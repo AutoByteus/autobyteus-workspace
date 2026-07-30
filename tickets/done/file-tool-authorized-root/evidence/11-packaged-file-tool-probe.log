@@ -1,0 +1,7 @@
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+{"result":"PASS","package":"electron-resources-server","tools":5,"absolute":true,"relativeBaseDir":true,"protectedMatrix":5,"schemaParity":true}
+exit=0

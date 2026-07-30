@@ -30,4 +30,27 @@ describe('insert_in_file tool (integration)', () => {
     expect(result).toBe(`Text inserted successfully at ${filePath}`);
     expect(await fs.readFile(filePath, 'utf-8')).toBe('line1\nline2\ninserted\nline3\n');
   });
+
+  it('resolves a relative path from an explicit absolute base directory', async () => {
+    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-insert-in-file-'));
+    const filePath = path.join(tmpDir, 'relative.txt');
+    await fs.writeFile(filePath, 'before\nafter\n', 'utf-8');
+
+    const result = await getTool().execute(
+      { agentId: 'agent', workspaceRootPath: path.join(tmpDir, 'different-workspace') } satisfies MockContext,
+      { path: 'relative.txt', base_dir: tmpDir, after_text: 'before\n', new_text: 'inserted\n' }
+    );
+
+    expect(result).toBe(`Text inserted successfully at ${filePath}`);
+    expect(await fs.readFile(filePath, 'utf-8')).toBe('before\ninserted\nafter\n');
+  });
+
+  it('rejects a relative path without base_dir', async () => {
+    await expect(
+      getTool().execute(
+        { agentId: 'agent', workspaceRootPath: '/tmp' } satisfies MockContext,
+        { path: 'relative.txt', after_text: 'before\n', new_text: 'inserted\n' }
+      )
+    ).rejects.toThrow('Provide an absolute path or an absolute base_dir');
+  });
 });

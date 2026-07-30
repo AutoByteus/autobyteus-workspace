@@ -1,0 +1,97 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/autobyteus-ts
+
+stdout | tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies read_file for a protected path
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies write_file for a protected path
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies edit_file for a protected path
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies replace_in_file for a protected path
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies insert_in_file for a protected path
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies read_file through a symlink to a protected path
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies write_file through a symlink to a protected path
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies edit_file through a symlink to a protected path
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies replace_in_file through a symlink to a protected path
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies insert_in_file through a symlink to a protected path
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies a write to a non-existent descendant of a protected root
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+
+ ✓ tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies read_file for a protected path 6ms
+ ✓ tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies write_file for a protected path 3ms
+ ✓ tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies edit_file for a protected path 3ms
+ ✓ tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies replace_in_file for a protected path 5ms
+ ✓ tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies insert_in_file for a protected path 3ms
+ ✓ tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies read_file through a symlink to a protected path 4ms
+ ✓ tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies write_file through a symlink to a protected path 3ms
+ ✓ tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies edit_file through a symlink to a protected path 3ms
+ ✓ tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies replace_in_file through a symlink to a protected path 3ms
+ ✓ tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies insert_in_file through a symlink to a protected path 2ms
+ ✓ tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies a write to a non-existent descendant of a protected root 3ms
+
+ Test Files  1 passed (1)
+      Tests  11 passed (11)
+   Start at  09:49:35
+   Duration  358ms (transform 156ms, setup 32ms, import 162ms, tests 39ms, environment 0ms)
+

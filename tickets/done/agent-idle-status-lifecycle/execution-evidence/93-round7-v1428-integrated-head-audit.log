@@ -1,0 +1,27 @@
+# Round 7 v1.4.28 integrated-head audit
+# Started: 2026-07-29T10:34:48Z
+head=740bec4cd4f03a198e0cc7cd8e575351e607991f
+branch=codex/agent-idle-status-lifecycle
+recorded_base=6caf809303294252c109420b238588f0c68aca6a
+merge_base=6caf809303294252c109420b238588f0c68aca6a
+base_is_ancestor=true
+unmerged_entries=0
+conflict_markers=0
+lifecycle_transformer_first=true
+event_monitor_begin_count=2
+event_monitor_commit_count=2
+obsolete_activity_repair_symbols=0
+removed_lifecycle_processor_refs=0
+direct_default_pipeline_bypass=0
+
+## Effective source sizes
+autobyteus-server-ts/src/agent-execution/services/agent-run-command-coordinator.ts=499
+autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-thread-event-converter.ts=490
+autobyteus-server-ts/src/agent-execution/events/processors/lifecycle-status/agent-turn-lifecycle-state.ts=172
+
+## User-owned app isolation
+port_29695_listening=true
+
+## Uncommitted production/test paths
+none
+# Finished: 2026-07-29T10:34:50Z

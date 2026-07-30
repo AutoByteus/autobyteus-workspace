@@ -1,0 +1,397 @@
+# Round 6 integrated-base live Claude team roundtrip + projection/restore lifecycle
+# Started: 2026-07-22T06:35:07Z
+# Command: RUN_CLAUDE_E2E=1 pnpm exec vitest run tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts -t "routes live inter-agent|serves every team member projection" --reporter=verbose
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:30593) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-runtime-e2e-appdata-G5mGZO
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-runtime-e2e-appdata-G5mGZO/.env
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+CachedAutobyteusLlmModelProvider initialized with an in-memory cache strategy.
+AutobyteusModelCatalog initialized.
+CachedAudioModelProvider initialized.
+AudioModelService initialized.
+CachedImageModelProvider initialized.
+ImageModelService initialized.
+CachedVideoModelProvider initialized.
+VideoModelService initialized.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Agent Definition created successfully with ID: claude-ping-29066f78-ad65-4816-87ce-6aff844ff40f
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Agent Definition created successfully with ID: claude-pong-29066f78-ad65-4816-87ce-6aff844ff40f
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+[2026-07-22T06:35:16.233Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Agent Team Definition created successfully with ID: claude-roundtrip-team-29066f78-ad65-4816-87ce-6aff844ff40f
+
+stderr | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-roundtrip-e2e-0Y3reh
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-roundtrip-e2e-0Y3reh.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Created and registered workspace ID: agent_ws_88fea95d9decb5fc7e65fde28de0cb499411c39acaff065a0e7384b383473623
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+[2026-07-22T06:35:16.263Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Registered 6 image models from Autobyteus host https://localhost:51739.
+Autobyteus image models from https://localhost:51739: gpt-image-1-rpa@localhost:51739, nano-banana-pro-app-rpa@localhost:51739, imagen-4-rpa@localhost:51739, imagen-4-ultra-rpa@localhost:51739, imagen-4-fast-rpa@localhost:51739, qwen-image-rpa@localhost:51739
+Autobyteus image discovery summary for https://localhost:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=39
+
+stderr | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Registered 4 audio models from Autobyteus host https://localhost:51739.
+Autobyteus audio models from https://localhost:51739: gemini-2.5-pro-tts-rpa@localhost:51739, gemini-2.5-flash-tts-rpa@localhost:51739, gemini-3.1-flash-tts-rpa@localhost:51739, qwen-tts-rpa@localhost:51739
+Autobyteus audio discovery summary for https://localhost:51739: total=4, registered=4, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=27
+
+stderr | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stderr | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Could not fetch image models from Autobyteus server at https://localhost:51740: Error
+
+stderr | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stderr | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Could not fetch audio models from Autobyteus server at https://localhost:51740: Error
+
+stderr | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+[2026-07-22T06:35:16.321Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 30 items.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Agent definition cache populated with 49 items.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Successfully created mixed team run 'claude_roundtrip_team_29066f78_ad65_4816_87ce_6a_4482ea8a705445fabb16d6cfb73ef411'.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Agent team websocket attached for team run claude_roundtrip_team_29066f78_ad65_4816_87ce_6a_4482ea8a705445fabb16d6cfb73ef411
+Created agent session e7a2bee4-74df-412d-8184-9e9017333d31 for run claude_roundtrip_team_29066f78_ad65_4816_87ce_6a_4482ea8a705445fabb16d6cfb73ef411
+Agent Team WebSocket connected: session=e7a2bee4-74df-412d-8184-9e9017333d31, run=claude_roundtrip_team_29066f78_ad65_4816_87ce_6a_4482ea8a705445fabb16d6cfb73ef411
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Successfully created claude_agent_sdk agent run 'claude_ping_29066f78_ad65_4816_87ce_6aff844ff40f_b7e508b9a6694f689b038ffc6a02a68c'.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Registered 6 image models from Autobyteus host https://192.168.2.142:51739.
+Autobyteus image models from https://192.168.2.142:51739: gpt-image-1-rpa@192.168.2.142:51739, nano-banana-pro-app-rpa@192.168.2.142:51739, imagen-4-rpa@192.168.2.142:51739, imagen-4-ultra-rpa@192.168.2.142:51739, imagen-4-fast-rpa@192.168.2.142:51739, qwen-image-rpa@192.168.2.142:51739
+Autobyteus image discovery summary for https://192.168.2.142:51739: total=6, registered=6, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=134
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Finished Autobyteus image model discovery. Total models registered: 12
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Registered 4 audio models from Autobyteus host https://192.168.2.142:51739.
+Autobyteus audio models from https://192.168.2.142:51739: gemini-2.5-pro-tts-rpa@192.168.2.142:51739, gemini-2.5-flash-tts-rpa@192.168.2.142:51739, gemini-3.1-flash-tts-rpa@192.168.2.142:51739, qwen-tts-rpa@192.168.2.142:51739
+Autobyteus audio discovery summary for https://192.168.2.142:51739: total=4, registered=4, skippedMalformed=0, skippedMissingSchema=0, skippedUnknownProvider=0, durationMs=134
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Finished Autobyteus audio model discovery. Total models registered: 8
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Successfully created claude_agent_sdk agent run 'claude_pong_29066f78_ad65_4816_87ce_6aff844ff40f_172ee2ac205042099aa75bb28a17f91e'.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+[team-communication] projection inserted teamRunId=claude_roundtrip_team_29066f78_ad65_4816_87ce_6a_4482ea8a705445fabb16d6cfb73ef411 messageId=teammsg_p7jjNMwt09PH0t25Ko6XMGrr8p4KFF7R referenceCount=0 projectionPath=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-runtime-e2e-appdata-G5mGZO/memory/agent_teams/claude_roundtrip_team_29066f78_ad65_4816_87ce_6a_4482ea8a705445fabb16d6cfb73ef411/team_communication_messages.json
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Discovering Ollama models from host: http://127.0.0.1:11434
+
+stderr | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Finished LM Studio discovery. Total models registered: 10
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Discovering Autobyteus models from host: https://localhost:51739
+
+stderr | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Discovering Autobyteus models from host: https://localhost:51740
+
+stderr | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stderr | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Could not connect or fetch models from Autobyteus server at https://localhost:51740: 
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Discovering Autobyteus models from host: https://192.168.2.142:51739
+
+stderr | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+[team-communication] projection inserted teamRunId=claude_roundtrip_team_29066f78_ad65_4816_87ce_6a_4482ea8a705445fabb16d6cfb73ef411 messageId=teammsg_yUpIc5r_KDSmCweZWVM1wakE6SzdGBMp referenceCount=0 projectionPath=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-runtime-e2e-appdata-G5mGZO/memory/agent_teams/claude_roundtrip_team_29066f78_ad65_4816_87ce_6a_4482ea8a705445fabb16d6cfb73ef411/team_communication_messages.json
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Finished Autobyteus discovery. Total models registered: 74
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Closed agent session e7a2bee4-74df-412d-8184-9e9017333d31
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Agent Team WebSocket disconnected: e7a2bee4-74df-412d-8184-9e9017333d31
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+[2026-07-22T06:37:22.355Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID claude-roundtrip-team-29066f78-ad65-4816-87ce-6aff844ff40f.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Agent Team Definition with ID claude-roundtrip-team-29066f78-ad65-4816-87ce-6aff844ff40f deleted successfully.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+In-memory cache: Removed agent definition with ID claude-ping-29066f78-ad65-4816-87ce-6aff844ff40f.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Agent Definition with ID claude-ping-29066f78-ad65-4816-87ce-6aff844ff40f deleted successfully.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+In-memory cache: Removed agent definition with ID claude-pong-29066f78-ad65-4816-87ce-6aff844ff40f.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Agent Definition with ID claude-pong-29066f78-ad65-4816-87ce-6aff844ff40f deleted successfully.
+
+ × tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime 126821ms
+   → Timed out waiting for team websocket event 'ping send_message_to TOOL_EXECUTION_SUCCEEDED'. preview='TEAM_COMMUNICATION_MESSAGE:{"messageId":"teammsg_yUpIc5r_KDSmCweZWVM1wakE6SzdGBMp","teamRunId":"claude_roundtrip_team_29066f78_ad65_4816_87ce_6a_4482ea8a705445fabb16d6cfb73ef411","senderAddress":{"segments":[{"kind":"member","m | MEMBER_INPUT_MESSAGE:{"content":"You received a message from sender name: pong, sender id: claude_pong_29066f78_ad65_4816_87ce_6aff844ff40f_172ee2ac205042099aa75bb28a17f91e\nmessage:\nPONG-TO-PING ROUNDTRIP_PONG:29066f78- | SEGMENT_END:{"id":"call_00_X3kzHYprjgHHKJMPGqi48622","segment_type":"tool_call","tool_name":"send_message_to","arguments":{"recipient_name":"ping","content":"PONG-TO-PING ROUNDTRIP_PONG:29066f78-ad65-4816-87ce-6a | TOOL_EXECUTION_SUCCEEDED:{"invocation_id":"call_00_X3kzHYprjgHHKJMPGqi48622","tool_name":"send_message_to","turn_id":"claude_pong_29066f78_ad65_4816_87ce_6aff844ff40f_172ee2ac205042099aa75bb28a17f91e:turn:1784702121500","argu | TOKEN_USAGE_UPDATED:{"usage_event_id":"ac466019-7cf8-4c65-8118-49af8470c0bb","idempotency_key":"claude_sdk_usage:claude_ping_29066f78_ad65_4816_87ce_6aff844ff40f_b7e508b9a6694f689b038ffc6a02a68c:02e2cf40-bd40-497d-abf2-1 | TURN_COMPLETED:{"turnId":"claude_ping_29066f78_ad65_4816_87ce_6aff844ff40f_b7e508b9a6694f689b038ffc6a02a68c:turn:1784702116416","turn_id":"claude_ping_29066f78_ad65_4816_87ce_6aff844ff40f_b7e508b9a6694f689b038ffc6a0 | AGENT_STATUS:{"status":"idle","can_interrupt":false,"agent_name":"ping","agent_id":"claude_ping_29066f78_ad65_4816_87ce_6aff844ff40f_b7e508b9a6694f689b038ffc6a02a68c","member_route_key":"ping","member_path":["ping | TURN_STARTED:{"turnId":"claude_ping_29066f78_ad65_4816_87ce_6aff844ff40f_b7e508b9a6694f689b038ffc6a02a68c:turn:1784702126828","turn_id":"claude_ping_29066f78_ad65_4816_87ce_6aff844ff40f_b7e508b9a6694f689b038ffc6a0 | AGENT_STATUS:{"status":"running","can_interrupt":true,"agent_name":"ping","agent_id":"claude_ping_29066f78_ad65_4816_87ce_6aff844ff40f_b7e508b9a6694f689b038ffc6a02a68c","member_route_key":"ping","member_path":["pi | SEGMENT_CONTENT:{"id":"claude_pong_29066f78_ad65_4816_87ce_6aff844ff40f_172ee2ac205042099aa75bb28a17f91e:turn:1784702121500:claude-text:65a2ed2c-5446-4fbb-8ddb-03be1f6e3e79:0","sessionId":"fa382716-a118-4f22-a28c-d05 | SEGMENT_END:{"id":"claude_pong_29066f78_ad65_4816_87ce_6aff844ff40f_172ee2ac205042099aa75bb28a17f91e:turn:1784702121500:claude-text:65a2ed2c-5446-4fbb-8ddb-03be1f6e3e79:0","sessionId":"fa382716-a118-4f22-a28c-d05 | TOKEN_USAGE_UPDATED:{"usage_event_id":"d4a28c86-82be-4201-b687-021384866496","idempotency_key":"claude_sdk_usage:claude_pong_29066f78_ad65_4816_87ce_6aff844ff40f_172ee2ac205042099aa75bb28a17f91e:fa382716-a118-4f22-a28c-d | TURN_COMPLETED:{"turnId":"claude_pong_29066f78_ad65_4816_87ce_6aff844ff40f_172ee2ac205042099aa75bb28a17f91e:turn:1784702121500","turn_id":"claude_pong_29066f78_ad65_4816_87ce_6aff844ff40f_172ee2ac205042099aa75bb28a1 | AGENT_STATUS:{"status":"idle","can_interrupt":false,"agent_name":"pong","agent_id":"claude_pong_29066f78_ad65_4816_87ce_6aff844ff40f_172ee2ac205042099aa75bb28a17f91e","member_route_key":"pong","member_path":["pong | SEGMENT_CONTENT:{"id":"claude_ping_29066f78_ad65_4816_87ce_6aff844ff40f_b7e508b9a6694f689b038ffc6a02a68c:turn:1784702126828:claude-text:4fbea9c7-a209-4875-b23e-e481135a687f:0","sessionId":"02e2cf40-bd40-497d-abf2-169 | SEGMENT_END:{"id":"claude_ping_29066f78_ad65_4816_87ce_6aff844ff40f_b7e508b9a6694f689b038ffc6a02a68c:turn:1784702126828:claude-text:4fbea9c7-a209-4875-b23e-e481135a687f:0","sessionId":"02e2cf40-bd40-497d-abf2-169 | TOKEN_USAGE_UPDATED:{"usage_event_id":"08620939-2250-4ae4-9cbf-0ca42cdf5ac1","idempotency_key":"claude_sdk_usage:claude_ping_29066f78_ad65_4816_87ce_6aff844ff40f_b7e508b9a6694f689b038ffc6a02a68c:02e2cf40-bd40-497d-abf2-1 | TURN_COMPLETED:{"turnId":"claude_ping_29066f78_ad65_4816_87ce_6aff844ff40f_b7e508b9a6694f689b038ffc6a02a68c:turn:1784702126828","turn_id":"claude_ping_29066f78_ad65_4816_87ce_6aff844ff40f_b7e508b9a6694f689b038ffc6a0 | AGENT_STATUS:{"status":"idle","can_interrupt":false,"agent_name":"ping","agent_id":"claude_ping_29066f78_ad65_4816_87ce_6aff844ff40f_b7e508b9a6694f689b038ffc6a02a68c","member_route_key":"ping","member_path":["ping | TEAM_STATUS:{"status":"idle","source_path":[]}'
+ ↓ tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > interrupts a pending Claude team turn and accepts a follow-up on the same websocket
+ ↓ tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > creates a nested team definition and routes live Claude inter-agent messaging between leaf members
+ ↓ tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > preserves workspace mapping across create->terminate->restore->continue for claude team runs created with workspaceId
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-projection-e2e-1s50x1
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-projection-e2e-1s50x1.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Created and registered workspace ID: agent_ws_ccdcfb512b899a2f1d255b8c9b9f7f19c7387038a27055f7c72948eed1c1b6a3
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+In-memory cache: Added new agent definition with ID claude-projection-professor-0a0dc322-7059-4f8e-9c7a-d8e664e81ba2.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Agent Definition created successfully with ID: claude-projection-professor-0a0dc322-7059-4f8e-9c7a-d8e664e81ba2
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+In-memory cache: Added new agent definition with ID claude-projection-student-0a0dc322-7059-4f8e-9c7a-d8e664e81ba2.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Agent Definition created successfully with ID: claude-projection-student-0a0dc322-7059-4f8e-9c7a-d8e664e81ba2
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+[2026-07-22T06:37:23.290Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID claude-projection-team-0a0dc322-7059-4f8e-9c7a-d8e664e81ba2.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Agent Team Definition created successfully with ID: claude-projection-team-0a0dc322-7059-4f8e-9c7a-d8e664e81ba2
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-projection-e2e-1s50x1
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-projection-e2e-1s50x1.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Reusing registered workspace ID: agent_ws_ccdcfb512b899a2f1d255b8c9b9f7f19c7387038a27055f7c72948eed1c1b6a3
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Successfully created mixed team run 'claude_projection_team_0a0dc322_7059_4f8e_9c7a_d_50f1e489107a42beb81750d0259afcbf'.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Agent team websocket attached for team run claude_projection_team_0a0dc322_7059_4f8e_9c7a_d_50f1e489107a42beb81750d0259afcbf
+Created agent session 721f4fc7-9a9a-48dc-855a-74ea9d237872 for run claude_projection_team_0a0dc322_7059_4f8e_9c7a_d_50f1e489107a42beb81750d0259afcbf
+Agent Team WebSocket connected: session=721f4fc7-9a9a-48dc-855a-74ea9d237872, run=claude_projection_team_0a0dc322_7059_4f8e_9c7a_d_50f1e489107a42beb81750d0259afcbf
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Successfully created claude_agent_sdk agent run 'claude_projection_professor_0a0dc322_7059_4f8e_9_fc8164c710b644d18202b4035ed3a63b'.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Successfully created claude_agent_sdk agent run 'claude_projection_student_0a0dc322_7059_4f8e_9c7_acce650b7c914e1db8d6ea08f3086a56'.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-projection-e2e-1s50x1
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-projection-e2e-1s50x1.
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-projection-e2e-1s50x1
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-projection-e2e-1s50x1.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Reusing registered workspace ID: agent_ws_ccdcfb512b899a2f1d255b8c9b9f7f19c7387038a27055f7c72948eed1c1b6a3
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Reusing registered workspace ID: agent_ws_ccdcfb512b899a2f1d255b8c9b9f7f19c7387038a27055f7c72948eed1c1b6a3
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Successfully restored mixed team run 'claude_projection_team_0a0dc322_7059_4f8e_9c7a_d_50f1e489107a42beb81750d0259afcbf'.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Successfully restored claude_agent_sdk agent run 'claude_projection_professor_0a0dc322_7059_4f8e_9_fc8164c710b644d18202b4035ed3a63b'.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Successfully restored claude_agent_sdk agent run 'claude_projection_student_0a0dc322_7059_4f8e_9c7_acce650b7c914e1db8d6ea08f3086a56'.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Closed agent session 721f4fc7-9a9a-48dc-855a-74ea9d237872
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Agent Team WebSocket disconnected: 721f4fc7-9a9a-48dc-855a-74ea9d237872
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+[2026-07-22T06:37:34.432Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID claude-projection-team-0a0dc322-7059-4f8e-9c7a-d8e664e81ba2.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Agent Team Definition with ID claude-projection-team-0a0dc322-7059-4f8e-9c7a-d8e664e81ba2 deleted successfully.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+In-memory cache: Removed agent definition with ID claude-projection-professor-0a0dc322-7059-4f8e-9c7a-d8e664e81ba2.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Agent Definition with ID claude-projection-professor-0a0dc322-7059-4f8e-9c7a-d8e664e81ba2 deleted successfully.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+In-memory cache: Removed agent definition with ID claude-projection-student-0a0dc322-7059-4f8e-9c7a-d8e664e81ba2.
+
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime
+Agent Definition with ID claude-projection-student-0a0dc322-7059-4f8e-9c7a-d8e664e81ba2 deleted successfully.
+
+ ✓ tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > serves every team member projection after terminate, restore, and continue in claude team runtime 12074ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts > Claude team inter-agent roundtrip e2e (live transport) > routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime
+Error: Timed out waiting for team websocket event 'ping send_message_to TOOL_EXECUTION_SUCCEEDED'. preview='TEAM_COMMUNICATION_MESSAGE:{"messageId":"teammsg_yUpIc5r_KDSmCweZWVM1wakE6SzdGBMp","teamRunId":"claude_roundtrip_team_29066f78_ad65_4816_87ce_6a_4482ea8a705445fabb16d6cfb73ef411","senderAddress":{"segments":[{"kind":"member","m | MEMBER_INPUT_MESSAGE:{"content":"You received a message from sender name: pong, sender id: claude_pong_29066f78_ad65_4816_87ce_6aff844ff40f_172ee2ac205042099aa75bb28a17f91e\nmessage:\nPONG-TO-PING ROUNDTRIP_PONG:29066f78- | SEGMENT_END:{"id":"call_00_X3kzHYprjgHHKJMPGqi48622","segment_type":"tool_call","tool_name":"send_message_to","arguments":{"recipient_name":"ping","content":"PONG-TO-PING ROUNDTRIP_PONG:29066f78-ad65-4816-87ce-6a | TOOL_EXECUTION_SUCCEEDED:{"invocation_id":"call_00_X3kzHYprjgHHKJMPGqi48622","tool_name":"send_message_to","turn_id":"claude_pong_29066f78_ad65_4816_87ce_6aff844ff40f_172ee2ac205042099aa75bb28a17f91e:turn:1784702121500","argu | TOKEN_USAGE_UPDATED:{"usage_event_id":"ac466019-7cf8-4c65-8118-49af8470c0bb","idempotency_key":"claude_sdk_usage:claude_ping_29066f78_ad65_4816_87ce_6aff844ff40f_b7e508b9a6694f689b038ffc6a02a68c:02e2cf40-bd40-497d-abf2-1 | TURN_COMPLETED:{"turnId":"claude_ping_29066f78_ad65_4816_87ce_6aff844ff40f_b7e508b9a6694f689b038ffc6a02a68c:turn:1784702116416","turn_id":"claude_ping_29066f78_ad65_4816_87ce_6aff844ff40f_b7e508b9a6694f689b038ffc6a0 | AGENT_STATUS:{"status":"idle","can_interrupt":false,"agent_name":"ping","agent_id":"claude_ping_29066f78_ad65_4816_87ce_6aff844ff40f_b7e508b9a6694f689b038ffc6a02a68c","member_route_key":"ping","member_path":["ping | TURN_STARTED:{"turnId":"claude_ping_29066f78_ad65_4816_87ce_6aff844ff40f_b7e508b9a6694f689b038ffc6a02a68c:turn:1784702126828","turn_id":"claude_ping_29066f78_ad65_4816_87ce_6aff844ff40f_b7e508b9a6694f689b038ffc6a0 | AGENT_STATUS:{"status":"running","can_interrupt":true,"agent_name":"ping","agent_id":"claude_ping_29066f78_ad65_4816_87ce_6aff844ff40f_b7e508b9a6694f689b038ffc6a02a68c","member_route_key":"ping","member_path":["pi | SEGMENT_CONTENT:{"id":"claude_pong_29066f78_ad65_4816_87ce_6aff844ff40f_172ee2ac205042099aa75bb28a17f91e:turn:1784702121500:claude-text:65a2ed2c-5446-4fbb-8ddb-03be1f6e3e79:0","sessionId":"fa382716-a118-4f22-a28c-d05 | SEGMENT_END:{"id":"claude_pong_29066f78_ad65_4816_87ce_6aff844ff40f_172ee2ac205042099aa75bb28a17f91e:turn:1784702121500:claude-text:65a2ed2c-5446-4fbb-8ddb-03be1f6e3e79:0","sessionId":"fa382716-a118-4f22-a28c-d05 | TOKEN_USAGE_UPDATED:{"usage_event_id":"d4a28c86-82be-4201-b687-021384866496","idempotency_key":"claude_sdk_usage:claude_pong_29066f78_ad65_4816_87ce_6aff844ff40f_172ee2ac205042099aa75bb28a17f91e:fa382716-a118-4f22-a28c-d | TURN_COMPLETED:{"turnId":"claude_pong_29066f78_ad65_4816_87ce_6aff844ff40f_172ee2ac205042099aa75bb28a17f91e:turn:1784702121500","turn_id":"claude_pong_29066f78_ad65_4816_87ce_6aff844ff40f_172ee2ac205042099aa75bb28a1 | AGENT_STATUS:{"status":"idle","can_interrupt":false,"agent_name":"pong","agent_id":"claude_pong_29066f78_ad65_4816_87ce_6aff844ff40f_172ee2ac205042099aa75bb28a17f91e","member_route_key":"pong","member_path":["pong | SEGMENT_CONTENT:{"id":"claude_ping_29066f78_ad65_4816_87ce_6aff844ff40f_b7e508b9a6694f689b038ffc6a02a68c:turn:1784702126828:claude-text:4fbea9c7-a209-4875-b23e-e481135a687f:0","sessionId":"02e2cf40-bd40-497d-abf2-169 | SEGMENT_END:{"id":"claude_ping_29066f78_ad65_4816_87ce_6aff844ff40f_b7e508b9a6694f689b038ffc6a02a68c:turn:1784702126828:claude-text:4fbea9c7-a209-4875-b23e-e481135a687f:0","sessionId":"02e2cf40-bd40-497d-abf2-169 | TOKEN_USAGE_UPDATED:{"usage_event_id":"08620939-2250-4ae4-9cbf-0ca42cdf5ac1","idempotency_key":"claude_sdk_usage:claude_ping_29066f78_ad65_4816_87ce_6aff844ff40f_b7e508b9a6694f689b038ffc6a02a68c:02e2cf40-bd40-497d-abf2-1 | TURN_COMPLETED:{"turnId":"claude_ping_29066f78_ad65_4816_87ce_6aff844ff40f_b7e508b9a6694f689b038ffc6a02a68c:turn:1784702126828","turn_id":"claude_ping_29066f78_ad65_4816_87ce_6aff844ff40f_b7e508b9a6694f689b038ffc6a0 | AGENT_STATUS:{"status":"idle","can_interrupt":false,"agent_name":"ping","agent_id":"claude_ping_29066f78_ad65_4816_87ce_6aff844ff40f_b7e508b9a6694f689b038ffc6a02a68c","member_route_key":"ping","member_path":["ping | TEAM_STATUS:{"status":"idle","source_path":[]}'
+ ❯ waitForTeamStreamEvent tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts:533:15
+    531|           .map((entry) => `${entry.type}:${JSON.stringify(entry.payloa…
+    532|           .join(" | ");
+    533|         throw new Error(`Timed out waiting for team websocket event '$…
+       |               ^
+    534|       };
+    535| 
+ ❯ waitForSendMessageLifecycleAndReceipt tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts:696:9
+ ❯ tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts:796:9
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed | 3 skipped (5)
+   Start at  08:35:08
+   Duration  145.91s (transform 3.99s, setup 19ms, import 6.32s, tests 138.95s, environment 0ms)
+
+# Finished: 2026-07-22T06:37:34Z
+# Exit status: 1

@@ -1,0 +1,19 @@
+Scope: all 11 workspace projects
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +1717
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 1717, reused 1366, downloaded 0, added 0
+Progress: resolved 1717, reused 1715, downloaded 0, added 280
+Progress: resolved 1717, reused 1715, downloaded 0, added 548
+Progress: resolved 1717, reused 1715, downloaded 0, added 645
+Progress: resolved 1717, reused 1715, downloaded 0, added 876
+Progress: resolved 1717, reused 1715, downloaded 0, added 949
+Progress: resolved 1717, reused 1715, downloaded 0, added 1165
+Progress: resolved 1717, reused 1715, downloaded 0, added 1500
+Progress: resolved 1717, reused 1715, downloaded 0, added 1717, done
+
+autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+autobyteus-ts postinstall: [node-pty-fix] repaired: /Users/normy/autobyteus_org/autobyteus-worktrees/delivery-agent-idle-status-lifecycle-v1.4.29/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+autobyteus-ts postinstall: Done
+Done in 10.8s using pnpm v10.28.2

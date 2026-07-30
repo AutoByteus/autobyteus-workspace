@@ -1,8 +1,41 @@
 import os from 'node:os';
 import path from 'node:path';
-import { statSync } from 'node:fs';
+import { existsSync, realpathSync, statSync } from 'node:fs';
 import type { AgentContextLike } from './background-process-context.js';
-import { resolveAbsolutePath } from '../file/workspace-path-utils.js';
+
+const isWithin = (root: string, candidate: string): boolean =>
+  candidate === root || candidate.startsWith(`${root}${path.sep}`);
+
+const resolvePhysicalCandidate = (candidate: string): string => {
+  let existingAncestor = candidate;
+  while (!existsSync(existingAncestor)) {
+    const parent = path.dirname(existingAncestor);
+    if (parent === existingAncestor) break;
+    existingAncestor = parent;
+  }
+  const realAncestor = realpathSync(existingAncestor);
+  return path.resolve(realAncestor, path.relative(existingAncestor, candidate));
+};
+
+function resolveContainedTerminalCwd(context: AgentContextLike, cwd: string): string {
+  const workspaceRootPath = context.workspaceRootPath;
+  if (!workspaceRootPath || workspaceRootPath.trim().length === 0) {
+    throw new Error("Parameter 'cwd' requires an authorized workspace root.");
+  }
+
+  const lexicalRoot = path.resolve(workspaceRootPath);
+  const candidate = path.resolve(path.isAbsolute(cwd) ? cwd : path.join(lexicalRoot, cwd));
+  if (!isWithin(lexicalRoot, candidate)) {
+    throw new Error('FILE_TOOL_PATH_OUTSIDE_AUTHORIZED_ROOT');
+  }
+
+  const physicalRoot = realpathSync(lexicalRoot);
+  const physicalCandidate = resolvePhysicalCandidate(candidate);
+  if (!isWithin(physicalRoot, physicalCandidate)) {
+    throw new Error('FILE_TOOL_PATH_OUTSIDE_AUTHORIZED_ROOT');
+  }
+  return path.normalize(physicalCandidate);
+}
 
 function ensureDirectoryExists(directoryPath: string): void {
   let stats;
@@ -37,14 +70,7 @@ export function resolveExecutionCwd(
   }
 
   const normalizedCwd = cwd.trim();
-  const hasWorkspaceRoot =
-    workspaceRootPath && typeof workspaceRootPath === 'string' && workspaceRootPath.trim().length > 0;
-  if (!hasWorkspaceRoot) {
-    throw new Error(
-      "Parameter 'cwd' requires an authorized workspace root."
-    );
-  }
-  const resolved = resolveAbsolutePath({
+  const resolved = resolveContainedTerminalCwd({
     agentId: context?.agentId ?? 'unknown',
     workspaceRootPath: workspaceRootPath as string,
   }, normalizedCwd);

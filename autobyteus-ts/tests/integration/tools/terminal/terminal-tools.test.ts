@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { mkdtemp, mkdir, rm } from 'node:fs/promises';
+import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { registerRunBashTool } from '../../../../src/tools/terminal/tools/run-bash.js';
@@ -56,7 +57,20 @@ runIntegration('terminal tools integration', () => {
       const result = await runBashTool.execute(context, { command: 'pwd', cwd: subdir }) as TerminalResult;
 
       expect(result.stdout).toContain('mysubdir');
-      expect(result.effectiveCwd).toBe(subdir);
+      expect(result.effectiveCwd).toBe(fs.realpathSync(subdir));
+    });
+  });
+
+  it('start_background_process rejects an explicit cwd outside the workspace', async () => {
+    await withTempDir(async (workspace) => {
+      await withTempDir(async (outside) => {
+        const context = new MockContext(workspace);
+
+        await expect(startBackgroundProcessTool.execute(context, {
+          command: 'echo should-not-start',
+          cwd: outside
+        })).rejects.toThrow('FILE_TOOL_PATH_OUTSIDE_AUTHORIZED_ROOT');
+      });
     });
   });
 

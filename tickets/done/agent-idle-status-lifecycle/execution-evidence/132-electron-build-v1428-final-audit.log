@@ -1,0 +1,29 @@
+# Electron v1.4.28 final package audit
+# Started: 2026-07-29T11:29:14Z
+
+build_and_verification_markers=pass
+
+dmg_sha256=a5ec7ddf1a56727f9597b4a1e93c901f6af5a99197d673d5269529a536554143
+zip_sha256=d3f26e930ce1314d4c4a07e0ddf6e457ba9b698afc3f971e674221a5d69894a3
+No errors detected in compressed data of /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.28.zip.
+zip_integrity=pass
+
+Identifier=Electron
+Signature=adhoc
+TeamIdentifier=not set
+local_signing=adhoc_only_expected
+notarization=not_performed_expected
+
+app_version=1.4.28
+electron_version=42.4.1
+app_arch=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+head=7e4b78d314b867c57723cee95d0cdd24be33a3cf
+origin_personal=6caf809303294252c109420b238588f0c68aca6a
+merge_base=6caf809303294252c109420b238588f0c68aca6a
+ahead_behind=17	0
+user_app_port_29695_listener=1
+packaged_probe_cleanup=pass
+dmg_cleanup=pass
+
+final_package_audit=pass
+# Finished: 2026-07-29T11:29:32Z

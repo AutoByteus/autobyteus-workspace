@@ -137,7 +137,10 @@ export class CodexThread {
   }
 
   markTurnCompleted(turnId?: string | null): void {
-    const completedTurnId = turnId ?? this.activeTurnId;
+    const completedTurnId = turnId ?? null;
+    if (!completedTurnId || this.activeTurnId !== completedTurnId) {
+      return;
+    }
     this.currentStatus = "IDLE";
     this.lastCompletedTurnId = completedTurnId ?? null;
     this.runContext.runtimeContext.activeTurnId = null;
@@ -148,9 +151,6 @@ export class CodexThread {
     this.currentStatus = status;
     const normalizedStatus = status?.trim().toUpperCase() ?? null;
     if (normalizedStatus === "IDLE") {
-      this.runContext.runtimeContext.activeTurnId = null;
-      this.pendingMcpToolCalls.clear();
-    } else if (normalizedStatus === "ERROR") {
       this.runContext.runtimeContext.activeTurnId = null;
       this.pendingMcpToolCalls.clear();
     }
@@ -272,12 +272,14 @@ export class CodexThread {
 
 
   emitRuntimeError(code: string, message: string): void {
-    this.setCurrentStatus("ERROR");
+    this.markRuntimeFailed();
     this.emitThreadAppServerMessage({
       method: CodexThreadEventName.ERROR,
       params: {
         code,
         message,
+        error_scope: "runtime",
+        error_effect: "terminal",
       },
     });
   }
@@ -294,15 +296,32 @@ export class CodexThread {
     this.rejectStartupReady(
       new Error(`Codex app server closed before startup completed: ${message}`),
     );
-    this.setCurrentStatus("ERROR");
-    this.runContext.runtimeContext.activeTurnId = null;
+    this.markRuntimeFailed();
     this.emitThreadAppServerMessage({
       method: CodexThreadEventName.ERROR,
       params: {
         code: "CODEX_APP_SERVER_CLOSED",
         message,
+        error_scope: "runtime",
+        error_effect: "terminal",
       },
     });
+  }
+
+  markTurnFailed(turnId: string): boolean {
+    if (this.activeTurnId !== turnId) {
+      return false;
+    }
+    this.currentStatus = "ERROR";
+    this.runContext.runtimeContext.activeTurnId = null;
+    this.pendingMcpToolCalls.clear();
+    return true;
+  }
+
+  private markRuntimeFailed(): void {
+    this.currentStatus = "ERROR";
+    this.runContext.runtimeContext.activeTurnId = null;
+    this.pendingMcpToolCalls.clear();
   }
 
   addUnbindHandler(unbind: () => void): void {

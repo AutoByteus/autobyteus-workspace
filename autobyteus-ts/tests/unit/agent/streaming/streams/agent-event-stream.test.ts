@@ -146,7 +146,12 @@ describe('AgentEventStream', () => {
     const consumer = collectStreamResults(streamer.allEvents(), streamer, 40);
     const producer = (async () => {
       await delay(5);
-      notifier.notifyAgentErrorOutputGeneration('Test.Source', 'A test error occurred.', 'Detailed traceback.');
+      notifier.notifyAgentErrorOutputGeneration({
+        source: 'Test.Source',
+        message: 'A test error occurred.',
+        details: 'Detailed traceback.',
+        classification: { scope: 'turn', effect: 'diagnostic', turnId: 'turn-1' }
+      });
     })();
 
     const [results] = await Promise.all([consumer, producer]);
@@ -158,6 +163,9 @@ describe('AgentEventStream', () => {
     expect(payload.source).toBe('Test.Source');
     expect(payload.message).toBe('A test error occurred.');
     expect(payload.details).toBe('Detailed traceback.');
+    expect(payload.error_scope).toBe('turn');
+    expect(payload.error_effect).toBe('diagnostic');
+    expect(payload.turn_id).toBe('turn-1');
   });
 
   it('allEvents receives mixed events in order', async () => {

@@ -30,7 +30,12 @@ export class ChannelRunOutputEventCollector {
       return null;
     }
 
-    if (input.event.eventType === AgentRunEventType.ERROR) {
+    if (
+      input.event.eventType === AgentRunEventType.ERROR &&
+      input.event.errorEvidence?.kind === "TURN_TERMINAL" &&
+      input.event.errorEvidence.turnId === turnId &&
+      this.pendingTurns.get(input.deliveryKey)?.turnId === turnId
+    ) {
       this.pendingTurns.delete(input.deliveryKey);
       return null;
     }

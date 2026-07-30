@@ -1,0 +1,24 @@
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+
+  ➜ Local:    http://127.0.0.1:18144/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+ℹ Re-optimizing dependencies because lockfile has changed
+✔ Vite client built in 205ms
+✔ Vite server built in 284ms
+[nitro] ✔ Nuxt Nitro server built in 3727ms
+ℹ Vite client warmed up in 1ms
+ℹ ✨ new dependencies optimized: crypto-js/sha256
+ℹ ✨ optimized dependencies changed. reloading
+ℹ ✨ new dependencies optimized: @iconify/vue
+ℹ ✨ optimized dependencies changed. reloading
+
+ ERROR  http proxy error: /rest/health
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1135:18)
+    at afterConnectMultiple (node:net:1716:7)
+    at TCPConnectWrap.callbackTrampoline (node:internal/async_hooks:130:17)
+

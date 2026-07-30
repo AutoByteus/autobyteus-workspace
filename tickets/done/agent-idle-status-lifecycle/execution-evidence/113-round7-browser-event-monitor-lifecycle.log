@@ -1,0 +1,38 @@
+# Round 7 Chrome Event Monitor/lifecycle probe
+utc=2026-07-29T10:55:01Z
+head=740bec4cd4f03a198e0cc7cd8e575351e607991f
+node:internal/modules/cjs/loader:1433
+  throw err;
+  ^
+
+Error: Cannot find module 'playwright-core'
+Require stack:
+- /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/[eval]
+    at Function._resolveFilename (node:internal/modules/cjs/loader:1430:15)
+    at Function.resolve (node:internal/modules/helpers:157:19)
+    at [eval]:1:9
+    at runScriptInThisContext (node:internal/vm:209:10)
+    at node:internal/process/execution:446:12
+    at [eval]-wrapper:6:24
+    at runScriptInContext (node:internal/process/execution:444:60)
+    at evalFunction (node:internal/process/execution:279:30)
+    at evalTypeScript (node:internal/process/execution:291:3)
+    at node:internal/main/eval_string:74:3 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/[eval]'
+  ]
+}
+
+Node.js v22.23.1
+file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/execution-evidence/browser-round7-event-monitor-lifecycle-probe.mjs:6
+if (!playwrightCorePath) throw new Error('PLAYWRIGHT_CORE_PATH is required.');
+                               ^
+
+Error: PLAYWRIGHT_CORE_PATH is required.
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/tickets/done/agent-idle-status-lifecycle/execution-evidence/browser-round7-event-monitor-lifecycle-probe.mjs:6:32
+    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+
+Node.js v22.23.1

@@ -155,6 +155,41 @@ describe('MarkdownRenderer', () => {
     expect(wrapper.emitted('file-path-action')).toBeUndefined();
   });
 
+  it('renders unsupported bare absolute Markdown destinations as inert labels', async () => {
+    const destinations = [
+      '/tmp/AutoByteus.dmg',
+      '/tmp/archive.zip',
+      '/tmp/setup.pkg',
+      '/tmp/application.app',
+      '/tmp/payload.bin',
+      '/tmp/unknown.custom',
+    ];
+    const wrapper = mount(MarkdownRenderer, {
+      props: {
+        content: destinations.map((destination) => `[artifact](${destination})`).join(' '),
+        enableEventMonitorFileActions: true,
+      },
+      global: { plugins: [pinia] },
+    });
+    await flushPromises();
+
+    const inertLinks = wrapper.findAll('[data-event-monitor-invalid-file-link="true"]');
+    expect(inertLinks).toHaveLength(destinations.length);
+    expect(wrapper.findAll('a')).toHaveLength(0);
+    expect(wrapper.findAll('[data-event-monitor-file-action-id]')).toHaveLength(0);
+    expect(wrapper.text()).toBe(destinations.map(() => 'artifact').join(' '));
+    for (const destination of destinations) {
+      expect(wrapper.html()).not.toContain(destination);
+    }
+
+    for (const inertLink of inertLinks) {
+      await inertLink.trigger('click');
+      await inertLink.trigger('keydown', { key: 'Enter' });
+      await inertLink.trigger('keydown', { key: ' ' });
+    }
+    expect(wrapper.emitted('file-path-action')).toBeUndefined();
+  });
+
   it('leaves file links unchanged when Event Monitor actions are disabled', () => {
     const wrapper = mount(MarkdownRenderer, {
       props: { content: '[requirements.md](file:///tmp/requirements.md)' },

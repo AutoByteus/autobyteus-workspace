@@ -1,0 +1,10 @@
+# DR-002 README and latest-base pre-build record
+timestamp=2026-07-29T11:42:46Z
+readme_command=pnpm build:electron:mac
+readme_local_env=NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util*
+head=7e4b78d314b867c57723cee95d0cdd24be33a3cf
+origin_personal=6caf809303294252c109420b238588f0c68aca6a
+merge_base=6caf809303294252c109420b238588f0c68aca6a
+ahead_behind=17	0
+version=1.4.28
+base_refresh=already_current

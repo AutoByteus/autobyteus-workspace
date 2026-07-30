@@ -30,7 +30,8 @@ describe('WriteFileXmlFormatter', () => {
     expect(schema).toContain('__START_CONTENT__');
     expect(schema).toContain('__END_CONTENT__');
     expect(schema).toContain('sentinel tags');
-    expect(schema).toContain('absolute or relative to the configured workspace root');
+    expect(schema).toContain('If path is relative, you must provide an absolute base_dir');
+    expect(schema).toContain('name="base_dir"');
     expect(schema).toContain('prior shell cd state');
   });
 

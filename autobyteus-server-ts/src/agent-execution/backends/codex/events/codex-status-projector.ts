@@ -3,6 +3,10 @@ import {
   normalizeAgentApiStatus,
   type AgentStatusPayload,
 } from "../../../domain/agent-status-payload.js";
+import type { AgentRunEvent } from "../../../domain/agent-run-event.js";
+import { AgentRunEventType } from "../../../domain/agent-run-event.js";
+import { resolveAgentRunErrorEvidence } from "../../../domain/agent-run-error-evidence.js";
+import { CodexThreadEventName } from "./codex-thread-event-name.js";
 
 export type CodexStatusSource = {
   currentStatus?: unknown;
@@ -36,4 +40,24 @@ export const projectCodexAgentStatus = (source: CodexStatusSource): AgentStatusP
     status,
     canInterrupt: status === "running" && Boolean(source.activeTurnId),
   });
+};
+
+export const deriveCodexAgentRunStatusHint = (
+  codexEventName: string,
+): AgentRunEvent["statusHint"] => {
+  if (codexEventName === CodexThreadEventName.TURN_STARTED) return "ACTIVE";
+  if (codexEventName === CodexThreadEventName.TURN_COMPLETED) return "IDLE";
+  if (codexEventName === CodexThreadEventName.ERROR) return "ERROR";
+  return null;
+};
+
+export const resolveCodexAgentRunEventStatusHint = (
+  event: AgentRunEvent,
+  nonErrorHint: AgentRunEvent["statusHint"],
+): AgentRunEvent["statusHint"] => {
+  if (event.eventType !== AgentRunEventType.ERROR) return nonErrorHint;
+  const evidence = resolveAgentRunErrorEvidence(event);
+  return evidence?.kind === "TURN_TERMINAL" || evidence?.kind === "RUNTIME_GLOBAL"
+    ? "ERROR"
+    : null;
 };

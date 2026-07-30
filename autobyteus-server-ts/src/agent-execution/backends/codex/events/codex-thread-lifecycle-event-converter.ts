@@ -1,6 +1,10 @@
 import type { AgentRunEvent } from "../../../domain/agent-run-event.js";
-import type { AgentStatusPayload } from "../../../domain/agent-status-payload.js";
+import {
+  normalizeAgentApiStatus,
+  type AgentStatusPayload,
+} from "../../../domain/agent-status-payload.js";
 import { AgentRunEventType } from "../../../domain/agent-run-event.js";
+import { resolveAgentRunErrorEvidence } from "../../../domain/agent-run-error-evidence.js";
 import type { JsonObject } from "../codex-app-server-json.js";
 import { CodexThreadEventName } from "./codex-thread-event-name.js";
 
@@ -44,17 +48,33 @@ export const convertCodexThreadLifecycleEvent = (
       const nestedError = asObject(payload.error);
       const errorCode = nestedError?.code ?? payload.code;
       const errorMessage = nestedError?.message ?? payload.message;
-      return [
-        ...reasoningEnds,
-        context.createStatusEvent(codexEventName, { status: "error", can_interrupt: false }),
-        context.createEvent(codexEventName, AgentRunEventType.ERROR, {
+      const errorPayload = {
           code: typeof errorCode === "string" ? errorCode : "RUNTIME_ERROR",
           message:
             typeof errorMessage === "string"
               ? errorMessage
               : "Runtime emitted an error event.",
-        }),
-      ];
+          ...(typeof payload.error_scope === "string"
+            ? { error_scope: payload.error_scope }
+            : {}),
+          ...(typeof payload.error_effect === "string"
+            ? { error_effect: payload.error_effect }
+            : {}),
+          ...(typeof payload.turn_id === "string" ? { turn_id: payload.turn_id } : {}),
+        };
+      const errorEvent = context.createEvent(
+        codexEventName,
+        AgentRunEventType.ERROR,
+        errorPayload,
+      );
+      const evidence = resolveAgentRunErrorEvidence(errorEvent);
+      if (evidence?.kind !== "TURN_TERMINAL" && evidence?.kind !== "RUNTIME_GLOBAL") {
+        return [...reasoningEnds, errorEvent];
+      }
+      const statusEvent = context.createStatusEvent(codexEventName);
+      return normalizeAgentApiStatus(statusEvent.payload.status) === "error"
+        ? [...reasoningEnds, errorEvent, statusEvent]
+        : [...reasoningEnds, errorEvent];
     }
     default:
       return [];

@@ -332,7 +332,7 @@ const createAgentMemberRunConfig = (runtimeKind: RuntimeKind): TeamMemberRunConf
   skillAccessMode: SkillAccessMode.NONE,
   workspaceId: null,
   workspaceRootPath: null,
-  memoryDir: null,
+  memoryDir: "/tmp/autobyteus-team-command-start-status-memory",
   llmConfig: null,
   runtimeKind,
   applicationExecutionContext: null,
@@ -442,7 +442,7 @@ describe("team command-start status overlays", () => {
       description: null,
       teamDefinitionId: "child-team-def-1",
       coordinatorMemberRouteKey: null,
-      childTeamRunId: null,
+      childTeamRunId: "child-team-run-1",
       memberConfigs: [],
     };
     const subTeamContext = new MixedSubTeamMemberContext({
@@ -451,7 +451,7 @@ describe("team command-start status overlays", () => {
       memberRouteKey: "ReviewTeam",
       memberRunId: "subteam-run-1",
       teamDefinitionId: "child-team-def-1",
-      childTeamRunId: null,
+      childTeamRunId: "child-team-run-1",
     });
     const parentContext = new TeamRunContext({
       runId: "parent-team-run-1",

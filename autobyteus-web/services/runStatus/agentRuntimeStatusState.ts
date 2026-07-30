@@ -35,17 +35,6 @@ export const applyLiveAgentStatusEvent = (
   }
 };
 
-export const applyLiveRuntimeActivityProjectionRepair = (context: AgentContext): void => {
-  const status = normalizeAgentRuntimeStatus(context.state.currentStatus);
-  if (status !== AgentStatus.Error) {
-    return;
-  }
-
-  context.state.currentStatus = AgentStatus.Running;
-  context.state.canInterrupt = false;
-  context.isSending = true;
-};
-
 export const applyActiveRuntimePlaceholder = (
   context: AgentContext,
   options: { preserveExistingLive?: boolean } = {},

@@ -1,0 +1,4 @@
+# Round 6 browser readiness
+http_status=200
+server_ready=true
+note=Harness text is client-rendered; semantic DOM readiness and behavior were asserted by Chrome in evidence 89 and clean rerun 90.

@@ -2,6 +2,7 @@ import {
   AgentRunEventType,
   type AgentRunEvent,
 } from "../../../domain/agent-run-event.js";
+import { resolveAgentRunErrorEvidence } from "../../../domain/agent-run-error-evidence.js";
 import type { AgentStatusPayload } from "../../../domain/agent-status-payload.js";
 import { serializePayload } from "../../../../services/agent-streaming/payload-serialization.js";
 import { asObject, asString, type ClaudeSessionEvent } from "../claude-runtime-shared.js";
@@ -78,6 +79,9 @@ const resolveSegmentMetadata = (
 const buildErrorPayload = (payload: Record<string, unknown>): Record<string, unknown> => ({
   code: asString(payload.code) ?? "RUNTIME_ERROR",
   message: asString(payload.message) ?? "Claude runtime emitted an error.",
+  ...(asString(payload.error_scope) ? { error_scope: asString(payload.error_scope) } : {}),
+  ...(asString(payload.error_effect) ? { error_effect: asString(payload.error_effect) } : {}),
+  ...(resolveTurnId(payload) ? { turn_id: resolveTurnId(payload) } : {}),
 });
 
 type ClaudeProjectedToolResult = {
@@ -336,15 +340,20 @@ export class ClaudeSessionEventConverter {
           },
         )];
       }
-      case ClaudeSessionEventName.ERROR:
-        return [
-          this.createStatusEvent(claudeEventName, { status: "error", can_interrupt: false }),
-          this.createEvent(
-            claudeEventName,
-            AgentRunEventType.ERROR,
-            buildErrorPayload(payload),
-          ),
-        ];
+      case ClaudeSessionEventName.ERROR: {
+        const errorEvent = this.createEvent(
+          claudeEventName,
+          AgentRunEventType.ERROR,
+          buildErrorPayload(payload),
+        );
+        const evidence = resolveAgentRunErrorEvidence(errorEvent);
+        return evidence?.kind === "TURN_TERMINAL" || evidence?.kind === "RUNTIME_GLOBAL"
+          ? [
+              errorEvent,
+              this.createStatusEvent(claudeEventName, { status: "error", can_interrupt: false }),
+            ]
+          : [errorEvent];
+      }
       default:
         return [];
     }
@@ -379,12 +388,22 @@ export class ClaudeSessionEventConverter {
     eventType: AgentRunEventType,
     payload: Record<string, unknown>,
   ): AgentRunEvent {
-    return {
+    const event: AgentRunEvent = {
       eventType,
       runId: this.runId,
       payload,
-      statusHint: deriveClaudeAgentRunStatusHint(claudeEventName),
+      statusHint: null,
     };
+    if (eventType !== AgentRunEventType.ERROR) {
+      event.statusHint = deriveClaudeAgentRunStatusHint(claudeEventName);
+      return event;
+    }
+
+    const evidence = resolveAgentRunErrorEvidence(event);
+    event.statusHint = evidence?.kind === "TURN_TERMINAL" || evidence?.kind === "RUNTIME_GLOBAL"
+      ? "ERROR"
+      : null;
+    return event;
   }
 
   private buildClaudeCompactionBoundaryPayload(

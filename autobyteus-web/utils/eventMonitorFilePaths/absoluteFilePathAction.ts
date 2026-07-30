@@ -198,7 +198,7 @@ export function resolveEventMonitorMarkdownFileDestination(
   }
   const previewType = determineFilePreviewType(normalizedCandidate);
   if (previewType === 'Unsupported') {
-    return { kind: 'not-file' };
+    return invalidFileDestination(rawDestination);
   }
 
   return {

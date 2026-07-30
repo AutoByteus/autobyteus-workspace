@@ -1,0 +1,23 @@
+timestamp=2026-07-29T12:55:55Z
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+head=318e2847e50502f520a6300a0990455060dcdbfa
+origin_personal=6caf809303294252c109420b238588f0c68aca6a
+merge_base=6caf809303294252c109420b238588f0c68aca6a
+ahead_behind=0	19
+merge_commit_parents=6caf809303294252c109420b238588f0c68aca6a 0febb53a136f8d4bb183edd3015db97a98ecb550
+smoke_summary:
+ ✓ tests/unit/external-channel/runtime/channel-team-run-facade.test.ts > ChannelTeamRunFacade > throws when TeamRunService cannot resolve the team run 1ms
+ ✓ tests/unit/external-channel/runtime/channel-team-run-facade.test.ts > ChannelTeamRunFacade > captures the targeted member turn through the dispatch-scoped listener when the backend response has no turn id 1ms
+
+ Test Files  6 passed (6)
+      Tests  38 passed (38)
+   Start at  14:54:24
+   Duration  12.93s (transform 4.38s, setup 30ms, import 11.01s, tests 771ms, environment 0ms)
+
+canonical_diff_check=PASS
+Repository artifact hygiene check passed.
+Tracked files scanned: 17413
+Path-length threshold: 200
+Longest tracked path: 197 chars: tickets/done/agent-catalog-origin-grouping/validation-artifacts/round3/ui-application-package/applications/research-workspace/agent-teams/literature-review/agents/source-collector/agent-config.json
+non_ticket_changes:

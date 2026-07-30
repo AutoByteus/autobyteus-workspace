@@ -1,0 +1,30 @@
+
+> autobyteus-workspace@ release /Users/normy/autobyteus_org/autobyteus-worktrees/delivery-agent-idle-status-lifecycle-v1.4.29
+> bash scripts/desktop-release.sh release 1.4.29 -- --release-notes tickets/done/agent-idle-status-lifecycle/release-notes.md --branch delivery/agent-idle-status-lifecycle-v1.4.29 --no-push
+
+Updating autobyteus-web/package.json: 1.4.28 -> 1.4.29
+Updating autobyteus-message-gateway/package.json: 1.4.28 -> 1.4.29
+Synced curated release notes to .github/release-notes/release-notes.md
+Syncing managed messaging release manifest to v1.4.29
+[32mSynced default release manifest: /Users/normy/autobyteus_org/autobyteus-worktrees/delivery-agent-idle-status-lifecycle-v1.4.29/autobyteus-server-ts/src/managed-capabilities/messaging-gateway/release-manifest.json[0m
+[32mRelease tag: v1.4.29[0m
+[32mServer version: 0.1.1[0m
+[delivery/agent-idle-status-lifecycle-v1.4.29 2abcd1601] chore(release): bump workspace release version to 1.4.29
+ Committer: normy <normy@macbookpro.speedport.ip>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 4 files changed, 29 insertions(+), 14 deletions(-)
+Release prepared locally (not pushed).
+To push later:
+  git push origin delivery/agent-idle-status-lifecycle-v1.4.29
+  git push origin v1.4.29

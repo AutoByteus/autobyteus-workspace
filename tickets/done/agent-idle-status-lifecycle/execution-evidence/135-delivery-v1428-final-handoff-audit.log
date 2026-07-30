@@ -1,0 +1,12 @@
+# Delivery v1.4.28 final handoff audit
+timestamp=2026-07-29T11:35:27Z
+head=7e4b78d314b867c57723cee95d0cdd24be33a3cf
+origin_personal=6caf809303294252c109420b238588f0c68aca6a
+merge_base=6caf809303294252c109420b238588f0c68aca6a
+ahead_behind=17	0
+version=1.4.28
+artifact_presence=pass
+package_checksums=pass
+delivery_docs_whitespace=pass
+user_verification_hold=pass
+final_handoff_audit=pass

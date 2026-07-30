@@ -1,0 +1,18 @@
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+file:///Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/autobyteus-ts/dist/tools/file/workspace-path-utils.js:43
+            throw new Error("Parameter 'base_dir' must be an absolute directory when provided for a relative path.");
+                  ^
+
+Error: Parameter 'base_dir' must be an absolute directory when provided for a relative path.
+    at resolveFileToolPath (file:///Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/autobyteus-ts/dist/tools/file/workspace-path-utils.js:43:19)
+    at FunctionalTool.readFile [as _originalFunc] (file:///Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/autobyteus-ts/dist/tools/file/read-file.js:51:23)
+    at FunctionalTool._execute (file:///Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/autobyteus-ts/dist/tools/functional-tool.js:62:25)
+    at FunctionalTool.execute (file:///Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/autobyteus-ts/dist/tools/base-tool.js:220:21)
+    at async file:///private/tmp/file-tool-authorized-root-built-probe.mjs:34:5
+
+Node.js v22.23.1
+exit=1

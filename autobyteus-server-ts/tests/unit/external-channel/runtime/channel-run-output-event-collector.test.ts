@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { AgentRunEventType } from "../../../../src/agent-execution/domain/agent-run-event.js";
+import type { AgentRunErrorEvidence } from "../../../../src/agent-execution/domain/agent-run-error-evidence.js";
 import { ChannelRunOutputEventCollector } from "../../../../src/external-channel/runtime/channel-run-output-event-collector.js";
 import type {
   ChannelOutputEventTextKind,
@@ -12,9 +13,11 @@ const parsedEvent = (input: {
   turnId?: string;
   text?: string | null;
   textKind?: ChannelOutputEventTextKind | null;
+  errorEvidence?: AgentRunErrorEvidence | null;
 }): ParsedChannelOutputEvent => ({
   eventType: input.eventType,
   statusHint: "ACTIVE",
+  errorEvidence: input.errorEvidence ?? null,
   agentRunId: "agent-run-1",
   teamRunId: null,
   memberName: null,
@@ -149,5 +152,57 @@ describe("ChannelRunOutputEventCollector", () => {
     });
 
     expect(final?.replyText).toBe("clean final reply");
+  });
+
+  it("preserves collected output across recoverable diagnostic errors", () => {
+    const collector = new ChannelRunOutputEventCollector();
+    collector.processEvent({
+      deliveryKey: "delivery-1",
+      event: parsedEvent({
+        eventType: AgentRunEventType.SEGMENT_CONTENT,
+        text: "still working",
+        textKind: "STREAM_FRAGMENT",
+      }),
+    });
+    collector.processEvent({
+      deliveryKey: "delivery-1",
+      event: parsedEvent({
+        eventType: AgentRunEventType.ERROR,
+        errorEvidence: { kind: "TURN_DIAGNOSTIC", turnId: "turn-1" },
+      }),
+    });
+
+    const final = collector.processEvent({
+      deliveryKey: "delivery-1",
+      event: parsedEvent({ eventType: AgentRunEventType.TURN_COMPLETED }),
+    });
+    expect(final?.replyText).toBe("still working");
+  });
+
+  it("does not clear newer-turn output for an older terminal error", () => {
+    const collector = new ChannelRunOutputEventCollector();
+    collector.processEvent({
+      deliveryKey: "delivery-1",
+      event: parsedEvent({
+        eventType: AgentRunEventType.SEGMENT_CONTENT,
+        turnId: "turn-b",
+        text: "newer reply",
+        textKind: "STREAM_FRAGMENT",
+      }),
+    });
+    collector.processEvent({
+      deliveryKey: "delivery-1",
+      event: parsedEvent({
+        eventType: AgentRunEventType.ERROR,
+        turnId: "turn-a",
+        errorEvidence: { kind: "TURN_TERMINAL", turnId: "turn-a" },
+      }),
+    });
+
+    const final = collector.processEvent({
+      deliveryKey: "delivery-1",
+      event: parsedEvent({ eventType: AgentRunEventType.TURN_COMPLETED, turnId: "turn-b" }),
+    });
+    expect(final?.replyText).toBe("newer reply");
   });
 });

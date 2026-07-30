@@ -1,0 +1,228 @@
+# Electron macOS ARM64 personal build on v1.4.19 base
+# Started: 2026-07-20T04:17:33Z
+# Command: AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_TEAM_ID= APPLE_SIGNING_IDENTITY= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac
+# Branch: codex/agent-idle-status-lifecycle
+# Head: 9cffe5dd36279df7736c77058b83930636fb0eb4
+# origin/personal: 8c7e2c2aa591b174a3d5c90eb0d05584538bbf12
+# package version: 1.4.19
+
+> autobyteus@1.4.19 build:electron:mac /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-web
+> cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --mac
+
+
+> autobyteus@1.4.19 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+
+> autobyteus@1.4.19 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+
+> autobyteus@1.4.19 audit:localization-literals /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-web
+> node ./scripts/audit-localization-literals.mjs
+
+[audit:localization-literals] Passed with zero unresolved findings.
+(node:54016) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-web/localization/audit/migrationScopes.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-web/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+> autobyteus@1.4.19 prepare-server /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-web
+> node ./scripts/prepare-server-dispatch.mjs
+
+[0;32m=======================================[0m
+[0;32m   Preparing AutoByteus Server Files   [0m
+[0;32m=======================================[0m
+[0;32m✓[0m Created target directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-web/resources/server
+
+[0;33mBuilding server and dependencies...[0m
+Scope: all 11 workspace projects
+
+../autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+../autobyteus-ts postinstall: [node-pty-fix] ok: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+../autobyteus-ts postinstall: Done
+Done in 1.3s using pnpm v10.28.1
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 96ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Want to react to database changes in your app as they happen? Discover how with Pulse: https://pris.ly/tip-1-pulse
+
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 7.8.0                       │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+
+> autobyteus-server-ts@0.1.1 prebuild /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 11 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 92ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Need your database queries to be 1000x faster? Accelerate offers you that and more: https://pris.ly/tip-2-accelerate
+
+
+> autobyteus-server-ts@0.1.1 build /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts
+> pnpm run build:full
+
+
+> autobyteus-server-ts@0.1.1 build:full /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-managed-messaging-assets.mjs && node ./scripts/smoke-built-in-agents-bootstrap.mjs
+
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+(node:54368) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+
+[0;33mBuilding mobile web assets...[0m
+
+> autobyteus@1.4.19 build:mobile-web /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-web
+> node ./scripts/build-mobile-web.mjs
+
+
+> autobyteus@1.4.19 generate /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-web
+> nuxt generate
+
+┌  Building Nuxt for production...
+│
+●  Nuxt 3.21.1 (with Nitro 2.13.1, Vite 7.3.1 and Vue 3.5.28)
+[nuxt] modules:before: 0.083ms
+isElectronBuild false
+[nuxt] kit:compatibility: 0.025ms
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+ℹ Module electron took 0.26ms to setup.
+[nuxt] kit:compatibility: 0.018ms
+[nuxt] kit:compatibility: 0.082ms
+[nuxt] kit:compatibility : 0.326ms
+ℹ Module pinia took 2.17ms to setup.
+ℹ Module devhandler-compat took 0.03ms to setup.
+[nuxt] pages:routerOptions: 0.04ms
+ℹ Module nuxt:pages took 12.12ms to setup.
+ℹ Module nuxt:meta took 2.28ms to setup.
+[nuxt] kit:compatibility: 0.316ms
+ℹ Module nuxt:components took 5.31ms to setup.
+ℹ Module nuxt:imports took 0.97ms to setup.
+ℹ Module nuxt:nuxt-config-schema took 0.25ms to setup.
+ℹ Module @nuxt/telemetry took 0.06ms to setup.
+[nuxt] imports:dirs: 0.104ms
+[nuxt] imports:sources: 0.067ms
+[nuxt] imports:context: 0.104ms
+[nuxt] imports:extend: 0.05ms
+[nuxt] builder:generateApp: 0.024ms
+[nuxt] schema:extend: 0.012ms
+[nuxt] schema:resolved: 0.006ms
+[nuxt] modules:done: 115.802ms
+[nuxt] nitro:config: 61.555ms
+[nuxt] nitro:init: 0.674ms
+[nuxt] ready: 0.008ms
+│
+●  Nitro preset: static
+[nitro] types:extend: 0.013ms
+[nuxt] prepare:types: 55.641ms
+[nuxt] components:dirs: 0.007ms
+[nuxt] app:resolve: 0.74ms
+[nuxt] pages:extend: 0.07ms
+[nuxt] pages:resolved: 0.113ms
+[nuxt] components:extend: 0.427ms
+[nuxt] app:templates: 37.752ms
+[nuxt] ℹ Compiled app-component.mjs in 9.52ms
+[nuxt] ℹ Compiled types/app.config.d.ts in 9.5ms
+[nuxt] ℹ Compiled app.config.mjs in 9.55ms
+[nuxt] ℹ Compiled types/app-defaults.d.ts in 9.59ms
+[nuxt] ℹ Compiled types/build.d.ts in 9.65ms
+[nuxt] ℹ Compiled nitro.client.mjs in 9.41ms
+[nuxt] ℹ Compiled css.mjs in 9.46ms
+[nuxt] ℹ Compiled fetch.mjs in 9.5ms
+[nuxt] ℹ Compiled error-component.mjs in 9.55ms
+[nuxt] ℹ Compiled global-polyfills.mjs in 9.7ms
+[nuxt] ℹ Compiled layouts.mjs in 9.77ms
+[nuxt] ℹ Compiled middleware.mjs in 9.56ms
+[nuxt] ℹ Compiled nuxt.config.mjs in 9.44ms
+[nuxt] ℹ Compiled paths.mjs in 9.23ms
+[nuxt] ℹ Compiled root-component.mjs in 9.25ms
+[nuxt] ℹ Compiled test-component-wrapper.mjs in 9.08ms
+[nuxt] ℹ Compiled types/vue-shim.d.ts in 9.14ms
+[nuxt] ℹ Compiled types/nitro-layouts.d.ts in 9.2ms
+[nuxt] ℹ Compiled types/builder-env.d.ts in 9.25ms
+[nuxt] ℹ Compiled routes.mjs in 9.32ms
+[nuxt] ℹ Compiled pages.mjs in 8.38ms
+[nuxt] ℹ Compiled types/middleware.d.ts in 8.34ms
+[nuxt] ℹ Compiled types/nitro-middleware.d.ts in 8.38ms
+[nuxt] ℹ Compiled types/layouts.d.ts in 8.44ms
+[nuxt] ℹ Compiled unhead-options.mjs in 8.46ms
+[nuxt] ℹ Compiled unhead.config.mjs in 8.5ms
+[nuxt] ℹ Compiled components.d.ts in 8.55ms
+[nuxt] ℹ Compiled types/components.d.ts in 6.54ms
+[nuxt] ℹ Compiled components.plugin.mjs in 3.73ms
+[nuxt] ℹ Compiled component-names.mjs in 3.71ms
+[nuxt] ℹ Compiled components.islands.mjs in 3.68ms
+[nuxt] ℹ Compiled component-chunk.mjs in 3.51ms
+[nuxt] ℹ Compiled route-rules.mjs in 11.78ms
+[nuxt] nitro:prepare:types: 12.177ms
+[nuxt] ℹ Compiled imports.mjs in 12.4ms
+[nuxt] ℹ Compiled imports.d.ts in 12.45ms
+[nuxt] ℹ Compiled types/nitro-nuxt.d.ts in 13.07ms
+[nuxt] ℹ Compiled types/schema.d.ts in 20.56ms
+[nuxt] ℹ Compiled types/imports.d.ts in 17.41ms
+[nuxt] pages:routerOptions: 0.011ms
+[nuxt] ℹ Compiled router.options.mjs in 24.19ms
+[nuxt] ℹ Compiled plugins.server.mjs in 7ms
+[nuxt] ℹ Compiled plugins.client.mjs in 9.43ms
+[nuxt] ℹ Compiled types/plugins.d.ts in 11.64ms
+[nuxt] imports:extend: 0.022ms
+[nuxt] builder:generateApp: 0.006ms
+[nuxt] app:templatesGenerated: 80.305ms
+[nuxt] build:before: 1.05ms
+[nuxt] vite:extend: 2.654ms
+[nuxt] vite:extendConfig: 0.37ms
+[nuxt] vite:configResolved: 0.006ms
+ℹ Building client...
+ℹ vite v7.3.1 building client environment for production...
+ℹ transforming...
+
+# Aborted by delivery at 2026-07-20T04:18:05Z because origin/personal advanced during the build.
+# This is execution history, not a product build failure. No artifact from this attempt is a delivery candidate.
+# Exit status: 130 (intentional interruption)

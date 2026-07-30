@@ -161,4 +161,53 @@ describe("AgentRun", () => {
     expect(run.getStatusSnapshot()).toMatchObject({ status: "error", agent_id: "agent-run-error" });
   });
 
+  it("ignores non-status hints and error content when updating the canonical snapshot", () => {
+    let listener: ((event: AgentRunEvent) => void) | null = null;
+    const backend = {
+      getPlatformAgentRunId: () => null,
+      isActive: () => true,
+      getStatusSnapshot: () => ({ status: "idle" as const, can_interrupt: false }),
+      subscribeToEvents: vi.fn().mockImplementation((next: (event: AgentRunEvent) => void) => {
+        listener = next;
+        return () => { listener = null; };
+      }),
+      postUserMessage: vi.fn(),
+      approveToolInvocation: vi.fn(),
+      interrupt: vi.fn(),
+      terminate: vi.fn(),
+    };
+    const run = new AgentRun({
+      context: new AgentRunContext({
+        runId: "agent-run-hints",
+        config: new AgentRunConfig({
+          runtimeKind: "autobyteus",
+          agentDefinitionId: "agent-def-1",
+          llmModelIdentifier: "test-model",
+          autoExecuteTools: false,
+          workspaceId: null,
+          llmConfig: null,
+          skillAccessMode: null,
+        }),
+        runtimeContext: null,
+      }),
+      backend: backend as never,
+    });
+    run.subscribeToEvents(() => undefined);
+
+    listener?.({
+      eventType: AgentRunEventType.SEGMENT_CONTENT,
+      runId: run.runId,
+      payload: { turn_id: "turn-1", delta: "content" },
+      statusHint: "ACTIVE",
+    });
+    listener?.({
+      eventType: AgentRunEventType.ERROR,
+      runId: run.runId,
+      payload: { message: "diagnostic" },
+      statusHint: "ERROR",
+    });
+
+    expect(run.getStatusSnapshot()).toEqual({ status: "idle", can_interrupt: false });
+  });
+
 });

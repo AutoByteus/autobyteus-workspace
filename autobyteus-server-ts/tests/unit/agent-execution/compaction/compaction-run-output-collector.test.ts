@@ -68,6 +68,37 @@ describe("CompactionRunOutputCollector", () => {
     await expect(output).resolves.toBe('{"episodic_summary":"claude"}');
   });
 
+  it("keeps classified diagnostics as content-only before normal completion", async () => {
+    const collector = new CompactionRunOutputCollector({ runId: "compaction-run-1" });
+    const output = collector.waitForFinalOutput(1_000);
+
+    collector.observe(event(AgentRunEventType.ERROR, {
+      message: "recoverable",
+      error_scope: "turn",
+      error_effect: "diagnostic",
+      turn_id: "turn-1",
+    }));
+    collector.observe(event(AgentRunEventType.ASSISTANT_COMPLETE, { content: '{"episodic_summary":"ok"}' }));
+    collector.observe(event(AgentRunEventType.TURN_COMPLETED, { turn_id: "turn-1" }, "IDLE"));
+
+    await expect(output).resolves.toBe('{"episodic_summary":"ok"}');
+  });
+
+  it("fails immediately on classified terminal error evidence", async () => {
+    const collector = new CompactionRunOutputCollector({ runId: "compaction-run-1" });
+    const output = collector.waitForFinalOutput(1_000);
+
+    collector.observe(event(AgentRunEventType.ERROR, {
+      message: "terminal failure",
+      error_scope: "turn",
+      error_effect: "terminal",
+      turn_id: "turn-1",
+    }, "ERROR"));
+    collector.observe(event(AgentRunEventType.AGENT_STATUS, { status: "error" }, "ERROR"));
+
+    await expect(output).rejects.toThrow(/failed: terminal failure/);
+  });
+
   it("fails clearly when the compactor asks for tool approval", async () => {
     const collector = new CompactionRunOutputCollector({ runId: "compaction-run-1" });
     const output = collector.waitForFinalOutput(1_000);

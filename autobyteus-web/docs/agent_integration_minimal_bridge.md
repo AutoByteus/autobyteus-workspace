@@ -64,10 +64,20 @@ Minimal handler set:
 
 These handlers update the agent context and mark messages complete. In the current contract:
 - `TURN_STARTED` is a turn-scoped lifecycle marker that clients can observe directly.
-- `TURN_COMPLETED` is the preferred completion signal for one specific turn.
+- `TURN_COMPLETED` / `TURN_INTERRUPTED` settle only their matching `turn_id`;
+  a delayed terminal event for an older turn cannot close a newer turn.
 - `AGENT_STATUS` is run-level state with payload
   `{ status: "offline" | "initializing" | "idle" | "running" | "error", can_interrupt: boolean, agent_id?, agent_name? }`.
   It does not contain legacy transition-field names.
+- `ERROR` preserves existing source/code/message/details fields and may add
+  `{ error_scope: "turn", error_effect: "diagnostic" | "terminal", turn_id: string }`
+  or `{ error_scope: "runtime", error_effect: "terminal" }`. A diagnostic or
+  unclassified error is visible but does not settle a turn. Runtime-scoped
+  terminal evidence has no `turn_id`.
+- Do not infer `running`, error recovery, or turn reopening from `SEGMENT_*`,
+  tool, inter-agent, todo, or system-task activity. Late content for a completed
+  turn remains displayable while the member stays `idle`; lifecycle changes
+  come from canonical status/boundary/error evidence.
 - Standalone `SEND_MESSAGE` payloads must include `message_id` and
   `dedupe_key`. After an accepted command for an inactive or prepared run
   identity, the backend command coordinator publishes non-interruptible
@@ -98,6 +108,8 @@ These handlers update the agent context and mark messages complete. In the curre
   and first-load history views.
 - `AGENT_STATUS` remains useful as run-level state, but `TURN_COMPLETED` is the
   preferred signal when a client needs to know that one accepted turn has finished.
+  Correlate it by `turn_id` rather than treating any terminal event as a global
+  completion signal.
 
 ### 5) Core types
 You need small types for:

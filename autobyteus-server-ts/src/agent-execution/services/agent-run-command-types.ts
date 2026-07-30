@@ -26,6 +26,12 @@ export type AgentRunCommandErrorCode =
   | "RUNTIME_REJECTED"
   | "UNKNOWN_ERROR";
 
+export type AgentRunCommandTurnAssociation =
+  | { kind: "PENDING_IDENTITY" }
+  | { kind: "IDENTIFIED"; turnId: string }
+  | { kind: "AWAITING_ANONYMOUS_START" }
+  | { kind: "ANONYMOUS_ARMED"; armedAtSequence: number };
+
 export type AgentCommandAckPayload = {
   command_type: "SEND_MESSAGE";
   run_id: string;
@@ -50,6 +56,7 @@ export type AgentRunCommandRecord = {
   code?: AgentRunCommandErrorCode;
   message?: string;
   turnId?: string | null;
+  association: AgentRunCommandTurnAssociation;
 };
 
 export type AgentRunCommandCoordinatorInput = {

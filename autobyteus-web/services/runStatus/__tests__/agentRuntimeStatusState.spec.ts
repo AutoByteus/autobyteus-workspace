@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import {
   applyLiveAgentStatusEvent,
-  applyLiveRuntimeActivityProjectionRepair,
 } from '../agentRuntimeStatusState';
 
 const buildContext = (status: AgentStatus = AgentStatus.Offline) => ({
@@ -28,22 +27,12 @@ describe('agentRuntimeStatusState', () => {
     expect(context.isSending).toBe(true);
   });
 
-  it('clears stale error on same-run live non-error activity', () => {
+  it('recovers error only when a canonical running status event arrives', () => {
     const context = buildContext(AgentStatus.Error);
 
-    applyLiveRuntimeActivityProjectionRepair(context);
+    applyLiveAgentStatusEvent(context, { status: 'running', can_interrupt: true });
 
     expect(context.state.currentStatus).toBe(AgentStatus.Running);
-    expect(context.state.canInterrupt).toBe(false);
-    expect(context.isSending).toBe(true);
-  });
-
-  it('does not use live activity projection repair as a general lifecycle source', () => {
-    const context = buildContext(AgentStatus.Idle);
-
-    applyLiveRuntimeActivityProjectionRepair(context);
-
-    expect(context.state.currentStatus).toBe(AgentStatus.Idle);
     expect(context.state.canInterrupt).toBe(true);
     expect(context.isSending).toBe(false);
   });

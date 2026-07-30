@@ -39,6 +39,9 @@ export class ErrorEventData extends BaseStreamPayload {
   source: string;
   message: string;
   details?: string;
+  error_scope?: string;
+  error_effect?: string;
+  turn_id?: string;
 
   constructor(data: Record<string, any>) {
     assertRequiredKeys(data, ['source', 'message'], 'ErrorEventData');
@@ -46,6 +49,9 @@ export class ErrorEventData extends BaseStreamPayload {
     this.source = String(data.source ?? '');
     this.message = String(data.message ?? '');
     this.details = data.details ?? undefined;
+    this.error_scope = typeof data.error_scope === 'string' ? data.error_scope : undefined;
+    this.error_effect = typeof data.error_effect === 'string' ? data.error_effect : undefined;
+    this.turn_id = typeof data.turn_id === 'string' ? data.turn_id : undefined;
   }
 }
 

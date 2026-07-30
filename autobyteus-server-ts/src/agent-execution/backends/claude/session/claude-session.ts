@@ -19,7 +19,7 @@ import {
   type ClaudeActiveTurnExecution,
 } from "./claude-active-turn-execution.js";
 import { resolveClaudeSessionToolingOptions } from "./claude-session-tooling-options.js";
-import { buildClaudeProviderCompactionEvent, isClaudeTurnTerminalChunk, resolveClaudeTurnTerminalError } from "./claude-session-output-events.js";
+import { buildClaudeProviderCompactionEvent, buildClaudeTurnTerminalErrorEvent, isClaudeTurnTerminalChunk, resolveClaudeTurnTerminalError } from "./claude-session-output-events.js";
 import { ClaudeProcessDiagnostics, enrichClaudeRuntimeErrorWithDiagnostics, formatClaudeRuntimeError } from "./claude-process-diagnostics.js";
 import { ClaudeTextSegmentProjector } from "./claude-text-segment-projector.js";
 import { buildClaudeSessionMcpServerConfig } from "./claude-session-mcp-server-config.js";
@@ -174,16 +174,14 @@ export class ClaudeSession {
         if (isClaudeActiveTurnInterrupted(activeTurn)) {
           return;
         }
+        const failedTurnId = activeTurn.turnId;
+        if (this.activeTurnId !== failedTurnId) {
+          return;
+        }
         this.currentStatus = "ERROR";
         this.isInterruptingActiveTurn = false;
         this.clearActiveTurn();
-        this.emitRuntimeEvent({
-          method: ClaudeSessionEventName.ERROR,
-          params: {
-            code: "CLAUDE_RUNTIME_TURN_FAILED",
-            message: String(error),
-          },
-        });
+        this.emitRuntimeEvent(buildClaudeTurnTerminalErrorEvent(failedTurnId, error));
         throw error;
       } finally {
         this.clearActiveTurnExecution(activeTurn);
@@ -303,12 +301,13 @@ export class ClaudeSession {
   }
 
   markTurnCompleted(turnId: string | null = null): void {
+    if (!turnId || this.runContext.runtimeContext.activeTurnId !== turnId) {
+      return;
+    }
     this.runContext.runtimeContext.hasCompletedTurn = true;
     this.currentStatus = "IDLE";
     this.isInterruptingActiveTurn = false;
-    if (!turnId || this.runContext.runtimeContext.activeTurnId === turnId) {
-      this.runContext.runtimeContext.activeTurnId = null;
-    }
+    this.runContext.runtimeContext.activeTurnId = null;
   }
 
   private resolveProviderSessionIdForResume(): string | null {
