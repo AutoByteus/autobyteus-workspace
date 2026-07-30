@@ -91,29 +91,26 @@ describe('write_file tool (integration)', () => {
     expect(written).toBe('Overwritten Functional Content');
   });
 
-  it('resolves relative paths from the workspace root', async () => {
+  it('resolves relative paths from an explicit absolute base directory', async () => {
     const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-write-file-'));
     const relPath = path.join('subdir', 'relative.txt');
     const fullPath = path.join(tmpDir, relPath);
     const content = 'Relative content';
 
     const tool = getToolInstance();
-    const context: MockContext = {
-      agentId: 'agent',
-      workspaceRootPath: tmpDir 
-    };
+    const context: MockContext = { agentId: 'agent', workspaceRootPath: tmpDir };
 
-    const result = await tool.execute(context, { path: relPath, content });
+    const result = await tool.execute(context, { path: relPath, base_dir: tmpDir, content });
     expect(result).toBe(`File created/updated at ${path.normalize(fullPath)}`);
     expect(await fs.readFile(fullPath, 'utf-8')).toBe(content);
   });
 
-  it('rejects relative paths when no workspace root is configured', async () => {
+  it('rejects relative paths without an explicit base directory', async () => {
     const tool = getToolInstance();
-    const context: MockContext = { agentId: 'agent', workspaceRootPath: null };
+    const context: MockContext = { agentId: 'agent', workspaceRootPath: '/tmp' };
 
     await expect(tool.execute(context, { path: 'relative.txt', content: 'nope' })).rejects.toThrow(
-      'but no workspace root is configured'
+      'Provide an absolute path or an absolute base_dir'
     );
   });
 

@@ -49,7 +49,7 @@ describe('edit_file tool (integration)', () => {
     expect(await fs.readFile(outsidePath, 'utf-8')).toBe('line1\nline2 updated\n');
   });
 
-  it('resolves relative edit paths from the workspace root', async () => {
+  it('resolves relative edit paths from an explicit absolute base directory', async () => {
     const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-edit-file-'));
     const filePath = path.join(tmpDir, 'sample.txt');
     await fs.writeFile(filePath, 'line1\nline2\n', 'utf-8');
@@ -58,18 +58,19 @@ describe('edit_file tool (integration)', () => {
 
     const result = await tool.execute(context, {
       path: 'sample.txt',
+      base_dir: tmpDir,
       patch: '@@ -1,2 +1,2 @@\n line1\n-line2\n+line2 updated\n'
     });
     expect(result).toBe(`File edited successfully at ${filePath}`);
     expect(await fs.readFile(filePath, 'utf-8')).toBe('line1\nline2 updated\n');
   });
 
-  it('rejects relative edit paths when no workspace root is configured', async () => {
+  it('rejects relative edit paths without an explicit base directory', async () => {
     const tool = getPatchTool();
-    const context: MockContext = { agentId: 'agent', workspaceRootPath: null };
+    const context: MockContext = { agentId: 'agent', workspaceRootPath: '/tmp' };
 
     await expect(
       tool.execute(context, { path: 'sample.txt', patch: '@@ -1,1 +1,1 @@\n-line1\n+line1 updated\n' })
-    ).rejects.toThrow('but no workspace root is configured');
+    ).rejects.toThrow('Provide an absolute path or an absolute base_dir');
   });
 });
