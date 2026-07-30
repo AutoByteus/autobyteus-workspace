@@ -2,8 +2,8 @@
 
 ## Status
 
-- Current status: `Awaiting explicit user verification`
-- Delivery round: `DR-001`
+- Current status: `Finalization authorized; in progress`
+- Delivery round: `DR-002`
 - Last updated: `2026-07-30`
 - Ticket: `event-monitor-markdown-link-clickability`
 - Ticket branch: `codex/event-monitor-markdown-link-clickability`
@@ -27,29 +27,30 @@
   - Targeted Chrome browser validation passed for six unsupported families, pointer/Enter/Space inertness, supported action behavior, and generic opt-out isolation.
   - Cleanup completed; no task-owned process or temporary route remains.
 - Proportional durable test-code review: `CRR-002 Pass`; no findings and no rerun required.
+- User verification: `Received on 2026-07-30`; user confirmed the task is done and requested finalization without a new version release.
 - Delivery base check: `git fetch origin personal` succeeded; latest `origin/personal` is `34f3fe97a281a9b85e02409bd753ad132df13d20`, already the ticket branch merge-base. No new base commits required integration and no additional post-integration rerun was required.
-- Checkpoint state: The cumulative ticket package and delivery artifacts are preserved in the local checkpoint above; the checkpoint has not been pushed or merged.
+- Checkpoint state: The cumulative ticket package and delivery artifacts are preserved locally; finalization now proceeds from the verified state without a release.
 - Delivery docs sync: `Pass`; long-lived docs were reviewed and remain accurate, with no edits required.
 
 ## Delivery Artifacts
 
-- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-markdown-link-clickability/tickets/in-progress/event-monitor-markdown-link-clickability/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-markdown-link-clickability/tickets/in-progress/event-monitor-markdown-link-clickability/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-markdown-link-clickability/tickets/in-progress/event-monitor-markdown-link-clickability/design-spec.md`
-- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-markdown-link-clickability/tickets/in-progress/event-monitor-markdown-link-clickability/solution-revision-record.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-markdown-link-clickability/tickets/in-progress/event-monitor-markdown-link-clickability/design-review-report.md`
-- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-markdown-link-clickability/tickets/in-progress/event-monitor-markdown-link-clickability/architecture-review-revision-record.md`
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-markdown-link-clickability/tickets/in-progress/event-monitor-markdown-link-clickability/implementation-handoff.md`
-- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-markdown-link-clickability/tickets/in-progress/event-monitor-markdown-link-clickability/implementation-revision-record.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-markdown-link-clickability/tickets/in-progress/event-monitor-markdown-link-clickability/code-review-report.md`
-- Code review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-markdown-link-clickability/tickets/in-progress/event-monitor-markdown-link-clickability/code-review-revision-record.md`
-- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-markdown-link-clickability/tickets/in-progress/event-monitor-markdown-link-clickability/api-e2e-coverage-investigation.md`
-- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-markdown-link-clickability/tickets/in-progress/event-monitor-markdown-link-clickability/api-e2e-execution-coverage-report.md`
-- API/E2E revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-markdown-link-clickability/tickets/in-progress/event-monitor-markdown-link-clickability/api-e2e-revision-record.md`
-- API/E2E test review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-markdown-link-clickability/tickets/in-progress/event-monitor-markdown-link-clickability/api-e2e-test-review-report.md`
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-markdown-link-clickability/tickets/in-progress/event-monitor-markdown-link-clickability/docs-sync-report.md`
-- Release/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-markdown-link-clickability/tickets/in-progress/event-monitor-markdown-link-clickability/release-deployment-report.md`
-- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-markdown-link-clickability/tickets/in-progress/event-monitor-markdown-link-clickability/delivery-revision-record.md`
+- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-markdown-link-clickability/tickets/done/event-monitor-markdown-link-clickability/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-markdown-link-clickability/tickets/done/event-monitor-markdown-link-clickability/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-markdown-link-clickability/tickets/done/event-monitor-markdown-link-clickability/design-spec.md`
+- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-markdown-link-clickability/tickets/done/event-monitor-markdown-link-clickability/solution-revision-record.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-markdown-link-clickability/tickets/done/event-monitor-markdown-link-clickability/design-review-report.md`
+- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-markdown-link-clickability/tickets/done/event-monitor-markdown-link-clickability/architecture-review-revision-record.md`
+- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-markdown-link-clickability/tickets/done/event-monitor-markdown-link-clickability/implementation-handoff.md`
+- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-markdown-link-clickability/tickets/done/event-monitor-markdown-link-clickability/implementation-revision-record.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-markdown-link-clickability/tickets/done/event-monitor-markdown-link-clickability/code-review-report.md`
+- Code review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-markdown-link-clickability/tickets/done/event-monitor-markdown-link-clickability/code-review-revision-record.md`
+- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-markdown-link-clickability/tickets/done/event-monitor-markdown-link-clickability/api-e2e-coverage-investigation.md`
+- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-markdown-link-clickability/tickets/done/event-monitor-markdown-link-clickability/api-e2e-execution-coverage-report.md`
+- API/E2E revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-markdown-link-clickability/tickets/done/event-monitor-markdown-link-clickability/api-e2e-revision-record.md`
+- API/E2E test review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-markdown-link-clickability/tickets/done/event-monitor-markdown-link-clickability/api-e2e-test-review-report.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-markdown-link-clickability/tickets/done/event-monitor-markdown-link-clickability/docs-sync-report.md`
+- Release/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-markdown-link-clickability/tickets/done/event-monitor-markdown-link-clickability/release-deployment-report.md`
+- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-markdown-link-clickability/tickets/done/event-monitor-markdown-link-clickability/delivery-revision-record.md`
 
 Retained execution evidence is in the same ticket folder: focused/adjacent test logs, diff-check log, browser-availability log, and browser evidence JSON.
 
@@ -67,11 +68,11 @@ Retained execution evidence is in the same ticket folder: focused/adjacent test 
 - No release, publication, version bump, tag, deployment, or rollout is claimed or performed by this handoff.
 - No release notes artifact was created because release/deployment is not in scope for this delivery round.
 
-## Repository Finalization Hold
+## Repository Finalization
 
-- The branch has not been pushed, merged into `personal`, archived to `tickets/done`, or cleaned up.
-- Explicit user verification is required before any of those operations.
-- Required user action: confirm that the integrated handoff is verified/complete, or identify a required correction. A confirmation is also the authorization to proceed with repository finalization without release/deployment work.
+- User verification authorizes the ticket archive move, ticket-branch push, merge into `personal`, and cleanup.
+- Release/publication/deployment remains explicitly skipped.
+- Finalization operations are in progress; exact commit, merge, push, archive, and cleanup results will be recorded in the final delivery artifacts.
 
 ## Residual Risks
 
