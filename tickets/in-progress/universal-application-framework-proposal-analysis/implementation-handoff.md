@@ -32,17 +32,19 @@ One application-graph `DeferredPublishedArtifactPublicationPort` breaks the real
 
 Lifecycle and composition cleanup now block new application session issue before ingress/run shutdown, revoke only graph-owned sessions, close the deferred port, and later close the process authority with the event/vault/Prisma owners. Restart constructs a fresh process authority, graph scope, port, and session set. The established internal route, capability security, 401/404 behavior, tool projection, recipient-name messaging, provider-native tools, configured-MCP boundary, and Studio-only external `/mcp/gateway` remain unchanged.
 
+Source commit `15dc77abc5d1aa8e800fca429fc5b648b473b1d5` completes the bounded `CRR-021` / `CR-016` lifecycle correction. `ApplicationRunShutdownAuthority` retains only the existing graph-local team-run and agent-run shutdown ports, stops teams before remaining agents, aggregates both failure classes, and is invoked after worker engines stop but before application session-scope revocation and publication-port close. Lifecycle step isolation guarantees later scope, port, and streaming cleanup still executes after a run-shutdown failure. Neither graph-local manager is exposed on the public runtime graph.
+
 The current implementation also retains the previously reviewed dual-host, package launch/edit/readiness, portable-policy, graph-local definition/prompt, standalone route, and Codex definition-authority corrections. No application-owned MCP provisioning, provider-native file-tool change, package/schema migration, compatibility route, graph lookup by ID, mutable current-graph pointer, second Agent Tools family, or global publication fallback was added.
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-revision-record.md`
-- Current implementation revision ID: `IR-012`
+- Current implementation revision ID: `IR-013`
 - Related solution revision IDs: `SR-010` (`SR-007` remains withdrawn; prior revisions retained as history)
 - Related architecture-review revision IDs: `ARCH-REV-008` (`ARCH-REV-007` remains withdrawn)
-- Related code-review revision IDs: `CRR-020` trigger; `CRR-019` prior IR-011 source pass; earlier rounds retained as history
+- Related code-review revision IDs: `CRR-021` trigger; `CRR-020` SR-010 design trigger; `CRR-019` prior IR-011 source pass; earlier rounds retained as history
 - Related API/E2E revision IDs: `API-REV-007` trigger; `API-REV-001`–`API-REV-006` history
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `CR-015`, `APIE2E-STANDALONE-MCP-003`, `APIE2E-F007`
+- Triggering finding IDs: `CR-016` (historical API/E2E context: `APIE2E-STANDALONE-MCP-003`, `APIE2E-F007`)
 
 ## Reviewed Behavior Implementation Trace
 
@@ -52,9 +54,9 @@ The current implementation also retains the previously reviewed dual-host, packa
 | `BEH-002` | Application code uses one host-neutral `startApplication`. | Existing SDK coordinator/providers. | Preserved; no application-facing API change. |
 | `BEH-003` | Strict manifest v4 and stable package identity remain unchanged. | Existing parser/selection and current package layout. | Preserved; session execution authorities are process-memory-only. |
 | `BEH-004` | Package-owned agent/team execution returns through the exact application graph. | `AgentToolsMcpProcessAuthority`; `ApplicationAgentToolsSessionAuthority`; graph publication port/service; application run authorities. | Implemented. Authenticated `publish_artifacts` delegates only through the issuing session's graph port. |
-| `BEH-005` | Studio and standalone remain explicit compositions with deterministic readiness and stop. | Both composition builders, `GeneralProcessRunAuthority`, `ApplicationPlatformLifecycle`. | Implemented. One process family per composition; P6A bind assertion and scoped revoke/close order are explicit. |
+| `BEH-005` | Studio and standalone remain explicit compositions with deterministic readiness and stop. | Both composition builders, `GeneralProcessRunAuthority`, `ApplicationRunShutdownAuthority`, `ApplicationPlatformLifecycle`. | Implemented. One process family per composition; P6A bind assertion, ordered graph-run shutdown, and scoped revoke/close are explicit. |
 | `BEH-006` | Native application commands and runtime callback keep portable and host-bound concerns separate. | Existing devkit/package policy plus exact internal Agent Tools session route. | Preserved. Native/configured-MCP/external-gateway boundaries are unchanged. |
-| `BEH-007` | Current rows/data remain directly usable and runtime owners clean up deterministically. | Existing launch store/service; scoped session revoke; port/process close. | Preserved; no persistence or migration. Old scope descriptors fail after close; restart creates a fresh scope. |
+| `BEH-007` | Current rows/data remain directly usable and runtime owners clean up deterministically. | Existing launch store/service; graph run-shutdown authority; scoped session revoke; port/process close. | Preserved; no persistence or migration. Team/member/agent backends stop before scope disposal; old descriptors fail after close and restart creates a fresh scope. |
 | `BEH-008` | Exact graph-local definitions/context reach runtime bootstrap and final team prompts. | Existing graph-local definition injection and member-context paths, now sharing the graph session authority. | Preserved; no composition-critical global fallback was reintroduced. |
 
 ## Key Files Or Areas
@@ -68,6 +70,7 @@ The current implementation also retains the previously reviewed dual-host, packa
 - Bind-once cycle seam: `autobyteus-server-ts/src/application-platform/runtime/deferred-published-artifact-publication-port.ts`
 - Runtime graph/run wiring: `create-application-platform-runtime-graph.ts`, `create-application-run-authorities.ts`, and adjacent orchestration/runtime graph contracts
 - Application and general runtime ownership: `agent-run-manager.ts`, `agent-team-run-manager.ts`, `general-process-run-authority.ts`, Codex/Claude bootstrap/session paths, and mixed-team/member paths
+- Graph-run shutdown: `autobyteus-server-ts/src/application-platform/runtime/application-run-shutdown-authority.ts`
 - Readiness/stop: `application-platform-lifecycle.ts` and lifecycle contracts
 - Host composition: `build-studio-server-composition.ts`, `build-standalone-application-server-composition.ts`, and `start-standalone-application-host.ts`
 
@@ -119,7 +122,8 @@ The current implementation also retains the previously reviewed dual-host, packa
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis`
 - Branch: `codex/universal-application-framework-proposal-analysis`
 - SR-010 solution commit: `70faec030f614b502ceb3975d492c9f50dd84ff9`
-- IR-012 production source commit: `cf8c8f7213468e5625bf521bbf0649fb78ac1a63`
+- IR-012 publication-authority source commit: `cf8c8f7213468e5625bf521bbf0649fb78ac1a63`
+- IR-013 graph-run shutdown source commit: `15dc77abc5d1aa8e800fca429fc5b648b473b1d5`
 - Reviewed base `6caf809303294252c109420b238588f0c68aca6a` remains in history. Delivery owns final tracked-base refresh/integration; implementation did not merge or rebase.
 - No dependency, schema, generated package, or frontend change was made in IR-012.
 - Other owners' modified/untracked tests, reports, review artifacts, and evidence remain preserved and were not staged in the source commit.
@@ -134,11 +138,13 @@ The current implementation also retains the previously reviewed dual-host, packa
 - Existing application authority and Codex integration selection: `application-run-authorities.test.ts` passed 1/1; the Codex backend integration file reported 12 environment-gated skips.
 - Existing Agent Tools route security/restart selection (`enforces route gate auth`, `rejects revoked sessions`, `rejects old descriptors`) — Pass, 3 selected tests; missing bearer remains 401 and unavailable/revoked/old sessions remain 404.
 - `git diff --check`, staged-source ownership check, disposable-file cleanup, global/publication lookup audit, and changed-source effective-line audit — Pass. No changed source implementation file exceeds 500 effective lines.
+- IR-013 disposable shutdown/lifecycle Vitest probe — Pass, 2/2: shutdown is idempotent, stops team runs before remaining agent runs, aggregates failures from both owners, executes agent shutdown after team failure, and retains scope/port/streaming cleanup after run-shutdown failure. Probe removed.
+- IR-013 final `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`, `git diff --check`, temporary-file cleanup, manager-leakage search, staging audit, and changed-source size audit — Pass. The new authority is 36 effective lines; all six changed production files remain below 500 effective lines and 220 changed lines.
 - No durable test was added or changed by implementation; durable coverage remains API/E2E ownership.
 
 ## Frontend Rendered-Result Check
 
-`Not Applicable` for IR-012. This revision changes backend construction, authenticated internal tool dispatch authority, readiness, and cleanup only; no rendered frontend or user interaction source changed.
+`Not Applicable` for IR-013. This revision changes backend construction, authenticated internal tool dispatch authority, readiness, and cleanup only; no rendered frontend or user interaction source changed.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
@@ -147,10 +153,11 @@ The current implementation also retains the previously reviewed dual-host, packa
 - Add durable paired-authority proof with deliberately distinct general/application publication owners: route lookup, issue, dispatch, and revoke must use the one composition process family; application publication must touch only the application graph.
 - Add deterministic pre-bind, missing-authority, second-bind, post-close, scope-close/restart, and no-mutation assertions.
 - Prove application and general session scopes do not revoke or publish through one another; old application descriptors remain 404 after scope close/restart.
+- Exercise graceful stop with active application team/member/agent runs: session issue blocks first, team runs stop before remaining agents, scope/port cleanup still runs after injected termination failures, no old backend survives restart, and process-general runs remain isolated.
 - Preserve route capability security: missing bearer 401; wrong/unknown/revoked 404; supplied-origin loopback gate; descriptor redaction/non-persistence; no external gateway in standalone.
 - Resume the retained command, parity/digest, worker-recovery, graph-isolation, event/vault/Prisma cleanup, launch/edit/readiness, prompt, and portable-policy matrix after the focused regression passes.
 - Keep `APIE2E-REPO-005` separate as `Unclear` unless a supported production origin is established.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-`api_e2e_engineer` owns durable test reconciliation and all broader executable/API/E2E evidence. Source review must pass before that stage resumes. IR-012 checks are implementation-scoped only and do not establish API/E2E Pass.
+`api_e2e_engineer` owns durable test reconciliation and all broader executable/API/E2E evidence. Source review must pass before that stage resumes. IR-013 checks are implementation-scoped only and do not establish API/E2E Pass.
