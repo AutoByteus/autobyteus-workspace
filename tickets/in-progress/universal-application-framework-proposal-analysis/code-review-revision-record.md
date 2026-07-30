@@ -28,6 +28,7 @@
 | `CRR-022` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-013` | `Fail — Local Fix` | `Pass` | `CR-016`, `APIE2E-F007` |
 | `CRR-023` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-test-review-report.md` | Proportional API/E2E Test-Code Review / `API-REV-008` | `N/A` | `Pass` | `N/A` |
 | `CRR-024` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-014` after `DR-001` | `Pass` (`CRR-022` source; `CRR-023` test review) | `Pass` | `DR-001`; retained `CR-015`, `CR-016` |
+| `CRR-025` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-009` | `Pass` | `Fail — Local Fix` | `CR-017`, `APIE2E-F008` |
 
 ## Revision Entries
 
@@ -674,3 +675,29 @@ None.
 - Material score or classification changes: source result remains `Pass`; score rises from `95/100` in CRR-022 to `96/100` for the integrated correction. `DR-001` is source-resolved but delivery remains blocked pending post-integration execution.
 - Recommended recipient: `api_e2e_engineer`
 - Remaining risks or uncertainty: refresh the affected/broader integrated execution, including real standalone same-process restart and dual-host lifecycle behavior. If API/E2E changes no durable test, the subsequent proportional test review should be `Not Applicable`. Historical `APIE2E-REPO-005` remains separately `Unclear`.
+
+### CRR-025 — Atomic development pack metadata failure classified as implementation Local Fix
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Review entry point and round: `API/E2E Failure-Origin Review`, round `25`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `API-REV-009`; `APIE2E-PARITY-005` / `APIE2E-F008`; new source finding `CR-017`
+- Relevant solution revision IDs: `SR-010`; retained `SR-006`
+- Relevant architecture-review revision IDs: `ARCH-REV-008`; retained `ARCH-REV-006`
+- Relevant implementation revision IDs: `IR-014`; original atomic-pack implementation `IR-001`
+- Relevant API/E2E revision IDs: `API-REV-009`; retained `API-REV-008`
+- Relevant delivery revision IDs: `DR-001`
+- Prior authoritative result: `Pass` (`CRR-024` source review); API-REV-009 confirms DR-001 resolved in execution
+- Current authoritative result: `Fail — Local Fix`
+- What changed in the review result and why: API/E2E found an independent critical package-parity failure after the integrated lifecycle passed. The maintained `pnpm dev:studio` path reaches the atomic pack, which uses a randomized physical staging root as `paths.outputPackageRoot`; the existing README writer serializes that temporary root before rename. The canonical package therefore changes 1/73 digests and names a removed directory. The non-fake durable regression is valid and reproduces the exact live behavior. Existing requirements/design are unambiguous, so the correction belongs to the implementation owner rather than solution design.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `DR-001` | Source-resolved; post-integration execution pending | Resolved | `IR-014`, `CRR-024`, `API-REV-009` | Exact lifecycle 3/3, integrated server 25/90, supported same-process restart/token drain, real standalone and Studio publication/handoff/projection, and cleanup pass. |
+| `CR-015`, `CR-016`, `APIE2E-F007` | Resolved | Remain Resolved | `IR-012`, `IR-013`, `API-REV-008`, `API-REV-009` | Both real host Agent Tools publication/handoff/projection journeys pass in API-REV-009. |
+
+- New or remaining finding IDs: `CR-017`, `APIE2E-F008`
+- Material score or classification changes: full source scorecard not recomputed for the focused failure-origin entry point. Latest result changes from Pass to `Fail — Local Fix`; CRR-024 API/E2E readiness is reopened only for atomic package parity.
+- Recommended recipient: `implementation_engineer`
+- Remaining risks or uncertainty: preserve normal `pack --out`, pre-rename validation, atomic rollback, and the one package-metadata owner while separating the staging write location from canonical metadata identity. Preserve the failing API/E2E-owned regression. `APIE2E-REPO-005` remains separate historical `Unclear` debt.
