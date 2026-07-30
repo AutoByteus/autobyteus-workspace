@@ -14,7 +14,7 @@
 - Latest tracked base: `origin/personal` at `34f3fe97a281a9b85e02409bd753ad132df13d20`.
 - Ticket branch: `codex/event-monitor-markdown-link-clickability` at `f809c765ddc2807bfc2a1c154fb906d92e24ea2a`.
 - Pre-verification delivery checkpoint: `aa2070124332a4aac9fbcf2d342a8832a39fbc46` (`chore(ticket): checkpoint delivery package`).
-- Divergence: reviewed source `1` commit ahead / `0` behind; current local checkpoint branch `2` commits ahead / `0` behind because it additionally contains the cumulative ticket package. Merge-base is `34f3fe97a281a9b85e02409bd753ad132df13d20`.
+- Divergence: reviewed source `1` commit ahead / `0` behind; the current local branch remains `0` commits behind and additionally contains the cumulative ticket package plus delivery-owned handoff metadata. Merge-base is `34f3fe97a281a9b85e02409bd753ad132df13d20`.
 - Integration result: `Already current`; no merge/rebase, conflict, or reviewed-state loss.
 - Post-integration check: `Not additionally rerun`; the base did not advance and API/E2E `API-REV-001` already passed against the reviewed source. Delivery-owned changes are ticket metadata only.
 

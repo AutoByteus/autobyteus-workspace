@@ -8,7 +8,7 @@
 - Reviewed implementation source: `f809c765ddc2807bfc2a1c154fb906d92e24ea2a` (`fix(web): neutralize unsupported markdown file links`).
 - Bootstrap / finalization target: `origin/personal` / `personal`, recorded in `investigation-notes.md`.
 - Latest tracked remote base checked: `origin/personal` at `34f3fe97a281a9b85e02409bd753ad132df13d20`, after `git fetch origin personal` on `2026-07-30`.
-- Integrated reviewed source: `f809c765d`; merge-base with `origin/personal` is `34f3fe97a`, and the reviewed source is `1` commit ahead / `0` behind. The current local checkpoint branch is `2` commits ahead / `0` behind because it additionally contains the cumulative ticket package.
+- Integrated reviewed source: `f809c765d`; merge-base with `origin/personal` is `34f3fe97a`, and the reviewed source is `1` commit ahead / `0` behind. The current local branch remains `0` commits behind and additionally contains the cumulative ticket package plus delivery-owned handoff metadata.
 - Pre-verification delivery checkpoint: `aa2070124332a4aac9fbcf2d342a8832a39fbc46` (`chore(ticket): checkpoint delivery package`); this preserves the cumulative review/evidence package locally without pushing or finalizing it.
 
 ## Integrated-State Gate
