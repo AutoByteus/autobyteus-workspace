@@ -2,21 +2,21 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/design-spec.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/design-spec.md`
 - Supplemental task artifacts:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/path-authorization-evidence.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/filesystem-access-policy.md`
-- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/solution-revision-record.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/design-review-report.md`
-- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/architecture-review-revision-record.md`
-- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/implementation-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/path-authorization-evidence.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/filesystem-access-policy.md`
+- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/solution-revision-record.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/design-review-report.md`
+- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/architecture-review-revision-record.md`
+- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/implementation-revision-record.md`
 
 ## Current Implementation Summary
 
 - Implementation cycle: `Initial`
-- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/implementation-revision-record.md`
+- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/implementation-revision-record.md`
 - Current implementation revision ID: `IR-001`
 - Related solution revision IDs: `SR-009`
 - Related architecture-review revision IDs: `ARCH-REV-004`

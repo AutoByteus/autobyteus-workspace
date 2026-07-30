@@ -8,12 +8,12 @@
 - Prior Review Round Reviewed: Implementation source review Round 1 (`Pass`); no unresolved code-review findings.
 - Latest Authoritative Round: `2`
 - Scope constraint: This is a separate lightweight review of durable test-code changes only. The implementation-source scorecard and API/E2E execution confidence were not reopened.
-- Requirements / design context: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/requirements.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/design-spec.md`
-- Prior Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/code-review-report.md`
-- Current Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/code-review-revision-record.md`
-- API/E2E Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/api-e2e-coverage-investigation.md`
-- API/E2E Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/api-e2e-execution-coverage-report.md`
-- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/api-e2e-revision-record.md`
+- Requirements / design context: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/requirements.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/design-spec.md`
+- Prior Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/code-review-report.md`
+- Current Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/code-review-revision-record.md`
+- API/E2E Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/api-e2e-coverage-investigation.md`
+- API/E2E Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/api-e2e-execution-coverage-report.md`
+- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/api-e2e-revision-record.md`
 
 ## Review Scope
 

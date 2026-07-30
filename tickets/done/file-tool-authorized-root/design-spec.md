@@ -52,8 +52,8 @@ This is intentionally a trusted-local contract. It does not claim to be a host f
 
 | Artifact Path | Purpose | Related Requirements / Acceptance IDs | Relationship | Status |
 | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/path-authorization-evidence.md` | Reproduction, history, revised security rationale, terminal boundary, and base-directory/schema evidence | REQ-001–REQ-009; AC-001–AC-011 | Retained evidence for the source and schema change | Evidence/context; approval `N/A` |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/filesystem-access-policy.md` | Trusted-local absolute/base-directory policy, schema contract, and terminal boundary | REQ-001–REQ-005, REQ-007–REQ-009; AC-001–AC-011 | Defines intended user-visible behavior, schema wording, and resolver separation | Intended behavior; user approved, architecture approval required |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/path-authorization-evidence.md` | Reproduction, history, revised security rationale, terminal boundary, and base-directory/schema evidence | REQ-001–REQ-009; AC-001–AC-011 | Retained evidence for the source and schema change | Evidence/context; approval `N/A` |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/filesystem-access-policy.md` | Trusted-local absolute/base-directory policy, schema contract, and terminal boundary | REQ-001–REQ-005, REQ-007–REQ-009; AC-001–AC-011 | Defines intended user-visible behavior, schema wording, and resolver separation | Intended behavior; user approved, architecture approval required |
 
 ## Task Design Health Assessment (Mandatory)
 

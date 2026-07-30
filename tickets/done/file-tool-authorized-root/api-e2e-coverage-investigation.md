@@ -2,19 +2,19 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/design-spec.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/design-spec.md`
 - Supplemental Task Artifacts: `path-authorization-evidence.md` (retained evidence, approval `N/A`); `filesystem-access-policy.md` (intended behavior, user-approved and architecture-approved in the reviewed package).
-- Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/solution-revision-record.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/design-review-report.md`
-- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/architecture-review-revision-record.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/implementation-handoff.md`
-- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/implementation-revision-record.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/code-review-report.md`
-- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/code-review-revision-record.md`
+- Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/solution-revision-record.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/design-review-report.md`
+- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/architecture-review-revision-record.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/implementation-handoff.md`
+- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/implementation-revision-record.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/code-review-report.md`
+- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/code-review-revision-record.md`
 - Delivery Revision Record: `N/A` (pre-delivery)
-- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/api-e2e-revision-record.md` (created after completed result)
+- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/api-e2e-revision-record.md` (created after completed result)
 - Current API/E2E Revision ID: `API-REV-001`
 - Current Investigation Round: `1`
 - Trigger: `code_reviewer` implementation-source review `CRR-001` passed for commit `4cb3167a2`.

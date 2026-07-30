@@ -2,21 +2,21 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/design-spec.md`
-- Supplemental Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/path-authorization-evidence.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/filesystem-access-policy.md`
-- Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/solution-revision-record.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/design-review-report.md`
-- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/architecture-review-revision-record.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/implementation-handoff.md`
-- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/implementation-revision-record.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/code-review-report.md`
-- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/code-review-revision-record.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/design-spec.md`
+- Supplemental Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/path-authorization-evidence.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/filesystem-access-policy.md`
+- Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/solution-revision-record.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/design-review-report.md`
+- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/architecture-review-revision-record.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/implementation-handoff.md`
+- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/implementation-revision-record.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/code-review-report.md`
+- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/code-review-revision-record.md`
 - Delivery Revision Record: `N/A` (pre-delivery)
 - Relevant Delivery Revision IDs: `N/A`
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/api-e2e-coverage-investigation.md`
-- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/api-e2e-revision-record.md`
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/api-e2e-coverage-investigation.md`
+- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/api-e2e-revision-record.md`
 - Current API/E2E Revision ID: `API-REV-001`
 - Current Execution Round: `1`
 - Trigger: `code_reviewer` implementation-source review `CRR-001` passed for commit `4cb3167a2`.
@@ -45,7 +45,7 @@
 
 | Scenario ID | Behavior / Requirement / Acceptance-Criteria IDs | Changed Boundary | Execution Surface / Mode | Evidence Type | Result | Evidence / Artifact |
 | --- | --- | --- | --- | --- | --- | --- |
-| `API-FILE-001` | `BEH-001`, `AC-001`, `AC-002`, `REQ-001` | Absolute file read outside workspace, including configured skill reference | Registered source tool; packaged runtime direct probe | Durable + Live | Pass | `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/autobyteus-ts/tests/integration/tools/file/read-file.test.ts`; `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/evidence/14-exact-skill-reference-probe.log` |
+| `API-FILE-001` | `BEH-001`, `AC-001`, `AC-002`, `REQ-001` | Absolute file read outside workspace, including configured skill reference | Registered source tool; packaged runtime direct probe | Durable + Live | Pass | `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/autobyteus-ts/tests/integration/tools/file/read-file.test.ts`; `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/evidence/14-exact-skill-reference-probe.log` |
 | `API-FILE-002` | `BEH-003`, `AC-003`, `REQ-001`/`REQ-002` | Absolute external write | Registered source tool; built-dist and packaged resource probes | Durable + Live + Desktop | Pass | `autobyteus-ts/tests/integration/tools/file/write-file.test.ts`; `evidence/07-built-dist-probe.log`; `evidence/11-packaged-file-tool-probe.log` |
 | `API-FILE-003` | `BEH-003`, `AC-004`, `REQ-002` | Absolute external edit/replace/insert | Registered source integration tools | Durable | Pass | `autobyteus-ts/tests/integration/tools/file/{edit-file,replace-in-file,insert-in-file}.test.ts`; `evidence/04-file-terminal-integration.log` |
 | `API-FILE-004` | `BEH-007`, `AC-009`, `REQ-003`/`REQ-008` | Relative path with explicit absolute `base_dir` across five tools | Registered source tools; built-dist and packaged probes | Durable + Live + Desktop | Pass | Existing five tool integration tests; `evidence/02-focused-tools-with-protected-matrix.log`; `evidence/07-built-dist-probe.log`; `evidence/11-packaged-file-tool-probe.log` |
@@ -159,18 +159,18 @@ None. No implicit workspace-relative or compatibility-only behavior was retained
 
 | Artifact Path | Type / Purpose | Retained Or Temporary | Notes |
 | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/evidence/02-focused-tools-with-protected-matrix.log` | Focused Vitest result | Retained | 16 files / 88 tests passed. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/evidence/03-autobyteus-ts-unit-tools.log` | Broader unit result | Retained | 80 files / 355 tests passed. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/evidence/04-file-terminal-integration.log` | Real file/terminal integration result | Retained | 7 files / 52 tests passed. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/evidence/07-built-dist-probe.log` | Built package probe | Retained | Five-tool schema/protected/path assertions pass. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/evidence/08-server-production-build.log` | Production server build | Retained | Production compile and sanitized smoke pass. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/evidence/09-electron-mac-package-build.log` | macOS arm64 Electron build | Retained | DMG/ZIP created. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/evidence/02-focused-tools-with-protected-matrix.log` | Focused Vitest result | Retained | 16 files / 88 tests passed. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/evidence/03-autobyteus-ts-unit-tools.log` | Broader unit result | Retained | 80 files / 355 tests passed. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/evidence/04-file-terminal-integration.log` | Real file/terminal integration result | Retained | 7 files / 52 tests passed. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/evidence/07-built-dist-probe.log` | Built package probe | Retained | Five-tool schema/protected/path assertions pass. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/evidence/08-server-production-build.log` | Production server build | Retained | Production compile and sanitized smoke pass. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/evidence/09-electron-mac-package-build.log` | macOS arm64 Electron build | Retained | DMG/ZIP created. |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.29.dmg` | Packaged desktop artifact | Temporary/generated | Kept in ignored build output for inspection; not a source artifact. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/evidence/10-packaged-terminal-runtime.log` | Packaged native terminal guard | Retained | Target/selected helper and spawn pass. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/evidence/11-packaged-file-tool-probe.log` | Packaged file-tool probe | Retained | Five-tool packaged contract pass. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/evidence/14-exact-skill-reference-probe.log` | Exact external skill read | Retained | Hash/size only; no content retained. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/evidence/12-server-typecheck-known-limitation.log` | Known typecheck limitation | Retained | Pre-existing TS6059 test-tree/rootDir failure. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/evidence/07-built-dist-probe-initial-harness-failure.log` | Initial temporary probe harness mismatch | Retained | Harness expected wrong wording; corrected probe passed; not an implementation failure. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/evidence/10-packaged-terminal-runtime.log` | Packaged native terminal guard | Retained | Target/selected helper and spawn pass. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/evidence/11-packaged-file-tool-probe.log` | Packaged file-tool probe | Retained | Five-tool packaged contract pass. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/evidence/14-exact-skill-reference-probe.log` | Exact external skill read | Retained | Hash/size only; no content retained. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/evidence/12-server-typecheck-known-limitation.log` | Known typecheck limitation | Retained | Pre-existing TS6059 test-tree/rootDir failure. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/evidence/07-built-dist-probe-initial-harness-failure.log` | Initial temporary probe harness mismatch | Retained | Harness expected wrong wording; corrected probe passed; not an implementation failure. |
 
 ## Temporary Execution Methods / Scaffolding
 

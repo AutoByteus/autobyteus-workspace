@@ -11,7 +11,7 @@
 ### CRR-001 — Trusted-local file-tool implementation source review
 
 - Review entry point: `Implementation Review`
-- Triggering role and report: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/implementation-handoff.md`; implementation revision `IR-001`.
+- Triggering role and report: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/implementation-handoff.md`; implementation revision `IR-001`.
 - Review round: `1`
 - Prior authoritative result: `N/A`
 - Current authoritative result: `Pass`
@@ -32,7 +32,7 @@
 ### CRR-002 — Proportional review of protected-path durable coverage
 
 - Review entry point: `Successful API/E2E Proportional Test-Code Review`
-- Triggering role and report: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/api-e2e-execution-coverage-report.md`; API/E2E revision `API-REV-001`, Round 1.
+- Triggering role and report: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/api-e2e-execution-coverage-report.md`; API/E2E revision `API-REV-001`, Round 1.
 - Review round: `2`
 - Prior authoritative result: `Pass` (`CRR-001` implementation-source review); no unresolved findings.
 - Current authoritative result: `Pass`.

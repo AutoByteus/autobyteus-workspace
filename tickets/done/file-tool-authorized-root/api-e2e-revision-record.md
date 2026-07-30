@@ -10,7 +10,7 @@
 
 ### API-REV-001 — Trusted-local file-tool coverage and packaged runtime baseline
 
-- Triggering role, report path, and round: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/api-e2e-execution-coverage-report.md`; Round `1`.
+- Triggering role, report path, and round: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/api-e2e-execution-coverage-report.md`; Round `1`.
 - Triggering finding or scenario IDs: `CRR-001`; `API-FILE-001`–`API-FILE-012`.
 - Related solution, architecture-review, implementation, code-review, or delivery revision IDs: `SR-009`, `ARCH-REV-004`, `IR-001`, `CRR-001`; delivery `N/A`.
 - Why this baseline or coverage/execution revision was recorded: First completed API/E2E validation result for the trusted-local file-tool contract; no prior API/E2E result existed.

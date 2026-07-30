@@ -8,17 +8,17 @@
 - Prior Review Round Reviewed: `N/A`
 - Latest Authoritative Round: `1`
 - Branch basis: `origin/personal` / `34f3fe97a281a9b85e02409bd753ad132df13d20` through `HEAD` / `4cb3167a2627f4ebc0e8ed74b4b4c4bad0f97e6f`; one commit ahead and zero commits behind.
-- Requirements Doc Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/requirements.md`
-- Investigation Notes Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/investigation-notes.md`
-- Design Spec Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/design-spec.md`
+- Requirements Doc Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/requirements.md`
+- Investigation Notes Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/investigation-notes.md`
+- Design Spec Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/design-spec.md`
 - Supplemental Artifacts Reviewed:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/path-authorization-evidence.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/filesystem-access-policy.md`
-- Solution Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/solution-revision-record.md` (`SR-009`)
-- Design Review Report Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/design-review-report.md` — architecture gate `Pass`, `ARCH-REV-004`.
-- Architecture Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/architecture-review-revision-record.md` (`ARCH-REV-004`)
-- Implementation Handoff Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/implementation-handoff.md` (`IR-001`)
-- Implementation Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/in-progress/file-tool-authorized-root/implementation-revision-record.md` (`IR-001`)
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/path-authorization-evidence.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/filesystem-access-policy.md`
+- Solution Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/solution-revision-record.md` (`SR-009`)
+- Design Review Report Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/design-review-report.md` — architecture gate `Pass`, `ARCH-REV-004`.
+- Architecture Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/architecture-review-revision-record.md` (`ARCH-REV-004`)
+- Implementation Handoff Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/implementation-handoff.md` (`IR-001`)
+- Implementation Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/file-tool-authorized-root/tickets/done/file-tool-authorized-root/implementation-revision-record.md` (`IR-001`)
 - API/E2E Coverage Investigation and Execution: `N/A` for this pre-API/E2E gate; downstream-owned.
 - Failing Scenario IDs / Failure Evidence: `N/A`.
 

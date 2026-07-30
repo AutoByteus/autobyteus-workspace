@@ -3,14 +3,14 @@
 ## Scope
 
 - Ticket: `file-tool-authorized-root`
-- Trigger: API/E2E Round 1 passed at 96% confidence and proportional durable-test review CRR-002 passed with no findings.
+- Trigger: Finalization refresh after API/E2E Round 1 passed at 96% confidence, proportional durable-test review CRR-002 passed with no findings, and the user authorized release `v1.4.30`.
 - Bootstrap base reference: `origin/personal` at `34f3fe97a281a9b85e02409bd753ad132df13d20`.
-- Integrated base reference used for docs sync: `origin/personal` at `34f3fe97a281a9b85e02409bd753ad132df13d20`, refreshed with `git fetch origin --prune` on 2026-07-30.
-- Post-integration verification reference: Branch was already current with the refreshed base (`git rev-list --left-right --count origin/personal...HEAD` = `0 1`; no new base commit integrated). `git diff --check` passed after docs edits and delivery artifacts were written. No additional executable rerun was required because the reviewed/validated implementation state did not change.
+- Integrated base reference used for docs sync: `origin/personal` at `596094be191f6aecba6ef37abcda342a20e9af64`, refreshed with `git fetch origin --prune` on 2026-07-30 and merged into the ticket branch as `651feadfe`.
+- Post-integration verification reference: The advanced base integrated without conflicts. Focused file-tool tests (1 file / 11 tests), incoming markdown-link tests (2 files / 63 tests), integrated macOS Electron build, packaged terminal probe, and `git diff --check` passed. No additional long-lived docs changes were required after the refresh because the target's incoming behavior was already documented by its archived ticket and did not alter this ticket's file-tool contract.
 
 ## Why Docs Were Updated
 
-- Summary: The implementation changes the durable generic file-tool path contract: absolute local paths are trusted, relative paths require an explicit absolute per-call `base_dir`, protected AutoByteus internal paths remain denied, and terminal `cwd` remains workspace-contained. These rules were not previously recorded in long-lived package documentation.
+- Summary: The implementation changes the durable generic file-tool path contract: absolute local paths are trusted, relative paths require an explicit absolute per-call `base_dir`, protected AutoByteus internal paths remain denied, and terminal `cwd` remains workspace-contained. These rules were not previously recorded in long-lived package documentation. The final integration refresh confirmed those docs remain accurate alongside the latest target's unrelated markdown-link hardening.
 - Why this should live in long-lived project docs: Future tool/schema and terminal maintainers need an explicit boundary between trusted-local generic file operations and workspace-contained terminal execution; otherwise the old workspace-root assumption can be reintroduced or terminal authorization can be widened accidentally.
 
 ## Long-Lived Docs Reviewed
@@ -51,8 +51,8 @@
 ## Delivery Continuation
 
 - Result: `Pass`
-- Next delivery action: Present the integrated, docs-synchronized handoff for explicit user verification. Do not archive, commit/push, merge, release, or deploy until that signal is received.
-- Notes: The branch remains in `tickets/in-progress/file-tool-authorized-root`; the refreshed base was already current and no post-integration executable rerun was needed. Upstream limitations remain authoritative: unsupported default Linux Electron target on darwin/arm64, pre-existing server TS6059 typecheck noise, unchanged approval/UI scope, non-macOS targets, and no full GUI launch/quit.
+- Next delivery action: Archive and finalize the user-authorized integrated package, then run the documented `v1.4.30` release helper.
+- Notes: The latest target was merged without conflict and revalidated. Upstream limitations remain authoritative: unsupported default Linux Electron target on darwin/arm64, pre-existing server TS6059 typecheck noise, unchanged approval/UI scope, non-macOS targets, and no full GUI launch/quit.
 
 ## Blocked Or Escalated Follow-Up (Use Only If Docs Sync Cannot Complete)
 
