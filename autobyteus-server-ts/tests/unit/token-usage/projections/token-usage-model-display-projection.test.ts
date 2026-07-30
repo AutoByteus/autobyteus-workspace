@@ -59,6 +59,15 @@ describe("token usage model display projection", () => {
       model_value: "openai-compatible:provider_A",
     }), context())).toBe("OpenAI-Compatible (provider_A):qwen3");
     expect(resolveTokenUsageModelDisplayName(event({
+      model_identifier: "legacy-model",
+      model_value: "openai-compatible:provider_A",
+    }), context())).toBe("Unknown Provider:Unknown Model");
+    expect(resolveTokenUsageModelDisplayName(event({
+      model_provider: "DEEPSEEK",
+      model_identifier: "legacy-model",
+      model_value: "openai-compatible:provider_A",
+    }), context())).toBe("Unknown Provider:Unknown Model");
+    expect(resolveTokenUsageModelDisplayName(event({
       model_identifier: null,
       model_value: null,
     }), context())).toBe("Unknown Provider:Unknown Model");

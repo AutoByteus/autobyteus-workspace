@@ -9,21 +9,22 @@
 - Solution revision record: `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/tickets/in-progress/token-statistics-custom-provider-model/solution-revision-record.md`
 - Design review report: `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/tickets/in-progress/token-statistics-custom-provider-model/design-review-report.md`
 - Architecture review revision record: `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/tickets/in-progress/token-statistics-custom-provider-model/architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence, when applicable: `N/A`.
+- Triggering rework report: `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/tickets/in-progress/token-statistics-custom-provider-model/code-review-report.md`
+- Triggering code-review revision record: `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/tickets/in-progress/token-statistics-custom-provider-model/code-review-revision-record.md`
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`.
+- Implementation cycle: `Rework after CRR-001`.
 - Implementation revision record: `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/tickets/in-progress/token-statistics-custom-provider-model/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`.
+- Current implementation revision ID: `IR-002`.
 - Related solution revision IDs: `SR-004`.
 - Related architecture-review revision IDs: `ARCH-REV-003`.
-- Related code-review revision IDs: `N/A`.
+- Related code-review revision IDs: `CRR-001`.
 - Related API/E2E revision IDs: `N/A`.
 - Related delivery revision IDs: `N/A`.
-- Triggering finding IDs: `N/A`.
+- Triggering finding IDs: `F-001`.
 
-Implemented the architecture-approved provider-aware display projection without changing canonical identity or accounting. The server now resolves AutoByteus provider/model labels using one query-scoped custom-provider map, preserves non-AutoByteus labels, and derives Model/Task display metadata from one ordered raw/display entry sequence. GraphQL and frontend hydration expose and render the new display fields while retaining raw fields. The fixed-ID app-data migration normalizes only eligible composite `model_value` rows using independent CAS updates and validates row-count/raw-identity invariants.
+Implemented the architecture-approved provider-aware display projection without changing canonical identity or accounting. The server now resolves AutoByteus provider/model labels using one query-scoped custom-provider map, preserves non-AutoByteus labels, and derives Model/Task display metadata from one ordered raw/display entry sequence. GraphQL and frontend hydration expose and render the new display fields while retaining raw fields. The fixed-ID app-data migration normalizes only eligible composite `model_value` rows using independent CAS updates and validates row-count/raw-identity invariants. The CRR-001 malformed-composite fallback finding is corrected: malformed `model_value` metadata now yields exactly `Unknown Provider:Unknown Model` unless `model_identifier` is itself a valid raw composite.
 
 ## Reviewed Behavior Implementation Trace
 
@@ -33,7 +34,7 @@ Implemented the architecture-approved provider-aware display projection without 
 | `BEH-TOKMODEL-002` | Canonical raw identity remains grouping, attribution, pricing, row identity, and raw API data. | Existing `normalizeTokenUsageModelIdentifier`, grouping keys, and accounting aggregate unchanged; display fields are additive. | Implemented; focused statistics and GraphQL regression checks passed. |
 | `BEH-TOKMODEL-003` | Built-in AutoByteus provider names use the existing display mapping; other runtimes retain current labels. | Pure resolver uses `getLlmProviderDisplayName` for built-ins and raw precedence for non-AutoByteus. | Implemented and unit-tested. |
 | `BEH-TOKMODEL-004` | Task raw/display arrays stay aligned across every recursive constructor, including duplicates and empty paths. | `modelDisplayFields()` in `task-statistics-tree-builder.ts` consumes one `TokenUsageModelDisplayEntry[]` sequence for root, standalone, nested, and legacy-member rows. | Implemented; frontend task table tests passed. |
-| `BEH-TOKMODEL-005` | Unknown, deleted, malformed, missing, and colon-containing metadata is deterministic and non-empty. | Anchored parser and fallback matrix in `token-usage-model-display-projection.ts`; store fallback only when display transport is absent/invalid. | Implemented and resolver-tested with synthetic composite fixtures. |
+| `BEH-TOKMODEL-005` | Unknown, deleted, malformed, missing, and colon-containing metadata is deterministic and non-empty. | Anchored parser and fallback matrix in `token-usage-model-display-projection.ts`; store fallback only when display transport is absent/invalid. | Implemented; CRR-001 F-001 corrected and focused assertions cover malformed values with non-composite raw identity and built-in provider metadata. |
 | `BEH-TOKMODEL-006` | Historical composite `model_value` is safely normalized without rewriting raw identity. | `TokenUsageCustomProviderModelValueBackfillMigration` plus `Prisma...Database` and registry placement. | Implemented; migration tests cover idempotence, warnings, partial failure, retry, CAS, and invariants. |
 | `BEH-TOKMODEL-007` | Accounting aggregate consumers remain display-context-free. | `getTotalCost`, run-summary adapter, synthetic GraphQL summary aggregate, and aggregate GraphQL mapping remain untouched. | Implemented; existing GraphQL regression checks passed. |
 | `BEH-TOKMODEL-008` | Ordered display projection has one entry per raw identifier and mixed-runtime task collisions use raw fallback. | `buildTokenUsageModelDisplayEntries()` is shared by Model and Task paths and never deduplicates by display label. | Implemented and unit-tested. |
@@ -116,7 +117,7 @@ Implemented the architecture-approved provider-aware display projection without 
 ## Local Implementation Checks Run
 
 - `pnpm -C autobyteus-server-ts build` — passed, including shared package builds, Prisma generation, TypeScript production build, asset copy, and built-in-agent bootstrap smoke.
-- `pnpm -C autobyteus-server-ts exec vitest run tests/integration/token-usage/providers/statistics-provider.integration.test.ts tests/unit/token-usage/projections/token-usage-model-display-projection.test.ts tests/unit/app-data-migrations/token-usage-custom-provider-model-value-backfill-migration.test.ts` — passed, `3` files / `15` tests.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/integration/token-usage/providers/statistics-provider.integration.test.ts tests/unit/token-usage/projections/token-usage-model-display-projection.test.ts tests/unit/app-data-migrations/token-usage-custom-provider-model-value-backfill-migration.test.ts` — repeated after CRR-001 F-001 fix and passed, `3` files / `15` tests.
 - Existing targeted GraphQL regressions (`token-usage-ledger-graphql.e2e.test.ts`, `token-usage-unit-prices-graphql.e2e.test.ts`) — passed, `2` files / `4` tests; these are recorded as regression evidence only, not downstream API/E2E sign-off.
 - `pnpm -C autobyteus-web exec nuxt prepare` — passed.
 - `pnpm -C autobyteus-web test:nuxt --run stores/__tests__/tokenUsageStatistics.spec.ts components/settings/token-usage/__tests__/TokenUsageModelStatisticsTable.spec.ts components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts` — passed, `3` files / `6` tests.
@@ -147,4 +148,4 @@ Implemented the architecture-approved provider-aware display projection without 
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-API/E2E engineer must independently investigate current coverage, add or adjust durable API/E2E tests as needed, verify live GraphQL contract/codegen and realistic migration startup/recovery behavior, inspect the rendered browser surface, score coverage confidence, and return the result to `code_reviewer`. This handoff does not claim API/E2E sign-off.
+API/E2E engineer must independently investigate current coverage, add or adjust durable API/E2E tests as needed, verify live GraphQL contract/codegen and realistic migration startup/recovery behavior, inspect the rendered browser surface, score coverage confidence, and return the result to `code_reviewer`. This handoff does not claim API/E2E sign-off; source review must be repeated for CRR-001 before API/E2E starts.

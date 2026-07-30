@@ -92,9 +92,17 @@ const resolveAutobyteusDisplayName = (
 
   let providerId: string | null = rawComposite?.providerId ?? null;
   let modelName: string | null = null;
+  let providerForDisplay = event.model_provider;
 
   if (valueIsMalformedComposite) {
-    modelName = rawComposite?.modelName ?? (!rawIsMalformedComposite ? modelIdentifier : null);
+    if (rawComposite) {
+      modelName = rawComposite.modelName;
+    } else {
+      // A malformed composite value must not leak a non-composite raw
+      // identifier or infer a provider from metadata. Only a valid raw
+      // composite may supply the fallback provider/model pair.
+      providerForDisplay = null;
+    }
   } else if (valueComposite) {
     if (rawComposite) {
       // Matching and conflicting composites both use the canonical raw
@@ -119,7 +127,7 @@ const resolveAutobyteusDisplayName = (
     modelName = modelIdentifier;
   }
 
-  const providerLabel = resolveProviderLabel(providerId, event.model_provider, context);
+  const providerLabel = resolveProviderLabel(providerId, providerForDisplay, context);
   return `${providerLabel}:${modelName ?? UNKNOWN_MODEL}`;
 };
 

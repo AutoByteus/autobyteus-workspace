@@ -5,6 +5,7 @@
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | `architecture_reviewer`, `design-review-report.md`, implementation round 1 | `N/A` | `Initial Baseline` | `SR-004`, `ARCH-REV-003`, `CRR-N/A`, `API-REV-N/A`, `DR-N/A` | Implementation complete; handed to `code_reviewer` |
+| IR-002 | `code_reviewer`, `code-review-report.md`, source-review rework round 1 | `F-001` | `Local Fix` | `SR-004`, `ARCH-REV-003`, `CRR-001`, `API-REV-N/A`, `DR-N/A` | Fix implemented and re-submitted to `code_reviewer` |
 
 ## Revision Entries
 
@@ -32,3 +33,26 @@
 - Local validation and result: Server build passed; focused server tests passed (`3` files, `15` tests); targeted existing GraphQL regression tests passed (`2` files, `4` tests); frontend Nuxt preparation passed; focused frontend store/component tests passed (`3` files, `6` tests); web boundary and localization guards passed; live-backend GraphQL codegen passed once against the updated schema; generated schema introspection and migration registry placement checks passed.
 - Next recipient or routing: `code_reviewer` for implementation-source review, then `api_e2e_engineer` after source review passes.
 - Remaining limitations or risks: No live browser preview was available in the implementation environment; API/E2E engineer must independently validate the new GraphQL display fields, synthetic composite fixtures, migration lifecycle against realistic startup wiring, and browser rendering. Repository-wide `pnpm -C autobyteus-server-ts typecheck` remains blocked by the existing `rootDir=src` plus `include=tests` TS6059 baseline; the production build passed.
+
+### IR-002 — Correct malformed composite display fallback after CRR-001
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/tickets/in-progress/token-statistics-custom-provider-model/code-review-report.md`; bounded source-review rework round 1.
+- Triggering finding IDs: `F-001` from `CRR-001`; the source review was not authorized to advance to API/E2E.
+- Classification: `Local Fix`.
+- Prior authoritative result: `IR-001` implementation was complete but source review failed because malformed composite `model_value` could leak a non-composite raw model or built-in provider metadata.
+- Current authoritative result: The malformed composite branch now uses only a valid raw composite provider/suffix; otherwise it forces exactly `Unknown Provider:Unknown Model`. Focused assertions cover both non-composite raw identity and built-in provider metadata.
+- Related solution revision IDs: `SR-004`.
+- Related architecture-review revision IDs: `ARCH-REV-003`.
+- Related code-review revision IDs: `CRR-001`.
+- Related API/E2E revision IDs: `N/A`; API/E2E remains pending repeated source review.
+- Related delivery revision IDs: `N/A`.
+- Why this implementation revision is recorded: It documents the implementation-owned correction required by the failed source review before downstream coverage can begin.
+- Approved behavior or requirement IDs affected: `BEH-TOKMODEL-005`, `REQ-TOKMODEL-004`, `AC-TOKMODEL-005`, and `AC-TOKMODEL-007`.
+- Implementation delta:
+  - Changed `resolveAutobyteusDisplayName()` so a malformed `openai-compatible:` `model_value` cannot fall through to a non-composite `model_identifier` or `model_provider` label.
+  - Preserved the approved valid-raw-composite fallback and all normal composite, built-in, missing, non-AutoByteus, and collision paths.
+  - Added focused assertions for malformed composite values with `legacy-model` raw identity and with `DEEPSEEK` provider metadata.
+- Changed files or areas: `autobyteus-server-ts/src/token-usage/projections/token-usage-model-display-projection.ts`; `autobyteus-server-ts/tests/unit/token-usage/projections/token-usage-model-display-projection.test.ts`; implementation handoff artifacts.
+- Local validation and result: Focused server suite passed (`3` files, `15` tests); production server build passed; `git diff --check` passed.
+- Next recipient or routing: `code_reviewer` for repeated implementation-source review; API/E2E remains unauthorized until that review passes.
+- Remaining limitations or risks: No live browser preview was available; the repository-wide server typecheck retains the known TS6059 baseline; API/E2E and delivery stages remain downstream-owned.
