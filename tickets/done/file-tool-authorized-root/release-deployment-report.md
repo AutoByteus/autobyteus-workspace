@@ -126,7 +126,7 @@ Release workflow is in scope after repository finalization. The release tag push
 - Integrated-state Electron build: `pnpm build:electron:mac` exited `0` (`evidence/19-integrated-electron-mac-build.log`).
 - Integrated-state packaged terminal runtime: target/selected helpers and spawn probe passed (`evidence/20-integrated-packaged-terminal-runtime.log`).
 - Release helper: `pnpm release 1.4.30 -- --release-notes tickets/done/file-tool-authorized-root/release-notes.md` exited `0`; versions were bumped to `1.4.30`, the managed messaging manifest was synced, the annotated tag was created, and branch/tag pushes succeeded (`evidence/21-release-v1.4.30.log`).
-- Release workflow observation: `gh run list` found all five documented release workflows for tag `v1.4.30`; Desktop, Android, iOS, Messaging Gateway, and Server Docker were `in_progress` at capture time. Completion/publication remains remote-CI-owned.
+- Release workflow observation: `gh run list` found all five documented release workflows for tag `v1.4.30`. Follow-up capture at 2026-07-30T08:12:51Z showed Messaging Gateway and Android completed successfully; Desktop, iOS, and Server Docker remained `in_progress`. Completion/publication remains remote-CI-owned (`evidence/21-release-v1.4.30.log`).
 
 ## Rollback Criteria
 

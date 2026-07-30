@@ -77,7 +77,7 @@
 - Delivery round and trigger: The finalized `personal` target was pushed, then the documented release helper was run for `v1.4.30`.
 - Triggering upstream report, verification, or evidence: Release helper output and tag/workflow verification in `evidence/21-release-v1.4.30.log`.
 - Prior authoritative result: `Pass` — target merge completed, target push pending (`DR-004`).
-- Current authoritative result: `Pass` — `personal` and annotated tag `v1.4.30` were pushed; remote tag verification passed; five release workflows were observed running or queued.
+- Current authoritative result: `Pass` — `personal` and annotated tag `v1.4.30` were pushed; remote tag verification passed; Android and Messaging Gateway workflows succeeded, while Desktop, iOS, and Server Docker remained in progress at the follow-up capture.
 - Docs sync report: No new behavior documentation was required; durable docs remain current.
 - Handoff summary: Updated with release commit, tag, package versions, and workflow status.
 - Release/publication/deployment report: Updated with finalization and release results.

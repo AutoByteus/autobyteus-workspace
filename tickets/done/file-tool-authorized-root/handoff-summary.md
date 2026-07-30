@@ -61,7 +61,7 @@
 - Release commit: `ca2ccb49993db0f3f028bd8472c48515eff81c4e`.
 - Tag: `v1.4.30` (remote tag verification passed).
 - Package versions: `autobyteus-web` `1.4.30`; `autobyteus-message-gateway` `1.4.30`.
-- Workflows: Desktop, Android, iOS, Messaging Gateway, and Server Docker release workflows triggered by the tag; they were still running/queued when captured.
+- Workflows: All five documented release workflows were triggered by the tag. Follow-up capture showed Android and Messaging Gateway succeeded; Desktop, iOS, and Server Docker were still running. See `evidence/21-release-v1.4.30.log`.
 
 ## Docs Synchronization
 
