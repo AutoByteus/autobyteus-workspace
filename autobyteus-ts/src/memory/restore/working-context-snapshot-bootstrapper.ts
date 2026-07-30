@@ -1,4 +1,4 @@
-import type { Message } from '../../llm/utils/messages.js';
+import { Message, MessageRole } from '../../llm/utils/messages.js';
 import type { MemoryManager } from '../memory-manager.js';
 import { CompactedMemoryContextProjector } from '../projection/compacted-memory-context-projector.js';
 import type { MemoryStore } from '../store/base-store.js';
@@ -73,9 +73,22 @@ export class WorkingContextSnapshotBootstrapper {
       memoryManager.listRawTracesOrdered(),
       options.maxItemChars ?? memoryManager.compactionPolicy.maxItemChars,
     );
+    const recoveredSystemMessages = recovered.filter(
+      (message) => message.role === MessageRole.SYSTEM,
+    );
     memoryManager.installWorkingContextWithoutSnapshot(this.compactedMemoryProjector.project({
       systemPrompt,
-      continuationMessages: recovered,
+      headMessages: recoveredSystemMessages.length
+        ? [
+            ...(systemPrompt.trim()
+              ? [new Message(MessageRole.SYSTEM, { content: systemPrompt })]
+              : []),
+            ...recoveredSystemMessages,
+          ]
+        : undefined,
+      continuationMessages: recovered.filter(
+        (message) => message.role !== MessageRole.SYSTEM,
+      ),
       bundle: null,
     }));
     const repair = memoryManager.ensureWorkingContextToolProtocolSafeForNextLlm({

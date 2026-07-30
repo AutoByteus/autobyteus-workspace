@@ -14,6 +14,9 @@ import { createToolCallIdentity, toolCallIdentityKey } from '../models/tool-call
 import { ToolInteractionStatus, type ToolInteraction } from '../models/tool-interaction.js';
 import { buildToolInteractions } from '../tool-interaction-builder.js';
 
+const TRUSTED_INTERRUPTION_BOUNDARY_TRACE_TYPE = 'operation_boundary';
+const TRUSTED_INTERRUPTION_BOUNDARY_SOURCE_EVENT = 'AgentTurnInterruptedEvent';
+
 export class WorkingContextRecoveryProjector {
   project(rawTraces: RawTraceItem[], _maxItemChars?: number | null): Message[] {
     const interactionByIdentity = new Map(
@@ -83,6 +86,17 @@ export class WorkingContextRecoveryProjector {
     if (trace.traceType === 'assistant') {
       return this.withRecoveryProvenance(
         new Message(MessageRole.ASSISTANT, { content: trace.content }),
+        trace.turnId,
+        trace.id,
+      );
+    }
+    if (
+      trace.traceType === TRUSTED_INTERRUPTION_BOUNDARY_TRACE_TYPE
+      && trace.sourceEvent === TRUSTED_INTERRUPTION_BOUNDARY_SOURCE_EVENT
+      && trace.content.trim()
+    ) {
+      return this.withRecoveryProvenance(
+        new Message(MessageRole.SYSTEM, { content: trace.content }),
         trace.turnId,
         trace.id,
       );

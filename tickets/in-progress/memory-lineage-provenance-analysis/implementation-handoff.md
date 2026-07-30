@@ -13,7 +13,7 @@
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/solution-revision-record.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/design-review-report.md`
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence, when applicable: `N/A`; implementation began from the `ARCH-REV-004` Pass and reconciled the already-present SR-002-derived worktree as directed.
+- Triggering rework report, revision record, or evidence, when applicable: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/code-review-report.md` and `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/code-review-revision-record.md`; `CRR-001` / `CR-F-001`.
 
 ## Current Implementation Summary
 
@@ -21,15 +21,17 @@ The implementation now uses a current-schema-only native compaction path. The st
 
 A required startup migration owns all historical filename knowledge and deletes exactly the four approved derived-memory files from discovered standalone/team-member runs. It preserves raw evidence, reports failures as `FAILED`, and is enforced by the migration runner and real server startup caller. Native compaction and Work Evidence now share the tight core readable-value/condensed-tool body while retaining separate source models and envelopes.
 
-- Implementation cycle: `Initial`
+`IR-002` completes the bounded `CR-F-001` correction: active no-snapshot recovery recognizes only an `operation_boundary` whose source is `AgentTurnInterruptedEvent`, restores its non-blank recorded cancellation fence as a provenance-bearing system message, and includes it with the base system head before canonical finalization. Other boundary types/sources remain excluded; archive replay and compatibility recovery were not added.
+
+- Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-001`, `SR-002`, `SR-003`, `SR-004`
 - Related architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`, `ARCH-REV-003`, `ARCH-REV-004`
-- Related code-review revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001`
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Triggering finding IDs: `CR-F-001`
 
 ## Reviewed Behavior Implementation Trace
 
@@ -40,7 +42,7 @@ A required startup migration owns all historical filename knowledge and deletes 
 | `BEH-003` | Application-owned replacement outputs and successful lineage publication. | `accepted-compaction-builder.ts`, `episodic-item.ts`, `semantic-item.ts`, exact row lookup in `run-memory-file-store.ts`. | One to three episodes and at most twenty semantic facts receive deterministic manager-owned IDs; the strategy has no output-ID or storage authority. |
 | `BEH-004` | Typed direct/root origin or truthful `not_found`/integrity failure. | `lineage/compaction-lineage-resolver.ts`, `lineage/memory-origin-resolution.ts`, server `memory-lineage/services/agent-memory-origin-service.ts`. | Resolver validates producing/prior records, exact output rows, completed archive descriptor/content, cycles, and deduplicated raw roots. |
 | `BEH-005` | Recurrent exact-head memory and one finalized canonical context. | `current-compaction-output-loader.ts`, projector/message builder, planner, `working-context-finalizer.ts`, manager coordinator. | Tail-listed rows only are projected. M(n-1) participates in the next compactable logical prefix but is not re-archived or projected beside M(n). |
-| `BEH-006` | Current-only v5 restore and fail-closed pre-runtime reset. | server reset migration/helper, registry, runner, `server-runtime.ts`; core snapshot serializer/bootstrapper and recovery projector. | Exactly four derived files are reset; raw files are excluded. Existing success/warning results remain startable, non-startable required results throw after attempts, startup rethrows. Restore is v5 or no-memory initialization; a lineage head without exact rows/snapshot fails integrity. |
+| `BEH-006` | Current-only v5 restore and fail-closed pre-runtime reset. | server reset migration/helper, registry, runner, `server-runtime.ts`; core snapshot serializer/bootstrapper and recovery projector. | Exactly four derived files are reset; raw files are excluded. Existing success/warning results remain startable, non-startable required results throw after attempts, startup rethrows. Restore is v5 or no-memory initialization; a lineage head without exact rows/snapshot fails integrity. Active no-snapshot recovery now retains only the trusted interruption cancellation boundary as a provenance-bearing system message. |
 | `BEH-007` | Explicit native run/member lineage scope; external storage behavior remains outside native compaction. | `compaction-lineage-scope-resolver.ts`, `AgentConfig`, `AgentFactory`, backend factory. | Scope is supplied from standalone/team context rather than inferred from a directory; no external-runtime semantic compactor or lineage writer was added. |
 | `BEH-008` | Reachable runner/parser failure is pre-write and pending state remains retryable. | `pending-compaction-executor.ts`, strict response parser/normalizer, manager baseline/accept/commit boundaries. | Proposal failures occur before accepted storage mutation; pending state clears only as the final successful commit step. Head/context are rechecked before acceptance and commit. |
 | `BEH-009` | Natural reasoning-free bounded compactor conversation with one escaped boundary. | planner/unit builder -> `compaction-conversation-history-renderer.ts` -> prompt builder -> summarizer. | Prior memory and selected natural units retain order; settled tools use consumer-neutral bodies. Raw/call IDs, private reasoning, timestamps, Work Evidence markup, and mechanical memory sections are omitted. |
@@ -50,7 +52,7 @@ A required startup migration owns all historical filename knowledge and deletes 
 
 - Core compaction authority: `autobyteus-ts/src/memory/memory-manager-compaction-coordinator.ts`, `compaction/accepted-compaction-builder.ts`, `compaction/accepted-compaction-committer.ts`, `compaction/working-context-compaction-proposal.ts`.
 - Lineage/current output: `autobyteus-ts/src/memory/lineage/`, `store/file-compaction-lineage-store.ts`, `projection/current-compaction-output-loader.ts`.
-- Canonical context/snapshot: `working-context-provenance.ts`, `working-context-finalizer.ts`, `working-context-finalization-validation.ts`, `working-context-snapshot-serializer.ts`, `restore/working-context-snapshot-bootstrapper.ts`.
+- Canonical context/snapshot: `working-context-provenance.ts`, `working-context-finalizer.ts`, `working-context-finalization-validation.ts`, `working-context-snapshot-serializer.ts`, `restore/working-context-snapshot-bootstrapper.ts`, and the trusted active-recovery mapping in `restore/working-context-recovery-projector.ts`.
 - Compactor input/output: message unit builder/planner, conversation renderer, prompt builder, strict response parser/normalizer, built-in Memory Compactor template.
 - Startup transition: server `app-data-migrations/migrations/reset-pre-lineage-memory-*`, registry/runner/domain error, and `server-runtime.ts`.
 - Product wiring/query: server backend lineage-scope resolver/factory, compactor launch metadata resolver/runner, and memory-origin service.
@@ -67,7 +69,7 @@ A required startup migration owns all historical filename knowledge and deletes 
 
 - Normal filesystem publication is intentionally non-transactional across unsupported process termination; the reviewed design accepts possible pre-head archive/output leftovers and adds no journal.
 - The existing memory unit/integration test corpus still encodes deleted v4/gate/manifest/legacy strategy contracts. The focused run reported `17` failed files / `28` failed tests and `14` passed files / `85` passed tests. Durable test replacement and broader execution are downstream API/E2E-owned work, not implementation sign-off.
-- The real `startConfiguredServer` failure path still needs downstream product-path coverage proving bootstrap/build/listen are not called; implementation checks exercised the migration and aggregate runner directly.
+- The real `startConfiguredServer` failure path still needs downstream product-path coverage proving bootstrap/build/listen are not called; implementation checks exercised the migration and aggregate runner directly. The real interrupt -> reset -> bootstrap -> follow-up journey also remains downstream coverage work even though the focused projector/bootstrap source probes now pass.
 - The branch remains 20 commits behind `origin/personal`; delivery owns the later remote refresh and integrated-state check.
 
 ## Task Design Health Assessment Implementation Check
@@ -77,7 +79,7 @@ A required startup migration owns all historical filename knowledge and deletes 
 - Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `Refactor Needed Now`
 - Implementation matched the reviewed assessment (`Yes`/`No`): `Yes`
 - If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `N/A`
-- Evidence / notes: strategy persistence/identity assignment moved behind manager acceptance; lineage-tail selection replaced mixed retrieval; structural range provenance/finalization replaced loose origin metadata; startup history knowledge is migration-confined; duplicate presentation policy was extracted without combining consumer orchestration. Aligned SR-002 work was reconciled rather than restarted wholesale.
+- Evidence / notes: strategy persistence/identity assignment moved behind manager acceptance; lineage-tail selection replaced mixed retrieval; structural range provenance/finalization replaced loose origin metadata; startup history knowledge is migration-confined; duplicate presentation policy was extracted without combining consumer orchestration. Aligned SR-002 work was reconciled rather than restarted wholesale. `CR-F-001` was a bounded missing supported-input case in the recovery owner and did not invalidate the reviewed design assessment.
 
 ## Legacy / Compatibility Removal Check
 
@@ -87,7 +89,7 @@ A required startup migration owns all historical filename knowledge and deletes 
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`
-- Notes: removed the schema gate, compacted-memory manifest runtime model, loose message-provenance file, server work-trace redactor, historical current retrieval APIs, old response alias/shape, and state/pointer/origin variants. `MemoryManager` is 492 effective non-empty lines and the changed backend factory is 499; focused helpers were split out. No changed source file exceeded 500 effective non-empty lines or had more than 220 added lines.
+- Notes: removed the schema gate, compacted-memory manifest runtime model, loose message-provenance file, server work-trace redactor, historical current retrieval APIs, old response alias/shape, and state/pointer/origin variants. The trusted interruption-boundary mapping preserves a current supported safety event and introduces no old-schema decoder or generic recovery path. `MemoryManager` is 492 effective non-empty lines and the changed backend factory is 499; focused helpers were split out. No changed source file exceeded 500 effective non-empty lines or had more than 220 added lines.
 
 ## Persisted Data Transition Check (When Applicable)
 
@@ -111,6 +113,8 @@ A required startup migration owns all historical filename knowledge and deletes 
 - Recurrent manager/lineage/resolver/snapshot smoke: two accepted compactions, C2 -> C1 predecessor, no state file, message-only v5 without output IDs, direct/root resolver, `not_found`, and exact restore — passed.
 - Lineage append-invariant smoke: absent/first/next success plus stale expected predecessor, duplicate ID, mismatched record predecessor, and fork rejection without write; no state file — passed.
 - Restore/current-output smoke: absent lineage initializes active-only no-memory v5; lineage referencing a missing exact output fails closed without fallback — passed.
+- `CR-F-001` direct recovery probe: exact trusted `operation_boundary` + `AgentTurnInterruptedEvent` recovered one system message with single-message raw/turn provenance; different source/type and blank content were rejected — passed.
+- `CR-F-001` no-snapshot bootstrap probe: base system prompt + trusted cancellation fence + recovered user history finalized into valid v5; untrusted boundary text remained excluded and lineage stayed absent — passed.
 - Presentation smoke: redaction before omission, explicit head/tail marker, shared result/error grammar, exactly one escaped conversation boundary, no reasoning/raw/call IDs/timestamps, and Work Evidence timestamp/Markdown preservation — passed.
 - Startup reset/runner smoke: 12 exact deletions across standalone/direct+nested team member directories, 12 idempotent skips, raw trace/manifest byte preservation, forced target deletion failure -> `FAILED`, all required results persisted/returned in the typed throw, and existing warning-success not rerun — passed.
 - Forbidden-source searches for state/pointer/legacy origin/schema-gate/old response identifiers — clean; the obsolete manifest filename appears only inside the reset migration.
@@ -126,7 +130,7 @@ A required startup migration owns all historical filename knowledge and deletes 
 - Replace stale core fixtures with current proposal/accept/commit tests and prove runner/parser failure makes no archive/output/lineage/snapshot/context mutation while retaining the pending operation.
 - Cover lineage JSONL absent/empty/linear tail, duplicate/stale/mismatch/fork rejection without write, exact current rows, broken current row, completed archive identity/count, resolver cycle/missing predecessor/missing archive, typed unknown ID, and no state/manifest alternatives.
 - Cover v5 message/tool/media/emoji-range round-trip and strict rejection of pre-v5, identity-bearing snapshot extras, invalid/out-of-bounds/overlapping ranges, memory-region-versus-lineage mismatch, and lineage head without snapshot.
-- Exercise the real `startConfiguredServer` with mocks/spies: standalone/team-member exact deletion, raw preservation, itemized durable failure, runner/caller rethrow, and no bootstrap/build/listen after failure; verify existing `SUCCEEDED`/`SUCCEEDED_WITH_WARNINGS` remain startable.
+- Exercise the real `startConfiguredServer` with mocks/spies: standalone/team-member exact deletion, raw preservation, itemized durable failure, runner/caller rethrow, and no bootstrap/build/listen after failure; verify existing `SUCCEEDED`/`SUCCEEDED_WITH_WARNINGS` remain startable. Add the real user interrupt -> trusted raw boundary -> successful reset -> no-snapshot bootstrap -> follow-up journey and prove the cancellation fence survives while untrusted boundaries do not.
 - Add renderer golden cases for short values, nullish/non-string/fallback values, each secret/backend pattern, exact omitted count/head/tail, reserved boundary collisions near limits, multi-call result/error pairing, genuine Work Evidence `no_outcome`, and separate consumer envelopes.
 - Cover explicit standalone/team-member scope wiring, provider registry resolution failure before accepted output, C1/C2 recurrent projection, M(n-1)+R(n) planning with R(n)-only archive membership, and tool/media preservation through finalization.
 - Confirm active Event Monitor remains active-only and generated Work Evidence remains archive-plus-active with no WorkingContext/snapshot cross-source fallback.
