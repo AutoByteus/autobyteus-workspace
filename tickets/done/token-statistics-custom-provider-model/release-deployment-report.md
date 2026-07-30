@@ -2,15 +2,15 @@
 
 ## Release / Publication / Deployment Scope
 
-This delivery handoff includes the latest-base integration, docs sync, and a user-requested local Electron test build for `token-statistics-custom-provider-model`. User verification has been received; repository finalization, ticket archival, release/version/tag work, and workflow publication are authorized and in progress. No deployment beyond the tag-driven release workflows is separately required.
+This delivery handoff includes the latest-base integration, docs sync, and a user-requested local Electron test build for `token-statistics-custom-provider-model`. User verification has been received; repository finalization, ticket archival, release/version/tag work, and workflow publication are complete. No deployment beyond the tag-driven release workflows was separately required.
 
 ## Handoff Summary
 
 - Handoff summary artifact: `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/tickets/done/token-statistics-custom-provider-model/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/tickets/done/token-statistics-custom-provider-model/delivery-revision-record.md`
-- Current delivery revision ID: `DR-004`
-- Notes: The integrated branch is current with tracked `origin/personal`; the user verified the Electron package and authorized finalization plus release `v1.4.31`.
+- Current delivery revision ID: `DR-005`
+- Notes: The user verified the Electron package; the ticket is archived, `personal` is finalized, and release `v1.4.31` is published.
 
 ## Local Electron Test Build
 
@@ -74,47 +74,56 @@ This delivery handoff includes the latest-base integration, docs sync, and a use
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/<ticket-name>`: `Pending final ticket commit`
+- Ticket moved to `tickets/done/<ticket-name>`: `Yes` — moved before the final ticket commit
 - Archived ticket path: `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model/tickets/done/token-statistics-custom-provider-model/`
 
 ## Version / Tag / Release Commit
 
-Release authorized and planned: `v1.4.31` from current `1.4.30`. The archived ticket `release-notes.md` will be passed to `pnpm release 1.4.31 -- --release-notes tickets/done/token-statistics-custom-provider-model/release-notes.md --branch <release-worktree-branch> --no-push`; the release commit/tag will then be pushed to `origin/personal`/`v1.4.31` after target finalization.
+- Version transition: `1.4.30` -> `1.4.31` in `autobyteus-web/package.json` and `autobyteus-message-gateway/package.json`.
+- Release helper: `pnpm release 1.4.31 -- --release-notes tickets/done/token-statistics-custom-provider-model/release-notes.md --branch delivery/token-statistics-custom-provider-model-v1.4.31 --no-push`.
+- Release commit: `3d31bf31ee6c2ddabb5ea966a36d4f2a195a1a5d`.
+- Annotated tag: `v1.4.31`; remote peeled tag target matches the release commit.
+- Curated release notes: archived `tickets/done/token-statistics-custom-provider-model/release-notes.md` and published at `.github/release-notes/release-notes.md`.
+- GitHub Release: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.31.
 
 ## Repository Finalization
 
 - Bootstrap context source: `tickets/done/token-statistics-custom-provider-model/investigation-notes.md`.
 - Ticket branch: `codex/token-statistics-custom-provider-model`.
-- Ticket branch commit result: `Pending final archive commit`.
-- Ticket branch push result: `Pending user-authorized finalization`.
+- Ticket branch commit result: `Completed` — `56f78d2ba`.
+- Ticket branch push result: `Completed` — `origin/codex/token-statistics-custom-provider-model`.
 - Finalization target remote: `origin`.
 - Finalization target branch: `personal`.
 - Target advanced after user verification: `No`; refreshed `origin/personal` remained `1b8d8c2f2`.
 - Delivery-owned edits protected before re-integration: `Not needed` — target did not advance.
-- Re-integration before final merge result: `Pending finalization merge`.
-- Target branch update result: `Pending`.
-- Merge into target result: `Pending`.
-- Push target branch result: `Pending`.
-- Repository finalization status: `Authorized and in progress`.
-- Blocker (if applicable): None at this stage; release/workflow outcomes remain to be verified.
+- Re-integration before final merge result: `Completed` — merge commit `a05f293777ad3d9ef4d81e387ae8a787ed120272`, no conflicts.
+- Target branch update result: `Completed` — release commit `3d31bf31ee6c2ddabb5ea966a36d4f2a195a1a5d` pushed to `origin/personal`.
+- Merge into target result: `Completed` — `personal` contains the finalized ticket merge.
+- Push target branch result: `Completed` — `origin/personal@3d31bf31ee6c2ddabb5ea966a36d4f2a195a1a5d`.
+- Repository finalization status: `Complete`.
+- Blocker (if applicable): None.
 
 ## Release / Publication / Deployment
 
 - Applicable: `Yes`
 - Method: Repository release helper plus tag-driven GitHub Actions workflows.
 - Method reference / command: `pnpm release 1.4.31 -- --release-notes tickets/done/token-statistics-custom-provider-model/release-notes.md` (executed from a clean temporary worktree based on finalized `personal`; push is performed after target merge).
-- Release/publication/deployment result: `Pending`.
-- Release notes handoff result: `Created at tickets/done/token-statistics-custom-provider-model/release-notes.md; pending release helper consumption.`
-- Blocker (if applicable): None currently; workflow results must be verified after tag push.
+- Release/publication/deployment result: `Complete`.
+- Release notes handoff result: `Complete` — curated notes were consumed by the release helper.
+- GitHub Release publication: `Complete` — 21 assets, non-draft, non-prerelease.
+- Workflow results: Desktop `30558616029` success; Android `30558615894` success; iOS `30558616039` success; Messaging Gateway `30558615897` success; Server Docker `30558615908` success.
+- Server Docker images: `autobyteus/autobyteus-server:1.4.31` and `:latest`, multi-arch digest `sha256:dde43ac59db13baa4d8bee7661b36235aecedec5051de501c1d8508c18e3b326`; platform manifests were published for linux/amd64 and linux/arm64.
+- Non-blocking workflow annotation: GitHub Actions emitted existing Node.js 20 deprecation warnings while forcing Node 24.
+- Blocker (if applicable): None.
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_worktrees/token-statistics-custom-provider-model`
-- Worktree cleanup result: `Blocked` — must remain available for user verification and any finalization refresh.
+- Worktree cleanup result: `Retained` — preserved for the previously produced local Electron test artifacts and archived evidence.
 - Worktree prune result: `Not required`
-- Local ticket branch cleanup result: `Blocked` — branch is still the verification candidate.
-- Remote branch cleanup result: `Not required` — ticket branch was not pushed.
-- Blocker (if applicable): Explicit user verification and subsequent finalization are pending.
+- Local ticket branch cleanup result: `Retained` with the archived ticket checkout for evidence access.
+- Remote branch cleanup result: `Pending post-handoff cleanup` — the merged ticket branch may be deleted after this record is retained.
+- Blocker (if applicable): None; retention is an evidence-preservation choice, not a release blocker.
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
 
@@ -125,12 +134,12 @@ Release authorized and planned: `v1.4.31` from current `1.4.30`. The archived ti
 ## Release Notes Summary
 
 - Release notes artifact created before verification: `Yes` — `release-notes.md`.
-- Archived release notes artifact used for release/publication: `Pending archive commit`.
-- Release notes status: `Ready for v1.4.31 release helper.`
+- Archived release notes artifact used for release/publication: `Yes` — consumed by the release helper.
+- Release notes status: `Published with v1.4.31`.
 
 ## Deployment Steps
 
-No deployment path is in scope. User testing should launch the DMG or ZIP listed above; no package was installed or launched by delivery.
+No separate deployment path is in scope. Tag-driven release workflows published the desktop, Android, iOS, messaging-gateway, and Server Docker artifacts; the user-confirmed local Electron test package remains retained for evidence.
 
 ## Environment Or Persisted-Data Transition Notes
 
@@ -153,10 +162,10 @@ No deployment path is in scope. User testing should launch the DMG or ZIP listed
 
 ## Rollback Criteria
 
-- Do not finalize if the user-facing behavior changes after a later target refresh without renewed verification.
-- Do not finalize if the targeted post-reintegration executable check fails, the merge conflicts, or the migration status/identity/accounting invariants regress.
-- If finalization has begun and a release/deployment step fails, preserve the finalization state, record the exact failure, and stop further release/cleanup actions until recovery is explicitly planned.
+- If the target branch advances after this release, do not rewrite `v1.4.31`; use a corrective version for any follow-up.
+- If a release/deployment step fails in a future run, preserve the published tag and record the exact failure; do not retry unchanged source without a recovery decision.
+- GitHub Actions Node 20 deprecation annotations are non-blocking and did not affect the successful release.
 
 ## Final Status
 
-`User-verified; repository finalization and v1.4.31 release in progress.`
+`Complete — v1.4.31 finalized and published.`

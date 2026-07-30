@@ -8,8 +8,21 @@
 | DR-002 | User-requested README-guided Electron test build | Integrated handoff ready; verification pending | Personal macOS ARM64 Electron test package built and integrity-verified; behavioral verification and finalization still pending | `handoff-summary.md`, `release-deployment-report.md`, this record |
 | DR-003 | `code_reviewer` delivery handoff after API-REV-002 / CRR-006 | Personal test package ready; verification pending | Snapshot-aware integrated handoff and docs sync ready; finalization remains held for explicit user behavioral verification | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, this record |
 | DR-004 | User verified Electron behavior and authorized finalization plus a new release | Snapshot-aware handoff ready; verification pending | User-verified finalization and v1.4.31 release in progress; target refresh unchanged | `release-notes.md`, `handoff-summary.md`, `release-deployment-report.md`, this record |
+| DR-005 | Finalization and tag-driven release workflows completed | User-verified finalization and v1.4.31 release in progress | Ticket archived, `personal` finalized, v1.4.31 published successfully across all five release workflows | `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md`, this record |
 
 ## Revision Entries
+
+### DR-005 — Finalized repository and published v1.4.31
+
+- Delivery round and trigger: Delivery round 5, triggered by completion of the user-authorized finalization and tag-driven release workflow set.
+- Triggering upstream report, verification, or evidence: ticket commit `56f78d2ba`; target merge `a05f293777ad3d9ef4d81e387ae8a787ed120272`; release commit `3d31bf31ee6c2ddabb5ea966a36d4f2a195a1a5d`; tag `v1.4.31`; workflow runs `30558616029`, `30558615894`, `30558616039`, `30558615897`, and `30558615908`; GitHub Release `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.31`.
+- Prior authoritative result: `DR-004` — user-verified finalization and v1.4.31 release in progress.
+- Current authoritative result: `Complete` — the ticket is archived, the ticket branch is pushed, `personal` is finalized at `3d31bf31e`, the annotated tag `v1.4.31` is pushed, the GitHub Release has 21 assets, and all five tag-driven workflows passed.
+- Release verification: Server Docker published `autobyteus/autobyteus-server:1.4.31` and `:latest` as a linux/amd64 + linux/arm64 multi-arch index at digest `sha256:dde43ac59db13baa4d8bee7661b36235aecedec5051de501c1d8508c18e3b326`; desktop/Android/iOS/messaging-gateway assets are present on the GitHub Release.
+- Repository finalization: `codex/token-statistics-custom-provider-model` commit `56f78d2ba` was pushed; merge `a05f293777ad3d9ef4d81e387ae8a787ed120272` and release commit `3d31bf31ee6c2ddabb5ea966a36d4f2a195a1a5d` were pushed to `origin/personal`; no conflicts occurred.
+- User verification/finalization state: User verification was received before archival and push. Finalization and release are complete. The dedicated ticket worktree remains retained for local Electron evidence; this is not a delivery blocker.
+- Next recipient/action: `None required`; optional follow-up is monitoring the published release assets and Docker image.
+- Remaining blockers, rollback concerns, or untested scope: External provider network/credentials and alternate DB engines remain outside this task. Existing GitHub Actions Node 20 deprecation annotations are non-blocking. Do not rewrite `v1.4.31`; use a corrective version for future changes.
 
 ### DR-004 — User-verified finalization and v1.4.31 release authorization
 
