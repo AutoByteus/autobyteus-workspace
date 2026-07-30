@@ -57,6 +57,21 @@ describe('absolute Event Monitor file path policy', () => {
   });
 
   it.each([
+    '/tmp/archive.zip',
+    '/tmp/installer.dmg',
+    '/tmp/setup.pkg',
+    '/tmp/application.app',
+    '/tmp/payload.bin',
+    '/tmp/unknown.custom',
+    'C:\\tmp\\installer.dmg',
+  ])('classifies unsupported bare absolute destination %s as inert', (rawDestination) => {
+    expect(resolveEventMonitorMarkdownFileDestination(rawDestination)).toEqual({
+      kind: 'invalid-file',
+      rawDestination,
+    });
+  });
+
+  it.each([
     'file:///Users/normy/.../report.md',
     'file:///tmp/../report.md',
     'file:///tmp/./report.md',

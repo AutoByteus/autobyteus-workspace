@@ -1,0 +1,31 @@
+
+> autobyteus@1.4.29 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-markdown-link-clickability/autobyteus-web
+> cross-env NUXT_TEST=true vitest utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-markdown-link-clickability/autobyteus-web
+
+stderr | utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts (45 tests) 6ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts (18 tests) 106ms
+
+ Test Files  2 passed (2)
+      Tests  63 passed (63)
+   Start at  09:10:47
+   Duration  7.35s (transform 3.49s, setup 12.68s, collect 113ms, tests 113ms, environment 569ms, prepare 446ms)
+

@@ -1,0 +1,7 @@
+date=2026-07-30T07:11:18Z
+browser executables:
+FOUND /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+MISSING /Applications/Chromium.app/Contents/MacOS/Chromium
+MISSING /usr/bin/google-chrome
+MISSING /usr/bin/chromium
+MISSING /usr/bin/chromium-browser
