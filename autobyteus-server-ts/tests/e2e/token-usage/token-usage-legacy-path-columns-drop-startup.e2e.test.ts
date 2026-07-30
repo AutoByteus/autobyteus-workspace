@@ -15,6 +15,7 @@ const TOKEN_USAGE_MIGRATION_SQL_FILES = [
   "20260625193000_token_usage_component_pricing_explainability/migration.sql",
   "20260629120000_add_token_usage_display_fields/migration.sql",
   "20260702093000_token_usage_execution_address/migration.sql",
+  "20260730090000_add_token_usage_provider_name/migration.sql",
 ];
 
 const TOKEN_USAGE_EXECUTION_ADDRESS_BACKFILL_MIGRATION_ID =

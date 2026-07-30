@@ -31,17 +31,19 @@ type AggregatePayload = Partial<TokenUsageCostSummaryAggregate> & {
   cacheState?: string | null;
 };
 
-type TaskRowPayload = Omit<TokenUsageTaskStatisticsRow, 'aggregate' | 'children' | 'rowKind' | 'createdTimeSource'> & {
+type TaskRowPayload = Omit<TokenUsageTaskStatisticsRow, 'aggregate' | 'children' | 'rowKind' | 'createdTimeSource' | 'modelDisplayNames'> & {
   rowKind?: string | null;
   createdTimeSource?: string | null;
   aggregate?: AggregatePayload | null;
   executionAddress?: unknown;
   children?: TaskRowPayload[] | null;
+  modelDisplayNames?: string[] | null;
 };
 
 type ModelRowPayload = {
   runtimeKind?: string | null;
   llmModel?: string | null;
+  modelDisplayName?: string | null;
   aggregate?: AggregatePayload | null;
 };
 
@@ -82,6 +84,10 @@ const normalizeCacheState = (cacheState?: string | null): TokenUsageCacheState =
 };
 
 const normalizeArray = (value?: string[] | null): string[] => Array.isArray(value) ? value : [];
+const normalizeDisplayArray = (displayValues: string[] | null | undefined, rawValues: string[]): string[] => {
+  const normalized = normalizeArray(displayValues);
+  return normalized.length === rawValues.length ? normalized.map((value, index) => value?.trim() || rawValues[index] || 'Unknown') : rawValues;
+};
 const nullableNumber = (value: unknown): number | null => typeof value === 'number' && Number.isFinite(value) ? value : null;
 const numberOrZero = (value: unknown): number => nullableNumber(value) ?? 0;
 const nullableString = (value: unknown): string | null => typeof value === 'string' && value.trim() ? value : null;
@@ -163,6 +169,7 @@ const normalizeTaskRow = (row: TaskRowPayload): TokenUsageTaskStatisticsRow => (
   createdAt: row.createdAt,
   createdTimeSource: normalizeCreatedTimeSource(row.createdTimeSource),
   models: normalizeArray(row.models),
+  modelDisplayNames: normalizeDisplayArray(row.modelDisplayNames, normalizeArray(row.models)),
   runtimeKinds: normalizeArray(row.runtimeKinds),
   aggregate: normalizeAggregate(row.aggregate),
   children: (row.children ?? []).map(normalizeTaskRow),
@@ -172,6 +179,7 @@ const normalizeModelRow = (row: ModelRowPayload): TokenUsageRuntimeModelStatisti
   rowId: `runtime-model:${row.runtimeKind ?? 'Unknown'}:${row.llmModel ?? 'Unknown'}`,
   runtimeKind: row.runtimeKind ?? 'Unknown',
   llmModel: row.llmModel ?? 'Unknown',
+  modelDisplayName: row.modelDisplayName?.trim() || row.llmModel?.trim() || 'Unknown',
   aggregate: normalizeAggregate(row.aggregate),
 });
 

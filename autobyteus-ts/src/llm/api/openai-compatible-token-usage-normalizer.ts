@@ -56,6 +56,7 @@ export const createOpenAICompatibleTokenUsageObservation = (
     rawUsage: usage,
     model: {
       modelProvider: model.provider,
+      providerName: model.providerName,
       modelIdentifier: model.modelIdentifier,
       modelValue: model.value,
     },

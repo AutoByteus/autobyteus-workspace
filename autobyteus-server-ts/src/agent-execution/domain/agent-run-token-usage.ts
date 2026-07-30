@@ -96,6 +96,7 @@ export interface TokenUsageUpdatedPayload {
   member_name: string | null;
   runtime_kind: TokenUsageRuntimeKind;
   model_provider: string | null;
+  provider_name: string | null;
   model_identifier: string | null;
   model_value: string | null;
   ingestion_kind: TokenUsageIngestionKind;
@@ -272,6 +273,12 @@ export const createTokenUsageUpdatedPayload = (input: {
   if (inputTokenSemantic === "unknown") qualityFlags.add("input_token_semantic_unknown");
   const cacheStateSource = source.cache_state ?? usage?.cache_state;
   const cacheState = isCacheState(cacheStateSource) ? cacheStateSource : "unknown";
+  const topLevelProviderName = asString(source.provider_name);
+  const nestedProviderName = asString(usage?.provider_name);
+  if (topLevelProviderName && nestedProviderName && topLevelProviderName !== nestedProviderName) {
+    qualityFlags.add("provider_name_top_level_nested_conflict");
+  }
+  const providerName = topLevelProviderName ?? nestedProviderName;
   const executionAddressSource = source.execution_address ?? source.executionAddress;
   const executionAddress = executionAddressSource === undefined || executionAddressSource === null
     ? null
@@ -304,6 +311,7 @@ export const createTokenUsageUpdatedPayload = (input: {
     member_name: asString(source.member_name),
     runtime_kind: runtimeKind,
     model_provider: asString(source.model_provider) ?? asString(usage?.model_provider),
+    provider_name: providerName,
     model_identifier: asString(source.model_identifier) ?? asString(usage?.model_identifier),
     model_value: asString(source.model_value) ?? asString(usage?.model_value),
     ingestion_kind: ingestionKind,

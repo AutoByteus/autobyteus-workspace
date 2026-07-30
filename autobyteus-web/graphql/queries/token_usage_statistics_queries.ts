@@ -57,6 +57,7 @@ export const GET_TOKEN_USAGE_TASK_STATISTICS = gql`
     createdAt
     createdTimeSource
     models
+    modelDisplayNames
     runtimeKinds
     aggregate {
       ...TokenUsageCostSummaryAggregateFields
@@ -92,6 +93,7 @@ export const GET_TOKEN_USAGE_STATISTICS = gql`
     usageStatisticsInPeriod(startTime: $startTime, endTime: $endTime) {
       runtimeKind
       llmModel
+      modelDisplayName
       inputTokens
       cacheReadInputTokens
       cacheCreationInputTokens

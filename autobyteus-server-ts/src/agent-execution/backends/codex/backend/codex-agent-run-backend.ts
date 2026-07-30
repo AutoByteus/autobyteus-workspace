@@ -198,6 +198,7 @@ export class CodexAgentRunBackend implements AgentRunBackend {
         usage_scope: usage.usage_scope,
         snapshot_series_key: usage.snapshot_series_key,
         model_provider: usage.model_provider,
+        provider_name: usage.provider_name,
         model_identifier: usage.model_identifier,
         model_value: usage.model_value,
         reported_input_tokens: usage.reported_input_tokens,

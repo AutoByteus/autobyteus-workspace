@@ -47,6 +47,7 @@ export const createGeminiTokenUsageObservation = (
     rawUsage: usage,
     model: {
       modelProvider: model.provider,
+      providerName: model.providerName,
       modelIdentifier: model.modelIdentifier,
       modelValue: model.value,
     },
