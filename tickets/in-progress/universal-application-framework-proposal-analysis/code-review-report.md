@@ -2,122 +2,200 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `API/E2E Failure-Origin Review`
+- Review Entry Point: `Implementation Review`
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/requirements.md`
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/investigation-notes.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-spec.md`
 - Supplemental Task Artifacts Reviewed As Context: `proposal-critical-analysis.md`, `design-self-validation.md`, and `sources/autobyteus-vertical-application-developer-experience-proposal.md` in the same ticket directory
 - Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/solution-revision-record.md`
-- Relevant Solution Revision IDs: `SR-009` and `SR-008`; `SR-007` remains withdrawn
+- Relevant Solution Revision IDs: `SR-010`; prior approved `SR-006` remains applicable and withdrawn revisions remain historical only
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md`
 - Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/architecture-review-revision-record.md`
-- Relevant Architecture Review Revision IDs: `ARCH-REV-006`; `ARCH-REV-007` was withdrawn with no decision
+- Relevant Architecture Review Revision IDs: `ARCH-REV-008` and retained `ARCH-REV-006`
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-revision-record.md`
-- Relevant Implementation Revision IDs: cumulative `IR-001`–`IR-011`
+- Relevant Implementation Revision IDs: `IR-012`, cumulative `IR-001`–`IR-011`
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-020`
-- Current Review Round: `20`
-- Trigger: `api_e2e_engineer` round-7 failure handoff after `IR-011` / `CRR-019`
-- Prior Review Round Reviewed: `19` / `CRR-019` (`Pass`, `96/100`)
-- Latest Authoritative Round: `20`
-- Coverage Investigation Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-coverage-investigation.md`
-- Execution Coverage Report Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`
-- API/E2E Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-revision-record.md`
+- Current Code Review Revision ID: `CRR-021`
+- Current Review Round: `21`
+- Trigger: `implementation_engineer` handoff for source commit `cf8c8f7213468e5625bf521bbf0649fb78ac1a63`
+- Prior Review Round Reviewed: `20` / `CRR-020` (`Fail — Design Impact`)
+- Latest Authoritative Round: `21`
+- Coverage Investigation Reviewed: `api-e2e-coverage-investigation.md` as retained failure context
+- Execution Coverage Report Reviewed: `api-e2e-execution-coverage-report.md` as retained failure context
+- API/E2E Revision Record Reviewed: `api-e2e-revision-record.md`
 - Relevant API/E2E Revision IDs: `API-REV-007`
 - Delivery Revision Record Reviewed: `N/A`
 - Relevant Delivery Revision IDs: `N/A`
-- Failing Scenario IDs: `APIE2E-STANDALONE-MCP-003`, `APIE2E-F007`
-- Exact Failing Commands / Execution Mode: real clean standalone Brief via `pnpm -C applications/brief-studio dev -- --port 43124 --no-open`, installed Chrome, real worker/SQLite, Codex App Server, authenticated Luna, and the actual session-scoped Agent Tools MCP transport
-- Failure Evidence Paths: `api-rev-007-actual-tools-dispatch.json`, `api-rev-007-standalone-state-after-failure.log`, `api-rev-007-brief-standalone-final-browser.json`, `api-rev-007-brief-standalone-final.png`, and `api-rev-007-source-correlation.log` under the ticket's `evidence/api-e2e/` directory
+- Failing Scenario IDs: source-review finding `CR-016`; triggering historical scenarios `APIE2E-STANDALONE-MCP-003` / `APIE2E-F007`
+- Exact Failing Commands / Execution Mode: reviewer TypeScript passed; focused Vitest selection produced `59` passes, `12` environment-gated skips, and two expected API/E2E-owned stale-test failures described below
+- Failure Evidence Paths: current source paths listed in `CR-016`; retained `api-rev-007-*` evidence under the ticket's `evidence/api-e2e/` directory
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: failure origin after IR-011. Traced the supported standalone Brief action from real package-local member runs through the authenticated Agent Tools session, default `publish_artifacts` adapter provider, publication service, active-run lookup, artifact event/journal relay, and application projection.
-- Files / areas reviewed: application run-authority construction, the default MCP adapter-provider/catalog/session/dispatcher/executor chain, Agent Tools route composition, Codex session construction, publication service and fallback context, the runtime graph boundary, DS-014, and API-REV-007 live evidence.
-- Explicit exclusions: no proportional review of the cumulative API/E2E test package; no new Claude or native-tool finding; no change request for `/mcp/gateway`; no attribution of independent `APIE2E-REPO-005`.
+- Changed implementation and behavior reviewed: the complete IR-012 process/session/publication authority correction, application/general runtime construction, authenticated route dispatch, graph publication, readiness, graceful stop/restart, and cleanup.
+- Files / areas reviewed: all 29 changed production-source paths in `cf8c8f721`; SR-010/DS-014/P6A; Studio and standalone composition roots; Agent Tools process/session/route/provider code; publication port/service; graph run authorities; Codex/Claude/mixed create/restore/cleanup wiring; lifecycle and process close paths.
+- Explicit exclusions: no proportional review or implementation ownership of the cumulative API/E2E-owned dirty test package; no provider-native-tool, application-owned-MCP, external-gateway, schema, persistence, frontend, or unrelated singleton redesign.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: Yes. AC-005 and AC-006 require the maintained application's configured real team to publish artifacts and project them into application state in both hosts.
-- Design-spec behavior map verified against the implementation: contradicted at the publication-authority boundary. BEH-004/DS-014 correctly require real `publish_artifacts` completion, but DS-014 states the existing route/session/catalog/dispatcher/adapters already work unchanged and that only route registration was missing. The supported application graph owns a separate publication service while the unchanged default MCP provider captures the process-global service.
-- Design review report and round confirmed: `ARCH-REV-006` remains the last approved decision, but its retained Agent Tools premise is now incomplete for graph-local application runs.
+- Approved requirements basis understood: Yes. The same package must complete real publication/handoff in both hosts, and operator stop/restart must revoke application sessions and stop owned run/member resources deterministically.
+- Design-spec behavior map verified against the implementation: DS-014's forward publication spine is implemented coherently. DS-005/DS-014's graceful-stop spine is contradicted because graph-local run managers are constructed but never attached to lifecycle shutdown.
+- Design review report and round confirmed: `ARCH-REV-008` is the current Pass and explicitly makes P6A plus stop ordering implementation obligations.
 - Behavior-basis status: `Contradicted`
-- Changed or newly discovered behavior, if any: none. Publication and projection are already approved behavior; the newly reached evidence exposes an incomplete authority design.
-- Remaining material ambiguity, if any: intended behavior is clear. The correct construction owner and cycle-breaking contract for a graph-aware Agent Tools publication authority require solution design and architecture review.
+- Changed or newly discovered behavior, if any: None. Graceful stop/restart is already `UC-014`, `BEH-005`/`BEH-007`, and `MP-ARCH-008-002`.
+- Remaining material ambiguity, if any: None. This is a bounded implementation omission against the reviewed lifecycle.
 
 | Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence |
 | --- | --- | --- | --- |
-| `BEH-004` | Contradicted at publication execution | Real package-owned researcher and writer sessions authenticate, list eligible server tools, call `publish_artifacts`, and should relay artifacts into the application. | All five real calls reach the adapter but use a publication service whose manager cannot see either graph-local run; no journal or application projection is produced. |
-| `BEH-005` | Confirmed | IR-010's standalone route is mounted and the real sessions reach it successfully. | None. |
-| `BEH-006` | Contradicted at the business consequence | Clean standalone build/validation, launch, descriptor, tools list, communication, writer creation, and invocation all succeed. | Publication fails before the required artifact projection and the application remains `not_started`. |
+| `BEH-004` | Confirmed in source; executable rerun pending | Application Codex/Claude and mixed members receive the graph-scoped session authority; authenticated sessions carry the exact deferred publication port; the provider delegates only through that port. | None in the main publication path. |
+| `BEH-005` | Contradicted at graceful stop | Both compositions own one route/session family and close application lifecycle before the process authority. | The lifecycle closes workers/scope/port but never stops the graph-local `AgentTeamRunManager` or `AgentRunManager`. |
+| `BEH-006` | Confirmed in source; executable rerun pending | Standalone and Studio route construction use exact process dependencies; package/runtime behavior remains unchanged. | None in startup or dispatch. |
+| `BEH-007` | Contradicted at stop/restart | Ports/scopes are ephemeral and restart constructs fresh instances. | Active graph-local run/member backends are not terminated by the application lifecycle before their session scope and port close. |
+
+## Structural / Design Checks
+
+| Check | Result | Evidence | Required Action |
+| --- | --- | --- | --- |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | SR-010 correctly classifies the prior defect as a boundary/construction-cycle issue and IR-012 implements that bounded structure. | None. |
+| Implementation matches approved behavior-defining supplemental artifacts | Pass | The retained proposal analysis/self-validation constraints remain intact; no package, provider-native, or external-gateway expansion appears. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | Fail | DS-014 publication is clear, but the supported operator-stop spine ends without graph-local run/member shutdown. | Resolve `CR-016`. |
+| Ownership boundary preservation and clarity | Pass | One composition process authority, one graph session scope, and one narrow publication port replace the prior hidden global publication path. | None. |
+| Off-spine concern clarity | Pass | Authentication, registry/catalog dispatch, deferred binding, and lifecycle remain attached to explicit owners rather than the business spine. | None. |
+| Existing capability/subsystem reuse check | Pass | Existing catalog, route, service, manager, and publication semantics are reused; new manager `stopAll*` operations already exist. | Connect the existing graph managers to lifecycle rather than add another shutdown family. |
+| Reusable owned structures check | Pass | Session execution authorities and publication request/port shapes are centralized once. | None. |
+| Shared-structure/data-model tightness check | Pass | The non-wire authority shape contains only the publication port; process and graph scopes are specialized without a kitchen-sink container. | None. |
+| Repeated coordination ownership check | Pass | Registry/catalog/executor/dispatcher construction is owned once by `AgentToolsMcpProcessAuthority`. | None. |
+| Empty indirection check | Pass | The process authority owns identity/lifecycle policy; the deferred port owns a real bind-once state machine. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | New files are small and subject-owned; providers remain adapters and publication stays in its existing subsystem. | None. |
+| Ownership-driven dependency check | Pass | Composition -> process authority -> graph scope -> authenticated session port follows the reviewed direction; no request-time graph lookup exists. | None. |
+| Authoritative Boundary Rule check | Pass | Route/provider callers no longer bypass an outer authority to find a hidden global publication manager. | None. |
+| File placement check | Pass | Process/session code is under Agent Tools MCP; the cycle seam is under application runtime; publication contract is under published artifacts. | None. |
+| Flat-vs-over-split layout judgment | Pass | The new files represent distinct owners and avoid both a large composition blob and artificial one-method forwarding layers. | None. |
+| Interface/API/query/command/service-method boundary clarity | Pass | `routeDependencies`, `createApplicationSessionAuthority`, and `publishManyForRun` have singular subjects and explicit identities. | None. |
+| Naming quality and naming-to-responsibility alignment check | Pass | Process, application scope, deferred port, and general-process run authority names match their responsibilities. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | Studio/standalone share authority types and route registrar; host-specific construction remains at composition roots. | None. |
+| Patch-on-patch complexity control | Pass | IR-012 replaces the failed hidden-global boundary instead of adding a fallback, catalog merge, or package branch. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Fail | Graph-local managers and their new `stopAll*` operations are not reachable from graph lifecycle cleanup, leaving the owned active-run state without a close path. | Resolve `CR-016`; do not remove the operations. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Implementation probes target process-family identity, bind states, scope isolation, P6A, and missing authority; API/E2E must make these durable. | Reconcile durable coverage after source re-review. |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | No implementation-owned durable test changed; the existing Agent Tools fixtures remain coherent. | API/E2E owns explicit dependency fixture updates. |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | No implementation-owned test retention or compatibility suite was added. Two existing failures are known signature/fixture updates in the API/E2E-owned package, not production evidence. | API/E2E updates them after source Pass. |
+| API/E2E readiness for the next workflow stage | Fail | TypeScript and most focused checks pass, but graceful stop cannot yet prove no graph-run/session leak; the route-backed publication and standalone-composition fixtures also need explicit new dependencies. | Source-fix and re-review first; then API/E2E reconciliation/rerun. |
+
+## Source File Size And Structure Audit
+
+All 29 changed production-source files were audited. No file exceeds 500 effective non-empty lines and no changed-file delta exceeds 220 lines.
+
+| Source File / Area | Effective Non-Empty Lines | `>500` Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
+| --- | ---: | --- | --- | --- | --- | --- | --- |
+| `agent-tools/mcp/agent-tools-mcp-process-authority.ts` | 114 | Pass | Pass (`123`) | Pass | Pass | Healthy owner | None. |
+| `agent-tools/mcp/application-agent-tools-session-authority.ts` | 103 | Pass | Pass (`115`) | Pass | Pass | Healthy owner | None. |
+| `application-platform/runtime/deferred-published-artifact-publication-port.ts` | 45 | Pass | Pass (`51`) | Pass | Pass | Healthy narrow state machine | None. |
+| `services/published-artifacts/published-artifact-publication-port.ts` | 23 | Pass | Pass (`26`) | Pass | Pass | Healthy contract | None. |
+| `compositions/build-studio-server-composition.ts` | 225 | Pass | Pass (`131`) | Pass | Pass | Composition root remains readable | None. |
+| `standalone-application-host/start-standalone-application-host.ts` | 236 | Pass | Pass (`51`) | Pass | Pass | Process facade remains bounded | None. |
+| `application-platform/runtime/create-application-platform-runtime-graph.ts` | 151 | Pass | Pass (`23`) | Fail only at omitted close connection | Pass | `Local Fix` | Expose/invoke graph-run shutdown. |
+| `application-platform/runtime/application-platform-lifecycle.ts` | 186 | Pass | Pass (`6`) | Fail at shutdown completeness | Pass | `Local Fix` | Resolve `CR-016`. |
+| `agent-execution/services/agent-run-manager.ts` / `agent-team-run-manager.ts` | 332 / 283 | Pass | Pass (`44` / `38`) | Pass; stop operations exist | Pass | Healthy owners, currently unconnected in graph | Connect through a narrow graph lifecycle boundary. |
+| Largest other changed files: `mixed-team-manager.ts` / `mixed-agent-member-handle.ts` / Codex bootstrapper | 471 / 401 / 396 | Pass | Pass (`8` / `8` / `6`) | Pass | Pass | No size-triggered split | None. |
+
+## Legacy / Backward-Compatibility Verdict
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| No backward-compatibility mechanisms in changed scope | Pass | No aliases, dual authority paths, or fallback publication owner were added. |
+| No legacy old-behavior retention in changed scope | Pass | The MCP provider no longer retains its prior cached/global publication path. |
+| Dead/obsolete code cleanup completeness in changed scope | Fail | The graph lifecycle lacks the required connection to its owned run managers' shutdown operations; see `CR-016`. |
+| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | Session/port state remains ephemeral; no schema or migration change exists. |
+| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | No compatibility behavior appears. |
+| Approved transition mechanics match the reviewed design | Pass | `Directly Usable — No Migration` is preserved. |
+
+## Dead / Obsolete / Legacy Items Requiring Removal
+
+None. `CR-016` requires connecting live owned shutdown behavior, not removing a legacy item.
+
+## Docs-Impact Verdict
+
+- Docs impact: `No` additional product-documentation impact identified in IR-012.
+- Why: SR-010/design artifacts already document the internal authority and lifecycle contract; the remaining issue is implementation conformance.
+- Files or areas likely affected: reviewer and implementation handoff artifacts only until source passes; delivery still owns final project-doc assessment.
 
 ## Material Premise Validation
 
-### `MP-CR-015` — a supported standalone application member reaches the default publication adapter while active only in the application graph
+### Upstream Design-Review Material-Premise Decisions
 
-- Origin: `New`
-- Related approved requirement or established contract: REQ-004, REQ-005, REQ-007; AC-005 and AC-006
-- Relevant behavior ID(s): `BEH-004`, `BEH-006`
-- Initiating basis kind: `User`
-- Independent product-supported initiating trigger or applicable governing contract: a user opens the maintained Brief standalone application, creates a Brief, and selects `Generate draft`.
-- Support evidence: API-REV-007 uses the supported application-folder command and real UI. It creates an attached binding, real package-owned researcher and writer Codex runs, authenticated Agent Tools sessions, and two successful roster handoffs.
-- Forward current production caller/event path that exercises the initiating basis and reaches the claimed state: `Brief Generate draft -> selected application backend -> guarded binding/team launch -> graph-local researcher/writer AgentRunManager -> Codex session descriptor -> standalone Agent Tools route -> default catalog/dispatcher/executor -> PublishArtifactsMcpAdapterProvider -> cached default PublishedArtifactPublicationService -> process-global AgentRunManager lookup -> artifact event/journal/application projection`.
-- Lifecycle preconditions and material consequence at the claimed point: the exact graph-local member runs and binding are active; descriptors, authentication, tool listing, tool calls, team routing, and writer creation have succeeded. The default publication service checks a different manager, reports the run inactive, and prevents snapshots/events/journal/projection from establishing the approved application result.
-- Reachability: `Reachable`
-- Review consequence / proportionate response: correct the Agent Tools publication authority design rather than adding another isolated global override or session-specific fallback. The solution must define a coherent composition owner, exact instance flow, construction-cycle break, lifecycle, and validation matrix.
+| Premise ID | Current Status | Changed Evidence / Reason |
+| --- | --- | --- |
+| `MP-ARCH-008-001` | Confirmed | IR-012 now connects the supported application member's authenticated publication call to its graph-local port in source; API/E2E proof remains pending. |
+| `MP-ARCH-008-002` | Confirmed | Operator stop/restart remains a supported lifecycle. Current source blocks issue and revokes the scope, but omits the required graph-local run/member shutdown step before port/process disposal. |
+
+No new premise is introduced.
+
+## Review Scorecard
+
+- Overall score (`/10`): `9.0`
+- Overall score (`/100`): `90`
+- Score calculation note: simple average rounded for trend visibility; the review fails because several mandatory categories are below `9.0`, regardless of the average.
+
+| Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| --- | --- | ---: | --- | --- | --- |
+| `1` | Data-Flow Spine Inventory and Clarity | 8.6 | Main publication and authority spines are explicit and coherent. | The supported shutdown spine does not reach graph-local run/member termination. | Complete the lifecycle edge in `CR-016`. |
+| `2` | Ownership Clarity and Boundary Encapsulation | 9.4 | Process, graph scope, authenticated session, and publication owners are explicit. | The graph-run owner is not exposed through a narrow close boundary. | Add only the lifecycle-facing close contract. |
+| `3` | API / Interface / Query / Command Clarity | 9.4 | New interfaces are small, explicit, and subject-specific. | Shutdown has no graph-run interface despite manager operations existing. | Expose one narrow close/stop operation, not manager internals. |
+| `4` | Separation of Concerns and File Placement | 9.4 | Files and compositions follow ownership. | Lifecycle wiring is incomplete, not misplaced. | Keep the correction in graph construction/lifecycle contracts. |
+| `5` | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.5 | The session authority and publication port shapes are tight. | No material shared-shape weakness. | Preserve the current shapes. |
+| `6` | Naming Quality and Local Readability | 9.3 | Names communicate scope and lifecycle well. | General and application run authority symmetry is incomplete in the public graph construction. | Name the graph shutdown boundary explicitly. |
+| `7` | API/E2E Readiness | 8.2 | TypeScript passes and focused execution has broad green coverage. | Graceful cleanup is not implementable as approved; two API-owned fixtures are stale after explicit dependency changes. | Source-fix/re-review, then durable fixture updates and live rerun. |
+| `8` | Runtime Correctness And Behavioral Fidelity | 8.2 | The original publication-authority defect is corrected in source. | Active graph-local run/member backends can survive application lifecycle stop while their sessions/port are closed. | Stop team then agent managers before final scope/port disposal, with failure-safe ordering. |
+| `9` | No Backward-Compatibility / No Legacy Retention | 9.8 | Clean-cut authority replacement with no fallback or dual path. | No material weakness. | Preserve. |
+| `10` | Cleanup Completeness | 7.8 | Scope/port/process closes are present and idempotent. | The application graph's actual run managers are never stopped or released by its lifecycle. | Resolve `CR-016` and prove restart has no old active runs/sessions. |
 
 ## Findings
 
-### `CR-015` — the application graph's publication authority is disconnected from the Agent Tools execution authority
+### `CR-016` — graceful application stop omits graph-local run/member shutdown
 
-- Affected approved behavior: REQ-004/REQ-005/REQ-007, AC-005/AC-006, `BEH-004`, and `BEH-006`.
-- Reachability basis: `MP-CR-015`.
+- Affected approved behavior: `BEH-005`, `BEH-007`; `REQ-004`, `REQ-005`; `AC-006`, `AC-010`, `AC-013`; `UC-011`, `UC-014`, `UC-018`; DS-005/DS-014 lifecycle stop.
+- Reachability basis: confirmed upstream `MP-ARCH-008-002`. The independent trigger is the supported operator stop/restart of Studio or standalone after a real application run has issued sessions.
 - Source evidence:
-  1. `createApplicationRunAuthorities()` constructs the correct `PublishedArtifactPublicationService` with its exact graph-local `AgentRunManager` and relay service.
-  2. `buildDefaultAgentToolMcpAdapterProviders()` separately constructs `PublishArtifactsMcpAdapterProvider()` without a dependency.
-  3. That provider captures `getPublishedArtifactPublicationService()`, whose service falls back to process-global `AgentRunManager.getInstance()` and the process-global relay.
-  4. Codex session creation, the registered route, dispatcher, executor, and catalog use their cached default authority family. The session carries paths and application execution context but no publication authority or event callback.
-  5. The application runtime graph does not expose a coherent Agent Tools runtime authority or route dependencies to either server composition.
-- Runtime evidence: both package-owned Codex threads connect to all three MCP servers, list 86 tools, expose `publish_artifacts` and `send_message_to`, and complete two real roster handoffs. Three researcher and two writer publication calls all fail with the exact graph-local member reported inactive; the publication journal and application artifact tables stay empty.
-- Authoritative-boundary consequence: the composition creates the correct publication owner but its MCP execution path reaches a separate internal manager through a cached default. A downstream adapter therefore depends on a hidden process owner rather than the application graph authority governing the run.
-- Why this is `Design Impact`, not a bounded local fix:
-  - DS-014 explicitly treated the existing session/catalog/dispatcher/adapters as already correct and prohibited a publication bridge; API-REV-007 disproves that premise for the required product path.
-  - The available constructor seams do not by themselves define one coherent instance flow. Session creation, route registry, catalog, dispatcher, and executor must agree on the same provider authority.
-  - Construction is cyclic: the graph-local publication service requires the graph `AgentRunManager`, while the Codex factory/bootstrapper needed to construct that manager creates Agent Tools sessions. Selecting a late-bound port/resolver, a composition-owned Agent Tools authority, or a different event/publication contract changes ownership and lifecycle and must be reviewed rather than improvised.
-- Required design outcomes:
-  1. Define one explicit composition-owned Agent Tools runtime authority for application sessions, or an equivalently clear run/session-scoped authority contract. Its session creation and route dispatch must resolve the same adapter/provider family.
-  2. Bind `publish_artifacts` to the exact application publication authority that owns the active run and relay. Application execution must not fall back to the process-global publication service.
-  3. Break the construction cycle with one narrow, named, fail-closed port/factory/resolver and explicit bind/stop semantics; do not use mutable singleton replacement, catalog merging, package-ID branches, or request-time compatibility fallback.
-  4. Preserve the established capability token, registry revocation, tool eligibility, one internal route, successful `send_message_to`, native Codex/Claude tools, and the separate Studio external gateway.
-  5. Inventory the server-owned adapters actually reachable from the maintained application configurations and verify that any graph-sensitive dependency follows the same authority rule. Do not expand to unsupported runtime/tool scenarios.
-  6. Add durable default-provider/application-graph functional coverage and rerun real standalone and Studio publication/projection after source review.
+  1. `createApplicationRunAuthorities()` constructs exact graph-local `AgentRunManager` and `AgentTeamRunManager` instances.
+  2. IR-012 adds `stopAllAgentRuns()` and `stopAllTeamRuns()` and uses them only in `GeneralProcessRunAuthority`.
+  3. The application-run authority return shape exposes services/publication but no lifecycle-facing run close boundary; `ApplicationPlatformRuntimeGraph` likewise retains no graph-run closer.
+  4. `ApplicationPlatformLifecycle.runStop()` blocks session issue, disposes ingress/observers/workers, closes the application session scope and publication port, and stops streaming, but never terminates either graph-local manager.
+  5. `ApplicationEngineHostService.stopAllApplicationEngines()` stops backend worker processes and streams; `ApplicationBackendHost.stop()` closes worker sockets/observers/lifecycle only. Neither owns platform agent/team runs.
+- Material consequence: graceful standalone development restart or Studio/standalone process stop can leave package-owned Codex/Claude/team backends and their graph manager state active while their authenticated sessions are revoked and publication port is closed. The old graph has no remaining authoritative close path, contradicting the approved no-session/no-run-survival lifecycle and creating cleanup/restart leakage risk.
+- Required action:
+  1. Expose one narrow application-graph run shutdown authority from the existing graph-local managers; do not expose both managers broadly or use process globals.
+  2. Invoke it in the reviewed stop sequence after new ingress/session issue is blocked and before final scope/port/process disposal. Stop team runs before remaining agent runs, aggregate failures, and ensure scope revoke/port close still execute.
+  3. Preserve exact application/general manager separation, session-authority injection, publication authority, and route behavior.
+  4. Add durable lifecycle proof that active graph-local team/member runs stop, their sessions revoke, the port closes afterward, a general-process session is unaffected until process close, and restart contains no old run/session state.
+- Classification: `Local Fix` — the approved design and existing manager operations are sufficient; the implementation omitted their graph lifecycle connection.
 
-### Review-gap attribution
+### Prior finding resolution
 
-CRR-019 correctly verified the bounded Codex definition-authority fix and API-REV-007 confirms that exact descriptor/tool-list/handoff path now works. The remaining gap predates IR-011. Earlier DS-014/CRR-016 treated the existing Agent Tools adapter family as a proven reusable subsystem after inspecting registration and tool projection, but did not trace `publish_artifacts` from the default MCP provider through its concrete publication service and active-run owner. Because DS-014 explicitly froze that ownership and rejected a publication bridge, this is an upstream design gap rather than an IR-011 defect.
+- `CR-015`: resolved in source; API/E2E rerun pending. The default MCP publication provider is authority-free, authenticated sessions carry the exact graph port, and no provider/request path calls the cached publication service or process-global run manager.
+- `CR-001`–`CR-014`: remain resolved for their owned behavior; IR-012 does not reopen their application development, launch, prompt, route, definition, or configuration paths.
 
 ## Classification
 
-`Design Impact`
+`Local Fix`
 
 ## Recommended Recipient
 
-`solution_designer`
+`implementation_engineer`
 
 ## Residual Risks
 
-- Avoid another one-dependency patch that leaves session creation and route execution on different catalogs or registries.
-- Do not broaden the finding to Claude, native Codex/Claude tools, generic MCP transport, or `/mcp/gateway`; the confirmed failure is the server-owned publication authority for supported application sessions.
-- Preserve the already-passing descriptor, authenticated tool list, `send_message_to`, writer creation, route security, and session cleanup behavior.
-- `APIE2E-REPO-005` remains independently `Unclear`.
+- After the source fix, API/E2E must reconcile the explicit route/session dependencies in the existing route-backed publication and standalone-composition tests; the reviewer run observed those two stale fixtures while 59 tests passed and 12 Codex cases were environment-gated.
+- Then rerun real standalone and Studio publication, recipient-name handoff, journal/relay/projection, graceful stop/restart, scope isolation, and cleanup.
+- Preserve native Codex/Claude tools, configured-MCP boundaries, route security, and Studio-only external `/mcp/gateway`.
+- `APIE2E-REPO-005` remains independently `Unclear` and is not attributed here.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Fail`
-- Review Entry Point: `API/E2E Failure-Origin Review`
-- Material-Premise Gate: `Pass` (`MP-CR-015` is reachable)
-- Score Summary: CRR-019's full source score is not recomputed in this focused review; its publication-boundary/API-E2E-readiness conclusion is superseded for the supported application path
-- Failure Origin: `Design Impact` — the reviewed design did not connect the graph-local publication owner to the Agent Tools session/route execution authority or define the required cycle-breaking lifecycle
-- Recommended Recipient: `solution_designer`
-- Notes: `CR-014` and IR-011 remain resolved. API-REV-007 confirms actual Agent Tools exposure and `send_message_to`; only publication/projection is currently blocked.
+- Review Entry Point: `Implementation Review`
+- Material-Premise Gate: `Pass` (`MP-ARCH-008-001` and `MP-ARCH-008-002` remain reachable/confirmed)
+- Score Summary: `9.0/10` (`90/100`); Data-Flow, API/E2E Readiness, Runtime Correctness, and Cleanup are below the clean-pass threshold
+- Failure Origin: `Local Fix` — graph-local run managers are not connected to application lifecycle shutdown
+- Recommended Recipient: `implementation_engineer`
+- Notes: IR-012 resolves `CR-015` in source, but must not advance to API/E2E until `CR-016` passes source re-review.
