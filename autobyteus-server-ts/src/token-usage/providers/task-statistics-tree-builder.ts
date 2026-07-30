@@ -13,6 +13,11 @@ import type {
   TokenUsageTaskStatisticsRowKind,
 } from "../domain/statistics-models.js";
 import {
+  buildTokenUsageModelDisplayEntries,
+  EMPTY_TOKEN_USAGE_MODEL_DISPLAY_CONTEXT,
+  type TokenUsageModelDisplayContext,
+} from "../projections/token-usage-model-display-projection.js";
+import {
   buildTokenUsageCostSummaryAggregate,
 } from "../projections/token-usage-cost-summary-aggregate.js";
 
@@ -182,7 +187,10 @@ const nodeDisplayName = (node: ExecutionNode, events: TokenUsageUpdatedPayload[]
 };
 
 export class TokenUsageTaskStatisticsTreeBuilder {
-  buildRows(records: TokenUsageUpdatedPayload[]): TokenUsageTaskStatisticsRow[] {
+  buildRows(
+    records: TokenUsageUpdatedPayload[],
+    displayContext: TokenUsageModelDisplayContext = EMPTY_TOKEN_USAGE_MODEL_DISPLAY_CONTEXT,
+  ): TokenUsageTaskStatisticsRow[] {
     const teamGroups: EventGroups = new Map();
     const standaloneAgentGroups: EventGroups = new Map();
     for (const record of records) {
@@ -193,16 +201,18 @@ export class TokenUsageTaskStatisticsTreeBuilder {
       }
     }
     return sortRowsByCreatedAtDesc([
-      ...Array.from(teamGroups.entries()).map(([teamRunId, events]) => this.buildTeamRow(teamRunId, events)),
-      ...Array.from(standaloneAgentGroups.entries()).map(([runId, events]) => this.buildStandaloneAgentRow(runId, events)),
+      ...Array.from(teamGroups.entries()).map(([teamRunId, events]) => this.buildTeamRow(teamRunId, events, displayContext)),
+      ...Array.from(standaloneAgentGroups.entries()).map(([runId, events]) => this.buildStandaloneAgentRow(runId, events, displayContext)),
     ]);
   }
 
   private buildStandaloneAgentRow(
     runId: string,
     events: TokenUsageUpdatedPayload[],
+    displayContext: TokenUsageModelDisplayContext,
   ): TokenUsageTaskStatisticsRow {
     const aggregate = buildTokenUsageCostSummaryAggregate(events);
+    const displayFields = modelDisplayFields(events, displayContext);
     const latest = latestEvent(events);
     return {
       rowId: `agent:${runId}`,
@@ -220,7 +230,7 @@ export class TokenUsageTaskStatisticsTreeBuilder {
         UNKNOWN_AGENT_LABEL,
       summary: firstNonEmptyDisplayValue(events, (event) => event.run_summary),
       ...runCreatedMetadata(events),
-      models: aggregate.observed_model_identifiers,
+      ...displayFields,
       runtimeKinds: aggregate.observed_runtime_kinds,
       aggregate,
       children: [],
@@ -230,8 +240,10 @@ export class TokenUsageTaskStatisticsTreeBuilder {
   private buildTeamRow(
     teamRunId: string,
     events: TokenUsageUpdatedPayload[],
+    displayContext: TokenUsageModelDisplayContext,
   ): TokenUsageTaskStatisticsRow {
     const aggregate = buildTokenUsageCostSummaryAggregate(events);
+    const displayFields = modelDisplayFields(events, displayContext);
     const root = createNode({
       rowKind: "MEMBER_RUN",
       memberRouteKey: null,
@@ -249,8 +261,8 @@ export class TokenUsageTaskStatisticsTreeBuilder {
       this.insertEvent(root, nodes, event);
     }
     const children = [
-      ...Array.from(root.children.values()).map((node) => this.toRow(teamRunId, node)),
-      ...Array.from(fallbackGroups.entries()).map(([key, groupEvents]) => this.buildLegacyMemberRow(teamRunId, key, groupEvents)),
+      ...Array.from(root.children.values()).map((node) => this.toRow(teamRunId, node, displayContext)),
+      ...Array.from(fallbackGroups.entries()).map(([key, groupEvents]) => this.buildLegacyMemberRow(teamRunId, key, groupEvents, displayContext)),
     ];
     return {
       rowId: `team:${teamRunId}`,
@@ -266,7 +278,7 @@ export class TokenUsageTaskStatisticsTreeBuilder {
       displayName: firstNonEmptyDisplayValue(events, (event) => event.team_name) ?? UNKNOWN_TEAM_LABEL,
       summary: firstNonEmptyDisplayValue(events, (event) => event.run_summary),
       ...runCreatedMetadata(events),
-      models: aggregate.observed_model_identifiers,
+      ...displayFields,
       runtimeKinds: aggregate.observed_runtime_kinds,
       aggregate,
       children: sortRowsByCreatedAtDesc(children),
@@ -288,8 +300,13 @@ export class TokenUsageTaskStatisticsTreeBuilder {
     }
   }
 
-  private toRow(teamRunId: string, node: ExecutionNode): TokenUsageTaskStatisticsRow {
+  private toRow(
+    teamRunId: string,
+    node: ExecutionNode,
+    displayContext: TokenUsageModelDisplayContext,
+  ): TokenUsageTaskStatisticsRow {
     const aggregate = buildTokenUsageCostSummaryAggregate(node.events);
+    const displayFields = modelDisplayFields(node.events, displayContext);
     const latest = latestEvent(node.events);
     return {
       rowId: `team:${teamRunId}:address:${node.key}`,
@@ -305,11 +322,11 @@ export class TokenUsageTaskStatisticsTreeBuilder {
       displayName: nodeDisplayName(node, node.events),
       summary: null,
       ...runCreatedMetadata(node.events),
-      models: aggregate.observed_model_identifiers,
+      ...displayFields,
       runtimeKinds: aggregate.observed_runtime_kinds,
       aggregate,
       children: sortRowsByCreatedAtDesc(
-        Array.from(node.children.values()).map((child) => this.toRow(teamRunId, child)),
+        Array.from(node.children.values()).map((child) => this.toRow(teamRunId, child, displayContext)),
       ),
     };
   }
@@ -318,8 +335,10 @@ export class TokenUsageTaskStatisticsTreeBuilder {
     teamRunId: string,
     groupKey: string,
     events: TokenUsageUpdatedPayload[],
+    displayContext: TokenUsageModelDisplayContext,
   ): TokenUsageTaskStatisticsRow {
     const aggregate = buildTokenUsageCostSummaryAggregate(events);
+    const displayFields = modelDisplayFields(events, displayContext);
     const latest = latestEvent(events);
     const memberName = firstNonEmptyDisplayValue(events, (event) => event.member_name) ??
       latest?.member_route_key ??
@@ -340,10 +359,21 @@ export class TokenUsageTaskStatisticsTreeBuilder {
       displayName: memberName,
       summary: null,
       ...runCreatedMetadata(events),
-      models: aggregate.observed_model_identifiers,
+      ...displayFields,
       runtimeKinds: aggregate.observed_runtime_kinds,
       aggregate,
       children: [],
     };
   }
 }
+
+const modelDisplayFields = (
+  events: TokenUsageUpdatedPayload[],
+  displayContext: TokenUsageModelDisplayContext,
+): Pick<TokenUsageTaskStatisticsRow, "models" | "modelDisplayNames"> => {
+  const entries = buildTokenUsageModelDisplayEntries(events, displayContext);
+  return {
+    models: entries.map((entry) => entry.modelIdentifier),
+    modelDisplayNames: entries.map((entry) => entry.modelDisplayName),
+  };
+};

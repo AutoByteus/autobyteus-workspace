@@ -145,7 +145,7 @@
               </div>
             </td>
             <td class="px-3 py-3">{{ formatter.formatDistinctValues(entry.row.runtimeKinds, 'runtime') }}</td>
-            <td class="px-3 py-3">{{ formatter.formatDistinctValues(entry.row.models, 'model') }}</td>
+            <td class="px-3 py-3">{{ formatter.formatDistinctValues(entry.row.modelDisplayNames, 'model') }}</td>
             <td class="px-3 py-3 text-right tabular-nums">
               <div>{{ formatter.formatInteger(entry.row.aggregate.grossInputTokens) }}</div>
               <div class="text-xs text-gray-500">{{ formatter.cacheSubline(entry.row.aggregate) }}</div>

@@ -34,6 +34,7 @@ model TokenUsageLedgerEvent {
   memberName                           String?   @map("member_name")
   runtimeKind                          String    @map("runtime_kind")
   modelProvider                        String?   @map("model_provider")
+  providerName                         String?   @map("provider_name")
   modelIdentifier                      String?   @map("model_identifier")
   modelValue                           String?   @map("model_value")
   ingestionKind                        String    @map("ingestion_kind")

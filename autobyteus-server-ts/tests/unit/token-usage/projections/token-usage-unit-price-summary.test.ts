@@ -27,6 +27,7 @@ const buildEvent = (overrides: Partial<TokenUsageUpdatedPayload> = {}): TokenUsa
   member_name: null,
   runtime_kind: "codex_app_server",
   model_provider: "OPENAI",
+  provider_name: null,
   model_identifier: "gpt-test",
   model_value: null,
   ingestion_kind: "codex_thread_token_usage",

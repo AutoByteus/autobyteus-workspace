@@ -124,6 +124,7 @@ export const createAnthropicTokenUsageObservationFromAccumulator = (
       : { events: accumulator.rawUsages },
     model: {
       modelProvider: model.provider,
+      providerName: model.providerName,
       modelIdentifier: model.modelIdentifier,
       modelValue: model.value,
     },

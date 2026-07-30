@@ -1,0 +1,34 @@
+{
+  "url": "http://127.0.0.1:38302/settings",
+  "taskGrouping": "task",
+  "modelGrouping": "model",
+  "taskText": "Back to Workspace\nAPI Keys\nToken Statistics\nMessaging\nDisplay\nLanguage\nLocal Tools\nMCP Servers\nApplication Packages\nAgent Packages\nServer Settings\nExtensions\nUpdates\nTask\nModel\nto\nFetch Statistics\nTask / Run\n\t\nRuntime\n\tMODEL(S)\t\nInput\n\t\nOutput\n\tINPUT COST\tOUTPUT COST\t\nTotal Cost\n\t\nCreated Time\n\n\nUnknown agent run\nrun \u2026d2-codex\n\tCodex\tgpt-5.6-luna\t\n100\nno cache data\n\t\n10\n\t1,00\u00a0$\t0,2500\u00a0$\t\n1,25\u00a0$\n\t\n29. Juli 2026, 14:00\nFirst usage observed\n\n\nUnknown agent run\nrun \u20262-custom\n\tAutobyteus\talibaba_cloud:qwen3.8-max-preview\t\n100\nno cache data\n\t\n10\n\t1,00\u00a0$\t0,2500\u00a0$\t\n1,25\u00a0$\n\t\n29. Juli 2026, 14:00\nFirst usage observed\n\n\nUnknown agent run\nrun \u2026deepseek\n\tAutobyteus\tDeepSeek:deepseek-v4-flash\t\n100\nno cache data\n\t\n10\n\t1,00\u00a0$\t0,2500\u00a0$\t\n1,25\u00a0$\n\t\n29. Juli 2026, 14:00\nFirst usage observed",
+  "modelText": "Back to Workspace\nAPI Keys\nToken Statistics\nMessaging\nDisplay\nLanguage\nLocal Tools\nMCP Servers\nApplication Packages\nAgent Packages\nServer Settings\nExtensions\nUpdates\nTask\nModel\nto\nFetch Statistics\nRUNTIME\tLLM MODEL\tINPUT TOKENS\tCACHED INPUT\tOUTPUT TOKENS\tTHINKING TOKENS\tINPUT COST\tOUTPUT COST\tTHINKING COST\tTOTAL COST\nAutobyteus\tDeepSeek:deepseek-v4-flash\t100\t\n0\nno cache data\n\t10\t\n0\n\t1,00\u00a0$\t0,2500\u00a0$\tprice missing\t1,25\u00a0$\nAutobyteus\talibaba_cloud:qwen3.8-max-preview\t100\t\n0\nno cache data\n\t10\t\n0\n\t1,00\u00a0$\t0,2500\u00a0$\tprice missing\t1,25\u00a0$\nCodex\tgpt-5.6-luna\t100\t\n0\nno cache data\n\t10\t\n0\n\t1,00\u00a0$\t0,2500\u00a0$\tprice missing\t1,25\u00a0$",
+  "graphqlResponses": [
+    {
+      "url": "http://127.0.0.1:38301/graphql",
+      "status": 200,
+      "hasData": true,
+      "errors": null
+    },
+    {
+      "url": "http://127.0.0.1:38301/graphql",
+      "status": 200,
+      "hasData": true,
+      "errors": null
+    },
+    {
+      "url": "http://127.0.0.1:38301/graphql",
+      "status": 200,
+      "hasData": true,
+      "errors": null
+    },
+    {
+      "url": "http://127.0.0.1:38301/graphql",
+      "status": 200,
+      "hasData": true,
+      "errors": null
+    }
+  ],
+  "consoleErrors": []
+}

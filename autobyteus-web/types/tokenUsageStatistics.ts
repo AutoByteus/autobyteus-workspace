@@ -57,6 +57,7 @@ export interface TokenUsageTaskStatisticsRow {
   createdAt: string;
   createdTimeSource: TokenUsageCreatedTimeSource;
   models: string[];
+  modelDisplayNames: string[];
   runtimeKinds: string[];
   aggregate: TokenUsageCostSummaryAggregate;
   children: TokenUsageTaskStatisticsRow[];
@@ -66,6 +67,7 @@ export interface TokenUsageRuntimeModelStatisticsRow {
   rowId: string;
   runtimeKind: string;
   llmModel: string;
+  modelDisplayName: string;
   aggregate: TokenUsageCostSummaryAggregate;
 }
 

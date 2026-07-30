@@ -265,6 +265,7 @@ export const buildClaudeTokenUsageEvent = (input: {
       ingestion_kind: "claude_sdk_result",
       usage_scope: "per_turn",
       model_provider: "ANTHROPIC",
+      provider_name: null,
       model_identifier: model,
       model_value: model,
       reported_input_tokens: inputTokens,

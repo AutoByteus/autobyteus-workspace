@@ -9,6 +9,15 @@ import {
 } from "../projections/token-usage-cost-summary-aggregate.js";
 import { TokenUsageTaskStatisticsTreeBuilder } from "./task-statistics-tree-builder.js";
 import { TokenUsageLedgerStore } from "./token-usage-ledger-store.js";
+import {
+  buildTokenUsageModelDisplayEntries,
+  EMPTY_TOKEN_USAGE_MODEL_DISPLAY_CONTEXT,
+  type TokenUsageModelDisplayContext,
+} from "../projections/token-usage-model-display-projection.js";
+import {
+  getCustomLlmProviderStore,
+  type CustomLlmProviderStore,
+} from "../../llm-management/llm-providers/stores/custom-llm-provider-store.js";
 import type { TokenUsageUpdatedPayload } from "../../agent-execution/domain/agent-run-token-usage.js";
 
 type EventGroups = Map<string, TokenUsageUpdatedPayload[]>;
@@ -27,7 +36,31 @@ export class TokenUsageStatisticsProvider {
   constructor(
     private readonly store = new TokenUsageLedgerStore(),
     private readonly taskTreeBuilder = new TokenUsageTaskStatisticsTreeBuilder(),
+    private readonly customProviderStore: Pick<CustomLlmProviderStore, "listProviders"> = getCustomLlmProviderStore(),
   ) {}
+
+  private async loadDisplayContext(events: TokenUsageUpdatedPayload[]): Promise<TokenUsageModelDisplayContext> {
+    const requiresLegacyProviderLookup = events.some((event) => (
+      normalizeTokenUsageRuntimeKind(event.runtime_kind).trim().toLowerCase() === "autobyteus" &&
+      !event.provider_name?.trim()
+    ));
+    if (!requiresLegacyProviderLookup) return EMPTY_TOKEN_USAGE_MODEL_DISPLAY_CONTEXT;
+
+    try {
+      const providers = await this.customProviderStore.listProviders();
+      return {
+        customProviderNames: new Map(
+          providers.map((provider) => [provider.id, provider.name] as const),
+        ),
+        providerMapLoadFailed: false,
+      };
+    } catch {
+      return {
+        ...EMPTY_TOKEN_USAGE_MODEL_DISPLAY_CONTEXT,
+        providerMapLoadFailed: true,
+      };
+    }
+  }
 
   async getTotalCost(startDate: Date, endDate: Date): Promise<number | null> {
     const records = await this.store.listEventsInPeriod(startDate, endDate);
@@ -39,7 +72,8 @@ export class TokenUsageStatisticsProvider {
     endDate: Date,
   ): Promise<TokenUsageTaskStatisticsResult> {
     const records = await this.store.listEventsInPeriod(startDate, endDate);
-    return { rows: this.taskTreeBuilder.buildRows(records) };
+    const displayContext = await this.loadDisplayContext(records);
+    return { rows: this.taskTreeBuilder.buildRows(records, displayContext) };
   }
 
   async getStatisticsPerRuntimeModel(
@@ -47,6 +81,7 @@ export class TokenUsageStatisticsProvider {
     endDate: Date,
   ): Promise<TokenUsageRuntimeModelStatisticsRow[]> {
     const records = await this.store.listEventsInPeriod(startDate, endDate);
+    const displayContext = await this.loadDisplayContext(records);
     const groups: EventGroups = new Map();
 
     for (const record of records) {
@@ -61,6 +96,7 @@ export class TokenUsageStatisticsProvider {
         rowId: `runtime-model:${runtimeKind}:${modelIdentifier}`,
         runtimeKind,
         modelIdentifier,
+        modelDisplayName: this.resolveModelDisplayName(events, displayContext),
         aggregate: buildTokenUsageCostSummaryAggregate(events),
       };
     }).sort((a, b) => (
@@ -68,5 +104,12 @@ export class TokenUsageStatisticsProvider {
       a.runtimeKind.localeCompare(b.runtimeKind) ||
       a.modelIdentifier.localeCompare(b.modelIdentifier)
     ));
+  }
+
+  private resolveModelDisplayName(
+    events: TokenUsageUpdatedPayload[],
+    displayContext: TokenUsageModelDisplayContext,
+  ): string {
+    return buildTokenUsageModelDisplayEntries(events, displayContext)[0]?.modelDisplayName ?? "Unknown";
   }
 }
