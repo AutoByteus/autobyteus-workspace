@@ -16,19 +16,19 @@ import type { ApplicationBackendWebSocketSessionService } from "../../applicatio
 import type { ApplicationBackendApiGatewayService } from "../../application-backend-api-gateway/services/application-backend-api-gateway-service.js";
 import type { ApplicationPlatformLifecycle } from "./application-platform-lifecycle.js";
 import type {
-  ApplicationAgentToolsSessionAuthority,
-} from "../../agent-tools/mcp/application-agent-tools-session-authority.js";
+  ScopedAgentToolMcpSessionManager,
+} from "../../agent-tools/mcp/scoped-agent-tool-mcp-session-manager.js";
 import type {
   PublishedArtifactPublicationService,
 } from "../../services/published-artifacts/published-artifact-publication-service.js";
 
-export type ApplicationPlatformRuntimeGraph = Readonly<{
+export type ApplicationPlatformRuntime = Readonly<{
   bundleService: ApplicationBundleService;
   storageLifecycleService: ApplicationStorageLifecycleService;
   platformStateStore: ApplicationPlatformStateStore;
   globalPlatformStateStore: ApplicationGlobalPlatformStateStore;
   runLookupStore: ApplicationRunLookupStore;
-  agentToolsSessionAuthority: ApplicationAgentToolsSessionAuthority;
+  agentToolsSessionManager: ScopedAgentToolMcpSessionManager;
   publishedArtifactPublicationService: PublishedArtifactPublicationService;
   startupGate: ApplicationOrchestrationStartupGate;
   availabilityService: ApplicationAvailabilityService;

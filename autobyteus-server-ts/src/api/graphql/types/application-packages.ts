@@ -9,7 +9,7 @@ import {
   Resolver,
   registerEnumType,
 } from "type-graphql";
-import { getStudioApplicationPackageRegistryService } from "../studio-application-api-authorities.js";
+import { getStudioApplicationPackageRegistryService } from "../studio-application-api-services.js";
 import type {
   ApplicationPackageDebugDetails as ApplicationPackageDebugDetailsModel,
   ApplicationPackageImportInput as ApplicationPackageImportInputModel,

@@ -2,14 +2,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { buildAgentRunMessageSenderContext } from "../../../../src/agent-communication/domain/agent-run-message-sender.js";
 import { buildConfiguredAgentToolExposure } from "../../../../src/agent-execution/shared/configured-agent-tool-exposure.js";
 import {
-  createAgentToolsMcpProcessAuthority,
-} from "../../../../src/agent-tools/mcp/agent-tools-mcp-process-authority.js";
+  createAgentToolsMcpRuntime,
+} from "../../../../src/agent-tools/mcp/agent-tools-mcp-runtime.js";
 import {
   AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR,
 } from "../../../../src/config/server-runtime-endpoints.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 
-const createPublicationPort = () => ({
+const createPublisher = () => ({
   publishManyForRun: vi.fn().mockResolvedValue([]),
 });
 
@@ -27,7 +27,7 @@ const createSessionInput = (runId: string) => ({
 const bearerToken = (authorization: string): string =>
   authorization.replace(/^Bearer\s+/, "");
 
-describe("AgentToolsMcpProcessAuthority", () => {
+describe("AgentToolsMcpRuntime", () => {
   let originalInternalBaseUrl: string | undefined;
 
   beforeEach(() => {
@@ -47,18 +47,18 @@ describe("AgentToolsMcpProcessAuthority", () => {
   });
 
   it("revokes an application scope without revoking the general process scope, then clears both at process close", () => {
-    const generalPublication = createPublicationPort();
-    const applicationPublication = createPublicationPort();
-    const processAuthority = createAgentToolsMcpProcessAuthority({
-      generalProcessPublication: generalPublication,
+    const generalPublisher = createPublisher();
+    const applicationPublisher = createPublisher();
+    const mcpRuntime = createAgentToolsMcpRuntime({
+      generalProcessPublisher: generalPublisher,
     });
     let applicationPublicationReady = true;
-    const applicationAuthority =
-      processAuthority.createApplicationSessionAuthority({
-        executionAuthorities: {
-          publishedArtifactPublication: applicationPublication,
+    const applicationSessionManager =
+      mcpRuntime.createApplicationSessionManager({
+        executionCapabilities: {
+          publishedArtifactPublisher: applicationPublisher,
         },
-        assertExecutionAuthoritiesReady: () => {
+        assertExecutionCapabilitiesReady: () => {
           if (!applicationPublicationReady) {
             throw new Error("Application publication is unavailable.");
           }
@@ -66,13 +66,13 @@ describe("AgentToolsMcpProcessAuthority", () => {
       });
 
     const general =
-      processAuthority.generalProcessSessionAuthority.createAgentToolMcpSession(
+      mcpRuntime.generalProcessSessionManager.createAgentToolMcpSession(
         createSessionInput("general-run"),
       );
-    const application = applicationAuthority.createAgentToolMcpSession(
+    const application = applicationSessionManager.createAgentToolMcpSession(
       createSessionInput("application-run"),
     );
-    const registry = processAuthority.routeDependencies.registry;
+    const registry = mcpRuntime.routeDependencies.registry;
 
     expect(
       registry.resolveSession({
@@ -82,8 +82,8 @@ describe("AgentToolsMcpProcessAuthority", () => {
     ).toMatchObject({
       ok: true,
       session: {
-        executionAuthorities: {
-          publishedArtifactPublication: generalPublication,
+        executionCapabilities: {
+          publishedArtifactPublisher: generalPublisher,
         },
       },
     });
@@ -95,22 +95,22 @@ describe("AgentToolsMcpProcessAuthority", () => {
     ).toMatchObject({
       ok: true,
       session: {
-        executionAuthorities: {
-          publishedArtifactPublication: applicationPublication,
+        executionCapabilities: {
+          publishedArtifactPublisher: applicationPublisher,
         },
       },
     });
 
-    applicationAuthority.blockNewSessions();
+    applicationSessionManager.blockNewSessions();
     applicationPublicationReady = false;
-    applicationAuthority.close();
-    applicationAuthority.close();
+    applicationSessionManager.close();
+    applicationSessionManager.close();
 
     expect(() =>
-      applicationAuthority.createAgentToolMcpSession(
+      applicationSessionManager.createAgentToolMcpSession(
         createSessionInput("late-application-run"),
       ),
-    ).toThrow("Agent Tools MCP session authority is closing.");
+    ).toThrow("Scoped Agent Tools MCP session manager is closing.");
     expect(
       registry.resolveSession({
         sessionId: application.session.sessionId,
@@ -124,8 +124,8 @@ describe("AgentToolsMcpProcessAuthority", () => {
       }),
     ).toMatchObject({ ok: true });
 
-    processAuthority.close();
-    processAuthority.close();
+    mcpRuntime.close();
+    mcpRuntime.close();
 
     expect(
       registry.resolveSession({
@@ -134,12 +134,12 @@ describe("AgentToolsMcpProcessAuthority", () => {
       }),
     ).toMatchObject({ ok: false, reason: "missing_session" });
     expect(() =>
-      processAuthority.createApplicationSessionAuthority({
-        executionAuthorities: {
-          publishedArtifactPublication: applicationPublication,
+      mcpRuntime.createApplicationSessionManager({
+        executionCapabilities: {
+          publishedArtifactPublisher: applicationPublisher,
         },
-        assertExecutionAuthoritiesReady: vi.fn(),
+        assertExecutionCapabilitiesReady: vi.fn(),
       }),
-    ).toThrow("Agent Tools MCP process authority is closed.");
+    ).toThrow("Agent Tools MCP runtime is closed.");
   });
 });

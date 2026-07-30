@@ -75,7 +75,7 @@ describe("MixedAgentMemberHandle Agent Tools MCP cleanup", () => {
     const config = buildMemberConfig();
     const { teamContext, memberContext } = buildTeamContext(config);
     const registry = getAgentToolMcpSessionRegistry();
-    const agentToolMcpSessionAuthority = new AgentToolMcpSessionService({
+    const agentToolMcpSessionManager = new AgentToolMcpSessionService({
       registry,
       getInternalBaseUrl: () => "http://127.0.0.1:43124",
     });
@@ -119,7 +119,7 @@ describe("MixedAgentMemberHandle Agent Tools MCP cleanup", () => {
       context: memberContext,
       config,
       agentRunManager: { createAgentRun: vi.fn() } as never,
-      agentToolMcpSessionAuthority,
+      agentToolMcpSessionManager,
       publish: vi.fn(),
       notifyStatusChange: vi.fn(),
       deliverInterAgentMessage: vi.fn(),

@@ -56,7 +56,7 @@ import {
 import { buildAgentRunMessageSenderContext } from "../../../../agent-communication/domain/agent-run-message-sender.js";
 import {
   getAgentToolMcpSessionService,
-  type AgentToolMcpSessionAuthority,
+  type AgentToolMcpSessionManager,
 } from "../../../../agent-tools/mcp/agent-tool-mcp-session-service.js";
 import {
   materializeCodexAgentToolsMcpThreadConfig,
@@ -183,7 +183,7 @@ export class CodexThreadBootstrapper {
   private readonly defaultBootstrapStrategy: CodexThreadBootstrapStrategy;
   private readonly teamBootstrapStrategy: CodexThreadBootstrapStrategy;
   private readonly clientManager: CodexAppServerClientManager;
-  private readonly agentToolMcpSessionService: AgentToolMcpSessionAuthority;
+  private readonly agentToolMcpSessionService: AgentToolMcpSessionManager;
 
   constructor(
     workspaceSkillMaterializer: CodexWorkspaceSkillMaterializer = getCodexWorkspaceSkillMaterializer(),
@@ -193,7 +193,7 @@ export class CodexThreadBootstrapper {
     defaultBootstrapStrategy: CodexThreadBootstrapStrategy = new DefaultCodexThreadBootstrapStrategy(),
     teamBootstrapStrategy: CodexThreadBootstrapStrategy = getTeamMemberCodexThreadBootstrapStrategy(),
     clientManager: CodexAppServerClientManager = getCodexAppServerClientManager(),
-    agentToolMcpSessionService: AgentToolMcpSessionAuthority = getAgentToolMcpSessionService(),
+    agentToolMcpSessionService: AgentToolMcpSessionManager = getAgentToolMcpSessionService(),
   ) {
     this.workspaceSkillMaterializer = workspaceSkillMaterializer;
     this.workspaceResolver = workspaceResolver;

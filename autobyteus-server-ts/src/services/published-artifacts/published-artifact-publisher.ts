@@ -19,7 +19,7 @@ export type PublishedArtifactPublicationRequest = {
   fallbackRuntimeContext?: PublishedArtifactPublicationFallbackRuntimeContext | null;
 };
 
-export interface PublishedArtifactPublicationPort {
+export interface PublishedArtifactPublisher {
   publishManyForRun(
     input: PublishedArtifactPublicationRequest,
   ): Promise<PublishedArtifactSummary[]>;

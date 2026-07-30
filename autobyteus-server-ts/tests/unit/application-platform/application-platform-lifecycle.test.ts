@@ -12,12 +12,12 @@ const createDependencies = () => ({
       isApplicationReady: vi.fn(() => true),
       getDiagnosticsByApplicationId: vi.fn(() => new Map()),
     },
-    agentToolsSessionAuthority: {
+    agentToolsSessionManager: {
       assertReady: vi.fn(),
       blockNewSessions: vi.fn(),
       close: vi.fn(),
     },
-    publishedArtifactPublicationPort: {
+    publishedArtifactPublisher: {
       close: vi.fn(),
     },
   },
@@ -59,7 +59,7 @@ const createDependencies = () => ({
   notificationHub: { closeAll: vi.fn() },
   runObserverService: { dispose: vi.fn(async () => undefined) },
   engineHostService: { stopAllApplicationEngines: vi.fn(async () => undefined) },
-  runShutdownAuthority: { stopAllRuns: vi.fn(async () => undefined) },
+  runShutdownCoordinator: { stopAllRuns: vi.fn(async () => undefined) },
   streamingService: { stopAll: vi.fn(async () => undefined) },
 });
 
@@ -77,7 +77,7 @@ describe("ApplicationPlatformLifecycle", () => {
       dependencies.preparation.toolReadiness.registerRequiredGroups,
     );
     expect(
-      dependencies.preparation.agentToolsSessionAuthority.assertReady,
+      dependencies.preparation.agentToolsSessionManager.assertReady,
     ).toHaveBeenCalledAfter(
       dependencies.preparation.toolReadiness.registerRequiredGroups,
     );
@@ -108,7 +108,7 @@ describe("ApplicationPlatformLifecycle", () => {
       if (error) throw error;
     });
     dependencies.eventDispatchService.stop = record("events");
-    dependencies.preparation.agentToolsSessionAuthority.blockNewSessions =
+    dependencies.preparation.agentToolsSessionManager.blockNewSessions =
       vi.fn(() => order.push("session-block"));
     dependencies.agentCommunicationService.closeAll = record("communication");
     dependencies.backendGateway.dispose = record("gateway") as never;
@@ -119,13 +119,13 @@ describe("ApplicationPlatformLifecycle", () => {
     dependencies.notificationHub.closeAll = record("notifications") as never;
     dependencies.runObserverService.dispose = record("observers");
     dependencies.engineHostService.stopAllApplicationEngines = record("workers");
-    dependencies.runShutdownAuthority.stopAllRuns = record(
+    dependencies.runShutdownCoordinator.stopAllRuns = record(
       "runs",
-      new Error("graph run shutdown failed"),
+      new Error("runtime run shutdown failed"),
     );
-    dependencies.preparation.agentToolsSessionAuthority.close =
+    dependencies.preparation.agentToolsSessionManager.close =
       record("sessions") as never;
-    dependencies.preparation.publishedArtifactPublicationPort.close =
+    dependencies.preparation.publishedArtifactPublisher.close =
       record("publication") as never;
     dependencies.streamingService.stopAll = record("streaming");
     const lifecycle = new ApplicationPlatformLifecycle(dependencies as never);

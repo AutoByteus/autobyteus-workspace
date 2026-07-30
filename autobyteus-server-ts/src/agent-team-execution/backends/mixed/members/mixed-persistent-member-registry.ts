@@ -17,7 +17,7 @@ import type { MixedTeamEventPublish, MixedTeamMemberHandle, MixedTeamStatusChang
 import { MixedTeamMemberConfigResolver } from "./mixed-team-member-config-resolver.js";
 import type { MemberTeamContextBuilder } from "../../../services/member-team-context-builder.js";
 import type {
-  AgentToolMcpSessionAuthority,
+  AgentToolMcpSessionManager,
 } from "../../../../agent-tools/mcp/agent-tool-mcp-session-service.js";
 
 export type PersistentMemberRegistryAccess = {
@@ -33,7 +33,7 @@ export class MixedPersistentMemberRegistry implements PersistentMemberRegistryAc
     configResolver: MixedTeamMemberConfigResolver;
     subTeamRunFactory: import("../mixed-sub-team-run-factory.js").MixedSubTeamRunFactory;
     agentRunManager?: AgentRunManager;
-    agentToolMcpSessionAuthority?: AgentToolMcpSessionAuthority;
+    agentToolMcpSessionManager?: AgentToolMcpSessionManager;
     memberTeamContextBuilder: MemberTeamContextBuilder;
     publish: MixedTeamEventPublish;
     notifyStatusChange: MixedTeamStatusChange;
@@ -86,8 +86,8 @@ export class MixedPersistentMemberRegistry implements PersistentMemberRegistryAc
           context,
           config: config as Extract<TeamRunMemberConfig, { memberKind: "agent" }>,
           agentRunManager: this.options.agentRunManager,
-          agentToolMcpSessionAuthority:
-            this.options.agentToolMcpSessionAuthority,
+          agentToolMcpSessionManager:
+            this.options.agentToolMcpSessionManager,
           memberTeamContextBuilder: this.options.memberTeamContextBuilder,
           publish: this.options.publish,
           notifyStatusChange: this.options.notifyStatusChange,

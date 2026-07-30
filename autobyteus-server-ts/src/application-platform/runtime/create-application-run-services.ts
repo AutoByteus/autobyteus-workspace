@@ -16,7 +16,7 @@ import { MixedTeamRunBackendFactory } from "../../agent-team-execution/backends/
 import { MixedTeamManager } from "../../agent-team-execution/backends/mixed/mixed-team-manager.js";
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import { TeamRunService } from "../../agent-team-execution/services/team-run-service.js";
-import type { DeferredApplicationEngineEventHandlerPort } from "./deferred-application-engine-event-handler-port.js";
+import type { BindOnceApplicationEngineEventHandler } from "./bind-once-application-engine-event-handler.js";
 import { ApplicationPublishedArtifactRelayService } from "../../application-orchestration/services/application-published-artifact-relay-service.js";
 import type { ApplicationRunBindingStore } from "../../application-orchestration/stores/application-run-binding-store.js";
 import { AgentRunMetadataService } from "../../run-history/services/agent-run-metadata-service.js";
@@ -28,17 +28,17 @@ import { RunFileChangeService } from "../../services/run-file-changes/run-file-c
 import { TeamCommunicationService } from "../../services/team-communication/team-communication-service.js";
 import { MemberTeamContextBuilder } from "../../agent-team-execution/services/member-team-context-builder.js";
 import type {
-  ApplicationAgentToolsSessionAuthority,
-} from "../../agent-tools/mcp/application-agent-tools-session-authority.js";
-import { ApplicationRunShutdownAuthority } from "./application-run-shutdown-authority.js";
+  ScopedAgentToolMcpSessionManager,
+} from "../../agent-tools/mcp/scoped-agent-tool-mcp-session-manager.js";
+import { ApplicationRunShutdownCoordinator } from "./application-run-shutdown-coordinator.js";
 
-export const createApplicationRunAuthorities = (input: {
+export const createApplicationRunServices = (input: {
   appConfig: AppConfig;
   bindingStore: ApplicationRunBindingStore;
-  deferredEnginePort: DeferredApplicationEngineEventHandlerPort;
+  bindOnceApplicationEngineEventHandler: BindOnceApplicationEngineEventHandler;
   agentDefinitionService: AgentDefinitionService;
   agentTeamDefinitionService: AgentTeamDefinitionService;
-  agentToolsSessionAuthority: ApplicationAgentToolsSessionAuthority;
+  agentToolsSessionManager: ScopedAgentToolMcpSessionManager;
 }) => {
   const memoryDir = input.appConfig.getMemoryDir();
   const memoryLocationService = new AgentMemoryLocationService({ memoryDir });
@@ -48,7 +48,7 @@ export const createApplicationRunAuthorities = (input: {
   });
   const artifactRelay = new ApplicationPublishedArtifactRelayService({
     bindingStore: input.bindingStore,
-    engineHostService: input.deferredEnginePort as never,
+    engineHostService: input.bindOnceApplicationEngineEventHandler as never,
   });
   const memberTeamContextBuilder = new MemberTeamContextBuilder(
     input.agentTeamDefinitionService,
@@ -61,12 +61,12 @@ export const createApplicationRunAuthorities = (input: {
     undefined,
     undefined,
     undefined,
-    input.agentToolsSessionAuthority,
+    input.agentToolsSessionManager,
   );
   const claudeSessionManager = new ClaudeSessionManager(
     undefined,
     undefined,
-    input.agentToolsSessionAuthority,
+    input.agentToolsSessionManager,
   );
   const claudeSessionBootstrapper = new ClaudeSessionBootstrapper(
     undefined,
@@ -88,7 +88,7 @@ export const createApplicationRunAuthorities = (input: {
     publishedArtifactRelayService: artifactRelay,
     runFileChangeService,
     memoryRecorder: new AgentRunMemoryRecorder(),
-    agentToolMcpSessionAuthority: input.agentToolsSessionAuthority,
+    agentToolMcpSessionManager: input.agentToolsSessionManager,
   });
   const agentTeamRunManager = new AgentTeamRunManager({
     mixedTeamRunBackendFactory: new MixedTeamRunBackendFactory({
@@ -97,8 +97,8 @@ export const createApplicationRunAuthorities = (input: {
         new MixedTeamManager(context, {
           subTeamRunFactory,
           agentRunManager,
-          agentToolMcpSessionAuthority:
-            input.agentToolsSessionAuthority,
+          agentToolMcpSessionManager:
+            input.agentToolsSessionManager,
           memberTeamContextBuilder,
         }),
     }),
@@ -138,7 +138,7 @@ export const createApplicationRunAuthorities = (input: {
     agentRunManager,
     metadataService: agentRunMetadataService,
   });
-  const runShutdownAuthority = new ApplicationRunShutdownAuthority(
+  const runShutdownCoordinator = new ApplicationRunShutdownCoordinator(
     agentTeamRunManager,
     agentRunManager,
   );
@@ -146,7 +146,7 @@ export const createApplicationRunAuthorities = (input: {
     agentRunService,
     teamRunService,
     teamRunMetadataService,
-    runShutdownAuthority,
+    runShutdownCoordinator,
     publicationService,
     publishedArtifactProjectionService,
     memoryLocationService,

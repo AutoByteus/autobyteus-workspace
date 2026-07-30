@@ -4,7 +4,7 @@ import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
 import type { AgentRunIdentityAllocator } from "../../../src/agent-execution/services/agent-run-identity-allocator.js";
-import { createApplicationRunAuthorities } from "../../../src/application-platform/runtime/create-application-run-authorities.js";
+import { createApplicationRunServices } from "../../../src/application-platform/runtime/create-application-run-services.js";
 
 type AllocatorProbe = AgentRunIdentityAllocator & {
   agentDefinitionService: unknown;
@@ -38,12 +38,12 @@ type ProjectionServiceProbe = {
   metadataService: unknown;
 };
 
-type RunShutdownAuthorityProbe = {
+type RunShutdownCoordinatorProbe = {
   teamRuns: unknown;
   agentRuns: unknown;
 };
 
-describe("application run authorities", () => {
+describe("application run services", () => {
   const tempRoots: string[] = [];
 
   afterEach(async () => {
@@ -53,8 +53,10 @@ describe("application run authorities", () => {
     );
   });
 
-  it("shares one graph-local real allocator across agent and team launch authorities", async () => {
-    const root = await fs.mkdtemp(path.join(os.tmpdir(), "application-run-authorities-"));
+  it("shares one runtime-local real allocator across agent and team launch services", async () => {
+    const root = await fs.mkdtemp(
+      path.join(os.tmpdir(), "application-run-services-"),
+    );
     tempRoots.push(root);
     const memoryDir = path.join(root, "memory");
     const packageAgentDefinitionId =
@@ -63,48 +65,48 @@ describe("application run authorities", () => {
       definitionId === packageAgentDefinitionId
         ? { id: definitionId, name: "Researcher" }
         : null);
-    const graphAgentDefinitionService = {
+    const runtimeAgentDefinitionService = {
       getAgentDefinitionById,
     };
-    const graphAgentToolsSessionAuthority = {};
+    const runtimeAgentToolsSessionManager = {};
     const globalDefinitionLookup = vi.spyOn(AgentDefinitionService, "getInstance");
 
-    const authorities = createApplicationRunAuthorities({
+    const services = createApplicationRunServices({
       appConfig: {
         getMemoryDir: () => memoryDir,
       } as never,
       bindingStore: {} as never,
-      deferredEnginePort: {} as never,
-      agentDefinitionService: graphAgentDefinitionService as never,
+      bindOnceApplicationEngineEventHandler: {} as never,
+      agentDefinitionService: runtimeAgentDefinitionService as never,
       agentTeamDefinitionService: {} as never,
-      agentToolsSessionAuthority: graphAgentToolsSessionAuthority as never,
+      agentToolsSessionManager: runtimeAgentToolsSessionManager as never,
     });
     const agentRunService =
-      authorities.agentRunService as unknown as AgentRunServiceProbe;
+      services.agentRunService as unknown as AgentRunServiceProbe;
     const teamRunService =
-      authorities.teamRunService as unknown as TeamRunServiceProbe;
+      services.teamRunService as unknown as TeamRunServiceProbe;
     const projectionService =
-      authorities.publishedArtifactProjectionService as unknown as ProjectionServiceProbe;
-    const runShutdownAuthority =
-      authorities.runShutdownAuthority as unknown as RunShutdownAuthorityProbe;
+      services.publishedArtifactProjectionService as unknown as ProjectionServiceProbe;
+    const runShutdownCoordinator =
+      services.runShutdownCoordinator as unknown as RunShutdownCoordinatorProbe;
     const allocator = teamRunService.agentRunIdentityAllocator;
     globalDefinitionLookup.mockClear();
 
     expect(agentRunService.provisioningService.agentRunIdentityAllocator).toBe(allocator);
-    expect(allocator.agentDefinitionService).toBe(graphAgentDefinitionService);
+    expect(allocator.agentDefinitionService).toBe(runtimeAgentDefinitionService);
     expect(allocator.agentRunManager).toBe(agentRunService.agentRunManager);
     expect(
       agentRunService.agentRunManager.codexBackendFactory.threadBootstrapper
         .agentDefinitionService,
-    ).toBe(graphAgentDefinitionService);
+    ).toBe(runtimeAgentDefinitionService);
     expect(allocator.agentRunMetadataService).toBe(agentRunService.metadataService);
     expect(agentRunService.provisioningService.metadataService).toBe(
       agentRunService.metadataService,
     );
     expect(projectionService.metadataService).toBe(agentRunService.metadataService);
     expect(allocator.teamRunMetadataService).toBe(teamRunService.teamRunMetadataService);
-    expect(runShutdownAuthority.teamRuns).toBe(teamRunService.agentTeamRunManager);
-    expect(runShutdownAuthority.agentRuns).toBe(agentRunService.agentRunManager);
+    expect(runShutdownCoordinator.teamRuns).toBe(teamRunService.agentTeamRunManager);
+    expect(runShutdownCoordinator.agentRuns).toBe(agentRunService.agentRunManager);
 
     await expect(
       allocator.allocateForAgentDefinition(packageAgentDefinitionId),

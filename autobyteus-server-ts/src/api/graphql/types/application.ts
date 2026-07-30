@@ -1,5 +1,5 @@
 import { Arg, Field, ObjectType, Query, Resolver, registerEnumType } from "type-graphql";
-import { getStudioApplicationBundleService } from "../studio-application-api-authorities.js";
+import { getStudioApplicationBundleService } from "../studio-application-api-services.js";
 
 export enum ApplicationExecutionResourceKindGraph {
   AGENT = "AGENT",

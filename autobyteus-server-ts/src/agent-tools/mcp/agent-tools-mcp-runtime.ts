@@ -1,16 +1,16 @@
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
 import type {
-  PublishedArtifactPublicationPort,
-} from "../../services/published-artifacts/published-artifact-publication-port.js";
+  PublishedArtifactPublisher,
+} from "../../services/published-artifacts/published-artifact-publisher.js";
 import { AgentToolMcpCatalog } from "./agent-tool-mcp-catalog.js";
 import { AgentToolMcpSessionRegistry } from "./agent-tool-mcp-session-registry.js";
 import {
   AgentToolMcpSessionService,
-  type AgentToolMcpSessionAuthority,
+  type AgentToolMcpSessionManager,
 } from "./agent-tool-mcp-session-service.js";
 import { AgentToolMcpToolExecutor } from "./agent-tool-mcp-tool-executor.js";
 import {
-  type AgentToolMcpSessionExecutionAuthorities,
+  type AgentToolMcpSessionExecutionCapabilities,
 } from "./agent-tool-mcp-session.js";
 import {
   type AgentToolsMcpRouteDependencies,
@@ -18,7 +18,7 @@ import {
 import { AgentToolsMcpMethodDispatcher } from "./agent-tools-mcp-method-dispatcher.js";
 import { AgentToolsMcpResultMapper } from "./agent-tools-mcp-result-mapper.js";
 import { AgentToolsMcpSchemaMapper } from "./agent-tools-mcp-schema-mapper.js";
-import { ApplicationAgentToolsSessionAuthority } from "./application-agent-tools-session-authority.js";
+import { ScopedAgentToolMcpSessionManager } from "./scoped-agent-tool-mcp-session-manager.js";
 import {
   ConfiguredMcpAgentToolSourceResolver,
 } from "./configured-mcp/configured-mcp-agent-tool-source-resolver.js";
@@ -26,20 +26,20 @@ import {
   buildDefaultAgentToolMcpAdapterProviders,
 } from "./providers/default-agent-tool-mcp-adapter-providers.js";
 
-export type ApplicationAgentToolsSessionAuthorityFactory = Pick<
-  AgentToolsMcpProcessAuthority,
-  "createApplicationSessionAuthority"
+export type ApplicationAgentToolsSessionManagerFactory = Pick<
+  AgentToolsMcpRuntime,
+  "createApplicationSessionManager"
 >;
 
-export class AgentToolsMcpProcessAuthority {
+export class AgentToolsMcpRuntime {
   readonly routeDependencies: AgentToolsMcpRouteDependencies;
-  readonly generalProcessSessionAuthority: AgentToolMcpSessionAuthority;
+  readonly generalProcessSessionManager: AgentToolMcpSessionManager;
   private readonly registry: AgentToolMcpSessionRegistry;
   private readonly catalog: AgentToolMcpCatalog;
   private closed = false;
 
   constructor(input: {
-    generalProcessPublication: PublishedArtifactPublicationPort;
+    generalProcessPublisher: PublishedArtifactPublisher;
   }) {
     this.registry = new AgentToolMcpSessionRegistry();
     const schemaMapper = new AgentToolsMcpSchemaMapper();
@@ -64,21 +64,21 @@ export class AgentToolsMcpProcessAuthority {
       registry: this.registry,
       dispatcher,
     });
-    this.generalProcessSessionAuthority = this.createSessionAuthority({
-      publishedArtifactPublication: input.generalProcessPublication,
+    this.generalProcessSessionManager = this.createSessionManager({
+      publishedArtifactPublisher: input.generalProcessPublisher,
     });
   }
 
-  createApplicationSessionAuthority(input: {
-    executionAuthorities: AgentToolMcpSessionExecutionAuthorities;
-    assertExecutionAuthoritiesReady: () => void;
-  }): ApplicationAgentToolsSessionAuthority {
+  createApplicationSessionManager(input: {
+    executionCapabilities: AgentToolMcpSessionExecutionCapabilities;
+    assertExecutionCapabilitiesReady: () => void;
+  }): ScopedAgentToolMcpSessionManager {
     this.assertOpen();
-    return new ApplicationAgentToolsSessionAuthority(
-      this.createSessionService(input.executionAuthorities),
+    return new ScopedAgentToolMcpSessionManager(
+      this.createSessionService(input.executionCapabilities),
       () => {
         this.assertOpen();
-        input.assertExecutionAuthoritiesReady();
+        input.assertExecutionCapabilitiesReady();
       },
     );
   }
@@ -91,33 +91,33 @@ export class AgentToolsMcpProcessAuthority {
     this.registry.clear();
   }
 
-  private createSessionAuthority(
-    executionAuthorities: AgentToolMcpSessionExecutionAuthorities,
-  ): ApplicationAgentToolsSessionAuthority {
-    return new ApplicationAgentToolsSessionAuthority(
-      this.createSessionService(executionAuthorities),
+  private createSessionManager(
+    executionCapabilities: AgentToolMcpSessionExecutionCapabilities,
+  ): ScopedAgentToolMcpSessionManager {
+    return new ScopedAgentToolMcpSessionManager(
+      this.createSessionService(executionCapabilities),
       () => this.assertOpen(),
     );
   }
 
   private createSessionService(
-    executionAuthorities: AgentToolMcpSessionExecutionAuthorities,
+    executionCapabilities: AgentToolMcpSessionExecutionCapabilities,
   ): AgentToolMcpSessionService {
     return new AgentToolMcpSessionService({
       registry: this.registry,
       catalog: this.catalog,
-      executionAuthorities,
+      executionCapabilities,
     });
   }
 
   private assertOpen(): void {
     if (this.closed) {
-      throw new Error("Agent Tools MCP process authority is closed.");
+      throw new Error("Agent Tools MCP runtime is closed.");
     }
   }
 }
 
-export const createAgentToolsMcpProcessAuthority = (input: {
-  generalProcessPublication: PublishedArtifactPublicationPort;
-}): AgentToolsMcpProcessAuthority =>
-  new AgentToolsMcpProcessAuthority(input);
+export const createAgentToolsMcpRuntime = (input: {
+  generalProcessPublisher: PublishedArtifactPublisher;
+}): AgentToolsMcpRuntime =>
+  new AgentToolsMcpRuntime(input);

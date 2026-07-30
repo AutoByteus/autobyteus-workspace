@@ -22,9 +22,9 @@ import {
 } from "./published-artifact-snapshot-store.js";
 import type {
   PublishedArtifactPublicationFallbackRuntimeContext,
-  PublishedArtifactPublicationPort,
+  PublishedArtifactPublisher,
   PublishedArtifactPublicationRequest,
-} from "./published-artifact-publication-port.js";
+} from "./published-artifact-publisher.js";
 import {
   EMPTY_PUBLISHED_ARTIFACT_PROJECTION,
   normalizePublishedArtifactType,
@@ -54,7 +54,7 @@ const normalizeOptionalNonEmptyString = (value: string | null | undefined): stri
 };
 
 export class PublishedArtifactPublicationService
-implements PublishedArtifactPublicationPort {
+implements PublishedArtifactPublisher {
   constructor(
     private readonly dependencies: {
       agentRunManager?: AgentRunManager;

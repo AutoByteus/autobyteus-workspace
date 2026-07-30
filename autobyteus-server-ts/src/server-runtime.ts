@@ -23,7 +23,7 @@ import {
 import { getManagedMessagingGatewayService } from "./managed-capabilities/messaging-gateway/defaults.js";
 import type { ServerOptions } from "./app.js";
 import { getSecretVaultRuntime } from "./secret-management/secret-vault-runtime.js";
-import { buildStudioServerComposition } from "./compositions/build-studio-server-composition.js";
+import { buildStudioServer } from "./compositions/build-studio-server.js";
 
 const logger = createServerLogger("server.runtime");
 
@@ -111,13 +111,13 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
   try {
     const { loggingConfig } = await initializeStudioProcessResources();
     processResourcesInitialized = true;
-    const composition = await buildStudioServerComposition({
+    const studioServer = await buildStudioServer({
       appConfig: appConfigProvider.config,
       loggingConfig,
     });
-    app = composition.app;
+    app = studioServer.fastify;
     registerShutdownHandlers(app);
-    await composition.applicationGraph.lifecycle.prepareBeforeListen();
+    await studioServer.applicationRuntime.lifecycle.prepareBeforeListen();
     await app.listen({ host: options.host, port: options.port });
     logger.info(`Server listening on ${options.host}:${options.port}`);
     startChannelRunOutputDeliveryRuntime();
@@ -139,12 +139,12 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
     } catch (error) {
       logger.error(`Failed to restore managed messaging gateway: ${String(error)}`);
     }
-    await composition.applicationGraph.lifecycle.recoverAfterListen();
+    await studioServer.applicationRuntime.lifecycle.recoverAfterListen();
     await scheduleStudioBackgroundTasks();
   } catch (error) {
     if (app) {
       await app.close().catch((closeError) => {
-        logger.error(`Failed to close Studio composition after startup error: ${String(closeError)}`);
+        logger.error(`Failed to close Studio server after startup error: ${String(closeError)}`);
       });
     } else if (processResourcesInitialized) {
       try {

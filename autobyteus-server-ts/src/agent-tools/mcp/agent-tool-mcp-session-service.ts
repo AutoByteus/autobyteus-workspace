@@ -6,7 +6,7 @@ import {
   type AgentToolMcpCreateSessionInput,
   type AgentToolMcpDescriptor,
   type AgentToolMcpSession,
-  type AgentToolMcpSessionExecutionAuthorities,
+  type AgentToolMcpSessionExecutionCapabilities,
   type AgentToolMcpSessionOwnerIdentity,
   type RedactedAgentToolMcpDescriptor,
 } from "./agent-tool-mcp-session.js";
@@ -27,10 +27,10 @@ export type CreateAgentToolMcpSessionResult = {
 
 export type AgentToolMcpSessionIssueInput = Omit<
   AgentToolMcpCreateSessionInput,
-  "enabledTools" | "toolRoutes" | "configuredMcpToolSources" | "executionAuthorities"
+  "enabledTools" | "toolRoutes" | "configuredMcpToolSources" | "executionCapabilities"
 >;
 
-export type AgentToolMcpSessionAuthority = {
+export type AgentToolMcpSessionManager = {
   createAgentToolMcpSession(
     input: AgentToolMcpSessionIssueInput,
   ): CreateAgentToolMcpSessionResult;
@@ -49,7 +49,7 @@ type AgentToolMcpSessionServiceDeps = {
   registry?: AgentToolMcpSessionRegistry;
   catalog?: AgentToolMcpCatalog;
   getInternalBaseUrl?: () => string;
-  executionAuthorities?: AgentToolMcpSessionExecutionAuthorities | null;
+  executionCapabilities?: AgentToolMcpSessionExecutionCapabilities | null;
 };
 
 export class AgentToolMcpSessionService {
@@ -57,7 +57,7 @@ export class AgentToolMcpSessionService {
   private readonly registry: AgentToolMcpSessionRegistry;
   private readonly catalog: AgentToolMcpCatalog;
   private readonly getInternalBaseUrl: () => string;
-  private readonly executionAuthorities: AgentToolMcpSessionExecutionAuthorities | null;
+  private readonly executionCapabilities: AgentToolMcpSessionExecutionCapabilities | null;
 
   static getInstance(): AgentToolMcpSessionService {
     if (!AgentToolMcpSessionService.instance) {
@@ -74,8 +74,8 @@ export class AgentToolMcpSessionService {
     this.registry = deps.registry ?? getAgentToolMcpSessionRegistry();
     this.catalog = deps.catalog ?? getAgentToolMcpCatalog();
     this.getInternalBaseUrl = deps.getInternalBaseUrl ?? getInternalServerBaseUrlOrThrow;
-    this.executionAuthorities = deps.executionAuthorities
-      ? Object.freeze({ ...deps.executionAuthorities })
+    this.executionCapabilities = deps.executionCapabilities
+      ? Object.freeze({ ...deps.executionCapabilities })
       : null;
   }
 
@@ -89,7 +89,7 @@ export class AgentToolMcpSessionService {
     });
     const { session, capabilityToken } = this.registry.createSession({
       ...input,
-      executionAuthorities: this.executionAuthorities,
+      executionCapabilities: this.executionCapabilities,
       enabledTools: exposure.enabledTools,
       toolRoutes: exposure.toolRoutes,
       configuredMcpToolSources: exposure.configuredMcpToolSources,

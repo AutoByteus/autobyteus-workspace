@@ -9,7 +9,7 @@ import {
   registerEnumType,
 } from "type-graphql";
 import { AgentDefinitionConverter } from "../converters/agent-definition-converter.js";
-import { getStudioAgentDefinitionService } from "../studio-application-api-authorities.js";
+import { getStudioAgentDefinitionService } from "../studio-application-api-services.js";
 import {
   GraphqlDefaultLaunchConfig,
   GraphqlDefaultLaunchConfigInput,

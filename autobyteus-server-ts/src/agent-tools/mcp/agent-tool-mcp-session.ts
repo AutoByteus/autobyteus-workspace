@@ -3,8 +3,8 @@ import type { ConfiguredAgentToolExposure } from "../../agent-execution/shared/c
 import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type {
-  PublishedArtifactPublicationPort,
-} from "../../services/published-artifacts/published-artifact-publication-port.js";
+  PublishedArtifactPublisher,
+} from "../../services/published-artifacts/published-artifact-publisher.js";
 import type { ConfiguredMcpAgentToolSource } from "./configured-mcp/configured-mcp-agent-tool-source.js";
 import type { AgentToolMcpToolRouteTable } from "./agent-tool-mcp-tool-route.js";
 
@@ -63,8 +63,8 @@ export type AgentToolMcpExecutionContext = {
   applicationExecutionContext?: ApplicationExecutionContext | null;
 };
 
-export type AgentToolMcpSessionExecutionAuthorities = Readonly<{
-  publishedArtifactPublication: PublishedArtifactPublicationPort;
+export type AgentToolMcpSessionExecutionCapabilities = Readonly<{
+  publishedArtifactPublisher: PublishedArtifactPublisher;
 }>;
 
 export type AgentToolMcpSession = {
@@ -75,7 +75,7 @@ export type AgentToolMcpSession = {
   runtimeKind: RuntimeKind | string | null;
   configuredExposure: ConfiguredAgentToolExposure;
   executionContext: AgentToolMcpExecutionContext;
-  executionAuthorities: AgentToolMcpSessionExecutionAuthorities | null;
+  executionCapabilities: AgentToolMcpSessionExecutionCapabilities | null;
   enabledTools: string[];
   toolRoutes: AgentToolMcpToolRouteTable;
   configuredMcpToolSources: ConfiguredMcpAgentToolSource[];
@@ -89,7 +89,7 @@ export type AgentToolMcpCreateSessionInput = {
   sender: AgentRunMessageSenderContext;
   configuredExposure: ConfiguredAgentToolExposure;
   executionContext?: AgentToolMcpExecutionContext | null;
-  executionAuthorities?: AgentToolMcpSessionExecutionAuthorities | null;
+  executionCapabilities?: AgentToolMcpSessionExecutionCapabilities | null;
   enabledTools: string[];
   toolRoutes: AgentToolMcpToolRouteTable;
   configuredMcpToolSources?: ConfiguredMcpAgentToolSource[];

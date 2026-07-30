@@ -21,10 +21,10 @@ import { BuiltInApplicationPackageMaterializer } from "../application-packages/s
 import { ApplicationPackageRegistryService } from "../application-packages/services/application-package-registry-service.js";
 import { FileApplicationBundleProvider } from "../application-bundles/providers/file-application-bundle-provider.js";
 import { ApplicationBundleService } from "../application-bundles/services/application-bundle-service.js";
-import { createApplicationPlatformRuntimeGraph } from "../application-platform/runtime/create-application-platform-runtime-graph.js";
-import type { ApplicationPlatformRuntimeGraph } from "../application-platform/runtime/application-platform-runtime-graph.js";
+import { buildApplicationPlatformRuntime } from "../application-platform/runtime/build-application-platform-runtime.js";
+import type { ApplicationPlatformRuntime } from "../application-platform/runtime/application-platform-runtime.js";
 import { createApplicationDefinitionServices } from "../application-platform/runtime/create-application-definition-services.js";
-import { configureStudioApplicationApiAuthorities } from "../api/graphql/studio-application-api-authorities.js";
+import { configureStudioApplicationApiServices } from "../api/graphql/studio-application-api-services.js";
 import { stopMemorySyncWorker } from "../memory-sync/source/memory-sync-worker.js";
 import { stopChannelRunOutputDeliveryRuntime } from "../external-channel/runtime/channel-run-output-runtime-singleton.js";
 import { stopGatewayCallbackDeliveryRuntime } from "../external-channel/runtime/gateway-callback-delivery-runtime.js";
@@ -32,32 +32,32 @@ import { getManagedMessagingGatewayService } from "../managed-capabilities/messa
 import { stopDefaultAgentRunEventPipeline } from "../agent-execution/events/default-agent-run-event-pipeline.js";
 import { getSecretVaultRuntime } from "../secret-management/secret-vault-runtime.js";
 import {
-  createAgentToolsMcpProcessAuthority,
-  type AgentToolsMcpProcessAuthority,
-} from "../agent-tools/mcp/agent-tools-mcp-process-authority.js";
+  createAgentToolsMcpRuntime,
+  type AgentToolsMcpRuntime,
+} from "../agent-tools/mcp/agent-tools-mcp-runtime.js";
 import {
   getPublishedArtifactPublicationService,
 } from "../services/published-artifacts/published-artifact-publication-service.js";
 import {
-  GeneralProcessRunAuthority,
-} from "../agent-execution/runtime/general-process-run-authority.js";
+  GeneralProcessRunSupervisor,
+} from "../agent-execution/runtime/general-process-run-supervisor.js";
 
-export type StudioServerComposition = Readonly<{
-  app: FastifyInstance;
-  applicationGraph: ApplicationPlatformRuntimeGraph;
+export type StudioServer = Readonly<{
+  fastify: FastifyInstance;
+  applicationRuntime: ApplicationPlatformRuntime;
   packageRegistryService: ApplicationPackageRegistryService;
 }>;
 
 const closeStudioProcessResources = async (input: {
-  agentToolsProcessAuthority: AgentToolsMcpProcessAuthority;
-  generalProcessRunAuthority: GeneralProcessRunAuthority;
+  agentToolsMcpRuntime: AgentToolsMcpRuntime;
+  generalProcessRunSupervisor: GeneralProcessRunSupervisor;
 }): Promise<void> => {
   stopMemorySyncWorker();
   try {
-    await input.generalProcessRunAuthority.close();
+    await input.generalProcessRunSupervisor.close();
   } finally {
     try {
-      input.agentToolsProcessAuthority.close();
+      input.agentToolsMcpRuntime.close();
     } finally {
       try {
         await stopChannelRunOutputDeliveryRuntime();
@@ -84,12 +84,12 @@ const closeStudioProcessResources = async (input: {
   }
 };
 
-const createStudioApplicationAuthorities = (
+const createStudioApplicationServices = (
   appConfig: AppConfig,
-  agentToolsProcessAuthority: AgentToolsMcpProcessAuthority,
+  agentToolsMcpRuntime: AgentToolsMcpRuntime,
 ) => {
   let bundleService!: ApplicationBundleService;
-  let applicationGraph!: ApplicationPlatformRuntimeGraph;
+  let applicationRuntime!: ApplicationPlatformRuntime;
   let definitionServices!: ReturnType<typeof createApplicationDefinitionServices>;
   const packageRegistryService = new ApplicationPackageRegistryService({
     rootSettingsStore: new ApplicationPackageRootSettingsStore(appConfig),
@@ -105,12 +105,12 @@ const createStudioApplicationAuthorities = (
     },
     availabilityService: {
       reconcileCatalogSnapshotWithKnownApplications: (...args) =>
-        applicationGraph.availabilityService
+        applicationRuntime.availabilityService
           .reconcileCatalogSnapshotWithKnownApplications(...args),
     },
     platformStateStore: {
       listKnownApplicationIds: () =>
-        applicationGraph.platformStateStore.listKnownApplicationIds(),
+        applicationRuntime.platformStateStore.listKnownApplicationIds(),
     },
   });
   bundleService = new ApplicationBundleService({
@@ -121,56 +121,56 @@ const createStudioApplicationAuthorities = (
     appConfig,
     bundleService,
   });
-  applicationGraph = createApplicationPlatformRuntimeGraph({
+  applicationRuntime = buildApplicationPlatformRuntime({
     appConfig,
     bundleService,
     ...definitionServices,
-    agentToolsSessionAuthorityFactory:
-      agentToolsProcessAuthority,
+    agentToolsSessionManagerFactory:
+      agentToolsMcpRuntime,
   });
   return {
     packageRegistryService,
     bundleService,
-    applicationGraph,
+    applicationRuntime,
     ...definitionServices,
   };
 };
 
-export const buildStudioServerComposition = async (input: {
+export const buildStudioServer = async (input: {
   appConfig: AppConfig;
   loggingConfig: LoggingConfig;
-}): Promise<StudioServerComposition> => {
-  const agentToolsProcessAuthority =
-    createAgentToolsMcpProcessAuthority({
-      generalProcessPublication:
+}): Promise<StudioServer> => {
+  const agentToolsMcpRuntime =
+    createAgentToolsMcpRuntime({
+      generalProcessPublisher:
         getPublishedArtifactPublicationService(),
     });
-  const generalProcessRunAuthority =
-    new GeneralProcessRunAuthority(
-      agentToolsProcessAuthority.generalProcessSessionAuthority,
+  const generalProcessRunSupervisor =
+    new GeneralProcessRunSupervisor(
+      agentToolsMcpRuntime.generalProcessSessionManager,
     );
-  let studioAuthorities:
-    ReturnType<typeof createStudioApplicationAuthorities>;
+  let studioServices:
+    ReturnType<typeof createStudioApplicationServices>;
   try {
-    studioAuthorities = createStudioApplicationAuthorities(
+    studioServices = createStudioApplicationServices(
       input.appConfig,
-      agentToolsProcessAuthority,
+      agentToolsMcpRuntime,
     );
   } catch (error) {
     await closeStudioProcessResources({
-      agentToolsProcessAuthority,
-      generalProcessRunAuthority,
+      agentToolsMcpRuntime,
+      generalProcessRunSupervisor,
     });
     throw error;
   }
   const {
     packageRegistryService,
     bundleService,
-    applicationGraph,
+    applicationRuntime,
     agentDefinitionService,
     agentTeamDefinitionService,
-  } = studioAuthorities;
-  configureStudioApplicationApiAuthorities({
+  } = studioServices;
+  configureStudioApplicationApiServices({
     bundleService,
     packageRegistryService,
     agentDefinitionService,
@@ -184,11 +184,11 @@ export const buildStudioServerComposition = async (input: {
   });
   app.addHook("onClose", async () => {
     try {
-      await applicationGraph.lifecycle.stop();
+      await applicationRuntime.lifecycle.stop();
     } finally {
       await closeStudioProcessResources({
-        agentToolsProcessAuthority,
-        generalProcessRunAuthority,
+        agentToolsMcpRuntime,
+        generalProcessRunSupervisor,
       });
     }
   });
@@ -199,7 +199,7 @@ export const buildStudioServerComposition = async (input: {
     });
     await registerAgentToolsMcpRoutes(
       app,
-      agentToolsProcessAuthority.routeDependencies,
+      agentToolsMcpRuntime.routeDependencies,
     );
     await registerMcpGatewayRoutes(app);
     await app.register(cors, {
@@ -213,14 +213,14 @@ export const buildStudioServerComposition = async (input: {
     await registerRemoteAccessPolicyPlugin(app);
     await registerMobileWebStaticRoutes(app);
     await app.register(
-      async (restApp) => registerRestRoutes(restApp, applicationGraph),
+      async (restApp) => registerRestRoutes(restApp, applicationRuntime),
       { prefix: "/rest" },
     );
-    await registerWebsocketRoutes(app, applicationGraph);
+    await registerWebsocketRoutes(app, applicationRuntime);
     await registerGraphql(app);
     return Object.freeze({
-      app,
-      applicationGraph,
+      fastify: app,
+      applicationRuntime,
       packageRegistryService,
     });
   } catch (error) {

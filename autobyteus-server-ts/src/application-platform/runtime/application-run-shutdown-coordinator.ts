@@ -1,17 +1,17 @@
-export type ApplicationTeamRunShutdownPort = {
+export type ApplicationTeamRunStopper = {
   stopAllTeamRuns(): Promise<void>;
 };
 
-export type ApplicationAgentRunShutdownPort = {
+export type ApplicationAgentRunStopper = {
   stopAllAgentRuns(): Promise<void>;
 };
 
-export class ApplicationRunShutdownAuthority {
+export class ApplicationRunShutdownCoordinator {
   private stopPromise: Promise<void> | null = null;
 
   constructor(
-    private readonly teamRuns: ApplicationTeamRunShutdownPort,
-    private readonly agentRuns: ApplicationAgentRunShutdownPort,
+    private readonly teamRuns: ApplicationTeamRunStopper,
+    private readonly agentRuns: ApplicationAgentRunStopper,
   ) {}
 
   stopAllRuns(): Promise<void> {

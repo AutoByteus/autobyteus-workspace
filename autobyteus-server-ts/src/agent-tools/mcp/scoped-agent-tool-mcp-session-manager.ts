@@ -1,6 +1,6 @@
 import {
   AgentToolMcpSessionService,
-  type AgentToolMcpSessionAuthority,
+  type AgentToolMcpSessionManager,
   type AgentToolMcpSessionIssueInput,
   type CreateAgentToolMcpSessionResult,
 } from "./agent-tool-mcp-session-service.js";
@@ -10,8 +10,8 @@ import type {
   RedactedAgentToolMcpDescriptor,
 } from "./agent-tool-mcp-session.js";
 
-export class ApplicationAgentToolsSessionAuthority
-implements AgentToolMcpSessionAuthority {
+export class ScopedAgentToolMcpSessionManager
+implements AgentToolMcpSessionManager {
   private readonly ownedSessions =
     new Map<string, AgentToolMcpSessionOwnerIdentity>();
   private issueBlocked = false;
@@ -19,14 +19,14 @@ implements AgentToolMcpSessionAuthority {
 
   constructor(
     private readonly sessionService: AgentToolMcpSessionService,
-    private readonly assertExecutionAuthoritiesReady: () => void,
+    private readonly assertExecutionCapabilitiesReady: () => void,
   ) {}
 
   assertReady(): void {
     if (this.issueBlocked) {
-      throw new Error("Agent Tools MCP session authority is closing.");
+      throw new Error("Scoped Agent Tools MCP session manager is closing.");
     }
-    this.assertExecutionAuthoritiesReady();
+    this.assertExecutionCapabilitiesReady();
   }
 
   createAgentToolMcpSession(

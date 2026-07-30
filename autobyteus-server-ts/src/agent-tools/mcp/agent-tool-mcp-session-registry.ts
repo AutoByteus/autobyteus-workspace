@@ -58,8 +58,8 @@ export class AgentToolMcpSessionRegistry {
       runtimeKind: input.runtimeKind ?? input.sender.runtimeKind ?? null,
       configuredExposure: cloneConfiguredExposure(input.configuredExposure),
       executionContext: cloneAgentToolMcpExecutionContext(input.executionContext),
-      executionAuthorities: input.executionAuthorities
-        ? Object.freeze({ ...input.executionAuthorities })
+      executionCapabilities: input.executionCapabilities
+        ? Object.freeze({ ...input.executionCapabilities })
         : null,
       enabledTools: [...input.enabledTools],
       toolRoutes: cloneAgentToolMcpToolRouteTable(input.toolRoutes),

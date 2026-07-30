@@ -5,20 +5,20 @@ import type {
 import type { ApplicationExecutionEventDispatchResult } from "../../application-engine/runtime/protocol.js";
 import type { ApplicationEngineHostService } from "../../application-engine/services/application-engine-host-service.js";
 
-export type ApplicationEngineEventHandlerPort = Pick<
+export type ApplicationEngineEventHandler = Pick<
   ApplicationEngineHostService,
   | "invokeApplicationEventHandler"
   | "invokeApplicationArtifactHandler"
   | "stopApplicationEngine"
 >;
 
-export class DeferredApplicationEngineEventHandlerPort
-implements ApplicationEngineEventHandlerPort {
-  private target: ApplicationEngineEventHandlerPort | null = null;
+export class BindOnceApplicationEngineEventHandler
+implements ApplicationEngineEventHandler {
+  private target: ApplicationEngineEventHandler | null = null;
 
-  bind(target: ApplicationEngineEventHandlerPort): void {
+  bind(target: ApplicationEngineEventHandler): void {
     if (this.target) {
-      throw new Error("The application engine event handler port is already bound.");
+      throw new Error("The application engine event handler is already bound.");
     }
     this.target = target;
   }
@@ -45,9 +45,9 @@ implements ApplicationEngineEventHandlerPort {
     return this.requireTarget().stopApplicationEngine(applicationId);
   }
 
-  private requireTarget(): ApplicationEngineEventHandlerPort {
+  private requireTarget(): ApplicationEngineEventHandler {
     if (!this.target) {
-      throw new Error("The application engine event handler port is not bound.");
+      throw new Error("The application engine event handler is not bound.");
     }
     return this.target;
   }

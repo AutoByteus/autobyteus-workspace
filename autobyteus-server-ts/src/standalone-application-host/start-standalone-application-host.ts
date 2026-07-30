@@ -16,8 +16,8 @@ import {
   stopDefaultAgentRunEventPipeline,
 } from "../agent-execution/events/default-agent-run-event-pipeline.js";
 import { seedInternalServerBaseUrlFromListenAddress } from "../config/server-runtime-endpoints.js";
-import { createApplicationPlatformRuntimeGraph } from "../application-platform/runtime/create-application-platform-runtime-graph.js";
-import { buildStandaloneApplicationServerComposition } from "../compositions/build-standalone-application-server-composition.js";
+import { buildApplicationPlatformRuntime } from "../application-platform/runtime/build-application-platform-runtime.js";
+import { buildStandaloneApplicationServer } from "../compositions/build-standalone-application-server.js";
 import {
   resolveStandaloneApplicationHostConfig,
   type StandaloneApplicationHostConfig,
@@ -27,15 +27,15 @@ import { materializeStandaloneHostConfig } from "./config/standalone-host-config
 import { createApplicationDefinitionServices } from "../application-platform/runtime/create-application-definition-services.js";
 import { validateStandaloneApplicationPackage } from "../application-platform/launch-configuration/application-standalone-package-validator.js";
 import {
-  createAgentToolsMcpProcessAuthority,
-  type AgentToolsMcpProcessAuthority,
-} from "../agent-tools/mcp/agent-tools-mcp-process-authority.js";
+  createAgentToolsMcpRuntime,
+  type AgentToolsMcpRuntime,
+} from "../agent-tools/mcp/agent-tools-mcp-runtime.js";
 import {
   getPublishedArtifactPublicationService,
 } from "../services/published-artifacts/published-artifact-publication-service.js";
 import {
-  GeneralProcessRunAuthority,
-} from "../agent-execution/runtime/general-process-run-authority.js";
+  GeneralProcessRunSupervisor,
+} from "../agent-execution/runtime/general-process-run-supervisor.js";
 
 export type StandaloneApplicationHostHandle = Readonly<{
   config: StandaloneApplicationHostConfig;
@@ -147,10 +147,10 @@ export const startStandaloneApplicationHost = async (
   });
   let app: FastifyInstance | null = null;
   let processResources: StandaloneProcessResources | null = null;
-  let agentToolsProcessAuthority:
-    AgentToolsMcpProcessAuthority | null = null;
-  let generalProcessRunAuthority:
-    GeneralProcessRunAuthority | null = null;
+  let agentToolsMcpRuntime:
+    AgentToolsMcpRuntime | null = null;
+  let generalProcessRunSupervisor:
+    GeneralProcessRunSupervisor | null = null;
   try {
     processResources = await initializeStandaloneProcessResources(config);
     await resetDefaultAgentRunEventPipeline();
@@ -159,37 +159,37 @@ export const startStandaloneApplicationHost = async (
       appConfig: processResources.appConfig,
       bundleService,
     });
-    agentToolsProcessAuthority =
-      createAgentToolsMcpProcessAuthority({
-        generalProcessPublication:
+    agentToolsMcpRuntime =
+      createAgentToolsMcpRuntime({
+        generalProcessPublisher:
           getPublishedArtifactPublicationService(),
       });
-    generalProcessRunAuthority =
-      new GeneralProcessRunAuthority(
-        agentToolsProcessAuthority.generalProcessSessionAuthority,
+    generalProcessRunSupervisor =
+      new GeneralProcessRunSupervisor(
+        agentToolsMcpRuntime.generalProcessSessionManager,
       );
-    const graph = createApplicationPlatformRuntimeGraph({
+    const applicationRuntime = buildApplicationPlatformRuntime({
       appConfig: processResources.appConfig,
       bundleService,
       ...definitionServices,
-      agentToolsSessionAuthorityFactory:
-        agentToolsProcessAuthority,
+      agentToolsSessionManagerFactory:
+        agentToolsMcpRuntime,
       selectedApplicationIds: new Set([selection.applicationId]),
     });
-    app = await buildStandaloneApplicationServerComposition({
+    app = await buildStandaloneApplicationServer({
       selection,
-      graph,
+      applicationRuntime,
       loggingConfig: processResources.loggingConfig,
       agentToolsRouteDependencies:
-        agentToolsProcessAuthority.routeDependencies,
+        agentToolsMcpRuntime.routeDependencies,
     });
-    await graph.lifecycle.prepareBeforeListen();
+    await applicationRuntime.lifecycle.prepareBeforeListen();
     const url = await app.listen({ host: config.host, port: config.port });
     seedInternalServerBaseUrlFromListenAddress({
       requestedHost: config.host,
       listenAddress: app.server.address(),
     });
-    await graph.lifecycle.recoverAfterListen();
+    await applicationRuntime.lifecycle.recoverAfterListen();
 
     let closePromise: Promise<void> | null = null;
     const close = (): Promise<void> => {
@@ -198,10 +198,10 @@ export const startStandaloneApplicationHost = async (
           await app!.close();
         } finally {
           try {
-            await generalProcessRunAuthority!.close();
+            await generalProcessRunSupervisor!.close();
           } finally {
             try {
-              agentToolsProcessAuthority!.close();
+              agentToolsMcpRuntime!.close();
             } finally {
               try {
                 await stopDefaultAgentRunEventPipeline();
@@ -228,10 +228,10 @@ export const startStandaloneApplicationHost = async (
     } finally {
       if (processResources) {
         try {
-          await generalProcessRunAuthority?.close();
+          await generalProcessRunSupervisor?.close();
         } finally {
           try {
-            agentToolsProcessAuthority?.close();
+            agentToolsMcpRuntime?.close();
           } finally {
             try {
               await stopDefaultAgentRunEventPipeline();

@@ -18,23 +18,23 @@ import { SkillService } from "../../skills/services/skill-service.js";
 import { ApplicationAvailabilityStateRegistry } from "./application-availability-state-registry.js";
 import { ApplicationDefinitionRuntimeReadiness } from "./application-definition-runtime-readiness.js";
 import { ApplicationPlatformLifecycle } from "./application-platform-lifecycle.js";
-import type { ApplicationPlatformRuntimeGraph } from "./application-platform-runtime-graph.js";
-import { createApplicationOrchestrationAuthorities } from "./create-application-orchestration-authorities.js";
-import { DeferredApplicationEngineEventHandlerPort } from "./deferred-application-engine-event-handler-port.js";
-import { DeferredPublishedArtifactPublicationPort } from "./deferred-published-artifact-publication-port.js";
+import type { ApplicationPlatformRuntime } from "./application-platform-runtime.js";
+import { createApplicationOrchestrationServices } from "./create-application-orchestration-services.js";
+import { BindOnceApplicationEngineEventHandler } from "./bind-once-application-engine-event-handler.js";
+import { BindOncePublishedArtifactPublisher } from "./bind-once-published-artifact-publisher.js";
 import type {
-  ApplicationAgentToolsSessionAuthorityFactory,
-} from "../../agent-tools/mcp/agent-tools-mcp-process-authority.js";
+  ApplicationAgentToolsSessionManagerFactory,
+} from "../../agent-tools/mcp/agent-tools-mcp-runtime.js";
 
-export const createApplicationPlatformRuntimeGraph = (input: {
+export const buildApplicationPlatformRuntime = (input: {
   appConfig: AppConfig;
   bundleService: ApplicationBundleService;
   agentDefinitionService: AgentDefinitionService;
   agentTeamDefinitionService: AgentTeamDefinitionService;
-  agentToolsSessionAuthorityFactory:
-    ApplicationAgentToolsSessionAuthorityFactory;
+  agentToolsSessionManagerFactory:
+    ApplicationAgentToolsSessionManagerFactory;
   selectedApplicationIds?: ReadonlySet<string> | null;
-}): ApplicationPlatformRuntimeGraph => {
+}): ApplicationPlatformRuntime => {
   const storageLifecycleService = new ApplicationStorageLifecycleService({
     appConfig: input.appConfig,
     applicationBundleService: input.bundleService,
@@ -45,34 +45,35 @@ export const createApplicationPlatformRuntimeGraph = (input: {
   });
   const globalPlatformStateStore = new ApplicationGlobalPlatformStateStore(input.appConfig);
   const availabilityRegistry = new ApplicationAvailabilityStateRegistry();
-  const deferredEnginePort = new DeferredApplicationEngineEventHandlerPort();
-  const deferredPublicationPort =
-    new DeferredPublishedArtifactPublicationPort();
-  const agentToolsSessionAuthority =
-    input.agentToolsSessionAuthorityFactory
-      .createApplicationSessionAuthority({
-        executionAuthorities: {
-          publishedArtifactPublication: deferredPublicationPort,
+  const bindOnceApplicationEngineEventHandler =
+    new BindOnceApplicationEngineEventHandler();
+  const bindOncePublishedArtifactPublisher =
+    new BindOncePublishedArtifactPublisher();
+  const agentToolsSessionManager =
+    input.agentToolsSessionManagerFactory
+      .createApplicationSessionManager({
+        executionCapabilities: {
+          publishedArtifactPublisher: bindOncePublishedArtifactPublisher,
         },
-        assertExecutionAuthoritiesReady: () =>
-          deferredPublicationPort.assertBound(),
+        assertExecutionCapabilitiesReady: () =>
+          bindOncePublishedArtifactPublisher.assertBound(),
       });
-  const authorities = createApplicationOrchestrationAuthorities({
+  const services = createApplicationOrchestrationServices({
     ...input,
     platformStateStore,
     globalPlatformStateStore,
     availabilityRegistry,
-    deferredEnginePort,
-    agentToolsSessionAuthority,
+    bindOnceApplicationEngineEventHandler,
+    agentToolsSessionManager,
   });
-  deferredPublicationPort.bind(authorities.publicationService);
+  bindOncePublishedArtifactPublisher.bind(services.publicationService);
   const engineHostService = new ApplicationEngineHostService({
     applicationBundleService: input.bundleService,
     storageLifecycleService,
-    orchestrationHostService: authorities.orchestrationHostService,
-    agentStreamingService: authorities.agentStreamingService,
+    orchestrationHostService: services.orchestrationHostService,
+    agentStreamingService: services.agentStreamingService,
   });
-  deferredEnginePort.bind(engineHostService);
+  bindOnceApplicationEngineEventHandler.bind(engineHostService);
 
   const notificationHub = new ApplicationBackendNotificationHub();
   const backendWebSocketSessionService = new ApplicationBackendWebSocketSessionService({
@@ -80,7 +81,7 @@ export const createApplicationPlatformRuntimeGraph = (input: {
   });
   const backendGateway = new ApplicationBackendApiGatewayService({
     applicationBundleService: input.bundleService,
-    availabilityService: authorities.availabilityService,
+    availabilityService: services.availabilityService,
     engineHostService,
     notificationHub,
     webSocketSessionService: backendWebSocketSessionService,
@@ -89,8 +90,8 @@ export const createApplicationPlatformRuntimeGraph = (input: {
     bundleService: input.bundleService,
     agentDefinitionService: input.agentDefinitionService,
     agentTeamDefinitionService: input.agentTeamDefinitionService,
-    configurationService: authorities.configurationService,
-    executionResourceResolver: authorities.executionResourceResolver,
+    configurationService: services.configurationService,
+    executionResourceResolver: services.executionResourceResolver,
     skillService: new SkillService({ config: input.appConfig }),
     activeApplicationIds: input.selectedApplicationIds,
   });
@@ -102,7 +103,7 @@ export const createApplicationPlatformRuntimeGraph = (input: {
       },
       prepareAgentCustomizations: async () => loadAgentCustomizations(),
       toolReadiness: new AgentToolRegistryReadiness({
-        publishedArtifactPublicationService: authorities.publicationService,
+        publishedArtifactPublicationService: services.publicationService,
       }),
       bootstrapBuiltInAgents: async () => {
         await bootstrapBuiltInAgents({
@@ -111,24 +112,24 @@ export const createApplicationPlatformRuntimeGraph = (input: {
         });
       },
       definitionRuntimeReadiness,
-      agentToolsSessionAuthority,
-      publishedArtifactPublicationPort: deferredPublicationPort,
+      agentToolsSessionManager,
+      publishedArtifactPublisher: bindOncePublishedArtifactPublisher,
     },
     bundleService: input.bundleService,
     platformStateStore,
-    recoveryService: authorities.recoveryService,
-    availabilityService: authorities.availabilityService,
-    eventDispatchService: authorities.eventDispatchService,
-    startupGate: authorities.startupGate,
+    recoveryService: services.recoveryService,
+    availabilityService: services.availabilityService,
+    eventDispatchService: services.eventDispatchService,
+    startupGate: services.startupGate,
     selectedApplicationIds: input.selectedApplicationIds,
-    agentCommunicationService: authorities.agentCommunicationService,
+    agentCommunicationService: services.agentCommunicationService,
     backendGateway,
     backendWebSocketSessionService,
     notificationHub,
-    runObserverService: authorities.runObserverService,
+    runObserverService: services.runObserverService,
     engineHostService,
-    runShutdownAuthority: authorities.runShutdownAuthority,
-    streamingService: authorities.agentStreamingService,
+    runShutdownCoordinator: services.runShutdownCoordinator,
+    streamingService: services.agentStreamingService,
   });
 
   return Object.freeze({
@@ -136,16 +137,16 @@ export const createApplicationPlatformRuntimeGraph = (input: {
     storageLifecycleService,
     platformStateStore,
     globalPlatformStateStore,
-    runLookupStore: authorities.runLookupStore,
-    agentToolsSessionAuthority,
-    publishedArtifactPublicationService: authorities.publicationService,
-    startupGate: authorities.startupGate,
-    availabilityService: authorities.availabilityService,
-    recoveryService: authorities.recoveryService,
-    eventDispatchService: authorities.eventDispatchService,
-    orchestrationHostService: authorities.orchestrationHostService,
-    agentStreamingService: authorities.agentStreamingService,
-    agentCommunicationService: authorities.agentCommunicationService,
+    runLookupStore: services.runLookupStore,
+    agentToolsSessionManager,
+    publishedArtifactPublicationService: services.publicationService,
+    startupGate: services.startupGate,
+    availabilityService: services.availabilityService,
+    recoveryService: services.recoveryService,
+    eventDispatchService: services.eventDispatchService,
+    orchestrationHostService: services.orchestrationHostService,
+    agentStreamingService: services.agentStreamingService,
+    agentCommunicationService: services.agentCommunicationService,
     engineHostService,
     notificationHub,
     backendWebSocketSessionService,

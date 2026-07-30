@@ -109,7 +109,7 @@ export class ApplicationOrchestrationHostService {
 
   private get launchConfigurationService(): ApplicationLaunchConfigurationService {
     if (!this.dependencies.launchConfigurationService) {
-      throw new Error("Application launch configuration authority is not configured.");
+      throw new Error("Application launch configuration service is not configured.");
     }
     return this.dependencies.launchConfigurationService;
   }

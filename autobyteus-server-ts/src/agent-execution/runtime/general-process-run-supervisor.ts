@@ -1,5 +1,5 @@
 import type {
-  AgentToolMcpSessionAuthority,
+  AgentToolMcpSessionManager,
 } from "../../agent-tools/mcp/agent-tool-mcp-session-service.js";
 import { ClaudeAgentRunBackendFactory } from "../backends/claude/backend/claude-agent-run-backend-factory.js";
 import { ClaudeSessionManager } from "../backends/claude/session/claude-session-manager.js";
@@ -22,13 +22,13 @@ import {
   MemberTeamContextBuilder,
 } from "../../agent-team-execution/services/member-team-context-builder.js";
 
-export class GeneralProcessRunAuthority {
+export class GeneralProcessRunSupervisor {
   private readonly agentRunManager: AgentRunManager;
   private readonly agentTeamRunManager: AgentTeamRunManager;
   private closePromise: Promise<void> | null = null;
 
   constructor(
-    agentToolsSessionAuthority: AgentToolMcpSessionAuthority,
+    agentToolsSessionManager: AgentToolMcpSessionManager,
   ) {
     const codexThreadBootstrapper = new CodexThreadBootstrapper(
       undefined,
@@ -38,12 +38,12 @@ export class GeneralProcessRunAuthority {
       undefined,
       undefined,
       undefined,
-      agentToolsSessionAuthority,
+      agentToolsSessionManager,
     );
     const claudeSessionManager = new ClaudeSessionManager(
       undefined,
       undefined,
-      agentToolsSessionAuthority,
+      agentToolsSessionManager,
     );
     this.agentRunManager = AgentRunManager.initializeProcessInstance({
       codexBackendFactory: new CodexAgentRunBackendFactory(
@@ -53,7 +53,7 @@ export class GeneralProcessRunAuthority {
       claudeBackendFactory: new ClaudeAgentRunBackendFactory(
         claudeSessionManager,
       ),
-      agentToolMcpSessionAuthority: agentToolsSessionAuthority,
+      agentToolMcpSessionManager: agentToolsSessionManager,
     });
     const memberTeamContextBuilder =
       new MemberTeamContextBuilder(
@@ -70,8 +70,8 @@ export class GeneralProcessRunAuthority {
                   new MixedTeamManager(context, {
                     subTeamRunFactory,
                     agentRunManager: this.agentRunManager,
-                    agentToolMcpSessionAuthority:
-                      agentToolsSessionAuthority,
+                    agentToolMcpSessionManager:
+                      agentToolsSessionManager,
                     memberTeamContextBuilder,
                   }),
             }),

@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { buildGraphqlSchema } from "../../../../../src/api/graphql/schema.js";
-import { configureStudioApplicationApiAuthorities } from "../../../../../src/api/graphql/studio-application-api-authorities.js";
+import { configureStudioApplicationApiServices } from "../../../../../src/api/graphql/studio-application-api-services.js";
 import { AgentDefinitionResolver } from "../../../../../src/api/graphql/types/agent-definition.js";
 import { AgentTeamDefinitionResolver } from "../../../../../src/api/graphql/types/agent-team-definition.js";
 import { AgentDefinitionService } from "../../../../../src/agent-definition/services/agent-definition-service.js";
@@ -20,7 +20,7 @@ describe("definition catalog refresh GraphQL boundary", () => {
   } as unknown as AgentTeamDefinitionService;
 
   beforeAll(() => {
-    configureStudioApplicationApiAuthorities({
+    configureStudioApplicationApiServices({
       agentDefinitionService,
       agentTeamDefinitionService,
       bundleService: {} as ApplicationBundleService,

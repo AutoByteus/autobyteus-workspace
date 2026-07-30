@@ -3,49 +3,49 @@ import type { AgentTeamDefinitionService } from "../../agent-team-definition/ser
 import type { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
 import type { ApplicationPackageRegistryService } from "../../application-packages/services/application-package-registry-service.js";
 
-type StudioApplicationApiAuthorities = Readonly<{
+type StudioApplicationApiServices = Readonly<{
   agentDefinitionService: AgentDefinitionService;
   agentTeamDefinitionService: AgentTeamDefinitionService;
   bundleService: ApplicationBundleService;
   packageRegistryService: ApplicationPackageRegistryService;
 }>;
 
-let configuredAuthorities: StudioApplicationApiAuthorities | null = null;
+let configuredServices: StudioApplicationApiServices | null = null;
 
-export const configureStudioApplicationApiAuthorities = (
-  authorities: StudioApplicationApiAuthorities,
+export const configureStudioApplicationApiServices = (
+  services: StudioApplicationApiServices,
 ): void => {
-  if (configuredAuthorities) {
-    throw new Error("Studio application API authorities are already configured.");
+  if (configuredServices) {
+    throw new Error("Studio application API services are already configured.");
   }
-  configuredAuthorities = Object.freeze(authorities);
+  configuredServices = Object.freeze(services);
 };
 
 export const getStudioApplicationBundleService = (): ApplicationBundleService => {
-  if (!configuredAuthorities) {
-    throw new Error("Studio application API authorities are not configured.");
+  if (!configuredServices) {
+    throw new Error("Studio application API services are not configured.");
   }
-  return configuredAuthorities.bundleService;
+  return configuredServices.bundleService;
 };
 
 export const getStudioAgentDefinitionService = (): AgentDefinitionService => {
-  if (!configuredAuthorities) {
-    throw new Error("Studio application API authorities are not configured.");
+  if (!configuredServices) {
+    throw new Error("Studio application API services are not configured.");
   }
-  return configuredAuthorities.agentDefinitionService;
+  return configuredServices.agentDefinitionService;
 };
 
 export const getStudioAgentTeamDefinitionService = (): AgentTeamDefinitionService => {
-  if (!configuredAuthorities) {
-    throw new Error("Studio application API authorities are not configured.");
+  if (!configuredServices) {
+    throw new Error("Studio application API services are not configured.");
   }
-  return configuredAuthorities.agentTeamDefinitionService;
+  return configuredServices.agentTeamDefinitionService;
 };
 
 export const getStudioApplicationPackageRegistryService =
   (): ApplicationPackageRegistryService => {
-    if (!configuredAuthorities) {
-      throw new Error("Studio application API authorities are not configured.");
+    if (!configuredServices) {
+      throw new Error("Studio application API services are not configured.");
     }
-    return configuredAuthorities.packageRegistryService;
+    return configuredServices.packageRegistryService;
   };

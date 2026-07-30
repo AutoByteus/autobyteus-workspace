@@ -1,9 +1,9 @@
 export { startServer, type ServerOptions } from "./app.js";
 export { startConfiguredServer } from "./server-runtime.js";
 export {
-  buildStudioServerComposition,
-  type StudioServerComposition,
-} from "./compositions/build-studio-server-composition.js";
+  buildStudioServer,
+  type StudioServer,
+} from "./compositions/build-studio-server.js";
 export {
   startStandaloneApplicationHost,
   type StandaloneApplicationHostHandle,

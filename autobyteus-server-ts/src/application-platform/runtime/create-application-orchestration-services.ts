@@ -27,8 +27,8 @@ import { ApplicationLaunchOverrideStore } from "../../application-orchestration/
 import { ApplicationRunBindingStore } from "../../application-orchestration/stores/application-run-binding-store.js";
 import { ApplicationRunLookupStore } from "../../application-orchestration/stores/application-run-lookup-store.js";
 import type { ApplicationAvailabilityStateRegistry } from "./application-availability-state-registry.js";
-import type { DeferredApplicationEngineEventHandlerPort } from "./deferred-application-engine-event-handler-port.js";
-import { createApplicationRunAuthorities } from "./create-application-run-authorities.js";
+import type { BindOnceApplicationEngineEventHandler } from "./bind-once-application-engine-event-handler.js";
+import { createApplicationRunServices } from "./create-application-run-services.js";
 import { getRuntimeAvailabilityService } from "../../runtime-management/runtime-availability-service.js";
 import { getModelCatalogService } from "../../llm-management/services/model-catalog-service.js";
 import { getLlmProviderService } from "../../llm-management/llm-providers/services/llm-provider-service.js";
@@ -40,19 +40,19 @@ import {
   ApplicationProviderCredentialReadinessAdapter,
 } from "../launch-configuration/application-provider-credential-readiness-adapter.js";
 import type {
-  ApplicationAgentToolsSessionAuthority,
-} from "../../agent-tools/mcp/application-agent-tools-session-authority.js";
+  ScopedAgentToolMcpSessionManager,
+} from "../../agent-tools/mcp/scoped-agent-tool-mcp-session-manager.js";
 
-export const createApplicationOrchestrationAuthorities = (input: {
+export const createApplicationOrchestrationServices = (input: {
   appConfig: AppConfig;
   bundleService: ApplicationBundleService;
   platformStateStore: ApplicationPlatformStateStore;
   globalPlatformStateStore: ApplicationGlobalPlatformStateStore;
   availabilityRegistry: ApplicationAvailabilityStateRegistry;
-  deferredEnginePort: DeferredApplicationEngineEventHandlerPort;
+  bindOnceApplicationEngineEventHandler: BindOnceApplicationEngineEventHandler;
   agentDefinitionService: AgentDefinitionService;
   agentTeamDefinitionService: AgentTeamDefinitionService;
-  agentToolsSessionAuthority: ApplicationAgentToolsSessionAuthority;
+  agentToolsSessionManager: ScopedAgentToolMcpSessionManager;
 }) => {
   const runLookupStore = new ApplicationRunLookupStore({
     globalPlatformStateStore: input.globalPlatformStateStore,
@@ -72,7 +72,7 @@ export const createApplicationOrchestrationAuthorities = (input: {
     availabilityReader: input.availabilityRegistry.reader as never,
     platformStateStore: input.platformStateStore,
     journalStore,
-    engineHostService: input.deferredEnginePort as never,
+    engineHostService: input.bindOnceApplicationEngineEventHandler as never,
   });
   const ingressService = new ApplicationExecutionEventIngressService({
     journalStore,
@@ -85,13 +85,13 @@ export const createApplicationOrchestrationAuthorities = (input: {
     ingressService,
     lifecycleHub,
   });
-  const runAuthorities = createApplicationRunAuthorities({
+  const runServices = createApplicationRunServices({
     ...input,
     bindingStore,
   });
   const lifecycleGateway = new ApplicationBoundRunLifecycleGateway({
-    agentRunService: runAuthorities.agentRunService,
-    teamRunService: runAuthorities.teamRunService,
+    agentRunService: runServices.agentRunService,
+    teamRunService: runServices.teamRunService,
   });
   const runObserverService = new ApplicationRunObserverService({
     lifecycleGateway,
@@ -111,7 +111,7 @@ export const createApplicationOrchestrationAuthorities = (input: {
   });
   const availabilityService = new ApplicationAvailabilityService({
     applicationBundleService: input.bundleService,
-    engineHostService: input.deferredEnginePort as never,
+    engineHostService: input.bindOnceApplicationEngineEventHandler as never,
     recoveryService,
     dispatchService: eventDispatchService,
     stateRegistry: input.availabilityRegistry,
@@ -145,8 +145,8 @@ export const createApplicationOrchestrationAuthorities = (input: {
     executionResourceResolver,
     bindingStore,
     lookupStore: runLookupStore,
-    agentRunService: runAuthorities.agentRunService,
-    teamRunService: runAuthorities.teamRunService,
+    agentRunService: runServices.agentRunService,
+    teamRunService: runServices.teamRunService,
     agentDefinitionService: input.agentDefinitionService,
     agentTeamDefinitionService: input.agentTeamDefinitionService,
   });
@@ -165,11 +165,11 @@ export const createApplicationOrchestrationAuthorities = (input: {
     bindingStore,
     lookupStore: runLookupStore,
     runObserverService,
-    agentRunService: runAuthorities.agentRunService,
-    teamRunService: runAuthorities.teamRunService,
-    teamRunMetadataService: runAuthorities.teamRunMetadataService,
-    publishedArtifactProjectionService: runAuthorities.publishedArtifactProjectionService,
-    memoryLocationService: runAuthorities.memoryLocationService,
+    agentRunService: runServices.agentRunService,
+    teamRunService: runServices.teamRunService,
+    teamRunMetadataService: runServices.teamRunMetadataService,
+    publishedArtifactProjectionService: runServices.publishedArtifactProjectionService,
+    memoryLocationService: runServices.memoryLocationService,
     ingressService,
     agentTargetAuthorizationService: targetAuthorizationService,
     terminalTransitionService,
@@ -187,12 +187,12 @@ export const createApplicationOrchestrationAuthorities = (input: {
     startupGate,
     eventDispatchService,
     runObserverService,
-    runShutdownAuthority: runAuthorities.runShutdownAuthority,
+    runShutdownCoordinator: runServices.runShutdownCoordinator,
     recoveryService,
     availabilityService,
     configurationService,
     executionResourceResolver,
-    publicationService: runAuthorities.publicationService,
+    publicationService: runServices.publicationService,
     orchestrationHostService,
     agentStreamingService,
     agentCommunicationService,

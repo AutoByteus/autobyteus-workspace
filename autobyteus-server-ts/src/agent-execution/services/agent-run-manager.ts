@@ -35,7 +35,7 @@ import {
 } from "../../agent-memory/services/agent-run-memory-recorder.js";
 import {
   getAgentToolMcpSessionService,
-  type AgentToolMcpSessionAuthority,
+  type AgentToolMcpSessionManager,
 } from "../../agent-tools/mcp/agent-tool-mcp-session-service.js";
 
 const logger = {
@@ -59,7 +59,7 @@ type AgentRunManagerOptions = {
   runFileChangeService?: RunFileChangeService;
   publishedArtifactRelayService?: ApplicationPublishedArtifactRelayService;
   memoryRecorder?: AgentRunMemoryRecorder;
-  agentToolMcpSessionAuthority?: AgentToolMcpSessionAuthority;
+  agentToolMcpSessionManager?: AgentToolMcpSessionManager;
 };
 
 export class AgentRunManager {
@@ -70,7 +70,7 @@ export class AgentRunManager {
   private readonly runFileChangeService: RunFileChangeService;
   private readonly publishedArtifactRelayService: ApplicationPublishedArtifactRelayService;
   private readonly memoryRecorder: AgentRunMemoryRecorder;
-  private readonly agentToolMcpSessionAuthority: AgentToolMcpSessionAuthority;
+  private readonly agentToolMcpSessionManager: AgentToolMcpSessionManager;
   private activeRuns = new Map<string, AgentRun>();
   private readonly runFileChangeUnsubscribers = new Map<string, () => void>();
   private readonly publishedArtifactRelayUnsubscribers = new Map<string, () => void>();
@@ -111,8 +111,8 @@ export class AgentRunManager {
     this.publishedArtifactRelayService =
       options.publishedArtifactRelayService ?? getApplicationPublishedArtifactRelayService();
     this.memoryRecorder = options.memoryRecorder ?? getAgentRunMemoryRecorder();
-    this.agentToolMcpSessionAuthority =
-      options.agentToolMcpSessionAuthority ?? getAgentToolMcpSessionService();
+    this.agentToolMcpSessionManager =
+      options.agentToolMcpSessionManager ?? getAgentToolMcpSessionService();
     logger.info("AgentRunManager initialized.");
   }
 
@@ -321,7 +321,7 @@ export class AgentRunManager {
 
   private unregisterActiveRun(runId: string): void {
     this.activeRuns.delete(runId);
-    this.agentToolMcpSessionAuthority.revokeAgentToolMcpSessionsForRun(runId);
+    this.agentToolMcpSessionManager.revokeAgentToolMcpSessionsForRun(runId);
     this.unregisterRunFileChanges(runId);
     this.unregisterPublishedArtifactRelay(runId);
     this.unregisterMemoryRecorder(runId);

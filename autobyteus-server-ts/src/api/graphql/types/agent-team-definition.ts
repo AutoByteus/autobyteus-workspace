@@ -22,7 +22,7 @@ import { AgentTeamDefinitionConverter } from "../converters/agent-team-definitio
 import {
   getStudioAgentDefinitionService,
   getStudioAgentTeamDefinitionService,
-} from "../studio-application-api-authorities.js";
+} from "../studio-application-api-services.js";
 import {
   GraphqlDefaultLaunchConfig,
   GraphqlDefaultLaunchConfigInput,

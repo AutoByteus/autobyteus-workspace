@@ -14,14 +14,14 @@ import type { ApplicationAgentStreamingService } from "../../application-agent-s
 import type { AgentToolRegistryReadiness } from "../../startup/agent-tool-loader.js";
 import type { ApplicationDefinitionRuntimeReadiness } from "./application-definition-runtime-readiness.js";
 import type {
-  ApplicationAgentToolsSessionAuthority,
-} from "../../agent-tools/mcp/application-agent-tools-session-authority.js";
+  ScopedAgentToolMcpSessionManager,
+} from "../../agent-tools/mcp/scoped-agent-tool-mcp-session-manager.js";
 import type {
-  DeferredPublishedArtifactPublicationPort,
-} from "./deferred-published-artifact-publication-port.js";
+  BindOncePublishedArtifactPublisher,
+} from "./bind-once-published-artifact-publisher.js";
 import type {
-  ApplicationRunShutdownAuthority,
-} from "./application-run-shutdown-authority.js";
+  ApplicationRunShutdownCoordinator,
+} from "./application-run-shutdown-coordinator.js";
 
 export type ApplicationPlatformLifecycleState =
   | "constructed"
@@ -41,9 +41,9 @@ export type ApplicationPlatformLifecycleDependencies = {
     toolReadiness: AgentToolRegistryReadiness;
     bootstrapBuiltInAgents: () => Promise<void>;
     definitionRuntimeReadiness: ApplicationDefinitionRuntimeReadiness;
-    agentToolsSessionAuthority: ApplicationAgentToolsSessionAuthority;
-    publishedArtifactPublicationPort:
-      DeferredPublishedArtifactPublicationPort;
+    agentToolsSessionManager: ScopedAgentToolMcpSessionManager;
+    publishedArtifactPublisher:
+      BindOncePublishedArtifactPublisher;
   };
   bundleService: ApplicationBundleService;
   platformStateStore: ApplicationPlatformStateStore;
@@ -58,6 +58,6 @@ export type ApplicationPlatformLifecycleDependencies = {
   notificationHub: ApplicationBackendNotificationHub;
   runObserverService: ApplicationRunObserverService;
   engineHostService: ApplicationEngineHostService;
-  runShutdownAuthority: ApplicationRunShutdownAuthority;
+  runShutdownCoordinator: ApplicationRunShutdownCoordinator;
   streamingService: ApplicationAgentStreamingService;
 };

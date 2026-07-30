@@ -182,7 +182,7 @@ const memberIdentityOnly = (
   agentDefinitionId: leaf.agentDefinitionId,
 }));
 
-describe("ApplicationLaunchConfigurationService selected-resource authority", () => {
+describe("ApplicationLaunchConfigurationService selected-resource resolution", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });

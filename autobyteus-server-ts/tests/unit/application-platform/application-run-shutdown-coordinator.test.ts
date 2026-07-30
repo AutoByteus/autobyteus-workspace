@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
 import {
-  ApplicationRunShutdownAuthority,
-} from "../../../src/application-platform/runtime/application-run-shutdown-authority.js";
+  ApplicationRunShutdownCoordinator,
+} from "../../../src/application-platform/runtime/application-run-shutdown-coordinator.js";
 
-describe("ApplicationRunShutdownAuthority", () => {
+describe("ApplicationRunShutdownCoordinator", () => {
   it("stops team runs before remaining agent runs and is idempotent", async () => {
     const order: string[] = [];
     const stopAllTeamRuns = vi.fn(async () => {
@@ -12,17 +12,17 @@ describe("ApplicationRunShutdownAuthority", () => {
     const stopAllAgentRuns = vi.fn(async () => {
       order.push("agents");
     });
-    const authority = new ApplicationRunShutdownAuthority(
+    const coordinator = new ApplicationRunShutdownCoordinator(
       { stopAllTeamRuns },
       { stopAllAgentRuns },
     );
 
-    const firstStop = authority.stopAllRuns();
-    const concurrentStop = authority.stopAllRuns();
+    const firstStop = coordinator.stopAllRuns();
+    const concurrentStop = coordinator.stopAllRuns();
 
     expect(concurrentStop).toBe(firstStop);
     await expect(firstStop).resolves.toBeUndefined();
-    await expect(authority.stopAllRuns()).resolves.toBeUndefined();
+    await expect(coordinator.stopAllRuns()).resolves.toBeUndefined();
     expect(order).toEqual(["teams", "agents"]);
     expect(stopAllTeamRuns).toHaveBeenCalledTimes(1);
     expect(stopAllAgentRuns).toHaveBeenCalledTimes(1);
@@ -32,7 +32,7 @@ describe("ApplicationRunShutdownAuthority", () => {
     const order: string[] = [];
     const teamFailure = new Error("team shutdown failed");
     const agentFailure = new Error("agent shutdown failed");
-    const authority = new ApplicationRunShutdownAuthority(
+    const coordinator = new ApplicationRunShutdownCoordinator(
       {
         stopAllTeamRuns: vi.fn(async () => {
           order.push("teams");
@@ -47,13 +47,13 @@ describe("ApplicationRunShutdownAuthority", () => {
       },
     );
 
-    const stop = authority.stopAllRuns();
+    const stop = coordinator.stopAllRuns();
     await expect(stop).rejects.toMatchObject({
       name: "AggregateError",
       message: "Application run shutdown failed.",
       errors: [teamFailure, agentFailure],
     });
-    await expect(authority.stopAllRuns()).rejects.toBeInstanceOf(AggregateError);
+    await expect(coordinator.stopAllRuns()).rejects.toBeInstanceOf(AggregateError);
     expect(order).toEqual(["teams", "agents"]);
   });
 });

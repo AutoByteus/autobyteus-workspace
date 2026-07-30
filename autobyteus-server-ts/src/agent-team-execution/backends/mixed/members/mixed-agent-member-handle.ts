@@ -18,7 +18,7 @@ import {
 import type { AgentStatusPayload } from "../../../../agent-execution/domain/agent-status-payload.js";
 import { RuntimeKind } from "../../../../runtime-management/runtime-kind-enum.js";
 import type {
-  AgentToolMcpSessionAuthority,
+  AgentToolMcpSessionManager,
 } from "../../../../agent-tools/mcp/agent-tool-mcp-session-service.js";
 import type { TeamMemberRunConfig } from "../../../domain/team-run-config.js";
 import type { TeamRunMemberConfig } from "../../../domain/team-run-config.js";
@@ -53,7 +53,7 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
     context: MixedAgentMemberContext;
     config: TeamMemberRunConfig;
     agentRunManager?: AgentRunManager;
-    agentToolMcpSessionAuthority?: AgentToolMcpSessionAuthority;
+    agentToolMcpSessionManager?: AgentToolMcpSessionManager;
     memberTeamContextBuilder: MemberTeamContextBuilder;
     interAgentMessageRouter?: InterAgentMessageRouter;
     publish: MixedTeamEventPublish;
@@ -213,7 +213,7 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
   dispose(): void {
     this.unsubscribe?.();
     this.unsubscribe = null;
-    this.options.agentToolMcpSessionAuthority
+    this.options.agentToolMcpSessionManager
       ?.revokeAgentToolMcpSessionsForMemberRun(this.context.memberRunId);
     this.agentRun = null;
     this.commandStatusOverlayStore.clear();

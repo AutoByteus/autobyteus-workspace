@@ -172,8 +172,8 @@ describe("Agent Tools MCP route publish_artifacts integration", () => {
         workingDirectory: workspaceRoot,
         memoryDir,
       },
-      executionAuthorities: {
-        publishedArtifactPublication: publicationService,
+      executionCapabilities: {
+        publishedArtifactPublisher: publicationService,
       },
     });
     const sessionUrl = `/mcp/agent-tools/${session.sessionId}`;

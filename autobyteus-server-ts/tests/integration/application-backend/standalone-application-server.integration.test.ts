@@ -4,13 +4,13 @@ import path from "node:path";
 import WebSocket from "ws";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { ApplicationBackendNotificationHub } from "../../../src/application-backend-api-gateway/notifications/application-backend-notification-hub.js";
-import { buildStandaloneApplicationServerComposition } from "../../../src/compositions/build-standalone-application-server-composition.js";
+import { buildStandaloneApplicationServer } from "../../../src/compositions/build-standalone-application-server.js";
 import { resolveStandaloneApplicationHostConfig } from "../../../src/standalone-application-host/config/standalone-application-host-config.js";
 import { StandaloneApplicationSelectionService } from "../../../src/standalone-application-host/services/standalone-application-selection-service.js";
 import {
-  createAgentToolsMcpProcessAuthority,
-  type AgentToolsMcpProcessAuthority,
-} from "../../../src/agent-tools/mcp/agent-tools-mcp-process-authority.js";
+  createAgentToolsMcpRuntime,
+  type AgentToolsMcpRuntime,
+} from "../../../src/agent-tools/mcp/agent-tools-mcp-runtime.js";
 
 const BRIEF_PACKAGE_ROOT = path.resolve(
   process.cwd(),
@@ -60,14 +60,14 @@ const waitForSocketMessage = async (socket: WebSocket): Promise<unknown> =>
     socket.once("error", reject);
   });
 
-describe("standalone application selection and composition", () => {
-  const apps: Array<Awaited<ReturnType<typeof buildStandaloneApplicationServerComposition>>> = [];
-  const processAuthorities: AgentToolsMcpProcessAuthority[] = [];
+describe("standalone application server", () => {
+  const apps: Array<Awaited<ReturnType<typeof buildStandaloneApplicationServer>>> = [];
+  const mcpRuntimes: AgentToolsMcpRuntime[] = [];
 
   afterEach(async () => {
     await Promise.allSettled(apps.splice(0).map((app) => app.close()));
-    for (const authority of processAuthorities.splice(0)) {
-      authority.close();
+    for (const mcpRuntime of mcpRuntimes.splice(0)) {
+      mcpRuntime.close();
     }
   });
 
@@ -113,15 +113,15 @@ describe("standalone application selection and composition", () => {
       connectApplicationWebSocket: vi.fn(),
     };
     const notificationHub = new ApplicationBackendNotificationHub();
-    const agentToolsProcessAuthority = createAgentToolsMcpProcessAuthority({
-      generalProcessPublication: {
+    const agentToolsMcpRuntime = createAgentToolsMcpRuntime({
+      generalProcessPublisher: {
         publishManyForRun: vi.fn(async () => []),
       },
     });
-    processAuthorities.push(agentToolsProcessAuthority);
-    const app = await buildStandaloneApplicationServerComposition({
+    mcpRuntimes.push(agentToolsMcpRuntime);
+    const app = await buildStandaloneApplicationServer({
       selection,
-      graph: {
+      applicationRuntime: {
         lifecycle,
         backendGateway: gateway,
         notificationHub,
@@ -134,7 +134,7 @@ describe("standalone application selection and composition", () => {
         scopedLogLevelOverrides: [],
       },
       agentToolsRouteDependencies:
-        agentToolsProcessAuthority.routeDependencies,
+        agentToolsMcpRuntime.routeDependencies,
     });
     apps.push(app);
 
@@ -204,7 +204,7 @@ describe("standalone application selection and composition", () => {
         params: {
           protocolVersion: "2025-03-26",
           capabilities: {},
-          clientInfo: { name: "standalone-composition-test", version: "1" },
+          clientInfo: { name: "standalone-server-test", version: "1" },
         },
       },
     });
@@ -263,7 +263,7 @@ describe("standalone application selection and composition", () => {
     expect(await hashTree(BRIEF_PACKAGE_ROOT)).toBe(initialDigest);
   }, 20_000);
 
-  it("fails before composition for invalid roots and missing explicit selections", async () => {
+  it("fails before server construction for invalid roots and missing explicit selections", async () => {
     await expect(
       new StandaloneApplicationSelectionService().resolve(
         resolveStandaloneApplicationHostConfig({
