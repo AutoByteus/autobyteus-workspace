@@ -11,6 +11,7 @@
 - Pre-verification delivery checkpoint: `aa2070124332a4aac9fbcf2d342a8832a39fbc46` (`chore(ticket): checkpoint delivery package`).
 - Final ticket archive commit: `75bea4fe2b946a8b395bc71bec103c61915feff2` (`chore(ticket): archive event monitor markdown link clickability`).
 - Finalization merge commit on `personal`: `6bb72ea289e6e041ddf109b1277fc8cae27f0fab`.
+- Final delivery-metadata merge commit on `personal`: `8249c1fa4cca5ced7f54112d5df3a27aff87c8c5`; current `origin/personal` points here.
 
 ## Delivered Change
 
@@ -78,6 +79,7 @@ Retained execution evidence is in the same ticket folder: focused/adjacent test 
 - Ticket branch `codex/event-monitor-markdown-link-clickability` was committed as `75bea4fe2b946a8b395bc71bec103c61915feff2` and pushed to `origin/codex/event-monitor-markdown-link-clickability`.
 - Latest target `origin/personal` was refreshed at `34f3fe97a`; the ticket branch was merged without conflict as `6bb72ea289e6e041ddf109b1277fc8cae27f0fab` and pushed to `origin/personal`.
 - Final integrated source remained the reviewed source; no additional rerun was required because the final target refresh introduced no new base commits or source changes.
+- Cleanup completed: dedicated ticket and finalization worktrees were removed; local and remote ticket branches were deleted after target-branch finalization. The unrelated dirty main `personal` worktree was preserved untouched.
 
 ## Residual Risks
 

@@ -49,8 +49,8 @@
 
 - Ticket folder transition: `Complete — archived at tickets/done/event-monitor-markdown-link-clickability/`.
 - Ticket branch commit/push: `Complete — 75bea4fe2b946a8b395bc71bec103c61915feff2 pushed to origin/codex/event-monitor-markdown-link-clickability`.
-- Finalization target refresh/merge/push: `Complete — origin/personal was refreshed at 34f3fe97a and updated with merge commit 6bb72ea289e6e041ddf109b1277fc8cae27f0fab`.
-- Worktree/branch cleanup: `Pending until delivery metadata update is merged; then safe cleanup will be performed`.
+- Finalization target refresh/merge/push: `Complete — origin/personal was refreshed at 34f3fe97a and updated with merge commit 6bb72ea289e6e041ddf109b1277fc8cae27f0fab; final delivery metadata was merged as 8249c1fa4cca5ced7f54112d5df3a27aff87c8c5 and pushed to origin/personal`.
+- Worktree/branch cleanup: `Complete — dedicated ticket and finalization worktrees removed; local and remote ticket branches deleted after target-branch finalization. The unrelated dirty main personal worktree was preserved untouched.`
 
 ## Verification Evidence
 
@@ -66,4 +66,4 @@
 
 ## Current Result
 
-`Finalized; archived and merged into personal; no release/version bump performed.`
+`Finalized; archived and merged into personal; cleanup complete; no release/version bump performed.`
