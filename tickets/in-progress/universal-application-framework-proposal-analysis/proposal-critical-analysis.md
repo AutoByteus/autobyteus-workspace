@@ -4,17 +4,17 @@
 
 - Assessment status: Complete for the repository baseline recorded below
 - Recommendation status: **Approve the vision conditionally; revise the proposal before treating it as an implementation plan**
-- Approval applicability: Approved/refined through 2026-07-30. User/account concerns are excluded; application-folder commands, complete package defaults, optional Studio overrides, and the internal Agent Tools/general-gateway/application-MCP boundary remain approved. SR-010 corrects only the graph-local publication authority and lifecycle design exposed by CRR-020.
+- Approval applicability: Approved/refined through 2026-07-30. User/account concerns are excluded; application-folder commands, complete package defaults, optional Studio overrides, and the internal Agent Tools/general-gateway/application-MCP boundary remain approved. SR-011 adds only a behavior-neutral central framework vocabulary correction after the functional implementation passed.
 - Source proposal: [sources/autobyteus-vertical-application-developer-experience-proposal.md](sources/autobyteus-vertical-application-developer-experience-proposal.md)
 - Requirements basis: [requirements.md](requirements.md)
 - Evidence log: [investigation-notes.md](investigation-notes.md)
-- Repository design baseline: refreshed before implementation to `origin/personal` at `6caf809303294252c109420b238588f0c68aca6a`; current focused review authority is `CRR-020` at task commit `7dfc050f4` on 2026-07-30
+- Repository design baseline: refreshed before implementation to `origin/personal` at `6caf809303294252c109420b238588f0c68aca6a`; current naming review authority is `CRR-028` at task commit `548b55833` on 2026-07-30
 
 ## Executive Verdict
 
 The proposal has a strong product thesis and the right high-level ownership split: an application should own its product UX and business state, while AutoByteus should own runtime execution, orchestration, application scoping, and host integration. The repository already contains more of that foundation than the proposal implies: Studio application discovery, a strict iframe bootstrap contract, a separate application worker process, app-owned SQLite migrations, durable application-to-agent/team bindings, bundled agents and teams, direct frontend agent communication, and a first devkit all exist.
 
-The original proposal was **not implementation-ready**. The bounded architecture through complete package defaults, three-state readiness, invalid host-override handling, selected-resource sparse editing, recursive portable policy, graph-local prompt construction, and route parity has since passed review and been implemented. API-REV-007 now reaches the actual server-tool consequence: route/auth/tool listing and recipient-name handoff work, but every publication call uses a process-global publication service that cannot see the application graph’s active member run. The correct graph-local publication service already exists; the remaining design work is to bind it to application-created Agent Tools sessions through one composition-owned process family and a narrow fail-closed cycle-breaking port. Runtime-internal tooling and the general external gateway remain outside this correction. At the original investigation baseline, the proposal treated several absent or partial capabilities as small adaptations:
+The original proposal was **not implementation-ready**. The bounded dual-host architecture has since passed architecture, implementation-source, API/E2E, and durable-test review. `API-REV-010` validates real Studio/standalone launch, Codex/Luna package defaults, Agent Tools publication and recipient-name handoff, application projection, restart/cleanup, and package parity at 98.3% confidence. `CRR-028` identifies no runtime gap; the remaining design work is a behavior-neutral readability correction because the central names `Composition`, `Graph`, `Authority`, and `Port` hide concrete server, runtime, manager, supervisor, coordinator, and bind-once roles. At the original investigation baseline, the proposal treated several absent or partial capabilities as small adaptations:
 
 1. there was no standalone application product host;
 2. the frontend startup API was iframe-specific rather than host-neutral;
@@ -51,11 +51,12 @@ Classification meanings:
 | Bundled agents and teams | Existing | Bundle discovery creates canonical application-owned agent/team identities. | Reuse. |
 | Bundled/versioned skills and tools | Absent | Devkit copies agents and agent teams only. Agent configs resolve named skills/tools through platform registries. | Exclude from MVP portability guarantee or design an explicit dependency model later. |
 | No hidden global resources | Not satisfied | Execution-resource slots default to both `bundle` and `shared`; all visible shared agents/teams are listable and shared refs use unversioned definition IDs. | Revise the claim and introduce explicit, versioned dependency semantics before ecosystem distribution. |
-| Standalone product host at `/` | Existing with one graph-publication gap | Selected-app composition, root/static serving, same-origin bootstrap, Codex/Luna defaults, readiness, dev/start, and the internal Agent Tools route exist. Real publication reaches the adapter but selects the process-global manager rather than the graph-local run owner. | Preserve route parity; connect application sessions to the exact graph publication authority without global lookup or a second gateway. |
-| Explicit server composition | Existing in task implementation | Studio and selected-application standalone compositions share a graph/lifecycle with bounded route inventories. | Preserve explicit compositions; do not add a generic module locator. |
+| Standalone product host at `/` | Existing and passed | Selected-app server, root/static serving, same-origin bootstrap, Codex/Luna defaults, readiness, dev/start, internal Agent Tools publication/handoff/projection, restart, and cleanup pass. | Preserve behavior while applying the bounded name map. |
+| Explicit server assembly | Existing in task implementation | Studio and selected-application standalone servers share one `ApplicationPlatformRuntime` model with bounded route inventories. | Preserve explicit assembly; do not add a generic module locator. |
 | Vue/React scaffolds and HMR | Absent | The devkit has one plain TypeScript/CSS template and one-shot esbuild output. | Defer until host portability works. |
-| Standalone-first dev command | Existing with bounded publication-authority gap | `autobyteus-app dev` runs the real standalone host; API-REV-007 reaches Codex/Luna, authenticates to the internal route, and completes team handoff, but publication consults the wrong run manager. | Preserve command/validation/route behavior; bind application-created sessions to the graph-local publication service. |
-| Dual-host conformance | Partial and substantial | Selected-resource/policy/prompt/launch/route cases pass. API-REV-007 proves actual tools and messaging, then fails all publication calls because the default provider captured the process-global service. | Correct the session publication authority and rerun exact standalone and Studio publication/journal/projection paths; do not add unrelated runtime-internal scope. |
+| Standalone-first dev command | Existing and passed | `autobyteus-app dev` runs the real standalone host through repeated atomic pack/watch/restart cycles and completes the maintained real team/tool journey. | Preserve command/validation/route/package behavior. |
+| Dual-host conformance | Existing and passed | `API-REV-010` proves identical package artifacts, real provider/team execution, publication/message/handoff/projection, restart, and cleanup in both hosts. | Use as the regression baseline for the behavior-neutral rename. |
+| Central framework naming | Needs bounded correction | Functional boundaries are correct, but `StudioServerComposition`, `ApplicationPlatformRuntimeGraph`, several unrelated `*Authority` roles, and bind-once `*Port` proxies are not self-explanatory. | Apply the exact server/runtime/manager/supervisor/coordinator/service/publisher/handler map with no aliases or repository-wide rename. |
 | Package version/signature/integrity | Absent | No `.abapp`, release version, file checksum manifest, publisher identity, signature verification, or revocation path exists. | Defer distribution claims until defined and enforced. |
 | Permissions and isolation | Absent beyond scoping/validation | Manifest v4 has no permissions. Worker code inherits host environment and Node privileges. The app iframe lacks a sandbox attribute. | Treat marketplace execution as blocked on a threat model and enforceable controls. |
 | Marketplace | Absent | Public GitHub/default-branch archive import exists, but it is not a signed/versioned marketplace pipeline. | Defer as a separate program after security and release semantics. |
@@ -68,7 +69,7 @@ Classification meanings:
 
 ### 2. Runtime responsibility model
 
-The proposal correctly rejects the idea that `autobyteus-ts` is the whole platform runtime. The server is the multi-runtime authority and already selects separate backends under `autobyteus-server-ts/src/agent-execution/backends/`.
+The proposal correctly rejects the idea that `autobyteus-ts` is the whole platform runtime. The server is the multi-runtime owner and already selects separate backends under `autobyteus-server-ts/src/agent-execution/backends/`.
 
 ### 3. Application/platform ownership split
 
@@ -78,9 +79,9 @@ The repository reflects the proposal's strongest boundary: the host presents and
 
 Studio remains the optional experimentation surface. Package defaults, not a saved Studio row, are the standalone baseline.
 
-### 4. Server composition should be reused, not forked
+### 4. Server assembly should be reused, not forked
 
-A copied “mini server” would immediately split policy, lifecycle, recovery, and security behavior. The proposal is correct to demand composition from the same implementation. It is also correct that physical package extraction should follow proven module boundaries rather than precede them.
+A copied “mini server” would immediately split policy, lifecycle, recovery, and security behavior. The proposal is correct to demand explicit assembly from the same implementation. It is also correct that physical package extraction should follow proven module boundaries rather than precede them.
 
 ### 5. Root ownership belongs to the host
 
@@ -90,9 +91,13 @@ The application artifact should not declare itself as the global root. A standal
 
 The proposal explicitly recognizes executable backend/tool code as dangerous. That concern is correct; the proposed remedies are merely incomplete today.
 
+### 7. The runtime is prepared infrastructure, not an automatically started run
+
+Each host builds one `ApplicationPlatformRuntime`: the connected application services, managers, factories, stores, and lifecycle needed to serve applications. That build step does not create a new agent or team execution. Application business code remains the normal run trigger; the established recovery phase may restore only legitimate recorded runs. The SR-011 naming correction makes this distinction discoverable without changing the execution lifecycle.
+
 ## Original Supported Production Spines
 
-These paths record the repository baseline against which the proposal was judged. The task implementation has since added provider-local dual-host startup and explicit compositions; the retained paths remain relevant evidence for the shared runtime/storage/orchestration behavior that the correction must preserve.
+These paths record the repository baseline against which the proposal was judged. The task implementation has since added provider-local dual-host startup and explicit Studio/standalone server builders; the retained paths remain relevant evidence for the shared runtime/storage/orchestration behavior that the correction must preserve.
 
 ### APP-CURRENT-001 — Studio host launch
 
@@ -194,7 +199,7 @@ Displaying a permission list is not an enforcement mechanism.
 
 `server-runtime.ts` always registers MCP, gateway, permissive CORS, multipart, WebSockets, mobile static content, every REST route, every GraphQL resolver, remote access policy, managed messaging, background tasks, and application recovery. REST and GraphQL owners use fixed registries. No `AutoByteusPlatformModule` or composition folder exists.
 
-**Correction:** the first proof must use explicit Studio and standalone compositions. Standalone registers root/readiness/bootstrap and selected-application browser ingress plus the required session-scoped `/mcp/agent-tools/:sessionId` runtime callback. That internal bearer-capability route is not the optional external `/mcp/gateway`, which remains Studio-only. Loopback does not authorize broad `buildApp()` as fallback. Extract explicit construction/start/stop owners and avoid a generic locator.
+**Correction:** the first proof must use explicit `buildStudioServer` and `buildStandaloneApplicationServer` assembly roots. Standalone registers root/readiness/bootstrap and selected-application browser ingress plus the required session-scoped `/mcp/agent-tools/:sessionId` runtime callback. That internal bearer-capability route is not the optional external `/mcp/gateway`, which remains Studio-only. Loopback does not authorize broad `buildApp()` as fallback. Extract explicit construction/start/stop owners and avoid a generic locator.
 
 ### P1-1 — Application resources are not yet closed portable dependencies — remains a bounded limitation
 
@@ -209,12 +214,12 @@ Bundled agents and teams are application-scoped. Skills and tools are not packag
 
 The first proof may use bundled agents/teams plus named built-in tools on a declared supported host, but it must not claim that skills/tools are fully portable yet.
 
-### P1-2 — One `capabilities` array cannot own composition, compatibility, and security — deferred contract work
+### P1-2 — One `capabilities` array cannot own server assembly, compatibility, and security — deferred contract work
 
 The proposal uses “capability” for at least three different concepts:
 
 1. application feature/API usage;
-2. server module dependencies needed for composition; and
+2. server module dependencies needed for assembly; and
 3. sensitive permissions requested from the operator.
 
 **Correction:** keep these separate. Each requires its own identifier namespace, version/compatibility rule, required/optional behavior, failure mode, and enforcement owner. Transitive dependencies and runtime-adapter availability also need an owner.
@@ -244,11 +249,11 @@ The original implementation could select a bundled team while leaf definitions o
 
 **Correction:** retain complete package defaults and the three statuses, but distinguish manifest package baseline, selected-resource definition baseline, sparse saved override, and effective result. The same launch owner exposes the current selected baseline and a no-write preview for an unsaved selection; Studio never traverses definitions or inherits from its post-overlay result. Pack/validate applies one recursive schema-aware portable policy: exact supported token-count/pricing fields remain valid, while password/secret/authorization/token-value/endpoint/workspace fields are rejected at any depth. No baseline/preview persistence, fallback, compatibility branch, or mandatory standalone setup UI is introduced.
 
-### P1-6 — Agent Tools route parity is implemented, but application publication selects the wrong authority — Design Impact
+### P1-6 — Agent Tools route parity is implemented, but application publication selects the wrong manager/publisher — resolved in the functional baseline
 
-Run provisioning issues a session descriptor for eligible server-owned Agent Tools and selected available MCP-origin tools at `/mcp/agent-tools/:sessionId`. Both hosts now register the bearer-protected callback. API-REV-007 proves both Brief members authenticate, list real `publish_artifacts` and `send_message_to`, and complete recipient-name handoff. Publication still fails because `PublishArtifactsMcpAdapterProvider` captured a cached process-global `PublishedArtifactPublicationService`, while the active runs belong to the graph-local `AgentRunManager`.
+Run provisioning issues a session descriptor for eligible server-owned Agent Tools and selected available MCP-origin tools at `/mcp/agent-tools/:sessionId`. Both hosts now register the bearer-protected callback. API-REV-007 proves both Brief members authenticate, list real `publish_artifacts` and `send_message_to`, and complete recipient-name handoff. Publication still fails because `PublishArtifactsMcpAdapterProvider` captured a cached process-global `PublishedArtifactPublicationService`, while the active runs belong to the application-runtime-scoped `AgentRunManager`.
 
-**Correction:** preserve the existing route, capability gates, descriptor, URL derivation, eligibility, and dispatcher semantics, but make the authority family explicit. One composition-owned Agent Tools process authority owns the registry/catalog/executor/dispatcher supplied to route registration and application session creation. Each application-created session carries a narrow graph-local publication port. Because the correct publication service requires the graph run manager and that manager requires runtime factories that issue sessions, create one graph-owned deferred port before those factories, bind it once to the correct service before readiness, and fail closed before bind/after close. Revoke the application scope’s sessions before closing the port and graph owners. Do not use mutable singleton replacement, request-time graph lookup, catalog merge, package branches, a second route/gateway, compatibility fallback, user authentication, or runtime-internal changes.
+**Correction:** preserve the existing route, capability gates, descriptor, URL derivation, eligibility, and dispatcher semantics, while making the dependency family explicit. One server-owned `AgentToolsMcpRuntime` owns the registry/catalog/executor/dispatcher supplied to route registration and application session creation. Each application-created session carries a narrow application-runtime-scoped `PublishedArtifactPublisher`. Because the correct publication service requires the application-runtime run manager and that manager requires runtime factories that issue sessions, create one `BindOncePublishedArtifactPublisher` before those factories, bind it once to the correct service before readiness, and fail closed before bind/after close. Revoke the application scope’s sessions before closing the publisher and application runtime. Do not use mutable singleton replacement, request-time application-runtime lookup, catalog merge, package branches, a second route/gateway, compatibility fallback, user authentication, or runtime-internal changes.
 
 The general `/mcp/gateway` exists so external MCP clients can call the Studio process’s host-configured `ToolOrigin.MCP` registry tools. MCP Server Management performs provisioning/import; the gateway re-exports those tools and excludes AutoByteus run-dependent tools. It is neither application provisioning nor an application/run-scoped catalog. Standalone does not inherit Studio MCP configuration. A future application-owned MCP resource contract may reuse shared provisioning internals, but package declaration, host-secret binding, lifecycle/readiness, and application scoping are separate work.
 
@@ -261,7 +266,7 @@ The general `/mcp/gateway` exists so external MCP clients can call the Studio pr
 | “The same backend bundle must run in both modes.” | Directionally right but unproven. | Keep as an MVP invariant and verify identical backend entry digest in both hosts. |
 | Proposed root-level manifest sample | Incompatible with current package root, ID rules, folder names, and manifest v4. | Label it “future contract sketch”; use current v4 for the first proof and design vNext separately. |
 | Permission declaration + process isolation | Suggests policy declarations provide safety. | State that declarations are metadata until enforced by frontend/worker/platform isolation controls. |
-| “Initial implementation can run full server headlessly.” | Conflicts with the bounded product surface and leaves unrelated route/startup ownership in the standalone process even when loopback-bound. | Reject the current broad `buildApp()` composition for standalone. Construct the explicit selected-application composition from named shared runtime prerequisites and verify its exact route inventory. |
+| “Initial implementation can run full server headlessly.” | Conflicts with the bounded product surface and leaves unrelated route/startup ownership in the standalone process even when loopback-bound. | Reject the current broad `buildApp()` server for standalone. Construct the explicit selected-application server from named shared runtime prerequisites and verify its exact route inventory. |
 | Phase 1 “universal package” before standalone proof | Risks redesigning the artifact without a second real host. | Prove current bundle through both hosts first; evolve the artifact only from observed host differences. |
 | “No mock substitution” | Correct for conformance but conflicts with current default dev behavior. | Keep mocks for unit/contract iteration only; require real backend/runtime paths for portability conformance. |
 | “A manifest default team makes the application standalone-ready.” | A resource reference does not supply every leaf runtime/model or prove host availability. | “A standalone-enabled package validates complete application-owned leaf defaults; the host then validates runtime/model/credentials before reporting `RUNNABLE`.” |
@@ -294,17 +299,17 @@ The proof should not add marketplace fields, package signing, Vue/React scaffold
 4. The app frontend uses one host-neutral startup API with host-owned bootstrap providers; no business component branches on Studio vs standalone.
 5. Both hosts start the same backend entry and use the same application engine, storage lifecycle, migrations, resource resolver, orchestration, event, and artifact owners.
 6. Standalone development uses the real application worker and a real agent/team backend, not the current mock backend.
-7. The standalone composition registers only its explicit selected-application browser surface plus the capability-scoped internal Agent Tools runtime callback. Broad Studio/admin route registries and the external MCP gateway are not constructed or registered in that process.
+7. The standalone server registers only its explicit selected-application browser surface plus the capability-scoped internal Agent Tools runtime callback. Broad Studio/admin route registries and the external MCP gateway are not constructed or registered in that process.
 8. The MVP remains local/self-hosted and introduces no user/account subsystem.
-9. From an application folder, `pnpm start` runs the already-built `dist/importable-package` through the production standalone composition; it does not rebuild, watch, or substitute mocks.
+9. From an application folder, `pnpm start` runs the already-built `dist/importable-package` through the production standalone server; it does not rebuild, watch, or substitute mocks.
 10. Every standalone-capable required execution leaf has complete application-owned runtime/model defaults; pack/validate rejects incompleteness. For the maintained Brief and Socratic applications, the user-confirmed leaf default is `codex_app_server` / `gpt-5.6-luna`.
 11. Fresh standalone data uses package defaults without a setup UI or preseeded override row; the host fails before listen when runtime/model/credentials cannot be resolved.
-12. The exact graph-local team-definition authority reaches member prompt construction, including package team instructions.
+12. The exact application-runtime-scoped team-definition service reaches member prompt construction, including package team instructions.
 13. If a Studio-saved shared resource disappears or saved team-member topology becomes stale, the valid package is not blamed and its baseline is not executed silently; Studio blocks run, explains the saved override, and restores package evaluation only after explicit replacement/reset.
 14. Selecting an alternate resource before save or clearing a saved field uses the server-computed selected-resource baseline/preview. Studio persists only explicit sparse fields, handles mixed-runtime inheritance without implicit defaults, and PUT revalidates resource/topology.
 15. Package portable configuration accepts exact typed token-count/pricing fields and recursively rejects credential/password/authorization/token-value/endpoint/workspace fields with path-only diagnostics.
-16. Both hosts register the existing Agent Tools session callback before static fallback. The composition supplies one exact registry/catalog/dispatcher family to route registration and application session issuance.
-17. Each application-created session carries the exact graph-local publication port. `publish_artifacts` produces the graph publication journal and application projection; recipient-name `send_message_to` remains session-context delivery. General `/mcp/gateway` stays Studio-only.
+16. Both hosts register the existing Agent Tools session callback before static fallback. The server-owned `AgentToolsMcpRuntime` supplies one exact registry/catalog/dispatcher family to route registration and application session issuance.
+17. Each application-created session carries the exact application-runtime-scoped publication publisher. `publish_artifacts` produces the application-runtime publication journal and application projection; recipient-name `send_message_to` remains session-context delivery. General `/mcp/gateway` stays Studio-only.
 
 ### Exit criteria
 
@@ -322,18 +327,19 @@ The proof should not add marketplace fields, package signing, Vue/React scaffold
 - **MVP-EC-012:** Worker/frontend trust limitations are documented and the host refuses packages outside the configured trusted source set.
 - **MVP-EC-013:** `pnpm dev`, `pnpm dev:studio`, `pnpm build`, `pnpm validate`, and `pnpm start` have the approved distinct meanings; the production start path consumes the existing package and writes only to a separate data root.
 - **MVP-EC-014:** The application-run readiness result is only `RUNNABLE`, `INVALID_PACKAGE`, or `HOST_REQUIREMENT_MISSING`; no success state carries a null required profile and no business request silently supplies the missing model.
-- **MVP-EC-015:** A real Brief member system prompt includes the non-empty package `team.md` instruction through graph-local definition authority.
+- **MVP-EC-015:** A real Brief member system prompt includes the non-empty package `team.md` instruction through the application-runtime-scoped team-definition service.
 - **MVP-EC-016:** Deleting a Studio-selected shared team and separately changing saved team-member topology each yields `HOST_REQUIREMENT_MISSING` with `HOST_OVERRIDE` issue, preserves the package baseline and row, leaves the affected effective configuration null, blocks `requireRunnable`, and becomes eligible for package-default execution only after explicit Reset/delete.
 - **MVP-EC-017:** Unsaved alternate selection returns an identity-bound no-write selected-resource baseline; clearing a saved alternate field reveals that definition value; stale preview/PUT races fail without write/fallback; mixed-runtime teams require an explicit common runtime before bulk model selection.
 - **MVP-EC-018:** Validator accepts exact `max_tokens`, `token_limit`, `safety_margin_tokens`, and typed pricing fields; recursively rejects nested password, bearer authorization, access-token value, endpoint, and workspace paths without echoing values.
 - **MVP-EC-019:** Both hosts register the existing `/mcp/agent-tools/:sessionId` route before static fallback. Fresh standalone Brief uses the actual descriptor/`tools/list` to execute eligible `publish_artifacts` and `send_message_to`, hand off researcher to writer, and project artifacts. Missing bearer reaches the established 401 gate, unknown/unavailable session remains 404, and general `/mcp/gateway` remains unreachable in standalone. Runtime internals are not part of this proof.
-- **MVP-EC-020:** Application Agent Tools sessions and the authenticated route use one composition-owned registry/catalog/dispatcher family. An application publication call uses only its session’s exact graph-local publication port and never a process-global run manager. A deliberately different global manager cannot receive its event/journal/projection; unbound, closed, or revoked scopes fail before mutation.
+- **MVP-EC-020:** Application Agent Tools sessions and the authenticated route use one server-owned `AgentToolsMcpRuntime` registry/catalog/dispatcher family. An application publication call uses only its session’s exact application-runtime-scoped publication publisher and never a process-global run manager. A deliberately different global manager cannot receive its event/journal/projection; unbound, closed, or revoked scopes fail before mutation.
+- **MVP-EC-021:** Central framework names follow the reviewed responsibility map: servers are `Server`, long-lived connected service sets are `Runtime`, scoped collections are `Manager`, general run lifetime is `Supervisor`, ordered application stopping is `Coordinator`, and bind-once callables are `BindOnce*Publisher/Handler`. Building `ApplicationPlatformRuntime` creates no new agent/team run. Old names/files/exports are absent, no compatibility aliases exist, and the API-REV-010 behavior remains unchanged.
 
 ## Revised Roadmap
 
 ### Stage 0 — Contract and threat-boundary decisions
 
-- Freeze terminology: project, bundle, package root, release artifact, host, bootstrap provider, client transport, feature dependency, composition dependency, permission.
+- Freeze terminology: project, bundle, package root, release artifact, host, bootstrap provider, client transport, feature dependency, server-assembly dependency, permission.
 - Record the trusted-package limitation.
 - Inventory current application platform routes, startup/shutdown services, singleton dependencies, persistence, and background work.
 - Freeze the standalone public ingress and readiness contract.
@@ -347,13 +353,14 @@ The proof should not add marketplace fields, package signing, Vue/React scaffold
 - Require complete package-owned runtime/model defaults for standalone-capable projects.
 - Add real dual-host conformance with one representative app, including fresh-root package-default execution.
 
-### Stage 2 — Bounded application-platform composition
+### Stage 2 — Bounded application-platform runtime and server assembly
 
 - Extract explicit application-platform HTTP/WebSocket registration and lifecycle functions from the monolithic root.
 - Establish deterministic process start/recovery/stop plus a separate authoritative application-run readiness invariant.
-- Build explicit Studio and standalone composition roots; the current full server is never a standalone fallback or interim stage.
+- Build explicit Studio and standalone server assembly roots; the current full server is never a standalone fallback or interim stage.
 - Add standalone operational contracts and route-surface verification.
-- Keep the internal Agent Tools MCP session route in both hosts before static fallback and the external gateway Studio-only. Make the shared process transport family explicit, bind application sessions to their graph-local publication port, and give the scoped session owner deterministic revoke/close semantics.
+- Keep the internal Agent Tools MCP session route in both hosts before static fallback and the external gateway Studio-only. Make the shared process transport family explicit, bind application sessions to their application-runtime-scoped publication publisher, and give the scoped session owner deterministic revoke/close semantics.
+- Use the exact familiar role vocabulary for the assembled servers, application runtime, process MCP runtime, scoped session managers, run supervisor, shutdown coordinator, services, and bind-once callables; remove the old abstract symbols without aliases.
 
 ### Stage 3 — Portable release contract
 
@@ -369,7 +376,7 @@ The proof should not add marketplace fields, package signing, Vue/React scaffold
 - Keep mock/iframe-contract machinery test-only; it is not a public product command and cannot satisfy conformance.
 - Make `build`/project `validate` reject incomplete defaults and recursively non-portable host-secret fields while preserving exact approved tuning/pricing. Make Studio overrides optional and resettable without changing package bytes.
 - Preserve invalid saved overrides as diagnosable host-local blockers; never classify them as package failure, auto-delete them, or silently run the package baseline.
-- Expose selected-resource baseline/unsaved preview from the server launch authority; remove UI package/effective inference, persist only sparse fields, and represent mixed-runtime inheritance explicitly.
+- Expose selected-resource baseline/unsaved preview from `ApplicationLaunchConfigurationService`; remove UI package/effective inference, persist only sparse fields, and represent mixed-runtime inheritance explicitly.
 - Require reliable full reload/restart in the first slice; framework-specific HMR and Vue/React scaffolds remain later improvements.
 
 ### Stage 5 — Security and marketplace foundation
@@ -379,7 +386,7 @@ The proof should not add marketplace fields, package signing, Vue/React scaffold
 
 ### Stage 6 — Distribution optimization
 
-- Package only required modules/runtime adapters after composition boundaries are proven.
+- Package only required modules/runtime adapters after server/runtime boundaries are proven.
 - Add deployment profiles, build/release automation, rollback, and multi-node work only when product requirements demand them.
 
 ## Decision Table
@@ -389,35 +396,37 @@ The proof should not add marketplace fields, package signing, Vue/React scaffold
 | Universal application product vision | Accept | Strong leverage of existing platform capabilities. |
 | Same business code/artifacts across hosts | Accept with precise wording | Correct invariant; host config and operations will differ. |
 | Application owns product UX and business data | Accept | Correct domain ownership. |
-| Platform owns runtime/orchestration/scoping/isolation | Accept | Matches existing runtime authority and required trust boundary. |
+| Platform owns runtime/orchestration/scoping/isolation | Accept | Matches existing runtime ownership and required trust boundary. |
 | Current runtime architecture description | Accept | Repository evidence supports it. |
 | Host-specific transport classes as written | Revise | Bootstrap and business communication are different concerns. |
 | Proposed manifest/sample directory as near-term contract | Reject | Incompatible with strict current v4 and package semantics. |
-| Current package as universal proof artifact | Accept after bounded correction | Launch/edit/prompt/route/messaging boundaries pass; the proof still needs graph-local publication/journal/projection through the authenticated default-provider path. |
-| Full server headlessly for first proof | Reject | Standalone must use the explicit selected-application composition. Named underlying runtime prerequisites may be reused, but the broad server/route composition is neither a fallback nor an implementation stage. |
-| Capability-driven composition | Accept as target, revise mechanism | Current graph is monolithic; avoid generic service-locator architecture. |
+| Current package as universal proof artifact | Accept for the trusted local proof | Launch/edit/prompt/route/publication/messaging/projection and package parity pass through API-REV-010. |
+| Full server headlessly for first proof | Reject | Standalone must use the explicit selected-application server. Named underlying runtime prerequisites may be reused, but the broad server/route assembly is neither a fallback nor an implementation stage. |
+| Explicit capability-driven server assembly | Accept as target, revise mechanism | The original construction path was monolithic; avoid generic service-locator architecture. |
 | Mock-free portability conformance | Accept | Required to prove real runtime behavior. |
 | Mocks for local unit iteration | Retain | Useful when clearly not conformance evidence. |
 | Marketplace after simple signing/permissions | Reject | Enforceable isolation/trust/revocation must precede arbitrary code. |
 | Vue/React scaffold priority | Defer | Does not validate portability or trust boundaries. |
 | Complete application-owned runtime/model defaults | Accept as foundation | Standalone model selection must travel with the application, while host capabilities/secrets remain local. |
-| Mandatory standalone setup UI or copied Studio state | Reject | Duplicates configuration authority and makes a valid package depend on host seeding. |
-| Studio runtime/model override and reset | Accept | Useful experimentation overlay when selected-resource baseline/preview comes from the same server authority, persistence stays sparse, and package defaults are never mutated. |
+| Mandatory standalone setup UI or copied Studio state | Reject | Duplicates the launch-configuration service and makes a valid package depend on host seeding. |
+| Studio runtime/model override and reset | Accept | Useful experimentation overlay when selected-resource baseline/preview comes from the same launch service, persistence stays sparse, and package defaults are never mutated. |
 | Silent package fallback when a saved override becomes invalid | Reject | Changes the user’s selected execution resource and hides host-state drift; require scoped diagnostics and explicit replacement/reset. |
 | `READY` with nullable required launch profile | Reject | Resource selection is not runnable readiness. |
 | Recursive portable package launch policy | Accept as required boundary | Closed schemas preserve valid tuning/pricing while rejecting credentials/endpoints/host paths at any depth. |
-| UI reconstruction of selected definition baseline | Reject | It duplicates server traversal/precedence and can self-inherit from post-overlay values; use the launch authority view/preview. |
+| UI reconstruction of selected definition baseline | Reject | It duplicates server traversal/precedence and can self-inherit from post-overlay values; use the launch service view/preview. |
 | Skills/tools automatically portable | Reject for current state | Current dependencies are ambient platform registries. |
-| Internal Agent Tools MCP callback in both hosts | Accept as required runtime infrastructure | Eligible server-owned/configured-MCP tools depend on it. Preserve its route/security contract, but make process transport and session execution authority explicit so graph-sensitive adapters cannot fall back globally. |
+| Internal Agent Tools MCP callback in both hosts | Accept as required runtime infrastructure | Eligible server-owned/configured-MCP tools depend on it. Preserve its route/security contract, but make process transport and session execution capability explicit so application-runtime-sensitive adapters cannot fall back globally. |
 | External MCP gateway in standalone | Reject | It is a different optional generic integration surface and would expand AC-010 unnecessarily. |
-| Change or newly specify Codex/Claude runtime-internal tools in this ticket | Reject | `origin/personal` behavior remains untouched; this ticket owns only the application-platform route/composition boundary. |
+| Change or newly specify Codex/Claude runtime-internal tools in this ticket | Reject | `origin/personal` behavior remains untouched; this ticket owns only the application-platform route/server-assembly boundary. |
 | Treat Studio MCP configuration or `/mcp/gateway` as an application dependency | Reject | The gateway serves external clients over host-configured MCP-origin tools; focused applications require a future application-owned MCP resource/provisioning contract. |
-| Broad Agent Tools aggregate/runtime rewrite | Reject | CRR-020 justifies one explicit process family plus one narrow graph publication port, not a general tool-runtime redesign or duplicate catalog/route. |
-| Session-bound `PublishedArtifactPublicationPort` with bind-once graph cycle break | Accept as required boundary | The authenticated session is retained through dispatch and can carry the exact graph owner without request-time lookup; bind-before-ready and revoke/close semantics make the construction cycle explicit and fail closed. |
+| Broad Agent Tools aggregate/runtime rewrite | Reject | CRR-020 justifies one explicit process family plus one narrow application-runtime publication publisher, not a general tool-runtime redesign or duplicate catalog/route. |
+| Session-bound `PublishedArtifactPublisher` with bind-once application-runtime cycle break | Accept as required boundary | The authenticated session carries the exact application runtime owner without request-time lookup; bind-before-ready and revoke/close semantics pass. |
 | Agent Tools compatibility alias, fallback, or persisted session path | Reject | The bounded fix reuses the existing route and behavior directly. |
+| Familiar central framework role vocabulary | Accept as required readability correction | The current abstract names obscure otherwise-passed responsibilities. Apply the exact bounded name/file map, remove old names cleanly, and preserve behavior. |
+| Compatibility aliases for renamed private/internal symbols | Reject | The server package is private and no repository-external consumer was found; aliases would preserve the ambiguity without a supported contract need. |
 
 ## Final Recommendation
 
 Approve the proposal as a **strategic direction**, not as the implementation specification. Authorize only the bounded, trusted-package, single-node dual-host proof first. Require evidence from that proof before changing the package contract or funding marketplace work.
 
-The implemented macro, launch/edit/prompt, route, and messaging slices show that AutoByteus can support a second host. Completion now depends on one bounded authority correction: compose one exact Agent Tools process family, carry the graph-local publication port on application sessions, bind it once before readiness, and revoke/close it deterministically. Then prove publication journal/application projection in real standalone and Studio. Do not redesign provider-native tools, expose the general gateway, inherit Studio MCP state, or add a request-time/global fallback. The broad-suite `APIE2E-REPO-005` diagnostic remains separate and unattributed.
+The bounded dual-host proof is functionally complete and validated. Before delivery resumes, apply one behavior-neutral readability correction: rename the central framework spine according to the exact `Server` / `Runtime` / `Manager` / `Supervisor` / `Coordinator` / `Service` / `Publisher` / `Handler` map, remove the old names/files without aliases, update affected docs/tests/diagrams, and retain the API-REV-010 behavior. In particular, `ApplicationPlatformRuntime` means prepared host-level application services; it does not start a new agent/team run. Do not redesign provider-native tools, expose the general gateway, inherit Studio MCP state, change routes/data/packages, or expand into a repository-wide rename. The broad-suite `APIE2E-REPO-005` diagnostic remains separate and unattributed.
