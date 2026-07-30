@@ -18,6 +18,14 @@
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-coverage-investigation.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-test-review-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/docs-sync-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/handoff-summary.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/release-deployment-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/delivery-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/evidence/delivery/dr-001-post-integration-check.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/evidence/delivery/dr-001-integration-failure-rerun.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/evidence/delivery/dr-001-integrated-source-diff-check.log`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-007-actual-tools-dispatch.json`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-007-standalone-state-after-failure.log`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-007-brief-standalone-final-browser.json`
@@ -34,17 +42,19 @@ Lifecycle and composition cleanup now block new application session issue before
 
 Source commit `15dc77abc5d1aa8e800fca429fc5b648b473b1d5` completes the bounded `CRR-021` / `CR-016` lifecycle correction. `ApplicationRunShutdownAuthority` retains only the existing graph-local team-run and agent-run shutdown ports, stops teams before remaining agents, aggregates both failure classes, and is invoked after worker engines stop but before application session-scope revocation and publication-port close. Lifecycle step isolation guarantees later scope, port, and streaming cleanup still executes after a run-shutdown failure. Neither graph-local manager is exposed on the public runtime graph.
 
+Integrated source commit `32909b036e074b21a0bf691c17a46a1b6f2aa8ff` resolves the bounded `DR-001` latest-base lifecycle incompatibility after merge commit `3b8afa366a4a35a1a31340e7b21bc8f219cd9d8e`. `stopDefaultAgentRunEventPipeline()` now preserves the cached stopped composition and quiescent lifecycle state, so getters cannot recreate token enrichment/persistence after shutdown. Only `resetDefaultAgentRunEventPipeline()` clears the composition and restores `accepting`; the test reset delegates to that exact owner. Because supported standalone development intentionally closes and starts the public host in one process, `startStandaloneApplicationHost()` invokes the explicit reset after process-resource initialization and before constructing the new graph. Studio and production process close remain stop-only.
+
 The current implementation also retains the previously reviewed dual-host, package launch/edit/readiness, portable-policy, graph-local definition/prompt, standalone route, and Codex definition-authority corrections. No application-owned MCP provisioning, provider-native file-tool change, package/schema migration, compatibility route, graph lookup by ID, mutable current-graph pointer, second Agent Tools family, or global publication fallback was added.
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-revision-record.md`
-- Current implementation revision ID: `IR-013`
+- Current implementation revision ID: `IR-014`
 - Related solution revision IDs: `SR-010` (`SR-007` remains withdrawn; prior revisions retained as history)
 - Related architecture-review revision IDs: `ARCH-REV-008` (`ARCH-REV-007` remains withdrawn)
-- Related code-review revision IDs: `CRR-021` trigger; `CRR-020` SR-010 design trigger; `CRR-019` prior IR-011 source pass; earlier rounds retained as history
-- Related API/E2E revision IDs: `API-REV-007` trigger; `API-REV-001`–`API-REV-006` history
-- Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `CR-016` (historical API/E2E context: `APIE2E-STANDALONE-MCP-003`, `APIE2E-F007`)
+- Related code-review revision IDs: `CRR-023` proportional test review Pass; `CRR-022` IR-013 source Pass; earlier rounds retained as history
+- Related API/E2E revision IDs: `API-REV-008` Pass; `API-REV-001`–`API-REV-007` history
+- Related delivery revision IDs: `DR-001` integration-blocking Local Fix trigger
+- Triggering finding IDs: `N/A` — `DR-001` latest-base event-pipeline lifecycle integration failure
 
 ## Reviewed Behavior Implementation Trace
 
@@ -54,9 +64,9 @@ The current implementation also retains the previously reviewed dual-host, packa
 | `BEH-002` | Application code uses one host-neutral `startApplication`. | Existing SDK coordinator/providers. | Preserved; no application-facing API change. |
 | `BEH-003` | Strict manifest v4 and stable package identity remain unchanged. | Existing parser/selection and current package layout. | Preserved; session execution authorities are process-memory-only. |
 | `BEH-004` | Package-owned agent/team execution returns through the exact application graph. | `AgentToolsMcpProcessAuthority`; `ApplicationAgentToolsSessionAuthority`; graph publication port/service; application run authorities. | Implemented. Authenticated `publish_artifacts` delegates only through the issuing session's graph port. |
-| `BEH-005` | Studio and standalone remain explicit compositions with deterministic readiness and stop. | Both composition builders, `GeneralProcessRunAuthority`, `ApplicationRunShutdownAuthority`, `ApplicationPlatformLifecycle`. | Implemented. One process family per composition; P6A bind assertion, ordered graph-run shutdown, and scoped revoke/close are explicit. |
+| `BEH-005` | Studio and standalone remain explicit compositions with deterministic readiness and stop. | Both composition builders, run/lifecycle owners, and default event-pipeline stop/reset boundary. | Implemented. Stop stays quiescent; only explicit host/test reset reopens the process pipeline for a fresh supported composition. |
 | `BEH-006` | Native application commands and runtime callback keep portable and host-bound concerns separate. | Existing devkit/package policy plus exact internal Agent Tools session route. | Preserved. Native/configured-MCP/external-gateway boundaries are unchanged. |
-| `BEH-007` | Current rows/data remain directly usable and runtime owners clean up deterministically. | Existing launch store/service; graph run-shutdown authority; scoped session revoke; port/process close. | Preserved; no persistence or migration. Team/member/agent backends stop before scope disposal; old descriptors fail after close and restart creates a fresh scope. |
+| `BEH-007` | Current rows/data remain directly usable and runtime owners clean up deterministically. | Existing launch store/service; graph/run/session/port cleanup; quiescent event-pipeline stop. | Preserved. Late token work cannot reopen persistence after stop; standalone in-process restart is reopened only by its explicit process-start owner. |
 | `BEH-008` | Exact graph-local definitions/context reach runtime bootstrap and final team prompts. | Existing graph-local definition injection and member-context paths, now sharing the graph session authority. | Preserved; no composition-critical global fallback was reintroduced. |
 
 ## Key Files Or Areas
@@ -73,6 +83,7 @@ The current implementation also retains the previously reviewed dual-host, packa
 - Graph-run shutdown: `autobyteus-server-ts/src/application-platform/runtime/application-run-shutdown-authority.ts`
 - Readiness/stop: `application-platform-lifecycle.ts` and lifecycle contracts
 - Host composition: `build-studio-server-composition.ts`, `build-standalone-application-server-composition.ts`, and `start-standalone-application-host.ts`
+- Integrated event-pipeline lifecycle: `autobyteus-server-ts/src/agent-execution/events/default-agent-run-event-pipeline.ts` and the standalone public host start boundary
 
 ## Important Assumptions
 
@@ -80,6 +91,7 @@ The current implementation also retains the previously reviewed dual-host, packa
 - General-process Codex/Claude construction and application-graph construction deliberately share the process registry/catalog but use separate explicit session authorities and publication ports.
 - `executionAuthorities` is immutable process-memory state on an authenticated session; it is not serialized, logged, persisted, or copied into a package/descriptor.
 - Application-owned MCP declarations/provisioning and runtime-internal/provider-native tools remain outside this ticket.
+- A normal Studio/production process starts once and closes with quiescent stop only. The supported standalone development rebuild is the intentional same-process exception and reopens through `startStandaloneApplicationHost()` as the explicit process owner.
 - `APIE2E-REPO-005` remains separately `Unclear`; this implementation does not attribute or change it.
 
 ## Known Risks
@@ -88,15 +100,16 @@ The current implementation also retains the previously reviewed dual-host, packa
 - API/E2E-owned durable tests, reports, and evidence remain intentionally dirty/untracked in the shared worktree. Several preserved test fixtures must be reconciled with the new explicit route/lifecycle/runtime-graph dependencies by `api_e2e_engineer`; implementation did not rewrite them.
 - A real authenticated Codex/Claude process, full event pipeline, database journal, and browser artifact projection were not started in this implementation stage.
 - Repository-wide unrelated singleton cleanup is intentionally out of scope; source review should assess only whether application/general composition paths can bypass the new explicit authority split.
+- The focused delivery regression is green, but the latest-base integrated package must return through API/E2E; implementation does not claim the prior API-REV-008 evidence covers this post-merge reconciliation.
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: `Larger approved requirement plus downstream authority correction`
-- Reviewed root-cause classification: `Boundary Or Ownership Issue / Construction-Cycle Gap`
-- Reviewed refactor decision: `Refactor Needed Now`, bounded to Agent Tools application-session publication
+- Reviewed change posture: `Latest-base integration Local Fix`
+- Reviewed root-cause classification: `Auto-merge lifecycle semantic incompatibility`
+- Reviewed refactor decision: `No additional refactor`; reconcile the existing stop/reset lifecycle boundary
 - Implementation matched the reviewed assessment: `Yes`
-- If challenged, routed as `Design Impact`: `N/A`; SR-010/ARCH-REV-008 already resolved the design impact
-- Evidence / notes: one explicit process family, one graph scope, one narrow session execution authority, and one bind-once graph port replace the global capture. No provider-specific or package-ID workaround was added.
+- If challenged, routed as `Design Impact`: `N/A`; DR-001 classified the integrated failure as implementation-owned Local Fix
+- Evidence / notes: stop no longer clears/reopens the singleton. One explicit reset owner performs the state transition, and the public standalone host start boundary—not a getter, close path, or devkit internal—owns supported same-process restart.
 
 ## Legacy / Compatibility Removal Check
 
@@ -124,6 +137,8 @@ The current implementation also retains the previously reviewed dual-host, packa
 - SR-010 solution commit: `70faec030f614b502ceb3975d492c9f50dd84ff9`
 - IR-012 publication-authority source commit: `cf8c8f7213468e5625bf521bbf0649fb78ac1a63`
 - IR-013 graph-run shutdown source commit: `15dc77abc5d1aa8e800fca429fc5b648b473b1d5`
+- DR-001 checkpoint: `ddf7fe3117221d178f0c6af1825bcb708031d73c`; integrated base: `1b8d8c2f22c5f846dd82cdd706f594103d1b4e1e`; merge commit: `3b8afa366a4a35a1a31340e7b21bc8f219cd9d8e`
+- IR-014 integrated lifecycle source commit: `32909b036e074b21a0bf691c17a46a1b6f2aa8ff`
 - Reviewed base `6caf809303294252c109420b238588f0c68aca6a` remains in history. Delivery owns final tracked-base refresh/integration; implementation did not merge or rebase.
 - No dependency, schema, generated package, or frontend change was made in IR-012.
 - Other owners' modified/untracked tests, reports, review artifacts, and evidence remain preserved and were not staged in the source commit.
@@ -140,11 +155,13 @@ The current implementation also retains the previously reviewed dual-host, packa
 - `git diff --check`, staged-source ownership check, disposable-file cleanup, global/publication lookup audit, and changed-source effective-line audit — Pass. No changed source implementation file exceeds 500 effective lines.
 - IR-013 disposable shutdown/lifecycle Vitest probe — Pass, 2/2: shutdown is idempotent, stops team runs before remaining agent runs, aggregates failures from both owners, executes agent shutdown after team failure, and retains scope/port/streaming cleanup after run-shutdown failure. Probe removed.
 - IR-013 final `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`, `git diff --check`, temporary-file cleanup, manager-leakage search, staging audit, and changed-source size audit — Pass. The new authority is 36 effective lines; all six changed production files remain below 500 effective lines and 220 changed lines.
+- IR-014 exact delivery rerun: `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/events/default-agent-run-event-pipeline-lifecycle.test.ts tests/integration/token-usage/providers/default-agent-run-event-pipeline-lifecycle.integration.test.ts --reporter=verbose` — Pass, 2 files / 3 tests. Stop-before-getter remains non-persistent; an active composition stays identical/quiescent across repeat stop/getter calls; explicit reset creates a fresh accepting composition; accepted SQLite persistence drains once and late work does not reopen it.
+- IR-014 final `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`, `git diff --check`, lifecycle-state mutation/reset-owner audit, staging audit, and changed-source size audit — Pass. The pipeline is 50 effective lines / 9 changed lines; standalone host is 240 effective lines / 6 changed lines.
 - No durable test was added or changed by implementation; durable coverage remains API/E2E ownership.
 
 ## Frontend Rendered-Result Check
 
-`Not Applicable` for IR-013. This revision changes backend construction, authenticated internal tool dispatch authority, readiness, and cleanup only; no rendered frontend or user interaction source changed.
+`Not Applicable` for IR-014. This revision changes only the backend default event-pipeline stop/reset boundary and standalone process-start ownership; no rendered frontend or user interaction source changed.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
@@ -154,10 +171,11 @@ The current implementation also retains the previously reviewed dual-host, packa
 - Add deterministic pre-bind, missing-authority, second-bind, post-close, scope-close/restart, and no-mutation assertions.
 - Prove application and general session scopes do not revoke or publish through one another; old application descriptors remain 404 after scope close/restart.
 - Exercise graceful stop with active application team/member/agent runs: session issue blocks first, team runs stop before remaining agents, scope/port cleanup still runs after injected termination failures, no old backend survives restart, and process-general runs remain isolated.
+- Recheck the latest-base default event pipeline: repeat stop/getter calls remain quiescent and identity-stable; accepted token usage drains before close; late work is not persisted; explicit standalone host close/start creates one fresh accepting composition without a getter-driven restart.
 - Preserve route capability security: missing bearer 401; wrong/unknown/revoked 404; supplied-origin loopback gate; descriptor redaction/non-persistence; no external gateway in standalone.
 - Resume the retained command, parity/digest, worker-recovery, graph-isolation, event/vault/Prisma cleanup, launch/edit/readiness, prompt, and portable-policy matrix after the focused regression passes.
 - Keep `APIE2E-REPO-005` separate as `Unclear` unless a supported production origin is established.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-`api_e2e_engineer` owns durable test reconciliation and all broader executable/API/E2E evidence. Source review must pass before that stage resumes. IR-013 checks are implementation-scoped only and do not establish API/E2E Pass.
+`api_e2e_engineer` owns durable test reconciliation and all broader executable/API/E2E evidence. Source review must pass before that stage resumes. IR-014 checks are implementation-scoped only and do not establish API/E2E Pass.
