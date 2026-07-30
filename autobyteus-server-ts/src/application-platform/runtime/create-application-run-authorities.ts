@@ -4,6 +4,8 @@ import type { AgentTeamDefinitionService } from "../../agent-team-definition/ser
 import { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
 import { AgentRunMemoryRecorder } from "../../agent-memory/services/agent-run-memory-recorder.js";
 import { AutoByteusAgentRunBackendFactory } from "../../agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.js";
+import { CodexAgentRunBackendFactory } from "../../agent-execution/backends/codex/backend/codex-agent-run-backend-factory.js";
+import { CodexThreadBootstrapper } from "../../agent-execution/backends/codex/backend/codex-thread-bootstrapper.js";
 import { AgentRunIdentityAllocator } from "../../agent-execution/services/agent-run-identity-allocator.js";
 import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import { AgentRunService } from "../../agent-execution/services/agent-run-service.js";
@@ -43,10 +45,19 @@ export const createApplicationRunAuthorities = (input: {
   const memberTeamContextBuilder = new MemberTeamContextBuilder(
     input.agentTeamDefinitionService,
   );
+  const codexThreadBootstrapper = new CodexThreadBootstrapper(
+    undefined,
+    undefined,
+    input.agentDefinitionService,
+  );
   const agentRunManager = new AgentRunManager({
     autoByteusBackendFactory: new AutoByteusAgentRunBackendFactory({
       agentDefinitionService: input.agentDefinitionService,
     }),
+    codexBackendFactory: new CodexAgentRunBackendFactory(
+      undefined,
+      codexThreadBootstrapper,
+    ),
     publishedArtifactRelayService: artifactRelay,
     runFileChangeService,
     memoryRecorder: new AgentRunMemoryRecorder(),
