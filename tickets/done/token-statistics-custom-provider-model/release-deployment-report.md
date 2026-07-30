@@ -122,7 +122,7 @@ This delivery handoff includes the latest-base integration, docs sync, and a use
 - Worktree cleanup result: `Retained` — preserved for the previously produced local Electron test artifacts and archived evidence.
 - Worktree prune result: `Not required`
 - Local ticket branch cleanup result: `Retained` with the archived ticket checkout for evidence access.
-- Remote branch cleanup result: `Pending post-handoff cleanup` — the merged ticket branch may be deleted after this record is retained.
+- Remote branch cleanup result: `Retained` — the merged ticket branch remains available for audit/recovery alongside the retained ticket worktree.
 - Blocker (if applicable): None; retention is an evidence-preservation choice, not a release blocker.
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
