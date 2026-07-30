@@ -7,6 +7,7 @@
 | DR-001 | Initial delivery after API/E2E Pass and proportional durable-test review Pass | N/A | Pass — integrated/docs-synchronized, awaiting user verification | `docs-sync-report.md`; `handoff-summary.md`; `release-deployment-report.md` |
 | DR-002 | User requested README-guided Electron build and packaged runtime check | Pass — delivery preparation / user-verification hold | Pass — macOS arm64 package built and runtime probe passed; user verification still pending | `handoff-summary.md`; `release-deployment-report.md`; `delivery-revision-record.md`; `evidence/15-delivery-electron-mac-build.log`; `evidence/16-delivery-packaged-terminal-runtime.log` |
 | DR-003 | User authorized finalization/release; target refresh found 9 new base commits | Pass — package built, user-verification hold | Pass — latest base integrated, focused checks and integrated Electron build passed; finalization/release in progress | `handoff-summary.md`; `release-deployment-report.md`; `delivery-revision-record.md`; `evidence/17-integrated-file-tool-tests.log`; `evidence/18-integrated-markdown-tests.log`; `evidence/19-integrated-electron-mac-build.log`; `evidence/20-integrated-packaged-terminal-runtime.log` |
+| DR-004 | Ticket branch pushed and merged into the refreshed `personal` target | Pass — target merge pending | Pass — target merge completed as `aecbdb818`; target push and release remain pending | `release-deployment-report.md`; `handoff-summary.md`; `delivery-revision-record.md` |
 
 ## Revision Entries
 
@@ -54,3 +55,18 @@
 - Why this delivery revision was recorded: The target advanced after the prior verification handoff, so delivery preserved the reviewed package, integrated the latest target, and recorded revalidation before finalization.
 - Next recipient/action: Delivery engineer — archive the ticket, commit/push the ticket branch, merge/push `personal`, then run the documented `v1.4.30` release helper and verify the resulting tag/workflows.
 - Remaining blockers, rollback concerns, or untested scope: No delivery blocker. Full GUI launch/quit and non-macOS targets remain untested locally; local macOS signing is skipped. Release workflow completion depends on remote CI and publication credentials/policies.
+
+### DR-004 — Target merge before release
+
+- Delivery round and trigger: Ticket branch `codex/file-tool-authorized-root` was pushed successfully, then merged into the refreshed `personal` target.
+- Triggering upstream report, verification, or evidence: Ticket branch push result and merge commit `aecbdb818`.
+- Prior authoritative result: `Pass` — ticket archived and ticket branch pushed (`DR-003`).
+- Current authoritative result: `Pass` — the reviewed package is integrated into `personal`; target push and release `v1.4.30` remain pending.
+- Docs sync report: No new behavior documentation was required; the archived docs-sync report remains current.
+- Handoff summary: Updated with the target merge and pending release state.
+- Release/publication/deployment report: Updated with the completed target merge and pending target push.
+- Integration and post-integration verification: The integrated checks recorded in `evidence/17`–`evidence/20` remain the verified basis; no source changed after those checks.
+- User verification/finalization state: User authorization remains valid for the unchanged reviewed package.
+- Why this delivery revision was recorded: Records the completed repository integration boundary before the separate release helper step.
+- Next recipient/action: Delivery engineer — push `personal`, run `pnpm release 1.4.30 -- --release-notes tickets/done/file-tool-authorized-root/release-notes.md`, verify the tag and workflows, then record final release status.
+- Remaining blockers, rollback concerns, or untested scope: Release workflow completion depends on remote CI and publication credentials/policies. Full GUI launch/quit and non-macOS targets remain untested locally; local macOS signing is skipped.

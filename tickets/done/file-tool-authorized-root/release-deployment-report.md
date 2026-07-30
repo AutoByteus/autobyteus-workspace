@@ -64,9 +64,9 @@ Release `v1.4.30` is authorized. After repository finalization, delivery will ru
 - Delivery-owned edits protected before re-integration: `Completed` (`160df219`).
 - Re-integration before final merge result: `Completed` (`651feadfe`); no conflicts.
 - Target branch update result: `Refreshed` from `origin/personal` at `596094be191f6aecba6ef37abcda342a20e9af64` after the user's release authorization.
-- Merge into target result: `Pending` — target worktree finalization is next.
-- Push target branch result: `Pending` — target worktree finalization is next.
-- Repository finalization status: `In progress`.
+- Merge into target result: `Completed` (`aecbdb818` — `Merge file-tool authorized-root into personal`).
+- Push target branch result: `Pending` — target push is next.
+- Repository finalization status: `In progress; target merge completed, push pending`.
 - Blocker (if applicable): `N/A`.
 
 ## Release / Publication / Deployment
@@ -132,4 +132,4 @@ Hold finalization or request renewed verification if a post-verification target 
 
 ## Final Status
 
-**Pass — ticket archived and ticket branch pushed; target merge/push and release `v1.4.30` remain in progress.**
+**Pass — ticket archived and merged into `personal`; target push and release `v1.4.30` remain in progress.**
