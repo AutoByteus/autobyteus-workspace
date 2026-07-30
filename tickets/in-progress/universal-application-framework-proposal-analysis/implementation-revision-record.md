@@ -15,6 +15,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-007 | Code reviewer; `code-review-report.md`; `CRR-011` | `CR-009`, `CR-010`, `CR-011` | `Local Fix` | `SR-005`, `ARCH-REV-005`, `CRR-011`, `API-REV-004`; `DR: N/A` | `Ready for source re-review` |
 | IR-008 | Architecture reviewer; `design-review-report.md`; `ARCH-REV-006`, after `CRR-012` | `CR-009`, `CR-012` | `Design Impact` | `SR-006`, `ARCH-REV-006`, `CRR-012`, `API-REV-004`; `DR: N/A` | `Ready for source re-review` |
 | IR-009 | Code reviewer; `code-review-report.md`; `CRR-013` | `CR-009` | `Local Fix` | `SR-006`, `ARCH-REV-006`, `CRR-013`, `API-REV-004`; `DR: N/A` | `Ready for source re-review` |
+| IR-010 | Solution designer; `solution-revision-record.md`; `SR-009` after corrective `CRR-016` / `API-REV-005` | `CR-013`, `APIE2E-F005`, `APIE2E-STANDALONE-MCP-001` | `Local Fix` | `SR-009`, `ARCH-REV-006`, `CRR-016`, `API-REV-005`; `DR: N/A` | `Ready for source re-review` |
 
 ## Revision Entries
 
@@ -197,3 +198,23 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: source commit `957b928b131d6953ffc5ace7000e1f954db90fdd`; server build-config TypeScript no-emit and full build passed. A disposable direct built-policy probe rejected eight endpoint/credential/auth alias forms recursively at exact paths without values while accepting token counts, typed pricing, and harmless nested parameters. A disposable copied real Brief package probe accepted the positive AutoByteus profile and rejected independent `server_url`, `api_url`, `connection_string`, and `access_key` packages through the real validator boundary. Temporary packages were removed; diff, ownership, file-size, and staging checks passed.
 - Next recipient or routing: `code_reviewer` for focused implementation-source re-review. After Pass, normal routing may resume to `api_e2e_engineer` for durable test reconciliation and the full API/E2E rerun.
 - Remaining limitations or risks: implementation-scoped probes are disposable and do not replace durable API/E2E coverage. API/E2E must add the alias matrix while preserving exact token-count/pricing positives, then complete the retained selected-baseline/preview/sparse/mixed-runtime and live dual-host scenarios. All API/E2E-owned dirty tests, reports, and evidence remain preserved.
+
+### IR-010 — Mount the existing Agent Tools MCP route in standalone
+
+- Triggering role, report path, and round: solution designer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/solution-revision-record.md`; authoritative `SR-009`, following corrective focused review `CRR-016` and API/E2E round `API-REV-005`.
+- Triggering finding IDs: `CR-013`, `APIE2E-F005`, `APIE2E-STANDALONE-MCP-001`
+- Classification: `Local Fix`
+- Prior authoritative result: `Ready for source re-review` (`IR-009`); source review passed in `CRR-014`, then `API-REV-005` reached the advertised run-scoped Agent Tools URL in standalone and received the generic/static `404`. `CRR-016` superseded the withdrawn `CRR-015` design-impact classification and identified the missing existing registrar call as the only source defect.
+- Current authoritative result: `Ready for source re-review`
+- Related solution revision IDs: `SR-009` (`SR-007` withdrawn; `SR-008` is the bounded correction basis)
+- Related architecture-review revision IDs: `ARCH-REV-006` (`ARCH-REV-007` withdrawn with no decision)
+- Related code-review revision IDs: `CRR-016` (`CRR-015` superseded; `CRR-014` prior source pass)
+- Related API/E2E revision IDs: `API-REV-005`
+- Related delivery revision IDs: `N/A`
+- Why this implementation revision is recorded: Studio already mounted the established run-scoped Agent Tools MCP registrar, while standalone advertised the same session URL but installed only selected-app ingress and its static wildcard. The supported standalone request therefore never reached the existing bearer/session gate.
+- Approved behavior or requirement IDs affected: `BEH-004`–`BEH-006`; `REQ-004`, `REQ-005`, `REQ-007`; `AC-003`, `AC-005`, `AC-006`, `AC-009`, `AC-010`, `AC-014`–`AC-016`; `DS-014`.
+- Implementation delta: imported and awaited the existing `registerAgentToolsMcpRoutes(app)` in `buildStandaloneApplicationServerComposition()` after the current plugin/browser-ingress registration and before `registerStandaloneApplicationStaticRoutes()`. The registrar, session/catalog/dispatcher/adapters, auth, base-URL, cleanup, Studio composition, external gateway boundary, and all application launch/edit/prompt behavior remain unchanged. No runtime-internal tooling or application-owned MCP declaration/provisioning source was added or modified.
+- Changed files or areas: `autobyteus-server-ts/src/compositions/build-standalone-application-server-composition.ts`; canonical `implementation-handoff.md`; this revision record. API/E2E-owned dirty tests/reports/evidence were preserved and are not part of the implementation commits.
+- Local validation and result: source commit `e8e06afddcbc56ad57584a3289b562cf3ddda351`; server build-config TypeScript no-emit passed; the unchanged standalone composition integration file passed 2/2 and proved unauthenticated standalone Agent Tools ingress now returns the established `401 unauthorized`; the unchanged Agent Tools route integration suite passed 11/11 and preserved unknown/wrong/revoked `404 session_unavailable`; an inline route-inventory probe confirmed the internal mount precedes static fallback and no external gateway is registered; diff, source-size, and staging guards passed.
+- Next recipient or routing: `code_reviewer` for implementation-source and structural re-review. After Pass, return through `api_e2e_engineer` for the corrected durable expectation and rerun of `APIE2E-STANDALONE-MCP-001` / `APIE2E-F005`.
+- Remaining limitations or risks: implementation checks do not replace a real standalone runtime callback and artifact/handoff completion rerun. Application-owned MCP declarations/provisioning and runtime-internal tooling are explicitly outside this ticket. The secondary `APIE2E-REPO-005` remains separately `Unclear` and must not broaden this fix without verified origin.
