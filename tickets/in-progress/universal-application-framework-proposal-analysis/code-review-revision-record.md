@@ -20,6 +20,7 @@
 | `CRR-014` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-009` | `Fail — Local Fix` | `Pass` | `CR-009` |
 | `CRR-015` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | API/E2E Failure-Origin Review / `API-REV-005` | `Pass` | `Fail — Design Impact` | `CR-013`, `APIE2E-F005` |
 | `CRR-016` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | API/E2E Failure-Origin Clarification / user-confirmed tool projection | `Fail — Design Impact` | `Fail — Local Fix` | `CR-013`, `APIE2E-F005` |
+| `CRR-017` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-010` | `Fail — Local Fix` | `Pass` | `CR-013`, `APIE2E-F005` |
 
 ## Revision Entries
 
@@ -456,3 +457,29 @@ None.
 - Material score or classification changes: no full score recomputation. Classification changes from `Design Impact` to implementation-owned `Local Fix`; the API/E2E expectation/report also needs a bounded correction so configured package names are not treated as the actual MCP descriptor.
 - Recommended recipient: `implementation_engineer`, routed via the current `solution_designer` reset point because the superseded Design Impact package is already there.
 - Remaining risks or uncertainty: do not commit or approve the in-progress broad SR-007/runtime-authority redesign on CRR-015's incorrect gateway premise. Preserve native/server/configured-MCP/external-gateway distinctions and revalidate actual descriptor contents plus the real standalone publication/handoff flow.
+
+### CRR-017 — IR-010 mounts the established standalone Agent Tools route
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `17`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-010`; `CR-013`, `APIE2E-F005`, `APIE2E-STANDALONE-MCP-001`
+- Relevant solution revision IDs: `SR-009` clarification and `SR-008` bounded correction basis; `SR-007` withdrawn
+- Relevant architecture-review revision IDs: `ARCH-REV-006`; `ARCH-REV-007` withdrawn with no decision
+- Relevant implementation revision IDs: `IR-010`
+- Relevant API/E2E revision IDs: `API-REV-005`
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: `Fail — Local Fix` (`CRR-016`)
+- Current authoritative result: `Pass` (`CRR-017`, `96/100`)
+- What changed in the review result and why: IR-010 makes the exact bounded correction identified by CRR-016. `buildStandaloneApplicationServerComposition()` imports and awaits the existing platform `registerAgentToolsMcpRoutes(app)` after selected-app REST/WebSocket ingress and before the static wildcard. It does not alter route/auth/session/catalog/dispatcher/adapter behavior, runtime-native tooling, Studio, or the separate external gateway. Independent TypeScript and focused integration execution passes 2 files / 13 tests, including the exact prior standalone route boundary now reaching `401 unauthorized` instead of generic/static `404`.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-001`–`CR-012` | Resolved in source / applicable API/E2E rerun pending | Remain Resolved | `IR-002`–`IR-009`, `CRR-002`–`CRR-014`, `API-REV-001`–`API-REV-005` | IR-010 changes only the standalone route inventory and does not alter their development, graph-authority, launch, prompt, portability, or selected-resource paths. |
+| `CR-013` | Open — Local Fix | Resolved in source; API/E2E rerun pending | `SR-008`, `SR-009`, `IR-010`, `CRR-016`, `CRR-017`, `API-REV-005` | Source diff is one existing registrar import plus one awaited mount before static fallback. TypeScript no-emit passes; standalone and Agent Tools route suites pass 13/13; standalone does not mount the external gateway. |
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: result changes from `Fail — Local Fix` to `Pass`; current full source score is `9.6/10` (`96/100`) with every category `>=9.0`.
+- Recommended recipient: `api_e2e_engineer`
+- Remaining risks or uncertainty: API/E2E must use the actual descriptor/`tools/list`, require eligible server tools such as `publish_artifacts` and `send_message_to` without incorrectly requiring native `write_file` through MCP, rerun `APIE2E-STANDALONE-MCP-001` and the real standalone Brief workflow first, then complete the retained matrix. `APIE2E-REPO-005` remains independently unattributed.
