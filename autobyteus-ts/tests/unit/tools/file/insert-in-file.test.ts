@@ -26,8 +26,9 @@ describe('insert_in_file tool', () => {
 
     const schema = definition?.argumentSchema;
     expect(schema).toBeInstanceOf(ParameterSchema);
-    expect(schema?.parameters.length).toBe(4);
+    expect(schema?.parameters.length).toBe(5);
     expect(schema?.getParameter('path')).toBeInstanceOf(ParameterDefinition);
+    expect(schema?.getParameter('base_dir')?.required).toBe(false);
     expect(schema?.getParameter('new_text')?.type).toBe(ParameterType.STRING);
     expect(schema?.getParameter('before_text')?.type).toBe(ParameterType.STRING);
     expect(schema?.getParameter('after_text')?.type).toBe(ParameterType.STRING);
@@ -73,26 +74,26 @@ describe('insert_in_file tool', () => {
     ).rejects.toThrow('[anchor_not_found]');
   });
 
-  it('resolves relative paths from the workspace root', async () => {
+  it('resolves relative paths from an explicit absolute base directory', async () => {
     const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-insert-in-file-'));
     const filePath = path.join(tmpDir, 'relative.txt');
     await fs.writeFile(filePath, 'alpha\nbeta\n', 'utf-8');
 
     const result = await getTool().execute(
       { agentId: 'agent', workspaceRootPath: tmpDir } satisfies MockContext,
-      { path: 'relative.txt', after_text: 'alpha\n', new_text: 'inserted\n' }
+      { path: 'relative.txt', base_dir: tmpDir, after_text: 'alpha\n', new_text: 'inserted\n' }
     );
 
     expect(result).toBe(`Text inserted successfully at ${filePath}`);
     expect(await fs.readFile(filePath, 'utf-8')).toBe('alpha\ninserted\nbeta\n');
   });
 
-  it('rejects relative paths when no workspace root is configured', async () => {
+  it('rejects relative paths without an explicit base directory', async () => {
     await expect(
       getTool().execute(
-        { agentId: 'agent', workspaceRootPath: null } satisfies MockContext,
+        { agentId: 'agent', workspaceRootPath: '/tmp' } satisfies MockContext,
         { path: 'relative.txt', after_text: 'alpha\n', new_text: 'inserted\n' }
       )
-    ).rejects.toThrow('no workspace root is configured');
+    ).rejects.toThrow('Provide an absolute path or an absolute base_dir');
   });
 });

@@ -27,6 +27,32 @@ This document details the unified design for defining, generating, and using sch
 - Enforcing a universal config format beyond the internal `ParameterSchema`.
 - Automatically converting runtime arguments into configuration settings.
 
+## 2.1 Generic File-Tool Path Contract
+
+The generic local file tools (`read_file`, `write_file`, `edit_file`,
+`replace_in_file`, and `insert_in_file`) use a trusted-local path contract.
+This is intentionally distinct from the workspace-rooted file-explorer and
+terminal `cwd` boundaries:
+
+- an absolute `path` is used directly and may refer to any local path that the
+  server process can access;
+- a relative `path` requires an explicit absolute `base_dir` for that single
+  invocation;
+- when `path` is absolute it takes precedence if `base_dir` is also supplied;
+- omitting `base_dir` for a relative path is an error; the resolver never
+  falls back to the configured workspace, process `cwd`, or a prior shell
+  `cd`;
+- `base_dir` is invocation-scoped and does not change agent or shell working
+  directory state; and
+- configured AutoByteus internal deny paths remain protected after physical
+  path resolution, including descendants and symlink traversal.
+
+The path and `base_dir` descriptions are shared across the five native
+schemas. Provider-specific formatters must preserve the same precedence and
+fallback wording. This contract supports configured skill references and
+external project worktrees without introducing a second per-path approval
+workflow; tool/run approval remains the separate invocation gate.
+
 ---
 
 ## 3. Core Architecture

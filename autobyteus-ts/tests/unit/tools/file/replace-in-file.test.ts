@@ -26,8 +26,9 @@ describe('replace_in_file tool', () => {
 
     const schema = definition?.argumentSchema;
     expect(schema).toBeInstanceOf(ParameterSchema);
-    expect(schema?.parameters.length).toBe(3);
+    expect(schema?.parameters.length).toBe(4);
     expect(schema?.getParameter('path')).toBeInstanceOf(ParameterDefinition);
+    expect(schema?.getParameter('base_dir')?.required).toBe(false);
     expect(schema?.getParameter('old_text')?.type).toBe(ParameterType.STRING);
     expect(schema?.getParameter('new_text')?.type).toBe(ParameterType.STRING);
   });
@@ -59,26 +60,26 @@ describe('replace_in_file tool', () => {
     ).rejects.toThrow('[multiple_matches]');
   });
 
-  it('resolves relative paths from the workspace root', async () => {
+  it('resolves relative paths from an explicit absolute base directory', async () => {
     const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-replace-in-file-'));
     const filePath = path.join(tmpDir, 'relative.txt');
     await fs.writeFile(filePath, 'a', 'utf-8');
 
     const result = await getTool().execute(
       { agentId: 'agent', workspaceRootPath: tmpDir } satisfies MockContext,
-      { path: 'relative.txt', old_text: 'a', new_text: 'b' }
+      { path: 'relative.txt', base_dir: tmpDir, old_text: 'a', new_text: 'b' }
     );
 
     expect(result).toBe(`File updated successfully at ${filePath}`);
     expect(await fs.readFile(filePath, 'utf-8')).toBe('b');
   });
 
-  it('rejects relative paths when no workspace root is configured', async () => {
+  it('rejects relative paths without an explicit base directory', async () => {
     await expect(
       getTool().execute(
-        { agentId: 'agent', workspaceRootPath: null } satisfies MockContext,
+        { agentId: 'agent', workspaceRootPath: '/tmp' } satisfies MockContext,
         { path: 'relative.txt', old_text: 'a', new_text: 'b' }
       )
-    ).rejects.toThrow('no workspace root is configured');
+    ).rejects.toThrow('Provide an absolute path or an absolute base_dir');
   });
 });

@@ -30,13 +30,14 @@ describe('edit_file tool', () => {
 
     const schema = definition?.argumentSchema;
     expect(schema).toBeInstanceOf(ParameterSchema);
-    expect(schema?.parameters.length).toBe(2);
+    expect(schema?.parameters.length).toBe(3);
 
     const pathParam = schema?.getParameter('path');
     expect(pathParam).toBeInstanceOf(ParameterDefinition);
     expect(pathParam?.type).toBe(ParameterType.STRING);
     expect(pathParam?.required).toBe(true);
-    expect(pathParam?.description).toContain('absolute or relative to the configured workspace root');
+    expect(pathParam?.description).toContain('If path is relative, you must provide an absolute base_dir');
+    expect(schema?.getParameter('base_dir')?.required).toBe(false);
 
     const patchParam = schema?.getParameter('patch');
     expect(patchParam).toBeInstanceOf(ParameterDefinition);
@@ -139,7 +140,7 @@ index 1111111..2222222 100644
     await expect(tool.execute(context, { path: filePath, patch: '@@ -1,1 +1,1 @@\n-line1\n+line1 updated\n' })).rejects.toThrow('does not exist');
   });
 
-  it('resolves relative paths from the workspace root', async () => {
+  it('resolves relative paths from an explicit absolute base directory', async () => {
     const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-edit-file-'));
     const filePath = path.join(tmpDir, 'rel_patch.txt');
     await fs.writeFile(filePath, 'line1\nline2\n', 'utf-8');
@@ -152,22 +153,23 @@ index 1111111..2222222 100644
 
     const result = await tool.execute(context, {
       path: 'rel_patch.txt',
+      base_dir: tmpDir,
       patch: '@@ -1,2 +1,2 @@\n line1\n-line2\n+line2 updated\n'
     });
     expect(result).toBe(`File edited successfully at ${filePath}`);
     expect(await fs.readFile(filePath, 'utf-8')).toBe('line1\nline2 updated\n');
   });
 
-  it('rejects relative paths when no workspace root is configured', async () => {
+  it('rejects relative paths without an explicit base directory', async () => {
     const tool = getPatchTool();
 
     await expect(tool.execute(
-      { agentId: 'agent', workspaceRootPath: null } satisfies MockContext,
+      { agentId: 'agent', workspaceRootPath: '/tmp' } satisfies MockContext,
       {
         path: 'rel_patch.txt',
         patch: '@@ -1,1 +1,1 @@\n-line1\n+line1 updated\n'
       }
-    )).rejects.toThrow('no workspace root is configured');
+    )).rejects.toThrow('Provide an absolute path or an absolute base_dir');
   });
 
   it('read then patch flow', async () => {

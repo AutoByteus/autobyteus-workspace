@@ -13,6 +13,10 @@ Terminal tools provide stateless non-interactive command execution for agents pl
 ## Overview
 
 - **`run_bash` is stateless** — each call runs the supplied command through a non-interactive shell in the resolved `cwd`. Do not rely on `cd` or exported variables from earlier calls.
+- **Terminal `cwd` remains workspace-contained** — an explicit terminal `cwd`
+  is resolved by the terminal-specific containment resolver. The generic file
+  tools' trusted-local absolute-path contract does not widen terminal command
+  working directories.
 - **Foreground execution is non-PTY** — command output is captured from process pipes, avoiding terminal prompt/echo/wrapping artifacts.
 - **Background processes use PID identity** — managed background processes are returned and queried by `pid` only.
 - **Long-running commands use normal shell syntax** — for example, `npm run dev > server.log 2>&1 &`. If an ordinary live descendant remains after the shell exits, it is adopted and returned in `backgroundProcesses`.

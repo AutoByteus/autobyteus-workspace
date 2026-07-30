@@ -4,26 +4,20 @@ import type { BaseTool } from '../base-tool.js';
 import { ToolCategory } from '../tool-category.js';
 import { defaultToolRegistry } from '../registry/tool-registry.js';
 import { ParameterSchema, ParameterDefinition, ParameterType } from '../../utils/parameter-schema.js';
-import { resolveAbsolutePath } from './workspace-path-utils.js';
+import { addFileToolPathParameters } from './file-tool-schema.js';
+import { resolveFileToolPath } from './workspace-path-utils.js';
 
 const DESCRIPTION = [
   'Reads content from a specified file. Supports optional 1-based inclusive line ranges via start_line/end_line.',
   'Each returned line is prefixed with its line number when include_line_numbers is true.',
-  "'path' may be an absolute filesystem path or a path relative to the configured workspace root.",
-  "Relative paths are resolved from the workspace root, never from prior shell cd state.",
-  'Raises ValueError if a relative path is given without a valid workspace root or if line range arguments are invalid.',
+  "File paths use trusted-local semantics: absolute paths are used directly; relative paths require an explicit absolute base_dir and are never resolved from workspace, process, or shell cd state.",
+  'Raises ValueError if a relative path is given without an absolute base_dir or if line range arguments are invalid.',
   'Raises FileNotFoundError if the file does not exist.',
   'Raises IOError if file reading fails for other reasons.'
 ].join(' ');
 
 const argumentSchema = new ParameterSchema();
-argumentSchema.addParameter(new ParameterDefinition({
-  name: 'path',
-  type: ParameterType.STRING,
-  description:
-    "Parameter 'path' for tool 'read_file'. This may be an absolute filesystem path or a path relative to the configured workspace root. It is never resolved from prior shell cd state.",
-  required: true
-}));
+addFileToolPathParameters(argumentSchema);
 argumentSchema.addParameter(new ParameterDefinition({
   name: 'start_line',
   type: ParameterType.INTEGER,
@@ -49,6 +43,7 @@ type AgentContextLike = { agentId: string; workspaceRootPath?: string | null };
 export async function readFile(
   context: AgentContextLike,
   filePath: string,
+  baseDir?: string | null,
   startLine?: number | null,
   endLine?: number | null,
   includeLineNumbers: boolean = true
@@ -69,7 +64,7 @@ export async function readFile(
     throw new Error(`end_line (${endLine}) must be >= start_line (${startLine}).`);
   }
 
-  const finalPath = resolveAbsolutePath(context, filePath);
+  const finalPath = resolveFileToolPath(context, filePath, baseDir);
 
   try {
     await fs.access(finalPath);
@@ -121,7 +116,7 @@ export function registerReadFileTool(): BaseTool {
       description: DESCRIPTION,
       argumentSchema,
       category: ToolCategory.FILE_SYSTEM,
-      paramNames: ['context', 'path', 'start_line', 'end_line', 'include_line_numbers']
+      paramNames: ['context', 'path', 'base_dir', 'start_line', 'end_line', 'include_line_numbers']
     })(readFile) as BaseTool;
     return cachedTool;
   }

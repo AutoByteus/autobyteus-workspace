@@ -79,28 +79,25 @@ describe('read_file tool (integration)', () => {
     await expect(tool.execute(context, {})).rejects.toThrow(`Invalid arguments for tool '${TOOL_NAME_READ_FILE}'`);
   });
 
-  it('resolves relative paths from the workspace root', async () => {
+  it('resolves relative paths from an explicit absolute base directory', async () => {
     const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-read-file-'));
     const filePath = path.join(tmpDir, 'relative_reader_test.txt');
     await fs.writeFile(filePath, 'Relative path content for read_file', 'utf-8');
 
     const tool = getToolInstance();
-    const context: MockContext = {
-      agentId: 'agent',
-      workspaceRootPath: tmpDir 
-    };
+    const context: MockContext = { agentId: 'agent', workspaceRootPath: tmpDir };
 
-    await expect(tool.execute(context, { path: 'relative_reader_test.txt' })).resolves.toBe(
+    await expect(tool.execute(context, { path: 'relative_reader_test.txt', base_dir: tmpDir })).resolves.toBe(
       '1: Relative path content for read_file'
     );
   });
 
-  it('rejects relative paths when no workspace root is configured', async () => {
+  it('rejects relative paths without an explicit base directory', async () => {
     const tool = getToolInstance();
-    const context: MockContext = { agentId: 'agent', workspaceRootPath: null };
+    const context: MockContext = { agentId: 'agent', workspaceRootPath: '/tmp' };
 
     await expect(tool.execute(context, { path: 'relative_reader_test.txt' })).rejects.toThrow(
-      'but no workspace root is configured'
+      'Provide an absolute path or an absolute base_dir'
     );
   });
 
