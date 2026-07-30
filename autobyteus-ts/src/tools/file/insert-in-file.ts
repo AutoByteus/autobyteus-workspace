@@ -4,20 +4,15 @@ import type { BaseTool } from '../base-tool.js';
 import { ToolCategory } from '../tool-category.js';
 import { defaultToolRegistry } from '../registry/tool-registry.js';
 import { ParameterSchema, ParameterDefinition, ParameterType } from '../../utils/parameter-schema.js';
-import { resolveAbsolutePath } from './workspace-path-utils.js';
+import { addFileToolPathParameters } from './file-tool-schema.js';
+import { resolveFileToolPath } from './workspace-path-utils.js';
 import { insertRelativeToAnchor, TextEditOperationError } from './text-edit-utils.js';
 
 const DESCRIPTION =
-  'Inserts new text before or after one exact anchor block in a file without rewriting the rest. Provide exactly one of before_text or after_text, copying the anchor exactly from the file including whitespace and newlines. Use this after read_file when you need to insert a new block near existing text. If the anchor is not unique, use a more specific anchor or switch to edit_file.';
+  'Inserts new text before or after one exact anchor block in a file without rewriting the rest. File paths use trusted-local semantics: absolute paths are used directly; relative paths require an explicit absolute base_dir and are never resolved from workspace, process, or shell cd state. Provide exactly one of before_text or after_text, copying the anchor exactly from the file including whitespace and newlines. Use this after read_file when you need to insert a new block near existing text. If the anchor is not unique, use a more specific anchor or switch to edit_file.';
 
 const argumentSchema = new ParameterSchema();
-argumentSchema.addParameter(new ParameterDefinition({
-  name: 'path',
-  type: ParameterType.STRING,
-  description:
-    'The filesystem path to the file to update. This may be absolute or relative to the configured workspace root. It is never resolved from prior shell cd state.',
-  required: true
-}));
+addFileToolPathParameters(argumentSchema);
 argumentSchema.addParameter(new ParameterDefinition({
   name: 'new_text',
   type: ParameterType.STRING,
@@ -45,11 +40,12 @@ type AgentContextLike = { agentId: string; workspaceRootPath?: string | null };
 export async function insertInFile(
   context: AgentContextLike,
   path: string,
+  baseDir: string | null | undefined,
   new_text: string,
   before_text?: string,
   after_text?: string
 ): Promise<string> {
-  const finalPath = resolveAbsolutePath(context, path);
+  const finalPath = resolveFileToolPath(context, path, baseDir);
 
   try {
     await fs.access(finalPath);
@@ -92,7 +88,8 @@ export function registerInsertInFileTool(): BaseTool {
       name: TOOL_NAME,
       description: DESCRIPTION,
       argumentSchema,
-      category: ToolCategory.FILE_SYSTEM
+      category: ToolCategory.FILE_SYSTEM,
+      paramNames: ['context', 'path', 'base_dir', 'new_text', 'before_text', 'after_text']
     })(insertInFile) as BaseTool;
     return cachedTool;
   }

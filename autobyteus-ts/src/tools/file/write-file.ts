@@ -5,26 +5,20 @@ import type { BaseTool } from '../base-tool.js';
 import { ToolCategory } from '../tool-category.js';
 import { defaultToolRegistry } from '../registry/tool-registry.js';
 import { ParameterSchema, ParameterDefinition, ParameterType } from '../../utils/parameter-schema.js';
-import { resolveAbsolutePath } from './workspace-path-utils.js';
+import { addFileToolPathParameters } from './file-tool-schema.js';
+import { resolveFileToolPath } from './workspace-path-utils.js';
 
 const DESCRIPTION = [
   'Creates or overwrites a file with specified content.',
-  "'path' may be an absolute filesystem path or a path relative to the configured workspace root.",
-  "Relative paths are resolved from the workspace root, never from prior shell cd state.",
+  "File paths use trusted-local semantics: absolute paths are used directly; relative paths require an explicit absolute base_dir and are never resolved from workspace, process, or shell cd state.",
   "'content' is the string content to write.",
   "Creates parent directories if they don't exist.",
-  'Raises ValueError if a relative path is given without a valid workspace root.',
+  'Raises ValueError if a relative path is given without an absolute base_dir.',
   'Raises IOError if file writing fails.'
 ].join(' ');
 
 const argumentSchema = new ParameterSchema();
-argumentSchema.addParameter(new ParameterDefinition({
-  name: 'path',
-  type: ParameterType.STRING,
-  description:
-    "Parameter 'path' for tool 'write_file'. This may be an absolute filesystem path or a path relative to the configured workspace root. It is never resolved from prior shell cd state.",
-  required: true
-}));
+addFileToolPathParameters(argumentSchema);
 argumentSchema.addParameter(new ParameterDefinition({
   name: 'content',
   type: ParameterType.STRING,
@@ -37,9 +31,10 @@ type AgentContextLike = { agentId: string; workspaceRootPath?: string | null };
 export async function writeFile(
   context: AgentContextLike,
   path: string,
+  baseDir: string | null | undefined,
   content: string
 ): Promise<string> {
-  const finalPath = resolveAbsolutePath(context, path);
+  const finalPath = resolveFileToolPath(context, path, baseDir);
 
   try {
     const dirPath = pathModule.dirname(finalPath);
@@ -63,7 +58,8 @@ export function registerWriteFileTool(): BaseTool {
       name: TOOL_NAME,
       description: DESCRIPTION,
       argumentSchema,
-      category: ToolCategory.FILE_SYSTEM
+      category: ToolCategory.FILE_SYSTEM,
+      paramNames: ['context', 'path', 'base_dir', 'content']
     })(writeFile) as BaseTool;
     return cachedTool;
   }

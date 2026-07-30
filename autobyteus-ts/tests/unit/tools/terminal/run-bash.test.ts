@@ -88,6 +88,14 @@ describe('runBash', () => {
     expect(result.effectiveCwd).toBe(fs.realpathSync(path.join(workspaceRoot, 'packages', 'api')));
   });
 
+  it('rejects an explicit cwd outside the workspace', async () => {
+    const workspaceRoot = createTempWorkspace();
+    const outsideRoot = createTempWorkspace();
+    const context: any = { workspaceRootPath: workspaceRoot };
+
+    await expect(runBash(context, 'pwd', outsideRoot)).rejects.toThrow('FILE_TOOL_PATH_OUTSIDE_AUTHORIZED_ROOT');
+  });
+
   it('rejects relative cwd paths when no workspace is configured', async () => {
     const context: any = { workspaceRootPath: null };
 

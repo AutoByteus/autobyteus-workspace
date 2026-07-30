@@ -5,19 +5,14 @@ import { ToolCategory } from '../tool-category.js';
 import { defaultToolRegistry } from '../registry/tool-registry.js';
 import { ParameterSchema, ParameterDefinition, ParameterType } from '../../utils/parameter-schema.js';
 import { applyUnifiedDiff, PatchApplicationError } from '../../utils/diff-utils.js';
-import { resolveAbsolutePath } from './workspace-path-utils.js';
+import { addFileToolPathParameters } from './file-tool-schema.js';
+import { resolveFileToolPath } from './workspace-path-utils.js';
 
 const DESCRIPTION =
-  'Applies a diff-style patch to one file without overwriting unrelated content. Provide a git diff or unified diff patch for the target file. Use this for surgical patch edits. If exact text replacement is easier, use replace_in_file. If you only need to insert new text near an exact anchor, use insert_in_file.';
+  'Applies a diff-style patch to one file without overwriting unrelated content. File paths use trusted-local semantics: absolute paths are used directly; relative paths require an explicit absolute base_dir and are never resolved from workspace, process, or shell cd state. Provide a git diff or unified diff patch for the target file. Use this for surgical patch edits. If exact text replacement is easier, use replace_in_file. If you only need to insert new text near an exact anchor, use insert_in_file.';
 
 const argumentSchema = new ParameterSchema();
-argumentSchema.addParameter(new ParameterDefinition({
-  name: 'path',
-  type: ParameterType.STRING,
-  description:
-    'The filesystem path to the file to patch. This may be absolute or relative to the configured workspace root. It is never resolved from prior shell cd state.',
-  required: true
-}));
+addFileToolPathParameters(argumentSchema);
 argumentSchema.addParameter(new ParameterDefinition({
   name: 'patch',
   type: ParameterType.STRING,
@@ -39,9 +34,10 @@ function splitLinesKeepEnds(text: string): string[] {
 export async function editFile(
   context: AgentContextLike,
   path: string,
+  baseDir: string | null | undefined,
   patch: string
 ): Promise<string> {
-  const finalPath = resolveAbsolutePath(context, path);
+  const finalPath = resolveFileToolPath(context, path, baseDir);
 
   try {
     await fs.access(finalPath);
@@ -102,7 +98,8 @@ export function registerEditFileTool(): BaseTool {
       name: TOOL_NAME,
       description: DESCRIPTION,
       argumentSchema,
-      category: ToolCategory.FILE_SYSTEM
+      category: ToolCategory.FILE_SYSTEM,
+      paramNames: ['context', 'path', 'base_dir', 'patch']
     })(editFile) as BaseTool;
     return cachedTool;
   }

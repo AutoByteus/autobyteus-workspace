@@ -26,32 +26,36 @@ const resolvePhysicalCandidate = (candidate: string): string => {
   return pathModule.resolve(realAncestor, pathModule.relative(existingAncestor, candidate));
 };
 
-export function resolveAbsolutePath(
-  context: WorkspaceContextLike,
-  inputPath: string
+const RELATIVE_PATH_ERROR =
+  "Relative file paths require an explicit absolute 'base_dir'. Provide an absolute path or an absolute base_dir; relative paths are not resolved from the configured workspace, process cwd, or prior shell cd state.";
+
+export function resolveFileToolPath(
+  _context: WorkspaceContextLike,
+  inputPath: string,
+  baseDir?: string | null
 ): string {
   if (typeof inputPath !== 'string' || inputPath.trim().length === 0) {
     throw new Error('Path must be a non-empty string.');
   }
 
   const normalizedInputPath = inputPath.trim();
-  const workspaceRootPath = context.workspaceRootPath ?? null;
-  if (!workspaceRootPath || workspaceRootPath.trim().length === 0) {
-    throw new Error(
-      `Path access is unavailable for agent '${context.agentId}' because no workspace root is configured.`
-    );
+  let candidate: string;
+  if (pathModule.isAbsolute(normalizedInputPath)) {
+    candidate = pathModule.resolve(normalizedInputPath);
+  } else {
+    if (typeof baseDir !== 'string' || baseDir.trim().length === 0) {
+      throw new Error(RELATIVE_PATH_ERROR);
+    }
+    const normalizedBaseDir = baseDir.trim();
+    if (!pathModule.isAbsolute(normalizedBaseDir)) {
+      throw new Error("Parameter 'base_dir' must be an absolute directory when provided for a relative path.");
+    }
+    candidate = pathModule.resolve(normalizedBaseDir, normalizedInputPath);
   }
-  const lexicalRoot = pathModule.resolve(workspaceRootPath);
-  const candidate = pathModule.resolve(
-    pathModule.isAbsolute(normalizedInputPath) ? normalizedInputPath : pathModule.join(lexicalRoot, normalizedInputPath),
-  );
-  if (!isWithin(lexicalRoot, candidate)) throw new Error('FILE_TOOL_PATH_OUTSIDE_AUTHORIZED_ROOT');
 
-  const physicalRoot = fs.realpathSync(lexicalRoot);
   const physicalCandidate = resolvePhysicalCandidate(candidate);
-  if (!isWithin(physicalRoot, physicalCandidate)) throw new Error('FILE_TOOL_PATH_OUTSIDE_AUTHORIZED_ROOT');
   if (deniedRealPaths.some((denied) => isWithin(denied, physicalCandidate))) {
     throw new Error('FILE_TOOL_PATH_DENIED');
   }
-  return pathModule.normalize(physicalCandidate);
+  return pathModule.normalize(candidate);
 }

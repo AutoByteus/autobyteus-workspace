@@ -1,0 +1,7 @@
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+{"result":"PASS","names":["read_file","write_file","edit_file","replace_in_file","insert_in_file"],"absolute":true,"relativeBaseDir":true,"missingBaseDir":true,"invalidRelativeBase":true,"schemaParity":true,"protectedMatrix":5}
+exit=0
