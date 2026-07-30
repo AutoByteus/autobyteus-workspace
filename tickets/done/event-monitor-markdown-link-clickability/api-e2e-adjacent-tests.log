@@ -1,0 +1,39 @@
+
+> autobyteus@1.4.29 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-markdown-link-clickability/autobyteus-web
+> cross-env NUXT_TEST=true vitest composables/__tests__/useMarkdownSegments.spec.ts components/workspace/agent/__tests__/AgentConversationFeed.spec.ts components/workspace/agent/__tests__/AgentEventMonitor.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-markdown-link-clickability/autobyteus-web
+
+stderr | composables/__tests__/useMarkdownSegments.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/agent/__tests__/AgentEventMonitor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/agent/__tests__/AgentConversationFeed.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/agent/__tests__/AgentConversationFeed.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useMarkdownSegments.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/agent/__tests__/AgentEventMonitor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/__tests__/useMarkdownSegments.spec.ts (3 tests) 22ms
+ ✓ components/workspace/agent/__tests__/AgentEventMonitor.spec.ts (3 tests) 18ms
+ ✓ components/workspace/agent/__tests__/AgentConversationFeed.spec.ts (15 tests) 122ms
+
+ Test Files  3 passed (3)
+      Tests  21 passed (21)
+   Start at  09:11:01
+   Duration  5.91s (transform 3.09s, setup 14.95s, collect 354ms, tests 162ms, environment 526ms, prepare 535ms)
+
