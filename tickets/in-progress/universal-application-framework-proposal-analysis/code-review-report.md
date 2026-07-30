@@ -2,119 +2,178 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `API/E2E Failure-Origin Review`
+- Review Entry Point: `Implementation Review`
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/requirements.md`
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/investigation-notes.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-spec.md`
 - Supplemental Task Artifacts Reviewed As Context: `proposal-critical-analysis.md`, `design-self-validation.md`, and `sources/autobyteus-vertical-application-developer-experience-proposal.md` in the same ticket directory
 - Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/solution-revision-record.md`
-- Relevant Solution Revision IDs: `SR-009`, with `SR-008` as the CR-013 correction basis; `SR-007` remains withdrawn
+- Relevant Solution Revision IDs: `SR-009`, with `SR-008` retained as the bounded Agent Tools correction basis; `SR-007` is withdrawn
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md`
 - Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/architecture-review-revision-record.md`
 - Relevant Architecture Review Revision IDs: `ARCH-REV-006`; `ARCH-REV-007` was withdrawn with no decision
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-revision-record.md`
-- Relevant Implementation Revision IDs: `IR-010`, with `IR-001`–`IR-009` retained as implementation history
+- Relevant Implementation Revision IDs: `IR-011`, with cumulative `IR-001`–`IR-010` retained as context
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-018`
-- Current Review Round: `18`
-- Trigger: `api_e2e_engineer` round-6 failure handoff after CRR-017/IR-010
-- Prior Review Round Reviewed: `17` / `CRR-017` (`Pass`)
-- Latest Authoritative Round: `18`
+- Current Code Review Revision ID: `CRR-019`
+- Current Review Round: `19`
+- Trigger: `implementation_engineer` source re-review handoff for the bounded `CR-014` graph-local Codex definition-authority correction
+- Prior Review Round Reviewed: `18` / `CRR-018` (`Fail — Local Fix`)
+- Latest Authoritative Round: `19`
 - Coverage Investigation Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-coverage-investigation.md`
 - Execution Coverage Report Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`
 - API/E2E Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-revision-record.md`
 - Relevant API/E2E Revision IDs: `API-REV-006`
 - Delivery Revision Record Reviewed: `N/A`
 - Relevant Delivery Revision IDs: `N/A`
-- Failing Scenario IDs: `APIE2E-STANDALONE-MCP-002`, `APIE2E-F006`, `APIE2E-CODEX-AUTH-001`
-- Exact Failing Commands / Execution Mode:
-  - Real product path: `pnpm -C applications/brief-studio dev -- --port 43124 --no-open` with fresh owned data, real worker/SQLite, Codex App Server, authenticated `gpt-5.6-luna`, and system Chrome.
-  - Direct regression: `pnpm -C autobyteus-server-ts exec vitest run tests/unit/application-platform/application-run-authorities.test.ts`
-- Failure Evidence Paths: `api-rev-006-standalone-actual-run-descriptor-state.json`, `api-rev-006-standalone-actual-tools-and-workaround.json`, `api-rev-006-codex-definition-authority-regression.log`, `api-rev-006-source-correlation.log`, and the real-run logs/trace under `tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/`
+- Failing Scenario IDs: triggering context `APIE2E-STANDALONE-MCP-002`, `APIE2E-F006`, `APIE2E-CODEX-AUTH-001`; source resolution reviewed here
+- Exact Failing Commands / Execution Mode: prior real standalone `pnpm -C applications/brief-studio dev -- --port 43124 --no-open`; direct authority regression `pnpm -C autobyteus-server-ts exec vitest run tests/unit/application-platform/application-run-authorities.test.ts`
+- Failure Evidence Paths: API-REV-006 evidence under `tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/`, especially `api-rev-006-standalone-actual-run-descriptor-state.json`, `api-rev-006-codex-definition-authority-regression.log`, and `api-rev-006-source-correlation.log`
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: failure-origin only. Confirmed IR-010 route registration, then traced the actual package-local agent-definition authority from `createApplicationRunAuthorities()` through `AgentRunManager`, the Codex backend factory, and `CodexThreadBootstrapper`.
-- Files / areas reviewed: `create-application-run-authorities.ts`, `agent-run-manager.ts`, `codex-agent-run-backend-factory.ts`, `codex-thread-bootstrapper.ts`, the updated graph-authority regression, and API-REV-006 live descriptor/tool evidence.
-- Explicit exclusions: no proportional review of the cumulative API/E2E test package; no full source scorecard; no Claude source finding or change without an independently established supported Claude scenario; no attribution of `APIE2E-REPO-005`.
+- Changed implementation and behavior reviewed: source commit `2377496070631da4a8a9838e173ed2a6c6ec1714` at task HEAD `798020d12`; the application run composition now constructs an existing Codex bootstrapper with the exact graph-local `AgentDefinitionService`, wraps it in the existing Codex backend factory, and injects that factory into its `AgentRunManager`.
+- Files / areas reviewed: the changed application run-authority composition; `AgentRunManager` runtime selection; Codex factory create/restore use; Codex bootstrapper definition/tool-exposure path; IR-011 artifacts; the preserved API/E2E-owned authority regression; and the relevant Codex unit/integration suites.
+- Explicit exclusions: no proportional review of the cumulative uncommitted API/E2E test package; no real authenticated standalone Brief rerun; no Claude change or finding; no change to runtime-native tools, Agent Tools route/session/catalog/dispatcher/adapters, Studio's external gateway, or `APIE2E-REPO-005`.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: Yes. AC-005/AC-006 require the maintained Brief package's real Codex team run to receive eligible `publish_artifacts` and `send_message_to`, hand work to the writer, and produce projected artifacts in both hosts.
-- Design-spec behavior map verified against the implementation: contradicted at one implementation connection. The reviewed design explicitly requires definition/runtime foundations to pass their exact graph-local definition services into runtime/run services and prohibits new composition-critical application-graph code from resolving process globals. The current application graph injects that authority into AutoByteus and allocation but omits the Codex factory.
-- Design review report and round confirmed: `ARCH-REV-006` remains the valid `Pass` decision. The current evidence does not expose an inadequate design; it exposes incomplete implementation of its exact-authority rule.
-- Behavior-basis status: `Contradicted` by current Codex source/runtime wiring
-- Changed or newly discovered behavior, if any: none. This is a supported maintained-package path already required by AC-005/AC-006.
-- Remaining material ambiguity, if any: none for the Codex failure origin. Claude is not classified in this focused round.
+- Approved requirements basis understood: Yes. The maintained package-owned Codex researcher must resolve its package-local definition, derive eligible server-tool exposure, receive the run-scoped descriptor, call the already-mounted standalone route, hand work to the writer, and publish projected artifacts.
+- Design-spec behavior map verified against the implementation: Yes. The complete path is `Brief Generate draft -> guarded team launch -> application AgentRunManager -> explicitly injected Codex factory/bootstrapper -> graph-local package definition -> configured-tool exposure/session descriptor -> standalone Agent Tools route -> authenticated server dispatch -> writer handoff/artifact projection`. IR-011 corrects the previously missing definition-authority connection.
+- Design review report and round confirmed: `ARCH-REV-006` remains the applicable architecture `Pass`; its exact-definition-service/no-composition-global rules are preserved.
+- Behavior-basis status: `Confirmed`
+- Changed or newly discovered behavior, if any: none. The implementation completes an already-approved maintained Codex path.
+- Remaining material ambiguity, if any: none for source review. Live descriptor/dispatch/business completion remains API/E2E evidence.
 
-| Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Evidence |
+| Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence |
 | --- | --- | --- | --- |
-| `BEH-004` | Contradicted at Codex bootstrap authority | A valid package-local researcher reaches the application `AgentRunManager`, which selects its Codex backend factory and bootstrapper before creating the run-scoped Agent Tools descriptor. | The application graph omits `codexBackendFactory`; the manager selects the process-global factory/bootstrapper, whose `AgentDefinitionService.getInstance()` lookup cannot resolve the package-local ID. |
-| `BEH-005` | Confirmed | IR-010 correctly mounts the existing standalone Agent Tools route; the focused route selection passes 13/13 and the prior generic/static 404 is gone. | None. The current failure occurs before a non-empty descriptor can use that route. |
-| `BEH-006` | Contradicted at the real configured-tool run | Clean standalone builds, validates, creates the Brief, binding, team run, exact package-owned researcher, Codex thread, and run-scoped session. | `codexThreadConfig.appServerConfig` is null; the session has empty configured/enabled tools; no AutoByteus Agent Tools server appears; no eligible dispatch, writer handoff, or projection occurs. |
+| `BEH-004` | Confirmed in source | The application graph's exact `AgentDefinitionService` now reaches the Codex bootstrapper that resolves instructions/configured tools and creates the run-scoped Agent Tools descriptor. | None. |
+| `BEH-005` | Confirmed | IR-010's standalone Agent Tools route remains mounted before static fallback; IR-011 does not alter host route inventory or route/session behavior. | None. |
+| `BEH-006` | Confirmed for the changed construction path | The maintained Codex/Luna run uses the same application `AgentRunManager`; both create and restore call the one injected factory/bootstrapper. | Full real tools/list, dispatch, writer, and artifact completion remains downstream evidence. |
+
+## Structural / Design Checks
+
+| Check | Result | Evidence | Required Action |
+| --- | --- | --- | --- |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | CRR-018 and IR-011 classify one omitted composition dependency; no new owner/refactor is required. | None. |
+| Implementation matches approved behavior-defining supplemental artifacts | Pass | Exact graph authority reaches the Codex run path without changing native tools or MCP/gateway scope. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | The review traces user action, team launch, application manager, runtime factory/bootstrapper, package definition, descriptor, route, dispatch, handoff, and artifacts. | API/E2E should execute the full live spine. |
+| Ownership boundary preservation and clarity | Pass | `createApplicationRunAuthorities()` remains the graph construction owner; the Codex bootstrapper remains definition/tool-exposure owner. | None. |
+| Off-spine concern clarity | Pass | Workspace/skill/client/session collaborators retain their established defaults; only the graph-sensitive definition authority is replaced. | None. |
+| Existing capability/subsystem reuse check | Pass | Existing `CodexThreadBootstrapper`, `CodexAgentRunBackendFactory`, and `AgentRunManager` injection seams are reused directly. | None. |
+| Reusable owned structures check | Pass | No new structure or duplicate factory family is added. | None. |
+| Shared-structure/data-model tightness check | Pass | Contracts and run/configuration models are unchanged. | None. |
+| Repeated coordination ownership check | Pass | One bootstrapper instance serves create and restore through one injected factory. | None. |
+| Empty indirection check | Pass | No wrapper or pass-through abstraction is introduced. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Dependency construction stays in the composition; lookup/exposure behavior stays in the Codex bootstrapper. | None. |
+| Ownership-driven dependency check | Pass | The application graph explicitly supplies its authority downward; no runtime service reaches back into application composition. | None. |
+| Authoritative Boundary Rule check | Pass | The composition uses public constructors and does not access bootstrapper internals, definition providers, session registry, or dispatcher. | None. |
+| File placement check | Pass | The sole production edit is in the application run-graph construction file that owns concrete runtime authorities. | None. |
+| Flat-vs-over-split layout judgment | Pass | Eleven lines in the existing cohesive 119-line construction owner are clearer than a new graph-specific module. | None. |
+| Interface/API/query/command/service-method boundary clarity | Pass | Existing constructors express the exact dependency. Positional defaults are used as designed, with the graph-sensitive third/second arguments explicit. | No task-local API redesign required. |
+| Naming quality and naming-to-responsibility alignment check | Pass | `codexThreadBootstrapper` and `codexBackendFactory` placement make the authority path readable. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | No bootstrap, lookup, exposure, or factory behavior is copied. | None. |
+| Patch-on-patch complexity control | Pass | The correction replaces one activated global default with explicit construction; no fallback, branch, merge, or special package rule is added. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | No now-dead source or obsolete path is created; general-process defaults remain valid outside this graph. | None. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | The authority test asserts exact service identity, shared allocator/manager authorities, package-local allocation, and no global definition lookup; Codex tests cover bootstrap/factory create/restore. | API/E2E must next prove actual descriptor and business consequence. |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | IR-011 changes no durable test; the preserved graph-authority test extends its existing one-graph fixture. | Proportional test-code review remains after a successful API/E2E run. |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | No implementation-owned test or compatibility fixture was added. | API/E2E owns its cumulative dirty test reconciliation. |
+| API/E2E readiness for the next workflow stage | Pass | TypeScript no-emit passes; reviewer selection passes 24 tests with 12 environment-gated skips; the exact formerly failing authority assertion is green. | Rerun actual descriptor/tools/list/dispatch/handoff/artifact scenario first. |
+
+## Source File Size And Structure Audit
+
+| Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
+| --- | ---: | --- | --- | --- | --- | --- | --- |
+| `autobyteus-server-ts/src/application-platform/runtime/create-application-run-authorities.ts` | 118 | Pass | Pass — IR-011 adds 11 lines | Pass — one application run-graph construction concern | Pass — application runtime composition owns concrete authorities | Accept | None. |
+
+## Legacy / Backward-Compatibility Verdict
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| No backward-compatibility mechanisms in changed scope | Pass | Explicit current dependency construction only. |
+| No legacy old-behavior retention in changed scope | Pass | The application path no longer activates the wrong global Codex definition authority. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | General-process defaults remain current behavior for non-application construction and are not dead. |
+| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | No persisted data or schema change. |
+| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | No persistence/read/write path changed. |
+| Approved transition mechanics match the reviewed design, including migration safety only when required | Pass | Migration is not applicable. |
+
+## Dead / Obsolete / Legacy Items Requiring Removal
+
+None.
+
+## Docs-Impact Verdict
+
+- Docs impact: `Yes`
+- Why: the durable project documentation should preserve the invariant that every graph-sensitive runtime bootstrap dependency is explicitly supplied by the application composition.
+- Files or areas likely affected: the ticket's canonical design/implementation/review artifacts already record the correction; final durable project-document synchronization remains delivery-owned.
 
 ## Material Premise Validation
 
-### `MP-CR-014` — the maintained standalone Codex run reaches a package-local definition lookup before Agent Tools descriptor creation
+### Upstream Design-Review Material-Premise Decisions
 
-- Origin: `New`
-- Related approved requirement or established contract: REQ-004, REQ-005, REQ-007; AC-005 and AC-006.
-- Relevant behavior ID(s): `BEH-004`, `BEH-006`.
-- Initiating basis kind: `User`.
-- Independent product-supported initiating trigger or applicable governing contract: a user opens the maintained Brief standalone application, creates a Brief, and chooses `Generate draft`.
-- Support evidence: API-REV-006 reaches a fresh real Brief binding, team run, exact package-local researcher run, and authenticated Codex/Luna thread using the supported application UI and application-folder `dev` command.
-- Forward production caller/event path: `Brief UI Generate draft -> selected application backend -> guarded Brief team launch -> TeamRunService/MixedTeamManager -> application AgentRunManager -> CodexAgentRunBackendFactory -> CodexThreadBootstrapper -> package-local AgentDefinitionService lookup -> configured-tool exposure -> Agent Tools session descriptor -> standalone route -> server tool dispatch -> writer handoff/artifact projection`.
-- Lifecycle preconditions and material consequence: package validation/readiness, binding, team-run allocation, researcher allocation, and Codex thread creation all succeed. The bootstrapper instead resolves the definition from the process-global catalog, receives null, derives an empty tool exposure, and emits no usable descriptor, so publication/handoff and projected artifacts cannot occur.
-- Reachability: `Reachable`.
-- Review consequence / proportionate response: require the existing application graph construction owner to inject its exact `AgentDefinitionService` into the Codex bootstrapper/factory used by its `AgentRunManager`. No route, session, tool catalog, native runtime tool, external gateway, persistence, or design change is justified.
+| Premise ID | Current Status | Changed Evidence / Reason |
+| --- | --- | --- |
+| `MP-CR-014` | Confirmed | IR-011 now carries the exact application definition authority through the supported Codex construction path. The direct identity regression is green; full live consequence remains API/E2E-owned. |
+
+No new or reclassified material premise is introduced by this implementation.
+
+## Review Scorecard
+
+- Overall score (`/10`): `9.6`
+- Overall score (`/100`): `96`
+- Score calculation note: simple average of the ten current category scores, rounded for summary; every mandatory category is at or above `9.0`.
+
+| Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| --- | --- | ---: | --- | --- | --- |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.5 | The supported path now traces cleanly from product action through graph authority, descriptor, dispatch, and business consequence. | Live completion remains downstream. | API/E2E should capture the real descriptor, tools/list, dispatch, handoff, and projection. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.7 | Graph construction explicitly owns the graph-sensitive service; bootstrap logic remains encapsulated. | No in-scope source weakness found. | Preserve explicit graph construction for future runtime-sensitive dependencies. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.3 | Existing constructor seams express the correction without a new API. | Positional `undefined` defaults are less self-documenting than named options, though established and bounded. | Consider named construction options only in a separately justified broader refactor. |
+| `4` | `Separation of Concerns and File Placement` | 9.8 | Construction and behavior remain in their correct owners. | No in-scope weakness found. | None. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.5 | Existing factory/bootstrapper structures are reused; no parallel model is created. | No data-model work was needed. | None. |
+| `6` | `Naming Quality and Local Readability` | 9.4 | Local names make the injected chain visible in a compact composition. | Constructor positions require reading the existing signature. | Keep exact local names and avoid further positional expansion in unrelated work. |
+| `7` | `API/E2E Readiness` | 9.1 | TypeScript and focused graph/Codex tests pass, including the exact prior failure. | The real authenticated product run has not yet confirmed descriptor/tools/dispatch/business completion. | API/E2E must rerun the failing live scenario before the retained matrix. |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.4 | Create and restore share the graph-local bootstrapper; native/runtime and Agent Tools behavior remain unchanged. | Final live Codex/Luna evidence is pending. | Verify non-null descriptor and real server-tool calls, writer run, and projection. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 10.0 | No compatibility branch, fallback, merge, or package special case exists. | No in-scope weakness found. | None. |
+| `10` | `Cleanup Completeness` | 9.8 | One production file changed; no implementation-owned source residue or scratch artifact remains. | Shared worktree contains preserved artifacts owned by other stages. | Those owners should finalize them in their normal stages. |
 
 ## Findings
 
-### `CR-014` — application Codex bootstrap escapes the graph-local agent-definition authority
+### `CR-014` — Resolved in implementation source
 
-- Affected approved behavior: REQ-004/REQ-005/REQ-007, AC-005/AC-006, `BEH-004` and `BEH-006`.
-- Reachability basis: `MP-CR-014`.
-- Source evidence:
-  1. `createApplicationRunAuthorities()` receives the exact graph-local `AgentDefinitionService`.
-  2. It injects that service into `AutoByteusAgentRunBackendFactory` and `AgentRunIdentityAllocator`, but constructs `AgentRunManager` without `codexBackendFactory`.
-  3. `AgentRunManager` therefore chooses `getCodexAgentRunBackendFactory()`.
-  4. That cached default factory chooses the default cached `CodexThreadBootstrapper`.
-  5. The bootstrapper defaults to `AgentDefinitionService.getInstance()` and uses it to resolve instructions, skills, and configured Agent Tools exposure.
-- Runtime evidence: the exact package-local definition ID and Codex/Luna run are present, but the bootstrapper lookup returns null; `appServerConfig` is null; the session's configured/enabled tools are empty; `publish_artifacts` and `send_message_to` call counts are zero.
-- Durable reproduction: the API/E2E-owned `application-run-authorities.test.ts` identity assertion fails exactly because the Codex bootstrapper owns the global service instead of the supplied graph service. The reviewer independently reproduced this 1/1 failure.
-- Bounded required correction:
-  1. In `createApplicationRunAuthorities()`, construct/inject a Codex backend factory whose bootstrapper receives the exact input `agentDefinitionService`.
-  2. Reuse the existing `CodexAgentRunBackendFactory` and `CodexThreadBootstrapper` dependency seams. Do not add a new factory family, service locator, fallback, catalog merge, or package-ID branch.
-  3. Preserve existing general-process defaults, native Codex tools, Agent Tools route/session/catalog/dispatcher/adapters, Studio/external-gateway boundaries, create/restore semantics, and cleanup.
-  4. After source re-review, API/E2E updates/runs the direct authority regression, verifies a non-null actual descriptor and authenticated `tools/list`, then reruns the real publication/handoff/writer/projection path.
-- Scope guard: this focused evidence establishes the maintained Codex path only. It does not authorize a speculative Claude change.
+- Prior defect: the application `AgentRunManager` activated its default cached Codex factory/bootstrapper, which used the process-global `AgentDefinitionService` and could not resolve package-local definitions.
+- Resolution evidence: IR-011 constructs `CodexThreadBootstrapper(undefined, undefined, input.agentDefinitionService)`, supplies it to `CodexAgentRunBackendFactory`, and injects that factory into the application `AgentRunManager`. The same factory/bootstrapper serves create and restore.
+- Independent reviewer checks:
+  - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` — Pass.
+  - Focused Vitest selection covering application run authorities, Codex bootstrapper, and Codex backend factory — 2 files passed, 1 environment-gated integration file skipped; 24 tests passed, 12 skipped.
+  - The exact API/E2E-owned authority regression that previously failed now passes 1/1 and observes no global definition lookup.
+  - `git diff --check` — Pass.
+- Status: `Resolved in source; API/E2E rerun pending`.
 
-### Review-gap attribution
-
-This source defect predated IR-010 and was reasonably detectable from the approved exact-authority contract plus the application graph's omitted `codexBackendFactory`. CRR-017 correctly passed the two-line route mount but overstated the unchanged runtime-projection path as confirmed without tracing the package-local definition through the concrete Codex factory/bootstrapper. Its API/E2E-readiness and runtime-fidelity conclusions are superseded for this path. The route-mount conclusion and `CR-013` resolution remain valid.
+No new findings.
 
 ## Classification
 
-`Local Fix` — implementation-owned. The reviewed design already states the correct boundary and the existing constructors already support explicit dependency injection.
+Not applicable; the implementation review passes.
 
 ## Recommended Recipient
 
-`implementation_engineer`
+`api_e2e_engineer`
 
 ## Residual Risks
 
-- Fix only the confirmed application Codex authority escape. Do not change Claude, native Codex/Claude tools, Agent Tools projection rules, route/auth/session behavior, or `/mcp/gateway` without independent product evidence.
-- The model's direct SQLite workaround and resulting semantic `in_review`/artifact rows are invalid proof; API/E2E must require authenticated Agent Tools publication plus real writer handoff and projection.
-- API/E2E must rerun the exact failing Codex authority test and live scenario before resuming parity/remount/commands/digests/recovery/cleanup.
-- `APIE2E-REPO-005` remains independently `Unclear`.
+- First rerun `APIE2E-STANDALONE-MCP-002` / `APIE2E-F006`: require a non-null actual descriptor, authenticated Agent Tools `tools/list`, real `publish_artifacts` and `send_message_to`, writer handoff/run, and projected artifacts.
+- Reject direct file/SQLite manipulation as publication or handoff proof.
+- Do not broaden this confirmed Codex correction into Claude, native runtime tools, Agent Tools transport/projection, or external-gateway work without independent supported evidence.
+- After the critical path passes, resume the retained parity/remount/command/digest/recovery/isolation/cleanup matrix.
+- `APIE2E-REPO-005` remains separately `Unclear`.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
-- Review Entry Point: `API/E2E Failure-Origin Review`
-- Material-Premise Gate: `Pass` (`MP-CR-014` is reachable)
-- Score Summary: CRR-017's full score is not recomputed in this focused review; its API/E2E-readiness and runtime-fidelity conclusions are superseded for the confirmed Codex path
-- Failure Origin: `Local Fix` — application run graph omits explicit Codex factory/bootstrapper construction with the exact graph-local `AgentDefinitionService`
-- Recommended Recipient: `implementation_engineer`
-- Notes: IR-010 itself is correct and `CR-013` remains resolved. API-REV-006 exposed the next, separate composition-authority omission before descriptor creation.
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Review`
+- Material-Premise Gate: `Pass`
+- Score Summary: `9.6/10` (`96/100`); every category is `>=9.0`
+- Failure Origin: `N/A`; `CR-014` is resolved in source
+- Recommended Recipient: `api_e2e_engineer`
+- Notes: IR-011 is the correct bounded graph-authority fix. It is source-approved; final real Codex descriptor/dispatch/business completion remains API/E2E-owned.
