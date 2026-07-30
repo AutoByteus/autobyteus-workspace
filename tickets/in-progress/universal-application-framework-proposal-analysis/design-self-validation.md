@@ -2,243 +2,260 @@
 
 ## Status
 
-- Validation status: Complete through architecture-review round-2 corrections and the 2026-07-29 latest-base audit
-- Outcome: `Pass after bounded design corrections`; the final passes added the missing Studio presentation spine, production start spine, exact maintained-project pack mappings, singular refreshed-base process prerequisites, and explicit rejection of the broad-server fallback
-- Review handoff status: Architecture round 2 returned `Fail — Design Impact`; SR-003 corrects AR-001, AR-005, and AR-006 and is ready for re-review after artifact consistency checks
-- Validation type: Architecture simulation and canonical design-principles audit; no production implementation exists to execute yet
-- Requirements effect: The approved native application-folder command contract adds one reachable production-launch use case and AC-013. Eighteen reachable product use cases now have stable IDs and complete requirement/acceptance/spine traceability. The corrections make build-once immutability, standalone same-origin endpoint normalization, selected-application recovery filtering, static-navigation flow, Studio reload/exit, production `start`, unversioned code naming, current Prisma/vault/Search readiness, and the local no-auth network boundary explicit.
-- Approval applicability: `N/A` as validation evidence. The requirements and design spec remain the intended-behavior authorities.
+- **Validation round:** `SV-013`, correcting the withdrawn SV-012 interpretation after `CRR-016` superseded `CRR-015`.
+- **Conclusion:** **Pass — bounded Local Fix under the architecture-approved SR-006 foundation.** `ARCH-REV-006` remains the design authority. The reachable defect is only the missing standalone registration of the existing Agent Tools MCP route; no new runtime, port set, publication bridge, base-URL phase, or architecture review is required. This is not an implementation or API/E2E pass.
+- **Current implementation evidence:** SR-006 passed as `ARCH-REV-006`; IR-008/IR-009 and `CRR-014` implement/pass selected-resource editing, recursive portable policy, complete Codex/Luna launch, and prompt semantics. `API-REV-005` proves standalone binding/team/session descriptor creation but reaches generic 404 at the unregistered existing route. `CRR-016` verifies the existing Agent Tools subsystem is already coherent, corrects the expected tool projection, and classifies only the standalone route omission as `Local Fix`. The implementation engineer removed all unapproved SR-007 production drafts before this correction.
+- **Authoritative product decision:** a standalone-capable package is self-contained for runtime/model selection. Studio overrides are optional host-owned overlays. Credentials, provider endpoints, installed runtime/model availability, and comparable machine-local prerequisites remain host-owned.
+- **Routing:** send the corrected cumulative package directly to `implementation_engineer` for the bounded CR-013 composition fix; then resume normal source review and API/E2E.
 
 ## Inputs
 
-- [requirements.md](requirements.md)
-- [investigation-notes.md](investigation-notes.md)
-- [design-spec.md](design-spec.md)
-- [proposal-critical-analysis.md](proposal-critical-analysis.md)
-- [design-review-report.md](design-review-report.md) and [architecture-review-revision-record.md](architecture-review-revision-record.md)
-- Team canonical `shared/design-principles.md`
-- Current production-path evidence in the application SDKs, Studio application host, server application/process modules, devkit, and representative applications
-- Refreshed repository baseline `origin/personal` / task `HEAD` at `6caf809303294252c109420b238588f0c68aca6a`
+1. Approved intent and acceptance basis in [requirements.md](requirements.md).
+2. Current implementation, repository evidence, and decision log in [investigation-notes.md](investigation-notes.md).
+3. Target architecture, exact ownership, flow, and implementation map in [design-spec.md](design-spec.md).
+4. Proposal assessment in [proposal-critical-analysis.md](proposal-critical-analysis.md).
+5. Architecture history in [design-review-report.md](design-review-report.md) and [architecture-review-revision-record.md](architecture-review-revision-record.md).
+6. Implementation handoff/history in [implementation-handoff.md](implementation-handoff.md) and [implementation-revision-record.md](implementation-revision-record.md).
+7. Current focused failure-origin authority `CRR-016` / CR-013 in [code-review-report.md](code-review-report.md) and [code-review-revision-record.md](code-review-revision-record.md). It supersedes `CRR-015`.
+8. Executable evidence in [api-e2e-coverage-investigation.md](api-e2e-coverage-investigation.md), [api-e2e-execution-coverage-report.md](api-e2e-execution-coverage-report.md), and [api-e2e-revision-record.md](api-e2e-revision-record.md).
+9. Canonical design principles in the `solution-designer` skill.
 
 ## Invariants Under Validation
 
-1. One application source is packaged once; the exact same package bytes are consumed by Studio and standalone.
-2. Host choice is runtime composition, not application source, manifest, or build variation.
-3. Application business code calls one `startApplication` API and contains no Studio/standalone branch.
-4. Provider-specific bootstrap wires normalize into one tight `ApplicationRuntimeBootstrap`.
-5. Both hosts reuse one gateway, engine, storage, orchestration, communication, event, and artifact path.
-6. Standalone selects exactly one configured application and exposes only selected-application ingress.
-7. Package files are read-only runtime inputs; all mutable state is written under the configured host data root.
-8. Existing schemas and migration behavior remain current and require no data transformation.
-9. The first slice is local/self-hosted, trusted-package, single-node, and has no user/account/authentication subsystem.
-10. `pnpm dev` means real standalone development, `pnpm dev:studio` means real Studio development, and `pnpm start` runs the existing production build without rebuilding, watching, or mocking.
-11. Both hosts preserve the refreshed-base operational database, protected-path, Prisma, secret-vault, provisioned Search-tool, event-pipeline, and shutdown requirements in the specified order.
-12. Starter, Brief Studio, and Socratic use one devkit pack owner; maintained non-default layouts are declaratively mapped, not delegated to custom build hooks.
-13. Standalone always uses the explicit selected-application composition. Loopback/trusted-network policy never authorizes the current broad `buildApp()` composition as a fallback or interim stage.
+1. **One package, two hosts:** Studio and standalone consume the same read-only manifest-v4 package bytes; no host-specific application build exists.
+2. **Package-owned standalone baseline:** every required execution slot and effective leaf agent/member in a standalone-capable package resolves an application-owned `runtimeKind` and `llmModelIdentifier`.
+3. **Four launch stages:** manifest package baseline, currently selected-resource pre-overlay baseline, sparse saved host override, and post-overlay effective configuration have distinct meanings. Selected baseline/preview is computed, never persisted, and the UI does not infer it.
+4. **One launch/edit authority:** package and exact selected-resource traversal, no-write unsaved selection preview, sparse override overlay, provenance, host validation, readiness, and business-launch access are governed by `ApplicationLaunchConfigurationService` in both hosts.
+5. **Truthful readiness:** platform/process health and selected-application run readiness are separate. Application readiness is exactly `RUNNABLE`, `INVALID_PACKAGE`, or `HOST_REQUIREMENT_MISSING`. Package issues alone produce `INVALID_PACKAGE`; host override/capability issues produce `HOST_REQUIREMENT_MISSING`; an LLM-backed required leaf or invalid-override slot with a null effective profile is never runnable.
+6. **Fail before business action:** package incompleteness fails `build`/`validate`; missing host prerequisites fail startup/entry before business UI/action. No request-time rescue or silent model/provider/resource fallback exists.
+7. **Shared runtime:** both thin hosts normalize their browser bootstrap into one SDK runtime and delegate to the same platform, engine, gateway, orchestration, runtime, storage, events, artifacts, communication, and internal Agent Tools session-transport authorities.
+8. **Exact graph authority:** `MemberTeamContextBuilder` receives the graph-local `AgentTeamDefinitionService` and the same builder is propagated through root/subteam managers, registries, and new/recovered/task-agent member handles.
+9. **No package mutation or data migration:** definitions remain current read-only baseline sources; only explicit sparse host overrides live in existing stores. Selected baseline/preview is not persisted. Valid rows overlay the exact selected definition; invalid rows remain diagnostic state and are not auto-deleted, rewritten, or bypassed.
+10. **No user authentication scope:** there is no user/account/login subsystem. Default standalone access remains loopback; explicit non-loopback bind is trusted-network. The runtime callback's bearer capability authorizes one machine-to-process run session and is not user identity.
+11. **Native project experience:** application folders retain `pnpm dev`, `pnpm dev:studio`, `pnpm build`, `pnpm validate`, and `pnpm start`, with standalone `dev`/`start` requiring a standalone-enabled, valid package.
+12. **Clean cut:** no version suffix in code symbols, manifest-vNext, compatibility alias, package-builder alias, baseline fallback, broad-server fallback, custom builder, mock product mode, second standalone profile model, or second top-level server project is introduced.
+13. **Portable package data only:** one recursive schema-aware policy accepts exact runtime-supported token-count/pricing fields and rejects credential/password/authorization/token-value/endpoint/workspace semantics at any depth without logging values.
+14. **Existing Agent Tools boundary, route parity, and correct projection:** both hosts register the existing `/mcp/agent-tools/:sessionId` route before static fallback, while only Studio registers external `/mcp/gateway`. Codex/Claude native file tools remain native. The internal gateway projects eligible server-owned adapters such as `publish_artifacts` and `send_message_to`, plus configured `ToolOrigin.MCP` tools; it does not project native `write_file` or other ordinary non-MCP native tools.
 
 ## Scenario Validation Matrix
 
-| Case ID | Supported Trigger / Governing Contract | Reachability | Spine(s) Exercised | Expected Production Path And Outcome | Result |
-| --- | --- | --- | --- | --- | --- |
-| SV-C01 | Developer runs the supported package command and dual-host conformance command | Reachable — approved operational path | DS-006, DS-007 | Source -> one package assembly -> manifest-v4 validation -> digest -> the unchanged package is consumed by Studio and standalone -> digest remains unchanged after both runs | Pass after SV-001 made this an explicit spine and read-only invariant |
-| SV-C02 | User imports/selects the package in Studio, completes setup, and enters the application | Reachable — current supported Studio path | DS-001, DS-003, DS-004, DS-005 | Studio catalog/setup -> ensure-ready -> worker -> iframe v4 provider -> normalized runtime bootstrap -> shared client -> business UI; backend/runtime return path remains current | Pass |
-| SV-C03 | Operator starts standalone with a valid package root, local application ID, and new or existing isolated data root; browser opens `/` | Reachable — approved target operational path | DS-002, DS-003, DS-005, DS-008 | Config owner preserves existing host config or creates only a missing empty/non-secret `.env` -> shared process/graph preparation -> listen/recovery -> selected UI -> same-origin bootstrap provider -> normalized runtime bootstrap -> shared client -> business UI | Pass after SV-002/SV-005/SV-006 corrections |
-| SV-C04 | Operator binds standalone to loopback or another explicit interface and accesses it using the browser-visible origin | Reachable — `host` is supported config | DS-002 | Standalone wire returns root-relative platform paths; the provider resolves HTTP/WS endpoints against `window.location.origin`, never the server bind address or an untrusted reflected host | Pass after SV-002/SV-004; the former absolute `127.0.0.1` response example was insufficient |
-| SV-C05 | Operator supplies an invalid package root or missing local application ID | Reachable — supported config can be invalid | DS-002, DS-005 | Selection delegates to current parser and fails before listen with an exact diagnostic; no implicit first application and no partial data initialization | Pass |
-| SV-C06 | A valid package root contains multiple applications and the operator supplies one local ID | Reachable — current package container supports multiple applications | DS-002, DS-005, DS-007 | Selection filters only the configured application; static routes, bootstrap, ingress, availability, and recovery receive one immutable selected descriptor | Pass |
-| SV-C07 | Studio iframe hints/envelope are malformed, mismatched, or unsupported | Reachable — iframe v4 is a governing host contract | DS-001 | Studio provider validates origin/window/application/launch correlation and fails startup; it never falls through to standalone fetch | Pass |
-| SV-C08 | Top-level standalone bootstrap is unavailable, malformed, or reports failed readiness | Reachable — approved standalone startup path | DS-002, DS-005 | Standalone provider fails strict acquisition/validation; coordinator reaches `startup_failed`; no mock or Studio fallback occurs | Pass |
-| SV-C09 | Required workspace/tool/definition/runtime readiness fails | Reachable — named modules and configured resources are exercised by real startup | DS-005 | Named P4–P9 phase rejects, lifecycle becomes failed, ingress cannot report ready; standalone closes/exits non-zero and Studio does not report application readiness | Pass |
-| SV-C10 | Application frontend invokes query, command, route, GraphQL, notification, custom backend WebSocket, or direct agent-communication capability | Reachable — current SDK/gateway/communication contracts | DS-003, DS-004 | Shared client -> host mount -> exact gateway/notification/custom-WS/agent-communication owner -> engine/orchestration as applicable -> result/event/socket; host code never imports backend business modules | Pass |
-| SV-C11 | Application backend resolves a configured bundled team and starts a real run that emits events and artifacts | Reachable — Brief Studio current behavior and approved proof | DS-003, DS-004 | Context capability -> orchestration -> real runtime -> durable binding/journal -> handler/notification/artifact relay -> frontend reconciliation | Pass; host-provided tools/runtimes remain a declared first-slice dependency |
-| SV-C12 | Standalone restarts using the same selected application and data root | Reachable — supported operational restart | DS-004, DS-005 | Existing schemas open directly -> selected application known-state intersection -> binding recovery -> availability reconciliation -> pending event resume | Pass after SV-003 made the selected-ID filter explicit |
-| SV-C13 | A standalone data root contains dormant state for a previously selected different local application | Reachable — operator can change supported selection config while reusing a root | DS-005 | Recovery may inspect the store but activates only `known IDs ∩ {selected canonical ID}`; dormant records are preserved and never recovered/exposed by the new selected-app host | Pass after SV-003; no destructive cleanup or migration |
-| SV-C14 | Worker exits after readiness and the frontend later invokes the backend or reloads | Reachable — process failure/reload are current lifecycle conditions | DS-003, DS-005 | Existing engine/availability owners retain worker state and ensure-ready behavior; host adapters do not implement a second restart policy | Pass structurally; implementation/API-E2E must verify the retained current behavior |
-| SV-C15 | Operator terminates standalone while timers, workers, notifications, custom sockets, agent streams, event pipeline, vault, or Prisma are active | Reachable — supported process signal/close | DS-005, DS-010 | Stop ingress -> application lifecycle cleanup -> default run-event pipeline -> vault -> Prisma, with finally-style cleanup and one process timeout | Pass after latest-base stop audit |
-| SV-C16 | Browser requests `/`, a relative asset, a valid SPA navigation, traversal input, or `/_autobyteus/unknown` | Reachable — normal browser/static and HTTP paths | DS-008 | Selected UI resolver confines real paths under `ui/`; platform prefix is excluded first; eligible document navigation alone falls back to entry HTML; API/traversal errors never become HTML | Pass after DS-008 made the flow explicit |
-| SV-C17 | Standalone starts with its default network configuration and no account/auth subsystem | Reachable — approved local/self-hosted product mode | DS-002, DS-005 | Default bind is loopback; standalone registers no permissive cross-origin middleware and requires browser WebSocket `Origin` authority to equal request `Host` authority; non-loopback bind is explicit trusted-network operation | Pass after SV-004; this is a network boundary, not user authentication |
-| SV-C18 | Developer runs `pnpm dev` or `pnpm dev:studio` in the starter, Brief Studio, or Socratic project | Reachable — approved developer workflow | DS-006, DS-007 | Devkit loads the checked-in project mapping, resolves the real sources/resources, and uses one pack/validator; `dev` watches/restarts the real standalone host while `dev:studio` reloads through real Studio and preserves Studio's explicit Reload action. No missing config invokes a mock or custom builder. The exact Brief/Socratic mappings currently pack and validate their icons, teams, migrations, and exposure manifests in a disposable probe | Pass after SV-006/SV-008 |
-| SV-C19 | Application source or template imports Studio, Electron, standalone-host, or server-internal modules | Reachable as a source change, prohibited by approved contract | DS-001, DS-002, DS-007 | Static dependency checks and exact migration inventory reject the import/branch; providers remain SDK-owned | Pass |
-| SV-C20 | Studio user reloads, exits, or leaves the application route | Reachable — current documented Studio action/path | DS-009 | Reload creates a fresh launch generation and iframe document; exit/leave clears route-visit launch state, tears down the document, closes browser-scoped resources, and restores the standard Studio shell without creating a runtime run | Pass after DS-009 made the preserved lifecycle explicit |
-| SV-C21 | Standalone selected application declares a required execution-resource slot with neither a manifest default nor existing data-root configuration | Reachable — current resource-slot contract applied to approved standalone selection | DS-005 | Definition/resource readiness reports an explicit selected-application setup diagnostic and does not report ready or silently select a resource; the first proof passes because Brief Studio supplies a resolvable bundled-team default | Pass with declared first-slice limitation; a general standalone setup UI remains outside this proof |
-| SV-C22 | Studio user saves execution-resource setup after entry and then chooses whether to reload | Reachable — current documented Studio setup/presentation path | DS-009 | Saving setup updates configuration but preserves the current launch/iframe; only explicit Reload produces a new launch generation and remount | Pass after DS-009 expanded to the full presentation lifecycle |
-| SV-C23 | Developer/operator runs `pnpm build`, `pnpm validate`, and `pnpm start` from an application project | Reachable — approved native production workflow | DS-007, DS-010, DS-002, DS-005 | Build produces `dist/importable-package`; validate checks it; start revalidates the existing output, derives the explicit source-manifest local ID, uses separate durable data, invokes the real standalone process once, and never packs/watches/mocks/mutates package bytes | Pass after SV-006 added DS-010 and AC-013 |
-| SV-C24 | Either host starts on refreshed base `6caf80930` and completes required platform preparation before reporting application readiness | Reachable — current server startup always performs the operational DB/vault/Search prerequisites and the approved target preserves that governing runtime contract | DS-005, DS-010 | Exact AppConfig/database location -> core migration -> protected DB/root-key/WAL/SHM/journal paths -> Prisma -> secret vault -> app-data migration -> exactly seven named tool groups including Search -> runtime readiness; close reverses consumer dependencies and shuts event pipeline/vault/Prisma | Pass after SV-007/SV-008 consistency correction; no user authentication introduced |
+Every row has a supported action, system event, or governing package/host contract. Out-of-scope future deployment modes are not counted.
+
+| Case | Product-Reachable Trigger | Spine(s) | Expected End-to-End Outcome | Design Result |
+| --- | --- | --- | --- | --- |
+| SV-C01 | Developer builds once and consumes the output in Studio and standalone | DS-006, DS-007 | One assembly/validation/digest; both hosts consume unchanged frontend/backend/package bytes; runtime writes stay outside the package | Pass |
+| SV-C02 | Studio user imports a valid self-contained package and enters without saving an override | DS-001, DS-012 | Package defaults and provenance are visible; host requirements validate; iframe provider normalizes bootstrap; shared client mounts the business UI | Pass after SV-009 |
+| SV-C03 | Operator runs standalone with a valid maintained package and fresh data root | DS-002, DS-011, DS-012, DS-014 | `codex_app_server` / `gpt-5.6-luna` defaults resolve without seeded rows/setup UI; readiness is `RUNNABLE`; `/` mounts; the existing internal Agent Tools route is registered before static fallback and any real tool-dependent run | Pass after bounded CR-013 Local Fix |
+| SV-C04 | Operator binds loopback or an explicit trusted-network interface and uses the browser-visible origin | DS-002, DS-008 | Root-relative platform paths resolve from `window.location.origin`; no server bind address or reflected host becomes browser endpoint authority | Pass |
+| SV-C05 | Operator supplies invalid package root, missing/ambiguous local ID, or non-standalone selection | DS-002, DS-011 | Current parser/selection authority fails before listen and before partial application initialization; no implicit first app | Pass |
+| SV-C06 | Package contains multiple applications and operator selects one standalone-enabled local ID | DS-002, DS-005 | Static/bootstrap/ingress/recovery receive one immutable canonical selected descriptor and expose only that application | Pass |
+| SV-C07 | Studio iframe origin/window/application/launch correlation is malformed or unsupported | DS-001 | Studio provider rejects; startup fails; it never falls through to standalone acquisition | Pass |
+| SV-C08 | Standalone bootstrap is unavailable, malformed, or contradicts selected identity/readiness | DS-002, DS-012 | Standalone provider rejects; coordinator reaches startup failure; no Studio/mock fallback exists | Pass |
+| SV-C09 | Named workspace, tool, definition, runtime, database, or vault platform prerequisite fails | DS-005 | Named lifecycle phase fails truthfully; platform does not become healthy; ingress does not claim application runnable | Pass |
+| SV-C10 | Frontend invokes query, command, route, GraphQL, notification, custom WebSocket, or direct agent communication | DS-003, DS-004 | Shared client -> host mount -> exact shared gateway/communication owner -> result/event/socket; host imports no backend business modules | Pass |
+| SV-C11 | Backend requests the required package resource and starts a real team run | DS-003, DS-004, DS-012, DS-014 | `requireRunnable` supplies a non-null effective configuration; Codex keeps native file tools; the existing descriptor/route exposes eligible server tools and configured MCP-origin tools; handoff/events/artifacts complete through existing authorities | Pass after bounded CR-013 Local Fix; executable rerun required |
+| SV-C12 | Host restarts with the same selected application and data root | DS-004, DS-005 | Current schemas open directly; selected known-state intersection recovers bindings/availability/pending events; package remains immutable | Pass |
+| SV-C13 | Standalone data root contains dormant state for a previously selected different local application | DS-005 | Recovery activates only `known IDs ∩ {selected canonical ID}`; other records remain dormant and unmodified | Pass |
+| SV-C14 | Worker exits after readiness and frontend later invokes or reloads | DS-003, DS-005 | Existing engine/availability owners retain recovery and ensure-ready responsibility; hosts do not create a second restart policy | Pass structurally; executable verification retained |
+| SV-C15 | Operator terminates while timers, workers, Agent Tools sessions, notifications, sockets, streams, events, vault, or Prisma are active | DS-005, DS-010, DS-014 | Existing run/member/session cleanup remains authoritative, followed by the established event/vault/Prisma shutdown sequence; route registration introduces no new lifecycle owner | Pass; affected regression retained |
+| SV-C16 | Browser requests `/`, relative asset, valid SPA navigation, traversal input, or unknown reserved platform path | DS-008 | Real-path confinement under selected `ui/`; reserved prefix excluded first; only eligible document navigation receives SPA fallback | Pass |
+| SV-C17 | Standalone starts with default networking and no account/authentication subsystem | DS-002, DS-008 | Loopback default, no broad Studio CORS, browser WebSocket origin authority equals request host authority; explicit non-loopback is trusted-network operation | Pass |
+| SV-C18 | Developer runs `pnpm dev` or `pnpm dev:studio` in starter, Brief, or Socratic | DS-006, DS-011, DS-012 | Checked-in mapping feeds the real pack/validator; maintained leaves package `codex_app_server` / `gpt-5.6-luna`; `dev` runs standalone watch/restart; `dev:studio` uses real Studio reload; no mock/custom builder | Pass in implementation; broader executable rerun remains downstream |
+| SV-C19 | Application/template imports Studio, Electron, standalone-host, or server internals | DS-001, DS-002, DS-007 | Static dependency checks reject host coupling; providers remain SDK-owned and the source contains one startup call | Pass |
+| SV-C20 | Studio user reloads, exits, or leaves the application route | DS-009 | Reload creates fresh launch generation/document; exit/leave tears down browser resources and restores shell without inventing a runtime run | Pass |
+| SV-C21 | Developer builds/validates a standalone-enabled package with an incomplete required leaf default | DS-011 | Pure package validation returns `INVALID_PACKAGE` with slot/member/source details; `build`/`validate` fail and no runnable package is emitted/accepted | Pass after SV-009; corrects the prior false Brief-default premise |
+| SV-C22 | Studio user saves an alternate model/runtime override, runs, then resets | DS-009, DS-012 | Override wins and persists separately; package bytes remain unchanged; reset deletes the row and immediately reveals package defaults | Pass after SV-009 |
+| SV-C23 | Developer/operator runs `pnpm build`, `pnpm validate`, then `pnpm start` | DS-007, DS-010, DS-011, DS-012 | Validate loads project config and standalone rule; start revalidates existing output, does not repack/watch/mock, and launches only if host-runnable | Pass after SV-009 refinement |
+| SV-C24 | Either host prepares refreshed-base platform prerequisites | DS-005, DS-010 | AppConfig/database -> migration -> protected DB/root-key/sidecars -> Prisma -> vault -> app-data migration -> exactly seven tool groups including Search -> definitions/runtimes | Pass; run readiness remains a later DS-012 check |
+| SV-C25 | Package default resolution traverses a nested team/member/leaf definition | DS-011, DS-012 | Deterministic package precedence is innermost team default -> outer teams nearest-first -> leaf agent default; all required leaves complete or validation fails | Pass after SV-009 |
+| SV-C26 | Studio override exists for member, slot/team, or whole application | DS-012 | Host member override -> host slot/team override -> exact selected-resource definition baseline; effective values retain definition/host provenance and no process-global default participates | Pass after SV-011 refinement |
+| SV-C27 | Valid package declares runtime/model unavailable on host or lacks required credential | DS-012 | If the host cannot resolve `codex_app_server`, `gpt-5.6-luna`, or required credentials, platform may remain healthy but application is `HOST_REQUIREMENT_MISSING` before Studio entry/standalone listen/business action; exact diagnostic names owner/input and no Sol/other-model substitution occurs | Pass after SV-009; exact Luna negative path confirmed before SR-005 handoff |
+| SV-C28 | Brief backend or SDK attempts launch with missing profile or request-supplied rescue model | DS-003, DS-012 | Boundary rejects before launch; backend uses `requireRunnable(slot)` only; hard-coded resource/request-model/profile-null fallback is removed | Pass after SV-009 |
+| SV-C29 | Real package-team member prompt is created in a graph with a distinct definition catalog | DS-013 | Graph-local builder resolves package `team.md`; final member system prompt contains the Team Instruction section; global catalog cannot satisfy it accidentally | Pass after SV-009 |
+| SV-C30 | Override changes runtime/model while an inherited `llmConfig` targets another selection | DS-012 | Runtime/model/portable config are overlaid atomically by layer; incompatible inherited config is cleared or rejected and provenance remains truthful | Pass after SV-009 |
+| SV-C31 | Studio user saves a shared team for Brief, deletes that shared team through the supported catalog action, then reopens the application | DS-012 | Package baseline remains valid; selected-resource baseline is null because the resource is deleted; saved row remains visible with `savedOverrideState: INVALID`; affected effective config is null; aggregate is `HOST_REQUIREMENT_MISSING` with `HOST_OVERRIDE/SAVED_RESOURCE_UNAVAILABLE`; entry and `requireRunnable` are blocked; explicit Reset deletes the row and reevaluates defaults | Pass after SV-010 |
+| SV-C32 | Studio has a saved team-member override whose route or agent identity no longer matches the current selected team topology | DS-012 | Package baseline, current selected-resource baseline, and raw row remain visible for explicit replacement; stale members are diagnosed as `HOST_OVERRIDE/SAVED_MEMBER_TOPOLOGY_STALE`; no member is silently dropped and no baseline runs; replace/reset is required | Pass after SV-010 |
+| SV-C33 | Studio user selects an allowed alternate agent/team before any save, then changes selection while a preview is in flight or the resource disappears before PUT | DS-012 | Identity-bound no-write preview returns the exact selected-resource definition baseline or structured invalid-selection issue; stale responses are discarded; Save is blocked pending/invalid; PUT re-resolves and rejects catalog/topology drift without writing/fallback | Pass after SV-011 |
+| SV-C34 | Studio edits a saved alternate team, clears a model/runtime field, and encounters homogeneous then mixed inherited member runtimes | DS-012 | Editor inherits only from the selected pre-overlay baseline, omits cleared fields from persistence, reloads after change, preserves per-member values, disables bulk model for mixed runtime, and requires an explicit common runtime before bulk model override | Pass after SV-011 |
+| SV-C35 | Developer validates package tuning containing approved token counts/pricing plus nested password, bearer authorization, access-token value, endpoint, or workspace fields | DS-011 | Recursive policy accepts exact typed token-count/pricing inputs; rejects each secret/host-local path as `PACKAGE_FORBIDDEN_HOST_FIELD` without exposing values; no app-specific/compatibility exception | Pass after SV-011 |
+| SV-C36 | Fresh standalone Brief creates a real Codex/Luna team run and the researcher uses native and server-owned tools | DS-003, DS-004, DS-012, DS-014 | Native `write_file` succeeds through Codex rather than the MCP gateway; the actual descriptor/`tools/list` exposes eligible `publish_artifacts` and `send_message_to`; the registered route dispatches them under the issued session; writer handoff, lifecycle events, and projected artifacts complete | Pass after bounded CR-013 Local Fix; rerun APIE2E-BRIEF-003/APIE2E-F005 with corrected expectations |
+| SV-C37 | Existing internal Agent Tools route receives no bearer, an unknown session, or a request for a tool outside the session projection | DS-014, DS-005 | No bearer reaches the established 401 authorization gate; unknown/unavailable session remains 404; the route cannot elevate native file tools into MCP or expose tools outside the issued descriptor; existing cleanup semantics remain unchanged | Pass after bounded CR-013 Local Fix; focused durable/API route proof required |
+| SV-C38 | Studio and standalone compose existing Agent Tools transport while only Studio owns the external MCP gateway | DS-005, DS-014 | Both compositions call the same existing internal route registrar before static fallback; standalone still omits `/mcp/gateway`; no new runtime/ports/path builder/configured-source resolver/publication bridge is introduced | Pass after bounded CR-013 Local Fix; focused composition proof required |
 
 ## Reachable Product Use-Case Completeness Audit
 
-The use-case inventory contains only paths with an independent supported user/developer/operational action, system event, or governing contract. Unsupported multi-process, marketplace, multi-node, and public-internet modes remain ordinary out-of-scope statements; they are not counted as use cases.
-
-| Use Case ID | Reachable Validation Case(s) | Design Spine(s) | Listed In Requirements? | Outcome |
-| --- | --- | --- | --- | --- |
-| UC-001 — Build once, consume in both hosts | SV-C01, SV-C18, SV-C19 | DS-007 -> DS-001/DS-002; DS-006 evidence | Yes | Complete |
-| UC-002 — Studio setup and entry | SV-C02, SV-C09, SV-C10, SV-C11 | DS-001, DS-003, DS-004, DS-005 | Yes | Complete |
-| UC-003 — Studio presentation lifecycle | SV-C20, SV-C22 | DS-009 | Yes | Complete after second audit |
-| UC-004 — Standalone start and browser entry | SV-C03, SV-C04, SV-C08, SV-C10 | DS-002, DS-003, DS-005, DS-008 | Yes | Complete |
-| UC-005 — Standalone selection rejection | SV-C05, SV-C06 | DS-002, DS-005 | Yes | Complete |
-| UC-006 — Host-specific bootstrap normalization | SV-C07, SV-C08, SV-C19 | DS-001, DS-002 and frontend state | Yes | Complete |
-| UC-007 — Shared backend operation | SV-C10 | DS-003 | Yes | Complete |
-| UC-008 — Live application communication | SV-C10, SV-C11, SV-C15 | DS-003, DS-004, DS-005 | Yes | Complete |
-| UC-009 — Real resource and agent/team execution | SV-C09, SV-C11, SV-C21 | DS-003, DS-004, DS-005 | Yes | Complete, including missing-setup product failure |
-| UC-010 — Storage preparation and migrations | SV-C02, SV-C03, SV-C12 | DS-003, DS-005 | Yes | Complete |
-| UC-011 — Restart and recovery | SV-C12, SV-C13 | DS-004, DS-005 | Yes | Complete |
-| UC-012 — Required readiness or worker failure | SV-C09, SV-C14 | DS-003, DS-005 | Yes | Complete |
-| UC-013 — Standalone root, assets, navigation, and public boundary | SV-C16, SV-C17 | DS-008, DS-002 | Yes | Complete |
-| UC-014 — Graceful process stop | SV-C15 | DS-005 | Yes | Complete |
-| UC-015 — Native application-folder development | SV-C01, SV-C18 | DS-006, DS-007 | Yes | Complete |
-| UC-016 — Host-neutral application authoring | SV-C01, SV-C19 | DS-007, DS-001, DS-002 | Yes | Complete |
-| UC-017 — Local or explicit trusted-network standalone access | SV-C04, SV-C17 | DS-002, DS-008 | Yes | Complete |
-| UC-018 — Build, validate, and start standalone production | SV-C03, SV-C15, SV-C23, SV-C24 | DS-010 -> DS-005/DS-008/DS-002 | Yes | Complete after native-command and latest-base audit |
+| Use Case | Validation Cases | Primary Spine(s) | Result |
+| --- | --- | --- | --- |
+| UC-001 — Build once, consume in both hosts | SV-C01, SV-C18, SV-C19, SV-C23 | DS-006, DS-007 | Complete |
+| UC-002 — Studio entry from package defaults | SV-C02, SV-C07, SV-C09, SV-C27 | DS-001, DS-012 | Complete after SV-009 |
+| UC-003 — Studio presentation lifecycle | SV-C20, SV-C22 | DS-009, DS-012 | Complete |
+| UC-004 — Standalone start and browser entry | SV-C03, SV-C04, SV-C08, SV-C27, SV-C36, SV-C38 | DS-002, DS-011, DS-012, DS-014 | Complete after bounded CR-013 Local Fix |
+| UC-005 — Standalone selection rejection | SV-C05, SV-C06 | DS-002, DS-011 | Complete |
+| UC-006 — Host-specific bootstrap normalization | SV-C07, SV-C08, SV-C19 | DS-001, DS-002 | Complete |
+| UC-007 — Shared backend operation | SV-C10, SV-C28 | DS-003, DS-012 | Complete |
+| UC-008 — Live application communication | SV-C10, SV-C11, SV-C15 | DS-003, DS-004, DS-005 | Complete |
+| UC-009 — Real resource and agent/team execution | SV-C11, SV-C25, SV-C26, SV-C28, SV-C29, SV-C36–SV-C38 | DS-003, DS-004, DS-012–DS-014 | Complete after bounded CR-013 Local Fix |
+| UC-010 — Storage preparation and migrations | SV-C02, SV-C03, SV-C12, SV-C24 | DS-003, DS-005 | Complete |
+| UC-011 — Restart and recovery | SV-C12, SV-C13 | DS-004, DS-005 | Complete |
+| UC-012 — Required readiness or worker failure | SV-C09, SV-C14, SV-C27 | DS-005, DS-012 | Complete after SV-009 |
+| UC-013 — Standalone root/assets/navigation/boundary | SV-C04, SV-C16, SV-C17 | DS-002, DS-008 | Complete |
+| UC-014 — Graceful process stop | SV-C15, SV-C37, SV-C38 | DS-005, DS-010, DS-014 | Complete; no new shutdown owner |
+| UC-015 — Native application-folder development | SV-C18, SV-C21 | DS-006, DS-011 | Complete after SV-009 |
+| UC-016 — Host-neutral application authoring | SV-C01, SV-C19 | DS-001, DS-002, DS-007 | Complete |
+| UC-017 — Local/trusted-network standalone access | SV-C04, SV-C17, SV-C37, SV-C38 | DS-002, DS-008, DS-014 | Complete after bounded CR-013 Local Fix |
+| UC-018 — Build, validate, start production | SV-C03, SV-C15, SV-C21, SV-C23, SV-C24, SV-C27, SV-C36, SV-C38 | DS-010–DS-012, DS-014 | Complete after bounded CR-013 Local Fix |
+| UC-019 — Reject invalid standalone package | SV-C21, SV-C25, SV-C35 | DS-011 | Complete after SV-011 |
+| UC-020 — Studio alternate-resource sparse override and reset | SV-C22, SV-C26, SV-C30, SV-C33, SV-C34 | DS-009, DS-012 | Complete after SV-011 |
+| UC-021 — Missing host requirement | SV-C09, SV-C27 | DS-005, DS-012 | Complete after SV-009 |
+| UC-022 — Package team prompt semantics | SV-C29 | DS-013 | Complete after SV-009 |
+| UC-023 — Invalidated Studio override | SV-C31, SV-C32 | DS-012 | Complete after SV-010 |
 
 ## Corrections Produced By The Validation
 
-Discussion naming refinement: all current application SDK/contract code symbols are unversioned. This includes existing manifest, backend-bundle, backend-definition, frontend-SDK, and Studio-iframe constants, types, validators, factories, and filenames. Their serialized numeric version fields remain unchanged, but no `V1`, `V4`, `_V1`, `_V4`, or equivalent suffix and no suffixed compatibility alias remains in the target code.
+### SV-001–SV-008 — Retained prior corrections
 
-### SV-001 — Make “build once, consume twice” a real spine
+The prior rounds remain authoritative and are preserved in [solution-revision-record.md](solution-revision-record.md):
 
-**Problem:** AC-001 and DS-006 mentioned digest evidence, but the design lacked a full package-production-to-host-consumption spine. That made the main product invariant look like test metadata rather than an architectural flow.
+- `SV-001`: made build-once/consume-twice an immutable-package spine (`DS-007`).
+- `SV-002`: separated standalone root-relative wire paths from normalized absolute runtime endpoints.
+- `SV-003`: scoped standalone recovery to the selected canonical application.
+- `SV-004`: defined the no-auth loopback/trusted-network and same-origin boundary.
+- `SV-005`: added confined standalone static and SPA-navigation behavior (`DS-008`).
+- `SV-006`: fixed native `dev`/`dev:studio`/`build`/`validate`/`start` contracts (`DS-010`).
+- `SV-007`: reconciled lifecycle with protected paths, Prisma, vault, Search, event pipeline, and refreshed-base cleanup.
+- `SV-008`: fixed readiness ordering/seven-tool consistency, exact Brief/Socratic devkit mappings, and rejection of the broad-server fallback.
 
-**Correction:**
+Code symbols remain unversioned. Existing serialized manifest/iframe numeric version fields remain unchanged; no suffixed alias is added.
 
-- Add DS-007 from application source through one package assembly/validation/digest to both host consumers.
-- State that both hosts treat the package root as read-only.
-- Require pre-run/post-run digest evidence and the same frontend/backend entry digests in conformance.
-- Keep all runtime writes under the host-configured data root.
+### SV-009 — Make a standalone-capable package actually runnable and preserve graph-local prompt authority
 
-### SV-002 — Separate the standalone wire payload from normalized absolute runtime endpoints
+**Problems found by executable/review evidence:**
 
-**Problem:** The design example returned absolute `127.0.0.1` URLs from `GET /_autobyteus/bootstrap`. That breaks when Fastify binds `0.0.0.0`, the browser uses a LAN hostname, or TLS is terminated before the process. Allowing one runtime type to contain either relative or absolute endpoint meanings would also loosen the shared structure.
-
-**Correction:**
-
-- Add a strict `StandaloneApplicationBootstrapPayload` wire contract containing selected application identity plus root-relative `/_autobyteus/*` paths.
-- `StandaloneSameOriginBootstrapProvider` validates that wire shape and resolves absolute HTTP/WS URLs from `window.location.origin`.
-- The provider returns the existing tight `ApplicationRuntimeBootstrap` with absolute endpoints.
-- Studio continues to normalize iframe payload v4 into the same runtime type.
-- Neither the application nor the server derives browser endpoints from the server bind address.
-
-### SV-003 — Filter standalone recovery to the selected canonical application
-
-**Problem:** “Selected catalog + isolated persisted IDs” was ambiguous when one data root contains state from a previous configured local application. Recovering every known ID would violate the one-selected-application host boundary.
+1. The design treated a default resource as a runnable launch default. Brief researcher/writer defaults contain `runtimeKind` only, while clean standalone requires `llmModelIdentifier` and fails at the business action.
+2. Current configuration/readiness can return `READY` with `launchProfile: null`; runtime validation accepts the null and the SDK/backend can defer failure or rescue it through request/hard-coded values.
+3. Studio has persisted overrides but reset does not delete them, and the design did not make package values the explicit baseline/provenance source.
+4. `MemberTeamContextBuilder` can escape the selected application graph through `AgentTeamDefinitionService.getInstance()`, so real package team instructions disappear from member prompts.
 
 **Correction:**
 
-- Standalone recoverable IDs are exactly `persistedKnownApplicationIds ∩ {selection.applicationId}`.
-- Global lookup, binding recovery, availability, dispatch resume, and worker recovery are scoped to that selected ID.
-- State for other IDs remains dormant and unmodified; no deletion or data migration is introduced.
-- Studio continues to reconcile its full installed catalog and known IDs.
+- Add `standalone.enabled` to source-only devkit configuration; leave manifest v4 unchanged.
+- Add pure `validateStandaloneApplicationPackage({ packageRoot, localApplicationId })` and invoke it from standalone-enabled `build`, project-root `validate`, `dev`, and `start` as appropriate.
+- Reject a package unless every required slot has its package-owned resource default and every effective leaf resolves `runtimeKind` plus `llmModelIdentifier`. Update Brief researcher, Brief writer, and the Socratic tutor to the user-confirmed `codex_app_server` / `gpt-5.6-luna` package default.
+- Replace the current ambiguous configuration/status boundary with one `ApplicationLaunchConfigurationService` and the tight aggregate states `RUNNABLE`, `INVALID_PACKAGE`, and `HOST_REQUIREMENT_MISSING`.
+- Define deterministic package and host-overlay precedence, source provenance, atomic `llmConfig` handling, and host ports for runtime availability, exact model lookup, and credential readiness.
+- Make standalone validate application run readiness before listen/static UI; make Studio use the same authority before entry while allowing its wider process to remain healthy.
+- Treat current persisted configuration rows as optional overlays, add delete/reset behavior, and never seed/copy package defaults into the database.
+- Make business backends consume only `requireRunnable(slot)` and remove Brief hard-coded resource, request-model rescue, and SDK null-profile construction.
+- Construct `MemberTeamContextBuilder` from the exact graph-local `AgentTeamDefinitionService` and propagate it through every manager/registry/handle creation/restoration path; add final-prompt semantic coverage using distinct catalogs.
 
-### SV-004 — Make the no-auth local network boundary explicit
+### SV-010 — Represent invalid saved host state without package blame or fallback
 
-**Problem:** The design intentionally has no user/account/authentication subsystem, but it did not say what the standalone default bind/CORS/WebSocket boundary is. A broad or permissive default would contradict the local trusted-package scope.
-
-**Correction:**
-
-- Default standalone bind: `127.0.0.1`.
-- A non-loopback bind must be explicit and is a trusted-network operator decision, not a public-internet security claim.
-- Standalone does not install the Studio server's permissive CORS policy.
-- Standalone browser WebSocket upgrades require normalized `Origin` authority to equal normalized request `Host` authority; missing/mismatched origins are rejected. Trusted-proxy rewriting is not claimed in the first slice.
-- This adds no user identity, login, session, or authorization model.
-
-### SV-005 — Add the standalone static/navigation spine
-
-**Problem:** DS-002 covered initial root asset selection but did not stretch through relative assets, SPA navigation, reserved-prefix exclusion, and meaningful application startup. AC-009 therefore depended on off-spine prose without a complete supported flow.
+**Problem found by ARCH-REV-004 / AR-007:** Studio can save a shared team and later delete it, and saved member topology can become stale. The package baseline remains valid, but SV-009’s union put complete configurations inside every `HOST_REQUIREMENT_MISSING` result. The state therefore fit neither `INVALID_PACKAGE` nor the stated host variant, and falling back would violate the saved override’s precedence.
 
 **Correction:**
 
-- Add DS-008 for root/static/navigation.
-- Require decoded and real-path containment under the selected `ui/` root.
-- Exclude `/_autobyteus/*` before static lookup and fallback.
-- Apply SPA fallback only to eligible HTML document navigation, never API/WebSocket/asset failures.
+- Keep the three aggregate statuses but remove duplicated configuration arrays from the readiness union; per-slot views are the single configuration projection.
+- Evaluate in strict order: package baseline -> saved override validity -> effective overlay -> host capability. Package failure wins only for package defects.
+- Define `HOST_REQUIREMENT_MISSING` as valid package plus host-local blocker. Closed issue scope distinguishes `HOST_OVERRIDE` from `HOST_CAPABILITY`.
+- Preserve `packageBaseline`, raw `savedOverride`, update timestamp, and issue details. For invalid override, set `savedOverrideState: INVALID`, `effectiveConfiguration: null`, and `canResetToPackageDefaults: true`.
+- Do not auto-delete/rewrite the row, drop stale members, or execute the package baseline. `requireRunnable` rejects until an explicit replacement PUT or Reset DELETE triggers reevaluation.
+- Add separate durable cases for missing selected shared resource and stale member route/agent topology, including post-reset transition.
 
-### SV-006 — Make native development and post-build production start explicit
+### SV-011 — Strengthen the server edit projection and portable-field policy
 
-**Problem:** The earlier design distinguished real/mocked host modes but did not define the application-folder production command after `build`. It also retained a public contract-mock concept after the user selected the simpler native workflow.
+**Problems found by CRR-012:**
 
-**Correction:**
-
-- Fix the public script contract to `dev`, `dev:studio`, `build`, `validate`, and `start`.
-- Make `dev` real standalone watch/repack/graceful restart/browser reload and `dev:studio` real Studio local-package watch/reload; mock/iframe machinery is test-only.
-- Add DS-010 from the existing validated build through `autobyteus-app start`, the public standalone process API, readiness, root/bootstrap, and graceful stop.
-- Require `start` to derive the explicit source-manifest local ID, use a separate durable data root, and never build/watch/mock/mutate the package.
-- Keep the process API in the existing server project and the command facade in the devkit; add no top-level project or server copy.
-
-### SV-007 — Reconcile the design with refreshed `origin/personal`
-
-**Problem:** The user requested a latest-base refresh. The server root changed after the initial investigation: real runtime startup now initializes operational repository Prisma and a secret vault, protects database/key paths from file tools, registers a provisioned Search tool, and closes the default run-event pipeline/vault/Prisma.
+1. `ApplicationLaunchConfigurationService` computes the alternate resource’s pre-overlay `selectedBaseline`, but `ApplicationLaunchSlotView` drops it. The Studio editor consequently has no authoritative baseline before first save or can inherit from the old post-overlay value while clearing a saved field.
+2. Available-resource summaries contain identity only. Repairing this in web code would require a second definition traversal/precedence owner.
+3. The package validator accepts legitimate token-count fields, but its broad recursive heuristic still admits nested password, bearer authorization, and access-token-value keys.
 
 **Correction:**
 
-- Refresh the dedicated branch by fast-forward to `6caf809303294252c109420b238588f0c68aca6a` and re-audit all application-critical changed paths. The final `a5ad63bb9..6caf80930` delta changes only completed-ticket delivery evidence and does not touch the designed production paths.
-- Add named P2A/P2B operational database/protected-path/Prisma/vault readiness to both compositions.
-- Add Search as the seventh required tool group and remove hidden registration from broad route construction.
-- Extend the exact composition/Modify-Retain inventory and process stop order.
-- Preserve one composition per process and treat the vault as provider/runtime configuration, not a user/account authentication feature.
+- Keep four non-overlapping stages: manifest package baseline, selected-resource definition baseline, sparse saved override, and post-overlay effective configuration.
+- Clean-cut rename the graph-local builder to `ApplicationLaunchResourceBaselineBuilder`; definition baselines use only package/selected-definition provenance, while host provenance appears only after overlay.
+- Add `selectedResourceBaseline` to the stored slot view and a closed no-write `ApplicationLaunchSelectionPreview` for unsaved refs. Preview performs no persistence, overlay, host validation, readiness transition, or fallback.
+- Bind preview to exact application/slot/ref, discard stale responses, disable save while pending/invalid, refresh after catalog/definition/save/reset changes, and let PUT re-resolve as final concurrency authority.
+- Remove the Studio package/effective inheritance heuristic. Clearing a field persists absence and reveals the selected definition baseline.
+- Represent mixed runtime explicitly; per-member inheritance remains authoritative until an explicit common runtime enables a bulk model override.
+- Add one recursive `ApplicationPortableLaunchConfigPolicy` with closed runtime/root/pricing schemas. Preserve exact token-count/pricing fields and reject actual password/secret/authorization/token-value/endpoint/workspace paths without logging values or adding compatibility/app exceptions.
+- Preserve current override rows/schema, three readiness statuses, invalid-row semantics, Codex/Luna defaults, and graph-local prompt authority.
 
-### SV-008 — Close architecture-review round-2 consistency and maintained-project gaps
+### SV-012 — Withdrawn broad Agent Tools reinterpretation
 
-**Problem:** Architecture review round 2 found three bounded contradictions: one dependency rule reversed protected-path/Prisma order, one file row still said six required tool groups, Brief/Socratic's supported development commands lacked inputs for their non-default layouts, and the approved critical analysis still allowed the rejected full-server fallback.
+SV-012 was drafted from `CRR-015`, which incorrectly assumed package `toolNames` should all be MCP gateway tools and therefore expected native `write_file` in the gateway. That premise led to an unapproved proposal for a new aggregate runtime, port set, publication bridge, readiness phase, base-URL phase, and shutdown authority.
 
-**Correction:**
+`CRR-016` supersedes that review result. Architecture review of SR-007 was stopped, the broad production drafts were removed, and SV-012 is retained only as chronological evidence. It is not part of the current design authority and must not be implemented.
 
-- Make every lifecycle rule, sequence, example, guidance row, and SV-C24 use one chain: `AppConfig/database location -> core migration -> protected DB/root-key/sidecar paths -> Prisma -> secret vault -> app-data migration -> remaining readiness`.
-- Name all seven P6 groups everywhere, including provisioned Search.
-- Add the exact shared Brief/Socratic `autobyteus-app.config.mjs` mapping for `frontend-src`, `backend-src`, optional agents/assets, root teams, entries, migrations, seven backend exposure booleans, and `dist/importable-package`.
-- Move each icon into `frontend-src`, import the frontend SDK package, switch the five scripts to direct devkit commands, and delete rather than wrap each custom builder plus source-root `ui`/`backend` mirrors/vendor trees.
-- Validate the mapping seam with a disposable current-devkit pack/validate probe for both maintained apps; do not claim that this executes the not-yet-implemented host commands.
-- Remove every recommendation, roadmap stage, target-behavior statement, and decision-table allowance for the current broad server as a standalone fallback. Named runtime prerequisites remain reusable only inside the explicit selected-application composition.
+### SV-013 — Restore the native/server tool boundary and narrow CR-013
+
+**Corrected evidence from CRR-016 and reviewed source:**
+
+1. Codex and Claude keep their native file tools. The server Agent Tools MCP gateway does not provide a native `read_file`/`write_file` adapter.
+2. `buildDefaultAgentToolMcpAdapterProviders()` already projects eligible server-owned adapters, including `publish_artifacts` and `send_message_to`.
+3. `ConfiguredMcpAgentToolSourceResolver` forwards only configured `ToolOrigin.MCP` tools; it intentionally ignores ordinary non-MCP native tools.
+4. Studio already calls `registerAgentToolsMcpRoutes(app)`. Standalone constructs the existing session/descriptor stack but omits only that same registrar, so the advertised path reaches generic 404 instead of the route's established authorization gate.
+5. The external `/mcp/gateway` is a different Studio-only integration surface and remains absent in standalone.
+
+**Bounded correction:**
+
+- In `build-standalone-application-server-composition.ts`, import the existing `registerAgentToolsMcpRoutes` and `await registerAgentToolsMcpRoutes(app)` before registering static/SPA fallback.
+- Reuse the existing route, session service, catalog, dispatcher, adapters, descriptor issuance, auth semantics, base-URL behavior, and cleanup unchanged.
+- Keep Codex/Claude native file tools native. Do not add file adapters to the Agent Tools MCP gateway or infer gateway exposure from package `toolNames`.
+- Keep eligible server-owned gateway tools and configured MCP-origin tools governed by the existing descriptor and `tools/list`.
+- Do not add a second route, alias, compatibility fallback, external gateway, runtime aggregate, ports, path builder, configured-source resolver, publication bridge, readiness phase, or shutdown owner.
+- Correct API/E2E expectations to inspect the actual issued descriptor and `tools/list`, then prove native file output plus server-owned publication/message dispatch through the registered route.
 
 ## Data-Flow Coverage Check
 
-| In-Scope Use Case | Primary / Operational Spine | Return / Event Spine | Bounded Local Spine | Coverage Result |
-| --- | --- | --- | --- | --- |
-| Studio launch | DS-001 | DS-004 when runtime work starts | DS-001 frontend state; DS-005 lifecycle | Complete |
-| Standalone launch | DS-002 | DS-004 when runtime work starts | DS-002 frontend state; DS-005 lifecycle | Complete |
-| Shared backend invocation | DS-003 | Request result plus DS-004 for async output | Engine/worker internals retained behind existing owner | Complete |
-| Real agent/team execution | DS-003 -> DS-004 | DS-004 | Existing runtime loops remain owned by runtime services | Complete |
-| Startup/readiness/recovery/stop | DS-005 operational boundary | Readiness/failure projection | DS-005 lifecycle state machine plus process-resource close | Complete after latest-base audit |
-| Native development | DS-006 | Command result/logs | Config resolution, watch coalescing, host close/restart, Studio explicit reload | Complete after SV-006/SV-008 |
-| Build once / two hosts | DS-007 | Conformance evidence | Package assembly/validation owner | Complete after SV-001 |
-| Standalone root/assets/navigation | DS-008 | Browser response/startup result | Static resolver/fallback policy | Complete after SV-005 |
-| Studio presentation lifecycle | DS-009 | Stable launch after setup save, fresh bootstrap on reload, or shell restoration on exit | Route-visit launch state and iframe document teardown | Complete after reachable-use-case audit |
-| Built-package production start | DS-010 -> DS-005/DS-008/DS-002 | Process result/logs and browser startup | No-build command translation, host config materialization, process close | Complete after SV-006/SV-007 |
+| In-Scope Concern | Primary / Return Spine | Authoritative Boundary | Result |
+| --- | --- | --- | --- |
+| Studio launch and presentation | DS-001, DS-009 | Studio host + shared startup coordinator | Complete |
+| Standalone launch/root/navigation | DS-002, DS-008 | Selected standalone host + same-origin provider | Complete |
+| Shared backend/live execution | DS-003, DS-004 | Gateway/engine/orchestration/runtime/events | Complete |
+| Platform readiness/recovery/stop | DS-005 | `ApplicationPlatformLifecycle` and process composition | Complete |
+| Native application development | DS-006 | Devkit config/commands and real hosts | Complete |
+| One package/two hosts | DS-007 | Existing pack/parser/validator and read-only consumers | Complete |
+| Built-package production start | DS-010 | Devkit `start` -> public standalone host API | Complete |
+| Standalone package completeness/portability | DS-011 | Pure platform package validator + recursive portable policy reused by devkit | Complete after SV-011 |
+| Selected-resource editing/effective launch/readiness | DS-012 | `ApplicationLaunchConfigurationService` view/preview/commands/guard | Complete after SV-011 |
+| Package-team prompt semantics | DS-013 | Graph-local definition service and context builder | Complete after SV-009 |
+| Internal Agent Tools configured-tool transport | DS-014 with DS-004/DS-005 return/stop | Existing session descriptor, route registrar, catalog, dispatcher, adapters, and cleanup; standalone adds only the missing registrar call | Complete after bounded CR-013 Local Fix |
 
 ## Canonical Design-Principles Audit
 
 | Principle / Derived Check | Result | Validation |
 | --- | --- | --- |
-| 1. Approved behavior and production reality | Pass | BEH-001–BEH-007 link approved intent, current evidence, target production paths, and preserved behavior. No user/account subsystem was reintroduced. |
-| 2. Data-flow spine inventory and span sufficiency | Pass after SV-001/SV-005/SV-006 and DS-009 | DS-001–DS-010 cover both hosts, Studio reload/exit, backend/runtime return, lifecycle, native development, immutable dual-host package consumption, root/static navigation, and production use of the existing build. Primary paths contain the initiating surface, authoritative owners, downstream mechanisms, and meaningful outcomes. |
-| 3. Ownership clarity and boundary encapsulation | Pass after SV-002/SV-003/SV-006/SV-007/SV-008 | Provider wires are provider-owned, normalized runtime shape stays tight, selection owns identity once, recovery cannot bypass selected-app authority, commands resolve declarative inputs and call only pack/host public boundaries, process prerequisites are composition-owned, routes delegate to gateway/communication owners, and composition alone constructs the graph. |
-| 4. Off-spine concerns around the spine | Pass | Validation, static confinement, endpoint normalization, readiness projection, non-secret host-config materialization, logging, digest evidence, and process cleanup serve named owners and do not become competing coordinators. Existing package/runtime/storage/vault capabilities are reused. |
-| 5. Current-schema runtime and proportionate persisted-data transition | Pass | Schemas/readers/writers remain unchanged; direct use under distinct roots is correct. Dormant non-selected records are preserved rather than migrated or deleted. |
-| 6. Product-reachability gate | Pass | Every use case and validation case names a supported current/target trigger or governing contract. Unsupported future modes remain in requirements `Out of Scope` and are not inflated into use cases or validation scenarios. |
-| Clean-cut replacement / no compatibility path | Pass | `startHostedApplication`, hosted-only types/copy, public mock fallback/contract mode, broad route registration, and composition-critical application-graph lookups are removed rather than wrapped. |
-| Authoritative boundary / no mixed-level dependency | Pass | Application -> SDK, command -> public host API, route -> gateway, gateway -> engine, worker context -> orchestration, composition -> lifecycle/registrars/process resources. Forbidden bypasses are explicit. |
-| Reusable shared structures are semantically tight | Pass after SV-002 | Runtime bootstrap means absolute ready-to-use endpoints only; standalone relative wire paths have their own strict type rather than making one DTO ambiguous. |
-| Existing capability-area reuse before new helpers | Pass after SV-008 | New owners exist only for genuinely new host/bootstrap/lifecycle/command-session concerns; engine, gateway, storage, parser, orchestration, runtime, vault, communication, and the devkit pack implementation remain authoritative. No custom-builder adapter is introduced. |
-| File/folder mapping follows ownership | Pass after SV-008 | SDK startup, standalone host, shared application-platform runtime, devkit command/development sessions/configs, maintained source inputs, transport adapters, and compositions have distinct physical owners without creating a new top-level project. |
-| Removal/decommission completeness | Pass after SV-008 | The design enumerates source, generated output, custom builders/vendor mirrors, route registration, scheduler, accessor, and documentation removal. |
-| Interface identity/selector clarity | Pass | Runtime application identity is canonical; standalone config accepts `{packageRoot, localApplicationId, appDataDir, host, port, publicBaseUrl?}` and derives canonical identity once; devkit derives local ID from source manifest and selected-app routes accept no caller application selector. |
-| Empty-indirection/generic-container smell | Pass | The runtime graph factory owns exact construction and returns a typed composition result; it is never injected as a general container. |
-| Persisted-data migration smell | Pass | No schema change and no speculative database rewrite; the current runtime remains current-schema-only. |
+| Approved behavior and production reality | Pass after SV-013 | BEH-004–BEH-006 incorporate the exact standalone 404/stalled-run evidence while CRR-016 restores the verified native/server/configured-MCP tool projection. All architecture-approved launch/edit/prompt behavior remains unchanged. |
+| Spine span sufficiency | Pass after SV-013 | DS-014 covers native file work, existing authenticated server-tool dispatch, handoff, events, and artifacts. The only missing main-line node is standalone registration of the existing route. DS-011–DS-013 remain complete. |
+| Ownership clarity and boundary encapsulation | Pass after SV-013 | Existing session, route, catalog, dispatcher, adapter, and cleanup owners remain authoritative. Standalone composition only exposes the already-owned route; external gateway and native runtime tools stay in their distinct owners. |
+| Off-spine support remains subordinate | Pass | Existing bearer auth/redaction, origin gate, descriptors, diagnostics, and cleanup remain unchanged and do not become an alternate orchestrator, user-auth system, or external gateway. |
+| Current-schema persisted-data transition | Pass after SV-011 | Valid rows are sparse overlays; invalid rows are preserved diagnostics; computed selected baselines/previews are not stored; reset deletes explicitly; no schema or migration is required. |
+| Product-reachability gate | Pass | All 23 use cases and 38 scenarios are supported actions, current failures, or governing contracts. DS-014 is exercised by the maintained Brief real run; marketplace, multi-node, and public-internet modes remain excluded. |
+| Clean-cut replacement | Pass after SV-013 | The unapproved runtime/ports/publication drafts were removed. The fix reuses one existing route with no alias, wrapper, compatibility branch, gateway fallback, or second tool system. |
+| Interface and semantic tightness | Pass after SV-011 | Manifest baseline, selected baseline, sparse override, and effective configuration are separate; preview is a closed no-write union; definition and host provenance cannot overlap; readiness remains classification/issues only. |
+| Existing capability reuse | Pass | Existing Agent Tools session/route/catalog/dispatcher/auth/adapters are composed under one owner; no second MCP/tool system is created. Existing launch/runtime/application owners remain authoritative. |
+| Composition-critical dependency control | Pass after SV-013 | No new composition-critical dependency is introduced. The standalone root calls the same existing registrar already used by Studio, before the existing static wildcard. |
+| File/folder placement and removal | Pass | One existing standalone composition file changes; the existing route and Agent Tools subsystem stay in place. No new project, runtime, ports, path owner, or cross-layer facade is added. |
+| Failure semantics | Pass after SV-011 | `INVALID_PACKAGE` is package-only; `HOST_REQUIREMENT_MISSING` is valid package plus host-local override/capability blocker; `RUNNABLE` means every required slot/leaf can launch. Studio exposes explicit replacement/reset without fallback. |
 
-## Residual Risks That Remain Honest
+## Residual Risks And Required Downstream Evidence
 
-1. The initial `pnpm start` command delegates to the existing server project/runtime available in the AutoByteus checkout/distribution. Later optimized binary/container/package extraction is not decided, but must preserve the command and package contract.
-2. Manifest v4 does not package every tool, skill, model, or external runtime dependency. The first conformance proof uses declared current built-in dependencies and must not claim full offline portability.
-3. Public-internet deployment, TLS/reverse-proxy support, authentication, multi-user tenancy, and multi-node execution are not claimed by this first local standalone host.
-4. Current Studio behavior after a worker crash is retained structurally but must be verified by executable coverage once implementation exists.
-5. A complete repository-wide dependency-injection conversion remains out of scope; the exact composition-critical graph paths may not use global fallback accessors.
-6. Latest-base Prisma/vault/tool readiness is structurally designed but must be verified in real standalone execution, including restart cleanup and a provider-backed Search/tool path.
-7. The disposable mapping probe proves existing pack support for the exact Brief/Socratic inputs, but downstream execution must still verify their new `dev`, `dev:studio`, and built-output production paths after those commands and the host exist.
+1. Implementation coverage must prove standalone calls the existing registrar before static fallback: no bearer reaches the route's 401 gate rather than generic 404, and an unknown/unavailable session retains established 404 behavior.
+2. The same composition coverage must prove external `/mcp/gateway` remains absent in standalone.
+3. API/E2E must rerun `APIE2E-STANDALONE-MCP-001`, `APIE2E-BRIEF-003`, and `APIE2E-F005` with corrected expectations derived from the actual descriptor and `tools/list`.
+4. Fresh-root standalone Brief must prove Codex native `write_file` separately from gateway-owned `publish_artifacts` and `send_message_to`, followed by writer handoff, lifecycle events, projected artifacts, and cleanup. Route presence alone is insufficient.
+5. API/E2E must not infer gateway tools from package `toolNames`, add a file adapter, or require native `write_file` in MCP `enabled_tools`.
+6. Existing selected-resource, portable policy, invalid override, package defaults, and prompt semantics passed focused coverage and must remain in the affected regression set.
+7. `APIE2E-REPO-005` remains an `Unclear` unattributed broad server-suite diagnostic. API/E2E/code review must reconcile it separately; DS-014 does not claim to fix it.
+8. Model/runtime credentials remain host requirements. A host without Codex/Luna must produce `HOST_REQUIREMENT_MISSING`, never substitute another runtime/model.
+9. Optimized distribution, offline dependency packaging, mandatory standalone override UI/CLI, public-internet hosting, user authentication, marketplace isolation, and repository-wide singleton removal remain out of scope.
 
 ## Self-Validation Decision
 
-The macro design remains sound:
+The major architecture remains:
 
-> One immutable application package is consumed by two thin hosts, which normalize host-specific bootstrap protocols and compose one shared application-platform runtime.
+> One immutable application package supplies its complete standalone launch baseline; two thin hosts may overlay host-owned configuration and normalize their ingress, then use one authoritative application-platform runtime and business stack.
 
-The design is stronger after eight bounded corrections, the unversioned naming refinement, the reachable-use-case audit that added DS-009, the native command refinement that added DS-010, and the latest-base/process/config audits. All eighteen listed reachable use cases map to one or more complete spines and at least one of twenty-four validation scenarios. No extra top-level project, second server implementation, host-specific application build, custom-builder adapter, broad-server fallback, public mock product mode, user/account subsystem, compatibility wrapper, data migration, or manifest-vNext work is required.
+The corrected design keeps the established Agent Tools subsystem unchanged. Codex/Claude native file operations remain runtime-native; the existing internal route carries eligible server-owned tools and configured MCP-origin tools. Standalone only adds the missing call to the existing registrar, while the external MCP gateway remains Studio-only.
 
-The user ended the discussion hold and authorized further review. The package may proceed after final consistency and solution-revision-record checks.
+All 23 reachable use cases map to DS-001–DS-014 and at least one of 38 validation cases. The design does not require a new readiness status, project, mandatory standalone setup UI, persisted Agent Tools session/baseline/preview, migration, manifest change, user-authentication subsystem, host-specific build, compatibility route, fallback, external gateway expansion, runtime aggregate, port layer, publication bridge, or duplicated server/tool system. `ARCH-REV-006` remains authoritative; the bounded CR-013 fix is ready for `implementation_engineer`. No implementation or API/E2E pass is presumed.

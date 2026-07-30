@@ -4,29 +4,30 @@
 
 - Assessment status: Complete for the repository baseline recorded below
 - Recommendation status: **Approve the vision conditionally; revise the proposal before treating it as an implementation plan**
-- Approval applicability: Approved/refined through 2026-07-27. User/account concerns are excluded, and the native application-folder commands are `dev`, `dev:studio`, `build`, `validate`, and `start`. SR-003 removes a contradictory fallback allowance and supplies maintained-project design precision without changing that approved behavior.
+- Approval applicability: Approved/refined through 2026-07-30. User/account concerns are excluded; native commands, complete package defaults, and optional Studio overrides remain as approved. SR-008 preserves the existing native/server/configured-MCP tool boundary and narrows the remaining standalone defect to registration of the existing bearer-protected Agent Tools route.
 - Source proposal: [sources/autobyteus-vertical-application-developer-experience-proposal.md](sources/autobyteus-vertical-application-developer-experience-proposal.md)
 - Requirements basis: [requirements.md](requirements.md)
 - Evidence log: [investigation-notes.md](investigation-notes.md)
-- Repository baseline: refreshed at the user's request to `origin/personal` at `6caf809303294252c109420b238588f0c68aca6a` on 2026-07-29
+- Repository design baseline: refreshed before implementation to `origin/personal` at `6caf809303294252c109420b238588f0c68aca6a`; current focused review authority is `CRR-016` at task commit `6518a19f516d17a6d84481606254d28fb7e8be59` on 2026-07-30
 
 ## Executive Verdict
 
 The proposal has a strong product thesis and the right high-level ownership split: an application should own its product UX and business state, while AutoByteus should own runtime execution, orchestration, application scoping, and host integration. The repository already contains more of that foundation than the proposal implies: Studio application discovery, a strict iframe bootstrap contract, a separate application worker process, app-owned SQLite migrations, durable application-to-agent/team bindings, bundled agents and teams, direct frontend agent communication, and a first devkit all exist.
 
-The proposal is **not implementation-ready**. It treats several absent or partial capabilities as though they are small adaptations:
+The original proposal was **not implementation-ready**. The bounded architecture through complete package defaults, three-state readiness, invalid host-override handling, selected-resource sparse editing, recursive portable policy, and graph-local prompt construction has since passed review and been implemented. The current proof is not complete because standalone advertises the existing Agent Tools MCP session callback to Codex/Claude but does not register that route. Native Codex/Claude file tools remain available independently; the missing route blocks eligible server-owned tools such as publication and team messaging, so the real Brief run cannot finish its handoff/artifact path. At the original investigation baseline, the proposal treated several absent or partial capabilities as small adaptations:
 
-1. there is no standalone application product host;
-2. the frontend startup API is iframe-specific rather than host-neutral;
-3. the server has one broad, fixed composition root rather than capability-driven application composition;
+1. there was no standalone application product host;
+2. the frontend startup API was iframe-specific rather than host-neutral;
+3. the server had one broad, fixed composition root rather than capability-driven application composition;
 4. current installable package semantics and manifest v4 do not match the proposed artifact or sample manifest;
 5. skills, tools, and shared execution resources are not closed, versioned application dependencies;
 6. the worker subprocess is not a security sandbox and inherits the full server environment;
 7. the Studio application iframe has no `sandbox` attribute;
 8. version strings and capability/permission declarations do not yet amount to compatibility or security enforcement; and
-9. there is no real dual-host conformance suite.
+9. there was no real dual-host conformance suite; and
+10. it did not define who owns the portable runtime/model baseline, optional host overrides, or truthful application-run readiness.
 
-The right decision is therefore **proceed, but narrow and reorder**. Prove one existing application bundle through the current Studio path and a deliberately bounded standalone host before expanding manifest v4, extracting packages, or building a marketplace. Treat all packages as trusted first-party code until an enforceable isolation and publisher-trust model exists.
+The right decision remains **proceed, but narrow and reorder**. Prove one existing application bundle through the current Studio path and a deliberately bounded standalone host before expanding manifest v4, extracting packages, or building a marketplace. Treat all packages as trusted first-party code until an enforceable isolation and publisher-trust model exists.
 
 ## Readiness Matrix
 
@@ -44,17 +45,17 @@ Classification meanings:
 | Application backend worker | Existing with a trust limitation | `ApplicationEngineHostService` starts one worker subprocess per application and bridges named capabilities over IPC. The subprocess is not sandboxed. | Reuse for trusted MVP packages; do not market it as third-party isolation. |
 | App-owned storage and migrations | Existing | Per-app `app.sqlite` is separated from `platform.sqlite`; SQL migrations are ordered, checksummed, and restricted. | Reuse unchanged in the portability proof. |
 | Application-owned orchestration | Existing | Backend context exposes `agentExecution`, `agentResources`, and `publishedArtifacts`; bindings and lifecycle events are durable and app-scoped. | Reuse as the canonical business-backend/runtime boundary. |
-| Frontend SDK transport injection | Partial | `ApplicationClientTransport` is injectable and the current implementation uses HTTP/WebSocket endpoints, but `startHostedApplication` requires iframe hints and `window.parent.postMessage`. | Refactor bootstrap acquisition, not business-client APIs. |
+| Frontend SDK bootstrap/client separation | Existing in task implementation | `startApplication` selects provider-local Studio/standalone bootstrap and constructs one shared HTTP/WebSocket client. | Preserve; do not reopen the macro boundary. |
 | Backend SDK host neutrality | Partial, comparatively strong | The SDK is mainly types, `defineApplication`, target-address builders, and launch-profile helpers. Host-provided context capabilities carry runtime calls. | Reuse the context-capability boundary; correct proposal examples to current APIs. |
 | Portable package | Partial and semantically mismatched | Current package roots contain `applications/` and can hold multiple applications. A generated devkit package contains one app under that container. There is no immutable release artifact. | Separate package-root, application-bundle, and signed-release terminology. |
 | Bundled agents and teams | Existing | Bundle discovery creates canonical application-owned agent/team identities. | Reuse. |
 | Bundled/versioned skills and tools | Absent | Devkit copies agents and agent teams only. Agent configs resolve named skills/tools through platform registries. | Exclude from MVP portability guarantee or design an explicit dependency model later. |
 | No hidden global resources | Not satisfied | Execution-resource slots default to both `bundle` and `shared`; all visible shared agents/teams are listable and shared refs use unversioned definition IDs. | Revise the claim and introduce explicit, versioned dependency semantics before ecosystem distribution. |
-| Standalone product host at `/` | Absent | No same-origin bootstrap provider, standalone lifecycle composition, product-root server, or application-selecting host configuration was found. | This is the main MVP feature, not an already available mode. |
-| Capability-driven server composition | Absent | `server-runtime.ts`, REST, WebSocket, and GraphQL registration are fixed and broad; no platform module contract/composition folder exists. | First inventory and extract explicit application-platform composition boundaries. |
+| Standalone product host at `/` | Existing with one route-registration gap | Selected-app composition, root/static serving, same-origin bootstrap, Codex/Luna defaults, readiness, and dev/start exist. Real run reaches existing Agent Tools session issue but the advertised internal route is absent. | Call the existing route registrar before static fallback; do not redesign the working subsystem or widen to external gateway/broad server. |
+| Explicit server composition | Existing in task implementation | Studio and selected-application standalone compositions share a graph/lifecycle with bounded route inventories. | Preserve explicit compositions; do not add a generic module locator. |
 | Vue/React scaffolds and HMR | Absent | The devkit has one plain TypeScript/CSS template and one-shot esbuild output. | Defer until host portability works. |
-| Standalone-first dev command | Absent | `autobyteus-app dev` renders a host bar and iframe. Without real server URLs it uses a mock backend. | Do not describe current dev as standalone product execution. |
-| Dual-host conformance | Absent | Current durable tests cover iframe v4/client behavior only. | Add real same-package Studio/standalone scenarios as an MVP exit gate. |
+| Standalone-first dev command | Existing with bounded route gap | `autobyteus-app dev` runs the real standalone host and reaches a Codex/Luna team run, but the run stalls when eligible server-owned tools target the absent existing route. | Preserve command/validation; add the same existing internal route registration used by Studio. |
+| Dual-host conformance | Partial and substantial | Selected-resource/policy/prompt/launch cases now pass. API-REV-005 proves standalone run/session creation but fails eligible server-tool dispatch and artifacts because the route is absent. CRR-016 corrects the mistaken expectation that native `write_file` must be an MCP tool. | Register the existing route and rerun the exact native-file plus server publication/message/handoff/artifact path before declaring proof complete. |
 | Package version/signature/integrity | Absent | No `.abapp`, release version, file checksum manifest, publisher identity, signature verification, or revocation path exists. | Defer distribution claims until defined and enforced. |
 | Permissions and isolation | Absent beyond scoping/validation | Manifest v4 has no permissions. Worker code inherits host environment and Node privileges. The app iframe lacks a sandbox attribute. | Treat marketplace execution as blocked on a threat model and enforceable controls. |
 | Marketplace | Absent | Public GitHub/default-branch archive import exists, but it is not a signed/versioned marketplace pipeline. | Defer as a separate program after security and release semantics. |
@@ -71,11 +72,11 @@ The proposal correctly rejects the idea that `autobyteus-ts` is the whole platfo
 
 ### 3. Application/platform ownership split
 
-The repository already reflects the proposal's strongest boundary: the Studio host starts the application, but the application backend decides when and how to start agent or team work. The current route journey is:
+The repository reflects the proposal's strongest boundary: the host presents and guards the application, while the application backend decides when to start agent/team business work. The corrected shared journey is:
 
-`Applications card -> setup-first route -> saved execution-resource configuration -> Enter application -> ensure backend ready -> iframe v4 bootstrap -> app backend starts agent/team through context capabilities -> durable binding/events/artifacts`.
+`Manifest package baseline -> selected-resource baseline/optional sparse host override -> authoritative effective profile + host validation -> RUNNABLE -> Studio iframe or standalone root -> app backend requires runnable resource -> binding/team runtime -> runtime-native file work plus issued Agent Tools session capability -> authenticated eligible server-tool dispatch -> team handoff -> durable events/projected artifacts`.
 
-That path should remain the governing path for both hosts.
+Studio remains the optional experimentation surface. Package defaults, not a saved Studio row, are the standalone baseline.
 
 ### 4. Server composition should be reused, not forked
 
@@ -89,7 +90,9 @@ The application artifact should not declare itself as the global root. A standal
 
 The proposal explicitly recognizes executable backend/tool code as dangerous. That concern is correct; the proposed remedies are merely incomplete today.
 
-## Current Supported Production Spines
+## Original Supported Production Spines
+
+These paths record the repository baseline against which the proposal was judged. The task implementation has since added provider-local dual-host startup and explicit compositions; the retained paths remain relevant evidence for the shared runtime/storage/orchestration behavior that the correction must preserve.
 
 ### APP-CURRENT-001 — Studio host launch
 
@@ -122,9 +125,9 @@ The proposal explicitly recognizes executable backend/tool code as dangerous. Th
 
 These are real foundations. The standalone path should reuse them rather than invent parallel run, storage, or package loaders.
 
-## Critical Architecture Gaps
+## Original Architecture Gaps And Remaining Corrections
 
-### P0-1 — “Transport” currently conflates bootstrap with network traffic
+### P0-1 — “Transport” conflated bootstrap with network traffic — resolved by the implemented macro slice
 
 The proposal names `StudioIframeTransport` and `StandaloneSameOriginTransport`. That terminology does not match the current physical path:
 
@@ -140,7 +143,7 @@ The proposal names `StudioIframeTransport` and `StandaloneSameOriginTransport`. 
 
 The app entrypoint should become host-neutral (`startApplication` or equivalent), while host selection remains outside application business code.
 
-### P0-2 — Proposed package and manifest examples are incompatible with current v4
+### P0-2 — Proposed package and manifest examples are incompatible with current v4 — deferred intentionally
 
 Current package and identity facts:
 
@@ -161,7 +164,7 @@ The proposal's `version`, `publisher`, `platformVersion`, `resources`, `capabili
 
 Use manifest v4 unchanged for the first portability proof. If distribution metadata is later required, design a clean new contract version and migrate all in-tree apps; do not silently widen v4 or maintain dual compatibility readers indefinitely.
 
-### P0-3 — Subprocess separation is not marketplace isolation
+### P0-3 — Subprocess separation is not marketplace isolation — remains out of this trusted-package slice
 
 `ApplicationWorkerSupervisor` starts Node with the bundle as `cwd`, inherits all of `process.env`, and applies no Node permission flags, OS sandbox, container boundary, filesystem allowlist, network allowlist, syscall restriction, or secret filtering. Application code can import Node APIs available in its self-contained bundle. The application UI iframe also has no `sandbox` attribute.
 
@@ -187,13 +190,13 @@ They do not make third-party backend/frontend code safe.
 
 Displaying a permission list is not an enforcement mechanism.
 
-### P0-4 — Current server construction cannot yet express a bounded standalone surface
+### P0-4 — Original server construction could not express a bounded standalone surface — resolved by the implemented macro slice
 
 `server-runtime.ts` always registers MCP, gateway, permissive CORS, multipart, WebSockets, mobile static content, every REST route, every GraphQL resolver, remote access policy, managed messaging, background tasks, and application recovery. REST and GraphQL owners use fixed registries. No `AutoByteusPlatformModule` or composition folder exists.
 
-**Correction:** the first proof must replace the current broad `buildApp()` path with explicit Studio and standalone compositions. The standalone composition may initialize only the named shared runtime prerequisites it actually depends on and registers only root/readiness/bootstrap plus selected-application ingress. Loopback remains the default network boundary, but loopback binding does not authorize the broad server composition as a fallback. Extract explicit registration/start/stop owners and avoid a generic service locator.
+**Correction:** the first proof must use explicit Studio and standalone compositions. Standalone registers root/readiness/bootstrap and selected-application browser ingress plus the required session-scoped `/mcp/agent-tools/:sessionId` runtime callback. That internal bearer-capability route is not the optional external `/mcp/gateway`, which remains Studio-only. Loopback does not authorize broad `buildApp()` as fallback. Extract explicit construction/start/stop owners and avoid a generic locator.
 
-### P1-1 — Application resources are not yet closed portable dependencies
+### P1-1 — Application resources are not yet closed portable dependencies — remains a bounded limitation
 
 Bundled agents and teams are application-scoped. Skills and tools are not packaged by the devkit, and agent configs resolve their names through platform registries. Execution-resource slots permit shared definitions by default and shared refs are unversioned IDs.
 
@@ -206,7 +209,7 @@ Bundled agents and teams are application-scoped. Skills and tools are not packag
 
 The first proof may use bundled agents/teams plus named built-in tools on a declared supported host, but it must not claim that skills/tools are fully portable yet.
 
-### P1-2 — One `capabilities` array cannot own composition, compatibility, and security
+### P1-2 — One `capabilities` array cannot own composition, compatibility, and security — deferred contract work
 
 The proposal uses “capability” for at least three different concepts:
 
@@ -216,7 +219,7 @@ The proposal uses “capability” for at least three different concepts:
 
 **Correction:** keep these separate. Each requires its own identifier namespace, version/compatibility rule, required/optional behavior, failure mode, and enforcement owner. Transitive dependencies and runtime-adapter availability also need an owner.
 
-### P1-3 — Version declarations are not fully enforced compatibility
+### P1-3 — Version declarations are not fully enforced compatibility — deferred release work
 
 The backend manifest parses `targetRuntime.semver`, but repository search found no runtime-range comparison before worker startup. SDK compatibility uses exact contract constants, not negotiated ranges. Current GitHub import downloads the repository's current default branch rather than an immutable release.
 
@@ -229,11 +232,23 @@ The backend manifest parses `targetRuntime.semver`, but repository search found 
 - upgrade/rollback and data migration ownership; and
 - how increased permissions block automatic update.
 
-### P1-4 — Standalone operations are underdefined
+### P1-4 — Standalone operations were underdefined — bounded local-host decisions are now implemented
 
 A real product host needs more than serving `/` and starting a process. Missing decisions include readiness, graceful shutdown/drain, worker crash behavior, data directories, secrets/provider configuration, backups, upgrade/rollback, logs/metrics, bind address/TLS/reverse-proxy contract, WebSocket routing, persistent file/object storage, and concurrency.
 
 **Correction:** explicitly bound the first standalone host to single-node, local SQLite, trusted packages, one selected application, and documented process/data lifecycle. Multi-tenant or horizontally scaled operation is a later architecture.
+
+### P1-5 — Runnable defaults plus an authoritative sparse-edit projection — bounded current correction
+
+The original implementation could select a bundled team while leaf definitions omitted `llmModelIdentifier`, then report `READY` with a null profile. That foundation is corrected: standalone-enabled packages now carry complete defaults and readiness is guarded. CRR-012 exposes the remaining related edit problem: the server computes an alternate selected-resource baseline but omits it from the Studio view, so first-save/field-clear inheritance can use no context or the old post-overlay result.
+
+**Correction:** retain complete package defaults and the three statuses, but distinguish manifest package baseline, selected-resource definition baseline, sparse saved override, and effective result. The same launch owner exposes the current selected baseline and a no-write preview for an unsaved selection; Studio never traverses definitions or inherits from its post-overlay result. Pack/validate applies one recursive schema-aware portable policy: exact supported token-count/pricing fields remain valid, while password/secret/authorization/token-value/endpoint/workspace fields are rejected at any depth. No baseline/preview persistence, fallback, compatibility branch, or mandatory standalone setup UI is introduced.
+
+### P1-6 — Existing Agent Tools MCP route registration was omitted from standalone — bounded Local Fix
+
+Codex and Claude keep their native file tools. Separately, run provisioning issues a session descriptor for eligible server-owned Agent Tools and configured MCP-origin tools at `/mcp/agent-tools/:sessionId`. Studio registers that bearer-protected callback; standalone currently advertises it but returns generic 404. This internal route is different from the optional external `/mcp/gateway`.
+
+**Correction:** reuse the working subsystem unchanged. Import and await the existing `registerAgentToolsMcpRoutes(app)` in standalone before static/SPA registration, exactly as Studio already does for the internal route. Preserve existing descriptor/session/catalog/dispatcher/adapters/auth/base-URL/cleanup behavior. Validate actual descriptor/`tools/list`: `publish_artifacts` and `send_message_to` are eligible server-owned tools; configured `ToolOrigin.MCP` tools may also appear; native `write_file` is not expected in MCP. Do not add native file adapters, a second route, aggregate runtime, new ports, publication bridge, compatibility fallback, user-auth subsystem, or external gateway to standalone.
 
 ## Claims That Need Corrective Language
 
@@ -247,6 +262,9 @@ A real product host needs more than serving `/` and starting a process. Missing 
 | “Initial implementation can run full server headlessly.” | Conflicts with the bounded product surface and leaves unrelated route/startup ownership in the standalone process even when loopback-bound. | Reject the current broad `buildApp()` composition for standalone. Construct the explicit selected-application composition from named shared runtime prerequisites and verify its exact route inventory. |
 | Phase 1 “universal package” before standalone proof | Risks redesigning the artifact without a second real host. | Prove current bundle through both hosts first; evolve the artifact only from observed host differences. |
 | “No mock substitution” | Correct for conformance but conflicts with current default dev behavior. | Keep mocks for unit/contract iteration only; require real backend/runtime paths for portability conformance. |
+| “A manifest default team makes the application standalone-ready.” | A resource reference does not supply every leaf runtime/model or prove host availability. | “A standalone-enabled package validates complete application-owned leaf defaults; the host then validates runtime/model/credentials before reporting `RUNNABLE`.” |
+| “Standalone needs a setup screen to choose a model.” | Makes host state the baseline and duplicates Studio. | “Standalone normally uses package defaults. Studio/host overrides are optional overlays; invalid package or missing host requirements fail explicitly.” |
+| “MCP gateway is Studio-only, so standalone needs no MCP route.” | Conflates optional external gateway with the internal session callback already issued to runtimes. | “Both hosts register the existing capability-scoped Agent Tools session callback for eligible server-owned/configured-MCP tools. Native Codex/Claude file tools remain native. Only Studio registers the separate external MCP gateway.” |
 | Marketplace follows portability | Trust work is a separate program. | Gate marketplace execution on sandbox, signature, revocation, permission enforcement, immutable release, and audit controls. |
 
 ## Recommended First Portability Proof
@@ -258,7 +276,8 @@ Use one representative existing bundle, preferably **Brief Studio**, because it 
 - current manifest v4 and devkit packaging;
 - a bundled agent team;
 - application-owned backend state;
-- saved execution-resource configuration;
+- complete application-owned agent/team launch defaults;
+- optional saved Studio execution-resource override and reset;
 - real runtime launch;
 - application notifications/events; and
 - published artifacts.
@@ -268,30 +287,43 @@ The proof should not add marketplace fields, package signing, Vue/React scaffold
 ### Required target behavior
 
 1. The same generated application package contents are installed/selected for both hosts.
-2. Studio continues to run its current setup-first iframe lifecycle unchanged.
+2. Studio continues to run its iframe lifecycle, shows package defaults, and may persist/reset optional runtime/model overrides without mutating the package.
 3. A new standalone host selects exactly one application through deployment configuration and serves the same UI artifact as the branded root at `/`.
 4. The app frontend uses one host-neutral startup API with host-owned bootstrap providers; no business component branches on Studio vs standalone.
 5. Both hosts start the same backend entry and use the same application engine, storage lifecycle, migrations, resource resolver, orchestration, event, and artifact owners.
 6. Standalone development uses the real application worker and a real agent/team backend, not the current mock backend.
-7. The standalone composition registers only its explicit selected-application surface. Broad Studio/admin route registries are not constructed or registered in that process.
+7. The standalone composition registers only its explicit selected-application browser surface plus the capability-scoped internal Agent Tools runtime callback. Broad Studio/admin route registries and the external MCP gateway are not constructed or registered in that process.
 8. The MVP remains local/self-hosted and introduces no user/account subsystem.
 9. From an application folder, `pnpm start` runs the already-built `dist/importable-package` through the production standalone composition; it does not rebuild, watch, or substitute mocks.
+10. Every standalone-capable required execution leaf has complete application-owned runtime/model defaults; pack/validate rejects incompleteness. For the maintained Brief and Socratic applications, the user-confirmed leaf default is `codex_app_server` / `gpt-5.6-luna`.
+11. Fresh standalone data uses package defaults without a setup UI or preseeded override row; the host fails before listen when runtime/model/credentials cannot be resolved.
+12. The exact graph-local team-definition authority reaches member prompt construction, including package team instructions.
+13. If a Studio-saved shared resource disappears or saved team-member topology becomes stale, the valid package is not blamed and its baseline is not executed silently; Studio blocks run, explains the saved override, and restores package evaluation only after explicit replacement/reset.
+14. Selecting an alternate resource before save or clearing a saved field uses the server-computed selected-resource baseline/preview. Studio persists only explicit sparse fields, handles mixed-runtime inheritance without implicit defaults, and PUT revalidates resource/topology.
+15. Package portable configuration accepts exact typed token-count/pricing fields and recursively rejects credential/password/authorization/token-value/endpoint/workspace fields with path-only diagnostics.
+16. Both hosts register the existing Agent Tools session callback before static fallback. Codex/Claude native file operations remain native; the callback dispatches eligible server-owned tools such as `publish_artifacts` and `send_message_to` plus configured MCP-origin tools. Team handoff, events, and artifacts complete, while external `/mcp/gateway` remains Studio-only.
 
 ### Exit criteria
 
 - **MVP-EC-001:** One generated package passes current v4 validation and its content digest is identical in the Studio and standalone scenarios.
 - **MVP-EC-002:** The same frontend entry and backend bundle entry digest are observed in both hosts.
-- **MVP-EC-003:** Studio's current setup/enter/reload/exit journey still passes.
-- **MVP-EC-004:** Direct standalone root launch reaches business UI without iframe launch hints or Studio globals.
+- **MVP-EC-003:** Studio package-default entry plus optional override/run/reset-to-package-default/reload/exit journeys pass without package mutation.
+- **MVP-EC-004:** Fresh-root standalone resolves the maintained application’s `codex_app_server` / `gpt-5.6-luna` package defaults and completes a real run without iframe hints, Studio globals, setup UI, or a preseeded configuration row.
 - **MVP-EC-005:** The same app migration files produce the expected app-owned schema/state in each host-specific data root.
 - **MVP-EC-006:** A real bundled agent/team execution starts through `context.agentExecution`, emits lifecycle progress, and produces/reconciles a published artifact in both hosts.
 - **MVP-EC-007:** Restarting the standalone host preserves app data and restores/reconciles supported binding state according to current orchestration contracts.
 - **MVP-EC-008:** No portability conformance scenario uses the devkit mock backend.
 - **MVP-EC-009:** Static checks find no imports from `autobyteus-web`, Electron APIs, or server-internal managers in application business code.
 - **MVP-EC-010:** A captured standalone public-route inventory contains only the approved application/product ingress; unrelated Studio/admin routes are unreachable externally.
-- **MVP-EC-011:** Contract mismatch and missing-capability cases fail explicitly before business UI/handler execution.
+- **MVP-EC-011:** Incomplete standalone package fails pack/validate as `INVALID_PACKAGE`; unavailable runtime/model/credentials yields `HOST_REQUIREMENT_MISSING` with `HOST_CAPABILITY` issues before standalone listen or Studio business entry/action.
 - **MVP-EC-012:** Worker/frontend trust limitations are documented and the host refuses packages outside the configured trusted source set.
 - **MVP-EC-013:** `pnpm dev`, `pnpm dev:studio`, `pnpm build`, `pnpm validate`, and `pnpm start` have the approved distinct meanings; the production start path consumes the existing package and writes only to a separate data root.
+- **MVP-EC-014:** The application-run readiness result is only `RUNNABLE`, `INVALID_PACKAGE`, or `HOST_REQUIREMENT_MISSING`; no success state carries a null required profile and no business request silently supplies the missing model.
+- **MVP-EC-015:** A real Brief member system prompt includes the non-empty package `team.md` instruction through graph-local definition authority.
+- **MVP-EC-016:** Deleting a Studio-selected shared team and separately changing saved team-member topology each yields `HOST_REQUIREMENT_MISSING` with `HOST_OVERRIDE` issue, preserves the package baseline and row, leaves the affected effective configuration null, blocks `requireRunnable`, and becomes eligible for package-default execution only after explicit Reset/delete.
+- **MVP-EC-017:** Unsaved alternate selection returns an identity-bound no-write selected-resource baseline; clearing a saved alternate field reveals that definition value; stale preview/PUT races fail without write/fallback; mixed-runtime teams require an explicit common runtime before bulk model selection.
+- **MVP-EC-018:** Validator accepts exact `max_tokens`, `token_limit`, `safety_margin_tokens`, and typed pricing fields; recursively rejects nested password, bearer authorization, access-token value, endpoint, and workspace paths without echoing values.
+- **MVP-EC-019:** Both hosts register the existing `/mcp/agent-tools/:sessionId` route before static fallback. Fresh standalone Brief proves native Codex `write_file` separately, then uses the actual descriptor/`tools/list` to execute eligible `publish_artifacts` and `send_message_to`, hand off researcher to writer, and project artifacts. Missing bearer reaches the established 401 gate, unknown/unavailable session remains 404, and external `/mcp/gateway` remains unreachable in standalone.
 
 ## Revised Roadmap
 
@@ -308,14 +340,16 @@ The proof should not add marketplace fields, package signing, Vue/React scaffold
 - Extract host-neutral startup around bootstrap acquisition.
 - Add standalone product host and same-origin bootstrap.
 - Reuse current worker/storage/orchestration owners.
-- Add real dual-host conformance with one representative app.
+- Require complete package-owned runtime/model defaults for standalone-capable projects.
+- Add real dual-host conformance with one representative app, including fresh-root package-default execution.
 
 ### Stage 2 — Bounded application-platform composition
 
 - Extract explicit application-platform HTTP/WebSocket registration and lifecycle functions from the monolithic root.
-- Establish deterministic start/readiness/recovery/stop order.
+- Establish deterministic process start/recovery/stop plus a separate authoritative application-run readiness invariant.
 - Build explicit Studio and standalone composition roots; the current full server is never a standalone fallback or interim stage.
 - Add standalone operational contracts and route-surface verification.
+- Register the existing internal Agent Tools MCP session route in both hosts before static fallback, keep the external gateway Studio-only, and preserve the existing session/catalog/dispatcher/adapters/auth/cleanup authority without a new wrapper or runtime layer.
 
 ### Stage 3 — Portable release contract
 
@@ -329,6 +363,9 @@ The proof should not add marketplace fields, package signing, Vue/React scaffold
 - Standardize the native application-folder contract: `pnpm dev` for real standalone watch/rebuild/restart, `pnpm dev:studio` for the real Studio host, `pnpm build`, `pnpm validate`, and `pnpm start` for production standalone execution of the existing build.
 - Give Brief Studio and Socratic checked-in devkit mappings for their real `frontend-src`, `backend-src`, root team, entrypoint, migration, exposure, and output inputs; retire their custom package builders so all five commands share one pack owner.
 - Keep mock/iframe-contract machinery test-only; it is not a public product command and cannot satisfy conformance.
+- Make `build`/project `validate` reject incomplete defaults and recursively non-portable host-secret fields while preserving exact approved tuning/pricing. Make Studio overrides optional and resettable without changing package bytes.
+- Preserve invalid saved overrides as diagnosable host-local blockers; never classify them as package failure, auto-delete them, or silently run the package baseline.
+- Expose selected-resource baseline/unsaved preview from the server launch authority; remove UI package/effective inference, persist only sparse fields, and represent mixed-runtime inheritance explicitly.
 - Require reliable full reload/restart in the first slice; framework-specific HMR and Vue/React scaffolds remain later improvements.
 
 ### Stage 5 — Security and marketplace foundation
@@ -352,17 +389,29 @@ The proof should not add marketplace fields, package signing, Vue/React scaffold
 | Current runtime architecture description | Accept | Repository evidence supports it. |
 | Host-specific transport classes as written | Revise | Bootstrap and business communication are different concerns. |
 | Proposed manifest/sample directory as near-term contract | Reject | Incompatible with strict current v4 and package semantics. |
-| Current package as immediately universal | Reject | No standalone host or conformance proof exists. |
+| Current package as universal proof artifact | Accept after bounded correction | Launch/edit/prompt boundaries pass; the proof still needs standalone registration of the existing internal Agent Tools route and the corrected native-file/server-tool/handoff/artifact path. |
 | Full server headlessly for first proof | Reject | Standalone must use the explicit selected-application composition. Named underlying runtime prerequisites may be reused, but the broad server/route composition is neither a fallback nor an implementation stage. |
 | Capability-driven composition | Accept as target, revise mechanism | Current graph is monolithic; avoid generic service-locator architecture. |
 | Mock-free portability conformance | Accept | Required to prove real runtime behavior. |
 | Mocks for local unit iteration | Retain | Useful when clearly not conformance evidence. |
 | Marketplace after simple signing/permissions | Reject | Enforceable isolation/trust/revocation must precede arbitrary code. |
 | Vue/React scaffold priority | Defer | Does not validate portability or trust boundaries. |
+| Complete application-owned runtime/model defaults | Accept as foundation | Standalone model selection must travel with the application, while host capabilities/secrets remain local. |
+| Mandatory standalone setup UI or copied Studio state | Reject | Duplicates configuration authority and makes a valid package depend on host seeding. |
+| Studio runtime/model override and reset | Accept | Useful experimentation overlay when selected-resource baseline/preview comes from the same server authority, persistence stays sparse, and package defaults are never mutated. |
+| Silent package fallback when a saved override becomes invalid | Reject | Changes the user’s selected execution resource and hides host-state drift; require scoped diagnostics and explicit replacement/reset. |
+| `READY` with nullable required launch profile | Reject | Resource selection is not runnable readiness. |
+| Recursive portable package launch policy | Accept as required boundary | Closed schemas preserve valid tuning/pricing while rejecting credentials/endpoints/host paths at any depth. |
+| UI reconstruction of selected definition baseline | Reject | It duplicates server traversal/precedence and can self-inherit from post-overlay values; use the launch authority view/preview. |
 | Skills/tools automatically portable | Reject for current state | Current dependencies are ambient platform registries. |
+| Internal Agent Tools MCP callback in both hosts | Accept as required runtime infrastructure | Eligible server-owned/configured-MCP tools already depend on it; standalone omission makes the approved real run stall. Reuse the existing registrar and authorities unchanged. |
+| External MCP gateway in standalone | Reject | It is a different optional generic integration surface and would expand AC-010 unnecessarily. |
+| Native file tools through Agent Tools MCP | Reject | Codex/Claude own native file tools; the server gateway projects eligible server tools and configured MCP-origin tools only. |
+| New Agent Tools aggregate runtime/ports/publication bridge for this fix | Reject | CRR-016 verifies the subsystem already works in Studio; the only source defect is missing standalone route registration. |
+| Agent Tools compatibility alias, fallback, or persisted session path | Reject | The bounded fix reuses the existing route and behavior directly. |
 
 ## Final Recommendation
 
 Approve the proposal as a **strategic direction**, not as the implementation specification. Authorize only the bounded, trusted-package, single-node dual-host proof first. Require evidence from that proof before changing the package contract or funding marketplace work.
 
-A successful first slice would show that AutoByteus already has the core application runtime platform and only needs a second host plus cleaner bootstrap/composition boundaries. A failed or heavily divergent proof would reveal the real coupling early, before those assumptions are embedded into a new manifest, devkit API, or marketplace ecosystem.
+The implemented macro and launch/edit/prompt slices show that AutoByteus can support a second host. Completion now depends on one bounded composition fix: call the existing Agent Tools route registrar in standalone before static fallback, preserve native Codex/Claude file tools and the existing server/configured-MCP projection, and complete the real standalone publication/message/team/artifact journey. Do not redesign the working Agent Tools subsystem. The broad-suite `APIE2E-REPO-005` diagnostic remains separate and unattributed.
