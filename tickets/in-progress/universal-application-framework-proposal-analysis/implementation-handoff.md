@@ -23,122 +23,113 @@
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/handoff-summary.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/release-deployment-report.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/delivery-revision-record.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/evidence/delivery/dr-001-post-integration-check.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/evidence/delivery/dr-001-integration-failure-rerun.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/evidence/delivery/dr-001-integrated-source-diff-check.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-007-actual-tools-dispatch.json`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-007-standalone-state-after-failure.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-007-brief-standalone-final-browser.json`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-007-brief-standalone-final.png`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-007-source-correlation.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-009-atomic-pack-metadata-regression.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-009-prelive-hashes.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-009-postlive-hashes.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/api-rev-009-final-cleanup-integrity.log`
 
 ## Current Implementation Summary
 
-Source commit `cf8c8f7213468e5625bf521bbf0649fb78ac1a63` implements the authoritative `SR-010` / `ARCH-REV-008` correction for `CR-015`. Studio and standalone now each construct one explicit Agent Tools process authority whose exact registry, catalog/providers, executor, dispatcher, and route dependencies are shared by route authentication, application/general session issue, dispatch, and revocation. Application sessions carry the exact graph-local published-artifact publication port as an in-memory, non-wire execution authority; the publish adapter no longer captures or discovers a process-global publication service.
+`IR-016` implements the exact `SR-011` / `ARCH-REV-009` behavior-neutral framework vocabulary map. The server assembly roots, live application runtime, process MCP runtime, scoped session manager, general run supervisor, application run shutdown coordinator, publisher/handler cycle breakers, and internal service builders now expose concrete roles through their types, functions, properties, files, imports, root exports, tests, and current developer/module documentation.
 
-One application-graph `DeferredPublishedArtifactPublicationPort` breaks the real construction cycle. It is created before run/runtime factories, attached to the graph-scoped session authority, bound exactly once after the graph-local publication service exists, asserted during P6A before catalog/recovery/business readiness, and closed after the scope blocks issue and revokes its sessions. Application Codex, Claude, agent-run, and mixed-team/member create/restore/cleanup paths receive the exact scoped session authority. Non-application construction receives a distinct explicit general-process session authority and cannot reuse the application scope.
+The change is a clean private/internal rename. The retired symbols and files are removed rather than retained as aliases. Construction continues to use the same object instances, dependency order, route/session family, publication binding, lifecycle, cleanup, package selection, and provider behavior. `buildApplicationPlatformRuntime()` still only prepares services, managers, factories, and lifecycle owners. A strengthened structural test now proves that constructing two isolated runtimes calls neither `createAgentRun()` nor `createTeamRun()`; retained launch-service tests prove business demand remains the run-creation trigger, and retained recovery tests prove only recorded nonterminal bindings are restored.
 
-Lifecycle and composition cleanup now block new application session issue before ingress/run shutdown, revoke only graph-owned sessions, close the deferred port, and later close the process authority with the event/vault/Prisma owners. Restart constructs a fresh process authority, graph scope, port, and session set. The established internal route, capability security, 401/404 behavior, tool projection, recipient-name messaging, provider-native tools, configured-MCP boundary, and Studio-only external `/mcp/gateway` remain unchanged.
-
-Source commit `15dc77abc5d1aa8e800fca429fc5b648b473b1d5` completes the bounded `CRR-021` / `CR-016` lifecycle correction. `ApplicationRunShutdownAuthority` retains only the existing graph-local team-run and agent-run shutdown ports, stops teams before remaining agents, aggregates both failure classes, and is invoked after worker engines stop but before application session-scope revocation and publication-port close. Lifecycle step isolation guarantees later scope, port, and streaming cleanup still executes after a run-shutdown failure. Neither graph-local manager is exposed on the public runtime graph.
-
-Integrated source commit `32909b036e074b21a0bf691c17a46a1b6f2aa8ff` resolves the bounded `DR-001` latest-base lifecycle incompatibility after merge commit `3b8afa366a4a35a1a31340e7b21bc8f219cd9d8e`. `stopDefaultAgentRunEventPipeline()` now preserves the cached stopped composition and quiescent lifecycle state, so getters cannot recreate token enrichment/persistence after shutdown. Only `resetDefaultAgentRunEventPipeline()` clears the composition and restores `accepting`; the test reset delegates to that exact owner. Because supported standalone development intentionally closes and starts the public host in one process, `startStandaloneApplicationHost()` invokes the explicit reset after process-resource initialization and before constructing the new graph. Studio and production process close remain stop-only.
-
-Source commit `dbdab1b311b558bd3d40e8e7c4feaac87fe1af97` resolves the bounded `CRR-025` / `CR-017` atomic-pack metadata defect exposed by `API-REV-009`. Resolved devkit paths now distinguish the physical `outputPackageRoot` used for build, validation, and atomic staging from the `metadataPackageRoot` that the package assembler serializes. Ordinary `pack` and explicit `pack --out` use the same path for both meanings; atomic development pack writes and validates in `.pack-staging-<uuid>` while the sole README writer records the canonical final package root before rename. Atomic replacement and rollback are unchanged, with no post-publication metadata repair or staging-name filter.
-
-The current implementation also retains the previously reviewed dual-host, package launch/edit/readiness, portable-policy, graph-local definition/prompt, standalone route, and Codex definition-authority corrections. No application-owned MCP provisioning, provider-native file-tool change, package/schema migration, compatibility route, graph lookup by ID, mutable current-graph pointer, second Agent Tools family, or global publication fallback was added.
+Source/test commit `b18b0dc9f` contains the clean code and test rename. Documentation commit `8fccda58a` synchronizes the server modules, web Applications guide, custom application guide, and devkit README without taking ownership of or discarding the delivery-owned documentation deltas already present in the shared worktree.
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-revision-record.md`
-- Current implementation revision ID: `IR-015`
-- Related solution revision IDs: `SR-010` (`SR-007` remains withdrawn; prior revisions retained as history)
-- Related architecture-review revision IDs: `ARCH-REV-008` (`ARCH-REV-007` remains withdrawn)
-- Related code-review revision IDs: `CRR-025` Local Fix trigger; `CRR-024` IR-014 source Pass; `CRR-023` prior proportional test review Pass
-- Related API/E2E revision IDs: `API-REV-009` Fail / 94%; `API-REV-008` prior Pass
-- Related delivery revision IDs: `DR-001` remains blocked; its event-pipeline failure is execution-confirmed resolved
-- Triggering finding IDs: `CR-017`, `APIE2E-PARITY-005`, `APIE2E-F008`
+- Current implementation revision ID: `IR-016`
+- Related solution revision IDs: `SR-011`
+- Related architecture-review revision IDs: `ARCH-REV-009`
+- Related code-review revision IDs: `CRR-028` trigger; `CRR-026` prior source Pass; `CRR-027` prior proportional test review Pass
+- Related API/E2E revision IDs: `API-REV-010` prior Pass at 98.3%
+- Related delivery revision IDs: `DR-001`
+- Triggering finding IDs: `CR-018`
 
 ## Reviewed Behavior Implementation Trace
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
-| `BEH-001` | One immutable current package remains usable through Studio and standalone. | Existing providers/compositions/devkit hosts plus retained launch authority. | Preserved; SR-010 changes no package or manifest contract. |
-| `BEH-002` | Application code uses one host-neutral `startApplication`. | Existing SDK coordinator/providers. | Preserved; no application-facing API change. |
-| `BEH-003` | Strict manifest v4, stable package identity, and canonical package metadata remain unchanged across host/development consumption. | Existing parser/selection plus devkit `application-project-paths.ts`, `package-assembler.ts`, and atomic pack. | Implemented. Atomic physical staging no longer leaks into canonical generated metadata. |
-| `BEH-004` | Package-owned agent/team execution returns through the exact application graph. | `AgentToolsMcpProcessAuthority`; `ApplicationAgentToolsSessionAuthority`; graph publication port/service; application run authorities. | Implemented. Authenticated `publish_artifacts` delegates only through the issuing session's graph port. |
-| `BEH-005` | Studio and standalone remain explicit compositions with deterministic readiness and stop. | Both composition builders, run/lifecycle owners, and default event-pipeline stop/reset boundary. | Implemented. Stop stays quiescent; only explicit host/test reset reopens the process pipeline for a fresh supported composition. |
-| `BEH-006` | Native application commands and runtime callback keep portable and host-bound concerns separate. | Existing devkit/package policy plus exact internal Agent Tools session route; atomic pack supplies distinct physical and metadata roots to the shared assembler. | Implemented. `pack`, `pack --out`, and atomic development pack each describe their actual final package root while sharing one metadata writer. |
-| `BEH-007` | Current rows/data remain directly usable and runtime owners clean up deterministically. | Existing launch store/service; graph/run/session/port cleanup; quiescent event-pipeline stop. | Preserved. Late token work cannot reopen persistence after stop; standalone in-process restart is reopened only by its explicit process-start owner. |
-| `BEH-008` | Exact graph-local definitions/context reach runtime bootstrap and final team prompts. | Existing graph-local definition injection and member-context paths, now sharing the graph session authority. | Preserved; no composition-critical global fallback was reintroduced. |
+| `BEH-001` | One current manifest-v4 package remains directly usable through Studio and standalone. | Existing bundle, selection, package-validation, and host paths; renamed server builders only. | Preserved; no package, manifest, or data change. |
+| `BEH-002` | Application code continues to use one host-neutral `startApplication`. | Existing frontend SDK startup coordinator and providers. | Preserved; untouched. |
+| `BEH-003` | Canonical package identity, bytes, validation, and atomic metadata remain stable. | Existing parser/devkit/atomic package owners. | Preserved; no package-producing file changed. |
+| `BEH-004` | Package-owned agent/team execution remains graph-local and publishes through the issuing scope. | `AgentToolsMcpRuntime` -> `ScopedAgentToolMcpSessionManager` -> session execution capabilities -> `PublishedArtifactPublisher`. | Preserved exact object identity; vocabulary only. |
+| `BEH-005` | Studio and standalone remain explicit hosts with distinct ingress cardinality. | `buildStudioServer`, `buildStandaloneApplicationServer`, `startStandaloneApplicationHost`, `ApplicationPlatformRuntime`. | Implemented target names; route sets and lifecycle order unchanged. |
+| `BEH-006` | Real development/build/start behavior remains unchanged. | Existing devkit command and development-session paths. | Preserved; no devkit production source changed. |
+| `BEH-007` | Application readiness, recovery, run ownership, and shutdown remain explicit and ordered. | `buildApplicationPlatformRuntime`, `ApplicationPlatformLifecycle`, `ApplicationRunShutdownCoordinator`, `GeneralProcessRunSupervisor`. | Preserved; structural test proves runtime construction starts zero runs. |
+| `BEH-008` | Application backend, Agent Tools, provider-native tools, and gateway wire behavior remain unchanged. | Existing REST/WS/MCP routes and configured provider paths with renamed injected manager/capability properties. | Preserved; route integration tests pass. |
+| `BEH-009` | Central names expose concrete server/runtime/manager/supervisor/coordinator/service/publisher/handler responsibility. | Exact `design-spec.md` current-to-target map applied across server source, tests, exports, and docs. | Implemented cleanly; exact retired identifier/file scans are clean. |
 
 ## Key Files Or Areas
 
-- Process family: `autobyteus-server-ts/src/agent-tools/mcp/agent-tools-mcp-process-authority.ts`
-- Graph session scope: `autobyteus-server-ts/src/agent-tools/mcp/application-agent-tools-session-authority.ts`
-- Session execution authority and registry/service: `agent-tool-mcp-session.ts`, `agent-tool-mcp-session-registry.ts`, `agent-tool-mcp-session-service.ts`
-- Exact route dependencies: `autobyteus-server-ts/src/agent-tools/mcp/agent-tools-mcp-routes.ts`
-- Authority-free publication provider: `autobyteus-server-ts/src/agent-tools/mcp/providers/publish-artifacts-mcp-adapter-provider.ts`
-- Narrow publication boundary: `autobyteus-server-ts/src/services/published-artifacts/published-artifact-publication-port.ts` and `published-artifact-publication-service.ts`
-- Bind-once cycle seam: `autobyteus-server-ts/src/application-platform/runtime/deferred-published-artifact-publication-port.ts`
-- Runtime graph/run wiring: `create-application-platform-runtime-graph.ts`, `create-application-run-authorities.ts`, and adjacent orchestration/runtime graph contracts
-- Application and general runtime ownership: `agent-run-manager.ts`, `agent-team-run-manager.ts`, `general-process-run-authority.ts`, Codex/Claude bootstrap/session paths, and mixed-team/member paths
-- Graph-run shutdown: `autobyteus-server-ts/src/application-platform/runtime/application-run-shutdown-authority.ts`
-- Readiness/stop: `application-platform-lifecycle.ts` and lifecycle contracts
-- Host composition: `build-studio-server-composition.ts`, `build-standalone-application-server-composition.ts`, and `start-standalone-application-host.ts`
-- Integrated event-pipeline lifecycle: `autobyteus-server-ts/src/agent-execution/events/default-agent-run-event-pipeline.ts` and the standalone public host start boundary
-- Atomic physical/final root selection: `autobyteus-application-devkit/src/development/atomic-application-pack.ts`
-- Sole package metadata writer: `autobyteus-application-devkit/src/package/package-assembler.ts`
-- Resolved physical and metadata path meanings: `autobyteus-application-devkit/src/paths/application-project-paths.ts`
+- Server assembly:
+  - `autobyteus-server-ts/src/compositions/build-studio-server.ts`
+  - `autobyteus-server-ts/src/compositions/build-standalone-application-server.ts`
+  - `autobyteus-server-ts/src/server-runtime.ts`
+  - `autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts`
+- Application runtime:
+  - `autobyteus-server-ts/src/application-platform/runtime/application-platform-runtime.ts`
+  - `autobyteus-server-ts/src/application-platform/runtime/build-application-platform-runtime.ts`
+  - `autobyteus-server-ts/src/application-platform/runtime/create-application-orchestration-services.ts`
+  - `autobyteus-server-ts/src/application-platform/runtime/create-application-run-services.ts`
+  - `autobyteus-server-ts/src/application-platform/runtime/application-run-shutdown-coordinator.ts`
+  - `autobyteus-server-ts/src/application-platform/runtime/bind-once-application-engine-event-handler.ts`
+  - `autobyteus-server-ts/src/application-platform/runtime/bind-once-published-artifact-publisher.ts`
+- Agent Tools and process run ownership:
+  - `autobyteus-server-ts/src/agent-tools/mcp/agent-tools-mcp-runtime.ts`
+  - `autobyteus-server-ts/src/agent-tools/mcp/scoped-agent-tool-mcp-session-manager.ts`
+  - `autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-service.ts`
+  - `autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session.ts`
+  - `autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts`
+  - `autobyteus-server-ts/src/services/published-artifacts/published-artifact-publisher.ts`
+- Studio GraphQL service configuration:
+  - `autobyteus-server-ts/src/api/graphql/studio-application-api-services.ts`
+- Root export:
+  - `autobyteus-server-ts/src/index.ts`
+- Structural and retained behavior tests:
+  - `autobyteus-server-ts/tests/unit/application-platform/application-platform-runtime-isolation.test.ts`
+  - `autobyteus-server-ts/tests/unit/application-platform/application-run-services.test.ts`
+  - `autobyteus-server-ts/tests/unit/application-platform/application-run-shutdown-coordinator.test.ts`
+  - `autobyteus-server-ts/tests/unit/agent-tools/mcp/agent-tools-mcp-runtime.test.ts`
+  - `autobyteus-server-ts/tests/integration/application-backend/standalone-application-server.integration.test.ts`
 
 ## Important Assumptions
 
-- Each server composition is the only construction owner for one Agent Tools process family and supplies its exact route dependencies.
-- General-process Codex/Claude construction and application-graph construction deliberately share the process registry/catalog but use separate explicit session authorities and publication ports.
-- `executionAuthorities` is immutable process-memory state on an authenticated session; it is not serialized, logged, persisted, or copied into a package/descriptor.
-- Application-owned MCP declarations/provisioning and runtime-internal/provider-native tools remain outside this ticket.
-- A normal Studio/production process starts once and closes with quiescent stop only. The supported standalone development rebuild is the intentional same-process exception and reopens through `startStandaloneApplicationHost()` as the explicit process owner.
-- `outputPackageRoot` is the physical assembly/validation location. `metadataPackageRoot` is the intended final package location described by generated metadata; both are equal outside atomic staging.
-- `writePackageReadme()` remains the only generated README metadata owner, and atomic publication never repairs metadata after rename.
-- `APIE2E-REPO-005` remains separately `Unclear`; this implementation does not attribute or change it.
+- `autobyteus-server-ts` remains private, and the verified repository consumer graph contains no supported external consumer of the retired root export.
+- `ApplicationPlatformRuntime` names the long-lived connected application service set; it is not a service locator and its construction is not a business run trigger.
+- Only supported application business demand creates a new run. Post-listen recovery may restore a run only from recorded nonterminal state.
+- `composition` remains valid for the assembly activity/folder, not for a returned live server handle. `dependency graph` remains design explanation, not a runtime object name.
+- Provider-native tools, configured MCP, the internal Agent Tools route, and Studio-only external `/mcp/gateway` keep their existing boundaries.
+- `APIE2E-REPO-005` remains separately `Unclear` and is not attributed to this rename.
 
 ## Known Risks
 
-- Implementation-scoped probes used fakes and in-process Fastify injection. API/E2E must rerun the real standalone and Studio Brief publication/message/handoff/journal/projection journeys.
-- API/E2E-owned durable tests, reports, and evidence remain intentionally dirty/untracked in the shared worktree. Several preserved test fixtures must be reconciled with the new explicit route/lifecycle/runtime-graph dependencies by `api_e2e_engineer`; implementation did not rewrite them.
-- A real authenticated Codex/Claude process, full event pipeline, database journal, and browser artifact projection were not started in this implementation stage.
-- Repository-wide unrelated singleton cleanup is intentionally out of scope; source review should assess only whether application/general composition paths can bypass the new explicit authority split.
-- The focused delivery regression is green and API-REV-009 confirms DR-001 resolved, but the latest-base integrated package remains blocked by CR-017 until source review and API/E2E reconfirm canonical package parity.
-- Implementation-scoped checks prove stable README bytes and rollback with disposable projects; real maintained `dev` and `dev:studio` digest parity remains API/E2E-owned.
+- The rename spans 50 server source/test files and eight documentation files, so source review should independently audit exact object identity, route dependency identity, lifecycle ordering, and retired-name removal.
+- The existing package-level `pnpm typecheck` command remains unusable because `tsconfig.json` sets `rootDir: src` while including `tests`; it fails with repository-wide `TS6059` before checking the rename. The production build configuration and full server build both pass.
+- Prior `API-REV-010` behavior evidence predates the vocabulary rename. API/E2E should rerun a proportionate dual-host start/run/publication/handoff/stop matrix after source Pass.
+- API/E2E- and delivery-owned dirty tests, reports, evidence, and documentation deltas remain preserved in the shared worktree and were not committed as implementation-owned source.
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: `Bug-fix Local Fix`
-- Reviewed root-cause classification: `Local Implementation Defect`
-- Reviewed refactor decision: `No additional refactor`; preserve the package assembler as the one metadata owner while separating physical and represented roots
+- Reviewed change posture: `Behavior-neutral refactor`
+- Reviewed root-cause classification: `Boundary or ownership readability issue`
+- Reviewed refactor decision: `Refactor Needed Now`
 - Implementation matched the reviewed assessment: `Yes`
-- If challenged, routed as `Design Impact`: `N/A`; CRR-025 classified the independently reachable failure as implementation-owned Local Fix
-- Evidence / notes: the existing assembler still owns all generated metadata and validation. Atomic pack now supplies its canonical metadata target separately from the staging write target; normal command semantics and replacement/rollback ownership are unchanged.
+- If challenged, routed as `Design Impact`: `Yes`; `CRR-028` was routed through `SR-011` and `ARCH-REV-009` before implementation
+- Evidence / notes: the exact reviewed name/file map was applied without changing boundaries, adding indirection, or broadening the repository-wide rename.
 
 ## Legacy / Compatibility Removal Check
 
 - Backward-compatibility mechanisms introduced: `None`
-- Legacy old-behavior retained in production scope: `No`
-- Dead/obsolete production code, obsolete files, unused helpers/flags/adapters, and dormant replaced paths removed in scope: `Yes`; application/default global publication/session lookup is absent from the corrected construction and dispatch paths
-- Shared structures remain tight: `Yes`; resolved paths add one non-optional field with the singular meaning “root represented in generated package metadata”
+- Legacy old-behavior retained in scope: `No`
+- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes`; all mapped retired files/symbols/root exports are absent
+- Shared structures remain tight: `Yes`; no new container/base/optional field was introduced
 - Canonical shared design guidance was reapplied: `Yes`
-- Changed source implementation files stayed within proactive size-pressure guardrails: `Yes`; no changed source file exceeds 500 effective non-empty lines, and larger responsibility deltas were split into owned process/session/port files
-- Notes: no compatibility alias, post-rename repair, staging-name filter, alternate metadata writer, or fallback was introduced.
+- Changed source implementation files stayed within proactive size-pressure guardrails: `Yes`; all changed source files remain at or below 500 effective non-empty lines and every source delta remains below 220 changed lines
+- Notes: no aliases, deprecated wrappers, duplicate exports, compatibility imports, or parallel old/new tests remain.
 
 ## Persisted Data Transition Check
 
-- Approved decision: `Directly Usable — No Migration`
-- Design-spec decision reference: `design-spec.md` — “Persisted Data / State Transition Decision” and DS-014 session non-persistence
+- Approved decision: `Not Affected`
+- Design-spec decision reference: `SR-011` behavior-neutral vocabulary and persisted-state sections
 - Implementation follows the approved decision without an unapproved migration or version-specific runtime fallback: `Yes`
-- Direct-use evidence: package schema, manifest, application/platform database, launch override, descriptor wire, and token shapes are unchanged. Only generated README path content is corrected to describe the already-canonical final package root.
+- Direct-use evidence: no schema, manifest, package, database, descriptor wire, session persistence, or serialized application contract changed
 - Migration implementation: `N/A`
 - Deviation: `None`
 
@@ -146,57 +137,50 @@ The current implementation also retains the previously reviewed dual-host, packa
 
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis`
 - Branch: `codex/universal-application-framework-proposal-analysis`
-- SR-010 solution commit: `70faec030f614b502ceb3975d492c9f50dd84ff9`
-- IR-012 publication-authority source commit: `cf8c8f7213468e5625bf521bbf0649fb78ac1a63`
-- IR-013 graph-run shutdown source commit: `15dc77abc5d1aa8e800fca429fc5b648b473b1d5`
-- DR-001 checkpoint: `ddf7fe3117221d178f0c6af1825bcb708031d73c`; integrated base: `1b8d8c2f22c5f846dd82cdd706f594103d1b4e1e`; merge commit: `3b8afa366a4a35a1a31340e7b21bc8f219cd9d8e`
-- IR-014 integrated lifecycle source commit: `32909b036e074b21a0bf691c17a46a1b6f2aa8ff`
-- CRR-025 reviewer/current trigger commit: `7f6558bab`
-- IR-015 atomic metadata source commit: `dbdab1b311b558bd3d40e8e7c4feaac87fe1af97`
-- Reviewed base `6caf809303294252c109420b238588f0c68aca6a` remains in history. Delivery owns final tracked-base refresh/integration; implementation did not merge or rebase.
-- No dependency, schema, manifest, persisted-data, or frontend change was made in IR-015.
-- Other owners' modified/untracked tests, reports, review artifacts, and evidence remain preserved and were not staged in the source commit.
+- Solution package commit: `4bd4b6bd5` (`SR-011`)
+- Source/test commit: `b18b0dc9f`
+- Documentation commit: `8fccda58a`
+- No dependency, lockfile, schema, manifest, generated package, or frontend production source changed in `IR-016`.
+- Delivery owns final tracked-base integration. Implementation did not merge, rebase, push, release, deploy, archive, or clean other owners' evidence.
 
 ## Local Implementation Checks Run
 
-- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` — Pass after the final production-source change.
-- Disposable graph-authority Vitest probe — Pass, 1/1: one exact process route family; issue blocked before P6A; pre-bind/second-bind/post-close calls fail before graph mutation; application route publication reaches only its graph port; scope close revokes only its sessions; general session remains until process close; restart authority is fresh. Probe removed.
-- Disposable lifecycle-order Vitest probe — Pass, 1/1: P6A occurs after tool readiness and before catalog readiness; stop blocks issue before ingress/run shutdown, then revokes the application scope and closes its publication port. Probe removed.
-- Disposable missing-session-publication-authority provider probe — Pass, 1/1 after correcting the probe's expected result variant: explicit `publish_artifacts_failed`, with no unattached/global publication owner invoked and no mutation. Probe removed.
-- Existing focused unit suites: `agent-tool-mcp-session-service.test.ts`, `agent-tool-mcp-catalog.test.ts`, and `agent-run-manager.test.ts` — Pass, 3 files / 24 tests.
-- Existing application authority and Codex integration selection: `application-run-authorities.test.ts` passed 1/1; the Codex backend integration file reported 12 environment-gated skips.
-- Existing Agent Tools route security/restart selection (`enforces route gate auth`, `rejects revoked sessions`, `rejects old descriptors`) — Pass, 3 selected tests; missing bearer remains 401 and unavailable/revoked/old sessions remain 404.
-- `git diff --check`, staged-source ownership check, disposable-file cleanup, global/publication lookup audit, and changed-source effective-line audit — Pass. No changed source implementation file exceeds 500 effective lines.
-- IR-013 disposable shutdown/lifecycle Vitest probe — Pass, 2/2: shutdown is idempotent, stops team runs before remaining agent runs, aggregates failures from both owners, executes agent shutdown after team failure, and retains scope/port/streaming cleanup after run-shutdown failure. Probe removed.
-- IR-013 final `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`, `git diff --check`, temporary-file cleanup, manager-leakage search, staging audit, and changed-source size audit — Pass. The new authority is 36 effective lines; all six changed production files remain below 500 effective lines and 220 changed lines.
-- IR-014 exact delivery rerun: `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/events/default-agent-run-event-pipeline-lifecycle.test.ts tests/integration/token-usage/providers/default-agent-run-event-pipeline-lifecycle.integration.test.ts --reporter=verbose` — Pass, 2 files / 3 tests. Stop-before-getter remains non-persistent; an active composition stays identical/quiescent across repeat stop/getter calls; explicit reset creates a fresh accepting composition; accepted SQLite persistence drains once and late work does not reopen it.
-- IR-014 final `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`, `git diff --check`, lifecycle-state mutation/reset-owner audit, staging audit, and changed-source size audit — Pass. The pipeline is 50 effective lines / 9 changed lines; standalone host is 240 effective lines / 6 changed lines.
-- IR-015 `pnpm -C autobyteus-application-devkit build && pnpm -C autobyteus-application-devkit test` — Pass; build succeeded and 20/20 tests passed, including the preserved API/E2E-owned `atomic development pack keeps generated package metadata canonical after staging rename` regression.
-- IR-015 disposable focused assembly probe — Pass: two unchanged atomic packs produced identical canonical README SHA-256 `bec9cbb7…`; neither README contained `.pack-staging-*` or `.pack-previous-*`; an explicit physical output override described its actual final root; invalid generated package validation failed before any rename (`0` rename calls); injected publish-rename failure restored the prior canonical package and removed the previous-root backup. Probe and temporary projects removed.
-- IR-015 disposable exact CLI probe — Pass: default `pack` described the configured final output root and `pack --out` described the explicit final output root. Probe and temporary projects removed.
-- IR-015 `git diff --check`, staged-source ownership, temporary/generated-output cleanup, and changed-source size audits — Pass. The three production files are 37/101/175 effective lines with 1/4/13 changed lines; no changed implementation file exceeds 500 effective lines or a 220-line delta.
-- No durable test was added or changed by implementation; durable coverage remains API/E2E ownership.
+- `pnpm -C autobyteus-server-ts build:full` — Pass; TypeScript build, managed-asset copy, built-in-agent bootstrap smoke, and sanitized no-`DATABASE_URL` smoke completed.
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` — Pass.
+- Renamed-boundary selection — Pass, 6 files / 9 tests:
+  - `agent-tools-mcp-runtime.test.ts`
+  - `application-platform-runtime-isolation.test.ts`
+  - `application-run-shutdown-coordinator.test.ts`
+  - `application-run-services.test.ts`
+  - `application-platform-lifecycle.test.ts`
+  - `standalone-application-server.integration.test.ts`
+- Business-demand/recovery/route/Studio selection — Pass, 5 files / 25 tests:
+  - application run-binding launch service
+  - orchestration recovery service
+  - Agent Tools MCP route integration
+  - application context capabilities
+  - imported Brief Studio integration
+- Built root-export smoke — Pass: `buildStudioServer` and `startStandaloneApplicationHost` are functions; the retired Studio builder export is absent.
+- Exact mapped retired-identifier scan across source, tests, affected server/web/devkit/developer docs — Pass.
+- Retired mapped file inventory — Pass; all old files are absent and all target files exist.
+- `git diff --check`, staged ownership checks, and changed-source size/delta audit — Pass.
+- `pnpm -C autobyteus-server-ts typecheck` — Not usable due pre-existing project configuration: all tests match the configured include while residing outside `rootDir: src`, producing repository-wide `TS6059`. The production build configuration and full build pass.
 
 ## Frontend Rendered-Result Check
 
-`Not Applicable` for IR-015. This revision changes only devkit package path/metadata assembly semantics; no rendered frontend or user interaction source changed.
+`Not Applicable`. `IR-016` changes internal server vocabulary, structural tests, and developer/module documentation only. No rendered frontend or user interaction source changed.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
-- First rerun the preserved `atomic development pack keeps generated package metadata canonical after staging rename` regression, then `APIE2E-PARITY-005` / `APIE2E-F008`.
-- Repeat unchanged atomic packing and verify canonical README bytes/digests are stable and contain no staging/previous root; verify normal `pack`, explicit `pack --out`, pre-rename validation, and failed-publish rollback.
-- Rerun the affected maintained Brief `dev` and `dev:studio` matrix and confirm all package/authoring digests remain identical before/after host consumption.
-- First rerun `APIE2E-STANDALONE-MCP-003` / `APIE2E-F007`: real package-owned researcher and writer authenticate, list eligible tools, publish into the exact application graph, hand off by recipient name, complete journal/relay/application projection, and leave no direct-database workaround.
-- Repeat the same publication/message/handoff/journal/projection journey through Studio to prove the host compositions share one behavior while keeping standalone free of `/mcp/gateway`.
-- Add durable paired-authority proof with deliberately distinct general/application publication owners: route lookup, issue, dispatch, and revoke must use the one composition process family; application publication must touch only the application graph.
-- Add deterministic pre-bind, missing-authority, second-bind, post-close, scope-close/restart, and no-mutation assertions.
-- Prove application and general session scopes do not revoke or publish through one another; old application descriptors remain 404 after scope close/restart.
-- Exercise graceful stop with active application team/member/agent runs: session issue blocks first, team runs stop before remaining agents, scope/port cleanup still runs after injected termination failures, no old backend survives restart, and process-general runs remain isolated.
-- Recheck the latest-base default event pipeline: repeat stop/getter calls remain quiescent and identity-stable; accepted token usage drains before close; late work is not persisted; explicit standalone host close/start creates one fresh accepting composition without a getter-driven restart.
-- Preserve route capability security: missing bearer 401; wrong/unknown/revoked 404; supplied-origin loopback gate; descriptor redaction/non-persistence; no external gateway in standalone.
-- Resume the retained command, parity/digest, worker-recovery, graph-isolation, event/vault/Prisma cleanup, launch/edit/readiness, prompt, and portable-policy matrix after the focused regression passes.
-- Keep `APIE2E-REPO-005` separate as `Unclear` unless a supported production origin is established.
+- Independently verify the exact `design-spec.md` name/file map, removed-file inventory, root exports, and absence of aliases or compatibility paths.
+- Confirm `buildStudioServer()` returns the same Fastify server, application runtime, and package registry objects in the same construction/lifecycle order.
+- Confirm standalone still validates/selects one package, registers the internal Agent Tools route before static fallback, excludes `/mcp/gateway`, listens, recovers, and closes in the established order.
+- Re-run runtime isolation: two runtimes share no application-scoped services and construction creates zero new agent/team runs.
+- Re-run explicit business launch and recorded-run recovery, including application publication, recipient-name handoff, journal/projection, stop, and restart.
+- Preserve Agent Tools capability security: missing bearer 401; unknown/revoked 404; exact process route/session family; scope isolation; no publication fallback.
+- Compare maintained package bytes/digests before and after host use; the rename must not affect package output.
+- Keep `APIE2E-REPO-005` separate unless a supported production origin is established.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-`api_e2e_engineer` owns durable test reconciliation and all broader executable/API/E2E evidence. Source review must pass before that stage resumes. IR-015 checks are implementation-scoped only and do not establish API/E2E Pass.
+`api_e2e_engineer` owns the proportionate executable rerun and any durable API/E2E test reconciliation after source review passes. The checks above are implementation-scoped and do not establish API/E2E Pass.
