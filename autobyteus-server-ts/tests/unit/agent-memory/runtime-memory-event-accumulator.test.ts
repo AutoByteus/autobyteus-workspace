@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { RuntimeMemoryEventAccumulator } from "../../../src/agent-memory/services/runtime-memory-event-accumulator.js";
-import { RunMemoryWriter } from "../../../src/agent-memory/store/run-memory-writer.js";
+import { ExternalRuntimeMemoryWriter } from "../../../src/agent-memory/store/external-runtime-memory-writer.js";
 import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { AgentMemoryService } from "../../../src/agent-memory/services/agent-memory-service.js";
 import { MemoryFileStore } from "../../../src/agent-memory/store/memory-file-store.js";
@@ -46,7 +46,7 @@ const readView = (memoryDir: string, includeArchive = false) =>
 
 const createAccumulator = (
   memoryDir: string,
-  writer: RunMemoryWriter = new RunMemoryWriter({ memoryDir }),
+  writer: ExternalRuntimeMemoryWriter = new ExternalRuntimeMemoryWriter({ memoryDir }),
 ) => new RuntimeMemoryEventAccumulator({
   runId: "run-1",
   writer,
@@ -104,9 +104,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
         ["tool_call", "", "tool-2"],
       ]);
     expect(view.rawTraces?.filter((trace) => trace.traceType === "reasoning")).toHaveLength(1);
-    expect(view.workingContext).toEqual(expect.arrayContaining([
-      expect.objectContaining({ role: "assistant", reasoning: "A\n\nB" }),
-    ]));
+    expect(view.workingContext).toBeNull();
   });
 
   it("projects adjacent missing-turn reasoning content and end onto one fallback turn", async () => {
@@ -141,13 +139,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
       expect.objectContaining({ traceType: "reasoning", turnId: "fallback-turn-1", content: "orphan reasoning" }),
       expect.objectContaining({ traceType: "assistant", turnId: "fallback-turn-1", content: "fallback answer" }),
     ]);
-    expect(view.workingContext).toEqual([
-      expect.objectContaining({
-        role: "assistant",
-        reasoning: "orphan reasoning",
-        content: "fallback answer",
-      }),
-    ]);
+    expect(view.workingContext).toBeNull();
   });
 
   it("persists one trace for adjacent reasoning deltas and a new trace after a tool boundary", async () => {
@@ -211,9 +203,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
       ["reasoning", "because ", "turn-1"],
       ["assistant", "hello", "turn-1"],
     ]);
-    expect(view.workingContext).toEqual([
-      expect.objectContaining({ role: "assistant", content: "hello", reasoning: "because " }),
-    ]);
+    expect(view.workingContext).toBeNull();
   });
 
   it("persists open reasoning before a following tool call without duplicating later flushes", async () => {
@@ -505,13 +495,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
       ["reasoning", "think before answer"],
       ["assistant", "visible answer"],
     ]);
-    expect(view.workingContext).toEqual([
-      expect.objectContaining({
-        role: "assistant",
-        content: "visible answer",
-        reasoning: "think before answer",
-      }),
-    ]);
+    expect(view.workingContext).toBeNull();
   });
 
   it("persists open reasoning before assistant complete output", async () => {
@@ -542,13 +526,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
       ["assistant", "final complete answer"],
     ]);
     expect(view.rawTraces?.filter((trace) => trace.traceType === "reasoning")).toHaveLength(1);
-    expect(view.workingContext).toEqual([
-      expect.objectContaining({
-        role: "assistant",
-        content: "final complete answer",
-        reasoning: "think before final complete",
-      }),
-    ]);
+    expect(view.workingContext).toBeNull();
   });
 
 
@@ -788,9 +766,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
       "assistant",
       "provider_compaction_boundary",
     ]);
-    expect(fullView.workingContext).toEqual([
-      expect.objectContaining({ role: "assistant", content: "before boundary" }),
-    ]);
+    expect(fullView.workingContext).toBeNull();
   });
 
   it("dedupes replayed provider boundaries without dropping post-boundary active records", async () => {
@@ -852,7 +828,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
   it("retries rotation from an existing provider boundary marker when no complete segment exists", async () => {
     const memoryDir = await mkTempDir();
     const boundaryKey = "codex:thread-1:marker-only";
-    const initialWriter = new RunMemoryWriter({ memoryDir });
+    const initialWriter = new ExternalRuntimeMemoryWriter({ memoryDir });
     const accumulator = createAccumulator(memoryDir, initialWriter);
 
     accumulator.recordRunEvent(event(AgentRunEventType.TURN_STARTED, { turnId: "turn-compact" }));

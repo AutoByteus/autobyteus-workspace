@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AppDataMigrationRegistry } from "../../../src/app-data-migrations/app-data-migration-registry.js";
 import { AppDataMigrationRunner } from "../../../src/app-data-migrations/app-data-migration-runner.js";
 import type {
@@ -169,4 +169,61 @@ describe("AppDataMigrationRunner", () => {
       { migrationId: "m1", status: "NOT_RUN", attempts: 0, canRetry: true },
     ]);
   });
+
+  it("continues later required startup migrations after a failed migration result", async () => {
+    const repository = new InMemoryMigrationRepository();
+    const laterExecute = vi.fn(async () => ({ status: "SUCCEEDED" as const, summary }));
+    const runner = new AppDataMigrationRunner(
+      new AppDataMigrationRegistry([
+        createDefinition("cleanup-failed", async () => ({
+          status: "FAILED",
+          summary: { ...summary, failedCount: 1 },
+          errorMessage: "eligible snapshot unlink failed",
+        })),
+        createDefinition("later-startup-work", laterExecute),
+      ]),
+      repository,
+      { logsDir: tempDir },
+    );
+
+    const statuses = await runner.runPending();
+
+    expect(statuses).toMatchObject([
+      { migrationId: "cleanup-failed", status: "FAILED", canRetry: true },
+      { migrationId: "later-startup-work", status: "SUCCEEDED", canRetry: false },
+    ]);
+    expect(laterExecute).toHaveBeenCalledTimes(1);
+  });
+
+  it("exposes warning results for manual retry and records a successful retry attempt", async () => {
+    let attempt = 0;
+    const repository = new InMemoryMigrationRepository();
+    const runner = new AppDataMigrationRunner(
+      new AppDataMigrationRegistry([
+        createDefinition("cleanup-warning", async () => {
+          attempt += 1;
+          return attempt === 1
+            ? {
+                status: "SUCCEEDED_WITH_WARNINGS",
+                summary: { ...summary, migratedCount: 1, failedCount: 1 },
+                errorMessage: "one retained file requires retry",
+              }
+            : { status: "SUCCEEDED", summary: { ...summary, migratedCount: 1 } };
+        }),
+      ]),
+      repository,
+      { logsDir: tempDir },
+    );
+
+    await expect(runner.runPending()).resolves.toMatchObject([
+      { migrationId: "cleanup-warning", status: "SUCCEEDED_WITH_WARNINGS", canRetry: true, attempts: 1 },
+    ]);
+    await expect(runner.runMigration("cleanup-warning")).resolves.toMatchObject({
+      migrationId: "cleanup-warning",
+      status: "SUCCEEDED",
+      canRetry: false,
+      attempts: 2,
+    });
+  });
+
 });

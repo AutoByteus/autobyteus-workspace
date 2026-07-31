@@ -235,7 +235,7 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
     tempDirs.clear();
   });
 
-  it("persists raw traces and working context from a real Codex app-server turn without websocket attachment", async () => {
+  it("persists raw traces without WorkingContext from a real Codex app-server turn without websocket attachment", async () => {
     const workspaceRoot = await createTempDir("codex-live-memory-workspace");
     const memoryDir = await createTempDir("codex-live-memory-dir");
     const runId = `run-codex-live-memory-${randomUUID()}`;
@@ -337,7 +337,7 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
       const rawTracePath = path.join(memoryDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME);
       const snapshotPath = path.join(memoryDir, WORKING_CONTEXT_SNAPSHOT_FILE_NAME);
       await expect(fsPromises.access(rawTracePath)).resolves.toBeUndefined();
-      await expect(fsPromises.access(snapshotPath)).resolves.toBeUndefined();
+      await expect(fsPromises.access(snapshotPath)).rejects.toThrow();
       expect(fs.existsSync(path.join(memoryDir, "raw_traces.jsonl"))).toBe(false);
       expect(fs.existsSync(path.join(memoryDir, "raw_traces_archive.jsonl"))).toBe(false);
 
@@ -412,14 +412,7 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
         normalizedReasoningContentLength: normalizedReasoningContent.length,
       }));
 
-      const snapshot = JSON.parse(await fsPromises.readFile(snapshotPath, "utf8")) as {
-        messages?: Array<{ role?: string; content?: string }>;
-      };
-      expect(snapshot.messages?.map((message) => message.role)).toContain("user");
-      expect(snapshot.messages?.map((message) => message.role)).toContain("assistant");
-      expect(
-        snapshot.messages?.some((message) => String(message.content ?? "").includes(responseToken)),
-      ).toBe(true);
+      expect(fs.existsSync(snapshotPath)).toBe(false);
     } finally {
       unsubscribe();
       unsubscribeRaw();

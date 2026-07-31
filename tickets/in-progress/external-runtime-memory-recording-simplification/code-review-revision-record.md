@@ -8,6 +8,8 @@ The current `code-review-report.md` or `api-e2e-test-review-report.md` remains a
 | --- | --- | --- | --- | --- | --- |
 | `CRR-001` | `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/in-progress/external-runtime-memory-recording-simplification/code-review-report.md` | Implementation Review / initial `IR-001` source handoff | `N/A` | `Fail — Design Impact` | `CR-001` |
 | `CRR-002` | `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/in-progress/external-runtime-memory-recording-simplification/code-review-report.md` | Implementation Review / `IR-002` re-entry under purported SR-003 approval | `Fail — Design Impact` | `Blocked — Requirement Gap` | `CR-001` |
+| `CRR-003` | `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/in-progress/external-runtime-memory-recording-simplification/code-review-report.md` | Implementation Review / `IR-003` re-entry with complete approval chronology | `Blocked — Requirement Gap` | `Pass` | `CR-001` |
+| `CRR-004` | `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/in-progress/external-runtime-memory-recording-simplification/api-e2e-test-review-report.md` | Proportional Test Review / `API-REV-001` Pass | `Pass — source review` | `Pass — test review` | None |
 
 ## Revision Entries
 
@@ -58,3 +60,51 @@ None.
 - Material score or classification changes: Score rises from `8.8/10` to `9.4/10` because no source/design defect is established under the candidate behavior; classification changes from `Design Impact` to `Requirement Gap`, and the result is blocked pending explicit user decision.
 - Recommended recipient: `solution_designer`
 - Remaining risks or uncertainty: Exact user intent for failed-retained generic inspector visibility; durable tests/API/E2E/docs must wait; no implementation source fix is currently justified.
+
+### CRR-003 — Complete chronology resolves the requirement gap and source review passes
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/in-progress/external-runtime-memory-recording-simplification/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round 3
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/in-progress/external-runtime-memory-recording-simplification/implementation-handoff.md`; `IR-003`, `CR-001`, `CR-MP-001`
+- Relevant solution revision IDs: `SR-004` with prior solution history
+- Relevant architecture-review revision IDs: `ARCH-REV-003` with prior architecture history
+- Relevant implementation revision IDs: `IR-003` with `IR-002` / `IR-001` history
+- Relevant API/E2E revision IDs: `N/A`
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: `Blocked — Requirement Gap` (`CRR-002`)
+- Current authoritative result: `Pass`; `CR-001` resolved
+- What changed in the review result and why: SR-004 / ARCH-REV-003 / IR-003 record the complete ordered chronology: the earlier uncertainty requested discussion, and the later direct statement approved the explained simplicity-first behavior. Source remains unchanged and already implements that behavior cleanly. Independent source alignment, source diff, and TypeScript checks pass.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-001` | `Unresolved — Requirement Gap`; reachable lifecycle but product consequence treated as undecided | `Resolved`; failed-retained generic inspection is the later approved operational residual and requires no source patch | `CRR-001`, `CRR-002`, `SR-004`, `ARCH-REV-003`, `IR-003`, `CRR-003` | Exact ordered user-decision chronology; confirmed DS-011 production path; unchanged source at `8cd193e81`; cleanup/generic-inspection probes; source alignment and TypeScript checks |
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: Score rises from `9.4/10` to `9.6/10`; requirement gap closes; result changes from `Blocked` to `Pass`; `CR-MP-001` remains reachable but has no defect consequence under the approved contract.
+- Recommended recipient: `api_e2e_engineer`
+- Remaining risks or uncertainty: Durable test validity/changes and API/E2E execution are pending; approved failed-retained storage/inspection residual and conservative preservation exclusions remain; docs await delivery sync.
+
+### CRR-004 — Durable raw-only and cleanup coverage passes proportional review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/in-progress/external-runtime-memory-recording-simplification/api-e2e-test-review-report.md`
+- Review entry point and round: `Proportional Test Review`, round 1
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/in-progress/external-runtime-memory-recording-simplification/api-e2e-execution-coverage-report.md`; `API-REV-001`, API-001 through API-011
+- Relevant solution revision IDs: `SR-004` with prior solution history
+- Relevant architecture-review revision IDs: `ARCH-REV-003` with prior architecture history
+- Relevant implementation revision IDs: `IR-003` with prior implementation history
+- Relevant API/E2E revision IDs: `API-REV-001`
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: `Pass — implementation source review` (`CRR-003`)
+- Current authoritative result: `Pass — proportional durable test-code review`
+- What changed in the review result and why: API/E2E added two focused suites, updated nine durable tests, and removed the obsolete mixed-writer suite. Review of every changed path and the removal diff found clear requirement-facing scenarios, appropriate fixture reuse/isolation, coherent large-file placement, no stale compatibility coverage, and agreement with the 98.1% passed execution package.
+
+#### Prior Finding Resolution
+
+None. There were no unresolved test-review findings; source finding `CR-001` remains resolved under `CRR-003`.
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: `N/A` — proportional test review has no source scorecard; result is `Pass` with no classification.
+- Recommended recipient: `delivery_engineer`
+- Remaining risks or uncertainty: Repository-wide test typecheck remains limited by the documented pre-existing `rootDir`/`include` mismatch, while production build and targeted changed-test compile pass. Real user memory was intentionally preserved; invalid/unclassified historical data remains conservatively retained; not every provider/model/OS combination was executed. The failed-retained stale-inspection outcome remains an approved operational residual.
