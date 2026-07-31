@@ -1,0 +1,23 @@
+{
+  "result": "Pass",
+  "local": {
+    "src": "blob:http://127.0.0.1:31043/a6db0b43-6a08-47c9-955d-a400f8d0d528",
+    "sandbox": "allow-scripts allow-same-origin",
+    "renderedText": "Local HTML rendered from loaded content"
+  },
+  "workspace": {
+    "src": "http://localhost:8000/rest/workspaces/workspace-2/static/docs/page.html",
+    "sandbox": "allow-scripts allow-same-origin"
+  },
+  "localStaticRequests": [],
+  "workspaceStaticRequests": [
+    {
+      "method": "GET",
+      "url": "http://localhost:8000/rest/workspaces/workspace-2/static/docs/page.html"
+    },
+    {
+      "method": "GET",
+      "url": "http://localhost:8000/rest/workspaces/workspace-2/static/docs/page.html"
+    }
+  ]
+}

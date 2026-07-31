@@ -1,0 +1,11 @@
+{
+  "result": "Pass",
+  "resultStatus": "opened",
+  "file": {
+    "src": "blob:http://127.0.0.1:31043/e0be7e8d-3578-45f3-9885-bf637f5e7b05",
+    "sandbox": "allow-scripts allow-same-origin",
+    "renderedText": "Event Monitor HTML loaded through the trusted local bridge"
+  },
+  "localPathRequests": [],
+  "staticRequests": []
+}

@@ -1,0 +1,39 @@
+
+> autobyteus@1.4.34 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run components/workspace/agent/__tests__/AgentConversationFeed.spec.ts components/workspace/agent/__tests__/AgentEventMonitor.spec.ts shared/__tests__/localFileUrl.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web
+
+stderr | shared/__tests__/localFileUrl.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/agent/__tests__/AgentConversationFeed.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/agent/__tests__/AgentEventMonitor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | shared/__tests__/localFileUrl.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/agent/__tests__/AgentEventMonitor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/agent/__tests__/AgentConversationFeed.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ shared/__tests__/localFileUrl.spec.ts (4 tests) 3ms
+ ✓ components/workspace/agent/__tests__/AgentEventMonitor.spec.ts (3 tests) 19ms
+ ✓ components/workspace/agent/__tests__/AgentConversationFeed.spec.ts (15 tests) 117ms
+
+ Test Files  3 passed (3)
+      Tests  22 passed (22)
+   Start at  19:09:03
+   Duration  7.51s (transform 3.23s, setup 19.30s, collect 307ms, tests 138ms, environment 836ms, prepare 593ms)
+

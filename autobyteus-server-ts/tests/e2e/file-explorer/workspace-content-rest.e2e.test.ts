@@ -102,4 +102,21 @@ describe("workspace content REST boundary e2e", () => {
     });
     expect(response.rawPayload).not.toEqual(PNG_BYTES);
   });
+
+  it("rejects an absolute candidate through the static workspace route", async () => {
+    const outsideHtml = path.join(tempRoot, "absolute.html");
+    fs.writeFileSync(outsideHtml, "<h1>outside workspace</h1>", "utf-8");
+    const workspace = await workspaceManager.createWorkspace({ rootPath: workspaceRoot });
+
+    const response = await app.inject({
+      method: "GET",
+      url: `/rest/workspaces/${encodeURIComponent(workspace.workspaceId)}/static/${encodeURIComponent(outsideHtml)}`,
+    });
+
+    expect(response.statusCode).toBe(400);
+    expect(response.json()).toEqual({
+      detail: "Access denied: Path resolves outside the workspace boundary.",
+    });
+    expect(response.payload).not.toContain("outside workspace");
+  });
 });
