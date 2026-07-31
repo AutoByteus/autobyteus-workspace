@@ -39,6 +39,7 @@
 | `CRR-033` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-018` | `Fail — Local Fix` | `Pass` | `CR-022` |
 | `CRR-034` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-test-review-report.md` | Proportional API/E2E Test-Code Review / `API-REV-012` | `N/A` | `Pass` | `N/A` |
 | `CRR-035` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-019` | `Pass` (`CRR-033` source; `API-REV-012`; `CRR-034` test review) | `Fail — Local Fix` | `CR-023`, `CR-024` |
+| `CRR-036` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-020` | `Fail — Local Fix / 94` | `Fail — Local Fix / 95` | `CR-023`, `CR-024`, `CR-025` |
 
 ## Revision Entries
 
@@ -977,3 +978,32 @@ None for proportional test code. `CR-019`–`CR-021` were design-impact findings
 - Material score or classification changes: latest implementation result is `Fail — Local Fix / 94`; Ownership `8.6`, API clarity `8.8`, and API/E2E Readiness `8.4` are below the clean-pass target. Runtime Correctness remains `10.0` because production source did not change.
 - Recommended recipient: `implementation_engineer`
 - Remaining risks or uncertainty: fix only the exact DS-016 policy classifier and external-script resolution/fixtures. Do not broaden the architecture, change production source or correct docs, restore deferred/rejected candidates, or split policy ownership. After source Pass, the proportional API-REV-012 dual-host/package-parity loop remains required. Historical `APIE2E-REPO-005` stays separate.
+
+### CRR-036 — IR-020 resolves prior gaps but external script targets still bypass policy
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `36`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-020`; prior `CR-023`, `CR-024`; new `CR-025`; runtime scenario IDs `N/A`
+- Relevant solution revision IDs: `SR-016`; retained `SR-015`, `SR-014`, and production baseline `SR-013`
+- Relevant architecture-review revision IDs: `ARCH-REV-014`; retained `ARCH-REV-013`, `ARCH-REV-012`, and production baseline `ARCH-REV-011`
+- Relevant implementation revision IDs: `IR-020`; underlying hardening `IR-019`; retained production `IR-017`, `IR-018`
+- Relevant API/E2E revision IDs: retained `API-REV-012`
+- Relevant delivery revision IDs: `DR-005`
+- Prior authoritative result: `CRR-035` `Fail — Local Fix / 94`; open `CR-023`, `CR-024`
+- Current authoritative result: `Fail — Local Fix / 95`
+- What changed in the review result and why: IR-020 correctly completes the named AFB-001 categories, AFB-002 server implementation checks, AFB-003 outward owner checks, exact availability-error input, and individual direction fixtures. It also separates the diagnostic-owning SFC from the actual parsed/resolution origin, so imports and AFB-004 bindings inside resolved external scripts use the external file and diagnostics retain both paths. The official architecture suite passes 13/13, direct strict test-file and server production TypeScript checks pass, the frozen lockfile check passes, and the corrective delta is one test file. A complete affected review found one remaining supported source-form gap: a resolved Vue external `src` is read but is never evaluated as a dependency edge. Same-checker fixtures therefore return no violation when a governed Studio SFC directly selects server application-engine source or a maintained Brief SFC escapes its project to that host runtime.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-023` | Open — Local Fix | Resolved in source | `CRR-035`, `IR-020`, `CRR-036` | Named rule table covers runtime builder, lifecycle, stores, recovery, availability, run, session, publication, engine, queue, and shutdown; AFB-002/003 directions and exact seam have individual fixtures; official 13/13 Pass. |
+| `CR-024` | Open — Local Fix | Resolved in source | `CRR-035`, `IR-020`, `CRR-036` | `ParsedSource` carries separate `diagnosticImporter`/`resolutionOrigin`; import/binding resolution uses external file; diagnostic shows owning SFC and source; local/forbidden internal-import fixture passes. |
+| `AR-010`, `AR-011` | Resolved in reviewed design; substantially implemented with CR-024 previously open | Remain resolved in design and substantially implemented; bounded new `CR-025` remains | `SR-016`, `ARCH-REV-014`, `IR-019`, `IR-020`, `CRR-035`, `CRR-036` | Exact project/parser/obligation architecture exists; the remaining issue is one local omission of the resolved external source reference from the shared edge evaluator. |
+| `CR-019`–`CR-022` | Resolved | Remain Resolved | `SR-013`, `ARCH-REV-011`, `IR-017`, `IR-018`, `CRR-033`, `API-REV-012` | IR-020 changes no production runtime source. |
+| `APIE2E-REPO-005` | Historical `Unclear` / unattributed | Remains separate and unchanged | `API-REV-005`–`API-REV-012` | No supported connection to IR-020 or CR-025; not result evidence. |
+
+- New or remaining finding IDs: `CR-025`
+- Material score or classification changes: result remains `Fail — Local Fix` but improves from `94` to `95`; `CR-023` and `CR-024` resolve, while Ownership `8.8`, API/E2E Readiness `8.8`, and behavioral fidelity `8.9` remain below clean-pass target because of the direct external-`src` bypass.
+- Recommended recipient: `implementation_engineer`
+- Remaining risks or uncertainty: fix only the resolved external-`src` dependency edge and direct AFB-002/005 fixtures; preserve the corrected classifiers and source-origin model. Do not change production source, manifests/lock/docs, broaden policy, restore rejected hardening, or split ownership. After source Pass, the proportional API-REV-012 dual-host/package-parity loop remains required. Historical `APIE2E-REPO-005` stays separate.
