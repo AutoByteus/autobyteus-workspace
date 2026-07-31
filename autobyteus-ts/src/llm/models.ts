@@ -4,7 +4,12 @@ import { LLMConfig } from './utils/llm-config.js';
 import { ParameterSchema } from '../utils/parameter-schema.js';
 import { BaseLLM } from './base.js';
 import { getLlmProviderDisplayName } from './provider-display-names.js';
-import type { ModelMetadataProvenance } from './metadata/model-metadata-resolver.js';
+import {
+  cloneMultimodalCapabilities,
+  UNKNOWN_MULTIMODAL_CAPABILITIES,
+  type MultimodalCapabilities,
+} from './multimodal-capabilities.js';
+import type { ResolvedModelMetadata } from './metadata/model-metadata-resolver.js';
 import type { ProviderApiKeyResolver } from '../secrets/provider-api-key-resolver.js';
 import type { GeminiRuntimeResolver } from '../utils/gemini-runtime.js';
 
@@ -26,6 +31,8 @@ export interface LLMModelOptions {
   activeContextTokens?: number | null;
   maxInputTokens?: number | null;
   maxOutputTokens?: number | null;
+  multimodalCapabilities?: MultimodalCapabilities;
+  resolvedModelMetadata?: ResolvedModelMetadata;
   defaultCompactionRatio?: number | null;
   defaultSafetyMarginTokens?: number | null;
   runtime?: LLMRuntime;
@@ -50,7 +57,6 @@ export interface ModelInfo {
   active_context_tokens: number | null;
   max_input_tokens: number | null;
   max_output_tokens: number | null;
-  metadata_provenance?: ModelMetadataProvenance;
 }
 
 export class LLMModel {
@@ -71,6 +77,8 @@ export class LLMModel {
   public activeContextTokens: number | null;
   public maxInputTokens: number | null;
   public maxOutputTokens: number | null;
+  public readonly multimodalCapabilities: MultimodalCapabilities;
+  public readonly resolvedModelMetadata: ResolvedModelMetadata | null;
   public defaultCompactionRatio: number | null;
   public defaultSafetyMarginTokens: number | null;
   public runtime: LLMRuntime;
@@ -93,6 +101,10 @@ export class LLMModel {
     this.activeContextTokens = options.activeContextTokens ?? null;
     this.maxInputTokens = options.maxInputTokens ?? null;
     this.maxOutputTokens = options.maxOutputTokens ?? null;
+    this.multimodalCapabilities = cloneMultimodalCapabilities(
+      options.multimodalCapabilities ?? UNKNOWN_MULTIMODAL_CAPABILITIES,
+    );
+    this.resolvedModelMetadata = options.resolvedModelMetadata ?? null;
     this.defaultCompactionRatio = options.defaultCompactionRatio ?? 0.8;
     this.defaultSafetyMarginTokens = options.defaultSafetyMarginTokens ?? 256;
     this.runtime = runtime;

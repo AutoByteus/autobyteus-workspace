@@ -26,4 +26,16 @@ describe("BrowserScreenshotArtifactWriter", () => {
     expect(path.basename(filePath)).toMatch(/^session-123-\d+\.png$/);
     await expect(fs.readFile(filePath)).resolves.toEqual(Buffer.from("png-bytes"));
   });
+
+  it("rejects empty PNG buffers before creating the artifact directory", async () => {
+    const tempDir = path.join(os.tmpdir(), `browser-empty-artifacts-${Date.now()}`);
+    tempDirs.push(tempDir);
+
+    const writer = new BrowserScreenshotArtifactWriter(tempDir);
+
+    await expect(writer.write(Buffer.alloc(0), "session-empty")).rejects.toThrow(
+      "Browser screenshot produced no image bytes.",
+    );
+    await expect(fs.stat(tempDir)).rejects.toMatchObject({ code: "ENOENT" });
+  });
 });

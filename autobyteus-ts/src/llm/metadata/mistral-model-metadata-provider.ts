@@ -15,7 +15,7 @@ interface MistralModelListResponse {
 }
 
 const normalizePositiveInteger = (value: unknown): number | null =>
-  typeof value === 'number' && Number.isFinite(value) && value > 0 ? Math.trunc(value) : null;
+  typeof value === 'number' && Number.isFinite(value) && Number.isInteger(value) && value > 0 ? value : null;
 
 const trimTrailingSlash = (value: string): string => value.replace(/\/+$/, '');
 

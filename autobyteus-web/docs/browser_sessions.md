@@ -111,6 +111,17 @@ The renderer does not own:
 - native browser surface creation
 - native device emulation state
 
+### Screenshot artifact contract
+
+`BrowserTabPageOperations` owns screenshot capture and
+`BrowserScreenshotArtifactWriter` owns artifact persistence. A screenshot is
+successful only when Electron returns a non-empty PNG buffer. Empty capture
+buffers fail with the typed `browser_screenshot_failed` browser error before an
+artifact path is returned; the writer independently rejects empty buffers
+before creating a directory or file. Non-empty captures retain the existing
+`{ tab_id, artifact_path, mime_type: 'image/png' }` result shape. This boundary
+prevents a false-success zero-byte artifact from becoming invalid LLM media.
+
 ## Shell Lease Model
 
 Browser session lifecycle is application-global, but shell projection is not.

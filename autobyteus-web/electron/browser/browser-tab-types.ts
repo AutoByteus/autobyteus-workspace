@@ -157,6 +157,7 @@ export type BrowserTabErrorCode =
   | 'browser_navigation_failed'
   | 'browser_popup_session_mismatch'
   | 'browser_page_read_failed'
+  | 'browser_screenshot_failed'
   | 'dom_snapshot_failed'
   | 'browser_javascript_execution_failed'
   | 'browser_device_emulation_failed'

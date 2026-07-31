@@ -160,7 +160,7 @@ runLiveM4aIntegration('Gemini read_media_file .m4a live integration (env gated)'
     }));
 
     try {
-      const response = await llm.sendMessages(request.messages, request.renderedPayload);
+      const response = await llm.sendMessages(request.outboundMessages, request.renderedPayload);
       expect(response).toBeInstanceOf(CompleteResponse);
       expect(response.content.toLowerCase()).toContain('hello');
     } finally {

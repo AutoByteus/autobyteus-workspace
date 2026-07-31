@@ -34,7 +34,7 @@ export function getMimeType(mediaSource: string): string {
  * Check if a string is a valid base64 encoded string.
  */
 export function isBase64(s: string): boolean {
-  if (typeof s !== 'string' || s.length % 4 !== 0) {
+  if (typeof s !== 'string' || s.length === 0 || s.length % 4 !== 0) {
     return false;
   }
   // Standard regex for base64
@@ -70,6 +70,9 @@ async function isExistingFilePath(filePath: string): Promise<boolean> {
  * Create properly structured data URI object for API.
  */
 export function createDataUri(mimeType: string, base64Data: string): { type: string, image_url: { url: string } } {
+  if (!base64Data || !isBase64(base64Data) || Buffer.from(base64Data, 'base64').length === 0) {
+    throw new Error('Cannot create a media data URI from an empty or invalid base64 payload.');
+  }
   return {
     type: "image_url",
     image_url: {
@@ -88,7 +91,11 @@ export async function urlToBase64(url: string): Promise<string> {
       // Allow self-signed certs in dev similar to python verify=False
       // httpsAgent: new https.Agent({ rejectUnauthorized: false }) // skipped for now to keep deps light unless needed
     });
-    return Buffer.from(response.data).toString('base64');
+    const encoded = Buffer.from(response.data).toString('base64');
+    if (!encoded) {
+      throw new Error(`Media URL '${url}' returned an empty payload.`);
+    }
+    return encoded;
   } catch (error) {
     console.error(`Failed to download from URL ${url}: ${error}`);
     throw error;
@@ -101,6 +108,9 @@ export async function urlToBase64(url: string): Promise<string> {
 export async function fileToBase64(filePath: string): Promise<string> {
   try {
     const data = await fs.readFile(filePath);
+    if (data.length === 0) {
+      throw new Error(`Media file '${filePath}' is empty.`);
+    }
     return data.toString('base64');
   } catch (error) {
     console.error(`Failed to read and encode file at ${filePath}: ${error}`);
@@ -113,6 +123,10 @@ export async function fileToBase64(filePath: string): Promise<string> {
  * into a base64 encoded string by delegating to specialized functions.
  */
 export async function mediaSourceToBase64(mediaSource: string): Promise<string> {
+  if (typeof mediaSource !== 'string' || mediaSource.trim().length === 0) {
+    throw new Error('Invalid media source: the media payload is empty.');
+  }
+
   if (mediaSource.startsWith('data:')) {
     const commaIndex = mediaSource.indexOf(',');
     if (commaIndex < 0) {
@@ -122,9 +136,16 @@ export async function mediaSourceToBase64(mediaSource: string): Promise<string> 
     const header = mediaSource.slice(0, commaIndex).toLowerCase();
     const payload = mediaSource.slice(commaIndex + 1);
     if (header.includes(';base64')) {
+      if (!isBase64(payload) || Buffer.from(payload, 'base64').length === 0) {
+        throw new Error('Invalid data URI media source: the base64 payload is empty or invalid.');
+      }
       return payload;
     }
-    return Buffer.from(decodeURIComponent(payload), 'utf8').toString('base64');
+    const encoded = Buffer.from(decodeURIComponent(payload), 'utf8').toString('base64');
+    if (!encoded) {
+      throw new Error('Invalid data URI media source: the decoded payload is empty.');
+    }
+    return encoded;
   }
 
   if (mediaSource.startsWith('http://') || mediaSource.startsWith('https://')) {
@@ -136,6 +157,9 @@ export async function mediaSourceToBase64(mediaSource: string): Promise<string> 
   }
 
   if (isBase64(mediaSource)) {
+    if (Buffer.from(mediaSource, 'base64').length === 0) {
+      throw new Error('Invalid media source: the base64 payload is empty.');
+    }
     return mediaSource;
   }
 
@@ -147,6 +171,7 @@ export async function mediaSourceToBase64(mediaSource: string): Promise<string> 
  */
 export async function mediaSourceToDataUri(mediaSource: string): Promise<string> {
   if (mediaSource.startsWith('data:')) {
+    await mediaSourceToBase64(mediaSource);
     return mediaSource;
   }
 
@@ -160,6 +185,9 @@ export async function mediaSourceToDataUri(mediaSource: string): Promise<string>
       const mimeTypeFromPath = getMimeType(mediaSource);
       const mimeType = mimeTypeFromHeader || mimeTypeFromPath || 'application/octet-stream';
       const base64Data = Buffer.from(response.data).toString('base64');
+      if (!base64Data) {
+        throw new Error(`Media URL '${mediaSource}' returned an empty payload.`);
+      }
       return `data:${mimeType};base64,${base64Data}`;
     } catch (error) {
       console.error(`Failed to convert URL to data URI ${mediaSource}: ${error}`);
@@ -174,6 +202,9 @@ export async function mediaSourceToDataUri(mediaSource: string): Promise<string>
   }
 
   if (isBase64(mediaSource)) {
+    if (Buffer.from(mediaSource, 'base64').length === 0) {
+      throw new Error('Invalid media source: the base64 payload is empty.');
+    }
     return `data:application/octet-stream;base64,${mediaSource}`;
   }
 
