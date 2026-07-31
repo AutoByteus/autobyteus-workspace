@@ -2,23 +2,23 @@
 
 ## Current-State Read
 
-The Universal Application Dual-Host Foundation and the SR-011 naming correction are functionally passed:
+The Universal Application Dual-Host Foundation, the SR-011 naming correction, and the SR-013 architecture simplification are functionally passed:
 
-- architecture approval is recorded through `ARCH-REV-009`;
-- implementation is current through `IR-016`;
-- source behavior passes at 97 in `CRR-029`;
-- real Studio/standalone publication, recipient-name handoff, projection, restart/recovery, remount, cleanup, and exact `73/73` package parity pass at 98.9% in `API-REV-011`;
-- proportional durable-test review passes in `CRR-030`.
+- architecture approval is recorded through `ARCH-REV-011`;
+- implementation is current through `IR-017` / `IR-018`;
+- source behavior passes at 97 in `CRR-033`;
+- real Studio/standalone publication, recipient-name handoff, worker-exit restart, projection, restart/recovery, remount, cleanup, and exact `73/73` package parity pass at 96.6% in `API-REV-012`;
+- proportional durable-test review passes in `CRR-034`.
 
-`CRR-031` identifies no runtime defect and does not reopen `CR-018`. It finds three structural design impacts: broad runtime exposure, temporal/mixed package ownership, and two avoidable construction cycles. `ARCH-REV-010` then establishes a narrower current result:
+`CRR-031` and `ARCH-REV-010` are resolved history. The current runtime exposes four projections, uses split package owners, constructs run/publication/session and engine/delivery owners acyclically, restarts a failed worker before artifact invocation, and releases exact run resources while continuing stop-all cleanup.
 
-1. `CR-019` is resolved in design by the exact four-projection runtime boundary.
-2. `CR-020` is resolved in design by separate package registry, command, reconciliation, and refresh owners.
-3. `CR-021` remains partially open because SR-012 removed two source-grounded lifecycle edges: current artifact relay ensures/restarts the worker before handler invocation (`AR-008`), and current inactive-run removal synchronously revokes sessions plus detaches file/artifact/memory observers (`AR-009`).
+The new eight-candidate audit finds no further runtime design defect. It finds one missing enforceable invariant: the current source follows the reviewed dependency directions, but TypeScript resolves representative forbidden imports and the standard suite has no architecture import/call check. Existing docs explain the architecture but do not publish one exact dependency table linked to enforcement.
 
-The SR-013 correction is behavior-neutral and bounded. It retains every passing SR-012 direction, adds a closed artifact-delivery queue plus a late delivery service that always performs launcher ensure before controller invoke, and constructs an early application session scope plus `AgentRunResourceManager` under an identity-checked `ActiveAgentRunRegistry`. The exact normative target, file inventory, sequence, and validation contract are in [application-framework-architecture-simplification.md](application-framework-architecture-simplification.md).
+SR-014 is therefore test/docs-only. It adds one parser-based architecture test and publishes matching `AFB-001`–`AFB-005` rules in existing docs. It does not change production source, a public API, host conformance abstraction, lifecycle model, directory/suffix layout, observability correlation, route, schema, package, data, or runtime behavior. The complete proof and rejected/deferred alternatives are in [application-framework-hardening-evaluation.md](application-framework-hardening-evaluation.md).
 
 All earlier DS-014/SR-010/SR-011 references to bind-once cycle breakers describe the implemented and passed pre-SR-012 baseline only. DS-015 supersedes those construction mechanics. Their security, publisher identity, scoped revocation, exact cleanup, ensure/restart, and functional behavior remain mandatory; their proxy types/files do not.
+
+DS-016 does not supersede DS-015. It makes selected DS-015/AC-007 dependency directions executable and discoverable while preserving the passed source unchanged.
 
 ## Intended Change
 
@@ -34,6 +34,8 @@ The application source calls `startApplication(...)` once. An SDK-owned bootstra
 The first slice keeps manifest v4 and the current package layout unchanged. Host selection, standalone root ownership, and the standalone package identity are deployment concerns, not new manifest fields.
 
 The application package is assembled once and is a read-only runtime input in both hosts. Studio import/selection and standalone configured selection consume the same package bytes; every mutable database, log, migration-ledger, runtime-status, and orchestration write goes under the host's configured application-data root.
+
+The final hardening layer is development-time only: standard tests parse/resolve critical production/application imports and scoped-global call sites, reject forbidden directions, and point contributors to the exact documented correction. It does not execute inside either host.
 
 
 A standalone-capable application also owns its portable launch baseline. Its source-only devkit config declares `standalone.enabled: true`; each required slot has a bundled manifest default and every effective leaf resolves package-owned `runtimeKind` plus `llmModelIdentifier`. Studio may store an override overlay under its data root, but it never mutates the package. A fresh standalone data root contains no override row and normally runs directly from package defaults.
@@ -121,9 +123,22 @@ The same design is exposed as a native application-folder workflow:
 | `AR-009` / `MP-ARCH-010-002` | DS-015 application session scope, `AgentRunResourceManager`, exact registry methods/results, cleanup sequence, file/validation maps; SV-018 | Preserves inactive-discovery/replacement/terminate/stop cleanup through early dependencies. Removes the later registry-to-manager callback and does not add a generic event bus or global fallback. |
 | `CR-019`, `CR-020` | Retained DS-015 four projections and package owner sequence | ARCH-REV-010 confirms both resolved in design; SR-013 does not reopen them. |
 
+### Eight-Candidate Hardening Audit Resolution Map
+
+| Candidate | Decision And Resolution Location | Scope Effect |
+| --- | --- | --- |
+| Automated module-boundary enforcement | **Adopt Now** — DS-016, AFB-001–AFB-005, architecture test/file map, docs plan, SV-019 | Adds one standard test; prevents a contributor from compiling reviewed forbidden directions; no runtime source change. |
+| Deliberate application-platform public API | **Defer With Named Evidence Gap** — hardening supplement | Current private root API remains unchanged until a published server or supported external host consumer exists. |
+| Shared Studio/standalone conformance suite | **Defer With Named Evidence Gap** — hardening supplement | Zero same-layer duplicated host-builder assertions exist; retain owner tests and API/E2E rather than add a generic host harness. |
+| Consistent lifecycle vocabulary/contracts | **Reject** — hardening supplement lifecycle inventory | Distinct subject lifecycles remain separate; no generic state machine. |
+| Ownership-led directory mapping | **Reject** — hardening supplement ownership inventory | Current placement remains; no cosmetic move. |
+| Standardized role suffixes | **Reject** — hardening supplement role audit | Passed SR-011 vocabulary remains; no preference rename. |
+| Cross-boundary observability correlation | **Defer With Named Evidence Gap** — hardening supplement identifier trace | Existing canonical identities remain; no ambient correlation/event machinery without a demonstrated diagnostic dead end. |
+| Executable architecture documentation | **Adopt Now** — DS-016 docs plan | Adds one matching table to existing docs and a pointer; no generator or duplicated diagram system. |
+
 ### Discussion-Stage Self-Validation Resolution Map
 
-The use-case, canonical-principles, refreshed-base, and downstream consistency audit is retained in [design-self-validation.md](design-self-validation.md). It produced eighteen bounded corrections across discussion and downstream rework:
+The use-case, canonical-principles, refreshed-base, and downstream consistency audit is retained in [design-self-validation.md](design-self-validation.md). It produced nineteen bounded corrections across discussion and downstream rework:
 
 | Finding | Resolution Location | Scope Effect |
 | --- | --- | --- |
@@ -145,6 +160,7 @@ The use-case, canonical-principles, refreshed-base, and downstream consistency a
 | SV-016 | Familiar role vocabulary, clean current-to-target map, source/export impact, and behavior-preservation proof | Resolved CR-018 without changing runtime behavior or expanding into an automatic repository-wide rename |
 | SV-017 | Initial narrow outward runtime contracts, explicit package refresh ownership, and proposed acyclic run/publication/engine/event construction | Resolves CR-019/CR-020; superseded for the two CR-021 lifecycle edges by SV-018 after ARCH-REV-010 |
 | SV-018 | Ensure-before-artifact delivery and exact acyclic run-resource cleanup | Resolves AR-008/AR-009 through a closed artifact-delivery queue/service and early session-scope/resource/registry chain while retaining every passed behavior and avoiding generic deferred machinery |
+| SV-019 | Eight-candidate proof and executable boundary policy | Adopts only one architecture test plus matching existing-doc table; defers/rejects unsupported abstractions and preserves all passed production behavior |
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
@@ -160,6 +176,7 @@ The use-case, canonical-principles, refreshed-base, and downstream consistency a
 | BEH-008 | System | REQ-008 / AC-017 | Real package-team run constructs member prompts | Investigation BEH-008; CR-008 | Carry the exact application-runtime-scoped team definition service through member context so package team instructions reach prompts | DS-013, then DS-004 |
 | BEH-009 | Developer / Contract | REQ-009 / AC-018 | Contributor follows either server construction into the application runtime, Agent Tools session handling, run lifecycle, and cleanup | IR-016; CRR-029; API-REV-011; CRR-030 | Preserve the implemented responsibility vocabulary while removing the two superseded bind-once implementations | Cross-cutting vocabulary over DS-001–DS-005, DS-014, and DS-015 |
 | BEH-010 | Developer / Contract | REQ-010 / AC-019–AC-023 | Contributor changes a route, package command/refresh flow, run cleanup/publication, event/artifact delivery, or engine lifecycle | CRR-031; ARCH-REV-010; MP-ARCH-010-001/002 | Follow the four projections, package owners, exact session-scope/resource/registry chain, and ensure-before-invoke delivery without private access, callbacks, globals, or deferred binding | DS-015 plus unchanged DS-001–DS-014 product spines |
+| BEH-011 | Developer / Contract | REQ-011 / AC-024 | Contributor changes an application transport, package/bundle dependency, runtime/scoped publication dependency, or maintained application import | Current import/call scan; TypeScript resolution probe; hardening evaluation | Fail a forbidden dependency in the standard suite with exact AFB diagnostic; keep every permitted direction and production behavior unchanged | DS-016 development-time check over DS-001–DS-015 ownership boundaries |
 
 The behavior map defines the real behavior this design serves. The spines below show how the target structure carries it.
 
@@ -184,7 +201,7 @@ The authoritative reachable use-case inventory is in [requirements.md](requireme
 | UC-013 | DS-008, DS-002 | DS-005 readiness | Complete |
 | UC-014 | DS-005 | Existing stop/cleanup spine | Complete |
 | UC-015 | DS-006, DS-007 | DS-005 process cleanup | Complete |
-| UC-016 | DS-007, then DS-001/DS-002 | Frontend startup state; static dependency checks | Complete |
+| UC-016 | DS-007, then DS-001/DS-002 | Frontend startup state; DS-016 dependency check | Complete; durable enforcement added by SR-014 |
 | UC-017 | DS-002, DS-008, DS-014 | Provider origin normalization, browser ingress origin policy, and established internal capability auth | Complete; CR-015 preserves route/security behavior |
 | UC-018 | DS-010–DS-012, DS-014, then DS-002/DS-008 | DS-005 production process lifecycle/stop | Complete after CR-015 bind/revoke/close correction |
 | UC-019 | DS-011 | Package-validation diagnostic return, including recursive portable-field policy | Complete after SR-006 correction |
@@ -193,29 +210,31 @@ The authoritative reachable use-case inventory is in [requirements.md](requireme
 | UC-022 | DS-013, then DS-004 | Member prompt semantic assertion | Complete after SR-004 correction |
 | UC-023 | DS-012 | Saved shared-resource deletion/stale-member invalidation -> host-override issue -> blocked launch -> explicit reset/delete -> package-default reevaluation | Complete after SR-005 correction |
 | UC-024 | Naming projection over DS-001–DS-005 and DS-014 | Structural import/export/file/doc map plus retained behavioral regression | Complete and passed through CRR-030 |
-| UC-025 | DS-015 narrow route/package/run/engine ownership | DS-001–DS-014 unchanged request/return/recovery/shutdown behavior | Complete after SV-018 design; architecture/implementation proof pending |
-| UC-026 | DS-014 publication, then DS-015 artifact delivery | Worker-exit -> queue lease -> launcher ensure/restart -> controller artifact invoke -> projection | Complete after SV-018 design; focused proof required |
-| UC-027 | DS-015 exact active-run removal | Inactive discovery/replacement/terminate/stop-all -> resource release -> result | Complete after SV-018 design; focused exact-once proof required |
+| UC-025 | DS-015 narrow route/package/run/engine ownership | DS-001–DS-014 unchanged request/return/recovery/shutdown behavior | Complete and passed through API-REV-012 |
+| UC-026 | DS-014 publication, then DS-015 artifact delivery | Worker-exit -> queue lease -> launcher ensure/restart -> controller artifact invoke -> projection | Complete and passed through API-REV-012 |
+| UC-027 | DS-015 exact active-run removal | Inactive discovery/replacement/terminate/stop-all -> resource release -> result | Complete and passed through CRR-033/API-REV-012 |
+| UC-028 | DS-016 contributor boundary check | Policy diagnostic -> replace private/global dependency with contract/SDK/injected dependency -> re-run | Complete at design level; architecture-test implementation required |
 
 ## Relevant Supplemental Task Artifacts
 
 | Artifact Path | Purpose | Related Requirement / Acceptance-Criteria IDs | Relationship To This Design | Status / Approval Applicability |
 | --- | --- | --- | --- | --- |
 | [sources/autobyteus-vertical-application-developer-experience-proposal.md](sources/autobyteus-vertical-application-developer-experience-proposal.md) | Original universal-application vision | REQ-001–REQ-010 / AC-001–AC-023 | Product-direction input; illustrative contracts are not copied directly | Input source; approval `N/A` |
-| [proposal-critical-analysis.md](proposal-critical-analysis.md) | Repository-backed readiness assessment and bounded recommendation | REQ-001–REQ-010 / AC-001–AC-023 | Supplies the accepted/revised/deferred decisions that constrain this design | Approved/refined through 2026-07-30; SR-013 refines the behavior-neutral structural correction |
-| [design-self-validation.md](design-self-validation.md) | Use-case simulation, reachability classification, spine coverage, canonical design-principles audit, and latest-base reconciliation | REQ-001–REQ-010 / AC-001–AC-023 | Validates this design and records SV-001–SV-018 corrections through downstream rework | Complete validation evidence; approval `N/A` |
-| [application-framework-architecture-simplification.md](application-framework-architecture-simplification.md) | Exact CRR-031/ARCH-REV-010 contracts, owners, spines, lifecycle, file inventory, sequence, and evidence | REQ-010 / AC-019–AC-023 | Defines the intended behavior-neutral SR-013 architecture | Revised; architecture approval required |
+| [proposal-critical-analysis.md](proposal-critical-analysis.md) | Repository-backed readiness assessment and bounded recommendation | REQ-001–REQ-010 / AC-001–AC-023 | Supplies the accepted/revised/deferred decisions that constrain this design | Approved/refined through 2026-07-30; implemented foundation baseline |
+| [design-self-validation.md](design-self-validation.md) | Use-case simulation, reachability classification, spine coverage, canonical design-principles audit, and latest-base reconciliation | REQ-001–REQ-011 / AC-001–AC-024 | Validates this design and records SV-001–SV-019 corrections through downstream rework and the hardening audit | Complete validation evidence; approval `N/A` |
+| [application-framework-architecture-simplification.md](application-framework-architecture-simplification.md) | Exact CRR-031/ARCH-REV-010 contracts, owners, spines, lifecycle, file inventory, sequence, and evidence | REQ-010 / AC-019–AC-023 | Defines the implemented behavior-neutral SR-013 architecture | Approved in ARCH-REV-011; implemented and passed through CRR-033/API-REV-012/CRR-034 |
+| [application-framework-hardening-evaluation.md](application-framework-hardening-evaluation.md) | Eight-candidate source/reachability/proportionality proof and exact AFB dependency policy | REQ-011 / AC-024 | Defines DS-016 and records why the other six candidates do not justify source architecture change | Added in SR-014; adopted test/docs scope requires architecture approval; evidence classifications `N/A` |
 
 ## Task Design Health Assessment (Mandatory)
 
-- Change posture: `Completed larger requirement plus behavior-neutral internal architecture refactor`
-- Current design issue found: `Yes`
-- Root cause classification: `Boundary Or Ownership Issue` plus `Duplicated Policy Or Coordination`
-- Refactor needed now: `Yes, bounded to the CRR-031 runtime, package-refresh, run/publication/session, and engine/event construction spines`
-- Evidence: API-REV-011 proves runtime correctness and CR-018 naming is resolved. CRR-031 shows that callers still receive mixed-level internals and that ownership/construction order still requires implementation reconstruction despite the clearer names.
-- Design response: preserve the exact passed behavior while retaining the confirmed four projections and package owners, then complete CR-021 through an early application session scope/run resource/exact registry chain and closed artifact/event queues around controller/launcher. Remove both bind-once proxies and the broad engine host cleanly; do not add wrappers, aliases, reverse callbacks, generic deferred handlers/containers/event buses, application fallbacks, or unrelated repository-wide refactors.
-- Refactor rationale: a design-led map prevents ad hoc synonyms and preserves one name per responsibility. Because names are source-only and the server package is private with no external repository consumer of its Studio builder export, a clean cut is lower risk than compatibility aliases.
-- Intentional deferrals and residual risk: Manifest/release vNext, packaged/versioned skill/tool dependencies, marketplace execution, optimized distribution, and unrelated singleton cleanup remain deferred. `APIE2E-REPO-005` remains separately Unclear.
+- Change posture: `Passed dual-host foundation plus bounded behavior-neutral architecture hardening`
+- Current design issue found: `Yes, but not a production-runtime design defect`
+- Root cause classification: `Missing Enforceable Invariant` plus `Documentation Discoverability`
+- Refactor needed now: `No production refactor; add one architecture test and update two existing architecture documents`
+- Evidence: CRR-033, API-REV-012, and CRR-034 prove the SR-013 runtime, package, run/publication/session, engine/event, recovery, shutdown, and dual-host behavior. The current tree obeys those owners, but TypeScript successfully resolves representative forbidden imports and the standard suite has no architecture rule that prevents transport-to-private-runtime, package-to-presentation, application-to-host-internal, or application-scope-to-process-global regressions. Existing module documentation explains the runtime but does not publish the exact permitted and forbidden directions.
+- Design response: retain every current production file and owner; add DS-016 as one source-only architecture test with five closed policy IDs, then publish the identical policy table in existing server documentation. The test reports the importer, resolved dependency, policy ID, and corrective public contract/SDK/injected-dependency direction.
+- Proportionality: candidates for a public facade, shared host test harness, common lifecycle state machine, directory moves, suffix churn, and correlation infrastructure do not cross the current evidence threshold. They are rejected or deferred behind named production evidence gaps rather than used to justify another architecture refactor.
+- Intentional deferrals and residual risk: deliberate external/public API narrowing waits for a supported external consumer or bypass; shared contract-test extraction waits for duplicated same-layer assertions; cross-boundary correlation waits for a demonstrated diagnosis dead-end. Manifest/release vNext, packaged/versioned skill/tool dependencies, marketplace execution, optimized distribution, unrelated singleton cleanup, and `APIE2E-REPO-005` remain out of this bounded hardening.
 
 ## Terminology
 
@@ -999,6 +1018,58 @@ Required proof covers exact four-field runtime shape, narrow registrar signature
 | Modify | both server builders; runtime builder/contracts/lifecycle; REST/WebSocket/standalone registrars; package registry/bundle/GraphQL configuration; scoped MCP session manager/factory; run/publication/projection/relay; event/availability/recovery; gateway/WebSocket/streaming seams | Apply exact outward boundary, cleanup contracts, and construction order |
 | Remove | both `bind-once-*.ts` files; `application-engine-host-service.ts`; manager active/disposer maps; 19-field runtime fields; later-assigned Studio callbacks; application-path optional/global branches; proxy/broad-runtime tests | Clean replacement with no alias, reverse callback, dual path, or data migration |
 
+### DS-016 — Executable application-framework dependency boundary
+
+DS-016 is the bounded SR-014 hardening selected by the eight-candidate proof in [application-framework-hardening-evaluation.md](application-framework-hardening-evaluation.md). It changes no production source, runtime object graph, route, wire contract, persisted data, package byte, lifecycle, or user-visible behavior. Its purpose is to make already-approved ownership directions fail in the standard server test suite when a future contributor violates them.
+
+#### Governing owner and check shape
+
+`autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts` is the sole executable owner. It derives the repository root from the test module location rather than process CWD; walks only the closed source families named below; parses static imports/exports and literal `require`/dynamic-import forms; resolves them with the repository TypeScript configuration; and applies policy to the resolved source path. For AFB-004 it also inspects resolved imported bindings and static member call expressions against the exact forbidden callee set below. It must not rely on broad substring matching, generated output, or a new lint/plugin/toolchain dependency. The same test creates small fixtures only in an OS/disposable temp directory and proves every policy's allowed/rejected directions independently of the current tree without writing the repository.
+
+Every failure reports the stable policy ID, importer, resolved dependency, violated direction, and correction: use a runtime contract projection, an application SDK/local dependency, or an explicitly injected application-scoped dependency as applicable.
+
+#### Exact closed policy
+
+| Policy | Governed importer families | Allowed direction | Forbidden direction | Narrow exception |
+| --- | --- | --- | --- | --- |
+| `AFB-001` | `src/api/rest/**`, `src/api/websocket/**`, `src/standalone-application-host/api/**`, and `standalone-application-bootstrap-service.ts` | Application runtime access through `application-platform-runtime-contracts.ts` and exact subject inputs supplied by an assembly root | Importing runtime builder, lifecycle implementation, stores, recovery, availability state, run/session/publication, engine, queue, or shutdown internals | None |
+| `AFB-002` | `src/api/graphql/**`; production files under `autobyteus-web/components/applications/**` and `autobyteus-web/utils/application/**`; `autobyteus-web/composables/useRuntimeScopedModelSelection.ts` (exclude `__tests__`, `*.spec.*`, `*.test.*`) | GraphQL receives declared package/query/command contracts; Studio presentation consumes application SDK contracts/client and presentation-local helpers | GraphQL directly importing application-runtime private owners; Studio presentation importing server package/bundle/runtime implementation | No exception for convenience in production files |
+| `AFB-003` | `src/application-packages/**`, `src/application-bundles/**` | Package stores/readers/commands and bundle providers depend inward on their own domain contracts | Imports from API/presentation, server assembly, standalone host, or application-runtime private implementation | `ApplicationCatalogRefreshCoordinator` may depend on the exact `ApplicationCatalogReconciliationService` contract required by its approved bundle -> reconciliation -> agent -> team sequence |
+| `AFB-004` | `src/application-platform/runtime/**`; `application-agent-tool-mcp-session-scope.ts`; `scoped-agent-tool-mcp-session-manager.ts`; `providers/publish-artifacts-mcp-adapter-provider.ts` | Required constructor/factory injection of the exact application-scoped run registry, session scope/manager, and publisher | Calls to `AgentRunManager.getInstance`, `AgentTeamRunManager.getInstance`, `AgentToolMcpSessionService.getInstance`, `getAgentToolMcpSessionService`, `getGeneralProcessPublishedArtifactPublisher`, `createGeneralProcessPublishedArtifactPublisher`, or `createGeneralProcessPublishedArtifactRelayService` from a governed application path | Explicit general-process assembly factories may call the general-process constructors/getters; application paths may not. Existing unrelated process-scoped workspace/runtime/model capability getters are not governed by this policy. |
+| `AFB-005` | `applications/brief-studio/{frontend-src,backend-src}/**`; `applications/socratic-math-teacher/{frontend-src,backend-src}/**`; `autobyteus-application-devkit/templates/**/src/**` | Local modules, application backend/frontend SDKs, Node built-ins, and valid declared third-party libraries | Bare or resolved imports into `autobyteus-server-ts`, `autobyteus-web`, Electron, standalone-host, or devkit host/runtime internals | None; generated package output is not scanned |
+
+The policy does not ban dependency injection, all singletons, all cross-folder imports, or every repository layer combination. It protects only dependencies already proven material to DS-001–DS-015. A new valid direction must first be assigned to a real owner and reviewed; contributors must not suppress a failure with a broad allow-list.
+
+#### Development-time primary and return spine
+
+```text
+contributor changes governed TypeScript/JavaScript
+  -> standard server test command discovers architecture test
+  -> parser/resolver maps each governed import to its source owner
+  -> AFB-001..AFB-005 evaluate exact direction
+  -> allowed: suite continues
+  -> forbidden: fail with policy/importer/dependency/correction
+  -> contributor replaces dependency with contract/SDK/injection
+  -> rerun passes
+```
+
+This is a development/CI spine only. No checker, registry, middleware, or policy object is loaded in Studio or standalone production startup.
+
+#### Documentation contract
+
+`autobyteus-server-ts/docs/modules/applications.md` owns the human-readable AFB-001–AFB-005 table and explains the correction for each failure. `autobyteus-server-ts/docs/ARCHITECTURE.md` contains only a short boundary summary and a pointer to that module page and the executable test. Policy identifiers and meanings must match exactly; the test remains the executable source of truth. No generated documentation system or duplicate architecture reference is introduced.
+
+#### Exact change inventory and proof
+
+| Disposition | File | Responsibility |
+| --- | --- | --- |
+| Add | `autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts` | Parser/resolver-backed current-tree checks plus synthetic positive/negative policy fixtures |
+| Modify | `autobyteus-server-ts/docs/modules/applications.md` | Exact allowed/forbidden dependency table, policy IDs, owner directions, and failure-remediation guidance |
+| Modify | `autobyteus-server-ts/docs/ARCHITECTURE.md` | Concise architecture boundary summary and canonical links |
+| Production source change | None | Preserve the already-passed runtime and dual-host implementation exactly |
+
+Required proof is: each synthetic forbidden fixture fails only its intended AFB policy; allowed fixtures pass; the complete current governed tree passes; diagnostic contents are asserted; the existing affected server matrix and complete API-REV-012 dual-host characterization remain green; package parity remains `73/73`; and `git diff` confirms no production-source, package, schema, or generated-artifact change. No compatibility alias or data migration applies.
+
 ## Spine Actors / Main-Line Nodes
 
 - `startApplication` — thin public SDK entry.
@@ -1021,6 +1092,7 @@ Required proof covers exact four-field runtime shape, narrow registrar signature
 - `ScopedAgentToolMcpSessionManager` — owns sessions issued for one explicit scope, attaches its execution capabilities, and revokes that scope deterministically.
 - `ActiveAgentRunRegistry` — owns application active-run identity/state so the concrete publisher can be constructed before scoped sessions and run launch; no bind-once publication proxy remains.
 - `PublishedArtifactPublicationService` — remains the application-runtime-scoped publication invariant owner behind the narrow publisher interface.
+- `application-framework-boundaries.test.ts` — development-time policy owner for AFB-001–AFB-005. It resolves governed imports and has no production runtime role.
 
 ## Ownership Map
 
@@ -1038,6 +1110,7 @@ Required proof covers exact four-field runtime shape, narrow registrar signature
 - **Application-runtime publication owner:** remains `PublishedArtifactPublicationService` over the exact application run manager and relay. The MCP adapter depends only on the authenticated session's publisher.
 - **External MCP gateway:** remains the Studio-owned generic integration surface. It does not issue or resolve Agent Tools run sessions and is absent from standalone.
 - **Gateway/engine/orchestration:** retain their current subject ownership. Host adapters cannot bypass them.
+- **Architecture boundary test:** owns executable enforcement of the already-approved dependency directions only. It must not become a production registry, a generic layer framework, or a replacement for source owners.
 
 ## Thin Entry Facades / Public Wrappers (If Applicable)
 
@@ -1397,8 +1470,11 @@ All cached `getApplication*` accessors in modified application-runtime construct
 | `AgentRunResourceManager` + `ActiveAgentRunRegistry` | Exact per-run session/observer resources plus current-run identity transitions | Application publication, run manager commands, lifecycle shutdown | Manager-owned active/disposer maps, later callback, or stale completion deleting a replacement | Extend the typed removal/release results; never add a reverse callback |
 | `ApplicationPublishedArtifactDeliveryQueue` + `ApplicationPublishedArtifactDeliveryService` | Accepted artifact commands, per-run FIFO, drain, worker ensure/restart, controller invoke | Application artifact relay and lifecycle | Relay invoking a controller-only handle, generic event bus, or deferred handler binding | Extend the closed command/completion contract or delivery service |
 | Authenticated `AgentToolMcpSession.executionCapabilities` | Exact application-runtime `PublishedArtifactPublisher` | Tool executor/providers after route authentication | Provider captures global publication service or resolves runtime identity by request IDs | Add the narrowly typed publisher capability |
+| `AFB-001–AFB-005` architecture test | Resolved source-dependency directions across transports, packages/bundles, application runtime/session/publication, and maintained application code | Standard server test suite and contributors | Bypassing an approved contract/SDK/injected dependency or suppressing a violation with a broad allow-list | Update the real owner contract first; change a policy only with architecture review |
 
 ## Dependency Rules
+
+The prose rules below remain the design explanation. DS-016 makes the critical subset executable under stable IDs AFB-001–AFB-005; the exact table in DS-016 and [application-framework-hardening-evaluation.md](application-framework-hardening-evaluation.md) governs test scope and exceptions.
 
 - Application frontend source may depend only on frontend SDK/contracts and its own UI/business modules.
 - Application backend source may depend only on backend SDK/contracts and its own business modules.
@@ -1429,6 +1505,10 @@ All cached `getApplication*` accessors in modified application-runtime construct
 - A required standalone baseline must use a bundled manifest-default resource. Studio may select a shared or alternate bundled resource only through an authoritative selected baseline/preview; a sparse override may complete missing definition fields, but save/run validation remains final.
 - Mixed member handles require an injected `MemberTeamContextBuilder`; no handle/registry selects `AgentTeamDefinitionService.getInstance()`.
 - New server/application-runtime construction code must not call global singleton accessors beyond the retained one-process resources in the inventory. `AgentToolsMcpRuntime` is the concrete process owner, not a general service locator; its internals are not passed alongside it.
+- REST/WebSocket/standalone registrars must import application-runtime behavior through `application-platform-runtime-contracts.ts` and exact subject inputs, never private runtime owners (`AFB-001`).
+- GraphQL must consume declared package/query/command contracts; maintained application sources/templates must remain on local modules, SDKs, Node built-ins, and declared libraries rather than host/runtime internals (`AFB-002`, `AFB-005`).
+- Package/bundle code must not depend on presentation, API, assembly, standalone-host, or runtime implementation. The sole reviewed cross-owner edge is the catalog refresh coordinator's exact reconciliation contract (`AFB-003`).
+- Application runtime, scoped session, and publish-adapter paths must use required injected application-scoped dependencies and may not reach general-process/default getters; only named general-process assembly factories are exempt (`AFB-004`).
 
 ## Interface Boundary Mapping
 
@@ -1781,6 +1861,9 @@ Test and source filenames that repeat a replaced role follow the same clean map:
 | `autobyteus-application-devkit/src/development/studio-development-session.ts` | Devkit | Studio dev lifecycle | Pack/validate, watch/coalesce, call current local-package import/reload API, refresh Studio presentation | One real-host dev concern | Pack owner + Studio public client |
 | `autobyteus-application-devkit/src/commands/start.ts` | Devkit | Production start facade | Resolve existing package/source ID/data/network, validate, call public server start once | One no-build production command | Validator + public server start |
 | `autobyteus-application-devkit/src/studio/studio-application-package-client.ts` | Devkit | Studio public adapter | Local package import/reload requests and diagnostics | One external host API concern | Existing Studio GraphQL/application package contract |
+| `autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts` | Server Architecture Test | Executable dependency-policy owner | Resolve governed imports; enforce AFB-001–AFB-005 against current tree and synthetic allowed/rejected fixtures | One development-time invariant with no runtime role | Generic layering framework, broad allow-list, generated-output scan, or production dependency |
+| `autobyteus-server-ts/docs/modules/applications.md` | Server Documentation | Canonical application-framework boundary table | Publish exact AFB IDs, allowed/forbidden directions, exceptions, and remediation | Existing owner already explains application runtime architecture | Duplicate runtime behavior source or unreviewed exception |
+| `autobyteus-server-ts/docs/ARCHITECTURE.md` | Server Documentation | Top-level architecture index | Summarize the boundary and link to module policy/test | Existing architecture entrypoint | Duplicated full policy or generated-doc subsystem |
 
 ## Applied Patterns (If Any)
 
@@ -1807,6 +1890,7 @@ Test and source filenames that repeat a replaced role follow the same clean map:
 | `autobyteus-server-ts/src/agent-tools/mcp/` | Folder | Internal Agent Tools transport | Process MCP runtime, scoped session manager, session registry/catalog/executor/dispatcher, providers, and route registrar | Existing subject boundary owns this protocol and scoped capability selection | External gateway policy, application browser bootstrap, or provider-native tooling |
 | `autobyteus-server-ts/src/standalone-application-host/` | Folder | Standalone product host | Config, selection, root/bootstrap/fixed ingress, process entry | New host-specific capability | Worker/orchestration implementations |
 | `autobyteus-server-ts/src/compositions/` | Folder | Server assembly | `buildStudioServer` and `buildStandaloneApplicationServer` | Only place choosing a full product surface | Runtime business logic or returned `*Composition` types |
+| `autobyteus-server-ts/tests/architecture/` | Folder | Development-time architecture verification | Closed executable dependency checks for the application framework | Keeps policy tests distinct from production code and behavioral integration tests | Runtime code, service container, generic repository layer rules, or generated fixtures |
 | `autobyteus-server-ts/src/api/rest/` | Folder | REST transport | Shared handler set, Studio launch view/selection-preview/PUT/DELETE, and Studio mount | Existing transport convention | Definition traversal, launch precedence, standalone root/static policy |
 | `autobyteus-web/components/applications/setup/` + `useRuntimeScopedModelSelection.ts` | Folder/files | Studio launch editor | Consume selected baseline/preview, edit sparse fields, represent mixed-runtime inheritance | Host presentation over `ApplicationLaunchConfigurationService` | Definition parsing, precedence, fallback, derived baseline persistence |
 | `autobyteus-server-ts/src/api/websocket/` | Folder | WS transport | Studio application sockets and unrelated Studio sockets | Existing transport convention | Standalone fixed route policy |
@@ -1994,7 +2078,8 @@ return createStandaloneApplicationHostHandle({
 
 | Documentation | Required Target Vocabulary / Explanation | Behavior That Must Remain Explicit | Verification |
 | --- | --- | --- | --- |
-| `autobyteus-server-ts/docs/modules/applications.md` | Introduce `ApplicationPlatformRuntime` as the connected application service set and `ApplicationPlatformLifecycle` as its preparation/recovery/stop owner | Building the runtime starts no new agent/team run; application business demand starts work, and the established recovery phase may restore recorded work | No old central symbol appears; diagram follows server -> runtime -> business-triggered run |
+| `autobyteus-server-ts/docs/modules/applications.md` | Retain `ApplicationPlatformRuntime`/lifecycle explanation and add the exact AFB-001–AFB-005 allowed/forbidden dependency table plus correction guidance | Building the runtime starts no new run; current owner directions, application-scoped injection, and host-neutral application imports remain unchanged | Policy IDs/meanings match the executable architecture test; links resolve; no duplicate exception |
+| `autobyteus-server-ts/docs/ARCHITECTURE.md` | Add a concise application-framework boundary summary and point to the canonical module table and test | The architecture index does not become a second policy owner | Link and policy-family name match DS-016; detailed rules remain only in the module page/test |
 | `autobyteus-server-ts/docs/modules/application_engine.md` | Describe the engine service and `ApplicationRunShutdownCoordinator` by their concrete start/stop roles | Worker ownership, run timing, team-then-agent stop order, and passed Studio/standalone behavior are unchanged | Lifecycle sequence matches the design and mapped tests |
 | `autobyteus-server-ts/docs/modules/application_orchestration.md` | Use `createApplicationOrchestrationServices`, `createApplicationRunServices`, named services, and the injected `MemberTeamContextBuilder` | Business launch remains the only new-run trigger; no service locator or global team-definition fallback | Examples use target factories/fields and exact injected service |
 | `autobyteus-server-ts/docs/modules/application_sessions.md` and `application_backend_api_gateway.md` | Distinguish `AgentToolsMcpRuntime`, `ScopedAgentToolMcpSessionManager`, session execution capabilities, and `PublishedArtifactPublisher` | `/mcp/agent-tools/:sessionId` remains capability-scoped; `/mcp/gateway` remains a separate Studio external-client surface; native provider tools remain untouched | Route/session diagrams contain the exact two route meanings and no “authority/graph/port” code labels |
@@ -2149,6 +2234,14 @@ The layering is derived from the spines. It is not a request to move every curre
 7. Rebuild lifecycle stop from private participants: block session/event/artifact intake, terminate/remove runs, drain accepted artifact commands while launcher/controller remain live, close the application session scope, then stop engines and later process resources. Freeze only the four runtime projections. Remove application-path optional/global branches; keep supported general-process defaults only in named assembly factories.
 8. Delete superseded files/tests/imports in the same change, run retired-symbol/no-alias/no-whole-runtime/no-reverse-callback scans, then complete source review and the full API-REV-011 dual-host characterization loop plus SV-C52–SV-C57.
 
+### Sequence 11 — Make approved dependency directions executable
+
+1. Add the architecture test with a shared path normalizer, TypeScript parser/resolver helper, and closed AFB-001–AFB-005 rule table inside the test file. Do not add a production helper or new tool dependency.
+2. Add synthetic allowed/rejected fixtures in the test's temporary workspace and prove each forbidden fixture triggers exactly its intended policy with importer/dependency/correction diagnostics.
+3. Run the same rules over the current governed source families. Correct the test if it reports a path outside the closed policy; do not change production source or add a broad exception merely to make the test pass.
+4. Update `docs/modules/applications.md` with the exact policy table and remediation, then add the short pointer in `docs/ARCHITECTURE.md`. Assert policy IDs and links remain aligned.
+5. Run the architecture test, affected server test matrix, TypeScript checks, and the full API-REV-012 dual-host characterization baseline. Verify exact `73/73` package parity and inspect the change set for zero production-source/schema/package/generated-output changes.
+
 ## Key Tradeoffs
 
 - **Keep manifest v4 versus design vNext now:** Keeping v4 minimizes variables and proves the host boundary first. It does not solve immutable release/version metadata, which remains a later program.
@@ -2177,6 +2270,7 @@ The layering is derived from the spines. It is not a request to move every curre
 - **Late catalog coordinator versus callbacks into future services:** One explicit coordinator adds a real sequencing owner and permits acyclic construction. The alternative hides temporal coupling in non-null variables and makes rollback/refresh order harder to prove.
 - **Run identity/resource split versus publication depending on the full run manager:** An early identity registry plus resource manager slightly decomposes run management, but it lets publication and sessions be constructed in natural order while keeping create/restore/terminate commands with `AgentRunManager`. Exact identity removal prevents stale completion from deleting a replacement and centralizes session/observer cleanup without a reverse callback.
 - **Controller/launcher plus two closed delivery paths versus a permanent callback proxy:** The split creates two engine roles, one journal-wakeup queue/dispatcher, and one complete artifact-command queue/delivery service. That is more source files than one host service, but each has one protocol-specific lifecycle; both delivery paths preserve ensure/restart before controller invocation without a generic deferred handler.
+- **One bounded architecture test versus another runtime refactor or generic layering tool:** A parser/resolver-backed test adds durable enforcement without changing the working object graph or introducing a repository-wide layer framework. Its closed policy requires explicit maintenance when an approved owner direction changes, which is intentional: architecture changes should be reviewed rather than silently absorbed by a broad allow-list.
 
 ## Risks
 
@@ -2218,6 +2312,7 @@ The layering is derived from the spines. It is not a request to move every curre
 36. **Lazy engine/event regression:** splitting controller/launcher and adding a wakeup queue could change ensure, retry, crash, or remount timing. Mitigation: the journal remains authoritative; event ingress appends before enqueue; dispatcher retains current backoff/ack semantics; API-REV-011 restart/recovery/remount is a mandatory gate.
 37. **Run cleanup/identity regression:** an active-run registry could detach file/artifact/memory/session cleanup from terminate, inactive discovery/replacement, stop-all, rollback, or stale duplicate removal. Mitigation: `removeIfCurrent` identity results plus `AgentRunResourceManager.release`; delete ownership before attempting all four cleanup categories, never callback into a later manager, and test exact-once cleanup with deliberately distinct general/application scopes.
 38. **Artifact relay restart regression:** a controller-only relay could fail after a worker exits even though the current path restarts it. Mitigation: every accepted artifact command passes through `ApplicationPublishedArtifactDeliveryService -> ApplicationEngineLauncher.ensureReady -> ApplicationEngineController.invokeApplicationArtifactHandler`; lifecycle drains accepted commands before engine stop and SV-C52 proves the worker-exit witness.
+39. **Architecture-check false confidence or false positive:** a substring scan could miss aliased/resolved imports, or an over-broad rule could block legitimate domain dependencies and invite suppression. Mitigation: parse and resolve imports against TypeScript configuration, govern only AFB-001–AFB-005 source families, prove positive and negative synthetic fixtures, report corrective direction, and require architecture review for policy/exception changes.
 
 ## Guidance For Implementation
 
@@ -2268,3 +2363,7 @@ The layering is derived from the spines. It is not a request to move every curre
 - Apply the exact framework-name map as a clean internal rename. Do not retain old exports, wrappers, re-export aliases, duplicate files, or deprecated names.
 - Preserve the execution timing invariant explicitly: building `ApplicationPlatformRuntime` prepares services and managers only; it may restore recorded work in the established recovery phase, but it never starts a new agent/team until application business code requests one.
 - Keep the target vocabulary consistent in code, tests, diagrams, and affected developer/module documentation; use “composition” only for top-level assembly activity and “dependency graph” only for architecture relationships.
+- Implement DS-016 as a test/docs-only change. Do not edit production source to satisfy the new check unless a real current violation is independently proven and rerouted as design impact.
+- Resolve governed imports with the repository TypeScript configuration and evaluate normalized source paths. Cover static import/export plus literal `require`/dynamic import; do not use broad text matching or scan generated `dist` output.
+- Keep AFB-001–AFB-005 and their single catalog-reconciliation/general-process assembly exceptions closed. A new exception requires an owner, reachable production rationale, updated design/docs/test, and architecture review.
+- Run the complete existing behavior baseline after the architecture test even though no runtime change is intended; preserve exact Studio/standalone outputs and `73/73` package parity.
