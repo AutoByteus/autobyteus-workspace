@@ -1,10 +1,10 @@
 ## What's New
-- Added exact Claude Opus 5 catalog support with adaptive-thinking requests, 1M context metadata, 128k output metadata, and standard cache-aware pricing.
-- Refreshed GPT-5.6 Sol, Terra, and Luna pricing to the current source-dated standard and long-context values.
+- Added provider-neutral multimodal capability and static model metadata ownership for built-in LLM definitions.
 
 ## Improvements
-- Preserved provider-neutral token pricing/accounting through the existing `LLMFactory` path.
-- Updated provider catalog and LLM module-design documentation with current model identities, pricing dates, cache dimensions, and policy boundaries.
+- Preserved canonical conversation state while sanitizing provider-bound media requests.
+- Added bounded LLM request recovery without automatic retry or fallback-model selection.
+- Hardened browser screenshot and media handling against empty artifacts and payloads.
 
 ## Fixes
-- Corrected stale GPT-5.6 Terra/Luna pricing and added missing Anthropic Opus 5 request-policy recognition.
+- Fixed Gemini media continuation and related zero-byte media failures.
