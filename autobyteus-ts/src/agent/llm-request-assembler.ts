@@ -3,10 +3,20 @@ import { LLMUserMessage } from '../llm/user-message.js';
 import { Message, MessageRole } from '../llm/utils/messages.js';
 import { MemoryManager } from '../memory/memory-manager.js';
 import { PendingCompactionExecutor } from '../memory/compaction/pending-compaction-executor.js';
+import {
+  UNKNOWN_MULTIMODAL_CAPABILITIES,
+  type MultimodalCapabilities,
+} from '../llm/multimodal-capabilities.js';
+import {
+  sanitizeMediaInputMessages,
+  type MediaInputDiagnostic,
+} from '../llm/utils/media-input-sanitizer.js';
 
 export type RequestPackage = {
-  messages: Message[];
+  canonicalMessages: Message[];
+  outboundMessages: Message[];
   renderedPayload: unknown;
+  mediaDiagnostics: MediaInputDiagnostic[];
   didCompact: boolean;
 };
 
@@ -15,6 +25,7 @@ export class LLMRequestAssembler {
     private readonly memoryManager: MemoryManager,
     private readonly renderer: BasePromptRenderer,
     private readonly pendingCompactionExecutor: PendingCompactionExecutor | null = null,
+    private readonly multimodalCapabilities: MultimodalCapabilities = UNKNOWN_MULTIMODAL_CAPABILITIES,
   ) {}
 
   async prepareRequest(
@@ -39,13 +50,7 @@ export class LLMRequestAssembler {
       recoverySourceEvent: 'LLMRequestAssembler.preRender',
     });
     const finalMessages = this.memoryManager.getWorkingContextMessages();
-    const renderedPayload = await this.renderPayload(finalMessages);
-
-    return {
-      messages: finalMessages,
-      renderedPayload,
-      didCompact
-    };
+    return this.buildRequestPackage(finalMessages, didCompact);
   }
 
   async prepareToolContinuationRequest(
@@ -67,17 +72,28 @@ export class LLMRequestAssembler {
       recoverySourceEvent: 'LLMRequestAssembler.preRender',
     });
     const finalMessages = this.memoryManager.getWorkingContextMessages();
-    const renderedPayload = await this.renderPayload(finalMessages);
-
-    return {
-      messages: finalMessages,
-      renderedPayload,
-      didCompact
-    };
+    return this.buildRequestPackage(finalMessages, didCompact);
   }
 
   async renderPayload(messages: Message[]): Promise<unknown> {
     return this.renderer.render(messages);
+  }
+
+  private async buildRequestPackage(
+    canonicalMessages: Message[],
+    didCompact: boolean,
+  ): Promise<RequestPackage> {
+    const sanitized = await sanitizeMediaInputMessages(canonicalMessages, this.multimodalCapabilities);
+    for (const diagnostic of sanitized.diagnostics) {
+      console.warn(`[media-input] ${diagnostic.message}`);
+    }
+    return {
+      canonicalMessages,
+      outboundMessages: sanitized.outboundMessages,
+      renderedPayload: await this.renderPayload(sanitized.outboundMessages),
+      mediaDiagnostics: sanitized.diagnostics,
+      didCompact,
+    };
   }
 
   private buildUserMessage(processedUserInput: string | LLMUserMessage): Message {

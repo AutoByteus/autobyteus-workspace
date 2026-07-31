@@ -1,0 +1,30 @@
+{
+  "url": "http://127.0.0.1:3011/workspace",
+  "title": "",
+  "body": "Agents\nAgent Teams\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nNo agent or team run selected\n\nChoose an agent or team, or open run history to continue.\n\nChoose an agent or team\nOpen runs/history\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\n➜ Terminal initialized\nThe default interactive shell is now zsh.\nTo update your account to use zsh, please run `chsh\n -s /bin/zsh`.\nFor more details, please visit https://support.appl\ne.com/kb/HT208050.\n~ $  ",
+  "tests": [
+    "app-left-panel-shell",
+    "app-left-panel-sections",
+    "app-left-panel-primary-nav",
+    "app-left-panel-section-resize-handle",
+    "app-left-panel-run-history",
+    "workspace-row",
+    "workspace-adaptive-layout",
+    "workspace-center-right-flow",
+    "workspace-center-pane",
+    "workspace-center-content-shell",
+    "workspace-empty-state",
+    "workspace-empty-state-choose",
+    "workspace-empty-state-runs",
+    "workspace-right-resize-handle",
+    "workspace-right-panel",
+    "right-side-tab-list",
+    "right-side-panel-toggle",
+    "right-side-tab-content-shell",
+    "right-side-terminal-panel",
+    "terminal-panel",
+    "terminal-panel-entry"
+  ],
+  "consoleErrors": [],
+  "requestFailures": []
+}

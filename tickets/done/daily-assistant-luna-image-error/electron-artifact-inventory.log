@@ -1,0 +1,14 @@
+$ file artifacts
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app:                     directory
+autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.32.dmg: zlib compressed data
+autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.32.zip: Zip archive data, at least v2.0 to extract, compression method=store
+
+$ shasum -a 256 artifacts
+d73f962479dcd6408d4d72aa7242da57b51ceeebb04df9262964da8d7b76762c  autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.32.dmg
+b98ab6c3bef46789de367366aa99db32b5e819d50bab577c040f46ec7fd79958  autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.32.zip
+
+$ du -sh artifacts
+1.2G	autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+384M	autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.32.dmg
+385M	autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.32.zip
+EXIT_CODE=0

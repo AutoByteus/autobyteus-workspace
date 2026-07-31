@@ -39,7 +39,14 @@ export class BrowserTabPageOperations {
     boundsHooks?: BrowserScreenshotBoundsHooks,
   ): Promise<CaptureBrowserScreenshotResult> {
     const image = await this.captureSessionPage(session, fullPage, boundsHooks)
-    const artifactPath = await this.screenshotWriter.write(image.toPNG(), session.id)
+    const png = image.toPNG()
+    if (!png.length) {
+      throw new BrowserTabError(
+        'browser_screenshot_failed',
+        'Browser screenshot produced no image bytes.',
+      )
+    }
+    const artifactPath = await this.screenshotWriter.write(png, session.id)
 
     return {
       tab_id: session.id,

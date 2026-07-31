@@ -1,0 +1,311 @@
+tests/integration/agent/deepseek-single-agent-flow.test.ts(82,3): error TS2554: Expected 3 arguments, but got 2.
+tests/integration/agent/edit-file-benchmark-flow.test.ts(213,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+tests/integration/agent/edit-file-benchmark-flow.test.ts(264,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+tests/integration/agent/edit-file-benchmark-flow.test.ts(306,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+tests/integration/agent/edit-file-benchmark-flow.test.ts(370,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+tests/integration/agent/edit-file-benchmark-flow.test.ts(416,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+tests/integration/agent/edit-file-benchmark-flow.test.ts(448,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+tests/integration/agent/edit-file-benchmark-flow.test.ts(486,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+tests/integration/agent/edit-file-benchmark-flow.test.ts(538,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+tests/integration/agent/edit-file-benchmark-flow.test.ts(584,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+tests/integration/agent/edit-file-benchmark-flow.test.ts(615,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+tests/integration/agent/edit-file-benchmark-flow.test.ts(649,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+tests/integration/agent/edit-file-benchmark-flow.test.ts(683,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+tests/integration/agent/edit-file-benchmark-flow.test.ts(724,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+tests/integration/agent/edit-file-benchmark-flow.test.ts(757,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+tests/integration/agent/edit-file-benchmark-flow.test.ts(789,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+tests/integration/agent/edit-file-benchmark-flow.test.ts(831,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+tests/integration/agent/edit-file-benchmark-flow.test.ts(865,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+tests/integration/agent/edit-file-benchmark-flow.test.ts(900,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+tests/integration/agent/edit-file-benchmark-flow.test.ts(933,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+tests/integration/agent/edit-file-benchmark-flow.test.ts(967,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+tests/integration/agent/edit-file-benchmark-flow.test.ts(1001,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+tests/integration/agent/edit-file-benchmark-flow.test.ts(1044,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+tests/integration/agent/edit-file-benchmark-flow.test.ts(1073,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+tests/integration/agent/edit-file-benchmark-flow.test.ts(1102,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+tests/integration/agent/edit-file-benchmark-flow.test.ts(1180,67): error TS2345: Argument of type '(payload?: unknown) => number' is not assignable to parameter of type 'Listener'.
+  Type 'number' is not assignable to type 'void | Promise<void>'.
+tests/integration/agent/edit-file-benchmark-flow.test.ts(1181,64): error TS2345: Argument of type '(payload?: unknown) => number' is not assignable to parameter of type 'Listener'.
+  Type 'number' is not assignable to type 'void | Promise<void>'.
+tests/integration/agent/edit-file-benchmark-flow.test.ts(1226,96): error TS2345: Argument of type 'string | null' is not assignable to parameter of type 'string'.
+  Type 'null' is not assignable to type 'string'.
+tests/integration/agent/edit-file-benchmark-flow.test.ts(1233,96): error TS2345: Argument of type 'string | null' is not assignable to parameter of type 'string'.
+  Type 'null' is not assignable to type 'string'.
+tests/integration/agent/edit-file-benchmark-flow.test.ts(1279,71): error TS2345: Argument of type '(payload?: unknown) => number' is not assignable to parameter of type 'Listener'.
+  Type 'number' is not assignable to type 'void | Promise<void>'.
+tests/integration/agent/edit-file-benchmark-flow.test.ts(1280,68): error TS2345: Argument of type '(payload?: unknown) => number' is not assignable to parameter of type 'Listener'.
+  Type 'number' is not assignable to type 'void | Promise<void>'.
+tests/integration/agent/edit-file-diagnostics.test.ts(361,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+tests/integration/agent/edit-file-diagnostics.test.ts(411,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+tests/integration/agent/edit-file-diagnostics.test.ts(452,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+tests/integration/agent/edit-file-diagnostics.test.ts(497,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+tests/integration/agent/edit-file-diagnostics.test.ts(528,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+tests/integration/agent/edit-file-diagnostics.test.ts(565,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+tests/integration/agent/edit-file-diagnostics.test.ts(595,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+tests/integration/agent/edit-file-diagnostics.test.ts(628,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+tests/integration/agent/edit-file-diagnostics.test.ts(661,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+tests/integration/agent/edit-file-diagnostics.test.ts(702,14): error TS7006: Parameter 'paths' implicitly has an 'any' type.
+tests/integration/agent/gemini-read-media-file-m4a-live.test.ts(156,17): error TS2554: Expected 3-4 arguments, but got 2.
+tests/integration/agent/handlers/api-tool-call-handler-live.test.ts(32,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/agent/handlers/claude-tool-call-handler-live.test.ts(31,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/agent/handlers/gemini-tool-call-handler-live.test.ts(42,17): error TS2554: Expected 3-4 arguments, but got 1.
+tests/integration/agent/handlers/mistral-tool-call-handler-live.test.ts(32,17): error TS2554: Expected 5-7 arguments, but got 3.
+tests/integration/agent/incomplete-tool-call-resume-recovery.test.ts(33,7): error TS2515: Non-abstract class 'CapturingOpenAICompatibleLLM' does not implement inherited abstract member _streamMessagesToLLM from class 'BaseLLM'.
+tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts(102,67): error TS2345: Argument of type '(payload?: unknown) => number' is not assignable to parameter of type 'Listener'.
+  Type 'number' is not assignable to type 'void | Promise<void>'.
+tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts(103,64): error TS2345: Argument of type '(payload?: unknown) => number' is not assignable to parameter of type 'Listener'.
+  Type 'number' is not assignable to type 'void | Promise<void>'.
+tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts(104,66): error TS2345: Argument of type '(payload?: unknown) => number' is not assignable to parameter of type 'Listener'.
+  Type 'number' is not assignable to type 'void | Promise<void>'.
+tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts(181,71): error TS2345: Argument of type '(payload?: unknown) => number' is not assignable to parameter of type 'Listener'.
+  Type 'number' is not assignable to type 'void | Promise<void>'.
+tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts(182,68): error TS2345: Argument of type '(payload?: unknown) => number' is not assignable to parameter of type 'Listener'.
+  Type 'number' is not assignable to type 'void | Promise<void>'.
+tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts(183,70): error TS2345: Argument of type '(payload?: unknown) => number' is not assignable to parameter of type 'Listener'.
+  Type 'number' is not assignable to type 'void | Promise<void>'.
+tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts(320,69): error TS2345: Argument of type '(payload?: unknown) => number' is not assignable to parameter of type 'Listener'.
+  Type 'number' is not assignable to type 'void | Promise<void>'.
+tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts(321,66): error TS2345: Argument of type '(payload?: unknown) => number' is not assignable to parameter of type 'Listener'.
+  Type 'number' is not assignable to type 'void | Promise<void>'.
+tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts(322,68): error TS2345: Argument of type '(payload?: unknown) => number' is not assignable to parameter of type 'Listener'.
+  Type 'number' is not assignable to type 'void | Promise<void>'.
+tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts(425,73): error TS2345: Argument of type '(payload?: unknown) => number' is not assignable to parameter of type 'Listener'.
+  Type 'number' is not assignable to type 'void | Promise<void>'.
+tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts(426,70): error TS2345: Argument of type '(payload?: unknown) => number' is not assignable to parameter of type 'Listener'.
+  Type 'number' is not assignable to type 'void | Promise<void>'.
+tests/integration/agent/lmstudio-single-agent-run-bash-flow.test.ts(427,72): error TS2345: Argument of type '(payload?: unknown) => number' is not assignable to parameter of type 'Listener'.
+  Type 'number' is not assignable to type 'void | Promise<void>'.
+tests/integration/agent/memory-tool-call-flow.test.ts(107,62): error TS2339: Property 'traceType' does not exist on type 'MemoryItem'.
+tests/integration/agent/openai-single-agent-flow.test.ts(96,3): error TS2554: Expected 3 arguments, but got 2.
+tests/integration/agent/provider-native-tool-continuation-flow.test.ts(112,18): error TS2353: Object literal may only specify known properties, and 'prompt_tokens' does not exist in type '{ input_tokens: number | null; output_tokens: number | null; total_tokens: number | null; usage_scope: "per_call"; model_provider: string | null; model_identifier: string | null; ... 14 more ...; billable_output_tokens?: number | ... 1 more ... | undefined; }'.
+tests/integration/agent/provider-native-tool-continuation-flow.test.ts(120,16): error TS2353: Object literal may only specify known properties, and 'prompt_tokens' does not exist in type '{ input_tokens: number | null; output_tokens: number | null; total_tokens: number | null; usage_scope: "per_call"; model_provider: string | null; model_identifier: string | null; ... 14 more ...; billable_output_tokens?: number | ... 1 more ... | undefined; }'.
+tests/integration/agent/run-bash-benchmark-flow.test.ts(673,67): error TS2345: Argument of type '(payload?: unknown) => number' is not assignable to parameter of type 'Listener'.
+  Type 'number' is not assignable to type 'void | Promise<void>'.
+tests/integration/agent/run-bash-benchmark-flow.test.ts(674,64): error TS2345: Argument of type '(payload?: unknown) => number' is not assignable to parameter of type 'Listener'.
+  Type 'number' is not assignable to type 'void | Promise<void>'.
+tests/integration/agent/run-bash-benchmark-flow.test.ts(757,71): error TS2345: Argument of type '(payload?: unknown) => number' is not assignable to parameter of type 'Listener'.
+  Type 'number' is not assignable to type 'void | Promise<void>'.
+tests/integration/agent/run-bash-benchmark-flow.test.ts(758,68): error TS2345: Argument of type '(payload?: unknown) => number' is not assignable to parameter of type 'Listener'.
+  Type 'number' is not assignable to type 'void | Promise<void>'.
+tests/integration/agent/tool-approval-flow.test.ts(184,66): error TS7031: Binding element 'message' implicitly has an 'any' type.
+tests/integration/agent/tool-approval-flow.test.ts(420,21): error TS2352: Conversion of type 'EventEnvelope | undefined' to type '{ event: ToolResultEvent; }' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type 'EventEnvelope' is not comparable to type '{ event: ToolResultEvent; }'.
+    Types of property 'event' are incompatible.
+      Type 'BaseEvent' is missing the following properties from type 'ToolResultEvent': toolName, result, isDenied
+tests/integration/agent/tool-approval-flow.test.ts(474,21): error TS2352: Conversion of type 'EventEnvelope | undefined' to type '{ event: ToolResultEvent; }' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type 'EventEnvelope' is not comparable to type '{ event: ToolResultEvent; }'.
+    Types of property 'event' are incompatible.
+      Type 'BaseEvent' is missing the following properties from type 'ToolResultEvent': toolName, result, isDenied
+tests/integration/clients/autobyteus-client-media-staging.test.ts(105,20): error TS2554: Expected 2 arguments, but got 1.
+tests/integration/helpers/lmstudio-llm-helper.ts(51,32): error TS2554: Expected 3-4 arguments, but got 1.
+tests/integration/helpers/ollama-llm-helper.ts(38,42): error TS2554: Expected 3-4 arguments, but got 1.
+tests/integration/llm/api/anthropic-llm-image.test.ts(41,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/anthropic-llm-image.test.ts(68,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/anthropic-llm-image.test.ts(97,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/anthropic-llm-image.test.ts(123,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/anthropic-llm-image.test.ts(155,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/anthropic-llm.test.ts(22,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/anthropic-llm.test.ts(40,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/anthropic-llm.test.ts(67,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/anthropic-llm.test.ts(87,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/anthropic-llm.test.ts(115,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/autobyteus-llm.test.ts(79,34): error TS2554: Expected 3-4 arguments, but got 1.
+tests/integration/llm/api/autobyteus-llm.test.ts(98,34): error TS2554: Expected 3-4 arguments, but got 1.
+tests/integration/llm/api/autobyteus-llm.test.ts(130,34): error TS2554: Expected 3-4 arguments, but got 2.
+tests/integration/llm/api/autobyteus-llm.test.ts(156,34): error TS2554: Expected 3-4 arguments, but got 1.
+tests/integration/llm/api/autobyteus-llm.test.ts(195,34): error TS2554: Expected 3-4 arguments, but got 1.
+tests/integration/llm/api/deepseek-llm.test.ts(145,13): error TS2554: Expected 3 arguments, but got 2.
+tests/integration/llm/api/deepseek-llm.test.ts(243,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/deepseek-llm.test.ts(262,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/deepseek-llm.test.ts(289,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/deepseek-llm.test.ts(309,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/deepseek-llm.test.ts(337,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/gemini-llm.test.ts(55,17): error TS2554: Expected 3-4 arguments, but got 1.
+tests/integration/llm/api/gemini-llm.test.ts(69,17): error TS2554: Expected 3-4 arguments, but got 1.
+tests/integration/llm/api/gemini-llm.test.ts(91,17): error TS2554: Expected 3-4 arguments, but got 1.
+tests/integration/llm/api/gemini-llm.test.ts(106,17): error TS2554: Expected 3-4 arguments, but got 1.
+tests/integration/llm/api/gemini-llm.test.ts(133,17): error TS2554: Expected 3-4 arguments, but got 1.
+tests/integration/llm/api/gemini-llm.test.ts(153,17): error TS2554: Expected 3-4 arguments, but got 1.
+tests/integration/llm/api/gemini-llm.test.ts(173,17): error TS2554: Expected 3-4 arguments, but got 1.
+tests/integration/llm/api/gemini-llm.test.ts(196,17): error TS2554: Expected 3-4 arguments, but got 1.
+tests/integration/llm/api/glm-llm.test.ts(99,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/glm-llm.test.ts(120,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/glm-llm.test.ts(147,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/glm-llm.test.ts(167,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/glm-llm.test.ts(195,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/glm-llm.test.ts(209,17): error TS2554: Expected 3 arguments, but got 2.
+tests/integration/llm/api/glm-llm.test.ts(238,17): error TS2554: Expected 3 arguments, but got 2.
+tests/integration/llm/api/grok-llm.test.ts(21,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/grok-llm.test.ts(37,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/kimi-llm.test.ts(151,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/kimi-llm.test.ts(171,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/kimi-llm.test.ts(202,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/kimi-llm.test.ts(222,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/kimi-llm.test.ts(251,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/kimi-llm.test.ts(265,17): error TS2554: Expected 3 arguments, but got 2.
+tests/integration/llm/api/kimi-llm.test.ts(302,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/lmstudio-llm.test.ts(103,10): error TS2554: Expected 3 arguments, but got 2.
+tests/integration/llm/api/lmstudio-llm.test.ts(128,21): error TS2554: Expected 3-4 arguments, but got 1.
+tests/integration/llm/api/lmstudio-llm.test.ts(147,21): error TS2554: Expected 3-4 arguments, but got 1.
+tests/integration/llm/api/lmstudio-llm.test.ts(237,31): error TS2554: Expected 3-4 arguments, but got 1.
+tests/integration/llm/api/mistral-llm.test.ts(37,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/mistral-llm.test.ts(55,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/mistral-llm.test.ts(72,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/mistral-llm.test.ts(94,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/mistral-llm.test.ts(109,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/ollama-llm.test.ts(44,36): error TS2554: Expected 3-4 arguments, but got 1.
+tests/integration/llm/api/ollama-llm.test.ts(66,32): error TS2554: Expected 3-4 arguments, but got 1.
+tests/integration/llm/api/ollama-llm.test.ts(84,21): error TS2554: Expected 3-4 arguments, but got 1.
+tests/integration/llm/api/openai-compatible-llm.test.ts(17,17): error TS2554: Expected 5-7 arguments, but got 3.
+tests/integration/llm/api/openai-llm-image.test.ts(41,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/openai-llm-image.test.ts(63,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/openai-llm-image.test.ts(87,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/openai-llm-image.test.ts(109,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/openai-llm-image.test.ts(131,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/openai-llm-image.test.ts(153,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/openai-llm.test.ts(42,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/openai-llm.test.ts(64,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/openai-llm.test.ts(91,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/openai-llm.test.ts(120,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/openai-llm.test.ts(150,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/openai-llm.test.ts(170,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/openai-llm.test.ts(206,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/qwen-llm.test.ts(21,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/qwen-llm.test.ts(35,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/qwen-llm.test.ts(57,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/api/qwen-llm.test.ts(72,17): error TS2554: Expected 3 arguments, but got 1.
+tests/integration/llm/llm-factory-metadata-resolution.test.ts(276,36): error TS2554: Expected 3-4 arguments, but got 2.
+tests/integration/tools/mcp/http-managed-mcp-server.test.ts(120,28): error TS2339: Property 'isError' does not exist on type '{}'.
+tests/integration/tools/mcp/http-managed-mcp-server.test.ts(121,44): error TS2339: Property 'structuredContent' does not exist on type '{}'.
+tests/integration/tools/mcp/http-managed-mcp-server.test.ts(122,86): error TS2339: Property 'content' does not exist on type '{}'.
+tests/integration/tools/mcp/http-managed-mcp-server.test.ts(126,28): error TS2339: Property 'isError' does not exist on type '{}'.
+tests/integration/tools/mcp/http-managed-mcp-server.test.ts(127,44): error TS2339: Property 'structuredContent' does not exist on type '{}'.
+tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts(67,21): error TS2339: Property 'isError' does not exist on type '{}'.
+tests/integration/tools/mcp/websocket-managed-mcp-server.test.ts(160,28): error TS2339: Property 'isError' does not exist on type '{}'.
+tests/integration/tools/mcp/websocket-managed-mcp-server.test.ts(161,38): error TS2339: Property 'content' does not exist on type '{}'.
+tests/integration/tools/mcp/websocket-managed-mcp-server.test.ts(165,28): error TS2339: Property 'isError' does not exist on type '{}'.
+tests/integration/tools/mcp/websocket-managed-mcp-server.test.ts(166,44): error TS2339: Property 'structuredContent' does not exist on type '{}'.
+tests/integration/tools/multimedia/download-media-tool.test.ts(31,9): error TS2322: Type 'unknown' is not assignable to type 'string'.
+tests/integration/tools/multimedia/download-media-tool.test.ts(61,7): error TS2322: Type 'unknown' is not assignable to type 'string'.
+tests/integration/tools/multimedia/media-reader-tool.test.ts(35,12): error TS18046: 'result' is of type 'unknown'.
+tests/integration/tools/multimedia/media-reader-tool.test.ts(36,12): error TS18046: 'result' is of type 'unknown'.
+tests/integration/tools/multimedia/media-reader-tool.test.ts(37,12): error TS18046: 'result' is of type 'unknown'.
+tests/integration/tools/multimedia/media-reader-tool.test.ts(53,12): error TS18046: 'result' is of type 'unknown'.
+tests/integration/tools/multimedia/media-reader-tool.test.ts(54,12): error TS18046: 'result' is of type 'unknown'.
+tests/integration/tools/multimedia/media-reader-tool.test.ts(55,12): error TS18046: 'result' is of type 'unknown'.
+tests/integration/tools/terminal/isolated-pty-session.test.ts(88,22): error TS2339: Property 'close' does not exist on type 'never'.
+tests/integration/tools/terminal/terminal-tools.test.ts(117,14): error TS18046: 'result' is of type 'unknown'.
+tests/integration/tools/terminal/terminal-tools.test.ts(119,14): error TS18046: 'result' is of type 'unknown'.
+tests/integration/tools/tool-state.test.ts(9,18): error TS18047: 'current' is possibly 'null'.
+tests/integration/tools/usage/providers/tool-schema-provider.test.ts(43,32): error TS2339: Property 'name' does not exist on type '{}'.
+tests/unit/agent/agent.test.ts(50,3): error TS2322: Type 'Mock<(event: any) => Promise<{ accepted: boolean; code: string; turnId: any; invocationId: any; }>>' is not assignable to type '(event: ToolExecutionApprovalEvent) => Promise<PostToolApprovalResult>'.
+  Type 'Promise<{ accepted: boolean; code: string; turnId: any; invocationId: any; }>' is not assignable to type 'Promise<PostToolApprovalResult>'.
+    Type '{ accepted: boolean; code: string; turnId: any; invocationId: any; }' is not assignable to type 'PostToolApprovalResult'.
+      Property 'message' is missing in type '{ accepted: boolean; code: string; turnId: any; invocationId: any; }' but required in type '{ accepted: false; code: "interrupted_turn"; invocationId: string; turnId: string; message: string; }'.
+tests/unit/agent/agent.test.ts(56,3): error TS2322: Type 'Mock<(event: any) => Promise<{ accepted: boolean; code: string; turnId: any; invocationId: any; }>>' is not assignable to type '(event: ToolResultEvent) => Promise<PostToolResultResult>'.
+  Type 'Promise<{ accepted: boolean; code: string; turnId: any; invocationId: any; }>' is not assignable to type 'Promise<PostToolResultResult>'.
+    Type '{ accepted: boolean; code: string; turnId: any; invocationId: any; }' is not assignable to type 'PostToolResultResult'.
+      Property 'message' is missing in type '{ accepted: boolean; code: string; turnId: any; invocationId: any; }' but required in type '{ accepted: false; code: "interrupted_turn"; invocationId: string; turnId: string; message: string; }'.
+tests/unit/agent/factory/agent-factory.test.ts(206,5): error TS2349: This expression is not callable.
+  Type 'never' has no call signatures.
+tests/unit/agent/loop/agent-turn-runner.test.ts(190,76): error TS2493: Tuple type '[]' of length '0' has no element at index '0'.
+tests/unit/agent/loop/agent-turn-runner.test.ts(193,20): error TS2358: The left-hand side of an 'instanceof' expression must be of type 'any', an object type or a type parameter.
+tests/unit/agent/loop/agent-turn-runner.test.ts(193,73): error TS2339: Property 'turnId' does not exist on type 'never'.
+tests/unit/agent/loop/agent-turn-runner.test.ts(199,11): error TS2358: The left-hand side of an 'instanceof' expression must be of type 'any', an object type or a type parameter.
+tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts(29,7): error TS2515: Non-abstract class 'CapturingResumeLLM' does not implement inherited abstract member _streamMessagesToLLM from class 'BaseLLM'.
+tests/unit/agent/system-prompt-processor/available-skills-processor.test.ts(77,31): error TS2352: Conversion of type '{ getName: () => string; }' to type 'BaseTool<unknown, Record<string, unknown>, unknown>' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type '{ getName: () => string; }' is missing the following properties from type 'BaseTool<unknown, Record<string, unknown>, unknown>': agentId, definition, config, toolState, and 32 more.
+tests/unit/llm/api/openai-compatible-request-builder.test.ts(30,20): error TS2352: Conversion of type 'ChatCompletionCreateParams' to type 'Record<string, unknown>' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type 'ChatCompletionCreateParamsStreaming' is not comparable to type 'Record<string, unknown>'.
+    Index signature for type 'string' is missing in type 'ChatCompletionCreateParamsStreaming'.
+tests/unit/llm/api/openai-compatible-request-builder.test.ts(79,20): error TS2352: Conversion of type 'ChatCompletionCreateParams' to type 'Record<string, unknown>' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type 'ChatCompletionCreateParamsStreaming' is not comparable to type 'Record<string, unknown>'.
+    Index signature for type 'string' is missing in type 'ChatCompletionCreateParamsStreaming'.
+tests/unit/llm/extensions/base-extension.test.ts(25,27): error TS2554: Expected 0 arguments, but got 1.
+tests/unit/llm/extensions/base-extension.test.ts(26,26): error TS2554: Expected 0 arguments, but got 2.
+tests/unit/llm/extensions/extension-registry.test.ts(39,25): error TS2345: Argument of type 'typeof ExtA' is not assignable to parameter of type 'new (...args: unknown[]) => ExtA'.
+  Types of construct signatures are incompatible.
+    Type 'new (llm: BaseLLM) => ExtA' is not assignable to type 'new (...args: unknown[]) => ExtA'.
+      Types of parameters 'llm' and 'args' are incompatible.
+        Type 'unknown' is not assignable to type 'BaseLLM'.
+tests/unit/llm/extensions/extension-registry.test.ts(54,25): error TS2345: Argument of type 'typeof ExtA' is not assignable to parameter of type 'new (...args: unknown[]) => ExtA'.
+  Types of construct signatures are incompatible.
+    Type 'new (llm: BaseLLM) => ExtA' is not assignable to type 'new (...args: unknown[]) => ExtA'.
+      Types of parameters 'llm' and 'args' are incompatible.
+        Type 'unknown' is not assignable to type 'BaseLLM'.
+tests/unit/llm/metadata/model-metadata-resolver.test.ts(167,7): error TS2322: Type 'Mock<() => Promise<unknown>>' is not assignable to type '() => Promise<Map<string, Partial<{ maxContextTokens: number | null; maxInputTokens: number | null; maxOutputTokens: number | null; }>>>'.
+  Type 'Promise<unknown>' is not assignable to type 'Promise<Map<string, Partial<{ maxContextTokens: number | null; maxInputTokens: number | null; maxOutputTokens: number | null; }>>>'.
+    Type 'unknown' is not assignable to type 'Map<string, Partial<{ maxContextTokens: number | null; maxInputTokens: number | null; maxOutputTokens: number | null; }>>'.
+tests/unit/llm/models.test.ts(66,9): error TS2353: Object literal may only specify known properties, and 'apiKey' does not exist in type '{ id: string; name: string; providerType: LLMProvider.OPENAI_COMPATIBLE; baseUrl: string; }'.
+tests/unit/llm/openai-compatible-endpoint-provider.test.ts(118,34): error TS2554: Expected 3-4 arguments, but got 2.
+tests/unit/llm/prompt-renderers/openai-chat-renderer.test.ts(31,24): error TS2339: Property 'tool_calls' does not exist on type 'ChatCompletionMessageParam'.
+  Property 'tool_calls' does not exist on type 'ChatCompletionDeveloperMessageParam'.
+tests/unit/llm/supported-model-definitions.test.ts(388,29): error TS2554: Expected 3-4 arguments, but got 1.
+tests/unit/llm/supported-model-definitions.test.ts(389,29): error TS2554: Expected 3-4 arguments, but got 1.
+tests/unit/llm/utils/llm-config.test.ts(257,37): error TS2345: Argument of type 'LLMConfigData' is not assignable to parameter of type 'Record<string, unknown>'.
+  Index signature for type 'string' is missing in type 'LLMConfigData'.
+tests/unit/tools/file/file-tool-schema.test.ts(29,63): error TS2339: Property 'path' does not exist on type '{}'.
+tests/unit/tools/file/file-tool-schema.test.ts(30,66): error TS2339: Property 'base_dir' does not exist on type '{}'.
+tests/unit/tools/mcp/stdio-managed-mcp-server.test.ts(49,40): error TS2345: Argument of type '() => Promise<{ Client: typeof MockClient; Transport: typeof MockTransport; }>' is not assignable to parameter of type '() => Promise<SdkModule>'.
+  Type 'Promise<{ Client: typeof MockClient; Transport: typeof MockTransport; }>' is not assignable to type 'Promise<SdkModule>'.
+    Type '{ Client: typeof MockClient; Transport: typeof MockTransport; }' is not assignable to type 'SdkModule'.
+      Types of property 'Transport' are incompatible.
+        Type 'typeof MockTransport' is not assignable to type 'new (...args: unknown[]) => unknown'.
+          Types of construct signatures are incompatible.
+            Type 'new (options: Record<string, any>) => MockTransport' is not assignable to type 'new (...args: unknown[]) => unknown'.
+              Types of parameters 'options' and 'args' are incompatible.
+                Type 'unknown' is not assignable to type 'Record<string, any>'.
+tests/unit/tools/multimedia/download-media-tool.test.ts(51,23): error TS18046: 'result' is of type 'unknown'.
+tests/unit/tools/multimedia/download-media-tool.test.ts(76,23): error TS18046: 'result' is of type 'unknown'.
+tests/unit/tools/multimedia/media-reader-tool.test.ts(37,12): error TS18046: 'result' is of type 'unknown'.
+tests/unit/tools/multimedia/media-reader-tool.test.ts(38,12): error TS18046: 'result' is of type 'unknown'.
+tests/unit/tools/multimedia/media-reader-tool.test.ts(39,12): error TS18046: 'result' is of type 'unknown'.
+tests/unit/tools/multimedia/media-reader-tool.test.ts(58,12): error TS18046: 'audioResult' is of type 'unknown'.
+tests/unit/tools/multimedia/media-reader-tool.test.ts(59,12): error TS18046: 'audioResult' is of type 'unknown'.
+tests/unit/tools/multimedia/media-reader-tool.test.ts(60,12): error TS18046: 'audioResult' is of type 'unknown'.
+tests/unit/tools/multimedia/media-reader-tool.test.ts(63,12): error TS18046: 'videoResult' is of type 'unknown'.
+tests/unit/tools/multimedia/media-reader-tool.test.ts(64,12): error TS18046: 'videoResult' is of type 'unknown'.
+tests/unit/tools/multimedia/media-reader-tool.test.ts(65,12): error TS18046: 'videoResult' is of type 'unknown'.
+tests/unit/tools/usage/formatters/anthropic-json-schema-formatter.test.ts(57,12): error TS18046: 'inputSchema' is of type 'unknown'.
+tests/unit/tools/usage/formatters/anthropic-json-schema-formatter.test.ts(58,12): error TS18046: 'inputSchema' is of type 'unknown'.
+tests/unit/tools/usage/formatters/anthropic-json-schema-formatter.test.ts(59,12): error TS18046: 'inputSchema' is of type 'unknown'.
+tests/unit/tools/usage/formatters/default-json-schema-formatter.test.ts(98,12): error TS18046: 'inputSchema' is of type 'unknown'.
+tests/unit/tools/usage/formatters/default-json-schema-formatter.test.ts(99,12): error TS18046: 'inputSchema' is of type 'unknown'.
+tests/unit/tools/usage/formatters/default-json-schema-formatter.test.ts(101,24): error TS18046: 'inputSchema' is of type 'unknown'.
+tests/unit/tools/usage/formatters/gemini-json-schema-formatter.test.ts(56,12): error TS18046: 'parameters' is of type 'unknown'.
+tests/unit/tools/usage/formatters/gemini-json-schema-formatter.test.ts(57,12): error TS18046: 'parameters' is of type 'unknown'.
+tests/unit/tools/usage/formatters/gemini-json-schema-formatter.test.ts(58,12): error TS18046: 'parameters' is of type 'unknown'.
+tests/unit/tools/usage/formatters/google-json-schema-formatter.test.ts(56,12): error TS18046: 'parameters' is of type 'unknown'.
+tests/unit/tools/usage/formatters/google-json-schema-formatter.test.ts(57,12): error TS18046: 'parameters' is of type 'unknown'.
+tests/unit/tools/usage/formatters/google-json-schema-formatter.test.ts(58,12): error TS18046: 'parameters' is of type 'unknown'.
+tests/unit/tools/usage/formatters/mistral-json-schema-formatter.test.ts(47,12): error TS18046: 'output.function' is of type 'unknown'.
+tests/unit/tools/usage/formatters/mistral-json-schema-formatter.test.ts(48,12): error TS18046: 'output.function' is of type 'unknown'.
+tests/unit/tools/usage/formatters/mistral-json-schema-formatter.test.ts(49,12): error TS18046: 'output.function' is of type 'unknown'.
+tests/unit/tools/usage/formatters/mistral-json-schema-formatter.test.ts(50,12): error TS18046: 'output.function' is of type 'unknown'.
+tests/unit/tools/usage/formatters/mistral-json-schema-formatter.test.ts(51,12): error TS18046: 'output.function' is of type 'unknown'.
+tests/unit/tools/usage/formatters/mistral-json-schema-formatter.test.ts(52,12): error TS18046: 'output.function' is of type 'unknown'.
+tests/unit/tools/usage/formatters/mistral-json-schema-formatter.test.ts(53,12): error TS18046: 'output.function' is of type 'unknown'.
+tests/unit/tools/usage/formatters/openai-json-schema-formatter.test.ts(61,12): error TS18046: 'output.function' is of type 'unknown'.
+tests/unit/tools/usage/formatters/openai-json-schema-formatter.test.ts(62,12): error TS18046: 'output.function' is of type 'unknown'.
+tests/unit/tools/usage/formatters/openai-json-schema-formatter.test.ts(63,12): error TS18046: 'output.function' is of type 'unknown'.
+tests/unit/tools/usage/formatters/openai-json-schema-formatter.test.ts(64,12): error TS18046: 'output.function' is of type 'unknown'.
+tests/unit/tools/usage/formatters/openai-json-schema-formatter.test.ts(65,12): error TS18046: 'output.function' is of type 'unknown'.
+tests/unit/tools/usage/formatters/openai-json-schema-formatter.test.ts(66,12): error TS18046: 'output.function' is of type 'unknown'.
+tests/unit/tools/usage/formatters/openai-json-schema-formatter.test.ts(67,12): error TS18046: 'output.function' is of type 'unknown'.
+tests/unit/tools/usage/formatters/openai-json-schema-formatter.test.ts(68,12): error TS18046: 'output.function' is of type 'unknown'.
+tests/unit/tools/usage/formatters/openai-json-schema-formatter.test.ts(69,12): error TS18046: 'output.function' is of type 'unknown'.
+tests/unit/tools/usage/formatters/openai-json-schema-formatter.test.ts(70,12): error TS18046: 'output.function' is of type 'unknown'.
+tests/unit/tools/usage/formatters/openai-json-schema-formatter.test.ts(71,12): error TS18046: 'output.function' is of type 'unknown'.
+tests/unit/tools/usage/providers/run-bash-openai-schema.test.ts(20,12): error TS18046: 'schema.function' is of type 'unknown'.
+tests/unit/tools/usage/providers/run-bash-openai-schema.test.ts(21,12): error TS18046: 'schema.function' is of type 'unknown'.
+tests/unit/tools/usage/providers/run-bash-openai-schema.test.ts(25,12): error TS18046: 'schema.function' is of type 'unknown'.
+tests/unit/tools/usage/providers/run-bash-openai-schema.test.ts(26,12): error TS18046: 'schema.function' is of type 'unknown'.
+tests/unit/tools/usage/providers/run-bash-openai-schema.test.ts(27,24): error TS18046: 'schema.function' is of type 'unknown'.
+tests/unit/tools/usage/providers/run-bash-openai-schema.test.ts(28,12): error TS18046: 'schema.function' is of type 'unknown'.
+tests/unit/tools/usage/providers/tool-schema-provider.test.ts(54,12): error TS2571: Object is of type 'unknown'.
+tests/unit/tools/usage/providers/tool-schema-provider.test.ts(55,12): error TS2571: Object is of type 'unknown'.
+tests/unit/tools/usage/providers/tool-schema-provider.test.ts(56,12): error TS2571: Object is of type 'unknown'.
+tests/unit/tools/usage/providers/tool-schema-provider.test.ts(57,12): error TS2571: Object is of type 'unknown'.
+tests/unit/tools/usage/providers/tool-schema-provider.test.ts(76,12): error TS2571: Object is of type 'unknown'.
+tests/unit/tools/usage/providers/tool-schema-provider.test.ts(95,12): error TS2571: Object is of type 'unknown'.
+EXIT_CODE=2

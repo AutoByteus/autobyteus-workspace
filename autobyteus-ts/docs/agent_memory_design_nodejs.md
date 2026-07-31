@@ -315,6 +315,23 @@ pending compaction and again before provider dispatch. This complements, rather
 than replaces, the compaction-output validator: repair handles recoverable live or
 restored context, while output validation rejects an invalid proposed replacement.
 
+### 13.1. LLM Request Recovery Boundary
+
+`MemoryManager` exposes the named LLM request recovery API used by `LlmPhase`:
+
+1. capture a request snapshot before system-prompt insertion, compaction, or
+   user/tool-continuation append;
+2. commit it only after provider response ingestion succeeds; or
+3. restore the working context and compaction state on request assembly or
+   provider-stream failure.
+
+The recovery snapshot is limited to active working context and compaction
+flags. Restore persists the recovered working-context snapshot and appends a
+correlated `llm_request_recovery` raw trace with the request id, reason, and
+source event. Raw traces and tool facts committed before the request remain
+durable. Recovery returns one diagnostic and does not retry or select a
+fallback model.
+
 ## 14. External Runtime Recording
 
 Codex and Claude use server storage-only memory recording. They share raw-trace

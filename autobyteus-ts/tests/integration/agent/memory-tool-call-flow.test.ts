@@ -49,7 +49,7 @@ runIntegration('Memory tool call flow (LM Studio)', () => {
 
       const handler = new ApiToolCallStreamingResponseHandler({ turnId: TURN_ID });
       try {
-        for await (const chunk of llm.streamMessages(request.messages, request.renderedPayload, {
+        for await (const chunk of llm.streamMessages(request.outboundMessages, request.renderedPayload, {
           tools: [toolSchema],
           tool_choice: 'required'
         })) {
@@ -86,7 +86,7 @@ runIntegration('Memory tool call flow (LM Studio)', () => {
 
       let followResponse;
       try {
-        followResponse = await llm.sendMessages(followRequest.messages, followRequest.renderedPayload);
+        followResponse = await llm.sendMessages(followRequest.outboundMessages, followRequest.renderedPayload);
       } catch (error) {
         console.warn(`LM Studio follow-up failed: ${String(error)}`);
         return;

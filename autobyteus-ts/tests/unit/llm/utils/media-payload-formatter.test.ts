@@ -110,6 +110,19 @@ describe('media_payload_formatter', () => {
     await expect(mediaSourceToBase64('this is not a valid source')).rejects.toBeTruthy();
   });
 
+  it('rejects empty local files, downloads, raw base64, and data URI payloads', async () => {
+    const emptyFile = path.join(tempDir, 'empty.png');
+    await fs.writeFile(emptyFile, Buffer.alloc(0));
+    const mockedAxios = axios as any;
+    mockedAxios.get.mockResolvedValue({ data: Buffer.alloc(0) });
+
+    await expect(mediaSourceToBase64(emptyFile)).rejects.toThrow('is empty');
+    await expect(mediaSourceToBase64(USER_PROVIDED_IMAGE_URL)).rejects.toThrow('empty payload');
+    await expect(mediaSourceToBase64('')).rejects.toThrow('payload is empty');
+    await expect(mediaSourceToBase64('data:image/png;base64,')).rejects.toThrow('empty or invalid');
+    await expect(mediaSourceToDataUri('data:image/png;base64,')).rejects.toThrow('empty or invalid');
+  });
+
   it('resolves MIME types for .m4a paths, URLs, and data URIs', () => {
     expect(getMimeType(audioM4aFile)).toBe('audio/mp4');
     expect(getMimeType('https://example.com/uploads/meeting.m4a?download=1')).toBe('audio/mp4');

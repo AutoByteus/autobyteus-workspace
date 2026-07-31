@@ -3,7 +3,6 @@ import { LLMFactory } from '../../../src/llm/llm-factory.js';
 import { LLMModel } from '../../../src/llm/models.js';
 import { supportedModelDefinitions } from '../../../src/llm/supported-model-definitions.js';
 import { LLMProvider } from '../../../src/llm/providers.js';
-import { getCuratedModelMetadata } from '../../../src/llm/metadata/curated-model-metadata.js';
 import { OpenAILLM } from '../../../src/llm/api/openai-llm.js';
 
 describe('supportedModelDefinitions', () => {
@@ -308,7 +307,7 @@ describe('supportedModelDefinitions', () => {
     });
   });
 
-  it('removes MiniMax M2.7 from the registry and curated metadata', () => {
+  it('removes MiniMax M2.7 and keeps built-in capability metadata on definitions', () => {
     const names = new Set(supportedModelDefinitions.map((model) => model.name));
     const values = new Set(supportedModelDefinitions.map((model) => model.value));
 
@@ -316,12 +315,22 @@ describe('supportedModelDefinitions', () => {
     expect(values).toContain('MiniMax-M3');
     expect(names).not.toContain('minimax-m2.7');
     expect(values).not.toContain('MiniMax-M2.7');
-    expect(getCuratedModelMetadata({
-      provider: LLMProvider.MINIMAX,
-      name: 'minimax-m2.7',
-      value: 'MiniMax-M2.7',
-      canonicalName: 'minimax-m2.7',
-    })).toBeNull();
+
+    expect(supportedModelDefinitions.every((definition) => definition.staticMetadata)).toBe(true);
+    for (const definition of supportedModelDefinitions.filter(
+      (entry) => entry.provider === LLMProvider.GEMINI,
+    )) {
+      expect(definition.staticMetadata.multimodalCapabilities).toEqual({
+        image: 'supported',
+        audio: 'supported',
+        video: 'supported',
+      });
+    }
+    for (const definition of supportedModelDefinitions.filter(
+      (entry) => entry.provider === LLMProvider.DEEPSEEK,
+    )) {
+      expect(definition.staticMetadata.multimodalCapabilities.image).toBe('unsupported');
+    }
   });
 
   it('refreshes user-directed model registry entries without stale default choices', () => {

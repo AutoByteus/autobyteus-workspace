@@ -34,6 +34,13 @@ The architecture relies on a **Factory Pattern** combined with a **Registry** to
   - **Runtime:** Where the model is hosted (e.g., `API`,
     `OPENAI_COMPATIBLE`, `OLLAMA`).
   - **Config Schema:** A JSON schema defining model-specific configuration parameters (e.g., `thinking_level` for reasoning models).
+  - **Multimodal capabilities:** Provider-neutral `image`, `audio`, and `video`
+    states (`supported`, `unsupported`, or `unknown`). Built-in definitions
+    carry verified states; discovered and unverified models default to unknown.
+  - **Resolved metadata:** Numeric context/input/output limits retain per-field
+    provenance (`live`, `static_definition`, or `unknown`) through
+    `resolvedModelMetadata`. `activeContextTokens` remains runtime state and is
+    never taken from static catalog metadata.
   - **Factory Method:** `LLMFactory.createLLM(...)` instantiates the concrete `BaseLLM` for this model.
 
 - **`LLMFactory` (Singleton):**
@@ -82,6 +89,10 @@ new built-in enum value for every saved endpoint.
       and `claude-sonnet-5`, `deepseek-v4-flash`, `gemini-3.5-flash`, and
       the Kimi `kimi-k2.6` / `kimi-k2.7-code` /
       `kimi-k2.7-code-highspeed` rows).
+    - Resolves each built-in definition's colocated static metadata through
+      `ModelMetadataResolver`. Numeric fields use live provider metadata first,
+      then static definition values, then `unknown`; the definition remains the
+      source of multimodal capability states and provenance.
     - Probes local runtimes (Ollama, LM Studio) to discover available models.
     - Leaves custom OpenAI-compatible provider sync to the caller that owns
       persisted provider records.
@@ -112,10 +123,34 @@ new built-in enum value for every saved endpoint.
 ### 4.1 Adding a New Built-In Cloud Model
 
 Add built-in cloud models in `src/llm/supported-model-definitions.ts`, not by
-editing `LLMFactory.initializeRegistry()` directly. Add docs-backed metadata in
-`src/llm/metadata/curated-model-metadata.ts` when the model has known context,
-output, or pricing details. Provider-specific request-shape rules belong in the
-provider adapter under `src/llm/api/`.
+editing `LLMFactory.initializeRegistry()` directly. Each definition must carry
+`staticMetadata` from `src/llm/supported-model-static-metadata.ts`, including
+docs-backed numeric limits, multimodal capabilities, source URL, and verification
+date. `LLMFactory` maps resolved numeric fields explicitly and does not maintain
+a second curated metadata authority. Provider-specific request-shape rules belong
+in the provider adapter under `src/llm/api/`.
+
+### 4.1.1 Media capability, sanitization, and request recovery
+
+Working context remains canonical and provider-neutral. Before rendering, the
+`LLMRequestAssembler` creates a provider-facing copy through
+`src/llm/utils/media-input-sanitizer.ts`:
+
+- known-unsupported image/audio/video inputs are removed according to the
+  selected model's capability states;
+- image sources are validated through the shared media formatter so empty files,
+  empty data URIs, empty raw base64, and empty downloads cannot reach a provider;
+- the canonical `Message[]` is not mutated, and bounded media diagnostics are
+  returned with the request package; and
+- provider adapters receive `outboundMessages`, not an unsanitized canonical
+  request.
+
+`LlmPhase` opens a named `MemoryManager` LLM request-recovery boundary before
+system-prompt insertion, compaction, or request append. A successful response
+commits the boundary. Assembly or provider-stream failure restores the working
+context and compaction flags, persists the restored snapshot, records a
+correlated raw-trace recovery marker, and returns one diagnostic without an
+automatic retry. Raw traces and already committed tool facts are preserved.
 
 Current examples of provider-specific model rules:
 
@@ -219,13 +254,15 @@ business accounting.
 src/llm/
 ├── api/                                # Concrete BaseLLM implementations
 ├── extensions/                         # Optional explicit lifecycle extensions
-├── metadata/                           # Model metadata resolvers
+├── metadata/                           # Live model metadata resolvers
 ├── transport/                          # Shared transport helpers
 ├── utils/                              # Config, message/usage observation types, pricing models
 ├── base.ts                             # Abstract base class
 ├── custom-llm-provider-config.ts       # Persisted custom-provider schema
 ├── llm-factory.ts                      # Singleton registry and factory
 ├── models.ts                           # LLMModel metadata definition
+├── supported-model-static-metadata.ts  # Built-in static limits/capabilities/provenance
+├── multimodal-capabilities.ts          # Provider-neutral media capability states
 ├── openai-compatible-endpoint-discovery.ts
 ├── openai-compatible-endpoint-model.ts
 ├── openai-compatible-endpoint-provider.ts
