@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { AgentTurn } from '../../../src/agent/agent-turn.js';
 import type { CompactionStatusPayload } from '../../../src/agent/compaction/compaction-runtime-reporter.js';
 import { AgentConfig } from '../../../src/agent/context/agent-config.js';
@@ -27,6 +27,7 @@ import type {
 import { AUTOBYTEUS_COMPACTION_STRATEGY } from '../../../src/memory/compaction/working-context-compaction-strategy-setting.js';
 import { MemoryManager } from '../../../src/memory/memory-manager.js';
 import { CompactionPolicy } from '../../../src/memory/policies/compaction-policy.js';
+import { FileCompactionLineageStore } from '../../../src/memory/store/file-compaction-lineage-store.js';
 import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
 import { WorkingContext } from '../../../src/memory/working-context.js';
 import { registerReadFileTool } from '../../../src/tools/file/read-file.js';
@@ -88,13 +89,22 @@ class RecordingCompactionRunner implements CompactionAgentRunner {
     this.tasks.push(task);
     return {
       outputText: JSON.stringify({
-        episodic_summary: 'Settled history before the active tool protocol.',
+        episodes: [{ summary: 'Settled history before the active tool protocol.' }],
         critical_issues: [],
         unresolved_work: [],
         durable_facts: [{ fact: 'The active lookup result must remain available.' }],
         user_preferences: [],
         important_artifacts: [],
       }),
+      metadata: {
+        compactionAgentDefinitionId: 'memory-compactor',
+        compactionAgentName: 'Memory Compactor',
+        runtimeKind: 'autobyteus',
+        modelIdentifier: 'tool-lifecycle-model',
+        provider: 'openai',
+        compactionRunId: 'tool-lifecycle-compaction-run',
+        taskId: task.taskId,
+      },
     };
   }
 }
@@ -138,12 +148,24 @@ describe('structured strategy tool-safe lifecycle', () => {
     process.env[AUTOBYTEUS_COMPACTION_STRATEGY] = 'structured-json';
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'structured-tool-lifecycle-'));
     const registrySnapshot = defaultToolRegistry.snapshot();
+    let now = Date.now();
+    const dateNowSpy = vi.spyOn(Date, 'now').mockImplementation(() => now++);
     try {
-      fs.writeFileSync(path.join(tempDir, 'runtime-status.txt'), 'runtime status: ready\n', 'utf8');
+      const runtimeStatusPath = path.join(tempDir, 'runtime-status.txt');
+      fs.writeFileSync(runtimeStatusPath, 'runtime status: ready\n', 'utf8');
       const readFileTool = registerReadFileTool();
+      const store = new FileMemoryStore(tempDir, 'tool-lifecycle-agent');
+      const lineageScope = {
+        targetKind: 'agent_run' as const,
+        runId: 'tool-lifecycle-agent',
+        memberId: null,
+      };
       const manager = new MemoryManager({
-        store: new FileMemoryStore(tempDir, 'tool-lifecycle-agent'),
+        store,
         compactionPolicy: new CompactionPolicy({ triggerRatio: 0.1, safetyMarginTokens: 0 }),
+        lineageStore: new FileCompactionLineageStore(store.agentDir, lineageScope),
+        lineageScope,
+        agentId: 'tool-lifecycle-agent',
       });
       seedSettledHistory(manager);
       const runner = new RecordingCompactionRunner();
@@ -154,7 +176,10 @@ describe('structured strategy tool-safe lifecycle', () => {
             index: 0,
             call_id: 'call-lookup-1',
             name: 'read_file',
-            arguments_delta: '{"path":"runtime-status.txt","include_line_numbers":false}',
+            arguments_delta: JSON.stringify({
+              path: runtimeStatusPath,
+              include_line_numbers: false,
+            }),
           }],
           is_complete: true,
           usage: usage(200),
@@ -247,6 +272,8 @@ describe('structured strategy tool-safe lifecycle', () => {
       expect(nextRequest[toolCallIndex + 1]?.tool_payload).toBeInstanceOf(ToolResultPayload);
       expect((nextRequest[toolCallIndex + 1]?.tool_payload as ToolResultPayload).toolCallId)
         .toBe('call-lookup-1');
+      expect(runner.tasks[0]?.prompt.match(/<conversation_history>/g)).toHaveLength(1);
+      expect(runner.tasks[0]?.prompt.match(/<\/conversation_history>/g)).toHaveLength(1);
       expect(runner.tasks[0]?.prompt).not.toContain('call-lookup-1');
 
       const rendered = llm.renderedPayloads[1] as Array<Record<string, any>>;
@@ -258,6 +285,7 @@ describe('structured strategy tool-safe lifecycle', () => {
         tool_call_id: 'call-lookup-1',
       });
     } finally {
+      dateNowSpy.mockRestore();
       defaultToolRegistry.restore(registrySnapshot);
       fs.rmSync(tempDir, { recursive: true, force: true });
     }

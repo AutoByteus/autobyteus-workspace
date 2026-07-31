@@ -125,35 +125,52 @@ Each major business area is isolated under `src/<module>` and usually contains:
 
 ## Native Working-Context Compaction
 
-Native AutoByteus semantic compaction is composed in `autobyteus-ts` as a
-context-to-context strategy boundary. `MemoryManager` owns the live
-`WorkingContext` and persistence, while `PendingCompactionExecutor` resolves and
-invokes the configured strategy, validates the returned detached context, asks
-the manager to replace it, and owns lifecycle/request clearing.
+Native AutoByteus compaction is composed in `autobyteus-ts` as a proposal /
+accept / commit boundary. `PendingCompactionExecutor` captures the manager-owned
+WorkingContext and lineage-head baseline, resolves the configured strategy, and
+requests an ID-less proposal. `MemoryManager` verifies the baseline, assigns
+output identities, builds and validates the finalized candidate, and publishes
+it in this order: exact new-raw archive, episode/semantic rows, append-only
+lineage record, installed WorkingContext, schema-v5 message snapshot, then pending
+clear.
 
-The process-global `AUTOBYTEUS_COMPACTION_STRATEGY` setting is resolved for each
-subsequent pending operation through the default strategy registry. The only
-production registration is `structured-json` (`Structured JSON`); it uses the
-fixed built-in `autobyteus-memory-compactor`, structured episodic/semantic writes, retained
-suffix, compacted-memory projection, and raw-trace archive behavior behind the
-stable `compact(WorkingContext): Promise<WorkingContext>` contract. Strategy
-selection is not stored on agent definitions, runs, teams, `AgentConfig`, or the
-working context. The built-in compactor inherits blank runtime/model launch
-fields from the parent run; the removed
-`AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` key is not a runtime selector and a
-stale custom value is inert.
+The last valid record in `compaction_lineage.jsonl` is the only current-compaction
+authority. It identifies the exact current output rows, the completed raw archive
+for newly selected work, and the optional immediately preceding compaction. There
+is no mutable current pointer, compaction-state file, compacted-memory manifest,
+or snapshot-level output identity. Recurrent compaction consumes current output
+plus new raw-backed work and produces one bounded complete replacement.
 
-`ServerSettingsService` exposes the global setting through the existing
-`.env`/`process.env` persistence path and rejects values not present in production
-registry metadata. GraphQL exposes `getWorkingContextCompactionStrategies` as a
-read-only `{ id, name }` registry projection and
-`getEffectiveWorkingContextCompactionStrategyId` as the separate normalized ID
-runtime will attempt. The Settings -> Server Settings -> Basics Compaction card
-uses that catalog/effective-ID pair, persists changed valid values through the
-existing one-setting mutation, and never infers a default from catalog order.
-The selected strategy id/name is included in native compaction lifecycle
-metadata. See `autobyteus-ts/docs/agent_memory_design.md` for the domain,
-validation, restore, extension, and failure contracts.
+`AUTOBYTEUS_COMPACTION_STRATEGY` is resolved for each pending operation through
+the default registry. The only production registration is `structured-json`; it
+uses the fixed built-in `autobyteus-memory-compactor`, with blank runtime/model
+launch values inherited from the parent run. The removed
+`AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` key is inert, and no arbitrary-agent
+fallback exists.
+
+The backend resolves explicit standalone/team-member lineage scopes and composes
+`AgentMemoryOriginService` for internal direct/recursive origin lookup. The core
+resolver validates output membership, completed raw archives, predecessor chains,
+and cycles; unknown episode/semantic IDs return `not_found`, while broken
+current-format state is an integrity error.
+
+Server startup migration `20260730_reset_pre_lineage_memory` removes only old
+episode, semantic, pre-v5 snapshot, and compacted-memory-manifest files while
+preserving raw traces and raw-trace manifests. It is required and fail-closed:
+non-startable results are persisted, `AppDataMigrationRunner.runPending()`
+throws, and `startConfiguredServer()` rethrows before built-in-agent bootstrap,
+application construction, or listen.
+
+`ServerSettingsService` exposes the global strategy setting through the existing
+`.env`/`process.env` path and rejects values absent from production registry
+metadata. GraphQL exposes a read-only `{ id, name }` catalog and a separate
+effective-selection read; Settings -> Server Settings -> Basics consumes those
+authorities without inferring a default from catalog order. Selected strategy,
+provider, model, and runtime execution metadata are retained on successful
+lineage records and lifecycle reporting.
+
+See `autobyteus-ts/docs/agent_memory_design.md` for the full persistence,
+lineage, current-context, restore, presentation, origin, and failure contracts.
 
 ## Agent Work Trace Projection
 

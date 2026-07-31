@@ -1,0 +1,18 @@
+deleted_file=/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/db/test.db
+deleted_file=/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/db/test.db.secret.key
+deleted_file=/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db
+deleted_file=/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db-journal
+deleted_dir=/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/tests/.tmp/live-e2e-runtime
+absent=True path=/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/db/test.db
+absent=True path=/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/db/test.db.secret.key
+absent=True path=/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/db/test.db-wal
+absent=True path=/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/db/test.db-shm
+absent=True path=/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/db/test.db-journal
+absent=True path=/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db
+absent=True path=/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db-wal
+absent=True path=/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db-shm
+absent=True path=/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db-journal
+absent=True path=/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/tests/.tmp/live-e2e-runtime
+source_preserved=True path=/Users/normy/.autobyteus/server-data/.env
+--- remaining owned process matches (strict executables only) ---
+--- temp dirs ---

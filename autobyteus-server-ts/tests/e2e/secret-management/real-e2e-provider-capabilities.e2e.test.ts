@@ -9,6 +9,7 @@ import {
   type LiveE2ePreflight,
 } from '../../../../test-support/live-e2e/live-e2e-harness.js';
 import {
+  liveE2eScenarios,
   selectedLiveE2eScenarioIds,
 } from '../../../../test-support/live-e2e/live-e2e-scenarios.mjs';
 import { LiveE2eEvidenceScanner } from '../../../../test-support/live-e2e/live-e2e-evidence-scanner.js';
@@ -27,7 +28,7 @@ const safeExternalOperation = async <T>(scenarioId: string, operation: () => Pro
   try {
     return await operation();
   } catch (error) {
-    if (error instanceof Error && error.message.startsWith('LIVE_E2E_EVIDENCE_')) {
+    if (error instanceof Error && /^LIVE_E2E_[A-Z0-9_]+$/.test(error.message)) {
       throw error;
     }
     throw new Error(`LIVE_E2E_PROVIDER_OPERATION_FAILED:${scenarioId}`);
@@ -65,13 +66,22 @@ run('value-safe one-database-vault managed-provider capabilities', () => {
       if (preflight.health !== 'READY') {
         expect(preflight.configured).toEqual([]);
         expect(preflight.missing).toEqual([]);
-        expect(preflight.instructionCode).toMatch(/^SECRET_BACKEND_/);
+        expect(preflight.instructionCode).toMatch(/^(?:SECRET_BACKEND_|LOCAL_MODEL_)/);
       }
     });
 
     if (preflightOnly) continue;
 
-    it(`executes ${scenarioId} through its reviewed product boundary`, { timeout: 180_000 }, async ({ skip }) => {
+    const selectedScenario = liveE2eScenarios[scenarioId];
+    const scenarioTimeoutMs = selectedScenario?.providerId === 'LMSTUDIO'
+      ? 900_000
+      : selectedScenario?.operation === 'compaction-agent-flow'
+        ? 600_000
+        : 180_000;
+    it(
+      `executes ${scenarioId} through its reviewed product boundary`,
+      { timeout: scenarioTimeoutMs },
+      async ({ skip }) => {
       const preflight = await harness.preflight(scenarioId);
       if (preflight.health !== 'READY' || preflight.missing.length > 0) {
         const result = {
@@ -102,6 +112,35 @@ run('value-safe one-database-vault managed-provider capabilities', () => {
           status: 'PASSED',
         });
         expect(result.observedEventCount).toBeGreaterThan(0);
+        return;
+      }
+
+      if (scenario.operation === 'compaction-agent-flow') {
+        const result = await safeExternalOperation(
+          scenarioId,
+          () => execution.executeCompactionAgentFlow(assertEvidenceClean),
+        );
+        assertEvidenceClean(result);
+        expect(result).toMatchObject({
+          scenarioId,
+          capability: 'agent-compaction-turns',
+          status: 'PASSED',
+          compactionRatio: 0.05,
+          observedBelowThreshold: true,
+          observedAtOrAboveThreshold: true,
+          successfulToolCount: 3,
+          exactRetainedArtifactVerified: true,
+          projectedMemoryAndCurrentUserVerified: true,
+          canonicalCompactorAgentUsed: true,
+        });
+        expect(result.modelIdentifier).toContain(scenario.model!);
+        expect(result.canonicalCompactorPromptSha256).toMatch(/^[a-f0-9]{64}$/);
+        expect(result.managedSecretResolverUsed).toBe(scenario.requiredSecretId !== null);
+        expect(result.effectiveContextWindowTokens).toBeGreaterThan(0);
+        expect(result.triggerThresholdTokens).toBeGreaterThan(0);
+        expect(result.completedCompactionCount).toBeGreaterThanOrEqual(1);
+        expect(result.recoverableToolFailureCount).toBe(0);
+        process.stdout.write(`${JSON.stringify(result)}\n`);
         return;
       }
 
@@ -272,6 +311,7 @@ run('value-safe one-database-vault managed-provider capabilities', () => {
       }
 
       throw new Error(`LIVE_E2E_SCENARIO_EXECUTOR_MISSING:${scenarioId}`);
-    });
+      },
+    );
   }
 });

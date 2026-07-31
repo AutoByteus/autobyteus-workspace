@@ -36,11 +36,14 @@ Canonical active memory file names are imported from `autobyteus-ts/memory/store
 
 Common files/directories:
 
-- `raw_traces_active.jsonl` — active ordered raw trace records.
-- `working_context_snapshot.json` — schema-v4 persisted `WorkingContext` messages. New writes contain only schema version, agent id, and messages; existing v4 supersets remain directly readable.
-- `raw_traces_manifest.json` — rotated raw-trace manifest owned internally by `RawTraceArchiveManager`.
-- `raw_traces_<zero-padded-index>.jsonl` — immutable rotated raw-trace segment files in the same run memory directory, one complete segment per native compaction or provider-boundary rotation.
-- `episodic.jsonl`, `semantic.jsonl`, `compacted_memory_manifest.json` — native AutoByteus compacted memory artifacts when native semantic/episodic compaction has run.
+- `raw_traces_active.jsonl` — active ordered original raw trace records.
+- `raw_traces_manifest.json` — completed raw-trace archive descriptors owned by `RawTraceArchiveManager`.
+- `raw_traces_<zero-padded-index>.jsonl` — immutable raw-trace archives, including one exact-new-activity archive per successful native compaction.
+- `episodic.jsonl` and `semantic.jsonl` — immutable native compacted output rows.
+- `compaction_lineage.jsonl` — append-only successful native-compaction lineage. Its last valid record is the only current-compaction head and lists exact current output IDs plus the run-relative completed raw archive.
+- `working_context_snapshot.json` — strict schema-v5 finalized provider-neutral messages and message-local constituent ranges. It contains no output identity, lineage object, or mutable current-state field.
+
+There is no current `compacted_memory_manifest.json` or compaction-state/pointer file. Startup app-data migration `20260730_reset_pre_lineage_memory` deletes pre-lineage episode, semantic, snapshot, and compacted-memory-manifest files while preserving active/archive raw traces and `raw_traces_manifest.json`. Any discovery/deletion failure is required and fail-closed before runtime exposure.
 
 Startup app-data migration `20260707_raw_trace_active_file_name` renames existing active `raw_traces.jsonl` files to `raw_traces_active.jsonl` for local and imported memory corpora. Runtime steady state reads and writes only `raw_traces_active.jsonl`; the old active filename is not a compatibility alias.
 
@@ -54,7 +57,11 @@ runtime memory provider.
 
 ## Runtime Ownership
 
-Native AutoByteus runs remain owned by the `autobyteus-ts` `MemoryManager`. The server-side recorder must skip `RuntimeKind.AUTOBYTEUS` so native traces, snapshots, archives, and compacted memory are not duplicated. Native AutoByteus compaction is a pluggable context-to-context boundary: the executor resolves the process-global strategy for each pending operation, validates its returned detached `WorkingContext`, and only then asks `MemoryManager` to replace/persist it. The current `structured-json` strategy preserves semantic/episodic writes and rotates selected raw traces through shared direct segments with `boundary_type = "native_compaction"`.
+Native AutoByteus runs remain owned by the `autobyteus-ts` `MemoryManager`. The server-side recorder must skip `RuntimeKind.AUTOBYTEUS` so native traces, snapshots, archives, outputs, and lineage are not duplicated.
+
+Native compaction is a proposal / accept / commit boundary. The executor resolves the process-global strategy, captures the manager-owned WorkingContext and lineage-head baseline, and requests an ID-less proposal. `MemoryManager` verifies the baseline, assigns output identities, finalizes the candidate, and commits exact new-raw archive -> output rows -> lineage append -> finalized context -> schema-v5 snapshot -> pending clear. Recurrent compaction consumes the current head output plus new raw-backed work but archives only the new raw evidence. The lineage tail selects the exact current bounded replacement bundle; older successful outputs remain historical rather than being mixed into normal projection.
+
+`AgentMemoryOriginService` composes the core run-scoped resolver for explicit standalone/team-member targets and typed episode/semantic IDs. It returns direct and recursive raw origin for valid current-format chains, `not_found` for unknown artifacts, and an integrity error for broken lineage/archive/output membership.
 
 ### Global Compaction Strategy Setting
 

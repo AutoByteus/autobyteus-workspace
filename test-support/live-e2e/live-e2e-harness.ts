@@ -1,14 +1,29 @@
 import fs from 'node:fs/promises';
-import { randomUUID } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 import os from 'node:os';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
   AgentInputUserMessage,
+  FileCompactionLineageStore,
+  FileMemoryStore,
   LLMFactory,
   LLMRuntime,
+  MemoryType,
   MultimediaRuntime,
 } from '../../autobyteus-ts/src/index.js';
+import type { BaseLLM } from '../../autobyteus-ts/src/index.js';
+import { LLMExtension } from '../../autobyteus-ts/src/llm/extensions/base-extension.js';
+import { LLMProvider } from '../../autobyteus-ts/src/llm/providers.js';
+import { MessageRole, type Message } from '../../autobyteus-ts/src/llm/utils/messages.js';
+import type { CompleteResponse } from '../../autobyteus-ts/src/llm/utils/response-types.js';
 import { SkillAccessMode } from '../../autobyteus-ts/src/agent/context/skill-access-mode.js';
+import { resolveTokenBudget } from '../../autobyteus-ts/src/agent/token-budget.js';
+import { CompactionPolicy } from '../../autobyteus-ts/src/memory/policies/compaction-policy.js';
+import {
+  getWorkingContextMessageProvenance,
+  type WorkingContextMessageProvenance,
+} from '../../autobyteus-ts/src/memory/working-context-provenance.js';
 import { AudioClientFactory } from '../../autobyteus-ts/src/multimedia/audio/audio-client-factory.js';
 import { ImageClientFactory } from '../../autobyteus-ts/src/multimedia/image/image-client-factory.js';
 import { SearchClientFactory } from '../../autobyteus-ts/src/tools/search/factory.js';
@@ -25,7 +40,8 @@ import { createGeminiRuntimeResolver } from '../../autobyteus-server-ts/src/llm-
 import { getGeminiConfigurationService } from '../../autobyteus-server-ts/src/llm-management/services/gemini-configuration-service.js';
 import { ClaudeSdkClient } from '../../autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-client.js';
 import { AgentDefinition } from '../../autobyteus-server-ts/src/agent-definition/domain/models.js';
-import type { AgentDefinitionService } from '../../autobyteus-server-ts/src/agent-definition/services/agent-definition-service.js';
+import { AgentDefinitionService } from '../../autobyteus-server-ts/src/agent-definition/services/agent-definition-service.js';
+import { MEMORY_COMPACTOR_AGENT_DEFINITION_ID } from '../../autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.js';
 import { AutoByteusAgentRunBackendFactory } from '../../autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.js';
 import type { AgentRunBackend } from '../../autobyteus-server-ts/src/agent-execution/backends/agent-run-backend.js';
 import { AgentRunConfig } from '../../autobyteus-server-ts/src/agent-execution/domain/agent-run-config.js';
@@ -69,6 +85,162 @@ export type LiveE2eAgentFlowResult = {
   capability: 'agent-turn';
   status: 'PASSED';
   observedEventCount: number;
+};
+
+export type LiveE2eCompactionAgentFlowResult = {
+  scenarioId: string;
+  capability: 'agent-compaction-turns';
+  status: 'PASSED';
+  modelIdentifier: string;
+  effectiveContextWindowTokens: number;
+  compactionRatio: 0.05;
+  triggerThresholdTokens: number;
+  observedBelowThreshold: true;
+  observedAtOrAboveThreshold: true;
+  completedCompactionCount: number;
+  successfulToolCount: number;
+  recoverableToolFailureCount: number;
+  exactRetainedArtifactVerified: true;
+  projectedMemoryAndCurrentUserVerified: true;
+  qualityEvidence: {
+    persistedMemory: {
+      episodes: Record<string, unknown>[];
+      semanticFacts: Record<string, unknown>[];
+    };
+    projectedCompactedMemoryUserRegion: string;
+    nextCurrentUserRegion: string;
+  };
+  canonicalCompactorAgentUsed: true;
+  canonicalCompactorPromptSha256: string;
+  managedSecretResolverUsed: boolean;
+};
+
+const REAL_COMPACTION_RATIO = 0.05 as const;
+const REAL_COMPACTION_TIMEOUT_MS = 300_000;
+const MEMORY_COMPACTOR_TEMPLATE_PATH = fileURLToPath(new URL(
+  '../../autobyteus-server-ts/src/built-in-agents/templates/memory-compactor/agent.md',
+  import.meta.url,
+));
+
+const buildCompactionEvidence = (
+  group: 'A' | 'B',
+  anchors: Record<string, string>,
+  recordCount: number,
+): string => {
+  const anchorRecord = JSON.stringify({
+    record_type: 'task_anchor',
+    evidence_group: group,
+    ...anchors,
+  });
+  const records = Array.from({ length: recordCount }, (_, index) => {
+    const sequence = String(index + 1).padStart(4, '0');
+    return JSON.stringify({
+      record_type: 'operational_observation',
+      evidence_group: group,
+      sequence,
+      service: index % 2 === 0 ? 'payments-api' : 'ledger-writer',
+      shard: `checkout-${String((index % 11) + 1).padStart(2, '0')}`,
+      observation:
+        `Observation ${group}-${sequence} confirms the sampled batch checksum, retry state, queue depth, ` +
+        'and service health. It supplies realistic operational context but never supersedes the task anchor.',
+    });
+  });
+  return [anchorRecord, ...records, anchorRecord].join('\n');
+};
+
+const asFiniteNumber = (value: unknown): number | null =>
+  typeof value === 'number' && Number.isFinite(value) ? value : null;
+
+const asString = (value: unknown): string | null =>
+  typeof value === 'string' && value.trim().length > 0 ? value : null;
+
+const extractAgentMarkdownInstructions = (source: string): string => {
+  const match = /^---\r?\n[\s\S]*?\r?\n---\r?\n([\s\S]*)$/u.exec(source);
+  const instructions = match?.[1]?.trim();
+  if (!instructions) throw new Error('LIVE_E2E_CANONICAL_COMPACTOR_TEMPLATE_INVALID');
+  return instructions;
+};
+
+const loadCanonicalCompactorEvidence = async (): Promise<{
+  promptSha256: string;
+}> => {
+  const source = await fs.readFile(MEMORY_COMPACTOR_TEMPLATE_PATH, 'utf8');
+  const canonicalInstructions = extractAgentMarkdownInstructions(source);
+  const definition = await AgentDefinitionService.getInstance()
+    .getFreshAgentDefinitionById(MEMORY_COMPACTOR_AGENT_DEFINITION_ID);
+  if (
+    !definition
+    || definition.id !== MEMORY_COMPACTOR_AGENT_DEFINITION_ID
+    || definition.defaultLaunchConfig !== null
+    || definition.instructions.trim() !== canonicalInstructions
+  ) {
+    throw new Error('LIVE_E2E_CANONICAL_COMPACTOR_DEFINITION_MISMATCH');
+  }
+  return {
+    promptSha256: createHash('sha256').update(canonicalInstructions).digest('hex'),
+  };
+};
+
+type InvocationMessageSnapshot = {
+  role: MessageRole;
+  content: string | null;
+  toolPayload: unknown;
+  provenance: WorkingContextMessageProvenance | null;
+};
+
+type InvocationSnapshot = {
+  messages: InvocationMessageSnapshot[];
+};
+
+class InvocationCaptureExtension extends LLMExtension {
+  readonly invocations: InvocationSnapshot[] = [];
+
+  async beforeInvoke(messages: Message[]): Promise<void> {
+    this.invocations.push({
+      messages: messages.map((message) => ({
+        role: message.role,
+        content: message.content,
+        toolPayload: message.tool_payload,
+        provenance: getWorkingContextMessageProvenance(message),
+      })),
+    });
+  }
+
+  async afterInvoke(
+    _messages: Message[],
+    _response: CompleteResponse | null,
+  ): Promise<void> {}
+}
+
+const extractConstituent = (
+  invocation: InvocationSnapshot,
+  kind: 'compacted_memory' | 'current_user',
+  expectedValue?: string,
+): string | null => {
+  let first: string | null = null;
+  for (const message of invocation.messages) {
+    if (message.role !== MessageRole.USER || !message.content) continue;
+    if (message.provenance?.kind !== 'composed_user') continue;
+    for (const constituent of message.provenance.constituents) {
+      if (constituent.kind !== kind || !constituent.textRange) continue;
+      const value = message.content.slice(constituent.textRange.start, constituent.textRange.end);
+      if (expectedValue === undefined) first ??= value;
+      if (value === expectedValue) return value;
+    }
+  }
+  return expectedValue === undefined ? first : null;
+};
+
+const waitForLiveCondition = async (
+  predicate: () => boolean,
+  timeoutMs = REAL_COMPACTION_TIMEOUT_MS,
+): Promise<void> => {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    if (predicate()) return;
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+  throw new Error('LIVE_E2E_COMPACTION_FLOW_TIMEOUT');
 };
 
 export const classifyAutoByteusDiscoveryUnavailable = (
@@ -305,6 +477,409 @@ export class LiveE2eScenarioExecution {
     }
   }
 
+  async executeCompactionAgentFlow(
+    evidenceObserver?: (value: unknown) => void,
+  ): Promise<LiveE2eCompactionAgentFlowResult> {
+    if (this.scenario.operation !== 'compaction-agent-flow' || !this.scenario.model) {
+      throw new Error('LIVE_E2E_COMPACTION_AGENT_FLOW_SCENARIO_INVALID');
+    }
+
+    const ownedRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'live-e2e-compaction-agent-flow-'));
+    const workspaceDirectory = path.join(ownedRoot, 'workspace');
+    const memoryDirectory = path.join(ownedRoot, 'memory');
+    const evidenceAPath = path.join(workspaceDirectory, 'incident-evidence-a.jsonl');
+    const evidenceBPath = path.join(workspaceDirectory, 'incident-evidence-b.jsonl');
+    const finalArtifactPath = path.join(workspaceDirectory, 'retained-incident-plan.json');
+    await fs.mkdir(workspaceDirectory, { recursive: true });
+    await fs.mkdir(memoryDirectory, { recursive: true });
+
+    const partA = {
+      customer: 'Northwind Helios',
+      rollback_action: 'restore the last stable payments build',
+      safety_rule: 'the ledger delta must remain zero',
+      verification: 'reconcile both ledgers before reopening retries',
+    };
+    const partB = {
+      owner: 'Mira Chen',
+      mitigation: 'freeze payment retries',
+      rejection_condition: 'any duplicate ledger entry',
+      communication_channel: 'payments incident bridge',
+    };
+    const newConstraint = 'preserve auditable rollback proof';
+    const localModelScenario = this.scenario.providerId === 'LMSTUDIO';
+    await fs.writeFile(
+      evidenceAPath,
+      buildCompactionEvidence('A', partA, localModelScenario ? 170 : 180),
+      'utf8',
+    );
+    await fs.writeFile(
+      evidenceBPath,
+      buildCompactionEvidence('B', partB, localModelScenario ? 20 : 570),
+      'utf8',
+    );
+
+    const definition = new AgentDefinition({
+      id: 'live-e2e-compaction-agent-flow',
+      name: 'Managed-provider live compaction E2E agent',
+      role: 'Incident response analyst',
+      description: 'Exercises managed-provider tools, real compaction, retained quality, and continuation.',
+      instructions: [
+        'You are a careful incident response analyst.',
+        'Follow the requested file-tool sequence exactly and use provider-native tool calls.',
+        'Never invent task values; preserve exact literal values from tool evidence.',
+        'For write_file, use the exact absolute path supplied by the user.',
+        'The write_file content argument must always be a string, including when that string contains serialized JSON.',
+        'Do not finish a write request until write_file succeeds.',
+      ].join(' '),
+      toolNames: ['read_file', 'write_file'],
+      ownershipScope: 'shared',
+    });
+    const definitionService = {
+      getFreshAgentDefinitionById: async (id: string) => id === definition.id ? definition : null,
+      getAgentDefinitionById: async (id: string) => id === definition.id ? definition : null,
+    } as unknown as AgentDefinitionService;
+    const workspace = new FileSystemWorkspace({
+      rootPath: workspaceDirectory,
+      workspaceId: 'live-e2e-compaction-agent-workspace',
+    });
+    const workspaceManager = {
+      getWorkspaceById: () => undefined,
+      getOrCreateTempWorkspace: async () => workspace,
+    } as unknown as WorkspaceManager;
+
+    const modelIdentifier = await this.resolveScenarioModelIdentifier();
+    const canonicalCompactor = await loadCanonicalCompactorEvidence();
+    const providerExtraParams = this.scenario.providerId === 'DEEPSEEK'
+      ? { thinking_type: 'disabled' }
+      : {};
+    let primaryLlm: BaseLLM | null = null;
+    let invocationCapture: InvocationCaptureExtension | null = null;
+    const backendFactory = new AutoByteusAgentRunBackendFactory({
+      agentDefinitionService: definitionService,
+      createLLM: async (modelIdentifier, configInput) => {
+        const llm = await LLMFactory.createLLM(modelIdentifier, configInput, this.llmResolver);
+        primaryLlm = llm;
+        invocationCapture = new InvocationCaptureExtension(llm);
+        llm.registerExtension(invocationCapture);
+        return llm;
+      },
+      workspaceManager,
+    });
+    const runId = `live_e2e_compaction_agent_${randomUUID().replace(/-/g, '')}`;
+    let backend: LiveE2eAgentBackend | null = null;
+    let unsubscribe = (): void => {};
+    const events: Array<{
+      eventType: AgentRunEventType;
+      payload: Record<string, unknown>;
+      terminalError: boolean;
+    }> = [];
+    let completedTurns = 0;
+    let observerError: unknown = null;
+
+    try {
+      backend = await backendFactory.createBackend(new AgentRunConfig({
+        agentDefinitionId: definition.id!,
+        llmModelIdentifier: modelIdentifier,
+        autoExecuteTools: true,
+        memoryDir: memoryDirectory,
+        llmConfig: {
+          temperature: 0,
+          max_tokens: 1_024,
+          compaction_ratio: REAL_COMPACTION_RATIO,
+          safety_margin_tokens: 256,
+          extra_params: providerExtraParams,
+        },
+        skillAccessMode: SkillAccessMode.NONE,
+        runtimeKind: RuntimeKind.AUTOBYTEUS,
+      }), runId);
+
+      unsubscribe = backend.subscribeToEvents((value) => {
+        try {
+          evidenceObserver?.(value);
+        } catch (error) {
+          observerError = error;
+          return;
+        }
+        if (!isAgentRunEvent(value)) return;
+        events.push({
+          eventType: value.eventType,
+          payload: value.payload,
+          terminalError:
+            value.eventType === AgentRunEventType.ERROR
+            && value.statusHint === 'ERROR',
+        });
+        if (value.eventType === AgentRunEventType.TURN_COMPLETED) completedTurns += 1;
+      });
+
+      const postAndWait = async (content: string, expectedTurnCount: number): Promise<void> => {
+        const result = await backend!.postUserMessage(new AgentInputUserMessage(content));
+        if (!result.accepted) throw new Error('LIVE_E2E_COMPACTION_AGENT_FLOW_SEND_REJECTED');
+        await waitForLiveCondition(() =>
+          observerError !== null
+          || events.some(({ terminalError }) => terminalError)
+          || completedTurns >= expectedTurnCount,
+        localModelScenario ? 600_000 : REAL_COMPACTION_TIMEOUT_MS);
+        if (observerError) throw observerError;
+        if (events.some(({ terminalError }) => terminalError)) {
+          throw new Error('LIVE_E2E_COMPACTION_AGENT_FLOW_RUNTIME_ERROR');
+        }
+      };
+
+      await postAndWait(
+        `Call read_file exactly once for "${evidenceAPath}" with include_line_numbers=false. ` +
+        'Do not call write_file. Learn the task anchor and then respond concisely with EVIDENCE_A_INGESTED ' +
+        'plus the exact customer, rollback_action, safety_rule, and verification values.',
+        1,
+      );
+      await postAndWait(
+        `Call read_file exactly once for "${evidenceBPath}" with include_line_numbers=false. ` +
+        'Do not call write_file. Learn the task anchor and then respond concisely with EVIDENCE_B_INGESTED ' +
+        'plus the exact owner, mitigation, rejection_condition, and communication_channel values.',
+        2,
+      );
+
+      await fs.rm(evidenceAPath, { force: true });
+      await fs.rm(evidenceBPath, { force: true });
+      const finalInstruction =
+        `The evidence files are deleted. Without rereading them, call write_file exactly once with the exact ` +
+        `absolute path="${finalArtifactPath}". The content tool argument must be a string containing ` +
+        `serialized JSON, not a nested object. Write one valid JSON object with exactly these keys: ` +
+        'customer, rollback_action, safety_rule, verification, owner, mitigation, rejection_condition, ' +
+        `communication_channel, new_constraint. Use the exact retained values and set new_constraint to ` +
+        `"${newConstraint}". Do not write Markdown.`;
+      await postAndWait(finalInstruction, 3);
+
+      const finalContent = await fs.readFile(finalArtifactPath, 'utf8');
+      const finalArtifact = JSON.parse(finalContent) as Record<string, unknown>;
+      const expectedArtifact = {
+        ...partA,
+        ...partB,
+        new_constraint: newConstraint,
+      };
+      if (
+        Object.keys(finalArtifact).length !== Object.keys(expectedArtifact).length
+        || Object.entries(expectedArtifact).some(([key, value]) => finalArtifact[key] !== value)
+      ) {
+        throw new Error('LIVE_E2E_COMPACTION_EXACT_ARTIFACT_MISMATCH');
+      }
+
+      const compactionEvents = events
+        .filter(({ eventType }) => eventType === AgentRunEventType.COMPACTION_STATUS)
+        .map(({ payload }) => payload);
+      const phases = compactionEvents.map(({ phase }) => asString(phase)).filter(Boolean);
+      const completedCompactions = compactionEvents.filter(({ phase }) => phase === 'completed');
+      const tokenEvents = events
+        .filter(({ eventType }) => eventType === AgentRunEventType.TOKEN_USAGE_UPDATED)
+        .map(({ payload }) => payload);
+      const promptTokens = tokenEvents
+        .map(({ latest_prompt_tokens }) => asFiniteNumber(latest_prompt_tokens))
+        .filter((value): value is number => value !== null);
+      const contextWindows = tokenEvents
+        .map(({ effective_context_window_tokens }) => asFiniteNumber(effective_context_window_tokens))
+        .filter((value): value is number => value !== null);
+      const observedPrimaryLlm = primaryLlm as BaseLLM | null;
+      if (!observedPrimaryLlm) {
+        throw new Error('LIVE_E2E_COMPACTION_PRIMARY_LLM_MISSING');
+      }
+      const budget = resolveTokenBudget(
+        observedPrimaryLlm.model,
+        observedPrimaryLlm.config,
+        new CompactionPolicy(),
+      );
+      process.stdout.write(`${JSON.stringify({
+        event: 'managed_compaction_budget_probe',
+        compactionRatio: REAL_COMPACTION_RATIO,
+        promptTokens,
+        triggerThresholdTokens: budget?.triggerThresholdTokens ?? null,
+        phases,
+      })}\n`);
+      if (
+        completedCompactions.length < 1
+        || !phases.includes('requested')
+        || !phases.includes('started')
+        || phases.includes('failed')
+      ) {
+        throw new Error('LIVE_E2E_COMPACTION_LIFECYCLE_NOT_COMPLETED');
+      }
+
+      const triggerThresholdTokens = budget?.triggerThresholdTokens ?? 0;
+      const effectiveContextWindowTokens = budget?.effectiveContextCapacity ?? 0;
+      if (
+        budget?.compactionRatio !== REAL_COMPACTION_RATIO
+        || triggerThresholdTokens <= 0
+        || effectiveContextWindowTokens <= 0
+        || !contextWindows.includes(effectiveContextWindowTokens)
+        || !promptTokens.some((tokens) => tokens < triggerThresholdTokens)
+        || !promptTokens.some((tokens) => tokens >= triggerThresholdTokens)
+      ) {
+        throw new Error('LIVE_E2E_COMPACTION_BUDGET_EVIDENCE_INVALID');
+      }
+
+      const compactionAgentDefinitionIds = completedCompactions
+        .map(({ compaction_agent_definition_id }) => asString(compaction_agent_definition_id));
+      const compactionModelIdentifiers = completedCompactions
+        .map(({ compaction_model_identifier }) => asString(compaction_model_identifier));
+      const compactionRunIds = completedCompactions
+        .map(({ compaction_run_id }) => asString(compaction_run_id));
+      if (
+        compactionAgentDefinitionIds.some((id) => id !== MEMORY_COMPACTOR_AGENT_DEFINITION_ID)
+        || compactionModelIdentifiers.some((id) => id !== modelIdentifier)
+        || compactionRunIds.some((id) => id === null)
+        || compactionRunIds.length !== completedCompactions.length
+      ) {
+        throw new Error('LIVE_E2E_CANONICAL_COMPACTOR_EXECUTION_METADATA_INVALID');
+      }
+
+      const successfulTools = events.filter(
+        ({ eventType }) => eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      );
+      const failedTools = events.filter(
+        ({ eventType }) => eventType === AgentRunEventType.TOOL_EXECUTION_FAILED,
+      );
+      const successfulToolNames = successfulTools
+        .map(({ payload }) => asString(payload.tool_name))
+        .filter((value): value is string => value !== null);
+      if (
+        successfulToolNames.filter((name) => name === 'read_file').length !== 2
+        || successfulToolNames.filter((name) => name === 'write_file').length !== 1
+        || successfulTools.length !== 3
+        || failedTools.length !== 0
+      ) {
+        throw new Error('LIVE_E2E_COMPACTION_TOOL_SEQUENCE_INVALID');
+      }
+
+      const memoryStore = new FileMemoryStore(memoryDirectory, runId, {
+        agentRootSubdir: '',
+      });
+      const episodes = memoryStore.list(MemoryType.EPISODIC)
+        .map((item) => item.toDict());
+      const semanticFacts = memoryStore.list(MemoryType.SEMANTIC)
+        .map((item) => item.toDict());
+      if (
+        memoryStore.readArchiveRawTraces().length < 1
+        || episodes.length < 1
+      ) {
+        throw new Error('LIVE_E2E_COMPACTION_PERSISTENCE_MISSING');
+      }
+      const lineageStore = new FileCompactionLineageStore(memoryStore.agentDir, {
+        targetKind: 'agent_run',
+        runId,
+        memberId: null,
+      });
+      if (lineageStore.list().length !== completedCompactions.length) {
+        throw new Error('LIVE_E2E_COMPACTION_LINEAGE_COUNT_MISMATCH');
+      }
+
+      const capturedInvocations = invocationCapture?.invocations ?? [];
+      const finalInvocation = [...capturedInvocations].reverse().find(({ messages }) =>
+        messages.some(({ role, content }) =>
+          role === MessageRole.USER && content?.includes(finalArtifactPath)));
+      if (!finalInvocation) {
+        throw new Error('LIVE_E2E_COMPACTION_FINAL_INVOCATION_NOT_CAPTURED');
+      }
+      const projectedCompactedMemoryUserRegion = extractConstituent(
+        finalInvocation,
+        'compacted_memory',
+      );
+      const nextCurrentUserRegion = extractConstituent(
+        finalInvocation,
+        'current_user',
+        finalInstruction,
+      );
+      const projectedInvocation = JSON.stringify(finalInvocation);
+      const compactedAnchorValues = Object.values(partA);
+      const activeAnchorValues = Object.values(partB);
+      const expectedAnchorValues = [...compactedAnchorValues, ...activeAnchorValues];
+      process.stdout.write(`${JSON.stringify({
+        event: 'product_compactor_quality_probe',
+        requestedModelIdentifier: this.scenario.model,
+        modelIdentifier,
+        compactionRatio: REAL_COMPACTION_RATIO,
+        completedCompactionCount: completedCompactions.length,
+        compactionAgentDefinitionIds,
+        compactionRunIds,
+        canonicalCompactorPromptSha256: canonicalCompactor.promptSha256,
+        persistedMemory: {
+          episodes,
+          semanticFacts,
+        },
+        projectedCompactedMemoryUserRegion,
+        nextCurrentUserRegion,
+        anchorPresence: Object.fromEntries(expectedAnchorValues.map((anchor) => [
+          anchor,
+          projectedCompactedMemoryUserRegion?.includes(anchor) ?? false,
+        ])),
+        projectedInvocationAnchorPresence: Object.fromEntries(expectedAnchorValues.map((anchor) => [
+          anchor,
+          projectedInvocation.includes(anchor),
+        ])),
+        exactContinuationArtifact: finalArtifact,
+      })}\n`);
+      if (
+        !projectedCompactedMemoryUserRegion
+        || !projectedCompactedMemoryUserRegion.includes(
+          'You are continuing an ongoing task. Here is a concise summary of earlier work',
+        )
+        || /"record_type"\s*:/u.test(projectedCompactedMemoryUserRegion)
+        || nextCurrentUserRegion !== finalInstruction
+        || compactedAnchorValues.some((anchor) =>
+          !projectedCompactedMemoryUserRegion.includes(anchor))
+        || expectedAnchorValues.some((anchor) => !projectedInvocation.includes(anchor))
+      ) {
+        throw new Error('LIVE_E2E_COMPACTION_PROJECTED_CONTINUATION_QUALITY_INVALID');
+      }
+
+      return {
+        scenarioId: this.scenarioId,
+        capability: 'agent-compaction-turns',
+        status: 'PASSED',
+        modelIdentifier,
+        effectiveContextWindowTokens,
+        compactionRatio: REAL_COMPACTION_RATIO,
+        triggerThresholdTokens,
+        observedBelowThreshold: true,
+        observedAtOrAboveThreshold: true,
+        completedCompactionCount: completedCompactions.length,
+        successfulToolCount: successfulTools.length,
+        recoverableToolFailureCount: failedTools.length,
+        exactRetainedArtifactVerified: true,
+        projectedMemoryAndCurrentUserVerified: true,
+        qualityEvidence: {
+          persistedMemory: {
+            episodes,
+            semanticFacts,
+          },
+          projectedCompactedMemoryUserRegion,
+          nextCurrentUserRegion,
+        },
+        canonicalCompactorAgentUsed: true,
+        canonicalCompactorPromptSha256: canonicalCompactor.promptSha256,
+        managedSecretResolverUsed: this.scenario.requiredSecretId !== null,
+      };
+    } finally {
+      unsubscribe();
+      if (backend) await backend.terminate().catch(() => undefined);
+      await workspace.close();
+      await fs.rm(ownedRoot, { recursive: true, force: true });
+    }
+  }
+
+  private async resolveScenarioModelIdentifier(): Promise<string> {
+    if (!this.scenario.model) {
+      throw new Error('LIVE_E2E_SCENARIO_MODEL_REQUIRED');
+    }
+    if (this.scenario.providerId !== 'LMSTUDIO') {
+      return this.scenario.model;
+    }
+    await LLMFactory.reloadModels(LLMProvider.LMSTUDIO);
+    const matches = (await LLMFactory.listModelsByRuntime(LLMRuntime.LMSTUDIO))
+      .filter((model) => model.value === this.scenario.model);
+    if (matches.length !== 1) {
+      throw new Error('LIVE_E2E_LOCAL_MODEL_UNAVAILABLE');
+    }
+    return matches[0]!.model_identifier;
+  }
+
   async discoverAutoByteus(kind: 'llm' | 'audio' | 'image'): Promise<number> {
     if (!this.scenario.hosts?.length) throw new Error('LIVE_E2E_HOSTS_NOT_CONFIGURED');
     return this.discovery.refresh(kind);
@@ -320,11 +895,14 @@ export class LiveE2eScenarioExecution {
       .filter((model) => model.runtime === MultimediaRuntime.AUTOBYTEUS);
   }
 
-  async createLlm(modelIdentifier: string) {
+  async createLlm(
+    modelIdentifier: string,
+    configInput?: Record<string, unknown>,
+  ) {
     const gemini = await LLMFactory.requiresGeminiRuntimeResolver(modelIdentifier);
     return LLMFactory.createLLM(
       modelIdentifier,
-      undefined,
+      configInput,
       this.llmResolver,
       gemini ? createGeminiRuntimeResolver() : undefined,
     );
@@ -426,6 +1004,18 @@ export class LiveE2eHarness {
         instructionCode: vault.getSecretVaultStatus.instructionCode,
       };
     }
+    if (scenario.providerId === 'LMSTUDIO' && scenario.requiredSecretId === null) {
+      await LLMFactory.reloadModels(LLMProvider.LMSTUDIO);
+      const configured = (await LLMFactory.listModelsByRuntime(LLMRuntime.LMSTUDIO))
+        .some((model) => model.value === scenario.model);
+      return {
+        scenarioId,
+        health: configured ? 'READY' : 'UNAVAILABLE',
+        configured: configured && scenario.model ? [`local-model.${scenario.model}`] : [],
+        missing: [],
+        instructionCode: configured ? null : 'LOCAL_MODEL_UNAVAILABLE',
+      };
+    }
     let configured: boolean;
     if (scenario.geminiMode === 'AI_STUDIO' || scenario.geminiMode === 'VERTEX_EXPRESS') {
       const data = await executeGraphql<{
@@ -485,6 +1075,9 @@ export class LiveE2eHarness {
         };
       }
       configured = provider.provider.apiKeyConfigured;
+    }
+    if (!scenario.requiredSecretId) {
+      throw new Error('LIVE_E2E_REQUIRED_SECRET_ID_MISSING');
     }
     return preflightFromStatus(scenarioId, scenario.requiredSecretId, {
       vaultHealth: 'READY',

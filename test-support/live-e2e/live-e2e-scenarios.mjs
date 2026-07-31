@@ -23,6 +23,18 @@ export const liveE2eScenarios = Object.freeze({
     requiredSecretId: 'provider.deepseek.api-key',
     model: 'deepseek-v4-flash',
   }),
+  'deepseek.compaction-agent-flow': Object.freeze({
+    operation: 'compaction-agent-flow',
+    providerId: 'DEEPSEEK',
+    requiredSecretId: 'provider.deepseek.api-key',
+    model: 'deepseek-v4-flash',
+  }),
+  'lmstudio.qwen36.compaction-agent-flow': Object.freeze({
+    operation: 'compaction-agent-flow',
+    providerId: 'LMSTUDIO',
+    requiredSecretId: null,
+    model: 'qwen/qwen3.6-35b-a3b',
+  }),
   'serper.search': Object.freeze({
     operation: 'search',
     providerId: 'serper',

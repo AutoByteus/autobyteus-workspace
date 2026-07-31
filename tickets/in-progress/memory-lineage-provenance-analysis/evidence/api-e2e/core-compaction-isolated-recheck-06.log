@@ -1,0 +1,206 @@
+=== isolated memory-compaction-strategy-tool-lifecycle ===
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-ts
+
+stdout | tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts > structured strategy tool-safe lifecycle > waits for the terminal result, compacts through the current strategy, and renders the complete native tool group
+Successfully registered tool definition: 'read_file'
+AgentConfig created for name='agent', role='role'. Tool call format: api_tool_call
+AgentRuntimeState initialized for agent_id 'tool-lifecycle-agent'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'tool-lifecycle-agent'. Config and State linked.
+
+stdout | tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts > structured strategy tool-safe lifecycle > waits for the terminal result, compacts through the current strategy, and renders the complete native tool group
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+compaction_budget_evaluated {
+  agent_id: 'tool-lifecycle-agent',
+  prompt_tokens: 200,
+  effective_total_context_tokens: null,
+  context_derived_input_cap_tokens: null,
+  provider_input_cap_tokens: 1000,
+  effective_input_cap_tokens: 1000,
+  reserved_output_tokens: 64,
+  safety_margin_tokens: 0,
+  input_budget_tokens: 1000,
+  compaction_ratio: 0.1,
+  trigger_threshold_tokens: 100,
+  override_active: false,
+  compaction_required: true
+}
+compaction_requested {
+  agent_id: 'tool-lifecycle-agent',
+  phase: 'requested',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_ms7vsov5_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: null,
+  selected_block_count: null,
+  compacted_block_count: null,
+  raw_trace_count: null,
+  semantic_fact_count: null
+}
+
+stdout | tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts > structured strategy tool-safe lifecycle > waits for the terminal result, compacts through the current strategy, and renders the complete native tool group
+compaction_started {
+  agent_id: 'tool-lifecycle-agent',
+  phase: 'started',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_ms7vsov5_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0004',
+  compaction_strategy_id: 'structured-json',
+  compaction_strategy_name: 'Structured JSON',
+  selected_block_count: null,
+  compacted_block_count: null
+}
+compaction_execution_context {
+  agent_id: 'tool-lifecycle-agent',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_ms7vsov5_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0004',
+  pending_compaction: true,
+  selected_unit_count: 3,
+  protected_suffix_unit_count: 1,
+  retained_unit_count: 5,
+  working_context_message_count: 9,
+  raw_trace_count: 1
+}
+
+stdout | tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts > structured strategy tool-safe lifecycle > waits for the terminal result, compacts through the current strategy, and renders the complete native tool group
+compaction_result_summary {
+  agent_id: 'tool-lifecycle-agent',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_ms7vsov5_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  compacted_block_count: 3,
+  raw_trace_count: 1,
+  episode_summary_length: 48,
+  semantic_fact_count: 1,
+  compaction_agent_definition_id: 'memory-compactor',
+  compaction_agent_name: 'Memory Compactor',
+  compaction_runtime_kind: 'autobyteus',
+  compaction_model_identifier: 'tool-lifecycle-model',
+  compaction_run_id: 'tool-lifecycle-compaction-run',
+  compaction_task_id: 'compaction_task_37dba8df368645bcb0b117f98d59b4e3'
+}
+
+stderr | tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts > structured strategy tool-safe lifecycle > waits for the terminal result, compacts through the current strategy, and renders the complete native tool group
+compaction_failed {
+  agent_id: 'tool-lifecycle-agent',
+  phase: 'failed',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_ms7vsov5_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0004',
+  compaction_strategy_id: 'structured-json',
+  compaction_strategy_name: 'Structured JSON',
+  selected_block_count: 3,
+  compacted_block_count: null,
+  error_message: 'Memory compaction failed before dispatch: Accepted compaction requires provider.',
+  raw_trace_count: 1
+}
+
+ × tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts > structured strategy tool-safe lifecycle > waits for the terminal result, compacts through the current strategy, and renders the complete native tool group 28ms
+   → expected [ 'requested', 'started', 'failed' ] to deeply equal [ 'requested', 'started', 'completed' ]
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts > structured strategy tool-safe lifecycle > waits for the terminal result, compacts through the current strategy, and renders the complete native tool group
+AssertionError: expected [ 'requested', 'started', 'failed' ] to deeply equal [ 'requested', 'started', 'completed' ]
+
+- Expected
++ Received
+
+  [
+    "requested",
+    "started",
+-   "completed",
++   "failed",
+  ]
+
+ ❯ tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts:257:54
+    255|       expect(finalOutcome.kind).toBe('final');
+    256|       expect(runner.tasks).toHaveLength(1);
+    257|       expect(statuses.map((status) => status.phase)).toEqual(['request…
+       |                                                      ^
+    258|       expect(statuses[2]).toMatchObject({
+    259|         compaction_strategy_id: 'structured-json',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  21:03:04
+   Duration  1.36s (transform 849ms, setup 31ms, import 1.15s, tests 29ms, environment 0ms)
+
+=== isolated agent-runtime-compaction ===
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-ts
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > uses the injected compaction agent runner to compact memory before the next LLM leg
+Registered AgentContext for agent_id 'runtimecompactionagent_tester_4634'. Total registered contexts: 1
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > uses the injected compaction agent runner to compact memory before the next LLM leg
+Unregistered AgentContext for agent_id 'runtimecompactionagent_tester_4634'.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > keeps compaction pending and blocks the next provider dispatch when compaction agent output is invalid
+Registered AgentContext for agent_id 'runtimecompactionagent_tester_1008'. Total registered contexts: 1
+
+ × tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > uses the injected compaction agent runner to compact memory before the next LLM leg 148ms
+   → Memory compaction failed before dispatch: Accepted compaction requires provider.: expected true to be false // Object.is equality
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > keeps compaction pending and blocks the next provider dispatch when compaction agent output is invalid
+Unregistered AgentContext for agent_id 'runtimecompactionagent_tester_1008'.
+
+ ✓ tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > keeps compaction pending and blocks the next provider dispatch when compaction agent output is invalid 180ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent/runtime/agent-runtime-compaction.test.ts > Agent runtime compaction integration > uses the injected compaction agent runner to compact memory before the next LLM leg
+AssertionError: Memory compaction failed before dispatch: Accepted compaction requires provider.: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/integration/agent/runtime/agent-runtime-compaction.test.ts:209:9
+    207|         compactionEvents.some((event) => event.phase === 'failed'),
+    208|         compactionEvents.find((event) => event.phase === 'failed')?.er…
+    209|       ).toBe(false);
+       |         ^
+    210|       expect(compactionEvents.map((event) => event.phase)).toEqual(['r…
+    211| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)
+   Start at  21:03:05
+   Duration  2.34s (transform 1.37s, setup 21ms, import 1.89s, tests 329ms, environment 0ms)
+
+RESULT first=1 second=1
