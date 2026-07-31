@@ -4,7 +4,7 @@
 
 - Ticket: `update-openai-model-pricing`
 - Scope completed in this delivery round: refreshed tracked base, protected the passed cumulative package, verified active docs on the integrated candidate, and prepared the user-verification handoff.
-- User verification was received on 2026-07-31. Repository finalization and the requested `v1.4.32` release are now being executed.
+- User verification was received on 2026-07-31. Repository finalization and the requested `v1.4.32` release completed locally and on the tracked remote; tag-triggered GitHub workflows are subject to asynchronous completion.
 
 ## Handoff Summary
 
@@ -13,7 +13,7 @@
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/done/update-openai-model-pricing/delivery-revision-record.md`
 - Current delivery revision ID: `DR-001`
 - Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/done/update-openai-model-pricing/docs-sync-report.md`
-- Notes: The cumulative package was explicitly approved by the user; no downstream code/test finding remains. Release notes are prepared for `v1.4.32`.
+- Notes: The cumulative package was explicitly approved by the user; no downstream code/test finding remains. Release notes were consumed by the `v1.4.32` release preparation.
 
 ## Initial Delivery Integration Refresh
 
@@ -48,61 +48,64 @@
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/<ticket-name>`: `Pending final archival commit`
+- Ticket moved to `tickets/done/<ticket-name>`: `Yes`
 - Archived ticket path: `tickets/done/update-openai-model-pricing/`
+- Archive commit: `acaab165fbe4fe660c638480f2a559646acfa7ee`
 
 ## Version / Tag / Release Commit
 
-- Version/tag/release commit result: `Planned`
+- Version/tag/release commit result: `Completed`
 - Authorized version: `1.4.32` / tag `v1.4.32`
-- Method: Documented `scripts/desktop-release.sh release 1.4.32 --release-notes tickets/done/update-openai-model-pricing/release-notes.md` flow after target-branch finalization.
+- Release commit: `d03882153e1812de39cf871a29f493c5e305a9f9`
+- Tag commit: `d03882153e1812de39cf871a29f493c5e305a9f9` (annotated remote tag object `482ad58f3ea4add95d69e7775859ca5ba235a3f4`)
+- Method: `scripts/desktop-release.sh release 1.4.32 --release-notes tickets/done/update-openai-model-pricing/release-notes.md --branch delivery/update-openai-model-pricing-v1.4.32 --no-push`, followed by explicit pushes of `HEAD:personal` and `v1.4.32`.
 
 ## Repository Finalization
 
 - Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/done/update-openai-model-pricing/investigation-notes.md`
 - Ticket branch: `codex/update-openai-model-pricing`
-- Ticket branch commit result: `Pending archival/final delivery commit`
-- Ticket branch push result: `Pending final delivery commit`
+- Ticket branch commit result: `Completed` — `acaab165fbe4fe660c638480f2a559646acfa7ee` (`chore(ticket): archive update-openai-model-pricing`)
+- Ticket branch push result: `Completed` — `origin/codex/update-openai-model-pricing` at `acaab165fbe4fe660c638480f2a559646acfa7ee`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after user verification: `N/A`
-- Delivery-owned edits protected before re-integration: `Not needed` for the initial refresh; checkpoint `cff8bf54d` protects the upstream package before delivery-owned artifacts.
-- Re-integration before final merge result: `Not started — required after user verification and target refresh`
-- Target branch update result: `Not started`
-- Merge into target result: `Not started`
-- Push target branch result: `Not started`
-- Repository finalization status: `In progress after explicit user verification`
-- Blocker: `None`; final commit, target merge/push, and release execution are being performed now.
+- Target advanced after user verification: `No` — refresh remained `dfc0468b137cd231b79ff8096fa46750611b06e2` before merge.
+- Delivery-owned edits protected before re-integration: `Completed` — archive/final delivery commit `acaab165f`.
+- Re-integration before final merge result: `Completed` — isolated target worktree merged the ticket branch with no conflict.
+- Target branch update result: `Completed` — merge commit `dda4f2398ecd2280961b99be15b4e68049b41f86` pushed to `origin/personal`.
+- Merge into target result: `Completed` — `codex/update-openai-model-pricing` merged with `--no-ff`.
+- Push target branch result: `Completed` — target first advanced to `dda4f2398`; release commit later advanced it to `d03882153`.
+- Repository finalization status: `Completed`
+- Blocker: `None`
 
 ## Release / Publication / Deployment
 
 - Applicable: `Yes`
 - Method: `Documented Command`
 - Method reference / command: `scripts/desktop-release.sh release 1.4.32 --release-notes tickets/done/update-openai-model-pricing/release-notes.md` (invoked via `pnpm release 1.4.32 -- --release-notes ...` after target finalization).
-- Release/publication/deployment result: `In progress`
-- Release notes handoff result: `Prepared`
-- Blocker: `None`
+- Release/publication/deployment result: `Completed — tag pushed; GitHub Actions publication triggered`
+- Release notes handoff result: `Used` — archived release notes copied to `.github/release-notes/release-notes.md` by the release helper.
+- Blocker: `None`; hosted workflow completion is asynchronous and monitored separately.
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing`
-- Worktree cleanup result: `Pending release completion`
-- Worktree prune result: `Pending release completion`
-- Local ticket branch cleanup result: `Pending release completion`
-- Remote branch cleanup result: `Not required`
-- Blocker: Preserve the archived ticket and release evidence until the release command and tag push complete.
+- Worktree cleanup result: `Pending post-release evidence commit`
+- Worktree prune result: `Pending post-release evidence commit`
+- Local ticket branch cleanup result: `Pending post-release evidence commit`
+- Remote branch cleanup result: `Pending cleanup after release evidence`
+- Blocker: Retain the temporary target worktree until final release evidence is committed and pushed.
 
 ## Escalation / Reroute
 
 - Classification: `N/A`
 - Recommended recipient: `N/A`
-- Why final handoff could not complete: `N/A`; handoff is complete for user verification. Only repository finalization is held by the explicit user-verification gate.
+- Why final handoff could not complete: `N/A`; final handoff and repository finalization are complete. Only asynchronous hosted release workflow completion remains to be observed.
 
 ## Release Notes Summary
 
 - Release notes artifact created before verification: `Yes` — archived with the ticket before the final commit.
-- Archived release notes artifact used for release/publication: `Pending final archival commit`
-- Release notes status: `Prepared for v1.4.32`
+- Archived release notes artifact used for release/publication: `tickets/done/update-openai-model-pricing/release-notes.md`
+- Release notes status: `Used for v1.4.32`
 
 ## Deployment Steps
 
@@ -135,6 +138,18 @@ No deployment was run. The change is a static package/catalog update and no depl
 - Before finalization, retain checkpoint `cff8bf54d` and the upstream implementation commits; if user verification identifies a defect, preserve the current reports and route rework to the owning specialist.
 - After finalization, revert the final merge or a containing follow-up if exact GPT-5.6 pricing/tier values, exact Opus 5 identity/metadata, adaptive request policy, durable Sonnet pricing, provider-neutral accounting, or historical snapshot preservation regresses.
 
+## Finalization And Release Evidence
+
+- User verification: Explicit request `finalize and release a new version.` received on 2026-07-31.
+- Finalization target refresh: `git fetch origin --prune`; `origin/personal` remained `dfc0468b137cd231b79ff8096fa46750611b06e2` before merge.
+- Ticket archive commit: `acaab165fbe4fe660c638480f2a559646acfa7ee`.
+- Target merge commit: `dda4f2398ecd2280961b99be15b4e68049b41f86`.
+- Release commit: `d03882153e1812de39cf871a29f493c5e305a9f9`.
+- Remote target after release: `origin/personal` at `d03882153e1812de39cf871a29f493c5e305a9f9`.
+- Remote release tag: annotated tag `v1.4.32`, dereferenced commit `d03882153e1812de39cf871a29f493c5e305a9f9`.
+- Package synchronization: `autobyteus-web` and `autobyteus-message-gateway` are `1.4.32`; managed messaging release manifest references `v1.4.32`.
+- Release workflow trigger: `git push origin v1.4.32` completed; hosted workflow completion remains an asynchronous post-release check.
+
 ## Final Status
 
-`User-verified; ticket archival, repository finalization, and v1.4.32 release in progress.`
+`Finalized and released v1.4.32; tag-triggered GitHub Actions publication is asynchronous.`
