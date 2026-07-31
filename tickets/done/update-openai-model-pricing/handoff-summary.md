@@ -17,11 +17,11 @@
 
 ## Current Delivery State
 
-- Status: `User-verified; finalization and release in progress`
-- Repository finalization: Authorized by the user on 2026-07-31; ticket archival, final delivery commit, target-branch merge/push, and release are now in progress.
+- Status: `Finalized and released v1.4.32; remote release workflows triggered`
+- Repository finalization: Completed. Ticket archive commit `acaab165f`, target merge commit `dda4f2398`, and release commit `d03882153` are on `origin/personal`.
 - Delivery checkpoint: Completed locally to protect the passed cumulative package before delivery-owned edits.
 - Docs sync: Pass. The three active `autobyteus-ts/docs` documents were updated by the reviewed implementation and verified truthful on the integrated candidate; no further docs edits were needed.
-- Release/deployment: User requested a new version. Planned release is `v1.4.32` using the documented release helper after repository finalization.
+- Release/deployment: `v1.4.32` / `v1.4.32` tag was prepared with the documented release helper and pushed; GitHub release workflows were triggered by the tag push. Final hosted workflow publication remains subject to GitHub Actions completion.
 
 ## Delivered Behavior
 
@@ -58,8 +58,8 @@
 
 1. Review the exact pricing, model identity, metadata, adaptive-policy, and documentation changes in the candidate branch.
 2. If needed, rerun the focused and server checks recorded in `execution-coverage-report.md` using the repository environment setup described there.
-3. Confirm the static catalog behavior is acceptable, then explicitly reply with user verification (for example, `approve finalization`).
-4. Do not expect ticket archival, pushes, target-branch merge/push, release, or cleanup before that explicit signal.
+3. For release verification, monitor the GitHub Actions workflows triggered by tag `v1.4.32` and confirm the expected artifacts/publication results.
+4. The repository is finalized; any release-workflow failure should be handled as a release follow-up without reopening the passed source/test review.
 
 ## Cumulative Artifact Package
 
@@ -109,4 +109,4 @@
 - Explicit user completion/verification received: `Yes` — user requested finalization and a new version release on 2026-07-31.
 - Release notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/done/update-openai-model-pricing/release-notes.md`.
 - Authorized release version: `1.4.32` (`v1.4.32`), selected as the next version after `v1.4.31`.
-- Ticket archival, repository finalization, release publication, and cleanup are now being executed; final hashes and workflow status will be appended after completion.
+- Ticket archival, repository finalization, and release tag push completed. Ticket archive: `tickets/done/update-openai-model-pricing/`; target: `origin/personal` at `d03882153`; tag: `v1.4.32` at `d03882153`. GitHub Actions publication status is monitored separately.
