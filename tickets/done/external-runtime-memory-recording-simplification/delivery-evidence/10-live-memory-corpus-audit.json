@@ -1,0 +1,452 @@
+{
+  "auditVersion": 1,
+  "privacyPosture": "Read current run/team metadata only for exact runtime/location classification and file metadata only for corpus counts/sizes; no snapshot or raw-trace payload was read or emitted.",
+  "classifierAuthority": "Repository-built AgentRunMetadataStore, TeamRunMetadataStore, AgentMemoryLocationService, AgentMemoryLayout, and RuntimeKind helpers from the tested Electron server build.",
+  "memoryRoot": "/Users/normy/.autobyteus/server-data/memory",
+  "observations": [
+    {
+      "startedAt": "2026-07-31T15:37:22.751Z",
+      "completedAt": "2026-07-31T15:37:24.250Z",
+      "metadataClassification": {
+        "standaloneDirectories": 538,
+        "standaloneValidCurrent": 356,
+        "standaloneMissing": 182,
+        "standaloneInvalidOrUnreadable": 0,
+        "standaloneRunIdMismatch": 0,
+        "teamDirectories": 459,
+        "teamValidCurrent": 453,
+        "teamMissing": 6,
+        "teamInvalidOrUnreadable": 0,
+        "teamRunIdMismatch": 0,
+        "classifiedTeamMembers": 2473,
+        "conflictingResolvedLocations": 0
+      },
+      "classifiedTargetsByRuntime": {
+        "codex_app_server": {
+          "classifiedTargetCount": 2267,
+          "standaloneTargetCount": 106,
+          "recursiveTeamMemberTargetCount": 2161,
+          "providerResumeIdentifierPresentCount": 1952,
+          "snapshotPresent": {
+            "count": 0,
+            "bytes": 0
+          },
+          "activeRawTraces": {
+            "count": 1708,
+            "bytes": 2269395102
+          },
+          "completeRotatedRawSegments": {
+            "count": 1192,
+            "bytes": 1464236821
+          },
+          "rawTraceManifests": {
+            "count": 379,
+            "bytes": 747013
+          }
+        },
+        "claude_agent_sdk": {
+          "classifiedTargetCount": 66,
+          "standaloneTargetCount": 16,
+          "recursiveTeamMemberTargetCount": 50,
+          "providerResumeIdentifierPresentCount": 31,
+          "snapshotPresent": {
+            "count": 0,
+            "bytes": 0
+          },
+          "activeRawTraces": {
+            "count": 30,
+            "bytes": 3361895
+          },
+          "completeRotatedRawSegments": {
+            "count": 0,
+            "bytes": 0
+          },
+          "rawTraceManifests": {
+            "count": 0,
+            "bytes": 0
+          }
+        },
+        "autobyteus": {
+          "classifiedTargetCount": 494,
+          "standaloneTargetCount": 232,
+          "recursiveTeamMemberTargetCount": 262,
+          "providerResumeIdentifierPresentCount": 356,
+          "snapshotPresent": {
+            "count": 347,
+            "bytes": 32501775
+          },
+          "activeRawTraces": {
+            "count": 350,
+            "bytes": 27822518
+          },
+          "completeRotatedRawSegments": {
+            "count": 46,
+            "bytes": 3102721
+          },
+          "rawTraceManifests": {
+            "count": 7,
+            "bytes": 26235
+          }
+        },
+        "unsupported_or_unknown": {
+          "classifiedTargetCount": 2,
+          "standaloneTargetCount": 2,
+          "recursiveTeamMemberTargetCount": 0,
+          "providerResumeIdentifierPresentCount": 0,
+          "snapshotPresent": {
+            "count": 2,
+            "bytes": 16322
+          },
+          "activeRawTraces": {
+            "count": 2,
+            "bytes": 17875
+          },
+          "completeRotatedRawSegments": {
+            "count": 0,
+            "bytes": 0
+          },
+          "rawTraceManifests": {
+            "count": 0,
+            "bytes": 0
+          }
+        }
+      },
+      "exactExternalRuntimeSummary": {
+        "codex_app_server": {
+          "classifiedTargetCount": 2267,
+          "standaloneTargetCount": 106,
+          "recursiveTeamMemberTargetCount": 2161,
+          "providerResumeIdentifierPresentCount": 1952,
+          "snapshotPresent": {
+            "count": 0,
+            "bytes": 0
+          },
+          "activeRawTraces": {
+            "count": 1708,
+            "bytes": 2269395102
+          },
+          "completeRotatedRawSegments": {
+            "count": 1192,
+            "bytes": 1464236821
+          },
+          "rawTraceManifests": {
+            "count": 379,
+            "bytes": 747013
+          }
+        },
+        "claude_agent_sdk": {
+          "classifiedTargetCount": 66,
+          "standaloneTargetCount": 16,
+          "recursiveTeamMemberTargetCount": 50,
+          "providerResumeIdentifierPresentCount": 31,
+          "snapshotPresent": {
+            "count": 0,
+            "bytes": 0
+          },
+          "activeRawTraces": {
+            "count": 30,
+            "bytes": 3361895
+          },
+          "completeRotatedRawSegments": {
+            "count": 0,
+            "bytes": 0
+          },
+          "rawTraceManifests": {
+            "count": 0,
+            "bytes": 0
+          }
+        }
+      },
+      "snapshotCorpus": {
+        "total": {
+          "count": 601,
+          "bytes": 179195362
+        },
+        "eligibleExternalRemaining": {
+          "count": 0,
+          "bytes": 0
+        },
+        "eligibleExternalRemainingByRuntime": {},
+        "nativeAutobyteusPreserved": {
+          "count": 347,
+          "bytes": 32501775
+        },
+        "unsupportedRuntimePreserved": {
+          "count": 2,
+          "bytes": 16322
+        },
+        "unclassifiedPreserved": {
+          "count": 166,
+          "bytes": 1045628
+        },
+        "importedPreserved": {
+          "count": 86,
+          "bytes": 145631637
+        },
+        "conflictingClassificationPreserved": {
+          "count": 0,
+          "bytes": 0
+        }
+      },
+      "controlAndRawCorpus": {
+        "activeRawTraces": {
+          "count": 2351,
+          "bytes": 2370042233
+        },
+        "completeRotatedRawSegments": {
+          "count": 1302,
+          "bytes": 1554545784
+        },
+        "rawTraceManifests": {
+          "count": 407,
+          "bytes": 813384
+        },
+        "compactedMemoryManifests": {
+          "count": 71,
+          "bytes": 3550
+        },
+        "runMetadataFiles": {
+          "count": 385,
+          "bytes": 303551
+        },
+        "teamMetadataFiles": {
+          "count": 470,
+          "bytes": 2589356
+        }
+      },
+      "diagnostics": {
+        "symbolicLinkRoots": 0,
+        "symbolicLinkDirectoriesSkipped": 0,
+        "symbolicLinksNotFollowed": 0,
+        "rootInspectionErrors": 0,
+        "inventoryErrors": 0
+      }
+    },
+    {
+      "startedAt": "2026-07-31T15:37:25.755Z",
+      "completedAt": "2026-07-31T15:37:26.286Z",
+      "metadataClassification": {
+        "standaloneDirectories": 538,
+        "standaloneValidCurrent": 356,
+        "standaloneMissing": 182,
+        "standaloneInvalidOrUnreadable": 0,
+        "standaloneRunIdMismatch": 0,
+        "teamDirectories": 459,
+        "teamValidCurrent": 453,
+        "teamMissing": 6,
+        "teamInvalidOrUnreadable": 0,
+        "teamRunIdMismatch": 0,
+        "classifiedTeamMembers": 2473,
+        "conflictingResolvedLocations": 0
+      },
+      "classifiedTargetsByRuntime": {
+        "codex_app_server": {
+          "classifiedTargetCount": 2267,
+          "standaloneTargetCount": 106,
+          "recursiveTeamMemberTargetCount": 2161,
+          "providerResumeIdentifierPresentCount": 1952,
+          "snapshotPresent": {
+            "count": 0,
+            "bytes": 0
+          },
+          "activeRawTraces": {
+            "count": 1708,
+            "bytes": 2269395102
+          },
+          "completeRotatedRawSegments": {
+            "count": 1192,
+            "bytes": 1464236821
+          },
+          "rawTraceManifests": {
+            "count": 379,
+            "bytes": 747013
+          }
+        },
+        "claude_agent_sdk": {
+          "classifiedTargetCount": 66,
+          "standaloneTargetCount": 16,
+          "recursiveTeamMemberTargetCount": 50,
+          "providerResumeIdentifierPresentCount": 31,
+          "snapshotPresent": {
+            "count": 0,
+            "bytes": 0
+          },
+          "activeRawTraces": {
+            "count": 30,
+            "bytes": 3361895
+          },
+          "completeRotatedRawSegments": {
+            "count": 0,
+            "bytes": 0
+          },
+          "rawTraceManifests": {
+            "count": 0,
+            "bytes": 0
+          }
+        },
+        "autobyteus": {
+          "classifiedTargetCount": 494,
+          "standaloneTargetCount": 232,
+          "recursiveTeamMemberTargetCount": 262,
+          "providerResumeIdentifierPresentCount": 356,
+          "snapshotPresent": {
+            "count": 347,
+            "bytes": 32501775
+          },
+          "activeRawTraces": {
+            "count": 350,
+            "bytes": 27822518
+          },
+          "completeRotatedRawSegments": {
+            "count": 46,
+            "bytes": 3102721
+          },
+          "rawTraceManifests": {
+            "count": 7,
+            "bytes": 26235
+          }
+        },
+        "unsupported_or_unknown": {
+          "classifiedTargetCount": 2,
+          "standaloneTargetCount": 2,
+          "recursiveTeamMemberTargetCount": 0,
+          "providerResumeIdentifierPresentCount": 0,
+          "snapshotPresent": {
+            "count": 2,
+            "bytes": 16322
+          },
+          "activeRawTraces": {
+            "count": 2,
+            "bytes": 17875
+          },
+          "completeRotatedRawSegments": {
+            "count": 0,
+            "bytes": 0
+          },
+          "rawTraceManifests": {
+            "count": 0,
+            "bytes": 0
+          }
+        }
+      },
+      "exactExternalRuntimeSummary": {
+        "codex_app_server": {
+          "classifiedTargetCount": 2267,
+          "standaloneTargetCount": 106,
+          "recursiveTeamMemberTargetCount": 2161,
+          "providerResumeIdentifierPresentCount": 1952,
+          "snapshotPresent": {
+            "count": 0,
+            "bytes": 0
+          },
+          "activeRawTraces": {
+            "count": 1708,
+            "bytes": 2269395102
+          },
+          "completeRotatedRawSegments": {
+            "count": 1192,
+            "bytes": 1464236821
+          },
+          "rawTraceManifests": {
+            "count": 379,
+            "bytes": 747013
+          }
+        },
+        "claude_agent_sdk": {
+          "classifiedTargetCount": 66,
+          "standaloneTargetCount": 16,
+          "recursiveTeamMemberTargetCount": 50,
+          "providerResumeIdentifierPresentCount": 31,
+          "snapshotPresent": {
+            "count": 0,
+            "bytes": 0
+          },
+          "activeRawTraces": {
+            "count": 30,
+            "bytes": 3361895
+          },
+          "completeRotatedRawSegments": {
+            "count": 0,
+            "bytes": 0
+          },
+          "rawTraceManifests": {
+            "count": 0,
+            "bytes": 0
+          }
+        }
+      },
+      "snapshotCorpus": {
+        "total": {
+          "count": 601,
+          "bytes": 179195362
+        },
+        "eligibleExternalRemaining": {
+          "count": 0,
+          "bytes": 0
+        },
+        "eligibleExternalRemainingByRuntime": {},
+        "nativeAutobyteusPreserved": {
+          "count": 347,
+          "bytes": 32501775
+        },
+        "unsupportedRuntimePreserved": {
+          "count": 2,
+          "bytes": 16322
+        },
+        "unclassifiedPreserved": {
+          "count": 166,
+          "bytes": 1045628
+        },
+        "importedPreserved": {
+          "count": 86,
+          "bytes": 145631637
+        },
+        "conflictingClassificationPreserved": {
+          "count": 0,
+          "bytes": 0
+        }
+      },
+      "controlAndRawCorpus": {
+        "activeRawTraces": {
+          "count": 2351,
+          "bytes": 2370042233
+        },
+        "completeRotatedRawSegments": {
+          "count": 1302,
+          "bytes": 1554545784
+        },
+        "rawTraceManifests": {
+          "count": 407,
+          "bytes": 813384
+        },
+        "compactedMemoryManifests": {
+          "count": 71,
+          "bytes": 3550
+        },
+        "runMetadataFiles": {
+          "count": 385,
+          "bytes": 303551
+        },
+        "teamMetadataFiles": {
+          "count": 470,
+          "bytes": 2589356
+        }
+      },
+      "diagnostics": {
+        "symbolicLinkRoots": 0,
+        "symbolicLinkDirectoriesSkipped": 0,
+        "symbolicLinksNotFollowed": 0,
+        "rootInspectionErrors": 0,
+        "inventoryErrors": 0
+      }
+    }
+  ],
+  "stability": {
+    "delayMs": 1500,
+    "eligibleExternalRemainingCountStable": true,
+    "eligibleExternalRemainingCountDelta": 0,
+    "totalSnapshotCountDelta": 0,
+    "activeRawTraceCountDelta": 0,
+    "classifiedTargetCountDelta": 0
+  }
+}

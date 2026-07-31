@@ -334,12 +334,17 @@ fallback model.
 
 ## 14. External Runtime Recording
 
-Codex and Claude use server storage-only memory recording. They share raw-trace
-and snapshot physical primitives but do not execute AutoByteus semantic
-working-context strategies. Provider/session compaction boundaries can append
+Codex and Claude use server raw-trace-only memory recording. They share the
+native raw-trace and rotation primitives but do not construct, load, or persist
+an AutoByteus `WorkingContext` snapshot and do not execute AutoByteus semantic
+working-context strategies. Provider thread/session state remains the
+continuation authority. Provider/session compaction boundaries can append
 provenance markers and rotate raw traces; they do not select
 `AUTOBYTEUS_COMPACTION_STRATEGY`, write episodic/semantic memory, or inject
-AutoByteus compacted memory into the external provider session.
+AutoByteus compacted memory into the external provider session. The server owns
+the metadata-classified, best-effort startup cleanup for pre-cutover external
+snapshot copies; native `MemoryManager` snapshot behavior in this package is
+unchanged.
 
 ## 15. Runtime Settings
 

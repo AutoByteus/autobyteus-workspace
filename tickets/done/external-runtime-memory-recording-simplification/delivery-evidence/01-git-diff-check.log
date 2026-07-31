@@ -1,0 +1,2 @@
+$ git diff --cached --check
+PASS: current DR-002 candidate, including delivery artifacts and normalized build evidence, has no whitespace errors
