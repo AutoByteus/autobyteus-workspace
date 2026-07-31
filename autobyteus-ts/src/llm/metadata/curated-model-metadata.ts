@@ -56,6 +56,13 @@ const curatedModelMetadata: Partial<Record<LLMProvider, Record<string, CuratedMo
     }
   },
   [LLMProvider.ANTHROPIC]: {
+    'claude-opus-5': {
+      maxContextTokens: 1000000,
+      maxInputTokens: 1000000,
+      maxOutputTokens: 128000,
+      sourceUrl: 'https://platform.claude.com/docs/en/about-claude/models/overview',
+      verifiedAt: '2026-07-31'
+    },
     'claude-fable-5': {
       maxContextTokens: 1000000,
       maxInputTokens: 1000000,
