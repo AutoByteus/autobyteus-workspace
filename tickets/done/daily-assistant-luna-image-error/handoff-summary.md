@@ -28,7 +28,7 @@ Delivery and release completed. The user explicitly authorized completion and re
 
 ## Long-Lived Docs Sync
 
-Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/docs-sync-report.md`
+Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records/tickets/done/daily-assistant-luna-image-error/docs-sync-report.md`
 
 Updated:
 
@@ -59,7 +59,7 @@ Reviewed with no change:
 
 ## User-Requested Electron Test Build
 
-Electron build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/electron-test-build-report.md`
+Electron build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records/tickets/done/daily-assistant-luna-image-error/electron-test-build-report.md`
 
 - README-guided command: `NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac`
 - Result: **Pass** (`EXIT_CODE=0`) on macOS ARM64.
@@ -80,12 +80,12 @@ Electron build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-a
 
 ## Evidence
 
-- Base refresh: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/delivery-initial-base-refresh.log`
-- Delivery diff check: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/delivery-diff-check.log`
-- API/E2E coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/api-e2e-coverage-investigation.md`
-- API/E2E execution report: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/api-e2e-execution-coverage-report.md`
-- API/E2E revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/api-e2e-revision-record.md`
-- API/E2E test review: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/api-e2e-test-review-report.md`
+- Base refresh: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records/tickets/done/daily-assistant-luna-image-error/delivery-initial-base-refresh.log`
+- Delivery diff check: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records/tickets/done/daily-assistant-luna-image-error/delivery-diff-check.log`
+- API/E2E coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records/tickets/done/daily-assistant-luna-image-error/api-e2e-coverage-investigation.md`
+- API/E2E execution report: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records/tickets/done/daily-assistant-luna-image-error/api-e2e-execution-coverage-report.md`
+- API/E2E revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records/tickets/done/daily-assistant-luna-image-error/api-e2e-revision-record.md`
+- API/E2E test review: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records/tickets/done/daily-assistant-luna-image-error/api-e2e-test-review-report.md`
 
 ## User Authorization
 
@@ -100,30 +100,31 @@ Electron build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-a
 - Merge/push: `personal` merge commit `12ec509f5a3c108d558a090bb1cb1fdc72e6c114` pushed successfully.
 - Release: `pnpm release 1.4.33 -- --release-notes tickets/done/daily-assistant-luna-image-error/release-notes.md` passed; release commit `1ae4a4d3276b0c4833f7c764f5ea831366fd343c` and tag `v1.4.33` are published.
 - Worktree and ticket branch cleanup: completed after finalization.
+- Archived evidence checkout: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records` retains the canonical ticket records for inspection; the ticket worktree and ticket branch were removed.
 - Release workflow monitoring: five tag-triggered workflows are `queued`/`in_progress`; see `release-deployment-report.md` and `release-workflow-status.log`.
 
 ## Cumulative Artifact Package
 
-- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/design-spec.md`
-- Supplemental runtime evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/runtime-probe-evidence.md`
-- Supplemental recovery analysis: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/provider-media-recovery-analysis.md`
-- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/solution-revision-record.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/design-review-report.md`
-- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/architecture-review-revision-record.md`
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/implementation-handoff.md`
-- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/implementation-revision-record.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/code-review-report.md`
-- Code review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/code-review-revision-record.md`
-- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/api-e2e-coverage-investigation.md`
-- Execution report: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/api-e2e-execution-coverage-report.md`
-- API/E2E revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/api-e2e-revision-record.md`
-- Test-code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/api-e2e-test-review-report.md`
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/docs-sync-report.md`
-- Delivery/release report: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/release-deployment-report.md`
-- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/delivery-revision-record.md`
-- Electron test build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/electron-test-build-report.md`
-- Release/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/release-deployment-report.md`
-- Release command log: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/release-v1.4.33.log`
-- Release workflow status: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/release-workflow-status.log`
+- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records/tickets/done/daily-assistant-luna-image-error/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records/tickets/done/daily-assistant-luna-image-error/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records/tickets/done/daily-assistant-luna-image-error/design-spec.md`
+- Supplemental runtime evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records/tickets/done/daily-assistant-luna-image-error/runtime-probe-evidence.md`
+- Supplemental recovery analysis: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records/tickets/done/daily-assistant-luna-image-error/provider-media-recovery-analysis.md`
+- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records/tickets/done/daily-assistant-luna-image-error/solution-revision-record.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records/tickets/done/daily-assistant-luna-image-error/design-review-report.md`
+- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records/tickets/done/daily-assistant-luna-image-error/architecture-review-revision-record.md`
+- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records/tickets/done/daily-assistant-luna-image-error/implementation-handoff.md`
+- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records/tickets/done/daily-assistant-luna-image-error/implementation-revision-record.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records/tickets/done/daily-assistant-luna-image-error/code-review-report.md`
+- Code review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records/tickets/done/daily-assistant-luna-image-error/code-review-revision-record.md`
+- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records/tickets/done/daily-assistant-luna-image-error/api-e2e-coverage-investigation.md`
+- Execution report: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records/tickets/done/daily-assistant-luna-image-error/api-e2e-execution-coverage-report.md`
+- API/E2E revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records/tickets/done/daily-assistant-luna-image-error/api-e2e-revision-record.md`
+- Test-code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records/tickets/done/daily-assistant-luna-image-error/api-e2e-test-review-report.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records/tickets/done/daily-assistant-luna-image-error/docs-sync-report.md`
+- Delivery/release report: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records/tickets/done/daily-assistant-luna-image-error/release-deployment-report.md`
+- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records/tickets/done/daily-assistant-luna-image-error/delivery-revision-record.md`
+- Electron test build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records/tickets/done/daily-assistant-luna-image-error/electron-test-build-report.md`
+- Release/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records/tickets/done/daily-assistant-luna-image-error/release-deployment-report.md`
+- Release command log: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records/tickets/done/daily-assistant-luna-image-error/release-v1.4.33.log`
+- Release workflow status: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records/tickets/done/daily-assistant-luna-image-error/release-workflow-status.log`

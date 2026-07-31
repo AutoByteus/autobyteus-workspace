@@ -11,16 +11,16 @@
 
 ## Canonical Delivery Artifacts
 
-- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/handoff-summary.md`
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/docs-sync-report.md`
-- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/delivery-revision-record.md`
-- Release notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/release-notes.md`
-- Release command log: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/release-v1.4.33.log`
-- Workflow status evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/release-workflow-status.log`
+- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records/tickets/done/daily-assistant-luna-image-error/handoff-summary.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records/tickets/done/daily-assistant-luna-image-error/docs-sync-report.md`
+- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records/tickets/done/daily-assistant-luna-image-error/delivery-revision-record.md`
+- Release notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records/tickets/done/daily-assistant-luna-image-error/release-notes.md`
+- Release command log: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records/tickets/done/daily-assistant-luna-image-error/release-v1.4.33.log`
+- Workflow status evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records/tickets/done/daily-assistant-luna-image-error/release-workflow-status.log`
 
 ## User-Requested Electron Test Build
 
-- Build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/electron-test-build-report.md`
+- Build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records/tickets/done/daily-assistant-luna-image-error/electron-test-build-report.md`
 - README-guided command passed on macOS ARM64: `NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac`.
 - Packaged terminal runtime verification passed, including Darwin ARM64 `node-pty` helper validation and spawn probe.
 - Build artifacts remain unsigned/notarized; native GUI visual quality and live-provider behavior remain explicit residuals.
@@ -72,11 +72,12 @@
 
 ## Ticket State And Cleanup
 
-- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error`.
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records/tickets/done/daily-assistant-luna-image-error`.
 - Dedicated worktree cleanup: **Completed** after merge/release; the worktree is no longer retained.
 - Local ticket branch cleanup: **Completed** after merge; local branch deleted.
 - Remote ticket branch cleanup: **Completed** after merge; remote branch deleted.
 - The primary local `personal` worktree was not modified or cleaned because it contained unrelated `application-agent-streaming` delivery edits; those edits were preserved.
+- Archived evidence checkout: `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records` (detached at the final personal tip) is retained solely so the canonical ticket reports remain directly inspectable after ticket-worktree cleanup.
 
 ## Verification Checks
 
