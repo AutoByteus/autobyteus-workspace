@@ -30,6 +30,9 @@ export class AppDataMigrationRegistry {
       new RemoveExternalRuntimeWorkingContextSnapshotsMigration(
         appConfigProvider.config.getMemoryDir(),
       ),
+      // Native snapshot conversion resolves provenance through the current raw-trace layout.
+      new RawTraceRotationLayoutMigration(appConfigProvider.config.getMemoryDir()),
+      new RawTraceActiveFileNameMigration(appConfigProvider.config.getMemoryDir()),
       new MigrateNativeWorkingContextSnapshotsV5Migration(
         appConfigProvider.config.getMemoryDir(),
       ),
@@ -38,8 +41,6 @@ export class AppDataMigrationRegistry {
       new TokenUsageCustomProviderModelValueBackfillMigration(),
       new TokenUsageProviderNameSnapshotBackfillMigration(),
       new TokenUsageLegacyPathColumnsDropMigration(),
-      new RawTraceRotationLayoutMigration(appConfigProvider.config.getMemoryDir()),
-      new RawTraceActiveFileNameMigration(appConfigProvider.config.getMemoryDir()),
       new RemoveSelfEvolutionRunMetadataMigration(appConfigProvider.config.getMemoryDir()),
       new TeamRunHistoryIndexV2AppDataMigration(appConfigProvider.config.getMemoryDir()),
       new RunHistoryIndexV2AppDataMigration(appConfigProvider.config.getMemoryDir()),

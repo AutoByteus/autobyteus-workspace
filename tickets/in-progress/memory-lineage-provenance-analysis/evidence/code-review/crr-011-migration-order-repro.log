@@ -1,0 +1,22 @@
+$ current registry/order and current raw-store inspection
+MigrateNativeWorkingContextSnapshotsV5Migration is registered before RawTraceRotationLayoutMigration and RawTraceActiveFileNameMigration.
+The native migration materializes facts through RunMemoryFileStore.listRawTracesOrdered(), which reads raw_traces_active.jsonl.
+RawTraceActiveFileNameMigration is the retained required migration that renames legacy raw_traces.jsonl to raw_traces_active.jsonl.
+
+$ current-build direct-upgrade reproduction
+{
+  "nativeStatus": "SUCCEEDED_WITH_WARNINGS",
+  "nativeMessageCount": 0,
+  "nativeDetail": {
+    "itemId": "agents/run-legacy-v4",
+    "filePath": "<temp-root>/agents/run-legacy-v4/working_context_snapshot.json",
+    "status": "MIGRATED",
+    "message": "Converted native WorkingContext snapshot to strict v5 with omissions {\"droppedFieldCount\":2,\"droppedMessageCount\":1,\"droppedToolGroupCount\":0,\"reasonCodes\":[\"optional_field_omitted\",\"source_reference_mismatch\",\"empty_candidate\"]}."
+  },
+  "renameStatus": "SUCCEEDED",
+  "activeAfterRename": "{\"id\":\"raw-1\",\"ts\":1,\"turn_id\":\"turn-1\",\"seq\":1,\"trace_type\":\"user\",\"content\":\"must survive\",\"source_event\":\"UserMessageReceived\"}\n"
+}
+
+$ repository chronology
+schema-v4-baseline c262dcecf 2026-06-02 09:53:38 +0200 chore(ticket): checkpoint compaction frontier validated state
+active-name-migration 33305e405 2026-07-07 21:25:20 +0200 feat(memory): rename active raw trace file

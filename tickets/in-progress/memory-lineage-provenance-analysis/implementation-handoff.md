@@ -15,25 +15,26 @@
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/design-review-report.md`
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/architecture-review-revision-record.md`
 - Triggering review: `ARCH-REV-009` Pass for `SR-015`; `ARCH-F-012` through `ARCH-F-014` are resolved and `ARCH-F-015` is closed by the explicit user-approved forward-only scope.
+- Triggering source rework: `CRR-011` `Fail — Local Fix`; `CR-F-002` / `CR-PREM-002` require the retained raw-layout/active-filename migrations to precede native snapshot fact consumption.
 - Relevant prior downstream context: `code-review-report.md`, `code-review-revision-record.md`, `coverage-investigation.md`, `execution-coverage-report.md`, `api-e2e-revision-record.md`, `api-e2e-test-review-report.md`, `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, and `delivery-revision-record.md` in the same ticket directory.
 
 ## Current Implementation Summary
 
 The delivered SR-010 baseline remains intact: manager-owned IDless proposal/accept/commit, lineage-tail current authority, recurrent canonical context, natural uncapped compactor output, prompt audit `1 | 2` with current write `2`, typed origin resolution, shared condensed rendering, exact approved Memory Compactor prompt, Event Monitor/Work Evidence separation, and launch/provider configuration are unchanged.
 
-`IR-004` replaces only the reviewed SR-015 transition/restore/recovery delta. One exact server classifier derives standalone `runId` or team-member `memberRunId` as the strict snapshot identity and is reused by the delivered external cleanup and new native migration without merging action policy. New migration ID `20260731_migrate_native_working_context_snapshots_v5` processes exact AutoByteus locations only when lineage is absent/zero-byte, validates a complete strict-v5 candidate before replacement, and then removes exactly `episodic.jsonl`, `semantic.jsonl`, and `compacted_memory_manifest.json`. Its pure core converter is the only historical v1/v3/v4/v5 decoder and only matcher of stored message refs to supplied same-location active facts. Unsupported, invalid, unsourced, old-compacted, or incomplete/ambiguous Tool units are omitted; undecodable/no-survivor input becomes metadata-identified `messages: []`; parseable identity conflict is rejected without mutation. Any nonempty-lineage location is skipped before snapshot content inspection or cleanup, and raw traces/manifests are never written.
+`IR-005` preserves the complete reviewed `IR-004` SR-015 transition/restore/recovery delta and changes only startup registry composition for `CR-F-002`: external-runtime cleanup remains first, then the existing raw-trace rotation-layout and active-filename migrations complete before native snapshot conversion consumes current active facts. One exact server classifier derives standalone `runId` or team-member `memberRunId` as the strict snapshot identity and is reused by the delivered external cleanup and new native migration without merging action policy. New migration ID `20260731_migrate_native_working_context_snapshots_v5` processes exact AutoByteus locations only when lineage is absent/zero-byte, validates a complete strict-v5 candidate before replacement, and then removes exactly `episodic.jsonl`, `semantic.jsonl`, and `compacted_memory_manifest.json`. Its pure core converter is the only historical v1/v3/v4/v5 decoder and only matcher of stored message refs to supplied same-location active facts. Unsupported, invalid, unsourced, old-compacted, or incomplete/ambiguous Tool units are omitted; undecodable/no-survivor input becomes metadata-identified `messages: []`; parseable identity conflict is rejected without mutation. Any nonempty-lineage location is skipped before snapshot content inspection or cleanup, and raw traces/manifests are never written. No old raw-filename reader or fallback was added.
 
 Normal restore now requires strict v5 and no longer has a raw-history projector. The migration runner again persists/returns ordinary statuses and real server startup logs and continues. `LLMRequestAssembler` now captures request recovery only after any pending compaction and immediately before request mutation, returns the checkpoint in `RequestPackage`, restores post-capture assembly failures locally, and leaves `LlmPhase` to restore provider failures or release after normal/interrupted retained outcomes exactly once.
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/implementation-revision-record.md`
-- Current implementation revision ID: `IR-004`
+- Current implementation revision ID: `IR-005`
 - Related solution revision IDs: `SR-001` through `SR-015`; current `SR-015`
 - Related architecture-review revision IDs: `ARCH-REV-001` through `ARCH-REV-009`; current `ARCH-REV-009`
-- Related code-review revision IDs: `CRR-001` through `CRR-010` as prior delivered history; new source review pending
+- Related code-review revision IDs: `CRR-001` through `CRR-011`; `CRR-011` triggered this bounded local fix and source re-review is pending
 - Related API/E2E revision IDs: `API-REV-001` through `API-REV-007` as prior delivered history; SR-015 execution pending
 - Related delivery revision IDs: `DR-001` through `DR-007` as prior delivered history; SR-015 delivery pending
-- Triggering finding IDs: `ARCH-F-012`, `ARCH-F-013`, `ARCH-F-014`, `ARCH-F-015`
+- Triggering finding IDs: `CR-F-002` / `CR-PREM-002`; upstream design findings `ARCH-F-012`, `ARCH-F-013`, `ARCH-F-014`, `ARCH-F-015` remain resolved/closed
 
 ## Reviewed Behavior Implementation Trace
 
@@ -44,19 +45,19 @@ Normal restore now requires strict v5 and no longer has a raw-history projector.
 | `BEH-003` | Preserve manager-owned complete natural output and audit value 2. | Existing manager acceptance/committer. | Unchanged; exact prompt and current audit write remain delivered SR-010 source. |
 | `BEH-004` | Preserve typed direct/root origin resolution. | Existing `CompactionLineageResolver`. | Unchanged. Migration creates no inferred lineage or backfill. |
 | `BEH-005` | Preserve exact lineage-tail recurrence and message-only v5. | Existing loader/projector/finalizer/serializer. | Unchanged current runtime; migration outputs the same strict v5 schema without snapshot-level output IDs. |
-| `BEH-006` | Replace destructive reset with tolerant exact-native conversion and strict runtime restore. | `native-working-context-snapshot-v5-converter.ts`; `migrate-native-working-context-snapshots-v5-migration.ts`; `working-context-snapshot-bootstrapper.ts`. | Implemented. Empty v5 is valid; identity conflict fails without mutation; nonempty lineage skips untouched. |
+| `BEH-006` | Replace destructive reset with tolerant exact-native conversion and strict runtime restore. | Registry raw-layout/name prerequisites -> `native-working-context-snapshot-v5-converter.ts`; `migrate-native-working-context-snapshots-v5-migration.ts`; `working-context-snapshot-bootstrapper.ts`. | Implemented. Existing raw layout/name migrations now expose legacy active facts before conversion; empty v5 remains valid; identity conflict fails without mutation; nonempty lineage skips untouched. |
 | `BEH-007` | Keep AutoByteus snapshot authority separate from external raw-only runtimes. | `RuntimeMemoryLocationClassifier`; external cleanup adapter; native migration exact `RuntimeKind.AUTOBYTEUS` predicate. | External cleanup's four focused path/symlink/idempotence/retry tests still pass. |
 | `BEH-008` | Preserve compactor pre-write retry and accepted invariants. | Existing strategy/manager/committer. | Unchanged; pre-capture compactor failure has no request checkpoint to restore. |
 | `BEH-009` | Preserve canonical renderer-only compaction input. | Existing prompt builder/renderer/finalizer. | Production prompt still byte-matches its approved supplement. |
 | `BEH-010` | Preserve tight shared Tool/value presentation. | Existing core presentation and server Work Evidence adapter. | Unchanged. Migration matching does not extend the shared renderer. |
 | `BEH-011` | Preserve exact natural prompt, uncapped accepted path, and mixed audit history. | Existing SR-010 prompt/parser/normalizer/acceptance/lineage source. | Unchanged; no reimplementation or provider configuration change. |
 | `BEH-012` | Capture request recovery from the post-compaction stable base and settle once. | `llm-request-assembler.ts` -> `RequestPackage.recoverySnapshot` -> `llm-phase.ts` -> existing `LlmRequestRecoveryBoundary`. | Focused proof restored post-compaction M2 with pending cleared, restored provider-style failure once, and released normal/tool-continuation outcomes once. |
-| `BEH-013` | Convert every eligible content shape by truthful subset omission; no second scanner/repair/recovery subsystem. | Pure converter plus per-run server migration. | Representative v1/v4/current-v5, invalid JSON, incomplete Tool, standalone/team identity, warning, idempotence, and rejection probes passed; no product-root scan was added. |
+| `BEH-013` | Convert every eligible content shape by truthful subset omission; no second scanner/repair/recovery subsystem. | Existing raw layout/name migrations -> pure converter plus per-run server migration. | Representative v1/v4/current-v5, invalid JSON, incomplete Tool, standalone/team identity, warning, idempotence, rejection, and direct-upgrade legacy-active-filename probes passed; no old-filename converter read or product-root scan was added. |
 
 ## Key Files Or Areas
 
 - Exact location seam: `autobyteus-server-ts/src/agent-memory/services/runtime-memory-location-classifier.ts`.
-- Native publication owner: `autobyteus-server-ts/src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5-migration.ts` and registry.
+- Native publication owner: `autobyteus-server-ts/src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5-migration.ts`; `app-data-migration-registry.ts` orders external cleanup -> current raw-layout prerequisites -> native conversion.
 - Migration-only conversion: `autobyteus-ts/src/memory/migration/native-working-context-snapshot-v5-converter.ts` plus its tight type/diagnostic files.
 - Delivered external cleanup adapter: `remove-external-runtime-working-context-snapshots-migration.ts`.
 - Strict runtime restore: `working-context-snapshot-bootstrapper.ts`; recovery projector and export removed.
@@ -64,6 +65,7 @@ Normal restore now requires strict v5 and no longer has a raw-history projector.
 - Stable-base recovery: `llm-request-assembler.ts`, `RequestPackage`, `llm-phase.ts`, and tightened `llm-request-recovery.ts` input.
 - Superseded destructive reset: both `reset-pre-lineage-memory-*` production files removed.
 - Focused evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/evidence/implementation/ir-004-sr015-focused-proof.log`.
+- Local-fix evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/evidence/implementation/ir-005-cr-f-002-focused-proof.log`.
 
 ## Important Assumptions
 
@@ -107,7 +109,7 @@ Normal restore now requires strict v5 and no longer has a raw-history projector.
 - Design-spec decision reference: `design-spec.md` Migration Plan and sections 5.10/7/10; `REQ-008`, `REQ-014`; `AC-008`, `AC-009`, `AC-018`
 - Implementation follows the approved decision without an unapproved migration or version-specific runtime fallback: `Yes`
 - Direct-use evidence or discard/rebuild result, when applicable: strict-v5/no-lineage snapshots are retained byte-for-byte when the converter proves semantic/current/source equivalence; nonempty lineage is skipped before content inspection
-- Migration implementation and focused checks, only when `Migration Required`: new durable ID runs after external cleanup; classifier identity, v1/v4/current-v5 conversion, parse-invalid empty v5, omission, incomplete Tool group, identity rejection, team new-ID mapping, nonempty-lineage preservation, exact cleanup, raw-byte preservation, and retry idempotence passed focused probes
+- Migration implementation and focused checks, only when `Migration Required`: new durable ID runs after external cleanup and the retained raw-trace rotation/active-filename prerequisites; classifier identity, v1/v4/current-v5 conversion, parse-invalid empty v5, omission, incomplete Tool group, identity rejection, team new-ID mapping, nonempty-lineage preservation, exact cleanup, raw-byte preservation, retry idempotence, and a direct upgrade whose only fact initially used the legacy active filename passed focused probes
 - Deviation from the reviewed transition decision: `None`
 
 ## Environment Or Dependency Notes
@@ -121,6 +123,7 @@ Normal restore now requires strict v5 and no longer has a raw-history projector.
 
 - `autobyteus-ts`: `pnpm build` — passed (`tsc -p tsconfig.build.json` plus runtime dependency verification).
 - `autobyteus-server-ts`: `pnpm build` — passed (shared builds, Prisma generation, server build, managed asset copy, sanitized built-in-agent bootstrap smoke).
+- `CR-F-002` direct-upgrade proof against current built code — passed: default registry indexes are external cleanup `3`, raw rotation `4`, active filename `5`, native v5 `6`; a source-backed v4 User message whose fact initially existed only in `raw_traces.jsonl` survived as one strict-v5 User message with exact content, while raw bytes remained unchanged under the current active filename.
 - Converter focused proof — passed: v4 complete system/user/Tool group retained with current provenance and bounded omissions; v1 unsourced natural content omitted; invalid JSON became empty strict v5; incomplete Tool group omitted; identity mismatch rejected; equivalent natural strict v5 returned `converted`.
 - Native migration focused proof — passed: standalone conversion, exact post-v5 cleanup, raw byte preservation, invalid-source empty v5, any-nonempty lineage full preservation, identity rejection with zero mutation, and second-run idempotence.
 - Team classifier/migration proof — passed: subject and strict `agent_id` both use new `memberRunId`, with full route/path identity retained by classifier.
@@ -147,4 +150,4 @@ Normal restore now requires strict v5 and no longer has a raw-history projector.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Yes. `IR-004` is ready for implementation-source and structural review only. After that passes, `api_e2e_engineer` owns durable test changes, broader repository/API/E2E execution, realistic migration/startup/restore/continuation setup, environment isolation/cleanup, confidence scoring, and evidence.
+Yes. `IR-005` is ready for focused implementation-source and structural re-review of `CR-F-002` only. After that passes, `api_e2e_engineer` owns durable test changes, broader repository/API/E2E execution, realistic migration/startup/restore/continuation setup, environment isolation/cleanup, confidence scoring, and evidence.

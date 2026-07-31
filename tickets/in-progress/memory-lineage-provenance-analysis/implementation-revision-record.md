@@ -8,6 +8,7 @@
 | `IR-002` | `code_reviewer`; `code-review-report.md`; `CRR-001` | `CR-F-001` | `Local Fix` | `SR-001`–`SR-004`; `ARCH-REV-001`–`ARCH-REV-004`; `CRR-001`; `API-REV/DR: N/A` | Trusted interruption fence restored in active no-snapshot recovery; ready for source re-review. |
 | `IR-003` | `architecture_reviewer`; `design-review-report.md`; `ARCH-REV-006` | `ARCH-F-006`–`ARCH-F-009` (resolved design findings) | `Design Impact` | `SR-001`–`SR-010`; `ARCH-REV-001`–`ARCH-REV-006`; prior `CRR-001`–`CRR-008`, `API-REV-001`–`API-REV-006`, `DR-001`–`DR-005` | Exact natural prompt, canonical history-only rendering, uncapped accepted path, and truthful mixed audit history implemented; ready for new source review. |
 | `IR-004` | `architecture_reviewer`; `design-review-report.md`; `ARCH-REV-009` | `ARCH-F-012`–`ARCH-F-015` (resolved/closed design findings) | `Design Impact` | `SR-001`–`SR-015`; `ARCH-REV-001`–`ARCH-REV-009`; prior `CRR-001`–`CRR-010`, `API-REV-001`–`API-REV-007`, `DR-001`–`DR-007` | Forward-only exact-native snapshot migration, strict-v5-only restore, ordinary startup status flow, and post-compaction request recovery implemented; ready for source review. |
+| `IR-005` | `code_reviewer`; `code-review-report.md`; `CRR-011` | `CR-F-002` | `Local Fix` | `SR-001`–`SR-015`; `ARCH-REV-001`–`ARCH-REV-009`; `CRR-011`; prior `API-REV-001`–`API-REV-007`, `DR-001`–`DR-007` | Existing raw-trace layout/name prerequisites now execute before native v5 conversion; direct-upgrade source-backed v4 content survives; ready for source re-review. |
 
 ## Revision Entries
 
@@ -90,3 +91,23 @@
 - Local validation and result: core and full server builds passed; focused converter, standalone/team migration, lineage-byte-preservation, empty-v5, identity-rejection, strict restore, request-recovery, and ordinary-runner probes passed; delivered external cleanup retained all 4 focused unit tests; exact SR-010 prompt bytes still match; structural/size/whitespace checks passed. One pre-existing durable LlmPhase test file still has two SR-010-stale adjacent-user assertions and is explicitly handed downstream for test ownership.
 - Next recipient or routing: `code_reviewer` for implementation-source and structural review of `IR-004`.
 - Remaining limitations or risks: API/E2E still owns durable migration fixtures, real startup/continuation, pending-compaction provider-failure and interruption settlement coverage, cleanup and environment isolation; source migration intentionally has no backup/rollback/fault-recovery protocol; direct snapshot publication uses the existing atomic write primitive; delivery owns any later tracked-base refresh.
+
+### IR-005 — Order current raw-trace prerequisites before native snapshot conversion
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/code-review-report.md`; `CRR-011`
+- Triggering finding IDs: `CR-F-002` (premise `CR-PREM-002`)
+- Classification: `Local Fix`
+- Prior authoritative result: `IR-004` implementation-source review `Fail — Local Fix`
+- Current authoritative result: current code plus `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/implementation-handoff.md`; bounded correction ready for implementation-source re-review, not API/E2E sign-off
+- Related solution revision IDs: `SR-001` through `SR-015`
+- Related architecture-review revision IDs: `ARCH-REV-001` through `ARCH-REV-009`
+- Related code-review revision IDs: `CRR-011`
+- Related API/E2E revision IDs: `API-REV-001` through `API-REV-007` as prior delivered-baseline history; SR-015 execution remains pending
+- Related delivery revision IDs: `DR-001` through `DR-007` as prior delivered-baseline history
+- Why this implementation revision is recorded: `CR-PREM-002` demonstrated that a supported direct upgrade could run native conversion while valid referenced facts still lived in legacy `raw_traces.jsonl`, causing truthful v4 content to be omitted before the retained active-filename migration exposed those facts to the current store.
+- Approved behavior or requirement IDs affected: `BEH-006`, `BEH-013`; `REQ-008`, `REQ-014`; `AC-009`, `AC-018`; DF-S02/DF-L06
+- Implementation delta: reordered only the existing registry definitions so external-runtime cleanup remains first, followed by raw-trace rotation-layout migration, active-filename migration, and then native strict-v5 snapshot migration. The native migration/converter/runtime received no old-filename reader, compatibility branch, fallback, repair, or recovery path; ordinary nonblocking runner semantics are unchanged.
+- Changed files or areas: `autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts`; authoritative implementation handoff/revision artifacts; focused implementation evidence log.
+- Local validation and result: full server build passed, including rebuilt core/shared packages and bootstrap smoke; a current-built-code isolated direct-upgrade proof asserted default registry order and converted a source-backed v4 user message after the retained rename, yielding one strict-v5 User message with exact content while preserving raw bytes; forbidden fallback and whitespace checks passed.
+- Next recipient or routing: `code_reviewer` for focused implementation-source re-review of `CR-F-002` before API/E2E.
+- Remaining limitations or risks: API/E2E still owns durable registry-order/direct-upgrade coverage and the broader SR-015 migration/restore/request-settlement matrix; the two delivered-SR-010-stale adjacent-user assertions remain downstream test-owned; delivery owns any later tracked-base refresh.

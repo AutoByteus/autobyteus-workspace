@@ -14,6 +14,7 @@
 | `CRR-008` | `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/api-e2e-test-review-report.md` | Proportional API/E2E Test Review / `API-REV-006` | `CRR-007` `Pass`; `API-REV-005` `Pass / 96%` | `Pass`; `API-REV-006` `Pass / 98%` | `None` |
 | `CRR-009` | `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/code-review-report.md` | Implementation Review / `IR-003` | `CRR-002` source-review `Pass`; `CRR-008` latest downstream review `Pass` | `Pass` | `None` |
 | `CRR-010` | `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/api-e2e-test-review-report.md` | Proportional API/E2E Test Review / `API-REV-007` | `CRR-009` source-review `Pass`; prior test review `CRR-008 Pass` | `Pass`; `API-REV-007 Pass / 98%` | `None` |
+| `CRR-011` | `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/code-review-report.md` | Implementation Review / `IR-004` | `CRR-009` source-review `Pass`; `CRR-010` latest downstream review `Pass` | `Fail — Local Fix` | `CR-F-002` |
 
 ## Revision Entries
 
@@ -253,3 +254,29 @@ None — CRR-005 had no unresolved proportional test-review finding.
 - Material score or classification changes: `N/A` — proportional test review does not apply or reopen the implementation-source scorecard; result is `Pass`.
 - Recommended recipient: `delivery_engineer`
 - Remaining risks or uncertainty: Model-chosen semantic density and latency remain probabilistic, and two real models are not a benchmark corpus; both witnessed journeys were continuation-ready. Normal-publication process-crash atomicity remains outside the approved scope; browser/Electron remains inapplicable. Delivery owns tracked-base refresh, integrated-state checks, documentation synchronization, and final handoff.
+
+### CRR-011 — Native snapshot migration requires one startup-order correction
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/code-review-report.md`
+- Review entry point and round: `Implementation Review`, source round `4`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/implementation-handoff.md`; `IR-004`; new finding `CR-F-002`; premise `CR-PREM-002`
+- Relevant solution revision IDs: `SR-001` through `SR-015`; current `SR-015`
+- Relevant architecture-review revision IDs: `ARCH-REV-001` through `ARCH-REV-009`; current `ARCH-REV-009`
+- Relevant implementation revision IDs: `IR-001` through `IR-004`; current `IR-004`
+- Relevant API/E2E revision IDs: `API-REV-001` through `API-REV-007` as prior delivered-baseline history; SR-015 execution pending
+- Relevant delivery revision IDs: `DR-001` through `DR-007` as prior delivered-baseline history
+- Prior authoritative result: source review `CRR-009 Pass`; latest downstream review `CRR-010 Pass / API-REV-007 Pass at 98%`
+- Current authoritative result: `Fail — Local Fix`
+- What changed in the review result and why: IR-004 correctly isolates historical conversion, exact native identity/classification, strict-v5-only restore, ordinary nonblocking startup status, and post-compaction request recovery. Full production-startup tracing found one bounded integration-order defect: the new native migration reads only current `raw_traces_active.jsonl` through `RunMemoryFileStore`, but it is registered before the retained required migration that renames legacy `raw_traces.jsonl`. A current-build direct-upgrade reproduction converted one valid source-backed v4 user message to empty v5 and renamed its evidence only afterward. This violates truthful retention for the reachable pending-migration path and blocks API/E2E.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-F-001` | Resolved in `CRR-002`; preserved through `CRR-010` | Remains resolved | `IR-002`; `CRR-002`; `IR-004` | SR-015 deliberately removes raw-history interruption recovery and moves supported request retention to the post-compaction checkpoint; no old defect or fallback is restored. |
+| `TCR-001` | Resolved in `CRR-007`; preserved through `CRR-010` | Remains resolved | `API-REV-005` through `API-REV-007`; `CRR-007` through `CRR-010` | IR-004 changes no durable live-tool assertion or product-compactor tool-failure contract. |
+
+- New or remaining finding IDs: `CR-F-002`
+- Material score or classification changes: source score `9.4/10` (`94.4/100`) -> `8.9/10` (`89.2/100`); classification `Local Fix`.
+- Recommended recipient: `implementation_engineer`
+- Remaining risks or uncertainty: Fix the registry prerequisite order without adding an old-filename fallback/reader, then repeat source review. After source passes, API/E2E must add durable direct-upgrade sequencing plus representative converter/classifier/strict-restore/request-settlement coverage and reconcile the two stale canonical-user assertions. The 499-effective-line converter remains a bounded maintainability pressure; physical crash recovery remains user-rejected/out of scope.
