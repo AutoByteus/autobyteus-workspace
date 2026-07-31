@@ -9,19 +9,19 @@
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/in-progress/update-openai-model-pricing/solution-revision-record.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/in-progress/update-openai-model-pricing/design-review-report.md`
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/in-progress/update-openai-model-pricing/architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence: `N/A` — initial implementation after `ARCH-REV-001 Pass`
+- Triggering rework report, revision record, or evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/in-progress/update-openai-model-pricing/architecture-review-revision-record.md` — `REQ-GAP-001` resolved by `SR-004` and `ARCH-REV-003 Pass`
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` — metadata reconciliation only; production source remains the reviewed commit `777079e62`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/in-progress/update-openai-model-pricing/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
-- Related solution revision IDs: `SR-002`
-- Related architecture-review revision IDs: `ARCH-REV-001`
+- Current implementation revision ID: `IR-002`
+- Related solution revision IDs: `SR-002`, `SR-004`
+- Related architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-003` (`ARCH-REV-002` was the resolved blocked round)
 - Related code-review revision IDs: `N/A`
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Triggering finding IDs: `REQ-GAP-001` (resolved)
 
 The approved combined scope is implemented in the existing catalog, metadata,
 Anthropic request-policy, focused test, and active documentation owners. GPT-5.6
@@ -33,6 +33,12 @@ Anthropic policy membership. No server, persistence, public interface,
 transport, alias, fallback, Fast/Batch/cloud variant, or effort-contract change
 was introduced.
 
+The SR-004/ARCH-REV-003 re-review adds the approved preservation contract for
+Sonnet 5: the existing standard `(3,15,0.3,3.75,6)` pricing remains current,
+Anthropic's temporary `$2/$10` promotion is not represented, and no expiry or
+temporal pricing mechanism is introduced. This is a metadata/traceability
+reconciliation only; no new Sonnet 5 source change is implied.
+
 ## Reviewed Behavior Implementation Trace
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
@@ -42,6 +48,7 @@ was introduced.
 | BEH-003 | Add exact Opus 5 identity and reuse adaptive/no-sampling request behavior without changing older models. | `supported-model-definitions.ts` registers `claude-opus-5` with `AnthropicLLM` and `claudeAdaptiveThinkingSchema`; `autobyteus-ts/src/llm/api/anthropic-llm.ts` adds the exact value to the current adaptive family list. | Implemented. Sync and streaming request tests cover default, adaptive, sampling sanitization, and fixed-budget removal. |
 | BEH-004 | Add standard Opus 5 cache-aware pricing/date and official 1M context/input plus 128k output metadata. | Catalog pricing is in `supported-model-definitions.ts`; curated limits/source/date are in `autobyteus-ts/src/llm/metadata/curated-model-metadata.ts`; factory metadata test verifies projection/schema. | Implemented. Pricing `(5,25,0.5,6.25,10)`, effective `2026-07-24`, verified metadata `2026-07-31`. |
 | BEH-005 | Keep active docs aligned with both providers and explicitly separate Fast mode from the standard Opus 5 row. | Updated `autobyteus-ts/docs/provider_model_catalogs.md`, `llm_module_design.md`, and `llm_module_design_nodejs.md` with current IDs, values, dates, prices, policy, and first-party links. | Implemented. Historical ticket artifacts and runtime authority remain unchanged. |
+| BEH-006 | Preserve durable Sonnet 5 standard pricing and explicitly exclude the temporary promotion and expiry/temporal pricing. | Existing `claude-sonnet-5` row in `autobyteus-ts/src/llm/supported-model-definitions.ts` remains `(3,15,0.3,3.75,6)`; existing catalog pricing test asserts those values; no temporal selector or expiry path exists. | Implemented by preservation; no source delta required. Covers REQ-008 / AC-013. |
 
 ## Key Files Or Areas
 
@@ -54,7 +61,8 @@ was introduced.
 - `autobyteus-ts/src/llm/metadata/curated-model-metadata.ts`
   - Adds official Opus 5 limits/source/verification date.
 - `autobyteus-ts/tests/unit/llm/supported-model-definitions.test.ts`
-  - Updates GPT-5.6 exact values/date and adds Opus 5 identity/pricing/date assertions.
+  - Updates GPT-5.6 exact values/date, adds Opus 5 identity/pricing/date
+    assertions, and continues to assert Sonnet 5 durable standard pricing.
 - `autobyteus-ts/tests/unit/llm/api/anthropic-llm.test.ts`
   - Extends current adaptive sync/stream request matrix with Opus 5.
 - `autobyteus-ts/tests/integration/llm/llm-factory-metadata-resolution.test.ts`
@@ -89,10 +97,10 @@ was introduced.
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: `Feature` plus `Behavior Change`
-- Reviewed root-cause classification: `Local Implementation Defect` / `Missing Invariant` for missing Opus 5 catalog/policy; no ownership/boundary defect
+- Reviewed change posture: `Feature` plus `Behavior Change`, with SR-004 durable-pricing preservation
+- Reviewed root-cause classification: `Local Implementation Defect` / `Missing Invariant` for missing Opus 5 catalog/policy; `Requirement Gap` `REQ-GAP-001` is resolved by the explicit durable Sonnet 5 decision; no ownership/boundary defect
 - Reviewed refactor decision: `No Refactor Needed`
-- Implementation matched the reviewed assessment: `Yes`
+- Implementation matched the reviewed assessment: `Yes` — source remains unchanged; SR-004 is represented by preserved existing standard pricing and metadata traceability
 - If challenged, routed as `Design Impact`: `N/A`
 - Evidence / notes: Existing catalog, metadata resolver, Anthropic adapter, and
   provider-neutral factory/server boundaries were extended in place. No new
@@ -108,7 +116,8 @@ was introduced.
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes` — `supported-model-definitions.ts` remains under 500 effective non-empty lines and the source delta is small.
 - Notes: Exact model identity is used for Opus 5; no aliases, date branches,
-  stale-price fallbacks, Fast-mode inference, or historical repricing were added.
+  stale-price fallbacks, Fast-mode inference, temporary Sonnet promotion,
+  Sonnet expiry path, or historical repricing were added.
 
 ## Persisted Data Transition Check (When Applicable)
 
@@ -167,10 +176,14 @@ not affect a rendered frontend or user interaction surface.
   provider table or migration is introduced.
 - Review active documentation for stale GPT-5.6 Terra/Luna values and any
   accidental Fast/Batch/cloud/fallback/effort variant claims.
+- Confirm Sonnet 5 remains `(3,15,0.3,3.75,6)` and no temporary `$2/$10`
+  promotion or expiry mechanism appears in source/docs/tests.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-`api_e2e_engineer` owns independent API/E2E and broader executable coverage,
+`code_reviewer` must first perform the normal independent source review against
+the SR-004/ARCH-REV-003 package. After source review, `api_e2e_engineer` owns
+independent API/E2E and broader executable coverage,
 environment discovery, confidence scoring, and any live/browser validation.
 In particular, validate the existing server token-cost integration without
 modifying server ownership, and classify provider-access limitations separately
