@@ -56,7 +56,6 @@ export { COMPACTION_LINEAGE_FILE_NAME, EPISODIC_MEMORY_FILE_NAME, MEMORY_FILE_NA
 export { WorkingContextSnapshotStore } from './store/working-context-snapshot-store.js';
 export { FileCompactionLineageStore } from './store/file-compaction-lineage-store.js';
 export { resolveMemoryBaseDir, resolveAgentMemoryDir } from './path-resolver.js';
-export { WorkingContextRecoveryProjector } from './restore/working-context-recovery-projector.js';
 export {
   buildSingleMessageProvenance,
   collectMessageRawTraceIds,

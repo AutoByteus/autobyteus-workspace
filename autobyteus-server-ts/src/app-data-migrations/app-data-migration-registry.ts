@@ -13,8 +13,8 @@ import { TokenUsageProviderNameSnapshotBackfillMigration } from "./migrations/to
 import { TokenUsageLegacyPathColumnsDropMigration } from "./migrations/token-usage-legacy-path-columns-drop-migration.js";
 import { RemoveGlobalSkillDiscoveryModeMigration } from "./migrations/remove-global-skill-discovery-mode-migration.js";
 import { CustomProviderV1AppDataMigration } from "./migrations/custom-provider-v1-app-data-migration.js";
-import { ResetPreLineageMemoryAppDataMigration } from "./migrations/reset-pre-lineage-memory-app-data-migration.js";
 import { RemoveExternalRuntimeWorkingContextSnapshotsMigration } from "./migrations/remove-external-runtime-working-context-snapshots-migration.js";
+import { MigrateNativeWorkingContextSnapshotsV5Migration } from "./migrations/migrate-native-working-context-snapshots-v5-migration.js";
 
 export class AppDataMigrationRegistry {
   private readonly definitions: AppDataMigrationDefinition[];
@@ -30,6 +30,9 @@ export class AppDataMigrationRegistry {
       new RemoveExternalRuntimeWorkingContextSnapshotsMigration(
         appConfigProvider.config.getMemoryDir(),
       ),
+      new MigrateNativeWorkingContextSnapshotsV5Migration(
+        appConfigProvider.config.getMemoryDir(),
+      ),
       new TeamCommunicationProjectionAddressMigration(appConfigProvider.config.getMemoryDir()),
       new TokenUsageExecutionAddressBackfillMigration(appConfigProvider.config.getMemoryDir()),
       new TokenUsageCustomProviderModelValueBackfillMigration(),
@@ -37,7 +40,6 @@ export class AppDataMigrationRegistry {
       new TokenUsageLegacyPathColumnsDropMigration(),
       new RawTraceRotationLayoutMigration(appConfigProvider.config.getMemoryDir()),
       new RawTraceActiveFileNameMigration(appConfigProvider.config.getMemoryDir()),
-      new ResetPreLineageMemoryAppDataMigration(appConfigProvider.config.getMemoryDir()),
       new RemoveSelfEvolutionRunMetadataMigration(appConfigProvider.config.getMemoryDir()),
       new TeamRunHistoryIndexV2AppDataMigration(appConfigProvider.config.getMemoryDir()),
       new RunHistoryIndexV2AppDataMigration(appConfigProvider.config.getMemoryDir()),

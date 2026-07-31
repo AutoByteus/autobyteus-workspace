@@ -72,7 +72,28 @@ runtime memory provider.
 
 Native AutoByteus runs remain owned by the `autobyteus-ts` `MemoryManager`. The server-side recorder must skip `RuntimeKind.AUTOBYTEUS` so native traces, snapshots, archives, outputs, and lineage are not duplicated.
 
-Native compaction is a proposal / accept / commit boundary. The executor resolves the process-global strategy, captures the manager-owned WorkingContext and lineage-head baseline, and requests an ID-less proposal. `MemoryManager` verifies the baseline, assigns output identities, finalizes the candidate, and commits exact new-raw archive -> output rows -> lineage append -> finalized context -> schema-v5 snapshot -> pending clear. Recurrent compaction consumes the current head output plus new raw-backed work but archives only the new raw evidence. The lineage tail selects the exact current bounded replacement bundle; older successful outputs remain historical rather than being mixed into normal projection.
+Native compaction is a proposal / accept / commit boundary. The executor resolves the process-global strategy, captures the manager-owned WorkingContext and lineage-head baseline, and requests an ID-less proposal. `MemoryManager` verifies the baseline, assigns output identities, finalizes the candidate, and commits exact new-raw archive -> output rows -> lineage append -> finalized context -> schema-v5 snapshot -> pending clear. Recurrent compaction consumes the current head output plus new raw-backed work but archives only the new raw evidence. The lineage tail selects the exact current complete replacement bundle; older successful outputs remain historical rather than being mixed into normal projection.
+
+The built-in Memory Compactor chooses the natural number of episodes and
+semantic facts needed for safe continuation. Accepted output requires at least
+one episode, but no fixed total episode/fact cap is imposed during parsing,
+normalization, publication, lineage read/write, current-head projection, or
+typed origin lookup. Per-entry bounds, structural validation, cleanup,
+deduplication, and positive salience remain enforced.
+
+The persisted `autobyteus-memory-compactor` system prompt owns the stable task,
+natural-sizing guidance, and exact response schema. Each operation sends only
+the core renderer's canonical `<conversation_history>` block. The renderer
+reuses `WorkingContextFinalizer`, so compatible prior-memory and current-user
+regions become one natural User turn and assistant/Tool boundaries remain
+ordered. It omits reasoning, backend IDs, duplicated schema/count policy, and
+platform internals while preserving redaction, explicit value bounds, and
+reserved-boundary escaping.
+
+New successful lineage records use `promptContractVersion: 2`. Existing
+immutable value-1 records remain directly usable, mixed `1 -> 2` chains are
+valid, and unsupported values reject without rewriting or compatibility
+decoding.
 
 `AgentMemoryOriginService` composes the core run-scoped resolver for explicit standalone/team-member targets and typed episode/semantic IDs. It returns direct and recursive raw origin for valid current-format chains, `not_found` for unknown artifacts, and an integrity error for broken lineage/archive/output membership.
 

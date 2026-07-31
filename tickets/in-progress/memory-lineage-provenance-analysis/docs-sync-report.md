@@ -3,26 +3,26 @@
 ## Scope
 
 - Ticket: `memory-lineage-provenance-analysis`
-- Trigger: Current `API-REV-006 Pass / 98%` plus `CRR-008 Pass`, following the historical API-REV-001–005 / CRR-003–007 rounds and the still-pending user-verification handoff
+- Trigger: `IR-003` / `CRR-009 Pass`, followed by current `API-REV-007 Pass / 98%` and `CRR-010 Pass`; `DR-007` then reran the README-guided Electron build at the user's request while the verification hold remained active
 - Bootstrap base reference: `origin/personal@34f3fe97a281a9b85e02409bd753ad132df13d20`
-- Integrated base reference used for docs sync: `origin/personal@1d79e908f258651998a6cbf0a94e374896170f2a`
-- Post-integration verification reference: candidate checkpoint `8507b812565cec764a019af89caa913586383f1c`; conflict-free base merges at `7e512a5b837d869f1985322e0f7e2c744a4cffe5` and `4bfb99e3f6edd34405adeef55aab460e104b9b4d`; focused harness 1 file / 15 tests Pass; integrated server/shared build, Prisma generation, and built-in bootstrap smoke Pass; canonical product-compactor DeepSeek/Qwen coverage Pass in `API-REV-006`; refreshed Electron 1.4.32 package build and artifact validation Pass
+- Integrated base reference used for docs sync: `origin/personal@80d6693c1b0df5abdfd2c3dc0ec01ff885425847`
+- Post-integration verification reference: implementation `c6c60b9996d61ef373236b66437844cd8b315af8`; API/E2E checkpoint `70aa1d08a09e59185efd93596695b16c9d1d1a62`; conflict-free base merge `b9fd12e572ddac036fd52ead3186cabe630176fd`; integrated natural-contract 6 files / 28 tests Pass; server prompt/harness 2 files / 16 tests Pass; server/shared build, Prisma generation, and sanitized bootstrap smoke Pass; canonical DeepSeek/Qwen natural-compactor coverage Pass in `API-REV-007`; current README-guided Electron 1.4.32 rebuild and artifact validation Pass; final fetch kept the base unchanged at 10 ahead / 0 behind
 
 ## Why Docs Were Updated
 
-- Summary: The existing memory docs still described a context-to-context `compact()` strategy, schema-v4 tolerant restore, mixed durable-memory projection, and a current compacted-memory manifest. The integrated implementation instead uses ID-less proposals, manager-owned accepted publication, append-only lineage-tail current authority, strict message-only schema v5, a fail-closed derived-state reset, typed origin resolution, and shared consumer-neutral readable tool/value rendering.
+- Summary: The earlier delivery corrected the proposal/publication, lineage, schema-v5, reset, origin, and shared presentation contracts. IR-003 then removed stale fixed episode/fact limits, made the built-in system prompt the sole stable instruction/schema owner, made each operation message renderer-only canonical history, and introduced immutable prompt-audit value 2 while directly preserving value-1 history. Long-lived docs were updated again so they do not retain the superseded 1–3 episode / 20-fact policy or duplicate-prompt model.
 - Why this should live in long-lived project docs: These are runtime, persistence, startup, recovery, lineage, presentation, and cross-runtime authority boundaries that future implementation and operations work must preserve after the ticket artifacts are archived.
 
 ## Long-Lived Docs Reviewed
 
 | Doc Path | Why It Was Reviewed | Result (`Updated`/`No change`/`Needs follow-up`) | Notes |
 | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-ts/docs/agent_memory_design.md` | Canonical core memory design was materially stale | Updated | Replaced the old v4/context-to-context contract with current proposal/accept/commit, lineage, v5, reset, origin, presentation, and residual guarantees. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-ts/docs/agent_memory_design_nodejs.md` | TypeScript mirror of the core memory design | Updated | Kept aligned with the canonical core document, with only the title differing. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/docs/ARCHITECTURE.md` | Server composition still described the removed `compact(WorkingContext)` boundary | Updated | Documents manager-owned acceptance/publication, lineage-tail authority, fail-closed startup, server origin service, and settings scope. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/docs/modules/agent_memory.md` | Storage layout and native-runtime ownership listed schema v4 and the obsolete manifest | Updated | Documents schema v5, `compaction_lineage.jsonl`, exact current output, origin service, and reset behavior. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/docs/modules/agent_work_traces.md` | Shared readable presentation changed while Work Evidence/native compaction remain separate | Updated | Documents shared core renderer policy and preserves separate source/envelope/artifact ownership. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/docs/design/startup_initialization_and_lazy_services.md` | Required reset and startup non-exposure are durable operational behavior | Updated | Records exact reset scope and the runner/caller fail-closed ordering. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-ts/docs/agent_memory_design.md` | Canonical core memory design still prescribed fixed 1–3 episode / 20-fact output | Updated | Documents natural model-chosen output, at-least-one-episode structural minimum, renderer-only canonical history, sole system-prompt ownership, and prompt audit 1/2 rules. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-ts/docs/agent_memory_design_nodejs.md` | TypeScript mirror of the core memory design | Updated | Kept byte-aligned below the title with the canonical natural-compactor and prompt-audit contract. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/docs/ARCHITECTURE.md` | Server composition needed the SR-010 natural-compactor boundary | Updated | Adds natural output preservation, system-prompt versus renderer-only operation ownership, canonical User-turn composition, and prompt-audit 1/2 behavior. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/docs/modules/agent_memory.md` | Runtime/storage module needed natural-count and audit-version semantics | Updated | Adds count-cap removal across accepted publication/current projection/origin, canonical history ownership, and immutable mixed audit 1 -> 2 rules. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/docs/modules/agent_work_traces.md` | Shared presentation separation needed the renderer-only operation rule | Updated | Clarifies that compaction sends only finalized canonical history while the stable task/schema remains in the built-in system prompt; Work Evidence remains a separate consumer. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/docs/design/startup_initialization_and_lazy_services.md` | Required reset and startup non-exposure are durable operational behavior | No change | The earlier delivery already records the exact reset scope and runner/caller fail-closed ordering; IR-003 did not change that lifecycle. |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/README.md` | Checked whether root onboarding needed a native-memory deep-design expansion | No change | Existing root memory section is Memory Sync/operator onboarding and already links module docs; duplicating the deep native contract there would blur scope. |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/docs/design/codex_raw_event_mapping.md` | Checked external provider compaction and storage-only boundaries | No change | It already states provider compaction is not AutoByteus semantic compaction and forbids runtime memory retrieval/injection. |
 
@@ -30,12 +30,11 @@
 
 | Doc Path | Type Of Update | What Changed | Why |
 | --- | --- | --- | --- |
-| `autobyteus-ts/docs/agent_memory_design.md` | Canonical runtime/design rewrite | Current authorities, accepted publication order, bounded recurrent replacement, lineage schema/head, strict v5, reset, origin, natural compactor input, shared readable policy, source owners | Remove obsolete runtime understanding and preserve the integrated contract. |
-| `autobyteus-ts/docs/agent_memory_design_nodejs.md` | Mirrored runtime/design rewrite | Same current contract as the canonical core design | Prevent the TypeScript-specific mirror from contradicting the canonical document. |
-| `autobyteus-server-ts/docs/ARCHITECTURE.md` | Server composition update | Proposal/accept/commit, origin service, reset gate, lineage authority, settings/execution metadata | Make server boundary ownership and startup behavior accurate. |
-| `autobyteus-server-ts/docs/modules/agent_memory.md` | Storage/runtime module update | Current file layout, schema v5, lineage head, reset, origin service | Keep explorer/storage/runtime operators aligned with current files and authority. |
-| `autobyteus-server-ts/docs/modules/agent_work_traces.md` | Presentation boundary update | Core readable renderer reuse, 20,000-character Work Evidence bound, explicit no-outcome behavior, separate compaction envelope/source | Record the shared policy without falsely making generated Work Evidence a compaction input. |
-| `autobyteus-server-ts/docs/design/startup_initialization_and_lazy_services.md` | Startup lifecycle update | Exact four-file reset and required fail-closed runner/caller behavior | Preserve the operational gate and raw-evidence safety contract. |
+| `autobyteus-ts/docs/agent_memory_design.md` | Canonical runtime/design update | Natural complete replacement, no total output-count cap, system-prompt ownership, renderer/finalizer canonical history, prompt audit 1/2, unsupported-value rejection | Remove the superseded fixed-count and duplicate-operation-prompt understanding. |
+| `autobyteus-ts/docs/agent_memory_design_nodejs.md` | Mirrored runtime/design update | Same natural-compactor and prompt-audit contract as the canonical core design | Prevent the TypeScript-specific mirror from contradicting the canonical document. |
+| `autobyteus-server-ts/docs/ARCHITECTURE.md` | Server composition update | Natural output, sole system-prompt instruction/schema owner, renderer-only canonical history, audit-2 writes and mixed 1 -> 2 reads | Make the SR-010 server/core composition boundary durable. |
+| `autobyteus-server-ts/docs/modules/agent_memory.md` | Storage/runtime module update | Natural-count accepted output, canonical prompt/history split, prompt audit 1/2 and unsupported-value rejection | Keep runtime and storage readers aligned with current output and audit authority. |
+| `autobyteus-server-ts/docs/modules/agent_work_traces.md` | Presentation boundary update | Renderer-only canonical compaction history and system-prompt-only stable policy, while retaining separate Work Evidence sources/envelopes | Prevent duplicate prompt ownership or generated Work Evidence from becoming compaction input. |
 
 ## Durable Design / Runtime Knowledge Promoted
 
@@ -46,6 +45,8 @@
 | Clean epoch/startup | Exactly four obsolete derived files are discarded; raw evidence is preserved; failures block startup | `requirements.md`; `use-case-data-flow-spine-map.md`; `execution-coverage-report.md` | Core memory design; server startup and memory module docs |
 | Origin semantics | Explicit episode/semantic selector resolves producing compaction, direct archive/predecessor, and recursive raw roots; broken current state is an integrity error | `memory-context-and-lineage-contract.md`; `provenance-methodology-analysis.md` | Core memory design; server architecture/module docs |
 | Presentation separation | Native compaction and Work Evidence share deterministic readable value/tool bodies but not sources, envelopes, bounds, or artifact authority | `compacted-memory-message-role-analysis.md`; `design-spec.md` | Core memory design; Work Trace module doc |
+| Natural compactor output | The model chooses the continuation-sufficient number of episodes/facts; only at least one episode and structural/per-entry validation remain | `memory-compactor-prompt-content-contract.md`; `requirements.md`; `design-spec.md` | Core memory design; server architecture/memory docs |
+| Prompt/history ownership and audit | Stable task/schema lives only in the built-in system prompt; each operation is one finalized renderer-owned history block; new lineage writes audit 2 while immutable audit 1 remains direct | `memory-compactor-prompt-content-contract.md`; `memory-context-and-lineage-contract.md`; `design-spec.md` | Core memory design; server architecture/memory/work-trace docs |
 
 ## Removed / Replaced Components Recorded
 
@@ -56,6 +57,9 @@
 | `compacted_memory_manifest.json`, gate/reset authority, and any mutable current pointer/state | required startup discard plus append-only `compaction_lineage.jsonl` tail authority | Core memory design; server startup/memory docs |
 | mixed historical durable-memory projection | exact output bundle listed by the lineage head | Core memory design; server architecture/module docs |
 | server-local `AgentWorkTraceRedactor` / prefix-only value loss | core `ReadableValueRenderer` and `CondensedToolCallRenderer` with explicit head/tail omission | Core memory design; Work Trace module doc |
+| fixed 1–3 episode / 20-fact limits across prompt, parser, normalizer, acceptance, and lineage | natural model-chosen output with at least one episode plus structural/per-entry safeguards | Core memory design; server architecture/memory docs |
+| duplicated operation task/schema/count prompt and constituent-level user labels | system-prompt-only stable policy plus one `WorkingContextFinalizer`-composed renderer history block | Core memory design; server architecture/memory/work-trace docs |
+| new lineage writes using prompt audit 1 only | immutable audit 1 reads plus audit 2 for new natural/canonical-history writes; unsupported values reject | Core memory design; server architecture/memory docs |
 
 ## No-Impact Decision (Use Only If Truly No Docs Changes Are Needed)
 
@@ -66,12 +70,15 @@
 - API-REV-004/005 follow-up: `No additional docs change` — the five-percent quality witness and exact-zero result assertion changed durable tests/test support only; production source and approved runtime behavior remain unchanged.
 - API-REV-006 / CRR-008 follow-up: `No additional docs change` — canonical product-compactor proof strengthened the live test/support boundary without changing production source or the approved memory runtime contract.
 - Latest-base/Electron follow-up: `No additional memory-doc change` — the integrated base added unrelated LLM/pricing release truth and bumped the desktop package to 1.4.32; delivery rebuilt the local package but did not change memory behavior or its long-lived docs.
+- API-REV-007 / CRR-010 follow-up: `No additional docs change beyond the IR-003 source impact above` — API/E2E updated 15 durable test/support paths and no production source; it validated rather than changed the natural-compactor contract.
+- Electron follow-up: `No build-instruction docs change` — delivery reran the documented local macOS packaging path so the hands-on 1.4.32 artifact contains IR-003.
+- DR-007 user-request rebuild: `No additional docs change` — the repeated README-guided build succeeded without changing source or the documented packaging procedure.
 
 ## Delivery Continuation
 
 - Result: `Pass`
 - Next delivery action: User quits the older AutoByteus instance, tests `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.32.dmg`, and explicitly confirms completion; do not archive, push, merge, release, deploy, or clean the worktree/branch before that signal.
-- Notes: The reviewed package is protected by local checkpoint `8507b812565cec764a019af89caa913586383f1c`. Latest-base merges completed at `4bfb99e3f6edd34405adeef55aab460e104b9b4d`; final fetch confirmed `origin/personal@1d79e908f258651998a6cbf0a94e374896170f2a` with the branch 7 ahead / 0 behind. API-REV-006 / CRR-008 is Pass with no unresolved findings, integrated harness/build checks passed, and the base-version change was reflected in a rebuilt and validated Electron 1.4.32 package. Delivery-owned current-round artifact edits remain local during the verification hold. Delivery must refresh the base again after explicit user verification and before finalization.
+- Notes: IR-003 is committed at `c6c60b9996d61ef373236b66437844cd8b315af8`; the API-REV-007 / CRR-010 delta is protected at `70aa1d08a09e59185efd93596695b16c9d1d1a62`; latest base `origin/personal@80d6693c1b0df5abdfd2c3dc0ec01ff885425847` merged without conflict at `b9fd12e572ddac036fd52ead3186cabe630176fd`. Integrated focused tests/builds and the current DR-007 Electron rebuild pass. Delivery-owned docs/handoff edits remain local during the verification hold. Delivery must refresh the base again after explicit user verification and before finalization.
 
 ## Blocked Or Escalated Follow-Up (Use Only If Docs Sync Cannot Complete)
 

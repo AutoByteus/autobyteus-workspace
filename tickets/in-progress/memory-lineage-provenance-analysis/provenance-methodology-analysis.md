@@ -2,13 +2,13 @@
 
 ## Status And Scope
 
-- Status: Complete evidence supplement, SR-010 aligned. The direct relationship schema/methodology is unchanged; accepted lineage validation now removes a hidden count policy and prompt audit metadata advances from new-write value 1 to 2.
+- Status: Complete evidence supplement, SR-015 aligned. Delivered SR-010 direct relationship/natural-count/audit remains unchanged. Pending work narrows conversion to exact native AutoByteus locations, uses tolerant current-shape per-run migration with omission rather than repair, preserves ordinary nonblocking startup, removes raw-history reconstruction, and prevents request recovery from crossing a durable compaction.
 - Date: 2026-07-31
-- Related requirements: REQ-001 through REQ-006, REQ-008, REQ-009, and REQ-012
-- Related acceptance criteria: AC-001 through AC-006, AC-008 through AC-013, and AC-016
+- Related requirements: REQ-001 through REQ-006, REQ-008, REQ-009, and REQ-012 through REQ-014
+- Related acceptance criteria: AC-001 through AC-006, AC-008 through AC-013, and AC-016 through AC-018
 - Normative relationship: `requirements.md`, `memory-context-and-lineage-contract.md`, and `use-case-data-flow-spine-map.md` define intended behavior and execution/ownership constraints. This file records repository/methodology evidence and the implications of the user-directed recurrent and no-content-duplication decisions.
 
-This analysis is limited to native memory compaction, automatic coarse direct and recursive provenance for episode/semantic outputs, origin/time queries, runtime-neutral raw identity, current-schema restore, and the required startup reset of disposable pre-lineage derived state. It does not define fine LLM citations, work-evidence chunking, byte-for-byte prompt replay, cross-run extraction, fact-level correction APIs, or filesystem crash recovery.
+This analysis is limited to native memory compaction, coarse direct/recursive provenance, origin/time, runtime-neutral raw identity, current-schema restore, exact native snapshot migration, and the interaction between durable compaction and ephemeral request recovery. It does not define fine LLM citations, work-evidence chunking, byte-for-byte prompt replay, cross-run extraction, fact-level correction APIs, or general filesystem crash recovery.
 
 ## Executive Conclusion
 
@@ -18,7 +18,7 @@ The target memory process is recurrent:
 M(n) = compact(M(n-1) + R(n))
 ```
 
-where `M(n-1)` is the complete memory output listed by the last successful lineage record and `R(n)` is the newly selected settled natural-activity prefix. Provenance is recorded without copying content:
+where `M(n-1)` is the complete memory output listed by the last successful lineage record and `R(n)` is the newly selected non-compacted-memory WorkingContext prefix backed by archive-eligible active raw evidence. R(n) consists of settled original activity. The one-time migration retains a non-system unit only when it already has truthful eligible-active backing; it omits unmatched units instead of manufacturing evidence. Provenance is recorded without copying normal input content:
 
 1. `MemoryManager` captures the current lineage head outside the LLM strategy; the planner identifies the compacted-memory message region by message-local kind/range and selects natural units whose exact raw-trace IDs are already known.
 2. The compactor reads one naturally ordered logical WorkingContext prefix containing the current memory projection, when present, followed by those selected units, and returns one complete replacement output with the natural number of episodes and facts chosen by the LLM.
@@ -36,7 +36,9 @@ where `M(n-1)` is the complete memory output listed by the last successful linea
 
 The LLM does **not** generate database pointers, raw IDs, compaction IDs, or fine evidence labels. The application already owns the pending compaction identity and assigns output artifact identities, so it creates the relation deterministically.
 
-SR-010 changes semantic allocation and the truthful audit value, not the direct pointer relation or lineage record schema. System policy asks for the smallest sufficient natural structure. Parser, normalizer, accepted builder, and lineage normalization retain every structurally valid item without count maxima. The full accepted path must carry natural membership through output persistence, lineage append/read, current projection, and origin lookup. Existing prompt-contract value `1` remains truthful for SR-004 records; new target records use `2`; readers preserve supported `1 | 2` mixed chains. No migration, token ceiling, or launch change is required.
+Delivered SR-010 changed semantic allocation and the truthful audit value, not the direct pointer relation or lineage record schema. Current system policy asks for the smallest sufficient natural structure. Current parser, normalizer, accepted builder, and lineage normalization retain every structurally valid item without count maxima; natural membership is already carried through output persistence, lineage append/read, current projection, and origin lookup. Existing prompt-contract value `1` remains truthful for SR-004 records; current writes use `2`; readers preserve supported `1 | 2` mixed chains. No lineage/output migration, token ceiling, launch change, or SR-015 compaction-path work is required.
+
+The pending SR-015 package retains SR-012's separate persisted-data migration for the **347 exact metadata-classified native AutoByteus snapshots** remaining after the completed external cleanup (32,501,775 bytes; v1=1, v3=79, v4=267; zero audit parse failures; zero lineage; active raw present for all). Codex/Claude no longer write snapshots; imported, unsupported, unclassified, and conflicting locations are excluded. One shared classifier owns exact location identity and derives standalone `runId` or team `memberRunId` as the strict-v5 snapshot identity. The server passes that identity, source bytes, and bounded same-subject eligible-active reference facts through one typed input; the pure migration converter alone owns historical decode and message/ref matching. Conversion is attempted only when lineage is absent/empty; every nonempty-lineage location skips untouched. The converter retains valid current-representable system messages and complete non-system units/tool groups only when their stored references resolve truthfully to eligible active raw records; it ignores unknown optional fields and omits unsupported, incomplete, ambiguous, old-compacted-memory, or unsourced units. Parse-invalid or fully omitted input becomes strict v5 with `messages: []`. It validates each full candidate before snapshot replacement, then removes only obsolete pre-lineage episode/semantic/manifest files. It does not backfill historical lineage, create recovery text, synthesize Tool outcomes, or append/modify raw evidence. The completed audit is sufficient corpus evidence; no global preflight or prepared-plan path is added.
 
 ## Correction: Why A Content-Bearing Snapshot Is Wrong Here
 
@@ -52,9 +54,9 @@ The product need is a derivation relation, not a second evidence repository. The
 
 ## Current Repository Findings
 
-### 1. Raw traces already provide authoritative leaf content and identity
+### 1. Raw storage already provides authoritative typed leaf content and identity
 
-`RawTraceItem` and server-written raw records carry IDs, occurrence time, turn/per-turn order, type/payload, and relevant tool/media/correlation fields. Identity remains compound run/member scope plus raw trace ID. Timestamps, absolute paths, and mutable active/archive placement are not primary identity.
+`RawTraceItem` and server-written raw records carry IDs, occurrence time, turn/per-turn order, type/payload, and relevant tool/media/correlation fields. Ordinary user/assistant/tool rows are immutable original activity; existing operational boundary rows remain explicitly typed evidence rather than user activity. Native snapshot migration creates no raw row. Identity remains compound run/member scope plus raw trace ID. Timestamps, absolute paths, and mutable active/archive placement are not primary identity.
 
 ### 2. Implemented SR-004 already records the selected relationship
 
@@ -77,25 +79,37 @@ Planner recurrence includes the compacted-memory unit. Snapshot v5 carries only 
 
 Pre-SR-004 evidence about excluded memory, top-K current projection, strategy-owned writes, v4 fallback, `Assistant work notes`, and server-local prefix slicing is historical rationale only.
 
-### 4. Remaining cardinality enforcement reaches lineage after output writes
+### 4. Delivered natural-cardinality path
 
-The current system prompt and operation builder prescribe 1–3 episodes and 20 facts. Parser, normalizer, and accepted builder enforce those limits. Independently, `normalizeCompactionLineageRecord` rejects more than three episode IDs or twenty semantic IDs. `FileCompactionLineageStore.appendNext` normalizes every write/read, and `AcceptedCompactionCommitter` archives R(n) and writes output rows before append. Therefore natural-count provenance requires removing the lineage count gate and proving the full persistence/read/query path; stopping at parser or accepted builder is insufficient.
+Before SR-010, the system prompt, operation builder, parser, normalizer, accepted builder, and lineage normalizer duplicated 1–3 episode / 20-fact limits, including a late lineage gate after archive/output writes. That evidence motivated ARCH-F-006 and IR-003. Current source has removed those limits from every layer and API-REV-007 proves the complete persistence/read/projection/origin path. The current provenance invariant is structural, not cardinality-based: retain at least one episode, array/ID uniqueness, safe run-relative archive filename, schema/scope/predecessor/time/execution/hash validation, and exact referenced-output checks.
 
-This count rule is not a provenance invariant. Retain at least one episode, array/ID uniqueness, safe run-relative archive filename, schema/scope/predecessor/time/execution/hash validation, and exact referenced-output checks.
+### 5. Delivered prompt-contract audit semantics
 
-### 5. Prompt contract version is producing-contract audit metadata
+Before SR-010, type/validation/write logic accepted literal `promptContractVersion: 1` only. Value 1 remains truthful for immutable records produced by the SR-004 fixed-count system prompt plus duplicated operation instructions. Current SR-010 writes value 2 for the natural system policy, history-only operation payload, and canonical-turn rendering.
 
-Current type/validation/write logic accepts literal `promptContractVersion: 1` only. Value 1 truthfully identifies the implemented SR-004 fixed-count system prompt plus duplicated operation instructions. The approved target is materially different: natural system policy, history-only operation payload, and canonical-turn rendering. New successful records therefore write value 2.
-
-Both are the same current lineage schema and direct relationship shape. Readers accept and preserve supported `1 | 2`; they do not branch into alternate content decoders or rewrite immutable records. A normal SR-004 value-1 predecessor followed by an SR-010 value-2 head is `Directly Usable — No Migration`.
+Both values use the same current lineage schema and direct relationship shape. Current readers accept and preserve supported `1 | 2`; they do not branch into alternate content decoders or rewrite immutable records. A normal value-1 predecessor followed by a value-2 head is `Directly Usable — No Migration`.
 
 ### 6. Message-local provenance does not own predecessor identity
 
 A compacted-memory constituent records local kind/range only; retained/current natural constituents may carry their own raw refs. `MemoryManager` separately captures the lineage head before strategy invocation and maps it to `previousCompactionId` during acceptance. The predecessor belongs in the lineage record, never in prompt text, message provenance, or snapshot v5.
 
-### 7. Failure and startup boundaries remain implemented and unchanged
+### 7. Failure, startup, and exact classification boundaries
 
-Runner/parser rejection remains pre-write and retryable under the same pending compaction ID. The required startup reset/current-only restore/fail-closed `startConfiguredServer` path is implemented and validated. Natural-count output that reaches the hidden lineage validator is a separate accepted-publication path, not parser failure and not a reason to add a journal.
+Runner/parser rejection remains pre-write and retryable under the same pending compaction ID. The registered destructive reset is superseded by exact ID `20260731_migrate_native_working_context_snapshots_v5`. The existing runner/server lifecycle remains nonblocking and the ticket-owned global exception/rethrow is removed. Snapshot content-shape problems yield `converted_with_omissions` and a valid v5, including `messages: []`. Conversion is attempted only for absent/empty lineage; every nonempty-lineage location skips untouched. Filesystem behavior remains owned by the existing runner and gains no ticket-specific branch. Natural-count lineage validation is already a separate delivered accepted-publication path.
+
+### 8. Migration omission avoids historical lineage invention
+
+The product-reachability witness is concrete: built-Electron existing-run activation reaches strict snapshot restore and rejects schema v4. Normal agent creation persists snapshots; no supported action was found that removes one from an existing restorable run. Therefore the required response is snapshot migration plus removal of the last-twelve/raw-history fallback—not a generalized recovery path.
+
+The migration preserves only context it can represent and source truthfully. It does not pretend to know which original pre-lineage raw records produced an old summary. Exact active-raw references are retained only when truthful; otherwise the non-system unit is omitted. Existing raw records are never appended, rewritten, archived, or deleted by migration. Absent/empty lineage still truthfully means that no current-format compaction has yet succeeded, and the first later compaction can consume only retained units already backed by eligible active evidence.
+
+### 9. External cleanup supplies the authoritative native boundary
+
+The completed prerequisite establishes `ExternalRuntimeMemoryWriter` as raw-only and removed every exact classified Codex/Claude snapshot. Therefore a snapshot file is not enough to infer native ownership. `RuntimeMemoryLocationClassifier` must derive exact standalone/team-member subject, directory, and runtime kind from current metadata/location services. External cleanup and native conversion reuse that result but retain separate eligibility/action policy.
+
+### 10. Request recovery is not lineage rollback
+
+Latest origin captures an LLM request recovery checkpoint before `LLMRequestAssembler`, while the assembler can durably accept pending compaction. The supported path `pending C(n) -> archive/output/lineage/context/v5 -> provider failure` can therefore restore a pre-C(n) context/pending flag behind current lineage. The target captures after pending compaction and before request mutation, carries the checkpoint in `RequestPackage`, and settles it through assembler/`LlmPhase`. It contains WorkingContext plus pending state only; provenance remains durable and untouched.
 
 ## Methodology Comparison
 
@@ -120,7 +134,7 @@ W3C PROV and ML Metadata support the chosen activity/input/output relation and r
 ### Authoritative content artifacts
 
 - `RawTraceRecord`
-  - authoritative original activity content;
+  - authoritative typed leaf evidence: normally original activity, or an explicitly identified operational/migration fact;
   - addressed by compound run/member plus raw trace ID;
   - may move from active to archive without identity/content change.
 - `EpisodeArtifact`
@@ -144,7 +158,7 @@ The authoritative artifact-to-compaction relation is the single `CompactionLinea
 - produced episode and semantic IDs;
 - derivation time;
 - runtime/provider/model context;
-- selection-policy version plus the producing prompt-contract audit version (`1` for implemented SR-004 records, `2` for new target records); and
+- selection-policy version plus the producing prompt-contract audit version (`1` for implemented SR-004 records, `2` for current SR-010+ records); and
 - optional rendered-input and canonical-record hashes.
 
 It contains no parallel activity/generation ID, repeated raw-ID list, raw-message text, memory text, episode/fact text, tool output, media payload, rendered prompt, fabricated segment ID, or internal archive boundary key. Direct membership/count/time bounds come from the referenced raw-trace archive file and manifest entry.
@@ -168,7 +182,7 @@ The canonical `raw_traces_manifest.json` validates that the recorded run-relativ
 
 | Step | Owner | Required behavior |
 | --- | --- | --- |
-| Raw identity/content | Existing raw writer/store | Preserve run-scoped identity/content through active/archive movement |
+| Raw identity/content | Existing raw writer/store only; native snapshot migration is read-only with respect to raw storage | Preserve existing run-scoped identity/content through active/archive movement; migration retains only truthfully backed units and never invents evidence |
 | Previous compaction identity | `MemoryManager` plus lineage repository | Capture the current lineage head before planning, verify it before acceptance, and map it to `previousCompactionId` without placing it in the snapshot or strategy proposal |
 | Natural prefix | Compaction planner | Select settled units and expose raw IDs used to build one raw-trace archive file |
 | Raw-trace archive file | Raw archive manager | Archive exactly the selected records and return the completed manifest entry, including its existing run-relative `file_name` |
@@ -253,11 +267,16 @@ Do not infer artifact kind from ID shape, or infer ancestry from timestamps, sim
 - Provider renderers translate rather than repair composition.
 - Raw traces never receive synthetic compaction-output rows.
 - Lineage records are never projected to the LLM.
-- The required startup migration deletes pre-lineage derived rows, snapshots, and compacted-memory manifests before runtime. Restore has no old-schema reader, row-selection fallback, or archive-corpus replay branch.
+- The exact native startup migration converts a readable eligible AutoByteus snapshot to strict v5 before exact three-file cleanup. Historical decoding is migration-only. All excluded location classes remain untouched; normal restore has no old-schema/raw-history branch.
+- A migrated old compacted summary is omitted because no producing current-format lineage record or truthful active source exists.
+- Explicit existing-run restore without a snapshot fails. No supported product path justifies reconstructing exact WorkingContext from a last-N raw window.
+- Request recovery captures the post-compaction canonical base and restores/releases only copied WorkingContext/pending state. It never changes lineage/current output.
 
 ## Persisted Schema Implications
 
-Lineage capture is prospective from a clean epoch boundary. Existing raw traces and raw-trace manifests are directly usable and preserved. Pre-lineage episodic rows, semantic rows, WorkingContext snapshots, and compacted-memory manifests are disposable and deleted by one required, idempotent startup migration. No content transformation or lineage backfill occurs, and normal runtime contains no old-schema branch.
+Lineage capture remains prospective from a clean current-format boundary. Existing original raw records and raw-trace manifests are directly usable and preserved. Pre-lineage episodic rows, semantic rows, and compacted-memory manifests are disposable, but WorkingContext snapshots are continuation authority and are `Migration Required`. One required idempotent startup migration converts an exact eligible native pre-lineage snapshot to strict v5 by retaining only current-valid truthfully sourceable units and omitting the rest; parse-invalid or fully omitted input becomes `messages: []`. Only after the v5 snapshot is durable does it delete the three obsolete files. The migration never mutates raw storage, no historical compaction lineage is backfilled, and normal runtime contains no old-schema branch.
+
+Every nonempty-lineage location is outside this transition and is skipped byte-for-byte without state validation. An already-valid strict-v5/no-lineage snapshot with no compacted-memory constituent is directly retained only when every non-system logical unit has at least one truthful eligible-active raw reference; only its obsolete pre-lineage files need cleanup. If any unit is unsourced, it follows tolerant conversion and omission even when other references are individually valid. An exact native location without a snapshot is skipped by migration; excluded runtime/location classes are never conversion candidates; no context or cleanup flow is invented for it because no supported existing-run restore path produces that premise. Explicit restore without a snapshot fails its invariant.
 
 Reference-only records belong in run-scoped `compaction_lineage.jsonl`. Existing schema-v1 records with prompt audit value 1 and new records with value 2 are directly usable in one chain; new writes use 2 and readers preserve either supported value. The last record is current; absent/empty means none.
 

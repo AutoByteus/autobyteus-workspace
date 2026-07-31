@@ -2,19 +2,19 @@
 
 ## Status And Authority
 
-- Status: User-approved wording authority; SR-010 technical correction ready for renewed architecture review after `ARCH-REV-005`
-- Purpose: Fix the exact origin/personal-style target text for the built-in Memory Compactor system prompt and the exact history-only, canonical-turn composition of its per-operation user message.
+- Status: User-approved delivered wording authority; unchanged by the pending SR-015 native-migration/restore/recovery revision and retained for the next cumulative architecture review
+- Purpose: Preserve the exact delivered origin/personal-style text for the built-in Memory Compactor system prompt and the exact history-only, canonical-turn composition of its per-operation user message.
 - Scope: `autobyteus-server-ts/src/built-in-agents/templates/memory-compactor/agent.md` and `WorkingContextCompactionPromptBuilder.buildTaskPrompt(...)`.
 - Related requirements: REQ-005, REQ-007, REQ-010, REQ-012
 - Related acceptance criteria: AC-006, AC-007, AC-014, AC-016
 - Approval applicability: Required. User-approved on 2026-07-31.
-- Implementation status: Not yet applied to production source. After architecture approval, implementation must reproduce this content exactly rather than inventing new wording. SR-010 does not change the user-approved prompt text; it completes the non-prompt validation, persistence, audit-version, and verification path required to accept the prompt's natural episode/fact counts.
+- Implementation status: Delivered by SR-010 (`ARCH-REV-006`, `IR-003`, `CRR-009`, `API-REV-007`, `CRR-010`, `DR-006`/`DR-007`). Current `agent.md` byte-matches section 1; `WorkingContextCompactionPromptBuilder` returns only the renderer-produced history described in section 2; natural-count parser/normalizer/acceptance/lineage behavior and prompt audit value `2` are current source. Pending SR-015 must preserve this contract unchanged while changing migration, restore, and recovery behavior.
 
 This supplement is the wording authority for the two prompts. The broader behavior, ownership, and validation contract remains authoritative in `requirements.md`, `memory-context-and-lineage-contract.md`, and `design-spec.md`.
 
-## 1. Exact Target `agent.md`
+## 1. Exact Delivered `agent.md`
 
-The complete target file is:
+The complete current file is:
 
 ```markdown
 ---

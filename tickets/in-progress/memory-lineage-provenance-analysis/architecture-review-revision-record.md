@@ -12,6 +12,9 @@ The latest `design-review-report.md` remains authoritative. This file records co
 | ARCH-REV-004 | Round 4 / SR-004 lineage-tail, snapshot-boundary, and startup correction | SR-001, SR-002, SR-003, SR-004 | Fail | Pass | ARCH-F-004, ARCH-F-005 |
 | ARCH-REV-005 | Round 5 / SR-009 prompt, cardinality, and canonical-turn revision | SR-001 through SR-009 | Pass | Fail | ARCH-F-006, ARCH-F-007, ARCH-F-008, ARCH-F-009 |
 | ARCH-REV-006 | Round 6 / SR-010 accepted-path, evidence, audit, and identity correction | SR-001 through SR-010 | Fail | Pass | ARCH-F-006, ARCH-F-007, ARCH-F-008, ARCH-F-009 |
+| ARCH-REV-007 | Round 7 / SR-012 native migration, strict restore, and request-recovery revision | SR-001 through SR-012 | Pass | Fail | ARCH-F-010, ARCH-F-011 |
+| ARCH-REV-008 | Round 8 / SR-014 tolerant migration simplification | SR-001 through SR-014 | Fail | Fail | ARCH-F-010, ARCH-F-011, ARCH-F-012, ARCH-F-013, ARCH-F-014, ARCH-F-015 |
+| ARCH-REV-009 | Round 9 / SR-015 typed forward-only migration correction | SR-001 through SR-015 | Fail | Pass | ARCH-F-012, ARCH-F-013, ARCH-F-014, ARCH-F-015 |
 
 ## Revision Entries
 
@@ -150,3 +153,73 @@ None.
 - Material classification changes: All four round-5 `Design Impact` findings are resolved. No new finding, requirement gap, unclear premise, or unsupported lifecycle machinery remains.
 - Recommended recipient: `implementation_engineer`
 - Remaining risks or uncertainty: Preserve the implemented SR-004 baseline; keep full-path natural-count and mixed-audit coverage; preserve assistant/tool/media and exact prompt boundaries during finalizer reuse; retain existing pre-write parser retry for provider truncation; do not imply crash-atomic publication; and leave the later one-commit remote refresh to delivery.
+
+### ARCH-REV-007 — Native migration and recovery ownership are sound, but the package needs a truthful delivered baseline and the approved all-file dry-run gate
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/design-review-report.md`
+- Review round and trigger: Round 7; `solution_designer` submitted user-approved `SR-012` after integrating the delivered external-runtime cleanup and latest request-recovery baseline.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/solution-revision-record.md` (`SR-012`); prior open findings `N/A`
+- Relevant solution revision IDs: `SR-001` through `SR-012`; current `SR-012`
+- Prior authoritative decision: `Pass` (`ARCH-REV-006`); material-premise gate `Pass`
+- Current authoritative decision: `Fail / Requirement Gap with related Design Impact`; material-premise gate `Pass`
+- What changed in the review result or what baseline was established: Re-established the actual current baseline after the latest merge. SR-010 passed architecture review, was implemented in `IR-003`, passed source/API-E2E/test review, and was delivered; its prompt, history-only canonical rendering, natural-count accepted path, and audit value 2 are present in current source. SR-012's exact native classifier, migration-only historical converter, strict-v5 restore, per-run publication/retry, nonblocking startup, and post-compaction request-recovery ownership are otherwise coherent. The package is not implementation-ready because it repeatedly treats delivered SR-010 as pending and because the user's required all-file read-only converter dry run before mutation has no normative requirement, owner, gating semantics, or evidence path.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `ARCH-F-006` | Resolved in `ARCH-REV-006` | Remains resolved and delivered | `SR-010`; `ARCH-REV-006`; `IR-003`; `CRR-009`; `API-REV-007`; `CRR-010`; `DR-006` | Current parser/normalizer/accepted builder/lineage store and downstream proof preserve >3 episodes and >20 facts through persistence, projection, and origin. |
+| `ARCH-F-007` | Resolved in `ARCH-REV-006` | Resolution remains true, but SR-012 reintroduced stale current-state statements as new `ARCH-F-010` | `SR-010`; `ARCH-REV-006`; current SR-012 package | Current source and the completed downstream chain prove SR-010 is delivered; SR-012 solution artifacts incorrectly revert the documented baseline. |
+| `ARCH-F-008` | Resolved in `ARCH-REV-006` | Remains resolved and delivered | `SR-010`; `ARCH-REV-006`; `IR-003`; `CRR-009`; `API-REV-007` | Current lineage model accepts/preserves prompt audit values 1/2 and writes current value 2. |
+| `ARCH-F-009` | Resolved in `ARCH-REV-006` | Remains resolved and delivered | `SR-010`; `ARCH-REV-006`; current source | Message constituents/snapshot remain identity-free; manager-captured lineage head supplies predecessor identity. |
+
+- New or remaining finding IDs: `ARCH-F-010`, `ARCH-F-011`
+- Material classification changes: The prior Pass is superseded for SR-012. `ARCH-F-010` is a new `Design Impact` caused by the reintroduced stale baseline. `ARCH-F-011` is a new `Requirement Gap` because an explicit user-approved pre-mutation safeguard is not in the normative package. Neither depends on an unsupported scenario. The material-premise gate passes: observed existing-run schema rejection supports migration, current request execution supports pending-compaction/provider-failure recovery, and no supported snapshot-less restore path exists to justify raw-history fallback.
+- Recommended recipient: `solution_designer`
+- Remaining risks or uncertainty: Exact converter fidelity over the classified corpus, deterministic evidence collision handling, external-cleanup semantic preservation, one-settlement request recovery, truthful nonblocking failure visibility, intentionally non-transactional normal compaction publication, dirty-worktree preservation, and delivery-owned later refresh remain visible after the two blockers are corrected.
+
+### ARCH-REV-008 — Tolerant conversion is proportionate, but its current contract and execution boundary need correction
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/design-review-report.md`
+- Review round and trigger: Round 8; `solution_designer` submitted user-approved `SR-014`, which treats the retained 347-file audit as sufficient, omits unsupported legacy units, permits empty strict-v5 output, and rejects SR-013 recovery notice/baseline/repair machinery.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/solution-revision-record.md` (`SR-014`); prior findings `ARCH-F-010`, `ARCH-F-011`
+- Relevant solution revision IDs: `SR-001` through `SR-014`; current `SR-014`
+- Prior authoritative decision: `Fail / Requirement Gap with related Design Impact`; material-premise gate `Pass`
+- Current authoritative decision: `Fail / Requirement Gap with related Design Impact`; material-premise gate `Pass`
+- What changed in the review result or what baseline was established: SR-014 truthfully preserves delivered SR-010 and makes the user's no-second-preflight decision normative, resolving both round-7 findings. The tolerant-subset/empty-v5 migration, strict restore, nonblocking startup, and request-recovery direction remains proportionate. Implementation is still gated because superseded migration baseline/Tool-repair rules remain in current authorities; the per-run converter lacks a complete identity/reference-fact input contract; BEH-013 is absent from the mandatory design behavior map; and invalid nonempty current-lineage state can fall through the broad tolerant-conversion branch.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `ARCH-F-010` | Open / Medium / Design Impact | Resolved | `SR-014`; `ARCH-REV-007` | Requirements, investigation, design current-state/health/change/sequence sections, foundation/spine/evidence supplements, and handoff guidance now identify SR-010 as delivered through ARCH-REV-006, IR-003, CRR-009, API-REV-007, CRR-010, and DR-006/007. Only migration/restore/startup/recovery remains pending. |
+| `ARCH-F-011` | Open / High / Requirement Gap | Closed by explicit user-approved requirement change | `SR-014`; `ARCH-REV-007` | BEH-013, REQ-014, AC-018, INV-021, §5.10, UC-015/029, DF-S02/L06, SCN-008/021, and the solution chronology establish that the retained audit is sufficient; per-run full-candidate validation precedes mutation; no second global dry run/prepared plan/fingerprint is required. |
+
+- New or remaining finding IDs: `ARCH-F-012`, `ARCH-F-013`, `ARCH-F-014`, `ARCH-F-015`
+- Material classification changes: The two round-7 blockers are resolved/closed. A new `Requirement Gap` captures stale rejected repair/baseline rules. Three bounded `Design Impact` findings cover the missing conversion input/identity contract, omitted BEH-013 trace, and unsafe invalid-nonempty-lineage fallthrough. The material-premise gate passes: the exact corpus contains incomplete Tool groups and thousands of reference-bearing messages; the parse-invalid empty-v5 path is an explicit governing contract; and normal accepted publication can append lineage before a snapshot write fails.
+- Recommended recipient: `solution_designer`
+- Remaining risks or uncertainty: Focused migration coverage must prove exact runtime identity, truthful active-reference matching, omission/empty continuation, invalid-current no-mutation, atomic replacement/cleanup retry, and no raw change. External cleanup, delivered SR-010, one-settlement request recovery, dirty-worktree preservation, and delivery-owned later refresh remain nonblocking downstream concerns.
+
+### ARCH-REV-009 — Typed forward-only native migration is implementation-ready
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/design-review-report.md`
+- Review round and trigger: Round 9; `solution_designer` submitted user-approved `SR-015` to close the round-8 stale-contract, identity-seam, and traceability findings and to apply the user's explicit replacement of the proposed invalid-nonempty-lineage recovery branch with an untouched structural exclusion.
+- Triggering role, report path, and finding IDs: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/design-review-report.md`; `ARCH-F-012`, `ARCH-F-013`, `ARCH-F-014`, `ARCH-F-015`
+- Relevant solution revision IDs: `SR-001` through `SR-015`; current `SR-015`
+- Prior authoritative decision: `Fail / Requirement Gap with related Design Impact`; material-premise gate `Pass`
+- Current authoritative decision: `Pass`; material-premise gate `Pass`
+- What changed in the review result or what baseline was established: Revalidated the complete cumulative package, current source, retained audit, delivered SR-010 evidence, and every round-8 correction. Migration now has one exact standalone/team-member identity plus same-subject active-reference-fact input, one pure historical decoder/matcher, one server files/status owner, complete BEH-013 spine traceability, and no stale repair/baseline prescription. Only absent/empty lineage can convert; every nonempty-lineage location is skipped unchanged under the user's approved forward-only scope. Normal restore/runtime remain strict v5-only, and the pending implementation remains bounded to migration/restore/startup/recovery reconciliation.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `ARCH-F-012` | Open / High / Requirement Gap | Resolved | `SR-015`; `ARCH-REV-008` | Requirements BEH-006/013, REQ-007/008/014, AC-009/018; foundation INV-018/021/025, conversion algorithm, UC-015/029, SCN-008/021; design folder/file/change/guidance sections; and the spine/evidence supplements now consistently prohibit migration baseline records, Tool repair, synthetic results, recovery content, and raw mutation. Active raw rows are bounded facts for validating already-stored refs only. |
+| `ARCH-F-013` | Open / High / Design Impact | Resolved | `SR-015`; `ARCH-REV-008` | `RuntimeMemoryLocation` now carries exact standalone `runId` or team `memberRunId` as derived `snapshotAgentId`. `NativeSnapshotConversionInput` carries expected identity, source bytes, and matching-relevant same-subject active facts. Design ownership, interfaces, files, DF-S02/DF-L06, and foundation §5.10 assign classification/lineage/files/status to the server migration and all historical decode plus message/content/media/tool/ref matching to the pure converter. Current metadata/raw types support the specified seam. |
+| `ARCH-F-014` | Open / Medium / Design Impact | Resolved | `SR-015`; `ARCH-REV-008` | The design's mandatory behavior map now includes BEH-013 and links BEH-006/013, REQ-008/014, AC-009/018, UC-015/029, SCN-008/021 through DF-S02 and DF-L06. Requirements and design each contain BEH-001 through BEH-013 exactly once; the design and spine supplement expose the same 27 spines. |
+| `ARCH-F-015` | Open / High / Design Impact | Closed by explicit user-approved scope change | `SR-015`; `ARCH-REV-008` | The user superseded the review's former invalid-nonempty-lineage recovery premise. Requirements, foundation, design, and spine map now use one early structural rule: absent/empty lineage may convert; every nonempty-lineage location is outside the transition and is skipped byte-for-byte without snapshot/head/output validation, cleanup, repair, or recovery. The material-premise review classifies migration-owned physical/incoherence recovery as not reachable as an in-scope design driver and requires no replacement machinery. |
+
+- New or remaining finding IDs: None.
+- Material classification changes: `ARCH-F-012` through `ARCH-F-014` are resolved. `ARCH-F-015` is closed by the current user-approved requirements basis rather than by implementing its former defensive prescription. No new finding, requirement gap, unclear premise, or unsupported recovery mechanism remains.
+- Recommended recipient: `implementation_engineer`
+- Remaining risks or uncertainty: Intentional legacy-content omission, parseable identity-rejection retry/manual removal, untouched nonempty-lineage locations, one-run-at-a-time publication/cleanup validation, exact recovery settlement, dirty-worktree preservation, and delivery-owned later refresh remain explicit nonblocking downstream risks. No compatibility reader, raw reconstruction, migration repair, physical-failure state machine, backup, rollback, journal, or fault harness may be introduced.

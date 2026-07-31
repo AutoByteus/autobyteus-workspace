@@ -117,8 +117,12 @@ truthful status and `result: not available`.
 
 The Work Evidence layer still owns timestamps, Markdown headings, file/manifests,
 raw-trace source selection, correlation, and the larger consumer bound. Native
-compaction owns its natural conversation/XML envelope and smaller bound, and
-never reads Work Evidence Markdown or manifests as memory input or provenance.
+compaction owns its natural conversation/XML envelope and smaller bound. Its
+operation message is only the compaction renderer's canonical
+`<conversation_history>` block, composed through `WorkingContextFinalizer`; the
+stable task, natural-sizing guidance, and response schema live only in the
+built-in Memory Compactor system prompt. Native compaction never reads Work
+Evidence Markdown or manifests as memory input or provenance.
 Exact work trace paths remain visible because consumers need file references.
 
 ## Consumer Contract

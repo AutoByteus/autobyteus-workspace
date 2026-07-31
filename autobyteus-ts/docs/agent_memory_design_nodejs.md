@@ -8,8 +8,8 @@ AutoByteus native memory separates five concerns:
    prepare the next LLM request.
 2. **Raw traces** are original runtime activity evidence. Active and archived raw
    records remain the authority for what work occurred.
-3. **Durable compacted output** is the bounded episode/semantic bundle produced by
-   one successful native compaction.
+3. **Durable compacted output** is the validated, model-sized episode/semantic
+   bundle produced by one successful native compaction.
 4. **Compaction lineage** relates a successful output bundle to the immediately
    preceding successful compaction and to one completed raw-trace archive file.
 5. **Readable presentation** renders conversation/tool evidence for LLM or human
@@ -81,7 +81,7 @@ The structured strategy uses the fixed built-in
 run's launch values. `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` is not a runtime
 selector, and no arbitrary-agent fallback is allowed.
 
-## 4. Recurrent Bounded Replacement
+## 4. Recurrent Complete Replacement
 
 Structured compaction implements:
 
@@ -94,10 +94,12 @@ set of newly selected, settled raw-backed WorkingContext units. Only `R(n)` is
 archived for the new compaction; prior-memory ancestry is represented by
 `previousCompactionId` and is never re-archived as new activity.
 
-The proposal is normalized to one complete replacement bundle containing:
-
-- one through three episode summaries; and
-- at most twenty semantic facts across the supported categories.
+The proposal is normalized to one complete replacement bundle with at least one
+non-empty episode. The Memory Compactor chooses the natural number of episodes
+and semantic facts needed for safe continuation. Parser, normalizer, acceptance,
+lineage, current projection, and origin resolution do not impose a total episode
+or fact-count cap; per-entry text bounds, structural validation, cleanup,
+deduplication, and positive salience still apply.
 
 The new lineage record lists exactly those assigned output IDs. Current
 projection loads only that head's bundle, never a retrieval mix or concatenation
@@ -178,6 +180,13 @@ A lineage record contains schema version, explicit standalone/team-member scope,
 provider / model metadata, policy/prompt versions, and optional integrity hashes.
 It does not copy raw IDs/content, prior memory, or rendered prompt content.
 
+`selectionPolicyVersion` remains `1`. Existing prompt-audit value `1` is retained
+and read directly, while every new accepted compaction writes
+`promptContractVersion: 2` for the natural-sizing/canonical-history contract.
+Mixed immutable `1 -> 2` chains are valid without rewriting or decoding earlier
+records. Any other prompt-contract value is rejected without mutating the
+append-only lineage file.
+
 ## 8. Clean Pre-Lineage Transition
 
 Server startup runs required app-data migration
@@ -241,19 +250,29 @@ fallback model.
 
 ## 11. Natural Compactor Conversation
 
-The compactable logical prefix is rendered as one natural ordered conversation
-inside the reserved application-generated `<conversation_history>` boundary.
-It contains the prior compacted-memory user region when present followed by the
-selected new user/assistant/tool units.
+The built-in `autobyteus-memory-compactor` system prompt owns the stable
+summarization instructions, natural episode/fact sizing guidance, and exact JSON
+response schema. The per-operation user message is only one renderer-produced
+`<conversation_history>...</conversation_history>` block; it does not duplicate
+task instructions, schema text, size policy, token settings, or platform
+internals.
+
+The compactable logical prefix is rendered as one natural ordered conversation.
+Before rendering, `WorkingContextFinalizer` composes the selected visible
+messages into canonical turns. A prior compacted-memory region followed by
+compatible retained/current user content therefore appears as one `User` turn,
+not artificial adjacent user labels. Assistant and tool boundaries remain
+ordered.
 
 The renderer omits private reasoning and backend call IDs. Each settled tool
 interaction is one `Tool` body containing name, status, arguments, and exactly
 one result or error section. Source text that could imitate the reserved outer
 boundary is escaped.
 
-The compactor returns only the exact structured JSON contract. Prompt rendering
-is not persisted as lineage evidence; an optional SHA-256 digest may support
-integrity/audit metadata without copying content.
+The compactor returns only the exact structured JSON contract and may choose any
+structurally valid natural output size with at least one episode. Prompt
+rendering is not persisted as lineage evidence; an optional SHA-256 digest may
+support integrity/audit metadata without copying content.
 
 ## 12. Shared Readable Value And Tool Policy
 

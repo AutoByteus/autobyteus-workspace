@@ -12,59 +12,61 @@
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/provenance-methodology-analysis.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/compacted-memory-message-role-analysis.md`
 - Solution Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/solution-revision-record.md`
-- Relevant Solution Revision IDs: `SR-001` through `SR-010`; current revision `SR-010`
+- Relevant Solution Revision IDs: `SR-001` through `SR-015`; current revision `SR-015`
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-006`
-- Current Review Round: `6`
-- Trigger: `solution_designer` submitted `SR-010` as the cumulative correction for `ARCH-F-006` through `ARCH-F-009` without changing the user-approved SR-009 behavior or exact prompt wording.
-- Prior Review Round Reviewed: `ARCH-REV-005` / round 5 / `Fail / Design Impact`
-- Latest Authoritative Round: `6`
-- Current-State Evidence Basis: approved SR-009 requirements and normative supplements; SR-010 canonical corrections; current source at `HEAD 4bfb99e3f6edd34405adeef55aab460e104b9b4d`; current compactor template, prompt builder, unit builder/planner, conversation renderer, finalizer, parser, normalizer, accepted builder/committer, lineage record/store, current-output projection, and origin resolver; downstream implementation/review/API-E2E/delivery evidence for the implemented SR-004 baseline. Production source remains unchanged for SR-010. `origin/personal` is `80d6693c1b0df5abdfd2c3dc0ec01ff885425847`; the branch is 7 ahead / 1 behind, with later refresh owned by delivery.
+- Current Architecture Review Revision ID: `ARCH-REV-009`
+- Current Review Round: `9`
+- Trigger: `solution_designer` submitted user-approved `SR-015` to close `ARCH-F-012` through `ARCH-F-014` and apply the user's approved supersession of `ARCH-F-015` with one forward-only structural rule: convert only absent/empty-lineage native locations and leave every nonempty-lineage location untouched.
+- Prior Review Round Reviewed: `ARCH-REV-008` / round 8 / `Fail — Requirement Gap with related Design Impact`
+- Latest Authoritative Round: `9`
+- Current-State Evidence Basis: current source and history at `HEAD fc45c94771e3dc7e4fe0d5e068a030fa3e4482d4`; `origin/personal@9615dcc88e73f0584e67623a3cfe1f0d2afd4617`; divergence `12 ahead / 0 behind`; delivered `ARCH-REV-006`, `IR-003`, `CRR-009`, `API-REV-007`, `CRR-010`, and `DR-006`/`DR-007`; current snapshot serializer, raw-trace model, run/team metadata identity types, compaction committer, restore, migration runner, and server startup source; delivered external-runtime artifacts; and the retained 347-snapshot read-only audit. SR-015 has not changed production source.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
 - Overall Basis Status (`Confirmed`/`Contradicted`/`Blocked`): `Confirmed`
-- Approved requirements / intended behavior understood: Yes. The LLM chooses natural episode/fact counts under unchanged launch/provider behavior; `agent.md` owns the exact stable contract; the operation message is exactly one renderer-produced conversation-history block; canonical user turns survive internal constituent selection; all implemented SR-004 storage, lineage, context, startup, presentation, and product boundaries remain unchanged.
-- Relevant existing behavior and evidence confirmed: Yes. Current source has the fixed count policy in the system/operation prompts, parser, normalizer, accepted builder, and lineage record validator; literal prompt audit value 1; and constituent-level visible labeling. Current source also confirms the implemented SR-004 recurrent lineage-tail, message-only v5 snapshot, fail-closed reset, reasoning-free XML/shared-Tool renderer, and manager-owned accepted publication baseline.
-- Approved change, preserved behavior, and outside scope understood: Yes. SR-010 adds the complete lineage validator/read/query delta, prompt audit value 2 with direct mixed 1/2 reads, and finalizer reuse while preserving all other SR-004 behavior. It adds no schema field, compatibility decoder, transaction journal, primary spine, token ceiling, launch change, migration change, public provenance surface, or new subsystem.
+- Approved requirements / intended behavior understood: Yes. Delivered SR-010 remains preservation-only. Pending work is exact-native absent/empty-lineage snapshot migration, strict-v5 snapshot-only restore plus projector removal, restoration of ordinary nonblocking startup migration behavior, and post-compaction/pre-request recovery capture.
+- Relevant existing behavior and evidence confirmed: Yes. Current source contains delivered SR-010, strict schema-v5 validation, run/member identity sources, append-only lineage, the superseded destructive reset/fail-closed runner changes, raw-history recovery, and the too-early request checkpoint. The retained audit covers 347 exact native v1/v3/v4 snapshots (32,501,775 bytes), with all stored raw references resolving; it also identifies content that the approved migration may omit.
+- Approved change, preserved behavior, and outside scope understood: The migration is one startup-only historical transformer. Normal runtime remains strict v5/current-lineage only. Unsupported legacy units may be omitted, including all messages. There is no compatibility reader, raw reconstruction, generated repair content, raw mutation, second corpus preflight, backup, rollback, journal, or ticket-specific physical-failure protocol. Every nonempty-lineage location is outside the transition and stays untouched.
 - Remaining material ambiguity, if any: None.
 
 | Behavior ID | Kind | Design Alignment With Approved Intent (`Pass`/`Fail`) | Approved Trigger / Contract And Current-State Evidence (`Pass`/`Fail`/`Unclear`) | Target Outcome / Path / Spine Coherence (`Pass`/`Fail`/`Unclear`) | Status (`Confirmed`/`Needs Correction`/`Unclear`) | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| BEH-001 | System/User | Pass | Pass | Pass | Confirmed | Preserve implemented raw-evidence and active-only Event Monitor behavior. |
-| BEH-002 | Contract | Pass | Pass | Pass | Confirmed | Remove only the obsolete lineage membership maximum and preserve the implemented relation. |
-| BEH-003 | Contract | Pass | Pass | Pass | Confirmed | Natural membership and producing-contract audit value 2 now traverse the full accepted path. |
-| BEH-004 | System | Pass | Pass | Pass | Confirmed | Preserve typed origin lookup and cover natural membership/mixed audit history. |
-| BEH-005 | System | Pass | Pass | Pass | Confirmed | Preserve exact-tail recurrence and keep predecessor identity outside messages/snapshot. |
-| BEH-006 | Operational | Pass | Pass | Pass | Confirmed | Preserve implemented fail-closed reset and current-only v5 restore. |
-| BEH-007 | Contract | Pass | Pass | Pass | Confirmed | Preserve native scope and external-runtime boundaries. |
-| BEH-008 | Operational | Pass | Pass | Pass | Confirmed | Preserve pre-write retry while removing only the reachable post-output count rejection. |
-| BEH-009 | Contract | Pass | Pass | Pass | Confirmed | Reuse the finalizer for canonical turns and preserve delivered renderer/presentation behavior. |
-| BEH-010 | User/System | Pass | Pass | Pass | Confirmed | Preserve implemented shared Tool/value presentation and separate Work Evidence ownership. |
-| BEH-011 | Contract | Pass | Pass | Pass | Confirmed | Exact prompt, natural counts, full accepted path, and mixed audit versions are coherent. |
+| BEH-001 | System/User | Pass | Pass | Pass | Confirmed | Preserve raw-evidence identity and active-only Event Monitor. |
+| BEH-002 | Contract | Pass | Pass | Pass | Confirmed | Preserve delivered reference-only lineage. |
+| BEH-003 | Contract | Pass | Pass | Pass | Confirmed | Preserve natural-count accepted output and prompt audit value 2. |
+| BEH-004 | System | Pass | Pass | Pass | Confirmed | Preserve delivered typed origin lookup. |
+| BEH-005 | System | Pass | Pass | Pass | Confirmed | Preserve exact-tail projection, canonical finalization, and message-only v5. |
+| BEH-006 | Operational/User | Pass | Pass | Pass | Confirmed | Implement exact native absent/empty-lineage conversion, strict restore, and untouched nonempty-lineage exclusion. |
+| BEH-007 | Contract | Pass | Pass | Pass | Confirmed | Preserve delivered external raw-only behavior. |
+| BEH-008 | Operational | Pass | Pass | Pass | Confirmed | Preserve pre-write compactor failure/retry behavior. |
+| BEH-009 | Contract | Pass | Pass | Pass | Confirmed | Preserve delivered natural compactor history. |
+| BEH-010 | User/System | Pass | Pass | Pass | Confirmed | Preserve delivered shared presentation boundary. |
+| BEH-011 | Contract | Pass | Pass | Pass | Confirmed | Preserve exact prompt/history/count/audit contract. |
+| BEH-012 | System/Failure | Pass | Pass | Pass | Confirmed | Move the request checkpoint after durable compaction and before request mutation. |
+| BEH-013 | Operational/Contract | Pass | Pass | Pass | Confirmed | Use the retained audit as feasibility evidence and implement per-run tolerant omission without a second preflight or repair path. |
 
-The four round-5 findings were rechecked against canonical content, not the SR-010 summary alone. The lineage validator/store/committer/read/query path is complete; affected current-state evidence now distinguishes implemented SR-004 from historical pre-SR-004 observations; prompt audit values have explicit producing-contract semantics and a direct-use transition; and message constituents no longer carry predecessor identity.
+The mandatory requirements and design maps each contain exactly one row for BEH-001 through BEH-013. The foundation has 29 use cases and 21 scenarios. The design and spine supplement expose the same 27 DF IDs: 12 primary, two secondary, three return/event, and ten bounded-local spines.
 
 ## Supplemental Artifact Coherence Verdict
 
 | Artifact | Purpose And Scope Are Clear? (`Pass`/`Fail`) | Linked To Relevant Core Artifacts? (`Pass`/`Fail`) | Internally Complete? (`Pass`/`Fail`) | Consistent With Related Core Artifacts? (`Pass`/`Fail`) | Status And Approval Applicability Are Clear? (`Pass`/`Fail`) | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| `memory-context-and-lineage-contract.md` | Pass | Pass | Pass | Pass | Pass | None. |
-| `use-case-data-flow-spine-map.md` | Pass | Pass | Pass | Pass | Pass | None. |
-| `memory-compactor-prompt-content-contract.md` | Pass | Pass | Pass | Pass | Pass | Copy the exact approved target after implementation handoff. |
-| `provenance-methodology-analysis.md` | Pass | Pass | Pass | Pass | Pass | None; approval remains N/A evidence/context. |
-| `compacted-memory-message-role-analysis.md` | Pass | Pass | Pass | Pass | Pass | None; approval remains N/A evidence/context. |
+| `memory-context-and-lineage-contract.md` | Pass | Pass | Pass | Pass | Pass | Implement the approved foundation; no migration repair/baseline rule remains. |
+| `use-case-data-flow-spine-map.md` | Pass | Pass | Pass | Pass | Pass | Use DF-S02/DF-L06 as the migration authority and preserve all delivered spines. |
+| `memory-compactor-prompt-content-contract.md` | Pass | Pass | Pass | Pass | Pass | Preserve unchanged; its exact `agent.md` block byte-matches production. |
+| `provenance-methodology-analysis.md` | Pass | Pass | Pass | Pass | Pass | Evidence/context only; no separate approval needed. |
+| `compacted-memory-message-role-analysis.md` | Pass | Pass | Pass | Pass | Pass | Evidence/context only; no separate approval needed. |
 
-All five supplements are inventoried in the investigation notes and linked from all three core artifacts. Their purpose, scope, status, approval applicability, and SR-010 role are explicit.
+The investigation notes inventory all five supplements with purpose, scope, status, approval applicability, supported core artifacts, and follow-up. All materially supported core artifacts link them. Markdown fences are balanced across all nine solution-owned artifacts.
 
 ## Task Design Health Assessment Verdict
 
 | Assessment Area | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Assessment is present for the current task posture | Pass | The design identifies implemented SR-004 as the reconciliation baseline and SR-010 as a bounded prompt/cardinality/canonical-turn/audit delta. | None. |
-| Root-cause classification is explicit and evidence-backed | Pass | Current source inventories every fixed-count site, the post-output lineage validator, literal audit value 1, and constituent-created visible turn split. | None. |
-| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | Reuse existing prompt, renderer, finalizer, parser/normalizer/acceptance, lineage, projection, and resolver owners; create no subsystem. | None. |
-| Refactor decision is supported by the concrete design sections or residual-risk rationale | Pass | File responsibilities, change inventory, sequence, removals, direct-use transition, focused tests, and preserved SR-004 owners are concrete. | None. |
+| Assessment is present for the current task posture | Pass | The package distinguishes delivered SR-010 from the bounded pending migration/restore/startup/recovery delta. | Preserve. |
+| Root-cause classification is explicit and evidence-backed | Pass | The observed pre-v5 restore failure, 347-file audit, unsupported snapshot-less projector path, and durable-compaction recovery ordering are documented against current source. | Preserve. |
+| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | Extract one classifier, add one isolated converter/migration, remove the projector/global gate, and relocate recovery capture; preserve all other delivered owners. | Implement proportionally. |
+| Refactor decision is supported by concrete design sections or residual-risk rationale | Pass | Owners, types, interfaces, files, removals, sequence, tests, and excluded machinery are explicit. | No design rework required. |
 
 ## Spine Inventory Verdict
 
@@ -76,188 +78,234 @@ All five supplements are inventoried in the investigation notes and linked from 
 | DF-P04 | Pre-dispatch native compaction | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DF-P05 | Tool-turn deferral | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DF-P06 | Recurrent compaction | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DF-P07 | Current-schema restore | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DF-P07 | Strict-v5 restore | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DF-P08 | Typed origin lookup | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DF-P09 | External-runtime evidence | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DF-P09 | External-runtime raw evidence | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DF-P10 | Immediate post-response compaction | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DF-P11 | Generated Work Evidence | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DF-S02 | Required startup reset | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DF-S03 | Lifecycle reporting | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DF-R01 | Runner/parser failure and retry | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DF-P12 | Durable-compaction-aware request preparation | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DF-S02 | Exact native snapshot migration | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DF-S03 | Compaction lifecycle reporting | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DF-R01 | Compactor pre-write failure/retry | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DF-R02 | Active cursor expiry | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DF-R03 | Post-capture request failure | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DF-L01 | Constituent-aware recurrent plan | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
-| DF-L02 | IDless natural-count proposal | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
+| DF-L02 | IDless natural proposal | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
 | DF-L03 | Canonical context finalization | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
-| DF-L04 | Natural-count accepted commit | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
+| DF-L04 | Accepted compaction publication | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
 | DF-L05 | Recursive origin | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
-| DF-L06 | Per-run obsolete-state deletion | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
+| DF-L06 | Per-native-run conversion/publication | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
 | DF-L07 | Active paging | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
-| DF-L08 | Natural canonical-turn compactor rendering | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
+| DF-L08 | Canonical compactor history | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
 | DF-L09 | Shared condensed Tool body | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
-
-The design spec and normative spine supplement contain the same 24 spine IDs. DF-L04 now traces archive -> output -> lineage normalization/append/read -> exact-head projection/origin membership -> context/snapshot, while DF-L08 reuses DF-L03 composition without importing lineage identity.
+| DF-L10 | Ephemeral request recovery | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
 
 ## Boundary Encapsulation Verdict
 
 | Boundary / Owner | Authoritative Public Entry Point Is Clear? (`Pass`/`Fail`) | Internal Owned Mechanisms Stay Internal? (`Pass`/`Fail`) | Caller Bypass Risk Is Controlled? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Built-in Memory Compactor `agent.md` | Pass | Pass | Pass | Pass | Exact approved stable system policy; launch configuration remains separate. |
-| Operation prompt builder / conversation renderer | Pass | Pass | Pass | Pass | Builder returns the renderer block only; renderer owns the envelope. |
-| `WorkingContextFinalizer` | Pass | Pass | Pass | Pass | Existing provider-neutral composition is reused before visible labels. |
-| Parser / normalizer / accepted builder | Pass | Pass | Pass | Pass | Structural/per-entry safeguards remain; cardinality policy is removed. |
-| `MemoryManager` / accepted committer | Pass | Pass | Pass | Pass | Manager retains baseline/head and identity authority; committer remains internal coordination. |
-| Lineage record/store/resolver | Pass | Pass | Pass | Pass | Record owns structural validation/audit enum, store owns persistence/head, resolver owns traversal. |
-| Unchanged SR-004 reset/snapshot/projection/presentation | Pass | Pass | Pass | Pass | No SR-010 bypass or duplicate authority is introduced. |
+| `RuntimeMemoryLocationClassifier` | Pass | Pass | Pass | Pass | Exact current metadata/location identity only; `snapshotAgentId` is derived from standalone `runId` or team `memberRunId`. |
+| Native startup migration | Pass | Pass | Pass | Pass | Owns eligibility, lineage gate, source/fact loading, publication, cleanup, item status, and runner integration. |
+| `NativeWorkingContextSnapshotV5Converter` | Pass | Pass | Pass | Pass | Pure migration-only historical decoder and sole message/content/media/tool/reference matcher. |
+| `AppDataMigrationRunner` / `startConfiguredServer` | Pass | Pass | Pass | Pass | Restore ordinary persisted-status/log-and-continue semantics; no ticket-wide startup exception. |
+| Snapshot bootstrapper | Pass | Pass | Pass | Pass | Strict v5 snapshot only; no historical decoder or raw-history projector. |
+| Request recovery boundary | Pass | Pass | Pass | Pass | Captures only ephemeral WorkingContext/pending state after compaction. |
+| Delivered SR-010 owners | Pass | Pass | Pass | Pass | Manager, lineage, projection, finalizer, prompt, and shared presentation boundaries remain unchanged. |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
 
 | Owner / Boundary | Allowed Dependencies Are Clear? (`Pass`/`Fail`) | Forbidden Shortcuts Are Explicit? (`Pass`/`Fail`) | Direction Is Coherent With Ownership? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `agent.md` -> normal product launch -> compactor | Pass | Pass | Pass | Pass | Stable policy does not absorb launch or persistence mechanics. |
-| Strategy -> prompt builder/renderer -> finalizer/presentation | Pass | Pass | Pass | Pass | Composition and readable-value policies are reused through existing core boundaries. |
-| Strategy -> parser/normalizer -> `MemoryManager` -> committer/store | Pass | Pass | Pass | Pass | Strategy stays IDless and write-free; manager owns accepted identity. |
-| Accepted builder/lineage record -> prompt audit value | Pass | Pass | Pass | Pass | New writes use exported current value 2; readers preserve supported 1/2. |
-| Message/snapshot provenance -> lineage identity | Pass | Pass | Pass | Pass | Explicitly forbidden; manager baseline supplies predecessor separately. |
-| Core -> server/product adapters | Pass | Pass | Pass | Pass | Existing dependency direction and external-runtime boundaries remain unchanged. |
+| Classifier -> external/native migration eligibility | Pass | Pass | Pass | Pass | Shared identity classification; separate action policies. |
+| Native migration -> pure converter | Pass | Pass | Pass | Pass | Server supplies typed same-subject facts; converter owns decode/matching and cannot access files/stores. |
+| Native migration -> snapshot store/obsolete cleanup | Pass | Pass | Pass | Pass | Candidate validates before publication; raw and nonempty-lineage locations are never mutated. |
+| Restore -> strict snapshot only | Pass | Pass | Pass | Pass | Historical conversion cannot be called by normal restore. |
+| Assembler -> manager recovery facade -> phase settlement | Pass | Pass | Pass | Pass | Checkpoint never contains or rolls back durable compaction state. |
+| Delivered compaction/presentation path | Pass | Pass | Pass | Pass | No strategy write, renderer orchestration, or boundary bypass is reintroduced. |
 
 ## Interface Boundary Verdict
 
 | Interface / API / Query / Command / Method | Subject Is Clear? (`Pass`/`Fail`) | Responsibility Is Singular? (`Pass`/`Fail`) | Identity Shape Is Explicit? (`Pass`/`Fail`) | Generic Boundary Risk (`Low`/`Medium`/`High`) | Verdict (`Pass`/`Fail`) |
 | --- | --- | --- | --- | --- | --- |
-| `WorkingContextCompactionPromptBuilder.buildTaskPrompt` | Pass | Pass | Pass | Low | Pass |
-| `CompactionConversationHistoryRenderer.render` | Pass | Pass | Pass | Low | Pass |
-| `WorkingContextFinalizer.finalize` | Pass | Pass | Pass | Low | Pass |
-| `CompactionResponseParser.parse` | Pass | Pass | Pass | Low | Pass |
-| `CompactionResultNormalizer.normalize` | Pass | Pass | Pass | Low | Pass |
-| `AcceptedCompactionBuilder.build` | Pass | Pass | Pass | Low | Pass |
-| `normalizeCompactionLineageRecord` | Pass | Pass | Pass | Low | Pass |
-| `CompactionLineageStore.appendNext/readHead/findProducingRecord` | Pass | Pass | Pass | Low | Pass |
-| `CompactionLineageExecution.promptContractVersion` | Pass | Pass | Pass | Low | Pass |
-| Typed origin resolver | Pass | Pass | Pass | Low | Pass |
+| `RuntimeMemoryLocationClassifier.classify` | Pass | Pass | Pass | Low | Pass |
+| `NativeWorkingContextSnapshotV5Converter.convert` | Pass | Pass | Pass | Low | Pass |
+| `MigrateNativeWorkingContextSnapshotsV5Migration.execute` | Pass | Pass | Pass | Low | Pass |
+| `AppDataMigrationRunner.runPending` | Pass | Pass | Pass | Low | Pass |
+| `WorkingContextSnapshotBootstrapper` restore | Pass | Pass | Pass | Low | Pass |
+| `LLMRequestAssembler.prepare*` / `RequestPackage` checkpoint | Pass | Pass | Pass | Low | Pass |
+| `LlmRequestRecoveryBoundary` capture/restore/release | Pass | Pass | Pass | Low | Pass |
+| Delivered lineage/origin/presentation interfaces | Pass | Pass | Pass | Low | Pass |
 
 ## Existing Capability / Subsystem Reuse Verdict
 
 | Need / Concern | Existing Capability Area Was Checked? (`Pass`/`Fail`) | Reuse / Extension Decision Is Sound? (`Pass`/`Fail`) | New Support Piece Is Justified? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Stable system policy | Pass | Pass | N/A | Pass | Replace the existing built-in template exactly. |
-| History-only operation message | Pass | Pass | N/A | Pass | Tighten the existing builder/renderer. |
-| Canonical user-turn composition | Pass | Pass | N/A | Pass | Reuse `WorkingContextFinalizer`; no connector helper. |
-| Structural parse/normalization/acceptance | Pass | Pass | N/A | Pass | Remove count policy in existing owners. |
-| Lineage membership validation/audit | Pass | Pass | N/A | Pass | Extend the existing record/store domain, not a new version service. |
-| Projection/origin verification | Pass | Pass | N/A | Pass | Exercise existing exact-head loader and typed resolver. |
-| SR-004 storage/context/product capabilities | Pass | Pass | N/A | Pass | Correctly preserved rather than rebuilt. |
+| Exact runtime location identity | Pass | Pass | Pass | Pass | Extract current external-cleanup discovery into one narrow classifier. |
+| Historical snapshot conversion | Pass | Pass | Pass | Pass | One new pure migration-only converter is proportionate. |
+| Raw-reference truth checking | Pass | Pass | N/A | Pass | Existing active raw model supplies bounded facts; converter alone matches them. |
+| Current finalization/strict validation | Pass | Pass | N/A | Pass | Reuse finalizer and serializer; do not duplicate current schema. |
+| Strict restore | Pass | Pass | N/A | Pass | Narrow the bootstrapper and remove the unsupported projector. |
+| Request rollback | Pass | Pass | N/A | Pass | Relocate the existing checkpoint instead of adding a transaction owner. |
 
 ## Subsystem / Capability-Area Allocation Verdict
 
 | Subsystem / Capability Area | Ownership Allocation Is Clear? (`Pass`/`Fail`) | Reuse / Extend / Create-New Decision Is Sound? (`Pass`/`Fail`) | Supports The Right Spine Owners? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Built-in agent template | Pass | Pass | Pass | Pass | Stable natural task/schema/quality contract. |
-| `memory/compaction` | Pass | Pass | Pass | Pass | Operation payload, parsing, cleanup, acceptance, and internal commit stay local. |
-| WorkingContext/context | Pass | Pass | Pass | Pass | Finalizer and message-local provenance retain their existing authority. |
-| `memory/lineage` / store | Pass | Pass | Pass | Pass | Natural membership and prompt audit enum fit existing owners. |
-| Projection/origin | Pass | Pass | Pass | Pass | Existing exact-head and typed lookup paths supply full-path proof. |
-| SR-004 restore/presentation/server capabilities | Pass | Pass | Pass | Pass | No pending SR-010 responsibility is misplaced here. |
+| Core `memory/migration` | Pass | Pass | Pass | Pass | Pure conversion only; no filesystem, startup, repair, or runtime compatibility. |
+| Server `agent-memory/services` | Pass | Pass | Pass | Pass | Exact current location identity only. |
+| Server `app-data-migrations` | Pass | Pass | Pass | Pass | Startup eligibility, files, cleanup, result persistence. |
+| Core restore | Pass | Pass | Pass | Pass | Strict v5 snapshot-only authority. |
+| Request assembly/recovery | Pass | Pass | Pass | Pass | Stable-base capture and one-settlement lifecycle. |
+| Delivered compaction/lineage/presentation | Pass | Pass | Pass | Pass | Preservation-only for SR-015. |
 
 ## Reusable Owned Structures Verdict
 
 | Repeated Structure / Logic | Extraction Need Was Evaluated? (`Pass`/`Fail`) | Shared File Choice Is Sound? (`Pass`/`Fail`/`N/A`) | Ownership Of Shared Structure Is Clear? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Canonical user connector/composition policy | Pass | Pass | Pass | Pass | Existing finalizer is reused. |
-| Exact prompt content | Pass | Pass | Pass | Pass | Approval-required supplement prevents paraphrase. |
-| Compaction result/semantic entry shapes | Pass | N/A | Pass | Pass | Variable-length arrays require no new field/type. |
-| Lineage execution audit metadata | Pass | Pass | Pass | Pass | Existing record type owns supported/current values. |
-| User constituent structure | Pass | Pass | Pass | Pass | Existing message-local kind/range/raw-ref schema remains sufficient. |
+| `RuntimeMemoryLocation` | Pass | Pass | Pass | Pass | Exact standalone/team subject plus derived snapshot identity. |
+| `NativeSnapshotConversionInput` / reference facts | Pass | Pass | Pass | Pass | One per-run, in-memory seam; no path or mutation operations. |
+| Conversion result/omission diagnostics | Pass | Pass | Pass | Pass | Tight candidate-or-identity-rejection union; bounded metadata only. |
+| Historical decoder | Pass | Pass | Pass | Pass | One migration-only owner. |
+| Request recovery snapshot | Pass | Pass | Pass | Pass | Existing opaque current-context/pending checkpoint remains tight. |
+| Delivered lineage/presentation structures | Pass | Pass | Pass | Pass | No SR-015 schema change. |
 
 ## Shared Structure / Data Model Tightness Verdict
 
 | Shared Structure / Type / Schema | One Clear Meaning Per Field? (`Pass`/`Fail`) | Redundant Attributes Removed? (`Pass`/`Fail`) | Overlapping Representation Risk Is Controlled? (`Pass`/`Fail`) | Shared Core Vs Specialized Variant / Composition Decision Is Sound? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| Exact compactor JSON response | Pass | Pass | Pass | Pass | Pass | Same fields; natural array lengths. |
-| `WorkingContextCompactionProposal` | Pass | Pass | Pass | Pass | Pass | Remains IDless and write-free. |
-| `CompactionLineageRecord.episodeIds/semanticIds` | Pass | Pass | Pass | N/A | Pass | Existing arrays accept natural membership; no shape migration. |
-| `CompactionLineageExecution.promptContractVersion` | Pass | Pass | Pass | N/A | Pass | Producing-contract audit metadata; supported 1/2, current 2. |
-| `UserConstituent` / snapshot v5 | Pass | Pass | Pass | Pass | Pass | Local structure/raw refs only; no predecessor or output identity. |
+| `RuntimeMemoryLocation` | Pass | Pass | Pass | Pass | Pass | `snapshotAgentId` is explicitly derived, not a second authority. |
+| `NativeSnapshotReferenceFact` | Pass | Pass | Pass | Pass | Pass | Mirrors matching-relevant active raw fields; excludes timestamp/path/mutation. |
+| `NativeSnapshotConversionInput` | Pass | Pass | Pass | Pass | Pass | Expected identity, source bytes, and same-subject facts only. |
+| `NativeSnapshotConversionResult` | Pass | Pass | Pass | Pass | Pass | Current candidate or typed identity rejection; no repair plan/content copies. |
+| Snapshot schema v5 | Pass | Pass | Pass | N/A | Pass | Messages and message-local provenance only; no lineage/current IDs. |
+| `CompactionLineageRecord` | Pass | Pass | Pass | Pass | Pass | Delivered direct-edge record and value-1/value-2 audit behavior unchanged. |
 
 ## File Responsibility Mapping Verdict
 
 | File | Responsibility Is Singular And Clear? (`Pass`/`Fail`) | Responsibility Matches The Intended Owner/Boundary? (`Pass`/`Fail`) | Responsibilities Were Re-Tightened After Shared-Structure Extraction? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Memory Compactor `agent.md` | Pass | Pass | N/A | Pass | Exact target supplied. |
-| Prompt builder / core export | Pass | Pass | Pass | Pass | Remove duplicate constant/export and return renderer output. |
-| Conversation renderer / finalizer | Pass | Pass | Pass | Pass | Canonical composition precedes consumer-specific labels/envelope. |
-| Response parser / normalizer | Pass | Pass | Pass | Pass | All-entry structural handling with existing per-entry safeguards. |
-| Accepted builder / committer | Pass | Pass | Pass | Pass | At-least-one/identity/sequence remain; new audit value is explicit. |
-| `compaction-lineage-record.ts` | Pass | Pass | N/A | Pass | Remove only upper counts; retain invariants; support 1/2 and current 2. |
-| File lineage store / projection / resolver | Pass | Pass | N/A | Pass | Existing paths verify append/read/current/origin behavior. |
-| SR-004 files outside the bounded delta | Pass | Pass | N/A | Pass | Preserve current implementation. |
+| `memory/migration/native-working-context-snapshot-v5-converter.ts` | Pass | Pass | Pass | Pass | Historical decode/matching/omission/finalization/strict candidate only. |
+| `agent-memory/services/runtime-memory-location-classifier.ts` | Pass | Pass | Pass | Pass | Current metadata/location classification and diagnostics only. |
+| `app-data-migrations/.../migrate-native-working-context-snapshots-v5-migration.ts` | Pass | Pass | Pass | Pass | Target/lineage/files/cleanup/status orchestration only. |
+| `working-context-snapshot-bootstrapper.ts` | Pass | Pass | Pass | Pass | Strict current snapshot restore only after projector removal. |
+| `llm-request-assembler.ts` / `llm-phase.ts` / `llm-request-recovery.ts` | Pass | Pass | Pass | Pass | Capture location and settlement roles are separated. |
+| Delivered SR-010 files | Pass | Pass | Pass | Pass | Explicit preserve/verify inventory prevents reimplementation. |
 
 ## Subsystem / Folder / File Placement Verdict
 
 | Path / Item | Target Placement Is Clear? (`Pass`/`Fail`) | Folder Matches Owning Boundary? (`Pass`/`Fail`) | Mixed-Layer Or Over-Split Risk (`Low`/`Medium`/`High`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Built-in memory-compactor template | Pass | Pass | Low | Pass | Correct stable system-policy location. |
-| `memory/compaction` builder/renderer/parser/normalizer/acceptance | Pass | Pass | Low | Pass | Bounded in-place refactor. |
-| `working-context-finalizer.ts` | Pass | Pass | Low | Pass | Existing provider-neutral composition boundary. |
-| `memory/lineage/compaction-lineage-record.ts` | Pass | Pass | Low | Pass | Correct structural/audit owner. |
-| `memory/store/file-compaction-lineage-store.ts` | Pass | Pass | Low | Pass | Existing persistence provider. |
-| Projection/origin files | Pass | Pass | Low | Pass | Existing read/query verification targets. |
-| Unaffected SR-004 folders | Pass | Pass | Low | Pass | No new folder/subsystem is justified. |
+| `autobyteus-ts/src/memory/migration/` | Pass | Pass | Low | Pass | Historical conversion is isolated from restore/runtime. |
+| `autobyteus-server-ts/src/agent-memory/services/` | Pass | Pass | Low | Pass | Product location classification belongs to server metadata/location ownership. |
+| `autobyteus-server-ts/src/app-data-migrations/` | Pass | Pass | Low | Pass | Filesystem/ledger transition remains pre-runtime. |
+| `autobyteus-ts/src/memory/restore/` | Pass | Pass | Low | Pass | Current-only bootstrap after projector removal. |
+| `autobyteus-ts/src/agent/` and `memory/llm-request-recovery.ts` | Pass | Pass | Low | Pass | Request orchestration and context checkpoint ownership remain distinct. |
 
 ## Removal / Decommission Completeness Verdict
 
 | Item / Area | Redundant / Obsolete Piece To Remove Is Named? (`Pass`/`Fail`) | Replacement Owner / Structure Is Clear? (`Pass`/`Fail`/`N/A`) | Removal / Decommission Scope Is Explicit? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Fixed count text in `agent.md` | Pass | Pass | Pass | Pass | Exact replacement supplied. |
-| Static builder task/schema/count text and `COMPACTION_RESULT_SHAPE` export | Pass | Pass | Pass | Pass | Builder becomes renderer-only. |
-| Parser episode/total-fact budget | Pass | Pass | Pass | Pass | Parse all structurally valid entries. |
-| Normalizer episode/total/per-category caps | Pass | Pass | Pass | Pass | Retain cleanup/dedup/noise/positive salience. |
-| Accepted-builder >3/>20 rejection | Pass | Pass | Pass | Pass | Retain at least one episode and application invariants. |
-| Lineage-record >3/>20 rejection | Pass | Pass | Pass | Pass | Explicitly removed while every other validation remains. |
-| Ticket-specific token/config changes | Pass | N/A | Pass | Pass | Explicitly absent. |
+| Destructive reset migration/helper/registration/tests | Pass | Pass | Pass | Pass | Replace with new durable migration ID; old success cannot suppress it. |
+| `RequiredAppDataMigrationError` and server rethrow/gate tests | Pass | Pass | Pass | Pass | Restore origin's ordinary persisted-status/log-and-continue lifecycle. |
+| `WorkingContextRecoveryProjector`, export, wiring, tests | Pass | Pass | Pass | Pass | Missing explicit restore snapshot fails; new-run initialization is separate. |
+| Historical runtime readers/manifests/state pointers | Pass | Pass | Pass | Pass | Remain removed; historical knowledge exists only in the startup transformer. |
+| Migration repair/baseline/raw writer paths | Pass | N/A | Pass | Pass | Explicitly prohibited; omit unsupported units instead. |
+| Delivered SR-010 prompt/lineage/presentation code | Pass | Pass | Pass | Pass | Preserve, not remove or restart. |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Area | Compatibility Wrapper / Dual-Path / Legacy Retention Exists? (`Yes`/`No`) | Clean-Cut Removal Is Explicit? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- |
-| Prompt/builder/cardinality production path | No | Pass | Pass | One exact target and no dual prompt/count path. |
-| Existing prompt-audit value-1 lineage records | No | Pass | Pass | A version-agnostic current-schema reader accepts supported audit values 1/2 without content decoding or rewrite. |
-| SR-004 current-schema runtime | No | Pass | Pass | No historical snapshot/row fallback is reintroduced. |
+| Normal snapshot restore/runtime | No | Pass | Pass | Strict schema v5 only; no raw/old-schema fallback. |
+| Startup migration transformer | No | Pass | Pass | Bounded historical decoding is migration-owned, not runtime compatibility. |
+| Lineage/output runtime | No | Pass | Pass | Current supported value-1/value-2 audit values share one current record shape and require no historical content branch. |
+| Excluded/nonempty-lineage locations | No | Pass | Pass | Untouched exclusion is not a compatibility reader or fallback. |
 
 ## Persisted-Data Transition Verdict (When Applicable)
 
 | Area / Stored Subject | Approved Decision | Representative Reader / Semantic / Invariant Evidence Is Sufficient? (`Pass`/`Fail`) | Direct Use, Rebuild, Or Migration Choice Is Proportionate? (`Pass`/`Fail`) | Migration Safety Is Complete If Required? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| Current episode/semantic rows | Directly Usable — No Migration | Pass | Pass | N/A | Pass | Shape/per-entry safeguards are unchanged; future row count may vary. |
-| Current lineage membership arrays | Directly Usable — No Migration | Pass | Pass | N/A | Pass | Existing arrays broaden allowed cardinality without structural change. |
-| Current lineage prompt audit metadata | Directly Usable — No Migration | Pass | Pass | N/A | Pass | Existing value 1 remains immutable; new value 2 uses the same record shape and reader. |
-| WorkingContext/snapshot v5 | Not Affected | Pass | Pass | N/A | Pass | No identity/schema change. |
-| Implemented SR-004 startup reset/raw evidence/Work Evidence | Not Affected | Pass | Pass | N/A | Pass | Preserve validated behavior. |
+| Raw active/archive traces and manifests | Directly Usable — No Migration | Pass | Pass | N/A | Pass | Active records are read only as matching facts; all raw files remain unchanged. |
+| Pre-lineage episode/semantic rows | Discard or Rebuild | Pass | Pass | N/A | Pass | Delete only after durable strict v5; no trustworthy producing edges exist. |
+| Pre-v5 absent/empty-lineage native snapshots | Migration Required | Pass | Pass | Pass | Pass | Exact identity/facts, pure tolerant conversion, full candidate validation, publication before cleanup, item status, retry, and bounded diagnostics are defined. |
+| Strict natural v5 with absent/empty lineage | Directly Usable — No Migration | Pass | Pass | N/A | Pass | Retain current-valid bytes and perform only obsolete-file cleanup after validation. |
+| Any nonempty lineage and its complete location | Directly Usable / outside this transition | Pass | Pass | N/A | Pass | User-approved structural exclusion: skip byte-for-byte without inspection or cleanup. |
+| Current lineage/output rows | Directly Usable — No Migration | Pass | Pass | N/A | Pass | Delivered schema and value-1/value-2 direct reads remain unchanged. |
+| `compacted_memory_manifest.json` | Discard or Rebuild | Pass | Pass | N/A | Pass | Delete after strict-v5 publication for eligible absent/empty-lineage targets only. |
+
+The approved migration decision is evidence-backed and proportional. The completed audit establishes corpus feasibility; representative production-path tests still must validate actual conversion. The user explicitly accepts omission and an empty strict-v5 context over compatibility or generated repair content.
 
 ## Change / Refactor Safety Verdict
 
 | Area | Sequence Is Realistic? (`Pass`/`Fail`) | Temporary Seams Are Explicit? (`Pass`/`Fail`) | Cleanup / Removal Is Explicit? (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) |
 | --- | --- | --- | --- | --- |
-| Exact `agent.md` replacement / unchanged launch config | Pass | Pass | Pass | Pass |
-| History-only builder / finalizer-based canonical rendering | Pass | Pass | Pass | Pass |
-| Parser/normalizer/accepted-builder cardinality removal | Pass | Pass | Pass | Pass |
-| Lineage count/audit-value reconciliation | Pass | Pass | Pass | Pass |
-| Full accepted-path and mixed-version coverage | Pass | Pass | Pass | Pass |
-| Preserve implemented SR-004/downstream baseline | Pass | Pass | Pass | Pass |
+| Delivered SR-010 preservation | Pass | Pass | Pass | Pass |
+| Classifier and external-cleanup adaptation | Pass | Pass | Pass | Pass |
+| New-ID native migration/converter | Pass | Pass | Pass | Pass |
+| Strict restore/projector removal | Pass | Pass | Pass | Pass |
+| Runner/server nonblocking reconciliation | Pass | Pass | Pass | Pass |
+| Recovery capture relocation | Pass | Pass | Pass | Pass |
+| Focused implementation/API-E2E coverage | Pass | Pass | Pass | Pass |
 
 ## Example Adequacy Verdict
 
 | Topic / Area | Example Was Needed? (`Yes`/`No`) | Example Is Present And Clear? (`Pass`/`Fail`/`N/A`) | Bad / Avoided Shape Is Explained When Helpful? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Exact system prompt | Yes | Pass | Pass | Pass | Complete target file and invariants are supplied. |
-| Exact history-only operation message | Yes | Pass | Pass | Pass | Builder composition is byte-exact. |
-| Canonical composed user turn | Yes | Pass | Pass | Pass | One User entry and real assistant/tool boundaries are explicit. |
-| >3 episodes / >20 facts through accepted publication | Yes | Pass | Pass | Pass | Coverage includes persistence, lineage append/read, projection, and origin. |
-| Prompt-contract audit transition | Yes | Pass | Pass | Pass | Value-1 predecessor/value-2 head and unsupported-value behavior are explicit. |
-| Message-only predecessor separation | Yes | Pass | Pass | Pass | Constituent type and manager-head mapping examples agree. |
+| Standalone/team snapshot identity | Yes | Pass | Pass | Pass | Type and parse-invalid team-member example distinguish `runId`/`memberRunId`. |
+| Tolerant message/Tool omission | Yes | Pass | Pass | Pass | Projection table and SCN-008/021 cover retain, omit, empty, and identity rejection. |
+| Any-nonempty-lineage gate | Yes | Pass | Pass | Pass | DF-S02/DF-L06 and concrete flow show the untouched exclusion before conversion. |
+| Request recovery after compaction | Yes | Pass | Pass | Pass | DF-P12/DF-R03 and SCN-020 trace capture and one settlement. |
+| Delivered prompt/canonical turn | Yes | Pass | Pass | Pass | Exact supplement remains the byte-level authority. |
 
 ## Material Premise Validation (Only When Needed)
 
-None. The natural-count path is the approved normal native-compaction path. Mixed prompt-audit values arise from ordinary successful compactions before and after the approved contract change. Canonical-turn rendering is reached by the implemented planner/unit-builder/renderer path. No finding or new machinery depends on an assumed production or failure scenario.
+### `ARCH-PREM-009-001` — Existing native pre-v5 continuation requires a startup transition
+
+- Related approved requirement or established contract: BEH-006, REQ-008, AC-009.
+- Relevant behavior ID(s): BEH-006, BEH-013.
+- Initiating basis kind: `User`.
+- Independent product-supported initiating trigger or applicable governing contract: A user opens a previously persisted native run in the Electron product.
+- Support evidence: The exposed run-history/restore surface invokes `AgentFactory.restoreAgent -> WorkingContextSnapshotRestoreStep -> WorkingContextSnapshotBootstrapper`; an observed schema-v4 run fails current strict-v5 restore. The retained metadata-classified audit found 347 native v1/v3/v4 snapshots.
+- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: Electron existing-run selection -> server run restore -> snapshot bootstrapper -> strict-v5 schema check -> rejection of v1/v3/v4.
+- Lifecycle preconditions and material consequence at the claimed point: A persisted native pre-v5 snapshot exists; without migration the run cannot continue.
+- Reachability: `Reachable`.
+- Review consequence / proportionate response: One startup-only exact-native converter is justified; historical decoding must not enter normal runtime.
+
+### `ARCH-PREM-009-002` — A provider failure can follow durable pending compaction
+
+- Related approved requirement or established contract: BEH-012, REQ-013, AC-017.
+- Relevant behavior ID(s): BEH-012.
+- Initiating basis kind: `System`.
+- Independent product-supported initiating trigger or applicable governing contract: Normal request preparation encounters pending compaction, then provider execution returns or throws a supported failure.
+- Support evidence: Current `LLMRequestAssembler` can execute pending compaction before provider rendering; current phase recovery is captured before assembly, while accepted compaction durably appends archive/output/lineage/snapshot.
+- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: LLM phase -> request assembler -> pending compaction -> durable commit -> request mutation/render -> provider failure -> recovery settlement.
+- Lifecycle preconditions and material consequence at the claimed point: The old checkpoint predates committed C(n), so restoring it would contradict the durable lineage head and allow duplicate work.
+- Reachability: `Reachable`.
+- Review consequence / proportionate response: Capture the ephemeral checkpoint after compaction and before request mutation; never roll back durable artifacts.
+
+### `ARCH-PREM-009-003` — Existing-run restore without a snapshot should reconstruct from raw history
+
+- Related approved requirement or established contract: BEH-006, REQ-008.
+- Relevant behavior ID(s): BEH-006.
+- Initiating basis kind: `User`.
+- Independent product-supported initiating trigger or applicable governing contract: No supported user action deletes an existing run's hidden snapshot while retaining it as a restorable run; normal new-run creation is a separate path and persists snapshots.
+- Support evidence: Current create/restore lifecycle and investigation notes establish no supported snapshot-less existing-run path. Raw history is not exact model context.
+- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: No supported path reaches the claimed state.
+- Lifecycle preconditions and material consequence at the claimed point: The projector would fabricate an approximate conversation from raw records and conflict with snapshot authority.
+- Reachability: `Not Reachable`.
+- Review consequence / proportionate response: Remove `WorkingContextRecoveryProjector`; explicit restore without a snapshot fails. Do not add another fallback.
+
+### `ARCH-PREM-009-004` — Nonempty lineage requires migration-owned coherence recovery
+
+- Related approved requirement or established contract: User-approved SR-015 structural migration scope; BEH-006/013, REQ-008/014, AC-009/018.
+- Relevant behavior ID(s): BEH-006, BEH-013.
+- Initiating basis kind: `Operational`.
+- Independent product-supported initiating trigger or applicable governing contract: None in the approved scope. Hidden-file tampering, infrastructure interruption, and ticket-specific disk/process-failure handling are explicitly excluded; no supported operator action or governing contract requires the migration to diagnose or repair lineage-aware state.
+- Support evidence: The user explicitly superseded `ARCH-F-015` and approved one eligibility predicate: only absent/empty lineage may convert; every nonempty-lineage location is untouched without inspection.
+- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: No approved initiating path reaches an in-scope migration recovery obligation; startup only observes the structural gate and skips the complete location.
+- Lifecycle preconditions and material consequence at the claimed point: Any nonempty lineage marks the location outside the audited pre-lineage transition. Its internal coherence is deliberately not evaluated by this migration.
+- Reachability: `Not Reachable` as a design driver for this ticket.
+- Review consequence / proportionate response: Do not retain the prior defensive finding or add recovery machinery. Implement the early untouched skip exactly.
 
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
@@ -265,7 +313,7 @@ None.
 
 ## Review Decision
 
-`Pass`
+`Pass` — The SR-015 behavior basis is confirmed, all round-8 findings are resolved or closed by the approved scope change, the design is actionable in the current codebase, and no in-scope mechanism depends on an unsupported material premise.
 
 ## Findings
 
@@ -273,7 +321,7 @@ None.
 
 ## Classification
 
-N/A — no blocking design finding remains.
+N/A — Pass.
 
 ## Recommended Recipient
 
@@ -281,16 +329,15 @@ N/A — no blocking design finding remains.
 
 ## Residual Risks
 
-- Implementation must reconcile only the bounded SR-010 delta and preserve the reviewed SR-004 source/review/API-E2E/delivery baseline.
-- Natural model-selected cardinality cannot guarantee semantic quality; deterministic checks prove absence of count loss, while SCN-019 evaluates continuation anchors without an exact-count assertion.
-- Finalizer reuse over selected unit messages must preserve assistant/tool/media boundaries, raw-archive eligibility, reserved-boundary escaping, and byte-exact builder output without mutating installed context.
-- Readers must preserve each record's prompt audit value in mixed chains; value 1 must not be rewritten to 2, and unsupported values must remain rejected.
-- Removing the count-only lineage gate does not make the existing multi-file commit crash-atomic or waive structural validation; no unsupported journal/recovery scope is approved.
-- `origin/personal` is one commit ahead and changes the same built-in compactor template; delivery owns the later refresh and must preserve the exact approved target deliberately.
-- Existing provider output limits can still yield malformed/truncated JSON; the approved response remains the existing pre-write parser failure/retry, not a ticket-specific ceiling.
+- Legacy units may be intentionally omitted, including every old non-system message; this is approved behavior. Downstream evidence must report omission counts/reasons without copied content.
+- A parseable source-identity conflict remains unchanged and `FAILED` for later retry; the ordinary startup path continues. Manual removal may sacrifice that continuation, as explicitly preferred over a compatibility path.
+- Every nonempty-lineage location is skipped untouched, including any obsolete files in that location. No migration coherence check, repair, backup, rollback, journal, or fault harness is in scope.
+- The migration processes one eligible location at a time and must prove raw byte preservation, strict candidate validation before snapshot replacement, and cleanup only after durable v5.
+- Recovery checkpoint settlement must remain exactly once across assembly failure, provider failure, success, and retained interruption.
+- Preserve the dirty worktree and delivered SR-010 evidence. Delivery retains responsibility for any later tracked-base refresh.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
 - Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass`
-- Notes: SR-010 closes `ARCH-F-006` through `ARCH-F-009`. The cumulative package is actionable against the implemented SR-004 baseline and is ready for proportional implementation of the exact prompt, history-only/canonical-turn rendering, natural-count validation, prompt-audit transition, and focused full-path coverage.
+- Notes: `ARCH-F-012`, `ARCH-F-013`, and `ARCH-F-014` are resolved. `ARCH-F-015` is closed by the explicit user-approved SR-015 scope change rather than by retaining its former recovery prescription. Implementation may resume only for the bounded pending migration/restore/startup/recovery delta; delivered SR-010 remains preservation-only.

@@ -139,7 +139,24 @@ authority. It identifies the exact current output rows, the completed raw archiv
 for newly selected work, and the optional immediately preceding compaction. There
 is no mutable current pointer, compaction-state file, compacted-memory manifest,
 or snapshot-level output identity. Recurrent compaction consumes current output
-plus new raw-backed work and produces one bounded complete replacement.
+plus new raw-backed work and produces one complete replacement. The built-in
+Memory Compactor chooses the natural number of episodes and semantic facts
+required for continuation; accepted output requires at least one episode, but
+the parser, normalizer, manager publication, lineage, current projection, and
+origin path do not impose the former fixed total-count limits.
+
+The persisted `autobyteus-memory-compactor` system prompt is the sole owner of
+stable task instructions, natural-sizing guidance, and the response schema. The
+operation user message is only the core renderer's canonical
+`<conversation_history>` block. That renderer reuses
+`WorkingContextFinalizer` so compatible prior-memory/current-user regions appear
+as one natural User turn, while assistant and Tool order, redaction, per-value
+bounds, reserved-boundary escaping, and input non-mutation remain enforced.
+
+New lineage records write `promptContractVersion: 2`. Existing immutable value-1
+records remain directly readable, mixed `1 -> 2` chains remain valid, and any
+unsupported audit value is rejected without compatibility decoding or file
+mutation.
 
 `AUTOBYTEUS_COMPACTION_STRATEGY` is resolved for each pending operation through
 the default registry. The only production registration is `structured-json`; it
