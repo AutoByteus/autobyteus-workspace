@@ -35,6 +35,9 @@
 | `CRR-029` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-016` | `Fail — Design Impact` | `Pass` | `CR-018` |
 | `CRR-030` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-test-review-report.md` | Proportional API/E2E Test-Code Review / `API-REV-011` | `N/A` | `Pass` | `N/A` |
 | `CRR-031` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Fresh Implementation Review / user-requested behavior-neutral architecture simplification audit | `Pass` (`CRR-029` source; `API-REV-011`; `CRR-030` test review) | `Fail — Design Impact` | `CR-019`, `CR-020`, `CR-021` |
+| `CRR-032` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-017` | `Fail — Design Impact` | `Fail — Local Fix` | `CR-022` |
+| `CRR-033` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-018` | `Fail — Local Fix` | `Pass` | `CR-022` |
+| `CRR-034` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-test-review-report.md` | Proportional API/E2E Test-Code Review / `API-REV-012` | `N/A` | `Pass` | `N/A` |
 
 ## Revision Entries
 
@@ -922,3 +925,26 @@ None. `CRR-023` and `CRR-027` had no unresolved proportional test-review finding
 - Material score or classification changes: result changes from `Fail — Local Fix / 95` to `Pass / 97`; every scorecard category is now `>=9.3`.
 - Recommended recipient: `api_e2e_engineer`
 - Remaining risks or uncertainty: API/E2E must migrate the five fixtures importing the removed broad host, then run real dual-host, worker-exit publication, drain/shutdown/restart, Agent Tools, recovery/remount, route-separation, and package-integrity scenarios. A successful run must return for proportional durable-test review. Historical `APIE2E-REPO-005` remains separate.
+
+### CRR-034 — API-REV-012 narrow-runtime durable-test migration passes proportional review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-test-review-report.md`
+- Review entry point and round: `Proportional API/E2E Test-Code Review`, round `34` overall / fourth proportional review
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `API-REV-012`; execution scenarios `APIE2E-REPO-012`, `APIE2E-WORKER-012`, `APIE2E-STANDALONE-012`, `APIE2E-STUDIO-012`, `APIE2E-ROUTES-012`, `APIE2E-PARITY-012`, and `APIE2E-CLEANUP-012`
+- Relevant solution revision IDs: `SR-013`; retained prior functional basis
+- Relevant architecture-review revision IDs: `ARCH-REV-011`; retained `ARCH-REV-010`
+- Relevant implementation revision IDs: `IR-017`, `IR-018`
+- Relevant API/E2E revision IDs: `API-REV-012`; retained baseline `API-REV-011`
+- Relevant delivery revision IDs: retained context through `DR-004`
+- Prior authoritative result: `N/A` for this proportional delta; implementation source is `CRR-033` Pass and prior proportional reviews `CRR-023`, `CRR-027`, and `CRR-030` have no unresolved findings
+- Current authoritative result: `Pass`
+- What changed in the review result and why: reviewed 12 durable test paths: one shared narrow application-engine integration helper and eleven migrations to current controller, launcher, gateway, active-run reader, event mapper, availability/reentry, delivery queue, and four-projection contracts. The delta removes no test or assertion, does not recreate the retired broad host, and keeps scenario-specific dependencies explicit. It agrees with API-REV-012's 31-file/116-test matrix, real worker-exit recovery, graceful multirun stop/restart, dual-host publication/handoff/projection, route separation, remount, 73/73 package parity, and clean resource teardown.
+
+#### Prior Finding Resolution
+
+None for proportional test code. `CR-019`–`CR-021` were design-impact findings resolved by `SR-013` / `ARCH-REV-011` / `IR-017`; `CR-022` was source-resolved by `IR-018` / `CRR-033`. `API-REV-012` now execution-confirms those source results. The unchanged implementation-owned `agent-run-manager.test.ts` regression remains covered by `CRR-033` and is not counted in this API/E2E test delta.
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: no source scorecard or API/E2E confidence recomputation. Proportional test-code result is `Pass`; `API-REV-012` remains `Pass / 96.6%`.
+- Recommended recipient: `delivery_engineer`
+- Remaining risks or uncertainty: historical `APIE2E-REPO-005` remains separate, unattributed `Unclear` whole-suite diagnostic debt and is not current requirement evidence. Delivery may resume integrated-state, documentation, handoff, and any in-scope release work without reopening the implementation scorecard.
