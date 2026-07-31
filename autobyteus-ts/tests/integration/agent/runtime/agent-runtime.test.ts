@@ -26,8 +26,6 @@ import { EventType } from '../../../../src/events/event-types.js';
 import { MemoryManager } from '../../../../src/memory/memory-manager.js';
 import { MemoryStore } from '../../../../src/memory/store/base-store.js';
 import { MemoryType } from '../../../../src/memory/models/memory-types.js';
-import { WorkingContextSnapshotSerializer } from '../../../../src/memory/working-context-snapshot-serializer.js';
-import { getWorkingContextMessageProvenance } from '../../../../src/memory/working-context-provenance.js';
 import { BaseTool, type ToolExecutionOptions } from '../../../../src/tools/base-tool.js';
 import { ParameterSchema, ParameterDefinition, ParameterType } from '../../../../src/utils/parameter-schema.js';
 import type { ChunkResponse } from '../../../../src/llm/utils/response-types.js';
@@ -762,7 +760,7 @@ describe('Agent runtime integration', () => {
     }
   }, 20000);
 
-  it('preserves only the trusted raw interruption fence through required-reset bootstrap and a successful follow-up', async () => {
+  it('rejects restore without a strict v5 snapshot and leaves interruption raw evidence untouched', async () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'runtime-reset-bootstrap-'));
     const agentId = `runtime_reset_interrupt_${Date.now()}`;
     const firstLlm = new ControllableLLM(makeModel(), new LLMConfig());
@@ -840,6 +838,9 @@ describe('Agent runtime integration', () => {
         fs.rmSync(path.join(tempDir, fileName), { force: true });
       }
       expect(fs.existsSync(path.join(tempDir, 'raw_traces_active.jsonl'))).toBe(true);
+      const rawBytesBeforeRestore = fs.readFileSync(
+        path.join(tempDir, 'raw_traces_active.jsonl'),
+      );
 
       secondLlm = new ControllableLLM(makeModel(), new LLMConfig());
       const secondConfig = new AgentConfig(
@@ -855,50 +856,13 @@ describe('Agent runtime integration', () => {
         secondAgent.context,
         (status) => status === AgentStatus.IDLE || status === AgentStatus.ERROR,
       )).toBe(true);
-      expect(secondAgent.context.currentStatus).toBe(AgentStatus.IDLE);
+      expect(secondAgent.context.currentStatus).toBe(AgentStatus.ERROR);
 
-      const restoredManager = secondAgent.context.memoryManager!;
-      const restoredMessages = restoredManager.getWorkingContextMessages();
-      const restoredFence = restoredMessages.find((message) =>
-        typeof message.content === 'string'
-        && message.content.includes('required-reset-test'));
-      expect(restoredMessages[0]).toMatchObject({
-        role: MessageRole.SYSTEM,
-        content: 'BASE SYSTEM PROMPT',
-      });
-      expect(restoredFence?.role).toBe(MessageRole.SYSTEM);
-      expect(getWorkingContextMessageProvenance(restoredFence!)).toEqual({
-        kind: 'single',
-        rawTraceIds: [trustedBoundary!.id],
-        turnId: interruptedTurnId,
-      });
-      expect(JSON.stringify(restoredMessages)).not.toContain('UNTRUSTED WRONG SOURCE BOUNDARY');
-      expect(restoredMessages.some(({ content }) => content === 'cancel this work')).toBe(true);
-      const resetSnapshot = JSON.parse(
-        fs.readFileSync(path.join(tempDir, 'working_context_snapshot.json'), 'utf-8'),
-      );
-      expect(WorkingContextSnapshotSerializer.validate(resetSnapshot)).toBe(true);
+      expect(secondAgent.context.memoryManager!.getWorkingContextMessages()).toEqual([]);
+      expect(fs.existsSync(path.join(tempDir, 'working_context_snapshot.json'))).toBe(false);
       expect(fs.existsSync(path.join(tempDir, 'compaction_lineage.jsonl'))).toBe(false);
-
-      await secondAgent.postUserMessage(new AgentInputUserMessage('follow up safely'));
-      await secondLlm.waitForFirstRequestStart();
-      const followUpRequest = secondLlm.requestMessages[0]!;
-      expect(followUpRequest[0]).toMatchObject({
-        role: MessageRole.SYSTEM,
-        content: 'BASE SYSTEM PROMPT',
-      });
-      expect(followUpRequest.some(({ content }) =>
-        typeof content === 'string' && content.includes('required-reset-test'))).toBe(true);
-      expect(followUpRequest.some(({ content }) =>
-        typeof content === 'string' && content.includes('cancel this work'))).toBe(true);
-      expect(followUpRequest.some(({ content }) =>
-        typeof content === 'string' && content.includes('follow up safely'))).toBe(true);
-      expect(JSON.stringify(followUpRequest)).not.toContain('UNTRUSTED WRONG SOURCE BOUNDARY');
-      secondLlm.unblockFirstResponse();
-      expect(await waitForCondition(
-        () => secondAgent!.context.currentStatus === AgentStatus.IDLE
-          && secondAgent!.context.state.activeTurn === null,
-      )).toBe(true);
+      expect(fs.readFileSync(path.join(tempDir, 'raw_traces_active.jsonl'))).toEqual(rawBytesBeforeRestore);
+      expect(secondLlm.calls).toEqual([]);
     } finally {
       firstLlm.unblockFirstResponse();
       secondLlm?.unblockFirstResponse();

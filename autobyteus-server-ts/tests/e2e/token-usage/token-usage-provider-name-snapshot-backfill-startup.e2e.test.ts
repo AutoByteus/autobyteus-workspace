@@ -290,16 +290,7 @@ describe('token usage provider-name snapshot backfill startup e2e', () => {
       siblingExecutions += 1;
     });
 
-    let failed: Awaited<ReturnType<typeof runner.runPending>> = [];
-    try {
-      await runner.runPending();
-      throw new Error('Expected required migration aggregation to reject.');
-    } catch (error) {
-      expect(error).toMatchObject({
-        code: 'REQUIRED_APP_DATA_MIGRATION_FAILED',
-      });
-      failed = (error as { results: Awaited<ReturnType<typeof runner.runPending>> }).results;
-    }
+    const failed = await runner.runPending();
     expect(failed).toEqual(expect.arrayContaining([
       expect.objectContaining({
         migrationId: TOKEN_USAGE_PROVIDER_NAME_SNAPSHOT_BACKFILL_MIGRATION_ID,

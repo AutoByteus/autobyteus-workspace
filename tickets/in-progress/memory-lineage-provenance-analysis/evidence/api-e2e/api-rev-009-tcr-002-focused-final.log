@@ -1,0 +1,53 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-ts
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase successful retained-outcome recovery settlement > captures once and releases once after real Tool-invocation ingestion without restoring retained context
+Successfully registered tool definition: 'request_recovery_test_tool'
+AgentRuntimeState initialized for agent_id 'agent_tool_recovery'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentConfig created for name='agent', role='role'. Tool call format: api_tool_call
+AgentContext composed for agent_id 'agent_tool_recovery'. Config and State linked.
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase successful retained-outcome recovery settlement > captures once and releases once after real Tool-invocation ingestion without restoring retained context
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+compaction_budget_skipped_no_usage {
+  agent_id: 'agent_tool_recovery',
+  turn_id: 'turn_tool_recovery',
+  reason: 'missing_usage'
+}
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase successful retained-outcome recovery settlement > captures once and releases once on retained partial interruption without restoring or settling twice
+AgentRuntimeState initialized for agent_id 'agent_interruption_recovery'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentConfig created for name='agent', role='role'. Tool call format: api_tool_call
+AgentContext composed for agent_id 'agent_interruption_recovery'. Config and State linked.
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase incomplete native tool-call resume recovery > kicks off LLM execution after one additional user prompt with provider-safe rendered history
+AgentRuntimeState initialized for agent_id 'agent_resume_repair'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentConfig created for name='agent', role='role'. Tool call format: api_tool_call
+AgentContext composed for agent_id 'agent_resume_repair'. Config and State linked.
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase incomplete native tool-call resume recovery > kicks off LLM execution after one additional user prompt with provider-safe rendered history
+compaction_budget_skipped_no_usage {
+  agent_id: 'agent_resume_repair',
+  turn_id: 'turn_after_restart',
+  reason: 'missing_usage'
+}
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase unknown-capability provider recovery > rolls back one failed image request and accepts the next text-only turn without retrying
+AgentRuntimeState initialized for agent_id 'agent_provider_recovery'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentConfig created for name='agent', role='role'. Tool call format: api_tool_call
+AgentContext composed for agent_id 'agent_provider_recovery'. Config and State linked.
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase unknown-capability provider recovery > rolls back one failed image request and accepts the next text-only turn without retrying
+compaction_budget_skipped_no_usage {
+  agent_id: 'agent_provider_recovery',
+  turn_id: 'turn_provider_recovery',
+  reason: 'missing_usage'
+}
+
+ ✓ tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts (4 tests) 22ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  01:38:44
+   Duration  792ms (transform 511ms, setup 14ms, import 675ms, tests 22ms, environment 0ms)
+

@@ -1,0 +1,13 @@
+# API-REV-009 cleanup evidence
+
+- Owned server test SQLite database: present after final server test and removed with exact Python unlink.
+- absent: autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db
+- absent: autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db-shm
+- absent: autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db-wal
+- Matching test-created OS temp roots:
+  none
+- Owned Vitest/pnpm process candidates:
+  none
+- /Users/normy/.autobyteus/server-data/.env: not read, sourced, modified, or imported in API-REV-009.
+- Repository .env.test: not modified in API-REV-009.
+- Result: Pass.

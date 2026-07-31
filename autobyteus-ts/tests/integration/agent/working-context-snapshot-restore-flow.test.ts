@@ -14,9 +14,9 @@ import { LLMRuntime } from '../../../src/llm/runtimes.js';
 import { LLMConfig } from '../../../src/llm/utils/llm-config.js';
 import { CompleteResponse, ChunkResponse } from '../../../src/llm/utils/response-types.js';
 import { Message, MessageRole } from '../../../src/llm/utils/messages.js';
-import { WorkingContext } from '../../../src/memory/working-context.js';
 import { WorkingContextSnapshotSerializer } from '../../../src/memory/working-context-snapshot-serializer.js';
 import { WorkingContextSnapshotStore } from '../../../src/memory/store/working-context-snapshot-store.js';
+import { WorkingContextFinalizer } from '../../../src/memory/working-context-finalizer.js';
 
 class DummyLLM extends BaseLLM {
   protected async _sendMessagesToLLM(_messages: Message[]): Promise<CompleteResponse> {
@@ -63,7 +63,9 @@ const waitForSnapshotMessage = async (
     const messages = Array.isArray(payload?.messages)
       ? payload.messages as Array<Record<string, unknown>>
       : [];
-    if (messages.some((message) => message.content === expectedContent)) {
+    if (messages.some((message) =>
+      typeof message.content === 'string' && message.content.includes(expectedContent)
+    )) {
       return payload!;
     }
     await delay(25);
@@ -90,21 +92,20 @@ describe('Working context snapshot restore flow (agent)', () => {
     }
   });
 
-  it('loads a schema-v4 superset during bootstrap and contracts it on the next ordinary write', async () => {
+  it('restores an exact strict-v5 snapshot and persists an ordinary continuation', async () => {
     const agentId = 'agent_restore';
 
-    const snapshot = new WorkingContext();
-    snapshot.appendMessage(new Message(MessageRole.SYSTEM, { content: 'System' }));
-    snapshot.appendMessage(new Message(MessageRole.USER, { content: 'Hello' }));
+    const snapshot = new WorkingContextFinalizer().finalize({
+      messages: [
+        new Message(MessageRole.SYSTEM, { content: 'System' }),
+        new Message(MessageRole.USER, { content: 'Hello' }),
+      ],
+    });
 
-    const payload = {
-      ...WorkingContextSnapshotSerializer.serialize(snapshot, {
-      schema_version: WorkingContextSnapshotSerializer.CURRENT_SCHEMA_VERSION,
-      agent_id: agentId
-      }),
-      epoch_id: 19,
-      last_compaction_ts: 123.5,
-    };
+    const payload = WorkingContextSnapshotSerializer.serialize(snapshot, {
+      agent_id: agentId,
+    });
+    expect(WorkingContextSnapshotSerializer.validate(payload)).toBe(true);
 
     const snapshotStore = new WorkingContextSnapshotStore(tempDir, agentId);
     snapshotStore.write(agentId, payload);
@@ -134,19 +135,26 @@ describe('Working context snapshot restore flow (agent)', () => {
     expect(messages[1]?.content).toBe('Hello');
 
     await agent.postUserMessage(new AgentInputUserMessage('Continue after restore.'));
-    const contractedPayload = await waitForSnapshotMessage(
+    const continuedPayload = await waitForSnapshotMessage(
       snapshotStore,
       agentId,
       'Continue after restore.',
     );
-    expect(contractedPayload).not.toHaveProperty('epoch_id');
-    expect(contractedPayload).not.toHaveProperty('last_compaction_ts');
-    const { workingContext: contractedContext } = WorkingContextSnapshotSerializer.deserialize(
-      contractedPayload,
+    expect(Object.keys(continuedPayload).sort()).toEqual(['agent_id', 'messages', 'schema_version']);
+    expect(WorkingContextSnapshotSerializer.validate(continuedPayload)).toBe(true);
+    const { workingContext: continuedContext } = WorkingContextSnapshotSerializer.deserialize(
+      continuedPayload,
     );
-    expect(contractedContext.buildMessages().map((message) => message.content)).toEqual(
-      expect.arrayContaining(['System', 'Hello', 'Continue after restore.']),
-    );
+    const continuedMessages = continuedContext.buildMessages();
+    expect(continuedMessages.map((message) => message.role)).toEqual([
+      MessageRole.SYSTEM,
+      MessageRole.USER,
+      MessageRole.ASSISTANT,
+    ]);
+    expect(continuedMessages[1]?.content).toContain('Hello');
+    expect(continuedMessages[1]?.content).toContain('The user\'s current message is:');
+    expect(continuedMessages[1]?.content).toContain('Continue after restore.');
+    expect(continuedMessages[2]?.content).toBe('ok');
 
     await agent.stop();
   });

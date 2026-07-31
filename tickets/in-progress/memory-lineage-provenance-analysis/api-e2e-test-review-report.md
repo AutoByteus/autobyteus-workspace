@@ -2,47 +2,34 @@
 
 ## Review Meta
 
-- Review Round: `7`
-- Trigger: `API-REV-007`; passed SR-010 natural-compactor execution for `CRR-009` / `IR-003` at implementation commit `c6c60b9996d61ef373236b66437844cd8b315af8`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/requirements.md` (`REQ-004`, `REQ-005`, `REQ-007`, `REQ-010`, `REQ-012`; `AC-006`, `AC-007`, `AC-009`, `AC-014`, `AC-016`)
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/design-spec.md` (`SR-010` natural sizing, canonical history, accepted publication, and prompt-audit transition)
+- Review Round: `9`
+- Trigger: `API-REV-009`; bounded durable-test correction for `CRR-013` findings `TCR-002` and `TCR-003` on unchanged implementation commit `d9753e69c1244bf88c0bc6816306495430047a35`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/requirements.md` (`REQ-006`, `REQ-008`, `REQ-013`, `REQ-014`; `AC-009`, `AC-017`, `AC-018`)
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/design-spec.md` (`SR-015`; canonical `SCN-020` request recovery and `SCN-021` native migration)
 - Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/memory-context-and-lineage-contract.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/use-case-data-flow-spine-map.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/provenance-methodology-analysis.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/compacted-memory-message-role-analysis.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/memory-compactor-prompt-content-contract.md`
-- Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/solution-revision-record.md` (`SR-001` through `SR-010`)
-- Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/architecture-review-revision-record.md` (`ARCH-REV-001` through `ARCH-REV-006`; current `ARCH-REV-006 Pass`)
-- Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/implementation-revision-record.md` (`IR-001`, `IR-002`, `IR-003`)
-- Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/code-review-report.md` (`CRR-009` source-review `Pass`)
+- Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/solution-revision-record.md` (`SR-001` through `SR-015`; current `SR-015`)
+- Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/architecture-review-revision-record.md` (`ARCH-REV-001` through `ARCH-REV-009`; current `ARCH-REV-009 Pass`)
+- Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/implementation-revision-record.md` (`IR-001` through `IR-005`; current `IR-005`)
+- Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/code-review-report.md` (`CRR-012` source-review `Pass`)
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-010`
+- Current Code Review Revision ID: `CRR-014`
 - Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/coverage-investigation.md`
 - Execution Coverage Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/execution-coverage-report.md`
-- API/E2E Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/api-e2e-revision-record.md` (`API-REV-001` through `API-REV-007`; current `API-REV-007`)
-- Delivery Revision Record Reviewed As Context (delivery re-entry only): `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/delivery-revision-record.md` (`DR-001` through `DR-005` prior delivered baseline)
-- API/E2E Result: `Pass`; SCN-019 and preserved SCN-001 through SCN-018 passed
-- Final Validation Confidence: `98%`; every applicable category is at least `96%`
-- Prior unresolved test-review findings rechecked: `None`; `TCR-001` remains resolved because the outer live assertion and both current model journeys require/return exactly zero failed tools
-- Review method: proportional static inspection of the 15 durable test/support diffs, relevant requirement and production-contract anchors, API-REV-007 reports, and retained passing evidence. Code review did not rerun the already successful API/E2E workflows.
+- API/E2E Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/api-e2e-revision-record.md` (`API-REV-001` through `API-REV-009`; current `API-REV-009`)
+- Delivery Revision Record Reviewed As Context (delivery re-entry only): `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/delivery-revision-record.md` (`DR-001` through `DR-007` prior delivered baseline)
+- API/E2E Result: `Pass / 98%`; implementation source and production source are unchanged
+- Final Validation Confidence: `98%`
+- Prior unresolved test-review findings rechecked: `TCR-002` and `TCR-003`; both resolved. `TCR-001` remains resolved.
+- Review method: proportional static re-review of the two Round-9 updated durable paths, canonical scenario mapping, focused/broader evidence, and structural report. The already successful executions were not rerun.
 
 ## Changed Durable Test Scope
 
-API-REV-007 updates 15 existing durable test/support paths, adds none, removes none, and changes no production source.
+Round 9 updates two durable test paths, adds/removes none, and changes no production source. The cumulative SR-015 delta remains `2` added, `18` updated, and `1` correctly removed path as reviewed in CRR-013.
 
 | Durable Test Path | Change (`Added`/`Updated`/`Removed`) | Related Scenario / Requirement | Coherent Test Responsibility | Notes |
 | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts` | Updated | SCN-017–019; AC-016 | Outward real-provider result contract | Requires one audit-2 value per completed compaction, at least one episode, exact-zero failed tools, and retained canonical-agent/projection/artifact assertions without prescribing semantic-fact count. |
-| `autobyteus-server-ts/tests/e2e/token-usage/token-usage-custom-provider-model-value-backfill-startup.e2e.test.ts` | Updated | Preserved AC-009 startup contract | Required-migration failure/retry E2E | Replaces stale fail-open expectation with aggregate rejection, persisted failed/sibling results, and unresolved-row-only successful retry. |
-| `autobyteus-server-ts/tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts` | Updated | Preserved AC-009 startup contract | Required-migration failure/retry E2E | Mirrors the approved fail-closed aggregate contract while retaining row preservation and retry assertions. |
-| `autobyteus-server-ts/tests/integration/agent-execution/compaction/compaction-agent-parent-fallback.integration.test.ts` | Updated | Preserved scope/provider/launch boundary | Parent/default launch fallback | Uses the current exact response schema and current `createLLM` injection/model-registration boundary; fallback precedence and failure metadata remain the subject. |
-| `autobyteus-server-ts/tests/unit/agent-execution/compaction/compaction-run-output-collector.test.ts` | Updated | Current compactor response schema | Cross-runtime output collection | Replaces removed `episodic_summary` fixtures with current `episodes` JSON while preserving content/reasoning/error lifecycle checks. |
-| `autobyteus-server-ts/tests/unit/agent-execution/compaction/server-compaction-agent-runner.test.ts` | Updated | Current compactor response schema | Visible child-run orchestration | Updates only the collected fixture/result shape; creation, metadata, termination, and failure assertions remain intact. |
-| `autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-templates.test.ts` | Updated | SCN-019; exact prompt supplement; AC-016 | Canonical built-in prompt golden | Byte-checks the full 2,788-byte template and rejects fixed-count, duplicate-constant, and platform-internal terminology in the established template test owner. |
-| `autobyteus-ts/tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts` | Updated | SCN-019; AC-006/007/016 | Real manager/tool-safe accepted publication | Carries 4 episodes/25 facts through status, archive/output, audit-2 lineage, exact current projection, and typed episode/semantic origins while retaining complete native Tool protocol assertions. |
-| `autobyteus-ts/tests/unit/memory/agent-compaction-summarizer.test.ts` | Updated | History-only operation prompt | Runner/parser integration boundary | Replaces the stale injected-schema assertion with visible history plus absence of duplicate operation schema. |
-| `autobyteus-ts/tests/unit/memory/compaction-lineage-resolver.test.ts` | Updated | SCN-019; AC-004/005/016 | Typed direct/root origin integrity | Uses a natural-count value-2 head over value-1 predecessor, resolves the fourth episode and twenty-fifth fact, and retains broken-chain/cycle/not-found coverage. |
-| `autobyteus-ts/tests/unit/memory/compaction-response-parser.test.ts` | Updated | SCN-019; AC-006/016 | Exact response parsing and entry bounds | Proves 5 episodes/25 facts survive while configured per-entry clamps, exact fields, required arrays, and at-least-one episode remain enforced. |
-| `autobyteus-ts/tests/unit/memory/compaction-result-normalizer.test.ts` | Updated | SCN-019; AC-006/016 | Cleanup/dedupe/order/salience | Preserves a fourth phase and 25 continuation facts with positive salience while retaining dedupe and noise filtering. |
-| `autobyteus-ts/tests/unit/memory/file-compaction-lineage-store.test.ts` | Updated | SCN-019; AC-006/008/012/016 | Append/read/current-head persisted contract | Proves mixed immutable `1 -> 2`, exact 4/25 value-2 head projection, unsupported value-3 rejection without mutation, and preserves long-chain/current-only integrity coverage. |
-| `autobyteus-ts/tests/unit/memory/working-context-compaction-prompt-builder.test.ts` | Updated | SCN-019; AC-014/016 | Canonical renderer-only operation message | Proves builder byte-equals renderer, one composed User turn, escaped reserved tags, assistant/Tool order, redaction/bounds, reasoning/ID/schema/count absence, input non-mutation, and real incomplete/orphan protocol rejection. |
-| `test-support/live-e2e/live-e2e-harness.ts` | Updated | SCN-017–019; AC-016 | Shared canonical product-compactor live journey | Reads every completed lineage record, rejects any non-2 audit value, exposes value-safe audit evidence, and leaves model-selected episode/fact counts unconstrained except for the required non-empty episode checked by the outward scenario. |
+| `autobyteus-ts/tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts` | Updated | Canonical SCN-020; REQ-013; AC-017; `TCR-002` | Real `LlmPhase` successful retained-outcome settlement | Adds deterministic Tool-invocation and accepted retained-interruption branches. Each directly asserts one capture, one commit of that checkpoint, no restore, and retained context/raw provenance; interruption also excludes the post-fence chunk. |
+| `autobyteus-server-ts/tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts` | Updated | Canonical SCN-021; AC-009/018; `TCR-003` | Native migration lineage eligibility | Parameterizes the standalone-v4 case over absent and zero-byte lineage, verifies exact v5/raw/manifest/cleanup behavior, preserves the zero-byte lineage file, and retains nonempty-lineage exclusion plus idempotence. |
 
 - No durable test file changed: `No`
 - Review result when no durable test file changed: `N/A`
@@ -51,28 +38,30 @@ API-REV-007 updates 15 existing durable test/support paths, adds none, removes n
 
 | Check | Result (`Pass`/`Fail`/`N/A`) | Evidence / Notes |
 | --- | --- | --- |
-| Scenario grouping and names make intent clear | Pass | Natural prompt/history, parsing/normalization, persisted lineage/current projection, origin, manager/tool lifecycle, live provider, current server fixture, and required-migration corrections remain in their established owner suites with behavior-specific names. |
-| Assertions prove approved requirements instead of incidental implementation details | Pass | Tests assert exact approved prompt/history boundaries, preservation above old caps, structural safeguards, manager publication consequences, immutable audit semantics, current-head/origin behavior, and normal product-runner continuation. Live item counts are recorded observations, not pass criteria. |
-| Fixtures, setup, helpers, and data builders reuse meaningful repetition | Pass | Existing response builders, lineage record/harness builders, shared live operation, temp stores, launch helpers, and migration runners are extended rather than duplicated. The exact prompt literal is an intentional product golden in the existing built-in-template owner. |
-| Test isolation and determinism are appropriate for the exercised boundary | Pass | Core store/integration tests use owned temp directories and restore registries/environment; migration E2Es use unique rows and cleanup; parent fallback uses replace-by-identifier model registration and owned agents/workspaces; real journeys are explicitly selected, preflighted, isolated, cleaned, and credential-scanned. |
-| Large files remain coherent and navigable rather than mixing unrelated scenarios | Pass | The large live harness remains organized around shared live product-boundary operations, and the parent/tool-lifecycle integrations each retain one coherent execution subject. Test source-size limits and forced splitting do not apply. |
-| No stale, duplicated, disabled-without-reason, or compatibility-only tests remain | Pass | Fixed 3/20, duplicate operation schema, removed `episodic_summary`, obsolete injection, and fail-open migration expectations are replaced in place. No added `.skip`, `.only`, `.todo`, compatibility alias, or parallel stale suite appears in the changed hunks. |
-| Added, updated, and removed coverage agrees with the coverage investigation and execution evidence | Pass | Repository diff contains exactly the reported 15 updated durable paths, no added/removed path, no production-source change, and no whitespace defect. Focused 28/28, complete memory 150/150, runtime 15/15, prompt/harness 16/16, server compactor 17/17, affected server 88/88, migration repair 4/4, root 174-pass, build, and both live-model results match the reports. |
+| Scenario grouping and names make intent clear | Pass | The two new retained-outcome cases are grouped under one `LlmPhase successful retained-outcome recovery settlement` subject; absent/zero-byte eligibility remains in the focused native migration owner. |
+| Assertions prove approved requirements instead of incidental implementation details | Pass | Tool and interruption cases exercise the real `LlmPhase`, assert the exact checkpoint instance and one-settlement consequence, and prove retained Tool/partial activity. Migration directly distinguishes absent, zero-byte, and nonempty lineage under the approved eligibility rule. |
+| Fixtures, setup, helpers, and data builders reuse meaningful repetition | Pass | Existing context/phase helpers and migration builders are reused. The concrete deterministic test Tool is registered through the real registry and the registry snapshot is restored in cleanup. |
+| Test isolation and determinism are appropriate for the exercised boundary | Pass | Both suites use owned temp roots and deterministic providers/facts. Registry state is restored; focused and broader executions pass; cleanup and credential-pattern checks are clean. |
+| Large files remain coherent and navigable rather than mixing unrelated scenarios | Pass | Both updates extend their existing single-subject suites with named cases; no unrelated scenario or parallel helper framework was introduced. |
+| No stale, duplicated, disabled-without-reason, or compatibility-only tests remain | Pass | The corrections add current-contract assertions only. No `.skip`, `.only`, compatibility path, raw replay, synthetic migration repair, or duplicate scenario was introduced. |
+| Added, updated, and removed coverage agrees with the coverage investigation and execution evidence | Pass | Round-9 inventory is exactly two updated test paths. Canonical artifacts consistently map SCN-020 to request recovery and SCN-021 to native migration. Focused results are 4/4 and 6/6; broader selections are 23/23 and 71/71. |
 
 ## Findings
 
-No actionable durable-test quality or correctness findings.
+No new or remaining actionable durable-test findings.
 
-| Finding ID | Test Path / Scenario | Evidence | Required Action | Classification / Owner |
-| --- | --- | --- | --- | --- |
-| None | N/A | The 15-file delta replaces stale contracts with direct current-behavior assertions, retains failure/cleanup safeguards, and agrees with the passed execution evidence. | None | N/A |
+| Finding ID | Prior Status | Current Status | Verification Evidence |
+| --- | --- | --- | --- |
+| `TCR-002` | Open / `Local Fix` in `CRR-013` | **Resolved** | Real Tool-invocation and accepted retained-interruption branches each capture once, commit the captured checkpoint once, never restore, and preserve the intended context/raw facts. Focused 4/4 and broader 23/23 pass. |
+| `TCR-003` | Open / `Local Fix` in `CRR-013` | **Resolved** | Absent/zero-byte lineage is directly parameterized; zero-byte remains byte-exact empty; nonempty stays untouched. Current reports use canonical SCN-020/SCN-021 meanings. Focused 6/6 and broader 71/71 pass. |
+| `TCR-001` | Resolved in `CRR-007` | Remains resolved | Round 9 changes no product-compactor failed-tool assertion or live harness behavior. |
 
-No implementation-source scorecard or API/E2E confidence result was reopened. API-REV-007's initial failures were stale test/fixture expectations and are absent from the current durable delta; the retained pre-correction logs are execution history, not current tests.
+No implementation-source scorecard or API/E2E confidence result was reopened.
 
 ## Latest Authoritative Result
 
 - Result: `Pass`
-- Changed durable test paths reviewed: `15` updated; `0` added; `0` removed
-- Unresolved finding IDs: `None`; `TCR-001` remains resolved
+- Changed durable test paths reviewed: Round 9 `0` added; `2` updated; `0` removed. Cumulative SR-015: `2` added; `18` updated; `1` removed.
+- Unresolved finding IDs: `None`; `TCR-001`, `TCR-002`, and `TCR-003` are resolved
 - Recommended Recipient: `delivery_engineer`
-- Notes: API-REV-007's durable tests directly protect the approved natural-sizing prompt, renderer-only canonical history, >3/>20 complete publication, mixed prompt-audit history, preserved startup/current-only boundaries, and real canonical product-compactor continuation under DeepSeek and Qwen. The proportional test-code review passes without reopening CRR-009 or the 98% execution result.
+- Notes: API-REV-009 supplies the missing exact Tool/interruption settlement and zero-byte-lineage proof, restores canonical scenario traceability, and passes proportional review. Delivery may proceed with the complete API-REV-009 / CRR-014 package.

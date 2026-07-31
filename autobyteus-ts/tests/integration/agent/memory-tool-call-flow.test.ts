@@ -45,7 +45,11 @@ runIntegration('Memory tool call flow (LM Studio)', () => {
       memoryManager.ingestUserMessage(userMessage, turnId, 'LLMUserMessageReadyEvent');
 
       const assembler = new LLMRequestAssembler(memoryManager, new OpenAIChatRenderer());
-      const request = await assembler.prepareRequest(userMessage, turnId, llm.config.systemMessage);
+      const request = await assembler.prepareRequest(
+        userMessage,
+        { turnId, requestId: `${turnId}:llm:1` },
+        llm.config.systemMessage,
+      );
 
       const handler = new ApiToolCallStreamingResponseHandler({ turnId: TURN_ID });
       try {
@@ -82,7 +86,11 @@ runIntegration('Memory tool call flow (LM Studio)', () => {
       }
 
       const followup = new LLMUserMessage({ content: "All tools finished. Please respond with 'done'." });
-      const followRequest = await assembler.prepareRequest(followup, turnId, llm.config.systemMessage);
+      const followRequest = await assembler.prepareRequest(
+        followup,
+        { turnId, requestId: `${turnId}:llm:2` },
+        llm.config.systemMessage,
+      );
 
       let followResponse;
       try {

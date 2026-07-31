@@ -7,7 +7,6 @@ import type { CompactionLineageRecord } from '../../../src/memory/lineage/compac
 import type { CompactionLineageScope } from '../../../src/memory/lineage/compaction-lineage-scope.js';
 import { MemoryManager } from '../../../src/memory/memory-manager.js';
 import { EpisodicItem } from '../../../src/memory/models/episodic-item.js';
-import { RawTraceItem } from '../../../src/memory/models/raw-trace-item.js';
 import { WorkingContextSnapshotBootstrapper } from '../../../src/memory/restore/working-context-snapshot-bootstrapper.js';
 import { FileCompactionLineageStore } from '../../../src/memory/store/file-compaction-lineage-store.js';
 import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
@@ -16,7 +15,6 @@ import {
   createCompactedMemoryUserMessage,
   WorkingContextFinalizer,
 } from '../../../src/memory/working-context-finalizer.js';
-import { getWorkingContextMessageProvenance } from '../../../src/memory/working-context-provenance.js';
 import { WorkingContextSnapshotSerializer } from '../../../src/memory/working-context-snapshot-serializer.js';
 
 const agentId = 'agent-bootstrap';
@@ -95,82 +93,29 @@ describe('WorkingContextSnapshotBootstrapper current-only restore', () => {
     expect(WorkingContextSnapshotSerializer.validate(snapshotStore.read(agentId)!)).toBe(true);
   });
 
-  it('recovers only the trusted active interruption fence with provenance after reset', () => {
-    memoryStore.add([
-      new RawTraceItem({
-        id: 'trusted-boundary',
-        ts: 1,
-        turnId: 'turn-interrupted',
-        seq: 1,
-        traceType: 'operation_boundary',
-        content: 'Cancellation fence: do not resume the interrupted action.',
-        sourceEvent: 'AgentTurnInterruptedEvent',
-      }),
-      new RawTraceItem({
-        id: 'wrong-source',
-        ts: 2,
-        turnId: 'turn-interrupted',
-        seq: 2,
-        traceType: 'operation_boundary',
-        content: 'UNTRUSTED_BOUNDARY',
-        sourceEvent: 'OtherEvent',
-      }),
-      new RawTraceItem({
-        id: 'blank-trusted',
-        ts: 3,
-        turnId: 'turn-interrupted',
-        seq: 3,
-        traceType: 'operation_boundary',
-        content: '   ',
-        sourceEvent: 'AgentTurnInterruptedEvent',
-      }),
-      new RawTraceItem({
-        id: 'follow-up-active-history',
-        ts: 4,
-        turnId: 'turn-follow-up',
-        seq: 1,
-        traceType: 'user',
-        content: 'Natural active continuation.',
-        sourceEvent: 'UserMessageReceivedEvent',
-      }),
-    ]);
-
-    new WorkingContextSnapshotBootstrapper(snapshotStore).bootstrap(
+  it('requires a strict v5 snapshot instead of replaying raw history', () => {
+    expect(() => new WorkingContextSnapshotBootstrapper(snapshotStore).bootstrap(
       manager,
       'Current base system prompt',
       { maxItemChars: null },
-    );
+    )).toThrow(`Explicit WorkingContext restore requires a strict v5 snapshot for agent '${agentId}'.`);
 
-    const messages = manager.getWorkingContextMessages();
-    expect(messages.map(({ role }) => role)).toEqual([
-      MessageRole.SYSTEM,
-      MessageRole.SYSTEM,
-      MessageRole.USER,
-    ]);
-    expect(messages.map(({ content }) => content)).toEqual([
-      'Current base system prompt',
-      'Cancellation fence: do not resume the interrupted action.',
-      'Natural active continuation.',
-    ]);
-    expect(JSON.stringify(messages)).not.toContain('UNTRUSTED_BOUNDARY');
-    expect(getWorkingContextMessageProvenance(messages[1]!)).toEqual({
-      kind: 'single',
-      rawTraceIds: ['trusted-boundary'],
-      turnId: 'turn-interrupted',
-    });
-    expect(manager.loadCurrentCompactionOutput()).toBeNull();
-    expect(WorkingContextSnapshotSerializer.validate(snapshotStore.read(agentId)!)).toBe(true);
+    expect(manager.getWorkingContextMessages()).toEqual([]);
+    expect(snapshotStore.read(agentId)).toBeNull();
   });
 
-  it('fails closed when a lineage head exists without its required v5 snapshot', () => {
-    memoryStore.add([new EpisodicItem({ id: 'e1', ts: 1, summary: 'Current M1' })]);
-    lineageStore.appendNext(null, lineageRecord());
+  it('rejects historical snapshot schemas without an old-schema reader', () => {
+    snapshotStore.write(agentId, {
+      schema_version: 4,
+      agent_id: agentId,
+      messages: [],
+    });
 
     expect(() => new WorkingContextSnapshotBootstrapper(snapshotStore).bootstrap(
       manager,
       'System',
       { maxItemChars: null },
-    )).toThrow("Current lineage head 'c1' requires a v5 message snapshot");
+    )).toThrow("Unsupported working-context snapshot schema '4'.");
   });
 
   it('rejects a compacted-memory snapshot when lineage is absent', () => {
@@ -189,5 +134,21 @@ describe('WorkingContextSnapshotBootstrapper current-only restore', () => {
       'System',
       { maxItemChars: null },
     )).toThrow('Snapshot compacted memory cannot exist without a lineage head');
+  });
+
+  it('rejects a valid strict-v5 payload whose agent identity conflicts with the run', () => {
+    const expected = new WorkingContextFinalizer().finalize({
+      messages: [new Message(MessageRole.SYSTEM, { content: 'Stored system' })],
+    });
+    snapshotStore.write(agentId, WorkingContextSnapshotSerializer.serialize(expected, {
+      agent_id: 'different-agent',
+    }));
+
+    expect(() => new WorkingContextSnapshotBootstrapper(snapshotStore).bootstrap(
+      manager,
+      'System',
+      { maxItemChars: null },
+    )).toThrow('Working-context v5 snapshot agent identity conflicts with its run.');
+    expect(manager.getWorkingContextMessages()).toEqual([]);
   });
 });

@@ -12,6 +12,9 @@ The canonical coverage investigation and execution coverage report remain author
 | API-REV-004 | User correction after API-REV-003; execution round 4 | SR-004, ARCH-REV-004, IR-002, CRR-003, DR-001 | Pass / 98% | Pass / 96% |
 | API-REV-005 | `CRR-006` / `TCR-001`; focused local-fix round 5 | SR-004, ARCH-REV-004, IR-002, CRR-006, DR-001 | Pass / 96% | Pass / 96% |
 | API-REV-006 | User-directed canonical product-compactor validation; execution round 6 | SR-004, ARCH-REV-004, IR-002, CRR-006, DR-001 | Pass / 96% | Pass / 98% |
+| API-REV-007 | `code_reviewer`; `CRR-009`; execution round 7 | SR-010, ARCH-REV-006, IR-003, CRR-009, DR-001–DR-005 | Pass / 98% | Pass / 98% |
+| API-REV-008 | `code_reviewer`; `CRR-012`; execution round 8 | SR-015, ARCH-REV-009, IR-005, CRR-012, DR-001–DR-007 | Pass / 98% | Pass / 98% |
+| API-REV-009 | `code_reviewer`; `CRR-013`; focused local-fix round 9 | SR-015, ARCH-REV-009, IR-005, CRR-013, DR-001–DR-007 | Pass / 98% | Pass / 98% |
 
 ## Revision Entries
 
@@ -316,3 +319,96 @@ None — API-REV-003 was already `Pass`. This revision supersedes its two-percen
   - The two-model live sample is strong boundary evidence, not a general compaction-quality benchmark corpus.
   - Process termination between normal publication writes remains explicitly outside approved scope.
   - Browser/Electron is inapplicable because no UI, renderer, IPC, preload, or desktop-shell boundary changed.
+
+### API-REV-008 — Forward-only native v5 migration and stable-base request recovery
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/code-review-report.md`; `CRR-012 Pass`; API/E2E execution round 8.
+- Triggering finding or scenario IDs: `CR-F-002` / `CR-PREM-002` was already resolved by IR-005; canonical `SCN-020` proves post-compaction stable-base request settlement and canonical `SCN-021` proves forward-only native conversion/migration/order/strict continuation.
+- Related solution, architecture-review, implementation, code-review, or delivery revision IDs: `SR-015`, `ARCH-REV-009`, `IR-005`, `CRR-012`; prior delivery baseline `DR-001`–`DR-007` retained as upstream evidence.
+- Why this coverage/execution revision was recorded: SR-015 replaces destructive reset/fail-closed startup and raw/old-schema runtime recovery with one exact native migration, ordinary nonblocking migration attempts, strict-v5 normal restore, and exact request-level stable-base settlement. Existing tests encoded the superseded behavior and the new pure converter/native migration had no durable owners.
+- Coverage decisions or durable test paths changed:
+  - Added the core native-v5 converter and server native migration suites.
+  - Updated 18 existing files for registry order, ordinary runner/startup, three token migration E2Es, strict restore/continuation, invalid Tool snapshots, request identity/recovery/exact-once settlement, canonical composed User behavior, and the server-settings compaction journey.
+  - Removed the obsolete destructive reset test; the new server migration suite is its direct current-contract replacement.
+  - Durable delta: `2 Added`, `18 Updated`, `1 Removed`; production source unchanged.
+- Scenarios added, changed, removed, or rechecked:
+  - `SCN-020`: pending compaction before capture; post-compaction stable base; assembly/provider restore; pre-capture error behavior; success/Tool/interruption one-settlement; canonical one-User composition.
+  - `SCN-021`: representative schema v1/v3/v4/current-v5 standalone/team conversion, exact active provenance, media/complete Tool groups, old-compacted and invalid/unsupported/unsourced/incomplete omissions, empty strict-v5 candidate, identity rejection, absent/nonempty-lineage behavior, exact cleanup/raw preservation, idempotence, ordinary default prerequisite order, strict restore and persisted continuation. Direct zero-byte-lineage migration evidence was added in API-REV-009.
+  - `SCN-001`–`SCN-019`: preserved affected lineage/compaction/v5/tool/media/startup/provider/presentation contracts rechecked through broad affected suites/builds and full root deterministic E2E.
+- Commands, environment, fixture, or broader-validation delta:
+  - Focused core passed 7 files/27 tests; focused server passed 4/16; token migration E2Es passed 3/6; affected core passed 40/181; server migration/runtime passed 16/70; server-settings passed 10/10.
+  - Final root `pnpm test:e2e` passed 50 files/175 tests with 14 files/49 explicitly gated. Core build and server build-config TypeScript check passed.
+  - Broader validation executed one exact legacy-filename `raw-1`-backed v4 snapshot through the ordinary prerequisite pipeline, strict restore, current User continuation, and valid v5 persistence using isolated real files/repository state.
+  - No external credential or provider was required. The private assignment file was not read, sourced, modified, or imported. Owned DB/temp/process state was removed and the round evidence credential-pattern scan returned zero matches.
+
+#### Prior Failure Resolution
+
+- No unresolved API-REV-007 failure existed. `CR-F-002` / `CR-PREM-002` entered this round as resolved by IR-005 and the ordinary-runner direct-upgrade ordering passed durable and broader execution.
+- Pre-maintenance failures and the first root-run server-settings failure were bounded API/E2E-owned stale assertions. Each was corrected against SR-015/SR-010 and passed its focused plus authoritative broad rerun.
+- No new failure ID remains.
+
+- Canonical artifacts and sections updated:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/execution-coverage-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/api-e2e-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/evidence/api-e2e/api-rev-008-core-focused.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/evidence/api-e2e/api-rev-008-core-memory-broad.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/evidence/api-e2e/api-rev-008-server-migration-broad.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/evidence/api-e2e/api-rev-008-root-deterministic-e2e-final.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/evidence/api-e2e/api-rev-008-core-build.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/evidence/api-e2e/api-rev-008-server-build-tsc.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/evidence/api-e2e/api-rev-008-cleanup.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/evidence/api-e2e/api-rev-008-secret-leak-scan.log`
+- Prior result and confidence: `Pass / 98%` (`API-REV-007`).
+- Current result and confidence: `Pass / 98%`.
+- New or remaining failure IDs: `None`.
+- Recommended recipient: `code_reviewer` for proportional review of the 20 added/updated durable paths and one removed stale path.
+- Remaining risks, blocked evidence, or untested scope:
+  - Representative isolated historical fixtures are strong exact-boundary evidence but not an exhaustive inventory of owner product data; product data was intentionally not mutated.
+  - The exploratory uncurated core suite and tests-inclusive TypeScript check expose unrelated pre-existing live/harness/test-debt failures; current production builds and every SR-015 authoritative selection pass.
+  - Normal-publication process-crash atomicity remains explicitly outside the approved scope.
+  - Browser/Electron is inapplicable because no UI, renderer, IPC, preload, or desktop-shell boundary changed.
+
+### API-REV-009 — TCR-002/TCR-003 direct settlement, zero-byte lineage, and scenario-traceability fix
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/api-e2e-test-review-report.md`; `CRR-013 Fail — Local Fix`; API/E2E focused local-fix round 9.
+- Triggering finding or scenario IDs: `TCR-002` and `TCR-003`; canonical `SCN-020` request recovery and `SCN-021` native migration.
+- Related solution, architecture-review, implementation, code-review, or delivery revision IDs: `SR-015`, `ARCH-REV-009`, `IR-005`, `CRR-012 Pass`, `CRR-013`; prior delivery baseline `DR-001`–`DR-007` remains upstream evidence.
+- Why this revision was recorded: API-REV-008 remained `Pass / 98%`, but proportional review found that changed durable coverage did not directly spy exact checkpoint settlement on the real `LlmPhase` Tool/interruption branches, reports reversed SCN-020/SCN-021, and zero-byte-lineage eligibility was claimed without a direct migration fixture.
+- Implementation/integrated commit executed: `d9753e69c1244bf88c0bc6816306495430047a35`; no production source changed in this round.
+- Coverage decisions or durable test paths changed:
+  - Round-9 delta: `0 Added`, `2 Updated`, `0 Removed`.
+  - Updated `autobyteus-ts/tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts` with real native Tool-ingestion and retained-interruption branches. Each directly asserts capture once, commit/release the exact checkpoint once, restore never, retained context/raw provenance, and exclusion of post-interrupt output. The existing recovery-state test supplies the complementary second-settlement rejection.
+  - Updated `autobyteus-server-ts/tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts` so the standalone-v4 case runs for absent and zero-byte lineage, preserves a zero-byte file byte-exactly, and rechecks strict-v5 publication, cleanup, raw preservation, and idempotence.
+  - Corrected current canonical artifacts so `SCN-020` is request recovery and `SCN-021` is native migration.
+  - Cumulative SR-015 durable delta remains `2 Added`, `18 Updated`, `1 Removed`.
+- Commands, environment, fixture, or broader-validation delta:
+  - Focused request recovery passed `1 file / 4 tests` (`api-rev-009-tcr-002-focused-final.log`).
+  - Focused native migration passed `1 file / 6 tests` (`api-rev-009-tcr-003-focused-final.log`).
+  - Broader request recovery passed `4 files / 23 tests` (`api-rev-009-request-recovery-broad.log`).
+  - Complete server migration/runtime selection passed `16 files / 71 tests` (`api-rev-009-migration-broad.log`).
+  - Structural/source-delta, cleanup, and evidence credential scans passed. No private secret source was read or imported, and no external provider was invoked.
+  - Full root/build/live-provider reruns were not required because the local fix changed only durable branch assertions and one filesystem fixture; API-REV-008/API-REV-007 remain authoritative for those unchanged surfaces.
+
+#### Prior Failure Resolution
+
+- `TCR-002`: `Resolved`. The real Tool branch and retained-interruption branch now each directly prove capture once, commit once with the captured checkpoint, restore never, retained state, and no phase-level second settlement.
+- `TCR-003`: `Resolved`. Scenario traceability is canonical, and zero-byte lineage is directly exercised as an eligible exact filesystem state alongside absent and nonempty cases.
+- No new failure ID remains.
+
+- Canonical artifacts and sections updated:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/execution-coverage-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/api-e2e-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/evidence/api-e2e/api-rev-009-tcr-002-focused-final.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/evidence/api-e2e/api-rev-009-tcr-003-focused-final.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/evidence/api-e2e/api-rev-009-request-recovery-broad.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/evidence/api-e2e/api-rev-009-migration-broad.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/evidence/api-e2e/api-rev-009-final-structural.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/evidence/api-e2e/api-rev-009-cleanup.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/evidence/api-e2e/api-rev-009-secret-leak-scan.log`
+- Prior result and confidence: `Pass / 98%` (`API-REV-008`); `CRR-013 Fail — Local Fix` was proportional test-review status only.
+- Current result and confidence: `Pass / 98%`.
+- New or remaining failure IDs: `None`; `TCR-002` and `TCR-003` resolved.
+- Recommended recipient: `code_reviewer` for proportional re-review of the two Round-9 updated durable paths.
+- Remaining risks, blocked evidence, or untested scope: unchanged from API-REV-008 — representative rather than exhaustive owner data, unrelated historical core harness debt, explicitly out-of-scope normal-publication process-crash atomicity, and inapplicable browser/Electron execution.

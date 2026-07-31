@@ -757,14 +757,17 @@ describe("Server settings GraphQL e2e", () => {
 
     const request = await assembler.prepareRequest(
       "after GraphQL update",
-      "turn-after-setting-update",
+      {
+        turnId: "turn-after-setting-update",
+        requestId: "turn-after-setting-update:llm:1",
+      },
       "System",
     );
     expect(request.didCompact).toBe(true);
-    expect(request.messages).toHaveLength(2);
-    expect(request.messages[0]?.content).toBe("System");
-    expect(request.messages[1]?.content).toContain("selected by GraphQL update");
-    expect(request.messages[1]?.content).toContain("after GraphQL update");
+    expect(request.canonicalMessages).toHaveLength(2);
+    expect(request.canonicalMessages[0]?.content).toBe("System");
+    expect(request.canonicalMessages[1]?.content).toContain("selected by GraphQL update");
+    expect(request.canonicalMessages[1]?.content).toContain("after GraphQL update");
     expect(request.renderedPayload).toEqual([
       { role: MessageRole.SYSTEM, content: "System" },
       {

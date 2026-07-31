@@ -19,13 +19,137 @@
 - Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/code-review-report.md`
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/code-review-revision-record.md`
 - Delivery Revision Record (delivery re-entry only): `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/delivery-revision-record.md`
-- Relevant Delivery Revision IDs: `DR-001` through `DR-005`
+- Relevant Delivery Revision IDs: `DR-001` through `DR-007`; SR-015 delivery pending
 - API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-007`
-- Current Investigation Round: `7`
-- Trigger: `CRR-009` source-review `Pass` for `IR-003` / `SR-010` at commit `c6c60b9996d61ef373236b66437844cd8b315af8`; validate natural model-chosen counts, exact canonical prompt/history composition, full accepted publication and mixed prompt-audit lineage, preserved SR-004 boundaries, and realistic product compactor quality.
-- Prior Investigation Reviewed: This file, rounds 1–6 / `API-REV-001`–`API-REV-006`
-- Latest Completed Authoritative Investigation: This file, round 7
+- Current API/E2E Revision ID: `API-REV-009`
+- Current Investigation Round: `9`
+- Trigger: `CRR-013 Fail — Local Fix` for `TCR-002` and `TCR-003`; complete direct real-`LlmPhase` Tool/interruption settlement proof, correct the canonical SCN-020/SCN-021 mapping, and add direct zero-byte-lineage migration eligibility evidence. Implementation source remains `CRR-012 Pass` at `d9753e69c1244bf88c0bc6816306495430047a35`.
+- Prior Investigation Reviewed: This file, rounds 1–8 / `API-REV-001`–`API-REV-008`; `API-REV-008 Pass / 98%` remained authoritative during the bounded local fix.
+- Latest Completed Authoritative Investigation: `API-REV-009 / Pass / 98%`
+
+## Round 9 TCR-002/TCR-003 Local-Fix Investigation
+
+### Trigger And Test-Validity Decision
+
+- `CRR-013` did not reopen the `API-REV-008 Pass / 98%` execution result or implementation source. It identified two bounded API/E2E durable-evidence defects owned by this role.
+- `TCR-002` was valid: direct checkpoint spies covered normal final response and provider failure/recovery, but no changed real-`LlmPhase` Tool-invocation or retained-interruption scenario asserted capture once, commit/release once, restore never, retained context, and no second settlement.
+- `TCR-003` was valid: reports reversed the approved mapping (`SCN-020` is request recovery; `SCN-021` is native migration), and the native migration suite directly covered absent and nonempty lineage but not a zero-byte lineage file.
+- No requirement, design, production-source, compatibility, or environment change was required. The local-fix delta is exactly two updated durable test files; the cumulative SR-015 durable delta remains `2 Added / 18 Updated / 1 Removed`.
+
+### Durable Corrections
+
+| Finding | Durable Correction | Direct Assertion |
+| --- | --- | --- |
+| `TCR-002` | Updated `autobyteus-ts/tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts` with real `LlmPhase` native Tool and retained-interruption branches. | Each branch captures exactly once, commits the exact captured checkpoint once, never restores, and retains the expected WorkingContext/raw trace. The Tool branch ingests a registered concrete test Tool call; the interruption branch retains the pre-fence partial response and excludes the post-interrupt chunk. Existing double-settlement rejection remains covered by `llm-request-recovery.test.ts`. |
+| `TCR-003` | Parameterized the standalone-v4 native migration case over absent and zero-byte lineage and corrected all current scenario references. | Both eligible forms publish strict v5, preserve raw/manifests, clean only obsolete outputs, and remain idempotent; zero-byte lineage stays byte-exact empty. Nonempty lineage remains excluded and untouched. `SCN-020` now consistently names request recovery and `SCN-021` native migration. |
+
+### Focused And Broader Execution
+
+| Order | Selection | Result | Evidence |
+| --- | --- | --- | --- |
+| 1 | Real-`LlmPhase` request-recovery owner | Pass: 1 file / 4 tests | `api-rev-009-tcr-002-focused-final.log` |
+| 2 | Native snapshot migration owner | Pass: 1 file / 6 tests | `api-rev-009-tcr-003-focused-final.log` |
+| 3 | Request-recovery broader selection (`LlmPhase`, assembler, recovery state, runtime) | Pass: 4 files / 23 tests | `api-rev-009-request-recovery-broad.log` |
+| 4 | Complete server app-data migration/runtime selection | Pass: 16 files / 71 tests | `api-rev-009-migration-broad.log` |
+| 5 | Structural, production-delta, cleanup, and evidence credential scan | Pass | `api-rev-009-final-structural.log`; `api-rev-009-cleanup.log`; `api-rev-009-secret-leak-scan.log` |
+
+### Confidence And Broader-Validation Decision
+
+- Final confidence remains `98%`: both review-identified proof gaps now have direct durable execution, every critical acceptance criterion is proven, and no applicable category is below `90%`.
+- Broader validation was `Required and completed` through the two affected broader repository selections. Re-running the full root E2E or live provider journeys was not required: this round changed only branch-specific checkpoint spies and one filesystem fixture state; `API-REV-008` already passed the unchanged full deterministic root surface, builds, ordinary migration lifecycle, and strict continuation.
+- Residual risks remain unchanged: representative rather than exhaustive owner data, unrelated historical core harness debt, model-dependent semantic quality already disclosed by API-REV-007, and explicitly out-of-scope process termination between normal publication operations.
+- Result: `Pass / 98%`. Next recipient: `code_reviewer` for proportional re-review of the two-path Round-9 test delta.
+
+## Round 8 Native Snapshot Migration, Strict Restore, And Stable-Base Recovery Investigation
+
+### Approved Delta And Changed Boundaries
+
+- Current reviewed basis: `SR-015`, `ARCH-REV-009 Pass`, `IR-005`, `CRR-012 Pass`. The implementation commit under validation is `d9753e69c1244bf88c0bc6816306495430047a35`; `CR-F-002` / `CR-PREM-002` is resolved.
+- Persisted-data decision: `Migration Required` only for exact metadata-classified native AutoByteus standalone/team-member snapshots with absent/zero-byte lineage. Every nonempty-lineage location is structurally outside the transition and must remain byte-for-byte untouched without snapshot inspection or cleanup.
+- Conversion boundary: one pure core converter owns historical v1/v3/v4/v5 decode and same-subject active-fact matching. System messages may survive structurally; non-system units and complete Tool groups require truthful active provenance. Unsupported/invalid/unsourced/old-compacted/ambiguous or incomplete units are omitted; parse-invalid/no-survivor input publishes metadata-identified strict v5 `messages: []`; parseable identity conflict rejects before mutation.
+- Server migration boundary: exact runtime classification supplies standalone `runId` or team `memberRunId`; complete candidate validation precedes atomic snapshot replacement; exactly `episodic.jsonl`, `semantic.jsonl`, and `compacted_memory_manifest.json` are removed after valid publication; raw bytes and manifests are not written. Existing external cleanup, raw rotation layout, and active-filename migrations run before native conversion.
+- Runtime boundary: normal explicit restore accepts only strict v5 with exact run identity and no raw-history projector/fallback. Ordinary startup persists and returns `FAILED`, `SUCCEEDED`, and `SUCCEEDED_WITH_WARNINGS` attempts while continuing bootstrap/build/listen; it does not aggregate-throw required failures.
+- Request boundary: `LLMRequestAssembler` completes pending compaction, captures the stable post-compaction WorkingContext/pending checkpoint immediately before current-request mutation, restores assembly failures locally, and returns the opaque checkpoint for `LlmPhase` to restore provider failures or release successful/tool/interrupted retained outcomes exactly once. Archive/output/lineage/tool facts are never rolled back.
+- Preserved SR-010 boundary: canonical adjacent compatible user constituents remain one composed User message. Migration/recovery tests must not restore obsolete separate-adjacent-user expectations, count caps, prompt duplication, or runtime historical decode.
+
+### Existing Coverage Validity Decisions
+
+| Path / Scenario | Decision | Investigation Basis / Required Maintenance |
+| --- | --- | --- |
+| `autobyteus-server-ts/tests/unit/app-data-migrations/reset-pre-lineage-memory-app-data-migration.test.ts` | `Stale / Replace` | Imports removed destructive reset production files and asserts deletion before conversion. Replace with native migration coverage; do not retain reset compatibility. |
+| `autobyteus-ts/tests/unit/memory/native-working-context-snapshot-v5-converter.test.ts` | `Add Durable Coverage` | No repository test owns the new sole historical decoder. Add representative v1/v3/v4/current-v5 identity, omission, media/Tool/provenance, no-survivor and invalid-source behavior. |
+| `autobyteus-server-ts/tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts` | `Add Durable Coverage` | Add standalone/team identity, absent/zero/nonempty-lineage gate, strict-v5 retention, exact cleanup/raw preservation, warnings/rejection/idempotence, and ordinary-runner direct-upgrade execution. |
+| `autobyteus-server-ts/tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts` | `Needs Update` | Existing default-registry assertions cover rotation/name relation but not external cleanup -> rotation -> active filename -> native v5 ordering. Extend exact order and execute a legacy-filename direct upgrade through the ordinary runner. |
+| `autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts` | `Needs Update` | Contains superseded aggregate-throw expectations/imports. Replace with attempt-all, persisted/returned `FAILED` plus `SUCCEEDED`, and retained `SUCCEEDED_WITH_WARNINGS` startability/retry behavior. |
+| `autobyteus-server-ts/tests/unit/server-runtime-app-data-migration-gate.test.ts` | `Stale / Replace or Rename` | Expects server rejection before bootstrap/listen. Current SR-015 contract logs ordinary results and continues. Update this existing owner to prove continuation after returned failed status and thrown runner infrastructure error. |
+| Three token-usage startup E2Es containing `RequiredAppDataMigrationError` | `Needs Update` | API-REV-007 assertions encoded the then-approved fail-closed reset contract; SR-015 explicitly restores ordinary nonblocking startup. Update to persisted status/continued-startup/retry assertions without compatibility behavior. |
+| `autobyteus-ts/tests/unit/memory/working-context-snapshot-bootstrapper.test.ts` | `Needs Update` | Current trusted-active bootstrap-without-snapshot scenario conflicts with strict explicit restore. Preserve valid v5/lineage checks; add missing/v4/identity rejection; remove raw reconstruction expectation. |
+| `autobyteus-ts/tests/integration/agent/working-context-snapshot-restore-flow.test.ts` | `Needs Update` | Misnamed schema-v4 test actually writes v5 plus forbidden root fields. Replace with exact strict-v5 restore and ordinary continuation persistence; add an explicit legacy rejection at the unit boundary. |
+| `autobyteus-ts/tests/integration/agent/incomplete-tool-call-resume-recovery.test.ts` | `Needs Update` | Seeds an invalid strict-v5 snapshot and expects runtime Tool repair. SR-015 migration omits incomplete groups and strict restore accepts only valid v5; replace/remove the invalid runtime-repair expectation, with omission proven at converter/migration boundaries. |
+| `autobyteus-ts/tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts` | `Needs Update` | Two assertions require adjacent user messages as separate rows. Update to the delivered SR-010 canonical composed-user contract while retaining Tool ordering and provider-failure recovery checks. |
+| `autobyteus-ts/tests/unit/agent/llm-request-assembler.test.ts`, `autobyteus-ts/tests/unit/memory/llm-request-recovery.test.ts`, and runtime compaction coverage | `Needs Update / Recheck` | Add exact stable-base post-compaction capture, post-capture assembly/provider restore, pre-capture compactor failure, success/tool/interruption one-settlement, and durable lineage non-rollback evidence. |
+| API-REV-007 prompt/natural-count/lineage/provider suites | `Still Valid / Recheck` | SR-015 preserves the delivered SR-010 prompt hash, uncapped output, mixed audit, current projection/origin, Event Monitor and Work Evidence. Re-run focused preservation suites/builds rather than changing their contracts. |
+
+### Discovery Evidence And Final Coverage Decisions
+
+- Focused pre-maintenance discovery was intentionally run against the superseded assertions. Core returned `5 failed / 1 passed` files and `9 failed / 4 passed` tests; server returned `3 failed / 1 passed` files and `2 failed / 8 passed` tests. Every failure matched an approved SR-015 contract change: removed reset sources, aggregate required-migration throwing, startup gating, raw replay/old snapshot acceptance, incomplete Tool repair, old request identity, or separate-adjacent-user output. Evidence: `evidence/api-e2e/api-rev-008-stale-focused-discovery.log`.
+- The first broad root E2E exposed one additional stale direct `LLMRequestAssembler.prepareRequest` call and obsolete `RequestPackage.messages` assertion in the server-settings compaction-strategy journey. This was a bounded API/E2E-owned test correction; the focused rerun passed 10/10 and the final root run passed 50 files/175 tests. Evidence: `api-rev-008-root-deterministic-e2e.log`, `api-rev-008-late-stale-callsite-focused.log`, `api-rev-008-server-settings-final.log`, and `api-rev-008-root-deterministic-e2e-final.log`.
+- Added durable pure-converter and server-native-migration owners. Replaced the destructive reset test. Updated registry ordering, ordinary runner/server startup, strict restore/continuation, invalid persisted Tool treatment, stable-base request recovery, token migration E2Es, the server-settings request contract, and remaining valid direct assembler call sites.
+- Final durable delta: `2 Added`, `18 Updated`, `1 Removed`; production source unchanged. The removed reset test has direct replacement coverage in the new migration suite.
+- The exploratory uncurated full core suite was retained as discovery evidence, not represented as authoritative: `423 passed / 35 failed` files and `2,022 passed / 83 failed` tests, plus environment-gated skips and two MCP spawn errors. Remaining failures are broad pre-existing/out-of-scope harness and environment debt (missing `/opt/homebrew/bin/uv`, ambient provider access/resolver setup, stale old LLM constructors/stream/parser/event expectations, and local model availability). SR-015-related failures it exposed were corrected and passed the focused, affected-broad, build, and root deterministic selections.
+- A tests-inclusive core `tsc -p tsconfig.json --noEmit` similarly exposed broad pre-existing test type debt and is non-authoritative. The production build configuration passed and the final relevant tests compile through Vitest transforms.
+
+### Repository Coverage Execution Plan And Results
+
+| Order | Command / Selection | Boundary Or Scenario Proven | Result | Evidence |
+| --- | --- | --- | --- | --- |
+| 1 | Focused stale discovery in core/server | Test-validity classification before maintenance | Expected stale failures; classified API/E2E-owned | `api-rev-008-stale-focused-discovery.log` |
+| 2 | Focused converter/bootstrap/recovery/restore suites | SCN-020/021 direct core behavior | Pass: 7 files / 27 tests | `api-rev-008-core-focused.log` |
+| 3 | Focused migration/registry/runner/startup suites | Exact migration publication, prerequisite ordering, ordinary nonblocking startup | Pass: 4 files / 16 tests | `api-rev-008-server-focused.log` |
+| 4 | Token migration runner E2Es | Persisted attempts and `FAILED`/`SUCCEEDED`/warning startability without aggregate throw | Pass: 3 files / 6 tests | `api-rev-008-token-migration-runner-e2e.log` |
+| 5 | Complete affected core memory/agent selection | Strict v5 restore, Tool/media, continuation, stable-base settlement, preserved compaction/lineage | Pass: 40 files / 181 tests | `api-rev-008-core-memory-broad.log` |
+| 6 | Complete server migration/runtime selection | Registry, scanner, migration repository/runner, startup lifecycle | Pass: 16 files / 70 tests | `api-rev-008-server-migration-broad.log` |
+| 7 | Focused server-settings compaction path after broad discovery | Current request identity and canonical request package | Pass: 1 file / 10 tests | `api-rev-008-server-settings-final.log` |
+| 8 | Root `pnpm test:e2e` | Full deterministic server/API/process surface | Pass: 50 files / 175 tests; 14 files / 49 explicitly gated | `api-rev-008-root-deterministic-e2e-final.log` |
+| 9 | Core build and server build-config TypeScript check | Current compile/package/runtime-dependency boundary | Pass | `api-rev-008-core-build.log`; `api-rev-008-server-build-tsc.log` |
+| 10 | `git diff --check`, stale-contract searches, cleanup and evidence credential scan | Structural hygiene and execution cleanup | Pass | `api-rev-008-cleanup.log`; `api-rev-008-secret-leak-scan.log` |
+
+### Post-Repository Confidence Scorecard
+
+| Confidence Category | Score | What Supports The Score | Remaining Uncertainty | Additional Validation That Could Improve It |
+| --- | --- | --- | --- | --- |
+| Requirement and acceptance-criteria proof | 99% | Direct converter/migration/restore/recovery assertions plus final root E2E | No exhaustive product corpus inventory | Not material for the approved exact-location migration |
+| Changed-boundary execution directness | 99% | Production converter, registry, ordinary runner, bootstrapper, assembler and phase are invoked directly | None material | N/A |
+| Cross-boundary integration realism and mock gap | 97% | Real files, atomic migration path, ordinary runner, strict bootstrap/continuation, Prisma/server E2E | Isolated fixtures rather than owner product data | Product corpus mutation is prohibited and unnecessary |
+| Environment, configuration, identity, and fixture fidelity | 98% | Standalone/team metadata, run/member identities, old/current raw layouts and actual app-data repository behavior | Representative rather than exhaustive historical shapes | Add fixtures only if a new supported historical shape is approved |
+| Failure, edge-case, lifecycle, and recovery evidence | 99% | Invalid/unsupported/unsourced/identity-conflict/nonempty-lineage, thrown runner, provider/render failure and exact-once settlement | Normal process crash between atomic filesystem steps remains outside scope | N/A in approved scope |
+| User-surface, browser, and desktop-shell confidence | N/A | No UI/browser/IPC/shell boundary changed | N/A | N/A |
+| Durable regression coverage quality and relevance | 98% | Current contract tests replace obsolete reset/fail-closed/raw-replay assumptions without fallback | Proportional code review remains the next gate | `code_reviewer` proportional review |
+
+- Overall post-repository confidence: `98%`.
+- Calculation method: rounded mean of the six applicable categories, with no score used to mask a critical criterion.
+- Every critical acceptance criterion directly proven: `Yes`.
+- Any applicable category below `90%`: `No`.
+- Default clean-confidence target of `95%` met: `Yes`.
+- Material residual risks: no exhaustive real product-data inventory was mutated; unrelated historical core live/harness debt remains outside SR-015; normal-publication process-crash atomicity remains explicitly outside approved scope.
+
+### Broader Validation Decision
+
+- Decision: `Required and completed`.
+- Selected execution mode: isolated lifecycle/filesystem integration plus full deterministic root API/E2E.
+- Confidence gap addressed: prerequisite ordering and migration/restore/continuation could not be established by isolated unit assertions alone.
+- Actual evidence: one exact legacy-filename `raw-1`-backed v4 snapshot ran through external cleanup -> rotation -> active-name -> native-v5 in the ordinary runner, restored through the strict bootstrapper, accepted a new current User continuation, and persisted a valid strict-v5 snapshot. The full root E2E then passed 50/50 executing files.
+- Browser/desktop decision: `Not Applicable`; no user interface or shell-specific boundary changed.
+- No credentials or external provider were required. The private assignment file was not read, sourced, modified, or imported.
+
+### Investigation Decision
+
+- Proceed To API/E2E Execution: `Completed`.
+- Repository-Resident Durable Coverage Added / Updated / Removed: `Yes — 2 / 18 / 1`.
+- Post-repository confidence: `98%`.
+- Broader validation decision: `Required and completed`.
+- Reroute Required Before Validation Execution: `No`.
+- Final result: `Pass`; next recipient is `code_reviewer` for proportional review of the 20 added/updated durable test paths and the one removed stale path.
 
 ## Round 7 Natural Semantic Sizing And Canonical History Investigation
 

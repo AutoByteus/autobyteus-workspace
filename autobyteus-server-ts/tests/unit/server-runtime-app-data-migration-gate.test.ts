@@ -2,11 +2,14 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => {
   const app = {
-    listen: vi.fn(),
-    close: vi.fn(),
-    register: vi.fn(),
+    listen: vi.fn(async () => undefined),
+    close: vi.fn(async () => undefined),
+    register: vi.fn(async () => undefined),
     addHook: vi.fn(),
-    server: { address: vi.fn() },
+    get: vi.fn(),
+    server: {
+      address: vi.fn(() => ({ address: "127.0.0.1", family: "IPv4", port: 43210 })),
+    },
   };
   return {
     app,
@@ -18,6 +21,15 @@ const mocks = vi.hoisted(() => {
     initializeSecretVault: vi.fn(async () => undefined),
     configureDeniedPaths: vi.fn(),
     loggerError: vi.fn(),
+    scheduleBackgroundTasks: vi.fn(async () => undefined),
+    startChannelRuntime: vi.fn(),
+    startGatewayRuntime: vi.fn(),
+    restoreManagedMessaging: vi.fn(async () => undefined),
+    getOrCreateTempWorkspace: vi.fn(async () => undefined),
+    runStartupRecovery: vi.fn(async (callback: () => Promise<void>) => callback()),
+    resumeBindings: vi.fn(async () => []),
+    resumePendingEvents: vi.fn(async () => undefined),
+    reconcileAvailability: vi.fn(),
   };
 });
 
@@ -29,6 +41,76 @@ vi.mock("repository_prisma", async (importOriginal) => ({
 }));
 vi.mock("../../src/startup/migrations.js", () => ({
   runMigrations: mocks.runDatabaseMigrations,
+}));
+vi.mock("../../src/startup/background-runner.js", () => ({
+  scheduleBackgroundTasks: mocks.scheduleBackgroundTasks,
+}));
+vi.mock("../../src/api/rest/index.js", () => ({ registerRestRoutes: vi.fn() }));
+vi.mock("../../src/api/graphql/index.js", () => ({ registerGraphql: vi.fn() }));
+vi.mock("../../src/api/websocket/index.js", () => ({ registerWebsocketRoutes: vi.fn() }));
+vi.mock("../../src/agent-tools/mcp/agent-tools-mcp-routes.js", () => ({
+  registerAgentToolsMcpRoutes: vi.fn(),
+}));
+vi.mock("../../src/mcp-gateway/mcp-gateway-routes.js", () => ({
+  registerMcpGatewayRoutes: vi.fn(),
+}));
+vi.mock("../../src/api/security/remote-access-policy-plugin.js", () => ({
+  registerRemoteAccessPolicyPlugin: vi.fn(),
+}));
+vi.mock("../../src/api/static/mobile-web.js", () => ({ registerMobileWebStaticRoutes: vi.fn() }));
+vi.mock("../../src/agent-tools/search/register-search-tool.js", () => ({
+  registerProvisionedSearchTool: vi.fn(),
+}));
+vi.mock("../../src/logging/http-access-log-policy.js", () => ({
+  registerHttpAccessLogPolicy: vi.fn(),
+}));
+vi.mock("../../src/external-channel/runtime/channel-run-output-runtime-singleton.js", () => ({
+  startChannelRunOutputDeliveryRuntime: mocks.startChannelRuntime,
+  stopChannelRunOutputDeliveryRuntime: vi.fn(),
+}));
+vi.mock("../../src/external-channel/runtime/gateway-callback-delivery-runtime.js", () => ({
+  startGatewayCallbackDeliveryRuntime: mocks.startGatewayRuntime,
+  stopGatewayCallbackDeliveryRuntime: vi.fn(),
+}));
+vi.mock("../../src/managed-capabilities/messaging-gateway/defaults.js", () => ({
+  getManagedMessagingGatewayService: () => ({
+    restoreIfEnabled: mocks.restoreManagedMessaging,
+    close: vi.fn(),
+  }),
+}));
+vi.mock("../../src/workspaces/workspace-manager.js", () => ({
+  getWorkspaceManager: () => ({ getOrCreateTempWorkspace: mocks.getOrCreateTempWorkspace }),
+}));
+vi.mock("../../src/application-packages/services/application-package-registry-service.js", () => ({
+  ApplicationPackageRegistryService: {
+    getInstance: () => ({ getRegistrySnapshot: vi.fn(async () => ({ packages: [] })) }),
+  },
+}));
+vi.mock("../../src/application-bundles/services/application-bundle-service.js", () => ({
+  ApplicationBundleService: {
+    getInstance: () => ({ getCatalogSnapshot: vi.fn(async () => ({ applications: [] })) }),
+  },
+}));
+vi.mock("../../src/application-storage/stores/application-platform-state-store.js", () => ({
+  ApplicationPlatformStateStore: class {
+    listKnownApplicationIds = vi.fn(async () => []);
+  },
+}));
+vi.mock("../../src/application-orchestration/services/application-availability-service.js", () => ({
+  getApplicationAvailabilityService: () => ({
+    reconcileCatalogSnapshotWithKnownApplications: mocks.reconcileAvailability,
+  }),
+}));
+vi.mock("../../src/application-orchestration/services/application-orchestration-startup-gate.js", () => ({
+  getApplicationOrchestrationStartupGate: () => ({ runStartupRecovery: mocks.runStartupRecovery }),
+}));
+vi.mock("../../src/application-orchestration/services/application-orchestration-recovery-service.js", () => ({
+  getApplicationOrchestrationRecoveryService: () => ({ resumeBindings: mocks.resumeBindings }),
+}));
+vi.mock("../../src/application-orchestration/services/application-execution-event-dispatch-service.js", () => ({
+  getApplicationExecutionEventDispatchService: () => ({
+    resumePendingEvents: mocks.resumePendingEvents,
+  }),
 }));
 vi.mock("../../src/app-data-migrations/app-data-migration-runner.js", () => ({
   getAppDataMigrationRunner: () => ({ runPending: mocks.runPending }),
@@ -51,6 +133,7 @@ vi.mock("../../src/config/app-config-provider.js", () => ({
       getLogsDir: () => "/tmp/server-runtime-gate/logs",
       getAppRootDir: () => "/tmp/server-runtime-gate",
       getOperationalDatabaseUrl: () => "file:/tmp/server-runtime-gate/test.db",
+      get: vi.fn(() => undefined),
       getOperationalDatabaseLocation: () => ({
         databasePath: "/tmp/server-runtime-gate/test.db",
         rootKeyPath: "/tmp/server-runtime-gate/root.key",
@@ -82,24 +165,22 @@ vi.mock("../../src/logging/server-app-logger.js", () => ({
 
 import { startConfiguredServer } from "../../src/server-runtime.js";
 
-describe("startConfiguredServer required app-data migration gate", () => {
+describe("startConfiguredServer ordinary app-data migration execution", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mocks.runPending.mockResolvedValue([]);
   });
 
-  it("rethrows required migration failure before built-in bootstrap, app construction, or listen", async () => {
-    const requiredFailure = Object.assign(
-      new Error("Required app data migrations are not startable: reset:FAILED."),
+  it("continues bootstrap, app construction, and listen when the runner reports a FAILED result", async () => {
+    mocks.runPending.mockResolvedValueOnce([
       {
-        name: "RequiredAppDataMigrationError",
-        code: "REQUIRED_APP_DATA_MIGRATION_FAILED",
-        results: [{ migrationId: "reset", status: "FAILED" }],
+        migrationId: "migrate_native_working_context_snapshots_v5",
+        status: "FAILED",
+        details: { diagnostics: [{ status: "FAILED", reason: "identity mismatch" }] },
       },
-    );
-    mocks.runPending.mockRejectedValueOnce(requiredFailure);
+    ]);
 
-    await expect(startConfiguredServer({ host: "127.0.0.1", port: 0 }))
-      .rejects.toBe(requiredFailure);
+    await expect(startConfiguredServer({ host: "127.0.0.1", port: 0 })).resolves.toBeUndefined();
 
     expect(mocks.runDatabaseMigrations).toHaveBeenCalledTimes(1);
     expect(mocks.configureDeniedPaths).toHaveBeenCalledWith([
@@ -114,9 +195,25 @@ describe("startConfiguredServer required app-data migration gate", () => {
     });
     expect(mocks.initializeSecretVault).toHaveBeenCalledTimes(1);
     expect(mocks.runPending).toHaveBeenCalledTimes(1);
-    expect(mocks.bootstrapBuiltInAgents).not.toHaveBeenCalled();
-    expect(mocks.fastify).not.toHaveBeenCalled();
-    expect(mocks.app.listen).not.toHaveBeenCalled();
+    expect(mocks.bootstrapBuiltInAgents).toHaveBeenCalledTimes(1);
+    expect(mocks.fastify).toHaveBeenCalledTimes(1);
+    expect(mocks.app.listen).toHaveBeenCalledWith({ host: "127.0.0.1", port: 0 });
+    expect(mocks.scheduleBackgroundTasks).toHaveBeenCalledTimes(1);
+    expect(mocks.loggerError).not.toHaveBeenCalledWith(
+      expect.stringContaining("Failed to run app data migrations"),
+    );
+  });
+
+  it("logs an infrastructure exception from the runner and still starts", async () => {
+    const runnerFailure = new Error("migration state store unavailable");
+    mocks.runPending.mockRejectedValueOnce(runnerFailure);
+
+    await expect(startConfiguredServer({ host: "127.0.0.1", port: 0 })).resolves.toBeUndefined();
+
+    expect(mocks.runPending).toHaveBeenCalledTimes(1);
+    expect(mocks.bootstrapBuiltInAgents).toHaveBeenCalledTimes(1);
+    expect(mocks.fastify).toHaveBeenCalledTimes(1);
+    expect(mocks.app.listen).toHaveBeenCalledTimes(1);
     expect(mocks.loggerError).toHaveBeenCalledWith(
       expect.stringContaining("Failed to run app data migrations"),
     );

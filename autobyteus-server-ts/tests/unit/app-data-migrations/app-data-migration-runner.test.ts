@@ -10,7 +10,6 @@ import type {
   AppDataMigrationRecordSnapshot,
 } from "../../../src/app-data-migrations/domain/app-data-migration-types.js";
 import { AppDataMigrationDuplicateRunError } from "../../../src/app-data-migrations/domain/app-data-migration-types.js";
-import { RequiredAppDataMigrationError } from "../../../src/app-data-migrations/domain/app-data-migration-types.js";
 
 class InMemoryMigrationRepository implements AppDataMigrationRecordRepositoryLike {
   records = new Map<string, AppDataMigrationRecordSnapshot>();
@@ -171,7 +170,7 @@ describe("AppDataMigrationRunner", () => {
     ]);
   });
 
-  it("attempts and persists every required migration before throwing the aggregate typed failure", async () => {
+  it("attempts, persists, and returns every required result without an aggregate startup throw", async () => {
     const repository = new InMemoryMigrationRepository();
     const executions: string[] = [];
     const runner = new AppDataMigrationRunner(
@@ -197,17 +196,10 @@ describe("AppDataMigrationRunner", () => {
       { logsDir: tempDir },
     );
 
-    let failure: RequiredAppDataMigrationError | null = null;
-    try {
-      await runner.runPending();
-    } catch (error) {
-      expect(error).toBeInstanceOf(RequiredAppDataMigrationError);
-      failure = error as RequiredAppDataMigrationError;
-    }
+    const results = await runner.runPending();
 
     expect(executions).toEqual(["m-fail", "m-success", "m-throws"]);
-    expect(failure?.code).toBe("REQUIRED_APP_DATA_MIGRATION_FAILED");
-    expect(failure?.results.map(({ migrationId, status }) => ({ migrationId, status })))
+    expect(results.map(({ migrationId, status }) => ({ migrationId, status })))
       .toEqual([
         { migrationId: "m-fail", status: "FAILED" },
         { migrationId: "m-success", status: "SUCCEEDED" },
