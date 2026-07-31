@@ -9,11 +9,12 @@
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/proposal-critical-analysis.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-self-validation.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/application-framework-architecture-simplification.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/application-framework-hardening-evaluation.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/sources/autobyteus-vertical-application-developer-experience-proposal.md`
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/solution-revision-record.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md`
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/architecture-review-revision-record.md`
-- Triggering and downstream context:
+- Triggering and retained downstream context:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-revision-record.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-coverage-investigation.md`
@@ -24,115 +25,77 @@
 
 ## Current Implementation Summary
 
-`IR-018` completes the bounded `CRR-032` / `CR-022` stop-all continuation correction on top of the architecture-approved `SR-013` / `ARCH-REV-011` application-framework simplification. The correction commit is `e9b1a49f20bcb382632df23f53bf0d33ebdf7080`; the complete SR-013 baseline remains `f7d17c744559238e7faa0a8bae182429cb3c0968`.
+`IR-019` implements the architecture-approved `SR-016` / `ARCH-REV-014` application-framework boundary hardening in the exact five-file scope. Commit `30257a0a896b7f29b09537c16c6021340274f82b` adds one test-only executable policy owner, declares its direct Vue SFC parser dependency, updates the lockfile, and synchronizes the two existing server architecture documents. No production source, runtime object graph, route, schema, application package, persisted data, or generated artifact changed.
 
-`ApplicationPlatformRuntime` now exposes exactly four immutable projections: `lifecycle`, `rest`, `realtime`, and `hostManagement`. REST, realtime, standalone, and Studio consumers receive only their exact subject contracts. Studio package state/query, mutation commands, and ordered catalog propagation are distinct owners with explicit rollback. Application run construction is acyclic through the early session scope, run-resource manager, exact active-run registry, concrete publication service, later scoped issuer, and run managers. Engine state/control and launch are split between controller and launcher; closed event and artifact queues break construction cycles without a generic bus or later handler binding. Artifact delivery preserves per-run FIFO and always ensures/restarts the application worker before invoking its artifact handler. Exact run removal revokes application sessions and detaches file-change, artifact-relay, and memory observers at most once.
+`tests/architecture/application-framework-boundaries.test.ts` derives the repository root from `import.meta.url`, enumerates the closed AFB-001–AFB-005 source families, extracts static/export/`require`/dynamic/import-type dependencies from TS/JS ASTs, extracts Vue `<script>` and `<script setup>` blocks directly through `@vue/compiler-sfc`, maps every importer to one of the seven reviewed project/profile forms, and resolves governed source fail-closed. It enforces the exact transport, GraphQL/presentation, package/bundle, application construction, and maintained application/template directions with stable actionable diagnostics.
 
-`ActiveAgentRunRegistry.snapshotActiveRuns()` now prunes every inactive exact run while retaining both the later active-run snapshot and all pruning cleanup errors. `AgentRunManager.stopAllAgentRuns()` seeds its error collection from that result, then attempts termination and exact removal for every retained run before throwing one aggregate. A cleanup failure in the first inactive run therefore cannot skip later active runs. Identity-checked replacement protection and at-most-once resource release remain intact.
-
-The two bind-once implementations, the broad `ApplicationEngineHostService`, the overloaded `ApplicationPackageService`, and their obsolete unit tests are removed with no alias, callback, compatibility wrapper, or application-path global fallback. Current server module documentation is synchronized. Runtime construction still creates zero new agent/team runs.
+AFB-004 uses the same exact binding/shape evaluator for the current tree and synthetic fixtures. It resolves named aliases and namespace members, rejects the seven named global/default callees in application construction, checks all nineteen reviewed constructor/factory occurrences, and tests every required omission, `null`, `undefined`, and opaque-spread variant. `CodexAgentRunBackendFactory` argument 1 and `ClaudeAgentRunBackendFactory` arguments 0/1 are mandatory in application construction; Codex positions 0/2 remain deliberately process-scoped. The two named general-process assembly roots remain the only explicit selection exemptions.
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-revision-record.md`
-- Current implementation revision ID: `IR-018`
-- Related solution revision IDs: `SR-013` (retains accepted `SR-012` runtime/package directions)
-- Related architecture-review revision IDs: `ARCH-REV-011` (`ARCH-REV-010` prior Design Impact)
-- Related code-review revision IDs: `CRR-032` Local Fix trigger; `CRR-031` design trigger; `CRR-029` prior source Pass; `CRR-030` prior proportional test review Pass
-- Related API/E2E revision IDs: `API-REV-011` prior Pass / 98.9%
-- Related delivery revision IDs: `DR-003`, `DR-004`
-- Triggering finding IDs: `CR-022` (the retained IR-017 baseline resolves `CR-019`–`CR-021`, `AR-008`, and `AR-009`)
+- Current implementation revision ID: `IR-019`
+- Related solution revision IDs: `SR-016`; retained `SR-015`, `SR-014`, and passed production baseline `SR-013`
+- Related architecture-review revision IDs: `ARCH-REV-014`; retained `ARCH-REV-013`, `ARCH-REV-012`, and production baseline `ARCH-REV-011`
+- Related code-review revision IDs: retained production source Pass `CRR-033` and proportional test review Pass `CRR-034`
+- Related API/E2E revision IDs: retained pre-hardening baseline `API-REV-012` / 96.6%
+- Related delivery revision IDs: `DR-005`
+- Triggering finding IDs: `AR-010`, `AR-011`; no open production-source finding
 
 ## Reviewed Behavior Implementation Trace
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
-| `BEH-001`–`BEH-003` | Current manifest-v4 packages, identity, stored data, host bootstrap, and package bytes remain unchanged. | Existing package parser/data/SDK/devkit paths; server runtime/package owner refactor only. | Preserved; no manifest, package-producing source, database schema, or wire DTO changed. |
-| `BEH-004` | Preserve application-local execution, publication, handoff, and projection, including worker restart before artifact handling. | `PublishedArtifactPublicationService` -> queue-backed relay -> `ApplicationPublishedArtifactDeliveryQueue` -> `ApplicationPublishedArtifactDeliveryService` -> `ApplicationEngineLauncher.ensureReady()` -> `ApplicationEngineController.invokeApplicationArtifactHandler()`. | Implemented; focused tests prove ensure-before-invoke, worker-absent restart, per-run FIFO, independent lanes, and drain. |
-| `BEH-005` | Preserve exact application MCP scope/session identity and complete run-resource cleanup. | `ApplicationAgentToolMcpSessionScope` -> `AgentRunResourceManager` -> `ActiveAgentRunRegistry` -> concrete publisher -> `ScopedAgentToolMcpSessionManager` -> agent/team managers. | Implemented; inactive discovery/replacement, partial rollback, exact terminate/stop-all, identity mismatch, at-most-once cleanup, and stop-all continuation after pruning/removal failures are covered. |
-| `BEH-006`–`BEH-008` | Preserve dual-host development, readiness/recovery/shutdown, routes, providers, native tools, and Studio-only gateway boundary. | `buildStudioServer`, `buildStandaloneApplicationServer`, narrow route registrars, `ApplicationPlatformLifecycle`, existing provider factories. | Preserved in source; no devkit/application/frontend production file changed. Full executable reconfirmation remains API/E2E-owned. |
-| `BEH-009` | Keep the previously passed responsibility vocabulary while deleting owners no longer needed. | Current server/runtime/manager/supervisor/coordinator names; removed both `BindOnce*` files. | Implemented cleanly; retired source/unit/doc scans are clear. |
-| `BEH-010` | Replace outward leakage, temporal package callbacks, and cyclic run/engine construction with the exact DS-015 owners. | Four runtime projections; `ApplicationPackageRegistryService` + `ApplicationPackageCommandService` + `ApplicationCatalogRefreshCoordinator`; early session/run registry and controller/queue owners; late launcher/delivery/dispatcher/reentry owners. | Implemented for `REQ-010`, `AC-019`–`AC-023`, and `UC-025`–`UC-027`. |
+| `BEH-001`–`BEH-010` | Preserve the passed dual-host application product, narrow/acyclic runtime, exact cleanup, provider execution, package bytes, and user-visible behavior. | Existing SR-013 production source and API-REV-012 durable coverage; no production or application/package-producing source in the IR-019 commit. | Preserved by zero production-source/package-output delta. Full executable reconfirmation remains downstream-owned. |
+| `BEH-011` | Reject contributor-introduced application-framework dependency and injection regressions with exact diagnostics. | `tests/architecture/application-framework-boundaries.test.ts`; server test manifest/lock; synchronized applications module and architecture guide. | Implemented for `REQ-011`, `AC-024`, `UC-028`, `DS-016`, `SV-019`, and `SV-C60`–`SV-C62`. |
 
 ## Key Files Or Areas
 
-- Narrow runtime and lifecycle:
-  - `autobyteus-server-ts/src/application-platform/runtime/application-platform-runtime.ts`
-  - `autobyteus-server-ts/src/application-platform/runtime/application-platform-runtime-contracts.ts`
-  - `autobyteus-server-ts/src/application-platform/runtime/build-application-platform-runtime.ts`
-  - `autobyteus-server-ts/src/application-platform/runtime/create-application-orchestration-services.ts`
-  - `autobyteus-server-ts/src/application-platform/runtime/create-application-run-services.ts`
-  - `autobyteus-server-ts/src/application-platform/runtime/application-platform-lifecycle.ts`
-- Package ownership:
-  - `autobyteus-server-ts/src/application-packages/services/application-package-registry-service.ts`
-  - `autobyteus-server-ts/src/application-packages/services/application-package-command-service.ts`
-  - `autobyteus-server-ts/src/application-packages/services/application-catalog-refresh-coordinator.ts`
-  - `autobyteus-server-ts/src/application-platform/runtime/application-catalog-reconciliation-service.ts`
-  - `autobyteus-server-ts/src/compositions/build-studio-server.ts`
-- Run/session/resource ownership:
-  - `autobyteus-server-ts/src/agent-tools/mcp/application-agent-tool-mcp-session-scope.ts`
-  - `autobyteus-server-ts/src/agent-execution/services/agent-run-resource-manager.ts`
-  - `autobyteus-server-ts/src/agent-execution/runtime/active-agent-run-registry.ts`
-  - `autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts`
-- Engine/event/artifact owners:
-  - `autobyteus-server-ts/src/application-engine/services/application-engine-controller.ts`
-  - `autobyteus-server-ts/src/application-engine/services/application-engine-launcher.ts`
-  - `autobyteus-server-ts/src/application-orchestration/services/application-execution-event-dispatch-queue.ts`
-  - `autobyteus-server-ts/src/application-orchestration/services/application-published-artifact-delivery-queue.ts`
-  - `autobyteus-server-ts/src/application-orchestration/services/application-published-artifact-delivery-service.ts`
-  - `autobyteus-server-ts/src/application-orchestration/services/application-reentry-service.ts`
-- Focused tests:
-  - `autobyteus-server-ts/tests/unit/agent-execution/runtime/active-agent-run-registry.test.ts`
-  - `autobyteus-server-ts/tests/unit/agent-execution/agent-run-resource-manager.test.ts`
-  - `autobyteus-server-ts/tests/unit/agent-tools/mcp/application-agent-tool-mcp-session-scope.test.ts`
-  - `autobyteus-server-ts/tests/unit/application-engine/application-engine-controller.test.ts`
-  - `autobyteus-server-ts/tests/unit/application-orchestration/services/application-published-artifact-delivery-service.test.ts`
-  - `autobyteus-server-ts/tests/unit/application-packages/application-package-command-service.test.ts`
-  - `autobyteus-server-ts/tests/unit/application-packages/application-catalog-refresh-coordinator.test.ts`
+- `autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts` — sole executable AFB-001–AFB-005 policy owner, project resolver, binding/shape evaluator, current-tree assertions, and synthetic proof.
+- `autobyteus-server-ts/package.json` — direct test-only `@vue/compiler-sfc` `^3.5.28` declaration.
+- `pnpm-lock.yaml` — direct server importer lock entry reusing the resolved `3.5.28` package.
+- `autobyteus-server-ts/docs/modules/applications.md` — canonical human-readable policies, project/manifest rules, four injection families, and correction guidance.
+- `autobyteus-server-ts/docs/ARCHITECTURE.md` — concise AFB pointer and canonical module-document link.
 
 ## Important Assumptions
 
-- `autobyteus-server-ts` remains private; no supported external consumer requires the removed internal classes/files.
-- General-process defaults remain available only through named process assembly (`createGeneralProcessRunSupervisor`, `createGeneralProcessPublishedArtifactPublisher` / getter). Application assembly supplies exact dependencies.
-- Runtime construction prepares owners but creates/restores no run; business launch and recorded-state recovery remain the only supported triggers.
-- Active-run event publication remains fire-and-forget with logged relay failure, while no-active-run fallback publication awaits queue completion.
-- `APIE2E-REPO-005` remains separately `Unclear` and is not attributed to SR-013.
+- The server package remains private/internal; DS-016 protects current repository contributor paths rather than claiming a public package boundary.
+- The seven reviewed project/profile forms are authoritative: server, Studio web, Brief backend/frontend, Socratic backend/frontend, and independently discovered valid devkit templates.
+- Reusable Codex/Claude and other constructors retain legitimate process defaults. Only application construction is required to supply the closed graph-sensitive inputs.
+- `build-studio-server.ts` and `start-standalone-application-host.ts` remain the named process assembly owners; no application-construction exemption exists.
+- A new application construction owner, template shape, constructor obligation, or exception requires a synchronized design/docs/test update and architecture review rather than a broad allow-list.
 
 ## Known Risks
 
-- Five API/E2E-owned integration suites still import the removed broad `ApplicationEngineHostService`. They were intentionally preserved for downstream validity/reconciliation rather than modified in the implementation stage:
-  - `application-backend-custom-websocket.integration.test.ts`
-  - `application-backend-mount-route-transport.integration.test.ts`
-  - `application-backend-rest-ws.integration.test.ts`
-  - `application-context-capabilities.integration.test.ts`
-  - `brief-studio-imported-package.integration.test.ts`
-- Implementation checks did not start real Studio/standalone hosts, authenticated Codex/Luna, a browser, or the complete API-REV-011 matrix. API/E2E must reconfirm routes, restart/recovery/remount, real publication/message/handoff/journal/projection, shutdown, and 73/73 parity.
-- Other roles' dirty ticket reports/evidence and the untracked devkit output remain preserved and are outside the implementation commits.
+- The checker intentionally owns an explicit current-source map. Legitimate future project/config/import or constructor changes will fail closed until the reviewed map and fixtures are updated; this is the intended contributor contract, not a runtime fallback.
+- Implementation checks did not start real Studio/standalone hosts, authenticated Codex/Luna, browser projection, or regenerate and compare the complete package matrix. API/E2E must reconfirm the retained API-REV-012 behavior and exact `73/73` package parity after source review.
+- `APIE2E-REPO-005` remains separately `Unclear` and is not attributed to this hardening.
+- Other roles' dirty delivery reports/evidence plus generated devkit outputs were preserved outside the implementation commit.
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: `Behavior-neutral architecture refactor`
-- Reviewed root-cause classification: `Boundary or Ownership Issue` plus `Duplicated Policy or Coordination`
-- Reviewed refactor decision: `Refactor Needed Now`
+- Reviewed change posture: `Behavior-neutral architecture hardening`
+- Reviewed root-cause classification: `Missing enforceable invariant` and documentation discoverability; no production-runtime defect
+- Reviewed refactor decision: `No production refactor needed`; adopt one bounded architecture test, direct test dependency/lock entry, and two existing-document updates
 - Implementation matched the reviewed assessment: `Yes`
-- If challenged, routed as `Design Impact`: `Yes`; `CRR-031` went through `SR-012`, `ARCH-REV-010`, `SR-013`, and authoritative `ARCH-REV-011` before implementation
-- Evidence / notes: the exact DS-015 construction, dependency, file, and shutdown maps were applied. No behavioral shortcut or compatibility layer was introduced.
+- If challenged, routed as `Design Impact`: `Yes`; AR-010/AR-011 went through SR-014–SR-016 and ARCH-REV-012–ARCH-REV-014 before implementation
+- Evidence / notes: implementation is exactly the five-file DS-016 inventory. No generic layering framework, production helper, whole-SFC TypeScript parse, generated `.nuxt` dependency, recursive constructor rule, or broad exception list was introduced.
 
 ## Legacy / Compatibility Removal Check
 
 - Backward-compatibility mechanisms introduced: `None`
-- Legacy old-behavior retained in scope: `No`
-- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes`
-- Shared structures remain tight: `Yes`; two closed queues carry only application IDs or complete artifact commands, and the runtime exposes four subject projections
+- Legacy old-behavior retained in scope: `No`; behavior is intentionally unchanged
+- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `N/A`; the approved change adds an invariant and updates existing docs
+- Shared structures remain tight: `Yes`; one closed test owns five policies and one closed construction-obligation table
 - Canonical shared design guidance was reapplied during implementation: `Yes`
-- Changed source size guardrails: `Yes`; all changed production files are below 500 effective non-empty lines, all new production files are at or below 213 effective lines, and the one high-churn existing package-registry file was a responsibility-reducing split rather than growth
-- Notes: retired-name scans are clean across production source, unit tests, and current module docs. No alias, reverse callback, generic bus/container, or deferred handler remains.
+- Changed source implementation files stayed within proactive size-pressure guardrails: `N/A`; no production source implementation file changed, and test files are outside the hard source limit
+- Notes: no alias, compatibility route, fallback, generated policy artifact, or duplicate policy owner was added.
 
 ## Persisted Data Transition Check
 
 - Approved decision: `Not Affected`
-- Design-spec decision reference: `DS-015` and `application-framework-architecture-simplification.md` — Data And Migration Decision
-- Implementation follows the approved decision without migration or version-specific runtime fallback: `Yes`
-- Direct-use evidence: no database schema, serialized DTO, application package, manifest, launch override, event journal, run lookup record, or projection representation changed
+- Design-spec decision reference: `DS-016` exact change inventory and no-production-source boundary
+- Implementation follows the approved decision without an unapproved migration or version-specific runtime fallback: `Yes`
+- Direct-use evidence: no Prisma schema, database model, serialized DTO, manifest, package byte, runtime state, or application data path changed
 - Migration implementation: `N/A`
 - Deviation: `None`
 
@@ -140,37 +103,36 @@ The two bind-once implementations, the broad `ApplicationEngineHostService`, the
 
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis`
 - Branch: `codex/universal-application-framework-proposal-analysis`
-- Complete SR-013 source commit: `f7d17c744559238e7faa0a8bae182429cb3c0968`
-- CR-022 correction commit: `e9b1a49f20bcb382632df23f53bf0d33ebdf7080`
-- No dependency, lockfile, schema, or application-package change was required.
+- Reviewed solution commit: `724996e970d589e70b9f714c3580c3bd12d38674`
+- Implementation source/test/docs commit: `30257a0a896b7f29b09537c16c6021340274f82b`
+- Added only direct server `devDependency` `@vue/compiler-sfc: ^3.5.28`; `pnpm-lock.yaml` reuses resolved version `3.5.28`.
+- `pnpm install --lockfile-only --frozen-lockfile` passes across all eleven workspace projects.
 
 ## Local Implementation Checks Run
 
-- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` — Pass.
-- Focused SR-013 unit selection — Pass: 18 files / 70 tests covering application lifecycle/runtime/run services, session scope, run resources/registry/manager, engine controller, artifact queue/delivery/publication, event dispatch, backend gateway, package commands/refresh, and shutdown.
-- Focused bundle/package ownership selection — Pass: 4 files / 27 tests.
-- Final post-audit targeted rerun — Pass: 3 files / 14 tests for lifecycle, artifact delivery, and agent-run manager.
-- CR-022 focused run/resource/shutdown selection — Pass: 5 files / 22 tests, including the real registry/resource-manager continuation case.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/architecture/application-framework-boundaries.test.ts` — Pass: 1 file / 10 tests. The complete current tree, all eleven governed Vue SFCs, the valid basic template, all nineteen current AFB-004 construction occurrences, every required mutation variant, exact general-process exemptions, SFC parse/error/src behavior, and project/manifest fixtures pass.
+- Direct architecture-test TypeScript no-emit with NodeNext/strict/Vitest types — Pass.
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` — Pass; production TypeScript remains green.
+- `pnpm install --lockfile-only --frozen-lockfile` — Pass.
+- Exact implementation inventory audit — Pass: one new architecture test plus server manifest, workspace lockfile, and two existing docs; no additional implementation file.
+- Production/package-output delta audit — Pass: no server production source, maintained application source, devkit source/template, schema, or generated package output changed.
+- AFB ID synchronization and documentation-link audit — Pass: AFB-001–AFB-005 appear in the test and both docs; all relative documentation links resolve.
 - `git diff --check` — Pass.
-- Retired source/unit/module-doc symbol and file scan — Pass; zero current-owner matches.
-- Outward runtime/import, Studio late-assignment, no-package-delta, and changed-source size audits — Pass.
 
 These are implementation-scoped checks, not API/E2E sign-off.
 
 ## Frontend Rendered-Result Check
 
-Not Applicable. SR-013 changes backend-internal construction, ownership, and documentation only; no rendered frontend or interaction source changed.
+Not Applicable. IR-019 changes a test-only architecture checker, a test dev dependency/lock entry, and documentation; no rendered frontend or user interaction source changed.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
-1. Reconcile the five stale integration fixtures to inject controller/launcher/narrow runtime contracts; do not restore the broad engine host.
-2. Rerun the complete API-REV-011 Studio and standalone characterization baseline.
-3. Kill an application worker while a real provider run remains active, then publish; prove ensure/restart, handler delivery, journal/projection/UI outcome, and no projection rollback.
-4. Exercise same-run FIFO, independent run lanes, failure settlement, and shutdown drain before engine stop.
-5. Exercise inactive lookup, inactive replacement, partial attachment rollback, accepted explicit terminate, stop-all, registration rollback, and stale identity mismatch; prove sessions and three observers release at most once.
-6. Reconfirm runtime build creates zero runs and legitimate recovery restores only recorded nonterminal runs.
-7. Reconfirm REST/WebSocket/MCP route sets, Studio-only `/mcp/gateway`, package import/reload/remove rollback and refresh order, and exact 73/73 package parity.
+1. Review the checker as the sole policy owner: actual source-kind extraction, seven profile/config/manifest forms, normalized resolution, and fail-closed governed imports.
+2. Confirm AFB-001–AFB-005 import directions, exact catalog-reconciliation exception, and exact two general-process assembly exemptions without a broad allow-list.
+3. Confirm direct-callee alias/namespace binding and all nineteen AFB-004 current-tree occurrence assertions use the same evaluator as synthetic omission/`null`/`undefined`/spread cases.
+4. Confirm Codex argument 1 and Claude arguments 0/1 are independently protected while Codex positions 0/2 remain allowed process inputs.
+5. After source Pass, rerun the API-REV-012 affected server matrix and complete Studio/standalone characterization, including worker restart, publication/message/handoff/projection, cleanup/recovery/remount, route inventory, and exact `73/73` package parity.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Yes. After implementation-source review passes, `api_e2e_engineer` must reconcile durable integration coverage and run the complete proportional real-host and lifecycle matrix. No API/E2E completion is claimed here.
+Yes. Implementation proved the new architecture contract locally and preserved a zero-production-source delta. After implementation-source review passes, `api_e2e_engineer` must independently validate the durable test/dependency integration and proportionally reconfirm the retained real dual-host and package-integrity baseline before proportional test review and delivery resume.
