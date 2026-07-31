@@ -2,10 +2,11 @@
 
 ## Status
 
-- Delivery status: **Ready for explicit user verification; finalization held**.
+- Delivery status: **Personal-flavor unsigned macOS ARM64 Electron artifact ready for user testing; finalization held**.
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview`.
 - Branch: `codex/event-monitor-html-file-preview`.
 - Validated implementation checkpoint: `a6ab5cc77b5324a1743c4bc121ccf1bb518163e7`.
+- Current delivery HEAD: `807e1d44c3e98745628a5ba5544488a1711dab5f`.
 - Latest tracked base: `origin/personal @ 9615dcc88e73f0584e67623a3cfe1f0d2afd4617`.
 - Finalization target recorded at bootstrap: `personal`.
 
@@ -15,7 +16,8 @@
 - Integration method: no merge required; the ticket branch was already current with the latest tracked base and has no behind commits.
 - Integrated-state check: `git diff --check` **Pass**.
 - Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/test-results/event-monitor-html-file-preview/delivery-integration-check.log`.
-- Additional executable rerun: not required because no base commit was integrated and delivery-owned changes are documentation/ticket records only. API/E2E `API-REV-001` already passed against the checkpoint source.
+- Initial delivery check required no additional executable rerun because no base commit was integrated and the initial delivery-owned changes were documentation/ticket records only. API/E2E `API-REV-001` already passed against the checkpoint source.
+- Later base refresh: `git fetch origin personal` again confirmed `origin/personal` remains `9615dcc88e73f0584e67623a3cfe1f0d2afd4617`; no new base commit was integrated.
 
 ## Change Summary
 
@@ -34,6 +36,32 @@
 - Coverage included 6 web files/80 tests, 3 preservation files/22 tests, 4 Electron boundary files/19 tests, 2 server REST files/8 tests, browser direct and launcher probes, and `git diff --check`.
 - Docs sync: `Pass`; `autobyteus-web/docs/content_rendering.md` and `autobyteus-web/docs/file_explorer.md` updated.
 
+## Local Electron Test Package
+
+README-guided build command:
+
+```bash
+AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_TEAM_ID= \
+DEBUG=electron-builder,electron-builder:* \
+pnpm -C autobyteus-web build:electron:mac -- --arm64
+```
+
+Build result: **Pass**. The package includes the integrated backend and was
+built on a matching Apple Silicon host. Delivery did not launch the packaged
+application; user testing is the next behavioral check.
+
+| Artifact | SHA-256 | Size |
+| --- | --- | ---: |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.34.dmg` | `5b322f3510dc1ba77049a6810182db67d9f0b645854604117c88a24f73a85686` | 402,350,844 bytes |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.34.dmg.blockmap` | `739ce15278a14951e17dc6ad03d0b7a7e86e4008355622fe8c18c14d3e9c4e98` | 418,072 bytes |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.34.zip` | `d58dabb770b4dd1a1922bd601481f7899b2a6b320901721b2d145219440eb8fc` | 397,974,189 bytes |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.34.zip.blockmap` | `b728b5be9cbfa064fa5b496e3ae7b1122b6e9c7c4a823223c798c949971085d6` | 409,830 bytes |
+
+Verification passed for the staged and final packaged `node-pty` runtime,
+matching-host spawn probe, DMG checksum, ZIP contents, and ARM64 app binary.
+The local package is unsigned and not notarized (`identity: null`); macOS may
+require explicit approval before opening it.
+
 ## Residual Risks
 
 - Packaged Electron IPC/window/server lifecycle remains unexecuted; focused Electron boundary tests passed.
@@ -43,7 +71,7 @@
 
 ## User Verification Request
 
-Please verify the integrated HTML preview behavior, especially local absolute Event Monitor HTML versus workspace-relative HTML, and confirm whether delivery may finalize. Explicit user verification is required before ticket archival, branch push, merge into `personal`, release/publication/deployment, or cleanup.
+Please test the supplied DMG or ZIP, verify the integrated HTML preview behavior—especially local absolute Event Monitor HTML versus workspace-relative HTML—and explicitly confirm whether delivery may finalize. Explicit user verification is required before ticket archival, branch push, merge into `personal`, release/publication/deployment, or cleanup.
 
 ## Finalization Hold
 
@@ -72,3 +100,5 @@ No repository finalization, release, publication, deployment, or cleanup has occ
 - Production viewer: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/components/fileExplorer/viewers/HtmlPreviewer.vue`
 - Focused frontend tests: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/components/fileExplorer/viewers/__tests__/HtmlPreviewer.spec.ts`, `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/components/fileExplorer/__tests__/FileViewer.spec.ts`
 - Execution evidence directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/test-results/event-monitor-html-file-preview/`
+- Electron build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/test-results/event-monitor-html-file-preview/electron-build-personal-arm64.log`
+- Electron build verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/test-results/event-monitor-html-file-preview/electron-build-verification-personal-arm64.log`

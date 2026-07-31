@@ -4,7 +4,7 @@
 
 - Ticket: `event-monitor-html-file-preview`.
 - Delivery round: `DR-001` initial integrated handoff.
-- Status: `Prepared — finalization held for explicit user verification`.
+- Status: `Prepared — local test package ready; finalization held for explicit user verification`.
 - Release/publication/deployment scope: `Not applicable` for the current request. No release notes, version bump, tag, publication, or deployment was performed.
 
 ## Integrated State
@@ -17,6 +17,19 @@
 - Integration: no merge required; the ticket branch was already based on the latest tracked base.
 - Post-integration check: `git diff --check` passed; evidence is `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/test-results/event-monitor-html-file-preview/delivery-integration-check.log`.
 - Additional executable rerun: not required because no base commit was integrated and delivery-owned changes are documentation/ticket records only. API/E2E `API-REV-001` passed on the checkpoint source.
+
+## Delivery Round 2 — Local Electron Test Package
+
+- Trigger: User requested a README-guided Electron build for hands-on testing.
+- Source HEAD: `807e1d44c3e98745628a5ba5544488a1711dab5f`.
+- Command: `AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* pnpm -C autobyteus-web build:electron:mac -- --arm64`.
+- Result: `Pass`; personal-flavor macOS ARM64 package completed with the integrated server.
+- Artifact verification: staged/final `node-pty` runtime checks and matching-host spawn probe passed; `hdiutil verify` and `unzip -tq` passed; binary reported `Mach-O 64-bit executable arm64`.
+- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/test-results/event-monitor-html-file-preview/electron-build-personal-arm64.log`.
+- Verification log: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/test-results/event-monitor-html-file-preview/electron-build-verification-personal-arm64.log`.
+- Artifact paths and hashes are authoritative in `handoff-summary.md`.
+- Package state: unsigned/notarization-disabled (`identity: null`); delivery did not launch it.
+- Docs impact: no additional long-lived documentation change from this packaging-only round.
 
 ## Validation Inputs
 
@@ -48,4 +61,4 @@ No release or deployment work is authorized or required by the current handoff. 
 
 ## Next Action
 
-User: verify the handoff and explicitly authorize completion/finalization if satisfied. On receipt, delivery must refresh `origin/personal`, protect/reintegrate any changed target state, rerun required checks if the user-facing state changes, then archive and finalize according to the recorded `personal` target.
+User: test the supplied Electron package, verify the handoff, and explicitly authorize completion/finalization if satisfied. On receipt, delivery must refresh `origin/personal`, protect/reintegrate any changed target state, rerun required checks if the user-facing state changes, then archive and finalize according to the recorded `personal` target.

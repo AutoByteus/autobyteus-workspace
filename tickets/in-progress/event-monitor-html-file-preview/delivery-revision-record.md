@@ -5,6 +5,7 @@
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
 | `DR-001` | `code_reviewer` handoff after `API-REV-001` Pass and `CRR-002` Pass | `N/A` | `Pass — integrated, docs-synchronized handoff ready for explicit user verification; finalization held` | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-revision-record.md`, `autobyteus-web/docs/content_rendering.md`, `autobyteus-web/docs/file_explorer.md`, delivery integration evidence |
+| `DR-002` | User requested README-guided Electron build for hands-on testing | `DR-001 — Pass / awaiting verification` | `Pass — personal-flavor unsigned macOS ARM64 Electron artifact ready; finalization still held` | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, Electron build and verification evidence |
 
 ## Revision Entries
 
@@ -25,3 +26,22 @@
 - Why this baseline is recorded: Establish the first authoritative delivery result without inferring a prior result from the missing record, preserve the latest-base check, promote the durable viewer contract into project docs, and make the verification hold explicit.
 - Next recipient/action: User verifies the integrated handoff and explicitly authorizes completion/finalization. After that signal, delivery must refresh `origin/personal` again and proceed only if the verified handoff remains current.
 - Remaining risks: Packaged Electron IPC/window/server lifecycle, full authenticated Event Monitor feed click, and local HTML relative CSS/image/script asset fidelity remain bounded residuals. The broad web typecheck retains the unrelated baseline diagnostics documented upstream.
+
+### DR-002 — Local macOS Electron test package
+
+- Delivery round and trigger: Round 2, triggered by the user's request to read the README and build Electron for hands-on testing.
+- Triggering guidance: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/README.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/README.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/AGENTS.md`, and `docs/github-actions-tag-build.md` local build instructions.
+- Prior authoritative result: `DR-001` — integrated handoff and docs sync passed; explicit user verification remained pending.
+- Current authoritative result: `Pass` for the local personal-flavor unsigned macOS ARM64 Electron package and artifact integrity checks; user behavioral verification and repository finalization remain pending.
+- Build command: `AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* pnpm -C autobyteus-web build:electron:mac -- --arm64`.
+- Build source: `HEAD 807e1d44c3e98745628a5ba5544488a1711dab5f`; package version `1.4.34`; host and target `arm64`; Electron runtime `42.4.1`.
+- Artifacts:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.34.dmg` — SHA-256 `5b322f3510dc1ba77049a6810182db67d9f0b645854604117c88a24f73a85686`.
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.34.zip` — SHA-256 `d58dabb770b4dd1a1922bd601481f7899b2a6b320901721b2d145219440eb8fc`.
+  - Adjacent DMG/ZIP blockmaps were also produced; hashes are recorded in `handoff-summary.md`.
+- Verification: staged/final packaged Terminal runtime checks passed; matching-host `node-pty` spawn probe passed; `hdiutil verify` passed; `unzip -tq` passed; the packaged app binary is ARM64. Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/test-results/event-monitor-html-file-preview/electron-build-personal-arm64.log` and `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/test-results/event-monitor-html-file-preview/electron-build-verification-personal-arm64.log`.
+- Packaging status: `identity: null`, unsigned and not notarized. Delivery did not launch the package; the user owns the hands-on behavioral test.
+- Docs sync: No additional long-lived docs change; the existing HTML preview contract remains current. The docs-sync report records this no-impact decision.
+- User verification/finalization state: Explicit verification has not been received. No push, archive, target merge, release, publication, deployment, or cleanup occurred.
+- Next recipient/action: User tests the DMG or ZIP, reports the behavioral result, and explicitly authorizes finalization if satisfied. Delivery must refresh `origin/personal` again before any finalization.
+- Remaining risks: Packaged Electron IPC/window/server lifecycle remains user-tested rather than delivery-launched; full authenticated feed click and local HTML relative-asset fidelity remain bounded residuals.

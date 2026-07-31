@@ -10,6 +10,15 @@
 - Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/test-results/event-monitor-html-file-preview/delivery-integration-check.log`.
 - Latest API/E2E authority: `API-REV-001` Pass at 95% confidence; proportional test-code review `CRR-002` Pass with no findings.
 
+## Delivery Round 2 — Local Electron Test Package
+
+- Trigger: User requested a README-guided Electron build for hands-on testing.
+- Build command: `AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* pnpm -C autobyteus-web build:electron:mac -- --arm64`.
+- Build result: `Pass`; the personal-flavor macOS ARM64 DMG, ZIP, and blockmaps were produced from `HEAD 807e1d44c3e98745628a5ba5544488a1711dab5f`.
+- Verification result: staged/final packaged Terminal runtime checks and matching-host `node-pty` spawn probe passed; `hdiutil verify` and `unzip -tq` passed.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/test-results/event-monitor-html-file-preview/electron-build-personal-arm64.log` and `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/test-results/event-monitor-html-file-preview/electron-build-verification-personal-arm64.log`.
+- Docs impact: `No additional long-lived documentation change`; this round only produced a local test package and delivery evidence. The existing HTML preview contract remains accurately documented below.
+
 ## Why Docs Were Updated
 
 The HTML viewer now has a durable resource-selection contract: workspace static HTML requires explicit workspace resource identity, while local or context-free HTML uses already-loaded content in a managed Blob URL. The server remains authoritative for static-route containment, and local relative-asset limitations remain bounded rather than being solved by permitting absolute static paths. These rules belong in the rendering and File Explorer documentation.
@@ -53,5 +62,5 @@ No impact was found for persisted data, migration, server configuration, Electro
 
 - Result: `Updated` / `Pass`.
 - User verification: `Not received`.
-- Next action: user verifies the integrated handoff. Delivery must refresh the finalization target again after explicit verification before archive, push, merge, release, deployment, or cleanup.
+- Next action: user tests the supplied unsigned personal macOS ARM64 package and explicitly verifies/authorizes finalization. Delivery must refresh the finalization target again after that signal before archive, push, merge, release, deployment, or cleanup.
 - Release/deployment scope: `Not applicable` for this handoff; no release notes, tag, publication, or deployment was created.
