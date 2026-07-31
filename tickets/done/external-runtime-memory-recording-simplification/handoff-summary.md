@@ -4,12 +4,12 @@
 
 - Ticket: `external-runtime-memory-recording-simplification`
 - Date: `2026-07-31`
-- Current Status: `Migration Verified; Ticket Archived; Finalization And v1.4.34 Release In Progress`
-- Authoritative worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification`
+- Current Status: `Finalized And Released — v1.4.34`
+- Authoritative repository checkout: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Ticket branch: `codex/external-runtime-memory-recording-simplification`
 - Finalization target from bootstrap context: remote `origin`, branch `personal`
-- Latest tracked base: `origin/personal` at `ea6d6b011035d71dc9594d61ad035470985fca8e`
-- Reviewed-package checkpoint / integrated revision: `1bfda2b017a0b6ed1e21b03a4b0358bbb9d27483`; the branch is 5 commits ahead and 0 behind `origin/personal`. A post-verification refresh confirmed the target is unchanged; the user has now authorized finalization and release.
+- Verified base before finalization: `origin/personal` at `ea6d6b011035d71dc9594d61ad035470985fca8e`
+- Reviewed-package checkpoint: `1bfda2b017a0b6ed1e21b03a4b0358bbb9d27483`; archived ticket commit: `1942efdcdccc6a4b01c2b92e27f23f02fc11762b`; target merge: `e5982cb179e3d633181fd15d2b35f77357771d9f`; release commit: `ca16d88debbf75408223aef688af3ca6ec391fd9`.
 
 ## Delivery Summary
 
@@ -23,15 +23,15 @@
   - Cleanup failures are reported and retryable without blocking later startup work; a failed unlink may leave a stale snapshot visible in the unchanged generic Memory Inspector while current raw traces and provider continuation remain healthy.
   - Long-lived server, native-memory, Codex, run-history, execution, project-overview, and frontend memory docs now describe the final integrated contract.
 - Approved scope references:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/done/external-runtime-memory-recording-simplification/requirements.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/done/external-runtime-memory-recording-simplification/design-spec.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/done/external-runtime-memory-recording-simplification/persisted-snapshot-inventory.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-runtime-memory-recording-simplification/requirements.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-runtime-memory-recording-simplification/design-spec.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-runtime-memory-recording-simplification/persisted-snapshot-inventory.md`
 - Deferred / not delivered:
   - No runtime-qualified Memory Inspector suppression was added for a stale file retained after a reported cleanup failure.
   - No imported, missing/unmatched metadata, or historical task-like snapshot was deleted.
   - No general raw-trace retention/compression/quota policy was added.
   - The normal startup path has now executed the approved migration against the user's standard app-data directory, and a read-only reconciliation verified the result.
-  - No release, version bump, tag, repository merge, push, ticket archival, or worktree/branch cleanup had occurred before the explicit user authorization; those actions are now authorized and in progress.
+  - Finalization and `v1.4.34` publication completed after explicit user authorization. General raw-trace retention policy and runtime-qualified stale-inspector suppression remain outside this ticket.
 
 ## Integrated-State Record
 
@@ -43,6 +43,8 @@
 - Post-integration executable rerun: `No`; no new base commits were integrated, so the prior 98.1%-confidence API/E2E evidence remains the executable authority.
 - Delivery-stage static verification: `Passed` (`git diff --check`, durable-doc obsolete-contract scan, production/test obsolete-writer scan).
 - Handoff current with latest tracked base: `Yes`.
+- Repository finalization: archived ticket commit `1942efdcd` was pushed, merge commit `e5982cb17` was pushed to `personal`, and release commit `ca16d88de` plus annotated tag `v1.4.34` were pushed.
+- Publication: all five tag-triggered workflows completed successfully and the public GitHub Release contains 21 assets.
 
 ## Verification Summary
 
@@ -78,19 +80,19 @@
   - Recommended DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.33.dmg`
   - ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.33.zip`
   - Unpacked app: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
-  - Personal build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/done/external-runtime-memory-recording-simplification/delivery-evidence/06-electron-macos-personal-build.log`
-  - Personal SHA-256 evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/done/external-runtime-memory-recording-simplification/delivery-evidence/07-electron-personal-artifact-sha256.log`
-  - `hdiutil verify` passed for the personal DMG; evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/done/external-runtime-memory-recording-simplification/delivery-evidence/08-electron-personal-dmg-verify.log`.
+  - Personal build log: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-runtime-memory-recording-simplification/delivery-evidence/06-electron-macos-personal-build.log`
+  - Personal SHA-256 evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-runtime-memory-recording-simplification/delivery-evidence/07-electron-personal-artifact-sha256.log`
+  - `hdiutil verify` passed for the personal DMG; evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-runtime-memory-recording-simplification/delivery-evidence/08-electron-personal-dmg-verify.log`.
   - The preliminary successful enterprise-flavor command/evidence is retained as `delivery-evidence/04-electron-macos-build.log` and `05-electron-artifact-sha256.log`; the personal DMG above is the intended test package.
 - Evidence:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/done/external-runtime-memory-recording-simplification/api-e2e-execution-coverage-report.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/done/external-runtime-memory-recording-simplification/api-e2e-test-review-report.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/done/external-runtime-memory-recording-simplification/delivery-evidence/`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-runtime-memory-recording-simplification/api-e2e-execution-coverage-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-runtime-memory-recording-simplification/api-e2e-test-review-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-runtime-memory-recording-simplification/delivery-evidence/`
 
 ## Documentation Sync Summary
 
 - Result: `Updated`.
-- Authoritative report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/done/external-runtime-memory-recording-simplification/docs-sync-report.md`
+- Authoritative report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-runtime-memory-recording-simplification/docs-sync-report.md`
 - Updated long-lived docs:
   - `autobyteus-server-ts/docs/PROJECT_OVERVIEW.md`
   - `autobyteus-server-ts/docs/modules/agent_execution.md`
@@ -127,44 +129,39 @@
 - Waiting for explicit user verification: `No`.
 - User verification: The user reviewed the successful migration result and stated, `I think the migration is completely successful.`
 - Finalization/release authorization: The user explicitly instructed, `finalize and release a new version.`
-- Planned release: next patch version `v1.4.34` from current synchronized package/tag version `v1.4.33`, using the documented `pnpm release` helper and this ticket's `release-notes.md`.
+- Completed release: `v1.4.34`, using the documented helper and this ticket's curated `release-notes.md`.
 - Test artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.33.dmg`
-- Data-impact warning: this unsigned local build uses the normal macOS app-data location `~/.autobyteus/server-data`. On launch, required migration `20260731_remove_external_runtime_working_context_snapshots` can delete exact metadata-classified Codex/Claude duplicate snapshots there. Back up `~/.autobyteus/server-data/memory` first if you want to retain a pre-test copy.
-- Suggested verification:
-  1. Mount/install the DMG and start the application so required app-data migrations run; because the build is unsigned, macOS may require the normal explicit local-app approval/open action. Confirm startup completes even if cleanup reports a retained-file warning.
-  2. Continue or create a Codex or Claude run and confirm conversation/activity reload and tool evidence remain available from Raw Traces.
-  3. Confirm a new or successfully cleaned external run shows no WorkingContext snapshot while its Raw Traces remain available.
-  4. Confirm a representative native AutoByteus run still retains its WorkingContext inspector behavior.
-- Required next user signal: None; finalization and release are authorized. Delivery will report the pushed merge/tag and workflow outcome or an exact blocker.
+- Migration outcome: the data-impact boundary has already executed successfully and was reconciled read-only; no further cleanup action or user signal is required.
+- Release URL: [v1.4.34](https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.34).
 
 ## Repository Finalization Status
 
-- Ticket archived to `tickets/done`: `Yes` — `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/done/external-runtime-memory-recording-simplification/`.
-- Ticket branch pushed: `No`.
-- Finalization target merged/pushed: `No`.
-- Release/publication/deployment: `Not in current scope`.
-- Worktree/branch cleanup: `Not started`.
-- Current result: `User verified; finalization and v1.4.34 release in progress.`
+- Ticket archived to `tickets/done`: `Yes` — `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-runtime-memory-recording-simplification/`.
+- Ticket branch pushed: `Yes`; remote branch later deleted after merge/release.
+- Finalization target merged/pushed: `Yes` — merge `e5982cb179e3d633181fd15d2b35f77357771d9f`.
+- Release/publication/deployment: `v1.4.34` published; all five workflows succeeded.
+- Worktree/branch cleanup: main `personal` was cleaned/current at the user's instruction; the remote ticket branch and temporary finalization clone were removed. The dedicated ticket worktree/local branch remain while the test Electron app is running from that bundle.
+- Current result: `Finalized and released; no known release blocker.`
 
 ## Cumulative Artifact Package
 
-- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/done/external-runtime-memory-recording-simplification/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/done/external-runtime-memory-recording-simplification/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/done/external-runtime-memory-recording-simplification/design-spec.md`
-- Persisted snapshot inventory: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/done/external-runtime-memory-recording-simplification/persisted-snapshot-inventory.md`
-- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/done/external-runtime-memory-recording-simplification/solution-revision-record.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/done/external-runtime-memory-recording-simplification/design-review-report.md`
-- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/done/external-runtime-memory-recording-simplification/architecture-review-revision-record.md`
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/done/external-runtime-memory-recording-simplification/implementation-handoff.md`
-- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/done/external-runtime-memory-recording-simplification/implementation-revision-record.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/done/external-runtime-memory-recording-simplification/code-review-report.md`
-- Code review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/done/external-runtime-memory-recording-simplification/code-review-revision-record.md`
-- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/done/external-runtime-memory-recording-simplification/api-e2e-coverage-investigation.md`
-- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/done/external-runtime-memory-recording-simplification/api-e2e-execution-coverage-report.md`
-- API/E2E revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/done/external-runtime-memory-recording-simplification/api-e2e-revision-record.md`
-- API/E2E test review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/done/external-runtime-memory-recording-simplification/api-e2e-test-review-report.md`
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/done/external-runtime-memory-recording-simplification/docs-sync-report.md`
-- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/done/external-runtime-memory-recording-simplification/handoff-summary.md`
-- Delivery/release/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/done/external-runtime-memory-recording-simplification/release-deployment-report.md`
-- Release notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/done/external-runtime-memory-recording-simplification/release-notes.md`
-- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/done/external-runtime-memory-recording-simplification/delivery-revision-record.md`
+- Requirements: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-runtime-memory-recording-simplification/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-runtime-memory-recording-simplification/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-runtime-memory-recording-simplification/design-spec.md`
+- Persisted snapshot inventory: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-runtime-memory-recording-simplification/persisted-snapshot-inventory.md`
+- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-runtime-memory-recording-simplification/solution-revision-record.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-runtime-memory-recording-simplification/design-review-report.md`
+- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-runtime-memory-recording-simplification/architecture-review-revision-record.md`
+- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-runtime-memory-recording-simplification/implementation-handoff.md`
+- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-runtime-memory-recording-simplification/implementation-revision-record.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-runtime-memory-recording-simplification/code-review-report.md`
+- Code review revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-runtime-memory-recording-simplification/code-review-revision-record.md`
+- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-runtime-memory-recording-simplification/api-e2e-coverage-investigation.md`
+- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-runtime-memory-recording-simplification/api-e2e-execution-coverage-report.md`
+- API/E2E revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-runtime-memory-recording-simplification/api-e2e-revision-record.md`
+- API/E2E test review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-runtime-memory-recording-simplification/api-e2e-test-review-report.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-runtime-memory-recording-simplification/docs-sync-report.md`
+- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-runtime-memory-recording-simplification/handoff-summary.md`
+- Delivery/release/deployment report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-runtime-memory-recording-simplification/release-deployment-report.md`
+- Release notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-runtime-memory-recording-simplification/release-notes.md`
+- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-runtime-memory-recording-simplification/delivery-revision-record.md`
