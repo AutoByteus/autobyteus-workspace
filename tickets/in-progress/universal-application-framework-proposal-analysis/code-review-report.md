@@ -2,140 +2,127 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Review` — fresh behavior-neutral architecture simplification audit
+- Review Entry Point: `Implementation Review`
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/requirements.md`
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/investigation-notes.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-spec.md`
-- Supplemental Task Artifacts Reviewed As Context: `proposal-critical-analysis.md`, `design-self-validation.md`, and `sources/autobyteus-vertical-application-developer-experience-proposal.md` in the same ticket directory
+- Supplemental Task Artifacts Reviewed As Context: `proposal-critical-analysis.md`, `design-self-validation.md`, `application-framework-architecture-simplification.md`, and `sources/autobyteus-vertical-application-developer-experience-proposal.md`
 - Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/solution-revision-record.md`
-- Relevant Solution Revision IDs: `SR-011`; retained functional basis `SR-010`, `SR-006`
+- Relevant Solution Revision IDs: `SR-013`; retained functional basis `SR-011`, `SR-010`, `SR-006`
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md`
 - Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/architecture-review-revision-record.md`
-- Relevant Architecture Review Revision IDs: `ARCH-REV-009`; retained functional basis `ARCH-REV-008`, `ARCH-REV-006`
+- Relevant Architecture Review Revision IDs: `ARCH-REV-011`; triggering `ARCH-REV-010`; retained `ARCH-REV-009`, `ARCH-REV-008`, `ARCH-REV-006`
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-revision-record.md`
-- Relevant Implementation Revision IDs: `IR-016`; cumulative functional implementation through `IR-015`
+- Relevant Implementation Revision IDs: `IR-017`; cumulative behavior through `IR-016`
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-031`
-- Current Review Round: `31`
-- Trigger: user-requested design-principles audit to remove accidental architecture complexity while preserving every passed product behavior after `API-REV-011` / `CRR-030`
-- Prior Review Round Reviewed: `CRR-029` source Pass; `API-REV-011` Pass / `98.9%`; `CRR-030` proportional test-code Pass
-- Latest Authoritative Round: `31`
-- Coverage Investigation Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-coverage-investigation.md`
-- Execution Coverage Report Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`
-- API/E2E Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-revision-record.md`
-- Relevant API/E2E Revision IDs: `API-REV-011`; retained `API-REV-010`, `API-REV-008`
-- Delivery Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/delivery-revision-record.md`
-- Relevant Delivery Revision IDs: `DR-001`
-- Failing Scenario IDs: `N/A` — this is a structural design-impact audit, not a runtime failure
+- Current Code Review Revision ID: `CRR-032`
+- Current Review Round: `32`
+- Trigger: `implementation_engineer` handoff `IR-017` at source/test/module-doc commit `f7d17c744559238e7faa0a8bae182429cb3c0968`, artifact/current HEAD `2280eb9d6cd295b263ca6bb341a6a8417a22a185`
+- Prior Review Round Reviewed: `CRR-031` (`Fail — Design Impact`); solution/architecture correction `SR-013` / `ARCH-REV-011 Pass`
+- Latest Authoritative Round: `32`
+- Coverage Investigation Reviewed: retained `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-coverage-investigation.md`
+- Execution Coverage Report Reviewed: retained `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`
+- API/E2E Revision Record Reviewed: retained `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-revision-record.md`
+- Relevant API/E2E Revision IDs: retained pre-refactor baseline `API-REV-011` / `98.9%`
+- Delivery Revision Record Reviewed: retained `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/delivery-revision-record.md`
+- Relevant Delivery Revision IDs: retained delivery context through `DR-004`; no delivery result is used as IR-017 source proof
+- Failing Scenario IDs: `N/A` — source-review finding `CR-022`
 - Exact Review Commands / Execution Mode:
-  - Static source trace of both server assembly roots, `ApplicationPlatformRuntime`, REST/WebSocket registrars, Studio package construction, application runtime/orchestration/run construction, Agent Tools MCP runtime/session management, publication, engine-event dispatch, and shutdown.
-  - Production-use inventory for every `applicationRuntime.*` access.
-  - Effective-line/responsibility inventory for the affected construction and service files.
-  - Existing executable basis retained: `API-REV-011` Pass / `98.9%`, including real Studio and standalone publication/handoff/projection, restart/recovery, remount, route separation, cleanup, and `73/73` package parity.
-- Failure Evidence Paths: `N/A`
+  - complete production diff and caller/consumer trace for `7ae3af738..f7d17c744` (77 changed production files; 101 source/unit/module-doc paths in the implementation commit);
+  - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` — Pass;
+  - focused reviewer selection across runtime isolation/lifecycle/run services/shutdown, active-run registry/resource manager/manager, MCP scope/runtime, engine controller, artifact/event delivery, and package command/refresh — 14 files / 36 tests Pass;
+  - disposable real-owner stop-all continuation probe — 1/1 Pass as reproduction of the defect, then removed;
+  - `git diff --check`, runtime projection inventory, retired-symbol inventory, source-size/delta audit, and worktree ownership audit — Pass.
+- Failure Evidence Paths: source trace in `application-platform-lifecycle.ts:139-175`, `application-run-shutdown-coordinator.ts:17-39`, `agent-run-manager.ts:244-268`, and `active-agent-run-registry.ts:82-106`; disposable probe result was recorded in this report and intentionally not retained as a supplemental artifact.
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: no product behavior change is proposed or accepted by this review. The current passed architecture was freshly assessed against the shared design principles to identify accidental complexity that can be removed while retaining the exact user/product contract.
-- Files / areas reviewed:
-  - `src/application-platform/runtime/application-platform-runtime.ts`
-  - `src/application-platform/runtime/build-application-platform-runtime.ts`
-  - `src/application-platform/runtime/create-application-orchestration-services.ts`
-  - `src/application-platform/runtime/create-application-run-services.ts`
-  - both `BindOnce*` construction-cycle seams and `ApplicationRunShutdownCoordinator`
-  - `src/compositions/build-studio-server.ts` and `build-standalone-application-server.ts`
-  - `src/api/rest/index.ts`, `src/api/websocket/index.ts`, and standalone route registrars
-  - `ApplicationPackageRegistryService`, bundle/definition refresh construction, and Studio GraphQL package commands
-  - `AgentToolsMcpRuntime`, scoped session management, `PublishedArtifactPublicationService`, agent/team run managers, application engine host, event dispatch, publication relay, and their current global/default factories
-- Explicit exclusions:
-  - no route, wire contract, schema, package, persisted-data, model/provider, Agent Tools capability, worker protocol, Studio iframe, standalone command, recovery, or shutdown behavior may be removed or weakened;
-  - do not merge Studio and standalone into a mode-switched `buildServer({ mode })`;
-  - do not introduce a service locator, generic dependency container, compatibility wrapper, dual path, or optional-field “shared” base;
-  - historical `APIE2E-REPO-005` remains separate and unattributed.
+- Changed implementation and behavior reviewed: complete IR-017 behavior-neutral architecture implementation: narrow runtime projections, Studio package/refresh ownership, acyclic session/run/publication construction, engine controller/launcher and closed queues, exact agent-run resource cleanup, lifecycle order, clean removals, module docs, and implementation-owned unit tests.
+- Files / areas reviewed: all production paths in the IR-017 source diff, with detailed traces through both server builders, runtime construction/contracts/lifecycle, Studio package commands/refresh, Agent Tools session scopes, run managers/registry/resources, publication/relay/delivery, engine controller/launcher/state, event dispatch/re-entry, route registrars, and shutdown.
+- Explicit exclusions: API/E2E-owned integration-fixture reconciliation and live dual-host execution remain downstream work after source Pass. The five fixtures importing the intentionally removed `ApplicationEngineHostService` must be migrated by `api_e2e_engineer`; the broad host must not be restored. Historical `APIE2E-REPO-005` remains separate and unattributed.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: Yes. The user explicitly requires a behavior-neutral architecture cleanup. `BEH-001`–`BEH-009`, `REQ-001`–`REQ-009`, and `AC-001`–`AC-018` remain the fixed functional contract; `UC-024` specifically requires contributors to navigate the framework by concrete responsibility.
-- Design-spec behavior map verified against the implementation: Yes for current behavior. The audit does not contradict the passed functional spines; it finds that the remaining construction and exposure shape is more coupled than necessary.
-- Design review report and round confirmed: `ARCH-REV-009 Pass` over the naming correction. That review did not redesign the broad runtime result, Studio package refresh cycle, or bind-once construction cycles now explicitly challenged by the user.
-- Behavior-basis status: `Confirmed`
+- Approved requirements basis understood: Yes. `UC-024`–`UC-027`, `REQ-009`–`REQ-010`, and `AC-018`–`AC-023` require clearer ownership without changing the already passed Studio/standalone product contract.
+- Design-spec behavior map verified against the implementation: Yes. Runtime construction, business launch, provider execution, Agent Tools publication/handoff, artifact/event return paths, worker ensure/restart, package refresh, recovery, and shutdown were traced forward through the current code.
+- Design review report and round confirmed: `ARCH-REV-011 Pass` over `SR-013` is the governing target. `AR-008` and `AR-009` are resolved in design.
+- Behavior-basis status: `Contradicted` — bounded implementation divergence `CR-022`; the approved behavior basis itself is clear
 - Changed or newly discovered behavior, if any: None.
-- Remaining material ambiguity, if any: None. The required posture is an internal clean-cut refactor with exact behavioral equivalence.
+- Remaining material ambiguity, if any: None. `CR-022` contradicts an explicit approved lifecycle rule; it does not expose a requirement or design ambiguity.
 
 | Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence |
 | --- | --- | --- | --- |
-| `BEH-001`–`BEH-003` | Confirmed | Both hosts use the same validated package and current bootstrap contracts; package bytes and manifest/storage formats are unaffected by the proposed cleanup. | None. |
-| `BEH-004`, `BEH-005`, `BEH-008` | Confirmed | `Server -> ApplicationPlatformRuntime -> orchestration/run services -> provider -> scoped Agent Tools -> publication/handoff/projection` is real and passes in both hosts. The design response must preserve this full forward and return spine. | None. |
-| `BEH-006`, `BEH-007` | Confirmed | Maintained commands, package defaults/overrides, storage, recovery, process restart, and shutdown order pass. They are fixed acceptance invariants for the refactor. | None. |
-| `BEH-009` | Confirmed, but structurally incomplete | Role names are now clear, but the public runtime shape, temporal package-construction callbacks, and cycle-breaking proxies still require a contributor to reconstruct mixed-level dependencies and construction order. | No new product behavior; this is the design-impact basis for `CR-019`–`CR-021`. |
+| `BEH-001`–`BEH-003` | Confirmed | Both hosts retain their public lifecycle, SDK/wire, and manifest-v4/package boundaries; IR-017 changes no schema or package bytes. | None. |
+| `BEH-004` | Confirmed | Authenticated publication persists/projected state, enqueues an exact delivery command, ensures/restarts the worker, invokes through the controller, and preserves caller completion policy. | None. |
+| `BEH-005` | Contradicted only for one stop-all failure continuation rule | Exact inactive discovery/removal deletes identity before resource cleanup and attempts every resource category. However, one cleanup error thrown while `listActiveRuns()` builds its snapshot prevents later exact runs from being attempted by `stopAllAgentRuns()`. | The governing `SR-013` stop-all contract requires failures to be aggregated only after every snapshot entry is attempted. |
+| `BEH-006`–`BEH-009` | Confirmed | Maintained commands, persisted state, prompt authority, and the approved role vocabulary remain intact. | None. |
+| `BEH-010` | Contradicted only by `CR-022` | Four outward projections, split package owners, early resource/registry state, concrete publication, scoped sessions, controller/launcher, and closed queues implement the approved architecture. The agent stop-all failure path is the sole confirmed divergence. | No new behavior; bounded implementation mismatch to AC-023. |
 
 ## Structural / Design Checks
 
 | Check | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | Fail | `SR-011` correctly solved vocabulary but intentionally retained the existing broad runtime and dependency cycles. The user now explicitly broadens the behavior-neutral refactor goal to structural simplicity. | Reassess the target architecture around runtime exposure, package refresh ownership, and acyclic construction. |
-| Implementation matches approved behavior-defining supplemental artifacts | Pass | Current behavior and execution remain aligned; no functional redesign is requested. | Preserve all approved behavior and update supplements only with the new internal target. |
-| Data-flow spine inventory clarity and preservation under shared principles | Fail | The business spines are valid, but route registration receives a 19-field runtime collection, and construction paths cross package registry, bundles, definitions, availability, run/session/publication, and engine/event cycles. | Keep the same spines while reducing each boundary to its true main-line ports and explicit return/event owners. |
-| Ownership boundary preservation and clarity | Fail | `ApplicationPlatformRuntime` exposes internal stores and lifecycle services; `ApplicationPackageRegistryService` owns records, roots, installation, diagnostics, validation, rollback, catalog refresh, definition refresh, availability reconciliation, and default lookup modes. | Narrow the runtime boundary and split package registry state/commands from ordered catalog refresh coordination. |
-| Off-spine concern clarity | Fail | Bind-once proxies are correct local mechanisms but exist because active-run lookup/publication/session creation and engine invocation/launch ownership form cycles. | Split the underlying state/controller owners so the proxies can be removed rather than promoted into permanent architecture. |
-| Existing capability/subsystem reuse check | Pass | The target can reuse existing package, bundle, definition, execution, event, worker, Agent Tools, publication, and recovery capabilities. | Do not create duplicate replacement subsystems. |
-| Reusable owned structures check | Pass | Existing route, lifecycle, publisher, session, and run contracts are reusable once ownership is narrowed. | Derive narrow route/runtime contracts from actual consumers; do not copy DTOs. |
-| Shared-structure/data-model tightness check | Fail | `ApplicationPlatformRuntime` is a broad 19-field read-only service collection even though production consumers use only a subset; accepting the whole runtime permits mixed-level access. | Expose only lifecycle and subject-specific REST/realtime/host-management dependency views; keep stores and internal services private. |
-| Repeated coordination ownership check | Fail | Package refresh order is embedded in `ApplicationPackageRegistryService` while Studio assembly injects callbacks to bundle, definition, availability, and state owners. | Give ordered package-to-catalog refresh/reconciliation one explicit coordinator constructed after its dependencies. |
-| Empty indirection check | Pass | The two `BindOnce*` types enforce real bind/rebind/closed invariants and are not empty pass-through wrappers. | Remove them only after eliminating their cycles; do not replace them with a generic deferred container. |
-| Scope-appropriate separation of concerns and file responsibility clarity | Fail | `createApplicationOrchestrationServices` constructs stores, bindings, events, recovery, availability, launch configuration, run execution, streaming, and communication. `ApplicationPackageRegistryService` is 478 effective lines with several owners. | After boundary redesign, group construction by real capability ownership rather than adding empty factories. |
-| Ownership-driven dependency check | Fail | Studio package construction uses `let bundleService!`, `let applicationRuntime!`, and `let definitionServices!`; application publication and engine callbacks require bind-then-use seams. | Establish an acyclic construction order with explicit state registries/controllers and a last-constructed package refresh coordinator. |
-| Authoritative Boundary Rule check | Fail | `registerRestRoutes` and `registerWebsocketRoutes` accept the outer `ApplicationPlatformRuntime` and directly select its internal services; Studio assembly also reaches runtime availability and platform-state internals. | Make registrars depend on exact subject-owned contracts, and prevent callers above the runtime boundary from receiving its internal service set. |
-| File placement check | Pass | The affected files sit in the correct high-level capability areas. | Revisit subfolder/file placement only after target responsibilities are finalized. |
-| Flat-vs-over-split layout judgment | Pass | Current layout is navigable after IR-016. | Split only where a new owner is real; avoid one-file-per-constructor fragmentation. |
-| Interface/API/query/command/service-method boundary clarity | Fail | The runtime type is broader than its consumers, and core services such as publication/package registry support both explicit injection and hidden global/default resolution. | Require explicit dependencies in application-runtime services; isolate general-process defaults in assembly factories. |
-| Naming quality and naming-to-responsibility alignment check | Pass | `CR-018` remains resolved; current role nouns are clear. | Preserve the vocabulary while changing structure. |
-| No unjustified duplication of code / repeated structures in changed scope | Pass | No duplicate architecture exists today. | Keep one runtime, one package refresh owner, one run registry, and one engine controller. |
-| Patch-on-patch complexity control | Fail | The bind-once seams and late-bound Studio callbacks are individually safe patches over dependency cycles, but the user now requests removal of the underlying accidental complexity. | Redesign the cycles directly; do not add another adapter/fallback layer. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | No obsolete IR-016 naming path remains. | The final design must explicitly remove superseded broad contracts/proxies/default branches. |
-| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | `API-REV-011` and CRR-030 provide strong behavior-preservation coverage. | Reuse the complete dual-host suite as characterization evidence and add narrow boundary/construction tests for the new design. |
-| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Existing runtime-isolation, route, lifecycle, run-service, MCP, package, and live-browser coverage is reusable. | Avoid duplicating host-specific suites for shared behavior. |
-| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | Current suite passed after clean naming replacement. | Remove tests for deleted proxies/old broad contracts and replace them with target-owner tests. |
-| API/E2E readiness for the next workflow stage | Fail | Current behavior is highly validated, but the new cross-cutting target has not been solution-designed or architecture-reviewed. | Return through solution design and architecture review before implementation; then rerun source review and dual-host API/E2E. |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | SR-013/ARCH-REV-011 directly address CR-019–CR-021 and the two reachable lifecycle premises. | None. |
+| Implementation matches approved behavior-defining supplemental artifacts | Fail | The main structure matches, but `stopAllAgentRuns()` violates the supplement's explicit every-snapshot-entry aggregation rule. | Correct `CR-022` without changing the approved owners. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | Request, publication, event, package refresh, run removal, and shutdown spines are readable in source and module docs. | Preserve. |
+| Ownership boundary preservation and clarity | Pass | Runtime internals stay private; registry, resource manager, session scope, publisher, controller, launcher, delivery queue, and refresh coordinator each own one concrete concern. | Preserve. |
+| Off-spine concern clarity | Pass | Stores, queues, adapters, observers, and registries serve named owners and no generic bus/container was introduced. | Preserve. |
+| Existing capability/subsystem reuse check | Pass | Existing package, definition, execution, MCP, worker, storage, and publication capabilities are reused. | None. |
+| Reusable owned structures check | Pass | Exact runtime contract projections, removal results, resource-release results, and queue commands are centrally owned rather than copied. | None. |
+| Shared-structure/data-model tightness check | Pass | The former 19-field aggregate is gone; the four frozen projections and typed exact-result shapes are narrow. | Preserve. |
+| Repeated coordination ownership check | Pass | Catalog refresh, artifact delivery, event dispatch, run cleanup, and lifecycle sequencing each have one owner. | Preserve. |
+| Empty indirection check | Pass | New boundaries own state, invariants, ordering, or translation; both bind-once proxies were removed rather than renamed. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Large old owners were split into state/controller/launcher, registry/commands/coordinator, scope/resource/registry, and queue/delivery responsibilities. | Preserve. |
+| Ownership-driven dependency check | Pass | Construction is acyclic; no later-bound reverse callback, service locator, runtime aggregate injection, or application global fallback remains. | Preserve. |
+| Authoritative Boundary Rule check | Pass | Hosts and registrars consume exact runtime projections; application publication consumes the registry rather than the global manager; callers do not mix outer and internal owners. | Preserve. |
+| File placement check | Pass | New files sit under their owning runtime, engine, package, execution, MCP, or orchestration subsystem. | None. |
+| Flat-vs-over-split layout judgment | Pass | The split reflects real owners; no pass-through-only one-file layers were found. | None. |
+| Interface/API/query/command/service-method boundary clarity | Pass | Runtime projections, package queries/commands, exact removal results, queue commands, and stop ports are subject-specific. | Preserve. |
+| Naming quality and naming-to-responsibility alignment check | Pass | SR-011 vocabulary remains coherent and the new names describe state, controller, launcher, registry, scope, resource, delivery, and coordinator roles. | Preserve. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | No parallel publication, engine, package, or cleanup family was retained. | None. |
+| Patch-on-patch complexity control | Pass | Old bind-once and broad-host machinery is removed cleanly; no alias, compatibility path, or new generic indirection was added. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Retired source/unit files and symbols are absent; old integration fixtures remain explicitly downstream-owned, not production residue. | API/E2E must migrate the fixtures after source Pass. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Fail | Unit coverage is strong for ownership and exact cleanup, but the stop-all test covers only the all-clean snapshot and misses cleanup-error continuation. | Add a durable regression that proves later exact runs are attempted and all errors aggregate. |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Focused unit suites are separated by owner and reuse narrow fakes. | Preserve. |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | Implementation-owned obsolete unit suites are removed. The five integration fixtures are explicitly assigned for downstream validity migration. | Do not restore old source to satisfy them. |
+| API/E2E readiness for the next workflow stage | Fail | The bounded lifecycle defect must be corrected and re-reviewed first. | Return to `implementation_engineer`; then source review and API/E2E. |
 
 ## Source File Size And Structure Audit
 
-No implementation delta exists in CRR-031, so changed-source hard/delta thresholds are `N/A`. Current effective sizes and structural pressure are recorded as design evidence, not line-count violations.
+The complete changed production set contains 77 paths. No current production file exceeds 500 effective non-empty lines; the maximum is 432. The only `>220` raw deltas are two deliberate removals and two cohesive new engine owners.
 
 | Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
 | --- | ---: | --- | --- | --- | --- | --- | --- |
-| `application-platform-runtime.ts` | 44 | `N/A` | `N/A` | Broad 19-field runtime/service collection | Correct area | Design Impact | Replace with narrow outward contracts; hide internal services. |
-| `build-application-platform-runtime.ts` | 153 | `N/A` | `N/A` | Owns runtime construction but also binds two cycle breakers | Correct area | Design Impact | Adopt an acyclic construction sequence. |
-| `create-application-orchestration-services.ts` | 198 | `N/A` | `N/A` | Constructs several distinct capability areas | Correct area | Design Impact | Decompose only along real launch/event/run/recovery/communication owners. |
-| `create-application-run-services.ts` | 153 | `N/A` | `N/A` | Run construction is coherent but couples active-run state, sessions, publication, providers, and shutdown | Correct area | Design Impact | Split active-run registry/state from launch orchestration to remove the publication cycle. |
-| `bind-once-application-engine-event-handler.ts` | 46 | `N/A` | `N/A` | Correct fail-before-bind proxy over an engine/orchestration cycle | Correct area | Design Impact | Replace through an early engine controller/registry plus later launcher. |
-| `bind-once-published-artifact-publisher.ts` | 45 | `N/A` | `N/A` | Correct fail-closed proxy over run/session/publication cycle | Correct area | Design Impact | Replace through an early active-run registry and explicitly constructed publisher. |
-| `build-studio-server.ts` | 225 | `N/A` | `N/A` | Server assembly plus late-bound package/bundle/definition/runtime callbacks and process shutdown | Correct area | Design Impact | Remove temporal non-null construction and keep host assembly explicit. |
-| `application-package-registry-service.ts` | 478 | `N/A` | `N/A` | Registry, roots, install, diagnostics, validation, rollback, refresh, reconciliation, and singleton/default modes | Correct subsystem, overloaded file | Design Impact | Split registry/commands from catalog refresh coordination and explicit default assembly. |
-| `published-artifact-publication-service.ts` | 241 | `N/A` | `N/A` | Publication behavior is coherent; dependency mode is hybrid injected/global | Correct subsystem | Design Impact | Require explicit core dependencies; general-process defaults belong in a separate factory. |
-| `api/rest/index.ts` and `api/websocket/index.ts` | 49 / 28 | `N/A` | `N/A` | Registrars accept the whole runtime and reach into internals | Correct transport area | Design Impact | Accept exact REST/realtime dependency contracts. |
+| `application-orchestration-host-service.ts` | 432 | Pass | Pass (`151` raw delta) | Coherent retained host orchestration; reduced rather than expanded | Pass | None | None. |
+| `application-package-registry-service.ts` | 225 | Pass | Pass (`517` raw delta, mostly clean removal) | Registry/query state only; commands and refresh moved out | Pass | None | None. |
+| `application-engine-controller.ts` | 205 | Pass | Review trigger (`230` added), acceptable | Owns attached handles/state/invocation only | Pass | None | None. |
+| `application-engine-launcher.ts` | 213 | Pass | Review trigger (`224` added), acceptable | Owns ensure/start/stop only | Pass | None | None. |
+| `agent-run-manager.ts` | 300 | Pass | Pass (`163` raw delta) | Backend selection/create/restore/terminate/stop-all only | Pass | `Local Fix` for `CR-022` | Correct stop-all snapshot/error continuation. |
+| `application-engine-host-service.ts` | Removed | N/A | Review trigger (`537` removed), Pass | Broad retired owner removed | Pass | None | None. |
+| `application-package-service.ts` and `BindOnce*` files | Removed | N/A | Pass | Obsolete owner/proxies removed cleanly | Pass | None | None. |
+| Remaining 70 changed production paths | `<=285` | Pass | Pass | No additional material SoC or placement issue found | Pass | None | None. |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in current scope | Pass | No compatibility mechanism is needed for an internal clean-cut refactor. |
-| No legacy old-behavior retention in current scope | Pass | Preserve behavior, not obsolete internal structure. |
-| Dead/obsolete code cleanup completeness in current scope | Pass | IR-016 old names are already removed; the new design must explicitly remove superseded proxies/contracts/default branches. |
-| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | `Not Affected`; no database/package/wire schema change is required. |
-| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | The target must stay current-shape-only. |
-| Approved transition mechanics match the reviewed design, including migration safety only when required | Pass | No migration applies. |
+| No backward-compatibility mechanisms in changed scope | Pass | No aliases, wrappers, dual path, or app-path global fallback was added. |
+| No legacy old-behavior retention in changed scope | Pass | Broad runtime, broad engine host, overloaded package service, and both bind-once proxies are removed. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | Retired source/unit/module-doc references are clean; downstream integration migration is explicitly owned. |
+| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | No persisted representation changes; current data remains directly usable. |
+| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | None introduced. |
+| Approved transition mechanics match the reviewed design, including migration safety only when required | Pass | No migration is required or implemented. |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal
 
-No item is dead before the redesign. The solution design must determine and explicitly remove the pieces made unnecessary by the target, expected to include the broad runtime exposure, late-bound package callbacks, and both `BindOnce*` cycle breakers if the proposed acyclic ownership split is accepted.
+None in implementation-owned production source. The five API/E2E-owned fixtures that still import the removed broad host require downstream test migration, not source restoration.
 
 ## Docs-Impact Verdict
 
-- Docs impact: `Yes`
-- Why: the developer-facing architecture diagrams and lifecycle descriptions must reflect the narrower runtime boundary, explicit package refresh owner, acyclic run/publication and engine/event construction, and unchanged dual-host behavior.
-- Files or areas likely affected: `autobyteus-server-ts/docs/modules/application_backend_api_gateway.md`, `application_orchestration.md`, `applications.md`, `autobyteus-web/docs/applications.md`, `docs/custom-application-development.md`, and the current solution supplements/diagrams.
+- Docs impact: `Yes — already addressed for IR-017`
+- Why: the architectural roles and spines changed materially.
+- Files or areas likely affected: implementation updated the current application backend, engine, orchestration, session, and applications module docs. `CR-022` is a bounded lifecycle-correctness fix and does not require a new public/developer contract unless its existing cleanup wording is changed (it should not be).
 
 ## Material Premise Validation
 
@@ -143,170 +130,75 @@ No item is dead before the redesign. The solution design must determine and expl
 
 | Premise ID | Current Status | Changed Evidence / Reason |
 | --- | --- | --- |
-| `MP-ARCH-009-001` | Confirmed | The server package remains private; a clean internal replacement still requires no compatibility alias. |
+| `MP-ARCH-010-001` | Confirmed | IR-017 implements closed artifact delivery with `ensureReady` before controller invocation and drain-before-engine-stop. |
+| `MP-ARCH-010-002` | Confirmed | Supported host shutdown reaches lifecycle -> shutdown coordinator -> agent manager stop-all. The approved cleanup contract requires every snapshot entry to be attempted even when one cleanup fails. Current source removes the first inactive identity/resources but aborts before later entries. |
 
-### `MP-CRR-031-001` — contributor follows a supported server-to-runtime route path
-
-- Origin: `New`
-- Related approved requirement or established contract: `REQ-009`, `AC-018`, `UC-024`
-- Relevant behavior ID(s): `BEH-009`
-- Initiating basis kind: `User`
-- Independent product-supported initiating trigger or applicable governing contract: a repository contributor uses the documented Studio or standalone server entrypoint to understand or change application REST/realtime behavior.
-- Support evidence: the exposed developer surface is the current server/application-framework source and module documentation; `UC-024` explicitly supports following construction into startup, sessions, execution, publication, and shutdown.
-- Forward current path: `buildStudioServer` or `buildStandaloneApplicationServer` -> `ApplicationPlatformRuntime` -> `registerRestRoutes` / `registerWebsocketRoutes` -> selected runtime internals.
-- Lifecycle preconditions and material consequence: during normal contribution/maintenance, the caller receives a 19-field runtime while each registrar needs a narrow subset; the authoritative boundary and dependency direction must be reconstructed manually.
-- Reachability: `Reachable`
-- Review consequence / proportionate response: `CR-019`; narrow the runtime's outward contracts without changing transport behavior.
-
-### `MP-CRR-031-002` — Studio package import/remove/reload exercises temporal refresh wiring
-
-- Origin: `New`
-- Related approved requirement or established contract: `REQ-001`, `REQ-003`, `REQ-004`, `AC-001`, `AC-003`, `AC-011`, `UC-001`, `UC-002`, `UC-015`
-- Relevant behavior ID(s): `BEH-001`, `BEH-003`, `BEH-006`
-- Initiating basis kind: `User`
-- Independent product-supported initiating trigger or applicable governing contract: a Studio user imports, removes, or reloads an application package through the maintained package-management surface.
-- Support evidence: Studio GraphQL package commands call `ApplicationPackageRegistryService`; real `dev:studio` registration/reload is part of the maintained developer journey.
-- Forward current path: Studio package command -> `ApplicationPackageRegistryService` mutation/rollback -> `refreshCatalogCaches` -> bundle refresh -> availability reconciliation against platform state -> agent refresh -> team refresh.
-- Lifecycle preconditions and material consequence: Studio server assembly creates the registry before bundle/definition/runtime services and supplies callbacks closing over later-assigned non-null variables; package state and refresh coordination are mixed in one service.
-- Reachability: `Reachable`
-- Review consequence / proportionate response: `CR-020`; split stable registry ownership from ordered refresh coordination and construct the coordinator after explicit dependencies exist.
-
-### `MP-CRR-031-003` — real application execution traverses both construction cycles
-
-- Origin: `New`
-- Related approved requirement or established contract: `REQ-004`, `REQ-005`, `REQ-008`, `AC-005`, `AC-006`, `AC-010`, `AC-014`–`AC-018`, `UC-009`, `UC-014`
-- Relevant behavior ID(s): `BEH-004`, `BEH-005`, `BEH-008`
-- Initiating basis kind: `User`
-- Independent product-supported initiating trigger or applicable governing contract: a Brief/Socratic user starts an application run; the agents use authenticated Agent Tools publication/handoff, and application events return through the worker engine.
-- Support evidence: `API-REV-011` proves both Studio and standalone real Codex/Luna publication, recipient handoff, projection, restart, and cleanup.
-- Forward current path: application UI -> backend gateway -> orchestration/run services -> run manager -> scoped Agent Tools session -> bind-once publisher -> publication service -> active run/event relay -> engine handler; the engine host is bound after orchestration construction.
-- Lifecycle preconditions and material consequence: before runtime readiness, publication/session/run state and event/orchestration/engine ownership form two construction cycles resolved by bind-once proxies. Runtime behavior is correct, but construction order and ownership are harder to reason about than necessary.
-- Reachability: `Reachable`
-- Review consequence / proportionate response: `CR-021`; split active-run registry from launch orchestration and engine controller/registry from engine launching, then remove the cycle breakers without changing runtime semantics.
+No new or reclassified premise is required. `CR-022` follows the already-approved operational/lifecycle contract; the disposable test reproduced that established path but is not used to establish reachability.
 
 ## Review Scorecard
 
-- Overall score (`/10`): `9.1`
-- Overall score (`/100`): `91`
-- Score calculation note: simple average rounded for trend visibility. Functional correctness is excellent, but four structural categories are below the clean-pass target; those gaps control the `Fail — Design Impact` result.
+- Overall score (`/10`): `9.5`
+- Overall score (`/100`): `95`
+- Score calculation note: simple average for trend visibility only; the material `CR-022` finding controls the decision.
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | ---: | --- | --- | --- |
-| `1` | Data-Flow Spine Inventory and Clarity | 8.7 | Startup, execution, publication, recovery, and shutdown are known and proven. | Broad runtime exposure and two construction cycles obscure the internal main/return spines. | Show the same spines through narrow ports and acyclic owners. |
-| `2` | Ownership Clarity and Boundary Encapsulation | 8.2 | Major lifetimes are correctly separated. | Runtime internals are publicly exposed; package registry and refresh coordination are mixed; active-run/engine state is not split from launch orchestration. | Establish narrow runtime, package refresh, active-run registry, and engine-controller owners. |
-| `3` | API / Interface / Query / Command Clarity | 8.4 | Names are strong and wire APIs are stable. | REST/WS registrars accept the whole runtime; core services support both explicit and global/default dependency modes. | Use exact dependency contracts and explicit assembly factories. |
-| `4` | Separation of Concerns and File Placement | 8.3 | High-level folders are appropriate. | Package registry and orchestration construction carry several capability responsibilities; Studio assembly contains temporal cycle wiring. | Split by real capability ownership after the target spine is designed. |
-| `5` | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 8.6 | Session/run/package domain shapes remain precise. | The 19-field runtime is an overly broad shared service shape. | Replace it with tight lifecycle and transport-facing contracts. |
-| `6` | Naming Quality and Local Readability | 9.8 | CR-018 remains resolved with familiar role vocabulary. | Structural coupling still requires implementation tracing despite good names. | Preserve names while simplifying dependency direction. |
-| `7` | API/E2E Readiness | 9.9 | `API-REV-011` provides an exceptional behavior-preservation baseline. | The new architecture target is not yet designed. | Reuse the baseline after implementation rather than weakening coverage. |
-| `8` | Runtime Correctness And Behavioral Fidelity | 9.9 | Real dual-host execution, publication, handoff, recovery, and parity pass. | No current runtime defect. | Preserve exact behavior throughout the refactor. |
-| `9` | No Backward-Compatibility / No Legacy Retention | 10.0 | Clean internal replacement is possible. | None. | Remove superseded internals without aliases or dual paths. |
-| `10` | Cleanup Completeness | 9.6 | Prior naming and functional cleanup is complete. | The new target will make some current proxies/contracts unnecessary. | Inventory and remove them explicitly in the reviewed design. |
+| `1` | Data-Flow Spine Inventory and Clarity | `9.7` | The full request, return, event, refresh, cleanup, and shutdown paths are explicit and traceable. | Only the stop-all exceptional continuation diverges from its documented spine. | Preserve the spine and correct continuation. |
+| `2` | Ownership Clarity and Boundary Encapsulation | `9.7` | Four projections and the new owner splits remove the former mixed-level dependencies and cycles. | No structural ownership gap remains. | Preserve current owners. |
+| `3` | API / Interface / Query / Command Clarity | `9.6` | Contracts are subject-specific and identity-explicit. | `listActiveRuns()` throws during pruning but its caller assumes it can first obtain a complete snapshot, making the failure contract locally ambiguous. | Make snapshot/error reporting explicit enough for stop-all to continue. |
+| `4` | Separation of Concerns and File Placement | `9.6` | State, lifecycle, launch, delivery, commands, and refresh responsibilities are separated into correct subsystems. | No material gap beyond the local stop-all behavior. | Preserve. |
+| `5` | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | `9.6` | Narrow frozen projections and typed exact-result structures replace broad collections. | No material gap. | Preserve. |
+| `6` | Naming Quality and Local Readability | `9.8` | Names state concrete roles and the source follows the approved vocabulary. | No material gap. | Preserve. |
+| `7` | API/E2E Readiness | `8.7` | Builds and 14/36 focused checks pass and the architecture is testable. | A requirement-linked shutdown regression is missing and current source is not ready for live execution sign-off. | Fix and add the durable stop-all continuation regression before API/E2E. |
+| `8` | Runtime Correctness And Behavioral Fidelity | `8.5` | Normal paths and per-run exact cleanup are well implemented. | A cleanup error encountered while constructing the stop-all snapshot prevents later active runs from being terminated, violating AC-023/SR-013. | Aggregate pruning plus per-run termination/removal errors after every exact entry is attempted. |
+| `9` | No Backward-Compatibility / No Legacy Retention | `10.0` | Clean-cut replacement with no aliases, fallback, dual path, or migration machinery. | Nothing material. | Preserve. |
+| `10` | Cleanup Completeness | `9.4` | Identity is deleted before cleanup, every per-run category is attempted, repeated release is idempotent, and retired code is removed. | Cross-run stop-all continuation is incomplete after one inactive-prune cleanup error. | Correct `CR-022`; keep per-run at-most-once semantics. |
 
 ## Findings
 
-### `CR-019` — `ApplicationPlatformRuntime` is a broad service collection rather than a narrow authoritative boundary
+### CR-022 — Stop-all aborts before later exact runs after an inactive-run cleanup failure
 
-- Evidence: the runtime exposes 19 services/stores. `registerRestRoutes` and `registerWebsocketRoutes` accept the whole runtime and reach into selected internals; Studio package assembly also reaches `availabilityService` and `platformStateStore`.
-- Affected approved behavior/contract: `BEH-004`, `BEH-005`, `BEH-009`; `REQ-004`, `REQ-005`, `REQ-009`; `AC-018`; `UC-024`.
-- Reachability: `MP-CRR-031-001`.
-- Required action: design the runtime's outward surface around lifecycle plus narrow subject-specific REST, realtime, and host-management contracts. Keep stores, recovery, event dispatch, run state, and shutdown internals private. Registrars must accept exact contracts rather than the whole runtime.
-- Behavior preservation: routes, request/response shapes, WebSockets, Agent Tools transport, lifecycle states, and host behavior remain identical.
-- Classification / owner: `Design Impact` / `solution_designer`.
-
-### `CR-020` — Studio package registry state and catalog refresh coordination have mixed ownership and temporal construction
-
-- Evidence: `createStudioApplicationServices` closes callbacks over `let bundleService!`, `let applicationRuntime!`, and `let definitionServices!`. `ApplicationPackageRegistryService` owns package roots/records, installation, diagnostics, validation, rollback, ordered bundle/availability/agent/team refresh, platform-state reads, and optional global/default resolution.
-- Affected approved behavior/contract: `BEH-001`, `BEH-003`, `BEH-006`, `REQ-001`, `REQ-003`, `REQ-004`, `AC-001`, `AC-003`, `AC-011`.
-- Reachability: `MP-CRR-031-002`.
-- Required action: keep package registry/storage/import/remove concerns under a package owner; move ordered bundle -> availability -> agent -> team reconciliation to one explicit refresh coordinator constructed after all dependencies. Replace application-path singleton/default fallbacks with explicit dependencies; if the general process needs defaults, provide a separately named assembly factory.
-- Behavior preservation: import/remove/reload behavior, rollback, diagnostics, registered package identity, bundle/definition refresh order, and Studio UI behavior remain identical.
-- Classification / owner: `Design Impact` / `solution_designer`.
-
-### `CR-021` — run/publication/session and engine/event/orchestration construction cycles create avoidable permanent machinery
-
-- Evidence: `buildApplicationPlatformRuntime` constructs and later binds `BindOncePublishedArtifactPublisher` and `BindOnceApplicationEngineEventHandler`. Publication depends on the full `AgentRunManager`, while the run manager needs scoped sessions that carry publication. Event dispatch/relay need engine invocation, while engine construction needs orchestration/streaming.
-- Affected approved behavior/contract: `BEH-004`, `BEH-005`, `BEH-008`, `REQ-004`, `REQ-005`, `REQ-008`, `AC-005`, `AC-006`, `AC-010`, `AC-014`–`AC-018`.
-- Reachability: `MP-CRR-031-003`.
-- Required action:
-  1. split active-run lookup/state from run launching so construction can be `ActiveAgentRunRegistry -> publication service -> scoped session manager -> run launch services`;
-  2. split engine handle/controller ownership from engine launching so event dispatch/relay depend on an early stable controller while the launcher attaches workers later;
-  3. remove both bind-once proxies if the cycles are eliminated; do not replace them with a generic deferred container;
-  4. require explicit application-runtime dependencies and isolate any supported general-process defaults in assembly factories;
-  5. only then decompose the orchestration builder into meaningful launch, event, run, recovery, and communication construction owners.
-- Behavior preservation: session auth, eligible tools, run identity, publication, relay/projection, worker invocation, readiness, stop order, and failure semantics remain identical.
-- Classification / owner: `Design Impact` / `solution_designer`.
-
-## Required Behavior-Preserving Target Direction
-
-The design should preserve the two explicit host assembly roots and one shared application runtime:
-
-```mermaid
-flowchart LR
-    Studio[buildStudioServer] --> Process[Server Process Runtime]
-    Standalone[buildStandaloneApplicationServer] --> Process
-    Process --> AppRuntime[Application Platform Runtime]
-    AppRuntime --> Lifecycle[Lifecycle]
-    AppRuntime --> Rest[REST Dependencies]
-    AppRuntime --> Realtime[Realtime Dependencies]
-    AppRuntime -. private .-> Launch[Launch Configuration]
-    AppRuntime -. private .-> Runs[Run Execution]
-    AppRuntime -. private .-> Events[Events and Projection]
-    AppRuntime -. private .-> Recovery[Recovery]
-```
-
-The internal construction target should be acyclic:
-
-```mermaid
-flowchart LR
-    ActiveRuns[Active Run Registry] --> Publication[Artifact Publication]
-    ActiveRuns --> RunLaunch[Agent and Team Run Launch]
-    Publication --> Sessions[Scoped Agent Tools Sessions]
-    Sessions --> RunLaunch
-
-    EngineController[Engine Controller and Handle Registry] --> EventDispatch[Event Dispatch and Artifact Relay]
-    EventDispatch --> Orchestration[Application Orchestration]
-    Orchestration --> EngineLauncher[Engine Launcher]
-    EngineController --> EngineLauncher
-```
-
-Runtime launchers still register handles and emit results through these owners, but dependency construction is acyclic because the stable state/controller owners are created before the services that mutate or invoke them.
-
-Mandatory fixed acceptance contract:
-
-1. same Studio and standalone commands and server surfaces;
-2. same manifest/package bytes and database schemas;
-3. same package defaults, sparse Studio overrides, validation, and reset;
-4. same worker protocol and backend gateway;
-5. same Codex/Claude/AutoByteus execution;
-6. same authenticated Agent Tools route, capability projection, `publish_artifacts`, and `send_message_to`;
-7. same artifact journal/relay/projection and business UI state;
-8. same readiness, recovery, remount, shutdown, and restart ordering;
-9. no host-mode switch builder, service locator, compatibility alias, global fallback in application paths, or duplicated architecture;
-10. rerun the full dual-host parity and lifecycle evidence after implementation.
+- Severity: Material lifecycle correctness defect; source review blocker.
+- Classification: `Local Fix` — implementation-owned.
+- Affected approved behavior/contracts: `BEH-005`, `BEH-010`, `UC-014`, `UC-027`, `REQ-010`, `AC-023`, and `SR-013` exact stop-all rule 4.
+- Reachability basis: confirmed upstream premise `MP-ARCH-010-002`. The supported operator/server close calls `ApplicationPlatformLifecycle.stop()` -> `ApplicationRunShutdownCoordinator.stopAllRuns()` -> `AgentRunManager.stopAllAgentRuns()`.
+- Current production trace:
+  1. `ApplicationPlatformLifecycle.runStop()` invokes run shutdown at `application-platform-lifecycle.ts:169`.
+  2. `ApplicationRunShutdownCoordinator` invokes the agent stopper even after team-stop error and aggregates owner failures.
+  3. `AgentRunManager.stopAllAgentRuns()` constructs `activeRuns` by calling `ActiveAgentRunRegistry.listActiveRuns()` before entering its guarded loop.
+  4. `listActiveRuns()` calls `getActiveRun()` for each map key. An inactive run is identity-removed and every resource category is attempted, but `assertCleanupSucceeded()` throws when that cleanup result contains errors.
+  5. Because that throw occurs while the snapshot is being constructed and outside the manager's per-entry `try`, later active runs are never terminated or removed.
+- Independent reviewer reproduction: a disposable test registered an inactive first run whose resource release returns one cleanup error and a later active run. `stopAllAgentRuns()` rejected with `AgentRunRemovalCleanupError`, and the later run's `terminate()` call count remained zero. The probe passed 1/1 as a reproduction and was removed.
+- Material consequence: host shutdown may proceed to scope/stream/process cleanup with later application-owned runs still active, contradicting the approved “every snapshot entry attempted, then aggregate failures” contract. This is not a claim that generic infrastructure failure is a new product feature; error aggregation is the explicit governing lifecycle contract.
+- Required correction: retain the current `ApplicationAgentToolMcpSessionScope -> AgentRunResourceManager -> ActiveAgentRunRegistry -> AgentRunManager` ownership. Provide a snapshot/prune result or equivalent bounded flow that retains active entries and pruning errors, then attempt termination plus exact `removeIfCurrent` for every retained entry and throw one aggregate only afterward. Do not swallow cleanup errors, restore manager-owned resource maps, add a registry-to-manager callback, reintroduce a broad host, or add a global/fallback path.
+- Required durable proof: one stop-all test with (a) an inactive first run whose cleanup reports multiple category errors and (b) one or more later active exact runs, asserting all later termination/removal attempts occur, no cleanup category repeats, stale identity cannot remove a replacement, and the final error aggregates pruning and termination/removal failures.
 
 ## Classification
 
-`Fail — Design Impact`
+`Local Fix`
+
+The approved architecture is sound; `CR-022` is a bounded implementation mismatch inside one existing manager/registry contract. No solution or architecture revision is required.
 
 ## Recommended Recipient
 
-`solution_designer`
+`implementation_engineer`
+
+After correction, return through complete affected source review and API/E2E. API/E2E must then reconcile the five obsolete integration fixtures against the new controller/launcher/narrow contracts and rerun the approved dual-host characterization.
 
 ## Residual Risks
 
-- The current implementation remains functionally passed. These findings must not be interpreted as permission to remove or weaken product behavior.
-- Avoid overcorrecting with a single large façade, generic event bus, generic dependency container, `buildServer(mode)`, or many pass-through-only factories.
-- Split only real state, policy, lifecycle, or sequencing owners; otherwise retain the existing service.
-- Preserve exact object/scope identity across server process, application runtime, worker, team run, agent run, and Agent Tools session lifetimes.
-- Historical `APIE2E-REPO-005` remains separate, unattributed `Unclear` repository-suite debt and is not part of this design impact.
+1. The five API/E2E-owned fixtures importing removed `ApplicationEngineHostService` remain intentionally stale until source Pass; they must be migrated without restoring the broad host.
+2. Live Studio/standalone worker-exit publication, restart/recovery, MCP publication/handoff, shutdown, and exact `73/73` package parity still require downstream execution because `API-REV-011` predates IR-017.
+3. The new queues have strong unit evidence, but live worker-exit-before-publication and drain-before-stop remain mandatory API/E2E scenarios.
+4. Historical `APIE2E-REPO-005` remains separate, unattributed `Unclear` whole-suite debt and is not evidence for or against IR-017.
+5. Other owners' dirty delivery artifacts and generated devkit output were preserved and excluded from this review result.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail — Design Impact`
-- Review Entry Point: `Implementation Review` — fresh behavior-neutral architecture simplification audit
-- Material-Premise Gate: `Pass`
-- Score Summary: `9.1/10` (`91/100`); functional categories remain excellent, while ownership/boundary/interface/separation categories are below the clean-pass target
-- Failure Origin: remaining accidental architecture complexity in the previously approved construction and exposure design, not a current runtime defect
-- Recommended Recipient: `solution_designer`
-- Notes: preserve all `API-REV-011` behavior. Redesign the runtime boundary, Studio package refresh ownership, and the two construction cycles through the normal solution-design and architecture-review loop before implementation resumes.
+- Review Decision: `Fail`
+- Review Entry Point: `Implementation Review`
+- Material-Premise Gate: `Pass` — upstream premises remain confirmed
+- Score Summary: `9.5/10`, `95/100`; Runtime Correctness `8.5` and API/E2E Readiness `8.7` are below clean-pass threshold
+- Failure Origin: bounded implementation mismatch in agent stop-all failure continuation (`CR-022`)
+- Recommended Recipient: `implementation_engineer`
+- Notes: CR-019, CR-020, CR-021, AR-008, and AR-009 are structurally resolved in IR-017. The new architecture is materially cleaner and should be preserved. Do not advance to API/E2E until `CR-022` is corrected and source re-review passes.

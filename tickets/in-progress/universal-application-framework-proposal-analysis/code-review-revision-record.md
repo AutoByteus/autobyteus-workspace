@@ -862,3 +862,34 @@ None. `CRR-023` and `CRR-027` had no unresolved proportional test-review finding
 - Material score or classification changes: latest full review changes from source `Pass / 97` plus API/E2E/test-review Pass to `Fail — Design Impact / 91`. Runtime correctness, naming, and test evidence remain excellent; ownership/boundary/interface/separation fall below the clean-pass target.
 - Recommended recipient: `solution_designer`
 - Remaining risks or uncertainty: preserve every route, schema, package byte, model/configuration behavior, worker protocol, Agent Tools capability, publication/handoff/projection result, recovery, remount, restart, and shutdown invariant. Avoid replacing current accidental complexity with a generic façade, event bus, dependency container, mode-switched server builder, compatibility layer, or pass-through-only factory. The revised package must return through architecture review before implementation.
+
+### CRR-032 — IR-017 narrow/acyclic runtime requires one bounded stop-all continuation fix
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `32`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-017`; new finding `CR-022`; scenario IDs `N/A`
+- Relevant solution revision IDs: `SR-013`; retained `SR-011`, `SR-010`, `SR-006`
+- Relevant architecture-review revision IDs: `ARCH-REV-011`; triggering `ARCH-REV-010`; retained `ARCH-REV-009`, `ARCH-REV-008`, `ARCH-REV-006`
+- Relevant implementation revision IDs: `IR-017`; cumulative behavior through `IR-016`
+- Relevant API/E2E revision IDs: retained pre-refactor baseline `API-REV-011`
+- Relevant delivery revision IDs: retained context through `DR-004`
+- Prior authoritative result: `CRR-031` `Fail — Design Impact`; revised design `SR-013` / `ARCH-REV-011 Pass`
+- Current authoritative result: `Fail — Local Fix`, `95/100`
+- What changed in the review result and why: the complete IR-017 source audit confirms the requested architecture simplification: four exact runtime projections, distinct package registry/command/refresh owners, acyclic scope/resource/registry/publication/session/run construction, early engine controller plus closed queues and late launcher/consumers, clean proxy/broad-host removal, and preserved naming. One bounded lifecycle mismatch remains. `AgentRunManager.stopAllAgentRuns()` asks `ActiveAgentRunRegistry.listActiveRuns()` for a complete snapshot outside its guarded loop; inactive pruning can throw a cleanup aggregate during that call, so later exact active runs are never attempted. An independent disposable probe reproduced the continuation failure 1/1. TypeScript no-emit and 14 focused files / 36 tests otherwise pass.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-019` | Open — Design Impact | Resolved in source | `CRR-031`, `SR-013`, `ARCH-REV-011`, `IR-017`, `CRR-032` | `ApplicationPlatformRuntime` exposes exactly frozen lifecycle/rest/realtime/hostManagement projections; route/host consumers use exact contracts and private internals do not leak. |
+| `CR-020` | Open — Design Impact | Resolved in source | same | Registry/query state, command/rollback, runtime reconciliation, and ordered bundle -> runtime -> agent -> team refresh are distinct acyclic owners with no later-bound callback. |
+| `CR-021` | Open — Design Impact | Resolved in source | same | Both bind-once proxies and broad engine host are removed; construction uses early scope/resource/registry and controller/queues plus late publisher/session/run managers and launcher/consumers. |
+| `AR-008` | Resolved in design | Resolved in source; API/E2E pending | `ARCH-REV-010`, `SR-013`, `ARCH-REV-011`, `IR-017` | Artifact delivery is closed/per-run ordered, always ensures before controller invocation, and drains before engine stop. |
+| `AR-009` | Resolved in design | Mostly resolved in source; bounded `CR-022` remains | same | Exact identity removal, state-before-cleanup, at-most-once resource release, all-category per-run cleanup, and stale replacement protection are implemented. Cross-run stop-all continuation after one prune cleanup failure is incomplete. |
+| `CR-001`–`CR-018` | Resolved | Remain Resolved | cumulative through `CRR-030`, retained `API-REV-011` | IR-017 preserves functional behavior and the approved readable vocabulary. |
+| `APIE2E-REPO-005` | Historical `Unclear` / unattributed | Remains separate and unchanged | `API-REV-005`–`API-REV-011` | No supported origin connects it to IR-017; it is not result evidence. |
+
+- New or remaining finding IDs: `CR-022`
+- Material score or classification changes: architecture/design-impact findings are resolved; latest implementation source is `Fail — Local Fix / 95`. Runtime Correctness is `8.5` and API/E2E Readiness `8.7`; all other scorecard categories are `>=9.4`.
+- Recommended recipient: `implementation_engineer`
+- Remaining risks or uncertainty: fix only the stop-all snapshot/error-continuation contract; do not alter the approved owner graph or restore retired machinery. After source Pass, API/E2E owns the five stale integration-fixture migrations and the complete dual-host behavior, worker-exit delivery, shutdown, restart/recovery, Agent Tools, and package-integrity execution. Historical `APIE2E-REPO-005` remains separate.
