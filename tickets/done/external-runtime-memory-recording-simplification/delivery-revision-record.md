@@ -8,6 +8,7 @@
 | DR-002 | User requested a README-grounded Electron build for hands-on verification | `DR-001 — Pass / awaiting verification` | `Pass — personal-flavor unsigned macOS ARM64 Electron artifact ready; finalization still held` | `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/04-08` Electron build/hash/DMG verification logs |
 | DR-003 | Real-data migration audit plus explicit user authorization to finalize and release | `DR-002 — Pass / awaiting verification` | `Pass — migration complete for approved scope; finalization and v1.4.34 release authorized` | `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md`, `delivery-evidence/09-11` |
 | DR-004 | User-authorized repository finalization, v1.4.34 publication, and main-personal cleanup | `DR-003 — Pass / authorized` | `Pass — ticket merged, v1.4.34 public, all five workflows successful, main personal clean` | `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/13-18` |
+| DR-005 | Post-publication cleanup verification | `DR-004 — Pass / released` | `Pass — canonical main checkout current; temporary clone and remote ticket branch removed; live-app worktree retained safely` | `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/19` |
 
 ## Revision Entries
 
@@ -62,3 +63,12 @@
 - Canonical reports: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-runtime-memory-recording-simplification/handoff-summary.md` and `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-runtime-memory-recording-simplification/release-deployment-report.md`.
 - Cleanup routing: Remote ticket branch deleted. The dedicated ticket worktree/local branch remain temporarily because the user-test Electron process still runs its app bundle from that worktree; deleting a live bundle is not safe cleanup and does not block release completion.
 - Remaining risks: Intentional retained snapshot exclusions, the pre-existing repository-wide test typecheck limitation, unexecuted provider/model/OS combinations, and external public App Store approval remain explicit. Reverting code does not reconstruct approved deleted duplicates.
+
+### DR-005 — Final cleanup state verified
+
+- Delivery round and trigger: Post-publication canonical-path and cleanup verification after `DR-004` records were pushed.
+- Prior authoritative result: `DR-004 — repository finalized, v1.4.34 public, workflows successful, main personal cleaned.`
+- Current authoritative result: `Pass — the main personal checkout contains the archived final records and is aligned with origin/personal; the temporary clean finalization clone and remote ticket branch are removed.`
+- Deliberate retention: The dedicated ticket worktree and checked-out local ticket branch remain because seven processes from the user-test Electron bundle are still running there. Delivery did not terminate the user's app or remove files backing a live process.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/external-runtime-memory-recording-simplification/delivery-evidence/19-final-cleanup-verification.log`.
+- Remaining risks: Unchanged from DR-004; the retained live-app worktree is cleanup debt only, not a release or product blocker.

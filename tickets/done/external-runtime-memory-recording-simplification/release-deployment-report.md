@@ -100,7 +100,8 @@
 - Main `personal` cleanup: tracked changes reset, untracked `.article-work` and application-agent-streaming post-delivery files removed, then the worktree aligned to the released `origin/personal`; clean-state evidence is `delivery-evidence/18-main-personal-cleanup.log`.
 - Remote ticket branch: deleted.
 - Dedicated ticket worktree/local branch: intentionally retained because the user-test Electron process is still executing its app bundle from that worktree. Deleting it while the live app is using the bundle is not considered safe cleanup.
-- Temporary clean finalization clone: removable after this final record is pushed and the main `personal` worktree is fast-forwarded.
+- Temporary clean finalization clone: removed after the final release record was pushed and the main `personal` worktree was fast-forwarded.
+- Final cleanup verification: `delivery-evidence/19-final-cleanup-verification.log`.
 
 ## Verification Basis And Residual Risks
 

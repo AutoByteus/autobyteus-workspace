@@ -140,7 +140,7 @@
 - Ticket branch pushed: `Yes`; remote branch later deleted after merge/release.
 - Finalization target merged/pushed: `Yes` — merge `e5982cb179e3d633181fd15d2b35f77357771d9f`.
 - Release/publication/deployment: `v1.4.34` published; all five workflows succeeded.
-- Worktree/branch cleanup: main `personal` was cleaned/current at the user's instruction; dedicated ticket worktree/local branch remain while the test Electron app is running from that bundle.
+- Worktree/branch cleanup: main `personal` was cleaned/current at the user's instruction; the remote ticket branch and temporary finalization clone were removed. The dedicated ticket worktree/local branch remain while the test Electron app is running from that bundle.
 - Current result: `Finalized and released; no known release blocker.`
 
 ## Cumulative Artifact Package
