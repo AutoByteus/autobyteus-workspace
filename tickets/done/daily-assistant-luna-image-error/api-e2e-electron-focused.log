@@ -1,0 +1,23 @@
+
+> autobyteus@1.4.32 test:electron /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/autobyteus-web
+> vitest --config ./electron/vitest.config.ts --run electron/browser/__tests__/browser-screenshot-artifact-writer.spec.ts electron/browser/__tests__/browser-tab-page-operations.spec.ts
+
+▲ [WARNING] Cannot find base config file "./.nuxt/tsconfig.json" [tsconfig.json]
+
+    tsconfig.json:2:13:
+      2 │   "extends": "./.nuxt/tsconfig.json",
+        ╵              ~~~~~~~~~~~~~~~~~~~~~~~
+
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/autobyteus-web/electron
+
+ ✓ browser/__tests__/browser-screenshot-artifact-writer.spec.ts (2 tests) 6ms
+ ✓ browser/__tests__/browser-tab-page-operations.spec.ts (2 tests) 4ms
+
+ Test Files  2 passed (2)
+      Tests  4 passed (4)
+   Start at  10:31:04
+   Duration  687ms (transform 79ms, setup 0ms, collect 96ms, tests 10ms, environment 0ms, prepare 247ms)
+
+
+EXIT_CODE=0

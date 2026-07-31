@@ -14,6 +14,7 @@ import { ContextFileType } from '../../../src/agent/message/context-file-type.js
 import { LLMRequestAssembler } from '../../../src/agent/llm-request-assembler.js';
 import { GeminiPromptRenderer } from '../../../src/llm/prompt-renderers/gemini-prompt-renderer.js';
 import { MessageRole } from '../../../src/llm/utils/messages.js';
+import { supportedModelDefinitions } from '../../../src/llm/supported-model-definitions.js';
 import { MemoryManager } from '../../../src/memory/memory-manager.js';
 import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
 
@@ -81,7 +82,17 @@ describe('read_media_file continuation flow (integration)', () => {
     expect(pipelineResult.llmUserMessage.audio_urls).toEqual([audioPath]);
     expect(pipelineResult.llmUserMessage.video_urls).toEqual([videoPath]);
 
-    const request = await new LLMRequestAssembler(memoryManager, new GeminiPromptRenderer()).prepareRequest(
+    const geminiDefinition = supportedModelDefinitions.find(
+      (definition) => definition.name === 'gemini-3.5-flash',
+    );
+    expect(geminiDefinition).toBeDefined();
+
+    const request = await new LLMRequestAssembler(
+      memoryManager,
+      new GeminiPromptRenderer(),
+      null,
+      geminiDefinition!.staticMetadata.multimodalCapabilities,
+    ).prepareRequest(
       pipelineResult.llmUserMessage,
       turn.turnId,
       'System prompt'
@@ -92,10 +103,14 @@ describe('read_media_file continuation flow (integration)', () => {
       .filter((trace) => trace.traceType === 'tool_result');
     expect(toolResultTraces).toHaveLength(2);
 
-    const currentMessage = request.messages.at(-1);
+    const currentMessage = request.canonicalMessages.at(-1);
     expect(currentMessage?.role).toBe(MessageRole.USER);
     expect(currentMessage?.audio_urls).toEqual([audioPath]);
     expect(currentMessage?.video_urls).toEqual([videoPath]);
+
+    const outboundCurrentMessage = request.outboundMessages.at(-1);
+    expect(outboundCurrentMessage?.audio_urls).toEqual([audioPath]);
+    expect(outboundCurrentMessage?.video_urls).toEqual([videoPath]);
 
     const renderedMessages = request.renderedPayload as Array<{
       role?: string;

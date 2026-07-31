@@ -133,7 +133,7 @@ describe('PendingCompactionExecutor', () => {
 
     process.env[AUTOBYTEUS_COMPACTION_STRATEGY] = 'second-test';
     const secondRequest = await assembler.prepareRequest('after second', 'turn-second', 'System');
-    expect(secondRequest.messages.map((message) => message.content)).toEqual([
+    expect(secondRequest.canonicalMessages.map((message) => message.content)).toEqual([
       'System',
       'second selected replacement',
       'after second',
@@ -147,7 +147,7 @@ describe('PendingCompactionExecutor', () => {
     manager.requestCompaction('turn-requested-again');
     process.env[AUTOBYTEUS_COMPACTION_STRATEGY] = 'first-test';
     const firstRequest = await assembler.prepareRequest('after first', 'turn-first', 'System');
-    expect(firstRequest.messages.map((message) => message.content)).toEqual([
+    expect(firstRequest.canonicalMessages.map((message) => message.content)).toEqual([
       'System',
       'first selected replacement',
       'after first',

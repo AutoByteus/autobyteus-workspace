@@ -1,10 +1,10 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
-  ModelMetadataProvenance,
   ModelMetadataResolver,
   type PartialResolvedModelMetadata,
   type ProviderModelMetadataProvider,
 } from '../../../../src/llm/metadata/model-metadata-resolver.js';
+import type { StaticModelMetadata } from '../../../../src/llm/supported-model-definition.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
 
 const lookup = (provider: LLMProvider, modelId: string) => ({
@@ -14,6 +14,28 @@ const lookup = (provider: LLMProvider, modelId: string) => ({
   canonicalName: modelId,
 });
 
+const staticMetadata: StaticModelMetadata = {
+  maxContextTokens: 1_000_000,
+  maxInputTokens: 900_000,
+  maxOutputTokens: 128_000,
+  multimodalCapabilities: {
+    image: 'supported',
+    audio: 'unsupported',
+    video: 'unsupported',
+  },
+  provenance: {
+    sourceUrl: 'https://example.test/model-catalog',
+    verifiedAt: '2026-07-31',
+  },
+};
+
+const unknownStaticMetadata: StaticModelMetadata = {
+  ...staticMetadata,
+  maxContextTokens: null,
+  maxInputTokens: null,
+  maxOutputTokens: null,
+};
+
 const resolverWith = (
   provider: LLMProvider,
   entries: Array<[string, PartialResolvedModelMetadata]>,
@@ -22,7 +44,7 @@ const resolverWith = (
   return {
     resolver: new ModelMetadataResolver({
       [provider]: {
-        kind: 'LIVE_WITH_CURATED_FALLBACK',
+        kind: 'LIVE_WITH_STATIC_FALLBACK',
         provider: { loadMetadata },
       },
     }),
@@ -36,140 +58,175 @@ afterEach(() => {
 });
 
 describe('ModelMetadataResolver', () => {
-  it('returns curated-only provenance for providers without a live strategy', async () => {
-    const metadata = await new ModelMetadataResolver().resolve(lookup(LLMProvider.OPENAI, 'gpt-5.5'));
+  it('returns static-definition values with per-field provenance when live metadata is unavailable', async () => {
+    const metadata = await new ModelMetadataResolver().resolve(
+      lookup(LLMProvider.OPENAI, 'gpt-5.5'),
+      staticMetadata,
+    );
 
-    expect(metadata).toMatchObject({
-      maxContextTokens: 1_050_000,
-      maxOutputTokens: 128_000,
-      provenance: ModelMetadataProvenance.CURATED_ONLY,
+    expect(metadata).toEqual({
+      maxContextTokens: {
+        value: 1_000_000,
+        source: 'static_definition',
+        staticProvenance: staticMetadata.provenance,
+      },
+      maxInputTokens: {
+        value: 900_000,
+        source: 'static_definition',
+        staticProvenance: staticMetadata.provenance,
+      },
+      maxOutputTokens: {
+        value: 128_000,
+        source: 'static_definition',
+        staticProvenance: staticMetadata.provenance,
+      },
     });
   });
 
-  it('returns the official GPT-5.6 limits with curated-only provenance', async () => {
-    const resolver = new ModelMetadataResolver();
-    for (const modelId of ['gpt-5.6-sol', 'gpt-5.6-terra', 'gpt-5.6-luna']) {
-      await expect(resolver.resolve(lookup(LLMProvider.OPENAI, modelId))).resolves.toMatchObject({
-        maxContextTokens: 1_050_000,
-        maxOutputTokens: 128_000,
-        provenance: ModelMetadataProvenance.CURATED_ONLY,
-      });
-    }
-  });
-
-  it('marks a matching live record LIVE, falls back per model, and caches one provider load', async () => {
+  it('merges matching live fields independently, falls back to static fields, and caches one provider load', async () => {
     const { resolver, loadMetadata } = resolverWith(LLMProvider.ANTHROPIC, [[
       'claude-sonnet-4-6',
-      { maxContextTokens: 1_200_000, maxInputTokens: 1_200_000, maxOutputTokens: 64_000 },
+      { maxContextTokens: 1_200_000, maxInputTokens: null, maxOutputTokens: 64_000 },
     ]]);
 
-    const liveMetadata = await resolver.resolve(lookup(LLMProvider.ANTHROPIC, 'claude-sonnet-4-6'));
-    const curatedFallback = await resolver.resolve(lookup(LLMProvider.ANTHROPIC, 'claude-opus-4-7'));
+    const liveMetadata = await resolver.resolve(
+      lookup(LLMProvider.ANTHROPIC, 'claude-sonnet-4-6'),
+      staticMetadata,
+    );
+    const staticFallback = await resolver.resolve(
+      lookup(LLMProvider.ANTHROPIC, 'claude-opus-4-7'),
+      staticMetadata,
+    );
 
-    expect(liveMetadata).toMatchObject({
-      maxContextTokens: 1_200_000,
-      maxInputTokens: 1_200_000,
-      maxOutputTokens: 64_000,
-      provenance: ModelMetadataProvenance.LIVE,
+    expect(liveMetadata).toEqual({
+      maxContextTokens: { value: 1_200_000, source: 'live' },
+      maxInputTokens: {
+        value: 900_000,
+        source: 'static_definition',
+        staticProvenance: staticMetadata.provenance,
+      },
+      maxOutputTokens: { value: 64_000, source: 'live' },
     });
-    expect(curatedFallback).toMatchObject({
-      maxContextTokens: 1_000_000,
-      maxOutputTokens: 128_000,
-      provenance: ModelMetadataProvenance.CURATED_FALLBACK,
+    expect(staticFallback.maxContextTokens).toMatchObject({
+      value: 1_000_000,
+      source: 'static_definition',
+    });
+    expect(staticFallback.maxOutputTokens).toMatchObject({
+      value: 128_000,
+      source: 'static_definition',
     });
     expect(loadMetadata).toHaveBeenCalledTimes(1);
   });
 
-  it('returns CURATED_FALLBACK when a live-capable strategy has no configured provider', async () => {
+  it('uses static definitions when a live strategy has no configured provider or no matching record', async () => {
     const resolver = new ModelMetadataResolver({
-      [LLMProvider.GEMINI]: { kind: 'LIVE_WITH_CURATED_FALLBACK', provider: null },
+      [LLMProvider.GEMINI]: { kind: 'LIVE_WITH_STATIC_FALLBACK', provider: null },
     });
 
-    await expect(resolver.resolve(lookup(LLMProvider.GEMINI, 'gemini-3-flash-preview')))
-      .resolves.toMatchObject({
-        maxContextTokens: 1_048_576,
-        provenance: ModelMetadataProvenance.CURATED_FALLBACK,
-      });
+    await expect(resolver.resolve(
+      lookup(LLMProvider.GEMINI, 'gemini-3-flash-preview'),
+      staticMetadata,
+    )).resolves.toMatchObject({
+      maxContextTokens: { value: 1_000_000, source: 'static_definition' },
+    });
+
+    const { resolver: unmatchedResolver } = resolverWith(LLMProvider.GEMINI, [[
+      'gemini-unrelated-model',
+      { maxContextTokens: 2_000_000 },
+    ]]);
+    await expect(unmatchedResolver.resolve(
+      lookup(LLMProvider.GEMINI, 'gemini-3-flash-preview'),
+      staticMetadata,
+    )).resolves.toMatchObject({
+      maxContextTokens: { value: 1_000_000, source: 'static_definition' },
+    });
   });
 
-  it('contains a failed live provider and returns CURATED_FALLBACK', async () => {
+  it('contains a failed live provider and returns static-definition fields', async () => {
     vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     const provider: ProviderModelMetadataProvider = {
       loadMetadata: vi.fn().mockRejectedValue(new Error('synthetic metadata failure')),
     };
     const resolver = new ModelMetadataResolver({
-      [LLMProvider.GEMINI]: { kind: 'LIVE_WITH_CURATED_FALLBACK', provider },
+      [LLMProvider.GEMINI]: { kind: 'LIVE_WITH_STATIC_FALLBACK', provider },
     });
 
-    await expect(resolver.resolve(lookup(LLMProvider.GEMINI, 'gemini-3-flash-preview')))
-      .resolves.toMatchObject({
-        maxContextTokens: 1_048_576,
-        provenance: ModelMetadataProvenance.CURATED_FALLBACK,
-      });
+    await expect(resolver.resolve(
+      lookup(LLMProvider.GEMINI, 'gemini-3-flash-preview'),
+      staticMetadata,
+    )).resolves.toMatchObject({
+      maxContextTokens: { value: 1_000_000, source: 'static_definition' },
+      maxOutputTokens: { value: 128_000, source: 'static_definition' },
+    });
   });
 
-  it('contains a timed-out live provider and returns CURATED_FALLBACK', async () => {
+  it('contains a timed-out live provider and returns static-definition fields', async () => {
     vi.useFakeTimers();
     vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     const provider: ProviderModelMetadataProvider = {
-      loadMetadata: vi.fn(() => new Promise(() => undefined)),
+      loadMetadata: vi.fn<ProviderModelMetadataProvider['loadMetadata']>(
+        () => new Promise<Map<string, PartialResolvedModelMetadata>>(() => undefined)
+      ),
     };
     const resolver = new ModelMetadataResolver(
-      { [LLMProvider.GEMINI]: { kind: 'LIVE_WITH_CURATED_FALLBACK', provider } },
+      { [LLMProvider.GEMINI]: { kind: 'LIVE_WITH_STATIC_FALLBACK', provider } },
       { providerLoadTimeoutMs: 10 },
     );
 
-    const pending = resolver.resolve(lookup(LLMProvider.GEMINI, 'gemini-3-flash-preview'));
+    const pending = resolver.resolve(
+      lookup(LLMProvider.GEMINI, 'gemini-3-flash-preview'),
+      staticMetadata,
+    );
     await vi.advanceTimersByTimeAsync(11);
 
     await expect(pending).resolves.toMatchObject({
-      maxContextTokens: 1_048_576,
-      provenance: ModelMetadataProvenance.CURATED_FALLBACK,
+      maxContextTokens: { value: 1_000_000, source: 'static_definition' },
     });
   });
 
-  it('returns CURATED_FALLBACK when live metadata has no matching record', async () => {
+  it('rejects invalid live numeric values in favor of static values and reports unknown when both are absent', async () => {
+    const { resolver } = resolverWith(LLMProvider.KIMI, [[
+      'kimi-k2.6',
+      {
+        maxContextTokens: 0,
+        maxInputTokens: -1,
+        maxOutputTokens: Number.NaN,
+      },
+    ]]);
+
+    await expect(resolver.resolve(lookup(LLMProvider.KIMI, 'kimi-k2.6'), staticMetadata))
+      .resolves.toMatchObject({
+        maxContextTokens: { value: 1_000_000, source: 'static_definition' },
+        maxInputTokens: { value: 900_000, source: 'static_definition' },
+        maxOutputTokens: { value: 128_000, source: 'static_definition' },
+      });
+
+    const { resolver: unknownResolver } = resolverWith(LLMProvider.MISTRAL, [[
+      'mistral-unknown',
+      { maxContextTokens: null, maxInputTokens: null, maxOutputTokens: null },
+    ]]);
+    await expect(unknownResolver.resolve(
+      lookup(LLMProvider.MISTRAL, 'mistral-unknown'),
+      unknownStaticMetadata,
+    )).resolves.toEqual({
+      maxContextTokens: { value: null, source: 'unknown' },
+      maxInputTokens: { value: null, source: 'unknown' },
+      maxOutputTokens: { value: null, source: 'unknown' },
+    });
+  });
+
+  it('matches provider metadata through models/ and canonical lookup keys', async () => {
     const { resolver } = resolverWith(LLMProvider.GEMINI, [[
-      'gemini-unrelated-model',
+      'gemini-3-flash-preview',
       { maxContextTokens: 2_000_000 },
     ]]);
 
-    await expect(resolver.resolve(lookup(LLMProvider.GEMINI, 'gemini-3-flash-preview')))
-      .resolves.toMatchObject({
-        maxContextTokens: 1_048_576,
-        provenance: ModelMetadataProvenance.CURATED_FALLBACK,
-      });
-  });
-
-  it('preserves live-over-curated merging for Kimi and Mistral', async () => {
-    const kimi = resolverWith(LLMProvider.KIMI, [[
-      'kimi-k2.6',
-      { maxContextTokens: 262_144 },
-    ]]).resolver;
-    const mistral = resolverWith(LLMProvider.MISTRAL, [[
-      'mistral-large-2512',
-      { maxContextTokens: 320_000 },
-    ]]).resolver;
-
-    await expect(kimi.resolve(lookup(LLMProvider.KIMI, 'kimi-k2.6'))).resolves.toMatchObject({
-      maxContextTokens: 262_144,
-      provenance: ModelMetadataProvenance.LIVE,
+    await expect(resolver.resolve({
+      ...lookup(LLMProvider.GEMINI, 'models/gemini-3-flash-preview'),
+      value: 'unmatched-value',
+      canonicalName: 'gemini-canonical',
+    }, staticMetadata)).resolves.toMatchObject({
+      maxContextTokens: { value: 2_000_000, source: 'live' },
     });
-    await expect(mistral.resolve(lookup(LLMProvider.MISTRAL, 'mistral-large-2512')))
-      .resolves.toMatchObject({
-        maxContextTokens: 320_000,
-        provenance: ModelMetadataProvenance.LIVE,
-      });
-  });
-
-  it('returns curated-only metadata for DeepSeek models without any provider load', async () => {
-    const resolver = new ModelMetadataResolver();
-    for (const modelId of ['deepseek-v4-flash', 'deepseek-v4-pro']) {
-      await expect(resolver.resolve(lookup(LLMProvider.DEEPSEEK, modelId))).resolves.toMatchObject({
-        maxContextTokens: 1_000_000,
-        maxOutputTokens: 384_000,
-        provenance: ModelMetadataProvenance.CURATED_ONLY,
-      });
-    }
   });
 });

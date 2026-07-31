@@ -1,5 +1,10 @@
 import type { SupportedModelDefinition } from './supported-model-definition.js';
-export type { SupportedModelDefinition } from './supported-model-definition.js';
+import { createStaticModelMetadata, DEEPSEEK_MEDIA_CAPABILITIES, GEMINI_MEDIA_CAPABILITIES } from './supported-model-static-metadata.js';
+export type {
+  SupportedModelDefinition,
+  StaticModelMetadata,
+  StaticModelMetadataProvenance,
+} from './supported-model-definition.js';
 import { LLMConfig, TokenPricingConfig, type TokenPricingConfigInput } from './utils/llm-config.js';
 import { ParameterSchema, ParameterDefinition, ParameterType } from '../utils/parameter-schema.js';
 
@@ -198,7 +203,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     value: modelId,
     provider: LLMProvider.OPENAI,
     llmClass: OpenAILLM,
-    canonicalName: modelId,
+    canonicalName: modelId, staticMetadata: createStaticModelMetadata(1050000, null, 128000, `https://developers.openai.com/api/docs/models/${modelId}`, '2026-07-10'),
     defaultConfig: new LLMConfig({ pricingConfig: createOpenAIGpt56Pricing(inputPrice, outputPrice) }),
     configSchema: openaiGpt56ReasoningSchema,
   })),
@@ -207,7 +212,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     value: 'gpt-5.5',
     provider: LLMProvider.OPENAI,
     llmClass: OpenAILLM,
-    canonicalName: 'gpt-5.5',
+    canonicalName: 'gpt-5.5', staticMetadata: createStaticModelMetadata(1050000, null, 128000, 'https://developers.openai.com/api/docs/models/gpt-5.5', '2026-04-25'),
     defaultConfig: new LLMConfig({ pricingConfig: pricing(5.0, 30.0, { cachedInputReadTokenPricing: 0.5 }) }),
     configSchema: openaiReasoningSchema
   },
@@ -216,7 +221,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     value: 'gpt-5.4',
     provider: LLMProvider.OPENAI,
     llmClass: OpenAILLM,
-    canonicalName: 'gpt-5.4',
+    canonicalName: 'gpt-5.4', staticMetadata: createStaticModelMetadata(1000000, null, 128000, 'https://developers.openai.com/api/docs/models/gpt-5.4', '2026-04-09'),
     defaultConfig: new LLMConfig({ pricingConfig: pricing(2.5, 15.0, { cachedInputReadTokenPricing: 0.25 }) }),
     configSchema: openaiReasoningSchema
   },
@@ -225,7 +230,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     value: 'gpt-5.4-mini',
     provider: LLMProvider.OPENAI,
     llmClass: OpenAILLM,
-    canonicalName: 'gpt-5.4-mini',
+    canonicalName: 'gpt-5.4-mini', staticMetadata: createStaticModelMetadata(400000, null, 128000, 'https://developers.openai.com/api/docs/models/gpt-5.4-mini', '2026-04-09'),
     defaultConfig: new LLMConfig({ pricingConfig: pricing(0.75, 4.5, { cachedInputReadTokenPricing: 0.075 }) }),
     configSchema: openaiReasoningSchema
   },
@@ -234,7 +239,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     value: 'mistral-large-2512',
     provider: LLMProvider.MISTRAL,
     llmClass: MistralLLM,
-    canonicalName: 'mistral-large-3',
+    canonicalName: 'mistral-large-3', staticMetadata: createStaticModelMetadata(256000, null, null, 'https://docs.mistral.ai/models/mistral-large-3-1-24-11/', '2026-04-09'),
     defaultConfig: new LLMConfig({ pricingConfig: pricing(2.0, 6.0) })
   },
   {
@@ -242,7 +247,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     value: 'devstral-2512',
     provider: LLMProvider.MISTRAL,
     llmClass: MistralLLM,
-    canonicalName: 'devstral-2',
+    canonicalName: 'devstral-2', staticMetadata: createStaticModelMetadata(256000, null, null, 'https://docs.mistral.ai/models/devstral-small-2507/', '2026-04-09'),
     defaultConfig: new LLMConfig({ pricingConfig: pricing(0.4, 2.0) })
   },
   {
@@ -250,7 +255,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     value: 'grok-4.5',
     provider: LLMProvider.GROK,
     llmClass: GrokLLM,
-    canonicalName: 'grok-4.5',
+    canonicalName: 'grok-4.5', staticMetadata: createStaticModelMetadata(500000, null, null, 'https://docs.x.ai/developers/models', '2026-07-09'),
     defaultConfig: new LLMConfig({
       extraParams: { reasoning_effort: 'high' },
       pricingConfig: pricing(2.0, 6.0, {
@@ -265,7 +270,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     value: 'claude-fable-5',
     provider: LLMProvider.ANTHROPIC,
     llmClass: AnthropicLLM,
-    canonicalName: 'claude-fable-5',
+    canonicalName: 'claude-fable-5', staticMetadata: createStaticModelMetadata(1000000, 1000000, 128000, 'https://platform.claude.com/docs/en/about-claude/models/overview', '2026-07-07'),
     defaultConfig: new LLMConfig({ pricingConfig: pricing(10.0, 50.0, {
       pricingEffectiveDate: '2026-07-07',
       cachedInputReadTokenPricing: 1.0,
@@ -279,7 +284,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     value: 'claude-opus-5',
     provider: LLMProvider.ANTHROPIC,
     llmClass: AnthropicLLM,
-    canonicalName: 'claude-opus-5',
+    canonicalName: 'claude-opus-5', staticMetadata: createStaticModelMetadata(1000000, 1000000, 128000, 'https://platform.claude.com/docs/en/about-claude/models/overview', '2026-07-31'),
     defaultConfig: new LLMConfig({ pricingConfig: pricing(5.0, 25.0, {
       pricingEffectiveDate: '2026-07-24',
       cachedInputReadTokenPricing: 0.5,
@@ -293,7 +298,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     value: 'claude-opus-4-8',
     provider: LLMProvider.ANTHROPIC,
     llmClass: AnthropicLLM,
-    canonicalName: 'claude-opus-4.8',
+    canonicalName: 'claude-opus-4.8', staticMetadata: createStaticModelMetadata(1000000, 1000000, 128000, 'https://platform.claude.com/docs/en/about-claude/models/overview', '2026-07-07'),
     defaultConfig: new LLMConfig({ pricingConfig: pricing(5.0, 25.0, {
       pricingEffectiveDate: '2026-07-07',
       cachedInputReadTokenPricing: 0.5,
@@ -307,7 +312,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     value: 'claude-opus-4-7',
     provider: LLMProvider.ANTHROPIC,
     llmClass: AnthropicLLM,
-    canonicalName: 'claude-opus-4.7',
+    canonicalName: 'claude-opus-4.7', staticMetadata: createStaticModelMetadata(1000000, 1000000, 128000, 'https://platform.claude.com/docs/en/about-claude/models/overview', '2026-04-25'),
     defaultConfig: new LLMConfig({ pricingConfig: pricing(5.0, 25.0, {
       cachedInputReadTokenPricing: 0.5,
       cachedInputWrite5mTokenPricing: 6.25,
@@ -320,7 +325,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     value: 'claude-sonnet-5',
     provider: LLMProvider.ANTHROPIC,
     llmClass: AnthropicLLM,
-    canonicalName: 'claude-sonnet-5',
+    canonicalName: 'claude-sonnet-5', staticMetadata: createStaticModelMetadata(1000000, 1000000, 128000, 'https://platform.claude.com/docs/en/about-claude/models/overview', '2026-07-07'),
     defaultConfig: new LLMConfig({ pricingConfig: pricing(3.0, 15.0, {
       pricingEffectiveDate: '2026-07-07',
       cachedInputReadTokenPricing: 0.3,
@@ -334,7 +339,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     value: 'claude-sonnet-4-6',
     provider: LLMProvider.ANTHROPIC,
     llmClass: AnthropicLLM,
-    canonicalName: 'claude-sonnet-4.6',
+    canonicalName: 'claude-sonnet-4.6', staticMetadata: createStaticModelMetadata(1000000, 1000000, 64000, 'https://platform.claude.com/docs/en/about-claude/models/overview', '2026-04-09'),
     defaultConfig: new LLMConfig({ pricingConfig: pricing(3.0, 15.0, {
       cachedInputReadTokenPricing: 0.3,
       cachedInputWrite5mTokenPricing: 3.75,
@@ -347,7 +352,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     value: 'deepseek-v4-flash',
     provider: LLMProvider.DEEPSEEK,
     llmClass: DeepSeekLLM,
-    canonicalName: 'deepseek-v4-flash',
+    canonicalName: 'deepseek-v4-flash', staticMetadata: createStaticModelMetadata(1000000, null, 384000, 'https://api-docs.deepseek.com/quick_start/pricing', '2026-04-25', DEEPSEEK_MEDIA_CAPABILITIES),
     defaultConfig: new LLMConfig({
       rateLimit: 60,
       pricingConfig: pricing(0.14, 0.28, { cachedInputReadTokenPricing: 0.0028 })
@@ -359,7 +364,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     value: 'deepseek-v4-pro',
     provider: LLMProvider.DEEPSEEK,
     llmClass: DeepSeekLLM,
-    canonicalName: 'deepseek-v4-pro',
+    canonicalName: 'deepseek-v4-pro', staticMetadata: createStaticModelMetadata(1000000, null, 384000, 'https://api-docs.deepseek.com/quick_start/pricing', '2026-04-25', DEEPSEEK_MEDIA_CAPABILITIES),
     defaultConfig: new LLMConfig({
       rateLimit: 60,
       pricingConfig: pricing(0.435, 0.87, { cachedInputReadTokenPricing: 0.003625 })
@@ -371,7 +376,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     value: 'gemini-3.1-pro-preview',
     provider: LLMProvider.GEMINI,
     llmClass: GeminiLLM,
-    canonicalName: 'gemini-3.1-pro-preview',
+    canonicalName: 'gemini-3.1-pro-preview', staticMetadata: createStaticModelMetadata(1048576, 1048576, 65536, 'https://ai.google.dev/gemini-api/docs/gemini-3', '2026-04-09', GEMINI_MEDIA_CAPABILITIES),
     defaultConfig: new LLMConfig({
       pricingConfig: pricing(2.25, 18.0, {
         cachedInputReadTokenPricing: 0.225,
@@ -400,7 +405,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     value: 'gemini-3-flash-preview',
     provider: LLMProvider.GEMINI,
     llmClass: GeminiLLM,
-    canonicalName: 'gemini-3-flash-preview',
+    canonicalName: 'gemini-3-flash-preview', staticMetadata: createStaticModelMetadata(1048576, 1048576, 65536, 'https://ai.google.dev/gemini-api/docs/gemini-3', '2026-04-09', GEMINI_MEDIA_CAPABILITIES),
     defaultConfig: new LLMConfig({ pricingConfig: pricing(0.5, 3.0) }),
     configSchema: geminiSchema
   },
@@ -409,7 +414,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     value: 'gemini-3.5-flash',
     provider: LLMProvider.GEMINI,
     llmClass: GeminiLLM,
-    canonicalName: 'gemini-3.5-flash',
+    canonicalName: 'gemini-3.5-flash', staticMetadata: createStaticModelMetadata(1048576, 1048576, 65536, 'https://ai.google.dev/gemini-api/docs/models/gemini-3.5-flash', '2026-05-20', GEMINI_MEDIA_CAPABILITIES),
     defaultConfig: new LLMConfig({ pricingConfig: pricing(1.5, 9.0, { cachedInputReadTokenPricing: 0.15 }) }),
     configSchema: geminiSchema
   },
@@ -418,7 +423,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     value: 'kimi-k2.6',
     provider: LLMProvider.KIMI,
     llmClass: KimiLLM,
-    canonicalName: 'kimi-k2.6',
+    canonicalName: 'kimi-k2.6', staticMetadata: createStaticModelMetadata(256000, null, null, 'https://platform.kimi.ai/docs/models', '2026-04-25'),
     defaultConfig: new LLMConfig({ pricingConfig: pricing(0.95, 4.0, { cachedInputReadTokenPricing: 0.16 }) })
   },
   {
@@ -426,7 +431,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     value: 'kimi-k2.7-code',
     provider: LLMProvider.KIMI,
     llmClass: KimiLLM,
-    canonicalName: 'kimi-k2.7-code',
+    canonicalName: 'kimi-k2.7-code', staticMetadata: createStaticModelMetadata(256000, null, null, 'https://platform.kimi.ai/docs/guide/kimi-k2-7-code-quickstart', '2026-06-16'),
     defaultConfig: createKimiK27CodeDefaultConfig(
       pricing(0.95, 4.0, { cachedInputReadTokenPricing: 0.19 }),
     )
@@ -436,7 +441,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     value: 'kimi-k2.7-code-highspeed',
     provider: LLMProvider.KIMI,
     llmClass: KimiLLM,
-    canonicalName: 'kimi-k2.7-code-highspeed',
+    canonicalName: 'kimi-k2.7-code-highspeed', staticMetadata: createStaticModelMetadata(256000, null, null, 'https://platform.kimi.ai/docs/guide/kimi-k2-7-code-quickstart', '2026-06-24'),
     defaultConfig: createKimiK27CodeDefaultConfig(
       pricing(1.90, 8.0, { cachedInputReadTokenPricing: 0.38 }),
     )
@@ -446,21 +451,21 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     value: 'qwen3.7-max',
     provider: LLMProvider.QWEN,
     llmClass: QwenLLM,
-    canonicalName: 'qwen3.7-max'
+    canonicalName: 'qwen3.7-max', staticMetadata: createStaticModelMetadata(262144, 258048, 65536, 'https://www.alibabacloud.com/help/en/model-studio/models', '2026-06-24'),
   },
   {
     name: 'qwen3-max',
     value: 'qwen3-max',
     provider: LLMProvider.QWEN,
     llmClass: QwenLLM,
-    canonicalName: 'qwen3-max'
+    canonicalName: 'qwen3-max', staticMetadata: createStaticModelMetadata(262144, 258048, 65536, 'https://www.alibabacloud.com/help/en/model-studio/models', '2026-04-09'),
   },
   {
     name: 'glm-5.2',
     value: 'glm-5.2',
     provider: LLMProvider.GLM,
     llmClass: GlmLLM,
-    canonicalName: 'glm-5.2',
+    canonicalName: 'glm-5.2', staticMetadata: createStaticModelMetadata(1000000, 1000000, 128000, 'https://docs.bigmodel.cn/cn/guide/models/text/glm-5.2', '2026-06-16'),
     defaultConfig: new LLMConfig({
       pricingConfig: pricing(8.0, 28.0, {
         currency: 'CNY',
@@ -475,7 +480,7 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     value: 'MiniMax-M3',
     provider: LLMProvider.MINIMAX,
     llmClass: MinimaxLLM,
-    canonicalName: 'minimax-m3',
+    canonicalName: 'minimax-m3', staticMetadata: createStaticModelMetadata(204800, 204800, null, 'https://platform.minimax.io/docs/release-notes/models', '2026-06-24'),
     defaultConfig: new LLMConfig({
       pricingConfig: pricing(0.3, 1.2, {
         cachedInputReadTokenPricing: 0.06,

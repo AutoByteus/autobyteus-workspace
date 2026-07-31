@@ -214,4 +214,50 @@ describe('OpenAIResponsesRenderer', () => {
       }
     ]);
   });
+
+  it('omits an empty image conversion while preserving the message text', async () => {
+    const renderer = new OpenAIResponsesRenderer();
+    const rendered = await renderer.render([
+      new Message(MessageRole.USER, {
+        content: 'continue without the unavailable screenshot',
+        image_urls: ['data:image/png;base64,']
+      })
+    ]);
+
+    expect(rendered).toEqual([
+      {
+        type: 'message',
+        role: 'user',
+        content: [
+          { type: 'input_text', text: 'continue without the unavailable screenshot' }
+        ]
+      }
+    ]);
+    expect(JSON.stringify(rendered)).not.toContain('base64,');
+  });
+
+  it('renders a valid non-empty image as the established Responses input_image shape', async () => {
+    const renderer = new OpenAIResponsesRenderer();
+    const rendered = await renderer.render([
+      new Message(MessageRole.USER, {
+        content: 'inspect this image',
+        image_urls: ['data:image/png;base64,aW1hZ2U=']
+      })
+    ]);
+
+    expect(rendered).toEqual([
+      {
+        type: 'message',
+        role: 'user',
+        content: [
+          { type: 'input_text', text: 'inspect this image' },
+          {
+            type: 'input_image',
+            image_url: 'data:image/jpeg;base64,aW1hZ2U=',
+            detail: 'auto'
+          }
+        ]
+      }
+    ]);
+  });
 });

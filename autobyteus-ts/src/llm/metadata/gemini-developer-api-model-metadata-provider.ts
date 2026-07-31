@@ -15,7 +15,7 @@ interface GeminiModelListResponse {
 }
 
 const normalizePositiveInteger = (value: unknown): number | null =>
-  typeof value === 'number' && Number.isFinite(value) && value > 0 ? Math.trunc(value) : null;
+  typeof value === 'number' && Number.isFinite(value) && Number.isInteger(value) && value > 0 ? value : null;
 
 const trimLeadingModelsPrefix = (value: string): string =>
   value.startsWith('models/') ? value.slice('models/'.length) : value;

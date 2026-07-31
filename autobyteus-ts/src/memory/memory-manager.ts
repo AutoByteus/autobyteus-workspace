@@ -25,6 +25,8 @@ import {
   type NativeToolCallRegistration,
 } from './raw-trace-ingestion.js';
 import { buildToolTraceLifecycleIndex, type ToolTraceLifecycleGroup } from './tool-trace-lifecycle-index.js';
+import { LlmRequestRecoveryBoundary, type LlmRequestRecoveryInput, type LlmRequestRecoveryProvenance, type LlmRequestRecoverySnapshot, type PendingCompactionRequest } from './llm-request-recovery.js';
+export type { LlmRequestRecoveryInput, LlmRequestRecoveryProvenance, LlmRequestRecoverySnapshot, PendingCompactionRequest } from './llm-request-recovery.js';
 
 export type ToolIntentIngestionOptions = { appendToWorkingContext?: boolean; assistantContent?: string | null; assistantReasoning?: string | null };
 export type ToolResultIngestionOptions = { source?: string; appendToWorkingContext?: boolean };
@@ -41,8 +43,6 @@ export type OperationBoundaryNoteInput = { scope: MemoryProjectionScope; reason?
 
 export type CompactionOperationId = string;
 
-export type PendingCompactionRequest = { operationId: CompactionOperationId; requestedTurnId: string | null };
-
 const OPERATION_BOUNDARY_TRACE_TYPE = 'operation_boundary';
 
 export class MemoryManager {
@@ -55,6 +55,7 @@ export class MemoryManager {
   compactionRequired = false;
   private pendingCompactionRequest: PendingCompactionRequest | null = null;
   private compactionOperationCounter = 0;
+  private readonly llmRequestRecovery: LlmRequestRecoveryBoundary;
   private seqByTurn = new Map<string, number>();
   private readonly toolLifecycleGroups = new Map<string, ToolTraceLifecycleGroup>();
 
@@ -66,6 +67,12 @@ export class MemoryManager {
     this.compactionPolicy = options.compactionPolicy ?? new CompactionPolicy();
     this.workingContext = options.workingContext?.copy() ?? new WorkingContext();
     this.workingContextSnapshotStore = options.workingContextSnapshotStore ?? null;
+    this.llmRequestRecovery = new LlmRequestRecoveryBoundary({
+      getWorkingContext: () => this.workingContext, setWorkingContext: (workingContext) => { this.workingContext = workingContext.copy(); },
+      getCompactionState: () => ({ compactionRequired: this.compactionRequired, pendingCompactionRequest: this.pendingCompactionRequest }),
+      setCompactionState: (state) => { this.compactionRequired = state.compactionRequired; this.pendingCompactionRequest = state.pendingCompactionRequest; },
+      persistWorkingContextSnapshot: () => this.persistWorkingContextSnapshot(), appendRawTrace: (input) => this.appendRawTrace(input),
+    });
     this.hydrateToolLifecycleGroups();
   }
 
@@ -447,6 +454,12 @@ export class MemoryManager {
   getWorkingContext(): WorkingContext {
     return this.workingContext.copy();
   }
+
+  captureLlmRequestRecoverySnapshot(input: LlmRequestRecoveryInput): LlmRequestRecoverySnapshot { return this.llmRequestRecovery.capture(input); }
+
+  restoreLlmRequestRecoverySnapshot(snapshot: LlmRequestRecoverySnapshot, provenance: LlmRequestRecoveryProvenance): void { this.llmRequestRecovery.restore(snapshot, provenance); }
+
+  commitLlmRequestRecoverySnapshot(snapshot: LlmRequestRecoverySnapshot): void { this.llmRequestRecovery.commit(snapshot); }
 
   replaceWorkingContext(workingContext: WorkingContext): void {
     this.workingContext = workingContext.copy();

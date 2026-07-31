@@ -1,0 +1,14 @@
+
+> autobyteus@1.4.32 test:e2e:workspace-responsive /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/autobyteus-web
+> node tests/e2e/workspace-responsive-probe.mjs -- --base-url http://127.0.0.1:3000 --output-dir ../tickets/in-progress/daily-assistant-luna-image-error/frontend-workspace-probe --fail-on-console-error
+
+page.waitForSelector: Timeout 20000ms exceeded.
+Call log:
+[2m  - waiting for locator('[data-test="workspace-adaptive-layout"]') to be visible[22m
+
+    at run (/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/autobyteus-web/tests/e2e/workspace-responsive-probe.mjs:1265:20) {
+  name: 'TimeoutError'
+}
+ ELIFECYCLE  Command failed with exit code 1.
+
+EXIT_CODE=1

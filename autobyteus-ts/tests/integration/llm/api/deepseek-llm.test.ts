@@ -190,7 +190,7 @@ describe('DeepSeekLLM reasoning continuation payloads', () => {
       const assembler = new LLMRequestAssembler(manager, (llm as any)._renderer);
       const request = await assembler.prepareToolContinuationRequest(turnId);
 
-      await llm.sendMessages(request.messages, request.renderedPayload, {
+      await llm.sendMessages(request.outboundMessages, request.renderedPayload, {
         tools: [WEATHER_TOOL_SCHEMA]
       });
 

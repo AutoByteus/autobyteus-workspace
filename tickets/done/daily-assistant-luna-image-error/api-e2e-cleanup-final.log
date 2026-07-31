@@ -1,0 +1,9 @@
+REMOVED autobyteus-server-ts/tests/.tmp/frontend-live-runtime
+REMOVED autobyteus-server-ts/db/test.db
+REMOVED autobyteus-server-ts/db/test.db.secret.key
+REMOVED autobyteus-server-ts/db/test.db-shm
+REMOVED autobyteus-server-ts/db/test.db-wal
+REMOVED autobyteus-server-ts/db/test.db-journal
+--- cleanup verification ---
+PORT_8010_FREE
+PORT_3011_FREE

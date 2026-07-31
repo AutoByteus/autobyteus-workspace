@@ -130,6 +130,14 @@ uses these collaborators:
     inter-agent input when structured `reference_files` are present.
 - `LlmPhase`
   - assembles memory-backed LLM requests;
+  - opens a named `MemoryManager` LLM-request recovery boundary before request
+    preparation, commits it after successful response/tool ingestion, and
+    restores working context plus compaction state on assembly or provider
+    failure;
+  - passes the selected model's provider-neutral multimodal capabilities to
+    `LLMRequestAssembler`, which gives providers a sanitized outbound message
+    copy and bounded invalid/unsupported-media diagnostics without mutating
+    canonical memory;
   - passes `{ signal, turnId }` into `BaseLLM.streamMessages(...)`;
   - publishes streamed segment facts through `AgentExternalEventNotifier`;
   - parses text/API tool calls through the streaming response handler factory;
@@ -343,6 +351,11 @@ Failed LLM streams are not treated as interrupts. Streaming handlers emit
 terminal `SEGMENT_END` events with `failed: true` and an error message for
 open segments; `ToolInvocationAdapter` suppresses failed partial tool segments
 so they do not become invocations, tool results, or same-turn continuations.
+The named LLM-request recovery boundary also restores the pre-request working
+context and compaction flags, persists that restored snapshot, and appends a
+correlated recovery trace. The failure is surfaced as one diagnostic; the
+runtime does not automatically retry or select a fallback model. Raw traces and
+tool facts committed before the failed request remain preserved.
 
 ## Current User Context File References
 

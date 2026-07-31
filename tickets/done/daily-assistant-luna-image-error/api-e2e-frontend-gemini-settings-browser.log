@@ -1,0 +1,8 @@
+{
+  "url": "http://127.0.0.1:3011/settings",
+  "geminiExactCount": 1,
+  "clicked": true,
+  "body": "Back to Workspace\nAPI Keys\nToken Statistics\nMessaging\nDisplay\nLanguage\nLocal Tools\nMCP Servers\nApplication Packages\nAgent Packages\nServer Settings\nExtensions\nUpdates\nAPI Key Management\n\nManage provider keys and reload available models\n\nReload Models\nPROVIDERS\nAnthropic\n6\nAutoByteus\n94\nDeepSeek\n2\nGemini\n12\nGLM\n1\nGrok\n1\nKimi\n3\nLM Studio\n14\nMiniMax\n1\nMistral\n2\nOllama\n0\nOpenAI\n9\nQwen\n2\nNew Provider\n0\nGemini\nConfigured\nReload Models\nActive mode\n\nVertex Express\n\nAI Studio\nGemini Developer API key\nNot Configured\nConfigure\n\nVertex Express\nVertex AI Express API key\nConfigured\nActive\nActive\nConfigure\n\nVertex Project\nGoogle Cloud project and location\nNot Configured\nConfigure\n\nLLM MODELS\ngemini-3-flash-preview\ngemini-3.1-pro-preview\ngemini-3.5-flash\nAUDIO MODELS\ngemini-2.5-flash-tts\ngemini-2.5-pro-tts\ngemini-3.1-flash-tts-preview\nIMAGE MODELS\ngemini-2.5-flash-image\ngemini-3-pro-image\ngemini-3.1-flash-image\ngemini-3.1-flash-lite-image\nimagen-4\nVIDEO MODELS\ngemini-omni-flash-preview",
+  "consoleErrors": [],
+  "requestFailures": []
+}

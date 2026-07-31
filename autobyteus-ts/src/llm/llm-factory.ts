@@ -87,16 +87,21 @@ const buildSupportedModels = async (): Promise<LLMModel[]> => {
 
   return Promise.all(
     supportedModelDefinitions.map(async (definition: SupportedModelDefinition) => {
-      const metadata = await metadataResolver.resolve({
-        provider: definition.provider,
-        name: definition.name,
-        value: definition.value,
-        canonicalName: definition.canonicalName,
-      });
+      const { staticMetadata, ...runtimeDefinition } = definition;
+      const resolved = await metadataResolver.resolve({
+        provider: runtimeDefinition.provider,
+        name: runtimeDefinition.name,
+        value: runtimeDefinition.value,
+        canonicalName: runtimeDefinition.canonicalName,
+      }, staticMetadata);
 
       return new LLMModel({
-        ...definition,
-        ...metadata,
+        ...runtimeDefinition,
+        maxContextTokens: resolved.maxContextTokens.value,
+        maxInputTokens: resolved.maxInputTokens.value,
+        maxOutputTokens: resolved.maxOutputTokens.value,
+        multimodalCapabilities: staticMetadata.multimodalCapabilities,
+        resolvedModelMetadata: resolved,
       });
     }),
   );

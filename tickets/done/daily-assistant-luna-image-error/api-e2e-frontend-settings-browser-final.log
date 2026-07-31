@@ -1,0 +1,9 @@
+{
+  "status": 200,
+  "url": "http://127.0.0.1:3011/settings",
+  "title": "",
+  "body": "Back to Workspace\nAPI Keys\nToken Statistics\nMessaging\nDisplay\nLanguage\nLocal Tools\nMCP Servers\nApplication Packages\nAgent Packages\nServer Settings\nExtensions\nUpdates\nAPI Key Management\n\nManage provider keys and reload available models\n\nReload Models\nPROVIDERS\nAnthropic\n6\nAutoByteus\n94\nDeepSeek\n2\nGemini\n12\nGLM\n1\nGrok\n1\nKimi\n3\nLM Studio\n14\nMiniMax\n1\nMistral\n2\nOllama\n0\nOpenAI\n9\nQwen\n2\nNew Provider\n0\nAnthropic\nConfigured\nReload Models\nSave Key\nLLM MODELS\nclaude-fable-5\nclaude-opus-4.7\nclaude-opus-4.8\nclaude-opus-5\nclaude-sonnet-4.6\nclaude-sonnet-5",
+  "tests": [],
+  "consoleErrors": [],
+  "requestFailures": []
+}
