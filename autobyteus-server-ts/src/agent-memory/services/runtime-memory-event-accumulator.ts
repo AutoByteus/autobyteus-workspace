@@ -1,7 +1,7 @@
 import type { AgentRunUserMessageAcceptedPayload } from "../../agent-execution/domain/agent-run-command-observer.js";
 import type { AgentRunEvent } from "../../agent-execution/domain/agent-run-event.js";
 import { AgentRunEventType } from "../../agent-execution/domain/agent-run-event.js";
-import type { RunMemoryWriter } from "../store/run-memory-writer.js";
+import type { ExternalRuntimeMemoryWriter } from "../store/external-runtime-memory-writer.js";
 import type { ToolTraceLifecycleGroup } from "autobyteus-ts/memory/tool-trace-lifecycle-index.js";
 import { ProviderCompactionBoundaryRecorder } from "./provider-compaction-boundary-recorder.js";
 import {
@@ -28,14 +28,13 @@ export class RuntimeMemoryEventAccumulator {
   private fallbackTurnIndex = 0;
   private currentFallbackTurnId: string | null = null;
   private readonly segments = new Map<string, SegmentState>();
-  private readonly pendingReasoningByTurn = new Map<string, string[]>();
   private readonly providerCompactionBoundaryRecorder: ProviderCompactionBoundaryRecorder;
   private readonly toolTraceSequencer: RuntimeToolTraceSequencer;
 
   constructor(
     private readonly input: {
       runId: string;
-      writer: RunMemoryWriter;
+      writer: ExternalRuntimeMemoryWriter;
       toolTraceLifecycleGroups: ReadonlyMap<string, ToolTraceLifecycleGroup>;
     },
   ) {
@@ -54,20 +53,13 @@ export class RuntimeMemoryEventAccumulator {
   recordAcceptedUserMessage(payload: AgentRunUserMessageAcceptedPayload): void {
     const turnId = this.resolveTurnId(payload.result.turnId);
     const media = extractAcceptedMessageMedia(payload.message);
-    this.input.writer.write({
-      trace: {
-        traceType: "user",
-        turnId,
-        content: payload.message.content,
-        sourceEvent: "AgentRun.postUserMessage",
-        ts: payload.acceptedAt.getTime() / 1000,
-        media,
-      },
-      snapshotUpdate: {
-        kind: "user",
-        content: payload.message.content,
-        media,
-      },
+    this.input.writer.appendRawTrace({
+      traceType: "user",
+      turnId,
+      content: payload.message.content,
+      sourceEvent: "AgentRun.postUserMessage",
+      ts: payload.acceptedAt.getTime() / 1000,
+      media,
     });
   }
 
@@ -170,7 +162,6 @@ export class RuntimeMemoryEventAccumulator {
         this.flushSegment(segment.id, event.eventType);
       }
     }
-    this.flushPendingReasoning(turnId);
     this.toolTraceSequencer.completeTurn(turnId);
     if (this.activeTurnId === turnId) this.activeTurnId = null;
     if (this.currentFallbackTurnId === turnId) this.currentFallbackTurnId = null;
@@ -216,57 +207,23 @@ export class RuntimeMemoryEventAccumulator {
     if (sourceEvent !== AgentRunEventType.TURN_COMPLETED) {
       this.flushOpenReasoningSegments(turnId, sourceEvent);
     }
-    const reasoning = this.consumePendingReasoning(turnId);
-    this.input.writer.write({
-      trace: {
-        traceType: "assistant",
-        turnId,
-        content,
-        sourceEvent,
-        ts,
-      },
-      snapshotUpdate: {
-        kind: "assistant",
-        content,
-        reasoning,
-      },
+    this.input.writer.appendRawTrace({
+      traceType: "assistant",
+      turnId,
+      content,
+      sourceEvent,
+      ts,
     });
   }
 
   private writeReasoningTrace(turnId: string, content: string, sourceEvent: string, ts: number | null): void {
-    this.input.writer.write({
-      trace: {
-        traceType: "reasoning",
-        turnId,
-        content,
-        sourceEvent,
-        ts,
-      },
+    this.input.writer.appendRawTrace({
+      traceType: "reasoning",
+      turnId,
+      content,
+      sourceEvent,
+      ts,
     });
-    const pending = this.pendingReasoningByTurn.get(turnId) ?? [];
-    pending.push(content);
-    this.pendingReasoningByTurn.set(turnId, pending);
-  }
-
-  private flushPendingReasoning(turnId: string): void {
-    const reasoning = this.consumePendingReasoning(turnId);
-    if (!reasoning) {
-      return;
-    }
-    this.input.writer.writeSnapshotUpdate({
-      kind: "assistant",
-      content: null,
-      reasoning,
-    });
-  }
-
-  private consumePendingReasoning(turnId: string): string | null {
-    const pending = this.pendingReasoningByTurn.get(turnId);
-    if (!pending?.length) {
-      return null;
-    }
-    this.pendingReasoningByTurn.delete(turnId);
-    return pending.join("\n\n");
   }
 
   private flushOpenReasoningSegments(turnId: string, sourceEvent: string): void {
