@@ -17,6 +17,9 @@ The latest [design-review-report.md](design-review-report.md) is authoritative. 
 | ARCH-REV-009 | Round 9 / SR-011 after CRR-028 naming audit | SR-011 | `Pass`, then downstream `Fail — Design Impact` | `Pass` | CR-018 |
 | ARCH-REV-010 | Round 10 / SR-012 after CRR-031 architecture audit | SR-012 | `Pass`, then downstream `Fail — Design Impact` | `Fail — Design Impact` | CR-019–CR-021; AR-008, AR-009 |
 | ARCH-REV-011 | Round 11 / SR-013 bounded ARCH-REV-010 correction | SR-013 | `Fail — Design Impact` | `Pass` | CR-021; AR-008, AR-009 |
+| ARCH-REV-012 | Round 12 / SR-014 evidence-backed hardening audit | SR-014 | `Pass` | `Fail — Design Impact` | AR-010, AR-011 |
+| ARCH-REV-013 | Round 13 / SR-015 bounded ARCH-REV-012 correction | SR-015 | `Fail — Design Impact` | `Fail — Design Impact` | AR-010, AR-011 |
+| ARCH-REV-014 | Round 14 / SR-016 final ARCH-REV-013 correction | SR-016 | `Fail — Design Impact` | `Pass` | AR-010, AR-011 |
 
 ## Revision Entries
 
@@ -287,3 +290,76 @@ None.
 - Material classification changes: `Fail — Design Impact` -> `Pass`; AR-008 and AR-009 resolve and CR-021 is complete in design.
 - Recommended recipient: `implementation_engineer`
 - Remaining risks or uncertainty: Implementation/source review must verify exact construction identity, no retired/default/reverse paths, queue completion/error/drain behavior, all exact cleanup origins and stale identity, and zero runs during runtime construction. API/E2E must rerun the complete API-REV-011 Studio/standalone baseline plus worker-exit-before-publication and cleanup-focused cases, preserving exact `73/73` package parity. Delivery retains final tracked-base integration ownership; `APIE2E-REPO-005` remains separately `Unclear`.
+
+### ARCH-REV-012 — SR-014 hardening direction is sound but the executable boundary contract is incomplete
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md`
+- Review round and trigger: Round 12; `SR-014` user-requested eight-candidate architecture-hardening audit after the SR-013 source, dual-host API/E2E, and durable-test baseline passed through `CRR-034`.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/solution-revision-record.md`; no open trigger finding, with new review findings `AR-010` and `AR-011`.
+- Relevant solution revision IDs: `SR-014`; `SR-013` remains the fixed functional architecture baseline.
+- Prior authoritative decision: `ARCH-REV-011` / `SR-013` `Pass`; current downstream implementation and test baseline also passes through `CRR-034`.
+- Current authoritative decision: `Fail — Design Impact`
+- What changed in the review result or what baseline was established: Accepted the proportional eight-candidate conclusion: adopt one bounded architecture test and two existing-document updates; defer public API, shared host conformance extraction, and new correlation behind named evidence gaps; reject generic lifecycle, directory moves, and suffix standardization. No runtime refactor is justified. The adopted DS-016 checker nevertheless requires bounded rework because AFB-004's direct callee list misses optional-constructor omission that activates the same forbidden process/global dependencies, and the parser/resolver plan does not define Vue SFC import extraction or per-project/config/manifest resolution across the expressly governed source families.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001–AR-009 | Resolved | Remain resolved | SR-002–SR-013; ARCH-REV-002–ARCH-REV-011 | SR-014 changes no production behavior or source; current CRR-033/API-REV-012/CRR-034 evidence preserves every prior resolution. |
+| CR-001–CR-021 | Resolved in design/source/API-E2E | Remain resolved | IR-017/IR-018, CRR-033, API-REV-012, CRR-034 | Exact four projections, package owners, acyclic construction, publication, handoff, worker restart, cleanup, recovery/remount, and 73/73 parity remain fixed. |
+| APIE2E-REPO-005 | Unclear / unattributed | Remains separate; no architecture consequence | API-REV-012 and prior review records | No supported origin connects it to SR-014, and the hardening design does not rely on it. |
+
+- New or remaining finding IDs: `AR-010`, `AR-011`.
+- Material classification changes: prior architecture and downstream functional `Pass` -> bounded `Fail — Design Impact` for the new test/docs design only. The production architecture remains passed; no runtime defect or requirement gap was found.
+- Recommended recipient: `solution_designer`
+- Remaining risks or uncertainty: Rework must add exact application-construction injection obligations and omission fixtures to AFB-004; define exact Vue SFC extraction plus importer-to-project/config/manifest resolution and unresolved-import policy; and update the test/docs-only inventory if a direct test parser dependency is truly required. It must not introduce a generic layering framework, broad allow-list, production helper/refactor, or new product behavior. Preserve other owners' dirty artifacts and delivery-owned tracked-base integration.
+
+### ARCH-REV-013 — SR-015 resolves heterogeneous-source checking but leaves one nested provider omission
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md`
+- Review round and trigger: Round 13; `SR-015` bounded correction after `ARCH-REV-012` returned `AR-010` and `AR-011` against the SR-014 architecture-checker design.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/solution-revision-record.md`; `AR-010`, `AR-011`, `MP-ARCH-012-001`, and `MP-ARCH-012-002`.
+- Relevant solution revision IDs: `SR-015`; `SR-014` retains the accepted hardening candidate decision; `SR-013` remains the passed production architecture baseline.
+- Prior authoritative decision: `ARCH-REV-012` / `SR-014` `Fail — Design Impact`.
+- Current authoritative decision: `Fail — Design Impact`
+- What changed in the review result or what baseline was established: Verified that AR-011 is resolved by direct test-only Vue SFC parsing, actual script-language extraction, eleven-file enumeration, seven deterministic config/root/manifest profiles, fail-closed governed resolution, own-manifest library authority, aligned fixtures, and a truthful five-file implementation inventory. Verified that SR-015 materially improves AR-010 with exact binding/shape rules, sixteen construction obligations, current-tree occurrence assertions, and table-driven omission cases. AR-010 remains open because the current application source constructs `CodexAgentRunBackendFactory` and `ClaudeAgentRunBackendFactory` with graph-local bootstrap/session inputs, both constructors default those inputs to process-global owners when omitted, and neither nested constructor appears in the exact obligation table. A present non-null parent `codexBackendFactory`/`claudeBackendFactory` property can therefore still hide the same fallback-by-omission.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001–AR-009 | Resolved | Remain resolved | SR-002–SR-013; ARCH-REV-002–ARCH-REV-011 | SR-015 changes no production source, object graph, behavior, schema, package, or migration. |
+| AR-010 | Open — Design Impact | Partially resolved; remains open | ARCH-REV-012, SR-015, corrected DS-016 | Original publication/run/team omission families now have explicit obligations, but the absent Codex/Claude backend-factory rows leave a nested provider fallback path. |
+| AR-011 | Open — Design Impact | Resolved in design | ARCH-REV-012, SR-015, H-014, corrected DS-016/SV-019 | Direct declared SFC parser, source-kind extraction, project/manifest profiles, unresolved policy, fixtures, dependency/lock inventory, and zero-production boundary are complete. |
+| CR-001–CR-021 | Resolved in design/source/API-E2E | Remain resolved | IR-017/IR-018, CRR-033, API-REV-012, CRR-034 | Passed four-projection/package/run/session/publication/worker/cleanup behavior and exact 73/73 package parity remain fixed. |
+| APIE2E-REPO-005 | Unclear / unattributed | Remains separate; no architecture consequence | API-REV-012 and prior review records | No supported origin connects it to SR-015. |
+
+- New or remaining finding IDs: `AR-010` remains open; `AR-011` is resolved.
+- Material classification changes: overall `Fail — Design Impact` remains. The parser/resolver and implementation-inventory half of the prior result passes; only one bounded AFB-004 obligation-family completion remains.
+- Recommended recipient: `solution_designer`
+- Remaining risks or uncertainty: Add exact current-tree/fixture obligations for `CodexAgentRunBackendFactory` argument 1 and `ClaudeAgentRunBackendFactory` arguments 0/1, preserving the deliberately process-scoped Codex thread-manager/cleanup inputs. Perform one bounded nested-parent completeness check, align DS-016/hardening/SV-019/docs requirements, and return for architecture re-review. Do not edit production source, add a generic recursive constructor rule, broaden the singleton policy, or disturb the accepted AR-011 solution and other owners' dirty artifacts.
+
+### ARCH-REV-014 — SR-016 completes the executable application-framework boundary contract
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md`
+- Review round and trigger: Round 14; `SR-016` final bounded correction after `ARCH-REV-013` left only nested Codex/Claude backend-factory omission under `AR-010`.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/solution-revision-record.md`; `AR-010` / `MP-ARCH-012-001`, with resolved `AR-011` preserved.
+- Relevant solution revision IDs: `SR-016`; `SR-015` retains the accepted SFC/project solution; `SR-014` retains the accepted hardening candidate decision; `SR-013` remains the fixed passed production architecture baseline.
+- Prior authoritative decision: `ARCH-REV-013` / `SR-015` `Fail — Design Impact`.
+- Current authoritative decision: `Pass`
+- What changed in the review result or what baseline was established: Verified exact obligations for `CodexAgentRunBackendFactory` argument 1 and `ClaudeAgentRunBackendFactory` arguments 0/1, current-tree occurrence assertions, independent omitted/null/undefined negatives, and allowed Codex positions 0/2. Verified the bounded required-parent value audit accounts for all current nested reusable owners without a generic recursive rule or broader singleton policy. AR-011 remains resolved, the implementation inventory remains exactly one architecture test plus the server dev-manifest, workspace lockfile, and two existing docs, and no production source or behavior changes.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001–AR-009 | Resolved | Remain resolved | SR-002–SR-013; ARCH-REV-002–ARCH-REV-011 | SR-016 changes no production source, object graph, route, schema, package, data, or lifecycle. |
+| AR-010 | Partially resolved; open | Resolved in design | ARCH-REV-012/013, SR-015/SR-016, H-015, corrected DS-016/SV-019 | The exact obligation table now spans the missing provider factory inputs; the same evaluator owns current-tree and omitted/null/undefined fixture cases; the closed parent audit finds no other graph-sensitive child omission. |
+| AR-011 | Resolved in design | Remains resolved | ARCH-REV-012/013, SR-015/SR-016, H-014 | Direct test-only SFC parsing, eleven-SFC enumeration, seven deterministic project profiles, fail-closed resolution, own-manifest authority, aligned fixtures, and the five-file inventory are unchanged. |
+| CR-001–CR-021 | Resolved in design/source/API-E2E | Remain resolved | IR-017/IR-018, CRR-033, API-REV-012, CRR-034 | The full passed production architecture, real Studio/standalone behavior, and exact `73/73` package parity remain fixed. |
+| APIE2E-REPO-005 | Unclear / unattributed | Remains separate; no architecture consequence | API-REV-012 and prior review records | No supported origin connects it to SR-016. |
+
+- New or remaining finding IDs: None.
+- Material classification changes: `Fail — Design Impact` -> `Pass`; AR-010 resolves and AR-011 remains resolved. The SR-014 Adopt/Defer/Reject decision and SR-013 production architecture remain unchanged.
+- Recommended recipient: `implementation_engineer`
+- Remaining risks or uncertainty: Implementation must preserve the exact five-file, no-production-source scope; use direct SFC extraction and deterministic project/manifest resolution; implement one exact binding/shape evaluator with current-tree and synthetic proof; keep process-scoped Codex positions 0/2 and the two general-process assembly exemptions exact; synchronize docs; and rerun the proportional full passed baseline including `73/73` package parity. Delivery retains tracked-base integration ownership, and `APIE2E-REPO-005` remains separately `Unclear`.

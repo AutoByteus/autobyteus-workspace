@@ -1,236 +1,168 @@
 # API/E2E Execution Coverage Report
 
 - Task: Universal Application Dual-Host Architecture
-- API/E2E revision: `API-REV-012`
-- Reviewed source revision: `IR-018`
-- Source-review gate: `CRR-033` Pass
-- Reviewed HEAD: `4266ec7ebd60fbf06981159d6e1f7b0c9e6f6ca5`
-- Outcome: `Pass`
-- Final confidence: `97%` (`96.6%` unrounded)
+- API/E2E revision: `API-REV-013`
+- Reviewed implementation: `IR-021` (cumulative SR-016 hardening)
+- Source-review gate: `CRR-037` Pass / 98
+- Reviewed HEAD: `53eb73795c616148f01c2f6e0207f6b410410e24`
+- Outcome: **Pass**
+- Final confidence: `98%` (`98.3%` unrounded)
 
 ## Execution Round Meta
 
-- Triggering role/report: `code_reviewer`, `code-review-report.md`, `CRR-033`.
-- Prior result: `API-REV-011`, Pass / 99%.
-- Current round: 12.
-- Primary scenarios: `APIE2E-REPO-012`, `APIE2E-WORKER-012`, `APIE2E-STANDALONE-012`, `APIE2E-STUDIO-012`, `APIE2E-ROUTES-012`, `APIE2E-PARITY-012`, `APIE2E-CLEANUP-012`.
-- Acceptance basis: `REQ-010`, `AC-019`–`AC-023`, plus the preserved dual-host acceptance set.
-- Historical `APIE2E-REPO-005`: unchanged, separate, and not attributed to this revision.
+- Trigger: `code_reviewer` reopened downstream execution after IR-021 resolved `CR-025`.
+- Prior authoritative result: `API-REV-012`, Pass / 97%.
+- Acceptance basis: `BEH-011`, `REQ-011`, `AC-024`, `UC-028`, DS-016, plus preserved `AC-001`–`AC-023` dual-host behavior.
+- Scenario IDs: `APIE2E-ARCH-013`, `APIE2E-REPO-013`, `APIE2E-STANDALONE-013`, `APIE2E-STANDALONE-RESTART-013`, `APIE2E-STUDIO-013`, `APIE2E-STUDIO-REMOUNT-013`, `APIE2E-ROUTES-013`, `APIE2E-PARITY-013`, `APIE2E-CLEANUP-013`.
+- Historical `APIE2E-REPO-005`: unchanged, separate, and not used as Pass evidence.
 
-## Investigation And Execution Basis
+## Executed Repository Checks
 
-The complete cumulative package, SR-013 supplemental architecture, IR-018 handoff, CRR-033 report, current source/tests, package scripts, development launchers, prior API/E2E reports, and delivery-owned retained evidence were read before execution. Coverage investigation is authoritative at:
+| Command / Selection | Working Directory | Result | Evidence |
+| --- | --- | --- | --- |
+| `pnpm -C autobyteus-server-ts exec vitest run tests/architecture/application-framework-boundaries.test.ts` | repository root | 1 file / 14 tests Pass | `api-rev-013-architecture-first-gate.log` |
+| `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` | repository root | Pass | `api-rev-013-architecture-first-gate.log` |
+| Architecture test plus retained API-REV-012 31-file runtime/API Vitest selection | repository root | 32 files / 130 tests Pass | `api-rev-013-architecture-runtime-matrix.log` |
+| `pnpm -C autobyteus-server-ts build` | repository root | Pass; built bootstrap smoke Pass | `api-rev-013-build-maintained-app-matrix.log` |
+| `pnpm -C autobyteus-application-devkit test` | repository root | 20/20 Pass | `api-rev-013-build-maintained-app-matrix.log` |
+| Brief `build`, `validate`, `typecheck:backend` | repository root | Pass | `api-rev-013-build-maintained-app-matrix.log` |
+| Socratic `build`, `validate`, `typecheck:backend` | repository root | Pass | `api-rev-013-build-maintained-app-matrix.log` |
+| SR-016 commit/scope scan and `git diff --check` | repository root | Pass | `api-rev-013-scope-audit.log` |
 
-`/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-coverage-investigation.md`
+The architecture suite directly covers the IR-021 correction: Studio-local and Brief-local external scripts are accepted; Studio-to-server-runtime and Brief project-escape targets are rejected by AFB-002/005 before malformed target content is parsed. IR-020 resolution-origin behavior remains covered. The complete current tree passes all AFB rules.
 
-The round followed narrow-to-broad order: IR-018 gate, stale-fixture validity, durable migrations, affected matrix, builds, real standalone worker/restart flow, real Studio publication/remount, route separation, parity, cleanup.
+## Real Environment
 
-## Compatibility / Legacy Scope Check
+- Browser: installed Google Chrome, headless, through repository Playwright Core.
+- Standalone URL: `http://127.0.0.1:43127`.
+- Standalone data: unique `/tmp/api-rev013-standalone-data-*` root.
+- Studio backend: `http://127.0.0.1:8011` with isolated SQLite/data/log/memory/workspace values.
+- Studio frontend: `http://127.0.0.1:3011` with backend proxy directed to 8011.
+- Studio application client: `pnpm -C applications/brief-studio dev:studio -- --studio-url http://127.0.0.1:8011`.
+- Runtime identity: package-owned `Brief Studio Team`, researcher/writer members, `codex_app_server`, `gpt-5.6-luna` defaults.
+- Package integrity set: the authoritative API-REV-012 73 maintained Brief package/authoring paths.
 
-- Current `src` and `tests` contain no `ApplicationEngineHostService` reference.
-- The five requested broad-host integration fixtures and six additionally stale affected fixtures were migrated to current narrow contracts.
-- No alias, wrapper, compatibility path, broad host, fallback, duplicate runtime, old route, or weakened assertion was introduced.
-- No migration was required. Current data readers were exercised across a same-root standalone restart.
-- `git diff --check`: Pass.
+## Scenario Results
 
-## Changed Boundary And Evidence Matrix
-
-| Boundary / Scenario | Expected | Observed | Result | Evidence |
+| Scenario | Expected | Observed | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| `APIE2E-REPO-012` IR-018 continuation | Attempt every exact retained run/cleanup, aggregate at end | 5/22 focused and 31/116 affected tests pass, including later removals/failures and stale replacement | Pass | `api-rev-012-ir018-first-gate.log`, `api-rev-012-affected-server-matrix-pass.log` |
-| Stale broad-host fixtures | Preserve assertions through controller/launcher/gateway/narrow projections | 1 helper added; 11 tests updated; broad-host scan clean | Pass | migrated fixture and final matrix logs |
-| `APIE2E-WORKER-012` | Worker exit during active provider run is followed by ensure/restart and successful artifact delivery | Old worker PID 34533 exited while binding was attached; replacement worker PID 39934 appeared; actual tools published researcher/writer files; UI reached `in_review` with 2 outputs/1 final | Pass | worker-exit/restart log, browser JSON/PNG, actual-tools and projection JSON |
-| Artifact delivery ordering | Accepted commands drain before engine stop; ensure precedes handler invoke | Direct delivery/lifecycle tests pass in affected matrix; live post-exit publication reaches projection | Pass | affected matrix and worker recovery evidence |
-| Actual Agent Tools | Real authenticated `publish_artifacts` and recipient-name `send_message_to` | Researcher and writer publication results succeeded; researcher message was delivered to `writer`; revisions projected | Pass | standalone/studio actual-tools JSON and projection JSON |
-| Active multi-run stop | Graceful close stops worker/run children and listener without skipping later runs | Three attached team bindings recorded, including two newly launched runs; after SIGINT port and all owned host/worker/Codex PIDs were gone | Pass | active-multirun before/after logs |
-| Standalone restart/recovery | Same data root restores current records/runs, invalidates old session, and remains functional | Three mixed teams restored; prior records visible; fresh post-restart run completed in 109s with 2 artifacts; old session returned `404 session_unavailable` | Pass | restart log, postrestart browser JSON/PNG, old-session log |
-| Studio setup/business run | Exact package resource/defaults enter one iframe and complete | Brief Studio Team plus researcher/writer Codex/Luna defaults; actual two-member run, handoff, 2 artifacts, `in_review` | Pass | Studio run JSON, actual-tools and projection JSON |
-| Studio explicit remount | Fresh launch ID, exactly one iframe, persisted projection remains | `iframe-launch-1` changed to `iframe-launch-2`; iframe count stayed 1; completed Brief remained visible | Pass | `api-rev-012-studio-remount.json` and PNG |
-| Internal/external MCP separation | Internal route exists in both; external gateway Studio-only | Both internal unauthenticated probes returned 401; standalone `/mcp/gateway` 404; Studio gateway initialized 200 | Pass | route-separation log |
-| Package integrity | Both hosts leave exact maintained package/authoring bytes unchanged | 73/73 SHA-256 rows identical before/after; no staging/previous/temp pack residue | Pass | pre/post hashes and package-integrity log |
-| Cleanup | No owned listener/process/data/probe leak | 43126/8010/3010 clear; all owned roots/probes absent; unrelated 8000 and Codex processes retained | Pass | cleanup log |
+| `APIE2E-ARCH-013` | External `src` target enters AFB evaluator before read | Official suite 14/14; exact external-target fixtures Pass | Pass | architecture and scope logs |
+| `APIE2E-REPO-013` | Current runtime/API baseline remains integrated | 32 files / 130 tests Pass; server/devkit/apps build and validate | Pass | runtime/build logs |
+| `APIE2E-STANDALONE-013` | Real package team publishes, hands off by recipient name, and projects | Brief reaches `in_review`; 2 outputs / 1 final; researcher and writer publication succeed; `send_message_to(writer)` succeeds; SQLite has 2 revisions and attached binding | Pass | standalone browser JSON/PNG, actual-tools JSON, projection JSON |
+| `APIE2E-STANDALONE-RESTART-013` | Current data is directly usable after same-root restart | Host restores recorded mixed team; prior Brief/status/2 outputs/1 final remain visible | Pass | restart log/state JSON |
+| `APIE2E-STUDIO-013` | Exact package team/defaults enter one iframe and run real business path | Setup shows Brief team and Luna; actual publication/handoff/projection completes with 2 revisions | Pass | Studio browser JSON/PNG, tools and projection JSON |
+| `APIE2E-STUDIO-REMOUNT-013` | Explicit host reload produces one fresh launch and preserves app state | iframe launch ID changes 1 -> 2; iframe count remains 1; completed Brief remains visible | Pass | Studio browser JSON/PNG |
+| `APIE2E-ROUTES-013` | Internal route security and Studio-only gateway remain separated | Internal unauthenticated requests return 401 in both hosts; standalone `/mcp/gateway` 404; Studio initialize 200 | Pass | standalone/Studio route logs |
+| `APIE2E-PARITY-013` | Both development hosts do not mutate package/authoring bytes | Pre/post 73-row SHA-256 files are byte-identical | Pass | pre/post hashes and cleanup summary |
+| `APIE2E-CLEANUP-013` | No owned listener/process/scratch residue | Ports 43127/8011/3011 free; no matching owned process; staging residue 0 | Pass | cleanup summary |
 
-## Additional Repository Coverage Execution
+## Actual Agent Tools And Projection Proof
 
-| Check | Result | Evidence |
+### Standalone
+
+- Researcher `publish_artifacts`: `TOOL_EXECUTION_SUCCEEDED`.
+- Researcher `send_message_to` with `recipient_name: writer`: `TOOL_EXECUTION_SUCCEEDED`.
+- Writer `publish_artifacts`: `TOOL_EXECUTION_SUCCEEDED`.
+- Application SQLite: one `in_review` Brief, researcher/research and writer/final artifacts, two revisions.
+- Platform SQLite: attached team binding with researcher/writer members.
+
+### Studio
+
+- The same three actual Agent Tools results succeed from graph-local Studio runs.
+- Application SQLite contains the completed Brief and two projected revisions.
+- Platform SQLite contains the attached package-owned team binding and both member routes.
+- No bearer/session descriptor was retained in evidence.
+
+## Route Separation Proof
+
+| Host | Internal `/mcp/agent-tools/:sessionId` without bearer | External `/mcp/gateway` |
 | --- | --- | --- |
-| IR-018 manager/registry/resource/shutdown/lifecycle | 5 files / 22 tests Pass | `api-rev-012-ir018-first-gate.log` |
-| Requested migrated integrations plus WS session unit | 6 files / 15 tests Pass | `api-rev-012-migrated-fixtures-pass.log` |
-| Availability and relay units | 2 files / 10 tests Pass | `api-rev-012-stale-narrow-unit-rerun.log` |
-| Final affected server selection | 31 files / 116 tests Pass | `api-rev-012-affected-server-matrix-pass.log` |
-| Server build-config TypeScript no-emit | Pass | `api-rev-012-server-tsc.log` |
-| Devkit build/test | 20/20 Pass | `api-rev-012-build-maintained-app-matrix.log` |
-| Server full build | Pass | same build matrix log |
-| Frontend SDK build | Pass | same build matrix log |
-| Brief build / validate / backend typecheck | Pass | same build matrix log |
-| Socratic build / validate / backend typecheck | Pass | same build matrix log |
-| Retired symbol scan / diff check | Pass | final repository audit |
+| Standalone | `401 unauthorized` | `404 Not Found` |
+| Studio | `401 unauthorized` | `200`, MCP initialize for protocol `2025-06-18` |
 
-The initial baseline failures were caused by test-owned stale constructors/options and were corrected without production source changes. They are retained as validity evidence, not counted as product failures.
+## Package Integrity Proof
 
-## Validation Confidence Scorecard (Mandatory)
+- Baseline count: 73 paths.
+- Pre-live HEAD: `53eb73795c616148f01c2f6e0207f6b410410e24`.
+- Post-live HEAD: same.
+- Exact `cmp`: Pass.
+- Atomic staging/previous residue: 0.
+- Maintained Brief and Socratic package validation: Pass.
 
-| Category | Score | Evidence | Residual Uncertainty |
-| --- | ---: | --- | --- |
-| Requirement and acceptance-criteria proof | 96% | AC-019–023 mapped to direct repository and live results | No material unresolved criterion |
-| Changed-boundary execution directness | 98% | Exact manager/registry/queue/controller/launcher plus real worker exit and session rejection | Only internal timing is inferred from correlated PID/tool/projection evidence where no public hook exists |
-| Cross-boundary integration realism and mock gap | 98% | Real CLI, HTTP, WS/MCP, workers, provider, SQLite, browser, iframe, handoff, projection | No production deployment/multi-node exercise, outside scope |
-| Environment/configuration/identity/fixture fidelity | 96% | Current worktree, exact package-owned IDs/defaults, isolated data, system Chrome | Studio used alternate isolated ports because user-owned 8000 remained protected |
-| Failure/edge/lifecycle/recovery evidence | 97% | Stop-all failure continuation, worker exit, multi-run stop, old-session rejection, same-root recovery, cleanup | Live queue drain is correlated with direct durable ordering tests rather than externally instrumented |
-| User-surface/browser/desktop-shell confidence | 96% | Real standalone and Studio browser journeys plus iframe remount | Electron shell not run because no shell-specific surface changed |
-| Durable regression quality and relevance | 95% | Current narrow contracts, reusable helper, preserved behavior assertions, no obsolete host | Proportional test-code review pending |
+## Temporary Harness Note
 
-- Calculation: `(96+98+98+96+97+96+95)/7 = 96.57%`, rounded to `97%`.
-- Every critical acceptance criterion directly proven: Yes.
-- Any applicable category below 90%: No.
-- Clean confidence target met: Yes.
+The first combined Studio probe reached setup, entered one iframe, created the real Brief, and triggered the provider run. Its temporary logic took the setup snapshot before asynchronous data was ready and then polled the cross-origin iframe DOM from the parent page. The real run completed, as proven by raw traces and SQLite. A focused corrected Playwright frame probe then waited for exact package setup, verified the completed projection, opened host controls, and passed the remount assertion. The superseding evidence file contains only the successful result. No production or durable test was changed.
 
-## Broader Validation Decision And Execution
+## Final Confidence Scorecard
 
-- Decision: `Required — executed and passed`.
-- Why: repository tests alone could not prove the real provider, process exit, authenticated tool dispatch, iframe remount, same-data restart, or exact package immutability.
-- Execution modes: CLI, live API, system Chrome/Playwright Core, read-only SQLite correlation, PID/listener lifecycle, SHA-256 parity.
-- Result: Pass.
-- Confidence gain: 94% repository-only to 97% final.
+| Category | Score | Evidence |
+| --- | ---: | --- |
+| Requirement and acceptance-criteria proof | 99% | Direct AC-024 fixtures/current tree plus preserved host requirements |
+| Changed-boundary execution directness | 100% | Real architecture checker and exact external-target cases |
+| Cross-boundary integration realism/mock gap | 98% | 130 repository tests and real provider/browser/SQLite paths in both hosts |
+| Environment/configuration/identity fidelity | 98% | Current HEAD/lock/builds, isolated roots, exact team and Luna defaults |
+| Failure/edge/lifecycle/recovery | 96% | Forbidden-before-read cases, same-root restart, explicit remount, retained API-REV-012 lifecycle evidence |
+| User-surface/browser/desktop-shell confidence | 98% | Real standalone and Studio iframe Chrome journeys; no shell change |
+| Durable regression quality/relevance | 99% | Closed AFB owner and direct positive/negative fixtures; no API-owned test workaround |
 
-## Desktop Application Validation (When Applicable)
+- Overall: `98%` (`98.3%` unrounded).
+- No category is below 90%.
+- Broader validation: **Required — completed**.
 
-The relevant desktop renderer behavior is web-equivalent and was exercised in the real Nuxt browser host. No Electron preload/IPC/window/packaging change exists in IR-018. Electron execution was therefore not required and no shell claim is made.
+## Durable Coverage Changes
 
-## Platform / Runtime Targets
+- API/E2E-owned additions: none.
+- API/E2E-owned updates: none.
+- API/E2E-owned removals: none.
+- Durable proportional-review surface: `autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts`, with test-only dependency/lock integration in `autobyteus-server-ts/package.json` and `pnpm-lock.yaml`.
 
-- macOS arm64
-- Node 22
-- pnpm workspace
-- Chrome 150 via Playwright Core
-- standalone host: 127.0.0.1:43126
-- isolated Studio backend/frontend: 127.0.0.1:8010 and 127.0.0.1:3010
-- runtime/model: package-owned `codex_app_server` / `gpt-5.6-luna`
-- exact current Brief package and maintained Socratic build/validate boundary
+## Cleanup
 
-## Lifecycle / Upgrade / Restart / Persisted-Data Checks
+- Controlled Chrome instances closed.
+- Standalone, Studio backend, Studio frontend, and devkit watch processes stopped.
+- Ports 43127, 8011, and 3011 are free.
+- Temporary Playwright scripts removed.
+- No package staging/previous residue remains.
+- Other roles' dirty artifacts and pre-existing untracked devkit output were preserved.
 
-1. Killed the exact application worker while the real Brief researcher run and binding were active.
-2. Observed a replacement application worker before the recovered publication path completed.
-3. Started two additional real team runs, stopped the standalone host while all three bindings were attached, and verified no owned listener/child remained.
-4. Restarted the host on the same data root, observed recorded team recovery, retained app records, and a successful fresh post-restart run.
-5. Probed a pre-restart internal Agent Tools session ID after restart and observed `404 session_unavailable`.
-6. Remounted Studio from iframe launch 1 to launch 2 and observed one iframe with the same completed app projection.
-7. Verified exact 73-path bytes were unchanged and removed all owned runtime data/probes.
+## Residual Risk And Not-Tested Scope
 
-## Tests Implemented Or Updated
+- Historical `APIE2E-REPO-005` remains separate `Unclear`; no new origin was established.
+- Full API-REV-012 worker-kill and active multi-run injection was not repeated because SR-016 changes no production source; its retained evidence is combined with current 130-test/lifecycle and real restart/remount confirmation.
+- Electron shell execution was not selected because no shell-specific surface changed.
 
-Added:
+## Outcome And Routing
 
-- `autobyteus-server-ts/tests/integration/application-backend/application-engine-test-runtime.ts`
+- Outcome: **Pass**.
+- New/open failure IDs: none.
+- Final confidence: `98%`.
+- Next recipient: `code_reviewer` for the separate proportional durable-test review. Delivery must not resume until that review is complete.
 
-Updated:
+## Evidence Inventory
 
-- `autobyteus-server-ts/tests/integration/application-backend/application-backend-custom-websocket.integration.test.ts`
-- `autobyteus-server-ts/tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts`
-- `autobyteus-server-ts/tests/integration/application-backend/application-backend-rest-ws.integration.test.ts`
-- `autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts`
-- `autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts`
-- `autobyteus-server-ts/tests/unit/application-backend-api-gateway/application-backend-websocket-session-service.test.ts`
-- `autobyteus-server-ts/tests/unit/application-orchestration/application-availability-service.test.ts`
-- `autobyteus-server-ts/tests/unit/application-orchestration/application-published-artifact-relay-service.test.ts`
-- `autobyteus-server-ts/tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts`
-- `autobyteus-server-ts/tests/integration/application-backend/application-agent-communication-ws.integration.test.ts`
-- `autobyteus-server-ts/tests/integration/application-backend/standalone-application-server.integration.test.ts`
+All paths are relative to `tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e/`:
 
-Reconciled and executed from IR-018 without API-owned modification:
-
-- `autobyteus-server-ts/tests/unit/agent-execution/agent-run-manager.test.ts`
-
-## Tests Removed As Stale Or Obsolete
-
-None. Obsolete fixture setup was replaced; behavior assertions remain.
-
-## Durable Coverage Changed In The Codebase
-
-- 1 reusable integration helper added.
-- 11 durable test files updated.
-- 0 production source files changed.
-- 0 tests skipped, disabled, weakened, or removed.
-- The API/E2E durable delta remains unstaged for proportional review, matching the established team workflow.
-
-## Other Execution Artifacts
-
-Primary evidence directory:
-
-`/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/evidence/api-e2e`
-
-Key artifacts:
-
-- `api-rev-012-affected-server-matrix-pass.log`
-- `api-rev-012-build-maintained-app-matrix.log`
-- `api-rev-012-standalone-worker-exit-restart.log`
-- `api-rev-012-standalone-worker-recovery-browser.json`
-- `api-rev-012-standalone-actual-tools.json`
-- `api-rev-012-standalone-publication-projection.json`
-- `api-rev-012-active-multirun-before-stop.log`
-- `api-rev-012-active-multirun-after-stop.log`
-- `api-rev-012-standalone-postrestart-run.json`
-- `api-rev-012-old-session-after-restart.log`
-- `api-rev-012-studio-real-run-remount.json` (business run passed; its final reload locator was a temporary harness miss superseded by the dedicated passing remount artifact)
-- `api-rev-012-studio-remount.json`
-- `api-rev-012-studio-actual-tools.json`
-- `api-rev-012-studio-publication-projection.json`
-- `api-rev-012-route-separation-postrestart.log`
-- `api-rev-012-package-integrity.log`
-- `api-rev-012-cleanup.log`
-
-## Temporary Execution Methods / Scaffolding
-
-Temporary Playwright and process-monitor harnesses were created under `autobyteus-application-devkit/.tmp-api-rev012`, used only for live evidence, and removed. The first combined Studio business/remount harness correctly completed the real business run but looked for `Reload application` before opening the host-controls panel; a focused corrected harness opened `Open host controls` and passed launch-ID/state remount assertions. This was an API/E2E harness correction, not a production failure.
-
-A first Studio backend setup attempt inherited the user's process-level data variables. It was stopped before package import/business execution. The authoritative run explicitly overrode every data/database/server/log/memory/workspace value and used `/tmp/api-rev012-studio-data2`.
-
-## Dependencies Mocked Or Emulated
-
-- Repository unit/integration tests use their existing focused fakes where appropriate.
-- Broader validation used no fake provider, no direct application/SQLite write, no direct artifact injection, and no manual binding creation.
-- Read-only SQLite queries were used only to correlate public UI/tool/process results.
-- Real package-owned Codex/Luna runs executed `publish_artifacts` and `send_message_to`.
-
-## Result Summary
-
-`Pass`.
-
-IR-018 continuation and the SR-013 acyclic framework preserve the real dual-host behavior. Current narrow fixtures pass, live worker exit recovers before successful publication, actual Agent Tools publication/handoff/projected artifacts succeed in both hosts, active runs stop and recover, old sessions cannot dispatch, Studio remounts one iframe with preserved state, internal/external MCP boundaries remain distinct, all 73 maintained bytes remain identical, and cleanup is leak-free.
-
-## Cleanup Performed
-
-- Stopped owned standalone, Studio package watcher, Nuxt, and Studio backend processes.
-- Closed all controlled Chrome instances.
-- Verified ports 43126, 8010, and 3010 had no listener.
-- Verified all owned host/worker/Codex child PIDs exited.
-- Removed `/tmp/api-rev012-standalone-data`, `/tmp/api-rev012-studio-data`, `/tmp/api-rev012-studio-data2`, and `.tmp-api-rev012`.
-- Verified no Brief staging/previous/temp pack residue.
-- Preserved user-owned port 8000 and unrelated Codex processes.
-- Preserved other roles' dirty artifacts and untracked devkit outputs exactly as received.
-
-## Preliminary Classification
-
-- Result classification: `Pass`.
-- Implementation defect: none observed.
-- Requirement/design gap: none observed.
-- API/E2E local fixes: stale durable fixtures and one temporary remount locator corrected within this stage.
-- Historical `APIE2E-REPO-005`: remains `Unclear`, separate, and not reclassified.
-
-## Recommended Recipient
-
-`code_reviewer` for the separate proportional durable-test review. Delivery must not resume until that review passes or records the appropriate result.
-
-## Evidence / Notes
-
-The Nuxt dev process emitted transient `#app-manifest` pre-transform messages during validation-controlled restart/shutdown activity after an earlier discarded frontend invocation. The real Studio route, iframe, business run, and corrected remount all passed, and the maintained build matrix passed; no requirement-linked failure was observed or attributed to IR-018.
-
-## Latest Authoritative Result
-
-- API/E2E outcome: `Pass`
-- Confidence: `97%`
-- Broader validation: `Required — executed and passed`
-- Durable changes awaiting proportional review: 1 added helper + 11 updated tests
-- Open API/E2E blocker: none
-- Next stage: `code_reviewer` proportional test-code review
+- `api-rev-013-architecture-first-gate.log`
+- `api-rev-013-architecture-runtime-matrix.log`
+- `api-rev-013-build-maintained-app-matrix.log`
+- `api-rev-013-scope-audit.log`
+- `api-rev-013-standalone-host.log`
+- `api-rev-013-standalone-route-separation.log`
+- `api-rev-013-standalone-business-run.json`
+- `api-rev-013-standalone-business-run.png`
+- `api-rev-013-standalone-actual-tools.json`
+- `api-rev-013-standalone-publication-projection.json`
+- `api-rev-013-standalone-restart.log`
+- `api-rev-013-standalone-restart-state.json`
+- `api-rev-013-standalone-postrestart-routes.log`
+- `api-rev-013-studio-backend.log`
+- `api-rev-013-studio-frontend.log`
+- `api-rev-013-brief-dev-studio.log`
+- `api-rev-013-studio-route-separation.log`
+- `api-rev-013-studio-business-remount.json`
+- `api-rev-013-studio-business-remount.png`
+- `api-rev-013-studio-actual-tools.json`
+- `api-rev-013-studio-publication-projection.json`
+- `api-rev-013-prelive-hashes.log`
+- `api-rev-013-postlive-hashes.log`
+- `api-rev-013-package-integrity-cleanup.log`

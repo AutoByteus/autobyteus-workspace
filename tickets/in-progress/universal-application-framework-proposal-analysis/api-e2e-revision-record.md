@@ -16,6 +16,7 @@
 | API-REV-010 | `code_reviewer` `CRR-026`; API/E2E round 10 | `IR-015`; `CRR-025`–`CRR-026`; `API-REV-009`; `DR-001` | **Fail / 94%** | **Pass / 98%** |
 | API-REV-011 | `code_reviewer` `CRR-029`; API/E2E round 11 | `SR-011`; `ARCH-REV-009`; `IR-016`; `CRR-028`–`CRR-029`; `API-REV-010` | **Pass / 98%** | **Pass / 99%** |
 | API-REV-012 | `code_reviewer` `CRR-033`; API/E2E round 12 | `SR-013`; `ARCH-REV-010`–`ARCH-REV-011`; `IR-017`–`IR-018`; `CRR-030`–`CRR-033`; `API-REV-011` | **Pass / 99%** | **Pass / 97%** |
+| API-REV-013 | `code_reviewer` `CRR-037`; API/E2E round 13 | `SR-016`; `ARCH-REV-012`–`ARCH-REV-014`; `IR-019`–`IR-021`; `CRR-035`–`CRR-037`; `API-REV-012` | **Pass / 97%** | **Pass / 98%** |
 
 ## Revision Entries
 
@@ -322,3 +323,31 @@ No prior API/E2E failure was open. `CR-022` was source-resolved by IR-018 and is
 - New or remaining failure IDs: none for the current requirement-linked scope. `APIE2E-REPO-005` remains separately `Unclear`, unconnected, and unused as pass evidence.
 - Residual risks: live artifact-drain ordering is correlated with direct durable delivery/lifecycle tests rather than an external queue hook; Studio used isolated alternate ports to preserve the user-owned 8000 listener. Neither is a material acceptance gap.
 - Recommended recipient: `code_reviewer` for the separate proportional review of the one added helper, eleven updated durable tests, and the reconciled IR-018 manager regression before delivery resumes.
+
+### API-REV-013 — Executable external-script boundaries preserve current dual-host behavior
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`; API/E2E round 13 after `CRR-037` source-review Pass for `IR-021`.
+- Triggering finding or scenario IDs: resolved `CR-025`, retained resolved `CR-023`/`CR-024`; new validation IDs `APIE2E-ARCH-013`, `APIE2E-REPO-013`, `APIE2E-STANDALONE-013`, `APIE2E-STANDALONE-RESTART-013`, `APIE2E-STUDIO-013`, `APIE2E-STUDIO-REMOUNT-013`, `APIE2E-ROUTES-013`, `APIE2E-PARITY-013`, and `APIE2E-CLEANUP-013`.
+- Related revision IDs: `SR-016`; `ARCH-REV-012`–`ARCH-REV-014`; `IR-019`–`IR-021`; `CRR-035`–`CRR-037`; `API-REV-012`; delivery re-entry artifacts retained.
+- Why recorded: confirmed the completed `AFB-001`–`AFB-005` checker, the exact IR-021 Vue external-target correction, its test/dependency integration, and proportional preservation of the authoritative API-REV-012 real dual-host baseline.
+- Durable coverage delta: no API/E2E-owned test change. The cumulative SR-016 review surface is `autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts`, plus its test-only dependency/lock integration. IR-021 adds direct Studio-local allow/server-runtime reject and Brief-local allow/project-escape reject target fixtures without production source changes.
+- Repository execution: architecture first gate 1 file / 14 tests Pass; architecture plus retained runtime/API selection 32 files / 130 tests Pass; server build/no-emit; devkit 20/20; Brief and Socratic build/validate/backend typecheck; scope/diff audit Pass.
+- Real standalone execution: exact package Codex/Luna team completes a real Brief. Researcher and writer `publish_artifacts` succeed, researcher recipient-name `send_message_to(writer)` succeeds, SQLite contains two projected revisions and an attached two-member binding, and same-data host restart restores the completed record.
+- Real Studio execution: setup exposes the exact Brief Studio Team and researcher/writer `gpt-5.6-luna` defaults; one iframe runs a real Brief with the same Agent Tools and projection results. Explicit host-controls reload changes launch ID 1 to 2, retains exactly one iframe, and preserves the completed Brief.
+- Route/parity/cleanup: both internal Agent Tools routes return 401 without a bearer; standalone external gateway remains 404; Studio gateway initializes at 200. All 73 retained package/authoring SHA-256 rows are byte-identical before/after. Ports 43127/8011/3011, matching owned processes, and atomic scratch are clear.
+- Temporary harness note: an initial combined Studio harness used an early setup snapshot and parent-page cross-origin iframe poll after successfully triggering the real run. A focused Playwright frame harness verified the completed projection and remount; the canonical evidence contains the superseding Pass. No production or durable test changed.
+
+#### Prior Failure Resolution
+
+| Prior Scenario / Finding | Previous State | Current Resolution | Evidence |
+| --- | --- | --- | --- |
+| `CR-025` | Resolved in IR-021 source; API/E2E confirmation pending | **Resolved and execution-confirmed**: external target edges pass the official 14-test checker, including exact AFB-002/005 positive/negative fixtures | `api-rev-013-architecture-first-gate.log`, scope audit |
+| `CR-023`, `CR-024` | Resolved in IR-020 source | **Remain resolved**: complete current-tree/category checks and external resolution-origin fixture pass in the same suite | architecture/runtime logs |
+
+- Canonical artifacts updated: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, and this revision record.
+- Prior result and confidence: `Pass / 97%` (`96.6%`, API-REV-012).
+- Current result and confidence: **Pass / 98%** (`98.3%`).
+- Broader validation: **Required — completed** with real isolated standalone and Studio browser/API/process journeys.
+- New or remaining failure IDs: none for SR-016/IR-021. Historical `APIE2E-REPO-005` remains separate `Unclear`, unattributed, and unused as Pass evidence.
+- Residual risk: the complete API-REV-012 worker-kill and active multi-run failure injection was retained rather than repeated because SR-016 has zero production-source delta; current 130-test coverage, real same-data restart, real Studio remount, route checks, and exact parity provide proportional current-HEAD confirmation.
+- Recommended recipient: `code_reviewer` for the separate proportional review of the cumulative SR-016 durable architecture test before delivery resumes.

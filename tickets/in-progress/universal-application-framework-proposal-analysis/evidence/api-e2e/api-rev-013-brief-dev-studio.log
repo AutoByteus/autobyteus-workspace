@@ -1,0 +1,31 @@
+
+> @autobyteus-example/brief-studio-authoring@ dev:studio /Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/applications/brief-studio
+> autobyteus-app dev --host studio -- --studio-url http://127.0.0.1:8011
+
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+(node:15069) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-07-31T13:06:03.268Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-07-31T13:06:03.268Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-07-31T13:06:03.269Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+Studio package ready: application-local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Funiversal-application-framework-proposal-analysis%2Fapplications%2Fbrief-studio%2Fdist%2Fimportable-package
+Use Studio's “Reload application” action to remount the current application view.

@@ -1,222 +1,171 @@
 # API/E2E Coverage Investigation
 
 - Task: Universal Application Dual-Host Architecture
-- Current API/E2E revision: `API-REV-012`
-- Current reviewed implementation: `IR-018`
-- Source-review gate: `CRR-033` Pass
-- Reviewed HEAD: `4266ec7ebd60fbf06981159d6e1f7b0c9e6f6ca5`
+- Current API/E2E revision: `API-REV-013`
+- Current reviewed implementation: `IR-021` (cumulative `IR-019`–`IR-021` SR-016 hardening)
+- Source-review gate: `CRR-037` Pass / 98
+- Reviewed HEAD: `53eb73795c616148f01c2f6e0207f6b410410e24`
 - Investigation status: Complete
 - Execution outcome: Pass
-- Final confidence: `97%` (`96.6%` unrounded)
+- Final confidence: `98%` (`98.3%` unrounded)
 
 ## Investigation Meta
 
-- Trigger: `code_reviewer` requested the full SR-013 executable matrix after IR-018 resolved `CR-022`.
-- Primary behavior basis: `REQ-010`, `AC-019`–`AC-023`, `UC-025`–`UC-027`, plus preserved dual-host behavior in `AC-001`, `AC-003`, `AC-005`, `AC-006`, `AC-009`, `AC-010`, `AC-011`, `AC-014`–`AC-018`.
-- Supplemental architecture basis: `application-framework-architecture-simplification.md`.
-- Prior authoritative API/E2E result: `API-REV-011`, Pass / 99%.
-- Historical `APIE2E-REPO-005`: remains separate and unattributed. This round neither broadens nor reclassifies it.
+- Trigger: `code_reviewer` requested the reopened proportional API/E2E stage after IR-021 closed `CR-025`.
+- Requirement basis: `BEH-011`, `REQ-011`, `AC-024`, `UC-028`, DS-016, and `application-framework-hardening-evaluation.md`.
+- Preserved runtime basis: `BEH-001`–`BEH-010`, `AC-001`–`AC-023`, and the authoritative `API-REV-012` Pass / 97% baseline.
+- Supplemental artifacts: `application-framework-architecture-simplification.md` and `application-framework-hardening-evaluation.md`.
+- Historical `APIE2E-REPO-005`: remains separate, `Unclear`, unattributed, and unused as Pass evidence.
 
-## Current Requirement And Design Basis
+## Current Requirement And Changed Boundary
 
-SR-013 requires behavior-neutral structural simplification while preserving the previously passed Studio and standalone behavior. The directly executable requirements are:
+SR-016 adds a contributor-time architecture gate, not production behavior. The current checker must:
 
-1. Four exact outward runtime projections and current routes remain valid (`AC-019`).
-2. Package state, commands, and reconciliation retain their current behavior (`AC-020`).
-3. Removed bind-once and broad-host types do not remain in current test fixtures, and the acyclic runtime creates no runs during construction (`AC-021`).
-4. A provider run can publish after its application worker exits; delivery must ensure/restart the worker before handler invocation and preserve projection (`AC-022`).
-5. Exact run removal attempts all session/file/artifact/memory cleanup once, continues across failures, does not delete a replacement, and shutdown/restart remains correct (`AC-023`).
-6. Both real hosts continue to execute the package-owned Brief team, authenticated Agent Tools publication, recipient-name handoff, application projection, remount/restart, and byte-identical package behavior.
+1. parse governed TypeScript, JavaScript, and Vue SFC inputs;
+2. apply exact server, Studio-web, Brief, Socratic, and template project/config/manifest profiles;
+3. enforce `AFB-001`–`AFB-005`, including the closed AFB-004 injection obligations;
+4. treat a resolved Vue external `<script src>` as an SFC-owned dependency edge before reading the target;
+5. reject forbidden AFB-002/005 external targets with the standard SFC-owned diagnostic;
+6. allow local external targets, then resolve their imports from the external file;
+7. preserve the existing dual-host routes, execution, publication, recovery, remount, package bytes, and developer commands.
 
-The implementation handoff continues to declare a clean legacy removal and `Directly Usable — No Migration`; no migration or compatibility branch is required.
-
-## Changed Behavior Summary
-
-Production behavior is intended to be unchanged. IR-018 changes exact run cleanup continuation after inactive-pruning errors. The API/E2E-specific repository problem was stale coverage: five requested integrations and six additional affected tests still constructed the deliberately removed `ApplicationEngineHostService` or older dependency shapes.
-
-The durable test package now constructs the real narrow controller/launcher/gateway/runtime contracts and retains the original route, WebSocket, context, imported-package, availability, relay, session, Agent Tools, communication, and standalone assertions. No production source was changed by API/E2E.
+IR-021 changes only `autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts`. The three executable hardening commits have zero production `src/**` delta. Other integrated-base release/model updates since API-REV-012 are independently present and were covered by the broader build/runtime matrix; they are not attributed to SR-016.
 
 ## Changed Surface And Boundary Classification
 
 | Surface | Classification | Required Evidence |
 | --- | --- | --- |
-| Active-run identity/resource cleanup | Agent lifecycle / failure aggregation | IR-018 focused tests, stop-all continuation, stale replacement, exact-once cleanup |
-| Application engine ownership | Worker/controller/launcher process boundary | Narrow real test runtime; no broad host import; live worker-exit recovery |
-| Artifact delivery | Queue / worker restart / application projection | Durable delivery/lifecycle tests and real post-worker-exit publication |
-| Agent Tools | Authenticated internal MCP route and session lifecycle | Actual `publish_artifacts`, `send_message_to`, old-session rejection, 401/404 semantics |
-| Studio | Browser/iframe/setup/remount boundary | Exact Brief team/Luna defaults, real run, one-iframe remount, projected state |
-| Standalone | CLI/browser/same-origin host boundary | Real start, business run, active stop, same-data restart/recovery |
-| Package integrity | Read-only dual-host package | Exact 73-path digest equality before/after live hosts |
-| Maintained developer workflows | Build/validate/typecheck | Devkit and maintained Brief/Socratic command matrix |
-| Persistence | Existing current readers, no migration | Same data root across standalone restart; app/platform SQLite recovery |
+| Vue external `script src` | Test-owned parser/resolver boundary | Direct allowed and rejected AFB-002/005 fixtures through the real checker |
+| Architecture policy | Repository contributor gate | Complete current-tree `AFB-001`–`AFB-005` execution and exact diagnostics |
+| Project dependency declarations | Test-only development dependency/lock | Frozen/current install validity, build TypeScript, full architecture execution |
+| Runtime/API behavior | Behavior-preservation boundary | Retained 31-file API/runtime matrix on current HEAD |
+| Standalone host | Real browser/process boundary | Start, real Brief team run, publication/handoff/projection, same-data restart |
+| Studio host | Nuxt/GraphQL/iframe/browser boundary | Exact package team/Luna defaults, real run, one-iframe explicit remount |
+| MCP route separation | API/security boundary | Both internal routes 401 unauthenticated; standalone gateway 404; Studio gateway initialize 200 |
+| Package integrity | Read-only dual-host package boundary | Exact 73-path SHA-256 equality before and after both hosts |
+| Cleanup | Process/filesystem boundary | Owned ports/processes clear; no atomic staging/previous residue |
 
 ## Project Execution Discovery
 
-Authoritative execution sources inspected:
+Authoritative execution sources retained and rechecked:
 
-- root `package.json` and `scripts/development/run-dev.mjs`
-- `scripts/development/development-runtime.mjs`
-- `autobyteus-application-devkit/package.json`
-- `autobyteus-server-ts/package.json`
-- `autobyteus-web/package.json` and `nuxt.config.ts`
-- `applications/brief-studio/package.json`
-- `applications/socratic-math-teacher/package.json`
-- current test configuration and the prior API-REV-011 report/evidence
+- root `package.json` and pnpm workspace lock;
+- `autobyteus-server-ts/package.json`, Vitest configuration, build scripts, and architecture test;
+- `autobyteus-application-devkit/package.json`;
+- `autobyteus-web/package.json` and `nuxt.config.ts`;
+- `applications/brief-studio/package.json`;
+- `applications/socratic-math-teacher/package.json`;
+- API-REV-012 canonical reports and real-host evidence.
 
-Execution constraints and choices:
+Execution constraints:
 
-- Node 22 / pnpm workspace commands are authoritative.
-- The devkit must be built before an authoring folder consumes its linked `dist/cli.js`; the normal published-package user does not build the devkit separately.
-- An unrelated user-owned Python listener already occupied port 8000 and was not stopped. Final Studio validation therefore used an isolated backend on 8010 and Nuxt on 3010 with all backend URL variables pointed at 8010.
-- Standalone used 43126 and `/tmp/api-rev012-standalone-data`.
-- Studio used `/tmp/api-rev012-studio-data2` with explicit data/database/log/memory/workspace environment values.
-- System Chrome was driven through repository-available Playwright Core. No Electron shell-specific behavior changed, so an Electron launch was unnecessary.
-- Two unrelated user-owned Codex app-server processes were preserved.
+- Node 22 and pnpm workspace scripts are authoritative.
+- The linked devkit is built before local authoring commands consume `dist/cli.js`; published-package users receive built package output.
+- System Chrome was available at `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome` and driven with repository Playwright Core.
+- Standalone used port 43127 and a unique `/tmp/api-rev013-standalone-data-*` root.
+- Studio used isolated backend 8011, Nuxt 3011, and a unique `/tmp/api-rev013-studio-data-*` root with explicit data/database/log/memory/workspace variables.
+- No user-owned listener or data root was stopped or reused.
 
-## Persisted Data Transition Coverage Basis (When Applicable)
+## Existing Durable Coverage Validity Decisions
 
-- Approved decision: `Directly Usable — No Migration`.
-- Standalone was stopped with three recorded attached team bindings, restarted with the same data root, restored the recorded team runs, displayed prior business records, and completed a fresh post-restart publication/handoff run.
-- The old pre-restart Agent Tools session identifier returned `404 session_unavailable` after restart; session ID and credential were excluded from durable evidence.
-- Studio remount reused current app/platform SQLite state and retained the completed Brief projection.
-- No package bytes were mutated and no compatibility reader/migration was added.
-
-## Existing Durable Coverage Inventory
-
-| Coverage | Decision | Result |
+| Coverage | Decision | Current Result |
 | --- | --- | --- |
-| IR-018 `agent-run-manager.test.ts`, registry/resource manager, shutdown coordinator, lifecycle | Still Valid | 5 files / 22 tests Pass |
-| Application backend REST/custom WS/mount/context/imported Brief integrations | Needs Update, then Still Valid | Migrated to narrow runtime; final affected matrix Pass |
-| Application backend WebSocket session unit | Needs Update, then Still Valid | Uses narrow gateway/session dependencies; Pass |
-| Availability and published-artifact relay units | Needs Update, then Still Valid | Current state registry/reentry/delivery-queue contracts; Pass |
-| Agent Tools MCP route integration | Needs Update, then Still Valid | Current `activeRunReader`; Pass |
-| Agent communication WS integration | Needs Update, then Still Valid | Current `ApplicationAgentEventMapper`; Pass |
-| Standalone server integration | Needs Update, then Still Valid | Current lifecycle/rest/realtime/hostManagement projections; Pass |
-| Application delivery queue, event dispatcher, runtime isolation, route, publication and package tests in affected selection | Still Valid | 31 files / 116 tests Pass |
-| Devkit atomic pack/watch/browser ownership tests | Still Valid | 20/20 Pass |
+| `tests/architecture/application-framework-boundaries.test.ts` | **Updated by IR-021, Still Valid** | 14/14 Pass; current tree and external-script target fixtures execute |
+| IR-020 external-script resolution-origin fixture | **Still Valid** | Allowed target resolves imports from external file and preserves SFC/source diagnostic identity |
+| AFB-002 Studio external-target fixtures | **Still Valid** | Studio-local target allowed; server application-engine target rejected before target parse |
+| AFB-005 Brief external-target fixtures | **Still Valid** | Brief-local target allowed; host-runtime project escape rejected before target parse |
+| API-REV-012 31-file runtime/API selection | **Still Valid** | Re-executed with architecture test: 32 files / 130 tests Pass |
+| Devkit atomic pack/watch/browser tests | **Still Valid** | 20/20 Pass |
+| Maintained Brief/Socratic build/validate/typecheck | **Still Valid** | Pass for both applications |
+| Prior real dual-host scenarios | **Retained; proportional rerun required** | Current standalone and Studio real journeys Pass |
 
-## Stale Or Obsolete Coverage Decisions
+No current assertion was stale, removed, skipped, weakened, or replaced by a compatibility path.
 
-| Path Group | Obsolete Fixture Behavior | Current Replacement | Decision |
+## Durable Coverage Delta
+
+### Added / Updated For This Requirement
+
+- Cumulative SR-016 durable path: `autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts`.
+- IR-021 update: external Vue `src` is modeled as an SFC-owned `ImportEdge`; four direct allow/reject fixtures cover Studio and Brief targets.
+- Test-only dependency/declaration scope: `autobyteus-server-ts/package.json` and `pnpm-lock.yaml`; synchronized documentation remains in the upstream implementation package.
+
+### API/E2E-Owned Durable Changes In This Round
+
+None. The reviewed IR-021 architecture test already provides the correct durable boundary. API/E2E added only temporary execution harnesses and evidence; all temporary harnesses were removed.
+
+## Repository Execution Plan And Results
+
+| Order | Check | Result | Evidence |
 | --- | --- | --- | --- |
-| Five requested application-backend integrations | Construct/import removed broad `ApplicationEngineHostService` | Shared real narrow controller/launcher/gateway test runtime | Replace fixture only; preserve behavior assertions |
-| WebSocket session unit | Old broad host-shaped session dependency | Current gateway/session service dependencies | Update |
-| Availability unit | Old host-owned availability/re-entry API | `ApplicationAvailabilityStateRegistry` and `ApplicationReentryService` | Update |
-| Artifact relay unit | Old direct engine-host invocation | Exact delivery-queue acceptance command | Update |
-| Agent Tools route integration | Ignored old manager option | Current `activeRunReader` | Update |
-| Agent communication integration | Missing current event mapper | Supply real current mapper | Update |
-| Standalone server integration | Old single runtime object | Exact four projections | Update |
+| 1 | Architecture test first gate | 1 file / 14 tests Pass | `api-rev-013-architecture-first-gate.log` |
+| 2 | Server build-config TypeScript no-emit | Pass | `api-rev-013-architecture-first-gate.log` |
+| 3 | Architecture plus retained API-REV-012 runtime/API matrix | 32 files / 130 tests Pass | `api-rev-013-architecture-runtime-matrix.log` |
+| 4 | Full server build | Pass, including sanitized built-in bootstrap smoke | `api-rev-013-build-maintained-app-matrix.log` |
+| 5 | Devkit full suite | 20/20 Pass | `api-rev-013-build-maintained-app-matrix.log` |
+| 6 | Brief build, validate, backend typecheck | Pass | `api-rev-013-build-maintained-app-matrix.log` |
+| 7 | Socratic build, validate, backend typecheck | Pass | `api-rev-013-build-maintained-app-matrix.log` |
+| 8 | Commit/scope/diff audit | SR-016 executable commits have zero production-source delta; `git diff --check` Pass | `api-rev-013-scope-audit.log` |
 
-No current-behavior assertion was removed, skipped, weakened, or replaced by a compatibility path.
+## Post-Repository Confidence Scorecard
 
-## Durable Coverage To Add
-
-| Artifact | Purpose | Status |
-| --- | --- | --- |
-| `autobyteus-server-ts/tests/integration/application-backend/application-engine-test-runtime.ts` | Reusable real narrow application engine controller/launcher/gateway test assembly | Added and passing |
-
-## Durable Coverage To Update
-
-1. `autobyteus-server-ts/tests/integration/application-backend/application-backend-custom-websocket.integration.test.ts`
-2. `autobyteus-server-ts/tests/integration/application-backend/application-backend-mount-route-transport.integration.test.ts`
-3. `autobyteus-server-ts/tests/integration/application-backend/application-backend-rest-ws.integration.test.ts`
-4. `autobyteus-server-ts/tests/integration/application-backend/application-context-capabilities.integration.test.ts`
-5. `autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts`
-6. `autobyteus-server-ts/tests/unit/application-backend-api-gateway/application-backend-websocket-session-service.test.ts`
-7. `autobyteus-server-ts/tests/unit/application-orchestration/application-availability-service.test.ts`
-8. `autobyteus-server-ts/tests/unit/application-orchestration/application-published-artifact-relay-service.test.ts`
-9. `autobyteus-server-ts/tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts`
-10. `autobyteus-server-ts/tests/integration/application-backend/application-agent-communication-ws.integration.test.ts`
-11. `autobyteus-server-ts/tests/integration/application-backend/standalone-application-server.integration.test.ts`
-
-## Durable Coverage To Remove
-
-None.
-
-## Repository Coverage Execution Plan And Results
-
-| Order | Executable Check | Result | Evidence |
-| --- | --- | --- | --- |
-| 1 | IR-018 manager/registry/resource/shutdown/lifecycle selection | 5 files / 22 tests Pass | `api-rev-012-ir018-first-gate.log` |
-| 2 | Migrated requested fixtures and narrow WS session unit | 6 files / 15 tests Pass | `api-rev-012-migrated-fixtures-pass.log` |
-| 3 | Updated availability and relay units | 2 files / 10 tests Pass | `api-rev-012-stale-narrow-unit-rerun.log` |
-| 4 | Final affected server matrix | 31 files / 116 tests Pass | `api-rev-012-affected-server-matrix-pass.log` |
-| 5 | Server build-config TypeScript no-emit | Pass | `api-rev-012-server-tsc.log` |
-| 6 | Devkit full test/build | 20/20 Pass | `api-rev-012-build-maintained-app-matrix.log` |
-| 7 | Server full build and frontend SDK build | Pass | `api-rev-012-build-maintained-app-matrix.log` |
-| 8 | Brief and Socratic build, validate, backend typecheck | Pass for both maintained apps | `api-rev-012-build-maintained-app-matrix.log` |
-| 9 | Retired broad-host scan and `git diff --check` | Pass | final repository audit |
-
-The initial failures in `api-rev-012-stale-fixture-baseline.log`, `api-rev-012-stale-narrow-unit-baseline.log`, and the first affected selection were validated as stale test fixtures, not production regressions. Their corrected reruns pass.
-
-## Post-Repository Confidence Scorecard (Mandatory)
-
-| Category | Score | Basis | Repository-only Gap |
+| Category | Score | Basis | Remaining Repository-Only Gap |
 | --- | ---: | --- | --- |
-| Requirement and acceptance-criteria proof | 94% | Exact IR-018 continuation plus affected route/runtime/lifecycle coverage | Real host worker-exit and dual-host publication still required |
-| Changed-boundary execution directness | 96% | Real manager/registry/queue/controller/launcher contracts execute | Live provider/worker boundary not yet exercised |
-| Cross-boundary integration realism and mock gap | 92% | Real SQLite/workers/routes in integrations | Provider/browser/remount still absent |
-| Environment, configuration, identity, and fixture fidelity | 93% | Current package, current IDs, maintained builds | Real host config/identity still required |
-| Failure, edge-case, lifecycle, and recovery evidence | 95% | Cleanup aggregation, stale replacement, queue drain, lifecycle ordering | Live process exit/restart still required |
-| User-surface/browser confidence | 90% | Existing frontend and build evidence | Round-12 browser journey required |
-| Durable regression quality and relevance | 96% | Narrow shared runtime, preserved assertions, no broad-host imports | Proportional test-code review pending |
+| Requirement and acceptance proof | 99% | Exact current-tree and external-target fixtures Pass | No real-host preservation yet in this round |
+| Changed-boundary directness | 100% | The real checker executes its own approved fixtures and current tree | None for the checker |
+| Cross-boundary realism/mock gap | 96% | Retained real SQLite/API/runtime selection Pass | Browser/provider hosts still to confirm |
+| Environment/configuration/identity fidelity | 96% | Current lock, TypeScript, builds, maintained packages | Live host setup still to confirm |
+| Failure/edge/lifecycle/recovery | 95% | Forbidden targets, unresolved paths, injection obligations, retained lifecycle matrix | Same-data restart/remount still to confirm |
+| User-surface/browser confidence | 90% | No user code changed; builds pass | Proportional real dual-host confirmation required by handoff |
+| Durable regression quality/relevance | 99% | One closed test owner, direct positive/negative fixtures, no production helper | Proportional test-code review pending |
 
-- Repository-only confidence: `94%` (`93.7%` unrounded).
-- Broader validation: Required because AC-022's worker-exit witness, real Agent Tools dispatch, browser remount, process restart, and exact byte parity cannot be inferred from repository tests alone.
+- Repository-only confidence: `96%` (`96.4%` unrounded).
+- Broader validation decision: **Required**, despite the clean test-only scope, because the reopened delivery flow explicitly requires API-REV-012-equivalent dual-host, route, and package-integrity preservation evidence on current HEAD.
 
-## Broader Validation Decision (Mandatory)
+## Broader Validation Plan And Result
 
-- Decision: `Required — completed`.
-- Modes: CLI, live API, browser, process lifecycle, SQLite read-only correlation, exact digests.
-- Expected evidence gain: close the worker-restart, authenticated tool dispatch, real dual-host, remount, restart, session revocation, package integrity, and leak-cleanup gaps.
-- Outcome: all selected scenarios passed.
-
-## Desktop Application Validation Decision (When Applicable)
-
-The changed surface is web-equivalent. System Chrome exercised the real Nuxt Studio and standalone browser surfaces. No preload, IPC, native window, packaging, signing, or OS integration changed, so actual Electron execution would not add requirement-linked evidence.
-
-## Live Environment And Fixture Plan (Required When Broader Validation Runs)
-
-- Standalone: `pnpm -C applications/brief-studio start -- --port 43126 --data-dir /tmp/api-rev012-standalone-data`.
-- Studio backend: built server on 127.0.0.1:8010 with isolated data and SQLite paths.
-- Studio frontend: Nuxt on 127.0.0.1:3010 with all backend/WS endpoints on 8010.
-- Studio package client: `pnpm -C applications/brief-studio dev:studio -- --studio-url http://127.0.0.1:8010`.
-- Browser: installed Chrome through Playwright Core.
-- Team/runtime/model: exact package-owned Brief Studio Team; researcher/writer; `codex_app_server`; `gpt-5.6-luna`.
-- Data: fresh isolated roots; created only through public UI/host flows; inspected read-only with SQLite.
-- Cleanup: owned services, browsers, workers, Codex child, data roots, and temporary harnesses removed; unrelated 8000 and Codex processes retained.
-
-## Temporary Executable Validation Plan
-
-| Scenario | Temporary Method | Why Not Durable |
+| Scenario | Selected Evidence | Result |
 | --- | --- | --- |
-| `APIE2E-WORKER-012` | Browser request plus exact application-worker PID termination and replacement observation | OS/process timing and real provider are environment-sensitive; direct queue/launcher behavior is durable separately |
-| `APIE2E-STANDALONE-012` | Real same-origin Browser/CLI journey, active multi-run stop, same-data restart | Full provider/browser/process orchestration is expensive and environment-sensitive |
-| `APIE2E-STUDIO-012` | Real Studio setup/iframe/run/remount | Browser/provider/host orchestration is retained as evidence, while surface logic is durable elsewhere |
-| `APIE2E-PARITY-012` | Exact pre/post SHA-256 comparison of 73 maintained paths | Cross-process byte parity is an execution conformance check |
-| `APIE2E-CLEANUP-012` | Listener/PID/data-root audit | OS-specific |
+| `APIE2E-ARCH-013` | Current architecture test and scope audit | Pass |
+| `APIE2E-STANDALONE-013` | Real Chrome Brief create/generate; Codex/Luna team; raw Agent Tools traces; SQLite projection | Pass |
+| `APIE2E-STANDALONE-RESTART-013` | Stop/start same data root and browser state check | Pass |
+| `APIE2E-STUDIO-013` | Real Nuxt setup, exact package team/Luna defaults, iframe business run, raw traces, SQLite projection | Pass |
+| `APIE2E-STUDIO-REMOUNT-013` | Open host controls and explicit reload | Pass: launch 1 -> 2, one iframe, completed record retained |
+| `APIE2E-ROUTES-013` | Direct HTTP requests | Pass: internal 401 both hosts; standalone gateway 404; Studio gateway initialize 200 |
+| `APIE2E-PARITY-013` | Exact pre/post SHA-256 over retained 73-path set | Pass: 73/73 byte-identical |
+| `APIE2E-CLEANUP-013` | Listener/process/scratch audit | Pass |
 
-All temporary scripts were removed after evidence capture.
+The first combined Studio temporary harness entered and completed the real business run, but its readiness snapshot was early and its parent-page polling attempted cross-origin iframe DOM access. A focused corrected harness waited semantically inside the Playwright frame, confirmed the completed run, and passed explicit remount. This was temporary harness logic only; production and durable tests were unchanged.
 
-## Not Tested / Infeasible / Deferred
+## Final Confidence Scorecard
 
-| Boundary | Decision | Risk / Follow-up |
+| Category | Score | Final Basis |
+| --- | ---: | --- |
+| Requirement and acceptance-criteria proof | 99% | AC-024 checker behavior plus preserved dual-host acceptance directly executed |
+| Changed-boundary execution directness | 100% | Exact production checker/current-tree/fixture path executed |
+| Cross-boundary integration realism and mock gap | 98% | 130 repository tests plus real provider/browser/SQLite paths in both hosts |
+| Environment, configuration, identity, and fixture fidelity | 98% | Current HEAD, current lock/builds, exact Brief team and Luna defaults, isolated data |
+| Failure, edge-case, lifecycle, and recovery evidence | 96% | Forbidden-before-parse fixtures, standalone same-data restart, Studio remount, retained API-REV-012 lifecycle matrix |
+| User-surface/browser and desktop-shell confidence | 98% | Real Chrome standalone and Nuxt Studio iframe journeys; no shell-specific source changed |
+| Durable regression coverage quality and relevance | 99% | Closed AFB test owner and direct positive/negative fixtures; no broad allow-list or production helper |
+
+- Final confidence: `98%` (`98.3%` unrounded).
+- Every applicable category is at least 90%; all critical current-scope criteria have direct evidence.
+- No new failure ID or blocker exists.
+
+## Not Tested / Residual Scope
+
+| Boundary | Decision | Residual Risk |
 | --- | --- | --- |
-| Historical whole-repository `APIE2E-REPO-005` | Not rerun or reattributed | Separate historical uncertainty; no supported connection to IR-018/SR-013 was found |
-| Electron shell | Not applicable to changed behavior | Existing delivery-owned Electron evidence remains separate |
-| Multi-node deployment/public authentication | Outside approved local-first scope | None for current acceptance criteria |
-
-## Ambiguities Or Reroute Triggers
-
-None. No implementation failure, requirement gap, design impact, blocker, or new supported origin for `APIE2E-REPO-005` was found.
+| Historical `APIE2E-REPO-005` | Not rerun or reattributed | Separate historical uncertainty; no supported SR-016/IR-021 connection |
+| Electron shell | Not applicable | No preload, IPC, window, signing, packaging, or native integration changed |
+| Multi-node/public gateway deployment | Outside approved local-first scope | None for AC-024 or preserved local dual-host behavior |
+| Full API-REV-012 worker-kill/multi-run failure injection | Retained, not repeated | Production source unchanged; current runtime matrix plus proportional restart/remount closes current risk |
 
 ## Investigation Decision
 
-- Proceeded to execution: Yes.
-- Durable coverage added/updated/removed: 1 helper added, 11 test files updated, 0 removed.
-- Final result: `Pass`.
-- Final confidence: `97%` (`96.6%`).
-- Every critical acceptance criterion directly proven: Yes, through combined durable and real executable evidence.
-- Any category below 90%: No.
-- Clean target met: Yes.
-- Recommended recipient: `code_reviewer` for the required proportional durable-test review.
+- Result: `Pass`.
+- Final confidence: `98%`.
+- Broader validation: `Required — completed`.
+- API/E2E-owned durable changes: none.
+- Durable review surface: cumulative SR-016 `application-framework-boundaries.test.ts` and its test-only declaration/lock integration.
+- Recommended recipient: `code_reviewer` for the separate proportional durable-test review before delivery resumes.

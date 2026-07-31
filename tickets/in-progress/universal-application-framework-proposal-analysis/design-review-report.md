@@ -9,18 +9,19 @@
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/proposal-critical-analysis.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-self-validation.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/application-framework-architecture-simplification.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/application-framework-hardening-evaluation.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/sources/autobyteus-vertical-application-developer-experience-proposal.md`
 - Solution Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/solution-revision-record.md`
-- Relevant Solution Revision IDs: `SR-013`; `SR-012` retained for the approved four-projection/package-owner baseline; `SR-011` and `SR-010` retained as passed naming and functional baselines; `SR-007` remains withdrawn
+- Relevant Solution Revision IDs: `SR-016`; `SR-015` retains the resolved AR-011 source/project design; `SR-014` retains the accepted Adopt/Defer/Reject decision; `SR-013` remains the passed production architecture baseline
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-011`
-- Current Review Round: 11
-- Trigger: `SR-013` bounded correction after `ARCH-REV-010` returned `AR-008` and `AR-009` against the SR-012 cycle-removal design.
-- Prior Review Round Reviewed: round 10 / `ARCH-REV-010` (`Fail — Design Impact`)
-- Latest Authoritative Round Before This Review: round 10 / `ARCH-REV-010`
-- Current-State Evidence Basis: current source at the SR-013 design commit; `CRR-031`; `ARCH-REV-010`; the passed `IR-016`, `CRR-029`, `API-REV-011` (`Pass / 98.9%`), and `CRR-030` baseline; source traces through artifact publication/relay/engine ensure and agent-run registration, inactive discovery, termination, session revocation, observer cleanup, and shutdown.
-- Reviewed Solution Commit: `433ec798b7ebfe7926311061021624de33f02974`
-- Independent Review Checks: verified the solution commit changes only the seven solution-owned artifacts; all relative links in those artifacts resolve; canonical ranges are complete through BEH-010, REQ-010, AC-023, UC-027, DS-015, SV-018, SV-C57, and SR-013; `git diff --check` passes; current source reconfirms the two prior lifecycle premises; the revised owner graph is acyclic and preserves ensure-before-invoke plus exact run-resource cleanup without restoring either bind-once proxy, the broad engine host, a reverse callback, or a generic event bus/container.
+- Current Architecture Review Revision ID: `ARCH-REV-014`
+- Current Review Round: 14
+- Trigger: `SR-016` final bounded rework after `ARCH-REV-013` left only `AR-010` open for nested Codex/Claude provider-factory omission.
+- Prior Review Round Reviewed: round 13 / `ARCH-REV-013` (`Fail — Design Impact`)
+- Latest Authoritative Round Before This Review: round 13 / `ARCH-REV-013`
+- Current-State Evidence Basis: current source at the SR-016 solution commit; the passed `IR-017`/`IR-018`, `CRR-033`, `API-REV-012` (`Pass / 96.6%`), and `CRR-034` baseline; direct review of the revised DS-016 obligation table, required-parent audit, fixtures, reusable Codex/Claude constructor defaults, and current application construction.
+- Reviewed Solution Commit: `724996e970d589e70b9f714c3580c3bd12d38674`
+- Independent Review Checks: the commit changes exactly the six solution-owned artifacts; local links and code fences in the eight reviewed solution artifacts pass; the declared canonical ranges remain complete through BEH-011, REQ-011, AC-024, UC-028, DS-016, SV-019, SV-C62, and SR-016; `git diff-tree --check HEAD^ HEAD` passes; no production source changed. Current source uses `new CodexAgentRunBackendFactory(undefined, codexThreadBootstrapper)` and `new ClaudeAgentRunBackendFactory(claudeSessionManager, claudeSessionBootstrapper)`, while their reusable constructors retain the documented defaults.
 
 ## Round History
 
@@ -34,43 +35,35 @@
 | 6 | `SR-006` / `CRR-012` | CR-009, CR-012 | None | Pass | Selected-resource editing and portable policy gained authoritative owners. |
 | 7 | Withdrawn `SR-007` | CR-013 | N/A | Withdrawn — No Decision | Superseded premise; `ARCH-REV-006` remained valid. |
 | 8 | `SR-010` / `CRR-020` | CR-015 | None | Pass | Graph-local publication/session ownership became implementation-ready. |
-| 9 | `SR-011` / `CRR-028` | CR-018 and prior resolutions | None | Pass | Behavior-neutral role vocabulary and exact clean rename map were approved. |
-| 10 | `SR-012` / `CRR-031` | CR-019–CR-021 and prior resolutions | AR-008, AR-009 | Fail — Design Impact | Runtime projection and package ownership were sound; artifact recovery and active-run cleanup were incomplete. |
-| 11 | `SR-013` / `ARCH-REV-010` rework | AR-008, AR-009 | None | Pass | Closed artifact delivery and exact run-resource ownership preserve both lifecycle edges in an acyclic graph. |
+| 9 | `SR-011` / `CRR-028` | CR-018 and prior resolutions | None | Pass | Behavior-neutral vocabulary and clean rename map were approved. |
+| 10 | `SR-012` / `CRR-031` | CR-019–CR-021 and prior resolutions | AR-008, AR-009 | Fail — Design Impact | Runtime projection and package ownership were sound; two lifecycle edges were incomplete. |
+| 11 | `SR-013` / `ARCH-REV-010` rework | AR-008, AR-009 | None | Pass | Closed artifact delivery and exact run-resource ownership completed the acyclic target. |
+| 12 | `SR-014` hardening audit | All resolved findings and passed functional baseline | AR-010, AR-011 | Fail — Design Impact | Checker missed fallback-by-omission and lacked truthful heterogeneous-source resolution. |
+| 13 | `SR-015` / `ARCH-REV-012` rework | AR-010, AR-011 | None | Fail — Design Impact | AR-011 resolved; AR-010 still missed nested Codex/Claude provider-factory arguments. |
+| 14 | `SR-016` / `ARCH-REV-013` rework | AR-010; AR-011 preservation | None | Pass | Exact provider-factory obligations and a bounded parent-value audit close the last checker-design gap. |
 
 ## Prior Findings Resolution Check
 
 | Finding ID | Prior Status | Current Status | Related Revision | Verification Evidence | Required Follow-Up |
 | --- | --- | --- | --- | --- | --- |
-| AR-001–AR-007 | Resolved | Remain resolved | SR-002–SR-006, SR-010–SR-013 | SR-013 preserves the established package, host, readiness, launch/editing, prompt, route, and scoped publication requirements. | Preserve their regression baseline. |
-| CR-001–CR-018 | Resolved in design/source/test rounds | Remain resolved | cumulative through IR-016, CRR-029, API-REV-011, CRR-030 | The correction is limited to internal construction/lifecycle ownership and retains all passed functional and naming behavior. | Preserve the complete characterization baseline. |
-| CR-019 | Resolved in design | Remains resolved | CRR-031, SR-012, SR-013 | The runtime still exposes exactly lifecycle, REST, realtime, and host-management projections; registrars receive subject contracts. | Implementation/source proof. |
-| CR-020 | Resolved in design | Remains resolved | CRR-031, SR-012, SR-013 | Package registry state, package commands/rollback, catalog reconciliation, and ordered refresh remain distinct, acyclic owners. | Implementation/source proof. |
-| CR-021 | Partially resolved through SR-012 | Resolved in design | CRR-031, SR-012, SR-013, SV-018 | The early session-scope/resource/registry chain and early controller/closed-queue plus late launcher/consumer chain remove both permanent bind-once proxies while retaining the previously omitted lifecycle behavior. | Full implementation/source/API-E2E proof. |
-| AR-008 | Open — Design Impact | Resolved in design | ARCH-REV-010, SR-013, SV-C52, SV-C53 | Complete artifact commands enter a closed per-run queue; the late consumer always performs launcher `ensureReady` before controller invocation and drains before engine stop. | Focused worker-exit publication proof. |
-| AR-009 | Open — Design Impact | Resolved in design | ARCH-REV-010, SR-013, SV-C54–SV-C57 | Early application session scope plus `AgentRunResourceManager` and identity-checked `removeIfCurrent` define cleanup for inactive discovery/replacement, terminate, stop-all, rollback, and stale removal without a reverse callback. | Focused exact-once cleanup proof. |
-| APIE2E-REPO-005 | `Unclear` / unattributed | Remains separate and non-material | API-REV-011, CRR-031 | No supported origin ties the diagnostic to SR-013. | Reconcile separately; do not broaden this design. |
+| AR-001–AR-009 | Resolved | Remain resolved | SR-002–SR-013; ARCH-REV-002–ARCH-REV-011 | SR-016 changes no production source, runtime, route, schema, package, data, or lifecycle behavior. | Preserve the passed regression baseline. |
+| AR-010 | Partially resolved; open | Resolved in design | ARCH-REV-012/013, SR-015/SR-016, H-015, corrected DS-016/SV-019 | The closed obligation table now requires Codex argument 1 and Claude arguments 0/1, preserves deliberately process-scoped Codex arguments 0/2, uses the same binding/shape evaluator for current-tree assertions and omitted/null/undefined negatives, and records the bounded required-parent audit. | Implement the exact table, fixtures, and diagnostics; no production refactor. |
+| AR-011 | Resolved in design | Remains resolved | ARCH-REV-012/013, SR-015/SR-016, H-014 | Direct test-only SFC parsing, actual script-language extraction, eleven-SFC enumeration, seven project profiles, fail-closed governed resolution, own-manifest authority, aligned fixtures, and five-file inventory are unchanged. | Implement and prove. |
+| CR-001–CR-021 | Resolved in design/source/test rounds | Remain resolved | cumulative through IR-018, CRR-033, API-REV-012, CRR-034 | The production architecture and exact `73/73` package parity remain the mandatory fixed baseline. | Do not edit production source for this hardening. |
+| APIE2E-REPO-005 | `Unclear` / unattributed | Remains separate and non-material | API-REV-012 and prior review records | No supported origin connects it to SR-016. | Do not broaden this design. |
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
 - Overall Basis Status: `Confirmed`
-- Approved requirements / intended behavior understood: preserve the complete passed dual-host behavior while narrowing the runtime, separating package state/commands/reconciliation, and removing construction cycles without changing launch, recovery, publication, cleanup, routes, data, or package bytes.
-- Relevant existing behavior and evidence confirmed: API-REV-011 establishes the normal dual-host baseline. Current source confirms artifact relay currently ensures/restarts the application engine before handler invocation and inactive agent-run discovery synchronously revokes sessions and detaches file/artifact/memory observers.
-- Approved change, preserved behavior, and outside scope understood: four projections, package-owner split, exact active-run/resource ownership, controller/launcher split, two closed domain queues, clean removals, and no migration are in scope. Generic containers/event buses, compatibility aliases, application global fallbacks, new product behavior, and data changes remain out of scope.
+- Approved requirements / intended behavior understood: preserve the fully passed dual-host product and production architecture; add only development-time boundary enforcement, one direct test parser declaration/lock entry, and synchronized existing documentation.
+- Relevant existing behavior and evidence confirmed: application construction explicitly supplies graph-local definitions, sessions, managers, publication, provider bootstrappers, and team owners. Reusable factories retain optional defaults for legitimate general-process use. Governed source spans TypeScript, JavaScript, Vue, seven project profiles, and distinct manifests.
+- Approved change, preserved behavior, and outside scope understood: AFB-001–AFB-005, direct SFC test parsing, and two documentation updates are in scope. Public API, shared host harness, generic lifecycle, directory/suffix churn, correlation infrastructure, production refactor, route/schema/package/data change, and migration are outside scope.
 - Remaining material ambiguity, if any: None.
 
 | Behavior ID | Kind | Design Alignment With Approved Intent | Approved Trigger / Contract And Current-State Evidence | Target Outcome / Path / Spine Coherence | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| BEH-001 | Operational | Pass | Pass | Pass | Confirmed | Preserve host lifecycle. |
-| BEH-002 | Contract | Pass | Pass | Pass | Confirmed | Preserve SDK/wire path. |
-| BEH-003 | Contract | Pass | Pass | Pass | Confirmed | Preserve manifest-v4 package and parser. |
-| BEH-004 | System | Pass | Pass — real publication baseline and current ensure-before-artifact invocation | Pass — queue -> launcher ensure/restart -> controller invoke -> worker projection | Confirmed | Prove worker-exit case. |
-| BEH-005 | System / lifecycle | Pass | Pass — current exact run cleanup | Pass — registry identity removal -> resource manager -> scope/observer cleanup | Confirmed | Prove every removal origin. |
-| BEH-006 | Developer | Pass | Pass — API-REV-011 and 73/73 parity | Pass | Confirmed | Preserve commands/package bytes. |
-| BEH-007 | Persistence / recovery | Pass | Pass | Pass — no stored representation changes | Confirmed | No migration. |
-| BEH-008 | System | Pass | Pass | Pass | Confirmed | Preserve graph-local prompt service. |
-| BEH-009 | Contributor / contract | Pass | Pass — SR-011 baseline | Pass — vocabulary and clean removals remain coherent | Confirmed | Preserve vocabulary. |
-| BEH-010 | Contributor / architecture contract | Pass | Pass — CRR-031 and ARCH-REV-010 source traces | Pass — all corrected owner graphs are explicit and acyclic | Confirmed | Implement and run full baseline. |
+| BEH-001–BEH-010 | Existing product/runtime/contributor contracts | Pass | Pass — fixed by the passed production and API/E2E baseline | Pass — SR-016 preserves them | Confirmed | Retain full regression and zero production behavior change. |
+| BEH-011 | Contributor / architecture contract | Pass | Pass — supported application-framework edits can introduce forbidden imports or default-owner selection by omission | Pass — the exact parser/resolver/binding/shape path rejects all named direct and nested cases with actionable diagnostics | Confirmed | Implement DS-016 and its exact proof matrix. |
 
 ## Supplemental Artifact Coherence Verdict
 
@@ -78,221 +71,171 @@
 | --- | --- | --- | --- | --- | --- | --- |
 | Retained proposal source | Pass | Pass | Pass | Pass | Pass — evidence/input, approval N/A | None. |
 | `proposal-critical-analysis.md` | Pass | Pass | Pass | Pass | Pass — approved/refined intended behavior | Retain. |
-| `design-self-validation.md` | Pass | Pass | Pass | Pass | Pass — evidence-only, approval N/A | Retain SV-018 obligations. |
-| `application-framework-architecture-simplification.md` | Pass | Pass | Pass | Pass | Pass — intended architecture approved by this review | Implement exact contracts and validation map. |
+| `design-self-validation.md` | Pass | Pass | Pass | Pass | Pass — evidence-only, approval N/A | Implement SV-C58–SV-C62. |
+| `application-framework-architecture-simplification.md` | Pass | Pass | Pass | Pass | Pass — prior approved and implemented architecture | Preserve as the production baseline. |
+| `application-framework-hardening-evaluation.md` | Pass | Pass | Pass | Pass | Pass — evidence classifications N/A; adopted behavior now architecture-approved | Implement only the adopted bounded test/docs target. |
 
-The investigation notes inventory every supplement, approval applicability is explicit, and the architecture supplement is linked from each core artifact it materially supports.
+The investigation notes inventory every supplement and link it from materially supported core artifacts. Status, scope, and approval applicability are explicit.
 
 ## Task Design Health Assessment Verdict
 
 | Assessment Area | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Assessment is present for the current task posture | Pass | Boundary leakage, mixed package ownership, construction cycles, and the two preserved lifecycle edges are explicitly classified. | None. |
-| Root-cause classification is explicit and evidence-backed | Pass | CRR-031, ARCH-REV-010, and current source establish each structural defect and preserved behavior. | None. |
-| Refactor needed now / deferred decision is explicit | Pass | SR-013 keeps the behavior-neutral correction bounded and excludes unrelated programs. | None. |
-| Refactor decision is supported by concrete design sections or residual-risk rationale | Pass | DS-015, the simplification supplement, file inventory, construction order, shutdown order, and SV-C45–SV-C57 are actionable. | Implement and validate. |
+| Assessment is present for the current task posture | Pass | All eight hardening candidates and both prior checker findings have evidence and proportional decisions. | None. |
+| Root-cause classification is explicit and evidence-backed | Pass | Missing enforceable invariant/documentation discoverability; no production-runtime defect. | None. |
+| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | One test, test-only dependency/lock change, and two docs are adopted; six candidates are deferred/rejected. | Retain. |
+| Refactor decision is supported by concrete design sections or residual-risk rationale | Pass | DS-016 defines exact policies, targets, project profiles, fixtures, implementation inventory, and no-production boundary. | Implement without broadening. |
 
 ## Spine Inventory Verdict
 
 | Spine ID | Scope | Spine Is Readable? | Narrative Is Clear? | Facade Vs Governing Owner Is Clear? | Main Domain Subject Naming Is Clear? | Ownership Is Clear? | Off-Spine Concerns Stay Off Main Line? | Verdict |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| DS-001/DS-002 | Studio/standalone startup | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-003 | Shared request/gateway/engine/run path | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-004/DS-014/DS-015 | Publication return path | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-005/DS-015 | Lifecycle/recovery/stop | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-015 | Package import/reload/remove and rollback | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-015 | Active-run registration/removal/cleanup | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-015 | Durable event journal/queue/dispatcher | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-
-The publication spine now spans authenticated publication through persistence/binding, a closed delivery queue, ensure/restart, handler invocation, and business projection. The active-run spine reaches exact state removal, all resource categories, and the consuming manager result without a reverse callback.
+| DS-001–DS-015 | Existing Studio/standalone production spines | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-016 | Contributor TS/JS/Vue/construction change -> exact check -> diagnostic -> correction | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
 
 ## Boundary Encapsulation Verdict
 
 | Boundary / Owner | Authoritative Public Entry Point Is Clear? | Internal Owned Mechanisms Stay Internal? | Caller Bypass Risk Is Controlled? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `ApplicationPlatformRuntime` | Pass | Pass | Pass | Pass | Exactly four immutable projections. |
-| REST/realtime registrars | Pass | Pass | Pass | Pass | Exact subject inputs; no whole-runtime dependency. |
-| Package registry / commands / refresh coordinator | Pass | Pass | Pass | Pass | Distinct state, command/rollback, and ordering owners. |
-| Session scope / resource manager / active registry | Pass | Pass | Pass | Pass | Each owns one concrete lifecycle subject; exact identities prevent stale cleanup. |
-| Engine controller / launcher / artifact delivery | Pass | Pass | Pass | Pass | Controller owns attached state; launcher owns ensure/start; delivery owns the complete command. |
-| Lifecycle | Pass | Pass | Pass | Pass | Private participants, intake gates, drain, cleanup, and stop order are explicit. |
+| Existing production owners | Pass | Pass | Pass | Pass | Fixed by the SR-013 passed baseline. |
+| AFB-001/002/003/005 | Pass | Pass | Pass | Pass | Actual source kinds, projects, manifests, resolution, and exceptions are exact. |
+| AFB-004 application construction | Pass | Pass | Pass | Pass | Direct global/default calls and every listed omitted/null/undefined/spread bypass are covered, including nested provider factories. |
+| Documentation boundary | Pass | Pass | Pass | Pass | One detailed module table and one short architecture pointer remain proportionate. |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
 
 | Owner / Boundary | Allowed Dependencies Are Clear? | Forbidden Shortcuts Are Explicit? | Direction Is Coherent With Ownership? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Runtime projections | Pass | Pass | Pass | Pass | No stores/managers leak outward. |
-| Package command and refresh | Pass | Pass | Pass | Pass | No later-assigned callbacks or hidden defaults. |
-| Session scope / resources / registry / publication / issuer / managers | Pass | Pass | Pass | Pass | Early revocation capability breaks cleanup dependency without a reverse edge. |
-| Artifact relay / queue / delivery / launcher / controller | Pass | Pass | Pass | Pass | The late consumer restores ensure-before-invoke without a broad host. |
-| Event ingress / queue / dispatcher | Pass | Pass | Pass | Pass | Closed IDs plus durable journal avoid a generic event bus. |
-| General-process factories | Pass | Pass | Pass | Pass | Explicitly separated from application assembly. |
+| AFB-001 transport -> runtime contracts | Pass | Pass | Pass | Pass | Closed and aligned with current projections. |
+| AFB-002 GraphQL/Studio presentation | Pass | Pass | Pass | Pass | Direct SFC extraction and web profile are exact. |
+| AFB-003 package/bundle ownership | Pass | Pass | Pass | Pass | Exact reconciliation exception remains closed. |
+| AFB-004 application scope -> injected run/session/publication/provider/team owners | Pass | Pass | Pass | Pass | Exact direct-callee and construction-obligation sets cover the supported bypass family without banning approved process resources. |
+| AFB-005 maintained applications/templates | Pass | Pass | Pass | Pass | Own-manifest, built-in, local/SDK, cross-project, and unresolved rules are explicit. |
 
 ## Interface Boundary Verdict
 
 | Interface / API / Query / Command / Method | Subject Is Clear? | Responsibility Is Singular? | Identity Shape Is Explicit? | Generic Boundary Risk | Verdict |
 | --- | --- | --- | --- | --- | --- |
-| `ApplicationPlatformRuntime` four projections | Pass | Pass | Pass | Low | Pass |
-| REST and realtime subject contracts | Pass | Pass | Pass | Low | Pass |
-| Package query, command, reconciliation, and refresh contracts | Pass | Pass | Pass | Low | Pass |
-| `ApplicationAgentToolMcpSessionScope` | Pass | Pass | Pass | Low | Pass |
-| `AgentRunResourceManager.attach/release` | Pass | Pass | Pass | Low | Pass |
-| `ActiveAgentRunRegistry` / typed removal result | Pass | Pass | Pass | Low | Pass |
-| Artifact delivery command/queue/service | Pass | Pass | Pass | Low | Pass |
-| Engine controller/launcher | Pass | Pass | Pass | Low | Pass |
-| Closed event-dispatch queue | Pass | Pass | Pass | Low | Pass |
+| Existing runtime/package/run/session/publication contracts | Pass | Pass | Pass | Low | Pass |
+| AFB diagnostic/source-profile contract | Pass | Pass | Pass | Low | Pass |
+| AFB-004 obligation table/evaluator | Pass | Pass | Pass | Low | Pass |
+| Vue/TS/JS project resolver | Pass | Pass | Pass | Low | Pass |
 
 ## Existing Capability / Subsystem Reuse Verdict
 
 | Need / Concern | Existing Capability Area Was Checked? | Reuse / Extension Decision Is Sound? | New Support Piece Is Justified? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Package parsing/validation | Pass | Pass | N/A | Pass | Reuses `FileApplicationBundleProvider`; no second parser. |
-| Package catalog refresh | Pass | Pass | Pass | Pass | One sequencing coordinator is justified. |
-| Agent-run observer/session cleanup | Pass | Pass | Pass | Pass | Extracts current manager-owned resources into one exact lifecycle owner. |
-| Active run state | Pass | Pass | Pass | Pass | Registry owns identity/pruning, not backend orchestration. |
-| Engine handle/start split | Pass | Pass | Pass | Pass | Controller and launcher retain distinct real owners. |
-| Artifact delivery | Pass | Pass | Pass | Pass | Closed queue/service is required by the acyclic ensure path and existing asynchronous semantics. |
-| Event wakeup | Pass | Pass | Pass | Pass | Domain queue reuses the durable journal and is not generic. |
-| General-process behavior | Pass | Pass | Pass | Pass | Named assembly factories preserve the distinct scope. |
+| Architecture enforcement | Pass | Pass | Pass | Pass | One focused Vitest architecture test is sufficient. |
+| TypeScript plus Vue SFC extraction | Pass | Pass | Pass | Pass | Direct test-only parser dependency is truthful and avoids generated Nuxt authority. |
+| Existing documentation | Pass | Pass | N/A | Pass | Two current documents are sufficient. |
+| Existing product regression suite | Pass | Pass | N/A | Pass | It remains the behavior authority after implementation. |
 
 ## Subsystem / Capability-Area Allocation Verdict
 
 | Subsystem / Capability Area | Ownership Allocation Is Clear? | Reuse / Extend / Create-New Decision Is Sound? | Supports The Right Spine Owners? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Application platform runtime | Pass | Pass | Pass | Pass | Four outward projections over private owners. |
-| Application packages | Pass | Pass | Pass | Pass | Registry, command, refresh, and runtime reconciliation roles are coherent. |
-| Agent execution | Pass | Pass | Pass | Pass | Run identity and resource cleanup are separate but connected authoritative owners. |
-| Agent Tools MCP | Pass | Pass | Pass | Pass | Early scope revocation and later issuer share one process family without publisher backflow. |
-| Published artifacts | Pass | Pass | Pass | Pass | Relay maps; queue orders; delivery ensures and invokes. |
-| Application engine | Pass | Pass | Pass | Pass | Controller and launcher division preserves all lazy-start consumers. |
-| Application orchestration/events | Pass | Pass | Pass | Pass | Two closed queues have distinct subjects and lifecycle contracts. |
+| Production application framework | Pass | Pass | Pass | Pass | No production change is justified. |
+| Server architecture test | Pass | Pass | Pass | Pass | One test owns AFB-001–AFB-005 and exact fixtures/current-tree verification. |
+| Application architecture documentation | Pass | Pass | Pass | Pass | Canonical module table and short top-level pointer are proportionate. |
 
 ## Reusable Owned Structures Verdict
 
 | Repeated Structure / Logic | Extraction Need Was Evaluated? | Shared File Choice Is Sound? | Ownership Of Shared Structure Is Clear? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Runtime transport projections | Pass | Pass | Pass | Pass | Shared exact contracts are appropriate. |
-| Ordered catalog propagation | Pass | Pass | Pass | Pass | One coordinator prevents sequence duplication. |
-| Run resource records/results | Pass | Pass | Pass | Pass | Exact run identity and release outcome are singular. |
-| Active-run lookup/removal | Pass | Pass | Pass | Pass | Registry owns map transitions and invokes the early resource owner. |
-| Engine handle/control state | Pass | Pass | Pass | Pass | Controller is a real state owner. |
-| Artifact command/lease | Pass | Pass | Pass | Pass | Closed run-scoped ordering and completion contract. |
-| Journal wakeup queue | Pass | Pass | Pass | Pass | Closed application-ID structure is appropriately reusable. |
+| Five policy definitions | Pass | Pass | Pass | Pass | One test-local closed table is appropriate. |
+| Source extraction/project resolution | Pass | Pass | Pass | Pass | Current tree and fixtures must use the same machinery. |
+| AFB-004 construction obligations | Pass | Pass | Pass | Pass | The closed table now includes parent and nested provider-factory identities. |
+| Documentation rule table | Pass | Pass | Pass | Pass | Human guidance is synchronized but does not replace executable truth. |
 
 ## Shared Structure / Data Model Tightness Verdict
 
 | Shared Structure / Type / Schema | One Clear Meaning Per Field? | Redundant Attributes Removed? | Overlapping Representation Risk Is Controlled? | Shared Core Vs Specialized Variant / Composition Decision Is Sound? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| `ApplicationPlatformRuntime` | Pass | Pass | Pass | Pass | Pass | Four projections replace 19 mixed fields. |
-| REST/realtime/host-management contracts | Pass | Pass | Pass | Pass | Pass | Subject-specific immutable views. |
-| Session owner and run-resource release shapes | Pass | Pass | Pass | Pass | Pass | Scope identity, run identity, detached categories, and errors are non-overlapping. |
-| `AgentRunRemovalResult` | Pass | Pass | Pass | Pass | Pass | Removed/not-found/identity-mismatch are closed, explicit outcomes. |
-| Artifact delivery command | Pass | Pass | Pass | Pass | Pass | Carries only exact delivery identity and mapped event. |
-| Event wakeup shape | Pass | Pass | Pass | Pass | Pass | Application ID only; journal remains authoritative. |
-| Engine controller/launcher contracts | Pass | Pass | Pass | Pass | Pass | Attached state and ensure/start responsibilities do not overlap. |
+| AFB policy record | Pass | Pass | Pass | Pass | Pass | Scope, direction, exception, and diagnostic are distinct. |
+| Governed source/project profile | Pass | Pass | Pass | Pass | Pass | Source kind, config, root, aliases, and manifest are exact. |
+| AFB-004 required occurrence/shape record | Pass | Pass | Pass | Pass | Pass | Object properties and positional arguments remain distinct exact shapes evaluated by one mechanism. |
 
 ## File Responsibility Mapping Verdict
 
-| File / Area | Responsibility Is Singular And Clear? | Responsibility Matches The Intended Owner/Boundary? | Responsibilities Were Re-Tightened After Shared-Structure Extraction? | Verdict | Notes |
+| File | Responsibility Is Singular And Clear? | Responsibility Matches The Intended Owner/Boundary? | Responsibilities Were Re-Tightened After Shared-Structure Extraction? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `application-platform-runtime-contracts.ts` | Pass | Pass | Pass | Pass | Exact outward contracts. |
-| package registry/command/refresh files | Pass | Pass | Pass | Pass | State, commands/rollback, and ordered propagation remain distinct. |
-| `application-agent-tool-mcp-session-scope.ts` | Pass | Pass | Pass | Pass | Early application-scope ownership/revocation only. |
-| `agent-run-resource-manager.ts` | Pass | Pass | Pass | Pass | Exact session/file/artifact/memory attachment lifecycle. |
-| `active-agent-run-registry.ts` | Pass | Pass | Pass | Pass | Map, identity transitions, inactive pruning, typed removal. |
-| `application-published-artifact-delivery-{queue,service}.ts` | Pass | Pass | Pass | Pass | Closed ordering/completion and late ensure/invoke consumer. |
-| `application-engine-controller.ts` / `application-engine-launcher.ts` | Pass | Pass | Pass | Pass | Stable handles versus process/startup. |
-| event queue/dispatcher/reentry files | Pass | Pass | Pass | Pass | Durable wakeup, dispatch policy, explicit reentry. |
+| `tests/architecture/application-framework-boundaries.test.ts` | Pass | Pass | N/A | Pass | Owns policy parsing, resolution, exact binding/shape checks, fixtures, current-tree proof, and diagnostics. |
+| `autobyteus-server-ts/package.json` / `pnpm-lock.yaml` | Pass | Pass | N/A | Pass | Direct test-only SFC parser declaration only. |
+| `docs/modules/applications.md` | Pass | Pass | N/A | Pass | Canonical human-readable policy/obligation/profile guidance. |
+| `docs/ARCHITECTURE.md` | Pass | Pass | N/A | Pass | Short summary and pointer only. |
 
 ## Subsystem / Folder / File Placement Verdict
 
 | Path / Item | Target Placement Is Clear? | Folder Matches Owning Boundary? | Mixed-Layer Or Over-Split Risk | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `application-platform/runtime/` contracts/reconciliation | Pass | Pass | Low | Pass | Runtime boundary concerns. |
-| `application-packages/services/` command/refresh | Pass | Pass | Low | Pass | Package capability ownership. |
-| `agent-tools/mcp/` session scope | Pass | Pass | Low | Pass | MCP session ownership/revocation. |
-| `agent-execution/` resource manager/active registry | Pass | Pass | Low | Pass | Agent-run lifecycle state and attachments. |
-| `application-engine/services/` controller/launcher | Pass | Pass | Low | Pass | Engine state and startup owners. |
-| `application-orchestration/services/` artifact/event queues and consumers | Pass | Pass | Low | Pass | Two explicit orchestration return paths. |
+| Server architecture test | Pass | Pass | Low | Pass | Existing Vitest discovery covers `tests/**/*.test.ts`. |
+| Server dev manifest/workspace lock | Pass | Pass | Low | Pass | Parser ownership is direct and test-only. |
+| Existing application architecture docs | Pass | Pass | Low | Pass | Detailed module policy and top-level summary remain separated. |
 
 ## Removal / Decommission Completeness Verdict
 
 | Item / Area | Redundant / Obsolete Piece To Remove Is Named? | Replacement Owner / Structure Is Clear? | Removal / Decommission Scope Is Explicit? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| 19-field runtime outward shape | Pass | Pass | Pass | Pass | Replace with four projections. |
-| Late Studio callbacks and package defaults | Pass | Pass | Pass | Pass | Registry/command/refresh owners. |
-| `BindOncePublishedArtifactPublisher` | Pass | Pass | Pass | Pass | Early scope/resource/registry permits concrete publisher before issuer. |
-| `BindOnceApplicationEngineEventHandler` | Pass | Pass | Pass | Pass | Closed event and artifact queues permit late consumers. |
-| `ApplicationEngineHostService` | Pass | Pass | Pass | Pass | Controller, launcher, and artifact/event consumers allocate every current responsibility. |
-| Manager active/disposer collections | Pass | Pass | Pass | Pass | Registry and resource manager replace them cleanly. |
-| Application-path singleton/default branches | Pass | Pass | Pass | Pass | Exact removal inventory and negative scans are required. |
+| Production runtime/source | N/A | N/A | Pass | Pass | No production removal or edit is proposed. |
+| Generic candidate machinery | Pass | N/A | Pass | Pass | Unsupported public facade/harness/lifecycle/directory/suffix/correlation work remains deferred or rejected. |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Area | Compatibility Wrapper / Dual-Path / Legacy Retention Exists? | Clean-Cut Removal Is Explicit? | Verdict | Notes |
 | --- | --- | --- | --- | --- |
-| Runtime projections/package/run/engine services | No | Pass | Pass | No alias or dual path. |
-| Bind-once files and engine host | No target retention | Pass | Pass | Complete replacements are now explicit. |
-| Public wire/data/package contracts | No | Pass | Pass | Remain unchanged rather than wrapped. |
+| Architecture enforcement | No | Pass | Pass | One checker/policy version; no suppression, alias, or compatibility route. |
+| Product runtime/contracts | No change | Pass | Pass | Existing current contracts remain authoritative. |
 
 ## Persisted-Data Transition Verdict (When Applicable)
 
 | Area / Stored Subject | Approved Decision | Representative Reader / Semantic / Invariant Evidence Is Sufficient? | Direct Use, Rebuild, Or Migration Choice Is Proportionate? | Migration Safety Is Complete If Required? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| Package files/manifests | Directly Usable — No Migration | Pass | Pass | N/A | Pass | No serialized package change. |
-| App/platform databases, overrides, bindings, lookup state | Directly Usable — No Migration | Pass | Pass | N/A | Pass | Constructor/interface refactor only. |
-| Event journal/projections/migration ledgers | Directly Usable — No Migration | Pass | Pass | N/A | Pass | Existing records and semantics remain authoritative. |
-| MCP sessions, queues, engine handles, active-run/resource records | In-memory; recreate on process start | Pass | Pass | N/A | Pass | No persisted representation. |
+| All package/database/configuration/journal/projection data | Directly Usable — No Migration | Pass | Pass | N/A | Pass | Test/dev-manifest/lock/docs-only target changes no stored representation. |
 
 ## Change / Refactor Safety Verdict
 
 | Area | Sequence Is Realistic? | Temporary Seams Are Explicit? | Cleanup / Removal Is Explicit? | Verdict |
 | --- | --- | --- | --- | --- |
-| Runtime projections and registrar migration | Pass | Pass | Pass | Pass |
-| Package registry/command/refresh split | Pass | Pass | Pass | Pass |
-| Session scope/resource/registry and publisher/session/run order | Pass | Pass | Pass | Pass |
-| Engine controller/queues/launcher/consumers | Pass | Pass | Pass | Pass |
-| Retired-symbol/default/alias scans | Pass | Pass | Pass | Pass |
-| Full API-REV-011 characterization rerun | Pass | Pass | Pass | Pass |
-
-The sequence keeps the previously passed implementation working in bounded clusters, removes obsolete owners only after exact replacements compile, and permits no steady-state old/new dual path.
+| Add dependency/test, prove fixtures/current tree, update docs, rerun baseline | Pass | Pass | Pass | Pass |
+| Exact five-file implementation inventory | Pass | Pass | Pass | Pass |
+| Zero production-source change | Pass | Pass | Pass | Pass |
+| AFB-004 regression prevention | Pass | Pass | Pass | Pass |
+| Heterogeneous governed-source coverage | Pass | Pass | Pass | Pass |
 
 ## Example Adequacy Verdict
 
 | Topic / Area | Example Was Needed? | Example Is Present And Clear? | Bad / Avoided Shape Is Explained When Helpful? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Four runtime projections | Yes | Pass | Pass | Pass | Exact TypeScript shapes and caller mapping. |
-| Package success and rollback | Yes | Pass | Pass | Pass | Local/GitHub/remove/reload sequences are explicit. |
-| Active-run removal and cleanup | Yes | Pass | Pass | Pass | Interfaces and six transition rules cover all supported origins and stale identity. |
-| Engine ensure and publication relay | Yes | Pass | Pass | Pass | Command, queue lease, ensure/invoke, caller policy, and shutdown drain are explicit. |
-| Event queue/dispatcher | Yes | Pass | Pass | Pass | Domain-specific queue and journal order are clear. |
-| Complete construction/shutdown | Yes | Pass | Pass | Pass | Fourteen-step construction and exact stop ordering expose every owner. |
+| AFB-001–AFB-005 TS/JS/Vue imports | Yes | Pass | Pass | Pass | Current-tree and synthetic cases are explicit. |
+| Publication/run/session/provider/team omissions | Yes | Pass | Pass | Pass | Table-driven missing/null/undefined/spread cases use the exact evaluator. |
+| Nested provider backend-factory omission | Yes | Pass | Pass | Pass | Allowed constructions and independent Codex/Claude negative cases are exact. |
+| Vue SFC and per-project resolution | Yes | Pass | Pass | Pass | Parser, profiles, manifests, unresolved policy, and fixtures remain complete. |
 
 ## Material Premise Validation
 
-### MP-ARCH-010-001 — application worker exits before a still-active application run publishes an artifact
+### MP-ARCH-012-001 — a supported application-runtime edit omits an explicit graph-local constructor option
 
-- Related approved requirement or established contract: REQ-004, REQ-010; AC-005, AC-006, AC-021, AC-022; UC-009, UC-012, UC-026
-- Relevant behavior ID(s): BEH-004, BEH-010
-- Initiating basis kind: `System`
-- Independent product-supported initiating trigger or applicable governing contract: an active application worker exits after starting an application-bound provider/team run; the server-process-owned provider run retains its issued Agent Tools session and later invokes supported `publish_artifacts`.
-- Support evidence: UC-012 and UC-026 cover worker exit and publication. Current worker-close handling removes the engine handle without inherently terminating the provider run/session; publication is an established capability.
-- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: worker exit -> handle detached -> provider calls the authenticated Agent Tools route -> application publisher persists/projected artifact -> binding relay -> artifact delivery queue -> delivery service -> launcher `ensureReady` -> worker restart -> controller artifact-handler invoke -> business projection/UI.
-- Lifecycle preconditions and material consequence at the claimed point: binding and provider run remain active while no worker handle exists. Without ensure, delivery is lost; SR-013 now ensures/restarts before invocation and drains accepted delivery before engine stop.
+- Related approved requirement or established contract: REQ-011, AC-024; preservation of REQ-004/REQ-010 and AC-019/AC-021
+- Relevant behavior ID(s): BEH-004, BEH-005, BEH-010, BEH-011
+- Initiating basis kind: `Contract`
+- Independent product-supported initiating trigger or applicable governing contract: BEH-011/UC-028 explicitly support contributor changes to application construction and require immediate failure when a change selects a process-global/default owner by omission.
+- Support evidence: current application construction passes Codex argument 1 and Claude arguments 0/1 explicitly; their reusable constructors default those inputs to general-process owners if omitted.
+- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: contributor omits one governed graph-sensitive construction input -> the standard server architecture test resolves the exact constructor binding -> the AFB-004 occurrence/shape evaluator rejects omitted, `null`, or `undefined` before product execution -> actionable diagnostic identifies the constructor/position and required scoped input.
+- Lifecycle preconditions and material consequence at the claimed point: development/CI only; invalid construction cannot reach supported Studio or standalone provider execution when the required suite passes.
 - Reachability: `Reachable`
-- Review consequence / proportionate response: AR-008 is resolved. The closed queue/service is limited to the established artifact return path and requires focused executable proof.
+- Review consequence / proportionate response: handled by exact obligations for Codex argument 1 and Claude arguments 0/1, with allowed Codex positions 0/2 and a closed non-recursive parent audit. No production constructor change or generic default ban is justified.
 
-### MP-ARCH-010-002 — a supported active-run operation encounters an inactive or replaced run
+### MP-ARCH-012-002 — a supported Studio application-presentation edit adds a forbidden dependency inside a Vue SFC
 
-- Related approved requirement or established contract: REQ-004, REQ-005, REQ-010; AC-005, AC-006, AC-016, AC-021, AC-023; current agent-run cleanup behavior
-- Relevant behavior ID(s): BEH-004, BEH-005, BEH-010
-- Initiating basis kind: `System`
-- Independent product-supported initiating trigger or applicable governing contract: a provider backend/session becomes inactive while the server process remains alive, followed by supported lookup, replacement, publication/projection, termination, or stop for that run.
-- Support evidence: current provider runs expose active state; established run lookups prune inactive runs and perform session/observer cleanup. UC-027 retains that contract for all supported removal origins.
-- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: backend inactive or termination accepted -> manager/consumer calls active registry -> exact `removeIfCurrent` identity transition -> map/resource ownership deleted -> resource manager revokes run sessions and detaches file/artifact/memory observers -> typed result consumed; stale completion returns mismatch/no-op.
-- Lifecycle preconditions and material consequence at the claimed point: resources remain attached until exact removal. Missing cleanup leaks capability/observers; non-identity removal can delete a replacement. SR-013 performs cleanup once without a registry-to-manager callback.
+- Related approved requirement or established contract: REQ-011, AC-024
+- Relevant behavior ID(s): BEH-011
+- Initiating basis kind: `Contract`
+- Independent product-supported initiating trigger or applicable governing contract: AFB-002 governs production application presentation; UC-028 supports contributor edits and requires policy feedback.
+- Support evidence: eleven governed Vue SFCs exist; direct `@vue/compiler-sfc` parsing extracts their actual script blocks and imports, while the seven project profiles define resolution/manifest authority.
+- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: contributor adds an SFC script import -> direct SFC parser extracts it -> TS/JS AST resolves it under `studio-web` -> AFB-002 accepts it or returns an exact diagnostic -> contributor corrects and reruns before Studio build/use.
+- Lifecycle preconditions and material consequence at the claimed point: development/CI only; no parser enters production.
 - Reachability: `Reachable`
-- Review consequence / proportionate response: AR-009 is resolved. The early scope/resource/registry chain is proportionate and requires focused multi-origin/race/failure proof.
+- Review consequence / proportionate response: handled by the unchanged SR-015 AR-011 solution. Implementation/source review must prove direct dependency ownership, eleven-file enumeration, and the same fixture/current-tree path.
 
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
@@ -302,7 +245,7 @@ None.
 
 `Pass`
 
-SR-013 resolves AR-008 and AR-009 while retaining the already accepted CR-019 and CR-020 corrections. The complete target is behavior-grounded, acyclic, actionable in the current codebase, and proportionate to the two reachable lifecycle premises. Implementation may resume through the normal source-review and API/E2E path.
+SR-016 resolves the last open checker-design finding. The production architecture remains the fully passed SR-013 baseline. DS-016 is implementation-ready as a behavior-neutral, exact five-file hardening change: one architecture test, the server dev-manifest and workspace-lock dependency entries, and two existing documentation updates.
 
 ## Findings
 
@@ -318,20 +261,20 @@ None.
 
 ## Residual Risks
 
-1. Implementation must preserve queue completion/caller semantics: active-run relay remains fire-and-forget with logged failure, fallback relay remains awaited, and delivery failure does not undo persisted projection state.
-2. Worker-exit-before-publication must prove actual `ensureReady` restart followed by controller handler invocation and UI/business projection.
-3. Exact cleanup proof must cover inactive discovery/replacement, partial attach rollback, accepted terminate, stop-all, duplicate/stale removal, aggregate failure, and deliberately distinct application/general scopes.
-4. Shutdown must stop artifact intake, drain accepted commands while launcher/controller remain live, then stop workers/runs/scopes without accepting new sessions or delivery.
-5. The full API-REV-011 Studio/standalone characterization and exact `73/73` package parity remain mandatory; focused unit/structural tests are not a substitute.
-6. The Directly Usable — No Migration decision remains correct; no compatibility or migration machinery is warranted.
-7. The task branch remains behind tracked `origin/personal`; delivery retains final refresh/integration ownership.
+1. Implementation must use TypeScript parsing/resolution plus direct Vue SFC extraction, not grep, whole-SFC TypeScript parsing, generated `.nuxt` state, or a generic layering framework.
+2. AFB-004 must use one exact binding/shape evaluator for current-tree occurrences and fixtures, including every required omission/null/undefined/spread case and the exact allowed Codex positions 0/2.
+3. Project profiles, own-manifest dependency authority, fail-closed governed resolution, direct-callee aliases/namespace binding, and the two general-process assembly exemptions must remain exact.
+4. The implementation diff must remain exactly five files with no production source, runtime, route, schema, package output, data, generated artifact, compatibility path, or migration change.
+5. Source review and API/E2E must preserve the complete `CRR-033`/`API-REV-012`/`CRR-034` behavior baseline and exact `73/73` package parity proportionately.
+6. Documentation IDs, meanings, obligation inventory, project/manifest rules, and corrections must match the executable test; docs must not become an independent behavior source.
+7. Delivery retains tracked-base integration ownership. Preserve other roles' dirty reports/evidence and generated devkit outputs.
 8. `APIE2E-REPO-005` remains separately `Unclear` and must not broaden this implementation.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Current Architecture Review Revision: `ARCH-REV-011`
-- Reviewed Solution Revision: `SR-013`
-- Material-Premise Gate: `Pass` (`MP-ARCH-010-001` and `MP-ARCH-010-002` remain reachable and are handled proportionately)
-- Finding IDs: None; `AR-008` and `AR-009` resolved
-- Notes: CR-019, CR-020, and CR-021 are resolved in design. The cumulative reviewed solution package is ready for `implementation_engineer`; implementation/source/API-E2E evidence remains pending and no downstream pass is implied.
+- Current Architecture Review Revision: `ARCH-REV-014`
+- Reviewed Solution Revision: `SR-016`
+- Material-Premise Gate: `Pass`; MP-ARCH-012-001 and MP-ARCH-012-002 are handled proportionately
+- Finding IDs: None; `AR-010` resolved and `AR-011` remains resolved
+- Notes: The SR-014 Adopt/Defer/Reject decision, SR-013 production architecture, SR-015 SFC/project solution, and exact five-file implementation boundary are approved. Proceed to implementation without production refactor or scope expansion.

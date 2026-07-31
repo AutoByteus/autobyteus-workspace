@@ -3,77 +3,70 @@
 ## Scope
 
 - Ticket: `universal-application-framework-proposal-analysis`
-- Trigger: `CRR-030` proportional durable-test review Pass following `SR-011`, `ARCH-REV-009`, `IR-016`, `CRR-029`, and `API-REV-011`; DR-004 user request for a local Electron verification package
-- Bootstrap base reference: `origin/personal` at `6caf809303294252c109420b238588f0c68aca6a`
-- Integrated base reference used for docs sync: refreshed `origin/personal` at `dfc0468b137cd231b79ff8096fa46750611b06e2`
-- Post-integration verification reference: integrated candidate `669273f900950113ff0a8e60f9eca8142a3224bc`; `evidence/delivery/dr-003-base-refresh-and-integration.log`; `evidence/delivery/dr-003-post-integration-check.log`; local desktop package record `electron-test-build-report.md`
+- Trigger: `CRR-034` proportional durable-test review Pass following `SR-013`, `ARCH-REV-011`, `IR-018`, `CRR-033`, and `API-REV-012`
+- Bootstrap base reference: `origin/personal@6caf809303294252c109420b238588f0c68aca6a`
+- Previously integrated base: `origin/personal@dfc0468b137cd231b79ff8096fa46750611b06e2`
+- Current integrated base: `origin/personal@80d6693c1b0df5abdfd2c3dc0ec01ff885425847`
+- Current integrated candidate: `f25a9646ebb153714bc486cf14519f3530e1f83d`
+- Integration/check evidence: `evidence/delivery/dr-005-base-refresh-and-integration.log`, `evidence/delivery/dr-005-post-integration-check.log`, and `evidence/delivery/dr-005-delivery-audit.log`
 
 ## Why Docs Were Updated
 
-- Summary: The prior delivery sync already documented the final dual-host behavior. SR-011/IR-016 then corrected the central framework vocabulary without changing that behavior, and updated the affected long-lived server, web, devkit, and external-authoring docs. Delivery verified that current docs use concrete `Server`, `Runtime`, `Manager`, `Supervisor`, `Coordinator`, `Service`, `Publisher`, `Handler`, and `BindOnce*` roles and contain no retired central identifier or compatibility alias.
-- Why this should live in long-lived project docs: Maintainers should be able to infer construction, lifetime, scope, and lifecycle ownership directly from code and documentation after the ticket is archived. The runtime-build invariant—preparing services/managers starts no new agent or team run—must remain explicit alongside the already-documented dual-host, launch-configuration, session/publication, shutdown, and atomic-package contracts.
+SR-013 / IR-017 materially simplified the internal application-framework ownership model while preserving the already-approved dual-host product behavior. Long-lived server module docs were updated with the implementation so maintainers can understand the current four-projection runtime boundary, package command/reconciliation ownership, acyclic application-engine construction, worker recovery, artifact delivery ordering, and exact run/resource cleanup without consulting ticket history.
+
+IR-018 changes no public or developer-facing boundary. It corrects stop-all continuation so inactive-run pruning errors are retained while every remaining exact run is still attempted; the current lifecycle documentation already states that contract, so no additional long-lived edit was required for IR-018.
 
 ## Long-Lived Docs Reviewed
 
-| Doc Path | Why It Was Reviewed | Result (`Updated`/`No change`/`Needs follow-up`) | Notes |
-| --- | --- | --- | --- |
-| `autobyteus-server-ts/docs/modules/applications.md` | Studio/standalone server assembly and application runtime ownership | Updated | Uses `buildStudioServer`, `buildStandaloneApplicationServer`, and `ApplicationPlatformRuntime`; distinguishes server assembly from live runtime. |
-| `autobyteus-server-ts/docs/modules/application_orchestration.md` | Current runtime/service/session/publisher owners | Updated | Uses current service/manager/publisher vocabulary and current source paths while retaining launch configuration semantics. |
-| `autobyteus-server-ts/docs/modules/application_backend_api_gateway.md` | Studio API service configuration and setup routes | Updated | Uses service vocabulary; preview/save/reset behavior remains unchanged. |
-| `autobyteus-server-ts/docs/modules/application_engine.md` | Runtime construction, recovery, and shutdown | Updated | Uses current runtime/coordinator/manager names and retains no-new-run-on-build plus ordered shutdown behavior. |
-| `autobyteus-server-ts/docs/modules/application_sessions.md` | Process MCP runtime and scoped session lifetime | Updated | Uses `AgentToolsMcpRuntime` and scoped session managers instead of the retired authority vocabulary. |
-| `autobyteus-web/docs/applications.md` | Studio application's server-owned runtime boundary | Updated | Makes clear that loading setup does not traverse definitions or create runs; business demand owns launch. |
-| `docs/custom-application-development.md` | External author view of both servers and runtime | Updated | Names both server builders, `ApplicationPlatformRuntime`, process MCP runtime, scoped managers, and the zero-new-run construction invariant. |
-| `autobyteus-application-devkit/README.md` | Devkit/server responsibility split | Updated | Devkit orchestrates project/watch/host processes; server owns standalone assembly/runtime construction. |
-| `autobyteus-application-frontend-sdk/README.md`, `autobyteus-application-sdk-contracts/README.md`, sample application READMEs, and `autobyteus-web/docs/application-bundle-iframe-contract.md` | Confirm behavior/wire/package docs remain accurate after behavior-neutral rename | No change | SR-011 changes no external wire, manifest, command, package, iframe, or SDK contract. Prior reviewed updates remain authoritative. |
-| Base-branch token-usage docs and release records | Check whether the newly integrated v1.4.31 base requires application-framework doc reconciliation | No change | The base delta owns and documents its token-statistics schema/UI behavior separately; it does not change this ticket's application framework contract. |
-
-## Docs Updated
-
-| Doc Path | Type Of Update | What Changed | Why |
-| --- | --- | --- | --- |
-| `autobyteus-server-ts/docs/modules/{applications,application_orchestration,application_backend_api_gateway,application_engine,application_sessions}.md` | Reviewed IR-016 documentation update | Replaced opaque central role names/files with responsibility-based server/runtime/service/manager/coordinator/publisher terminology | Resolve `CR-018` and keep source ownership inferable. |
-| `autobyteus-web/docs/applications.md` | Reviewed IR-016 documentation update | Names the shared `ApplicationPlatformRuntime` and explicitly states that setup/runtime construction starts no run | Preserve demand-driven execution semantics. |
-| `docs/custom-application-development.md` | Reviewed IR-016 documentation update | Names server builders, live runtime, MCP runtime/scoped managers, and construction/recovery/run-trigger boundaries | Give external authors a truthful mental model without exposing internal dependency-container jargon. |
-| `autobyteus-application-devkit/README.md` | Reviewed IR-016 documentation update | Clarifies devkit orchestration versus server/runtime construction | Prevent the CLI from being mistaken for the application runtime/run owner. |
-| Prior DR-002 documentation set | Delivery sync retained | Dual-host composition, portable package defaults/Studio overrides, scoped publication/session lifecycle, deterministic shutdown, and atomic packaging | Functional behavior did not change in SR-011/IR-016. |
-
-No additional long-lived project-doc edit was required after merging the 13 new base commits. Delivery audited the integrated files and refreshed only this canonical docs-sync record and final handoff artifacts.
-
-DR-004 likewise requires no new long-lived project-doc edit: it executes the already-documented local Electron build and creates a ticket-local test-build report rather than changing product behavior, packaging policy, or author guidance.
+| Doc Path | Result | Current Truth |
+| --- | --- | --- |
+| `autobyteus-server-ts/docs/modules/applications.md` | Updated by IR-017; delivery-verified | `ApplicationPlatformRuntime` exposes exactly four immutable projections: `lifecycle`, `rest`, `realtime`, and `hostManagement`. Package registry, command, refresh, and reconciliation owners are explicit. |
+| `autobyteus-server-ts/docs/modules/application_engine.md` | Updated by IR-017; delivery-verified | Launcher owns ensure/start/restart/stop; controller owns attached workers and invocation. Accepted artifact delivery drains before engine stop; run/resource/session/observer cleanup ordering is explicit. |
+| `autobyteus-server-ts/docs/modules/application_orchestration.md` | Updated by IR-017; delivery-verified | Per-run FIFO/independent artifact lanes ensure the worker before controller delivery, lifecycle journals remain separate, and recovery/reentry ownership is current. |
+| `autobyteus-server-ts/docs/modules/application_sessions.md` | Updated by IR-017; delivery-verified | Application session scope is established early; shutdown drains accepted artifact work, stops exact runs, revokes scope, and detaches owned observers. |
+| `autobyteus-server-ts/docs/modules/application_backend_api_gateway.md` | Updated by IR-017; delivery-verified | Gateway docs depend on narrow launcher/controller contracts rather than the removed broad engine host. |
+| Prior server/web/devkit/external-authoring docs from DR-002/DR-003 | No additional change | Dual-host composition, portable package defaults/Studio overrides, application launch behavior, scoped Agent Tools publication, shutdown, and atomic package contracts remain accurate. |
+| v1.4.32 model/pricing docs integrated from `origin/personal` | No application-framework change | `.github` release notes and `autobyteus-ts` LLM/provider-model docs independently describe GPT-5.6 pricing and Claude Opus 5 support. |
+| Electron packaging docs | No change | DR-005 followed the existing local unsigned macOS ARM64 process; no packaging policy changed. |
 
 ## Durable Design / Runtime Knowledge Promoted
 
-| Topic | What Future Readers Need To Understand | Source Ticket Artifact(s) | Target Long-Lived Doc |
+| Topic | Current Durable Contract | Requirements / Review Basis | Long-Lived Location |
 | --- | --- | --- | --- |
-| Concrete framework role vocabulary | `Server` is the assembled host, `Runtime` the live application service set, `Manager` a scoped collection/lifecycle owner, `Supervisor` a long-lived run owner, `Coordinator` ordered multi-owner action, and publishers/handlers/bind-once wrappers name exact call roles. | `requirements.md` BEH-009/REQ-009/AC-018, `design-spec.md`, `SR-011`, `ARCH-REV-009`, `IR-016` | Five server application module docs, web Applications doc, custom-development guide, devkit README |
-| Runtime construction versus execution | Building one or more `ApplicationPlatformRuntime` instances prepares isolated services/managers but starts zero new agent/team runs; business demand starts new runs and recovery restores only recorded runs. | `SR-011`, `IR-016`, `CRR-029`, `API-REV-011`, `CRR-030` | Server Applications/Engine docs, web Applications doc, custom-development guide |
-| Clean private rename | Retired files, exports, tests, wrappers, and aliases are absent; no wire/data/package contract changed. | `design-spec.md`, `IR-016`, `CRR-029`, `API-REV-011` | Current source paths and affected long-lived docs |
-| Functional dual-host model | One immutable package runs in Studio and standalone with portable defaults, sparse Studio overrides, scoped MCP publication, ordered cleanup, and atomic package publication. | Prior cumulative package through `API-REV-010`; revalidated by `API-REV-011` | Prior DR-002 doc set retained under current vocabulary |
+| Narrow host boundary | Hosts consume only the immutable `lifecycle`, `rest`, `realtime`, and `hostManagement` projections; private construction owners do not leak outward. | `BEH-010`, `REQ-010`, `AC-019`, `CR-019` | Applications module docs |
+| Package ownership | Registry owns current state/query, command service owns import/reload/remove and rollback, refresh coordinator owns ordered catalog refresh, and reconciliation is a stable late dependency rather than a later-bound callback. | `AC-020`, `CR-020` | Applications module docs |
+| Acyclic execution construction | Application session scope and exact run identity/resource owners exist before run managers; engine launcher/controller/context/event owners are constructed without permanent bind-once proxies. | `AC-021`–`AC-022`, `CR-021` | Engine, Sessions, Gateway docs |
+| Artifact delivery and worker recovery | Accepted artifact commands use FIFO per run and independent lanes, call `ensureReady()` before controller delivery, and drain while worker recovery remains available before engine stop. | `SV-C52`–`SV-C55`, API-REV-012 | Engine and Orchestration docs |
+| Exact cleanup and continuation | Exact identity is removed before resource/session/observer cleanup; replacement runs are protected; cleanup failures aggregate only after all retained exact runs are attempted. | `AC-023`, `CR-022`, IR-018, API-REV-012 | Engine and Sessions docs |
+| Retained dual-host behavior | One immutable package runs in Studio and standalone with portable defaults, sparse Studio overrides, scoped publication/handoff, route separation, remount/recovery, deterministic shutdown, and atomic package parity. | Cumulative requirements; API-REV-012 | Prior DR-002/DR-003 doc set retained |
 
 ## Removed / Replaced Components Recorded
 
-| Old Component / Path / Concept | What Replaced It | Where The New Truth Is Documented |
+| Removed Boundary | Current Owner(s) | Documentation Result |
 | --- | --- | --- |
-| `StudioServerComposition` / `buildStudioServerComposition` and standalone composition builder names | `StudioServer` / `buildStudioServer` and `buildStandaloneApplicationServer` | Server Applications docs and custom-development guide |
-| `ApplicationPlatformRuntimeGraph` / create-runtime-graph factory | `ApplicationPlatformRuntime` / `buildApplicationPlatformRuntime` | Server Applications/Engine docs, web Applications doc, custom-development guide |
-| Agent Tools process/application session `*Authority` names | `AgentToolsMcpRuntime`, `ScopedAgentToolMcpSessionManager`, and manager interfaces/factories | Application Sessions and Orchestration docs |
-| General-process and shutdown `*Authority` names | `GeneralProcessRunSupervisor` and `ApplicationRunShutdownCoordinator` with narrow stoppers | Application Engine and Orchestration docs |
-| Publication/event-handler `Port` names for concrete/bind-once call roles | `PublishedArtifactPublisher`, `BindOncePublishedArtifactPublisher`, `ApplicationEngineEventHandler`, and bind-once handler | Orchestration/Engine docs and current source paths |
-| `*Authorities` construction helpers | `*Services` builders/results | Orchestration and gateway docs |
+| Broad `ApplicationEngineHostService` | `ApplicationEngineController`, `ApplicationEngineLauncher`, state/context/event collaborators | Removed from current source and module docs; narrow owners documented. |
+| `BindOncePublishedArtifactPublisher` and `BindOnceApplicationEngineEventHandler` | Early stable session/publication/run construction and direct engine/event collaborators | Removed without compatibility aliases; current acyclic path documented. |
+| Broad overloaded `ApplicationPackageService` and temporal callbacks | Registry, command service, refresh coordinator, catalog reconciliation service | Split responsibilities documented in Applications module. |
+| Mixed outward `ApplicationPlatformRuntime` internals | Four immutable host projections | Exact current outward contract documented. |
+| Cleanup that could abort before later runs | Failure-preserving active-run snapshot plus manager aggregation | IR-018 restores the documented attempt-all contract. |
 
-## No-Impact Decision (Use Only If Truly No Docs Changes Are Needed)
+## Documentation Audit Result
 
-- Not used for the cumulative round: SR-011/IR-016 had deliberate long-lived documentation impact. The later base integration itself had no additional application-framework docs impact because its token-statistics documentation is independently complete.
+- Retired broad engine host, bind-once implementations, and broad package service are absent from current source and long-lived server module docs.
+- All five IR-017 module docs contain the current narrow owners and relevant lifecycle/order semantics.
+- The newly integrated v1.4.32 base changes only its independently owned model/pricing documentation and release history; it has no application-framework documentation impact.
+- DR-005 local Electron packaging changes no durable build policy; `electron-test-build-report.md` records the concrete verification artifact.
+
+Evidence: `evidence/delivery/dr-005-delivery-audit.log`.
 
 ## Delivery Continuation
 
 - Result: `Pass`
-- Next delivery action: User to test the DR-004 local macOS ARM64 Electron package for integrated candidate `669273f900950113ff0a8e60f9eca8142a3224bc` and provide explicit approval/completion or a concrete issue.
-- Notes: The base advanced by 13 commits and was merged after checkpoint `3f8ec4362f489b41c99e01b222eadfa8e1b76b74`. Full server build and the exact API-REV-011 11-file/34-test selection pass on the integrated state. The documented unsigned Electron build and artifact validation also pass. Repository finalization remains on hold until explicit user approval/completion.
+- Next action: user to test the current v1.4.32 macOS ARM64 Electron package for candidate `f25a9646ebb153714bc486cf14519f3530e1f83d` and provide explicit approval/completion or a concrete issue.
+- Finalization state: held. No ticket archival, final ticket commit, push, target merge, release, deployment, or cleanup may occur before explicit user verification.
 
-## Blocked Or Escalated Follow-Up (Use Only If Docs Sync Cannot Complete)
+## Blocked Or Escalated Follow-Up
 
 - Classification: `N/A`
 - Recommended recipient: `N/A`
-- Why docs could not be finalized truthfully: `N/A`
+- Documentation blocker: `N/A`

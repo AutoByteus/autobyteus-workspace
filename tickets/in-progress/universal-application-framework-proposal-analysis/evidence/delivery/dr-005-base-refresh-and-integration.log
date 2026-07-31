@@ -1,0 +1,82 @@
+# DR-005 latest-base refresh and integration
+Started UTC: 2026-07-31T09:52:51Z
+Branch: codex/universal-application-framework-proposal-analysis
+Reviewed handoff anchor: 792e4ba9941fadf9f349734a71f8eff3d73b0dec
+Safety checkpoint: ae0bd4f04160505df344ca36f2db55eb989d5e35
+Remote base before fetch: 80d6693c1b0df5abdfd2c3dc0ec01ff885425847
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+Remote base after fetch: 80d6693c1b0df5abdfd2c3dc0ec01ff885425847
+Pre-merge divergence HEAD...origin/personal: 82/8
+Base commits absent from checkpoint:
+777079e62 Update GPT-5.6 pricing and add Claude Opus 5
+1c4013ce9 Reconcile implementation handoff with durable Sonnet policy
+cff8bf54d chore(delivery): checkpoint validated pricing package
+acaab165f chore(ticket): archive update-openai-model-pricing
+dda4f2398 Merge branch 'codex/update-openai-model-pricing' into personal
+d03882153 chore(release): bump workspace release version to 1.4.32
+1d79e908f docs(delivery): record v1.4.32 finalization and release
+80d6693c1 docs(delivery): verify v1.4.32 publication and cleanup
+Merge made by the 'ort' strategy.
+ .github/release-notes/release-notes.md             |   9 +-
+ autobyteus-message-gateway/package.json            |   2 +-
+ .../messaging-gateway/release-manifest.json        |  10 +-
+ ...pt56-token-usage-accounting-graphql.e2e.test.ts |  69 ++-
+ .../pricing/token-price-config-provider.test.ts    |   1 +
+ autobyteus-ts/docs/llm_module_design.md            |   7 +-
+ autobyteus-ts/docs/llm_module_design_nodejs.md     |  11 +-
+ autobyteus-ts/docs/provider_model_catalogs.md      |  41 +-
+ autobyteus-ts/src/llm/api/anthropic-llm.ts         |   1 +
+ .../src/llm/metadata/curated-model-metadata.ts     |   7 +
+ .../src/llm/supported-model-definitions.ts         |  34 +-
+ .../llm/llm-factory-metadata-resolution.test.ts    |  18 +
+ .../tests/unit/llm/api/anthropic-llm.test.ts       |   1 +
+ .../unit/llm/supported-model-definitions.test.ts   |  22 +-
+ autobyteus-web/package.json                        |   2 +-
+ .../api-e2e-revision-record.md                     |  34 ++
+ .../api-e2e-test-review-report.md                  |  60 +++
+ .../architecture-review-revision-record.md         |  72 +++
+ .../code-review-report.md                          | 184 ++++++++
+ .../code-review-revision-record.md                 |  82 ++++
+ .../coverage-investigation.md                      | 229 ++++++++++
+ .../delivery-revision-record.md                    |  40 ++
+ .../design-review-report.md                        | 229 ++++++++++
+ .../update-openai-model-pricing/design-spec.md     | 495 +++++++++++++++++++++
+ .../docs-sync-report.md                            |  68 +++
+ .../execution-coverage-report.md                   | 222 +++++++++
+ .../update-openai-model-pricing/handoff-summary.md | 119 +++++
+ .../implementation-handoff.md                      | 190 ++++++++
+ .../implementation-revision-record.md              |  89 ++++
+ .../investigation-notes.md                         | 194 ++++++++
+ .../release-deployment-report.md                   | 156 +++++++
+ .../update-openai-model-pricing/release-notes.md   |  10 +
+ .../update-openai-model-pricing/requirements.md    | 158 +++++++
+ .../solution-revision-record.md                    |  72 +++
+ 34 files changed, 2879 insertions(+), 59 deletions(-)
+ create mode 100644 tickets/done/update-openai-model-pricing/api-e2e-revision-record.md
+ create mode 100644 tickets/done/update-openai-model-pricing/api-e2e-test-review-report.md
+ create mode 100644 tickets/done/update-openai-model-pricing/architecture-review-revision-record.md
+ create mode 100644 tickets/done/update-openai-model-pricing/code-review-report.md
+ create mode 100644 tickets/done/update-openai-model-pricing/code-review-revision-record.md
+ create mode 100644 tickets/done/update-openai-model-pricing/coverage-investigation.md
+ create mode 100644 tickets/done/update-openai-model-pricing/delivery-revision-record.md
+ create mode 100644 tickets/done/update-openai-model-pricing/design-review-report.md
+ create mode 100644 tickets/done/update-openai-model-pricing/design-spec.md
+ create mode 100644 tickets/done/update-openai-model-pricing/docs-sync-report.md
+ create mode 100644 tickets/done/update-openai-model-pricing/execution-coverage-report.md
+ create mode 100644 tickets/done/update-openai-model-pricing/handoff-summary.md
+ create mode 100644 tickets/done/update-openai-model-pricing/implementation-handoff.md
+ create mode 100644 tickets/done/update-openai-model-pricing/implementation-revision-record.md
+ create mode 100644 tickets/done/update-openai-model-pricing/investigation-notes.md
+ create mode 100644 tickets/done/update-openai-model-pricing/release-deployment-report.md
+ create mode 100644 tickets/done/update-openai-model-pricing/release-notes.md
+ create mode 100644 tickets/done/update-openai-model-pricing/requirements.md
+ create mode 100644 tickets/done/update-openai-model-pricing/solution-revision-record.md
+Integrated candidate: f25a9646ebb153714bc486cf14519f3530e1f83d
+Post-merge divergence HEAD...origin/personal: 83/0
+Merge parents:
+f25a9646ebb153714bc486cf14519f3530e1f83d
+ae0bd4f04160505df344ca36f2db55eb989d5e35 80d6693c1b0df5abdfd2c3dc0ec01ff885425847
+Merge remote-tracking branch 'origin/personal' into codex/universal-application-framework-proposal-analysis
+Completed UTC: 2026-07-31T09:52:53Z
+FINAL: PASS

@@ -2,103 +2,96 @@
 
 ## Current Status
 
-- Delivery status: **Local Electron test package ready; explicit user verification pending**
-- Current delivery revision: `DR-004`
-- User-verification readiness: **Ready with validated macOS ARM64 DMG/ZIP; no explicit verification has yet been received**
+- Delivery status: **Current macOS ARM64 Electron package ready; explicit user verification pending**
+- Current delivery revision: `DR-005`
 - Ticket branch: `codex/universal-application-framework-proposal-analysis`
-- Integrated candidate: `669273f900950113ff0a8e60f9eca8142a3224bc`
-- Reviewed handoff anchor: `deb235f292251477b3e10808a93fe622753c709e` (`CRR-030`)
-- Reviewed production/source package: `IR-016`; source/test commit `b18b0dc9f`, documentation commit `8fccda58a`
-- Latest tracked base included: `origin/personal` at `dfc0468b137cd231b79ff8096fa46750611b06e2`
-- Candidate form: integrated commit plus uncommitted API/E2E/delivery evidence and canonical records; ignored DR-004 Electron test outputs are retained for the user; pre-existing/user-used `autobyteus-application-devkit/dist/` remains untracked and excluded
+- Integrated candidate: `f25a9646ebb153714bc486cf14519f3530e1f83d`
+- Reviewed handoff anchor: `792e4ba9941fadf9f349734a71f8eff3d73b0dec` (`CRR-034`)
+- Reviewed implementation: `IR-018` on `SR-013` / `ARCH-REV-011`
+- Latest tracked base included: `origin/personal@80d6693c1b0df5abdfd2c3dc0ec01ff885425847`
+- Candidate form: integrated commit plus uncommitted DR-005 delivery evidence/current canonical records; ignored Electron test outputs and generated devkit output remain preserved
 
 ## Authoritative Gates
 
-- Solution/architecture: `SR-011` and `ARCH-REV-009` **Pass** for the behavior-neutral responsibility vocabulary.
-- Implementation source review: `CRR-029` **Pass**, `97/100`; every mandatory category at least `9.0`, Naming Quality `9.8`.
-- API/E2E: `API-REV-011` **Pass**, `98.9%` (reported `99%`); every category at least `98%`.
-- Proportional durable-test review: `CRR-030` **Pass**; 10 current files across 11 raw paths, no finding.
-- `CR-018`: resolved in design/source and execution-confirmed.
-- Historical `APIE2E-REPO-005`: separate unattributed `Unclear` whole-suite debt; not requirement evidence and not a blocker.
+- Solution/architecture: `SR-013` / `ARCH-REV-011` **Pass**.
+- Implementation source: `CRR-033` **Pass**, `97/100`, for IR-018 and the underlying IR-017 narrow/acyclic architecture.
+- API/E2E: `API-REV-012` **Pass**, `96.6%` (reported `97%`); every mandatory category at least `95%`.
+- Proportional durable-test review: `CRR-034` **Pass**; one added helper and eleven updated durable tests, no finding.
+- `CR-019`–`CR-022` and `AR-008`–`AR-009`: resolved.
+- Historical `APIE2E-REPO-005`: separate unattributed `Unclear` whole-suite debt; not current requirement evidence and not a blocker.
 
 ## Latest-Base Integration
 
-- Before integrating the new base, delivery protected the cumulative reviewed/tested/evidence/docs package in local safety checkpoint `3f8ec4362f489b41c99e01b222eadfa8e1b76b74`.
-- Refreshed `origin/personal` had advanced by 13 commits to `dfc0468b137cd231b79ff8096fa46750611b06e2` for the completed token-statistics custom-provider/model v1.4.31 release.
-- The base merged without textual conflict as `669273f900950113ff0a8e60f9eca8142a3224bc`; post-merge divergence is `71/0`, so no base commit is missing.
-- Post-integration server full build passed, including shared builds, Prisma generation with the new base migration, TypeScript compilation, managed assets, and sanitized bootstrap smoke.
-- The exact API-REV-011 renamed/business boundary selection passed `11` files / `34` tests on the integrated state.
+- Delivery protected the complete CRR-034 package in local checkpoint `ae0bd4f04160505df344ca36f2db55eb989d5e35`.
+- `origin/personal` had advanced by eight commits from the DR-003 base to `80d6693c1b0df5abdfd2c3dc0ec01ff885425847`, carrying the independently completed v1.4.32 model/pricing release.
+- The base merged without conflict as `f25a9646ebb153714bc486cf14519f3530e1f83d`.
+- Post-merge divergence is `83/0`; no tracked base commit is missing.
+- Integrated full server build passed.
+- The exact API-REV-012 affected selection passed `31` files / `116` tests on the integrated state.
 
 Evidence:
 
-- `evidence/delivery/dr-003-base-refresh-and-integration.log`
-- `evidence/delivery/dr-003-post-integration-check.log`
-- `evidence/delivery/dr-003-delivery-audit.log`
+- `evidence/delivery/dr-005-base-refresh-and-integration.log`
+- `evidence/delivery/dr-005-post-integration-check.log`
+- `evidence/delivery/dr-005-delivery-audit.log`
 
-## Local Electron Test Package
+## Current Electron Test Package
 
-At the user's request, delivery followed the repository and Electron README instructions and built the current integrated candidate as a personal macOS ARM64 desktop package:
+The current integrated candidate was rebuilt according to the repository Electron instructions:
 
-- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.31.dmg`
-- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.31.zip`
-- Unpacked app: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
-- Build report: `tickets/in-progress/universal-application-framework-proposal-analysis/electron-test-build-report.md`
+- **DMG:** `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.32.dmg`
+- **ZIP:** `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.32.zip`
+- **Unpacked app:** `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- **Build report:** `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/electron-test-build-report.md`
 
-Build and validation are **Pass**. The package is version `1.4.31`, Electron `42.4.1`, and ARM64. The real packaged terminal spawn probe, embedded Studio/standalone/application-runtime owner checks, DMG checksum, ZIP integrity, and process/mount hygiene pass. This is an unsigned, non-notarized local test build; it is not a release or publication.
+Build and validation are **Pass** for Electron `42.4.1`, desktop version `1.4.32`, ARM64. The app metadata/architecture, embedded current narrow runtime owners, real packaged terminal spawn, DMG checksum, ZIP integrity, and process/mount hygiene pass.
+
+This package is unsigned and not notarized. It is a local verification artifact, not a release. The prior v1.4.31 DR-004 DMG/ZIP predates the current implementation and must not be used for approval.
 
 Evidence:
 
-- `evidence/delivery/dr-004-electron-macos-arm64-build.log`
-- `evidence/delivery/dr-004-electron-macos-arm64-verification.log`
+- `evidence/delivery/dr-005-electron-macos-arm64-build.log`
+- `evidence/delivery/dr-005-electron-macos-arm64-verification.log`
 
 ## Delivered Behavior
 
-- One immutable application package runs through Studio and a selected-application standalone server over the same application-runtime contract.
-- Complete package-owned launch defaults are portable; Studio stores sparse host overrides, supports no-write selection preview, preserves invalid overrides, and resets explicitly to package defaults.
-- Agent Tools sessions use the exact scoped publisher; general-process and application scopes remain separate. Standalone exposes only the internal session callback, not Studio's external MCP gateway.
-- Runtime shutdown blocks new work, drains communication/workers, stops teams before remaining agents, revokes scoped sessions, closes publication, and cleans owned listeners/processes.
-- Devkit watched packaging validates in staging, writes canonical final-root metadata, publishes by rename, rolls back safely, and preserves package immutability.
-- Real standalone and Studio evidence proves publication, recipient-name writer handoff, application projection, route separation, remount, restart/recovery, 73/73 package parity, and cleanup.
-
-## Framework Vocabulary And Execution Timing
-
-SR-011/IR-016 makes the central framework roles directly inferable:
-
-- `buildStudioServer` and `buildStandaloneApplicationServer` assemble host servers.
-- `ApplicationPlatformRuntime` is the live application service/manager set, not a dependency container and not a run.
-- `AgentToolsMcpRuntime` owns the process MCP subsystem; scoped session managers own application/general session lifetimes.
-- `GeneralProcessRunSupervisor` owns general-process runs; `ApplicationRunShutdownCoordinator` orders graph-scoped stop work.
-- `PublishedArtifactPublisher` and `BindOnce*` collaborators name their exact call and cycle-breaking roles.
-- Building two application runtimes starts zero new agent or team runs. Application business demand starts new work; recovery restores recorded work only.
-- Retired central names/files/exports/tests are absent with no aliases or compatibility wrappers. Wire, database, manifest, package, command, and host behavior are unchanged.
+- One immutable package runs through Studio and a selected-application standalone server over the same application-runtime behavior.
+- Hosts now see only four immutable runtime projections: `lifecycle`, `rest`, `realtime`, and `hostManagement`.
+- Package registry/query, commands/rollback, ordered catalog refresh, and reconciliation have explicit stable owners without later-bound mixed-level callbacks.
+- Engine launch/recovery and worker invocation are split between launcher and controller; session/publication/run/event construction no longer uses permanent bind-once implementations.
+- Artifact delivery ensures/restarts a worker before controller delivery, preserves FIFO per run with independent run lanes, and drains accepted work before engine stop.
+- Exact run removal protects replacements, cleans resource/session/observer ownership at most once, attempts every retained run, and aggregates failures afterward.
+- Portable package defaults, sparse Studio overrides, authenticated `publish_artifacts`, recipient-name `send_message_to`, application projection, route separation, remount, restart/recovery, exact 73/73 package parity, and owned cleanup remain proven.
 
 ## Documentation Sync
 
-Current long-lived server, web, devkit, and external-authoring docs use the SR-011 role vocabulary and retain all prior dual-host behavior documentation. Delivery found no stale retired identifier and no additional application-framework doc impact from the integrated token-statistics base or DR-004 local build.
+The five current server application module docs were updated with IR-017 and delivery-audited against the integrated state. IR-018 requires no additional long-lived edit because it restores the already-documented stop-all continuation contract. The integrated v1.4.32 model/pricing docs are independently complete and do not change this framework.
 
-Canonical report: `tickets/in-progress/universal-application-framework-proposal-analysis/docs-sync-report.md`.
+Canonical report:
+
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/docs-sync-report.md`
 
 ## Suggested User Verification
 
 1. Quit any existing AutoByteus desktop instance.
-2. Open the DR-004 DMG. Because this is an unsigned local build, macOS may require **Control-click → Open**.
-3. Back up `~/.autobyteus/server-data` first if the test must not modify current local state.
-4. In Studio, load a maintained package and confirm package defaults, selection preview/save/reset, application launch, real artifact publication, named writer handoff, and explicit **Reload application** after a watched rebuild.
-5. Quit and reopen the application to exercise shutdown and expected recovery.
-6. Optionally inspect the current server/runtime/session/publisher names and confirm their responsibilities are inferable.
-
-The automated package already records passing integrated build/test, real-host, and packaged-desktop integrity/runtime evidence. The required action is an explicit response approving/completing verification for candidate `669273f900950113ff0a8e60f9eca8142a3224bc`, or a concrete issue report.
+2. Open the **v1.4.32 DMG** listed above. Because it is unsigned, macOS may require **Control-click → Open**.
+3. Back up `~/.autobyteus/server-data` first if testing must not modify current local state.
+4. In Studio, load a maintained package and verify defaults, selection preview/save/reset, application launch, real artifact publication, recipient-name writer handoff, projection, and explicit **Reload application**.
+5. If practical, interrupt/reload an application worker and confirm a later artifact delivery recovers the worker and reaches projection.
+6. Quit while multiple application-owned runs are active, reopen with the same data, and verify clean shutdown plus expected recovery.
+7. Reply with explicit approval/completion or a concrete issue.
 
 ## Remaining Risks / Non-Blockers
 
-- `APIE2E-REPO-005` remains separate historical repository-test debt.
-- The package-level `typecheck` script still has a pre-existing test/rootDir configuration contradiction; production build/typecheck and the integrated full build pass.
-- The untracked `autobyteus-application-devkit/dist/` directory is documented by API-REV-011 as pre-existing/user-used and was deliberately preserved, not credited as evidence or included in commits.
-- Package import remains prebuilt-only, not a sandbox guarantee; marketplace-grade permission/isolation work is outside this foundation.
-- The DR-004 app is intentionally unsigned and not notarized; it is suitable only for local manual testing and may require macOS's explicit Open action.
+- `APIE2E-REPO-005` remains historical repository-test debt.
+- The package-level test-inclusive `typecheck` rootDir contradiction remains pre-existing; production/full build and the current affected matrix pass.
+- `autobyteus-application-devkit/.tmp-tests/` and `autobyteus-application-devkit/dist/` remain intentionally preserved, generated, and uncommitted.
+- Live artifact-drain ordering is correlated with direct durable delivery/lifecycle tests rather than an external queue hook; API-REV-012 records this as non-material.
+- The Electron package is unsigned and unnotarized and may require macOS's explicit Open action.
+- Package import remains prebuilt-only, not a sandbox guarantee; marketplace-grade isolation is outside this foundation.
 
 ## Finalization Hold
 
 - Ticket remains under `tickets/in-progress/`.
-- No final ticket commit, push, target-branch merge/push, release, deployment, archival, or worktree/branch cleanup has been performed.
-- After explicit user verification, delivery will fetch `origin/personal` again. If it advances or the verified state materially changes, delivery will re-integrate, rerun relevant checks, update artifacts, and request renewed verification before finalization.
+- No final ticket commit, push, target merge/push, release, deployment, archival, or worktree/branch cleanup has been performed.
+- After explicit verification, delivery must fetch `origin/personal` again. If the target advances or the verified state materially changes, delivery will re-integrate, rerun relevant checks, update artifacts, and request renewed verification before finalization.
