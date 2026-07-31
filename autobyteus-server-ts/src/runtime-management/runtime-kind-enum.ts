@@ -4,6 +4,12 @@ export enum RuntimeKind {
   CODEX_APP_SERVER = "codex_app_server",
 }
 
+export const isExternalProviderRuntimeKind = (
+  runtimeKind: RuntimeKind,
+): boolean =>
+  runtimeKind === RuntimeKind.CLAUDE_AGENT_SDK ||
+  runtimeKind === RuntimeKind.CODEX_APP_SERVER;
+
 export const runtimeKindFromString = (
   value: unknown,
   fallback?: RuntimeKind | null,

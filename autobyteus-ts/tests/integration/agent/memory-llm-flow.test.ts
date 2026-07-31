@@ -33,7 +33,7 @@ runIntegration('Memory assembler with LM Studio', () => {
 
       let response;
       try {
-        response = await llm.sendMessages(request.messages, request.renderedPayload);
+        response = await llm.sendMessages(request.outboundMessages, request.renderedPayload);
       } catch (error) {
         console.warn(`LM Studio request failed: ${String(error)}`);
         return;

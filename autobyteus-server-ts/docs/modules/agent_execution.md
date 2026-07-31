@@ -59,7 +59,7 @@ paths to the selected runtime/model provider for attached current-turn context
 files; unresolved or non-local values must be omitted rather than rendered as
 reference files.
 
-See [Agent Memory](./agent_memory.md) for the storage-only recorder contract and memory-file boundaries.
+See [Agent Memory](./agent_memory.md) for the external raw-trace-only recorder contract and memory-file boundaries.
 
 
 ## Runtime Identity Allocation
@@ -202,7 +202,7 @@ Adapters also own the ordering boundary between assistant text and tool
 lifecycles. If a provider emits `assistant text -> tool_use/tool_result ->
 assistant text`, the runtime must emit separate text segment completion events
 at the provider text-block boundaries so live streaming, team fanout,
-run-history projection, and storage-only memory traces all preserve the same
+run-history projection, and external raw-trace recording all preserve the same
 assistant/tool/assistant order without frontend provider-specific repair logic.
 
 ## Runtime Tool Lifecycle Normalization
@@ -358,4 +358,4 @@ Non-MCP tools and source-unknown provider result lanes stay unchanged;
 converters must not rewrite unrelated traffic just because a result value is
 envelope-shaped.
 
-The frontend consumes both normalized lanes through a shared Activity projection owner: eligible segment starts provide immediate Activity visibility, while lifecycle events update the same invocation through execution and terminal states. The storage-only memory recorder treats lifecycle events, not display-only segments, as durable tool-call/tool-result trace authority. This keeps transcript rendering, Activity argument rendering, run history, and memory traces runtime-neutral without requiring UI code to parse raw provider payloads.
+The frontend consumes both normalized lanes through a shared Activity projection owner: eligible segment starts provide immediate Activity visibility, while lifecycle events update the same invocation through execution and terminal states. The external raw-trace recorder treats lifecycle events, not display-only segments, as durable tool-call/tool-result trace authority. This keeps transcript rendering, Activity argument rendering, run history, and memory traces runtime-neutral without requiring UI code to parse raw provider payloads.

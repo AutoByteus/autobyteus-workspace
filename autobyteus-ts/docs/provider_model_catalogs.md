@@ -8,8 +8,9 @@ or changing provider-specific request-shaping behavior.
 
 | Surface | Catalog / Metadata Source | Runtime / Request-Shape Owner | Notes |
 | --- | --- | --- | --- |
-| LLM API models | `src/llm/supported-model-definitions.ts` | Provider adapters under `src/llm/api/` | `LLMFactory` builds registry entries from supported definitions and metadata. |
-| LLM metadata | `src/llm/metadata/curated-model-metadata.ts` | `src/llm/metadata/model-metadata-resolver.ts` | Add docs-backed context/output limits and verification dates for known API models. |
+| LLM API models | `src/llm/supported-model-definitions.ts` | Provider adapters under `src/llm/api/` | Each definition owns static numeric limits, multimodal capabilities, and provenance; `LLMFactory` explicitly maps resolved runtime fields. |
+| LLM static metadata | `staticMetadata` on each supported definition, with helpers in `src/llm/supported-model-static-metadata.ts` | `src/llm/metadata/model-metadata-resolver.ts` | Live numeric provider values override static values field-by-field; static definition values then unknown. `activeContextTokens` remains dynamic and is not resolved here. |
+| LLM media capability/recovery | `src/llm/multimodal-capabilities.ts`, `src/llm/utils/media-input-sanitizer.ts` | `LLMRequestAssembler`, `LlmPhase`, and `MemoryManager` | Capability filtering and empty-media validation happen on a provider-facing message copy; failed request preparation/streaming rolls back without automatic retry. |
 | Gemini LLM runtime names | `src/utils/gemini-model-mapping.ts` | `GeminiLLM` | Add API-key and Vertex mappings when Gemini LLM provider values differ or need explicit identity coverage. |
 | Audio / TTS models | `src/multimedia/audio/audio-client-factory.ts` | `src/multimedia/audio/api/*` | Built-in TTS models are registered by the audio factory. |
 | Gemini TTS runtime names | `src/utils/gemini-model-mapping.ts` | `GeminiAudioClient` | User-facing names can map to API-key and Vertex-specific model values. |
@@ -361,8 +362,9 @@ instead of flattening provider-specific pricing.
 ### Gemini LLM Models
 
 Gemini LLM catalog entries are registered in
-`src/llm/supported-model-definitions.ts`, with docs-backed limits in
-`src/llm/metadata/curated-model-metadata.ts`. Add an explicit LLM runtime
+`src/llm/supported-model-definitions.ts`, with docs-backed limits and
+capabilities in each definition's `staticMetadata` (helpers live in
+`src/llm/supported-model-static-metadata.ts`). Add an explicit LLM runtime
 mapping in `src/utils/gemini-model-mapping.ts` so both API-key and Vertex modes
 are covered by tests even when the provider value is currently identical.
 

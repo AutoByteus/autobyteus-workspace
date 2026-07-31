@@ -9,6 +9,7 @@ import { RawTraceItem } from "autobyteus-ts/memory/models/raw-trace-item.js";
 import { RunMemoryFileStore } from "autobyteus-ts/memory/store/run-memory-file-store.js";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 
 const writeJson = (filePath: string, payload: unknown) => {
   fs.mkdirSync(path.dirname(filePath), { recursive: true });
@@ -209,6 +210,106 @@ describe("Memory view GraphQL e2e", () => {
       toolResult: { ok: true },
       toolError: null,
     });
+  });
+
+  it("returns absent external WorkingContext after success, retained stale content after failure, independent raws, and native content", async () => {
+    const runFixtures = [
+      {
+        runId: "external-working-context-absent",
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+        snapshotContent: null,
+        rawContent: "codex current raw",
+      },
+      {
+        runId: "external-working-context-retained",
+        runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+        snapshotContent: "claude stale retained snapshot",
+        rawContent: "claude current raw",
+      },
+      {
+        runId: "native-working-context-present",
+        runtimeKind: RuntimeKind.AUTOBYTEUS,
+        snapshotContent: "native current context",
+        rawContent: "native current raw",
+      },
+    ] as const;
+
+    for (const fixture of runFixtures) {
+      createdAgentIds.push(fixture.runId);
+      const agentDir = path.join(memoryDir, "agents", fixture.runId);
+      writeJson(path.join(agentDir, "run_metadata.json"), {
+        runId: fixture.runId,
+        agentDefinitionId: `agent-${fixture.runId}`,
+        workspaceRootPath: "/workspace",
+        memoryDir: agentDir,
+        llmModelIdentifier: "model-test",
+        llmConfig: null,
+        autoExecuteTools: false,
+        skillAccessMode: "none",
+        runtimeKind: fixture.runtimeKind,
+        platformAgentRunId: null,
+        startedAt: "2026-07-31T00:00:00.000Z",
+      });
+      if (fixture.snapshotContent) {
+        writeJson(path.join(agentDir, "working_context_snapshot.json"), {
+          messages: [{ role: "assistant", content: fixture.snapshotContent }],
+        });
+      }
+      writeJsonl(path.join(agentDir, "raw_traces_active.jsonl"), [{
+        id: `raw-${fixture.runId}`,
+        trace_type: "assistant",
+        source_event: "SEGMENT_END",
+        content: fixture.rawContent,
+        ts: 1,
+        turn_id: "turn-1",
+        seq: 1,
+      }]);
+    }
+
+    const query = `
+      query ExternalMemoryOutcome($runId: String!) {
+        getAgentRunMemoryView(
+          runId: $runId
+          includeWorkingContext: true
+          includeRawTraces: true
+          includeEpisodic: false
+          includeSemantic: false
+        ) {
+          runId
+          workingContext { role content }
+          rawTraces { traceType content }
+        }
+      }
+    `;
+    type MemoryOutcome = {
+      getAgentRunMemoryView: {
+        runId: string;
+        workingContext: Array<{ role: string; content: string | null }> | null;
+        rawTraces: Array<{ traceType: string; content: string | null }> | null;
+      };
+    };
+
+    const absent = await execGraphql<MemoryOutcome>(query, { runId: runFixtures[0].runId });
+    expect(absent.getAgentRunMemoryView.workingContext).toBeNull();
+    expect(absent.getAgentRunMemoryView.rawTraces).toEqual([
+      { traceType: "assistant", content: "codex current raw" },
+    ]);
+
+    const retained = await execGraphql<MemoryOutcome>(query, { runId: runFixtures[1].runId });
+    expect(retained.getAgentRunMemoryView.workingContext).toEqual([
+      expect.objectContaining({ role: "assistant", content: "claude stale retained snapshot" }),
+    ]);
+    expect(retained.getAgentRunMemoryView.rawTraces).toEqual([
+      { traceType: "assistant", content: "claude current raw" },
+    ]);
+
+    const native = await execGraphql<MemoryOutcome>(query, { runId: runFixtures[2].runId });
+    expect(native.getAgentRunMemoryView.workingContext).toEqual([
+      expect.objectContaining({ role: "assistant", content: "native current context" }),
+    ]);
+    expect(native.getAgentRunMemoryView.rawTraces).toEqual([
+      { traceType: "assistant", content: "native current raw" },
+    ]);
   });
 
   it("returns active raw trace file metadata and defaults to the active file", async () => {

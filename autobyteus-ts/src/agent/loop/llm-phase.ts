@@ -162,8 +162,27 @@ export class LlmPhase {
       reporter: compactionReporter,
       strategyResolver,
     });
-    const assembler = new LLMRequestAssembler(memoryManager, renderer, pendingCompactionExecutor);
+    const assembler = new LLMRequestAssembler(
+      memoryManager,
+      renderer,
+      pendingCompactionExecutor,
+      llmInstance.model.multimodalCapabilities,
+    );
     const systemPrompt = context.state.processedSystemPrompt ?? llmInstance.config.systemMessage ?? null;
+    const llmCallSequence = turn.toolInvocationBatches.length + 1;
+    const llmCallId = `${activeTurnId}:llm:${llmCallSequence}`;
+    const recoverySnapshot = memoryManager.captureLlmRequestRecoverySnapshot({
+      turnId: activeTurnId,
+      requestId: llmCallId,
+      sourceEvent: 'LlmPhase.requestAssembly',
+    });
+    const rollbackRequest = (reason: string, sourceEvent: string): void => {
+      try {
+        memoryManager.restoreLlmRequestRecoverySnapshot(recoverySnapshot, { reason, sourceEvent });
+      } catch (rollbackError) {
+        console.error(`Failed to restore LLM request '${llmCallId}' recovery snapshot: ${String(rollbackError)}`);
+      }
+    };
 
     let request: RequestPackage;
     try {
@@ -176,6 +195,7 @@ export class LlmPhase {
     } catch (error) {
       if (error instanceof CompactionPreparationError) {
         turn.executionScope.throwIfAborted({ kind: 'llm_request_assembly' });
+        rollbackRequest('request assembly failed during compaction preparation', 'LlmPhase.prepareRequest');
         notifier?.notifyAgentErrorOutputGeneration({
           source: 'LlmPhase.prepareRequest',
           message: error.message,
@@ -188,12 +208,13 @@ export class LlmPhase {
           response: new CompleteResponse({ content: error.message, usage: null })
         };
       }
+      if (!isAgentInterruptionError(error)) {
+        rollbackRequest('request assembly failed', 'LlmPhase.prepareRequest');
+      }
       throw error;
     }
     turn.executionScope.throwIfAborted({ kind: 'llm_request_assembly' });
 
-    const llmCallSequence = turn.toolInvocationBatches.length + 1;
-    const llmCallId = `${activeTurnId}:llm:${llmCallSequence}`;
     const segmentIdPrefix = `segment_${randomUUID().replace(/-/g, '')}:`;
     let currentReasoningPartId: string | null = null;
     let parsedToolInvocationCount = 0;
@@ -201,7 +222,7 @@ export class LlmPhase {
     try {
       turn.executionScope.throwIfAborted({ kind: 'llm_stream_start' });
       const stream = llmInstance.streamMessages(
-        request.messages,
+        request.outboundMessages,
         request.renderedPayload,
         streamKwargs,
         { signal: turn.executionScope.signal, turnId: activeTurnId }
@@ -269,7 +290,9 @@ export class LlmPhase {
         throw error;
       }
 
-      const errorMessage = `Error processing your request with the LLM: ${String(error)}`;
+      const errorDetails = String(error);
+      const errorMessage = `Error processing your request with the LLM: ${errorDetails.slice(0, 1000)}`;
+      rollbackRequest('provider streaming failed before a usable response', 'LlmPhase.stream');
       streamingHandler.finalizeFailed(errorMessage);
       if (currentReasoningPartId) {
         notifier?.notifyAgentSegmentEvent(
@@ -283,7 +306,7 @@ export class LlmPhase {
       notifier?.notifyAgentErrorOutputGeneration({
         source: 'LlmPhase.stream',
         message: errorMessage,
-        details: String(error),
+        details: errorDetails,
         classification: { scope: 'turn', effect: 'diagnostic', turnId: activeTurnId }
       });
       return {
@@ -333,6 +356,7 @@ export class LlmPhase {
       turn.executionScope.throwIfAborted({ kind: 'llm_assistant_response' });
       memoryManager.ingestAssistantResponse(completeResponse, activeTurnId, 'LlmPhase');
     }
+    memoryManager.commitLlmRequestRecoverySnapshot(recoverySnapshot);
 
     turn.executionScope.throwIfAborted({ kind: 'llm_compaction' });
     evaluateLlmPhaseCompaction({

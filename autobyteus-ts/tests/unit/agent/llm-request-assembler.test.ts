@@ -53,8 +53,9 @@ describe('LLMRequestAssembler', () => {
     const request = await assembler.prepareRequest('hello', null, 'System prompt');
 
     expect(request.didCompact).toBe(false);
-    expect(request.messages.map((message) => message.role)).toEqual([MessageRole.SYSTEM, MessageRole.USER]);
-    expect(memoryManager.workingContext.buildMessages()).toEqual(request.messages);
+    expect(request.canonicalMessages.map((message) => message.role)).toEqual([MessageRole.SYSTEM, MessageRole.USER]);
+    expect(request.outboundMessages).toEqual(request.canonicalMessages);
+    expect(memoryManager.workingContext.buildMessages()).toEqual(request.canonicalMessages);
     expect(memoryManager.ensureWorkingContextToolProtocolSafeForNextLlm).toHaveBeenCalledTimes(2);
   });
 
@@ -84,13 +85,13 @@ describe('LLMRequestAssembler', () => {
         turnId: 'turn_0002',
       }
     ]);
-    expect(request.messages.map((message) => message.role)).toEqual([
+    expect(request.canonicalMessages.map((message) => message.role)).toEqual([
       MessageRole.SYSTEM,
       MessageRole.USER,
       MessageRole.USER,
     ]);
-    expect(request.messages[1]?.content).toContain('Durable summary');
-    expect(request.messages[2]?.content).toBe('new input');
+    expect(request.canonicalMessages[1]?.content).toContain('Durable summary');
+    expect(request.canonicalMessages[2]?.content).toBe('new input');
     expect(memoryManager.ensureWorkingContextToolProtocolSafeForNextLlm).toHaveBeenCalledTimes(2);
   });
 
@@ -147,7 +148,7 @@ describe('LLMRequestAssembler', () => {
         role: 'user',
         content: 'please continue there was a shutdown',
       });
-      expect(request.messages[assistantIndex + 1]?.tool_payload).toBeInstanceOf(ToolResultPayload);
+      expect(request.canonicalMessages[assistantIndex + 1]?.tool_payload).toBeInstanceOf(ToolResultPayload);
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }

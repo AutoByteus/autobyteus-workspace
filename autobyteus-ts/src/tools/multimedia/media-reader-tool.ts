@@ -4,8 +4,14 @@ import { BaseTool } from '../base-tool.js';
 import { ToolCategory } from '../tool-category.js';
 import { ParameterSchema, ParameterDefinition, ParameterType } from '../../utils/parameter-schema.js';
 import { ContextFile } from '../../agent/message/context-file.js';
+import { ContextFileType } from '../../agent/message/context-file-type.js';
+import type { MultimodalCapabilities } from '../../llm/multimodal-capabilities.js';
 
-type AgentContextLike = { agentId?: string; workspaceRootPath?: string | null };
+type AgentContextLike = {
+  agentId?: string;
+  workspaceRootPath?: string | null;
+  llmInstance?: { model?: { multimodalCapabilities?: MultimodalCapabilities } | null } | null;
+};
 
 type ReadMediaArgs = {
   file_path: string;
@@ -96,6 +102,20 @@ export class ReadMediaFile extends BaseTool {
     if (!stat.isFile()) {
       throw new Error(
         `The file '${filePath}' does not exist or is not a regular file at the resolved path '${absolutePath}'.`
+      );
+    }
+
+    if (stat.size === 0) {
+      throw new Error(`The media file '${filePath}' is empty and was not loaded.`);
+    }
+
+    const fileType = ContextFileType.fromPath(absolutePath);
+    if (
+      fileType === ContextFileType.IMAGE &&
+      context.llmInstance?.model?.multimodalCapabilities?.image === 'unsupported'
+    ) {
+      throw new Error(
+        'The selected model does not support image input. The image was not loaded. Continue without visual analysis and do not claim to have inspected the image.',
       );
     }
 

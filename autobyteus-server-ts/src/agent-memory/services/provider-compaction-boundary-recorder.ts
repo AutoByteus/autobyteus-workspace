@@ -1,6 +1,6 @@
 import type { AgentRunEvent } from "../../agent-execution/domain/agent-run-event.js";
 import type { ProviderCompactionBoundaryPayload } from "../domain/memory-recording-models.js";
-import type { RunMemoryWriter } from "../store/run-memory-writer.js";
+import type { ExternalRuntimeMemoryWriter } from "../store/external-runtime-memory-writer.js";
 import {
   asBoolean,
   asNumber,
@@ -15,7 +15,7 @@ export class ProviderCompactionBoundaryRecorder {
 
   constructor(
     private readonly input: {
-      writer: RunMemoryWriter;
+      writer: ExternalRuntimeMemoryWriter;
       resolveTurnId: (candidate: unknown) => string;
     },
   ) {}

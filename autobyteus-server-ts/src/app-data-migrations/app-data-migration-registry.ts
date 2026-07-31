@@ -14,6 +14,7 @@ import { TokenUsageLegacyPathColumnsDropMigration } from "./migrations/token-usa
 import { RemoveGlobalSkillDiscoveryModeMigration } from "./migrations/remove-global-skill-discovery-mode-migration.js";
 import { CustomProviderV1AppDataMigration } from "./migrations/custom-provider-v1-app-data-migration.js";
 import { ResetPreLineageMemoryAppDataMigration } from "./migrations/reset-pre-lineage-memory-app-data-migration.js";
+import { RemoveExternalRuntimeWorkingContextSnapshotsMigration } from "./migrations/remove-external-runtime-working-context-snapshots-migration.js";
 
 export class AppDataMigrationRegistry {
   private readonly definitions: AppDataMigrationDefinition[];
@@ -26,6 +27,9 @@ export class AppDataMigrationRegistry {
         appConfigProvider.config.getAppDataDir(),
       ),
       new TeamRunMetadataMemberTreeMigration(appConfigProvider.config.getMemoryDir()),
+      new RemoveExternalRuntimeWorkingContextSnapshotsMigration(
+        appConfigProvider.config.getMemoryDir(),
+      ),
       new TeamCommunicationProjectionAddressMigration(appConfigProvider.config.getMemoryDir()),
       new TokenUsageExecutionAddressBackfillMigration(appConfigProvider.config.getMemoryDir()),
       new TokenUsageCustomProviderModelValueBackfillMigration(),

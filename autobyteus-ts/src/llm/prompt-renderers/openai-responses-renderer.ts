@@ -67,6 +67,10 @@ export class OpenAIResponsesRenderer extends BasePromptRenderer {
             console.error(`Error processing image ${source}: ${result.reason}`);
             continue;
           }
+          if (!result.value) {
+            console.error(`Error processing image ${source}: media conversion returned no bytes.`);
+            continue;
+          }
 
           const hasLocalPath = source ? await isValidMediaPath(source) : false;
           const mimeType = hasLocalPath ? getMimeType(source) : 'image/jpeg';

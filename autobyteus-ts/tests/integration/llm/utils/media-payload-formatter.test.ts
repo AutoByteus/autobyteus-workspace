@@ -3,11 +3,11 @@ import { createDataUri } from '../../../../src/llm/utils/media-payload-formatter
 
 describe('media_payload_formatter (integration)', () => {
   it('creates image_url data uri structure', () => {
-    const data = createDataUri('image/png', 'abc123');
+    const data = createDataUri('image/png', 'aW1hZ2U=');
     expect(data).toEqual({
       type: 'image_url',
       image_url: {
-        url: 'data:image/png;base64,abc123'
+        url: 'data:image/png;base64,aW1hZ2U='
       }
     });
   });

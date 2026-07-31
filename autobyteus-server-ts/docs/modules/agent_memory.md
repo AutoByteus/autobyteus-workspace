@@ -2,7 +2,7 @@
 
 ## Scope
 
-`src/agent-memory` owns server-side memory exploration, inspection views, and the storage-only recorder used for non-native runtime runs. It reads and writes the same run/member memory files that the native TypeScript memory module defines in `autobyteus-ts`.
+`src/agent-memory` owns server-side memory exploration, inspection views, and the raw-trace-only recorder used for Codex and Claude runs. Its read side can inspect the same run/member memory files that the native TypeScript memory module defines in `autobyteus-ts`; its external-runtime write side is limited to raw traces and their rotation metadata.
 
 This module is intentionally separate from run-history projection: agent-memory exposes persisted memory artifacts for exploration and inspection, while `src/run-history` converts runtime or local-memory sources into historical replay bundles. Run-history metadata is used only to enrich memory explorer summaries and to group memory-bearing runs by stable agent/team identity.
 
@@ -41,11 +41,24 @@ Common files/directories:
 - `raw_traces_<zero-padded-index>.jsonl` — immutable raw-trace archives, including one exact-new-activity archive per successful native compaction.
 - `episodic.jsonl` and `semantic.jsonl` — immutable native compacted output rows.
 - `compaction_lineage.jsonl` — append-only successful native-compaction lineage. Its last valid record is the only current-compaction head and lists exact current output IDs plus the run-relative completed raw archive.
-- `working_context_snapshot.json` — strict schema-v5 finalized provider-neutral messages and message-local constituent ranges. It contains no output identity, lineage object, or mutable current-state field.
+- `working_context_snapshot.json` — native AutoByteus continuation state: strict schema-v5 finalized provider-neutral messages and message-local constituent ranges. It contains no output identity, lineage object, or mutable current-state field. Codex and Claude recording no longer creates or updates this file.
 
 There is no current `compacted_memory_manifest.json` or compaction-state/pointer file. Startup app-data migration `20260730_reset_pre_lineage_memory` deletes pre-lineage episode, semantic, snapshot, and compacted-memory-manifest files while preserving active/archive raw traces and `raw_traces_manifest.json`. Any discovery/deletion failure is required and fail-closed before runtime exposure.
 
 Startup app-data migration `20260707_raw_trace_active_file_name` renames existing active `raw_traces.jsonl` files to `raw_traces_active.jsonl` for local and imported memory corpora. Runtime steady state reads and writes only `raw_traces_active.jsonl`; the old active filename is not a compatibility alias.
+
+Required startup app-data migration
+`20260731_remove_external_runtime_working_context_snapshots` discards duplicate
+Codex/Claude snapshots only at exact standalone and recursive team-member
+locations classified by current run/team metadata. It preserves native
+AutoByteus snapshots, imported memory, unclassified or invalid-metadata
+locations, task-like locations without authoritative runtime metadata, raw
+traces/archives, metadata, provider resume ids, and artifacts. Cleanup is
+idempotent and retryable. Classification or unlink failures are recorded as
+warnings/failures without blocking later startup migrations; a failed unlink
+retains the stale file for retry, so the runtime-agnostic inspector may still
+show that old copy while current external raw recording and provider
+continuation remain healthy.
 
 The old monolithic `raw_traces_archive.jsonl` file is no longer an active read/write target. Historical monolithic archive files are intentionally not read by the approved no-compatibility policy.
 
@@ -78,12 +91,12 @@ The `structured-json` strategy always invokes the built-in `autobyteus-memory-co
 
 Compaction status metadata includes stable `compaction_strategy_id` and `compaction_strategy_name` in addition to operation/turn and current runner diagnostics. A resolver, strategy, validation, or replacement failure preserves the pending request and does not emit a false completed state.
 
-Codex and Claude runs are recorded by the server as **storage-only** memory:
+Codex and Claude runs are recorded by the server as **raw-trace-only** local memory:
 
-1. `AgentRunManager` attaches `AgentRunMemoryRecorder` as an active-run sidecar when the run has a `memoryDir` and the runtime is not native AutoByteus.
+1. `AgentRunManager` attaches `AgentRunMemoryRecorder` as an active-run sidecar when the run has a `memoryDir` and its runtime kind is explicitly Codex App Server or Claude Agent SDK.
 2. Accepted user messages are observed only after `AgentRun.postUserMessage(...)` returns `accepted: true`.
 3. Assistant text, reasoning, tool lifecycle outcomes, and normalized provider compaction-boundary payloads are captured from normalized `AgentRunEvent`s.
-4. `RunMemoryWriter` writes shared `RawTraceItem` records and updates `WorkingContext` messages through `RunMemoryFileStore`.
+4. `ExternalRuntimeMemoryWriter` writes shared `RawTraceItem` records through `RunMemoryFileStore`. It restores only sequence and tool-lifecycle state from active plus complete rotated raw traces; it never loads, constructs, or persists a `WorkingContext`.
 
 Tool execution uses a strict split physical contract shared with native memory:
 
@@ -154,7 +167,13 @@ later matching terminal may append only the result, using the hydrated call's
 canonical name. Historical result-side name/argument overlays remain read-only
 and never reconstruct current writer state.
 
-The recorder does not instantiate a Codex/Claude memory manager, retrieve memory for those runtimes, inject recorded memory into prompts, or alter provider/runtime session state. Memory persistence is independent of websocket clients; the sidecar is attached by the run manager, not by live stream subscribers.
+The recorder does not instantiate a Codex/Claude memory manager, read or write a
+Codex/Claude WorkingContext snapshot, retrieve memory for those runtimes, inject
+recorded memory into prompts, or alter provider/runtime session state. Memory
+persistence is independent of websocket clients; the sidecar is attached by the
+run manager, not by live stream subscribers. A future runtime kind is not
+implicitly recordable: it must deliberately opt into the external provider
+contract instead of inheriting it from a broad non-AutoByteus check.
 
 Route-backed Agent Tools MCP calls from Codex App Server and Claude Agent SDK
 are recorded only after the runtime adapter normalizes them into canonical
@@ -284,7 +303,7 @@ Current non-goals:
 
 - No archive compression.
 - No total-storage retention policy.
-- No working-context snapshot windowing/retention.
+- No external-runtime WorkingContext snapshot write, reconstruction, or fallback.
 - No compatibility read path for historical monolithic `raw_traces_archive.jsonl` files.
 
 ## Provider Compaction Boundaries
@@ -316,8 +335,10 @@ still correlates the call for arguments, anchoring, ordering, and lifecycle
 integrity. Existing historical name-less results and result rows containing
 duplicated or late/effective name/arguments remain readable through the normal
 logical read-only projection; that historical overlay is never fed back into
-recorder/writer decisions. Existing files are directly usable: this contract
-requires no raw-file rewrite, schema branch, Memory Sync change, or migration.
+recorder/writer decisions. Existing raw files are directly usable: this contract
+requires no raw-file rewrite, schema branch, or Memory Sync change. The separate
+required startup migration removes only metadata-classified duplicate external
+snapshots as described above.
 
 ## Key Source Files
 
@@ -334,7 +355,7 @@ requires no raw-file rewrite, schema branch, Memory Sync change, or migration.
 - Recorder: `src/agent-memory/services/agent-run-memory-recorder.ts`
 - Event accumulator: `src/agent-memory/services/runtime-memory-event-accumulator.ts`
 - Provider boundary recorder: `src/agent-memory/services/provider-compaction-boundary-recorder.ts`
-- Writer adapter: `src/agent-memory/store/run-memory-writer.ts`
+- External raw-trace writer adapter: `src/agent-memory/store/external-runtime-memory-writer.ts`
 - Shared file store: `autobyteus-ts/src/memory/store/run-memory-file-store.ts`
 - Shared archive manager: `autobyteus-ts/src/memory/store/raw-trace-archive-manager.ts`
 - Memory Sync feature details: `../features/memory_sync.md`

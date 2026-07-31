@@ -35,7 +35,7 @@ import {
   WORKING_CONTEXT_SNAPSHOT_FILE_NAME,
 } from "autobyteus-ts/memory/store/memory-file-names.js";
 import { RunMemoryFileStore } from "autobyteus-ts/memory/store/run-memory-file-store.js";
-import { RunMemoryWriter } from "../../../src/agent-memory/store/run-memory-writer.js";
+import { ExternalRuntimeMemoryWriter } from "../../../src/agent-memory/store/external-runtime-memory-writer.js";
 
 const tempDirs = new Set<string>();
 
@@ -510,7 +510,7 @@ describe("cross-runtime memory persistence integration", () => {
       await recorder.waitForIdle(run.runId);
 
       await expect(fs.access(path.join(memoryDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME))).resolves.toBeUndefined();
-      await expect(fs.access(path.join(memoryDir, WORKING_CONTEXT_SNAPSHOT_FILE_NAME))).resolves.toBeUndefined();
+      await expect(fs.access(path.join(memoryDir, WORKING_CONTEXT_SNAPSHOT_FILE_NAME))).rejects.toThrow();
       expect(new RunMemoryFileStore(memoryDir).getRawTraceArchiveRevisionInfo()).toBeNull();
 
       const view = readView(memoryDir);
@@ -527,15 +527,7 @@ describe("cross-runtime memory persistence integration", () => {
       expect(view.rawTraces?.find((trace) => trace.traceType === "assistant")?.sourceEvent).toBe(
         AgentRunEventType.SEGMENT_END,
       );
-      expect(view.workingContext?.map((message) => message.role)).toEqual([
-        "user",
-        "assistant",
-        "tool",
-        "assistant",
-      ]);
-      expect(view.workingContext?.findLast((message) => message.role === "assistant")?.reasoning).toBe(
-        "considering ",
-      );
+      expect(view.workingContext).toBeNull();
     },
   );
 
@@ -661,7 +653,7 @@ describe("cross-runtime memory persistence integration", () => {
     await expect(fs.access(path.join(memoryDir, SEMANTIC_MEMORY_FILE_NAME))).rejects.toThrow();
     await expect(fs.access(path.join(memoryDir, EPISODIC_MEMORY_FILE_NAME))).rejects.toThrow();
 
-    const restoredWriter = new RunMemoryWriter({ memoryDir });
+    const restoredWriter = new ExternalRuntimeMemoryWriter({ memoryDir });
     const continued = restoredWriter.appendRawTrace({
       traceType: "assistant",
       turnId,
@@ -1400,9 +1392,7 @@ describe("cross-runtime memory persistence integration", () => {
       `turn-${memberRunId}`,
     ]);
     const view = readView(memberMemoryDir);
-    expect(view.workingContext?.map((message) => [message.role, message.content])).toEqual([
-      ["user", "team hello"],
-      ["assistant", "team reply"],
-    ]);
+    expect(view.workingContext).toBeNull();
+    await expect(fs.access(path.join(memberMemoryDir, WORKING_CONTEXT_SNAPSHOT_FILE_NAME))).rejects.toThrow();
   });
 });

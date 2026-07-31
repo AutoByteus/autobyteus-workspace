@@ -222,7 +222,24 @@ The server `AgentMemoryOriginService` resolves the run-local directory and scope
 for standalone or team-member targets, then composes the core resolver. This is
 an internal service boundary; no provenance UI is implied.
 
-## 10. Natural Compactor Conversation
+## 10. LLM Request Recovery Boundary
+
+`MemoryManager` exposes the named LLM request recovery API used by `LlmPhase`:
+
+1. capture a request snapshot before system-prompt insertion, compaction, or
+   user/tool-continuation append;
+2. commit it only after provider response ingestion succeeds; or
+3. restore the working context and compaction state on request assembly or
+   provider-stream failure.
+
+The recovery snapshot is limited to active working context and compaction
+state. Restore persists the recovered working-context snapshot and appends a
+correlated `llm_request_recovery` raw trace with the request id, reason, and
+source event. Raw traces and tool facts committed before the request remain
+durable. Recovery returns one diagnostic and does not retry or select a
+fallback model.
+
+## 11. Natural Compactor Conversation
 
 The compactable logical prefix is rendered as one natural ordered conversation
 inside the reserved application-generated `<conversation_history>` boundary.
@@ -238,7 +255,7 @@ The compactor returns only the exact structured JSON contract. Prompt rendering
 is not persisted as lineage evidence; an optional SHA-256 digest may support
 integrity/audit metadata without copying content.
 
-## 11. Shared Readable Value And Tool Policy
+## 12. Shared Readable Value And Tool Policy
 
 `ReadableValueRenderer` and `CondensedToolCallRenderer` are core-owned,
 consumer-neutral presentation policies. They provide deterministic
@@ -256,7 +273,7 @@ but keep separate sources and envelopes:
 Work Evidence is derived and regenerable. Native compaction never reads its
 Markdown or manifest as model input or provenance evidence.
 
-## 12. Raw Traces, Event Monitor, And External Runtimes
+## 13. Raw Traces, Event Monitor, And External Runtimes
 
 Raw traces remain original activity evidence. Successful native compaction may
 move selected settled records from active storage to one completed archive
@@ -265,12 +282,18 @@ without changing their identity/content.
 Event Monitor and normal active-history paging remain active-raw views; archived
 records are accessed only by evidence, provenance, or explicit inspection paths.
 
-Codex and Claude use the server storage-only recorder. Provider/session
-compaction boundaries may append normalized markers and rotate settled active
-raw traces. They must not select the native strategy, create episodes/semantics,
-resolve or inject AutoByteus compacted memory, or change provider session state.
+Codex and Claude use server raw-trace-only memory recording. They share the
+native raw-trace and rotation primitives but do not construct, load, or persist
+an AutoByteus `WorkingContext` snapshot and do not execute AutoByteus semantic
+working-context strategies. Provider thread/session state remains the
+continuation authority. Provider/session compaction boundaries can append
+provenance markers and rotate raw traces; they do not select the native
+strategy, write episodic/semantic memory, resolve or inject AutoByteus compacted
+memory, or change provider session state. The server owns the
+metadata-classified, best-effort startup cleanup for pre-cutover external
+snapshot copies; native `MemoryManager` snapshot behavior is unchanged.
 
-## 13. Runtime Settings
+## 14. Runtime Settings
 
 | Setting | Meaning |
 | --- | --- |
@@ -284,7 +307,7 @@ catalog and effective selection separately through GraphQL. Updates affect later
 pending native operations in the current process; there is no multi-process or
 external-provider-session convergence guarantee.
 
-## 14. Key Source Owners
+## 15. Key Source Owners
 
 Core domain, acceptance, and publication:
 

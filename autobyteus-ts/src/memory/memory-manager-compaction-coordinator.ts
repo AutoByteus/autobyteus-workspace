@@ -22,6 +22,11 @@ export type PendingCompactionRequest = {
   requestedTurnId: string | null;
 };
 
+export type MemoryManagerPendingCompactionState = {
+  compactionRequired: boolean;
+  pendingCompactionRequest: PendingCompactionRequest | null;
+};
+
 export type MemoryManagerCompactionBaseline = {
   operationId: CompactionOperationId;
   context: WorkingContext;
@@ -70,6 +75,20 @@ export class MemoryManagerCompactionCoordinator {
   clear(): void {
     this.compactionRequired = false;
     this.pendingRequest = null;
+  }
+
+  capturePendingState(): MemoryManagerPendingCompactionState {
+    return {
+      compactionRequired: this.compactionRequired,
+      pendingCompactionRequest: this.pendingRequest ? { ...this.pendingRequest } : null,
+    };
+  }
+
+  restorePendingState(state: MemoryManagerPendingCompactionState): void {
+    this.compactionRequired = state.compactionRequired;
+    this.pendingRequest = state.pendingCompactionRequest
+      ? { ...state.pendingCompactionRequest }
+      : null;
   }
 
   captureBaseline(): MemoryManagerCompactionBaseline {

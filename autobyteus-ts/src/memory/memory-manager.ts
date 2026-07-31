@@ -46,6 +46,17 @@ import {
   type NativeToolCallRegistration,
 } from './raw-trace-ingestion.js';
 import { ToolTraceLifecycleState } from './tool-trace-lifecycle-state.js';
+import {
+  LlmRequestRecoveryBoundary,
+  type LlmRequestRecoveryInput,
+  type LlmRequestRecoveryProvenance,
+  type LlmRequestRecoverySnapshot,
+} from './llm-request-recovery.js';
+export type {
+  LlmRequestRecoveryInput,
+  LlmRequestRecoveryProvenance,
+  LlmRequestRecoverySnapshot,
+} from './llm-request-recovery.js';
 
 export type ToolIntentIngestionOptions = { appendToWorkingContext?: boolean; assistantContent?: string | null; assistantReasoning?: string | null };
 export type ToolResultIngestionOptions = { source?: string; appendToWorkingContext?: boolean };
@@ -74,6 +85,7 @@ export class MemoryManager {
   private readonly workingContextController: MemoryManagerWorkingContextController;
   workingContextSnapshotStore: WorkingContextSnapshotStore | null;
   private readonly compactionCoordinator: MemoryManagerCompactionCoordinator;
+  private readonly llmRequestRecovery: LlmRequestRecoveryBoundary;
   private seqByTurn = new Map<string, number>();
   private readonly toolLifecycleState: ToolTraceLifecycleState;
 
@@ -102,6 +114,14 @@ export class MemoryManager {
       installContext: (context) => this.workingContextController.install(context),
     });
     this.toolLifecycleState = new ToolTraceLifecycleState(this.store.listRawTraceCorpusOrdered());
+    this.llmRequestRecovery = new LlmRequestRecoveryBoundary({
+      getWorkingContext: () => this.workingContextController.getContext(),
+      setWorkingContext: (workingContext) => this.workingContextController.install(workingContext),
+      getCompactionState: () => this.compactionCoordinator.capturePendingState(),
+      setCompactionState: (state) => this.compactionCoordinator.restorePendingState(state),
+      persistWorkingContextSnapshot: () => this.persistWorkingContextSnapshot(),
+      appendRawTrace: (input) => this.appendRawTrace(input),
+    });
   }
 
   startTurn(): string {
@@ -471,6 +491,12 @@ export class MemoryManager {
   getWorkingContext(): WorkingContext {
     return this.workingContextController.getContext();
   }
+
+  captureLlmRequestRecoverySnapshot(input: LlmRequestRecoveryInput): LlmRequestRecoverySnapshot { return this.llmRequestRecovery.capture(input); }
+
+  restoreLlmRequestRecoverySnapshot(snapshot: LlmRequestRecoverySnapshot, provenance: LlmRequestRecoveryProvenance): void { this.llmRequestRecovery.restore(snapshot, provenance); }
+
+  commitLlmRequestRecoverySnapshot(snapshot: LlmRequestRecoverySnapshot): void { this.llmRequestRecovery.commit(snapshot); }
 
   replaceWorkingContext(workingContext: WorkingContext): void {
     this.workingContextController.replace(workingContext);

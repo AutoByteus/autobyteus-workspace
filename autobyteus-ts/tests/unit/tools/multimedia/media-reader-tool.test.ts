@@ -65,6 +65,41 @@ describe('ReadMediaFile tool (unit)', () => {
     expect(videoResult.fileType).toBe(ContextFileType.VIDEO);
   });
 
+  it('rejects an empty media file before creating a context file', async () => {
+    const emptyImagePath = path.join(tempDir, 'empty.png');
+    await fs.writeFile(emptyImagePath, Buffer.alloc(0));
+
+    const tool = new ReadMediaFile();
+    await expect(tool.execute({
+      agentId: 'agent-empty-media',
+      workspaceRootPath: tempDir,
+    }, { file_path: 'empty.png' })).rejects.toThrow(
+      "The media file 'empty.png' is empty and was not loaded.",
+    );
+  });
+
+  it('rejects image input for a model with explicit unsupported capability', async () => {
+    const imagePath = path.join(tempDir, 'unsupported.png');
+    await fs.writeFile(imagePath, IMAGE_BYTES);
+
+    const tool = new ReadMediaFile();
+    await expect(tool.execute({
+      agentId: 'agent-text-only',
+      workspaceRootPath: tempDir,
+      llmInstance: {
+        model: {
+          multimodalCapabilities: {
+            image: 'unsupported',
+            audio: 'unsupported',
+            video: 'unsupported',
+          },
+        },
+      },
+    }, { file_path: 'unsupported.png' })).rejects.toThrow(
+      'The selected model does not support image input. The image was not loaded. Continue without visual analysis and do not claim to have inspected the image.',
+    );
+  });
+
   it('requires workspace for relative paths', async () => {
     const tool = new ReadMediaFile();
     const context = { agentId: 'agent-2', workspaceRootPath: null };

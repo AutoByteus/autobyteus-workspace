@@ -65,36 +65,6 @@ export type RuntimeMemoryTraceInput =
   | RuntimeMemoryToolResultTraceInput
   | RuntimeMemoryProviderBoundaryTraceInput;
 
-export type RuntimeMemorySnapshotUpdate =
-  | {
-      kind: "user";
-      content: string;
-      media?: RawTraceMedia | null;
-    }
-  | {
-      kind: "assistant";
-      content: string | null;
-      reasoning?: string | null;
-    }
-  | {
-      kind: "tool_call";
-      toolCallId: string;
-      toolName: string;
-      toolArgs: Record<string, unknown>;
-    }
-  | {
-      kind: "tool_result";
-      toolCallId: string;
-      toolName: string;
-      toolResult: unknown;
-      toolError?: string | null;
-    };
-
-export type RuntimeMemoryWriteOperation = {
-  trace: RuntimeMemoryTraceInput;
-  snapshotUpdate?: RuntimeMemorySnapshotUpdate | null;
-};
-
 export type ProviderCompactionBoundaryPayload = {
   kind: "provider_compaction_boundary";
   runtime_kind: "CODEX" | "CLAUDE" | string;

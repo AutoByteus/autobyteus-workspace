@@ -193,7 +193,7 @@ Standalone agent persisted files:
   `llmConfig`, `autoExecuteTools`, `skillAccessMode`, `platformAgentRunId`,
   `preparedAt`, `preparedExpiresAt`, `startedAt`, and optional
   `applicationExecutionContext`
-- runtime memory artifacts: `memory/agents/<runId>/{raw_traces_active.jsonl,working_context_snapshot.json,...}`
+- runtime memory artifacts: all runtimes can have `memory/agents/<runId>/raw_traces_active.jsonl`; native AutoByteus runs additionally own `working_context_snapshot.json`, while new Codex/Claude recording does not create or update that snapshot
 - rotated raw-trace segments after native compaction or provider-boundary rotation: `memory/agents/<runId>/raw_traces_manifest.json` plus direct `memory/agents/<runId>/raw_traces_<zero-padded-index>.jsonl` files
 
 Team persisted files:
@@ -209,7 +209,7 @@ Team persisted files:
   recursive `memberTree`; agent-member entries must not carry
   `skillImprovementEffective` launch snapshots after the Skill Improvement metadata
   cleanup migration
-- member runtime memory artifacts: direct members use `memory/agent_teams/<rootTeamRunId>/<memberRunId>/{raw_traces_active.jsonl,working_context_snapshot.json,...}`; nested members use `memory/agent_teams/<rootTeamRunId>/<childTeamRunId>/<memberRunId>/{raw_traces_active.jsonl,working_context_snapshot.json,...}`, with deeper child team run ids appended in `teamRunPath` order
+- member runtime memory artifacts: direct members use `memory/agent_teams/<rootTeamRunId>/<memberRunId>/...`; nested members use `memory/agent_teams/<rootTeamRunId>/<childTeamRunId>/<memberRunId>/...`, with deeper child team run ids appended in `teamRunPath` order. Every supported runtime can persist `raw_traces_active.jsonl`; only native AutoByteus continuation owns new `working_context_snapshot.json` writes.
 - optional member rotated raw-trace segments: stored beside the member memory artifacts in that root-hierarchical team/member directory, for example `memory/agent_teams/<rootTeamRunId>/<...teamRunPath>/<memberRunId>/raw_traces_manifest.json` plus direct `raw_traces_<zero-padded-index>.jsonl` files
 - team communication projection: `memory/agent_teams/<rootTeamRunId>/team_communication_messages.json`
 - task delegation records projection: `memory/agent_teams/<rootTeamRunId>/task_delegation_records.json`
@@ -259,6 +259,14 @@ Important identity/storage rules:
   migrated/skipped/failed item counts. Current metadata parsing accepts only
   `PRELOADED_ONLY` and `NONE`; history restore must not resurrect all-installed
   skill discovery from older metadata.
+- required startup app-data migration
+  `20260731_remove_external_runtime_working_context_snapshots` discards only
+  exact current-metadata-classified Codex/Claude standalone and recursive
+  team-member snapshot copies. It preserves native, imported, unclassified,
+  invalid-metadata, and task-like locations plus every raw trace, archive,
+  metadata record, provider resume id, and artifact. Partial cleanup is
+  reported and retryable without blocking later startup migrations; retained
+  files can remain generically inspectable until retry.
 - manual fallback repair belongs to
   `scripts/migrate-agent-run-history-index-v2.mjs`; see
   `scripts/run-history-index-migration.md` before running cleanup against old
@@ -286,7 +294,7 @@ Important identity/storage rules:
   configured app memory root; restore, context-file resolution, and memory
   readback must not reuse a default-root singleton after tests or deployments
   select a different memory directory
-- Codex and Claude standalone/team-member/task-agent runs write storage-only local memory through the same resolved memory directories as native AutoByteus-owned runs; native AutoByteus memory contents remain owned by the native `autobyteus-ts` memory manager
+- Codex and Claude standalone/team-member/task-agent runs write raw-trace-only local memory through the same resolved memory directories as native AutoByteus-owned runs; they do not load or persist WorkingContext snapshots, and native AutoByteus memory contents remain owned by the native `autobyteus-ts` memory manager
 - runtime-native identifiers remain separate from domain identifiers:
   - AutoByteus native agent id
   - Codex thread id
@@ -511,7 +519,11 @@ active removal decisions.
 
 The prior `raw_traces_archive_manifest.json` plus `raw_traces_archive/` layout is migration/fallback input only. Startup app-data migration `20260617_raw_trace_rotation_layout` converts old complete entries to the direct rotated layout and decommissions old authoritative files after verification. The old monolithic `raw_traces_archive.jsonl` path is intentionally not a current read/write target and historical monolithic archive files are not read under the approved no-compatibility policy.
 
-Rotated raw-trace segments are not compression or retention. There is still no total-storage retention policy, no archive compression, and no working-context snapshot windowing/retention behavior.
+Rotated raw-trace segments are not compression or retention. There is still no
+total-storage retention policy or archive compression. Native WorkingContext
+snapshot behavior is unchanged; Codex and Claude have no current snapshot
+write/reconstruction path, and their old metadata-classified duplicates are a
+startup-cleanup concern rather than a retention window.
 
 ## Team Restore / Projection Contract
 

@@ -1,0 +1,56 @@
+{
+  "verificationTimeUtc": "2026-07-31T15:39:24.568Z",
+  "privacyPosture": "Read the authoritative migration ledger and metadata/file existence only; no snapshot or raw-trace payload was read or emitted, and no file was changed.",
+  "migrationRecord": {
+    "migrationId": "20260731_remove_external_runtime_working_context_snapshots",
+    "displayName": "Remove external runtime WorkingContext snapshots",
+    "status": "SUCCEEDED",
+    "attempts": 1,
+    "startedAtUtc": "2026-07-31T15:30:47.515Z",
+    "completedAtUtc": "2026-07-31T15:30:49.592Z",
+    "errorMessage": null,
+    "summary": {
+      "scannedCount": 2848,
+      "migratedCount": 1738,
+      "skippedCount": 1110,
+      "failedCount": 0
+    }
+  },
+  "detailPathReconciliation": {
+    "Removed duplicate external runtime WorkingContext snapshot.": {
+      "ledgerStatus": "MIGRATED",
+      "ledgerCount": 1738,
+      "currentlyPresentCount": 0,
+      "currentlyAbsentCount": 1738
+    },
+    "Eligible external runtime snapshot was already absent.": {
+      "ledgerStatus": "SKIPPED",
+      "ledgerCount": 595,
+      "currentlyPresentCount": 0,
+      "currentlyAbsentCount": 595
+    },
+    "Snapshot belongs to a native or unsupported runtime and was preserved.": {
+      "ledgerStatus": "SKIPPED",
+      "ledgerCount": 349,
+      "currentlyPresentCount": 349,
+      "currentlyAbsentCount": 0
+    },
+    "Snapshot has no exact current metadata-derived external runtime classification.": {
+      "ledgerStatus": "SKIPPED",
+      "ledgerCount": 166,
+      "currentlyPresentCount": 166,
+      "currentlyAbsentCount": 0
+    }
+  },
+  "authoritativeLog": {
+    "path": "/Users/normy/.autobyteus/server-data/logs/app-data-migrations/20260731_remove_external_runtime_working_context_snapshots-2026-07-31T15-30-49-590Z.log",
+    "sizeBytes": 1104391,
+    "sha256": "f6f5616478ceb76a919b25453f84f45baacabe9d9fcced5e81174482b8dc9b0a"
+  },
+  "liveProcessObservation": {
+    "packagedServerStillRunning": true,
+    "matchingProcessCount": 1,
+    "dataDir": "/Users/normy/.autobyteus/server-data"
+  },
+  "classification": "Complete for the approved persisted-data transition; only intentional preservation residuals remain, with no cleanup failures."
+}

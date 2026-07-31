@@ -254,4 +254,36 @@ describe("AppDataMigrationRunner", () => {
     expect(executeSucceeded).not.toHaveBeenCalled();
     expect(executeWarnings).not.toHaveBeenCalled();
   });
+
+  it("exposes warning results for manual retry and records a successful retry attempt", async () => {
+    let attempt = 0;
+    const repository = new InMemoryMigrationRepository();
+    const runner = new AppDataMigrationRunner(
+      new AppDataMigrationRegistry([
+        createDefinition("cleanup-warning", async () => {
+          attempt += 1;
+          return attempt === 1
+            ? {
+                status: "SUCCEEDED_WITH_WARNINGS",
+                summary: { ...summary, migratedCount: 1, failedCount: 1 },
+                errorMessage: "one retained file requires retry",
+              }
+            : { status: "SUCCEEDED", summary: { ...summary, migratedCount: 1 } };
+        }),
+      ]),
+      repository,
+      { logsDir: tempDir },
+    );
+
+    await expect(runner.runPending()).resolves.toMatchObject([
+      { migrationId: "cleanup-warning", status: "SUCCEEDED_WITH_WARNINGS", canRetry: true, attempts: 1 },
+    ]);
+    await expect(runner.runMigration("cleanup-warning")).resolves.toMatchObject({
+      migrationId: "cleanup-warning",
+      status: "SUCCEEDED",
+      canRetry: false,
+      attempts: 2,
+    });
+  });
+
 });

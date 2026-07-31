@@ -23,6 +23,9 @@ under the same provider-centered model contract.
   - `provider_type`
   - `runtime`
   - optional `host_url` and `config_schema`
+  - `multimodalCapabilities` with explicit `supported`, `unsupported`, or
+    `unknown` states for image, audio, and video input
+  - `resolvedModelMetadata` with per-field numeric provenance
 - **`LLMFactory`** (`src/llm/llm-factory.ts`): registry, discovery, reload
   logic, and custom OpenAI-compatible provider sync.
 
@@ -179,9 +182,31 @@ name.
 
 Built-in LLM API models are defined in
 `src/llm/supported-model-definitions.ts`. `LLMFactory.initializeRegistry()`
-loads those definitions, resolves curated metadata from
-`src/llm/metadata/curated-model-metadata.ts`, then registers the resulting
-`LLMModel` objects.
+loads those definitions, resolves provider-live numeric metadata over each
+definition's colocated `staticMetadata`, then registers the resulting
+`LLMModel` objects. Static metadata is defined by
+`src/llm/supported-model-static-metadata.ts` and includes numeric limits,
+multimodal capabilities, source URL, and verification date. The resolver keeps
+field-level provenance (`live`, `static_definition`, or `unknown`); it does not
+resolve `activeContextTokens`, which remains dynamic runtime state. There is no
+second `curated-model-metadata.ts` authority.
+
+### 6.1 Media input and failed-request recovery
+
+`LLMRequestAssembler` preserves canonical working-context messages and creates a
+provider-facing `outboundMessages` copy through
+`src/llm/utils/media-input-sanitizer.ts`. The sanitizer removes media that is
+known unsupported for the selected model and rejects empty or invalid image
+sources through the shared media formatter. It returns bounded diagnostics and
+does not rewrite canonical memory; provider renderers receive only the outbound
+copy.
+
+`LlmPhase` opens a named `MemoryManager` recovery boundary before request
+preparation. Successful provider completion commits it. Assembly or provider
+stream failure restores working context and compaction state, persists the
+restored snapshot, and records a correlated recovery trace before returning one
+recoverable diagnostic. This path deliberately does not retry or select a
+fallback model, and it preserves raw traces and already committed tool facts.
 
 The current latest-model support set is summarized in
 `docs/provider_model_catalogs.md`. Notable LLM entries include:
@@ -538,8 +563,9 @@ and the env-gated
 ## 11. Where to Update
 
 - Add built-in LLM API models in `src/llm/supported-model-definitions.ts`.
-- Add docs-backed LLM context/output/pricing metadata in
-  `src/llm/metadata/curated-model-metadata.ts`.
+- Add docs-backed static LLM context/input/output metadata, multimodal
+  capabilities, source URL, and verification date in each definition's
+  `staticMetadata` (using helpers from `src/llm/supported-model-static-metadata.ts`).
 - Keep provider-specific request-shape behavior in the matching
   `src/llm/api/*` adapter.
 - Keep provider-specific native tool history in
@@ -551,6 +577,12 @@ and the env-gated
   surfaces in `src/utils/gemini-model-mapping.ts`.
 - Add provider display names in `src/llm/provider-display-names.ts`.
 - Update shared metadata shape in `src/llm/models.ts`.
+- Update `src/llm/multimodal-capabilities.ts` when the provider-neutral media
+  capability contract changes.
+- Keep outbound media filtering in
+  `src/llm/utils/media-input-sanitizer.ts` and named request rollback in
+  `src/memory/llm-request-recovery.ts` / `MemoryManager`; do not add provider- or
+  model-name compatibility branches.
 - Update saved custom-provider schema in
   `src/llm/custom-llm-provider-config.ts`.
 - Update OpenAI-compatible custom-provider discovery/modeling in:

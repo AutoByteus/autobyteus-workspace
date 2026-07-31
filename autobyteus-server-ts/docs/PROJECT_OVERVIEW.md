@@ -40,7 +40,7 @@ Major domains under `src/`:
 - LLM and multimedia model management
 - Workspaces and file explorer
 - Token usage and memory-centric conversation state
-- Server-owned agent memory inspection, storage-only external-runtime recording, and Memory Sync / Memory Hub imported-memory corpus support
+- Server-owned agent memory inspection, raw-trace-only Codex/Claude recording, and Memory Sync / Memory Hub imported-memory corpus support
 - Agent artifacts
 - Remote Access / Phone Access pairing, mobile auth, and mobile static app serving
 

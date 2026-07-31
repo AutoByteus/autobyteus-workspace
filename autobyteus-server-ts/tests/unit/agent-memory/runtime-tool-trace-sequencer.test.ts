@@ -4,7 +4,7 @@ import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { RuntimeToolTraceSequencer } from "../../../src/agent-memory/services/runtime-tool-trace-sequencer.js";
-import { RunMemoryWriter } from "../../../src/agent-memory/store/run-memory-writer.js";
+import { ExternalRuntimeMemoryWriter } from "../../../src/agent-memory/store/external-runtime-memory-writer.js";
 import { RunMemoryFileStore } from "autobyteus-ts/memory/store/run-memory-file-store.js";
 
 const tempDirs = new Set<string>();
@@ -31,7 +31,7 @@ const createSequencer = (
   memoryDir: string,
   flushReasoningBoundary = vi.fn<(turnId: string, sourceEvent: string) => void>(),
 ) => {
-  const writer = new RunMemoryWriter({ memoryDir });
+  const writer = new ExternalRuntimeMemoryWriter({ memoryDir });
   return {
     flushReasoningBoundary,
     sequencer: new RuntimeToolTraceSequencer({

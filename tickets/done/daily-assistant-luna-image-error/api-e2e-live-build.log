@@ -1,0 +1,63 @@
+
+> autobyteus-workspace@ secrets:import /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error
+> pnpm --filter autobyteus-server-ts build && node autobyteus-server-ts/dist/secret-management/cli/import-local-environment-secrets.js -- --source /Users/normy/.autobyteus/server-data/.env --database-url file:/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/autobyteus-server-ts/db/test.db --dry-run
+
+
+> autobyteus-server-ts@0.1.1 prebuild /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 11 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 105ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Easily identify and fix slow SQL queries in your app. Optimize helps you enhance your visibility: https://pris.ly/--optimize
+
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 7.9.1                       │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+
+> autobyteus-server-ts@0.1.1 build /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/autobyteus-server-ts
+> pnpm run build:full
+
+
+> autobyteus-server-ts@0.1.1 build:full /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-managed-messaging-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+
+src/api/graphql/types/llm-provider.ts(14,10): error TS2724: '"autobyteus-ts/llm/metadata/model-metadata-resolver.js"' has no exported member named 'ModelMetadataProvenance'. Did you mean 'StaticModelMetadataProvenance'?
+src/api/graphql/types/llm-provider.ts(190,29): error TS2339: Property 'metadata_provenance' does not exist on type 'ModelInfo'.
+src/llm-management/services/model-metadata-provisioning-service.ts(29,7): error TS2322: Type '{ max_context_tokens: ResolvedMetadataField<number>; active_context_tokens: any; max_input_tokens: ResolvedMetadataField<number>; ... 12 more ...; config_schema?: Record<...> | undefined; }[]' is not assignable to type 'ModelInfo[]'.
+  Type '{ max_context_tokens: ResolvedMetadataField<number>; active_context_tokens: any; max_input_tokens: ResolvedMetadataField<number>; ... 12 more ...; config_schema?: Record<string, unknown>; }' is not assignable to type 'ModelInfo'.
+    Types of property 'max_context_tokens' are incompatible.
+      Type 'ResolvedMetadataField<number>' is not assignable to type 'number'.
+src/llm-management/services/model-metadata-provisioning-service.ts(30,41): error TS2554: Expected 2 arguments, but got 1.
+src/llm-management/services/model-metadata-provisioning-service.ts(39,43): error TS2551: Property 'activeContextTokens' does not exist on type 'ResolvedModelMetadata'. Did you mean 'maxContextTokens'?
+src/llm-management/services/model-metadata-provisioning-service.ts(42,41): error TS2339: Property 'provenance' does not exist on type 'ResolvedModelMetadata'.
+src/llm-management/services/model-metadata-provisioning-service.ts(82,16): error TS2322: Type '"CURATED_ONLY"' is not assignable to type '"LIVE_WITH_STATIC_FALLBACK" | "LIVE_WITH_CURATED_FALLBACK"'.
+ ELIFECYCLE  Command failed with exit code 2.
+/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/autobyteus-server-ts:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  autobyteus-server-ts@0.1.1 build: `pnpm run build:full`
+Exit status 2
+ ELIFECYCLE  Command failed with exit code 2.
+
+EXIT_CODE=2

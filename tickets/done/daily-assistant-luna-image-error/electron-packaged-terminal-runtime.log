@@ -1,0 +1,10 @@
+
+> autobyteus@1.4.32 verify-packaged-terminal-runtime /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/autobyteus-web
+> node ./scripts/verify-packaged-terminal-runtime.mjs --server-root ./electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server --platform darwin --arch arm64 --spawn-probe
+
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+
+EXIT_CODE=0

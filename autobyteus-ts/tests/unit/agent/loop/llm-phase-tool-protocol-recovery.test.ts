@@ -57,6 +57,40 @@ class CapturingResumeLLM extends BaseLLM {
   }
 }
 
+class FailingThenRecoveringLLM extends BaseLLM {
+  public readonly _renderer = new OpenAIChatRenderer();
+  public readonly streamCaptures: Message[][] = [];
+
+  constructor() {
+    super(
+      new LLMModel({
+        name: 'unknown-capability-recovery-model',
+        value: 'unknown-capability-recovery-model',
+        canonicalName: 'unknown-capability-recovery-model',
+        provider: LLMProvider.OPENAI,
+      }),
+      new LLMConfig({ systemMessage: 'System prompt', maxTokens: 64 }),
+    );
+  }
+
+  protected async _sendMessagesToLLM(): Promise<CompleteResponse> {
+    return new CompleteResponse({ content: 'unused' });
+  }
+
+  override async *streamMessages(
+    messages: Message[],
+    _renderedPayload: unknown = null,
+    _kwargs: Record<string, unknown> = {},
+    _options: LLMInvocationOptions = {},
+  ): AsyncGenerator<ChunkResponse, void, unknown> {
+    this.streamCaptures.push([...messages]);
+    if (this.streamCaptures.length === 1) {
+      throw new Error('provider rejected image input');
+    }
+    yield new ChunkResponse({ content: 'recovered', is_complete: true });
+  }
+}
+
 describe('LlmPhase incomplete native tool-call resume recovery', () => {
   it('kicks off LLM execution after one additional user prompt with provider-safe rendered history', async () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'llm-phase-resume-repair-'));
@@ -125,6 +159,77 @@ describe('LlmPhase incomplete native tool-call resume recovery', () => {
         role: 'user',
         content: 'please continue there was a shutdown',
       });
+    } finally {
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+});
+
+describe('LlmPhase unknown-capability provider recovery', () => {
+  it('rolls back one failed image request and accepts the next text-only turn without retrying', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'llm-phase-provider-recovery-'));
+    try {
+      const store = new FileMemoryStore(tempDir, 'agent_provider_recovery');
+      const memoryManager = new MemoryManager({ store });
+      memoryManager.replaceWorkingContext(new WorkingContext([
+        new Message(MessageRole.SYSTEM, { content: 'System prompt' }),
+        new Message(MessageRole.USER, { content: 'baseline context' }),
+      ]));
+
+      const llm = new FailingThenRecoveringLLM();
+      const state = new AgentRuntimeState('agent_provider_recovery');
+      state.llmInstance = llm;
+      state.memoryManager = memoryManager;
+      const config = new AgentConfig('agent', 'role', 'description', llm, 'System prompt', []);
+      const context = new AgentContext('agent_provider_recovery', config, state);
+
+      const failedTurn = new AgentTurn('turn_provider_failure');
+      const failedOutcome = await new LlmPhase().run({
+        llmUserMessage: new LLMUserMessage({
+          content: 'inspect this image',
+          image_urls: ['data:image/png;base64,aW1hZ2U='],
+        }),
+        turnId: failedTurn.turnId,
+        sourceEvent: new UserMessageReceivedEvent(
+          new AgentInputUserMessage('inspect this image')
+        ),
+      }, context, failedTurn, null);
+
+      expect(failedOutcome).toMatchObject({ kind: 'final', isError: true });
+      expect((failedOutcome as { kind: 'final'; response: CompleteResponse }).response.content)
+        .toContain('provider rejected image input');
+      expect(llm.streamCaptures).toHaveLength(1);
+      expect(llm.streamCaptures[0].at(-1)).toMatchObject({
+        role: MessageRole.USER,
+        content: 'inspect this image',
+        image_urls: ['data:image/png;base64,aW1hZ2U='],
+      });
+      expect(memoryManager.getWorkingContextMessages()).toEqual([
+        expect.objectContaining({ role: MessageRole.SYSTEM, content: 'System prompt' }),
+        expect.objectContaining({ role: MessageRole.USER, content: 'baseline context' }),
+      ]);
+
+      const recoveryTurn = new AgentTurn('turn_provider_recovery');
+      const recoveryOutcome = await new LlmPhase().run({
+        llmUserMessage: new LLMUserMessage({ content: 'continue with text only' }),
+        turnId: recoveryTurn.turnId,
+        sourceEvent: new UserMessageReceivedEvent(
+          new AgentInputUserMessage('continue with text only')
+        ),
+      }, context, recoveryTurn, null);
+
+      expect(recoveryOutcome.kind).toBe('final');
+      expect('isError' in recoveryOutcome && recoveryOutcome.isError).toBe(false);
+      expect(llm.streamCaptures).toHaveLength(2);
+      expect(llm.streamCaptures[1].at(-1)).toMatchObject({
+        role: MessageRole.USER,
+        content: 'continue with text only',
+        image_urls: [],
+      });
+      expect(llm.streamCaptures[1].some((message) => message.image_urls.length > 0)).toBe(false);
+      expect(memoryManager.getWorkingContextMessages().some((message) =>
+        message.image_urls.includes('data:image/png;base64,aW1hZ2U=')
+      )).toBe(false);
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }

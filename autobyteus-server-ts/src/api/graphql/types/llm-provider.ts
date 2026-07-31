@@ -11,7 +11,6 @@ import {
 } from 'type-graphql';
 import { GraphQLJSON } from 'graphql-scalars';
 import type { ModelInfo } from 'autobyteus-ts/llm/models.js';
-import { ModelMetadataProvenance } from 'autobyteus-ts/llm/metadata/model-metadata-resolver.js';
 import { getLlmProviderDisplayName } from 'autobyteus-ts/llm/provider-display-names.js';
 import { LLMProvider } from 'autobyteus-ts/llm/providers.js';
 import type { AudioModel } from 'autobyteus-ts/multimedia/audio/audio-model.js';
@@ -32,12 +31,19 @@ import type {
   GeminiSetupStatus,
 } from '../../../llm-management/services/gemini-configuration-service.js';
 import { getModelCatalogService } from '../../../llm-management/services/model-catalog-service.js';
+import type { ModelMetadataProvenanceValue } from '../../../llm-management/services/model-metadata-provisioning-service.js';
 import {
   GeminiSetupModeGraphql,
   GeminiSetupStateObject,
 } from './gemini-configuration.js';
 
-registerEnumType(ModelMetadataProvenance, { name: 'ModelMetadataProvenance' });
+enum ModelMetadataProvenanceGraphql {
+  LIVE = 'LIVE',
+  CURATED_FALLBACK = 'CURATED_FALLBACK',
+  CURATED_ONLY = 'CURATED_ONLY',
+}
+
+registerEnumType(ModelMetadataProvenanceGraphql, { name: 'ModelMetadataProvenance' });
 
 @ObjectType()
 class ModelDetail {
@@ -86,8 +92,8 @@ class ModelDetail {
   @Field(() => Int, { nullable: true })
   maxOutputTokens?: number | null;
 
-  @Field(() => ModelMetadataProvenance, { nullable: true })
-  metadataProvenance?: ModelMetadataProvenance | null;
+  @Field(() => ModelMetadataProvenanceGraphql, { nullable: true })
+  metadataProvenance?: ModelMetadataProvenanceGraphql | null;
 }
 
 @ObjectType()
@@ -171,7 +177,17 @@ class CustomProviderInputObject {
   apiKey!: string;
 }
 
-const mapLlmModel = (model: ModelInfo): ModelDetail => ({
+type ModelInfoWithMetadataProvenance = ModelInfo & {
+  metadata_provenance?: ModelMetadataProvenanceValue | null;
+};
+
+const mapMetadataProvenance = (
+  value: ModelMetadataProvenanceValue | null | undefined,
+): ModelMetadataProvenanceGraphql | null => value
+  ? ModelMetadataProvenanceGraphql[value]
+  : null;
+
+const mapLlmModel = (model: ModelInfoWithMetadataProvenance): ModelDetail => ({
   modelIdentifier: model.model_identifier,
   name: model.display_name,
   description: model.description ?? null,
@@ -187,7 +203,7 @@ const mapLlmModel = (model: ModelInfo): ModelDetail => ({
   activeContextTokens: model.active_context_tokens ?? null,
   maxInputTokens: model.max_input_tokens ?? null,
   maxOutputTokens: model.max_output_tokens ?? null,
-  metadataProvenance: model.metadata_provenance ?? null,
+  metadataProvenance: mapMetadataProvenance(model.metadata_provenance),
 });
 
 const mapMultimediaModel = (
