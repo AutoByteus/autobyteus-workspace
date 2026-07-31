@@ -53,6 +53,7 @@ type ImportEdge = {
   specifier: string;
   line: number;
   column: number;
+  importedNames?: readonly string[];
 };
 
 type ImportBinding = {
@@ -62,7 +63,8 @@ type ImportBinding = {
 };
 
 type ParsedSource = {
-  importer: string;
+  diagnosticImporter: string;
+  resolutionOrigin: string;
   sourceFile: ts.SourceFile;
   lineOffset: number;
   edges: ImportEdge[];
@@ -73,6 +75,7 @@ type BoundaryViolation = {
   policy: AfbPolicyId;
   profile: ProjectProfileName;
   importer: string;
+  sourceOrigin?: string;
   line: number;
   column: number;
   subject: string;
@@ -128,6 +131,109 @@ const CORRECTIONS: Record<AfbPolicyId, string> = {
   "AFB-004": "Inject the named application-scoped dependency; move genuine process construction to a named assembly owner.",
   "AFB-005": "Use project-local source, an application SDK, a Node built-in, or a library declared by this project's manifest.",
 };
+
+type ForbiddenTargetRule = {
+  category: string;
+  matches: (relativeTarget: string) => boolean;
+};
+
+const SERVER_SOURCE_PREFIX = "autobyteus-server-ts/src/";
+const APPLICATION_RUNTIME_CONTRACT = `${SERVER_SOURCE_PREFIX}application-platform/runtime/application-platform-runtime-contracts.ts`;
+
+const AFB_001_FORBIDDEN_TARGET_RULES: readonly ForbiddenTargetRule[] = [
+  {
+    category: "lifecycle",
+    matches: (target) => target === `${SERVER_SOURCE_PREFIX}application-platform/runtime/application-platform-lifecycle.ts`,
+  },
+  {
+    category: "stores",
+    matches: (target) => [
+      `${SERVER_SOURCE_PREFIX}application-orchestration/stores/`,
+      `${SERVER_SOURCE_PREFIX}application-packages/stores/`,
+      `${SERVER_SOURCE_PREFIX}application-storage/stores/`,
+    ].some((prefix) => target.startsWith(prefix)),
+  },
+  {
+    category: "recovery",
+    matches: (target) => target === `${SERVER_SOURCE_PREFIX}application-orchestration/services/application-orchestration-recovery-service.ts`,
+  },
+  {
+    category: "availability",
+    matches: (target) => [
+      `${SERVER_SOURCE_PREFIX}application-orchestration/services/application-availability-service.ts`,
+      `${SERVER_SOURCE_PREFIX}application-platform/runtime/application-availability-state-registry.ts`,
+    ].includes(target),
+  },
+  {
+    category: "run",
+    matches: (target) => [
+      `${SERVER_SOURCE_PREFIX}agent-execution/runtime/`,
+      `${SERVER_SOURCE_PREFIX}agent-execution/services/`,
+      `${SERVER_SOURCE_PREFIX}agent-team-execution/services/`,
+    ].some((prefix) => target.startsWith(prefix))
+      || target.startsWith(`${SERVER_SOURCE_PREFIX}application-orchestration/services/application-run-`)
+      || target.startsWith(`${SERVER_SOURCE_PREFIX}application-orchestration/services/application-bound-run-`),
+  },
+  {
+    category: "session",
+    matches: (target) => target.startsWith(`${SERVER_SOURCE_PREFIX}agent-tools/mcp/`),
+  },
+  {
+    category: "queue",
+    matches: (target) => [
+      `${SERVER_SOURCE_PREFIX}application-orchestration/services/application-execution-event-dispatch-queue.ts`,
+      `${SERVER_SOURCE_PREFIX}application-orchestration/services/application-published-artifact-delivery-queue.ts`,
+    ].includes(target),
+  },
+  {
+    category: "publication",
+    matches: (target) => target.startsWith(`${SERVER_SOURCE_PREFIX}services/published-artifacts/`)
+      || target.startsWith(`${SERVER_SOURCE_PREFIX}application-orchestration/services/application-published-artifact-`),
+  },
+  {
+    category: "engine",
+    matches: (target) => target.startsWith(`${SERVER_SOURCE_PREFIX}application-engine/`),
+  },
+  {
+    category: "shutdown",
+    matches: (target) => target === `${SERVER_SOURCE_PREFIX}application-platform/runtime/application-run-shutdown-coordinator.ts`,
+  },
+  {
+    category: "runtime-builder",
+    matches: (target) => target.startsWith(`${SERVER_SOURCE_PREFIX}application-platform/runtime/`)
+      && target !== APPLICATION_RUNTIME_CONTRACT,
+  },
+];
+
+const afb001ForbiddenTargetCategory = (
+  relativeTarget: string,
+  edge: ImportEdge,
+  allowAvailabilityErrorContract: boolean,
+): string | null => {
+  if (relativeTarget === APPLICATION_RUNTIME_CONTRACT) return null;
+  if (allowAvailabilityErrorContract
+    && relativeTarget === `${SERVER_SOURCE_PREFIX}application-orchestration/services/application-availability-service.ts`
+    && edge.importedNames?.length === 1
+    && edge.importedNames[0] === "ApplicationUnavailableError") return null;
+  return AFB_001_FORBIDDEN_TARGET_RULES.find((rule) => rule.matches(relativeTarget))?.category ?? null;
+};
+
+const isApplicationRuntimeImplementation = (relativeTarget: string): boolean =>
+  relativeTarget !== APPLICATION_RUNTIME_CONTRACT
+  && ([
+    `${SERVER_SOURCE_PREFIX}application-platform/`,
+    `${SERVER_SOURCE_PREFIX}application-orchestration/`,
+    `${SERVER_SOURCE_PREFIX}application-engine/`,
+    `${SERVER_SOURCE_PREFIX}application-storage/`,
+    `${SERVER_SOURCE_PREFIX}agent-execution/runtime/`,
+    `${SERVER_SOURCE_PREFIX}agent-tools/mcp/`,
+    `${SERVER_SOURCE_PREFIX}services/published-artifacts/`,
+  ].some((prefix) => relativeTarget.startsWith(prefix)));
+
+const isStudioPresentationTarget = (relativeTarget: string): boolean =>
+  relativeTarget.startsWith("autobyteus-web/components/applications/")
+  || relativeTarget.startsWith("autobyteus-web/utils/application/")
+  || relativeTarget === "autobyteus-web/composables/useRuntimeScopedModelSelection.ts";
 
 const DIRECT_GLOBAL_CALLEES: readonly DirectGlobalCallee[] = [
   {
@@ -496,8 +602,15 @@ class ApplicationFrameworkBoundaryChecker {
         violations.push(...parsedResult.violations);
         for (const parsed of parsedResult.sources) {
           for (const edge of parsed.edges) {
-            const resolution = this.resolveSpecifier(edge.specifier, importer, profile);
-            const violation = this.evaluateImport(policy, profile, importer, edge, resolution);
+            const resolution = this.resolveSpecifier(edge.specifier, parsed.resolutionOrigin, profile);
+            const violation = this.evaluateImport(
+              policy,
+              profile,
+              parsed.diagnosticImporter,
+              parsed.resolutionOrigin,
+              edge,
+              resolution,
+            );
             if (violation) violations.push(violation);
           }
           if (policy === "AFB-004") {
@@ -552,8 +665,15 @@ class ApplicationFrameworkBoundaryChecker {
     const violations = [...result.violations];
     for (const parsed of result.sources) {
       for (const edge of parsed.edges) {
-        const resolution = this.resolveSpecifier(edge.specifier, canonicalImporter, profile);
-        const violation = this.evaluateImport(policy, profile, canonicalImporter, edge, resolution);
+        const resolution = this.resolveSpecifier(edge.specifier, parsed.resolutionOrigin, profile);
+        const violation = this.evaluateImport(
+          policy,
+          profile,
+          parsed.diagnosticImporter,
+          parsed.resolutionOrigin,
+          edge,
+          resolution,
+        );
         if (violation) violations.push(violation);
       }
       if (policy === "AFB-004") {
@@ -925,7 +1045,7 @@ class ApplicationFrameworkBoundaryChecker {
     profile: ProjectProfile,
     policy: AfbPolicyId,
     lineOffset: number,
-    importer = sourceName,
+    diagnosticImporter = sourceName,
     language?: string,
   ): { sources: ParsedSource[]; violations: BoundaryViolation[] } {
     const sourceFile = ts.createSourceFile(
@@ -943,7 +1063,8 @@ class ApplicationFrameworkBoundaryChecker {
         violations: [this.violation({
           policy,
           profile,
-          importer,
+          importer: diagnosticImporter,
+          sourceOrigin: sourceName,
           line: position.line + 1 + lineOffset,
           column: position.character + 1,
           subject: "<source>",
@@ -954,20 +1075,28 @@ class ApplicationFrameworkBoundaryChecker {
 
     const edges: ImportEdge[] = [];
     const bindings = new Map<string, ImportBinding>();
-    const addEdge = (literal: ts.StringLiteralLike): void => {
+    const addEdge = (literal: ts.StringLiteralLike, importedNames?: readonly string[]): void => {
       const position = sourceFile.getLineAndCharacterOfPosition(literal.getStart(sourceFile));
       edges.push({
         specifier: literal.text,
         line: position.line + 1 + lineOffset,
         column: position.character + 1,
+        importedNames,
       });
     };
 
     for (const statement of sourceFile.statements) {
       if (ts.isImportDeclaration(statement) && ts.isStringLiteralLike(statement.moduleSpecifier)) {
-        addEdge(statement.moduleSpecifier);
-        const resolution = this.resolveSpecifier(statement.moduleSpecifier.text, importer, profile);
         const clause = statement.importClause;
+        const importedNames = [
+          ...(clause?.name ? ["default"] : []),
+          ...(clause?.namedBindings && ts.isNamespaceImport(clause.namedBindings) ? ["*"] : []),
+          ...(clause?.namedBindings && ts.isNamedImports(clause.namedBindings)
+            ? clause.namedBindings.elements.map((element) => element.propertyName?.text ?? element.name.text)
+            : []),
+        ];
+        addEdge(statement.moduleSpecifier, importedNames);
+        const resolution = this.resolveSpecifier(statement.moduleSpecifier.text, sourceName, profile);
         if (clause?.name) bindings.set(clause.name.text, { kind: "named", exportedName: "default", resolution });
         if (clause?.namedBindings && ts.isNamespaceImport(clause.namedBindings)) {
           bindings.set(clause.namedBindings.name.text, { kind: "namespace", resolution });
@@ -989,7 +1118,7 @@ class ApplicationFrameworkBoundaryChecker {
         addEdge(statement.moduleReference.expression);
         bindings.set(statement.name.text, {
           kind: "namespace",
-          resolution: this.resolveSpecifier(statement.moduleReference.expression.text, importer, profile),
+          resolution: this.resolveSpecifier(statement.moduleReference.expression.text, sourceName, profile),
         });
       }
     }
@@ -1010,13 +1139,17 @@ class ApplicationFrameworkBoundaryChecker {
       ts.forEachChild(node, visit);
     };
     visit(sourceFile);
-    return { sources: [{ importer, sourceFile, lineOffset, edges, bindings }], violations: [] };
+    return {
+      sources: [{ diagnosticImporter, resolutionOrigin: sourceName, sourceFile, lineOffset, edges, bindings }],
+      violations: [],
+    };
   }
 
   private evaluateImport(
     policy: AfbPolicyId,
     profile: ProjectProfile,
     importer: string,
+    sourceOrigin: string,
     edge: ImportEdge,
     resolution: Resolution,
   ): BoundaryViolation | null {
@@ -1025,6 +1158,7 @@ class ApplicationFrameworkBoundaryChecker {
         policy,
         profile,
         importer,
+        sourceOrigin,
         line: edge.line,
         column: edge.column,
         subject: edge.specifier,
@@ -1034,16 +1168,17 @@ class ApplicationFrameworkBoundaryChecker {
 
     if (policy === "AFB-001" && resolution.kind === "source") {
       const relativeTarget = normalizePath(relative(this.repositoryRoot, resolution.resolvedPath));
-      const runtimePrefix = "autobyteus-server-ts/src/application-platform/runtime/";
-      const forbiddenPrefixes = [
-        "autobyteus-server-ts/src/application-engine/",
-        "autobyteus-server-ts/src/agent-tools/mcp/",
-        "autobyteus-server-ts/src/agent-execution/runtime/",
-      ];
-      if ((relativeTarget.startsWith(runtimePrefix)
-          && !relativeTarget.endsWith("application-platform-runtime-contracts.ts"))
-        || forbiddenPrefixes.some((prefix) => relativeTarget.startsWith(prefix))) {
-        return this.importViolation(policy, profile, importer, edge, resolution, "PRIVATE_RUNTIME_IMPORT");
+      const category = afb001ForbiddenTargetCategory(relativeTarget, edge, true);
+      if (category) {
+        return this.importViolation(
+          policy,
+          profile,
+          importer,
+          sourceOrigin,
+          edge,
+          resolution,
+          `PRIVATE_RUNTIME_IMPORT category=${category}`,
+        );
       }
     }
 
@@ -1051,20 +1186,19 @@ class ApplicationFrameworkBoundaryChecker {
       if (resolution.kind === "bare"
         && pathIsInside(importer, this.webRoot)
         && ["autobyteus-server-ts", "autobyteus"].includes(resolution.packageName)) {
-        return this.importViolation(policy, profile, importer, edge, resolution, "HOST_IMPLEMENTATION_IMPORT");
+        return this.importViolation(policy, profile, importer, sourceOrigin, edge, resolution, "HOST_IMPLEMENTATION_IMPORT");
       }
       if (resolution.kind === "source") {
         const relativeTarget = normalizePath(relative(this.repositoryRoot, resolution.resolvedPath));
         if (pathIsInside(importer, this.serverRoot)
-          && relativeTarget.startsWith("autobyteus-server-ts/src/application-platform/runtime/")
-          && !relativeTarget.endsWith("application-platform-runtime-contracts.ts")) {
-          return this.importViolation(policy, profile, importer, edge, resolution, "PRIVATE_RUNTIME_IMPORT");
+          && isApplicationRuntimeImplementation(relativeTarget)) {
+          return this.importViolation(policy, profile, importer, sourceOrigin, edge, resolution, "PRIVATE_RUNTIME_IMPORT");
         }
         if (pathIsInside(importer, this.webRoot)
-          && (relativeTarget.startsWith("autobyteus-server-ts/src/application-platform/")
+          && (isApplicationRuntimeImplementation(relativeTarget)
             || relativeTarget.startsWith("autobyteus-server-ts/src/application-packages/")
             || relativeTarget.startsWith("autobyteus-server-ts/src/application-bundles/"))) {
-          return this.importViolation(policy, profile, importer, edge, resolution, "HOST_IMPLEMENTATION_IMPORT");
+          return this.importViolation(policy, profile, importer, sourceOrigin, edge, resolution, "HOST_IMPLEMENTATION_IMPORT");
         }
       }
     }
@@ -1081,17 +1215,19 @@ class ApplicationFrameworkBoundaryChecker {
         "autobyteus-server-ts/src/api/",
         "autobyteus-server-ts/src/compositions/",
         "autobyteus-server-ts/src/standalone-application-host/",
-        "autobyteus-server-ts/src/application-platform/runtime/",
       ];
-      if (!exactException && forbiddenPrefixes.some((prefix) => relativeTarget.startsWith(prefix))) {
-        return this.importViolation(policy, profile, importer, edge, resolution, "OUTWARD_OWNER_IMPORT");
+      if (!exactException
+        && (forbiddenPrefixes.some((prefix) => relativeTarget.startsWith(prefix))
+          || isStudioPresentationTarget(relativeTarget)
+          || isApplicationRuntimeImplementation(relativeTarget))) {
+        return this.importViolation(policy, profile, importer, sourceOrigin, edge, resolution, "OUTWARD_OWNER_IMPORT");
       }
     }
 
     if (policy === "AFB-005") {
       if (resolution.kind === "source") {
         if (!pathIsInside(resolution.resolvedPath, profile.projectRoot)) {
-          return this.importViolation(policy, profile, importer, edge, resolution, "PROJECT_ESCAPE_IMPORT");
+          return this.importViolation(policy, profile, importer, sourceOrigin, edge, resolution, "PROJECT_ESCAPE_IMPORT");
         }
       } else if (resolution.kind === "bare") {
         const forbiddenPackages = new Set([
@@ -1101,10 +1237,10 @@ class ApplicationFrameworkBoundaryChecker {
           "@autobyteus/application-devkit",
         ]);
         if (forbiddenPackages.has(resolution.packageName)) {
-          return this.importViolation(policy, profile, importer, edge, resolution, "HOST_RUNTIME_PACKAGE_IMPORT");
+          return this.importViolation(policy, profile, importer, sourceOrigin, edge, resolution, "HOST_RUNTIME_PACKAGE_IMPORT");
         }
         if (!this.manifestDeclares(profile.manifestPath, resolution.packageName)) {
-          return this.importViolation(policy, profile, importer, edge, resolution, "UNDECLARED_LIBRARY_IMPORT");
+          return this.importViolation(policy, profile, importer, sourceOrigin, edge, resolution, "UNDECLARED_LIBRARY_IMPORT");
         }
       }
     }
@@ -1129,12 +1265,13 @@ class ApplicationFrameworkBoundaryChecker {
     const visit = (node: ts.Node): void => {
       if (ts.isCallExpression(node)) {
         const match = this.matchDirectCallee(node.expression, parsed);
-        if (match && !allowedAssemblyFiles.has(normalizePath(parsed.importer))) {
+        if (match && !allowedAssemblyFiles.has(normalizePath(parsed.diagnosticImporter))) {
           const position = parsed.sourceFile.getLineAndCharacterOfPosition(node.expression.getStart(parsed.sourceFile));
           violations.push(this.violation({
             policy: "AFB-004",
             profile,
-            importer: parsed.importer,
+            importer: parsed.diagnosticImporter,
+            sourceOrigin: parsed.resolutionOrigin,
             line: position.line + 1 + parsed.lineOffset,
             column: position.character + 1,
             subject: match.symbol,
@@ -1225,7 +1362,7 @@ class ApplicationFrameworkBoundaryChecker {
     if (ts.isCallExpression(node)
       && ts.isPropertyAccessExpression(node.expression)
       && node.expression.name.text === "createApplicationSessionManager"
-      && normalizePath(parsed.importer).endsWith(
+      && normalizePath(parsed.diagnosticImporter).endsWith(
         "autobyteus-server-ts/src/application-platform/runtime/create-application-run-services.ts",
       )) {
       return CONSTRUCTION_OBLIGATIONS.find((obligation) => obligation.kind === "method") ?? null;
@@ -1253,7 +1390,8 @@ class ApplicationFrameworkBoundaryChecker {
           violations.push(this.violation({
             policy: "AFB-004",
             profile,
-            importer: occurrence.parsed.importer,
+            importer: occurrence.parsed.diagnosticImporter,
+            sourceOrigin: occurrence.parsed.resolutionOrigin,
             line: position.line + 1 + occurrence.parsed.lineOffset,
             column: position.character + 1,
             subject: `${occurrence.obligation.symbol}.argument[${required.argumentIndex}](${required.label})`,
@@ -1268,7 +1406,8 @@ class ApplicationFrameworkBoundaryChecker {
         violations.push(this.violation({
           policy: "AFB-004",
           profile,
-          importer: occurrence.parsed.importer,
+          importer: occurrence.parsed.diagnosticImporter,
+          sourceOrigin: occurrence.parsed.resolutionOrigin,
           line: position.line + 1 + occurrence.parsed.lineOffset,
           column: position.character + 1,
           subject: `${occurrence.obligation.symbol}.argument[${required.argumentIndex}].${required.path}`,
@@ -1287,7 +1426,8 @@ class ApplicationFrameworkBoundaryChecker {
         violations.push(this.violation({
           policy: "AFB-004",
           profile,
-          importer: occurrence.parsed.importer,
+          importer: occurrence.parsed.diagnosticImporter,
+          sourceOrigin: occurrence.parsed.resolutionOrigin,
           line: position.line + 1 + occurrence.parsed.lineOffset,
           column: position.character + 1,
           subject: `${occurrence.obligation.symbol}.argument[${required.argumentIndex}].${required.path}`,
@@ -1303,6 +1443,7 @@ class ApplicationFrameworkBoundaryChecker {
     policy: AfbPolicyId,
     profile: ProjectProfile,
     importer: string,
+    sourceOrigin: string,
     edge: ImportEdge,
     resolution: Resolution,
     reason: string,
@@ -1311,6 +1452,7 @@ class ApplicationFrameworkBoundaryChecker {
       policy,
       profile,
       importer,
+      sourceOrigin,
       line: edge.line,
       column: edge.column,
       subject: edge.specifier,
@@ -1325,6 +1467,7 @@ class ApplicationFrameworkBoundaryChecker {
     policy: AfbPolicyId;
     profile: ProjectProfile;
     importer: string;
+    sourceOrigin?: string;
     line: number;
     column: number;
     subject: string;
@@ -1335,6 +1478,9 @@ class ApplicationFrameworkBoundaryChecker {
       policy: input.policy,
       profile: input.profile.name,
       importer: normalizePath(relative(this.repositoryRoot, input.importer)),
+      sourceOrigin: input.sourceOrigin
+        ? normalizePath(relative(this.repositoryRoot, input.sourceOrigin))
+        : undefined,
       line: input.line,
       column: input.column,
       subject: input.subject,
@@ -1347,6 +1493,9 @@ class ApplicationFrameworkBoundaryChecker {
 
 const formatViolation = (violation: BoundaryViolation): string =>
   `[${violation.policy}] profile=${violation.profile} importer=${violation.importer}:${violation.line}:${violation.column}`
+  + (violation.sourceOrigin && violation.sourceOrigin !== violation.importer
+    ? ` source=${violation.sourceOrigin}`
+    : "")
   + ` subject=${violation.subject}`
   + ` resolved=${violation.resolvedDependency ?? "N/A"}`
   + ` reason=${violation.reason}`
@@ -1540,36 +1689,160 @@ describe("application framework architecture boundaries", () => {
     ]);
   });
 
-  it("enforces allowed and forbidden directions for AFB-001, AFB-002, and AFB-003", () => {
+  it("enforces every named AFB-001 private runtime category while retaining exact inputs", () => {
     const root = createFixtureRepository();
     writeFixture(root, "autobyteus-server-ts/src/application-platform/runtime/application-platform-runtime-contracts.ts", "export type Contract = {};\n");
-    writeFixture(root, "autobyteus-server-ts/src/application-platform/runtime/build-application-platform-runtime.ts", "export const build = () => {};\n");
-    writeFixture(root, "autobyteus-server-ts/src/api/rest/allowed.ts", "import type { Contract } from '../../application-platform/runtime/application-platform-runtime-contracts.js';\n");
-    writeFixture(root, "autobyteus-server-ts/src/api/rest/forbidden.ts", "import { build } from '../../application-platform/runtime/build-application-platform-runtime.js';\n");
+    writeFixture(root, "autobyteus-server-ts/src/application-bundles/services/application-bundle-service.ts", "export type ApplicationBundleService = {};\n");
+    writeFixture(root, "autobyteus-server-ts/src/application-orchestration/services/application-availability-service.ts", `
+      export class ApplicationUnavailableError extends Error {}
+      export class ApplicationAvailabilityService {}
+    `);
+    const allowedContract = writeFixture(root, "autobyteus-server-ts/src/api/rest/allowed.ts", "import type { Contract } from '../../application-platform/runtime/application-platform-runtime-contracts.js';\n");
+    const allowedSubject = writeFixture(root, "autobyteus-server-ts/src/api/rest/allowed-subject.ts", "import type { ApplicationBundleService } from '../../application-bundles/services/application-bundle-service.js';\n");
+    const allowedAvailabilityError = writeFixture(root, "autobyteus-server-ts/src/api/rest/allowed-availability-error.ts", "import { ApplicationUnavailableError } from '../../application-orchestration/services/application-availability-service.js';\n");
 
+    const forbiddenTargets = [
+      ["runtime-builder", "application-platform/runtime/build-application-platform-runtime.ts"],
+      ["lifecycle", "application-platform/runtime/application-platform-lifecycle.ts"],
+      ["stores", "application-orchestration/stores/application-run-binding-store.ts"],
+      ["recovery", "application-orchestration/services/application-orchestration-recovery-service.ts"],
+      ["run", "application-orchestration/services/application-run-binding-launch-service.ts"],
+      ["session", "agent-tools/mcp/scoped-agent-tool-mcp-session-manager.ts"],
+      ["publication", "application-orchestration/services/application-published-artifact-delivery-service.ts"],
+      ["engine", "application-engine/services/application-engine-controller.ts"],
+      ["queue", "application-orchestration/services/application-execution-event-dispatch-queue.ts"],
+      ["shutdown", "application-platform/runtime/application-run-shutdown-coordinator.ts"],
+    ] as const;
+    for (const [category, target] of forbiddenTargets) {
+      const targetPath = writeFixture(
+        root,
+        `autobyteus-server-ts/src/${target}`,
+        "export const forbidden = true;\n",
+      );
+      const importer = join(root, `autobyteus-server-ts/src/api/rest/forbidden-${category}.ts`);
+      writeFixture(
+        root,
+        `autobyteus-server-ts/src/api/rest/forbidden-${category}.ts`,
+        `import { forbidden } from ${JSON.stringify(relativeModuleSpecifier(importer, targetPath))};\n`,
+      );
+    }
+    writeFixture(
+      root,
+      "autobyteus-server-ts/src/api/rest/forbidden-availability.ts",
+      "import { ApplicationAvailabilityService } from '../../application-orchestration/services/application-availability-service.js';\n",
+    );
+
+    const checker = new ApplicationFrameworkBoundaryChecker(root);
+    for (const allowed of [allowedContract, allowedSubject, allowedAvailabilityError]) {
+      expect(checker.checkOneFile(allowed, "AFB-001").map(formatViolation)).toEqual([]);
+    }
+    const diagnostics = checker.checkCurrentTree(false)
+      .violations.map(formatViolation);
+    expect(diagnostics).toHaveLength(forbiddenTargets.length + 1);
+    for (const category of [...forbiddenTargets.map(([name]) => name), "availability"]) {
+      expect(diagnostics).toContainEqual(expect.stringContaining(
+        `[AFB-001] profile=server importer=autobyteus-server-ts/src/api/rest/forbidden-${category}.ts`,
+      ));
+      expect(diagnostics).toContainEqual(expect.stringContaining(
+        `reason=PRIVATE_RUNTIME_IMPORT category=${category} correction=`,
+      ));
+    }
+  });
+
+  it("enforces each GraphQL and Studio presentation direction in AFB-002", () => {
+    const root = createFixtureRepository();
     writeFixture(root, "autobyteus-server-ts/src/application-packages/services/application-package-registry-service.ts", "export type Registry = {};\n");
-    writeFixture(root, "autobyteus-server-ts/src/api/graphql/allowed.ts", "import type { Registry } from '../../application-packages/services/application-package-registry-service.js';\n");
-    writeFixture(root, "autobyteus-server-ts/src/api/graphql/forbidden.ts", "import { build } from '../../application-platform/runtime/build-application-platform-runtime.js';\n");
+    writeFixture(root, "autobyteus-server-ts/src/application-bundles/services/application-bundle-service.ts", "export const bundle = true;\n");
+    writeFixture(root, "autobyteus-server-ts/src/application-engine/services/application-engine-controller.ts", "export const runtime = true;\n");
+    const allowedGraphql = writeFixture(root, "autobyteus-server-ts/src/api/graphql/allowed.ts", "import type { Registry } from '../../application-packages/services/application-package-registry-service.js';\n");
+    writeFixture(root, "autobyteus-server-ts/src/api/graphql/forbidden-runtime.ts", "import { runtime } from '../../application-engine/services/application-engine-controller.js';\n");
     writeFixture(root, "autobyteus-web/utils/application/local.ts", "export const local = true;\n");
-    writeFixture(root, "autobyteus-web/components/applications/Allowed.vue", "<script setup lang='ts'>\nimport { local } from '~/utils/application/local'\n</script>\n");
-    writeFixture(root, "autobyteus-web/components/applications/Forbidden.vue", "<script>\nimport 'autobyteus-server-ts/application-platform/runtime'\n</script>\n");
+    const allowedLocal = writeFixture(root, "autobyteus-web/components/applications/Allowed.vue", "<script setup lang='ts'>\nimport { local } from '~/utils/application/local'\n</script>\n");
+    const allowedSdk = writeFixture(root, "autobyteus-web/components/applications/AllowedSdk.vue", "<script setup lang='ts'>\nimport type { ApplicationRuntimeBootstrap } from '@autobyteus/application-sdk-contracts'\n</script>\n");
+    const studioTargets = [
+      ["package", "autobyteus-server-ts/src/application-packages/services/application-package-registry-service.ts"],
+      ["bundle", "autobyteus-server-ts/src/application-bundles/services/application-bundle-service.ts"],
+      ["runtime", "autobyteus-server-ts/src/application-engine/services/application-engine-controller.ts"],
+    ] as const;
+    for (const [category, target] of studioTargets) {
+      const importer = join(root, `autobyteus-web/components/applications/Forbidden-${category}.vue`);
+      const targetPath = join(root, target);
+      writeFixture(
+        root,
+        `autobyteus-web/components/applications/Forbidden-${category}.vue`,
+        `<script setup lang='ts'>\nimport ${JSON.stringify(relativeModuleSpecifier(importer, targetPath))}\n</script>\n`,
+      );
+    }
 
+    const checker = new ApplicationFrameworkBoundaryChecker(root);
+    expect(checker.checkOneFile(allowedGraphql, "AFB-002").map(formatViolation)).toEqual([]);
+    expect(checker.checkOneFile(allowedLocal, "AFB-002").map(formatViolation)).toEqual([]);
+    expect(checker.checkOneFile(allowedSdk, "AFB-002").map(formatViolation)).toEqual([]);
+    const diagnostics = checker.checkCurrentTree(false)
+      .violations.map(formatViolation);
+    expect(diagnostics).toHaveLength(studioTargets.length + 1);
+    expect(diagnostics).toContainEqual(expect.stringContaining(
+      "[AFB-002] profile=server importer=autobyteus-server-ts/src/api/graphql/forbidden-runtime.ts",
+    ));
+    for (const [category] of studioTargets) {
+      expect(diagnostics).toContainEqual(expect.stringContaining(
+        `[AFB-002] profile=studio-web importer=autobyteus-web/components/applications/Forbidden-${category}.vue`,
+      ));
+    }
+  });
+
+  it("enforces every AFB-003 outward owner direction and only the reconciliation seam", () => {
+    const root = createFixtureRepository();
     writeFixture(root, "autobyteus-server-ts/src/application-packages/types.ts", "export type Package = {};\n");
-    writeFixture(root, "autobyteus-server-ts/src/application-packages/allowed.ts", "import type { Package } from './types.js';\n");
+    const allowedDomain = writeFixture(root, "autobyteus-server-ts/src/application-packages/allowed.ts", "import type { Package } from './types.js';\n");
+    const allowedStore = writeFixture(root, "autobyteus-server-ts/src/application-packages/stores/allowed-store.ts", "import type { Package } from '../types.js';\n");
+    const allowedReader = writeFixture(root, "autobyteus-server-ts/src/application-packages/readers/allowed-reader.ts", "import type { Package } from '../types.js';\n");
+    const allowedCommand = writeFixture(root, "autobyteus-server-ts/src/application-packages/services/allowed-command.ts", "import type { Package } from '../types.js';\n");
+    writeFixture(root, "autobyteus-server-ts/src/application-bundles/types.ts", "export type Bundle = {};\n");
+    const allowedBundleProvider = writeFixture(root, "autobyteus-server-ts/src/application-bundles/providers/allowed-provider.ts", "import type { Bundle } from '../types.js';\n");
+    writeFixture(root, "autobyteus-server-ts/src/api/rest/application.ts", "export const api = true;\n");
+    writeFixture(root, "autobyteus-web/utils/application/presentation.ts", "export const presentation = true;\n");
     writeFixture(root, "autobyteus-server-ts/src/compositions/build-studio-server.ts", "export const build = () => {};\n");
-    writeFixture(root, "autobyteus-server-ts/src/application-bundles/forbidden.ts", "import { build } from '../compositions/build-studio-server.js';\n");
+    writeFixture(root, "autobyteus-server-ts/src/standalone-application-host/services/host.ts", "export const host = true;\n");
+    writeFixture(root, "autobyteus-server-ts/src/application-engine/services/application-engine-controller.ts", "export const runtime = true;\n");
     writeFixture(root, "autobyteus-server-ts/src/application-platform/runtime/application-catalog-reconciliation-service.ts", "export type Reconcile = {};\n");
-    writeFixture(root, "autobyteus-server-ts/src/application-packages/services/application-catalog-refresh-coordinator.ts", "import type { Reconcile } from '../../application-platform/runtime/application-catalog-reconciliation-service.js';\n");
+    const allowedReconciliation = writeFixture(root, "autobyteus-server-ts/src/application-packages/services/application-catalog-refresh-coordinator.ts", "import type { Reconcile } from '../../application-platform/runtime/application-catalog-reconciliation-service.js';\n");
 
-    const result = new ApplicationFrameworkBoundaryChecker(root).checkCurrentTree(false);
-    const diagnostics = result.violations.map(formatViolation);
-    expect(diagnostics).toHaveLength(4);
-    expect(diagnostics).toEqual(expect.arrayContaining([
-      expect.stringContaining("[AFB-001] profile=server importer=autobyteus-server-ts/src/api/rest/forbidden.ts"),
-      expect.stringContaining("[AFB-002] profile=server importer=autobyteus-server-ts/src/api/graphql/forbidden.ts"),
-      expect.stringContaining("[AFB-002] profile=studio-web importer=autobyteus-web/components/applications/Forbidden.vue"),
-      expect.stringContaining("[AFB-003] profile=server importer=autobyteus-server-ts/src/application-bundles/forbidden.ts"),
-    ]));
+    const forbiddenTargets = [
+      ["api", "autobyteus-server-ts/src/api/rest/application.ts"],
+      ["presentation", "autobyteus-web/utils/application/presentation.ts"],
+      ["assembly", "autobyteus-server-ts/src/compositions/build-studio-server.ts"],
+      ["standalone", "autobyteus-server-ts/src/standalone-application-host/services/host.ts"],
+      ["runtime", "autobyteus-server-ts/src/application-engine/services/application-engine-controller.ts"],
+    ] as const;
+    for (const [category, target] of forbiddenTargets) {
+      const importer = join(root, `autobyteus-server-ts/src/application-bundles/forbidden-${category}.ts`);
+      writeFixture(
+        root,
+        `autobyteus-server-ts/src/application-bundles/forbidden-${category}.ts`,
+        `import ${JSON.stringify(relativeModuleSpecifier(importer, join(root, target)))};\n`,
+      );
+    }
+
+    const checker = new ApplicationFrameworkBoundaryChecker(root);
+    for (const allowed of [
+      allowedDomain,
+      allowedStore,
+      allowedReader,
+      allowedCommand,
+      allowedBundleProvider,
+      allowedReconciliation,
+    ]) {
+      expect(checker.checkOneFile(allowed, "AFB-003").map(formatViolation)).toEqual([]);
+    }
+    const diagnostics = checker.checkCurrentTree(false)
+      .violations.map(formatViolation);
+    expect(diagnostics).toHaveLength(forbiddenTargets.length);
+    for (const [category] of forbiddenTargets) {
+      expect(diagnostics).toContainEqual(expect.stringContaining(
+        `[AFB-003] profile=server importer=autobyteus-server-ts/src/application-bundles/forbidden-${category}.ts`,
+      ));
+    }
     for (const diagnostic of diagnostics) {
       expect(diagnostic).toContain("resolved=");
       expect(diagnostic).toContain("correction=");
@@ -1595,6 +1868,48 @@ describe("application framework architecture boundaries", () => {
     expect(checker.checkOneFile(unresolved, "AFB-005").map(formatViolation)[0]).toMatch(
       /\[AFB-005\].*profile=brief-frontend.*subject=\.\/missing\.js.*UNRESOLVED_GOVERNED_IMPORT.*correction=/,
     );
+  });
+
+  it("resolves Vue external-script imports from that script while keeping SFC-owned diagnostics", () => {
+    const root = createFixtureRepository();
+    const sfc = writeFixture(
+      root,
+      "autobyteus-web/components/applications/ExternalResolved.vue",
+      "<script lang='ts' src='./external/script.ts'></script>\n",
+    );
+    const externalScript = join(
+      root,
+      "autobyteus-web/components/applications/external/script.ts",
+    );
+    const allowedLocal = writeFixture(
+      root,
+      "autobyteus-web/components/applications/external/local.ts",
+      "export const local = true;\n",
+    );
+    const forbiddenRuntime = writeFixture(
+      root,
+      "autobyteus-server-ts/src/application-engine/services/application-engine-controller.ts",
+      "export const runtime = true;\n",
+    );
+    writeFixture(
+      root,
+      "autobyteus-web/components/applications/external/script.ts",
+      `import { local } from ${JSON.stringify(relativeModuleSpecifier(externalScript, allowedLocal))};\n`
+        + `import { runtime } from ${JSON.stringify(relativeModuleSpecifier(externalScript, forbiddenRuntime))};\n`,
+    );
+
+    const diagnostics = new ApplicationFrameworkBoundaryChecker(root).checkOneFile(sfc, "AFB-002")
+      .map(formatViolation);
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0]).toContain(
+      "[AFB-002] profile=studio-web importer=autobyteus-web/components/applications/ExternalResolved.vue",
+    );
+    expect(diagnostics[0]).toContain(
+      "source=autobyteus-web/components/applications/external/script.ts",
+    );
+    expect(diagnostics[0]).toContain("resolved=autobyteus-server-ts/src/application-engine/services/application-engine-controller.ts");
+    expect(diagnostics[0]).toContain("reason=HOST_IMPLEMENTATION_IMPORT");
+    expect(diagnostics[0]).not.toContain("UNRESOLVED_GOVERNED_IMPORT");
   });
 
   it("resolves package imports only from the owning manifest", () => {
