@@ -893,3 +893,32 @@ None. `CRR-023` and `CRR-027` had no unresolved proportional test-review finding
 - Material score or classification changes: architecture/design-impact findings are resolved; latest implementation source is `Fail — Local Fix / 95`. Runtime Correctness is `8.5` and API/E2E Readiness `8.7`; all other scorecard categories are `>=9.4`.
 - Recommended recipient: `implementation_engineer`
 - Remaining risks or uncertainty: fix only the stop-all snapshot/error-continuation contract; do not alter the approved owner graph or restore retired machinery. After source Pass, API/E2E owns the five stale integration-fixture migrations and the complete dual-host behavior, worker-exit delivery, shutdown, restart/recovery, Agent Tools, and package-integrity execution. Historical `APIE2E-REPO-005` remains separate.
+
+### CRR-033 — IR-018 stop-all continuation correction passes affected source review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `33`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-018`; `CR-022`; scenario IDs `N/A`
+- Relevant solution revision IDs: `SR-013`; retained `SR-011`, `SR-010`, `SR-006`
+- Relevant architecture-review revision IDs: `ARCH-REV-011`; retained `ARCH-REV-010`, `ARCH-REV-009`, `ARCH-REV-008`, `ARCH-REV-006`
+- Relevant implementation revision IDs: `IR-018`; underlying architecture implementation `IR-017`
+- Relevant API/E2E revision IDs: retained pre-SR-013 baseline `API-REV-011`
+- Relevant delivery revision IDs: retained context through `DR-004`
+- Prior authoritative result: `CRR-032` `Fail — Local Fix / 95`; open `CR-022`
+- Current authoritative result: `Pass / 97`
+- What changed in the review result and why: IR-018 adds one frozen registry-owned `ActiveAgentRunSnapshot` containing every retained active exact object plus all inactive-pruning cleanup errors. The manager seeds its error collection from those pruning results, attempts termination and exact `removeIfCurrent` for every retained run, and throws one final aggregate. The normal list query still surfaces pruning failures. No ownership, callback, global/fallback, broad-host, or compatibility change was introduced. Reviewer TypeScript no-emit and affected 5-file/22-test selection pass; the durable real-owner regression covers multiple pruning errors, later success, later removal-cleanup failure, later termination failure, at-most-once cleanup, and stale replacement preservation.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-022` | Open — Local Fix | Resolved in source; API/E2E confirmation pending | `CRR-032`, `IR-018`, `CRR-033` | `snapshotActiveRuns()` preserves active entries and all pruning errors; stop-all attempts every retained run and aggregates afterward; durable multi-failure test and reviewer 5/22 pass. |
+| `CR-019`, `CR-020`, `CR-021` | Resolved in IR-017 source | Remain Resolved | `CRR-031`, `SR-013`, `ARCH-REV-011`, `IR-017`, `CRR-032`, `IR-018` | IR-018 changes only the registry/manager stop-all result flow and preserves four projections, split package ownership, and acyclic construction. |
+| `AR-008`, `AR-009` | Resolved in design/source, with CR-022 previously remaining under AR-009 | Resolved in current source; API/E2E pending | `ARCH-REV-010`, `SR-013`, `ARCH-REV-011`, `IR-017`, `IR-018` | Ensure-before-artifact, drain-before-engine-stop, exact identity cleanup, all-category at-most-once release, stale protection, and cross-run failure continuation are implemented. |
+| `CR-001`–`CR-018` | Resolved | Remain Resolved | cumulative through `CRR-030`, retained `API-REV-011` | No functional, naming, package, route, provider, or persisted-data behavior changed. |
+| `APIE2E-REPO-005` | Historical `Unclear` / unattributed | Remains separate and unchanged | `API-REV-005`–`API-REV-011` | No supported origin connects it to IR-018; it is not result evidence. |
+
+- New or remaining finding IDs: None in implementation source.
+- Material score or classification changes: result changes from `Fail — Local Fix / 95` to `Pass / 97`; every scorecard category is now `>=9.3`.
+- Recommended recipient: `api_e2e_engineer`
+- Remaining risks or uncertainty: API/E2E must migrate the five fixtures importing the removed broad host, then run real dual-host, worker-exit publication, drain/shutdown/restart, Agent Tools, recovery/remount, route-separation, and package-integrity scenarios. A successful run must return for proportional durable-test review. Historical `APIE2E-REPO-005` remains separate.
