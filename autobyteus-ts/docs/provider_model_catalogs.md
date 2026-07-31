@@ -23,12 +23,13 @@ or changing provider-specific request-shaping behavior.
 
 | Surface | User-Facing Model ID | Provider API Value | Provider | Verified On | Implementation Notes |
 | --- | --- | --- | --- | --- | --- |
-| LLM | `gpt-5.6-sol` | `gpt-5.6-sol` | OpenAI | 2026-07-10 | Exact limited-preview ID; uses the Responses path, GPT-5.6 reasoning schema, 1.05M-token metadata, and tiered cache-read/cache-write-aware pricing. |
-| LLM | `gpt-5.6-terra` | `gpt-5.6-terra` | OpenAI | 2026-07-10 | Exact limited-preview ID; uses the Responses path, GPT-5.6 reasoning schema, 1.05M-token metadata, and tiered cache-read/cache-write-aware pricing. |
-| LLM | `gpt-5.6-luna` | `gpt-5.6-luna` | OpenAI | 2026-07-10 | Exact limited-preview ID; uses the Responses path, GPT-5.6 reasoning schema, 1.05M-token metadata, and tiered cache-read/cache-write-aware pricing. |
+| LLM | `gpt-5.6-sol` | `gpt-5.6-sol` | OpenAI | 2026-07-30 | Exact limited-preview ID; uses the Responses path, GPT-5.6 reasoning schema, 1.05M-token metadata, and current tiered cache-read/cache-write-aware pricing effective 2026-07-30. |
+| LLM | `gpt-5.6-terra` | `gpt-5.6-terra` | OpenAI | 2026-07-30 | Exact limited-preview ID; uses the Responses path, GPT-5.6 reasoning schema, 1.05M-token metadata, and current tiered cache-read/cache-write-aware pricing effective 2026-07-30. |
+| LLM | `gpt-5.6-luna` | `gpt-5.6-luna` | OpenAI | 2026-07-30 | Exact limited-preview ID; uses the Responses path, GPT-5.6 reasoning schema, 1.05M-token metadata, and current tiered cache-read/cache-write-aware pricing effective 2026-07-30. |
 | LLM | `gpt-5.5` | `gpt-5.5` | OpenAI | 2026-04-25 | Uses the official OpenAI Responses path and the shared OpenAI reasoning schema. |
 | LLM | `grok-4.5` | `grok-4.5` | xAI / Grok | 2026-07-09 | Sole built-in Grok row; uses xAI Chat Completions, always-on low/medium/high reasoning (default high), 500k-token curated context metadata, and source-dated cache-aware pricing. |
 | LLM | `claude-fable-5` | `claude-fable-5` | Anthropic | 2026-07-07 | High-cost catalog-available model; uses adaptive-thinking request policy, standard cache-aware pricing, and Fable data-retention/cost caveats below. |
+| LLM | `claude-opus-5` | `claude-opus-5` | Anthropic | 2026-07-31 | Exact API ID; standard pricing is effective 2026-07-24, with 1M context / 128k output metadata and the adaptive-thinking/no-sampling request policy. |
 | LLM | `claude-opus-4.8` | `claude-opus-4-8` | Anthropic | 2026-07-07 | Retained latest Opus row; uses the current adaptive-thinking/no-sampling request policy. |
 | LLM | `claude-sonnet-5` | `claude-sonnet-5` | Anthropic | 2026-07-07 | Latest Sonnet row; exact provider ID only, with no `claude-sonnet-4.8` alias. |
 | LLM | `claude-opus-4.7` | `claude-opus-4-7` | Anthropic | 2026-04-25 | Uses adaptive-thinking schema; see request-shape notes below. |
@@ -167,11 +168,14 @@ The built-in Anthropic catalog is static. Provider-scoped reload does not
 discover new Anthropic API model IDs; it returns the existing static Anthropic
 count until `src/llm/supported-model-definitions.ts` is updated.
 
-The active current-model rows are `claude-fable-5`, `claude-opus-4.8`,
-`claude-opus-4.7`, `claude-sonnet-5`, and retained `claude-sonnet-4.6`.
+The active current-model rows are `claude-opus-5`, `claude-fable-5`,
+`claude-opus-4.8`, `claude-opus-4.7`, `claude-sonnet-5`, and retained
+`claude-sonnet-4.6`. Opus 5 uses the exact provider API value
+`claude-opus-5`, with standard pricing effective 2026-07-24 and model limits
+verified 2026-07-31 against the [Claude models overview](https://platform.claude.com/docs/en/about-claude/models/overview).
 Do not add `claude-sonnet-4.8` unless Anthropic publishes that exact API ID.
 
-Claude Opus 4.8, Claude Opus 4.7, Claude Sonnet 5, and Claude Fable 5 must not
+Claude Opus 5, Claude Opus 4.8, Claude Opus 4.7, Claude Sonnet 5, and Claude Fable 5 must not
 reuse the older fixed-budget extended-thinking request shape. Their built-in
 schemas expose adaptive thinking:
 
@@ -182,6 +186,12 @@ schemas expose adaptive thinking:
   for these models.
 - The adapter does not inject its usual default `temperature` and removes
   `temperature`, `top_p`, and `top_k` request fields for these models.
+
+Claude Opus 5 standard pricing is input `$5`, output `$25`, cache read `$0.50`,
+5-minute cache write `$6.25`, and 1-hour cache write `$10` per million tokens.
+Anthropic Fast mode is a separate processing price (input `$10`, output `$50`)
+and remains explicitly outside this standard catalog row; the catalog does not
+infer Fast mode without a processing-mode identity.
 
 Claude Fable 5 is catalog-available only; it is not a default or fallback.
 It carries standard pricing of `$10` input / `$50` output per MTok plus
@@ -506,9 +516,9 @@ or they surface `price_missing`. Local runtimes such as Ollama and LM Studio
 should use `local_no_api_bill` status when there is no provider API bill rather
 than pretending a remote paid model cost is `$0`.
 
-Anthropic Claude rows verified on 2026-07-07 use standard first-party Claude API
-pricing in the static catalog, not Batch API, Opus Fast Mode, data-residency
-premiums, or temporary launch discounts. Claude Sonnet 5 deliberately uses the
+Anthropic Claude rows use standard first-party Claude API pricing in the static
+catalog, not Batch API, Opus Fast Mode, data-residency premiums, or temporary
+launch discounts. Claude Sonnet 5 deliberately uses the
 durable standard `$3` input / `$15` output per MTok row even though Anthropic's
 introductory `$2` / `$10` pricing runs through 2026-08-31. Cache dimensions must
 remain explicit:
@@ -517,19 +527,24 @@ remain explicit:
   `12.5`, 1-hour cache write `20`.
 - Opus 4.8: input `5`, output `25`, cache read `0.5`, 5-minute cache write
   `6.25`, 1-hour cache write `10`.
+- Opus 5 (effective 2026-07-24; verified 2026-07-31): input `5`, output `25`,
+  cache read `0.5`, 5-minute cache write `6.25`, 1-hour cache write `10`.
 - Sonnet 5: input `3`, output `15`, cache read `0.3`, 5-minute cache write
   `3.75`, 1-hour cache write `6`.
 
-OpenAI GPT-5.6 prices verified on 2026-07-10 are first-party standard API prices
-per million tokens. The standard tier applies through `272,000` input tokens;
+OpenAI GPT-5.6 prices are first-party standard API prices per million tokens
+effective 2026-07-30 and verified against the [GPT-5.6 Sol](https://developers.openai.com/api/docs/models/gpt-5.6-sol),
+[GPT-5.6 Terra](https://developers.openai.com/api/docs/models/gpt-5.6-terra), and
+[GPT-5.6 Luna](https://developers.openai.com/api/docs/models/gpt-5.6-luna) model
+pages. The standard tier applies through `272,000` input tokens;
 above that threshold the full request uses `2x` input/cache-read/cache-write and
 `1.5x` output prices:
 
 | Model | Standard Input | Standard Output | Cache Read | Cache Write | >272K Input | >272K Output | >272K Cache Read | >272K Cache Write |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | `gpt-5.6-sol` | `5` | `30` | `0.5` | `6.25` | `10` | `45` | `1` | `12.5` |
-| `gpt-5.6-terra` | `2.5` | `15` | `0.25` | `3.125` | `5` | `22.5` | `0.5` | `6.25` |
-| `gpt-5.6-luna` | `1` | `6` | `0.1` | `1.25` | `2` | `9` | `0.2` | `2.5` |
+| `gpt-5.6-terra` | `2` | `12` | `0.2` | `2.5` | `4` | `18` | `0.4` | `5` |
+| `gpt-5.6-luna` | `0.2` | `1.2` | `0.02` | `0.25` | `0.4` | `1.8` | `0.04` | `0.5` |
 
 ## Validation and Secret Hygiene
 

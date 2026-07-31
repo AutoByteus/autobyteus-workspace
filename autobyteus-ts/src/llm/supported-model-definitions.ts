@@ -54,11 +54,13 @@ const openaiGpt56ReasoningSchema = createOpenAIReasoningSchema(
   'medium',
 );
 
+const roundCatalogPrice = (value: number): number => Number(value.toFixed(10));
+
 const createOpenAIGpt56Pricing = (input: number, output: number): TokenPricingConfig => {
-  const cacheRead = input * 0.1;
-  const cacheWrite = input * 1.25;
+  const cacheRead = roundCatalogPrice(input * 0.1);
+  const cacheWrite = roundCatalogPrice(input * 1.25);
   return pricing(input, output, {
-    pricingEffectiveDate: '2026-06-26',
+    pricingEffectiveDate: '2026-07-30',
     cachedInputReadTokenPricing: cacheRead,
     cachedInputWriteTokenPricing: cacheWrite,
     inputTokenPricingTiers: [
@@ -73,10 +75,10 @@ const createOpenAIGpt56Pricing = (input: number, output: number): TokenPricingCo
       {
         tierId: 'long_context_gt_272k',
         maxInputTokens: null,
-        inputTokenPricing: input * 2,
-        outputTokenPricing: output * 1.5,
-        cachedInputReadTokenPricing: cacheRead * 2,
-        cachedInputWriteTokenPricing: cacheWrite * 2,
+        inputTokenPricing: roundCatalogPrice(input * 2),
+        outputTokenPricing: roundCatalogPrice(output * 1.5),
+        cachedInputReadTokenPricing: roundCatalogPrice(cacheRead * 2),
+        cachedInputWriteTokenPricing: roundCatalogPrice(cacheWrite * 2),
       },
     ],
   });
@@ -189,8 +191,8 @@ const grokReasoningSchema = new ParameterSchema([
 export const supportedModelDefinitions: SupportedModelDefinition[] = [
   ...([
     ['gpt-5.6-sol', 5.0, 30.0],
-    ['gpt-5.6-terra', 2.5, 15.0],
-    ['gpt-5.6-luna', 1.0, 6.0],
+    ['gpt-5.6-terra', 2.0, 12.0],
+    ['gpt-5.6-luna', 0.2, 1.2],
   ] as const).map(([modelId, inputPrice, outputPrice]) => ({
     name: modelId,
     value: modelId,
@@ -269,6 +271,20 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
       cachedInputReadTokenPricing: 1.0,
       cachedInputWrite5mTokenPricing: 12.5,
       cachedInputWrite1hTokenPricing: 20.0,
+    }) }),
+    configSchema: claudeAdaptiveThinkingSchema
+  },
+  {
+    name: 'claude-opus-5',
+    value: 'claude-opus-5',
+    provider: LLMProvider.ANTHROPIC,
+    llmClass: AnthropicLLM,
+    canonicalName: 'claude-opus-5',
+    defaultConfig: new LLMConfig({ pricingConfig: pricing(5.0, 25.0, {
+      pricingEffectiveDate: '2026-07-24',
+      cachedInputReadTokenPricing: 0.5,
+      cachedInputWrite5mTokenPricing: 6.25,
+      cachedInputWrite1hTokenPricing: 10.0,
     }) }),
     configSchema: claudeAdaptiveThinkingSchema
   },
