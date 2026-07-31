@@ -2,6 +2,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRun } from "../../../src/agent-execution/domain/agent-run.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
+import { ActiveAgentRunRegistry } from "../../../src/agent-execution/runtime/active-agent-run-registry.js";
+import { AgentRunResourceManager } from "../../../src/agent-execution/services/agent-run-resource-manager.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
 import {
   getAgentToolMcpSessionRegistry,
@@ -475,7 +477,10 @@ describe("AgentRunManager", () => {
       },
     };
     const activeRunRegistry = {
-      listActiveRuns: vi.fn(() => [run]),
+      snapshotActiveRuns: vi.fn(() => ({
+        activeRuns: [run],
+        pruningErrors: [],
+      })),
       removeIfCurrent: vi.fn(() => removal),
       assertCleanupSucceeded: vi.fn(),
     };
@@ -491,5 +496,141 @@ describe("AgentRunManager", () => {
       reason: "stop_all",
     });
     expect(activeRunRegistry.assertCleanupSucceeded).toHaveBeenCalledWith(removal);
+  });
+
+  it("continues stop-all after inactive pruning and later termination/removal failures", async () => {
+    const cleanupCalls: string[] = [];
+    const resourceManager = new AgentRunResourceManager({
+      sessionScope: {
+        revokeForRun: vi.fn((runId: string) => {
+          cleanupCalls.push(`session:${runId}`);
+          if (runId === "run-inactive") {
+            throw new Error("inactive session cleanup failed");
+          }
+          if (runId === "run-removal-failure") {
+            throw new Error("active session cleanup failed");
+          }
+          return 1;
+        }),
+      },
+      runFileChangeService: {
+        attachToRun: vi.fn((run: { runId: string }) => () => {
+          cleanupCalls.push(`files:${run.runId}`);
+          if (run.runId === "run-inactive") {
+            throw new Error("inactive file cleanup failed");
+          }
+        }),
+      },
+      publishedArtifactRelayService: {
+        attachToRun: vi.fn((run: { runId: string }) => () => {
+          cleanupCalls.push(`artifacts:${run.runId}`);
+        }),
+      },
+      memoryRecorder: {
+        attachToRun: vi.fn((run: { runId: string }) => () => {
+          cleanupCalls.push(`memory:${run.runId}`);
+        }),
+      },
+    } as never);
+    const registry = new ActiveAgentRunRegistry(resourceManager);
+    const inactiveRun = {
+      runId: "run-inactive",
+      isActive: vi.fn(() => false),
+      terminate: vi.fn(async () => ({ accepted: true })),
+    };
+    const successfulRun = {
+      runId: "run-success",
+      isActive: vi.fn(() => true),
+      terminate: vi.fn(async () => ({ accepted: true })),
+    };
+    const replacementRun = {
+      runId: "run-replaced-during-termination",
+      isActive: vi.fn(() => true),
+      terminate: vi.fn(async () => ({ accepted: true })),
+    };
+    const staleCompletionRun = {
+      runId: replacementRun.runId,
+      isActive: vi.fn(() => true),
+      terminate: vi.fn(async () => {
+        const removal = registry.removeIfCurrent({
+          runId: staleCompletionRun.runId,
+          expectedRun: staleCompletionRun as never,
+          reason: "explicit_termination",
+        });
+        registry.assertCleanupSucceeded(removal);
+        registry.register(replacementRun as never);
+        return { accepted: true };
+      }),
+    };
+    const removalFailureRun = {
+      runId: "run-removal-failure",
+      isActive: vi.fn(() => true),
+      terminate: vi.fn(async () => ({ accepted: true })),
+    };
+    const terminationFailureRun = {
+      runId: "run-termination-failure",
+      isActive: vi.fn(() => true),
+      terminate: vi.fn(async () => {
+        throw new Error("termination failed");
+      }),
+    };
+    for (const run of [
+      inactiveRun,
+      successfulRun,
+      staleCompletionRun,
+      removalFailureRun,
+      terminationFailureRun,
+    ]) {
+      registry.register(run as never);
+    }
+    const manager = new AgentRunManager({
+      activeRunRegistry: registry,
+    });
+
+    const failure = await manager.stopAllAgentRuns().catch((error) => error);
+
+    expect(failure).toBeInstanceOf(AggregateError);
+    expect((failure as AggregateError).errors).toHaveLength(3);
+    expect((failure as AggregateError).errors[0]).toMatchObject({
+      name: "AgentRunRemovalCleanupError",
+      errors: [
+        expect.objectContaining({ message: "inactive session cleanup failed" }),
+        expect.objectContaining({ message: "inactive file cleanup failed" }),
+      ],
+    });
+    expect((failure as AggregateError).errors[1]).toMatchObject({
+      name: "AgentRunRemovalCleanupError",
+      errors: [
+        expect.objectContaining({ message: "active session cleanup failed" }),
+      ],
+    });
+    expect((failure as AggregateError).errors[2]).toMatchObject({
+      message: "termination failed",
+    });
+    expect(inactiveRun.terminate).not.toHaveBeenCalled();
+    expect(successfulRun.terminate).toHaveBeenCalledOnce();
+    expect(staleCompletionRun.terminate).toHaveBeenCalledOnce();
+    expect(removalFailureRun.terminate).toHaveBeenCalledOnce();
+    expect(terminationFailureRun.terminate).toHaveBeenCalledOnce();
+    expect(registry.getActiveRun(successfulRun.runId)).toBeNull();
+    expect(registry.getActiveRun(replacementRun.runId)).toBe(replacementRun);
+    expect(replacementRun.terminate).not.toHaveBeenCalled();
+    expect(registry.getActiveRun(removalFailureRun.runId)).toBeNull();
+    expect(registry.getActiveRun(terminationFailureRun.runId))
+      .toBe(terminationFailureRun);
+    expect(resourceManager.release(inactiveRun.runId, inactiveRun as never).state)
+      .toBe("already_released");
+    expect(
+      resourceManager.release(
+        removalFailureRun.runId,
+        removalFailureRun as never,
+      ).state,
+    ).toBe("already_released");
+    expect(cleanupCalls.filter((entry) => entry === "session:run-inactive"))
+      .toHaveLength(1);
+    expect(cleanupCalls.filter((entry) =>
+      entry === "session:run-removal-failure")).toHaveLength(1);
+    expect(cleanupCalls.filter((entry) =>
+      entry === `session:${staleCompletionRun.runId}`)).toHaveLength(1);
   });
 });

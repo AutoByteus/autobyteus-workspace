@@ -242,9 +242,9 @@ export class AgentRunManager {
   }
 
   async stopAllAgentRuns(): Promise<void> {
-    const errors: unknown[] = [];
-    const activeRuns = [...this.activeRunRegistry.listActiveRuns()];
-    for (const activeRun of activeRuns) {
+    const snapshot = this.activeRunRegistry.snapshotActiveRuns();
+    const errors: unknown[] = [...snapshot.pruningErrors];
+    for (const activeRun of snapshot.activeRuns) {
       try {
         const termination = await activeRun.terminate();
         if (!termination.accepted) {

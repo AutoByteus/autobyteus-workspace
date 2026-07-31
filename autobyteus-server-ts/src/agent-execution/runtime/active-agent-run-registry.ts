@@ -32,6 +32,11 @@ export type AgentRunRemovalResult =
       reason: AgentRunRemovalReason;
     }>;
 
+export type ActiveAgentRunSnapshot = Readonly<{
+  activeRuns: readonly AgentRun[];
+  pruningErrors: readonly AgentRunRemovalCleanupError[];
+}>;
+
 export class AgentRunRemovalCleanupError extends AggregateError {
   constructor(readonly removalResult: Extract<AgentRunRemovalResult, { kind: "removed" }>) {
     super(
@@ -96,14 +101,41 @@ export class ActiveAgentRunRegistry {
   }
 
   listActiveRuns(): readonly AgentRun[] {
+    const snapshot = this.snapshotActiveRuns();
+    if (snapshot.pruningErrors.length > 0) {
+      throw new AggregateError(
+        snapshot.pruningErrors,
+        "Failed to prune inactive agent runs.",
+      );
+    }
+    return snapshot.activeRuns;
+  }
+
+  snapshotActiveRuns(): ActiveAgentRunSnapshot {
     const activeRuns: AgentRun[] = [];
+    const pruningErrors: AgentRunRemovalCleanupError[] = [];
     for (const runId of Array.from(this.activeRuns.keys())) {
-      const run = this.getActiveRun(runId);
-      if (run) {
+      const run = this.activeRuns.get(runId) ?? null;
+      if (!run) {
+        continue;
+      }
+      if (run.isActive()) {
         activeRuns.push(run);
+        continue;
+      }
+      const removal = this.removeIfCurrent({
+        runId,
+        expectedRun: run,
+        reason: "inactive_discovery",
+      });
+      if (removal.kind === "removed" && removal.resources.errors.length > 0) {
+        pruningErrors.push(new AgentRunRemovalCleanupError(removal));
       }
     }
-    return Object.freeze(activeRuns);
+    return Object.freeze({
+      activeRuns: Object.freeze(activeRuns),
+      pruningErrors: Object.freeze(pruningErrors),
+    });
   }
 
   removeIfCurrent(input: {
