@@ -7,31 +7,38 @@
 - Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/in-progress/external-runtime-memory-recording-simplification/design-spec.md`
 - Supplemental Task Artifacts Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/in-progress/external-runtime-memory-recording-simplification/persisted-snapshot-inventory.md`
 - Solution Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/in-progress/external-runtime-memory-recording-simplification/solution-revision-record.md`
-- Relevant Solution Revision IDs: `SR-002` (`SR-001` baseline also read)
+- Relevant Solution Revision IDs: `SR-003` (with `SR-002` / `SR-001` history reviewed)
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/in-progress/external-runtime-memory-recording-simplification/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-001`
-- Current Review Round: `1`
-- Trigger: Solution designer requested the initial architecture gate for the user-approved external-runtime raw-trace-only solution.
-- Prior Review Round Reviewed: `N/A`
-- Latest Authoritative Round: `1`
-- Current-State Evidence Basis: Refreshed base `origin/personal` at `ea6d6b011035d71dc9594d61ad035470985fca8e`; the complete solution package; and direct review of current runtime-kind, recorder, accumulator, tool sequencer, mixed writer, provider-boundary recorder, raw store/archive, run projection, memory inspection, metadata/location/layout, migration runner/registry, startup, provider-resume, tests, and documentation paths in the assigned worktree.
+- Current Architecture Review Revision ID: `ARCH-REV-002`
+- Current Review Round: `2`
+- Trigger: `CRR-001` / `CR-001` established reachable `CR-MP-001`; the user then approved `SR-003`, accepting stale generic inspector visibility after a reported cleanup failure and rejecting runtime/UI hiding machinery.
+- Prior Review Round Reviewed: Round 1 / `ARCH-REV-001` (`Pass` against `SR-002`)
+- Latest Authoritative Round: `2`
+- Triggering Downstream Artifacts Reviewed: `implementation-handoff.md`, `implementation-revision-record.md` (`IR-001`), `code-review-report.md`, and `code-review-revision-record.md` (`CRR-001`, `CR-001`, `CR-MP-001`).
+- Current-State Evidence Basis: Refreshed base `origin/personal` at `ea6d6b011035d71dc9594d61ad035470985fca8e`; source commit `8cd193e81`; handoff commit/current `HEAD` `3f0c143a8`; the complete cumulative package; the code-review probe evidence; and direct recheck of cleanup failure/retention, startup status/retry, generic physical-file inspection, external raw recording, projection, provider continuation, metadata/location/layout, and native/imported preservation paths.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
 - Overall Basis Status: `Confirmed`
-- Approved requirements / intended behavior understood: Codex App Server and Claude Agent SDK retain provider-owned continuation and application-owned raw traces while their duplicate AutoByteus `WorkingContext` recording is removed. Native AutoByteus memory is unchanged.
-- Relevant existing behavior and evidence confirmed: Current code independently confirms provider resume, external recorder raw-plus-snapshot duplication, all-runtime raw-backed normal projection, optional generic snapshot inspection, raw-only provider-boundary rotation, and the non-fatal registered startup migration lifecycle.
-- Approved change, preserved behavior, and outside scope understood: The change is limited to the two explicit external runtime kinds and exact current-metadata-classified standalone/team-member snapshots. Native, imported, unclassified, task-history, raw/archive, metadata, provider identity, and artifact data remain outside deletion scope.
+- Approved requirements / intended behavior understood: Codex App Server and Claude Agent SDK retain provider-owned continuation and application-owned raw traces while future external `WorkingContext` recording is removed. Successful cleanup/new runs naturally have no external snapshot; a reported failed unlink may retain a stale, generically inspectable copy until retry/manual removal. Native AutoByteus memory is unchanged.
+- Relevant existing behavior and evidence confirmed: Current code independently confirms provider resume, raw-only external recording after `IR-001`, all-runtime raw-backed normal projection, runtime-agnostic physical-file inspection, raw-only provider-boundary rotation, exact non-fatal startup cleanup, retained-file failure behavior, and retry availability. `CR-MP-001` is reachable as reported.
+- Approved change, preserved behavior, and outside scope understood: The change is limited to the two explicit external runtime kinds and exact current-metadata-classified standalone/team-member snapshots. Native, imported, unclassified, task-history, raw/archive, metadata, provider identity, artifact data, and the general file-backed inspector rule remain outside deletion/read-policy redesign. Runtime-qualified read filtering, migration-status coupling, and UI-specific hiding are explicitly out of scope.
 - Remaining material ambiguity, if any: None.
 
 | Behavior ID | Kind | Design Alignment With Approved Intent | Approved Trigger / Contract And Current-State Evidence | Target Outcome / Path / Spine Coherence | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
 | `BEH-001` | System | Pass | Pass — run create/restore reaches runtime-specific Codex thread or Claude session resume through stored provider identity; no WorkingContext input is present | Pass — `DS-001` preserves that independent continuation spine | Confirmed | None |
-| `BEH-002` | System | Pass | Pass — accepted messages and normalized events currently flow through recorder, accumulator/sequencer, and the mixed writer to raw storage | Pass — `DS-002`, `DS-007`, and `DS-008` contract the same reachable flow to direct raw append while retaining queue, sequence, reasoning, and tool invariants | Confirmed | None |
+| `BEH-002` | System | Pass | Pass — at current `IR-001` source, accepted messages and normalized events flow through recorder, accumulator/sequencer, and `ExternalRuntimeMemoryWriter` directly to raw storage | Pass — `DS-002`, `DS-007`, and `DS-008` retain queue, sequence, reasoning, and tool invariants without a parallel snapshot operation | Confirmed | None |
 | `BEH-003` | User | Pass | Pass — opening/reloading a run or paging the active event monitor reaches `LocalMemoryRunViewProjectionProvider`, which explicitly disables WorkingContext/episodic/semantic reads and reads active raw traces for all runtimes | Pass — `DS-003` preserves the complete user-facing projection path | Confirmed | None |
-| `BEH-004` | System/User | Pass | Pass — recording events create the duplicate snapshot today, and the exposed Memory Inspector action independently requests optional WorkingContext plus raw data; the current UI renders null as unavailable | Pass — `DS-002` removes production/read-maintenance while `DS-006` preserves the existing null/raw inspector contract and native behavior | Confirmed | None |
+| `BEH-004` | System/User | Pass | Pass — the recorder no longer reads/writes the snapshot, while the exposed Memory Inspector still generically returns a present physical file; `CR-MP-001` proves a failed eligible unlink can retain one | Pass — `DS-002` removes future production, `DS-006` preserves the one file-backed read rule, and `DS-011` records successful absence versus accepted stale visibility after reported failure | Confirmed | None |
 | `BEH-005` | System | Pass | Pass — completed provider compaction status reaches the boundary recorder and raw archive store without using WorkingContext | Pass — `DS-004` and `DS-009` retain correlation, deduplication, retry, rotation, manifest, and active-marker behavior | Confirmed | None |
-| `BEH-006` | Operational | Pass | Pass — server startup invokes the ordered app-data migration runner before serving; current metadata, location, and layout owners supply supported identity/path facts and the runner records non-fatal results | Pass — `DS-005` and `DS-010` isolate exact classification, unlink, idempotence, exclusions, and result reporting in one cleanup owner | Confirmed | None |
+| `BEH-006` | Operational | Pass | Pass — server startup invokes the ordered cleanup; exact non-`ENOENT` unlink failure records failure, retains the file, allows startup, and remains retryable | Pass — `DS-005` and `DS-010` retain exact cleanup ownership; `DS-011` traces the accepted retained-file/application/inspector lifecycle without adding defensive read policy | Confirmed | None |
+
+### Triggering Finding Recheck
+
+| Finding ID | Prior Status | Recheck Against `SR-003` | Current Architecture Status | Routing Consequence |
+| --- | --- | --- | --- | --- |
+| `CR-001` / `CR-MP-001` | Blocking `Design Impact` under `SR-002` | The premise remains `Reachable`, but the user changed the approved outcome: stale generic display after reported unlink failure is now explicitly acceptable. `BEH-004`, `BEH-006`, `REQ-011`, `REQ-012`, `AC-012`, `AC-013`, `DS-006`, and new `DS-011` are coherent with current code. | Resolved at the solution/architecture basis; no implementation-source redesign required | Return through implementation handoff alignment and source re-review; the code reviewer owns closure of `CR-001` against `SR-003` / `ARCH-REV-002` |
 
 ## Supplemental Artifact Coherence Verdict
 
@@ -62,6 +69,7 @@
 | `DS-008` | Reasoning/tool sequencing | Pass | Pass | N/A — bounded local spine | Pass | Pass | Pass | Pass |
 | `DS-009` | Boundary deduplication/retry | Pass | Pass | N/A — bounded local spine | Pass | Pass | Pass | Pass |
 | `DS-010` | Cleanup classification/action loop | Pass | Pass | N/A — bounded local spine | Pass | Pass | Pass | Pass |
+| `DS-011` | Failed eligible unlink through healthy application and optional stale inspection to retry/manual removal | Pass | Pass | Pass — cleanup owns failure/result; inspector keeps its independent generic read contract | Pass | Pass | Pass | Pass |
 
 ## Boundary Encapsulation Verdict
 
@@ -71,7 +79,7 @@
 | `ExternalRuntimeMemoryWriter` | Pass | Pass | Pass | Pass | Services use typed raw/lifecycle methods and may not manipulate JSONL, archive state, or WorkingContext |
 | `ProviderCompactionBoundaryRecorder` | Pass | Pass | Pass | Pass | Parsing, correlation, retry, and rotation decisions remain behind the boundary owner |
 | Cleanup migration | Pass | Pass | Pass | Pass | Runner invokes `execute`; deletion policy is not placed in the writer, generic store, metadata store, or caller |
-| Projection and optional memory read boundaries | Pass | Pass | Pass | Pass | Normal projection stays raw-only; inspection remains an independent optional read and does not recreate snapshots |
+| Projection and optional memory read boundaries | Pass | Pass | Pass | Pass | Normal projection stays raw-only; inspection independently reflects physical presence, including an accepted retained failed item, and never recreates snapshots |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
 
@@ -80,7 +88,7 @@
 | Recorder and event-control services | Pass | Pass | Pass | Pass | Depend inward on explicit runtime classification and external writer, never native memory models |
 | External writer | Pass | Pass | Pass | Pass | Depends on tight trace inputs and generic raw/archive store; no WorkingContext, Message, snapshot, or agent-ID dependency remains |
 | Cleanup migration | Pass | Pass | Pass | Pass | Depends on metadata/location/layout facts, filename constant, filesystem, and migration result contracts; forbids arbitrary stored paths, imports, symlink traversal, inference, and recursive deletion |
-| Read-side projection/inspection | Pass | Pass | Pass | Pass | Remains separate from recording and cleanup, with no runtime-specific frontend branch |
+| Read-side projection/inspection | Pass | Pass | Pass | Pass | Remains separate from recording and cleanup, with no runtime-kind, migration-status, or failure-specific branch |
 | Native memory | Pass | Pass | Pass | Pass | Shared snapshot store APIs remain available only to their existing native owner |
 
 ## Interface Boundary Verdict
@@ -93,7 +101,7 @@
 | `readToolTraceLifecycleGroups()` | Pass | Pass | Pass | Low | Pass |
 | External writer provider-boundary methods | Pass | Pass | Pass | Low | Pass |
 | Cleanup migration `execute()` | Pass | Pass | Pass | Low | Pass |
-| Existing optional memory view query/service | Pass | Pass | Pass | Low | Pass |
+| Existing optional physical memory view query/service | Pass | Pass | Pass | Low | Pass |
 
 ## Existing Capability / Subsystem Reuse Verdict
 
@@ -103,7 +111,7 @@
 | Raw persistence and archives | Pass | Pass — reuse generic physical store/archive manager | N/A | Pass | Keeps current raw semantics and native compatibility intact |
 | Runtime-to-memory location | Pass | Pass — reuse metadata, location service, and layout | N/A | Pass | Destructive policy does not move into fact providers |
 | Startup ordering, ledger, logs, and retry | Pass | Pass — extend app-data migration subsystem | N/A | Pass | Proportionate operational boundary already invoked before serving |
-| Optional UI absence | Pass | Pass — reuse current memory service/GraphQL/UI null contract | N/A | Pass | No invented runtime-specific UI policy |
+| Generic snapshot display/absence | Pass | Pass — reuse the current physical-presence rule for absent and retained files | N/A | Pass | The accepted rare stale display does not justify runtime/migration-specific policy |
 | Deletion eligibility policy | Pass | Pass | Pass — one new migration definition has no existing correct owner | Pass | Keeps disposal out of runtime and generic-store paths |
 
 ## Subsystem / Capability-Area Allocation Verdict
@@ -115,7 +123,7 @@
 | Agent-memory persistence | Pass | Pass | Pass | Pass | Contract and rename the mixed writer around external raw persistence |
 | App-data migrations | Pass | Pass | Pass | Pass | Owns startup disposal and durable results |
 | Run-history projection | Pass | Pass | Pass | Pass | Reused unchanged as raw-backed projection authority |
-| Memory exploration | Pass | Pass | Pass | Pass | Reused unchanged for optional absence/raw inspection |
+| Memory exploration | Pass | Pass | Pass | Pass | Reused unchanged: successful cleanup/new runs show absence, while retained failed files remain generically inspectable and raws remain independent |
 | Native memory | Pass | Pass | Pass | Pass | Explicit preserved boundary |
 
 ## Reusable Owned Structures Verdict
@@ -146,7 +154,7 @@
 | Accumulator, tool sequencer, and boundary recorder files | Pass | Pass | Pass | Pass | Each retains its distinct bounded state machine and uses the writer boundary |
 | Cleanup migration file | Pass | Pass | Pass | Pass | Candidate construction, classification, exact unlink, and summary form one operational transaction boundary |
 | Migration registry | Pass | Pass | N/A | Pass | Registration/order only; no cleanup logic |
-| Production-impact tests and durable documentation inventory | Pass | Pass | N/A | Pass | The package names owner-focused test replacements, broader existing coverage to update, native assertions to retain, and runtime-specific docs to synchronize; later stage ownership remains governed by the team flow |
+| Production-impact tests and durable documentation inventory | Pass | Pass | N/A | Pass | The revised package explicitly separates new/successful-cleanup absence from accepted failed-cleanup stale inspection and preserves native/imported controls; later stage ownership remains governed by the team flow |
 
 ## Subsystem / Folder / File Placement Verdict
 
@@ -169,22 +177,22 @@
 | Snapshot-only accumulator reasoning state and completion writes | Pass | Pass | Pass | Pass | Raw segment flushing is explicitly retained |
 | Tool snapshot payload construction | Pass | Pass | Pass | Pass | Raw tool lifecycle identity and hydration remain |
 | Eligible persisted external snapshots | Pass | Pass | Pass | Pass | Exact migration-owned unlink with no backup; exclusions explicit |
-| Obsolete tests/docs promises | Pass | Pass | Pass | Pass | Replaced by raw-only, absence, cleanup-safety, and native-preservation evidence |
+| Obsolete tests/docs promises | Pass | Pass | Pass | Pass | Replaced by raw-only, successful-cleanup absence, accepted retained-file residual, cleanup-safety, and native/imported-preservation evidence |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Area | Compatibility Wrapper / Dual-Path / Legacy Retention Exists? | Clean-Cut Removal Is Explicit? | Verdict | Notes |
 | --- | --- | --- | --- | --- |
-| External snapshot runtime path | No | Pass | Pass | No feature flag, dual write, fallback read, or raw-to-snapshot rebuild |
+| External snapshot recorder/runtime path | No | Pass | Pass | No feature flag, dual write, fallback runtime read, or raw-to-snapshot rebuild; generic physical inspection is a separate approved read contract |
 | Writer rename | No | Pass | Pass | No alias or re-export shim |
-| Cleanup | No | Pass | Pass | Unclassified files remain inert data, not a runtime compatibility path |
+| Cleanup and retained failed item | No | Pass | Pass | Unclassified or failed-retained files are persisted residuals, not a runtime compatibility path; no provider/recorder owner consumes them |
 | Native snapshot support | No in-scope legacy retention | Pass | Pass | Preserved current native authority, not compatibility for the removed external path |
 
 ## Persisted-Data Transition Verdict
 
 | Area / Stored Subject | Approved Decision | Representative Reader / Semantic / Invariant Evidence Is Sufficient? | Direct Use, Rebuild, Or Migration Choice Is Proportionate? | Migration Safety Is Complete If Required? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| Metadata-classified Codex/Claude standalone/team-member `working_context_snapshot.json` | `Discard or Rebuild` | Pass — current producer/reader, provider resume, raw-backed projection, raw lifecycle, native semantics, volume, and exact identity/path evidence are documented and independently confirmed | Pass — exact disposal removes material duplicate storage without transforming or backing up non-authoritative data | N/A — disposal uses an isolated idempotent startup cleanup, not schema migration | Pass | Classification, ordering, equality matching, symlink/import/arbitrary-path exclusions, per-item outcomes, failure status, startup availability, retry, and no-backup decision are explicit |
+| Metadata-classified Codex/Claude standalone/team-member `working_context_snapshot.json` | `Discard or Rebuild` | Pass — current recorder/runtime non-use, generic present-file inspection, provider resume, raw-backed projection, raw lifecycle, native semantics, volume, exact identity/path evidence, and failed-unlink probe are documented and independently confirmed | Pass — exact best-effort disposal removes material duplicates while explicitly allowing a reported retained item until retry/manual removal | N/A — disposal uses an isolated idempotent startup cleanup, not schema migration | Pass | Classification, ordering, equality matching, symlink/import/arbitrary-path exclusions, per-item outcomes, retention on failure, non-blocking startup, retry, generic inspection consequence, and no-backup decision are explicit |
 
 ## Change / Refactor Safety Verdict
 
@@ -192,7 +200,7 @@
 | --- | --- | --- | --- | --- |
 | External writer/model/service contraction | Pass | Pass — same-version clean cut; no temporary dual path required | Pass | Pass |
 | Raw ordering, tool lifecycle, and provider-boundary preservation | Pass | Pass — retained owners and methods are named before obsolete state is removed | Pass | Pass |
-| Persisted snapshot disposal | Pass | Pass — startup migration lands with the no-read/no-write runtime version | Pass | Pass |
+| Persisted snapshot disposal | Pass | Pass — startup migration lands with the no-read/no-write recorder/runtime version; generic inspection remains deliberately file-backed | Pass | Pass |
 | Tests and durable records | Pass | Pass — source checks precede API/E2E breadth and later documentation/finalization work | Pass | Pass |
 
 ## Example Adequacy Verdict
@@ -203,11 +211,21 @@
 | Runtime classification | Yes | Pass | Pass | Pass | Contrasts exact two-value policy with `!== AUTOBYTEUS` |
 | Cleanup targeting | Yes | Pass | Pass | Pass | Shows metadata plus layout plus exact match and rejects filename scan/arbitrary stored path |
 | Reasoning ordering | Yes | Pass | Pass | Pass | Separates raw flush behavior from snapshot-only pending state |
-| Inspector behavior | Yes | Pass | Pass | Pass | Shows null WorkingContext with independent raw access and rejects reconstruction/UI special casing |
+| Inspector behavior | Yes | Pass | Pass | Pass | Shows missing/successfully removed file as null, a failed-retained file as generically visible, and independent raw access in both states; rejects reconstruction and runtime/migration-specific hiding |
 
 ## Material Premise Validation
 
-None. The operational startup trigger, exposed Memory Inspector action, provider continuation, recording events, projection requests, and compaction events used by the design are already established in the confirmed behavior basis. No finding or new mechanism depends on an additional speculative production, failure, or lifecycle premise.
+### `CR-MP-001` — A classified external snapshot remains readable after a non-blocking cleanup failure
+
+- Related approved requirement or established contract: Revised `REQ-011`, `REQ-012`, `AC-012`, and `AC-013` explicitly accept retained-file generic inspection after a reported unlink failure while requiring healthy startup/provider/raw behavior.
+- Relevant behavior ID(s): `BEH-004`, `BEH-006`
+- Initiating basis kind: `Contract`
+- Independent product-supported initiating trigger or applicable governing contract: The approved startup-cleanup contract admits a non-`ENOENT` eligible unlink failure, requires truthful failure reporting and file retention for retry, and requires server startup to continue.
+- Support evidence: `SR-003`; the user's explicit 2026-07-31 clarification; current `removeEligibleTarget` failure behavior; `AppDataMigrationRunner.runPending`; `CRR-001` probe evidence. The exposed user surface is Memory Inspector, and the supported action is opening the affected Codex/Claude run after startup.
+- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: `ServerRuntime startup → AppDataMigrationRunner.runPending → cleanup execute → exact eligible fs.unlink → non-ENOENT failure detail + file retained → startup continues → user opens Memory Inspector → GraphQL MemoryViewResolver → AgentMemoryService.getRunMemoryView(includeWorkingContext=true) → MemoryFileStore.readWorkingContextSnapshot → retained messages returned`; provider continuation and normal projection independently follow their provider/raw spines.
+- Lifecycle preconditions and material consequence at the claimed point: Current metadata classifies the run as Codex/Claude, an old snapshot exists, and unlink fails. Disk reclamation is delayed and stale optional content remains visible until retry/manual removal, but no future external snapshot is produced or maintained and application/provider/raw-backed behavior remains healthy.
+- Reachability: `Reachable`
+- Review consequence / proportionate response: Accept the explicitly approved residual; preserve exact failure evidence, retry/manual-removal availability, and successful-cleanup/new-run absence; do not add runtime-qualified reads, migration coupling, UI hiding, or broader deletion. No architecture finding remains.
 
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
@@ -215,7 +233,7 @@ None.
 
 ## Review Decision
 
-`Pass` — the approved behavior basis is confirmed, the clean-cut target is actionable in the current codebase, persisted disposal is evidence-backed and proportionate, native and raw invariants are explicitly protected, and no in-scope machinery or finding depends on an unsupported premise.
+`Pass` — the `SR-003` behavior basis is confirmed, the reachable cleanup-failure/inspector lifecycle is explicit and proportionately accepted, the current clean-cut target remains actionable, persisted disposal is evidence-backed, native/raw/application invariants are protected, and no machinery or finding depends on an unsupported premise.
 
 ## Findings
 
@@ -231,13 +249,13 @@ None.
 
 ## Residual Risks
 
-- Missing, invalid, unmatched, imported, or otherwise unclassifiable historical snapshots intentionally remain inert. This is a bounded safety tradeoff, not an unresolved design gap.
-- Partial cleanup can leave eligible duplicate files until manual retry; the target runtime does not read them, and existing startup semantics remain non-blocking. Execution must preserve truthful failed/skipped evidence.
-- Raw ordering, tool lifecycle hydration, provider-boundary rotation, external inspector absence, and native memory non-regression require the designed source tests and later API/E2E coverage investigation.
+- Missing, invalid, unmatched, imported, or otherwise unclassifiable historical snapshots intentionally remain preserved and file-backed. This is a bounded safety tradeoff, not an unresolved design gap.
+- Partial cleanup can leave an eligible duplicate visible in the generic Memory Inspector and consume disk until retry/manual removal. The user explicitly accepts this residual; execution must preserve truthful failure evidence and healthy startup/provider/raw behavior.
+- Raw ordering, tool lifecycle hydration, provider-boundary rotation, new/successful-cleanup absence, failed-cleanup stale visibility, and native/imported non-regression require the revised durable test mapping and later API/E2E coverage investigation.
 - If implementation discovers a materially different persisted topology, runtime kind, production consumer, or cleanup scale, it must route the resulting requirement/design impact upstream rather than broaden deletion or add compatibility behavior locally.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
 - Material-Premise Gate: `Pass`
-- Notes: Initial architecture baseline `ARCH-REV-001`; relevant solution revision `SR-002`; no findings.
+- Notes: `ARCH-REV-002` supersedes the round-1 result for current work; relevant solution revision `SR-003`; `CR-001` is resolved at the approved behavior/design basis and awaits code-review closure after implementation handoff alignment; no architecture findings.

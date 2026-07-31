@@ -9,32 +9,34 @@
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/in-progress/external-runtime-memory-recording-simplification/solution-revision-record.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/in-progress/external-runtime-memory-recording-simplification/design-review-report.md`
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/in-progress/external-runtime-memory-recording-simplification/architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence, when applicable: `N/A` — initial implementation followed architecture pass `ARCH-REV-001`.
+- Triggering rework report, revision record, or evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/in-progress/external-runtime-memory-recording-simplification/code-review-report.md` and `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/in-progress/external-runtime-memory-recording-simplification/code-review-revision-record.md` (`CRR-001`, `CR-001`, `CR-MP-001`).
 
 ## Current Implementation Summary
 
-The approved external raw-trace-only contract is implemented in commit `8cd193e81` on `codex/external-runtime-memory-recording-simplification`. The mixed `RunMemoryWriter` boundary and snapshot-only recording models/state/calls are gone. `ExternalRuntimeMemoryWriter` retains raw field construction, sequence hydration from active plus complete archived traces, tool lifecycle indexing, and provider-boundary archive access. Recorder eligibility and cleanup both use the exact Codex/Claude predicate. A registered startup cleanup derives standalone and recursive team-member targets from current metadata and owned layout/location services, inventories only the local `agents` and `agent_teams` roots without traversing directory symlinks, unlinks only exact eligible snapshots, preserves native/imported/unclassified/task-history data, and reports idempotent skip/failure results without throwing away startup availability.
+The implementation remains the production source from commit `8cd193e81` on `codex/external-runtime-memory-recording-simplification`; the SR-003 / ARCH-REV-002 alignment check required no source change. The mixed `RunMemoryWriter` and snapshot-only recording models/state/calls are removed. `ExternalRuntimeMemoryWriter` retains raw field construction, active-plus-complete-archive sequence hydration, tool lifecycle indexing, and provider-boundary archive access. Recorder and cleanup eligibility use the exact Codex/Claude predicate. The registered startup cleanup derives exact standalone and recursive team-member targets from current metadata plus owned layout/location services, inventories only local `agents` and `agent_teams` roots without traversing directory symlinks, preserves native/imported/unclassified/task-history data, and reports idempotent skip/failure results without blocking startup.
 
-- Implementation cycle: `Initial`
+SR-003 explicitly distinguishes two inspection outcomes. New external runs and successfully cleaned external runs naturally have no WorkingContext snapshot. If an eligible non-`ENOENT` unlink fails, the migration truthfully reports and retains the file; startup, provider continuation, and raw-backed behavior stay healthy; and the unchanged generic file-backed Memory Inspector may show the stale snapshot until retry or manual removal. This reachable residual is approved and must not be hidden through runtime-qualified reads, migration-status coupling, UI policy, or broader deletion.
+
+- Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/in-progress/external-runtime-memory-recording-simplification/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
-- Related solution revision IDs: `SR-002` (with `SR-001` baseline context)
-- Related architecture-review revision IDs: `ARCH-REV-001`
-- Related code-review revision IDs: `N/A`
+- Current implementation revision ID: `IR-002`
+- Related solution revision IDs: `SR-003` (with `SR-002` / `SR-001` history)
+- Related architecture-review revision IDs: `ARCH-REV-002` (superseding `ARCH-REV-001` for current work)
+- Related code-review revision IDs: `CRR-001`
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Triggering finding IDs: `CR-001`; material premise `CR-MP-001`
 
 ## Reviewed Behavior Implementation Trace
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
-| BEH-001 | Preserve provider-owned Codex/Claude continuation and keep local WorkingContext out of provider bootstrap. | Runtime bootstrap/provider code was not changed; the recorder now owns raw evidence only. | Preserved by non-interference; later API/E2E must exercise representative provider continuation. |
-| BEH-002 | Preserve normalized user/assistant/reasoning/tool raw traces, ordering, and restart lifecycle hydration while removing parallel snapshot updates. | `agent-run-memory-recorder.ts` → accumulator/sequencer → `external-runtime-memory-writer.ts#appendRawTrace` → `RunMemoryFileStore`; `memory-recording-models.ts` now contains only raw/boundary contracts. | Implemented. Raw construction was moved without field changes; open reasoning flushes and compound tool identity remain. |
-| BEH-003 | Preserve all-runtime raw-backed run/event-monitor projection and paging. | Existing projection/read paths remain unchanged. | Preserved by non-interference; downstream coverage remains required. |
-| BEH-004 | Stop external snapshot construction/read/write and let the existing inspector return WorkingContext unavailable while Raw Traces remain. | Deleted snapshot update/write-operation models, writer WorkingContext/Message/agent-ID state, snapshot reads/writes, accumulator pending reasoning projection, and tool snapshot payloads. Generic memory read/UI paths remain unchanged. | Implemented for production source. Existing external snapshot files are ignored by the runtime immediately and removed by startup cleanup when eligible. |
-| BEH-005 | Preserve provider-boundary deduplication, retry, rotation, and active boundary marker. | `provider-compaction-boundary-recorder.ts` now depends on `ExternalRuntimeMemoryWriter`; writer archive methods are unchanged. | Implemented; focused local rotation probe retained the marker active and produced one complete archived trace. |
-| BEH-006 | Perform exact metadata-classified, idempotent, non-blocking external snapshot disposal with strict exclusions and truthful outcomes. | `remove-external-runtime-working-context-snapshots-migration.ts`, registered immediately after `TeamRunMetadataMemberTreeMigration` in `app-data-migration-registry.ts`; shared predicate in `runtime-kind-enum.ts`. | Implemented. Manual probes covered standalone/team external deletion, absence retry, native/import/unclassified/task preservation, layout use instead of stored `memoryDir`, and retained-file failure reporting. |
+| BEH-001 | Preserve provider-owned Codex/Claude continuation and keep local WorkingContext out of provider bootstrap. | Runtime bootstrap/provider source is unchanged; external recorder source owns raw evidence only. | Preserved by non-interference; later API/E2E must exercise representative provider continuation. |
+| BEH-002 | Preserve normalized user/assistant/reasoning/tool raw traces, ordering, and restart lifecycle hydration while removing parallel snapshot updates. | `agent-run-memory-recorder.ts` → accumulator/sequencer → `external-runtime-memory-writer.ts#appendRawTrace` → `RunMemoryFileStore`; `memory-recording-models.ts` contains only raw/boundary contracts. | Implemented. Raw field construction remains exact; open reasoning flushes and compound tool identity remain. |
+| BEH-003 | Preserve all-runtime raw-backed run/event-monitor projection and paging. | Existing projection/read paths remain unchanged. | Preserved by non-interference; downstream executable coverage remains required. |
+| BEH-004 | Stop future external snapshot production; successful cleanup/new runs show no WorkingContext; a failed-retained file may remain generically inspectable while Raw Traces stay independent. | Recording path contains no snapshot read/write. Existing `AgentMemoryService` / `MemoryFileStore` optional physical-file read remains runtime-agnostic and unchanged. | Implemented and aligned with SR-003. Focused validation observed the approved failed-cleanup stale WorkingContext and independent current raw trace together. |
+| BEH-005 | Preserve provider-boundary deduplication, retry, rotation, and active boundary marker. | `provider-compaction-boundary-recorder.ts` depends on `ExternalRuntimeMemoryWriter`; writer archive methods are unchanged. | Implemented; IR-001 focused rotation probe retained the marker active and produced one complete archived trace. |
+| BEH-006 | Perform exact metadata-classified, idempotent, non-blocking external snapshot disposal; retain and report a failed item for retry/manual removal. | `remove-external-runtime-working-context-snapshots-migration.ts`, registered immediately after `TeamRunMetadataMemberTreeMigration`; shared predicate in `runtime-kind-enum.ts`. | Implemented. Exact non-`ENOENT` unlink failure produces a failed detail and retains the file; the runner can continue startup and exposes retry. |
 
 ## Key Files Or Areas
 
@@ -47,21 +49,22 @@ The approved external raw-trace-only contract is implemented in commit `8cd193e8
 - `autobyteus-server-ts/src/agent-memory/services/provider-compaction-boundary-recorder.ts`
 - `autobyteus-server-ts/src/app-data-migrations/migrations/remove-external-runtime-working-context-snapshots-migration.ts`
 - `autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts`
+- Existing generic inspection path intentionally unchanged: `agent-memory/services/agent-memory-service.ts` and `agent-memory/store/memory-file-store.ts`.
 - Removed: `autobyteus-server-ts/src/agent-memory/store/run-memory-writer.ts` with no alias or re-export.
 
 ## Important Assumptions
 
-- Current standalone `run_metadata.json` and current recursive team `team_run_metadata.json` remain the authoritative runtime identity sources.
-- `AgentMemoryLayout` and `AgentMemoryLocationService` remain authoritative for supported physical locations; stored standalone `memoryDir` is intentionally ignored by cleanup.
-- The existing migration runner continues to record `FAILED` and `SUCCEEDED_WITH_WARNINGS` results and continue startup; both remain manually retryable.
-- Existing optional memory-read and frontend contracts continue to represent an absent snapshot as no WorkingContext independently of Raw Traces.
+- Current standalone `run_metadata.json` and recursive team `team_run_metadata.json` remain authoritative runtime identity sources for cleanup eligibility.
+- `AgentMemoryLayout` and `AgentMemoryLocationService` remain authoritative for supported deletion paths; stored standalone `memoryDir` is ignored by cleanup.
+- The migration runner records `FAILED` and `SUCCEEDED_WITH_WARNINGS`, continues startup, and retains manual retry availability.
+- The Memory Inspector is intentionally a generic physical-file view: absence follows new/successful cleanup, while a failed-retained external file remains visible until retry/manual removal.
 
 ## Known Risks
 
-- Missing, invalid, mismatched, imported, task-like, future-runtime, and otherwise unclassified snapshots intentionally remain inert and are not deleted.
-- A partial cleanup can retain eligible duplicates until manual retry; the result includes the exact item/path and error without exposing snapshot content.
-- Durable test files still contain the obsolete writer imports and external snapshot expectations. Per team ownership, `api_e2e_engineer` must investigate validity and make the durable test changes after source review.
-- Durable module documentation still describes external snapshot persistence. Per team ownership, `delivery_engineer` must synchronize it after executable coverage passes.
+- A failed eligible cleanup can leave stale optional external WorkingContext visible and consume disk until retry/manual removal. SR-003 explicitly accepts this residual in exchange for truthful evidence and healthy startup/provider/raw behavior.
+- Missing, invalid, mismatched, imported, task-like, future-runtime, and otherwise unclassified snapshots intentionally remain preserved and file-backed.
+- Durable test files still contain obsolete writer imports and pre-SR-003 snapshot expectations. `api_e2e_engineer` must decide validity and make durable test changes after source review.
+- Durable module documentation still describes external snapshot persistence without the successful-versus-failed cleanup distinction. `delivery_engineer` owns synchronization after executable coverage passes.
 
 ## Task Design Health Assessment Implementation Check
 
@@ -69,57 +72,63 @@ The approved external raw-trace-only contract is implemented in commit `8cd193e8
 - Reviewed root-cause classification: `Boundary Or Ownership Issue`, `Duplicated Policy Or Coordination`, and `Shared Structure Looseness`
 - Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `Refactor Needed Now`
 - Implementation matched the reviewed assessment (`Yes`/`No`): `Yes`
-- If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `N/A`
-- Evidence / notes: The implementation contracts the writer/model/service boundary instead of suppressing one write, removes the parallel snapshot representation, and isolates disposal in the reviewed operational owner. No newly discovered consumer, topology, requirement gap, or ownership conflict required upstream routing.
+- If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `Yes` — CRR-001 / CR-001 returned through SR-003 and ARCH-REV-002 before implementation resumed.
+- Evidence / notes: The source cleanly removes future external snapshot production and preserves one generic inspection boundary. ARCH-REV-002 confirms that adding runtime/migration/UI hiding would be unapproved defensive machinery. The current source therefore aligns without a patch.
 
 ## Legacy / Compatibility Removal Check
 
 - Backward-compatibility mechanisms introduced: `None`
-- Legacy old-behavior retained in scope: `No`
-- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes` for implementation-owned production source. Durable test validity/removal is explicitly downstream-owned and remains pending.
+- Legacy old-behavior retained in scope: `No` — failed-retained physical inspection is an approved operational residual, not an external recorder/runtime fallback.
+- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes` for implementation-owned production source. Durable test validity/removal remains downstream-owned.
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`
-- Notes: The cleanup migration is 299 effective non-empty lines. Its greater-than-220 delta was assessed against the reviewed single operational transaction boundary; it remains under 500 and cohesive, and splitting classification/inventory/action into forwarding files would weaken that owner without reusable policy.
+- Notes: The cleanup migration is 299 effective non-empty lines. Its greater-than-220 delta remains a reviewed cohesive operational transaction; no source delta was made in IR-002.
 
 ## Persisted Data Transition Check (When Applicable)
 
 - Approved decision (`Not Affected`/`Directly Usable — No Migration`/`Discard or Rebuild`/`Migration Required`): `Discard or Rebuild`
 - Design-spec decision reference: `design-spec.md#persisted-data--state-transition-decision-mandatory-when-persisted-data-may-be-affected` and `#cleanup-lifecycle-disposal-not-schema-transformation`
 - Implementation follows the approved decision without an unapproved migration or version-specific runtime fallback: `Yes`
-- Direct-use evidence or discard/rebuild result, when applicable: The external runtime no longer reads or writes the snapshot. The registered disposal lifecycle unlinks only exact current metadata/layout-derived Codex/Claude targets, treats absence as a skip, and preserves raw/provider/native/import/unclassified data.
-- Migration implementation and focused checks, only when `Migration Required`: `N/A` — the app-data migration framework is reused as the approved disposal ledger, not as a schema transformation.
+- Direct-use evidence or discard/rebuild result, when applicable: Exact current metadata/layout-derived Codex/Claude targets are unlinked when possible. Absence is idempotently skipped. Non-`ENOENT` failure is reported and retains the file for retry/manual removal; the external recorder/runtime never resumes consumption or maintenance of it.
+- Migration implementation and focused checks, only when `Migration Required`: `N/A` — the app-data migration framework is the approved disposal ledger, not a schema transformation.
 - Deviation from the reviewed transition decision: `None`
 
 ## Environment Or Dependency Notes
 
-- Installed the locked workspace dependencies into this isolated worktree with `pnpm install --offline --frozen-lockfile`; no external service, account, provider call, browser, or real user memory root was used.
-- Local probes used temporary directories and removed them in `finally` cleanup.
+- Locked workspace dependencies were previously installed in this isolated worktree with `pnpm install --offline --frozen-lockfile`.
+- Focused probes used temporary directories and removed them in `finally` cleanup. No external service, provider call, browser, or real user memory root was used.
 
 ## Local Implementation Checks Run
 
-- `pnpm -C autobyteus-server-ts build` — passed, including shared package builds, Prisma generation, TypeScript build, managed asset copy, and sanitized built-in agent bootstrap smoke.
-- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` — passed for implementation source.
-- External writer probe — passed: four exact raw records, millisecond-to-second timestamp normalization, restored per-turn sequence `4`, one hydrated tool lifecycle group, and `snapshotExists: false`.
-- Provider-boundary rotation probe — passed: one complete archived pre-boundary trace, active corpus containing only the boundary marker, and complete-segment state true.
-- Cleanup behavior/idempotence probe — passed: first run `SUCCEEDED` with 2 migrated / 4 skipped / 0 failed; retry `SUCCEEDED` with 0 migrated / 6 skipped / 0 failed; five native/import/unclassified/task files preserved.
-- Cleanup failure probe — passed: forced unlink denial returned `FAILED`, recorded one failed item, and retained the snapshot for retry.
-- `git diff --check` — passed before implementation commit.
-- Full test-inclusive typecheck and executable test suites were not claimed: existing durable tests intentionally await downstream validity review and replacement of obsolete writer/snapshot contracts.
+IR-002 alignment checks:
+
+- `git diff --quiet 8cd193e81 -- autobyteus-server-ts/src` — passed; no production source delta exists after SR-003 / ARCH-REV-002.
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` — passed for current implementation source.
+- Accepted cleanup-residual probe — passed: `cleanupStatus: FAILED`, one failed item, retained generic WorkingContext content `stale snapshot copy`, and independent raw content `current raw evidence`.
+
+IR-001 implementation checks retained as baseline evidence:
+
+- `pnpm -C autobyteus-server-ts build` — passed, including shared builds, Prisma generation, TypeScript build, managed assets, and sanitized built-in agent bootstrap smoke.
+- External writer probe — passed: four exact raw records, timestamp normalization, restored turn sequence `4`, one hydrated tool lifecycle group, and `snapshotExists: false`.
+- Provider-boundary rotation probe — passed: one complete archived pre-boundary trace and an active boundary marker.
+- Cleanup behavior/idempotence probe — passed: first run 2 migrated / 4 skipped / 0 failed; retry 0 migrated / 6 skipped / 0 failed; native/import/unclassified/task files preserved.
+- Cleanup unlink-failure probe — passed: failed result retained the snapshot for retry.
+- Full test-inclusive typecheck and executable suites are not claimed; durable test validity/change and broader execution remain downstream-owned.
 
 ## Frontend Rendered-Result Check (When Applicable)
 
-`Not Applicable` — no frontend production file or rendered interaction was changed. The approved external WorkingContext absence uses the existing optional/null Memory Inspector contract; independent browser/API evidence remains downstream-owned.
+`Not Applicable` — no frontend production file or rendered interaction changed. The existing generic Memory Inspector already renders physical presence or absence; SR-003 rejects runtime-specific hiding. Independent browser/API evidence remains downstream-owned.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
-1. Replace/rename writer unit coverage and prove raw field fidelity, timestamp normalization, active-plus-complete-archive sequence hydration, lifecycle indexing, rotation, and no snapshot read/write.
+1. Replace/rename writer unit coverage and prove raw field fidelity, timestamp normalization, active-plus-complete-archive sequence hydration, lifecycle indexing, rotation, and no future snapshot read/write.
 2. Preserve accumulator reasoning flush order and sequencer compound `(turnId, toolCallId)` call-before-result/dedup/restart behavior while removing snapshot assertions.
 3. Prove recorder acceptance for exactly Codex and Claude, rejection for AutoByteus and a future/unknown runtime value, and raw recording without a browser subscriber.
-4. Add cleanup cases for direct/nested/deep team members, standalone stored-`memoryDir` path injection, native/future/import/unclassified/task exclusions, metadata ID mismatch/invalidity, directory symlinks, exact-file unlink failure, warning status, and safe retry.
-5. Update cross-runtime memory and GraphQL/browser coverage so external WorkingContext is absent while Raw Traces remain independently usable and native WorkingContext remains present.
-6. Exercise representative Codex/Claude provider continuation and compaction-boundary replay/rotation without relying on a local snapshot.
+4. Cover cleanup direct/nested/deep team members, stored-`memoryDir` path injection, native/future/import/unclassified/task exclusions, metadata mismatch/invalidity, directory symlinks, exact-file unlink failure, warning status, and retry.
+5. Distinguish inspector outcomes: new/successfully cleaned external run → WorkingContext absent; failed-retained eligible external snapshot → stale WorkingContext visible with failure evidence and retry availability; Raw Traces independently usable in both states; native WorkingContext unchanged.
+6. Exercise representative Codex/Claude provider continuation and compaction-boundary replay/rotation without a local snapshot dependency.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Required. This artifact records only implementation-source checks and temporary focused probes. `api_e2e_engineer` still owns existing-test validity, durable test changes, broader repository execution, API/E2E/live-provider/browser decisions, environment setup, confidence scoring, cleanup, and final evidence.
+Required. This artifact records implementation-source checks and focused temporary probes only. `api_e2e_engineer` owns existing-test validity, durable test changes, broader repository execution, API/E2E/live-provider/browser decisions, environment setup, confidence scoring, cleanup, and final evidence after source review passes.

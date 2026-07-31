@@ -3,7 +3,7 @@
 ## Investigation Status
 
 - Bootstrap Status: Complete
-- Current Status: Repository, consumer, persisted-data, migration-lifecycle, and cleanup-identity investigation complete; requirements explicitly approved and design completed for architecture review.
+- Current Status: CRR-001 / CR-001 follow-up complete. The user resolved the cleanup-failure/inspector tradeoff in favor of simple generic file-backed inspection; revised requirements/design are being prepared for architecture re-review.
 - Investigation Goal: Establish the real Codex/Claude recording and continuation paths, determine every effect of removing their duplicate WorkingContext snapshots, and bound a safe raw-trace-only implementation and cleanup.
 - Scope Classification: `Medium`
 - Scope Classification Rationale: The source removal is bounded, but it crosses event accumulation, raw persistence, lifecycle hydration, persisted-data cleanup, generic memory inspection, tests, and durable documentation.
@@ -30,6 +30,7 @@ The ticket asks to simplify server-owned external-runtime memory recording after
 - Expected Finalization Target: `personal`
 - Remote Refresh Result: `git fetch origin --prune` succeeded on 2026-07-31. Task `HEAD` and refreshed `origin/personal` both resolved to `ea6d6b011035d71dc9594d61ad035470985fca8e`.
 - Existing Task Changes At Investigation Start: The four bootstrapped ticket artifacts were untracked; no implementation source was changed.
+- Current Downstream Baseline: implementation source commit `8cd193e81`; handoff commit/current branch head `3f0c143a8`; implementation record `IR-001`; architecture baseline `ARCH-REV-001`; blocking review against the prior wording `CRR-001` / `CR-001`.
 - Bootstrap Blockers: None.
 
 ## Supplemental Task Artifact Inventory
@@ -60,6 +61,9 @@ The ticket asks to simplify server-owned external-runtime memory recording after
 | 2026-07-31 | Docs | `docs/modules/agent_memory.md`, `codex_integration.md`, `run_history.md`, `agent_execution.md` | Find durable contract | Docs currently conflate common snapshot layout with external recording in several places while correctly describing raw-backed history elsewhere | Update runtime-specific ownership wording |
 | 2026-07-31 | Local data probe | Metadata-only/stat Python inventory under `/Users/normy/.autobyteus/server-data/memory`; aggregate result retained in `persisted-snapshot-inventory.md` | Quantify duplication and validate cleanup boundary | 1,703 classified Codex snapshots occupy ~3.18 GiB; 30 Claude snapshots ~2.63 MiB; every classified external location has active raw. Native, imported, and unclassified groups also exist | Use conservative exact classification |
 | 2026-07-31 | User approval | Conversation confirming external runtime ownership, all-runtime raw-trace-backed event monitor/normal run projection, and Codex/Claude-only snapshot removal | Lock refined requirement basis | User explicitly stated alignment and approval after the Memory Inspector distinction was clarified | No |
+| 2026-07-31 | Code review | `code-review-report.md`, `code-review-revision-record.md`; CRR-001 / CR-001 / CR-MP-001 | Investigate downstream design impact | Review proved a reachable composition: eligible unlink fails, file remains, startup continues, and the unchanged generic Memory Inspector can still read it, contradicting the prior unconditional REQ-011/AC-012 wording | User product decision required |
+| 2026-07-31 | Focused probe evidence | Temporary CR-MP-001 probe described in `code-review-report.md` | Validate reachability | Forced eligible unlink failure returned `FAILED`, retained the file, and a later generic read returned non-null WorkingContext | Evidence accepted; product consequence clarified by user |
+| 2026-07-31 | User clarification | Follow-up discussion of cleanup-failure tradeoff | Resolve whether the reachable inspector state is material | User accepts stale optional inspector visibility and delayed disk reclamation after a reported rare failure; application/provider/raw paths working is the meaningful guarantee. User does not want defensive runtime/UI logic for this edge case and accepts cleanup retry/manual removal | Revise old unconditional wording; no source-policy addition |
 
 ## Relevant Existing Behavior And Production Paths
 
@@ -68,9 +72,9 @@ The ticket asks to simplify server-owned external-runtime memory recording after
 | BEH-001 | System | Create/restore Codex or Claude run | Run metadata → runtime restore context → Codex thread resume / Claude session bootstrap | Provider platform ID/session owns continuation | Preserve exactly; never inject local WorkingContext |
 | BEH-002 | System | Accepted user command or normalized assistant/reasoning/tool/provider event | `AgentRunMemoryRecorder` → accumulator/sequencer → `RunMemoryWriter` → raw file store | Canonical normalized raw trace with sequence and lifecycle identity | Preserve, but remove the parallel snapshot representation |
 | BEH-003 | User | Open/reload run history or active event monitor | view projection service → local memory projection provider → active raw traces | Conversation/activity projection and paging | Preserve unchanged |
-| BEH-004 | System/User | Same events as BEH-002; generic Memory Inspector read | accumulator/sequencer → writer snapshot updates → `working_context_snapshot.json` → optional generic memory read | Duplicate transcript is persisted and can be inspected | Remove write/read maintenance; inspector reports unavailable for external WorkingContext |
+| BEH-004 | System/User | Same events as BEH-002; generic Memory Inspector read | accumulator/sequencer → writer snapshot updates → `working_context_snapshot.json` → optional generic memory read | Duplicate transcript is persisted and can be inspected | Remove future external snapshot production/maintenance. Successful cleanup naturally removes inspector visibility; a reported failed unlink may leave the stale file generically visible until retry, by explicit user choice |
 | BEH-005 | System | Completed, eligible provider compaction boundary | boundary recorder → raw append/deduplication → complete archive rotation/manifest | Settled active raws rotate; boundary remains active | Preserve unchanged |
-| BEH-006 | Operational | Registered startup app-data migration | migration registry/runner → metadata classification → layout-owned exact snapshot path | No cleanup exists today | Add best-effort, idempotent, exact external deletion with conservative skips |
+| BEH-006 | Operational | Registered startup app-data migration | migration registry/runner → metadata classification → layout-owned exact snapshot path | No cleanup existed before IR-001; current implementation retains a file and reports failure on non-`ENOENT` unlink errors | Preserve best-effort, idempotent, exact external deletion and non-blocking failure. No special read/UI response is required |
 
 ## File / Capability Inventory
 
@@ -101,6 +105,14 @@ The aggregate, content-safe evidence is retained in [`persisted-snapshot-invento
 
 No live provider request was needed to settle source ownership. API/E2E owns representative executable validation after implementation review.
 
+### CRR-001 Failure-Lifecycle Finding
+
+CR-MP-001 established this reachable path:
+
+`startup → exact eligible external snapshot → unlink failure → FAILED cleanup detail + file retained → startup continues → generic Memory Inspector read → stale WorkingContext displayed`.
+
+The code-review concern was not that provider continuation, raw recording, or normal event-monitor projection failed. It was a contradiction between the prior unconditional inspector-absence wording and the approved non-blocking cleanup failure. The user resolved that contradiction by accepting the stale optional display/delayed reclamation and rejecting extra defensive logic.
+
 ## External / Public Source Findings
 
 `N/A` — the current repository and local application-data layout are the authoritative sources for this ticket. No web research was needed.
@@ -126,6 +138,8 @@ No live provider request was needed to settle source ownership. API/E2E owns rep
 8. A startup migration after team-member metadata normalization is the clean cleanup boundary. It should reuse metadata stores, location service, and memory layout rather than place deletion policy inside the runtime writer or generic file store.
 9. Current metadata cannot safely classify all old task-like or missing-metadata locations. Preserving a small inert residual is preferable to risking native/imported deletion.
 10. Documentation and tests currently encode the obsolete external snapshot promise and need affirmative raw-only replacement coverage; native snapshot coverage remains valuable.
+11. Physical cleanup success controls whether an old snapshot disappears from the generic inspector. That coupling is intentionally retained for simplicity; the runtime does not maintain or depend on the old file.
+12. A reported cleanup failure is an operational data-removal residual, not an application-availability or provider-continuation defect. Operator retry/manual deletion is sufficient recovery.
 
 ## Persisted Data Transition Evidence (When Applicable)
 
@@ -139,6 +153,7 @@ No live provider request was needed to settle source ownership. API/E2E owns rep
 - Identity rule: Standalone run metadata or recursive current team-member metadata must state `codex_app_server` or `claude_agent_sdk`; path comes from supported location/layout owners. Filename presence alone is not identity.
 - Idempotence: Missing file is a skip; deleting the one eligible snapshot is success; repeat execution is safe.
 - Failure/availability: Deletion/classification problems are reported with actionable details. A partial cleanup failure does not block startup because runtime code no longer consumes the external file.
+- Optional inspection after failure: Because the generic inspector remains file-backed and runtime-agnostic, a retained eligible file can still be displayed until retry. The user explicitly accepts this and does not require a migration-status/runtime-kind filter.
 - Explicit exclusions: AutoByteus, imports, unknown/missing/unmatched metadata, unsupported task-agent history, and any future runtime kind.
 - Evidence link: [`persisted-snapshot-inventory.md`](./persisted-snapshot-inventory.md).
 
@@ -159,6 +174,14 @@ No live provider request was needed to settle source ownership. API/E2E owns rep
 - Native context-file-storage and memory-compaction tests remain authoritative.
 - GraphQL memory tests using a native WorkingContext fixture remain, with added/adjusted external absence and raw availability coverage where appropriate.
 
+### CR-001 executable mapping after user clarification
+
+- Successful cleanup: eligible external snapshot is removed; detail/availability naturally report no WorkingContext and Raw Traces remain usable.
+- Failed cleanup: forced unlink failure is reported, file remains, startup/application continue, and the generic inspector may still return the stale snapshot; this is an accepted result rather than a failure.
+- No future writes: new/continued Codex and Claude activity does not create or update the retained/missing snapshot in either cleanup outcome.
+- Normal behavior: provider continuation and all-runtime raw-backed projection/event-monitor paths remain independent of cleanup success.
+- Native/imported/unclassified controls retain existing file-backed inspection and are never deleted by the cleanup.
+
 ### Durable docs to update
 
 - `docs/modules/agent_memory.md`: distinguish native WorkingContext snapshots from external raw-only recording.
@@ -175,12 +198,14 @@ No live provider request was needed to settle source ownership. API/E2E owns rep
 - Imports are read-only historical corpora with sync-manifest semantics and are outside the cleanup.
 - Startup migration execution is best-effort in the existing server lifecycle; truthful result reporting is required.
 - Future runtime kinds need an explicit contract choice rather than inheriting today's external predicate.
+- No Memory Inspector runtime-kind/migration-status dependency should be added solely for a rare failed unlink. Physical file presence remains its general display rule.
 
 ## Open Unknowns / Risks
 
 - Excluded unclassified historical files remain as small inert duplicates; this is an intentional safety residual.
+- An eligible file may also remain as stale inspectable data after a reported deletion failure until retry/manual removal; the user explicitly accepts this rare operational residual.
 - API/E2E will determine the proportionate live-provider/browser execution matrix and environment feasibility after implementation review.
 
 ## Notes For Architecture Reviewer
 
-The package is ready for architecture review. Requirements were explicitly approved on 2026-07-31 after clarifying that normal run/event-monitor projection is raw-backed for every current runtime, while WorkingContext snapshot removal and cleanup apply only to Codex/Claude. Review the clean-cut writer contraction, explicit external-runtime predicate, preservation of raw reasoning/tool/boundary invariants, and exact metadata-derived startup cleanup boundary. The remaining unclassified-file and API/E2E breadth risks are intentional downstream concerns, not unresolved design gaps.
+SR-003 is ready for architecture re-review in response to CRR-001 / CR-001 and the subsequent user decision. The user-approved raw-only outcome is unchanged. The revised basis removes the old unconditional inspector-absence guarantee: successful cleanup yields absence, while a reported failed unlink may leave stale generic inspector visibility until retry/manual removal. No defensive read/UI machinery is desired. Review the requirements/design consistency and executable mapping before implementation/source review resumes.

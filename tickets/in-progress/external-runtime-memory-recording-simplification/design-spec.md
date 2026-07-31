@@ -13,6 +13,8 @@ The current writer therefore mixes two subjects with different authority. It own
 
 Investigation also found an exact current cleanup boundary: standalone run metadata and recursive team-member metadata carry `RuntimeKind`; `AgentMemoryLayout` and `AgentMemoryLocationService` derive supported paths. Missing/unmatched metadata, imports, and historical task-agent directories do not all have authoritative persisted runtime identity and must remain untouched. See `investigation-notes.md`, BEH-001 through BEH-006, and the retained inventory.
 
+CRR-001 / CR-001 later proved that an eligible non-`ENOENT` unlink failure retains the old file while startup continues, after which the unchanged generic Memory Inspector can still display it. The user explicitly accepts that rare stale optional display and delayed disk reclamation. The governing guarantees are no future external snapshot writes, healthy application/provider continuation, preserved raw recording/projection, truthful cleanup failure reporting, and safe retry/manual removal—not unconditional inspector absence after a failed physical delete.
+
 ## Intended Change
 
 Make the Codex/Claude recorder raw-trace-only:
@@ -23,7 +25,8 @@ Make the Codex/Claude recorder raw-trace-only:
 - remove the parallel snapshot update types and all accumulator/sequencer coordination that exists only to build that snapshot;
 - use an explicit current external-runtime predicate for Codex and Claude rather than the future-open condition `runtimeKind !== AUTOBYTEUS`;
 - register an idempotent startup cleanup that deletes only exact current-metadata-classified Codex/Claude standalone/team-member snapshot files and reports failures/skips without blocking startup;
-- leave native AutoByteus, imports, unclassified history, normal projection, and the existing Memory Inspector UI contract unchanged. File absence naturally yields `hasWorkingContext: false`/`workingContext: null`, while Raw Traces remain.
+- leave native AutoByteus, imports, unclassified history, normal projection, and the existing runtime-agnostic Memory Inspector contract unchanged. Successful file removal naturally yields `hasWorkingContext: false`/`workingContext: null`; a failed unlink may leave the stale snapshot visible until retry, while Raw Traces and application behavior remain unaffected.
+- do not add runtime-qualified read filters, migration-status checks, or UI branches solely to hide a file whose deletion failure was already reported.
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
@@ -32,9 +35,9 @@ Make the Codex/Claude recorder raw-trace-only:
 | BEH-001 | System | REQ-001; AC-001 | Create or restore a Codex/Claude run | Provider thread/session restoration; investigation production-path table | Preserve provider-owned continuation; never add local WorkingContext input | Run manager → runtime bootstrap → Codex thread resume / Claude session bootstrap; DS-001 |
 | BEH-002 | System | REQ-002, REQ-005; AC-002, AC-003, AC-006 | Accepted user message or normalized assistant/reasoning/tool event | Recorder queue → accumulator/sequencer → mixed writer; source log | Preserve raw semantics and lifecycle hydration; remove parallel snapshot update | Recorder → accumulator/sequencer → `ExternalRuntimeMemoryWriter.appendRawTrace` → `RunMemoryFileStore`; DS-002, DS-007, DS-008 |
 | BEH-003 | User | REQ-003; AC-004 | Open/reload normal run view or request earlier active events | Local projection explicitly requests raw only for every current runtime | Preserve all-runtime raw-backed conversation/activity projection and paging | `AgentRunViewProjectionService` → `LocalMemoryRunViewProjectionProvider` → active raw read → replay/event-monitor projection; DS-003 |
-| BEH-004 | System/User | REQ-004, REQ-005, REQ-010, REQ-011; AC-005, AC-006, AC-010, AC-012 | External recording and generic memory inspection | Mixed writer reads/writes duplicate snapshot; Memory Inspector optionally reads it | Remove Codex/Claude snapshot production/read-maintenance; existing inspector reports WorkingContext unavailable and preserves Raw Traces; native unchanged | Raw-only DS-002 plus unchanged optional memory read DS-006 |
+| BEH-004 | System/User | REQ-004, REQ-005, REQ-010, REQ-011, REQ-012; AC-005, AC-006, AC-010, AC-012, AC-013 | External recording and generic memory inspection | Mixed writer reads/writes duplicate snapshot; Memory Inspector generically reads a present file; CR-MP-001 proved failed cleanup can retain it | Remove Codex/Claude production/read-maintenance from the runtime. Successful cleanup yields inspector absence; reported failed cleanup may leave stale optional display until retry. Preserve Raw Traces and native/generic inspection | Raw-only DS-002 plus unchanged file-backed read DS-006 and accepted failure composition DS-011 |
 | BEH-005 | System | REQ-006; AC-007 | Completed provider compaction boundary | Boundary recorder uses raw correlation state and archive store only | Preserve deduplication, retry, rotation, manifest, and active boundary marker | Accumulator → boundary recorder → external writer → raw archive manager; DS-004, DS-009 |
-| BEH-006 | Operational | REQ-007, REQ-008, REQ-012; AC-008, AC-009, AC-013 | Registered startup app-data cleanup | No cleanup today; metadata/layout/migration capabilities exist | Delete only exact current-metadata-classified external snapshots; preserve and report exclusions/failures; remain restart-safe | Startup runner → cleanup migration → metadata/location classification → exact unlink/result ledger; DS-005, DS-010 |
+| BEH-006 | Operational | REQ-007, REQ-008, REQ-012; AC-008, AC-009, AC-013 | Registered startup app-data cleanup | IR-001 implements exact cleanup; non-`ENOENT` unlink failure reports and retains the file while startup continues | Preserve exact cleanup, exclusions, reporting, retry, and availability; no defensive read/UI response is required for retained data | Startup runner → cleanup migration → exact unlink/result ledger; DS-005, DS-010, DS-011 |
 
 ## Relevant Supplemental Task Artifacts
 
@@ -51,7 +54,7 @@ Make the Codex/Claude recorder raw-trace-only:
 - Evidence: `RunMemoryWriter` simultaneously owns external raw evidence and a derived `WorkingContext`; every ordinary event carries a raw trace plus an overlapping snapshot update; reasoning maintains extra per-turn state only for the duplicate. Provider continuation and normal projection use neither that state nor that file. The classified duplicate occupies approximately 3.18 GiB locally.
 - Design response: Contract the external recording model to one authoritative activity representation, name its persistence owner explicitly, and isolate one-time disposal in the existing operational migration lifecycle above the generic store.
 - Refactor rationale: Merely suppressing the final file write would leave duplicate types/state, an obsolete read path, and ambiguous writer ownership. Removing those together is the smallest coherent target.
-- Intentional deferrals and residual risk: Metadata-unclassifiable historical snapshots remain as inert storage. Imported snapshots and task-agent history without stable runtime identity are out of scope. This residual is accepted to protect native/imported data and does not leave runtime behavior on the old path.
+- Intentional deferrals and residual risk: Metadata-unclassifiable historical snapshots remain as inert storage. Imported snapshots and task-agent history without stable runtime identity are out of scope. A rare reported unlink failure can also leave an eligible stale snapshot visible in the generic inspector until retry/manual removal. These residuals do not leave provider or raw runtime behavior on the old path and are explicitly accepted.
 
 ## Terminology
 
@@ -68,22 +71,23 @@ This design follows the template order: verified behavior and data decision firs
 ## Legacy Removal Policy (Mandatory)
 
 - Policy: `No backward compatibility; remove legacy code paths.`
-- Remove external snapshot reads and writes in the same change.
+- Remove external **recorder/runtime** snapshot reads and writes in the same change. Preserve the separate generic Memory Inspector's physical-file read contract.
 - Remove `RuntimeMemorySnapshotUpdate`, `RuntimeMemoryWriteOperation`, `write(...)`, `writeSnapshotUpdate(...)`, `writeWorkingContextSnapshot(...)`, `workingContext`, `agentId`, and snapshot load/apply/persist methods from the external path.
 - Remove `pendingReasoningByTurn`, snapshot-only reasoning consumption, and turn-completion snapshot writes. Preserve open reasoning-segment flushes because those enforce raw ordering.
 - Do not keep aliases/re-export shims for `RunMemoryWriter`; update all production and test callers to `ExternalRuntimeMemoryWriter`.
 - Do not add a flag, dual write, old-file fallback, or raw-to-WorkingContext reconstruction.
 - Do not remove or weaken snapshot APIs in `autobyteus-ts/RunMemoryFileStore`; native AutoByteus still owns and uses them.
+- Do not treat a stale generic inspector read after failed physical deletion as backward-compatible runtime behavior: no runtime owner loads, updates, or depends on that file.
 
 ## Persisted Data / State Transition Decision (Mandatory When Persisted Data May Be Affected)
 
 - Stored subject, location, representative shape, and approximate volume: External `working_context_snapshot.json` files under local `agents/<run-id>/` and recursive `agent_teams/<root-team-id>/.../<member-run-id>/` locations. The probe classified 1,703 Codex files (~3.18 GiB) and 30 Claude files (~2.63 MiB).
 - Relevant code-model, serialization, semantic, or physical-store change: Current external runtime code stops loading, constructing, and serializing `WorkingContext`. The file is removed only at exact eligible locations. Native serialization is unchanged.
 - Normal reader/writer behavior and representative evidence: The mixed external writer is the producer/maintenance reader. Provider restore reads platform IDs; normal all-runtime run projection reads active raw traces with WorkingContext disabled; generic memory inspection optionally reads the file.
-- Required semantics and invariants under direct use: Preserve provider continuation, raw trace identity/order/content, lifecycle reconstruction from active plus complete archives, provider-boundary rotation, memory metadata, artifacts, and native WorkingContext. External inspection must return absence rather than a synthetic replacement.
+- Required semantics and invariants under direct use: Preserve provider continuation, raw trace identity/order/content, lifecycle reconstruction from active plus complete archives, provider-boundary rotation, memory metadata, artifacts, native WorkingContext, and generic file-backed inspection. New/successfully cleaned external runs have no snapshot; a failed delete may leave stale inspectable data without making it authoritative.
 - Physical-store, privacy/security, disposal/rebuild, and operational constraints: Use authoritative runtime metadata and layout-derived paths; never trust stored arbitrary `memoryDir` for deletion; do not follow directory symlinks; unlink only the target snapshot; do not log snapshot content; exclude imports and unmapped locations. Cleanup is best-effort and restart-safe.
 - Decision: `Discard or Rebuild`
-- Decision rationale: Provider sessions and the raw corpus preserve every approved continuation/activity outcome. Transforming or backing up a derived transcript would add I/O and retain private duplicate content without product benefit. Exact unlink has no application downtime beyond normal startup work, and partial failure is recoverable by manual migration retry because current runtime code ignores the old file.
+- Decision rationale: Provider sessions and the raw corpus preserve every approved continuation/activity outcome. Transforming or backing up a derived transcript would add I/O and retain private duplicate content without product benefit. Exact unlink has no application downtime beyond normal startup work. A partial failure is reported and recoverable by migration retry/manual removal; optional stale inspector visibility is accepted because no runtime owner consumes or updates the file.
 - Acceptance criteria or design constraints supported by this decision: REQ-007, REQ-008, REQ-012; AC-008, AC-009, AC-013.
 
 ### Cleanup Lifecycle (Disposal, Not Schema Transformation)
@@ -99,6 +103,7 @@ The app-data migration framework is reused as a one-time operational cleanup led
 - Action: unlink one snapshot when its resolved absolute path equals an eligible metadata-derived path. `ENOENT` is `SKIPPED`; a successful unlink is `MIGRATED`; metadata/traversal/unlink problems are `FAILED`; present native/unclassified files are `SKIPPED`.
 - Completion: standard app-data migration record and log. Any failures produce `SUCCEEDED_WITH_WARNINGS` when other items were processed, otherwise `FAILED`; startup continues under existing runner semantics. Both statuses remain manually retryable as supported by the runner.
 - Backup/rollback: none. The approved outcome is disposal and authoritative data remains in provider/raw sources.
+- Read/UI consequence: the migration does not publish status into memory reads. A retained failed item remains a normal physical snapshot to the generic inspector until retry/manual removal. This is the explicit simplicity tradeoff, not a compatibility path in external runtime code.
 
 ## Data-Flow Spine Inventory
 
@@ -109,18 +114,20 @@ The app-data migration framework is reused as a one-time operational cleanup led
 | DS-003 | Primary End-to-End | BEH-003 | Run view/event-monitor request | Conversation/activity page | `LocalMemoryRunViewProjectionProvider` | Proves all-runtime UI authority remains raw traces |
 | DS-004 | Return-Event | BEH-005 | Provider compaction status event | Boundary marker and optional complete archive | `ProviderCompactionBoundaryRecorder` | Preserves archive/deduplication behavior |
 | DS-005 | Primary End-to-End | BEH-006 | Server startup pending migrations | Cleanup result ledger/log | `RemoveExternalRuntimeWorkingContextSnapshotsMigration` | Owns safe one-time disposal |
-| DS-006 | Primary End-to-End | BEH-004 | Memory Inspector query | WorkingContext null/unavailable plus requested raws | `AgentMemoryService` / existing GraphQL/UI projection | Captures the approved visible change |
+| DS-006 | Primary End-to-End | BEH-004 | Memory Inspector query | File-backed WorkingContext result plus independently requested raws | `AgentMemoryService` / existing GraphQL/UI projection | Preserves the general inspector contract: absent after success, stale-visible after failed unlink |
 | DS-007 | Bounded Local | BEH-002 | Event arrives at per-run queue | Accumulator mutation completes | `AgentRunMemoryRecorder` | Serializes event persistence per run |
 | DS-008 | Bounded Local | BEH-002 | Segment/tool lifecycle observation | Ordered raw trace(s) | Accumulator and tool sequencer | Protects reasoning/tool ordering and restart hydration |
 | DS-009 | Bounded Local | BEH-005 | Boundary key parsed | Deduplicated/retried rotation state | Boundary recorder | Protects idempotent archive lifecycle |
 | DS-010 | Bounded Local | BEH-006 | Metadata/path inventory | Per-item migrated/skipped/failed result | Cleanup migration | Protects identity-to-path deletion invariant |
+| DS-011 | Primary End-to-End | BEH-004, BEH-006 | Eligible unlink failure | Healthy application with reported residual file | Cleanup migration plus unchanged generic inspector | Makes the accepted cross-spine failure lifecycle explicit |
 
 ## Primary Execution Spine(s)
 
 - DS-001: `Run create/restore → AgentRunService/manager → runtime restore context → Codex thread manager or Claude bootstrap → provider thread/session`
 - DS-003: `Run view/event-monitor query → AgentRunViewProjectionService → LocalMemoryRunViewProjectionProvider → AgentMemoryService active raw read → raw-to-replay projection → frontend`
 - DS-005: `ServerRuntime startup → AppDataMigrationRunner.runPending → cleanup definition → metadata/location classification → exact snapshot unlink/skip/fail → migration record/log`
-- DS-006: `Memory Inspector query → GraphQL memory resolver → AgentMemoryService → optional snapshot/raw reads → workingContext null + raw results → existing UI empty/unavailable handling`
+- DS-006: `Memory Inspector query → GraphQL memory resolver → AgentMemoryService → optional file-backed snapshot/raw reads → present snapshot or null + independent raw results → existing UI`
+- DS-011: `Eligible external unlink → non-ENOENT failure → FAILED/warning detail + file retained → startup continues → provider/raw paths work → optional inspector may display stale file → operator retry/manual removal`
 
 ## Spine Narratives (Mandatory)
 
@@ -131,7 +138,8 @@ The app-data migration framework is reused as a one-time operational cleanup led
 | DS-003 | The local projection provider reads active raw traces with other memory types disabled and converts them into replay and event-monitor views for every runtime. | active raw snapshot, replay event, projection | Local projection provider | cursor generation, recent-event policy |
 | DS-004 | A normalized provider boundary is correlated against active/archive state, appended once, and rotates settled pre-boundary raws when eligible. | boundary payload/key, marker, archive segment | Boundary recorder | archive manifest integrity, retry |
 | DS-005 | Startup cleanup builds exact eligible paths from authoritative metadata, inventories local snapshot files, and deletes only equality-matched external paths while recording every actionable outcome. | runtime metadata, memory location, snapshot path, migration detail | Cleanup migration | path safety, symlinks, privacy-safe logging |
-| DS-006 | The existing memory query finds no external snapshot after cutover, returns null/false for WorkingContext, and can independently return raw traces; native files continue to parse normally. | memory availability/view, WorkingContext/null, raws | AgentMemoryService and existing UI | file availability badges, no frontend contract change |
+| DS-006 | The existing memory query remains runtime-agnostic and file-backed: successful cleanup/new runs return null/false, retained failed items can still return stale content, and raw traces are independently readable. Native/imported/unclassified behavior is unchanged. | memory availability/view, snapshot-or-null, raws | AgentMemoryService and existing UI | file availability badges, no frontend contract change |
+| DS-011 | Cleanup truthfully records an eligible unlink failure and retains the file; startup and provider/raw behavior continue. The generic inspector may display the stale copy until retry/manual removal, which the user accepts. | failed cleanup detail, retained file, healthy runtime, optional stale view | Cleanup migration owns failure; inspector remains generic | operator retry, delayed reclamation |
 
 ## Spine Actors / Main-Line Nodes
 
@@ -143,6 +151,7 @@ The app-data migration framework is reused as a one-time operational cleanup led
 - `LocalMemoryRunViewProjectionProvider` as raw-to-UI projection owner.
 - `RemoveExternalRuntimeWorkingContextSnapshotsMigration` as cleanup owner.
 - Metadata stores, memory location service, and layout as cleanup identity/path providers.
+- The existing Memory Inspector remains a generic physical-file reader; it does not own runtime cleanup policy or migration recovery.
 
 ## Ownership Map
 
@@ -176,7 +185,7 @@ The app-data migration framework is reused as a one-time operational cleanup led
 | Accumulator `pendingReasoningByTurn`, consume/flush snapshot methods | Only associates raw reasoning with duplicate assistant snapshot | Existing reasoning raw trace plus segment flush ordering | In This Change | Do not remove `flushOpenReasoningSegments` |
 | Tool call/result snapshot payload construction | Duplicate of raw tool traces | Sequencer direct raw append | In This Change | Preserve lifecycle IDs and result/error normalization |
 | Existing eligible external snapshot files | Derived duplicates | Provider session + external raw corpus | In This Change | Exact startup cleanup; no backup |
-| Tests/docs promising external WorkingContext persistence | Obsolete contract | Raw-only, absence, cleanup-safety, and native-preservation coverage/docs | In This Change | Keep native snapshot tests |
+| Tests/docs promising future external WorkingContext persistence | Obsolete contract | Raw-only, successful-cleanup absence, accepted failed-cleanup residual, and native-preservation coverage/docs | In This Change | Keep native/generic snapshot tests |
 
 ## Return Or Event Spine(s) (If Applicable)
 
@@ -202,8 +211,9 @@ Errors stay at their current ownership boundaries: per-run recorder work logs an
 | Metadata topology read | DS-005 | Cleanup | Supply current recursive member identity/runtime | Team layouts are nested | Filename/path guessing |
 | Migration ledger/log | DS-005 | Cleanup | Durable status, retry, and actionable item results | Startup cleanup is best-effort | Silent partial deletion or false success |
 | Raw archive manager | DS-002, DS-004 | External writer/boundary recorder | Complete segments, manifests, active rewrite | Provider compaction rotates evidence | Coupling cleanup to raw retention |
-| Memory availability | DS-006 | Inspector | Derive has/no memory from files | Existing UI contract already models absence | Runtime-specific UI special case |
+| Memory availability | DS-006, DS-011 | Inspector | Derive has/no memory from physical files | Preserves one general UI rule for native/imported/unclassified and retained failures | Runtime/migration-specific UI policy and defensive complexity |
 | Native snapshot owner | DS-005, DS-006 | Native AutoByteus | Preserve authoritative WorkingContext | Same filename has different semantics | Catastrophic continuation loss |
+| Cleanup failure recovery | DS-005, DS-011 | Operator/app-data runner | Report exact failure and allow retry/manual removal | Rare data reclamation failure must not stop application | Coupling provider/raw operation to optional stale data |
 
 ## Ownership Boundaries
 
@@ -212,7 +222,7 @@ Errors stay at their current ownership boundaries: per-run recorder work logs an
 3. The external writer is the only external recorder boundary that creates and appends raw items or accesses raw archive lifecycle state. It exposes no WorkingContext operation.
 4. `RunMemoryFileStore` remains a generic physical provider. Its snapshot support remains for native consumers and is not evidence that the external writer may use it.
 5. Cleanup policy lives only in the app-data migration. Metadata and layout components provide identity/path facts; generic stores do not decide whether a snapshot is disposable.
-6. Normal projection and Memory Inspector remain read-side owners. They react to external file absence through existing optional contracts and never recreate the file.
+6. Normal projection remains raw-backed. Memory Inspector remains a generic read-side owner that reflects physical file presence and never recreates the file; it is intentionally unaware of runtime kind and migration status.
 
 ## Boundary Encapsulation Map
 
@@ -232,8 +242,9 @@ Errors stay at their current ownership boundaries: per-run recorder work logs an
 - External writer may depend on `RuntimeMemoryTraceInput`, `RawTraceItem`, lifecycle index, and `RunMemoryFileStore`; it must not call any WorkingContext snapshot method.
 - Cleanup migration may depend on runtime classification, run/team metadata stores, memory location/layout, the snapshot filename constant, and Node filesystem APIs. It must not accept a caller-supplied arbitrary run directory or use metadata `memoryDir` as a deletion target.
 - Cleanup may compare normalized absolute paths derived under owned roots. It must not delete from `imports`, follow symlink directories, infer runtime from names, or recurse-delete directories.
-- Projection/Memory Inspector dependencies remain unchanged. No runtime-specific frontend branch is added.
+- Projection/Memory Inspector dependencies remain unchanged. No runtime-kind, cleanup-ledger, or failure-specific frontend/read branch is added.
 - Native memory may continue to use generic snapshot store APIs. External removal must not modify the shared serialized schema or native compaction.
+- An eligible unlink failure must retain truthful failure evidence and the file for retry. It must not block provider continuation, raw recording, run projection, or server startup solely to force inspector absence.
 
 ## Interface Boundary Mapping
 
@@ -245,7 +256,7 @@ Errors stay at their current ownership boundaries: per-run recorder work logs an
 | `ExternalRuntimeMemoryWriter.readToolTraceLifecycleGroups()` | Physical tool lifecycle corpus | Hydrate sequencer across restart | writer-owned run directory | Reads active + complete archives |
 | External writer provider-boundary methods | One boundary/archive lifecycle | Query correlation state, remove already archived active records, rotate eligible raws | boundary key + marker trace ID/type | Kept explicit rather than generic store exposure to services |
 | Cleanup migration `execute()` | One-time external snapshot disposal | Classify, delete, summarize | constructor-owned memory root; metadata runtime identity + layout path | No arbitrary selector API |
-| `AgentMemoryService.getRunMemoryView` | Optional memory read view | Return requested WorkingContext/raw data | run ID + include options | Unchanged; absent snapshot returns null |
+| `AgentMemoryService.getRunMemoryView` | Optional physical memory read view | Return requested present-file WorkingContext/raw data | run ID + include options | Unchanged; absent snapshot returns null, retained failed-cleanup file remains readable |
 
 ## Interface Boundary Check
 
@@ -256,7 +267,7 @@ Errors stay at their current ownership boundaries: per-run recorder work logs an
 | External writer raw append | Yes | Yes | Low | Remove parallel write-operation wrapper |
 | External writer boundary methods | Yes | Yes | Low | Retain typed boundary key/marker contract |
 | Cleanup `execute` | Yes | Yes | Low | Derive targets internally; never accept file path input |
-| Generic memory read | Yes | Yes | Low | Existing include options remain independent |
+| Generic memory read | Yes | Yes | Low | Keep physical-file semantics; do not add runtime/migration selector |
 
 ## Main Domain Subject Naming Check
 
@@ -276,7 +287,7 @@ Errors stay at their current ownership boundaries: per-run recorder work logs an
 | Raw persistence/archives | `RunMemoryFileStore` and raw archive manager | Reuse | Already own physical trace semantics | N/A |
 | Runtime-to-memory location | Metadata stores, `AgentMemoryLocationService`, `AgentMemoryLayout` | Reuse | Already model supported standalone/nested team paths | N/A |
 | One-time cleanup status/retry | App-data migration registry/runner/repository | Extend | Existing startup lifecycle and logs fit disposal | N/A |
-| UI absence handling | Memory service/GraphQL/Memory Inspector | Reuse | Null/availability booleans already represent missing WorkingContext | N/A |
+| Generic snapshot display/absence | Memory service/GraphQL/Memory Inspector | Reuse | Physical presence already gives one general rule; user rejects rare-failure-specific policy | N/A |
 | Cleanup policy | No existing owner | Create New | Deletion eligibility is ticket-specific operational policy, not a store concern | Generic file store and runtime writer would cross ownership boundaries |
 
 ## Subsystem / Capability-Area Allocation
@@ -288,7 +299,7 @@ Errors stay at their current ownership boundaries: per-run recorder work logs an
 | Agent memory persistence | Raw item/sequence/lifecycle/archive access | DS-002, DS-004 | External writer | Refactor existing | Rename and contract writer |
 | App-data migrations | Metadata-classified snapshot disposal and result ledger | DS-005, DS-010 | Cleanup migration/runner | Extend | New definition registered in existing order |
 | Run-history projection | Active raw-to-view conversion | DS-003 | Local projection provider | Reuse unchanged | Regression authority |
-| Memory exploration | Optional file-backed view/availability | DS-006 | Memory service and UI | Reuse unchanged | External absence is data outcome |
+| Memory exploration | Optional file-backed view/availability | DS-006, DS-011 | Memory service and UI | Reuse unchanged | Successful cleanup yields absence; failed cleanup may yield accepted stale display |
 | Native memory | AutoByteus WorkingContext lifecycle | N/A preserved boundary | Native memory manager | Reuse unchanged | Explicit non-impact |
 
 ## Draft File Responsibility Mapping
@@ -360,14 +371,16 @@ Errors stay at their current ownership boundaries: per-run recorder work logs an
 | `autobyteus-server-ts/tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts` | File | Accumulator regression | Replace WorkingContext assertions with raw content/order/absence | Existing unit scope | Obsolete snapshot construction |
 | `autobyteus-server-ts/tests/unit/agent-memory/runtime-tool-trace-sequencer.test.ts` | File | Tool lifecycle regression | Preserve call/result/order/hydration; snapshot absent | Existing unit scope | Snapshot payload expectations |
 | `autobyteus-server-ts/tests/unit/agent-memory/agent-run-memory-recorder.test.ts` | File | Recorder regression | Codex/Claude accepted, AutoByteus/future-unknown rejected, raw-only behavior | Existing unit scope | Broad `not native` assumption |
-| `autobyteus-server-ts/tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts` | File | Cleanup regression | Exact standalone/nested member deletion; native/import/unknown/task/symlink exclusion; ENOENT/failure/retry summary | New owner deserves focused tests | Real user memory root |
-| Existing integration/E2E run-history and memory tests identified in investigation | Files | Cross-boundary regression | Update writer imports/direct appends and external snapshot expectations; retain raw projection/continuation/native assertions | Existing scenarios already cover realistic boundaries | Blanket test deletion |
+| `autobyteus-server-ts/tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts` | File | Cleanup regression | Exact standalone/nested member deletion; native/import/unknown/task/symlink exclusion; ENOENT/failure/retry summary and retained-file result | New owner deserves focused tests | Real user memory root |
+| `autobyteus-server-ts/tests/e2e/memory/memory-view-graphql.e2e.test.ts` and `memory-explorer-graphql.e2e.test.ts` | Files | Inspector contract regression | New/successfully cleaned external absence with raws; retained failure may remain file-backed without affecting application; native controls | Encodes clarified optional display contract | Runtime-qualified hiding assertion |
+| `autobyteus-server-ts/tests/e2e/memory-sync/memory-sync-api.e2e.test.ts` | File | Imported-history control | Preserve imported file-backed snapshot/raw inspection | Guards approved import boundary | Local cleanup behavior |
+| Existing integration/E2E run-history and runtime tests identified in investigation | Files | Cross-boundary regression | Update writer imports/direct appends; retain raw projection/provider continuation/native assertions under successful and failed cleanup | Existing scenarios already cover realistic boundaries | Blanket test deletion |
 | `autobyteus-server-ts/docs/modules/agent_memory.md` | File | Durable memory architecture docs | Distinguish native snapshot and external raw-only contracts | Primary memory documentation | Claim every runtime writes snapshot |
 | `autobyteus-server-ts/docs/modules/codex_integration.md` | File | Codex integration docs | Provider continuation + AutoByteus raw evidence | Runtime-specific documentation | External snapshot promise |
 | `autobyteus-server-ts/docs/modules/run_history.md` | File | Run-history docs | Clarify raw projection for all runtimes and runtime-specific artifacts | Projection documentation | Generic snapshot authority claim |
 | `autobyteus-server-ts/docs/modules/agent_execution.md` | File | Execution docs | Clarify recorder as external raw activity observer if needed | Cross-reference remains accurate | Native continuation conflation |
 
-No `autobyteus-web` production file change is designed: existing `hasWorkingContext`/`workingContext: null` and Raw Traces behavior already expresses the approved state. Downstream coverage investigation may add or update durable frontend/API assertions if needed to prove AC-012.
+No `autobyteus-web` production file change is designed: the existing UI generically reflects snapshot file presence and exposes Raw Traces independently. Downstream coverage may update assertions for successful-cleanup absence and accepted failed-cleanup stale visibility.
 
 ## Folder Boundary Check
 
@@ -388,18 +401,19 @@ No `autobyteus-web` production file change is designed: existing `hasWorkingCont
 | Runtime classification | `kind === CODEX_APP_SERVER || kind === CLAUDE_AGENT_SDK` via shared predicate | `kind !== AUTOBYTEUS` | A future runtime must opt in deliberately |
 | Cleanup target | Metadata says Codex + layout derives `/agents/<id>` + exact snapshot path match → unlink file | `find memory -name working_context_snapshot.json -delete` or use stored arbitrary `memoryDir` | Prevents native/imported/path-injection deletion |
 | Reasoning order | Flush open reasoning segment to raw before first tool call | Remove all reasoning state/flushes because snapshot reasoning was removed | Some reasoning coordination serves raw ordering, not duplication |
-| Inspector behavior | Missing external snapshot → existing `workingContext: null`, `hasWorkingContext: false`; raw read independent | Rebuild WorkingContext from raw or add Codex/Claude UI special case | Clean removal without replacement compatibility behavior |
+| Inspector behavior | Successful delete/missing file → null/false; failed delete/present file → generic stale display; raw read independent in both | Rebuild from raw or add runtime/migration-specific hiding logic | Encodes the explicit simplicity tradeoff and avoids defensive policy |
 
 ## Backward-Compatibility Rejection Log (Mandatory)
 
 | Candidate Compatibility Mechanism | Why It Was Considered | Rejection Decision (`Rejected`/`N/A`) | Clean-Cut Replacement / Removal Plan |
 | --- | --- | --- | --- |
-| Stop writes but continue loading old external snapshot | Could preserve inspector content temporarily | Rejected | Remove reader/writer state together; inspector shows unavailable |
+| Stop writes but continue external recorder loading of old snapshot | Could preserve runtime state temporarily | Rejected | Remove recorder reader/writer state together. The separate generic inspector may still display a physically retained file after reported cleanup failure, but runtime code never consumes it |
 | Feature flag or staged dual write | Could stage rollout | Rejected | Provider/raw authorities already support direct clean cut |
 | Rebuild snapshots from raw traces | Could preserve old file/UI behavior | Rejected | External WorkingContext is not an approved product requirement |
 | Keep `RunMemoryWriter` alias/re-export | Could reduce import edits | Rejected | Update callers so source naming reflects ownership |
 | Delete every matching filename | Could reclaim more historical space | Rejected | Delete only exact metadata-classified eligible paths; leave inert residual |
 | Back up external snapshots before delete | Could enable rollback | Rejected | Retains duplicate private data and I/O with no authoritative-state benefit |
+| Add runtime-qualified Memory Inspector suppression | Could force null even when unlink fails | Rejected | User accepts the rare stale optional display; keep the inspector file-backed and recover through retry/manual removal |
 
 ## Derived Layering (If Useful)
 
@@ -419,9 +433,9 @@ Projection remains a separate read-side layer and does not cross into recording 
 2. Introduce `ExternalRuntimeMemoryWriter` by moving only raw ID/timestamp/sequence, lifecycle index, and provider-boundary archive methods from the mixed writer.
 3. Contract `memory-recording-models.ts` by deleting snapshot/update-operation types. Update accumulator, tool sequencer, recorder, boundary recorder, and raw-seeding tests to direct raw append.
 4. Remove snapshot-only accumulator reasoning state while preserving open reasoning segment flush and tool ordering. Delete the old writer file with no alias.
-5. Add focused raw-only structural/unit/integration coverage, including no snapshot creation/read and active-plus-archive restart hydration. Preserve native snapshot tests.
+5. Add focused raw-only structural/unit/integration coverage, including no snapshot creation or recorder read and active-plus-archive restart hydration. Preserve native/generic inspector snapshot tests.
 6. Add the cleanup migration using exact metadata/layout classification, safe physical inventory, per-item results, and no backup. Register it immediately after team metadata member-tree normalization and add idempotence/exclusion/failure tests.
-7. Update cross-runtime and gated live expectations: provider continuation/raw traces remain, external WorkingContext is absent, native remains present. API/E2E owns final durable test validity and execution breadth.
+7. Update cross-runtime and gated live expectations: provider continuation/raw traces remain; new/successfully cleaned external WorkingContext is absent; a reported failed unlink may leave stale generic inspector content; native/imported controls remain file-backed. API/E2E owns final durable test validity and execution breadth.
 8. Synchronize durable docs and run structural search to prove removed symbols/imports/docs promises no longer exist in the external path.
 9. Run implementation-scoped checks, then source review before API/E2E. The same deployed server version both stops writes and runs cleanup at startup; no temporary dual-path seam is needed.
 
@@ -430,7 +444,7 @@ Projection remains a separate read-side layer and does not cross into recording 
 - Exact cleanup leaves some unclassifiable duplicates but eliminates the large proven corpus without risking native/imported data.
 - Renaming the writer causes test/import churn but prevents the resulting raw-only owner from remaining misleadingly generic.
 - Reusing the app-data migration framework calls a disposal task a migration operationally, but gains established startup ordering, durable results, logging, and manual retry without introducing a new maintenance system.
-- Keeping the frontend unchanged relies on its existing optional memory contract, avoiding unnecessary runtime-specific UI policy.
+- Keeping the frontend/read service unchanged means a rare failed deletion can leave stale optional content visible, but avoids runtime-specific inspector policy and matches the user's application-availability priority.
 
 ## Risks
 
@@ -439,8 +453,8 @@ Projection remains a separate read-side layer and does not cross into recording 
 - **Raw ordering regression:** Mitigated by retaining segment reasoning flushes and replacing snapshot assertions with sequence/content/tool-order assertions.
 - **Restart/tool duplication regression:** Mitigated by preserving physical active-plus-complete-archive lifecycle hydration and dedicated tests.
 - **Provider-boundary rotation regression:** Mitigated by leaving boundary owner/store behavior unchanged except the writer type and covering retry/dedup/rotation.
-- **Partial cleanup:** Standard warning/failure details and manual retry remain available; runtime behavior is safe because old snapshots are not read.
-- **Memory Inspector confusion:** Approved external absence is represented by existing null/availability UI; docs and API/E2E evidence must make the distinction clear.
+- **Partial cleanup:** Standard warning/failure details and manual retry/removal remain available. Provider and raw runtime behavior is safe because they do not read the old snapshot; optional generic inspection may still read it by explicit user choice.
+- **Memory Inspector confusion:** New/successfully cleaned runs show absence, while retained failed items may still show stale content. Docs and executable evidence must state this physical-presence rule rather than promise unconditional absence.
 - **Large migration detail logs:** Inventory is a few thousand files in observed data; details must contain only IDs/paths/status, never payload content. If implementation finds materially larger scale, keep summary truthful without weakening per-failure evidence.
 
 ## Guidance For Implementation
@@ -453,5 +467,6 @@ Projection remains a separate read-side layer and does not cross into recording 
 - Validate metadata identity against the directory/root being processed before eligibility. Treat missing, invalid, mismatched, native, imported, and future-runtime data as non-deletable.
 - Do not follow symlink directories or recursively delete. Unlink only the exact snapshot file and treat `ENOENT` as idempotent skip.
 - Reuse standard `AppDataMigrationExecutionResult`/summary/detail/status patterns and export the migration ID for tests.
+- On non-`ENOENT` unlink failure, retain the file, report the exact failure, continue startup, and leave generic inspection unchanged. Do not add runtime-kind/migration-status filtering in service, GraphQL, or frontend solely for this edge.
 - Do not change shared native snapshot serialization/store APIs or add frontend runtime branches.
 - Implementation and test owners should use the exact test/document impact inventory in `investigation-notes.md`; any discovered requirement or cross-cutting design gap returns to solution design.
