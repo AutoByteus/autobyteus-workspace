@@ -2,10 +2,10 @@
 
 ## Status And Scope
 
-- Status: Complete evidence supplement, aligned to recurrent replacement/reference-only lineage and SR-004 separation/current-head decisions
-- Date: 2026-07-30
-- Related requirements: REQ-001 through REQ-006, REQ-008, and REQ-009
-- Related acceptance criteria: AC-001 through AC-006 and AC-008 through AC-013
+- Status: Complete evidence supplement, SR-010 aligned. The direct relationship schema/methodology is unchanged; accepted lineage validation now removes a hidden count policy and prompt audit metadata advances from new-write value 1 to 2.
+- Date: 2026-07-31
+- Related requirements: REQ-001 through REQ-006, REQ-008, REQ-009, and REQ-012
+- Related acceptance criteria: AC-001 through AC-006, AC-008 through AC-013, and AC-016
 - Normative relationship: `requirements.md`, `memory-context-and-lineage-contract.md`, and `use-case-data-flow-spine-map.md` define intended behavior and execution/ownership constraints. This file records repository/methodology evidence and the implications of the user-directed recurrent and no-content-duplication decisions.
 
 This analysis is limited to native memory compaction, automatic coarse direct and recursive provenance for episode/semantic outputs, origin/time queries, runtime-neutral raw identity, current-schema restore, and the required startup reset of disposable pre-lineage derived state. It does not define fine LLM citations, work-evidence chunking, byte-for-byte prompt replay, cross-run extraction, fact-level correction APIs, or filesystem crash recovery.
@@ -18,10 +18,10 @@ The target memory process is recurrent:
 M(n) = compact(M(n-1) + R(n))
 ```
 
-where `M(n-1)` is the bounded memory output listed by the last successful lineage record and `R(n)` is the newly selected settled natural-activity prefix. Provenance is recorded without copying content:
+where `M(n-1)` is the complete memory output listed by the last successful lineage record and `R(n)` is the newly selected settled natural-activity prefix. Provenance is recorded without copying content:
 
 1. `MemoryManager` captures the current lineage head outside the LLM strategy; the planner identifies the compacted-memory message region by message-local kind/range and selects natural units whose exact raw-trace IDs are already known.
-2. The compactor reads one naturally ordered logical WorkingContext prefix containing the current memory projection, when present, followed by those selected units, and returns one complete bounded replacement output.
+2. The compactor reads one naturally ordered logical WorkingContext prefix containing the current memory projection, when present, followed by those selected units, and returns one complete replacement output with the natural number of episodes and facts chosen by the LLM.
 3. Application code reuses the pending `compactionId` and assigns episode and semantic IDs.
 4. After the strategy returns an IDless proposal, `MemoryManager` verifies/maps the captured baseline lineage head, assigns output IDs, and builds/validates the accepted candidate. Commit then archives exactly the selected raw records, persists output rows, and publishes one `CompactionLineageRecord`:
 
@@ -35,6 +35,8 @@ where `M(n-1)` is the bounded memory output listed by the last successful lineag
 6. The run-scoped resolver follows lineage records recursively and resolves authorized raw content from the authoritative raw store.
 
 The LLM does **not** generate database pointers, raw IDs, compaction IDs, or fine evidence labels. The application already owns the pending compaction identity and assigns output artifact identities, so it creates the relation deterministically.
+
+SR-010 changes semantic allocation and the truthful audit value, not the direct pointer relation or lineage record schema. System policy asks for the smallest sufficient natural structure. Parser, normalizer, accepted builder, and lineage normalization retain every structurally valid item without count maxima. The full accepted path must carry natural membership through output persistence, lineage append/read, current projection, and origin lookup. Existing prompt-contract value `1` remains truthful for SR-004 records; new target records use `2`; readers preserve supported `1 | 2` mixed chains. No migration, token ceiling, or launch change is required.
 
 ## Correction: Why A Content-Bearing Snapshot Is Wrong Here
 
@@ -52,75 +54,48 @@ The product need is a derivation relation, not a second evidence repository. The
 
 ### 1. Raw traces already provide authoritative leaf content and identity
 
-`RawTraceItem` and server-written raw records carry IDs, occurrence time, turn/per-turn order, type/payload, and relevant tool/media/correlation fields. Identity must be compound and run/member scoped:
+`RawTraceItem` and server-written raw records carry IDs, occurrence time, turn/per-turn order, type/payload, and relevant tool/media/correlation fields. Identity remains compound run/member scope plus raw trace ID. Timestamps, absolute paths, and mutable active/archive placement are not primary identity.
+
+### 2. Implemented SR-004 already records the selected relationship
+
+Current production is:
 
 ```text
-(runtime-neutral run/member identity, raw trace ID)
+WorkingContext planner includes projected M(n-1) plus natural R(n)
+-> IDless strategy proposal
+-> MemoryManager captures/verifies lineage head, assigns output IDs
+-> committer archives R(n), persists output rows, appends lineage
+-> tail loader projects exact current output
+-> typed resolver traverses direct/recursive origin
 ```
 
-Timestamps, absolute JSONL paths, and mutable `active` membership are not primary identity. Individual raw records use run/member scope plus raw trace ID. The coarse compaction relation uses the same run/member scope plus the completed archive manifest's existing run-relative `file_name`.
+The archive file owns exact R(n) membership/content; lineage stores its run-relative manifest filename, predecessor, and produced IDs only.
 
-### 2. Current compaction already knows the selected raw inputs
+### 3. Implemented context and presentation boundaries are already current
 
-The production path is:
+Planner recurrence includes the compacted-memory unit. Snapshot v5 carries only finalized messages/message-local ranges. Current output comes from the lineage tail. The compactor renderer already emits one reasoning-free XML-bounded User/Assistant/Tool history with shared condensed Tool values and head/tail omission. Generated Work Evidence already uses the same low-level presentation under its own raw/timestamped Markdown envelope.
 
-```text
-provider usage observation
--> threshold/pending request
--> WorkingContextMessageWindowPlanner
--> selected natural message/tool units
--> collectMessageRawTraceIds(...)
--> StructuredJsonCompactionStrategy
-```
+Pre-SR-004 evidence about excluded memory, top-K current projection, strategy-owned writes, v4 fallback, `Assistant work notes`, and server-local prefix slicing is historical rationale only.
 
-The planner already returns `rawTraceIdsToArchive`, and `pruneRawTracesById(..., true)` archives exactly those removed records in one `native_compaction` archive file. Internally, the archive manager calls this file a segment and uses a boundary key for idempotency. The target lineage record stores only the completed manifest entry's existing run-relative `file_name`. The archive file owns exact membership/content and the manifest entry owns count/time bounds, so lineage needs no repeated raw-ID list, content copy, fabricated segment ID, exposed boundary key, semantic matching, or second LLM pass.
+### 4. Remaining cardinality enforcement reaches lineage after output writes
 
-### 3. Current planner drops the memory input that influenced later work
+The current system prompt and operation builder prescribe 1–3 episodes and 20 facts. Parser, normalizer, and accepted builder enforce those limits. Independently, `normalizeCompactionLineageRecord` rejects more than three episode IDs or twenty semantic IDs. `FileCompactionLineageStore.appendNext` normalizes every write/read, and `AcceptedCompactionCommitter` archives R(n) and writes output rows before append. Therefore natural-count provenance requires removing the lineage count gate and proving the full persistence/read/query path; stopping at parser or accepted builder is insufficient.
 
-`WorkingContextMessageUnitBuilder` identifies `sourceKind: "compacted_memory"`, and `WorkingContextMessageWindowPlanner` excludes that unit from natural candidates. Current sequential compaction therefore summarizes only later natural units even though those activities occurred while the agent used the memory projection.
+This count rule is not a provenance invariant. Retain at least one episode, array/ID uniqueness, safe run-relative archive filename, schema/scope/predecessor/time/execution/hash validation, and exact referenced-output checks.
 
-The target includes the compacted-memory constituent in the selected logical conversation prefix using only its message-local kind/range. Separately, `MemoryManager` captures the lineage tail and maps that application-owned baseline to `previousCompactionId`; the snapshot and strategy proposal carry no compaction/output IDs. When lineage is absent/empty, there is no current derived-memory output. The LLM-facing history does not label this application mechanic or copy prior-memory text into lineage.
+### 5. Prompt contract version is producing-contract audit metadata
 
-### 4. Current projection mixes outputs from multiple successful compactions
+Current type/validation/write logic accepts literal `promptContractVersion: 1` only. Value 1 truthfully identifies the implemented SR-004 fixed-count system prompt plus duplicated operation instructions. The approved target is materially different: natural system policy, history-only operation payload, and canonical-turn rendering. New successful records therefore write value 2.
 
-`CompactedMemoryContextProjector` currently retrieves the latest three episodic rows and at most twenty semantic rows across the durable store. It does not preserve a producing-compaction identity.
+Both are the same current lineage schema and direct relationship shape. Readers accept and preserve supported `1 | 2`; they do not branch into alternate content decoders or rewrite immutable records. A normal SR-004 value-1 predecessor followed by an SR-010 value-2 head is `Directly Usable — No Migration`.
 
-The target treats each successful `compactionId` as the identity of its one output bundle and projects only the bundle listed by the last successful lineage record. Older rows remain immutable history and are reached through lineage.
+### 6. Message-local provenance does not own predecessor identity
 
-### 5. Current derived memory loses available lineage
+A compacted-memory constituent records local kind/range only; retained/current natural constituents may carry their own raw refs. `MemoryManager` separately captures the lineage head before strategy invocation and maps it to `previousCompactionId` during acceptance. The predecessor belongs in the lineage record, never in prompt text, message provenance, or snapshot v5.
 
-`StructuredJsonCompactionStrategy` currently creates one episode with unscoped turn IDs and semantic rows without source refs. Their timestamp is derivation time, not source occurrence. Neither the direct selected raw IDs nor prior-memory identity survives in a durable input/output relation.
+### 7. Failure and startup boundaries remain implemented and unchanged
 
-### 6. Readable work-trace Markdown is not the compaction authority
-
-`AgentWorkTraceProjectionService` regenerates Markdown/manifest output from archive plus active raw sources. Its current production caller belongs to an excluded workflow. Native memory compaction does not consume this package. The target lineage resolver may materialize a readable evidence view from referenced raw records, but it does not make mutable Markdown the source identity.
-
-### 7. Snapshot and raw evidence remain separate
-
-Raw traces answer what happened. `WorkingContext` and `working_context_snapshot.json` answer what the native model currently sees/resumes from. A lineage record answers which existing inputs generated which output. None replaces another.
-
-A valid v5 snapshot restores finalized messages, media/tool payloads, and message-local constituent ranges only; it contains no compaction/output/current-state identity. Before any runtime restore, the required startup migration removes `episodic.jsonl`, `semantic.jsonl`, `working_context_snapshot.json`, and `compacted_memory_manifest.json` from pre-lineage standalone/team-member run directories while preserving active/archive raw traces and their manifest. Normal runtime supports only v5 plus the current lineage/output model: absent/empty lineage means no current derived memory, while the last valid record lists the exact current outputs.
-
-### 8. Reachable failure ends before current writes
-
-A runner exception or response-parser rejection is reachable through normal pending compaction. The executor keeps the pending `compactionId` and retries on the next normal request. Target failure additionally publishes no lineage record and leaves the lineage head unchanged.
-
-Interrupted filesystem publication and custom/test-only invalid strategies do not justify a transaction journal in this ticket.
-
-### 9. Existing manifest and startup migration behavior do not provide current-compaction state
-
-On `origin/personal@1b8d8c2f22c5f846dd82cdd706f594103d1b4e1e`, `compacted_memory_manifest.json` has only:
-
-```text
-{
-  "schema_version": 3,
-  "last_reset_ts": <Date.now() epoch milliseconds>
-}
-```
-
-It is a semantic-schema reset marker used by `CompactedMemorySchemaGate`, not a compaction list, lineage record, output selector, or current-compaction authority. The target reset deletes it and adds no replacement manifest or one-field state file.
-
-The same branch's real server path is `startConfiguredServer -> AppDataMigrationRunner.runPending -> bootstrapBuiltInAgents -> buildApp -> app.listen`. Today `startConfiguredServer` catches/logs a runner throw and continues. Therefore fail-closed startup requires both boundaries: the runner persists all attempted required results and throws after any non-startable result; `startConfiguredServer` logs and rethrows before bootstrap/build/listen. The reset returns `FAILED` for every discovery/deletion failure, while existing `SUCCEEDED` and `SUCCEEDED_WITH_WARNINGS` remain startable.
+Runner/parser rejection remains pre-write and retryable under the same pending compaction ID. The required startup reset/current-only restore/fail-closed `startConfiguredServer` path is implemented and validated. Natural-count output that reaches the hidden lineage validator is a separate accepted-publication path, not parser failure and not a reason to add a journal.
 
 ## Methodology Comparison
 
@@ -150,10 +125,10 @@ W3C PROV and ML Metadata support the chosen activity/input/output relation and r
   - may move from active to archive without identity/content change.
 - `EpisodeArtifact`
   - stable ID, summary, derivation time;
-  - one of one through three outputs of one successful compaction.
+  - one of the model-selected outputs of one successful compaction; at least one episode is required, but no numeric maximum is part of provenance.
 - `SemanticArtifact`
   - stable ID, category/fact/salience, derivation time;
-  - one of at most twenty accepted facts from one successful compaction.
+  - one of the accepted continuation-critical facts from one successful compaction; no numeric maximum is part of provenance.
 
 The authoritative artifact-to-compaction relation is the single `CompactionLineageRecord` output list (plus a rebuildable lookup index), not a second independently writable producing-compaction field on every content row.
 
@@ -169,14 +144,14 @@ The authoritative artifact-to-compaction relation is the single `CompactionLinea
 - produced episode and semantic IDs;
 - derivation time;
 - runtime/provider/model context;
-- selection-policy and prompt-contract versions; and
+- selection-policy version plus the producing prompt-contract audit version (`1` for implemented SR-004 records, `2` for new target records); and
 - optional rendered-input and canonical-record hashes.
 
 It contains no parallel activity/generation ID, repeated raw-ID list, raw-message text, memory text, episode/fact text, tool output, media payload, rendered prompt, fabricated segment ID, or internal archive boundary key. Direct membership/count/time bounds come from the referenced raw-trace archive file and manifest entry.
 
 ### Current compaction state
 
-One successful compaction has one bounded output bundle and one `compactionId`; no parallel bundle-level identity exists. The last successfully appended lineage record identifies the only successful compaction whose output is projected by default; absent/empty lineage means none.
+One successful compaction has one complete output bundle with LLM-chosen natural item counts and one `compactionId`; no parallel bundle-level identity exists. The last successfully appended lineage record identifies the only successful compaction whose output is projected by default; absent/empty lineage means none.
 
 ## Authoritative Relations
 
@@ -197,9 +172,9 @@ The canonical `raw_traces_manifest.json` validates that the recorded run-relativ
 | Previous compaction identity | `MemoryManager` plus lineage repository | Capture the current lineage head before planning, verify it before acceptance, and map it to `previousCompactionId` without placing it in the snapshot or strategy proposal |
 | Natural prefix | Compaction planner | Select settled units and expose raw IDs used to build one raw-trace archive file |
 | Raw-trace archive file | Raw archive manager | Archive exactly the selected records and return the completed manifest entry, including its existing run-relative `file_name` |
-| Replacement content | Compactor LLM | Return a complete bounded latest output bundle, not pointers |
+| Replacement content | Compactor LLM | Return the smallest sufficient complete latest output bundle with a natural episode/fact count, not pointers |
 | Compaction/output identity | `PendingCompactionExecutor` lifecycle plus `MemoryManager` accepted-compaction boundary | Reuse the pending `compactionId`; retain the baseline lineage head outside the proposal; assign episode/semantic IDs only during manager acceptance |
-| Lineage relation | `MemoryManager` accepted-compaction boundary, served by the lineage persistence boundary | Publish one reference-only record only after accepted output |
+| Lineage relation | `MemoryManager` accepted-compaction boundary, served by record validator/store | Publish one reference-only record after output; retain natural membership; validate structure; write prompt audit 2 and preserve supported 1/2 on read |
 | Current state | Lineage repository, coordinated by `MemoryManager` | Expose the last successfully appended record as the sole current head; persist no second pointer/state file |
 | Origin resolution | Run-scoped resolver | Traverse relations and load authorized raw content on demand |
 
@@ -225,7 +200,7 @@ persist CompactionLineageRecord(
   raw_trace_archive_file = archive_file.file_name,
   episode_ids = output_ids.episodes,
   semantic_ids = output_ids.semantics,
-  metadata_versions_and_optional_hashes = ...
+  selectionPolicyVersion = 1, promptContractVersion = 2, optional hashes = ...
 )
 
 install WorkingContext(system + new output + retained suffix)
@@ -233,7 +208,7 @@ persist schema-v5 snapshot
 clear pending compaction
 ```
 
-All one through three episodes and at most twenty accepted semantic facts share the same relation. No per-item citation or copied input is required. Prior M(n-1) is a recurrent input but never counts as R(n), never makes a new operation eligible by itself, and is never archived again.
+Every accepted episode and semantic fact shares the same relation regardless of model-decided item count. The record validator/store must retain all output IDs; current projection and typed origin lookup consume that full membership. No per-item citation or copied input is required. Prior M(n-1) is a recurrent input but never counts as R(n), never makes a new operation eligible by itself, and is never archived again.
 
 Runner/parser failure publishes no outputs, lineage record, archive movement, replacement context, or snapshot update; the existing lineage head remains current.
 
@@ -284,7 +259,7 @@ Do not infer artifact kind from ID shape, or infer ancestry from timestamps, sim
 
 Lineage capture is prospective from a clean epoch boundary. Existing raw traces and raw-trace manifests are directly usable and preserved. Pre-lineage episodic rows, semantic rows, WorkingContext snapshots, and compacted-memory manifests are disposable and deleted by one required, idempotent startup migration. No content transformation or lineage backfill occurs, and normal runtime contains no old-schema branch.
 
-New reference-only records belong in run-scoped `compaction_lineage.jsonl`. Its last successful record is current and an absent/empty file means none. The first successful post-reset compaction is C1 with `previousCompactionId: null`; its output and v5 message snapshot are current-format state.
+Reference-only records belong in run-scoped `compaction_lineage.jsonl`. Existing schema-v1 records with prompt audit value 1 and new records with value 2 are directly usable in one chain; new writes use 2 and readers preserve either supported value. The last record is current; absent/empty means none.
 
 ## Storage Recommendation
 

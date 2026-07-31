@@ -10,6 +10,8 @@ The latest `design-review-report.md` remains authoritative. This file records co
 | ARCH-REV-002 | Round 2 / SR-002 design-impact correction | SR-001, SR-002 | Fail | Pass | ARCH-F-001, ARCH-F-002, ARCH-F-003 |
 | ARCH-REV-003 | Round 3 / SR-003 user-approved persisted-data requirement revision | SR-001, SR-002, SR-003 | Pass | Fail | ARCH-F-001, ARCH-F-002, ARCH-F-003, ARCH-F-004, ARCH-F-005 |
 | ARCH-REV-004 | Round 4 / SR-004 lineage-tail, snapshot-boundary, and startup correction | SR-001, SR-002, SR-003, SR-004 | Fail | Pass | ARCH-F-004, ARCH-F-005 |
+| ARCH-REV-005 | Round 5 / SR-009 prompt, cardinality, and canonical-turn revision | SR-001 through SR-009 | Pass | Fail | ARCH-F-006, ARCH-F-007, ARCH-F-008, ARCH-F-009 |
+| ARCH-REV-006 | Round 6 / SR-010 accepted-path, evidence, audit, and identity correction | SR-001 through SR-010 | Fail | Pass | ARCH-F-006, ARCH-F-007, ARCH-F-008, ARCH-F-009 |
 
 ## Revision Entries
 
@@ -99,3 +101,52 @@ None.
 - Material classification changes: Both prior `Design Impact` findings are resolved. No new finding, requirement gap, unclear premise, or unsupported recovery mechanism remains.
 - Recommended recipient: `implementation_engineer`
 - Remaining risks or uncertainty: Proportional reconciliation of the existing diff, exact startup scanner/raw-preservation behavior, linear-tail validation, message-range offset consistency, Work Evidence presentation parity, explicit scope/provider wiring, intentionally non-transactional normal publication, and the branch's 20-commit remote divergence remain non-blocking implementation/API-E2E/delivery risks.
+
+### ARCH-REV-005 — Natural compactor output is sound, but the accepted publication path and contract evidence need correction
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/design-review-report.md`
+- Review round and trigger: Round 5; `solution_designer` submitted user-approved `SR-009` to remove fixed compactor cardinality caps, install the exact natural prompt, emit only the rendered conversation-history operation message, and preserve canonical user turns by reusing `WorkingContextFinalizer`.
+- Triggering role, report path, and finding IDs: user-approved design-impact revision via `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/solution-revision-record.md`; prior open findings `N/A`
+- Relevant solution revision IDs: `SR-001` through `SR-009`; current revision `SR-009`
+- Prior authoritative decision: `Pass`; material-premise gate `Pass`
+- Current authoritative decision: `Fail / Design Impact`; material-premise gate `Pass`
+- What changed in the review result or what baseline was established: Revalidated the cumulative package against the implemented SR-004 baseline and current source. The exact system prompt, renderer-only operation message, finalizer reuse, and natural episode/fact-count direction are coherent. The package is not yet implementation-ready because a reachable lineage-record validator retains the removed 3/20 policy after archive/output persistence, affected “current” behavior evidence still describes pre-SR-004 code, the persisted prompt-contract version has no transition decision, and one normative statement incorrectly assigns previous-compaction identity to message constituents.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `ARCH-F-001` | Closed / superseded in `ARCH-REV-003` | Remains closed | `SR-003`, `SR-004`; `ARCH-REV-003`, `ARCH-REV-004` | SR-009 introduces no historical origin, seed, snapshot identity, or fallback change. |
+| `ARCH-F-002` | Closed / superseded in `ARCH-REV-003` | Remains closed | `SR-003`, `SR-004`; `ARCH-REV-003`, `ARCH-REV-004` | SR-009 introduces no compatibility reader, manifest, inferred backfill, or migration change. |
+| `ARCH-F-003` | Resolved in `ARCH-REV-002`; retained through `ARCH-REV-004` | Remains resolved | `SR-002` through `SR-009`; `ARCH-REV-002` through `ARCH-REV-004` | The strategy remains IDless and `MemoryManager` remains the accepted-candidate/output-ID owner. |
+| `ARCH-F-004` | Resolved in `ARCH-REV-004` | Remains resolved | `SR-004` through `SR-009`; `ARCH-REV-004` | SR-009 does not alter migration, runner, or server-exposure startup ownership. |
+| `ARCH-F-005` | Resolved in `ARCH-REV-004` | Remains resolved | `SR-004` through `SR-009`; `ARCH-REV-004` | The package and handoff preserve the implemented SR-004 baseline and identify SR-009 as proportional reconciliation rather than a clean restart. |
+
+- New or remaining finding IDs: `ARCH-F-006`, `ARCH-F-007`, `ARCH-F-008`, `ARCH-F-009`
+- Material classification changes: Four new `Design Impact` findings block implementation. The material-premise gate remains `Pass`: `ARCH-F-006` is reached by ordinary accepted compactions with natural counts, `ARCH-F-008` by ordinary successful compactions before and after the prompt change, and `ARCH-F-007`/`ARCH-F-009` are direct source/artifact contradictions.
+- Recommended recipient: `solution_designer`
+- Remaining risks or uncertainty: Once corrected, implementation must preserve the reviewed SR-004 baseline; prove natural counts survive the complete persistence/lineage/read path; preserve canonical assistant/tool/media boundaries while finalizing selected constituents; retain existing parser-failure retry for provider truncation; and leave the later one-commit remote refresh to delivery.
+
+### ARCH-REV-006 — Full natural-count publication, truthful audit history, and message-only provenance are implementation-ready
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/design-review-report.md`
+- Review round and trigger: Round 6; `solution_designer` submitted `SR-010` as the cumulative technical correction for all four round-5 findings while preserving the user-approved SR-009 behavior and exact prompt text.
+- Triggering role, report path, and finding IDs: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/design-review-report.md`; `ARCH-F-006`, `ARCH-F-007`, `ARCH-F-008`, `ARCH-F-009`
+- Relevant solution revision IDs: `SR-001` through `SR-010`; current revision `SR-010`
+- Prior authoritative decision: `Fail / Design Impact`; material-premise gate `Pass`
+- Current authoritative decision: `Pass`; material-premise gate `Pass`
+- What changed in the review result or what baseline was established: Revalidated the approved behavior, actual implemented SR-004 production baseline, every round-5 correction, and the complete structural package. Natural-count output now traverses parser, normalizer, acceptance, archive/output persistence, lineage normalization/append/read, exact-head projection, and typed origin lookup. Prompt audit values truthfully distinguish producing contracts without becoming schema decoders. Canonical rendering reuses the existing finalizer while message/snapshot provenance stays identity-free. The pending implementation inventory is bounded and proportional.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `ARCH-F-006` | Open / High / Design Impact | Resolved | `SR-010`; `ARCH-REV-005` | Requirements BEH-002/003/008/011, REQ-012, AC-006/016; foundation INV-023, UC-018–020/027, SCN-010/011/019; DF-L04; and the design current-state, file/change/sequence/test sections now include `compaction-lineage-record.ts`, `FileCompactionLineageStore`, `AcceptedCompactionCommitter`, output persistence, projection, and origin lookup. Only the upper 3/20 record gate is removed; all structural invariants remain. |
+| `ARCH-F-007` | Open / Medium / Design Impact | Resolved | `SR-010`; `ARCH-REV-005` | Requirements, investigation current-source rows/table, design current-state map, spine supplement, methodology, and message-role analysis now describe the implemented SR-004 planner/renderer/manager/lineage/snapshot/reset/presentation baseline. Pre-SR-004 excluded-memory, top-K, v4, work-notes, strategy-write, and server-redactor observations are explicitly historical. |
+| `ARCH-F-008` | Open / Medium / Design Impact | Resolved | `SR-010`; `ARCH-REV-005` | The foundation terminology/schema, requirements REQ-004/012 and AC-016, persisted-data table, interfaces/files, sequence, and tests define `promptContractVersion` as immutable producing-contract audit metadata: existing SR-004 records retain value 1, new target records write 2, readers accept/preserve supported 1/2 in one direct-use chain, and unsupported values are rejected without content-decoder branching or migration. |
+| `ARCH-F-009` | Open / Medium / Design Impact | Resolved | `SR-010`; `ARCH-REV-005` | Foundation INV-006/015/024 and §§5/5.6, requirements REQ-010, DF-L03/L08, design type/interface/file guidance, methodology, and message-role evidence agree that constituents carry only local kind/range/raw refs. `MemoryManager` separately captures/verifies the lineage head and maps it to `previousCompactionId`; messages, prompts, and snapshot v5 carry no predecessor identity. |
+
+- New or remaining finding IDs: None.
+- Material classification changes: All four round-5 `Design Impact` findings are resolved. No new finding, requirement gap, unclear premise, or unsupported lifecycle machinery remains.
+- Recommended recipient: `implementation_engineer`
+- Remaining risks or uncertainty: Preserve the implemented SR-004 baseline; keep full-path natural-count and mixed-audit coverage; preserve assistant/tool/media and exact prompt boundaries during finalizer reuse; retain existing pre-write parser retry for provider truncation; do not imply crash-atomic publication; and leave the later one-commit remote refresh to delivery.

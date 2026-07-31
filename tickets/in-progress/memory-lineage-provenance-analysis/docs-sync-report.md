@@ -3,10 +3,10 @@
 ## Scope
 
 - Ticket: `memory-lineage-provenance-analysis`
-- Trigger: `CRR-003` proportional durable-test review `Pass` after `API-REV-001`, followed before user verification by `API-REV-002` / `CRR-004`, a local macOS Electron package, `API-REV-003` / `CRR-005`, and the current `API-REV-005 Pass / 96%` plus `CRR-007 Pass` after the bounded `CRR-006` / `TCR-001` correction cycle
+- Trigger: Current `API-REV-006 Pass / 98%` plus `CRR-008 Pass`, following the historical API-REV-001–005 / CRR-003–007 rounds and the still-pending user-verification handoff
 - Bootstrap base reference: `origin/personal@34f3fe97a281a9b85e02409bd753ad132df13d20`
-- Integrated base reference used for docs sync: `origin/personal@dfc0468b137cd231b79ff8096fa46750611b06e2`
-- Post-integration verification reference: ticket merge `e13e6b2481fd8922c186e967dfe846d98d20d95d`; core build Pass; core memory/runtime 34 files / 160 tests Pass; server migration/startup 4 files / 10 tests Pass; server build-config typecheck Pass; OpenAI/DeepSeek telemetry Pass in `API-REV-002`; historical two-percent Qwen/DeepSeek coverage Pass in `API-REV-003`; current exact five-percent projected-context Qwen/DeepSeek coverage Pass in `API-REV-004`; exact-zero failed-tool correction and focused DeepSeek 2/2 Pass in `API-REV-005`
+- Integrated base reference used for docs sync: `origin/personal@1d79e908f258651998a6cbf0a94e374896170f2a`
+- Post-integration verification reference: candidate checkpoint `8507b812565cec764a019af89caa913586383f1c`; conflict-free base merges at `7e512a5b837d869f1985322e0f7e2c744a4cffe5` and `4bfb99e3f6edd34405adeef55aab460e104b9b4d`; focused harness 1 file / 15 tests Pass; integrated server/shared build, Prisma generation, and built-in bootstrap smoke Pass; canonical product-compactor DeepSeek/Qwen coverage Pass in `API-REV-006`; refreshed Electron 1.4.32 package build and artifact validation Pass
 
 ## Why Docs Were Updated
 
@@ -64,12 +64,14 @@
 - Electron-build follow-up: `No additional docs change` — the user-requested package build exercised the documented build path and changed no runtime contract or source documentation.
 - API-REV-003 follow-up: `No additional docs change` — round 3 added or corrected durable tests and test support only; it changed no production source or approved runtime contract.
 - API-REV-004/005 follow-up: `No additional docs change` — the five-percent quality witness and exact-zero result assertion changed durable tests/test support only; production source and approved runtime behavior remain unchanged.
+- API-REV-006 / CRR-008 follow-up: `No additional docs change` — canonical product-compactor proof strengthened the live test/support boundary without changing production source or the approved memory runtime contract.
+- Latest-base/Electron follow-up: `No additional memory-doc change` — the integrated base added unrelated LLM/pricing release truth and bumped the desktop package to 1.4.32; delivery rebuilt the local package but did not change memory behavior or its long-lived docs.
 
 ## Delivery Continuation
 
 - Result: `Pass`
-- Next delivery action: User tests the locally built macOS ARM64 Electron package and explicitly confirms completion; do not archive, push, merge, release, deploy, or clean the worktree/branch before that signal.
-- Notes: Delivery edits are uncommitted by design during the verification hold. Follow-up fetches through `API-REV-005` / `CRR-007` confirmed the branch remains current with `origin/personal@dfc0468b1` at 4 ahead / 0 behind. Integrated checks, live telemetry, the local Electron package build, current five-percent Qwen/DeepSeek evidence, the exact-zero focused DeepSeek rerun, and the managed harness unit boundary passed. API-REV-004/005 changed no production source, so the Electron package remains runtime-equivalent and no rebuild or further docs change was required. Delivery must refresh the base again after explicit user verification and before finalization.
+- Next delivery action: User quits the older AutoByteus instance, tests `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.32.dmg`, and explicitly confirms completion; do not archive, push, merge, release, deploy, or clean the worktree/branch before that signal.
+- Notes: The reviewed package is protected by local checkpoint `8507b812565cec764a019af89caa913586383f1c`. Latest-base merges completed at `4bfb99e3f6edd34405adeef55aab460e104b9b4d`; final fetch confirmed `origin/personal@1d79e908f258651998a6cbf0a94e374896170f2a` with the branch 7 ahead / 0 behind. API-REV-006 / CRR-008 is Pass with no unresolved findings, integrated harness/build checks passed, and the base-version change was reflected in a rebuilt and validated Electron 1.4.32 package. Delivery-owned current-round artifact edits remain local during the verification hold. Delivery must refresh the base again after explicit user verification and before finalization.
 
 ## Blocked Or Escalated Follow-Up (Use Only If Docs Sync Cannot Complete)
 

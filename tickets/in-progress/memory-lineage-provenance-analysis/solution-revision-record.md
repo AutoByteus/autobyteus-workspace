@@ -10,6 +10,12 @@ The current `requirements.md`, `investigation-notes.md`, `design-spec.md`, and s
 | SR-002 | `architecture_reviewer`; `design-review-report.md`; round 1 | `ARCH-F-001`, `ARCH-F-002`, `ARCH-F-003` | `Design Impact` | Revised cumulative solution package prepared for architecture review round 2 |
 | SR-003 | User requirement revision after architecture round 2 `Pass` and implementation start | Superseded basis for `ARCH-F-001`, `ARCH-F-002`; retained `ARCH-F-003` resolution | `Requirement Revision / Design Impact` | Clean-cut current-only package superseded the passed SR-002 design and implementation basis |
 | SR-004 | `architecture_reviewer`; round 3 plus user separation clarification | `ARCH-F-004`, `ARCH-F-005` | `Design Impact` | Lineage-tail/message-only-snapshot/fail-closed-startup package prepared for architecture review round 4 |
+| SR-005 | `api_e2e_engineer`; API-REV-006 follow-up plus user quality clarification | BEH-011 / REQ-012 / AC-016 design impact | `Requirement Revision / Design Impact` | Quality-first sizing draft prepared for user review, but it included an unrequested numeric token ceiling |
+| SR-006 | User correction during SR-005 review | BEH-011 / REQ-012 / AC-016 requirement correction | `Requirement Correction / Design Impact` | Natural LLM-chosen episode/fact counts; invented token ceiling and launch-config scope removed; architecture handoff withheld |
+| SR-007 | User clarification during SR-006 review | REQ-012 / AC-016 prompt-content precision | `Requirement Precision / Design Impact` | Exact future `agent.md` and builder-message content fixed in an approval-required supplement; architecture handoff withheld |
+| SR-008 | User correction during SR-007 review | REQ-012 / AC-016 prompt naturalness and boundary | `Requirement Correction / Design Impact` | Platform terminology removed from target system prompt; operation user message reduced to renderer-produced history only; architecture handoff withheld |
+| SR-009 | User correction during SR-008 review, followed by explicit approval | REQ-010 / REQ-012 / AC-014 / AC-016 prompt naturalness and canonical turn fidelity | `Requirement Correction / Design Impact` | Target system prompt aligned with origin/personal's concise ordinary language; composed user constituents render as one canonical `User:` turn; user-approved package prepared for architecture review |
+| SR-010 | `architecture_reviewer`; `ARCH-REV-005` / round 5 | `ARCH-F-006`, `ARCH-F-007`, `ARCH-F-008`, `ARCH-F-009` | `Design Impact` | Full natural-count accepted path, actual SR-004 evidence, truthful prompt audit transition, and message-only predecessor boundary prepared for renewed architecture review |
 
 ## Revision Entries
 
@@ -139,3 +145,186 @@ The current `requirements.md`, `investigation-notes.md`, `design-spec.md`, and s
 - Downstream and architecture-review impact: Architecture review round 4 must verify closure of `ARCH-F-004` and `ARCH-F-005` across the complete current package. After a `Pass`, implementation must first inventory the existing source diff, preserve aligned SR-002 work, remove/reshape only superseded seed/origin/pointer/snapshot fields, and implement the exact startup and lineage-tail deltas. It must not restart wholesale or preserve incompatible code merely because it already exists.
 - Next recipient or routing: `architecture_reviewer`
 - Remaining gaps or risks: Normal multi-file compaction publication is not crash-atomic and no unsupported journal/recovery contract is added. Range-offset convention, exact archive membership, migration discovery/deletion safety, provider metadata resolution, Work Evidence presentation parity, and proportional reconciliation of existing implementation remain downstream implementation/API-E2E risks. The branch remains `0` ahead / `20` behind `origin/personal`; delivery owns the later refresh.
+
+### SR-005 — Quality-first semantic-sizing draft with an unrequested numeric ceiling
+
+- Triggering role, report path, and round: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/execution-coverage-report.md` and `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/api-e2e-revision-record.md` (`API-REV-006`), followed by the user's explicit semantic-quality clarification; post-API/E2E Design Impact
+- Triggering finding IDs: no architecture finding ID yet; behavior/requirement delta is `BEH-011`, `REQ-012`, `AC-016`, `UC-027`, `SCN-019`
+- Prior authoritative result: `ARCH-REV-004` — `Pass`; the SR-004 implementation passed implementation/source review and API-REV-006 returned `Pass / 98%` for the then-approved fixed-count behavior. Delivery work and evidence are present in the worktree.
+- Current authoritative result: SR-005 cumulative package is refined for **user review**. It has not been sent to architecture review, and no SR-005 implementation is authorized.
+- Why this revision entry is recorded: API-REV-006 used the actual persisted built-in Memory Compactor and default server runner and proved exact continuation for two focused incident journeys, but not semantic adequacy for a diverse long selected history. The user rejected the fixed episode/fact counts in both prompt layers and clarified that compacted-memory quality means reliable task continuation: preserve the smallest sufficient semantic structure, keep unrelated phases distinct when needed, omit chatter/repetition/obsolete state, and prioritize continuation-critical information. The later SR-006 correction clarifies that no ticket-specific token ceiling is part of that policy.
+- Resolution:
+  - makes `agent.md` the single stable exact-JSON and quality-first semantic contract, with no episode, total-fact, or category count;
+  - keeps the per-operation user message natural and limited to the complete-replacement task plus exactly one `<conversation_history>` payload; it no longer duplicates schema or sizing policy;
+  - proposed an explicit numeric ceiling in the built-in launch configuration; the user had not requested or approved this scope;
+  - removes parser `.slice(0, 3)`, normalizer episode/total/category slices, and accepted-builder greater-than-three/greater-than-twenty rejection;
+  - retains at least one non-empty episode, exact fields, existing 4,000-character episode and 500-character fact bounds, cleanup, deduplication, noise filtering, deterministic order, positive salience, and malformed/token-truncated JSON pre-write failure/retry;
+  - proposed deterministic coverage for valid outputs beyond the former caps, token-setting propagation, and one long multi-threaded continuation-quality scenario without an exact item-count assertion; and
+  - leaves recurrent replacement, lineage, output IDs, persistence schemas, WorkingContext, snapshot, Event Monitor, Work Evidence, startup reset, and origin resolution unchanged.
+- Approved behavior or requirement IDs affected: pending user approval — BEH-011; REQ-005, REQ-007, REQ-012; AC-006, AC-007, AC-016; UC-018 through UC-020, UC-025, UC-027; SCN-019; existing DF-P04 through DF-P06, DF-P10, DF-L02, and DF-L08
+- Canonical artifacts and sections updated:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/requirements.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/investigation-notes.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/design-spec.md`
+- Supplemental artifacts updated, added, or removed:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/memory-context-and-lineage-contract.md` — normative quality/prompt contract, UC-027, and SCN-019
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/use-case-data-flow-spine-map.md` — existing-spine ownership/data-flow update; no new primary spine
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/provenance-methodology-analysis.md` — records that variable output cardinality does not change one-compaction lineage ownership
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/compacted-memory-message-role-analysis.md` — prompt-layer, code-enforcement, API-REV-006, and quality-scenario evidence
+- Architecture-review artifacts retained in the cumulative package:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/design-review-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/architecture-review-revision-record.md`
+- Downstream and architecture-review impact: This is a behavior/design delta even though much of the eventual edit is prompt text. Fixed counts are also enforced in parser, normalizer, and acceptance. SR-005 additionally proposed a launch-configuration change that SR-006 later removes. After user approval, the cumulative package must return to `architecture_reviewer`; only a Pass may authorize implementation reconciliation. The prior API-REV-006 Pass remains truthful evidence for the superseded fixed-count contract and is not retroactively rewritten.
+- Next recipient or routing: user review first. **Do not send to `architecture_reviewer` until the user explicitly approves this SR-005 package.**
+- Remaining gaps or risks at this round: The numeric token-ceiling proposal was not user-approved. Model allocation quality remains probabilistic; SCN-019 evaluates continuation anchors rather than a prescribed item count. Token-truncated malformed JSON remains an ordinary zero-write retry. Current branch evidence at this revision is HEAD `4bfb99e3f6edd34405adeef55aab460e104b9b4d`, `7` commits ahead and `1` behind `origin/personal@80d6693c1b0df5abdfd2c3dc0ec01ff885425847`; delivery owns any later refresh.
+
+### SR-006 — Remove the invented token ceiling and let the LLM choose natural item counts
+
+- Triggering role, report path, and round: user correction during SR-005 review; report path N/A; pre-architecture user-review round
+- Triggering finding IDs: requirement correction for `BEH-011`, `REQ-012`, `AC-016`, `UC-027`, and `SCN-019`
+- Prior authoritative result: SR-005 was refined for user review but had not been approved or sent to architecture. It correctly removed fixed semantic item counts but incorrectly added a solution-designer-invented numeric output-token ceiling and launch-config scope.
+- Current authoritative result: SR-006 removes that invented requirement. The target lets the LLM choose the natural number of episodes and facts and changes no `agent-config.json`, launch-resolution, or provider output-token setting. The package remains held for user review and has not been sent to architecture.
+- Why this revision entry is recorded: The user clarified that technical output-token ceilings must not be prescribed by this ticket. The model should receive natural quality guidance and determine the semantic structure itself, within whatever existing model/provider response behavior already applies.
+- Resolution:
+  - removes every numeric token-ceiling requirement, design rule, test expectation, and implementation step introduced in SR-005;
+  - removes `agent-config.json`, launch-resolution, and provider token propagation from the change inventory and requires those paths to remain unchanged;
+  - retains the quality-first system prompt contract: choose the natural number of episodes and facts, preserve distinct phases and continuation-critical state, and omit chatter/repetition/obsolete state;
+  - retains the natural operation user message with exactly one `<conversation_history>` block and no duplicated schema/sizing policy;
+  - retains removal of episode, total-fact, and per-category count truncation/rejection from parser, normalizer, and acceptance;
+  - retains existing structural and non-cardinality safeguards, including at least one episode, exact fields, cleanup, deduplication, noise filtering, positive salience, and malformed/truncated JSON zero-write retry; and
+  - leaves lineage, snapshot, persisted rows, migration, Event Monitor, Work Evidence, current-output projection, and all SR-004 architecture unchanged.
+- Approved behavior or requirement IDs affected: pending user review — BEH-011; REQ-005, REQ-007, REQ-012; AC-006, AC-007, AC-016; UC-018 through UC-020, UC-025, UC-027; SCN-019; existing DF-P04 through DF-P06, DF-P10, DF-L02, and DF-L08
+- Canonical artifacts and sections updated:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/requirements.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/investigation-notes.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/design-spec.md`
+- Supplemental artifacts updated:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/memory-context-and-lineage-contract.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/use-case-data-flow-spine-map.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/provenance-methodology-analysis.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/compacted-memory-message-role-analysis.md`
+- Downstream and architecture-review impact: Architecture review must evaluate only the count-free quality/prompt/enforcement delta over passed SR-004. No launch-configuration or provider-token change is part of implementation. After a Pass, implementation must update `agent.md`, the operation prompt builder, parser, normalizer, accepted builder, and focused coverage together.
+- Next recipient or routing: user review first. Do not send to `architecture_reviewer` until the user approves the corrected SR-006 package.
+- Remaining gaps or risks: Model semantic allocation remains probabilistic, so SCN-019 measures continuation anchors and separation of distinct phases rather than item counts. Existing provider truncation can still produce malformed JSON and follows the unchanged zero-write retry path.
+
+### SR-007 — Fix exact system-prompt and operation-message content before implementation
+
+- Triggering role, report path, and round: user clarification during SR-006 review; report path N/A; pre-architecture user-review round
+- Triggering finding IDs: requirement precision for REQ-005, REQ-007, REQ-010, REQ-012, AC-006, AC-007, AC-014, and AC-016
+- Prior authoritative result: SR-006 defined the correct natural LLM-chosen semantic-sizing behavior and owner split but left downstream implementation to translate that contract into final prompt strings.
+- Current authoritative result: SR-007 adds one approval-required wording authority containing the complete target `agent.md` and exact builder-generated operation-message text/composition. It does not edit production source or change the SR-006 behavior.
+- Why this revision entry is recorded: The user explicitly requested that downstream implementation not invent either prompt. Exact content belongs in the requirements basis even though production application remains implementation-owned after architecture Pass.
+- Resolution:
+  - adds `memory-compactor-prompt-content-contract.md` with the complete future `agent.md`, including frontmatter, complete-replacement semantics, smallest-sufficient episode guidance, natural fact selection, exact JSON schema, and the no-citation/application-identity rule;
+  - fixes the builder output to two exact static task lines followed by exactly one complete renderer-owned `<conversation_history>...</conversation_history>` block;
+  - makes clear that the documentation placeholder is never emitted;
+  - requires removal of duplicated builder schema/sizing text, the now-redundant `COMPACTION_RESULT_SHAPE` constant, and its unused public export;
+  - forbids implementation-authored wording substitutions, fixed item counts, ticket-specific token settings, duplicate schema in the operation message, delta-style input framing, and LLM-authored storage citations;
+  - links the new supplement from all three mandatory core artifacts and aligns the normative foundation/spine artifacts; and
+  - preserves SR-006 natural item counts, unchanged launch/provider configuration, existing non-cardinality safeguards, and all SR-004 lineage/context/startup behavior.
+- Approved behavior or requirement IDs affected: pending user review — REQ-005, REQ-007, REQ-010, REQ-012; AC-006, AC-007, AC-014, AC-016; BEH-011; UC-027; SCN-019
+- Canonical artifacts and sections updated:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/requirements.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/investigation-notes.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/design-spec.md`
+- Supplemental artifacts added or updated:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/memory-compactor-prompt-content-contract.md` — new approval-required exact wording authority
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/memory-context-and-lineage-contract.md` — exact prompt authority linked to INV-023 and prompt composition
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/use-case-data-flow-spine-map.md` — existing prompt owners tied to the exact content; no new spine
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/compacted-memory-message-role-analysis.md` — evidence supplement points to the wording authority
+- Downstream and architecture-review impact: Architecture review must treat the new prompt-content artifact as part of the approved requirements basis. After a Pass, implementation must copy both prompt texts exactly and reconcile prompt, parser, normalizer, acceptance, exports, and focused coverage together.
+- Next recipient or routing: user review first. Do not send to `architecture_reviewer` until the user approves the SR-007 prompt content and cumulative package.
+- Remaining gaps or risks: The exact wording is intentionally pending user review. Production `agent.md`, builder code, count enforcement, and tests remain unchanged until architecture Pass.
+
+### SR-008 — Keep the system prompt natural and make the operation message history-only
+
+- Triggering role, report path, and round: user correction during SR-007 review; report path N/A; pre-architecture user-review round
+- Triggering finding IDs: requirement correction for REQ-005, REQ-010, REQ-012, AC-014, and AC-016
+- Prior authoritative result: SR-007 created an exact-content draft, but its target system prompt defensively named platform concepts the model would never otherwise see, and its operation user message repeated two task lines already owned by the system prompt.
+- Current authoritative result: SR-008 removes all platform-internal defensive terminology from the target `agent.md` and makes `WorkingContextCompactionPromptBuilder` return exactly one `CompactionConversationHistoryRenderer` result with no static prefix or suffix.
+- Why this revision entry is recorded: The user correctly identified that teaching the model about storage IDs, citations, evidence labels, and similar absent concepts is unnatural and unnecessary. Exact-schema validation belongs to application code. The clear system prompt already defines the task, so the operation user message needs only source data.
+- Resolution:
+  - rewrites the exact target `agent.md` in natural summarization language without compaction IDs, episode/semantic IDs, citations, timestamps, evidence labels, raw-source references, storage/lineage vocabulary, “checkpoint,” or “delta” terminology;
+  - preserves the quality contract: the smallest sufficient episode structure, natural fact count, distinct phase preservation, noise removal, no invention, and exact JSON shape;
+  - reduces the operation user message to exactly one renderer-owned `<conversation_history>...</conversation_history>` block;
+  - requires `buildTaskPrompt(...)` to return `conversationRenderer.render(...)` directly, with no task instruction or other static text;
+  - retains removal of `COMPACTION_RESULT_SHAPE`, its public export, and every hidden cardinality limit;
+  - keeps `agent-config.json`, launch resolution, provider token configuration, persistence schemas, lineage, context, and snapshot behavior unchanged; and
+  - aligns the three core artifacts plus the exact prompt, foundation, spine, and message-role supplements.
+- Approved behavior or requirement IDs affected: pending user review — REQ-005, REQ-010, REQ-012; AC-014, AC-016; BEH-011; UC-027; SCN-019
+- Canonical artifacts and sections updated:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/requirements.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/investigation-notes.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/design-spec.md`
+- Supplemental artifacts updated:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/memory-compactor-prompt-content-contract.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/memory-context-and-lineage-contract.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/use-case-data-flow-spine-map.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/compacted-memory-message-role-analysis.md`
+- Downstream and architecture-review impact: Architecture review must validate the natural system-prompt/history-only-payload boundary as part of the requirements basis. After a Pass, implementation copies `agent.md` exactly, makes the builder return only the renderer output, removes duplicate prompt/count enforcement, and updates focused coverage.
+- Next recipient or routing: user review first. Do not send to `architecture_reviewer` until the user approves the SR-008 prompt boundary and cumulative package.
+- Remaining gaps or risks: Production `agent.md`, builder code, count enforcement, and tests remain unchanged until architecture Pass. Model semantic allocation remains probabilistic and is evaluated through continuation-quality evidence rather than exact item counts.
+
+### SR-009 — Align the LLM-facing prompt and transcript with natural canonical turns
+
+- Triggering role, report path, and round: user correction during SR-008 review; report path N/A; pre-architecture user-review round
+- Triggering finding IDs: requirement correction for REQ-010, REQ-012, AC-014, and AC-016
+- Prior authoritative result: SR-008 removed internal product terminology from the target system prompt and made the operation user message history-only, but one normative example expanded an internally composed earlier-summary/current-input user turn into two consecutive `User:` labels.
+- Current authoritative result: User-approved SR-009 aligns the exact target `agent.md` with origin/personal's concise ordinary-language style and requires the conversation-history renderer to preserve one model-visible `User:` entry per canonical user turn while keeping constituent ranges internal to application planning. The package is ready for architecture review.
+- Why this revision entry is recorded: The user requires the compactor to be LLM-native. The model should see only ordinary concepts present in its input—earlier work, an optional earlier summary, later events, and information needed to resume—not storage or lineage mechanics. Likewise, internal constituent granularity must not fabricate model-visible turns that differ from the canonical WorkingContext seen by the working LLM.
+- Resolution:
+  - uses the origin/personal `agent.md` style as the wording baseline while retaining the approved plural-episode JSON schema and quality-first natural item-count behavior;
+  - describes an optional earlier summary followed by later events as one continuous history in ordinary language;
+  - removes checkpoint/compacted-memory/storage/lineage/provenance/evidence/application-identity terminology from the exact target prompt;
+  - keeps the operation user message equal to one renderer-produced `<conversation_history>...</conversation_history>` block with no static task text;
+  - requires DF-L08 to reuse the existing `WorkingContextFinalizer` composition boundary over selected visible messages, so an earlier summary composed with adjacent compatible retained/current user content appears under one `User:` label rather than consecutive artificial labels and no second connector policy is created;
+  - preserves real assistant/tool boundaries and keeps constituent ranges available for selection, archive eligibility, snapshot round-trip, and lineage outside the prompt;
+  - adds exact contract/coverage language for canonical user-turn rendering; and
+  - leaves production source, launch/provider configuration, persistence, lineage, snapshot, Event Monitor, and Work Evidence behavior unchanged pending architecture approval.
+- Approved behavior or requirement IDs affected: user-approved — REQ-005, REQ-007, REQ-010, REQ-012; AC-006, AC-007, AC-014, AC-016; BEH-009, BEH-011; UC-025, UC-027; DF-L08; SCN-015, SCN-019
+- Canonical artifacts and sections updated:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/requirements.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/investigation-notes.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/design-spec.md`
+- Supplemental artifacts updated:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/memory-compactor-prompt-content-contract.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/memory-context-and-lineage-contract.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/use-case-data-flow-spine-map.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/compacted-memory-message-role-analysis.md`
+- Downstream and architecture-review impact: Architecture review must validate the exact natural `agent.md` and the constituent-to-canonical-turn rendering rule. After a Pass, implementation must copy the system prompt exactly, make the builder return only the renderer output, ensure the renderer emits one `User:` entry per canonical user turn, remove duplicate prompt/count enforcement, and update focused coverage.
+- Next recipient or routing: `architecture_reviewer`; user approval received on 2026-07-31.
+- Remaining gaps or risks: Production source remains unchanged until architecture Pass. Reconstituting canonical turns from independently selectable constituent ranges must preserve source selection and raw-archive eligibility without displaying those internal boundaries as artificial model turns; deterministic coverage is required.
+
+### SR-010 — Complete the natural-count accepted path and preserve truthful audit/message boundaries
+
+- Triggering role, report path, and round: `architecture_reviewer`; architecture review round 5 (`ARCH-REV-005`); `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/design-review-report.md`
+- Triggering finding IDs: `ARCH-F-006`, `ARCH-F-007`, `ARCH-F-008`, `ARCH-F-009`
+- Prior authoritative result: `Fail / Design Impact`; material-premise gate `Pass`
+- Current authoritative result: SR-010 corrects the technical design while preserving the user-approved SR-009 prompt wording and natural semantic-sizing behavior. The cumulative package is ready for renewed architecture review; no SR-010 source implementation is authorized until `Pass`.
+- Why this revision entry is recorded: Round 5 confirmed the behavior but found that the design stopped before a reachable lineage validator, mixed historical pre-SR-004 evidence into current-source descriptions, left the persisted prompt-audit value without transition semantics, and placed predecessor identity in message constituents contrary to the approved separation.
+- Resolution:
+  - traces valid natural-count output through parser, normalizer, accepted builder, `AcceptedCompactionCommitter`, output persistence, `FileCompactionLineageStore.appendNext`/read, exact-head projection, and typed origin resolution;
+  - removes only the lineage record's upper three-episode/twenty-semantic membership gate while retaining at least one episode, array/ID uniqueness, safe archive filename, scope, predecessor, time, execution, integrity, and output-existence invariants;
+  - refreshes requirements, investigation, design, and evidence supplements to the actual implemented SR-004 baseline: recurrent prior-memory inclusion, IDless proposal/manager acceptance, exact lineage-tail current output, v5 message-only snapshot/current-only restore, fail-closed startup, reasoning-free XML history, and shared Tool/value presentation are delivered and are not reimplementation work;
+  - defines `promptContractVersion` as producing-contract audit metadata rather than lineage schema: value `1` truthfully records the implemented SR-004 fixed-count/duplicated-operation contract; new successful SR-010 records write value `2` for the approved natural-system/history-only/canonical-turn contract; the current reader accepts/preserves supported values `1 | 2` in one directly usable mixed chain without content transformation or structural branching;
+  - restores the message-only boundary: compacted-memory constituents carry local kind/range only, natural constituents may carry local raw refs, and `MemoryManager` separately captures/verifies the lineage head and maps it to `previousCompactionId`;
+  - keeps the exact user-approved `agent.md` and history-only operation-message wording unchanged in `memory-compactor-prompt-content-contract.md`;
+  - narrows the pending implementation inventory to existing prompt/builder/renderer/parser/normalizer/accepted-builder/lineage-validator files plus focused full-path tests; all SR-004 manager/store/projection/resolver/snapshot/reset/Work-Evidence owners are preserved; and
+  - records that existing episode/semantic rows, snapshot v5, and schema-v1 lineage records are `Directly Usable — No Migration`; only existing array/audit value domains widen.
+- Approved behavior or requirement IDs affected: unchanged user-approved behavior; technical completeness for BEH-002 through BEH-005, BEH-008, BEH-009, BEH-011; REQ-003 through REQ-007, REQ-010, REQ-012; AC-003 through AC-008, AC-012, AC-014, AC-016; UC-004, UC-012, UC-018 through UC-022, UC-025, UC-027; DF-P04 through DF-P06, DF-P10, DF-L02, DF-L04, DF-L08; SCN-010, SCN-011, SCN-012, SCN-015, SCN-019
+- Canonical artifacts and sections updated:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/requirements.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/investigation-notes.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/design-spec.md`
+- Supplemental artifacts updated:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/memory-context-and-lineage-contract.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/use-case-data-flow-spine-map.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/provenance-methodology-analysis.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/compacted-memory-message-role-analysis.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/memory-compactor-prompt-content-contract.md`
+- Architecture-review artifacts retained in the cumulative package:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/design-review-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/architecture-review-revision-record.md`
+- Downstream and architecture-review impact: Renewed architecture review must verify closure of `ARCH-F-006` through `ARCH-F-009` against canonical content, not the revision summary alone. After a Pass, implementation must reconcile only the bounded SR-010 delta and preserve all existing SR-004 source/downstream evidence. The branch is 7 commits ahead / 1 behind tracked `origin/personal`; delivery owns the later refresh.
+- Next recipient or routing: `architecture_reviewer`
+- Remaining gaps or risks: Architecture `Pass` is still required. Semantic allocation remains probabilistic; deterministic coverage proves no hidden cardinality loss and a realistic multi-threaded journey checks continuation anchors without exact-count assertions. Normal multi-file publication remains intentionally non-transactional under the existing contract; no unsupported journal/recovery scope is added.

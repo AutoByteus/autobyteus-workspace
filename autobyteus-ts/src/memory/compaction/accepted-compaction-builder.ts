@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 
 import { MessageRole } from '../../llm/utils/messages.js';
+import { COMPACTION_LINEAGE_CURRENT_PROMPT_CONTRACT_VERSION } from '../lineage/compaction-lineage-record.js';
 import type { CompactionLineageScope } from '../lineage/compaction-lineage-scope.js';
 import { EpisodicItem } from '../models/episodic-item.js';
 import { SemanticItem } from '../models/semantic-item.js';
@@ -48,11 +49,8 @@ export class AcceptedCompactionBuilder {
   build(input: AcceptedCompactionBuildInput): AcceptedWorkingContextCompaction {
     const { compactionId, proposal } = input;
     if (!compactionId.trim()) throw new Error('Compaction ID must be non-empty.');
-    if (proposal.output.episodes.length < 1 || proposal.output.episodes.length > 3) {
-      throw new Error('Accepted compaction requires one through three episodes.');
-    }
-    if (proposal.output.semanticEntries.length > 20) {
-      throw new Error('Accepted compaction allows at most twenty semantic facts.');
+    if (proposal.output.episodes.length < 1) {
+      throw new Error('Accepted compaction requires at least one episode.');
     }
     const selected = proposal.selectedNewRawTraceIds.map((id) => id.trim()).filter(Boolean);
     if (!selected.length || new Set(selected).size !== selected.length) {
@@ -115,7 +113,7 @@ export class AcceptedCompactionBuilder {
           provider: requiredExecutionText(proposal.execution.provider, 'provider'),
           model: requiredExecutionText(proposal.execution.modelIdentifier, 'model identifier'),
           selectionPolicyVersion: 1,
-          promptContractVersion: 1,
+          promptContractVersion: COMPACTION_LINEAGE_CURRENT_PROMPT_CONTRACT_VERSION,
           ...(proposal.execution.renderedInputSha256
             ? { renderedInputSha256: proposal.execution.renderedInputSha256 }
             : {}),

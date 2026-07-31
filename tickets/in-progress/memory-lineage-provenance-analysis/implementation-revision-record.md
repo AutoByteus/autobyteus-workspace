@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- |
 | `IR-001` | `architecture_reviewer`; `design-review-report.md`; `ARCH-REV-004` | `N/A` | `Initial Baseline` | `SR-001`–`SR-004`; `ARCH-REV-001`–`ARCH-REV-004`; `CRR/API-REV/DR: N/A` | Current implementation and handoff ready for implementation-source review; downstream executable coverage remains required. |
 | `IR-002` | `code_reviewer`; `code-review-report.md`; `CRR-001` | `CR-F-001` | `Local Fix` | `SR-001`–`SR-004`; `ARCH-REV-001`–`ARCH-REV-004`; `CRR-001`; `API-REV/DR: N/A` | Trusted interruption fence restored in active no-snapshot recovery; ready for source re-review. |
+| `IR-003` | `architecture_reviewer`; `design-review-report.md`; `ARCH-REV-006` | `ARCH-F-006`–`ARCH-F-009` (resolved design findings) | `Design Impact` | `SR-001`–`SR-010`; `ARCH-REV-001`–`ARCH-REV-006`; prior `CRR-001`–`CRR-008`, `API-REV-001`–`API-REV-006`, `DR-001`–`DR-005` | Exact natural prompt, canonical history-only rendering, uncapped accepted path, and truthful mixed audit history implemented; ready for new source review. |
 
 ## Revision Entries
 
@@ -48,3 +49,23 @@
 - Local validation and result: core `pnpm build` passed; focused direct projector probe recovered exactly the trusted boundary with provenance and rejected wrong source/type/blank variants; focused no-snapshot bootstrap produced valid v5 with base system prompt + cancellation fence + active user history and excluded an untrusted boundary; prior absent/broken current restore and recurrent C1/C2 smokes still passed. Final server source typecheck, structural searches, and diff checks are recorded in the authoritative handoff after completion.
 - Next recipient or routing: `code_reviewer` for implementation-source re-review of `CR-F-001`.
 - Remaining limitations or risks: API/E2E still owns durable real interrupt -> reset -> bootstrap -> follow-up coverage, real startup non-exposure, and stale clean-cut test replacement; intentional non-transactional publication and delivery-owned remote refresh are unchanged.
+
+### IR-003 — Natural compactor contract and full accepted lineage path
+
+- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/design-review-report.md`; `ARCH-REV-006` Pass
+- Triggering finding IDs: `ARCH-F-006`, `ARCH-F-007`, `ARCH-F-008`, `ARCH-F-009`, all resolved in the reviewed `SR-010` design and defining its bounded implementation delta
+- Classification: `Design Impact`
+- Prior authoritative result: `IR-002` passed source review in `CRR-002`, the SR-004 baseline passed API/E2E through `API-REV-006` / `CRR-008`, and delivery reached `DR-005`; later user-approved `SR-010` superseded the fixed prompt/count/audit behavior without invalidating that structural baseline
+- Current authoritative result: current code plus `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/implementation-handoff.md`; SR-010 reconciliation ready for implementation-source and structural review, not API/E2E sign-off
+- Related solution revision IDs: `SR-001` through `SR-010`
+- Related architecture-review revision IDs: `ARCH-REV-001` through `ARCH-REV-006`
+- Related code-review revision IDs: `CRR-001` through `CRR-008` as prior delivered-baseline history; new review pending
+- Related API/E2E revision IDs: `API-REV-001` through `API-REV-006` as prior delivered-baseline history; SR-010 execution pending
+- Related delivery revision IDs: `DR-001` through `DR-005` as prior delivered-baseline history; SR-010 delivery pending
+- Why this baseline or implementation revision is recorded: the user-approved natural compactor contract replaces fixed prompt/parser/normalizer/acceptance/lineage count policy, requires canonical user-turn rendering, and advances immutable producing-contract audit metadata while preserving the already-delivered manager, store, reset, snapshot, resolver, and presentation architecture.
+- Approved behavior or requirement IDs affected: `BEH-002`, `BEH-003`, `BEH-004`, `BEH-005`, `BEH-008`, `BEH-009`, `BEH-011`; `REQ-004`, `REQ-005`, `REQ-007`, `REQ-010`, `REQ-012`; `AC-006`, `AC-007`, `AC-014`, `AC-016`
+- Implementation delta: copied the exact approved `agent.md`; reduced the operation builder to the renderer result and removed `COMPACTION_RESULT_SHAPE` plus its public export; finalized selected visible messages before labels; removed total/category membership caps from parser, normalizer, accepted builder, and lineage normalization while preserving entry/structure/reference safeguards and positive salience; added supported audit type `1 | 2`, current value `2`, observed-value preservation, and unsupported-value rejection.
+- Changed files or areas: built-in Memory Compactor `agent.md`; core compaction prompt builder, conversation renderer, parser, result normalizer, accepted builder, memory public index, lineage record; canonical implementation handoff/revision record; focused implementation evidence log.
+- Local validation and result: core build and server build-config typecheck passed; focused in-process proof preserved 4 episodes and 25 facts through parse/normalize, accepted commit, row persistence, lineage append/read, exact-head projection, and typed episode/semantic origin lookup; mixed v1 -> v2 traversal, current v2 write, unsupported v3 rejection, exact prompt bytes, renderer-only operation payload, canonical one-user labeling, and prior recurrent/interruption smokes passed.
+- Next recipient or routing: `code_reviewer` for a new implementation-source and structural review of `IR-003`.
+- Remaining limitations or risks: downstream durable tests and realistic built-in compactor execution must be updated/rerun for SR-010; `API-REV-006` prompt evidence is historical for the prior prompt; provider output quality/completion remains variable; normal publication remains non-transactional; delivery owns the one-commit remote refresh after downstream review.

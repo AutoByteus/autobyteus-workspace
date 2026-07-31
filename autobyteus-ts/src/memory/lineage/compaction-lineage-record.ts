@@ -4,13 +4,16 @@ import {
 } from './compaction-lineage-scope.js';
 
 export const COMPACTION_LINEAGE_SCHEMA_VERSION = 1;
+export const COMPACTION_LINEAGE_CURRENT_PROMPT_CONTRACT_VERSION = 2;
+export type CompactionLineagePromptContractVersion = 1
+  | typeof COMPACTION_LINEAGE_CURRENT_PROMPT_CONTRACT_VERSION;
 
 export type CompactionLineageExecution = {
   runtimeKind: string;
   provider: string;
   model: string;
   selectionPolicyVersion: 1;
-  promptContractVersion: 1;
+  promptContractVersion: CompactionLineagePromptContractVersion;
   renderedInputSha256?: string;
 };
 
@@ -69,14 +72,21 @@ export const normalizeCompactionLineageRecord = (value: unknown): CompactionLine
   }
   const episodeIds = requireIds(record.episodeIds, 'episodeIds');
   const semanticIds = requireIds(record.semanticIds, 'semanticIds');
-  if (episodeIds.length < 1 || episodeIds.length > 3 || semanticIds.length > 20) {
-    throw new Error('Compaction output membership is outside the accepted bounds.');
+  if (episodeIds.length < 1) {
+    throw new Error('Compaction output membership requires at least one episode.');
   }
   if (!record.execution || typeof record.execution !== 'object' || Array.isArray(record.execution)) {
     throw new Error('Compaction lineage execution metadata is required.');
   }
   const execution = record.execution as Record<string, unknown>;
-  if (execution.selectionPolicyVersion !== 1 || execution.promptContractVersion !== 1) {
+  if (execution.selectionPolicyVersion !== 1) {
+    throw new Error('Unsupported compaction selection policy version.');
+  }
+  const promptContractVersion = execution.promptContractVersion;
+  if (
+    promptContractVersion !== 1
+    && promptContractVersion !== COMPACTION_LINEAGE_CURRENT_PROMPT_CONTRACT_VERSION
+  ) {
     throw new Error('Unsupported compaction selection or prompt contract version.');
   }
   const renderedInputSha256 = execution.renderedInputSha256 === undefined
@@ -107,7 +117,7 @@ export const normalizeCompactionLineageRecord = (value: unknown): CompactionLine
       provider: requireText(execution.provider, 'execution.provider'),
       model: requireText(execution.model, 'execution.model'),
       selectionPolicyVersion: 1,
-      promptContractVersion: 1,
+      promptContractVersion,
       ...(renderedInputSha256 ? { renderedInputSha256 } : {}),
     },
     ...(integrity ? { integrity } : {}),

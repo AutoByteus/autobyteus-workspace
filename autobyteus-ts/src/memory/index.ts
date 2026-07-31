@@ -11,7 +11,7 @@ export { CompactionResult } from './compaction/compaction-result.js';
 export { CompactionResultNormalizer } from './compaction/compaction-result-normalizer.js';
 export type { NormalizedCompactionResult, NormalizedCompactedMemoryEntry } from './compaction/compaction-result-normalizer.js';
 export { AgentCompactionSummarizer } from './compaction/agent-compaction-summarizer.js';
-export { WorkingContextCompactionPromptBuilder, COMPACTION_RESULT_SHAPE } from './compaction/working-context-compaction-prompt-builder.js';
+export { WorkingContextCompactionPromptBuilder } from './compaction/working-context-compaction-prompt-builder.js';
 export { CompactionAgentRunnerError, getCompactionAgentRunnerErrorMetadata } from './compaction/compaction-agent-runner.js';
 export type { CompactionAgentExecutionMetadata, CompactionAgentRunner, CompactionAgentRunnerResult, CompactionAgentTask } from './compaction/compaction-agent-runner.js';
 export { CompactionResponseParser, CompactionResponseParseError } from './compaction/compaction-response-parser.js';

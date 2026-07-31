@@ -2,55 +2,62 @@
 
 ## Status
 
-`Design-ready — SR-004 lineage-tail/message-only-snapshot and fail-closed-startup revision for architecture review (2026-07-30)`
+`Ready for renewed architecture review — SR-010 technical correction of ARCH-F-006 through ARCH-F-009 over the user-approved SR-009 behavior (2026-07-31)`
 
-This design implements the approved requirements in `requirements.md`. The normative behavioral details remain in `memory-context-and-lineage-contract.md`; the complete use-case and data-flow inventory remains in `use-case-data-flow-spine-map.md`. This document fixes the target ownership, interfaces, storage decisions, file responsibilities, removal plan, and implementation order.
+This design preserves the implemented SR-004 lineage/context/startup baseline and the user-approved SR-009 natural sizing/prompt/canonical-turn intent. SR-010 supplies the missing technical completeness: full lineage validator/store/committer coverage, actual current-source evidence, truthful prompt-contract audit versioning, and strict separation between message-local provenance and manager-owned predecessor identity. The normative behavioral details remain in `memory-context-and-lineage-contract.md`; `use-case-data-flow-spine-map.md` owns path/ownership coverage; and `memory-compactor-prompt-content-contract.md` remains the exact LLM-facing wording authority.
 
-Architecture round 1 found three design impacts. SR-002 resolved them and architecture round 2 (`ARCH-REV-002`) passed the package, authorizing implementation. Implementation work then began and remains present in the worktree. The user subsequently superseded the persisted-state basis with a clean reset and then clarified the separation of current context, derived memory, and lineage. Architecture round 3 (`ARCH-REV-003`) failed SR-003 on the real startup caller and inaccurate solution chronology. SR-004 is authoritative and downstream implementation must reconcile the already-present SR-002 work rather than assume a clean baseline:
+Architecture round 1 found three design impacts. SR-002 resolved them and architecture round 2 (`ARCH-REV-002`) passed the package, authorizing implementation. Implementation work then began and remains present in the worktree. The user subsequently superseded the persisted-state basis with a clean reset and clarified the separation of current context, derived memory, and lineage. Architecture round 3 (`ARCH-REV-003`) failed SR-003 on the real startup caller and inaccurate solution chronology; SR-004 resolved both findings, and architecture round 4 (`ARCH-REV-004`) passed. Implementation, source review, API/E2E, and delivery work followed. API-REV-006 passed the then-approved fixed-count behavior at 98%, after which the user explicitly superseded only the compactor sizing policy. The solution designer then introduced an unrequested numeric token ceiling; the user rejected it. SR-006 preserves the passed lineage/context/startup architecture and introduces one bounded local behavior/refactor delta: remove fixed item counts and let the LLM choose natural episode/fact counts, with launch/provider output-token configuration unchanged. SR-007 added an exact prompt-content artifact; SR-008 removed leaked platform terminology from the system prompt and made the operation message exactly the renderer-produced history block. SR-009 aligns the target wording with origin/personal's concise natural style and prevents internal constituent ranges from becoming consecutive artificial `User:` entries. The user approved the cumulative revision and authorized architecture review:
 
-| Finding / revision trigger | Resolution in SR-004 |
+| Finding / revision trigger | Resolution in the current cumulative package |
 | --- | --- |
 | User separation-of-concerns clarification | `compaction_lineage.jsonl` contains successful records only and its last record is the sole current compaction. Snapshot v5 owns finalized messages/message-local ranges only. No `compaction_state.json`, current pointer, `CompactedMemoryOrigin`, or replacement manifest exists. |
 | User clean-cut decision superseding `ARCH-F-002` | One required startup app-data migration deletes pre-lineage episodic/semantic rows, WorkingContext snapshots, and compacted-memory manifests while preserving raw traces/manifests. Normal runtime has no historical reader or fallback. |
 | `ARCH-F-003` | Keeps DF-L02 strictly IDless, assigns output IDs/builds the accepted candidate only in `MemoryManager`, changes the simplified publication order to archive -> output -> append lineage as head -> context -> message-only snapshot, and keeps DF-S02/DF-S03 as `Secondary`. |
 | `ARCH-F-004` | `AppDataMigrationRunner.runPending()` persists all attempted required results and throws after any non-startable result. `ResetPreLineageMemoryAppDataMigration` returns `FAILED` for any discovery/deletion failure. The real `startConfiguredServer` caller logs and rethrows before `bootstrapBuiltInAgents`, `buildApp`, or `app.listen`; existing `SUCCEEDED`/`SUCCEEDED_WITH_WARNINGS` remain startable. |
 | `ARCH-F-005` | Records the round-2 Pass and existing superseded implementation work explicitly. The implementation sequence begins with reconciliation: retain aligned SR-002 code, remove superseded seed/origin/pointer pieces, and implement only the approved deltas. |
+| API-REV-006 design impact and user quality clarification | Preserves API-REV-006 as a Pass for the superseded fixed-count contract, then removes fixed item-count policy and lets the LLM choose the natural semantic structure. The user rejected a ticket-specific token ceiling; no launch/provider, lineage, persistence, snapshot, or primary-spine design changes occur. |
+| `ARCH-F-006` through `ARCH-F-009` / `ARCH-REV-005` | Adds the hidden lineage membership validator and full commit/read/projection/origin path; refreshes pre-SR-004 claims as historical; writes prompt audit version 2 while directly reading version 1/2 mixed chains; and keeps `previousCompactionId` solely in manager-captured lineage state, never message constituents. |
 
 ## Current-State Read
 
-The current native AutoByteus path already has the necessary source identities but loses their relationship:
+### Actual implemented SR-004 baseline at current HEAD
 
-1. `MemoryManager` records normalized raw activity and maintains the live provider-neutral `WorkingContext`.
-2. `WorkingContextMessageWindowPlanner` selects a compactable prefix and exposes raw-trace IDs for natural message units, but explicitly excludes the projected compacted-memory message.
-3. `StructuredJsonCompactionStrategy` both generates content and directly mutates persistence: it appends one episode/semantic rows, prunes selected raw traces into an archive, retrieves a mixed historical memory bundle, and returns a replacement context.
-4. `PendingCompactionExecutor` owns the pending operation/retry lifecycle but cannot govern the accepted state transition because the strategy has already published storage effects.
-5. `CompactedMemoryContextProjector` uses top-K retrieval across historical rows rather than selecting one complete output bundle.
-6. snapshot schema v4 persists provider-neutral message/media/tool state but has only loose message provenance. Pre-lineage episode/semantic/snapshot/manifest files cannot supply truthful producing-compaction edges and are explicitly disposable under the approved transition.
-7. native compaction and generated Work Evidence independently serialize, redact, and truncate readable tool fields. Native compaction exposes `Message.reasoning_content` as `Assistant work notes:` and applies prefix-only whole-line clipping. Work Evidence silently keeps only the first 20,000 characters after redaction.
-8. `compacted_memory_manifest.json` is only a schema/reset marker (`schema_version`, `last_reset_ts`); it contains no compaction history or current selection. `startConfiguredServer` currently catches/logs `AppDataMigrationRunner.runPending()` failure and continues to bootstrap/build/listen.
+1. `MemoryManager` records normalized activity, owns provider-neutral `WorkingContext`, captures the current lineage head before strategy execution, assigns output IDs, and coordinates accepted publication through `MemoryManagerCompactionCoordinator`/`AcceptedCompactionCommitter`.
+2. `WorkingContextMessageWindowPlanner` builds typed units, includes the existing `compacted_memory` unit in `compactableUnits`, protects live tool protocol, retains a recent suffix, and collects archive-eligible raw IDs only from selected natural R(n) units.
+3. `StructuredJsonCompactionStrategy` is side-effect-free and returns an IDless proposal. `AcceptedCompactionCommitter` performs archive -> output rows -> lineage append -> finalized context -> v5 snapshot -> pending clear.
+4. `compaction_lineage.jsonl` contains successful records only; `FileCompactionLineageStore.readHead()` selects current output. `CurrentCompactionOutputLoader` loads exactly the tail-listed rows. `CompactionLineageResolver` provides typed direct and recursive origin.
+5. Snapshot schema v5 persists finalized messages, media/tool structures, and message-local constituent ranges only. The required startup reset and `startConfiguredServer` fail-closed path are implemented; no old-schema runtime reader/gate/manifest authority remains.
+6. `CompactionConversationHistoryRenderer` already emits one escaped `<conversation_history>` block with reasoning-free `User`/`Assistant`/`Tool` entries, shared `CondensedToolCallRenderer` bodies, and explicit per-value head/tail omission. Generated Work Evidence already uses the same core presentation capability under its own raw/timestamped Markdown envelope.
 
-The relevant production evidence is recorded under BEH-001 through BEH-010 in `requirements.md` and in the source log/current-production-path sections of `investigation-notes.md`. The structural problem is missing application-owned derivation identity, mixed publication ownership, non-recurrent selection, unowned canonical user-message composition, and duplicated presentation policy.
+### Actual remaining SR-010 gaps
+
+7. `agent.md` and `WorkingContextCompactionPromptBuilder` duplicate the fixed 1–3 episode / 20 fact policy. Parser slices to 3/20; normalizer slices again and enforces per-category caps; accepted builder rejects >3/>20.
+8. `normalizeCompactionLineageRecord` independently rejects `episodeIds.length > 3` or `semanticIds.length > 20`. `FileCompactionLineageStore.appendNext()` invokes it after `AcceptedCompactionCommitter` has archived R(n) and persisted output rows, so stopping the delta at accepted-candidate construction would still reject normal natural-count output.
+9. `CompactionLineageExecution.promptContractVersion` accepts only literal `1`, and `AcceptedCompactionBuilder` writes literal `1`. That value truthfully audits the implemented fixed-count/duplicated-operation SR-004 prompt contract, but cannot truthfully label the materially changed target contract.
+10. `WorkingContextMessageUnitBuilder` expands a composed user message into separate constituent units. The renderer labels those units directly, so one canonical user turn can become consecutive artificial `User:` entries. `WorkingContextFinalizer` already owns the correct composition and must be reused before labels are emitted.
+
+Pre-SR-004 observations about top-K current projection, strategy-side persistence, v4 restore, `Assistant work notes`, server-local redaction, excluded prior memory, and swallowed migration failure remain historical evidence for SR-004. They are not current source claims and must not drive SR-010 reimplementation.
 
 Constraints the design must preserve:
 
-- Event Monitor remains an active-raw activity projection; it does not become a snapshot or archive browser.
-- generated Work Evidence remains an archive-plus-active readable projection; it does not become compactor input.
-- raw archive files and durable memory rows remain the content authorities; lineage repeats neither content nor raw IDs.
-- provider renderers remain responsible for provider wire/tool/media encoding, not memory semantics.
-- external Codex/Claude storage-only runtimes remain outside AutoByteus semantic compaction.
-- only the observed runner/parser pre-write failure, valid current-schema restore, and established pre-agent-bootstrap app-data migration path justify behavior in this ticket. No transaction journal, generic corruption recovery, or power-loss publication recovery is introduced.
+- Event Monitor remains active-raw only; Work Evidence remains archive-plus-active raw replay; neither is changed.
+- raw archive and durable output rows remain content authorities; lineage remains reference-only.
+- manager-owned IDless proposal/accepted commit, tail-as-current, v5 message-only snapshot, current-only restore, origin resolver, and shared presentation remain unchanged.
+- provider renderers own wire/tool/media encoding, not memory semantics; external storage-only runtimes remain out of semantic compaction scope.
+- existing launch/provider output capacity remains unchanged; malformed/truncated model output remains a pre-write parser failure/retry.
+- no transaction journal, compatibility reader, new schema field, new primary spine, or new subsystem is introduced.
 
 ## Intended Change
 
-Make native compaction a recurrent, application-owned accepted transition:
+Preserve the implemented recurrent application-owned transition:
 
 ```text
 M(n) = compact(M(n-1) + R(n))
 ```
 
-`R(n)` is a non-empty newly selected raw-backed natural prefix. A successful operation uses its existing pending `compactionId`, archives exactly `R(n)` into one completed raw archive file, persists one bounded replacement output, and appends one immutable reference-only lineage record. That last successful record is the current compaction. The manager then installs one finalized canonical `WorkingContext` and writes message-only snapshot schema v5. The LLM generates only episode/fact content; application code owns all identifiers and relations.
+`R(n)` is a non-empty newly selected raw-backed natural prefix. A successful operation uses its existing pending `compactionId`, archives exactly `R(n)` into one completed raw archive file, persists one complete replacement output with natural LLM-chosen item counts, and appends one immutable reference-only lineage record. That last successful record is the current compaction. The manager then installs one finalized canonical `WorkingContext` and writes message-only snapshot schema v5. The LLM generates only episode/fact content; application code owns all identifiers and relations.
 
-The same change:
+The implemented SR-004 baseline already:
 
 - makes the compaction strategy proposal-only;
 - centralizes accepted publication behind `MemoryManager`;
@@ -60,50 +67,61 @@ The same change:
 - adds one required, idempotent startup app-data migration that deletes pre-lineage episode/semantic/snapshot/manifest files while preserving raw evidence, then removes every historical-format runtime reader/gate/fallback;
 - adds a typed cycle-safe origin resolver;
 - replaces compaction-specific/Work-Evidence-specific readable tool formatting with one tight core `CondensedToolCallRenderer`;
-- removes private reasoning, backend IDs, synthetic timestamps, and silent prefix-only clipping from compactor input; and
+- removes private reasoning, backend IDs, synthetic timestamps, and silent prefix-only clipping from compactor input;
 - keeps all out-of-scope product surfaces and external-runtime semantics unchanged.
+
+### Pending SR-010 delta only
+
+- replace `agent.md` exactly and reduce the operation builder to renderer output only;
+- pass selected visible messages through the existing finalizer before visible labels;
+- remove count maxima from parser, normalizer, accepted builder, and lineage normalization while preserving all structural/per-entry safeguards;
+- define `promptContractVersion` as producing-contract audit metadata, write value `2` for the approved target, accept/preserve supported values `1 | 2`, and leave schema/selection policy versions unchanged; and
+- prove >3 episodes and >20 facts through accepted commit, output persistence, lineage append/read, current-head projection, and typed origin lookup.
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
 | Behavior ID | Kind | Approved Requirement / Intent And Acceptance-Criteria IDs | Approved Trigger Or Governing Contract | Relevant Existing Behavior And Evidence Reference | Approved Change Or Preserved Outcome | Target Production Path / Lifecycle And Spine ID(s) |
 | --- | --- | --- | --- | --- | --- | --- |
 | BEH-001 | System | REQ-001, REQ-002, REQ-008, REQ-009; AC-001–003, AC-009, AC-010 | Runtime activity and active Event Monitor use cases | Requirements current/desired table; investigation source log and active-only projection findings | Preserve immutable raw identity/content across active-to-archive movement; keep Event Monitor active-only | DF-P01, DF-P02, DF-R02, DF-L07 |
-| BEH-002 | Contract | REQ-002–004; AC-003, AC-004, AC-006 | One successful native compaction | Planner already knows raw refs but no durable input/output relation exists | Reference one completed archive `file_name`; do not duplicate raw IDs/content/prompt or invent activity/segment IDs | DF-P04, DF-L01, DF-L04 |
-| BEH-003 | Contract | REQ-003–006; AC-004–006 | Accepted structured output | Strategy currently appends one ungrouped episode and semantic rows | Publish one bounded output bundle and one lineage record; keep source/derivation times distinct | DF-L02, DF-L04, DF-P08 |
-| BEH-004 | System | REQ-003, REQ-006; AC-004, AC-012 | Typed internal origin lookup | No deterministic origin lookup exists | Resolve complete current-format direct/root origin; return `not_found` for unknown IDs and integrity error for broken referenced chains | DF-P08, DF-L05 |
-| BEH-005 | System | REQ-007; AC-007 | Repeated native compaction and normal request assembly | Current projector retrieves a mixed bounded row set and provider payload can receive adjacent user messages | Make current output recurrent, bounded, and exclusive; finalize provider-neutral user sections before snapshot/render | DF-P03–DF-P06, DF-P10, DF-L01, DF-L03 |
-| BEH-006 | Operational | REQ-006, REQ-008; AC-008, AC-009, AC-012 | Server startup and valid current-schema restore | Existing app-data migrations run before agent bootstrap; current restore still knows pre-lineage formats | Delete four obsolete derived-state files through required DF-S02/DF-L06, preserve raw evidence, block on failure, and make v5 the only runtime snapshot schema | DF-S02, DF-L06, DF-P07, DF-L03 |
+| BEH-002 | Contract | REQ-002–004; AC-003, AC-004, AC-006 | One successful native compaction | Implemented planner/strategy/manager/committer already publishes exact reference-only recurrent lineage; lineage normalization still caps output membership | Preserve relation/ownership; remove only the 3/20 lineage membership maximum | DF-P04, DF-L01, DF-L04 |
+| BEH-003 | Contract | REQ-003–006; AC-004–006 | Accepted structured output | Implemented complete output/lineage path; count maxima remain in four application layers and prompt audit value is fixed at 1 | Preserve all natural accepted items; write prompt audit value 2 while directly reading existing value 1/2 records | DF-L02, DF-L04, DF-P08 |
+| BEH-004 | System | REQ-003, REQ-006; AC-004, AC-012 | Typed internal origin lookup | Implemented resolver finds producing membership and direct/root origins | Preserve; prove natural-count membership and mixed prompt-version predecessors remain resolvable | DF-P08, DF-L05 |
+| BEH-005 | System | REQ-007; AC-007 | Repeated native compaction and request assembly | Implemented exact-tail recurrence/finalization/v5 snapshot; compactor renderer may relabel split constituents as separate user turns | Reuse finalizer before renderer labels; keep predecessor outside messages/snapshot | DF-P03–DF-P06, DF-P10, DF-L01, DF-L03, DF-L08 |
+| BEH-006 | Operational | REQ-006, REQ-008; AC-008, AC-009, AC-012 | Server startup and current-schema restore | Implemented reset/fail-closed startup/v5 restore exact-tail path | Preserve unchanged; current-schema prompt-version-1 lineage is directly usable with new version-2 records | DF-S02, DF-L06, DF-P07, DF-L03 |
 | BEH-007 | Contract | REQ-009; AC-010 | Storage-only external runtime | Codex/Claude persist evidence/provider boundaries without native semantic compaction | Use runtime-neutral lineage scope for native compaction; preserve external behavior and do not attribute snapshots to it | DF-P01, DF-P09 |
-| BEH-008 | Operational | REQ-004, REQ-007, REQ-008; AC-003, AC-011 | Runner failure or parser-rejected output | Existing executor keeps the pending operation and fails before strategy writes | Proposal-before-publication preserves zero-write retry with the same `compactionId` | DF-R01, DF-L02 |
-| BEH-009 | Contract | REQ-002, REQ-005, REQ-007, REQ-010, REQ-011; AC-006, AC-007, AC-014, AC-015 | Natural compactor request | Current prompt excludes prior memory, exposes reasoning/work notes and IDs, and clips prefixes | Render one escaped `<conversation_history>` with natural User/Assistant/Tool order and bounded visible values | DF-L01, DF-L08, DF-L09 |
-| BEH-010 | User | REQ-002, REQ-010, REQ-011; AC-014, AC-015 | Generated Work Evidence request | Work Evidence has the useful combined tool grammar but server-owned silent prefix slicing | Preserve its source/timestamp/Markdown/files/manifest while sharing readable body policy and explicit head/tail omission | DF-P11, DF-L09 |
+| BEH-008 | Operational | REQ-004, REQ-007, REQ-008; AC-003, AC-011 | Runner/parser rejection and natural-count accepted publication | Pre-write retry is implemented; hidden lineage cap can reject later after archive/output writes | Preserve pre-write retry and remove the post-output count rule; retain structural failures/order | DF-R01, DF-L02, DF-L04 |
+| BEH-009 | Contract | REQ-002, REQ-005, REQ-007, REQ-010, REQ-011; AC-006, AC-007, AC-014, AC-015 | Natural compactor request | Implemented renderer already includes prior memory, omits reasoning/IDs, uses XML/shared Tool/head-tail policy; builder duplicates policy and constituent labels can split a canonical turn | History-only builder plus finalizer-based canonical-turn labels; no lineage identity in constituents | DF-L01, DF-L08, DF-L09 |
+| BEH-010 | User | REQ-002, REQ-010, REQ-011; AC-014, AC-015 | Generated Work Evidence request | Shared readable body/head-tail policy is implemented | Preserve unchanged | DF-P11, DF-L09 |
+| BEH-011 | Contract | REQ-005, REQ-007, REQ-010, REQ-012; AC-006, AC-007, AC-014, AC-016 | UC-027 / any built-in native compaction | Fixed counts exist in prompts/parser/normalizer/accepted builder/lineage validator; current records audit version 1 | Exact natural prompt, history-only operation payload, no count caps, new-write audit value 2, mixed 1/2 direct use, and full accepted-path coverage | DF-P04–DF-P06, DF-P10, DF-L02, DF-L04, DF-L08 |
 
 ## Relevant Supplemental Task Artifacts
 
 | Artifact Path | Purpose | Related Requirement / Acceptance-Criteria IDs | Relationship To This Design | Status / Approval Applicability |
 | --- | --- | --- | --- | --- |
-| `tickets/in-progress/memory-lineage-provenance-analysis/memory-context-and-lineage-contract.md` | Normative terminology, invariants, schemas, rendering contract, 26 use cases, and failure behavior | REQ-001–011; AC-001–015 | The design must implement this contract without weakening or extending it | Refined and approved 2026-07-30 |
-| `tickets/in-progress/memory-lineage-provenance-analysis/use-case-data-flow-spine-map.md` | Complete production/target spine, owner, dependency, reachability, and persisted-data map | REQ-001–011; AC-001–015 | Supplies the stable DF IDs and design-principles validation used here | Refined and approved 2026-07-30 |
-| `tickets/in-progress/memory-lineage-provenance-analysis/provenance-methodology-analysis.md` | Provenance methodology and repository evidence | REQ-001–006, REQ-008–009; AC-001–006, AC-008–013 | Supports application-owned direct edges, recursive derivation, reference-only records, clean-epoch transition, lineage-tail current authority, and accepted publication order | Complete / SR-004 aligned; approval N/A (evidence) |
-| `tickets/in-progress/memory-lineage-provenance-analysis/compacted-memory-message-role-analysis.md` | Provider-message, restore, prompt, and Work Evidence investigation | REQ-007–011; AC-007–015 | Supports recurrent lineage-head input, canonical user composition, message-only snapshot ownership, fail-closed startup, and shared rendering boundary | Complete / SR-004 aligned; approval N/A after normative extraction |
+| `tickets/in-progress/memory-lineage-provenance-analysis/memory-context-and-lineage-contract.md` | Normative terminology, invariants, schemas, rendering contract, 27 use cases, exact prompt-content authority, and failure behavior | REQ-001–012; AC-001–016 | The design must implement this contract without weakening or extending it | User-approved / SR-010 aligned |
+| `tickets/in-progress/memory-lineage-provenance-analysis/use-case-data-flow-spine-map.md` | Complete production/target spine, owner, dependency, reachability, and persisted-data map | REQ-001–012; AC-001–016 | Supplies the stable DF IDs and design-principles validation used here; SR-010 adds no new spine | User-approved / SR-010 aligned |
+| `tickets/in-progress/memory-lineage-provenance-analysis/memory-compactor-prompt-content-contract.md` | Exact origin/personal-style target system-prompt file, history-only builder composition, and canonical user-turn rendering | REQ-005, REQ-007, REQ-010, REQ-012; AC-006, AC-007, AC-014, AC-016 | Wording/boundary authority; implementation copies it exactly and returns any requested wording change as a requirement gap | User-approved / SR-010 |
+| `tickets/in-progress/memory-lineage-provenance-analysis/provenance-methodology-analysis.md` | Provenance methodology and repository evidence | REQ-001–006, REQ-008–009, REQ-012; AC-001–006, AC-008–013, AC-016 | Supports application-owned direct edges, recursive derivation, reference-only records, clean-epoch transition, lineage-tail current authority, accepted publication order, and the fact that variable item counts do not change lineage | Complete / SR-010 aligned; approval N/A (evidence) |
+| `tickets/in-progress/memory-lineage-provenance-analysis/compacted-memory-message-role-analysis.md` | Provider-message, restore, prompt, natural semantic sizing, and Work Evidence investigation | REQ-007–012; AC-007–016 | Supports recurrent lineage-head input, canonical user composition, message-only snapshot ownership, fail-closed startup, shared rendering, and the quality-first prompt/enforcement ownership split | Complete / SR-010 aligned; approval N/A after normative extraction |
 
 ## Task Design Health Assessment (Mandatory)
 
-- Change posture: `Larger Requirement` with `Behavior Change` and required `Refactor`
-- Current design issue found: `Yes`
-- Root cause classification: `Missing Invariant`; `Boundary Or Ownership Issue`; `Duplicated Policy Or Coordination`; `Shared Structure Looseness`
-- Refactor needed now: `Yes`
-- Evidence: the strategy publishes storage while the executor owns lifecycle; retrieval mixes outputs across compactions; loose message metadata cannot identify composed user sections; pre-lineage derived state has no truthful producing edge; current restore carries historical-format policy; compaction and Work Evidence duplicate readable-tool/redaction/truncation logic; provider renderers currently receive context that has not been canonically finalized.
-- Design response: introduce IDless proposal/manager acceptance/commit boundaries, immutable direct lineage whose tail is current, typed message-local user constituent ranges with no derived-memory identity, a pure finalizer, exact lineage-head output loading, one pre-runtime reset migration, and one tight presentation capability.
-- Refactor rationale: adding lineage beside the existing mixed-level strategy would preserve the ownership bypass and make failure behavior unprovable. Adding another tool renderer would preserve inconsistent redaction/omission behavior. Both are in the direct path of the approved behavior and therefore must be corrected now.
-- Proportionality: this is not a wholesale memory rewrite. Preserve aligned SR-002 implementation already present after the round-2 Pass. Reconcile only the superseded historical-seed/origin/pointer fields and the explicitly required startup, lineage-tail, snapshot-boundary, and shared-renderer deltas.
-- Intentional deferrals and residual risk: no fine per-claim citations, provenance UI/API, external-runtime semantic compaction, global raw stream positions, historical provenance backfill, publication journal, arbitrary corruption recovery, or provider-specific live probe matrix is added. Normal filesystem publication still has the same non-transactional process-crash residual risk as the current store; no supported product path justifies expanding the ticket.
+- Change posture: `Behavior Change` plus bounded `Refactor` over implemented SR-004.
+- Current design issue found: `Yes`, limited to the pending delta.
+- Root cause classification: `Duplicated Policy Or Coordination` and `Missing Invariant`.
+- Refactor needed now: `Yes`, proportionate extension of existing owners only.
+- Evidence: count policy is duplicated across system prompt, operation builder, parser, normalizer, accepted builder, and lineage validator. The final lineage gate is reached after archive/output writes. Prompt audit value 1 cannot truthfully represent the changed producing contract. Constituent selection granularity leaks into visible turn labels despite an existing canonical finalizer.
+- Design response: one natural semantic policy in `agent.md`; history-only builder; existing finalizer reused before labels; remove only count maxima at all structural gates; add supported audit value 2 for new writes while preserving direct-use value-1 records; carry natural membership through existing commit/store/projection/origin boundaries.
+- Separation of concerns: message constituents retain local kind/range/raw refs only. `MemoryManager` separately captures/verifies the lineage tail and maps it to `previousCompactionId`. Lineage record owns audit version; prompt/renderer do not author storage identity.
+- Refactor explicitly not needed: no change to manager/committer sequencing, lineage/snapshot/row schemas, current-output loader, resolver algorithm, startup/reset, Event Monitor, Work Evidence, provider launch, or external runtime boundaries.
+- Proportionality: one prompt file, existing compaction parser/normalizer/builder/renderer, one lineage validator/type, one audit constant/value, and focused tests. No new service, file format, state file, migration, primary spine, or output-token policy.
+- Residual risk: model semantic quality remains probabilistic and normal publication remains non-transactional; neither justifies new machinery in this ticket.
 
 ## Terminology
 
 - **Raw trace**: immutable original activity record. It is evidence of what happened, not the agent's current memory.
 - **R(n)**: non-empty newly selected raw-backed natural activity for compaction `n`.
-- **M(n)**: complete bounded replacement output produced from M(n-1) plus R(n).
+- **M(n)**: complete replacement output produced from M(n-1) plus R(n), with the natural number of episodes and facts chosen by the LLM.
 - **Compaction proposal**: validated content and selection facts held in memory; it has no durable side effects.
 - **Accepted compaction**: proposal augmented by application-owned artifact IDs, the existing `compactionId`, explicit inputs, a finalized replacement context, and a lineage record candidate.
 - **CompactionLineageRecord**: one immutable reference-only direct derivation record for one successful native compaction.
@@ -134,13 +152,15 @@ The remainder follows the mandated reasoning order: transition decision, spines,
 | `raw_traces_active.jsonl`, completed raw archive JSONL, raw-trace manifests | Successful compaction obtains one completed archive descriptor and asserts exact selected membership | Preserve original record IDs/content byte-for-byte; lineage references only manifest `file_name` | `Directly Usable — No Migration` | Existing authoritative evidence remains valid and is the accepted preservation boundary. AC-001–005, AC-009 |
 | Pre-lineage `episodic.jsonl`, `semantic.jsonl` | Files lack trustworthy producing-compaction edges | Startup migration deletes each file; runtime never decodes or imports it | `Discard or Rebuild` | Structural conversion cannot reconstruct provenance; usage is sparse and user accepted loss. AC-009, AC-012 |
 | New current-format episodic/semantic JSONL | Rows are app-ID-owned outputs listed by exactly one lineage record | Current reader/writer only; no historical fields or tolerant fallback | `Directly Usable — No Migration` after transition | The reset creates a clean epoch before any new row is written. AC-003–009 |
-| `compaction_lineage.jsonl` | Append one immutable schema-v1 direct record per accepted compaction | Prospective-only, run-local, reference-only, no raw IDs/content/prompt | `Directly Usable — No Migration` | New additive store has no older physical shape. AC-003–006 |
+| `compaction_lineage.jsonl` | Existing schema-v1 record arrays allow natural membership; producing prompt audit changes from value 1 to new-write value 2 | Existing value-1 records remain immutable/truthful; normal reader accepts/preserves supported values `1` and `2`; no content interpretation or rewrite | `Directly Usable — No Migration` | Same physical/logical shape and direct relations. Mixed current-schema chains are a normal product path. AC-003–006, AC-016 |
 | Pre-v5 `working_context_snapshot.json` | v5 adds typed message-local constituent ranges only | Startup migration deletes it; no content conversion or runtime decoder | `Discard or Rebuild` | The old snapshot may retain an orphan compacted-memory projection after its pre-lineage rows are removed; snapshot is disposable continuation state. AC-008, AC-009 |
 | Schema-v5 `working_context_snapshot.json` | Canonical finalized messages plus message-local constituent ranges | Contains no compaction, episode, semantic, lineage, or current-state identity | `Directly Usable — No Migration` | Snapshot owns continuation messages only; lineage owns derived-memory relationships/current head. AC-007–009, AC-012 |
 | `compacted_memory_manifest.json` | Existing schema/reset marker containing only `schema_version` and `last_reset_ts`; not lineage or current state | Startup migration deletes it; model/constant/store APIs and gate are removed; no replacement manifest exists | `Discard or Rebuild` | Current validity comes from the successful lineage tail plus referenced rows. AC-009, AC-012 |
 | Generated Work Evidence Markdown/manifest | Visible value formatting changes | Regenerate normally from preserved raw evidence; no persisted-content conversion | `Discard or Rebuild` | Existing generated artifact contract already owns regeneration. AC-015 |
 
 Data loss is intentional only for the four pre-lineage derived-state files. Unacceptable loss is any active/archive raw trace or raw-trace manifest mutation.
+
+SR-010 changes allowed lineage membership cardinality and the producing prompt-audit enum, not the record schema. Existing prompt-contract value `1` remains truthful for SR-004 outputs; new outputs write `2`; both are directly usable in one chain. Episode/semantic, WorkingContext, snapshot, raw, reset, and Work Evidence persisted-data decisions remain unchanged.
 
 ### Migration Plan
 
@@ -180,13 +200,13 @@ The approved DF IDs are retained so implementation and verification can trace di
 | DF-R01 | Return-Event | BEH-008 | Runner/parser failure | No writes; same pending ID retries | Executor | Reachable consistency boundary |
 | DF-R02 | Return-Event | BEH-001 | Active rewrite invalidates cursor | `EXPIRED` and UI reload | Active page policy | Prevents archive crossover |
 | DF-L01 | Bounded Local | BEH-002, BEH-005, BEH-009 | Baseline WorkingContext | Exact M(n-1)+R(n) plan | Structured planner | Governs the cut and raw refs |
-| DF-L02 | Bounded Local | BEH-003, BEH-008, BEH-009 | Rendered input | IDless content/selection/execution proposal | Structured strategy | Separates LLM/strategy from output identity and publication |
+| DF-L02 | Bounded Local | BEH-003, BEH-008, BEH-009, BEH-011 | Rendered input plus built-in prompt policy | IDless content/selection/execution proposal with natural LLM-chosen item counts and no count loss | Structured strategy; system-prompt policy owner | Separates LLM semantic judgment, application structural safeguards, and publication identity; launch/provider configuration is unchanged |
 | DF-L03 | Bounded Local | BEH-005, BEH-006 | Optional current output/continuation/current input | Canonical finalized messages with message-local constituent ranges | Context finalizer | Prevents provider repair and false origin |
 | DF-L04 | Bounded Local | BEH-002, BEH-003, BEH-005, BEH-008 | Valid IDless proposal and unchanged baseline | Manager-assigned accepted candidate; archive/output/new lineage head/context/message snapshot current | `MemoryManager`/internal committer | Centralizes identity, validation, and publication |
 | DF-L05 | Bounded Local | BEH-004 | Producing lineage record | Cycle-safe direct/root origin | Lineage resolver | Preserves direct vs transitive |
 | DF-L06 | Bounded Local | BEH-006 | Discovered standalone/team-member run directory | Exactly four obsolete derived-state files removed; raw evidence unchanged | Startup reset migration | Confines transition knowledge and keeps runtime current-only |
 | DF-L07 | Bounded Local | BEH-001 | Active snapshot/cursor | Valid or expired page | Active page policy | Stable active-only paging |
-| DF-L08 | Bounded Local | BEH-009 | Planned logical prefix | Natural bounded task message | Compaction conversation renderer/prompt builder | Correct LLM-facing history |
+| DF-L08 | Bounded Local | BEH-009, BEH-011 | Planned logical prefix | Reuse `WorkingContextFinalizer` over selected visible messages to restore canonical user turns -> render one bounded history-only message with canonical User/Assistant/Tool turns, no constituent-created consecutive `User:` labels, and no duplicate JSON/sizing policy | Compaction conversation renderer/prompt builder using the existing canonical-context boundary | Correct LLM-facing history without duplicating user-composition policy |
 | DF-L09 | Bounded Local | BEH-009, BEH-010 | Tight tool input + bound | Consumer-neutral tool body | Core condensed renderer | One shared readable policy |
 
 ## Primary Execution Spine(s)
@@ -198,8 +218,9 @@ Policy/request preparation
 -> PendingCompactionExecutor
 -> WorkingContextMessageWindowPlanner (M(n-1) + R(n))
 -> CompactionConversationHistoryRenderer
+-> built-in Memory Compactor system policy + unchanged launch/provider configuration
 -> configured compactor runner
--> parser/normalizer
+-> parser/normalizer without item-count caps
 -> proposal
 -> MemoryManager.prepareAcceptedCompaction
 -> validator
@@ -262,6 +283,7 @@ Work Evidence caller
 - `WorkingContextMessageWindowPlanner`
 - `StructuredJsonCompactionStrategy`
 - `CompactionConversationHistoryRenderer`
+- built-in Memory Compactor system prompt
 - compactor runner/parser/normalizer
 - `AcceptedCompactionCommitter` behind `MemoryManager`
 - `WorkingContextFinalizer`
@@ -279,7 +301,8 @@ Work Evidence caller
 | Node | Owns | Must Not Own |
 | --- | --- | --- |
 | `PendingCompactionExecutor` | pending-operation lifecycle, request a baseline from `MemoryManager`, pass only the strategy input to the strategy, retain the manager-produced baseline for acceptance, reachable retry/reporting, calls into accepted-state boundary | lineage lookup, stores, raw archive internals, direct context mutation |
-| structured compaction strategy | planning, prompt construction, runner call, exact parser/normalizer, IDless content/selection/execution proposal | output-ID assignment, baseline lineage-head lookup, accepted candidate construction, durable writes, snapshot, arbitrary historical retrieval |
+| built-in Memory Compactor `agent.md` | concise origin/personal-style natural summarization task, exact JSON response contract, and quality-first semantic policy | per-operation conversation history, model/runtime selection, output IDs, structural acceptance, or persistence |
+| structured compaction strategy | planning, history-only operation-message construction, runner call, exact parser/normalizer, IDless content/selection/execution proposal | stable system-prompt task/semantic/schema policy, launch budgeting, output-ID assignment, baseline lineage-head lookup, accepted candidate construction, durable writes, snapshot, arbitrary historical retrieval |
 | `MemoryManager` | sole live context mutation, pending identity, compaction-baseline WorkingContext/lineage-head capture and later verification, deterministic output-ID assignment, previous-head-to-lineage mapping, accepted candidate construction/validation, commit entrypoints, final installed state | provider wire, Event Monitor, recursive origin response |
 | `AcceptedCompactionCommitter` | manager-internal normal publication sequence and store coordination | public lifecycle, retry policy, LLM calls |
 | `WorkingContextFinalizer` | pure provider-neutral section coalescing, message-local range construction, raw provenance preservation, and tool/message validation | persistence, provider encoding, content selection |
@@ -304,20 +327,23 @@ Work Evidence caller
 
 ## Removal / Decommission Plan (Mandatory)
 
+Rows marked `Implemented SR-004` are delivered cumulative cleanup. The final row is the only pending decommission set for SR-010.
+
 | Item To Remove / Decommission | Why It Becomes Unnecessary | Replaced By Which Owner / File / Structure | Scope | Notes |
 | --- | --- | --- | --- | --- |
-| strategy calls to `MemoryStore.add` and `pruneRawTracesById` | Violates proposal/commit ownership and pre-write failure proof | `MemoryManager` + `AcceptedCompactionCommitter` | In This Change | Remove store dependency from strategy construction |
-| top-K `Retriever` inside `CompactedMemoryContextProjector` for normal current projection | Mixes outputs across successful compactions | `CurrentCompactionOutputLoader` + explicit bundle projector | In This Change | Retriever may remain for unrelated general recall only |
-| planner exclusion of `compacted_memory` | Breaks recurrent semantics | constituent-aware unit builder/planner | In This Change | prior memory selected logically, never added to raw archive refs |
-| `Assistant work notes`, call-ID prompt lines, whole-line prefix clamp | Leaks reasoning/backend details and loses suffix silently | conversation renderer + core per-value renderer | In This Change | no second condenser |
-| singular `episodic_summary` result and old response aliases | Conflicts with exact bounded target schema | exact `episodes` parser/result/normalizer | In This Change | clean-cut response contract |
-| loose `message-provenance.ts` shape | Cannot model composed user sections tightly | `working-context-provenance.ts` discriminated types/ranges | In This Change | update all readers/writers/tests |
-| `CompactedMemorySchemaGate`, semantic clear/replace helpers, compacted-memory manifest model/constant/export/store APIs, and all historical snapshot/row readers | Conflict with current-only lineage/output authority | startup reset migration + schema-v5 message validators + lineage-head output loader | In This Change | Delete code/tests/APIs; migration deletes persisted files before runtime |
-| new-output `EpisodicItem.turnIds` and semantic `reference`/`tags` handling | Loose unscoped metadata is not target lineage | exact current-schema models/readers/writers | In This Change | Pre-lineage row files are removed; no tolerant reader remains |
-| v1-v4 snapshot restore/rebuild | v5 is sole current schema | startup reset + v5 bootstrapper | In This Change | Pre-v5 snapshots are deleted before runtime |
-| complete archive-plus-active raw recovery and textual tool reconstruction | Replays already compacted history and weakens tool structure | no-memory startup after reset or exact schema-v5 direct restore | In This Change | preserve tool repair only for valid v5 context |
-| `autobyteus-server-ts/.../agent-work-trace-redactor.ts` | Duplicates redaction and silent prefix truncation | core readable-value/condensed renderer | In This Change | server adapter retains Work Evidence envelope |
-| provider-side adjacent-user semantic repair, if any is found during implementation | Canonical state must equal snapshot and rendered meaning | `WorkingContextFinalizer` before both | In This Change | provider-specific wire merging may remain only if semantically lossless and contract-required |
+| strategy calls to `MemoryStore.add` and `pruneRawTracesById` | Violated proposal/commit ownership and pre-write failure proof | `MemoryManager` + `AcceptedCompactionCommitter` | Implemented SR-004 | Store dependency removed from strategy |
+| top-K `Retriever` inside `CompactedMemoryContextProjector` for normal current projection | Mixed outputs across successful compactions | `CurrentCompactionOutputLoader` + explicit bundle projector | Implemented SR-004 | Retriever may remain for unrelated general recall only |
+| planner exclusion of `compacted_memory` | Broke recurrent semantics | constituent-aware unit builder/planner | Implemented SR-004 | Prior memory is selected logically and never added to raw archive refs |
+| `Assistant work notes`, call-ID prompt lines, whole-line prefix clamp | Leaked reasoning/backend details and lost suffix silently | conversation renderer + core per-value renderer | Implemented SR-004 | No second condenser |
+| singular `episodic_summary` result and old response aliases | Conflicted with exact target schema | exact `episodes` parser/result/normalizer | Implemented SR-004 | Clean-cut response contract |
+| loose `message-provenance.ts` shape | Could not model composed user sections tightly | `working-context-provenance.ts` discriminated types/ranges | Implemented SR-004 | Current readers/writers use one message-local shape |
+| `CompactedMemorySchemaGate`, semantic clear/replace helpers, compacted-memory manifest model/constant/export/store APIs, and all historical snapshot/row readers | Conflicted with current-only lineage/output authority | startup reset migration + schema-v5 message validators + lineage-head output loader | Implemented SR-004 | Code/tests/APIs removed; migration owns obsolete persisted filenames |
+| new-output `EpisodicItem.turnIds` and semantic `reference`/`tags` handling | Loose unscoped metadata was not target lineage | exact current-schema models/readers/writers | Implemented SR-004 | Pre-lineage row files are removed; no tolerant reader remains |
+| v1-v4 snapshot restore/rebuild | v5 is sole current schema | startup reset + v5 bootstrapper | Implemented SR-004 | Pre-v5 snapshots are deleted before runtime |
+| complete archive-plus-active raw recovery and textual tool reconstruction | Replayed already compacted history and weakened tool structure | no-memory startup after reset or exact schema-v5 direct restore | Implemented SR-004 | Tool repair remains only for valid v5 context |
+| `autobyteus-server-ts/.../agent-work-trace-redactor.ts` | Duplicated redaction and silently truncated prefixes | core readable-value/condensed renderer | Implemented SR-004 | Server adapter retains Work Evidence envelope |
+| provider-side adjacent-user semantic repair | Canonical state must equal snapshot and rendered meaning | `WorkingContextFinalizer` before both | Implemented SR-004 | Provider-specific wire mapping remains provider-owned |
+| fixed 1–3 episode, 20-fact, and per-category/member caps plus duplicated operation policy | Conflicts with user-approved natural semantic sizing and truthful prompt audit | exact `agent.md`; history-only builder; uncapped parser/normalizer/accepted/lineage structural validators | Pending SR-010 | Retain at least one episode and every non-cardinality invariant; new records audit prompt contract 2 |
 
 ## Return Or Event Spine(s) (If Applicable)
 
@@ -331,13 +357,13 @@ DF-S03 remains a **secondary** observability spine: executor phase change -> `Co
 | Spine | Parent Owner | Arrow Chain | Why It Matters |
 | --- | --- | --- | --- |
 | DF-L01 | Structured planner | context -> constituent units -> protect systems/live tool suffix -> budget retained suffix -> select optional compacted-memory region by kind/range + natural prefix -> require raw-backed R(n) -> plan; manager retains lineage head separately | Separates logical prior memory from archive-eligible new activity |
-| DF-L02 | Structured strategy | plan -> natural render -> runner -> exact parse -> bounded normalize -> IDless content/selection/execution proposal | Ensures the LLM/strategy do not assign produced IDs or accepted state |
+| DF-L02 | Structured strategy | plan -> render exactly one history-only operation message -> apply built-in natural task/schema/quality system policy under unchanged launch/provider configuration -> runner -> exact all-entry parse -> cleanup/deduplicate/noise-filter/positive-salience normalize without count caps -> IDless proposal | Ensures semantic counts are model-decided while application structure, output identity, and accepted state remain separately owned |
 | DF-L03 | `MemoryManager` via finalizer | optional current output + continuation/current input -> compatible user coalescing -> message-local ranges/raw provenance/media -> tool validation | Makes one canonical state for snapshot, later planning, and render |
-| DF-L04 | `MemoryManager` plus internal committer | verify pending/lineage-head baseline -> assign IDs/map head to previous/build accepted candidate -> validate -> exact archive -> output rows -> append lineage as head -> install context -> message-only v5 snapshot -> clear pending | One normal acceptance/publication sequence behind one owner |
+| DF-L04 | `MemoryManager` plus internal committer/lineage store | verify pending/head -> assign IDs/map head to predecessor/build accepted candidate (new prompt audit value 2) -> exact archive -> output rows -> normalize/append lineage with natural-count membership -> read head/exact output -> install context -> v5 snapshot -> clear pending | One normal acceptance/publication sequence behind one owner; no post-output count rejection |
 | DF-L05 | Resolver | prove artifact membership -> direct archive -> previous record -> visited set -> dedupe -> intervals/status | Keeps records direct and queries recursive |
 | DF-L06 | Startup reset migration | discover run -> remove four obsolete derived files -> preserve raw evidence -> record status -> retry/block on failure | Handles the one approved persisted-data transition outside runtime |
 | DF-L07 | Active page policy | active snapshot/generation -> cursor validation -> page or expired | Keeps UI active-only |
-| DF-L08 | Conversation renderer | planned units -> source adaptation -> common values/tool bodies -> labels/order -> escape -> one XML boundary -> natural task | Makes prompt semantically natural |
+| DF-L08 | Conversation renderer | planned units -> flatten visible messages -> `WorkingContextFinalizer` canonical turns -> common values/tool bodies -> labels/order -> escape -> one XML boundary | Makes the history semantically natural without duplicating user-composition policy |
 | DF-L09 | Core presentation | tight input -> derive status -> serialize/redact -> head/tail bound -> body | Prevents duplication without merging consumer orchestration |
 
 ## Off-Spine Concerns Around The Spine
@@ -357,13 +383,14 @@ DF-S03 remains a **secondary** observability spine: executor phase change -> `Co
 ## Ownership Boundaries
 
 1. **Request/lifecycle to accepted state:** executor may ask a strategy for a proposal and ask `MemoryManager` to accept/commit it. It never coordinates files.
-2. **LLM/strategy content to application identity:** parser/normalizer and strategy return content plus input selection only. `MemoryManager` acceptance derives episode/semantic IDs deterministically from `compactionId` and stable output order and creates the accepted relation/context candidate.
+2. **LLM/strategy content to application identity:** `agent.md` defines the complete concise natural task plus stable JSON/quality policy; the operation user message supplies only rendered canonical history turns; parser/normalizer preserve every structurally valid entry while enforcing per-entry/cleanup rules; and the strategy returns content plus input selection only. `MemoryManager` acceptance derives episode/semantic IDs deterministically from `compactionId` and stable output order and creates the accepted relation/context candidate without cardinality policy. Lineage normalization validates relation structure, not semantic item maxima; it preserves the supported producing prompt audit value.
 3. **Live context to persistence:** only `MemoryManager` installs/replaces/finalizes `WorkingContext`. Snapshot store serializes the installed candidate; it does not choose or repair it.
 4. **Lineage record to evidence content:** lineage stores direct references. Archive manager owns raw membership/content; episodic/semantic stores own derived content.
 5. **Product target to filesystem scope:** server memory-location services map explicit standalone or team-member target identities to the correct memory root. The core resolver receives an already explicit scope/store; it never parses an absolute path into identity.
 6. **Shared presentation to consumer envelope:** core owns safe bounded visible body; compaction owns logical selection/XML/task; Work Evidence owns raw correlation/timestamps/Markdown/files.
 7. **Canonical context to provider wire:** provider renderers translate but do not merge semantic user sections or select memory.
 8. **Pre-lineage persisted data to current runtime:** the startup migration owns the only historical filename knowledge and deletes those derived files before bootstrap. `AppDataMigrationRunner.runPending()` owns required-startup success enforcement and throws after persisting results if any required definition ends in a non-startable status; the actual `startConfiguredServer` caller logs and rethrows the runner failure before `bootstrapBuiltInAgents`, `buildApp`, or `app.listen`. Normal current loaders never inspect or guess from old files.
+9. **Stable compactor policy to one operation:** the built-in system prompt owns the complete concise natural task and exact JSON/semantic quality; `WorkingContextFinalizer` remains the one canonical user-composition owner; the operation renderer reuses that boundary over selected visible messages and byte-emits only canonical history turns, never one composed user turn as consecutive `User:` labels; parser/normalizer own structural/non-cardinality cleanup; and acceptance owns application invariants. Launch/provider output-token configuration remains unchanged. None may duplicate another layer's concern or reintroduce cardinality policy.
 
 ## Boundary Encapsulation Map
 
@@ -372,10 +399,11 @@ DF-S03 remains a **secondary** observability spine: executor phase change -> `Co
 | `MemoryManager` accepted-compaction API | ID assignment, baseline-head validation, finalizer, internal committer, snapshot coordination | executor, bootstrap/install paths | strategy/executor calling raw/memory/lineage/snapshot stores | enrich accepted candidate/result types, not caller-side coordination |
 | `CompactionLineageStore` | append-only successful-record file, output lookup index/scan, efficient tail lookup | committer, resolver, current-output loader | direct JSON/file writes | add singular typed methods |
 | `RawTraceArchiveManager.archiveExact` | selected-ID validation, completed file/manifest creation/read | committer/resolver | lineage or strategy fabricating filenames/membership | return a typed completed descriptor |
-| `WorkingContextFinalizer.finalize` | user compatibility, framing, message-local range/raw/media provenance | manager and bootstrapper | provider renderer concatenation or origin synthesis | add explicit constituent input types |
+| `WorkingContextFinalizer.finalize` | user compatibility, natural retained/current framing, message-local range/raw/media provenance, and canonical user-turn reconstruction from selected constituent messages | manager, bootstrapper, and compaction conversation renderer | provider/compaction renderer inventing connector text or concatenation policy | add a focused pure selected-message input if the existing method is too broad; do not duplicate composition rules |
 | `AppDataMigrationRunner.runPending` | ordered required-startup migration execution, durable status, and startability decision | `startConfiguredServer` | server runtime interpreting individual migration details or continuing after required failure | return statuses on success; persist failure details then throw one typed required-migration failure |
 | `ResetPreLineageMemoryAppDataMigration.execute` | discover run directories, delete exact derived-state targets, preserve raw evidence, report retryable outcome | server startup migration runner | runtime reader fallback, broad directory deletion, raw-trace mutation | keep filename/scanning policy inside migration-owned files |
 | `CondensedToolCallRenderer.render` | serialization/redaction/bounds/body grammar | compaction and Work Evidence adapters | consumer-local clipping/body format | extend tight options only when common |
+| built-in Memory Compactor definition | stable `agent.md` JSON/quality policy | server compactor launch path | operation prompt redefining policy, code enforcing hidden item counts, or ticket-specific token configuration | revise the canonical prompt and focused structural validators, not launch configuration or a new policy service |
 | `AgentMemoryOriginService.resolve` | product target authorization/location and core resolver construction | future internal callers | caller passing arbitrary memory path | split explicit target union further |
 
 ## Dependency Rules
@@ -417,7 +445,9 @@ Forbidden:
 - provider renderers repairing adjacency or choosing compacted memory;
 - Work Evidence reading `WorkingContext`, or compaction reading generated Markdown;
 - common renderer looking up/correlating raw/tool records or adding timestamps/XML/Markdown/files;
-- old snapshot/result/provenance shapes or tolerant historical dictionaries entering current runtime through aliases or fallback.
+- old snapshot/result/provenance shapes or tolerant historical dictionaries entering current runtime through aliases or fallback;
+- operation prompts duplicating the stable JSON/sizing policy from `agent.md`; or
+- parser, normalizer, or acceptance silently truncating/rejecting valid output by episode, total-fact, or category count.
 
 ## Interface Boundary Mapping
 
@@ -431,7 +461,7 @@ Forbidden:
 | `CompactionLineageStore.appendNext(expectedPreviousCompactionId, record)` | immutable lineage and current-head transition | verify the observed tail equals the manager-captured expected predecessor, verify the record carries that same predecessor, then append exactly one schema-v1 successful record | explicit `CompactionLineageScope` + unique `compactionId` | rejects duplicate ID, changed/forked predecessor, or missing referenced output |
 | `CurrentCompactionOutputLoader.loadCurrent()` | current M(n) | return null when lineage is absent/empty; otherwise load exact episode/semantic rows listed by the tail record and return one projection bundle | run-local store/scope/lineage tail | no ranking or historical fallback; bundle IDs exactly match lineage lists |
 | `CompactedMemoryContextProjector.project(input)` | projected compacted-memory region | render one lineage-head output bundle as a compacted-memory message region without copying its compaction/content IDs into the message | current-output bundle + continuation | no source selection, ranking, or message-level output-ID arrays |
-| `WorkingContextFinalizer.finalize(input)` | canonical context | coalesce compatible adjacent user sections and emit message-local ranges plus raw-backed provenance | typed memory/retained/current sections | pure deterministic; no lineage lookup |
+| `WorkingContextFinalizer.finalize(input)` | canonical context or selected-prefix canonical turn sequence | coalesce compatible adjacent user sections, apply natural framing, and emit/preserve message-local ranges plus raw-backed provenance | typed memory/retained/current sections or planner-selected constituent messages | pure deterministic; no lineage lookup; renderer uses this boundary rather than reconstructing connectors itself |
 | `WorkingContextSnapshotSerializer.serialize/deserializeV5` | snapshot v5 | exact finalized message and message-local constituent round-trip | v5 messages with typed message-local ranges | contains no compaction/output/current-state identity |
 | `AppDataMigrationRunner.runPending()` | startup transition gate | execute all `requiredOnStartup` definitions, persist each result, and refuse startup when any required result is not startable | ordered registry definitions + durable migration records | `SUCCEEDED` and existing `SUCCEEDED_WITH_WARNINGS` are startable; `ResetPreLineageMemoryAppDataMigration` must return `FAILED`, never warnings, when any target discovery/deletion fails; throw after records/logs exist |
 | `ResetPreLineageMemoryAppDataMigration.execute()` | startup reset | delete exactly four derived-state filenames across discovered runs and report itemized results | configured memory root + migration ID | idempotent; must not touch raw evidence |
@@ -474,30 +504,32 @@ Forbidden:
 
 | Need / Concern | Existing Capability Area / Subsystem | Decision | Why | If New, Why Existing Areas Are Not Right |
 | --- | --- | --- | --- | --- |
-| exact raw archiving | `RawTraceArchiveManager` | Extend | Already owns immutable files/manifest | N/A |
-| live context/pending identity | `MemoryManager` | Extend | Existing authoritative state owner | N/A |
+| exact raw archiving | `RawTraceArchiveManager` | Reuse unchanged | Implemented SR-004 owner of exact immutable files/manifest | N/A |
+| live context/pending identity | `MemoryManager` | Reuse unchanged | Implemented authoritative state/acceptance owner | N/A |
 | strategy registry/selection | compaction strategy registry | Reuse | Pluggability remains valid after API changes | N/A |
-| current output loading | projection/retrieval area | Create New focused loader and tight projection bundle | Retriever ranks unrelated rows; loader reads exact output IDs from the lineage tail | Needed to separate tail-based selection from formatting without persisted duplicate state |
-| lineage persistence/resolution | memory store + new lineage capability | Create New | No current relation/current-head lookup or traversal owner exists | Episodic/semantic stores own content, not derivation graph |
-| canonical user composition | WorkingContext area | Create New finalizer | Provider renderers and message builder are wrong owners | Pure cross-provider semantic boundary required |
-| readable values/tools | existing Work Evidence redactor/renderer and compaction prompt builder | Extract to core | Logic is genuinely shared but sources/envelopes are not | N/A |
-| persisted-data reset | server app-data migrations | Add one definition using existing registry/runner | Real pre-agent-bootstrap transition path already exists | N/A |
+| current output loading | `CurrentCompactionOutputLoader` plus projection bundle | Reuse unchanged | Implemented exact lineage-tail output loading already separates selection from formatting | N/A |
+| lineage persistence/resolution | `memory/lineage` plus `FileCompactionLineageStore` | Extend in place | Implemented relation/current-head/traversal owners exist; only record membership and prompt-audit value domains change | N/A |
+| canonical user composition | `WorkingContextFinalizer` | Reuse at compactor-view boundary | Implemented pure cross-provider composition owner already governs context/snapshot/provider messages | N/A |
+| readable values/tools | `memory/presentation` core renderers | Reuse unchanged | Implemented tight shared value/Tool capability already serves both consumers with separate sources/envelopes | N/A |
+| compactor semantic/output policy | built-in Memory Compactor template (`agent.md`) | Extend in place | This is the persisted canonical child-agent system contract used by every normal server compaction | N/A |
+| persisted-data reset | server app-data migrations | Reuse unchanged | Implemented required reset/runner/startup path already fails closed | N/A |
 | product scope/path | `AgentMemoryLocationService` | Reuse | Already understands standalone/team layout | N/A |
 
 ## Subsystem / Capability-Area Allocation
 
 | Subsystem / Capability Area | Owns Which Concerns | Related Spine ID(s) | Governing Owner(s) Served | Decision | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `memory/compaction` | planning, rendering adapter, runner/parser/normalizer, proposal, executor | DF-P04–P06, P10, DF-R01, DF-L01/02/08 | executor/strategy | Refactor | No persistence |
+| `memory/compaction` | planning, operation rendering adapter, runner/parser/normalizer, proposal, executor | DF-P04–P06, P10, DF-R01, DF-L01/02/08 | executor/strategy | Refactor | No persistence; no stable system-policy duplication or item-count caps |
+| server built-in Memory Compactor template | exact JSON/quality system policy from `memory-compactor-prompt-content-contract.md` | DF-P04–P06, P10, DF-L02 | built-in agent definition | Modify | Existing capability; no new runtime owner; `agent-config.json` and launch/provider settings remain unchanged |
 | `memory/context` (existing root WorkingContext files) | typed message-local constituent ranges/raw provenance and finalization | DF-P03–P07, DF-L03 | `MemoryManager` | Extend | Keep close to WorkingContext; no derived-memory IDs |
-| `memory/lineage` | scope, successful records, persistence/current-head contract, resolver/result | DF-P08, DF-L04/05 | manager/resolver | Create New | Domain capability, not storage layout |
-| `memory/store` | current file implementations, raw archive, exact output lookup, snapshot | DF-L04/05 | manager/bootstrap/resolver | Extend | No historical dictionary API or business traversal |
-| `memory/projection` | explicit current-output load and one current bundle projection | DF-P03–P07 | manager/bootstrap | Refactor | No top-K or historical selection |
-| `memory/restore` | schema-v5 direct restore only | DF-P07 | bootstrapper | Simplify | No old-schema decode or complete-corpus fallback |
-| `memory/presentation` | safe visible values and condensed Tool body | DF-L08/09, DF-P11 | both adapters | Create New | Tight concern-neutral core |
-| server `app-data-migrations` | one-time deletion of obsolete derived state | DF-S02, DF-L06 | server startup | Extend | Only place with historical filenames; no content decoder |
-| server `agent-work-traces` | raw replay adapter and existing envelope/files | DF-P11 | projection service | Refactor | Imports core presentation only |
-| server memory origin service | explicit product target/location adapter | DF-P08 | internal caller | Create New | No public GraphQL/UI |
+| `memory/lineage` | scope, successful records, persistence/current-head contract, resolver/result | DF-P08, DF-L04/05 | manager/resolver | Focused extension | Already implemented; remove the record-level count maximum and support prompt audit values 1/2 |
+| `memory/store` | current file implementations, raw archive, exact output lookup, snapshot | DF-L04/05 | manager/bootstrap/resolver | Reuse + verify | Existing store normalizes append/read; cover natural membership and mixed audit versions through it |
+| `memory/projection` | explicit current-output load and one current bundle projection | DF-P03–P07 | manager/bootstrap | Reuse + verify | Exact-tail selection already implemented; prove all natural membership survives |
+| `memory/restore` | schema-v5 direct restore only | DF-P07 | bootstrapper | Reuse unchanged | No old-schema decode or complete-corpus fallback |
+| `memory/presentation` | safe visible values and condensed Tool body | DF-L08/09, DF-P11 | both adapters | Reuse unchanged | Tight concern-neutral core already implemented |
+| server `app-data-migrations` | one-time deletion of obsolete derived state | DF-S02, DF-L06 | server startup | Reuse unchanged | Implemented historical-file owner; no content decoder |
+| server `agent-work-traces` | raw replay adapter and existing envelope/files | DF-P11 | projection service | Reuse unchanged | Already imports core presentation |
+| server memory origin service | explicit product target/location adapter | DF-P08 | internal caller | Reuse + verify | Existing internal facade; no public GraphQL/UI |
 
 ## Draft File Responsibility Mapping
 
@@ -505,10 +537,10 @@ Forbidden:
 | --- | --- | --- | --- | --- | --- |
 | `working-context-compaction-proposal.ts` | compaction | strategy/executor boundary | IDless proposal with selected raw IDs, retained messages, normalized content, and execution metadata | One shared boundary model; baseline head remains manager-owned | Yes |
 | `accepted-compaction-committer.ts` | compaction | manager internal | normal publication sequence | Sequencing is cohesive and testable | Yes |
-| `compaction-conversation-history-renderer.ts` | compaction | prompt adapter | WorkingContext -> natural labeled history/XML | Separate source/envelope from common body | Yes |
+| `compaction-conversation-history-renderer.ts` | compaction | prompt adapter | selected constituent messages -> `WorkingContextFinalizer` -> labeled history/XML | Keeps planning granularity from leaking into model-visible turn structure without duplicating composition policy | Yes |
 | `working-context-provenance.ts` | context | manager/finalizer | discriminated message/constituent ranges and raw-backed provenance | Shared schema for planner/snapshot/finalizer; no lineage/output identity | Yes |
 | `working-context-finalizer.ts` | context | manager | deterministic coalescing/ranges | One pure invariant owner | Yes |
-| `compaction-lineage-record.ts` | lineage | persistence/resolver | immutable successful-record validation | One direct-relation subject | Yes |
+| `compaction-lineage-record.ts` | lineage | persistence/resolver | immutable successful-record structural validation plus supported prompt audit values 1/2; no count maximum | One direct-relation subject | Yes |
 | `compaction-lineage-resolver.ts` | lineage | query owner | traversal/status/result | One graph-query owner | Yes |
 | `file-compaction-lineage-store.ts` | store | persistence provider | successful-record JSONL plus efficient tail/read/find operations | One physical capability and one truth | Yes |
 | `current-compaction-output-loader.ts` | projection | selection owner | lineage tail -> exact output rows | Focused alternative to Retriever | Yes |
@@ -551,20 +583,21 @@ Forbidden:
 | `.../working-context-compaction-strategy.ts` | compaction | strategy interface | side-effect-free `propose` contract | Existing abstraction remains | proposal |
 | `.../structured-json-compaction-strategy.ts` | compaction | concrete strategy | plan/render/run/parse/normalize proposal | One strategy implementation | planner, renderer, proposal |
 | `.../pending-compaction-executor.ts` | compaction | lifecycle | request manager-produced baseline, pass only strategy input to proposal call, return baseline plus proposal to manager acceptance, failure/retry | Existing lifecycle owner; no direct lineage/store read | proposal |
-| `.../accepted-compaction-committer.ts` | compaction | manager internal | publication sequence only | Separates file coordination from manager state API | lineage/archive/snapshot |
-| `.../compaction-conversation-history-renderer.ts` | compaction | source adapter | ordered User/Assistant/Tool history, escaping, one XML boundary | Consumer-specific envelope | common presentation |
-| `.../working-context-compaction-prompt-builder.ts` | compaction | task builder | natural instructions + rendered history + exact response contract | Prompt task remains separate | conversation renderer |
-| `.../compaction-result.ts`, parser, normalizer | compaction | output contract | exact 1–3 episode/20-fact schema | Existing cohesive files | N/A |
+| `.../accepted-compaction-committer.ts` | compaction | manager internal | preserve archive -> output -> lineage -> context -> snapshot order; exercise natural membership through append | Separates file coordination from manager state API | lineage/archive/snapshot |
+| `.../compaction-conversation-history-renderer.ts` | compaction | source adapter | flatten selected visible unit messages, reuse `WorkingContextFinalizer` for canonical user turns, then render ordered User/Assistant/Tool history, escaping, and one XML boundary | Consumer-specific envelope; one `User:` label per canonical turn; owns no connector wording | finalizer + common presentation |
+| `.../working-context-compaction-prompt-builder.ts`; `autobyteus-ts/src/memory/index.ts` | compaction | history-only operation-message adapter and public export | return exactly one complete canonical-turn rendered history with no static prefix/suffix; remove `COMPACTION_RESULT_SHAPE` and its unused public export | Per-operation source payload remains separate from stable system policy | conversation renderer |
+| `.../compaction-result.ts`, parser, normalizer | compaction | output structure and cleanup | exact fields, all-entry parse, existing per-entry bounds, deduplication/noise filtering, deterministic ordering, positive salience; no item-count caps | Existing cohesive files; no new result field | N/A |
+| `.../accepted-compaction-builder.ts` | compaction | manager acceptance helper | require at least one episode, validate accepted references/structure without count maxima, and write current prompt contract version 2 | Existing acceptance boundary | proposal/lineage/context types/current prompt-version constant |
 | `.../working-context-message-unit.ts`, builder, planner | compaction | selection | constituent-aware logical units and R(n) cut | Existing planning capability | context provenance |
 | `autobyteus-ts/src/memory/working-context-provenance.ts` | context | shared schema | discriminated single/composed message-local provenance and ranges | One authoritative type model for planner/finalizer/snapshot; no compaction/output IDs | N/A |
-| `.../working-context-finalizer.ts` | context | `MemoryManager` pure helper | canonical adjacent-compatible user composition | Singular invariant | provenance |
+| `.../working-context-finalizer.ts` | context | canonical composition boundary used by `MemoryManager`, bootstrap, and compaction rendering | canonical adjacent-compatible user composition and natural retained/current framing | Singular invariant reused rather than reimplemented | provenance |
 | `.../memory-manager.ts` | context/state | authoritative boundary | pending identity, baseline-head capture/verification, accept/commit/install/finalize | Existing governing owner | committer/finalizer |
 | `autobyteus-ts/src/memory/lineage/compaction-lineage-scope.ts` | lineage | identity | runtime-neutral explicit scope union | Reused without paths | N/A |
-| `.../lineage/compaction-lineage-record.ts` | lineage | record model | immutable direct record and validation | Historical relation subject | scope |
+| `.../lineage/compaction-lineage-record.ts` | lineage | record model | immutable direct record; retain structural/uniqueness/scope/predecessor/time/execution/integrity checks; remove only upper membership counts; accept/preserve prompt contract values `1` and `2` and export current value 2 | Historical relation subject and producing-contract audit authority | scope |
 | `.../lineage/compaction-lineage-store.ts` | lineage | persistence interface | append-next/read-head/read-by-ID/find-output methods | One capability contract; head derives from successful-record order | record |
 | `.../lineage/memory-origin-resolution.ts` | lineage | query contract | artifact ref, status, direct/root response | Shared typed boundary | scope |
 | `.../lineage/compaction-lineage-resolver.ts` | lineage | query owner | membership, manifest, traversal, integrity | One cycle-safe algorithm | query/store/archive |
-| `autobyteus-ts/src/memory/store/file-compaction-lineage-store.ts` | store | provider | append-only successful-record JSONL and efficient tail lookup | One physical capability; no second state file | lineage types |
+| `autobyteus-ts/src/memory/store/file-compaction-lineage-store.ts` | store | provider | append/read normalized successful-record JSONL, tail lookup, output-membership lookup; accept natural membership and mixed prompt versions through the record validator | One physical capability; no second state file | lineage types |
 | `.../store/raw-trace-archive-manager.ts` | store | archive boundary | exact archive API and typed completed descriptor | Existing file authority | N/A |
 | `.../store/memory-file-names.ts`, `run-memory-file-store.ts`, `file-store.ts`, `base-store.ts` | store | file composition | new lineage filename/store wiring and exact output-row lookup; remove gate/manifest/dictionary-reset/state APIs | Existing storage composition | lineage store |
 | `autobyteus-ts/src/memory/models/episodic-item.ts` | memory model | current episodic row | current recognized fields and writer without `turn_ids` | One current row model | N/A |
@@ -575,39 +608,36 @@ Forbidden:
 | `.../projection/compacted-memory-context-projector.ts` | projection | pure projector | explicit projection bundle -> memory text/constituent range + continuation, without identity fields | Removes Retriever ownership | projection bundle/finalizer |
 | `autobyteus-ts/src/memory/restore/working-context-snapshot-bootstrapper.ts` | restore | decision owner | schema-v5 message restore or no-snapshot initialization | Existing entrypoint | finalizer |
 | `.../restore/working-context-recovery-projector.ts` | restore | current initialization transform | system + active current continuation when no v5 snapshot exists after reset | One bounded current-only transform | finalizer |
-| `.../restore/compacted-memory-schema-gate.ts` and its tests | restore | deletion | remove destructive semantic clearing/snapshot deletion | No target responsibility remains | N/A |
-| `.../store/compacted-memory-manifest.ts`, `COMPACTED_MEMORY_MANIFEST_FILE_NAME`, public export, and gate-only store APIs | store/restore | deletion/decommission | remove the old `schema_version`/`last_reset_ts` reset marker; persisted file deletion belongs to startup migration | Lineage tail owns current selection; no replacement manifest | N/A |
+| Historical `.../restore/compacted-memory-schema-gate.ts` and its tests | restore | removed in SR-004 | no current file/runtime responsibility | Delivered removal; do not recreate destructive semantic clearing/snapshot deletion | N/A |
+| Historical `.../store/compacted-memory-manifest.ts`, `COMPACTED_MEMORY_MANIFEST_FILE_NAME`, public export, and gate-only store APIs | store/restore | removed/decommissioned in SR-004 | no current runtime responsibility; persisted filename knowledge belongs only to startup migration | Delivered removal; no replacement manifest | N/A |
 | `autobyteus-ts/src/memory/working-context-snapshot-serializer.ts` | snapshot | v5 schema | exact typed message/message-local-range round-trip | Existing serializer authority; no lineage/output IDs | provenance |
 | `autobyteus-ts/src/memory/presentation/readable-value-renderer.ts` | presentation | common | stable serialization, redaction, head/tail omission/count | Primitive shared policy | N/A |
 | `.../presentation/condensed-tool-call-renderer.ts` | presentation | common | exact body grammar and status derivation | Tight shared formatter | readable value |
 | `autobyteus-server-ts/src/agent-work-traces/services/agent-work-trace-renderer.ts` | Work Evidence | envelope/adapter | map correlated event, timestamps, Markdown headers, common body | Existing output contract | core renderer |
-| `.../agent-work-trace-redactor.ts` | Work Evidence | deletion | remove obsolete server formatter | No responsibility remains | N/A |
+| Historical `.../agent-work-trace-redactor.ts` | Work Evidence | removed in SR-004 | no current file/runtime responsibility | Delivered removal; shared core presentation is current | N/A |
 | `autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts` and config/factory wiring | server launch | scope injection | build explicit lineage scope from run/member context | Launch already owns product identity | scope |
-| `autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts` and `server-compaction-agent-runner.ts` | server launch | execution metadata | resolve provider through the model registry and return runtime/provider/model in runner metadata | The launch boundary knows the actual model identity and already governs execution metadata | guessed provider strings |
+| `autobyteus-server-ts/src/built-in-agents/templates/memory-compactor/agent.md` | built-in agent | stable semantic/output policy | exact complete origin/personal-style file content from `memory-compactor-prompt-content-contract.md`; no implementation-authored wording, internal product terminology, duplicate policy, or numeric item counts | One canonical product-managed system contract restored at startup | N/A |
+| `autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts` and `server-compaction-agent-runner.ts` | server launch | unchanged execution metadata/configuration | preserve current provider/runtime/model and output-token behavior | Explicit non-change verified by focused coverage | guessed provider strings |
 | `autobyteus-server-ts/src/memory-lineage/services/agent-memory-origin-service.ts` | server memory lineage | product facade | explicit target authorization/location then core resolve | Keeps paths/server identity out of core | core resolver |
 | `autobyteus-server-ts/src/app-data-migrations/migrations/reset-pre-lineage-memory-app-data-migration.ts` plus focused file-discovery helper | server migration | startup transition | discover standalone/team-member runs, delete four exact derived-state files, preserve raw evidence, report itemized outcomes | Existing migration boundary and retry/log infrastructure | runtime memory models |
 | `autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts` | server startup | transition registration | register the reset as `requiredOnStartup` | Existing definition authority | result persistence or server continuation |
 | `autobyteus-server-ts/src/app-data-migrations/app-data-migration-runner.ts` | server startup | required-result enforcement | execute all required definitions, persist every attempted result, preserve existing startable statuses, then throw typed failure when any required result is non-startable | Existing migration lifecycle owner | bootstrap/build/listen |
-| `autobyteus-server-ts/src/server-runtime.ts` (`startConfiguredServer`) | server startup | fail-closed caller | await runner, log and rethrow required-migration failure before `bootstrapBuiltInAgents`, `buildApp`, or `app.listen` | Real production caller that currently swallows the error | migration-specific deletion/result persistence |
+| `autobyteus-server-ts/src/server-runtime.ts` (`startConfiguredServer`) | server startup | implemented fail-closed caller | await runner, log and rethrow required-migration failure before `bootstrapBuiltInAgents`, `buildApp`, or `app.listen` | Delivered SR-004 production boundary; unchanged in SR-010 | migration-specific deletion/result persistence |
 
 ## Explicit Change Inventory
 
-| Change Kind | Files / Areas | Intended Result |
-| --- | --- | --- |
-| Add | compaction proposal, accepted committer, and conversation-history renderer files | IDless strategy boundary, manager-internal publication sequence, and natural compactor rendering |
-| Add | `working-context-provenance.ts` and `working-context-finalizer.ts` | message-local range/raw-provenance schema and one canonical provider-neutral context invariant |
-| Add | `memory/lineage/**` plus `file-compaction-lineage-store.ts` | scope, immutable direct records, append-order current head, resolver, and file provider |
-| Add | projection bundle/current-output loader and startup derived-memory reset migration | exact lineage-tail selection plus isolated destructive transition |
-| Add | core readable-value/condensed-tool renderer files and server memory-origin facade | tight presentation reuse and explicit product-scoped origin lookup |
-| Modify | strategy interface/implementation, executor, result/parser/normalizer, prompt builder, unit builder/planner | recurrent `M(n-1)+R(n)` proposal-only planning/generation with no private reasoning or produced IDs |
-| Modify | `MemoryManager`, snapshot serializer/store, request append/install paths | accepted-candidate authority, baseline-head verification, finalization, and message-only v5 round-trip |
-| Modify | current projector/message builder, bootstrapper/recovery projector | exact lineage-head bundle, absent-lineage/no-memory behavior, and v5-only restore |
-| Modify | episode/semantic models and base/file/run-memory stores | target-only readers/writers, exact output lookup, and removal of gate/manifest/history APIs |
-| Modify | raw archive manager and memory filenames/exports | exact archive descriptor plus lineage file; remove obsolete manifest/state authority |
-| Modify | Work Evidence renderer, server launch/factory/provider metadata wiring, migration registry/runner/startup | shared condensed body, explicit scope/runtime/provider/model, and required reset enforcement |
-| Remove | loose `message-provenance.ts`, schema gate and tests, compacted-memory manifest model/constant/export/store APIs, gate-only semantic clear/replace helpers, and server Work Evidence redactor | no dual provenance, destructive restore authority, dead global schema manifest, or duplicate readable formatting |
+The cumulative ticket contains substantial SR-004 work already delivered. The only pending SR-010 source delta is:
 
-All durable tests and exports that encode removed APIs/shapes change in the same implementation. No production compatibility alias remains solely for old fixtures.
+| Change Kind | Pending Files / Areas | Intended Result |
+| --- | --- | --- |
+| Modify | `autobyteus-server-ts/src/built-in-agents/templates/memory-compactor/agent.md` | Copy the exact user-approved natural prompt from `memory-compactor-prompt-content-contract.md`; no fixed item counts or platform terminology |
+| Modify / remove unused export | `working-context-compaction-prompt-builder.ts`; `autobyteus-ts/src/memory/index.ts` | Return only the renderer-owned history block and remove `COMPACTION_RESULT_SHAPE` plus its unused export |
+| Modify | `compaction-conversation-history-renderer.ts` and focused tests | Reuse `WorkingContextFinalizer` over selected visible messages before labels, preserving assistant/tool/media boundaries and one canonical `User:` turn |
+| Modify | `compaction-response-parser.ts`; `compaction-result-normalizer.ts`; `accepted-compaction-builder.ts` | Remove item-count truncation/rejection/category caps; retain schema, per-entry, cleanup, dedupe/noise, positive-salience, and at-least-one-episode invariants; new accepted records use prompt audit value 2 |
+| Modify | `compaction-lineage-record.ts` | Remove only upper episode/semantic membership maxima; retain every structural/reference invariant; accept/preserve prompt audit values 1/2 and expose current new-write value 2 |
+| Test existing path | `accepted-compaction-committer.ts`; `file-compaction-lineage-store.ts`; current-output projection; origin resolver and their tests | Prove >3/>20 survives output persistence, lineage append/read, exact-head projection, and typed origin lookup; prove a mixed v1->v2 chain reads directly |
+
+The following implemented SR-004 capabilities are preserved rather than added/refactored again: IDless proposal/manager acceptance, exact raw archiving, accepted committer order, lineage store/resolver/tail-as-current, current-output loader/projector, current episode/semantic models, message-local provenance, WorkingContext finalizer and snapshot v5, startup reset/fail-closed server path, core readable-value/Tool renderers, generated Work Evidence adapter, and server origin facade.
 
 ## Applied Patterns (If Any)
 
@@ -670,7 +700,7 @@ type CompactionLineageRecord = {
     provider: string;
     model: string;
     selectionPolicyVersion: 1;
-    promptContractVersion: 1;
+    promptContractVersion: 1 | 2;
     renderedInputSha256?: string;
   };
   integrity?: { recordSha256: string };
@@ -680,7 +710,7 @@ type CompactionLineageRecord = {
 
 For `agent_run`, `runId` is that standalone/task agent run ID and `memberId` is always `null`. For `team_member`, `runId` is the team run ID and `memberId` is the member agent run ID from `MemberTeamContext`. Neither variant is inferred from a directory path.
 
-Good: the file contains successful records only. C2 references `previousCompactionId: C1` and its own archive file; appending C2 makes it the current head. Resolver walks C1 when roots are requested. An absent/empty file means no current compacted memory.
+Good: the file contains successful records only. C2 references `previousCompactionId: C1` and its own archive file; appending C2 makes it the current head. Resolver walks C1 when roots are requested. An absent/empty file means no current compacted memory. Prompt version `1` truthfully audits records produced by the implemented SR-004 fixed-count/duplicated-operation contract. Prompt version `2` audits records produced by the approved natural system prompt plus history-only canonical-turn operation payload. New writes use `2`; readers accept/preserve `1 | 2`; the field does not switch structural decoding.
 
 Avoid: copying C1's raw IDs into C2, storing selected message content again, naming a new `generationId`, using `segment-000001`, or persisting a duplicate `compaction_state.json`.
 
@@ -815,11 +845,25 @@ For every discovered standalone run directory and team-member run directory, the
 
 Missing targets are successful no-ops, so retry is idempotent. The migration does not open, rewrite, or delete active raw traces, archived raw traces, or `raw_traces_manifest.json`. It records `SUCCEEDED` only after all discovered targets are absent. A target discovery/deletion failure produces `FAILED` rather than `SUCCEEDED_WITH_WARNINGS`. `AppDataMigrationRunner.runPending()` persists every attempted required result and then throws a typed required-migration error if any result is non-startable. The actual `startConfiguredServer` caller logs and rethrows before `bootstrapBuiltInAgents`, `buildApp`, or `app.listen`; its programmatic promise rejects and the existing CLI rejection handler exits. Existing `SUCCEEDED` and `SUCCEEDED_WITH_WARNINGS` remain startable. No content migration, lineage backfill, or backup copy is required because the user classified these four derived files as disposable and the original raw evidence remains intact.
 
+### 8. Quality-first semantic sizing and prompt ownership
+
+`memory-compactor-prompt-content-contract.md` is the exact wording authority:
+
+- its section 1 contains the complete origin/personal-style natural target `agent.md`, including frontmatter, self-contained-summary semantics, smallest-sufficient episode guidance, natural fact selection, and the exact JSON schema without platform-internal defensive wording;
+- its section 2 makes the operation user message exactly one complete `CompactionConversationHistoryRenderer` output, with no static prefix or suffix, and requires internal constituent ranges to reconstitute canonical turns rather than consecutive artificial `User:` entries;
+- its operation message contains no task instruction, duplicate JSON schema, sizing policy, token policy, or platform-internal terminology; and
+- it requires removal of the redundant builder-owned `COMPACTION_RESULT_SHAPE` constant and public export when no caller remains.
+
+Implementation copies those strings exactly rather than paraphrasing them. Launch/provider output-token configuration remains unchanged; the ticket sets no numeric token ceiling. Parser, normalizer, and acceptance retain all structurally valid returned items without count caps.
+
 ## Current-Only Replacement Log (Mandatory)
+
+This is the cumulative clean-cut decision log. Every row except the fixed-count prompt/parser/normalizer/acceptance/lineage-validator row was implemented in SR-004 and is retained here as delivered design history, not pending SR-010 work.
 
 | Obsolete / Candidate Mechanism | Why It Was Considered | Decision | Clean-Cut Replacement / Removal Plan |
 | --- | --- | --- | --- |
 | parse both `episodic_summary` and `episodes`, snake/camel aliases | Old compactor response/tests | Rejected | exact target schema and updated prompt/tests |
+| fixed one-to-three episode, twenty-total-fact, and per-category/membership count policy in prompts/parser/normalizer/acceptance/lineage validator | Earlier attempt to constrain output | Rejected | one quality-first system contract, natural LLM-chosen item counts, all-entry structural parsing/normalization, no count rejection anywhere in accepted publication, and unchanged launch/provider token configuration |
 | normal restore or rebuild of schema-v1-v4 snapshots | Existing persisted snapshots | Rejected | required startup reset deletes them before runtime; bootstrap accepts only schema v5 |
 | compaction/output IDs inside message provenance or snapshot root | Couple continuation messages to derived-memory relationship state | Rejected | message-local compacted-memory kind/range only; lineage tail owns identity |
 | destructive `CompactedMemorySchemaGate` and global compacted-memory manifest authority | Reject older rows before fallback | Rejected | startup migration deletes the four obsolete derived files; normal runtime has neither gate nor manifest authority |
@@ -829,7 +873,7 @@ Missing targets are successful no-ops, so retry is idempotent. The migration doe
 | inferred historical lineage backfill | Pre-lineage rows lack source edges | Rejected | delete those rows; first post-reset compaction is C1 with `previousCompactionId: null` |
 | preserve strategy store mutation while also writing lineage | Smaller edit | Rejected | proposal-only strategy and manager-owned commit |
 | keep server redactor plus core renderer | Reduce Work Evidence change | Rejected | delete server duplicate and use common policy |
-| include old and new compacted memories together | Preserve all summaries | Rejected | each output is complete bounded replacement |
+| include old and new compacted memories together | Preserve all summaries | Rejected | each output is one complete replacement with natural LLM-chosen item counts |
 | generic origin query exposing one ambiguous artifact ID | Simpler query API | Rejected | explicit artifact kind + ID |
 | transaction journal for possible process interruption | Multi-file publication | Rejected | no supported product path; preserve reachable pre-write retry only |
 
@@ -855,12 +899,14 @@ Provider renderers branch from finalized core context and do not sit between con
 
 ## Change / Refactor Sequence
 
+Steps 1–16 record the SR-004 reconciliation sequence already implemented and validated. Steps 17–23 are the pending SR-010 implementation over the user-approved SR-009 intent; they must not begin until renewed architecture `Pass`.
+
 1. Reconcile the existing worktree created after the `ARCH-REV-002` Pass. Preserve aligned proposal/accept/commit, lineage-record/resolver, renderer, and finalizer work; remove or reshape superseded historical-seed/origin/current-pointer pieces including `legacy-compacted-memory-seed-reader.ts`, `CompactedMemoryOrigin`, `compaction_state.json`, pointer APIs, and snapshot identity fields. Do not discard and reimplement aligned work wholesale.
 2. Add/register `ResetPreLineageMemoryAppDataMigration`; make it return `FAILED` for any discovery/deletion failure. Change `AppDataMigrationRunner.runPending()` to persist all attempted required results and throw after a non-startable result. Change the real `startConfiguredServer` catch to log and rethrow before bootstrap/build/listen. Cover existing startable statuses, standalone/team-member discovery, exact deletion, raw preservation, idempotent retry, and fail-closed product behavior.
 3. Remove the semantic schema gate, compacted-memory manifest model/store/runtime authority, historical row/snapshot readers, complete-corpus recovery, reset-only APIs, and all old-schema fixtures/aliases. Make message-only snapshot v5 the only runtime schema.
 4. Add tight core presentation primitives and tests for stable serialization, redaction-before-bounds, deterministic head/tail omission, status derivation, and exact `result: not available`.
 5. Adapt Work Evidence to the common renderer while preserving its external timestamp/Markdown/file/manifest contract; delete `agent-work-trace-redactor.ts`.
-6. Replace compactor result/prompt contract with exact `episodes` schema and bounded normalization. Add the compaction-owned conversation renderer and remove work notes/IDs/prefix-only clamp.
+6. Replace compactor result/prompt contract with exact `episodes` schema and quality-first natural-count normalization. Add the compaction-owned conversation renderer and remove work notes/IDs/prefix-only clamp.
 7. Introduce typed message-local WorkingContext provenance and the finalizer; update ingestion/request append/projector paths so every installed/snapshotted/rendered context is finalized. Update planner units to expand composed user constituents while the manager retains the baseline lineage head outside the IDless proposal.
 8. Add/tighten lineage scope/record/query types, store contract, JSONL file provider, tail lookup, exact output lookup, and archive-manager `archiveExact` completed descriptor. Do not create a state type/file.
 9. Add current-output loader and change compacted-memory projector to accept one explicit lineage-head bundle. Keep Retriever only for unrelated general recall; it never selects current compaction output.
@@ -870,7 +916,14 @@ Provider renderers branch from finalized core context and do not sit between con
 13. Add cycle-safe lineage resolver and server internal explicit-target facade. Do not add GraphQL/UI.
 14. Update launch/factory wiring to pass explicit standalone/team-member lineage scope and resolved runtime/model/provider metadata where available.
 15. Remove all obsolete aliases, historical restore/rebuild paths, complete-corpus fallback, loose provenance, mixed current retrieval, strategy-store seams, gate/manifest/state authority, and duplicate tool renderers. Run structural searches proving forbidden paths are gone.
-16. Validate every UC/DF path, persisted-data decision, and clean-cut removal against AC-001–015.
+16. Validate every UC/DF path, persisted-data decision, and clean-cut removal against AC-001–016.
+17. SR-006/SR-009 incremental reconciliation: replace canonical `agent.md` with the complete origin/personal-style natural exact file in `memory-compactor-prompt-content-contract.md`. Leave `agent-config.json` and launch/provider output-token configuration unchanged.
+18. Reduce `WorkingContextCompactionPromptBuilder` to returning exactly one complete rendered conversation-history block with no static prefix or suffix; make the renderer reuse `WorkingContextFinalizer` over selected visible messages so a composed earlier-summary plus compatible retained/current input reconstitutes as one canonical `User:` entry instead of exposing constituent ranges as consecutive artificial turns; remove duplicate task/schema/sizing text, `COMPACTION_RESULT_SHAPE`, and its unused public export.
+19. Remove episode, total-fact, and category-count slices/rejections from parser, normalizer, and accepted builder. Retain at least one episode, exact fields, per-entry bounds, cleanup/deduplication/noise filtering, deterministic ordering, positive salience, and malformed/truncated-output failure.
+20. Update `compaction-lineage-record.ts`: remove only upper membership-count rejection; retain arrays, non-empty episode membership, ID uniqueness, safe archive filename, schema/scope/predecessor/time/execution/hash validation; define supported prompt audit values `1 | 2`, export current value `2`, preserve the observed reader value, and make new accepted builds use `2`.
+21. Add deterministic >3/>20 coverage through accepted builder -> committer archive/output -> lineage append/read -> current-head exact projection -> typed episode/semantic origin lookup. Add a mixed `v1 -> v2` chain proving audit values are preserved, v2 is current, and recursive origin traverses v1; prove an unsupported prompt audit value is rejected without rewrite or compatibility decoding. Keep unchanged-launch/configuration and canonical-turn coverage plus SCN-019 without exact-count assertions.
+22. Run structural searches proving no fixed-count enforcement remains in current source and no message/snapshot constituent carries `previousCompactionId`; allow fixed counts only in explicitly historical evidence/tests where applicable.
+23. Re-run implementation source review and API/E2E through the normal rework flow.
 
 Temporary seams are allowed only within an implementation commit while tests are being updated. The final tree must not retain dual strategy APIs, dual snapshot schemas, historical readers, dual provenance shapes, or two readable tool formatters.
 
@@ -884,19 +937,17 @@ Temporary seams are allowed only within an implementation commit while tests are
 - **Shared low-level renderer over shared broad event model:** eliminates duplicated policy without coupling WorkingContext and raw replay sources.
 - **Destructive derived-state reset over historical readers/backfill:** yields one clean current runtime and truthful prospective lineage at the intentional cost of discarding sparse pre-lineage derived memory; active/archive raw evidence remains preserved.
 - **No transaction journal:** proportional to verified product paths, but normal multi-file publication is not crash-atomic.
+- **Natural LLM-chosen cardinality over item or token ceilings:** lets the model preserve semantic structure appropriate to the selected history and avoids forced merging/loss. Existing provider/model response constraints remain operational concerns rather than ticket-authored semantic policy.
 
 ## Risks
 
 1. **Commit ordering under unexpected process termination:** the ticket does not promise crash recovery. Archive and output rows must exist before the lineage append that makes a record current; implementation must not imply stronger multi-file atomicity.
-2. **Range drift:** any later message mutation after finalization could invalidate constituent ranges. Finalized messages must be treated as immutable values; every serializer/deserializer validates ranges.
-3. **Exact raw archive membership:** current pruning APIs may silently tolerate missing IDs. The new exact archive method must fail before completing a manifest entry when membership differs.
-4. **Deterministic ID escaping/collision:** compaction IDs can contain unsafe characters. Use one documented stable encoder/hash plus output ordinal and reject duplicate existing IDs.
-5. **Provider metadata resolution:** the current runner metadata omits provider even though the model registry can resolve it. Extend launch resolution with `LLMFactory.getProvider(modelIdentifier)` and fail the compactor launch/metadata path before accepted output if the provider cannot be resolved; never infer it by parsing model text.
-6. **Startup migration discovery and deletion safety:** the reset must cover standalone and team-member run directories, delete only the four approved basenames, preserve raw evidence byte-for-byte, record completion only after all targets are absent, and prevent runtime startup on any failure.
-7. **Semantic bound quality:** one-to-three episodes and twenty facts prevent growth but can lose detail. This is an intentional output contract; tests should verify bounds, not subjective completeness.
-8. **Redaction behavior change:** moving Work Evidence redaction to core must preserve existing secret patterns while replacing silent prefix slicing. Golden tests must compare short values and output envelope.
-9. **Snapshot/server memory-view readers:** ancillary readers that assume v4 metadata may fail. Implementation must inventory and either update current readers or keep them explicitly non-authoritative without a dual runtime shape.
-10. **Scope wiring for team members:** `runId` and `memberId` must come from explicit `MemberTeamContext`; path parsing is forbidden.
+2. **Canonical-turn reconstitution:** reusing `WorkingContextFinalizer` over selected compactor-visible messages must preserve assistant/tool/media boundaries and the existing constituent ranges. Focused tests must prove it does not mutate the installed/snapshotted context.
+3. **Semantic allocation quality:** removing numeric item caps avoids forced semantic loss but cannot guarantee that every model chooses an optimal semantic structure. Deterministic tests prove prompt policy, unchanged launch configuration, and no hidden count loss; SCN-019 checks independently verifiable continuation anchors and phase separation without asserting a particular item count. Token-truncated malformed JSON remains a pre-write compactor failure/retry.
+4. **Mixed prompt audit history:** readers must not normalize a value-1 record into value 2 or reject a valid mixed chain. Focused record/store/projection/resolver coverage protects truthful immutable audit metadata.
+5. **Post-output structural rejection remains possible:** removing the count-only lineage gate does not make multi-file publication transactional or waive other lineage invariants. Structurally invalid records remain rejected under the existing ordered commit contract; this ticket does not add a recovery journal without a supported product path.
+
+Exact archive membership, deterministic output IDs, provider metadata resolution, startup migration safety, shared redaction/head-tail presentation, v5-only restore, and explicit team-member scope wiring were implemented and validated in SR-004. They are preserved invariants, not pending SR-010 refactors.
 
 ## Guidance For Implementation
 
@@ -905,20 +956,21 @@ Temporary seams are allowed only within an implementation commit while tests are
 - Make proposal and finalizer functions deterministic and unit-testable. No proposal method may write storage.
 - Keep message-local provenance structural: compacted-memory constituents carry only kind/ranges; retained/current constituents may carry the raw IDs needed for selection. No snapshot/message field carries compaction, episode, semantic, lineage, or current-state identity.
 - The strategy returns only selected new raw IDs, retained messages, normalized content, and execution metadata. `MemoryManager` retains the baseline lineage head outside the proposal. The strategy must not assign output IDs or build accepted lineage/context.
-- Resolve provider through `LLMFactory.getProvider(modelIdentifier)` at the compactor launch boundary and carry it in `CompactionAgentExecutionMetadata`. If registry resolution fails, fail before accepted output rather than persisting a guessed or absent provider.
-- Validate lineage on write: non-empty R(n), completed archive manifest entry, non-empty 1–3 episode list, max 20 semantic IDs, exact output ID existence, optional predecessor existence/scope match, and no duplicate `compactionId`.
+- Preserve the implemented provider resolution through `LLMFactory.getProvider(modelIdentifier)` and `CompactionAgentExecutionMetadata`; do not alter launch or output-token configuration.
+- Validate lineage on write: non-empty R(n), completed archive manifest entry, at least one non-empty episode, unique produced IDs, safe run-relative archive filename, exact output existence, predecessor/scope/time/execution/integrity correctness, and no duplicate `compactionId`. Do not impose episode/semantic/category maxima. `promptContractVersion` is audit metadata: accept/preserve supported values 1/2 and write current value 2.
 - Commit a normal accepted compaction in this exact order: archive R(n), persist output rows, append the unique next lineage record as the current head, install the finalized context, persist message-only v5 snapshot, then clear pending state. Append must reject a duplicate ID or predecessor unequal to the prior tail.
 - Validate state on read: the lineage tail and all output rows it lists must exist in the same scope. Missing referenced current state is an integrity failure, not a fallback to top-K history.
-- Register the required reset in the existing app-data migration boundary. Delete exactly `episodic.jsonl`, `semantic.jsonl`, `working_context_snapshot.json`, and `compacted_memory_manifest.json`; missing files are successful no-ops; raw traces and raw-trace manifests are never deletion targets. A reset discovery/target failure must be `FAILED`, not warning-success. Change `AppDataMigrationRunner.runPending()` to persist all attempted results and then throw a typed required-migration failure whenever a required definition is non-startable. Change the current `startConfiguredServer` catch to log and rethrow that error before `bootstrapBuiltInAgents`, `buildApp`, or `app.listen`; verify all three remain uncalled. Preserve existing `SUCCEEDED` and `SUCCEEDED_WITH_WARNINGS` as startable.
-- Remove `CompactedMemorySchemaGate`, its clear/delete path, the compacted-memory manifest runtime model, historical dictionary access, and all pre-v5 snapshot decoding/rebuild behavior. No current runtime file may import or branch on an old schema.
-- Replace old gate/reset/restore fixtures with product-path coverage that starts at `startConfiguredServer` and proves exact standalone/team-member deletion, raw byte preservation, idempotent retry, durable `FAILED`, runner throw, caller rethrow, and bootstrap/build/listen non-invocation. Separately prove v5 message-only restore, absent/empty-lineage no-memory initialization, lineage-tail exact-output loading, and broken referenced state as integrity failure without fallback.
+- Preserve the implemented startup reset, runner aggregation/throw, and `startConfiguredServer` log/rethrow boundary unchanged. No current runtime file may recreate `CompactedMemorySchemaGate`, manifest authority, historical dictionary access, or pre-v5 restore behavior.
+- Preserve the delivered product-path reset/v5 restore coverage; SR-010 does not rewrite or broaden it.
 - Cover the lineage store directly: absent/empty -> no head; first append requires both expected predecessor and record predecessor `null`; later append requires both to equal the prior tail; the appended record becomes the new read tail; duplicate `compactionId`, stale expected predecessor, mismatched record predecessor, and fork attempts are rejected without a write. Prove no `compaction_state.json` or replacement manifest is created.
 - Make origin traversal iterative or recursion-bounded with a visited set. A cycle or missing referenced current record/archive/output is an integrity error; an unknown typed output ID is `not_found`.
 - For user constituent ranges, define whether indices are JavaScript UTF-16 code-unit offsets and test multi-byte/emoji content consistently. The finalizer and serializer must use the same convention.
 - Redact before calculating omission. The marker count is the number of characters removed from the redacted serialized value. Preserve non-empty head and tail when the limit permits; retain complete values at or below the limit.
 - Native compaction passes only settled result/error outcomes. Work Evidence may pass `no_outcome` only after its source adapter has proven no terminal record exists.
+- `agent.md` owns the complete concise origin/personal-style natural task plus exact JSON and quality-first semantic contract; the operation user message must byte-equal exactly one selected rendered history as defined by `memory-compactor-prompt-content-contract.md`, with one `User:` entry per canonical user turn rather than per internal constituent. `agent-config.json`, launch resolution, and provider output-token configuration remain unchanged.
+- Parse every structurally valid returned episode/fact instead of slicing by count. Keep per-entry character limits, exact fields, cleanup, deduplication, noise filtering, deterministic order, and positive salience such as `Math.max(1, base - index)`. Accepted and lineage validation require at least one episode and structural/reference correctness, not maximum item counts. Prove persistence/read/projection/origin rather than stopping at proposal construction.
 - The compactor gets one task-level user message containing exactly one escaped `<conversation_history>` boundary. It never gets `Assistant work notes`, LLM reasoning, raw IDs, timestamps, call IDs, or generated Work Evidence Markdown.
 - Escape source-originated exact `<conversation_history>` and `</conversation_history>` sequences after redaction/head-tail bounding by replacing their angle brackets with `&lt;`/`&gt;`. The application-owned wrapper is added only after every source value has been escaped, so exactly one unescaped opening and closing boundary remain. XML tag matching is case-sensitive; tests must cover both literal reserved sequences and oversized values.
 - Keep existing Event Monitor active-only calls and Work Evidence archive-plus-active calls separate. Searches/tests should prove no snapshot fallback enters Event Monitor and no WorkingContext enters Work Evidence.
 - Preserve provider-native structured tool/media state through canonical finalization and v5 snapshot round-trip. Provider renderers should become thinner, not gain repair branches.
-- Update/remove tests alongside clean-cut APIs; do not retain production aliases solely to keep old fixtures passing.
+- Update/remove only tests and exports affected by the SR-010 prompt/count/audit delta; do not retain production aliases solely to keep old fixtures passing.

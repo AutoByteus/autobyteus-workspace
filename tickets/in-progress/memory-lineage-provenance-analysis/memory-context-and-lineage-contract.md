@@ -2,42 +2,44 @@
 
 ## 1. Status And Authority
 
-- Status: Refined approved design basis; SR-004 revised 2026-07-30 for lineage-tail current authority, message-only snapshot ownership, and fail-closed startup
-- Date: 2026-07-30
+- Status: User-approved behavior; SR-010 technical correction ready for renewed architecture review after `ARCH-REV-005`
+- Date: 2026-07-31
 - Task: `memory-lineage-provenance-analysis`
-- Implementation: This contract is approved intended-behavior input to the design; implementation still requires the reviewed design package.
-- Governing requirements: REQ-001 through REQ-011
-- Governing acceptance criteria: AC-001 through AC-015
+- Implementation: SR-004 passed architecture and is implemented/validated. SR-006/SR-009 define the user-approved natural-count, exact-system-prompt, history-only payload, and canonical-turn change. SR-010 completes its accepted lineage path, prompt audit versioning, current-evidence basis, and message/lineage separation without changing that intent or launch configuration. Renewed architecture review is required before implementation.
+- Governing requirements: REQ-001 through REQ-012
+- Governing acceptance criteria: AC-001 through AC-016
 - Governing spine/ownership supplement: `use-case-data-flow-spine-map.md`
+- Governing exact prompt-content supplement: `memory-compactor-prompt-content-contract.md`
 - Explicit exclusion: Work-evidence chunking and fine intra-input localization are not defined by this ticket.
 
-This contract defines the behavioral meaning of raw activity traces, active trace projection, recurrent work evidence, bounded compaction outputs, working context, snapshots, compaction, provider rendering, and lineage. `use-case-data-flow-spine-map.md` is the normative path/ownership companion: it maps every use case below to a complete production or approved target-production spine. If a later design or implementation conflicts with either normative artifact, the conflict must return to requirements clarification rather than being resolved silently in code.
+This contract defines the behavioral meaning of raw activity traces, active trace projection, recurrent work evidence, quality-first compaction outputs with LLM-chosen natural episode/fact counts, working context, snapshots, compaction, provider rendering, and lineage. `use-case-data-flow-spine-map.md` is the normative path/ownership companion: it maps every use case below to a complete production or approved target-production spine. If a later design or implementation conflicts with either normative artifact, the conflict must return to requirements clarification rather than being resolved silently in code.
 
 ### 1.1 Exact ticket implementation boundary
 
-This ticket changes seven product behaviors and no others:
+The cumulative ticket owns seven behaviors; SR-004 already implements the baseline, while SR-010 changes only the bounded prompt/cardinality/canonical-turn/audit delta within them:
 
 1. each successful native structured compaction archives exactly its selected raw records in one immutable raw-trace archive file, persists its output rows, and publishes one reference-only `CompactionLineageRecord` keyed by the existing successful `compactionId`, relating optional `previousCompactionId` plus that file's existing run-relative `file_name` to produced episode/semantic IDs; it repeats neither content nor raw IDs and introduces no parallel activity/generation ID;
-2. the compactor strategy returns an IDless bounded **complete replacement memory proposal** containing one through three coarse episodes plus bounded semantic facts, while `MemoryManager` retains the application-owned baseline lineage head, reuses the pending `compactionId`, assigns episode/semantic IDs, constructs/validates the accepted candidate, and records the relation;
+2. the compactor strategy returns an IDless **complete replacement memory proposal** whose LLM-chosen natural episode/fact counts form the smallest sufficient semantic structure for reliable continuation; this ticket sets neither item-count targets nor an output-token ceiling, while `MemoryManager` retains the application-owned baseline lineage head, reuses the pending `compactionId`, assigns episode/semantic IDs, constructs/validates the accepted candidate, and records the relation;
 3. an internal run-scoped resolver answers direct and recursive origin/time for current-format episode and semantic IDs, returns `not_found` for unknown artifacts, and treats a broken referenced chain as an integrity error;
 4. replacement `WorkingContext` is canonically composed before snapshot/render, contains only the memory output listed by the last successful lineage record, and preserves compatible-user, assistant/tool, media, and message-local constituent boundaries;
 5. one required idempotent startup app-data migration removes pre-lineage `episodic.jsonl`, `semantic.jsonl`, `working_context_snapshot.json`, and `compacted_memory_manifest.json` from standalone/team-member runs while retaining active/archive raw traces and manifests; normal runtime supports only schema-v5 message snapshots/current-format memory, and the absent/empty lineage file or its last successful record is the sole no-memory/current-memory authority; and
 6. the compactable logical WorkingContext prefix—including the existing compacted-memory user region when present and the newly selected settled activity it influenced—is rendered in natural order inside exactly one application-owned `<conversation_history>...</conversation_history>` boundary, without a separate mechanical prior-memory section; every settled call/result group appears as one straightforward `Tool` block containing `name`, `status`, `arguments`, and exactly one `result` or `error`; and
 7. native compaction and generated Work Evidence reuse a tight core-owned visible-value/readable-tool presentation capability for deterministic serialization, redaction, and configurable explicit head/tail omission, while WorkingContext planning/XML construction and raw historical replay/timestamped Markdown remain separately owned.
 
-The current flow is:
+The **historical pre-SR-004** flow excluded current memory, performed strategy-owned writes, used mixed retrieval, and lacked lineage. That flow is removed and is not the current baseline.
+
+The actual implemented SR-004 flow is:
 
 ```text
-selected natural WorkingContext units
--> existing synthetic memory unit is excluded by the planner
--> LLM returns one episodic_summary + semantic arrays
--> application appends memory without compaction-output lineage
--> selected raw records archive
--> projector chooses a bounded mix across durable rows
--> snapshot/render
+current lineage-tail output M(n-1) + selected raw-backed R(n)
+-> reasoning-free XML-bounded conversation renderer
+-> duplicated fixed-count system + operation policy
+-> parser/normalizer/accepted builder enforce 1–3/20
+-> manager-owned archive -> output -> lineage -> context -> v5 snapshot
+-> lineage normalization independently enforces 1–3/20 and prompt version 1
 ```
 
-The target flow is:
+The pending SR-010 target flow is:
 
 ```text
 compactable logical WorkingContext prefix
@@ -48,15 +50,17 @@ compactable logical WorkingContext prefix
      (no reasoning/work-notes/backend IDs or synthetic timestamps)
 -> enclose the complete rendered prefix once in
    <conversation_history>...</conversation_history>
+-> built-in Memory Compactor runs with its existing launch/provider configuration unchanged
 -> LLM returns one complete replacement output M(n)
-     (1..3 episodes + at most the accepted semantic total)
+     (smallest sufficient episode set + continuation-critical facts; natural counts)
 -> strategy returns one IDless content/selection/execution proposal
 -> MemoryManager validates the proposal/baseline, reuses pending compactionId,
    retains/verifies the baseline lineage head, assigns episode/semantic IDs,
    and builds/validates the accepted candidate
 -> archive R(n) exactly once in one complete immutable raw-trace archive file
 -> persist episode/semantic output rows comprising M(n)
--> publish one reference-only CompactionLineageRecord C(n)
+-> normalize and publish one reference-only CompactionLineageRecord C(n)
+     (no upper output-membership count; promptContractVersion: 2)
      compactionId: C(n)
      inputs: optional previousCompactionId C(n-1)
              + raw_traces_XXXXXX.jsonl containing R(n)
@@ -68,9 +72,9 @@ compactable logical WorkingContext prefix
 -> renderer translates the same logical context
 ```
 
-Raw activity capture, active-only Event Monitor behavior, generated Work Evidence source/timestamp/Markdown/file/manifest contracts, and storage-only external-runtime compaction behavior remain unchanged. Generated Work Evidence does change one visible-value behavior: silent 20,000-character prefix-only clipping becomes explicit configurable head/tail omission. The generated Markdown file is not passed to the compactor; both consumers reuse only the core presentation capability through their own source adapters. This contract does not add a provenance screen to the frontend.
+Raw activity capture, active-only Event Monitor behavior, generated Work Evidence source/timestamp/Markdown/file/manifest contracts, and storage-only external-runtime compaction behavior remain unchanged. SR-004 already replaced historical silent 20,000-character prefix-only clipping with explicit configurable head/tail omission. The generated Markdown file is not passed to the compactor; both consumers reuse only the core presentation capability through their own source adapters. SR-010 does not modify that delivered presentation boundary. This contract does not add a provenance screen to the frontend.
 
-There is no separate tool-result condenser in the current production strategy or in this ticket. Settled tool-call/result groups are rendered directly into the natural compactor conversation history as `Tool` blocks; the latest live/incomplete tool group is protected from compaction. The target replaces whole-item or value-level prefix-only clamping with deterministic variable-field head/tail clipping and an explicit omitted-character marker/count.
+There is no separate tool-result condenser in the current production strategy or in this ticket. Settled tool-call/result groups are rendered directly into the natural compactor conversation history as `Tool` blocks; the latest live/incomplete tool group is protected from compaction. The implemented renderer uses deterministic variable-field head/tail omission with an explicit omitted-character marker/count.
 
 ## 2. Terminology Contract
 
@@ -84,9 +88,9 @@ There is no separate tool-result condenser in the current production strategy or
 | Generated Work Evidence | Regenerable timestamped Markdown projected from explicitly enumerated raw archive-plus-active sources through historical replay | Yes, through its raw sources; the Markdown itself is derived | The Markdown is regenerated. Its source/order/file/manifest contract remains; oversized visible values use the shared head/tail omission policy | Explicit work-evidence consumers; the current caller remains unchanged |
 | Readable Tool entry | A tight presentation value containing `name`, `status`, `arguments`, and exactly one outcome variant, `result` or `error`; it contains no source timestamps, raw IDs, tool-call IDs, file metadata, or WorkingContext mechanics | No | Built independently by each source adapter, then serialized/redacted/bounded by the core presentation capability | Compactor conversation history and generated Work Evidence |
 | Compaction lineage record | One application-owned, immutable, reference-only derivation record keyed by the existing successful `compactionId`; it relates optional `previousCompactionId` and one completed raw-trace archive `file_name` to produced episode/semantic IDs | No | One record per successful native compaction; contains straightforward existing identifiers/metadata/hashes but no parallel activity/generation ID, repeated raw IDs, or copied evidence, memory, or prompt content | Compaction-output ownership and lineage |
-| Compaction output bundle | The bounded episode/semantic output of one successful compaction; the successful `compactionId` is its only bundle-level identity | No | The bundle listed by the last successful lineage record is current; older outputs remain immutable but inactive for default projection | WorkingContext projection and provenance |
-| Episodic memory | One of one through three coarse accounts in a successful compaction's replacement output | No | Its ID is listed once in the producing `CompactionLineageRecord`; content may become inactive when a newer compaction succeeds | Recall, recurrent compaction, lineage |
-| Semantic memory | A bounded fact in the same successful compaction output | No | Its ID is listed once in the producing `CompactionLineageRecord`; content may become inactive when a newer compaction succeeds | Recall, recurrent compaction, lineage |
+| Compaction output bundle | The quality-first episode/semantic output of one successful compaction, with the natural number of items chosen by the LLM; the successful `compactionId` is its only bundle-level identity | No | The bundle listed by the last successful lineage record is current; older outputs remain immutable but inactive for default projection | WorkingContext projection and provenance |
+| Episodic memory | One concise account in the smallest sufficient episode set of a successful compaction's replacement output | No | Its ID is listed once in the producing `CompactionLineageRecord`; content may become inactive when a newer compaction succeeds | Recall, recurrent compaction, lineage |
+| Semantic memory | A continuation-critical categorized fact in the same successful compaction output | No | Its ID is listed once in the producing `CompactionLineageRecord`; content may become inactive when a newer compaction succeeds | Recall, recurrent compaction, lineage |
 | Provenance resolver | Internal run-scoped read boundary that accepts explicit artifact kind + ID and traverses the matching current-format episode/fact output -> producing `compactionId` -> raw-trace archive file/`previousCompactionId` recursively | No | Read-only; returns complete recorded origin, `not_found`, or a current-state integrity error | Agent/backend origin questions |
 | WorkingContext | The ordered provider-neutral `Message` sequence owned by `MemoryManager` and used to prepare the next LLM request | No | Replaced or appended as current operational state | Request assembly and compaction |
 | Working-context snapshot | Persisted serialization of the current finalized `WorkingContext` messages | No | Latest snapshot is replaced on successful context mutation; schema v5 adds finalized message-local constituent ranges but no compaction, episode, semantic, lineage, or current-state identity. Pre-v5 snapshots are removed by the startup reset | Normal resume/reconstruction |
@@ -101,6 +105,9 @@ Normative terminology decisions:
 5. “Replacement” means current-projection replacement, not deletion or historical falsification: older successful compaction outputs remain immutable for origin traversal.
 6. “Compactor conversation history” refers only to the bounded LLM-facing view of selected WorkingContext, not the generated Work Evidence Markdown or another store. Exactly one outer `<conversation_history>` pair identifies its extent.
 7. “Readable Tool entry” is the shared presentation seam, not a shared source event. WorkingContext and raw historical replay each adapt into the tight entry independently; consumer timestamps, XML/Markdown envelopes, file metadata, and selection policy do not enter the shared shape.
+8. “Smallest sufficient” optimizes reliable continuation, not the fewest possible objects in isolation: unrelated task phases remain distinct when merging them would obscure state/outcomes, while chatter, repetition, and obsolete state do not earn separate entries.
+9. “Natural output sizing” means the LLM chooses how many episodes and facts are needed to preserve continuation-critical meaning. This ticket defines no item-count target and no numeric output-token ceiling; existing model/provider launch behavior remains unchanged.
+10. “Prompt contract version” is immutable producing-contract audit metadata, not a lineage schema switch. Value `1` identifies the implemented SR-004 fixed-count system/duplicated-operation contract; value `2` identifies the approved natural system prompt, history-only operation payload, and canonical-turn contract. New records write `2`; readers accept and preserve supported `1 | 2` mixed chains without rewriting or decoding content differently.
 
 ## 3. Authoritative Boundaries
 
@@ -189,13 +196,14 @@ baseline finalized WorkingContext
      each Tool block: name + status + arguments + result-or-error
    inside <conversation_history>...</conversation_history>
 -> compactor returns a complete replacement output M(n)
-     1..3 episodes + bounded semantic facts
+     smallest sufficient episode set + continuation-critical facts
+     with natural LLM-chosen episode and fact counts
 -> strategy returns an IDless proposal:
      normalized content + selected new raw IDs + retained continuation
      + execution metadata
 -> MemoryManager acceptance reuses C(n), assigns episode/semantic IDs,
      builds the accepted lineage/replacement-context candidate,
-     and validates bounded output plus complete tool/message protocol
+     and validates structurally correct output plus complete tool/message protocol
 -> archive exactly R(n) in one complete immutable raw-trace archive file
 -> persist episode/semantic output rows; retain older outputs as inactive history
 -> publish one immutable reference-only CompactionLineageRecord C(n)
@@ -210,7 +218,7 @@ baseline finalized WorkingContext
 
 The lineage append occurs only after the completed archive and output rows exist. A lineage record denotes a successfully accepted compaction; appending it makes it the sole current head. The store rejects a duplicate ID or a `previousCompactionId` that does not equal the prior tail. This is the normal in-process ordering invariant; it does not introduce a transaction journal or a process-crash recovery contract.
 
-The compactor output is a self-contained replacement checkpoint, not a delta. Its prompt must preserve still-valid prior memory, incorporate new decisions/results, update superseded understanding, retain important open work/artifacts/preferences, and omit obsolete or resolved state within the output bounds. The prior compacted memory is not described to the compactor as a storage object or “memory to revise”; it appears as the natural user-role compacted-memory region that was part of the working LLM's logical conversation context, followed by R(n) in order. The application-owned baseline lineage head—not the prompt grammar or snapshot message—supplies `previousCompactionId`. `Message.reasoning_content`, raw reasoning records, `Assistant work notes`, raw/turn/tool-call IDs, backend bookkeeping, and timestamps not present in logical WorkingContext do not enter the rendered conversation history.
+The compactor output is one self-contained summary of everything still needed to continue, not only the latest changes. Its prompt must preserve still-valid earlier information, incorporate new decisions/results, update understanding that is no longer correct, retain important open work/artifacts/preferences, and omit obsolete or resolved state. The prior compacted memory is not described to the compactor as a storage object or “memory to revise”; it appears as part of the same natural conversation history followed by R(n) in order. The application-owned baseline lineage head—not the prompt grammar or snapshot message—supplies `previousCompactionId`. `Message.reasoning_content`, raw reasoning records, `Assistant work notes`, raw/turn/tool-call IDs, backend bookkeeping, and timestamps not present in logical WorkingContext do not enter the rendered conversation history.
 
 If a current user input was recorded as raw activity before pending compaction but was not yet appended to `WorkingContext`, it is not part of R(n) or the archival set. After compaction, it is appended through canonical composition and the final schema-v5 snapshot is updated again before rendering.
 
@@ -239,7 +247,7 @@ C1000(previous C999; input M999 + raw R1000; output M1000 current)
 
 After C3, the lineage tail is C3 and WorkingContext contains M3, not `M1 + M2 + M3` and not a top-K mixture across compaction outputs. Older outputs remain persisted for provenance/audit but are not included by default in the current LLM context.
 
-Each successful compaction output is intrinsically bounded: one through three episodes and at most the accepted semantic total, currently twenty facts, with existing per-entry content limits. Consequently M1000 has the same maximum projection shape as M1. Each lineage record remains small because it stores one optional `previousCompactionId`, one raw-trace archive `file_name`, and produced episode/semantic IDs—not raw membership/content or a copied transitive ancestor list.
+Each successful compaction produces one complete replacement response with LLM-chosen natural episode and fact counts. M1000 does not grow merely because C1–C999 exist: it replaces rather than concatenates older outputs. This ticket introduces no numeric output-token ceiling and leaves existing model/provider output behavior unchanged. Each lineage record remains small because it stores one optional `previousCompactionId`, one raw-trace archive `file_name`, and produced episode/semantic IDs—not raw membership/content or a copied transitive ancestor list.
 
 Recursive origin follows direct edges with cycle protection and deduplication:
 
@@ -287,10 +295,12 @@ The frontend Event Monitor is therefore not reconstructed from `working_context_
 - INV-016 — Older successful compaction outputs remain immutable historical derivations after becoming inactive; projection supersession does not delete, rewrite, or invalidate their recorded content or lineage.
 - INV-017 — Recursive origin distinguishes direct input from transitive roots. Unknown artifacts return `not_found`; missing/inconsistent state inside a referenced current-format chain fails integrity validation rather than fabricating ancestry.
 - INV-018 — Every successful compaction has a non-empty newly selected raw-backed natural input R(n). The prior output M(n-1) is a recurrent seed but never by itself makes a new compaction eligible and is never re-archived.
-- INV-019 — The compactor receives one naturally ordered rendering of the compactable logical WorkingContext prefix, not separate prior-memory and evidence sections. Exactly one application-generated `<conversation_history>...</conversation_history>` pair encloses the projected compacted-memory user region, when present, followed by selected R(n); source content cannot create or close that boundary because reserved delimiter sequences are escaped. The enclosed history uses visible `User`, `Assistant`, and `Tool` entries. Each `Tool` entry contains only `name`, `status`, `arguments`, and exactly one `result` or `error`; it is not labeled as an assistant tool call. The history never includes provider-private reasoning, `Assistant work notes`, synthetic timestamps, or backend/raw/tool-call IDs, and never silently discards an oversized field's tail.
+- INV-019 — The compactor receives one naturally ordered rendering of the compactable logical WorkingContext prefix, not separate prior-memory and evidence sections. Exactly one application-generated `<conversation_history>...</conversation_history>` pair encloses the projected compacted-memory user region, when present, followed by selected R(n); source content cannot create or close that boundary because reserved delimiter sequences are escaped. The enclosed history uses visible `User`, `Assistant`, and `Tool` entries and reflects canonical turns rather than internal constituent splits: an earlier summary composed with adjacent compatible retained/current user content is one `User:` entry, never two consecutive artificial `User:` labels. Each `Tool` entry contains only `name`, `status`, `arguments`, and exactly one `result` or `error`; it is not labeled as an assistant tool call. The history never includes provider-private reasoning, `Assistant work notes`, synthetic timestamps, or backend/raw/tool-call IDs, and never silently discards an oversized field's tail.
 - INV-020 — Native compaction and generated Work Evidence share only a tight core presentation capability for visible-value serialization/redaction, readable Tool-body formatting, and configurable head/tail omission. WorkingContext selection/XML task composition and raw historical replay/timestamped Markdown/file generation remain separately authoritative; neither consumer reads the other's output or imports its orchestration.
 - INV-021 — The startup reset removes only pre-lineage episodic/semantic JSONL, WorkingContext snapshots, and compacted-memory manifests. It preserves raw traces/manifests, is idempotent, blocks agent runtime on a failed removal, and is the only component that knows the obsolete derived-state format.
 - INV-022 — `compaction_lineage.jsonl` contains successful compactions only. Its last valid record is the sole current compaction; an absent/empty file means none. Appending requires a unique `compactionId` and `previousCompactionId` equal to the prior head, so no `compaction_state.json`, current pointer, snapshot identity, or replacement manifest duplicates that state.
+- INV-023 — Compaction semantic sizing is quality-first and cardinality-free. `agent.md` owns the complete natural summarization task and stable JSON/quality contract; the operation user message is exactly one renderer-produced conversation-history block; parser, normalizer, accepted builder, and lineage record normalization retain every structurally valid item without episode, total-fact, per-category, or output-membership count truncation/rejection. At least one episode, exact fields, per-entry safeguards, cleanup/deduplication/noise filtering, deterministic positive salience, unique IDs, safe archive filename, scope/predecessor/time/execution/integrity validation remain required. Launch/provider configuration remains unchanged.
+- INV-024 — Message-local constituents carry only local kind/range plus raw-backed natural refs. `MemoryManager` separately captures/verifies the lineage head and maps it to `previousCompactionId`. Prompt contract version 1/2 lives only in lineage execution audit metadata; new records use 2, and readers preserve supported mixed values.
 
 ## 5. Canonical Message Composition Contract
 
@@ -317,9 +327,11 @@ Normative rules:
 Compacted memory is context, not a new request. Its wording must clearly establish that role, for example:
 
 ```text
-You are continuing an ongoing task. Here is the compacted memory of earlier work:
+You are continuing an ongoing task. Here is a concise summary of earlier work to help you resume.
+Use it as context for previous reasoning, actions, findings, decisions, constraints, and open work.
 
-<compacted memory>
+Earlier progress:
+1. <earlier-work summary>
 ```
 
 ### 5.2 First retained continuation is a compatible user message
@@ -327,9 +339,11 @@ You are continuing an ongoing task. Here is the compacted memory of earlier work
 When the first non-system retained message is a compatible user message, compacted memory and that message are represented as one canonical user turn:
 
 ```text
-You are continuing an ongoing task. Here is the compacted memory of earlier work:
+You are continuing an ongoing task. Here is a concise summary of earlier work to help you resume.
+Use it as context for previous reasoning, actions, findings, decisions, constraints, and open work.
 
-<compacted memory>
+Earlier progress:
+1. <earlier-work summary>
 
 The next retained user message was:
 
@@ -347,9 +361,11 @@ When the first retained continuation is assistant/tool history, insert one stand
 When compaction produces system + compacted memory and request assembly then appends the current user input, compose one canonical user turn:
 
 ```text
-You are continuing an ongoing task. Here is the compacted memory of earlier work:
+You are continuing an ongoing task. Here is a concise summary of earlier work to help you resume.
+Use it as context for previous reasoning, actions, findings, decisions, constraints, and open work.
 
-<compacted memory>
+Earlier progress:
+1. <earlier-work summary>
 
 The user's current message is:
 
@@ -372,12 +388,9 @@ Do not coalesce:
 
 ### 5.6 Compactor input rendered conversation history
 
-The server invokes the Memory Compactor with one task-level user message. The task describes the operation naturally as summarizing earlier conversation history so the same work can continue after a context refresh. The compactable logical WorkingContext prefix is enclosed once by an XML-style outer boundary:
+The server invokes the Memory Compactor with one user message. The complete natural task plus stable JSON/schema/sizing policy lives only in the product-managed system prompt. The operation user message contains only the compactable logical WorkingContext prefix enclosed once by an XML-style outer boundary:
 
 ```text
-Summarize the earlier conversation history below so the same work can continue after a context refresh.
-Preserve user goals, decisions, progress, findings, artifacts, tool outcomes, open questions, and next steps.
-
 <conversation_history>
 User:
 You are continuing an ongoing task. Here is a concise summary of earlier work to help you resume.
@@ -386,8 +399,8 @@ Use it as context for previous reasoning, actions, findings, decisions, constrai
 Earlier progress:
 1. <projected compacted-memory episode>
 
-User:
-<selected later user content>
+The user's current message is:
+<adjacent selected current-user content>
 
 Assistant:
 <selected visible assistant content>
@@ -408,7 +421,8 @@ Normative rules:
 
 - The rendered content is the **compactable logical conversation prefix**, not a dump of storage objects and not the entire provider request. Leading system messages, retained recent suffix, a current user input not yet appended to WorkingContext, and live/incomplete tool protocol remain outside the compactor input according to the planner contract.
 - When M(n-1) exists, its projected compacted-memory user region is included in its actual first non-system logical position, followed by selected R(n). It is not extracted, duplicated, or labeled as “current memory,” “memory to revise,” or a separate evidence seed.
-- Internal typed constituent provenance still identifies the producing `previousCompactionId` and independently selected natural raw refs. The continuous LLM-facing transcript does not weaken the application-owned lineage/archive distinction.
+- Rendering preserves canonical message turns. If the projected earlier-summary constituent and adjacent compatible retained/current user constituent were composed into one canonical user turn, they appear under one `User:` label with their natural retained/current framing. The renderer must not expand those internal constituent ranges into consecutive artificial `User:` entries. An intervening assistant or tool turn remains a real boundary.
+- Internal typed constituent provenance identifies only message-local kind/ranges and the independently selected natural constituents' raw refs. It carries no producing or previous compaction identity. Separately, `MemoryManager` captures/verifies the lineage head and maps it to `previousCompactionId` during acceptance. The continuous LLM-facing transcript does not weaken that application-owned lineage/archive distinction.
 - Exactly one application-generated `<conversation_history>` opening tag and one matching closing tag wrap the complete selected prefix. Entries inside it are not individually wrapped. The tag is a prompt boundary, not a persisted evidence format.
 - Before insertion, source-originated literal `<conversation_history>` and `</conversation_history>` sequences are escaped so user, assistant, or tool content cannot imitate or prematurely close the application-owned boundary. Boundary escaping affects only the rendered prompt view.
 - Visible user and assistant content remains. `Message.reasoning_content`, raw reasoning, provider-private thinking, and the label `Assistant work notes` are excluded. Provider-required reasoning may remain in WorkingContext/provider continuation state; exclusion here does not mutate it.
@@ -417,10 +431,11 @@ Normative rules:
 - Generated Work Evidence Markdown is not read by native compaction. Both consumers use the same core visible-value/readable-tool presentation capability, but native compaction adapts selected WorkingContext while Work Evidence adapts raw historical replay.
 - Shared redaction runs before length budgeting. The compactor's configured bound applies independently to each variable message, argument, result, or error value—not to the whole Tool block—using deterministic head-and-tail preservation around exactly one `… [N characters omitted] …` marker. `N` equals the length removed from the redacted serialized value. Prefix-only or silent clipping is forbidden.
 - This is deterministic presentation/budget protection. It does not call another model, create a tool-result summary, persist a new evidence copy, or change coarse whole-input provenance.
+- The complete natural target `agent.md` and exact history-only builder composition live in `memory-compactor-prompt-content-contract.md`. The operation user message contains no task text, JSON schema, episode/fact sizing policy, or platform-internal terminology, preventing drift between prompt and payload.
 
 ### 5.7 Structured compactor output
 
-The target LLM response is content-only and bounded:
+The target LLM response is content-only and quality-first, with the natural number of episodes and facts chosen by the LLM:
 
 ```json
 {
@@ -438,13 +453,14 @@ The target LLM response is content-only and bounded:
 Normative rules:
 
 - the compactor input is one natural rendering of the selected logical WorkingContext prefix: projected M(n-1) user region when present, followed by selected settled R(n);
-- the response is a complete bounded replacement output, not a delta against the prior memory;
-- the prompt directs the LLM to retain still-valid prior state, integrate new work, and express the latest consolidated understanding without returning old/new bundle identifiers;
-- `episodes` contains at least one and at most three non-empty coarse summaries;
-- at most twenty semantic facts total are accepted across the existing categories, with deterministic category/entry normalization and existing per-entry content bounds;
+- the response is one complete replacement output, not a delta against the prior memory;
+- the system prompt directs the LLM to retain still-valid prior state, integrate new work, and express the latest consolidated understanding without returning old/new bundle identifiers;
+- `episodes` contains at least one non-empty summary and uses the smallest sufficient set to preserve distinct task phases, important outcomes, and current state; unrelated work must not be conflated merely to reduce count, while chatter/repetition must not create episodes;
+- fact counts are chosen naturally by the LLM. Preserve continuation-critical facts, prioritizing constraints, decisions and rationale, unresolved work, user preferences, and important artifacts; retain deterministic category/entry normalization and existing per-entry safeguards;
+- `agent-config.json`, runtime/model resolution, and provider output-token configuration remain unchanged; this ticket adds no numeric completion ceiling;
 - the response contains no raw IDs, snapshot IDs, activity IDs, evidence labels, timestamps, or source citations;
 - `MemoryManager` captures/verifies the lineage head, reuses the pending `compactionId`, assigns episode/semantic IDs, builds the accepted candidate, records direct-input edges, and records source/derivation times; and
-- a missing/empty/malformed episode list is rejected through the existing parser-failure path, while entries beyond the accepted episode/semantic bounds are ignored deterministically before any candidate is published.
+- a missing/empty/malformed episode list is rejected through the existing parser-failure path. Structurally valid entries are not silently dropped or rejected by cardinality; a token-truncated malformed response follows the same zero-write retry path.
 
 ### 5.8 Tool-call and tool-result handling
 
@@ -591,7 +607,7 @@ After success, an absent/empty `compaction_lineage.jsonl` means no current compa
 
 **Data-flow spine:** Successful compaction may enter through DF-P04, DF-P05, or DF-P10; each uses planning DF-L01, proposal DF-L02, and accepted commit DF-L04.
 
-**Handling:** Before generation, `MemoryManager` captures the optional lineage-head ID as baseline state and the planner retains the pending `compactionId` plus raw IDs selected for R(n). The strategy returns normalized content/retained continuation/execution metadata and selected raw IDs but no compaction/output IDs or accepted candidate. `MemoryManager` verifies the pending state and unchanged lineage head, maps the baseline head to `previousCompactionId`, assigns output IDs, and builds/validates the accepted candidate. Commit then creates one complete immutable native-compaction raw-trace archive file from R(n), persists output rows, and publishes exactly one immutable/versioned `CompactionLineageRecord` containing `compactionId`, optional `previousCompactionId`, the completed file's existing run-relative `file_name`, produced episode/semantic IDs, execution/version metadata, and optional hashes. It repeats no raw IDs/content, prior/output content, rendered prompt, ancestral refs, parallel activity/generation ID, fabricated segment ID, or internal boundary key.
+**Handling:** Before generation, `MemoryManager` captures the optional lineage-head ID as baseline state and the planner retains the pending `compactionId` plus raw IDs selected for R(n). The strategy returns normalized content/retained continuation/execution metadata and selected raw IDs but no compaction/output IDs or accepted candidate. `MemoryManager` verifies the pending state and unchanged lineage head, maps the baseline head to `previousCompactionId`, assigns output IDs, and builds/validates the accepted candidate. Commit then creates one complete immutable native-compaction raw-trace archive file from R(n), persists output rows, and publishes exactly one immutable/versioned `CompactionLineageRecord` containing `compactionId`, optional `previousCompactionId`, the completed file's existing run-relative `file_name`, every produced episode/semantic ID, execution/version metadata, and optional hashes. Lineage normalization retains all natural-count membership, validates the remaining structural invariants, and new records use prompt contract version 2. It repeats no raw IDs/content, prior/output content, rendered prompt, ancestral refs, parallel activity/generation ID, fabricated segment ID, or internal boundary key.
 
 **Outcome:** A successful compaction publishes one small reference-only lineage record shared by every generated episode and semantic fact; runner/parser failure publishes none.
 
@@ -613,7 +629,7 @@ After success, an absent/empty `compaction_lineage.jsonl` means no current compa
 
 **Data-flow spine:** Immediate post-response path DF-P10 with DF-L01, DF-L02, DF-L03, and DF-L04.
 
-**Handling:** Compaction runs against a detached copy of the complete current `WorkingContext`, after the assistant response has been committed. It combines the current prior-memory output, when present, with the eligible settled natural prefix and asks for one complete replacement output of one through three coarse episodes plus at most twenty accepted semantic facts; recent natural context is retained.
+**Handling:** Compaction runs against a detached copy of the complete current `WorkingContext`, after the assistant response has been committed. It combines the current prior-memory output, when present, with the eligible settled natural prefix and asks for one quality-first complete replacement; the LLM chooses the natural number of episodes and facts needed for continuation, while recent natural context is retained.
 
 **Outcome:** A validated replacement output becomes current and is installed/snapshotted without waiting for another user message.
 
@@ -743,23 +759,23 @@ After success, an absent/empty `compaction_lineage.jsonl` means no current compa
 
 #### UC-019 — Create multiple episodes from one extraction
 
-**Trigger:** One valid structured compaction response contains two or three episode entries for the same selected input.
+**Trigger:** One valid structured compaction response contains multiple non-empty episode entries for the same selected input.
 
 **Data-flow spine:** DF-P04, DF-P05, or DF-P10 with proposal DF-L02 and accepted commit DF-L04.
 
-**Handling:** The strategy returns bounded episode content without output IDs. `MemoryManager` acceptance assigns every episode ID and records all episodes in the accepted candidate as outputs of the same `compactionId`. Commit persists the rows before the one reference-only lineage record, whose append makes it the new head. Fine intra-file localization is not required by this ticket; valid entries beyond the first three are ignored deterministically.
+**Handling:** The strategy returns episode content with an LLM-chosen natural item count and no output IDs. Parser, normalizer, and acceptance retain every structurally valid episode; no fourth-or-later item is discarded or rejected by count. `MemoryManager` acceptance assigns every episode ID and records all episodes in the accepted candidate as outputs of the same `compactionId`. Commit persists the rows before the one reference-only lineage record, whose append makes it the new head. Fine intra-file localization is not required by this ticket.
 
-**Outcome:** Citation workload remains bounded, every episode shares the same direct-input relation, and the output bundle becomes current only when its producing record is successfully appended as the lineage head.
+**Outcome:** Every episode from the same response—including a fourth or later episode—persists, appears in the appended/read lineage record, participates in exact-head projection when current, and resolves through the one producing compaction record. No episode repeats raw pointers.
 
-#### UC-020 — Create semantic facts from the bounded compaction input
+#### UC-020 — Create semantic facts from the compaction input
 
-**Trigger:** The normal structured compaction response includes zero or more valid semantic facts alongside its one through three episode outputs.
+**Trigger:** The normal structured compaction response includes zero or more valid semantic facts alongside its non-empty model-decided episode set.
 
 **Data-flow spine:** DF-P04, DF-P05, or DF-P10 with proposal DF-L02 and accepted commit DF-L04.
 
 **Handling:** The strategy returns accepted fact content without output IDs. `MemoryManager` acceptance assigns each semantic artifact ID and lists every fact in the accepted candidate as an output of the same `compactionId` used for the episode outputs. Commit persists semantic rows before lineage/current publication. The LLM returns fact content only; it does not select fine evidence labels or storage pointers.
 
-**Outcome:** Every semantic fact has deterministic recurrent provenance without detailed citation workload, and only facts listed by the lineage head are projected by default.
+**Outcome:** Every valid semantic fact—including a twenty-first or later fact—persists, appears in appended/read lineage membership, participates in current projection when current, and resolves to the successful compaction input without LLM evidence labels or copied source text.
 
 #### UC-021 — Ask where a memory came from
 
@@ -811,7 +827,7 @@ After success, an absent/empty `compaction_lineage.jsonl` means no current compa
 
 **Data-flow spine:** Compaction input-rendering local spine DF-L08 inside DF-P04, DF-P05, DF-P06, or DF-P10.
 
-**Handling:** Take the planner-selected logical WorkingContext constituents in order: the projected M(n-1) compacted-memory user region when present, followed by selected settled R(n). Render visible `User`/`Assistant` content and one `Tool` block per correlated call/outcome directly from those units. Each Tool block contains `name`, `status`, `arguments`, and exactly one `result` or `error`; no `Assistant tool call` label or backend call ID appears. Use the core presentation capability to serialize/redact each variable value and apply deterministic head/tail omission. Escape source-originated reserved boundary sequences, then wrap the complete selected prefix in exactly one application-generated `<conversation_history>...</conversation_history>` pair. Do not separate M(n-1), add mechanical memory/provenance labels, inject raw occurrence timestamps, re-read generated Work Evidence Markdown, or persist the rendered prompt as lineage content.
+**Handling:** Take the planner-selected logical WorkingContext constituents in order: the projected M(n-1) earlier-summary region when present, followed by selected settled R(n). Flatten the selected visible messages and reuse the canonical `WorkingContextFinalizer` composition boundary before adding visible labels; the compactor renderer must not own duplicate connector wording. If that summary region and adjacent compatible retained/current user content belong to one composed user message, render both under one `User:` label with their natural framing rather than exposing constituent ranges as consecutive user turns. Preserve real assistant/tool boundaries. Render visible `User`/`Assistant` content and one `Tool` block per correlated call/outcome directly from those canonical turns. Each Tool block contains `name`, `status`, `arguments`, and exactly one `result` or `error`; no `Assistant tool call` label or backend call ID appears. Use the core presentation capability to serialize/redact each variable value and apply deterministic head/tail omission. Escape source-originated reserved boundary sequences, then wrap the complete selected prefix in exactly one application-generated `<conversation_history>...</conversation_history>` pair. Do not separate M(n-1), add mechanical memory/provenance labels, inject raw occurrence timestamps, re-read generated Work Evidence Markdown, or persist the rendered prompt as lineage content.
 
 **Outcome:** The compactor reasons over one clearly bounded, natural representation of the compactable conversation context that influenced the working LLM, while application-owned metadata continues to distinguish prior-memory lineage from newly archived R(n).
 
@@ -826,6 +842,18 @@ After success, an absent/empty `compaction_lineage.jsonl` means no current compa
 **Handling:** `AgentWorkTraceProjectionService` retains its existing source enumeration and historical-replay transformation. Its source adapter first correlates each Tool call with its terminal result/error when one exists, then maps the completed interaction to the common `CondensedToolCallRenderer`. If no terminal record genuinely exists, it maps the call to `no_outcome(status)`; the renderer emits the supplied truthful status and `result: not available`. Shared redaction runs before deterministic per-value head/tail omission. `AgentWorkTraceRenderer` then adds the existing timestamped lowercase `user:`, `assistant:`, `tool:`, or `trace_event:` Markdown envelope and writes the existing files/manifest. It does not read WorkingContext or a compactor prompt, and the common renderer performs no trace lookup or lifecycle coordination.
 
 **Outcome:** Generated Work Evidence preserves its raw-backed timestamped Markdown contract and consumer path while no oversized visible message, argument, result, or error silently loses its tail.
+
+### Quality-First Compactor Sizing
+
+#### UC-027 — Produce a continuation-faithful replacement from a diverse long history
+
+**Trigger:** Normal native compaction selects a large logical prefix containing multiple distinct task phases, outcomes, decisions, constraints, unresolved items, user preferences, and important artifacts, plus chatter/repetition that is not continuation-critical.
+
+**Data-flow spine:** Existing compaction path DF-P04, DF-P05, or DF-P10 with rendering DF-L08, proposal DF-L02, and accepted commit DF-L04; no new primary spine.
+
+**Handling:** The product-managed `agent.md` supplies the complete natural summarization task and stable quality/JSON contract. The operation user message supplies exactly one natural conversation-history block and no other text. The LLM chooses the natural number of episodes and facts, keeps unrelated phases distinct when needed for continuation, omits chatter/repetition/obsolete state, and prioritizes continuation-critical facts. Parser/normalizer/acceptance retain all structurally valid items without count caps and preserve existing non-cardinality safeguards. Launch and provider output-token configuration remain unchanged.
+
+**Outcome:** The next agent can recover independently verifiable anchors from every continuation-critical phase and continue correctly. Success is evaluated by retained meaning and current state, not by requiring or forbidding a particular item count.
 
 ## 7. Provenance Identity And Time Contract
 
@@ -866,7 +894,7 @@ The following is the logical record shape. It fixes the required information, no
     "provider": "provider-id",
     "model": "model-id",
     "selectionPolicyVersion": 1,
-    "promptContractVersion": 1,
+    "promptContractVersion": 2,
     "renderedInputSha256": "optional-integrity-hash"
   },
   "integrity": {
@@ -883,6 +911,8 @@ Origin lookup uses an explicit subject selector rather than one generic ambiguou
   "id": "episode-0002"
 }
 ```
+
+`promptContractVersion: 2` is the new-write value for the approved target prompt/payload contract. Existing schema-v1 lineage records with `promptContractVersion: 1` remain valid and immutable; the reader accepts/preserves either supported value in one chain and performs the same structural decoding. Unknown values remain unsupported.
 
 `kind: "semantic"` searches only `semanticIds`. The resolver never guesses artifact kind from ID shape or searches two subject stores through one ambiguous selector.
 
@@ -947,16 +977,19 @@ The required failure scenario is limited to a compactor-runner failure or a resp
 | SCN-004 | UC-006, UC-008, UC-009 | Compaction plus current/retained user content produces natural canonical message composition |
 | SCN-005 | UC-007, UC-010 | Tool-call/result suffix survives compaction and provider rendering unchanged |
 | SCN-006 | UC-011 | Multimodal input survives composition, snapshot, restore, and renderer translation |
-| SCN-007 | UC-012 | Repeated compaction, including a one-thousand-operation long-run case, requires non-empty raw-backed R(n), consumes M(n-1) listed by the prior lineage head plus R(n), produces one bounded complete M(n), appends the successful record as the new head, keeps older outputs immutable/inactive, and archives only R(n); M(n-1) alone is a no-op eligibility state |
+| SCN-007 | UC-012 | Repeated compaction, including a one-thousand-operation long-run case, requires non-empty raw-backed R(n), consumes M(n-1) listed by the prior lineage head plus R(n), produces one complete M(n) with LLM-chosen natural item counts, appends the successful record as the new head, keeps older outputs immutable/inactive, and archives only R(n); M(n-1) alone is a no-op eligibility state |
 | SCN-008 | UC-013–UC-016 | The real `startConfiguredServer -> AppDataMigrationRunner.runPending` path scans standalone/team-member runs before agent bootstrap, removes exactly pre-lineage episodic/semantic JSONL, v1-v4 snapshots, and compacted-memory manifests, preserves active/archive raw traces and manifests byte-for-byte, and treats missing targets idempotently. Discovery/deletion failure is recorded as `FAILED`; the runner persists all attempted required results and throws; `startConfiguredServer` rethrows; bootstrap/build/listen mocks prove they were not called. Existing startable statuses still proceed. Current v5 message snapshots then resume directly; absent/empty lineage has no current derived memory, while its last valid record lists the exact current output |
 | SCN-009 | UC-017 | External-runtime storage behavior is represented honestly without false AutoByteus context semantics |
-| SCN-010 | UC-018–UC-019 | One through three episodes form one complete replacement output and resolve through the same automatic reference-only lineage record |
-| SCN-011 | UC-020 | At most twenty accepted semantic facts are produced by the same `compactionId` and resolve through its one lineage record without LLM-selected labels |
+| SCN-010 | UC-018–UC-019 | A deterministic response with more than three valid episodes survives parser, normalizer, accepted builder, archive/output persistence, lineage normalization/append/read, exact-head projection, and typed origin membership without count loss; at least-one, unique-ID, safe-record, predecessor/scope, and output-existence invariants still hold |
+| SCN-011 | UC-020 | More than twenty valid facts, including category counts above former limits, survive parser/normalizer/acceptance, output persistence, lineage append/read, exact-head projection, and typed origin membership under the same `compactionId`; no LLM-selected labels or application count truncation occur |
 | SCN-012 | UC-021–UC-022 | The internal run-scoped resolver reports direct input and recursively deduplicated raw roots for valid current-format IDs, returns `not_found` for unknown typed IDs, and reports a current-state integrity error for a broken referenced chain without guessed edges or row-store fallback |
 | SCN-013 | UC-023 | A compactor-runner failure or invalid compactor response leaves the lineage head and baseline state unchanged, and the next normal user request retries the same pending in-memory `compactionId` |
 | SCN-014 | UC-024 | Active rewrite expires UI cursor without archive fallback |
-| SCN-015 | UC-025 | A recurrent input containing the projected M1 user region followed by selected R2 user/assistant content, separate reasoning, a settled multi-call tool group, an error, a long command/result, redactable text, and literal source-provided `<conversation_history>`/`</conversation_history>` strings is sent as exactly one naturally ordered application-owned conversation-history block; M1 is not separated or mechanically relabeled, source delimiter strings are escaped, reasoning/synthetic timestamps/work-note/backend/tool-call IDs and `Assistant tool call` labels are absent, every correlated call/outcome is one Tool block with `name`, `status`, `arguments`, and `result` or `error`, secrets are redacted, and each oversized variable field retains deterministic head and tail around an explicit omitted-character count |
+| SCN-015 | UC-025 | A recurrent input containing the projected M1 earlier-summary constituent composed with adjacent compatible retained/current user content, later selected R2 user/assistant content, separate reasoning, a settled multi-call tool group, an error, a long command/result, redactable text, and literal source-provided `<conversation_history>`/`</conversation_history>` strings is sent as exactly one naturally ordered application-owned conversation-history block; the composed M1/user turn has one `User:` label rather than constituent-created consecutive labels, M1 is not separated or mechanically relabeled, source delimiter strings are escaped, reasoning/synthetic timestamps/work-note/backend/tool-call IDs and `Assistant tool call` labels are absent, every correlated call/outcome is one Tool block with `name`, `status`, `arguments`, and `result` or `error`, secrets are redacted, and each oversized variable field retains deterministic head and tail around an explicit omitted-character count |
 | SCN-016 | UC-026 | A normal generated Work Evidence projection over raw-backed short and oversized message/tool values plus one tool call with no terminal record preserves existing source enumeration, timestamps, ordering, lowercase Markdown labels, filenames, and manifest shape; reasoning remains absent; short values remain complete after redaction; every oversized message, argument, result, or error uses the shared deterministic head/tail omission marker/count rather than silent 20,000-character prefix-only slicing; and the outcome-less call preserves its truthful status and renders `result: not available` through the same common renderer |
+| SCN-019 | UC-027 | Canonical prompt/history/canonical-turn and unchanged-configuration coverage remains; deterministic coverage proves >3 episodes and >20 facts survive the complete accepted publication/read/projection/origin path; new records write prompt contract version 2; a mixed version-1 predecessor/version-2 head chain preserves both audit values and resolves recursively; an unsupported prompt audit value is rejected without rewrite or historical decoder; a long multi-thread journey preserves phase-specific continuation anchors without exact-count assertions |
+
+SCN-017 and SCN-018 are retained as the downstream API-REV-006 canonical Qwen/DeepSeek evidence IDs and are not redefined by this upstream contract revision.
 
 ## 10. Explicit Non-Goals
 
@@ -975,6 +1008,7 @@ The required failure scenario is limited to a compactor-runner failure or a resp
 - AutoByteus episodic/semantic compaction or WorkingContext snapshots for storage-only external runtimes.
 - A separate tool-result condenser or second tool-output summarization pass.
 - Successful compaction with no episode/memory output; the structured response contract requires a non-empty episode.
+- Prescribing a preferred, minimum, or maximum episode/fact count or a ticket-specific numeric output-token ceiling. The LLM chooses the natural semantic structure under unchanged launch/provider behavior.
 - Separate fact-level correction APIs, invalidation/deletion/redaction tombstones, or reverse-impact traversal. Recurrent compaction may update the latest consolidated understanding, and prior-output projection supersession is explicitly in scope.
 - Cross-run extraction or one compaction combining independent previous-compaction outputs from multiple runs. One optional `previousCompactionId` plus one new run-local prefix is the only recursive input shape in scope.
 - Interrupted filesystem publication, crash recovery, operation journals, or partial-write retry deduplication.
@@ -984,4 +1018,10 @@ The required failure scenario is limited to a compactor-runner failure or a resp
 
 Approved as the intended-behavior foundation together with `requirements.md` and `use-case-data-flow-spine-map.md` on 2026-07-30, when the user confirmed that the requirements are clear and directed continuation under the design principles. The approved package removes `Assistant work notes`/private reasoning and the mechanical separate prior-memory section from compactor input. The planner includes projected M(n-1) plus selected R(n) as one compactable logical WorkingContext prefix, rendered naturally inside exactly one application-owned `<conversation_history>...</conversation_history>` boundary. Both native compaction and generated Work Evidence use one general `CondensedToolCallRenderer`; a genuine `no_outcome(status)` renders that status and `result: not available`. Their sources, envelopes, timestamps, bounds, and persistence remain separately owned. The contract uses a reference-only compaction-lineage record with authoritative content remaining in raw/durable stores, and every use case is mapped to a complete spine.
 
-Architecture round 1 (`ARCH-REV-001`) identified implementation-critical contradictions in the earlier persisted-state treatment. SR-002 resolved them; architecture round 2 (`ARCH-REV-002`) returned `Pass`, and implementation began. The user then superseded that preservation basis with a simpler clean-cut policy: one startup migration deletes pre-lineage derived memory/snapshots/manifests while retaining raw evidence, and all normal runtime code is current-schema-only. SR-004 removes the superseded compatibility and duplicate-state designs and retains the aligned proposal ownership/publication order: IDless strategy -> `MemoryManager` acceptance -> archive -> output rows -> append lineage as head -> context -> message-only snapshot. It also makes required startup failure propagate through `startConfiguredServer` before bootstrap/build/listen. Existing SR-002-derived implementation must be reconciled after a new architecture `Pass`, not treated as an unstarted or disposable codebase.
+Architecture round 1 (`ARCH-REV-001`) identified implementation-critical contradictions in the earlier persisted-state treatment. SR-002 resolved them; architecture round 2 (`ARCH-REV-002`) returned `Pass`, and implementation began. The user then superseded that preservation basis with a simpler clean-cut policy: one startup migration deletes pre-lineage derived memory/snapshots/manifests while retaining raw evidence, and all normal runtime code is current-schema-only. SR-004 removed the superseded compatibility and duplicate-state designs and retained the aligned proposal ownership/publication order: IDless strategy -> `MemoryManager` acceptance -> archive -> output rows -> append lineage as head -> context -> message-only snapshot. It also made required startup failure propagate through `startConfiguredServer` before bootstrap/build/listen. Architecture round 4 passed SR-004; implementation and downstream validation then completed.
+
+On 2026-07-31 the user superseded the fixed cardinality portion after API-REV-006 and requested review before architecture handoff. The solution designer then introduced an unrequested numeric token ceiling. The user rejected it and clarified that the LLM must choose the natural number of episodes and facts. SR-006 removes fixed item counts from both prompt layers and every enforcement layer, introduces no token ceiling, and leaves launch/provider output-token configuration unchanged. That correction subsequently received the SR-007 through SR-009 wording and canonical-turn refinements described below and is now user-approved for architecture review.
+
+During SR-006 review the user requested a separate exact-content artifact so downstream implementation would not invent the system prompt or operation user message. SR-007 added that draft. The user then rejected platform-internal defensive language in the LLM prompt and confirmed that a clear system prompt makes per-operation task text redundant. SR-008 therefore made `memory-compactor-prompt-content-contract.md` the authority for a natural system prompt and a user message that byte-equals only the renderer-produced conversation-history block. During review the user identified that one example expanded a composed summary/current-request user turn into two consecutive `User:` labels and asked that the target wording remain as natural as origin/personal. SR-009 aligns the exact system prompt with that style and requires the renderer to preserve one canonical model-visible user turn while retaining constituent boundaries only for application planning. It does not edit production source or change SR-006 behavior. The user approved SR-009 and authorized architecture review.
+
+Architecture round 5 (`ARCH-REV-005`) passed the material-premise gate but found four technical design gaps in SR-009. SR-010 preserves the approved prompt text and behavior while completing the full accepted path: it removes the hidden lineage membership cap, distinguishes prompt audit value 1 (implemented SR-004 contract) from new-write value 2 (approved natural/history-only/canonical-turn contract) with direct-use mixed chains, refreshes current evidence to actual SR-004 source, and keeps predecessor identity solely in manager-captured lineage state rather than message constituents. Renewed architecture review is required before SR-010 source implementation.

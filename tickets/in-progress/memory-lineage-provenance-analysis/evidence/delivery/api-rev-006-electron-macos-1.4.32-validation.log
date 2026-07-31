@@ -1,0 +1,33 @@
+timestamp=2026-07-31T04:35:53Z
+head=7e512a5b837d869f1985322e0f7e2c744a4cffe5
+base=1d79e908f258651998a6cbf0a94e374896170f2a
+-rw-r--r--@ 1 normy  staff   384M Jul 31 06:34 autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.32.dmg
+-rw-r--r--@ 1 normy  staff   380M Jul 31 06:35 autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.32.zip
+-rwxr-xr-x@ 1 normy  staff    33K Jul 31 06:33 autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+dmg_sha256=4379f1ed6ccab19863068508b78c092e3dd6172ab79c2123eda7a717803dde67
+zip_sha256=fd92d7cf1dcbc7bad10f5f02c0dea48d956c6871b37127fafd97d721d74bef4d
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $B701C80E
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $69002081
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $22A33510
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $BA68BD6B
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $22A33510
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $66FBC26F
+Die überprüfte CRC32-Prüfsumme ist $3DDDE77C
+hdiutil: verify: checksum of "autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.32.dmg" is VALID
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+bundle_id=com.autobyteus.app
+short_version=1.4.32
+bundle_version=1.4.32
+embedded_port_occupant:
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 20333 normy   26u  IPv4 0x9f6543909a3e4a47      0t0  TCP *:29695 (LISTEN)

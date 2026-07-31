@@ -21,14 +21,6 @@ export type NormalizedCompactionResult = {
   semanticEntries: NormalizedCompactedMemoryEntry[];
 };
 
-const CATEGORY_LIMITS: Record<CompactedMemoryCategory, number> = {
-  critical_issue: 6,
-  unresolved_work: 6,
-  user_preference: 6,
-  durable_fact: 8,
-  important_artifact: 6,
-};
-
 const LOW_VALUE_NOISE_PATTERNS = [
   /dev server running/i,
   /localhost:\d+/i,
@@ -62,15 +54,14 @@ export class CompactionResultNormalizer {
     return {
       episodes: result.episodes
         .map(({ summary }) => ({ summary: collapseWhitespace(summary) }))
-        .filter(({ summary }) => Boolean(summary))
-        .slice(0, 3),
+        .filter(({ summary }) => Boolean(summary)),
       semanticEntries: this.normalizeEntries([
         ...this.toCandidates('critical_issue', result.criticalIssues),
         ...this.toCandidates('unresolved_work', result.unresolvedWork),
         ...this.toCandidates('user_preference', result.userPreferences),
         ...this.toCandidates('durable_fact', result.durableFacts),
         ...this.toCandidates('important_artifact', result.importantArtifacts),
-      ]).slice(0, 20),
+      ]),
     };
   }
 
@@ -97,15 +88,14 @@ export class CompactionResultNormalizer {
       }
 
       const currentCount = perCategoryCounts.get(candidate.category) ?? 0;
-      if (currentCount >= CATEGORY_LIMITS[candidate.category]) {
-        continue;
-      }
-
       perCategoryCounts.set(candidate.category, currentCount + 1);
       normalized.push({
         category: candidate.category,
         fact: candidate.fact,
-        salience: COMPACTED_MEMORY_CATEGORY_BASE_SALIENCE[candidate.category] - currentCount,
+        salience: Math.max(
+          1,
+          COMPACTED_MEMORY_CATEGORY_BASE_SALIENCE[candidate.category] - currentCount,
+        ),
       });
     }
 

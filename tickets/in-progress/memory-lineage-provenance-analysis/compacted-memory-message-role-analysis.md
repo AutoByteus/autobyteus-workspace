@@ -2,12 +2,12 @@
 
 ## Status And Scope
 
-- Investigation status: Complete; recurrent-replacement/work-evidence-rendering evidence aligned and SR-004 lineage-tail/message-only-snapshot/fail-closed-startup ownership recorded as of 2026-07-30
+- Investigation status: Complete; SR-010 aligned to the actual implemented SR-004 baseline and the full natural-count accepted path, prompt audit version transition, and message-only predecessor boundary
 - Artifact type: Evidence/context supplement
 - Approval applicability: N/A
 - Intended-behavior authority: `memory-context-and-lineage-contract.md` and `use-case-data-flow-spine-map.md`
-- Related requirements: REQ-007 through REQ-011
-- Related acceptance criteria: AC-007 through AC-015
+- Related requirements: REQ-007 through REQ-012
+- Related acceptance criteria: AC-007 through AC-016
 - Explicit exclusion: Work-evidence chunking and intra-file localization are not part of this artifact or ticket.
 
 This supplement records the current request, compaction, snapshot, renderer, and provider-contract evidence behind the foundation contract. It does not define an independent checkpoint, active-context journal, or alternative source of truth.
@@ -29,132 +29,82 @@ When compaction replaces an agent's working context, which layer must own the fi
 9. The reachable compactor failure boundary is before writes: a runner failure or parser-rejected response reached through normal compaction must leave the lineage head and baseline state unchanged and retain the current in-memory pending `compactionId` for retry. No broader publication-journal premise is established.
 10. There is no separate tool-result condenser in the current strategy or target ticket. Internally settled tool-call/result groups are rendered directly into normal compactor input; live/incomplete tool protocol remains protected. The LLM-facing form is the same straightforward shape already established by Work Evidence: one `Tool` block containing `name`, `status`, `arguments`, and `result` or `error`, without an `Assistant tool call` label or backend call ID.
 11. Compaction provenance is reference-only. Raw activity/archive and durable current-format memory remain the content authorities; one lineage record keyed by the existing successful `compactionId` relates optional `previousCompactionId` and the completed selected-record raw-trace archive file's existing run-relative `file_name` to produced episode/semantic IDs without an ambiguous mixed-subject list, invented activity/generation/segment IDs, exposed internal boundary key, repeated raw IDs, or copied messages, memory, tool/media payloads, or rendered prompts.
-12. `Assistant work notes:` is not a raw-evidence field or a generated Work Evidence concept. It is a compaction-only label emitted by `WorkingContextCompactionPromptBuilder.renderAssistantEnvelope()` when a `Message` has `reasoning_content`; `MemoryManager` populates that field from `response.reasoning`. The target natural conversation-history rendering excludes this private reasoning.
+12. `Assistant work notes:` was a historical pre-SR-004 compaction-only label over private `reasoning_content`. The implemented SR-004 renderer already excludes it and private reasoning; SR-010 does not reimplement that removal.
 13. The LLM-facing compaction input should not expose the storage/lineage distinction as separate “current memory” and “new evidence” sections. The planner still distinguishes them internally, but the renderer presents the projected compacted-memory user region plus selected later units as the one ordered logical conversation prefix that influenced the working LLM.
-14. Generated Work Evidence and core compaction currently duplicate visible-value formatting/bounding: Work Evidence redacts then silently slices each cleaned value to 20,000 characters; compaction uses a different serializer and roughly 2,000-character whole-line prefix clamp. The design-principles-compliant reuse boundary is one general core `CondensedToolCallRenderer`. Its input contains `name`, `arguments`, one `result(value)`/`error(value)`/`no_outcome(status)` variant, and the consumer bound; its output is only the condensed Tool body. Terminal status is derived, and a genuine no-outcome renders the supplied status plus `result: not available`. Source correlation, selection, waiting, headers, timestamps, and consumer envelopes remain separate.
+14. SR-004 already installed the design-principles-compliant shared `ReadableValueRenderer`/`CondensedToolCallRenderer` with explicit head/tail omission while preserving distinct sources/envelopes. SR-010 preserves it unchanged.
+15. Current compactor sizing is duplicated and mechanically constrained in the built-in system prompt, per-operation builder, parser, normalizer, accepted builder, and `normalizeCompactionLineageRecord`. The lineage store invokes that last gate after the committer has archived R(n) and persisted output rows.
+16. The tight target split is: `agent.md` owns natural task/JSON/quality policy; the operation message is renderer history only; parser/normalizer/acceptance/lineage validation enforce structure/per-entry/record safeguards without count caps; `MemoryManager` writes prompt audit version 2; readers preserve supported 1/2 records. Launch/provider configuration is unchanged.
+17. API-REV-006 used the actual persisted built-in compactor and default runner. DeepSeek produced one episode; Qwen produced one and then three; both live journeys continued exactly. Those focused incident journeys validate the existing path but do not prove that the old one-to-three/twenty limits preserve a diverse approximately 200k-token selected history. This is a real coverage gap, not evidence that every compaction should produce more items.
+18. The implemented unit builder expands message-local constituent ranges for selection, so the LLM-facing renderer must pass selected visible messages through `WorkingContextFinalizer` before labels. This reuse affects turn presentation only. Constituents keep local kind/range/raw refs; `MemoryManager` separately captures the lineage head and maps it to `previousCompactionId`.
+19. `promptContractVersion` audits the producing contract. Value 1 truthfully identifies current SR-004 fixed-count/duplicated-operation records; new target records use 2. The lineage reader preserves supported 1/2 mixed chains without structural branching or migration.
+20. Natural-count verification must continue beyond parser/acceptance through output persistence, lineage append/read, exact-head projection, and typed origin membership.
+
+## SR-006 Quality-First Output Contract Evidence
+
+The target wording deliberately avoids “as many as possible” and follows origin/personal's concise ordinary-language style. Compaction is successful when the successor can continue the same work correctly, not when it maximizes item count. The model therefore receives these stable priorities:
+
+- use the smallest number of episodes sufficient to preserve distinct task phases, important outcomes, and current state;
+- do not merge unrelated work merely to reduce the number of episodes;
+- do not create episodes for chatter, repetition, or obsolete activity;
+- preserve continuation-critical facts; and
+- prioritize constraints, decisions and rationale, unresolved work, user preferences, and important artifacts.
+
+The per-operation user message is source data only:
+
+```text
+<conversation_history>...</conversation_history>
+```
+
+The user explicitly rejected a ticket-specific numeric token ceiling. The LLM chooses the natural number of episodes and facts under the existing resolved model/provider behavior; `agent-config.json` and launch/output-token configuration do not change. Exact-count live assertions would reintroduce the policy being removed; SCN-019 instead verifies semantic anchors, separation of genuinely distinct phases, and omission of noise. Deterministic unit/integration cases prove that all structurally valid entries are retained.
+
+The exact future boundary is not left to downstream interpretation. `memory-compactor-prompt-content-contract.md` contains the complete natural target `agent.md` and requires the operation user message to byte-equal one renderer-produced history block with no static prefix or suffix. It is the wording authority; this investigation remains evidence for why that owner split is required.
 
 ## Current AutoByteus Production Path
 
-### Input is recorded before request assembly
+### Implemented recurrent planning and accepted publication
 
-`autobyteus-ts/src/agent/input-processor/memory-ingest-input-processor.ts` records processed user input through `MemoryManager.ingestUserMessage()` before the LLM phase prepares a request.
+`memory-ingest-input-processor.ts` records user input before request assembly. When compaction runs, `WorkingContextMessageUnitBuilder` exposes typed units/constituents, and `WorkingContextMessageWindowPlanner` includes the current `compacted_memory` unit in `compactableUnits` while collecting archive refs only from selected natural R(n) units.
 
-The raw event therefore already exists when pending compaction executes, but it has not yet been appended to the pre-request `WorkingContext` used by the compaction planner.
-
-### Compaction projection and request assembly
-
-`autobyteus-ts/src/memory/projection/compacted-memory-context-projector.ts` currently:
-
-- preserves leading system messages;
-- retrieves episodic and semantic memory;
-- inserts one synthetic `MessageRole.USER` message with `sourceKind: "compacted_memory"`; and
-- appends retained non-system continuation messages unchanged.
-
-`WorkingContextMessageUnitBuilder` classifies that synthetic message as `compacted_memory`, and `WorkingContextMessageWindowPlanner` currently excludes it from the natural candidates supplied to later compaction. `Retriever` then selects a bounded mixture across outputs of multiple successful compactions: the latest three episodic rows and at most twenty semantic rows by salience/recency.
-
-The target intentionally changes both behaviors. The projected compacted-memory user constituent stays in its natural logical position within the recurrent compaction input and carries only its message-local kind/range. Separately, `MemoryManager` captures the lineage tail before planning and maps that unchanged baseline to `previousCompactionId`. If lineage is absent/empty, no current derived-memory output exists. Appending the new successful lineage record makes its output bundle the only current compacted-memory projection.
-
-`autobyteus-ts/src/agent/llm-request-assembler.ts` then:
-
-1. executes pending compaction;
-2. appends the already-ingested current user input to `WorkingContext`; and
-3. renders the resulting messages.
-
-A normal post-compaction request can consequently contain:
+`StructuredJsonCompactionStrategy` returns an IDless proposal. `MemoryManager` separately captures/verifies the lineage head, maps it to `previousCompactionId`, assigns output IDs, and uses `AcceptedCompactionCommitter` for:
 
 ```text
-system
-user     // compacted memory
-user     // retained user continuation or current request
+archive R(n) -> persist output rows -> append lineage -> install finalized context -> write v5 snapshot -> clear pending
 ```
 
-### Current tests intentionally preserve adjacency
+The lineage tail loads the exact current output. Snapshot v5 stores messages and message-local ranges only.
 
-- `autobyteus-ts/tests/unit/memory/compacted-memory-context-projector.test.ts` expects `[system, user, user]` when retained continuation begins with user content.
-- `autobyteus-ts/tests/unit/agent/llm-request-assembler.test.ts` expects `[system, user(compacted memory), user(current input)]` after pending compaction.
-- `autobyteus-ts/tests/unit/memory/structured-json-compaction-strategy.test.ts` verifies that sequential compactions retain exactly one synthetic compacted-memory message.
+### Implemented compactor and Work Evidence rendering
 
-These tests prove current behavior. They do not prove that the shape is the desired portable contract.
+`CompactionConversationHistoryRenderer` already emits one escaped `<conversation_history>` block containing reasoning-free `User`, `Assistant`, and settled `Tool` entries. Tool bodies use the shared core renderer; oversized variable values use explicit head/tail omission. Generated Work Evidence also uses the shared core presentation but remains raw-backed, timestamped Markdown/files/manifest. It is not compactor input.
 
-### Current compactor transcript versus generated Work Evidence
+The operation builder still prepends duplicate task/schema/count text before the renderer block. The unit builder also expands one composed user message into separate constituent units; the renderer currently labels those units independently. Therefore the real SR-010 rendering delta is:
 
-The current compactor does **not** consume generated Work Evidence Markdown. It independently renders selected `WorkingContextMessageUnit` values in:
+1. `agent.md` becomes the sole stable task/JSON/quality policy;
+2. the operation builder returns only the renderer block; and
+3. selected visible messages pass through `WorkingContextFinalizer` before labeling, so one canonical user turn retains one `User:` label.
 
-- `autobyteus-ts/src/memory/compaction/working-context-compaction-prompt-builder.ts`.
+### Full remaining cardinality and audit path
 
-`renderAssistantEnvelope()` currently emits:
+Current enforcement sites are:
 
-```text
-Assistant work notes: <Message.reasoning_content>
-Assistant: <Message.content>
-```
+- system prompt: 1–3 episodes / <=20 facts;
+- operation builder: duplicate count policy;
+- parser: `.slice(0, 3)` and a 20-fact budget;
+- normalizer: episode/total/category caps;
+- accepted builder: >3/>20 rejection; and
+- lineage record normalization: >3/>20 membership rejection and prompt version exactly 1.
 
-This label was introduced by the completed `compaction-prompt-tool-result-coherence` ticket. That design renamed the earlier `Assistant reasoning:` presentation to `Assistant work notes:` so the content would feel less like model-internal reasoning while still preserving it for the compactor. The newer generated Work Evidence contract made a different and stricter choice: separate reasoning is not observable work evidence and is omitted. For the present memory-compaction contract, renaming private reasoning is not sufficient; it must not enter the rendered conversation history.
+`FileCompactionLineageStore.appendNext` invokes the lineage normalizer. Because the committer archives and writes rows before append, a normal >3/>20 proposal would otherwise fail after those writes. SR-010 removes only upper count gates and preserves all structural/per-entry/lineage invariants.
 
-The reasoning value enters WorkingContext through:
+Prompt contract value 1 remains truthful for current SR-004 records. New target records use value 2. Readers accept/preserve supported 1/2 mixed chains, and projection/origin behavior is version-agnostic because the relationship shape is unchanged.
 
-- `autobyteus-ts/src/memory/memory-manager.ts`, where normal assistant responses set `reasoning_content: response.reasoning`, and accepted assistant tool responses set `reasoning_content: assistantReasoning`.
+### Historical pre-SR-004 evidence (not current behavior)
 
-The whole rendered prompt is then supplied as one task-level user message by:
+Earlier source used top-K mixed projection, excluded current memory from later compaction, emitted `Assistant work notes`, used prefix-only clipping/server-local redaction, restored v4/fallback state, and allowed adjacent unfinalized user messages. Those observations motivated SR-004 and remain useful historical rationale, but every named behavior has already been replaced. They must not be described as current or reimplemented in SR-010.
 
-- `autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts`.
+### Reachable compactor failure distinction
 
-The existing generated Work Evidence path is separate:
-
-- `autobyteus-server-ts/src/agent-work-traces/services/agent-work-trace-renderer.ts`;
-- `autobyteus-server-ts/src/agent-work-traces/services/agent-work-trace-redactor.ts`;
-- `autobyteus-server-ts/src/agent-work-traces/services/agent-work-trace-projection-service.ts`; and
-- its current product caller, which consumes generated package locations rather than compactor input.
-
-That path reconstructs normalized historical replay events from authoritative raw records, renders timestamped `user`, `assistant`, and combined `tool` blocks, returns `null` for separate `reasoning` events, redacts visible values, writes Markdown/manifest files, and gives the caller their paths. A Tool block already contains `name`, `status`, optional `arguments`, and `result` or `error`. `AgentWorkTraceRedactor` then silently applies `.slice(0, 20_000)` to each cleaned value; it does not emit an omission marker or retain a suffix. The generated Markdown body is not copied into the caller's trigger message.
-
-| Concern | Current compactor prompt | Current generated Work Evidence | Target compactor conversation history |
-| --- | --- | --- | --- |
-| Source | Planner-selected natural WorkingContext units; compacted-memory unit currently excluded | Explicit archive-plus-active raw sources | One planner-selected logical WorkingContext prefix containing projected M(n-1), when present, followed by selected R(n) |
-| User/assistant | Compaction-specific `User:` / `Assistant:` lines | Timestamped `user:` / `assistant:` blocks | Natural `User:` / `Assistant:` entries in the same logical order seen by the working LLM; no injected timestamps |
-| Private reasoning | Rendered as `Assistant work notes:` | Explicitly omitted | Omitted |
-| Tools | Call-ID-oriented request/result lines | One combined `tool:` block with name/status/arguments/result-or-error | One `Tool:` block with the same body; no `Assistant tool call` label or tool-call/backend IDs |
-| Redaction | No equivalent evidence redactor in the prompt builder | `AgentWorkTraceRedactor` | Shared core redaction mechanism with consumer-owned source/envelope policy |
-| Oversized visible value | Default 2,000-character whole-line prefix plus ` …[truncated]` | Silent 20,000-character prefix slice per cleaned string | Both consumers use configurable per-value head and tail with one explicit omitted-character marker/count |
-| Wrapper/storage | One task prompt under `[CONVERSATION_HISTORY_TO_SUMMARIZE]`; no prompt file | Generated Markdown files and manifest | One natural task prompt; exactly one application-owned `<conversation_history>...</conversation_history>` boundary around the complete selected logical prefix; no separate prior-memory section, generated Markdown dependency, or persisted prompt copy |
-
-The target does not consume or rebuild generated Work Evidence as compactor input. `autobyteus-ts` compaction remains sourced from planner-selected WorkingContext units, while server projection remains sourced from raw historical replay. Both source adapters call the same core `CondensedToolCallRenderer`. It emits only `name`, `status`, `arguments`, and `result` or `error`; for `no_outcome(status)` the result line is exactly `result: not available`. The compactor wrapper is exactly one `<conversation_history>...</conversation_history>` pair around the selected logical prefix; Work Evidence retains its timestamped Markdown/file/manifest envelope; source-originated instances of the compactor's reserved delimiter are escaped before insertion.
-
-### Renderers forward the semantic shape
-
-The OpenAI Chat/Responses, Anthropic, Gemini, and Mistral renderers map the source message list without a common same-role finalizer. They still legitimately own provider-specific media and tool encoding.
-
-`working-context-compaction-output-validator.ts` protects message shape, leading system preservation, and tool protocol, but does not enforce a provider-neutral adjacent-role invariant.
-
-### Raw storage and active/archive projection
-
-`autobyteus-ts/src/memory/store/run-memory-file-store.ts` currently:
-
-- appends original raw events to `raw_traces_active.jsonl`;
-- archives selected compaction rows under a completed boundary;
-- rewrites the active file to the retained keep set;
-- reads the complete raw corpus as archive plus active rows when an evidence/history consumer explicitly asks for it; and
-- separately reads/writes `working_context_snapshot.json`.
-
-The current Event Monitor/run-history path is different from archive-aware evidence projection:
-
-- `LocalMemoryRunViewProjectionProvider.buildProjection` requests `includeArchive: false`;
-- active earlier-page reads remain within the active snapshot and do not fall back to archives; and
-- active-file replacement expires the cursor.
-
-Therefore Event Monitor answers “what recent active activity is visible?”, not “what exact context will the LLM receive?”
-
-### Snapshot bootstrap
-
-`autobyteus-ts/src/memory/restore/working-context-snapshot-bootstrapper.ts` prefers a valid schema-versioned snapshot and restores it directly. When the snapshot cannot be used, current fallback reads the complete archive-plus-active corpus and separately injects retrieved durable memory.
-
-A verified normal product trigger exists at server startup: the existing app-data migration runner executes before built-in-agent bootstrap. The approved target registers a required, idempotent migration that discovers standalone and team-member run directories and deletes exactly `episodic.jsonl`, `semantic.jsonl`, `working_context_snapshot.json`, and `compacted_memory_manifest.json`. It preserves active/archive raw traces and `raw_traces_manifest.json`. The reset returns `FAILED` for any discovery/deletion failure. `AppDataMigrationRunner.runPending()` persists every attempted required result and throws after a non-startable result; `startConfiguredServer` logs and rethrows before bootstrap/build/listen. Existing `SUCCEEDED` and `SUCCEEDED_WITH_WARNINGS` remain startable. After that clean epoch boundary, snapshot bootstrap supports only v5 messages; absent/empty lineage means no current derived memory and the last valid lineage record lists exact current outputs. There is no old-schema reader, row-selection fallback, or complete-corpus replay branch.
-
-### Reachable compactor failure
-
-Current runner or response-parser failure occurs before `StructuredJsonCompactionStrategy` writes episodic/semantic items or archives raw IDs. `PendingCompactionExecutor` emits a failed lifecycle event and leaves the pending operation in memory. The next normal user request invokes it again with the same operation ID; existing integration coverage verifies that no episode/archive output exists after failure.
-
-The target lineage/context design preserves that boundary by requiring an IDless strategy proposal and `MemoryManager`-built/validated accepted candidate before writes. Normal commit order is archive -> output rows -> append lineage as the new head -> installed context -> message-only v5 snapshot -> clear pending. Interrupted filesystem writes, invalid test-only strategies, and crash recovery do not establish a product premise for staged files or an operation journal.
+Runner/parser rejection is still pre-write and retryable under the same pending `compactionId`. The hidden lineage count rejection is a different accepted-publication path and is removed by eliminating the invalid cardinality rule. No journal or crash-recovery mechanism is added.
 
 ## Provider Contract And Probe Matrix
 
@@ -191,9 +141,11 @@ The renderer boundary is too late to own composition because:
 The provider-neutral boundary can instead represent compatible regions as one logical user message:
 
 ```text
-You are continuing an ongoing task. Here is the compacted memory of earlier work:
+You are continuing an ongoing task. Here is a concise summary of earlier work to help you resume.
+Use it as context for previous reasoning, actions, findings, decisions, constraints, and open work.
 
-<compacted memory>
+Earlier progress:
+1. <earlier-work summary>
 
 The user's current message is:
 
@@ -233,9 +185,10 @@ If implementation is later authorized, coverage must include:
 10. a compactor-runner failure or invalid response leaving the lineage head/baseline unchanged and retrying the same pending `compactionId`; and
 11. active-only Event Monitor paging and cursor expiry after active rewrite; and
 12. a recurrent compaction input containing projected M1 followed by selected R2 user/assistant content, separate reasoning, a settled multi-call tool group, an error, long arguments/results, redactable values, and literal source-provided `<conversation_history>`/`</conversation_history>` strings, proving that the compactor receives one naturally ordered conversation-history block with no separate M1 section, source delimiter collisions escaped, straightforward Tool blocks, and no `Assistant work notes`, `Assistant tool call`, reasoning, synthetic timestamps, backend/tool-call IDs, or silent prefix-only clipping; and
-13. a normal Work Evidence generation containing long user/assistant/tool values, proving that timestamps/order/Markdown/files/manifest remain while the same core omission marker/count preserves head and tail under the larger Work Evidence limit.
+13. a normal Work Evidence generation containing long user/assistant/tool values, proving that timestamps/order/Markdown/files/manifest remain while the same core omission marker/count preserves head and tail under the larger Work Evidence limit; and
+14. a long multi-threaded quality journey without exact-count assertions, plus deterministic >3/>20 coverage through parser, normalizer, accepted builder, archive/output persistence, lineage append/read, exact-head projection, and typed origin lookup; a mixed prompt-version-1 predecessor/version-2 head preserves both audit values; launch/provider configuration remains unchanged.
 
-The durable normative scenarios are SCN-003 through SCN-009 and SCN-013 through SCN-016 in `memory-context-and-lineage-contract.md`.
+The durable normative scenarios are SCN-003 through SCN-009, SCN-013 through SCN-016, and SCN-019 in `memory-context-and-lineage-contract.md`. SCN-017 and SCN-018 remain reserved for the downstream API-REV-006 evidence already recorded in that package.
 
 ## Primary Sources
 
@@ -254,5 +207,6 @@ The former physical/structural questions are resolved in `design-spec.md`:
 4. `readable-value-renderer.ts` and `condensed-tool-call-renderer.ts` own the tight shared presentation core; source-specific compaction and Work Evidence adapters retain their separate models/envelopes.
 5. `compaction-conversation-history-renderer.ts` owns natural selected-WorkingContext rendering and the one escaped outer boundary.
 6. The existing app-data migration subsystem owns the one-time pre-runtime derived-state reset; `CompactedMemorySchemaGate`, global compacted-memory manifest authority, historical dictionary access, and old snapshot readers are removed.
+7. `compaction-lineage-record.ts` owns structural record validation and prompt audit values 1/2; it owns no semantic count maximum. `MemoryManager`/accepted builder owns the new-write value 2.
 
 The fixed behavior remains: later compaction consumes the prior compacted-memory message region plus new raw-backed activity while `MemoryManager` supplies the previous lineage-head ID, only the successful successor becomes current, and every current-format lineage chain must resolve completely or fail with an integrity error.
