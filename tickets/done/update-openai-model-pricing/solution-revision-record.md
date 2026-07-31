@@ -59,7 +59,7 @@
 ### SR-004 — Resolve Sonnet 5 durable-pricing requirement gap
 
 - Triggering role, report path, and round: `solution_designer`; user decision after `architecture_reviewer` `ARCH-REV-002` / `REQ-GAP-001`; 2026-07-31 rework round.
-- Triggering finding IDs: `REQ-GAP-001` from `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/in-progress/update-openai-model-pricing/design-review-report.md`.
+- Triggering finding IDs: `REQ-GAP-001` from `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/done/update-openai-model-pricing/design-review-report.md`.
 - Prior authoritative result: SR-003 left the Sonnet 5 temporary introductory-versus-durable-standard policy choice open and architecture review was blocked.
 - Current authoritative result: Requirements are `Design-ready`; the user explicitly selected final durable standard Sonnet 5 pricing `(3,15,0.3,3.75,6)` and approved excluding the temporary `$2/$10` introductory rate and any expiry/temporal pricing mechanism.
 - Why this revision entry is recorded: It resolves the only architecture-review requirement gap and makes the prior recommendation an approved preserved behavior.

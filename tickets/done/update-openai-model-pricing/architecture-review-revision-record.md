@@ -12,9 +12,9 @@
 
 ### ARCH-REV-001 — Combined GPT-5.6 refresh and Claude Opus 5 support baseline
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/in-progress/update-openai-model-pricing/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/done/update-openai-model-pricing/design-review-report.md`
 - Review round and trigger: Round 1; initial completed architecture review of the reworked package. SR-002 superseded the OpenAI-only SR-001 scope before any prior architecture result was recorded.
-- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/in-progress/update-openai-model-pricing/solution-revision-record.md`; no triggering findings.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/done/update-openai-model-pricing/solution-revision-record.md`; no triggering findings.
 - Relevant solution revision IDs: `SR-001` (superseded baseline), `SR-002` (current combined design-ready package)
 - Prior authoritative decision: `N/A` — no earlier architecture-review report or revision record existed.
 - Current authoritative decision: `Pass`
@@ -31,9 +31,9 @@
 
 ### ARCH-REV-002 — Sonnet 5 promotional-rate policy gate
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/in-progress/update-openai-model-pricing/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/done/update-openai-model-pricing/design-review-report.md`
 - Review round and trigger: Round 2; SR-003's fresh first-party audit of every active/planned Claude price found a temporary Sonnet 5 introductory rate that differs from the durable standard row currently recorded by the catalog.
-- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/in-progress/update-openai-model-pricing/solution-revision-record.md`; `REQ-GAP-001`.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/done/update-openai-model-pricing/solution-revision-record.md`; `REQ-GAP-001`.
 - Relevant solution revision IDs: `SR-002` (prior combined package), `SR-003` (current audit/rework)
 - Prior authoritative decision: `Pass` (`ARCH-REV-001` for SR-002)
 - Current authoritative decision: `Blocked`
@@ -52,9 +52,9 @@
 
 ### ARCH-REV-003 — Durable Sonnet 5 policy resolution and implementation re-approval
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/in-progress/update-openai-model-pricing/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/done/update-openai-model-pricing/design-review-report.md`
 - Review round and trigger: Round 3; SR-004 records the user's explicit selection of durable Sonnet 5 standard pricing and resolves `REQ-GAP-001`.
-- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/in-progress/update-openai-model-pricing/solution-revision-record.md`; `REQ-GAP-001` resolved.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/done/update-openai-model-pricing/solution-revision-record.md`; `REQ-GAP-001` resolved.
 - Relevant solution revision IDs: `SR-003` (prior blocked audit), `SR-004` (current resolved package)
 - Prior authoritative decision: `Blocked` (`ARCH-REV-002`)
 - Current authoritative decision: `Pass`

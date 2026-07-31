@@ -10,7 +10,7 @@
 
 ### API-REV-001 — Provider-neutral pricing and GPT-5.6 server accounting baseline
 
-- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/in-progress/update-openai-model-pricing/code-review-report.md`; round `1` after `CRR-002` source-review Pass for implementation source `777079e62` and metadata reconciliation `IR-002`.
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/done/update-openai-model-pricing/code-review-report.md`; round `1` after `CRR-002` source-review Pass for implementation source `777079e62` and metadata reconciliation `IR-002`.
 - Triggering finding or scenario IDs: `API-PRICE-001`, `API-PRICE-002`, `LLM-CATALOG-001`, `ANTHROPIC-POLICY-001`, `DOCS-001`, `REGRESSION-TOK-001`.
 - Related solution, architecture-review, implementation, and code-review revision IDs: `SR-004`, `ARCH-REV-003`, `IR-002`, `CRR-002`; delivery `N/A`.
 - Why this baseline or coverage/execution revision was recorded: First completed API/E2E validation. The reviewed source changed catalog policy and Anthropic request recognition but did not change server source; direct server evidence was still required for all GPT-5.6 suffixes, both tiers, Opus 5 server mapping, and persisted GraphQL accounting.

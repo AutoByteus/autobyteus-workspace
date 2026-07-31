@@ -4,14 +4,14 @@
 
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
-| IR-001 | `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/in-progress/update-openai-model-pricing/architecture-review-revision-record.md`; initial implementation round | `N/A` | `Initial Baseline` | `SR-002`, `ARCH-REV-001`; `CRR/API-REV/DR: N/A` | Implementation complete; handoff ready for source review |
-| IR-002 | `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/in-progress/update-openai-model-pricing/architecture-review-revision-record.md`; SR-004 re-review reconciliation round | `REQ-GAP-001` resolved | `Local Fix` | `IR-001`, `SR-004`, `ARCH-REV-003`; `CRR/API-REV/DR: N/A` | Metadata reconciled; unchanged source ready for independent source review |
+| IR-001 | `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/done/update-openai-model-pricing/architecture-review-revision-record.md`; initial implementation round | `N/A` | `Initial Baseline` | `SR-002`, `ARCH-REV-001`; `CRR/API-REV/DR: N/A` | Implementation complete; handoff ready for source review |
+| IR-002 | `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/done/update-openai-model-pricing/architecture-review-revision-record.md`; SR-004 re-review reconciliation round | `REQ-GAP-001` resolved | `Local Fix` | `IR-001`, `SR-004`, `ARCH-REV-003`; `CRR/API-REV/DR: N/A` | Metadata reconciled; unchanged source ready for independent source review |
 
 ## Revision Entries
 
 ### IR-001 — Combined GPT-5.6 refresh and Claude Opus 5 baseline
 
-- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/in-progress/update-openai-model-pricing/architecture-review-revision-record.md`; initial implementation round after `ARCH-REV-001 Pass`.
+- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/done/update-openai-model-pricing/architecture-review-revision-record.md`; initial implementation round after `ARCH-REV-001 Pass`.
 - Triggering finding IDs: `N/A`.
 - Classification: `Initial Baseline`.
 - Prior authoritative result: `N/A`.
@@ -51,7 +51,7 @@
 
 ### IR-002 — Reconcile durable Sonnet 5 policy after SR-004 architecture re-review
 
-- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/in-progress/update-openai-model-pricing/architecture-review-revision-record.md`; `ARCH-REV-003` re-review after the `ARCH-REV-002` blocked round.
+- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/done/update-openai-model-pricing/architecture-review-revision-record.md`; `ARCH-REV-003` re-review after the `ARCH-REV-002` blocked round.
 - Triggering finding IDs: `REQ-GAP-001` — resolved by `SR-004`.
 - Classification: `Local Fix` — implementation handoff/revision metadata
   reconciliation; no production source change.
@@ -77,7 +77,7 @@
   record to reference `SR-004` / `ARCH-REV-003`, added the BEH-006 trace and
   durable Sonnet 5 preservation note, and routed `REQ-GAP-001` as resolved.
   No production source, test, or documentation code was changed for Sonnet 5.
-- Changed files or areas: `tickets/in-progress/update-openai-model-pricing/implementation-handoff.md` and `implementation-revision-record.md` only.
+- Changed files or areas: `tickets/done/update-openai-model-pricing/implementation-handoff.md` and `implementation-revision-record.md` only.
 - Local validation and result: Existing focused implementation checks remain
   authoritative from IR-001: 3 changed-path test files / 40 tests passed,
   TypeScript build passed, and `git diff --check` passed. This metadata-only

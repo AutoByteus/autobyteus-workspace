@@ -4,17 +4,17 @@
 
 | Revision ID | Canonical Review Report | Entry Point / Trigger | Prior Result | Current Result | Affected Finding IDs |
 | --- | --- | --- | --- | --- | --- |
-| CRR-001 | `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/in-progress/update-openai-model-pricing/code-review-report.md` | Implementation-source review of commit `777079e62` | N/A | Fail | `CR-001` |
-| CRR-002 | `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/in-progress/update-openai-model-pricing/code-review-report.md` | Re-review after implementation metadata reconciliation commit `1c4013ce9` / `IR-002` | Fail | Pass | `CR-001` resolved |
-| CRR-003 | `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/in-progress/update-openai-model-pricing/api-e2e-test-review-report.md` | Proportional durable-test review after API/E2E `API-REV-001` Pass | N/A | Pass | None |
+| CRR-001 | `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/done/update-openai-model-pricing/code-review-report.md` | Implementation-source review of commit `777079e62` | N/A | Fail | `CR-001` |
+| CRR-002 | `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/done/update-openai-model-pricing/code-review-report.md` | Re-review after implementation metadata reconciliation commit `1c4013ce9` / `IR-002` | Fail | Pass | `CR-001` resolved |
+| CRR-003 | `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/done/update-openai-model-pricing/api-e2e-test-review-report.md` | Proportional durable-test review after API/E2E `API-REV-001` Pass | N/A | Pass | None |
 
 ## Revision Entries
 
 ### CRR-001 — Initial implementation-source review finds stale implementation-package references
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/in-progress/update-openai-model-pricing/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/done/update-openai-model-pricing/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round `1`
-- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/in-progress/update-openai-model-pricing/implementation-handoff.md`; `CR-001`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/done/update-openai-model-pricing/implementation-handoff.md`; `CR-001`
 - Relevant solution revision IDs: `SR-002`, `SR-003`, `SR-004`
 - Relevant architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`, `ARCH-REV-003`
 - Relevant implementation revision IDs: `IR-001`
@@ -35,9 +35,9 @@
 
 ### CRR-002 — Implementation-source re-review passes after metadata reconciliation
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/in-progress/update-openai-model-pricing/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/done/update-openai-model-pricing/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round `2`
-- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/in-progress/update-openai-model-pricing/implementation-handoff.md`; `IR-002`; `CR-001`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/done/update-openai-model-pricing/implementation-handoff.md`; `IR-002`; `CR-001`
 - Relevant solution revision IDs: `SR-002`, `SR-004`
 - Relevant architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`, `ARCH-REV-003`
 - Relevant implementation revision IDs: `IR-001`, `IR-002`
@@ -60,9 +60,9 @@
 
 ### CRR-003 — Proportional durable-test review passes after API/E2E validation
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/in-progress/update-openai-model-pricing/api-e2e-test-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/done/update-openai-model-pricing/api-e2e-test-review-report.md`
 - Review entry point and round: `Successful API/E2E test-code review`, round `1`
-- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/in-progress/update-openai-model-pricing/api-e2e-revision-record.md`; `API-REV-001`; no test-review findings.
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/done/update-openai-model-pricing/api-e2e-revision-record.md`; `API-REV-001`; no test-review findings.
 - Relevant solution revision IDs: `SR-004`
 - Relevant architecture-review revision IDs: `ARCH-REV-003`
 - Relevant implementation revision IDs: `IR-002`

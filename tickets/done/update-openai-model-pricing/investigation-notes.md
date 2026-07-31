@@ -53,7 +53,7 @@ Follow-up user request: “by the way, could you also add support for claude opu
 
 - Project Type (`Git`/`Non-Git`): `Git`
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/in-progress/update-openai-model-pricing`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/done/update-openai-model-pricing`
 - Current Branch: `codex/update-openai-model-pricing`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing`
 - Bootstrap Base Branch: `origin/personal`
