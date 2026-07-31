@@ -124,7 +124,7 @@ describe("Agent Tools MCP route publish_artifacts integration", () => {
     const projectionStore = new PublishedArtifactProjectionStore();
     const snapshotStore = new PublishedArtifactSnapshotStore();
     const publicationService = new PublishedArtifactPublicationService({
-      agentRunManager: {
+      activeRunReader: {
         getActiveRun: vi.fn().mockReturnValue({
           runId,
           config: {

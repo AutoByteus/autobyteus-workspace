@@ -15,6 +15,8 @@ The latest [design-review-report.md](design-review-report.md) is authoritative. 
 | ARCH-REV-007 | Round 7 / withdrawn SR-007 after CRR-016 superseded CRR-015 | SR-007 (withdrawn) | `Pass`, then downstream correction | `Withdrawn — No Decision` | CR-013, APIE2E-F005 |
 | ARCH-REV-008 | Round 8 / SR-010 after CRR-020 and API-REV-007 | SR-010 | `ARCH-REV-006 Pass`; round 7 withdrawn; downstream `Fail — Design Impact` | `Pass` | CR-015, APIE2E-F007 |
 | ARCH-REV-009 | Round 9 / SR-011 after CRR-028 naming audit | SR-011 | `Pass`, then downstream `Fail — Design Impact` | `Pass` | CR-018 |
+| ARCH-REV-010 | Round 10 / SR-012 after CRR-031 architecture audit | SR-012 | `Pass`, then downstream `Fail — Design Impact` | `Fail — Design Impact` | CR-019–CR-021; AR-008, AR-009 |
+| ARCH-REV-011 | Round 11 / SR-013 bounded ARCH-REV-010 correction | SR-013 | `Fail — Design Impact` | `Pass` | CR-021; AR-008, AR-009 |
 
 ## Revision Entries
 
@@ -231,3 +233,57 @@ None.
 - Material classification changes: downstream `Fail — Design Impact` -> architecture `Pass`; CR-018 is resolved in design without reopening the passed functional architecture.
 - Recommended recipient: `implementation_engineer`
 - Remaining risks or uncertainty: Implementation/source review must verify a clean dependency-ordered rename, exact object identity and lifecycle preservation, zero new runs from runtime construction, removal of retired private exports/files/tests, and synchronized current documentation. Focused dual-host start/run/publication/handoff/stop regression is expected; broader API/E2E is proportionate only if the source change ceases to be behavior-neutral. Delivery still owns tracked-base integration, and `APIE2E-REPO-005` remains separately `Unclear`.
+
+### ARCH-REV-010 — SR-012 resolves runtime/package ownership but leaves two central cycle corrections incomplete
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md`
+- Review round and trigger: Round 10; `SR-012` Design Impact re-entry after the fresh architecture audit `CRR-031` / `CR-019`–`CR-021`, following the source, real API/E2E, and proportional test-review passes through `CRR-030`.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/solution-revision-record.md`; `CR-019`, `CR-020`, `CR-021`.
+- Relevant solution revision IDs: `SR-012`; `SR-011` remains the passed naming baseline and `SR-010` remains the passed functional publication basis.
+- Prior authoritative decision: `ARCH-REV-009` / `SR-011` `Pass`, followed by downstream `CRR-031 Fail — Design Impact` for boundary leakage, mixed package ownership, and construction cycles.
+- Current authoritative decision: `Fail — Design Impact`
+- What changed in the review result or what baseline was established: Verified that four exact runtime projections resolve CR-019 and the registry/command/reconciliation split resolves CR-020. The proposed state/controller owners and closed journal queue are proportionate directions for CR-021, but two source-grounded gaps remain. First, the target routes live artifact relay only through an attached-handle controller even though current relay invocation ensures/restarts the worker before invoking its handler. Second, the active-run registry is said to prune inactive runs while exact cleanup remains manager-owned through a later registered callback, but no acyclic callback/result contract appears in the interface or graph. The current target therefore cannot yet preserve behavior and remove the cycles as claimed.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001–AR-007 | Resolved through `ARCH-REV-006` | Remain Resolved | SR-002–SR-006, SR-010–SR-012; ARCH-REV-002–ARCH-REV-009 | SR-012 preserves the prior package/host/readiness/editing/prompt/route/publication requirements and does not reopen their decisions. |
+| CR-001–CR-018 | Resolved in prior design/source/API-E2E rounds | Remain Resolved | IR-016, CRR-029, API-REV-011, CRR-030, SR-012 | The passed functional baseline and familiar SR-011 vocabulary remain fixed requirements of SR-012. |
+| CR-019 | Open — Design Impact | Resolved in design | CRR-031, SR-012, SV-017, ARCH-REV-010 | The runtime exposes exactly lifecycle, REST, realtime, and host-management projections; registrars receive exact subject contracts and private owners remain internal. |
+| CR-020 | Open — Design Impact | Resolved in design | CRR-031, SR-012, SV-017, ARCH-REV-010 | Registry state/query, package commands/rollback, runtime reconciliation, and exact bundle-to-definition refresh sequencing have distinct owners and an acyclic Studio construction order. |
+| CR-021 | Open — Design Impact | Partially Resolved | CRR-031, SR-012, SV-017, ARCH-REV-010 | The active-run registry and engine controller/launcher/queue are appropriate candidate owners, but AR-008 and AR-009 show the target drops current ensure behavior and omits a coherent cleanup edge. |
+| APIE2E-REPO-005 | Unclear / unattributed | Remains separate; no architecture consequence | API-REV-011, CRR-031 | No supported origin connects it to SR-012; the solution does not rely on it. |
+
+- New or remaining finding IDs: `AR-008`, `AR-009`; `CR-021` remains partially unresolved through those findings.
+- Material classification changes: downstream `Fail — Design Impact` remains architecture `Fail — Design Impact`; CR-019 and CR-020 resolve in design, while CR-021 requires bounded upstream rework.
+- Recommended recipient: `solution_designer`
+- Remaining risks or uncertainty: Rework must retain the sound four-projection and package-owner decisions while defining (1) an acyclic ensure-before-invoke publication-relay path after worker loss and (2) an exact acyclic inactive-run removal/cleanup protocol covering session revocation and observer detach. It must not restore the broad engine host, add another bind-once callback, add a generic event bus/container, or introduce application global fallbacks. The complete API-REV-011 characterization plus focused worker-loss publication and exact-once inactive-run cleanup evidence remain mandatory. Delivery still owns tracked-base integration, and `APIE2E-REPO-005` remains separately `Unclear`.
+
+### ARCH-REV-011 — SR-013 preserves artifact delivery and exact run cleanup in an acyclic target
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/design-review-report.md`
+- Review round and trigger: Round 11; `SR-013` bounded Design Impact rework after `ARCH-REV-010` returned `AR-008` and `AR-009` against the SR-012 construction-cycle correction.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/solution-revision-record.md`; `AR-008`, `AR-009`, with `CR-021` as the downstream architecture finding being completed.
+- Relevant solution revision IDs: `SR-013`; `SR-012` retained for the approved four-projection and package-owner baseline; `SR-011` and `SR-010` retained as the passed naming and functional baselines.
+- Prior authoritative decision: `ARCH-REV-010` / `SR-012` `Fail — Design Impact`
+- Current authoritative decision: `Pass`
+- What changed in the review result or what baseline was established: Verified a closed complete-command artifact-delivery queue and late service that always performs launcher ensure/restart before controller handler invocation, preserving per-run FIFO, independent lanes, fire-and-forget versus awaited caller behavior, projection non-rollback, and drain-before-engine-stop. Verified an early application MCP session scope, exact `AgentRunResourceManager`, and identity-checked active registry that synchronously revoke sessions and detach file/artifact/memory observers for every supported removal origin without a registry-to-manager callback. The resulting construction is acyclic, keeps the accepted four runtime projections and package owner split, removes both bind-once proxies and the broad engine host cleanly, and introduces no generic bus/container, fallback, compatibility path, wire/data/package change, or migration.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001–AR-007 | Resolved | Remain resolved | SR-002–SR-006, SR-010–SR-013; ARCH-REV-002–ARCH-REV-010 | SR-013 changes only the bounded internal lifecycle/construction target and preserves every prior package, host, readiness, editing, prompt, route, and publication requirement. |
+| CR-001–CR-018 | Resolved in prior design/source/API-E2E rounds | Remain resolved | IR-016, CRR-029, API-REV-011, CRR-030, SR-013 | The passed functional and SR-011 naming baseline is fixed explicitly and remains the mandatory regression set. |
+| CR-019 | Resolved in design | Remains resolved | CRR-031, SR-012, SR-013, ARCH-REV-010 | Runtime still exposes exactly lifecycle, REST, realtime, and host-management projections; private owners do not leak. |
+| CR-020 | Resolved in design | Remains resolved | CRR-031, SR-012, SR-013, ARCH-REV-010 | Package state/query, commands/rollback, reconciliation, and ordered refresh remain distinct acyclic owners. |
+| CR-021 | Partially resolved | Resolved in design | CRR-031, SR-012, SR-013, SV-018, ARCH-REV-011 | The revised run/session/resource and engine/queue/consumer graphs preserve the two missing lifecycle edges while eliminating both bind-once cycles. |
+| AR-008 | Open — Design Impact | Resolved in design | ARCH-REV-010, SR-013, SV-C52, SV-C53 | Artifact relay enqueues an exact command; the late service performs `ensureReady` before controller invocation and accepted commands drain before engine stop. |
+| AR-009 | Open — Design Impact | Resolved in design | ARCH-REV-010, SR-013, SV-C54–SV-C57 | Exact identity removal invokes one early resource owner that revokes run sessions and detaches all observers once for inactive discovery/replacement, terminate, stop-all, rollback, and stale removal. |
+| APIE2E-REPO-005 | Unclear / unattributed | Remains separate; no architecture consequence | API-REV-011, CRR-031 | No supported origin connects it to SR-013; the design does not rely on it. |
+
+- New or remaining finding IDs: None.
+- Material classification changes: `Fail — Design Impact` -> `Pass`; AR-008 and AR-009 resolve and CR-021 is complete in design.
+- Recommended recipient: `implementation_engineer`
+- Remaining risks or uncertainty: Implementation/source review must verify exact construction identity, no retired/default/reverse paths, queue completion/error/drain behavior, all exact cleanup origins and stale identity, and zero runs during runtime construction. API/E2E must rerun the complete API-REV-011 Studio/standalone baseline plus worker-exit-before-publication and cleanup-focused cases, preserving exact `73/73` package parity. Delivery retains final tracked-base integration ownership; `APIE2E-REPO-005` remains separately `Unclear`.

@@ -22,31 +22,38 @@ describe("ApplicationBackendWebSocketSessionService", () => {
   it("rejects a raw client frame before readiness instead of queueing it", async () => {
     const gate = deferred();
     const socket = new TestSocket();
-    const engine = {
+    const engineController = {
       onWebSocketAction: vi.fn(), onWorkerClose: vi.fn(),
       openApplicationWebSocket: vi.fn(async () => undefined), closeApplicationWebSocket: vi.fn(async () => undefined),
       deliverApplicationWebSocketMessage: vi.fn(async () => undefined),
     };
-    const service = new ApplicationBackendWebSocketSessionService({ engineHostService: engine as never });
+    const engineLauncher = { ensureReady: vi.fn(async () => undefined) };
+    const service = new ApplicationBackendWebSocketSessionService({
+      engineController: engineController as never,
+      engineLauncher: engineLauncher as never,
+    });
     service.connect({ applicationId: "app-1", request: { path: "/room", params: {}, query: {}, headers: {} }, socket, requireApplication: () => gate.promise });
     socket.emit("message", "early", false);
     gate.resolve();
     await flush();
     expect(socket.closes[0]?.code).toBe(1002);
-    expect(engine.deliverApplicationWebSocketMessage).not.toHaveBeenCalled();
+    expect(engineController.deliverApplicationWebSocketMessage).not.toHaveBeenCalled();
   });
 
   it("orders the reserved READY frame before backend sends accepted during open", async () => {
     const socket = new TestSocket();
     let actionListener!: (event: any) => Promise<void>;
-    const engine: any = {
+    const engineController: any = {
       onWebSocketAction: (listener: typeof actionListener) => { actionListener = listener; },
       onWorkerClose: vi.fn(), closeApplicationWebSocket: vi.fn(async () => undefined), deliverApplicationWebSocketMessage: vi.fn(async () => undefined),
     };
-    engine.openApplicationWebSocket = vi.fn(async (_app: string, input: any) => {
+    engineController.openApplicationWebSocket = vi.fn(async (_app: string, input: any) => {
       await actionListener({ applicationId: "app-1", action: { action: "send", sessionId: input.sessionId, frame: { kind: "text", text: "business" } } });
     });
-    const service = new ApplicationBackendWebSocketSessionService({ engineHostService: engine });
+    const service = new ApplicationBackendWebSocketSessionService({
+      engineController,
+      engineLauncher: { ensureReady: vi.fn(async () => undefined) } as never,
+    });
     service.connect({ applicationId: "app-1", request: { path: "/room", params: {}, query: {}, headers: {} }, socket, requireApplication: async () => undefined });
     await flush();
     expect(socket.sent.map(String)).toEqual([
@@ -58,13 +65,16 @@ describe("ApplicationBackendWebSocketSessionService", () => {
   it("accepts the inbound queue limit and closes only the overflowing session above it", async () => {
     const socket = new TestSocket();
     const delivery = deferred();
-    const engine = {
+    const engineController = {
       onWebSocketAction: vi.fn(), onWorkerClose: vi.fn(),
       openApplicationWebSocket: vi.fn(async () => undefined),
       closeApplicationWebSocket: vi.fn(async () => undefined),
       deliverApplicationWebSocketMessage: vi.fn(() => delivery.promise),
     };
-    const service = new ApplicationBackendWebSocketSessionService({ engineHostService: engine as never });
+    const service = new ApplicationBackendWebSocketSessionService({
+      engineController: engineController as never,
+      engineLauncher: { ensureReady: vi.fn(async () => undefined) } as never,
+    });
     service.connect({ applicationId: "app-1", request: { path: "/room", params: {}, query: {}, headers: {} }, socket, requireApplication: async () => undefined });
     await flush();
     for (let index = 0; index < APPLICATION_WEBSOCKET_INBOUND_QUEUE_LIMIT; index += 1) {
@@ -80,14 +90,17 @@ describe("ApplicationBackendWebSocketSessionService", () => {
     const socket = new TestSocket();
     let actionListener!: (event: any) => Promise<void>;
     let sessionId = "";
-    const engine: any = {
+    const engineController: any = {
       onWebSocketAction: (listener: typeof actionListener) => { actionListener = listener; },
       onWorkerClose: vi.fn(),
       closeApplicationWebSocket: vi.fn(async () => undefined),
       deliverApplicationWebSocketMessage: vi.fn(async () => undefined),
       openApplicationWebSocket: vi.fn(async (_app: string, input: any) => { sessionId = input.sessionId; }),
     };
-    const service = new ApplicationBackendWebSocketSessionService({ engineHostService: engine });
+    const service = new ApplicationBackendWebSocketSessionService({
+      engineController,
+      engineLauncher: { ensureReady: vi.fn(async () => undefined) } as never,
+    });
     service.connect({ applicationId: "app-1", request: { path: "/room", params: {}, query: {}, headers: {} }, socket, requireApplication: async () => undefined });
     await flush();
     socket.bufferedAmount = APPLICATION_WEBSOCKET_NETWORK_BUFFERED_AMOUNT_LIMIT;

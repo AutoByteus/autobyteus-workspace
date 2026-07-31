@@ -17,6 +17,7 @@ import { ApplicationAgentTargetAuthorizationService } from "../../../src/applica
 import { ApplicationOrchestrationHostService } from "../../../src/application-orchestration/services/application-orchestration-host-service.js";
 import { ApplicationAgentStreamRuntimeSource } from "../../../src/application-agent-streaming/services/application-agent-stream-runtime-source.js";
 import { ApplicationAgentStreamingService } from "../../../src/application-agent-streaming/services/application-agent-streaming-service.js";
+import { ApplicationAgentEventMapper } from "../../../src/application-agent-streaming/services/application-agent-stream-event-mapper.js";
 import { ApplicationAgentCommunicationService } from "../../../src/application-agent-communication/services/application-agent-communication-service.js";
 import {
   createApplicationBackendMountTransport,
@@ -193,6 +194,7 @@ describe("Application agent communication WebSocket integration", () => {
     const streaming = new ApplicationAgentStreamingService({
       orchestrationHostService: orchestration,
       runtimeSource,
+      mapper: new ApplicationAgentEventMapper(),
     });
     communicationState.service = new ApplicationAgentCommunicationService({
       streamingService: streaming,

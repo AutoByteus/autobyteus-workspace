@@ -7,9 +7,8 @@ import WebSocket from "ws";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { ApplicationBundle } from "../../../src/application-bundles/domain/models.js";
 import { ApplicationStorageLifecycleService } from "../../../src/application-storage/services/application-storage-lifecycle-service.js";
-import { ApplicationEngineHostService } from "../../../src/application-engine/services/application-engine-host-service.js";
 import { ApplicationBackendApiGatewayService } from "../../../src/application-backend-api-gateway/services/application-backend-api-gateway-service.js";
-import { ApplicationBackendNotificationHub } from "../../../src/application-backend-api-gateway/notifications/application-backend-notification-hub.js";
+import { createApplicationEngineTestRuntime } from "./application-engine-test-runtime.js";
 import {
   createApplicationBackendMountTransport,
 } from "../../../../autobyteus-application-frontend-sdk/src/create-application-backend-mount-transport.js";
@@ -110,7 +109,7 @@ describe("Application backend custom WebSocket integration", () => {
   let applicationRootPath: string;
   let app: FastifyInstance;
   let baseUrl: string;
-  let engineHostService: ApplicationEngineHostService;
+  let engineRuntime: ReturnType<typeof createApplicationEngineTestRuntime>;
   const sockets: ApplicationBackendWebSocketConnection[] = [];
 
   beforeEach(async () => {
@@ -176,16 +175,11 @@ export default {
       appConfig: { getAppDataDir: () => tempRoot } as never,
       applicationBundleService: bundleService as never,
     });
-    engineHostService = new ApplicationEngineHostService({
+    engineRuntime = createApplicationEngineTestRuntime({
       applicationBundleService: bundleService as never,
       storageLifecycleService,
     });
-    gatewayState.service = new ApplicationBackendApiGatewayService({
-      applicationBundleService: bundleService as never,
-      availabilityService: { requireApplicationActive: vi.fn(async () => undefined) } as never,
-      engineHostService,
-      notificationHub: new ApplicationBackendNotificationHub(),
-    });
+    gatewayState.service = engineRuntime.backendGateway;
 
     app = fastify();
     await app.register(websocket);
@@ -201,8 +195,9 @@ export default {
 
   afterEach(async () => {
     for (const socket of sockets.splice(0)) socket.close();
-    await engineHostService.stopApplicationEngine(APPLICATION_ID).catch(() => undefined);
-    await engineHostService.stopApplicationEngine(DISABLED_APPLICATION_ID).catch(() => undefined);
+    await engineRuntime.engineLauncher.stop(APPLICATION_ID).catch(() => undefined);
+    await engineRuntime.engineLauncher.stop(DISABLED_APPLICATION_ID).catch(() => undefined);
+    engineRuntime.backendGateway.dispose();
     await app.close();
     gatewayState.service = null;
     await fs.rm(tempRoot, { recursive: true, force: true });
@@ -270,7 +265,7 @@ export default {
     });
     await expect(rawClose).resolves.toMatchObject({ code: 1002 });
 
-    const openSpy = vi.spyOn(engineHostService, "openApplicationWebSocket");
+    const openSpy = vi.spyOn(engineRuntime.engineController, "openApplicationWebSocket");
     const disabled = createClient(DISABLED_APPLICATION_ID).backend.connectWebSocket("/rooms/disabled");
     sockets.push(disabled);
     await expect(disabled.ready).rejects.toMatchObject({
@@ -289,7 +284,7 @@ export default {
     const close = waitForClose(connection);
     await connection.ready;
 
-    await engineHostService.stopApplicationEngine(APPLICATION_ID);
+    await engineRuntime.engineLauncher.stop(APPLICATION_ID);
     await expect(close).resolves.toMatchObject({ code: 1012 });
     await waitFor(() => errors.length === 1, "one frontend worker-stop error");
     expect(errors.map((error) => error.code)).toEqual(["BACKEND_UNAVAILABLE"]);

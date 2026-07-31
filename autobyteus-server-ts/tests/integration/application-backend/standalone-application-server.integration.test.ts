@@ -123,9 +123,20 @@ describe("standalone application server", () => {
       selection,
       applicationRuntime: {
         lifecycle,
-        backendGateway: gateway,
-        notificationHub,
-        agentCommunicationService: { connect: vi.fn() },
+        rest: {
+          assets: { resolveUiAsset: vi.fn() },
+          backend: gateway,
+          availability: { reloadAndReenter: vi.fn() },
+          executionResources: {},
+        },
+        realtime: {
+          backend: gateway,
+          notifications: notificationHub,
+          agentCommunication: { connect: vi.fn() },
+        },
+        hostManagement: {
+          catalogReconciliation: {},
+        },
       } as never,
       loggingConfig: {
         pinoLogLevel: "silent",

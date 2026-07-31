@@ -1,0 +1,104 @@
+{
+  "briefs": [
+    {
+      "brief_id": "brief-0f7c09b1-d80f-43c8-8ddb-ffb3e22f55e5",
+      "title": "API REV 012 Studio publication remount 1785490343526",
+      "status": "in_review",
+      "latest_binding_id": "25b2c9fe-9456-409d-8fc4-8d597a10a7f6",
+      "latest_run_id": "brief_studio_team_cbdef8e1d2bc4966a2a9b6a5b7e11a89",
+      "latest_binding_status": "ATTACHED",
+      "last_error_message": null,
+      "created_at": "2026-07-31T09:32:26.359Z",
+      "updated_at": "2026-07-31T09:33:38.600Z",
+      "approved_at": null,
+      "rejected_at": null
+    }
+  ],
+  "artifacts": [
+    {
+      "brief_id": "brief-0f7c09b1-d80f-43c8-8ddb-ffb3e22f55e5",
+      "artifact_kind": "researcher",
+      "publication_kind": "research",
+      "revision_id": "aad6a477-7ab8-4783-ab1c-53cd9e79341f",
+      "path": "/private/tmp/api-rev012-studio-data2/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md",
+      "description": "Concise research checkpoint for the Studio publication remount brief.",
+      "producer_member_route_key": "researcher",
+      "updated_at": "2026-07-31T09:32:59.429Z"
+    },
+    {
+      "brief_id": "brief-0f7c09b1-d80f-43c8-8ddb-ffb3e22f55e5",
+      "artifact_kind": "writer",
+      "publication_kind": "final",
+      "revision_id": "b985ce84-9840-4307-b0b1-ce23c6423219",
+      "path": "/private/tmp/api-rev012-studio-data2/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md",
+      "description": "Writer checkpoint: concise API REV 012 publication remount brief",
+      "producer_member_route_key": "writer",
+      "updated_at": "2026-07-31T09:33:38.600Z"
+    }
+  ],
+  "revisions": [
+    {
+      "revision_id": "aad6a477-7ab8-4783-ab1c-53cd9e79341f",
+      "brief_id": "brief-0f7c09b1-d80f-43c8-8ddb-ffb3e22f55e5",
+      "binding_id": "25b2c9fe-9456-409d-8fc4-8d597a10a7f6",
+      "run_id": "brief_studio_researcher_539ade221ba74668b4de0ff137b345c9",
+      "artifact_kind": "researcher",
+      "publication_kind": "research",
+      "path": "/private/tmp/api-rev012-studio-data2/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/research.md",
+      "producer_member_route_key": "researcher",
+      "published_at": "2026-07-31T09:32:59.429Z",
+      "projected_at": "2026-07-31T09:32:59.441Z"
+    },
+    {
+      "revision_id": "b985ce84-9840-4307-b0b1-ce23c6423219",
+      "brief_id": "brief-0f7c09b1-d80f-43c8-8ddb-ffb3e22f55e5",
+      "binding_id": "25b2c9fe-9456-409d-8fc4-8d597a10a7f6",
+      "run_id": "brief_studio_writer_190ae6a2d912435bbe9e6532e0a9ac39",
+      "artifact_kind": "writer",
+      "publication_kind": "final",
+      "path": "/private/tmp/api-rev012-studio-data2/applications/bundle-app__brief-studio__437fd90ec8a3c91d8a8237f8dd4f69f17596e8d3a1d800b8aaa28fba2a761b31/runtime/brief-studio/final-brief.md",
+      "producer_member_route_key": "writer",
+      "published_at": "2026-07-31T09:33:38.600Z",
+      "projected_at": "2026-07-31T09:33:38.607Z"
+    }
+  ],
+  "bindings": [
+    {
+      "binding_id": "25b2c9fe-9456-409d-8fc4-8d597a10a7f6",
+      "launch_request_id": "brief-launch-request-1d560142-4096-4538-8751-721877c5eff2",
+      "status": "ATTACHED",
+      "runtime_subject": "TEAM_RUN",
+      "run_id": "brief_studio_team_cbdef8e1d2bc4966a2a9b6a5b7e11a89",
+      "definition_id": "bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d",
+      "resource_owner": "bundle",
+      "resource_kind": "AGENT_TEAM",
+      "resource_local_id": "brief-studio-team",
+      "resource_definition_id": null,
+      "created_at": "2026-07-31T09:32:26.694Z",
+      "updated_at": "2026-07-31T09:32:26.694Z",
+      "terminated_at": null,
+      "last_error_message": null,
+      "summary_json": "{\"bindingId\":\"25b2c9fe-9456-409d-8fc4-8d597a10a7f6\",\"applicationId\":\"bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f\",\"launchRequestId\":\"brief-launch-request-1d560142-4096-4538-8751-721877c5eff2\",\"status\":\"ATTACHED\",\"executionResourceRef\":{\"source\":\"bundle\",\"kind\":\"AGENT_TEAM\",\"localId\":\"brief-studio-team\"},\"runtime\":{\"subject\":\"TEAM_RUN\",\"runId\":\"brief_studio_team_cbdef8e1d2bc4966a2a9b6a5b7e11a89\",\"definitionId\":\"bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b7472656573253246756e6976657273616c2d6170706c69636174696f6e2d6672616d65776f726b2d70726f706f73616c2d616e616c797369732532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d\",\"members\":[{\"memberName\":\"researcher\",\"memberRouteKey\":\"researcher\",\"displayName\":\"researcher\",\"teamPath\":[],\"runId\":\"brief_studio_researcher_539ade221ba74668b4de0ff137b345c9\",\"runtimeKind\":\"AGENT_TEAM_MEMBER\"},{\"memberName\":\"writer\",\"memberRouteKey\":\"writer\",\"displayName\":\"writer\",\"teamPath\":[],\"runId\":\"brief_studio_writer_190ae6a2d912435bbe9e6532e0a9ac39\",\"runtimeKind\":\"AGENT_TEAM_MEMBER\"}]},\"createdAt\":\"2026-07-31T09:32:26.694Z\",\"updatedAt\":\"2026-07-31T09:32:26.694Z\",\"terminatedAt\":null,\"lastErrorMessage\":null}"
+    }
+  ],
+  "members": [
+    {
+      "binding_id": "25b2c9fe-9456-409d-8fc4-8d597a10a7f6",
+      "member_name": "researcher",
+      "member_route_key": "researcher",
+      "display_name": "researcher",
+      "team_path_json": "[]",
+      "run_id": "brief_studio_researcher_539ade221ba74668b4de0ff137b345c9",
+      "runtime_kind": "AGENT_TEAM_MEMBER"
+    },
+    {
+      "binding_id": "25b2c9fe-9456-409d-8fc4-8d597a10a7f6",
+      "member_name": "writer",
+      "member_route_key": "writer",
+      "display_name": "writer",
+      "team_path_json": "[]",
+      "run_id": "brief_studio_writer_190ae6a2d912435bbe9e6532e0a9ac39",
+      "runtime_kind": "AGENT_TEAM_MEMBER"
+    }
+  ]
+}

@@ -5,11 +5,10 @@ import fastify, { type FastifyInstance } from "fastify";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createApplicationBackendMountTransport } from "../../../../autobyteus-application-frontend-sdk/src/create-application-backend-mount-transport.ts";
 import { ApplicationStorageLifecycleService } from "../../../src/application-storage/services/application-storage-lifecycle-service.js";
-import { ApplicationEngineHostService } from "../../../src/application-engine/services/application-engine-host-service.js";
 import { ApplicationBackendApiGatewayService } from "../../../src/application-backend-api-gateway/services/application-backend-api-gateway-service.js";
-import { ApplicationBackendNotificationHub } from "../../../src/application-backend-api-gateway/notifications/application-backend-notification-hub.js";
 import { SERVER_ROUTE_PARAM_MAX_LENGTH } from "../../../src/api/fastify-runtime-config.js";
 import type { ApplicationBundle } from "../../../src/application-bundles/domain/models.js";
+import { createApplicationEngineTestRuntime } from "./application-engine-test-runtime.js";
 
 const applicationBackendState = vi.hoisted(() => ({
   apiGatewayService: null as ApplicationBackendApiGatewayService | null,
@@ -94,7 +93,7 @@ describe("Application backend mount route transport integration", () => {
   let applicationRootPath: string;
   let app: FastifyInstance;
   let baseUrl: string;
-  let engineHostService: ApplicationEngineHostService;
+  let engineRuntime: ReturnType<typeof createApplicationEngineTestRuntime>;
 
   beforeEach(async () => {
     tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-route-transport-"));
@@ -161,16 +160,12 @@ describe("Application backend mount route transport integration", () => {
       applicationBundleService: bundleService as never,
     });
 
-    engineHostService = new ApplicationEngineHostService({
+    engineRuntime = createApplicationEngineTestRuntime({
       applicationBundleService: bundleService as never,
       storageLifecycleService,
     });
 
-    applicationBackendState.apiGatewayService = new ApplicationBackendApiGatewayService({
-      applicationBundleService: bundleService as never,
-      engineHostService,
-      notificationHub: new ApplicationBackendNotificationHub(),
-    });
+    applicationBackendState.apiGatewayService = engineRuntime.backendGateway;
 
     app = fastify({ maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH });
     await app.register(async (restApp) => {
@@ -184,7 +179,8 @@ describe("Application backend mount route transport integration", () => {
   });
 
   afterEach(async () => {
-    await engineHostService.stopApplicationEngine(APPLICATION_ID);
+    await engineRuntime.engineLauncher.stop(APPLICATION_ID);
+    engineRuntime.backendGateway.dispose();
     await app.close();
     await fs.rm(tempRoot, { recursive: true, force: true });
     applicationBackendState.apiGatewayService = null;

@@ -1,6 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 import type { ApplicationCatalogSnapshot } from "../../../src/application-bundles/domain/application-catalog-snapshot.js";
 import { ApplicationAvailabilityService } from "../../../src/application-orchestration/services/application-availability-service.js";
+import { ApplicationReentryService } from "../../../src/application-orchestration/services/application-reentry-service.js";
+import { ApplicationAvailabilityStateRegistry } from "../../../src/application-platform/runtime/application-availability-state-registry.js";
 
 const refreshedAt = new Date("2026-04-20T10:00:00.000Z").toISOString();
 const applicationId = "bundle-app__app-1";
@@ -76,17 +78,21 @@ const buildSnapshot = (): ApplicationCatalogSnapshot => ({
   ],
 });
 
+const createAvailabilityService = (
+  applicationBundleService: {
+    getApplicationById?: (applicationId: string) => Promise<unknown>;
+    getDiagnosticByApplicationId?: (applicationId: string) => Promise<unknown>;
+  } = {},
+) => new ApplicationAvailabilityService({
+  applicationBundleService: applicationBundleService as never,
+  stateRegistry: new ApplicationAvailabilityStateRegistry(),
+});
+
 describe("ApplicationAvailabilityService", () => {
   it("tracks active and quarantined applications from the catalog snapshot", async () => {
-    const dispatchService = {
-      suspendApplication: vi.fn(),
-    };
-    const service = new ApplicationAvailabilityService({
-      dispatchService: dispatchService as never,
-      applicationBundleService: {
-        getApplicationById: vi.fn(async () => null),
-        getDiagnosticByApplicationId: vi.fn(async () => null),
-      } as never,
+    const service = createAvailabilityService({
+      getApplicationById: vi.fn(async () => null),
+      getDiagnosticByApplicationId: vi.fn(async () => null),
     });
 
     service.synchronizeWithCatalogSnapshot(buildSnapshot());
@@ -99,15 +105,10 @@ describe("ApplicationAvailabilityService", () => {
       state: "QUARANTINED",
       detail: "manifest invalid",
     });
-    expect(dispatchService.suspendApplication).toHaveBeenCalledWith("bundle-app__broken-app");
   });
 
   it("keeps a catalog-active app active when startup recovery reports NO_PERSISTED_STATE", async () => {
-    const service = new ApplicationAvailabilityService({
-      dispatchService: {
-        suspendApplication: vi.fn(),
-      } as never,
-    });
+    const service = createAvailabilityService();
     service.synchronizeWithCatalogSnapshot(buildSnapshot());
 
     const availability = service.applyStartupRecoveryOutcome(applicationId, "CATALOG_ACTIVE", {
@@ -123,11 +124,7 @@ describe("ApplicationAvailabilityService", () => {
   });
 
   it("reconciles persisted-known applications back into quarantined ownership during live catalog refresh", async () => {
-    const service = new ApplicationAvailabilityService({
-      dispatchService: {
-        suspendApplication: vi.fn(),
-      } as never,
-    });
+    const service = createAvailabilityService();
 
     service.reconcileCatalogSnapshotWithKnownApplications({
       refreshedAt,
@@ -143,11 +140,7 @@ describe("ApplicationAvailabilityService", () => {
   });
 
   it("keeps persisted-only apps quarantined after a recovered startup reconciliation", async () => {
-    const service = new ApplicationAvailabilityService({
-      dispatchService: {
-        suspendApplication: vi.fn(),
-      } as never,
-    });
+    const service = createAvailabilityService();
 
     const availability = service.applyStartupRecoveryOutcome("bundle-app__persisted-only", "PERSISTED_ONLY", {
       applicationId: "bundle-app__persisted-only",
@@ -178,32 +171,32 @@ describe("ApplicationAvailabilityService", () => {
         steps.push("resume");
       }),
     };
-    const engineHostService = {
-      stopApplicationEngine: vi.fn(async () => {
+    const engineLauncher = {
+      stop: vi.fn(async () => {
         steps.push("stop-worker");
       }),
     };
-    const dispatchService = {
-      suspendApplication: vi.fn(),
+    const eventDispatchService = {
       resumePendingEventsForApplication: vi.fn(async () => {
         steps.push("resume-dispatch");
       }),
     };
-    const service = new ApplicationAvailabilityService({
-      applicationBundleService: bundleService as never,
-      engineHostService: engineHostService as never,
+    const availabilityService = createAvailabilityService(bundleService);
+    const service = new ApplicationReentryService({
+      bundleService: bundleService as never,
+      availabilityService,
       recoveryService: recoveryService as never,
-      dispatchService: dispatchService as never,
+      eventDispatchService: eventDispatchService as never,
+      engineLauncher: engineLauncher as never,
     });
-    service.synchronizeWithCatalogSnapshot(buildSnapshot());
+    availabilityService.synchronizeWithCatalogSnapshot(buildSnapshot());
 
     const availability = await service.reloadAndReenter(applicationId);
 
     expect(bundleService.reloadApplication).toHaveBeenCalledWith(applicationId);
-    expect(engineHostService.stopApplicationEngine).toHaveBeenCalledWith(applicationId);
+    expect(engineLauncher.stop).toHaveBeenCalledWith(applicationId);
     expect(recoveryService.resumeApplication).toHaveBeenCalledWith(applicationId);
-    expect(dispatchService.resumePendingEventsForApplication).toHaveBeenCalledWith(applicationId);
-    expect(dispatchService.suspendApplication).toHaveBeenCalledWith(applicationId);
+    expect(eventDispatchService.resumePendingEventsForApplication).toHaveBeenCalledWith(applicationId);
     expect(steps).toEqual(["stop-worker", "reload", "resume", "resume-dispatch"]);
     expect(availability).toMatchObject({ state: "ACTIVE", detail: null });
   });
@@ -215,12 +208,19 @@ describe("ApplicationAvailabilityService", () => {
       reloadApplication: vi.fn(async () => null),
       getCatalogSnapshot: vi.fn(async () => buildSnapshot()),
     };
-    const dispatchService = {
-      suspendApplication: vi.fn(),
-    };
-    const service = new ApplicationAvailabilityService({
-      applicationBundleService: bundleService as never,
-      dispatchService: dispatchService as never,
+    const availabilityService = createAvailabilityService(bundleService);
+    const service = new ApplicationReentryService({
+      bundleService: bundleService as never,
+      availabilityService,
+      recoveryService: {
+        resumeApplication: vi.fn(async () => undefined),
+      },
+      eventDispatchService: {
+        resumePendingEventsForApplication: vi.fn(async () => undefined),
+      },
+      engineLauncher: {
+        stop: vi.fn(async () => undefined),
+      },
     });
 
     const availability = await service.reloadAndReenter("bundle-app__broken-app");
@@ -232,63 +232,67 @@ describe("ApplicationAvailabilityService", () => {
   });
 
   it("stops a pre-existing ready worker before reentering a repaired application", async () => {
-    const engineHostService = {
-      stopApplicationEngine: vi.fn(async () => undefined),
+    const engineLauncher = {
+      stop: vi.fn(async () => undefined),
     };
-    const service = new ApplicationAvailabilityService({
-      applicationBundleService: {
-        reloadApplication: vi.fn(async () => ({ id: applicationId })),
-        getCatalogSnapshot: vi.fn(async () => ({
-          ...buildSnapshot(),
-          diagnostics: [],
-        })),
-      } as never,
-      engineHostService: engineHostService as never,
+    const bundleService = {
+      reloadApplication: vi.fn(async () => ({ id: applicationId })),
+      getCatalogSnapshot: vi.fn(async () => ({
+        ...buildSnapshot(),
+        diagnostics: [],
+      })),
+    };
+    const availabilityService = createAvailabilityService(bundleService);
+    const service = new ApplicationReentryService({
+      bundleService: bundleService as never,
+      availabilityService,
+      engineLauncher,
       recoveryService: {
         resumeApplication: vi.fn(async () => undefined),
-      } as never,
-      dispatchService: {
-        suspendApplication: vi.fn(),
+      },
+      eventDispatchService: {
         resumePendingEventsForApplication: vi.fn(async () => undefined),
-      } as never,
+      },
     });
-    service.synchronizeWithCatalogSnapshot(buildSnapshot());
+    availabilityService.synchronizeWithCatalogSnapshot(buildSnapshot());
 
     await expect(service.reloadAndReenter(applicationId)).resolves.toMatchObject({
       state: "ACTIVE",
     });
 
-    expect(engineHostService.stopApplicationEngine).toHaveBeenCalledTimes(1);
-    expect(engineHostService.stopApplicationEngine).toHaveBeenCalledWith(applicationId);
+    expect(engineLauncher.stop).toHaveBeenCalledTimes(1);
+    expect(engineLauncher.stop).toHaveBeenCalledWith(applicationId);
   });
 
   it("preserves REENTERING until recovery and dispatch resume both finish", async () => {
     const recoveryDeferred = createDeferred<void>();
-    const service = new ApplicationAvailabilityService({
-      applicationBundleService: {
-        reloadApplication: vi.fn(async () => ({ id: applicationId })),
-        getCatalogSnapshot: vi.fn(async () => ({
-          ...buildSnapshot(),
-          diagnostics: [],
-        })),
-      } as never,
-      engineHostService: {
-        stopApplicationEngine: vi.fn(async () => undefined),
-      } as never,
+    const bundleService = {
+      reloadApplication: vi.fn(async () => ({ id: applicationId })),
+      getCatalogSnapshot: vi.fn(async () => ({
+        ...buildSnapshot(),
+        diagnostics: [],
+      })),
+    };
+    const availabilityService = createAvailabilityService(bundleService);
+    const service = new ApplicationReentryService({
+      bundleService: bundleService as never,
+      availabilityService,
+      engineLauncher: {
+        stop: vi.fn(async () => undefined),
+      },
       recoveryService: {
         resumeApplication: vi.fn(() => recoveryDeferred.promise),
-      } as never,
-      dispatchService: {
-        suspendApplication: vi.fn(),
+      },
+      eventDispatchService: {
         resumePendingEventsForApplication: vi.fn(async () => undefined),
-      } as never,
+      },
     });
-    service.synchronizeWithCatalogSnapshot(buildSnapshot());
+    availabilityService.synchronizeWithCatalogSnapshot(buildSnapshot());
 
     const reentryPromise = service.reloadAndReenter(applicationId);
     await Promise.resolve();
 
-    await expect(service.getAvailability(applicationId)).resolves.toMatchObject({
+    await expect(availabilityService.getAvailability(applicationId)).resolves.toMatchObject({
       state: "REENTERING",
       detail: null,
     });

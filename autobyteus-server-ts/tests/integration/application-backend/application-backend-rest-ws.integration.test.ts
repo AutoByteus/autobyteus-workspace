@@ -6,7 +6,6 @@ import websocket from "@fastify/websocket";
 import WebSocket from "ws";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ApplicationStorageLifecycleService } from "../../../src/application-storage/services/application-storage-lifecycle-service.js";
-import { ApplicationEngineHostService } from "../../../src/application-engine/services/application-engine-host-service.js";
 import { ApplicationBackendApiGatewayService } from "../../../src/application-backend-api-gateway/services/application-backend-api-gateway-service.js";
 import {
   ApplicationBackendNotificationHub,
@@ -14,6 +13,7 @@ import {
 } from "../../../src/application-backend-api-gateway/notifications/application-backend-notification-hub.js";
 import { SERVER_ROUTE_PARAM_MAX_LENGTH } from "../../../src/api/fastify-runtime-config.js";
 import type { ApplicationBundle } from "../../../src/application-bundles/domain/models.js";
+import { createApplicationEngineTestRuntime } from "./application-engine-test-runtime.js";
 
 const applicationBackendState = vi.hoisted(() => ({
   apiGatewayService: null as ApplicationBackendApiGatewayService | null,
@@ -190,7 +190,7 @@ describe("Application backend REST/WS integration", () => {
   let applicationRootPath: string;
   let app: FastifyInstance;
   let baseUrl: string;
-  let engineHostService: ApplicationEngineHostService;
+  let engineRuntime: ReturnType<typeof createApplicationEngineTestRuntime>;
   let notificationSocket: WebSocket | null;
   let notificationMessages: ApplicationBackendNotificationStreamMessage[];
 
@@ -336,16 +336,13 @@ export default {
       applicationBundleService: bundleService as never,
     });
 
-    engineHostService = new ApplicationEngineHostService({
+    applicationBackendState.notificationHub = new ApplicationBackendNotificationHub();
+    engineRuntime = createApplicationEngineTestRuntime({
       applicationBundleService: bundleService as never,
       storageLifecycleService,
-    });
-    applicationBackendState.notificationHub = new ApplicationBackendNotificationHub();
-    applicationBackendState.apiGatewayService = new ApplicationBackendApiGatewayService({
-      applicationBundleService: bundleService as never,
-      engineHostService,
       notificationHub: applicationBackendState.notificationHub,
     });
+    applicationBackendState.apiGatewayService = engineRuntime.backendGateway;
 
     app = fastify({ maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH });
     await app.register(websocket);
@@ -375,7 +372,8 @@ export default {
     if (notificationSocket && notificationSocket.readyState === WebSocket.OPEN) {
       notificationSocket.close();
     }
-    await engineHostService.stopApplicationEngine(APPLICATION_ID);
+    await engineRuntime.engineLauncher.stop(APPLICATION_ID);
+    engineRuntime.backendGateway.dispose();
     await app.close();
     await fs.rm(tempRoot, { recursive: true, force: true });
     applicationBackendState.apiGatewayService = null;

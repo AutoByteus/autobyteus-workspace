@@ -20,19 +20,23 @@ import {
 } from "../../../src/application-bundles/providers/file-application-bundle-provider.js";
 import { ApplicationStorageLifecycleService } from "../../../src/application-storage/services/application-storage-lifecycle-service.js";
 import { ApplicationPlatformStateStore } from "../../../src/application-storage/stores/application-platform-state-store.js";
-import { ApplicationEngineHostService } from "../../../src/application-engine/services/application-engine-host-service.js";
+import { ApplicationEngineController } from "../../../src/application-engine/services/application-engine-controller.js";
 import { ApplicationBackendApiGatewayService } from "../../../src/application-backend-api-gateway/services/application-backend-api-gateway-service.js";
 import {
   ApplicationBackendNotificationHub,
   type ApplicationBackendNotificationStreamMessage,
 } from "../../../src/application-backend-api-gateway/notifications/application-backend-notification-hub.js";
 import { ApplicationExecutionEventDispatchService } from "../../../src/application-orchestration/services/application-execution-event-dispatch-service.js";
+import { ApplicationExecutionEventDispatchQueue } from "../../../src/application-orchestration/services/application-execution-event-dispatch-queue.js";
 import { ApplicationExecutionEventIngressService } from "../../../src/application-orchestration/services/application-execution-event-ingress-service.js";
 import { ApplicationAvailabilityService } from "../../../src/application-orchestration/services/application-availability-service.js";
 import { ApplicationOrchestrationHostService } from "../../../src/application-orchestration/services/application-orchestration-host-service.js";
 import { ApplicationOrchestrationStartupGate } from "../../../src/application-orchestration/services/application-orchestration-startup-gate.js";
 import { ApplicationRunBindingLaunchService } from "../../../src/application-orchestration/services/application-run-binding-launch-service.js";
 import { ApplicationRunObserverService } from "../../../src/application-orchestration/services/application-run-observer-service.js";
+import { ApplicationRunBindingLifecycleHub } from "../../../src/application-orchestration/services/application-run-binding-lifecycle-hub.js";
+import { ApplicationRunBindingTerminalTransitionService } from "../../../src/application-orchestration/services/application-run-binding-terminal-transition-service.js";
+import { ApplicationAgentTargetAuthorizationService } from "../../../src/application-orchestration/services/application-agent-target-authorization-service.js";
 import { ApplicationExecutionResourceResolver } from "../../../src/application-orchestration/services/application-execution-resource-resolver.js";
 import { ApplicationExecutionContext } from "../../../src/application-orchestration/domain/models.js";
 import { ApplicationExecutionEventJournalStore } from "../../../src/application-orchestration/stores/application-execution-event-journal-store.js";
@@ -43,12 +47,16 @@ import { registerApplicationBackendRoutes } from "../../../src/api/rest/applicat
 import { registerApplicationAvailabilityRoutes } from "../../../src/api/rest/application-availability.js";
 import { registerApplicationBackendNotificationWebsocket } from "../../../src/api/websocket/application-backend-notifications.js";
 import { AgentRunMetadataStore } from "../../../src/run-history/store/agent-run-metadata-store.js";
+import { AgentRunMetadataService } from "../../../src/run-history/services/agent-run-metadata-service.js";
+import { PublishedArtifactProjectionService } from "../../../src/run-history/services/published-artifact-projection-service.js";
 import type { TeamMemberSelector } from "../../../src/agent-team-execution/domain/team-run-member-identity.js";
 import { buildTeamLocalAgentDefinitionId } from "../../../src/agent-team-definition/utils/team-local-definition-id.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { PublishedArtifactProjectionStore } from "../../../src/services/published-artifacts/published-artifact-projection-store.js";
 import { PublishedArtifactSnapshotStore } from "../../../src/services/published-artifacts/published-artifact-snapshot-store.js";
 import { buildPublishedArtifactId } from "../../../src/services/published-artifacts/published-artifact-types.js";
+import { ApplicationAvailabilityStateRegistry } from "../../../src/application-platform/runtime/application-availability-state-registry.js";
+import { createApplicationEngineTestRuntime } from "./application-engine-test-runtime.js";
 
 const applicationBackendState = vi.hoisted(() => ({
   apiGatewayService: null as ApplicationBackendApiGatewayService | null,
@@ -394,13 +402,14 @@ describe("Brief Studio imported package integration", () => {
   let app: FastifyInstance;
   let baseUrl: string;
   let bundleService: ApplicationBundleService;
-  let engineHostService: ApplicationEngineHostService;
+  let engineRuntime: ReturnType<typeof createApplicationEngineTestRuntime>;
   let storageLifecycleService: ApplicationStorageLifecycleService;
   let applicationId: string;
   let startupGate: ApplicationOrchestrationStartupGate;
   let notificationSocket: WebSocket | null;
   let notificationMessages: ApplicationBackendNotificationStreamMessage[];
   let ingressService: ApplicationExecutionEventIngressService;
+  let dispatchService: ApplicationExecutionEventDispatchService;
   let bindingStore: ApplicationRunBindingStore;
   let lookupStore: ApplicationRunLookupStore;
   let latestBinding: ApplicationAgentBinding | ApplicationAgentTeamBinding | null;
@@ -424,15 +433,7 @@ describe("Brief Studio imported package integration", () => {
     await fs.mkdir(builtInAppRoot, { recursive: true });
     await fs.mkdir(appDataRoot, { recursive: true });
 
-    ApplicationBundleService.resetInstance();
     ApplicationStorageLifecycleService.resetInstance();
-    ApplicationEngineHostService.resetInstance();
-    ApplicationBackendApiGatewayService.resetInstance();
-    ApplicationAvailabilityService.resetInstance();
-    ApplicationExecutionEventDispatchService.resetInstance();
-    ApplicationOrchestrationHostService.resetInstance();
-    ApplicationOrchestrationStartupGate.resetInstance();
-    ApplicationRunObserverService.resetInstance();
     appConfigProvider.resetForTests();
     appConfigProvider.initialize({ appDataDir: appDataRoot });
 
@@ -449,7 +450,7 @@ describe("Brief Studio imported package integration", () => {
       } as never,
     );
 
-    bundleService = ApplicationBundleService.getInstance({
+    bundleService = new ApplicationBundleService({
       provider,
       packageRegistryService: {
         getRegistrySnapshot: async () => ({
@@ -503,8 +504,18 @@ describe("Brief Studio imported package integration", () => {
     bindingStore = new ApplicationRunBindingStore({ platformStateStore });
     const journalStore = new ApplicationExecutionEventJournalStore({ platformStateStore });
     lookupStore = new ApplicationRunLookupStore();
+    const eventDispatchQueue = new ApplicationExecutionEventDispatchQueue();
+    ingressService = new ApplicationExecutionEventIngressService({
+      journalStore,
+      dispatchQueue: eventDispatchQueue,
+    });
+    const availabilityRegistry = new ApplicationAvailabilityStateRegistry();
+    const availabilityService = new ApplicationAvailabilityService({
+      applicationBundleService: bundleService,
+      stateRegistry: availabilityRegistry,
+    });
 
-    startupGate = ApplicationOrchestrationStartupGate.getInstance();
+    startupGate = new ApplicationOrchestrationStartupGate();
     latestBinding = null;
     latestTeamRunId = null;
     executionContextByRouteKey = new Map();
@@ -662,32 +673,6 @@ describe("Brief Studio imported package integration", () => {
       agentDefinitionService: fakeAgentDefinitionService as never,
     });
 
-    let engineHostServiceRef: ApplicationEngineHostService | null = null;
-    const dispatchService = new ApplicationExecutionEventDispatchService({
-      applicationBundleService: bundleService,
-      journalStore,
-      engineHostService: {
-        invokeApplicationEventHandler: (...args: [string, { envelope: ApplicationExecutionEventEnvelope }]) => {
-          if (!engineHostServiceRef) {
-            throw new Error("Application engine host service is not ready.");
-          }
-          return engineHostServiceRef.invokeApplicationEventHandler(...args);
-        },
-      } as never,
-    });
-
-    ingressService = new ApplicationExecutionEventIngressService({
-      bindingStore,
-      lookupStore,
-      journalStore,
-      dispatchService,
-    });
-
-    const availabilityService = ApplicationAvailabilityService.getInstance({
-      applicationBundleService: bundleService,
-      dispatchService,
-    });
-
     const launchConfigurationService = {
       requireRunnableConfiguration: vi.fn(async () => ({
         slotKey: "draftingTeam",
@@ -745,11 +730,35 @@ describe("Brief Studio imported package integration", () => {
       })),
     };
 
+    const lifecycleHub = new ApplicationRunBindingLifecycleHub();
+    const terminalTransitionService = new ApplicationRunBindingTerminalTransitionService({
+      bindingStore,
+      lookupStore,
+      ingressService,
+      lifecycleHub,
+    });
     const runObserverService = new ApplicationRunObserverService({
       lifecycleGateway: fakeLifecycleGateway as never,
       bindingStore,
       lookupStore,
       ingressService,
+      terminalTransitionService,
+    });
+    const agentTargetAuthorizationService = new ApplicationAgentTargetAuthorizationService({
+      startupGate,
+      availabilityService,
+      bindingStore,
+      lifecycleHub,
+    });
+    const agentRunService = {
+      terminateAgentRun: vi.fn(async () => undefined),
+      resolveAgentRun: vi.fn(async () => null),
+    };
+    const publishedArtifactProjectionService = new PublishedArtifactProjectionService({
+      activeRunReader: { getActiveRun: () => null },
+      metadataService: new AgentRunMetadataService(appConfigProvider.config.getMemoryDir()),
+      projectionStore: new PublishedArtifactProjectionStore(),
+      snapshotStore: new PublishedArtifactSnapshotStore(),
     });
 
     const orchestrationHostService = new ApplicationOrchestrationHostService({
@@ -761,24 +770,37 @@ describe("Brief Studio imported package integration", () => {
       bindingStore,
       lookupStore,
       runObserverService,
+      agentRunService: agentRunService as never,
       teamRunService: fakeTeamRunService as never,
+      teamRunMetadataService: { readMetadata: vi.fn(async () => null) } as never,
       ingressService,
+      publishedArtifactProjectionService,
+      memoryLocationService: {
+        resolveTeamMemberLocationFromMetadata: vi.fn(() => null),
+      } as never,
+      agentTargetAuthorizationService,
+      terminalTransitionService,
     });
 
-    engineHostService = new ApplicationEngineHostService({
+    const engineController = new ApplicationEngineController();
+    engineRuntime = createApplicationEngineTestRuntime({
       applicationBundleService: bundleService as never,
       storageLifecycleService,
       orchestrationHostService,
+      engineController,
     });
-    engineHostServiceRef = engineHostService;
+    dispatchService = new ApplicationExecutionEventDispatchService({
+      applicationBundleService: bundleService,
+      availabilityReader: availabilityRegistry.reader,
+      platformStateStore,
+      journalStore,
+      eventQueue: eventDispatchQueue,
+      engineLauncher: engineRuntime.engineLauncher,
+      engineController,
+    });
 
-    applicationBackendState.notificationHub = new ApplicationBackendNotificationHub();
-    applicationBackendState.apiGatewayService = new ApplicationBackendApiGatewayService({
-      applicationBundleService: bundleService as never,
-      availabilityService,
-      engineHostService,
-      notificationHub: applicationBackendState.notificationHub,
-    });
+    applicationBackendState.notificationHub = engineRuntime.notificationHub;
+    applicationBackendState.apiGatewayService = engineRuntime.backendGateway;
 
     availabilityService.synchronizeWithCatalogSnapshot(await bundleService.getCatalogSnapshot());
     await startupGate.runStartupRecovery(async () => {
@@ -814,8 +836,10 @@ describe("Brief Studio imported package integration", () => {
       notificationSocket.close();
     }
     if (applicationId) {
-      await engineHostService.stopApplicationEngine(applicationId);
+      await engineRuntime.engineLauncher.stop(applicationId);
     }
+    dispatchService.stop();
+    engineRuntime.backendGateway.dispose();
     if (app) {
       await app.close();
     }
@@ -1082,7 +1106,8 @@ describe("Brief Studio imported package integration", () => {
       publishedAt: "2026-04-19T10:41:00.000Z",
       fixtureRoot: tempRoot,
     });
-    await engineHostService.invokeApplicationArtifactHandler(applicationId, {
+    await engineRuntime.engineLauncher.ensureReady(applicationId);
+    await engineRuntime.engineController.invokeApplicationArtifactHandler(applicationId, {
       event: researcherArtifactEvent,
     });
 
@@ -1097,7 +1122,8 @@ describe("Brief Studio imported package integration", () => {
       publishedAt: "2026-04-19T10:42:00.000Z",
       fixtureRoot: tempRoot,
     });
-    await engineHostService.invokeApplicationArtifactHandler(applicationId, {
+    await engineRuntime.engineLauncher.ensureReady(applicationId);
+    await engineRuntime.engineController.invokeApplicationArtifactHandler(applicationId, {
       event: writerArtifactEvent,
     });
 
@@ -1501,7 +1527,8 @@ describe("Brief Studio imported package integration", () => {
         publishedAt: "2026-04-19T10:51:00.000Z",
         fixtureRoot: tempRoot,
       });
-      await engineHostService.invokeApplicationArtifactHandler(applicationId, {
+      await engineRuntime.engineLauncher.ensureReady(applicationId);
+      await engineRuntime.engineController.invokeApplicationArtifactHandler(applicationId, {
         event: writerArtifactEvent,
       });
 
@@ -1689,8 +1716,9 @@ describe("Brief Studio imported package integration", () => {
       lastErrorMessage: null,
     };
 
+    await engineRuntime.engineLauncher.ensureReady(applicationId);
     await expect(
-      engineHostService.invokeApplicationArtifactHandler(
+      engineRuntime.engineController.invokeApplicationArtifactHandler(
         applicationId,
         {
           event: buildDirectArtifactEvent({

@@ -2,39 +2,43 @@
 
 ## Release / Publication / Deployment Scope
 
-This round completes latest-base confirmation, integrated-state delivery recording, durable documentation sync, and the user-verification handoff. The ticket does not request a package release, publication, version bump, tag, or deployment. Repository finalization and any later release/deployment decision remain prohibited until explicit user verification.
+DR-004 retains the DR-003 latest-base integrated candidate and, at the user's request, produces and validates a local unsigned macOS ARM64 Electron package for manual verification. This ticket does not request a version bump, tag, package publication, production release, or deployment. The v1.4.31 token-statistics release present in the integrated base is independently completed base history; the DR-004 v1.4.31 DMG/ZIP are local test artifacts, not a published release.
 
 ## Handoff Summary
 
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/delivery-revision-record.md`
-- Current delivery revision ID: `DR-002`
-- Notes: Candidate is ready for explicit user verification; this is not repository finalization.
+- Current delivery revision ID: `DR-004`
+- Notes: Integrated candidate and validated local Electron package are ready for explicit user verification; repository finalization has not begun.
 
 ## Initial Delivery Integration Refresh
 
 - Bootstrap base reference: `origin/personal`; implementation-review base `6caf809303294252c109420b238588f0c68aca6a`
-- Latest tracked remote base reference checked: `origin/personal` at `1b8d8c2f22c5f846dd82cdd706f594103d1b4e1e`
-- Base advanced since bootstrap or previous refresh: `No` since DR-001; DR-001 had already integrated the `43`-commit advance beyond `6caf8093`
-- New base commits integrated into the ticket branch: `No` in DR-002
-- Local checkpoint commit result: `Completed` in DR-001 — `ddf7fe3117221d178f0c6af1825bcb708031d73c`; no new checkpoint needed for a no-op refresh
-- Integration method: `Already current`
-- Integration result: `Completed`
-- Post-integration executable checks rerun: `No`
+- Latest tracked remote base reference checked: `origin/personal` at `dfc0468b137cd231b79ff8096fa46750611b06e2`
+- Base advanced since bootstrap or previous refresh: `Yes` — 13 commits after the DR-002 base, carrying the completed token-statistics v1.4.31 release
+- New base commits integrated into the ticket branch: `Yes`
+- Local checkpoint commit result: `Completed` — `3f8ec4362f489b41c99e01b222eadfa8e1b76b74`
+- Integration method: `Merge`
+- Integration result: `Completed` without textual conflict — `669273f900950113ff0a8e60f9eca8142a3224bc`
+- Post-integration executable checks rerun: `Yes`
 - Post-integration verification result: `Passed`
-- No-rerun rationale (only if no new base commits were integrated): Refreshed `origin/personal` remains the integrated merge base and contributes `0` missing commits. Current `API-REV-009` execution-confirmed the DR-001 lifecycle correction on the integrated branch; `API-REV-010` then passed at `98.3%` on the current candidate and `CRR-027` passed its durable delta.
-- Delivery edits started only after integrated state was current: `Yes`
-- Handoff state current with latest tracked remote base: `Yes`
+- No-rerun rationale (only if no new base commits were integrated): `N/A`
+- Delivery edits started only after integrated state was current: `Yes`; DR-003 canonical updates began after the merge and passing executable check
+- Handoff state current with latest tracked remote base: `Yes`; post-merge divergence `71/0`
 - Blocker (if applicable): `N/A`
 
-Evidence: `evidence/delivery/dr-002-base-refresh-and-integrated-state.log`.
+Evidence:
+
+- `evidence/delivery/dr-003-base-refresh-and-integration.log`
+- `evidence/delivery/dr-003-post-integration-check.log`
+- `evidence/delivery/dr-003-delivery-audit.log`
 
 ## User Verification
 
 - Initial explicit user completion/verification received: `No`
-- Initial verification reference: `Pending this handoff`
-- Renewed verification required after later re-integration: `No` at present; required if the finalization refresh materially changes the candidate
+- Initial verification reference: `Pending user testing of the DR-004 local Electron package`
+- Renewed verification required after later re-integration: `No prior verification existed`; a new explicit signal is required for the current materially newer candidate
 - Renewed verification received: `Not needed`
 - Renewed verification reference: `N/A`
 
@@ -42,43 +46,43 @@ Evidence: `evidence/delivery/dr-002-base-refresh-and-integrated-state.log`.
 
 - Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/docs-sync-report.md`
 - Docs sync result: `Updated`
-- Docs updated: external development guide; devkit README; server Applications, Orchestration, Backend Gateway, Sessions, and Engine module docs; web Applications doc; plus reviewed upstream sample/SDK/iframe documentation retained in the integrated package
-- No-impact rationale (if applicable): `N/A`
+- Docs updated: IR-016 updated five server application module docs, web Applications docs, custom application development guide, and devkit README to the SR-011 responsibility vocabulary; delivery verified those changes after latest-base integration and refreshed the canonical report
+- No-impact rationale (if applicable): The 13 newly integrated base commits have no additional application-framework docs impact; their token-statistics docs/release records are independently complete. DR-004 executes existing packaging instructions and changes no product contract, so it requires only the ticket-local Electron build report and refreshed delivery records.
 
 ## Ticket State Transition
 
 - Ticket moved to `tickets/done/<ticket-name>`: `No`
-- Archived ticket path: `N/A — explicit user verification is pending`
+- Archived ticket path: `N/A — explicit user verification pending`
 
 ## Version / Tag / Release Commit
 
-Not required for the current ticket scope and not started. No version bump, release commit, tag, package publication, or release notes artifact was created.
+Not applicable to production delivery scope and not started. The base's existing `v1.4.31` tag and release metadata were only integrated as tracked history; this ticket did not create, alter, publish, or claim them. DR-004 built local unsigned artifacts with the existing package version solely for user verification.
 
 ## Repository Finalization
 
 - Bootstrap context source: `investigation-notes.md` — expected finalization target `personal`
 - Ticket branch: `codex/universal-application-framework-proposal-analysis`
-- Ticket branch commit result: Pre-verification safety/integration commits exist; final ticket commit is not performed
+- Ticket branch commit result: Delivery safety checkpoint and base merge completed; final ticket commit not performed
 - Ticket branch push result: `Not started`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after user verification: `N/A — verification pending`
-- Delivery-owned edits protected before re-integration: `Not needed` in DR-002; preserved uncommitted for verification
-- Re-integration before final merge result: `Not needed` yet; mandatory remote refresh will run after user verification
+- Delivery-owned edits protected before re-integration: `Completed` through checkpoint `3f8ec4362`
+- Re-integration before final merge result: `Completed` for the verification candidate; another remote refresh is mandatory after user verification
 - Target branch update result: `Not started`
 - Merge into target result: `Not started`
 - Push target branch result: `Not started`
 - Repository finalization status: `Blocked`
-- Blocker (if applicable): Required explicit user verification/completion has not yet been received. This is a process hold, not a code/test failure.
+- Blocker (if applicable): Required explicit user verification/completion is pending. This is a workflow hold, not a source/test failure.
 
 ## Release / Publication / Deployment
 
-- Applicable: `No` for the current ticket scope
+- Applicable: `No` for this ticket scope
 - Method: `Other`
-- Method reference / command: `N/A`
-- Release/publication/deployment result: `Not required`
+- Method reference / command: Production release/deployment `N/A`; local verification package used documented `pnpm -C autobyteus-web build:electron:mac -- --arm64` with personal flavor and signing/notarization disabled
+- Release/publication/deployment result: `Not required`; local verification build `Pass`
 - Release notes handoff result: `Not required`
-- Blocker (if applicable): `N/A`; if release/deployment is requested later, it will be evaluated only after repository finalization.
+- Blocker (if applicable): `N/A`
 
 ## Post-Finalization Cleanup
 
@@ -87,7 +91,7 @@ Not required for the current ticket scope and not started. No version bump, rele
 - Worktree prune result: `Not required`
 - Local ticket branch cleanup result: `Blocked`
 - Remote branch cleanup result: `Not required`
-- Blocker (if applicable): User verification and repository finalization are pending; the worktree and branch preserve the candidate and cumulative evidence.
+- Blocker (if applicable): The candidate, user-used devkit `dist`, and cumulative evidence must remain intact until verification and finalization complete.
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
 
@@ -103,34 +107,38 @@ Not required for the current ticket scope and not started. No version bump, rele
 
 ## Deployment Steps
 
-None. Deployment is not in the recorded scope.
+None. Deployment is outside the recorded scope.
 
 ## Environment Or Persisted-Data Transition Notes
 
-- Approved persisted-data decision: `Directly Usable — No Migration`
-- Delivery action required: `None`
-- Result and evidence: No persistence/schema transition requires delivery migration. Current isolated startup, restart, recovery, and cleanup evidence is recorded in `API-REV-009` and retained by `API-REV-010`.
-- Migration completion, validation, recovery, and rollout evidence, only when `Migration Required`: `N/A`
+- Approved persisted-data decision: Ticket behavior remains `Directly Usable — No Migration`
+- Delivery action required: `None` for this ticket
+- Result and evidence: SR-011/IR-016 is a clean behavior-neutral private rename and changes no database/wire/package contract. The integrated base independently contains its own token-usage migration; the post-integration build regenerated Prisma and the focused test environment applied that migration successfully.
+- Migration completion, validation, recovery, and rollout evidence, only when `Migration Required`: `N/A` for this ticket; base release evidence remains in `tickets/done/token-statistics-custom-provider-model/`.
 
 ## Verification Checks
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Implementation source gate | Pass — `96/100` | `CRR-026`, `code-review-report.md` |
-| Current API/E2E gate | Pass — `98.3%`, every applicable category at least `97%` | `API-REV-010`, `api-e2e-execution-coverage-report.md` |
-| Proportional durable-test review | Pass — one later atomic metadata path, no findings | `CRR-027`, `api-e2e-test-review-report.md` |
-| DR-001 integrated lifecycle issue | Resolved; exact and live integrated paths pass | `IR-014`, `CRR-024`, `API-REV-009` |
-| Atomic metadata/parity issue | Resolved; focused `1/1`, full devkit `20/20`, four real host comparisons each `73/73` byte-identical | `IR-015`, `API-REV-010` evidence |
-| Latest tracked base refresh | Pass — `origin/personal` unchanged at `1b8d8c2f2`, `0` missing base commits | `evidence/delivery/dr-002-base-refresh-and-integrated-state.log` |
-| Delivery docs audit | Pass — scoped `git diff --check`, current owner/path and stale-term audit | `evidence/delivery/dr-002-delivery-audit.log` |
+| Solution/architecture vocabulary gate | Pass | `SR-011`, `ARCH-REV-009` |
+| Implementation source gate | Pass — `CRR-029`, `97/100` | `code-review-report.md`, `code-review-revision-record.md` |
+| API/E2E gate | Pass — `API-REV-011`, `98.9%`, every category at least `98%` | `api-e2e-execution-coverage-report.md`, API-REV-011 evidence |
+| Proportional durable-test review | Pass — 10 current files / 11 raw paths, no finding | `CRR-030`, `api-e2e-test-review-report.md` |
+| Latest tracked base refresh/integration | Pass — 13 commits merged without conflict, `0` base commits missing | `evidence/delivery/dr-003-base-refresh-and-integration.log` |
+| Integrated server build | Pass — shared builds, Prisma generation, full TypeScript, assets, bootstrap smoke | `evidence/delivery/dr-003-post-integration-check.log` |
+| Integrated renamed/business boundaries | Pass — `11` files / `34` tests | `evidence/delivery/dr-003-post-integration-check.log` |
+| Current vocabulary/path/docs audit | Pass | `evidence/delivery/dr-003-delivery-audit.log` |
+| Local macOS ARM64 Electron build | Pass — personal flavor, Electron `42.4.1`, version `1.4.31` | `electron-test-build-report.md`, `evidence/delivery/dr-004-electron-macos-arm64-build.log` |
+| Local Electron artifact/runtime validation | Pass — metadata/ARM64, embedded dual-host owners, real packaged terminal spawn, valid DMG/ZIP, clean process/mount state | `evidence/delivery/dr-004-electron-macos-arm64-verification.log` |
 
 ## Rollback Criteria
 
-- Do not archive, commit the final ticket state, push, merge to `personal`, release, deploy, or clean up before explicit user verification.
-- After verification, fetch `origin/personal` again. If it advanced, integrate it before finalization and rerun relevant checks; if user-visible behavior or artifacts materially change, require renewed verification.
-- If user verification reports a source, packaging, test, or requirement issue, keep the ticket in progress and route it through the owning workflow rather than weakening evidence or documentation.
-- Preserve package immutability, explicit override reset, graph-local publication/session scope, quiescent event-pipeline stop, and atomic rollback during any later correction.
+- Do not archive, perform the final ticket commit, push, merge to `personal`, release, deploy, or clean up before explicit user verification.
+- Retain the ignored DR-004 app/DMG/ZIP until the user completes testing; do not mistake them for signed/notarized release artifacts.
+- Fetch `origin/personal` again after verification. If it advances, integrate before finalization and rerun relevant checks; require renewed verification if user-facing behavior, vocabulary, or artifacts materially change.
+- Do not restore retired private names through aliases/wrappers, weaken zero-new-run-on-runtime-build proof, or conflate server assembly, application runtime, session management, run supervision, shutdown coordination, and publisher roles.
+- Preserve all prior dual-host package, launch configuration, publication/handoff, route separation, restart/recovery, shutdown, atomic parity, and cleanup behavior during any later correction.
 
 ## Final Status
 
-**Ready for explicit user verification; repository finalization held by policy.**
+**Local macOS ARM64 Electron test package ready for explicit user verification; repository finalization held by policy.**

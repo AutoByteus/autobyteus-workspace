@@ -15,6 +15,7 @@
 | API-REV-009 | `code_reviewer` `CRR-024`; delivery re-entry `DR-001`; API/E2E round 9 | `IR-014`; `CRR-024`; `API-REV-008`; `CRR-023`; `DR-001` | **Pass / 97%** | **Fail / 94%** |
 | API-REV-010 | `code_reviewer` `CRR-026`; API/E2E round 10 | `IR-015`; `CRR-025`–`CRR-026`; `API-REV-009`; `DR-001` | **Fail / 94%** | **Pass / 98%** |
 | API-REV-011 | `code_reviewer` `CRR-029`; API/E2E round 11 | `SR-011`; `ARCH-REV-009`; `IR-016`; `CRR-028`–`CRR-029`; `API-REV-010` | **Pass / 98%** | **Pass / 99%** |
+| API-REV-012 | `code_reviewer` `CRR-033`; API/E2E round 12 | `SR-013`; `ARCH-REV-010`–`ARCH-REV-011`; `IR-017`–`IR-018`; `CRR-030`–`CRR-033`; `API-REV-011` | **Pass / 99%** | **Pass / 97%** |
 
 ## Revision Entries
 
@@ -297,3 +298,27 @@ No prior API/E2E failure was open. `CR-018` was source-resolved by IR-016 and is
 - New or remaining failure IDs: none for the requirement-linked IR-016 scope. `APIE2E-REPO-005` remains separately `Unclear`, unconnected and unused as pass evidence.
 - Residual risks: one transient real-model `run_bash` failure recovered before required publication/handoff completion. The initial Studio reload locator error was isolated to temporary harness setup and corrected with direct semantic proof. Neither is a product blocker.
 - Recommended recipient: `code_reviewer` for the separate proportional review of the IR-016 durable test rename/update delta before delivery resumes.
+
+### API-REV-012 — Acyclic narrow owners preserve worker recovery, exact cleanup, and real dual-host behavior
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`; API/E2E round 12 after `CRR-033` source-review Pass for `IR-018`.
+- Triggering finding or scenario IDs: SR-013 / `AC-019`–`AC-023`; `CR-019`–`CR-022`; new validation IDs `APIE2E-REPO-012`, `APIE2E-WORKER-012`, `APIE2E-STANDALONE-012`, `APIE2E-STUDIO-012`, `APIE2E-ROUTES-012`, `APIE2E-PARITY-012`, and `APIE2E-CLEANUP-012`. Historical `APIE2E-REPO-005` remains separate and unattributed.
+- Related revision IDs: `SR-013`; `ARCH-REV-010`–`ARCH-REV-011`; `IR-017`–`IR-018`; `CRR-030`–`CRR-033`; `API-REV-011`.
+- Why recorded: reconciled the stale durable fixtures left by the clean removal of `ApplicationEngineHostService`, executed the IR-018 stop-all continuation gate, and proved the complete SR-013 behavior-neutral architecture through current repository coverage and real standalone/Studio execution.
+- Durable coverage delta: added one shared real narrow application-engine integration runtime; updated eleven test files to use current controller/launcher/gateway/availability/reentry/delivery-queue/event-mapper/active-run-reader/four-projection contracts; removed no assertion or test. The IR-018 `agent-run-manager.test.ts` delta was reconciled and executed but not modified by API/E2E.
+- Repository execution: IR-018 selection 5 files / 22 tests; requested migrated group 6 files / 15 tests; availability/relay 2 files / 10 tests; final affected selection 31 files / 116 tests; server TypeScript no-emit/full build; devkit 20/20; frontend SDK build; maintained Brief/Socratic build, validate, and backend typecheck all pass. Retired broad-host scan and `git diff --check` pass.
+- Real standalone execution: a controlled browser started the package-owned Codex/Luna team. The exact application worker was terminated while the provider run and binding were active; a replacement worker appeared, actual researcher/writer `publish_artifacts` plus recipient-name `send_message_to` succeeded, and the app reached `in_review` with two projected artifacts. Two additional team runs were active at graceful stop; all owned listeners/worker/Codex children exited. Same-data restart restored recorded teams and app records, a new generation completed, and a pre-restart Agent Tools session returned `404 session_unavailable`.
+- Real Studio execution: the exact Brief Studio Team and researcher/writer Codex/Luna defaults were visible and valid; one iframe mounted; actual publication/handoff/projected artifacts completed. Explicit host-controls reload changed the iframe launch ID from 1 to 2 while retaining exactly one iframe and the completed app projection.
+- Route/parity/cleanup: both internal Agent Tools routes return the established unauthenticated 401; standalone external gateway is absent at 404; Studio gateway initializes at 200. Exact 73/73 pre/post SHA-256 rows match. Ports, owned processes, isolated data roots, and temporary harnesses are clear; unrelated user processes were preserved.
+
+#### Prior Failure Resolution
+
+No prior API/E2E failure was open. `CR-022` was source-resolved by IR-018 and is now execution-confirmed through the focused stop-all continuation tests, active multi-run host stop, same-data recovery, and leak-free cleanup. The stale broad-host test fixtures were API/E2E-owned test-validity issues, not production failures.
+
+- Canonical artifacts updated: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, and this revision record.
+- Prior result and confidence: `Pass / 99%` (`98.9%`, API-REV-011).
+- Current result and confidence: **Pass / 97%** (`96.6%`).
+- Broader validation: **Required — completed** with real isolated standalone and Studio browser/process journeys.
+- New or remaining failure IDs: none for the current requirement-linked scope. `APIE2E-REPO-005` remains separately `Unclear`, unconnected, and unused as pass evidence.
+- Residual risks: live artifact-drain ordering is correlated with direct durable delivery/lifecycle tests rather than an external queue hook; Studio used isolated alternate ports to preserve the user-owned 8000 listener. Neither is a material acceptance gap.
+- Recommended recipient: `code_reviewer` for the separate proportional review of the one added helper, eleven updated durable tests, and the reconciled IR-018 manager regression before delivery resumes.
