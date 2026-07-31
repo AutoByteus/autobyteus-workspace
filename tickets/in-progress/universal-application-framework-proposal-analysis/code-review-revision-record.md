@@ -40,6 +40,7 @@
 | `CRR-034` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-test-review-report.md` | Proportional API/E2E Test-Code Review / `API-REV-012` | `N/A` | `Pass` | `N/A` |
 | `CRR-035` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-019` | `Pass` (`CRR-033` source; `API-REV-012`; `CRR-034` test review) | `Fail — Local Fix` | `CR-023`, `CR-024` |
 | `CRR-036` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-020` | `Fail — Local Fix / 94` | `Fail — Local Fix / 95` | `CR-023`, `CR-024`, `CR-025` |
+| `CRR-037` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-021` | `Fail — Local Fix / 95` | `Pass / 98` | `CR-025`; retained `CR-023`, `CR-024` |
 
 ## Revision Entries
 
@@ -1007,3 +1008,33 @@ None for proportional test code. `CR-019`–`CR-021` were design-impact findings
 - Material score or classification changes: result remains `Fail — Local Fix` but improves from `94` to `95`; `CR-023` and `CR-024` resolve, while Ownership `8.8`, API/E2E Readiness `8.8`, and behavioral fidelity `8.9` remain below clean-pass target because of the direct external-`src` bypass.
 - Recommended recipient: `implementation_engineer`
 - Remaining risks or uncertainty: fix only the resolved external-`src` dependency edge and direct AFB-002/005 fixtures; preserve the corrected classifiers and source-origin model. Do not change production source, manifests/lock/docs, broaden policy, restore rejected hardening, or split ownership. After source Pass, the proportional API-REV-012 dual-host/package-parity loop remains required. Historical `APIE2E-REPO-005` stays separate.
+
+### CRR-037 — IR-021 external-script target correction passes source review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `37`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-021`; `CR-025`; scenario IDs `N/A`
+- Relevant solution revision IDs: `SR-016`; retained `SR-015`, `SR-014`, and production baseline `SR-013`
+- Relevant architecture-review revision IDs: `ARCH-REV-014`; retained `ARCH-REV-013`, `ARCH-REV-012`, and production baseline `ARCH-REV-011`
+- Relevant implementation revision IDs: `IR-021`; underlying `IR-019`, `IR-020`; retained production `IR-017`, `IR-018`
+- Relevant API/E2E revision IDs: retained `API-REV-012`
+- Relevant delivery revision IDs: `DR-005`
+- Prior authoritative result: `CRR-036` `Fail — Local Fix / 95`; open `CR-025`; `CR-023`/`CR-024` resolved
+- Current authoritative result: `Pass / 98`
+- What changed in the review result and why: IR-021 creates one SFC-owned `ImportEdge` for a resolved Vue external `src`, applies the existing enclosing AFB evaluator before reading the file, stops on a forbidden target, and otherwise continues through the external-file resolution-origin path introduced for CR-024. Direct fixtures prove Studio AFB-002 local allow/server runtime reject and Brief AFB-005 local allow/project-escape reject. The official suite passes 14/14; an independent same-checker probe passes 15/15 and proves the two exact previously passing escapes are rejected before malformed target content is parsed. Direct strict test TypeScript, server build TypeScript, frozen lockfile, one-file scope, diff, and scratch cleanup all pass. No production, manifest/lock, docs, package, data, route, or runtime source changed.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-025` | Open — Local Fix | Resolved in source; API/E2E confirmation pending | `CRR-036`, `IR-021`, `CRR-037` | External `src` is evaluated as an SFC-owned edge before read; official AFB-002/005 allow/reject fixtures pass; exact independent malformed-target probe returns only expected boundary diagnostics. |
+| `CR-023` | Resolved in IR-020 source | Remains Resolved | `CRR-035`, `IR-020`, `CRR-036`, `IR-021`, `CRR-037` | IR-021 does not alter named AFB-001/002/003 classifier rules; official every-category/current-tree checks pass. |
+| `CR-024` | Resolved in IR-020 source | Remains Resolved | `CRR-035`, `IR-020`, `CRR-036`, `IR-021`, `CRR-037` | Allowed external targets still parse imports/bindings from the external file while diagnostics retain the owning SFC/source identity; retained fixture passes. |
+| `AR-010`, `AR-011` | Resolved in reviewed design; substantially implemented with CR-025 previously remaining | Resolved in current source; API/E2E confirmation pending | `SR-016`, `ARCH-REV-014`, `IR-019`–`IR-021`, `CRR-035`–`CRR-037` | Exact project/source parser, import directions, construction obligations, external-source edge, and fixtures now match the reviewed design. |
+| `CR-019`–`CR-022` | Resolved | Remain Resolved | `SR-013`, `ARCH-REV-011`, `IR-017`, `IR-018`, `CRR-033`, `API-REV-012` | IR-021 changes no production runtime source. |
+| `APIE2E-REPO-005` | Historical `Unclear` / unattributed | Remains separate and unchanged | `API-REV-005`–`API-REV-012` | No supported connection to IR-021; not result evidence. |
+
+- New or remaining finding IDs: None in implementation source.
+- Material score or classification changes: result improves from `Fail — Local Fix / 95` to `Pass / 98`; every scorecard category is now `>=9.5`.
+- Recommended recipient: `api_e2e_engineer`
+- Remaining risks or uncertainty: API/E2E must run the proportional SR-016/API-REV-012-equivalent architecture/durable integration, dual-host execution, route separation, and package-integrity confirmation, then return a Pass through proportional test review before delivery resumes. Historical `APIE2E-REPO-005` remains separate.
