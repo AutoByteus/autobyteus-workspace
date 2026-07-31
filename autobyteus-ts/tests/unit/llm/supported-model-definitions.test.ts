@@ -19,6 +19,7 @@ describe('supportedModelDefinitions', () => {
         'gemini-3.1-pro-preview',
         'minimax-m3',
         'deepseek-v4-pro',
+        'claude-opus-5',
         'claude-fable-5',
         'claude-opus-4.8',
         'claude-sonnet-5',
@@ -36,8 +37,8 @@ describe('supportedModelDefinitions', () => {
   it('registers exactly the three canonical GPT-5.6 models with family-specific reasoning and tiered cache pricing', async () => {
     const cases = [
       ['gpt-5.6-sol', 5, 30, 0.5, 6.25],
-      ['gpt-5.6-terra', 2.5, 15, 0.25, 3.125],
-      ['gpt-5.6-luna', 1, 6, 0.1, 1.25],
+      ['gpt-5.6-terra', 2, 12, 0.2, 2.5],
+      ['gpt-5.6-luna', 0.2, 1.2, 0.02, 0.25],
     ] as const;
     const openAIIds = supportedModelDefinitions
       .filter((definition) => definition.provider === LLMProvider.OPENAI)
@@ -90,12 +91,12 @@ describe('supportedModelDefinitions', () => {
           tier_id: 'long_context_gt_272k',
           max_input_tokens: null,
           input_price_per_million: input * 2,
-          output_price_per_million: output * 1.5,
+          output_price_per_million: Number((output * 1.5).toFixed(10)),
           cached_input_read_price_per_million: cacheRead * 2,
           cached_input_write_price_per_million: cacheWrite * 2,
         }),
       ]);
-      expect(definition?.defaultConfig?.pricingConfig.pricingEffectiveDate).toBe('2026-06-26');
+      expect(definition?.defaultConfig?.pricingConfig.pricingEffectiveDate).toBe('2026-07-30');
     }
 
     const olderSchema = supportedModelDefinitions.find((entry) => entry.name === 'gpt-5.5')?.configSchema?.toJsonSchema();
@@ -177,11 +178,13 @@ describe('supportedModelDefinitions', () => {
 
     expect(Array.from(names)).toEqual(expect.arrayContaining([
       'claude-fable-5',
+      'claude-opus-5',
       'claude-opus-4.8',
       'claude-sonnet-5',
     ]));
     expect(Array.from(values)).toEqual(expect.arrayContaining([
       'claude-fable-5',
+      'claude-opus-5',
       'claude-opus-4-8',
       'claude-sonnet-5',
     ]));
@@ -189,12 +192,13 @@ describe('supportedModelDefinitions', () => {
     expect(values).not.toContain('claude-sonnet-4-8');
 
     const expectedPricing = [
-      ['claude-fable-5', 10, 50, 1, 12.5, 20],
-      ['claude-opus-4.8', 5, 25, 0.5, 6.25, 10],
-      ['claude-sonnet-5', 3, 15, 0.3, 3.75, 6],
+      ['claude-opus-5', 5, 25, 0.5, 6.25, 10, '2026-07-24'],
+      ['claude-fable-5', 10, 50, 1, 12.5, 20, '2026-07-07'],
+      ['claude-opus-4.8', 5, 25, 0.5, 6.25, 10, '2026-07-07'],
+      ['claude-sonnet-5', 3, 15, 0.3, 3.75, 6, '2026-07-07'],
     ] as const;
 
-    for (const [modelIdentifier, input, output, cacheRead, cacheWrite5m, cacheWrite1h] of expectedPricing) {
+    for (const [modelIdentifier, input, output, cacheRead, cacheWrite5m, cacheWrite1h, effectiveDate] of expectedPricing) {
       const pricing = await LLMFactory.getModelPricingInfo({
         modelIdentifier,
         modelProvider: LLMProvider.ANTHROPIC,
@@ -217,6 +221,8 @@ describe('supportedModelDefinitions', () => {
           cached_input_write_1h: true,
         },
       });
+      expect(supportedModelDefinitions.find((definition) => definition.name === modelIdentifier)?.defaultConfig?.pricingConfig.pricingEffectiveDate)
+        .toBe(effectiveDate);
     }
   });
 

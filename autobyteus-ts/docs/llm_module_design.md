@@ -78,7 +78,7 @@ new built-in enum value for every saved endpoint.
     `LLMFactory.ensureInitialized()` is called. It:
     - Registers supported built-in API models from
       `src/llm/supported-model-definitions.ts` (for example `gpt-5.5`,
-      current Anthropic rows such as `claude-fable-5`, `claude-opus-4.8`,
+      current Anthropic rows such as `claude-opus-5`, `claude-fable-5`, `claude-opus-4.8`,
       and `claude-sonnet-5`, `deepseek-v4-flash`, `gemini-3.5-flash`, and
       the Kimi `kimi-k2.6` / `kimi-k2.7-code` /
       `kimi-k2.7-code-highspeed` rows).
@@ -125,8 +125,9 @@ Current examples of provider-specific model rules:
   support, plus trusted cache-read/cache-write and >272K input-tier pricing.
   Do not add the unsuffixed `gpt-5.6` alias as a fourth row or broaden older
   OpenAI schemas with `max`.
-- Current Anthropic adaptive-thinking rows (`claude-opus-4.8`,
-  `claude-opus-4.7`, `claude-sonnet-5`, and `claude-fable-5`) use adaptive
+- Current Anthropic adaptive-thinking rows (`claude-opus-5`,
+  `claude-opus-4.8`, `claude-opus-4.7`, `claude-sonnet-5`, and
+  `claude-fable-5`) use adaptive
   thinking rather than fixed-budget extended thinking. The adapter strips
   provider-invalid manual thinking budgets and unsupported sampling fields
   (`temperature`, `top_p`, `top_k`) for these rows. Do not add a

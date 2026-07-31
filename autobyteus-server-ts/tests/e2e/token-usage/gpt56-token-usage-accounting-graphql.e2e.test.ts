@@ -62,9 +62,11 @@ describe("GPT-5.6 token usage accounting and GraphQL convergence", () => {
     await initializePrisma({ datasourceUrl: process.env.DATABASE_URL });
     LLMFactory.resetForTests();
     (LLMFactory as unknown as { initialized: boolean }).initialized = true;
-    const gpt56Sol = supportedModelDefinitions.find((definition) => definition.name === "gpt-5.6-sol");
-    if (!gpt56Sol) throw new Error("gpt-5.6-sol must exist in the built-in model catalog");
-    LLMFactory.registerModel(new LLMModel(gpt56Sol));
+    for (const modelId of ["gpt-5.6-sol", "gpt-5.6-terra", "gpt-5.6-luna"]) {
+      const definition = supportedModelDefinitions.find((candidate) => candidate.name === modelId);
+      if (!definition) throw new Error(`${modelId} must exist in the built-in model catalog`);
+      LLMFactory.registerModel(new LLMModel(definition));
+    }
     schema = await buildGraphqlSchema();
     const require = createRequire(import.meta.url);
     const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
@@ -84,6 +86,7 @@ describe("GPT-5.6 token usage accounting and GraphQL convergence", () => {
 
   const buildPricedPayload = async (input: {
     runId: string;
+    modelId: string;
     grossInputTokens: number;
     cacheReadTokens: number;
     cacheWriteTokens: number;
@@ -100,8 +103,8 @@ describe("GPT-5.6 token usage accounting and GraphQL convergence", () => {
         usage_scope: "per_call",
         input_token_semantic: "gross_includes_cache",
         model_provider: "OPENAI",
-        model_identifier: "gpt-5.6-sol",
-        model_value: "gpt-5.6-sol",
+        model_identifier: input.modelId,
+        model_value: input.modelId,
         reported_input_tokens: input.grossInputTokens,
         reported_output_tokens: input.outputTokens,
         reported_total_tokens: input.grossInputTokens + input.outputTokens,
@@ -161,6 +164,7 @@ describe("GPT-5.6 token usage accounting and GraphQL convergence", () => {
 
   it.each([
     {
+      modelId: "gpt-5.6-sol",
       label: "standard <=272K tier",
       grossInputTokens: 1_000,
       cacheReadTokens: 200,
@@ -171,6 +175,7 @@ describe("GPT-5.6 token usage accounting and GraphQL convergence", () => {
       costs: { standard: 0.0025, cacheRead: 0.0001, cacheWrite: 0.001875, input: 0.004475, output: 0.003, total: 0.007475 },
     },
     {
+      modelId: "gpt-5.6-sol",
       label: "long-context >272K tier",
       grossInputTokens: 300_000,
       cacheReadTokens: 20_000,
@@ -180,7 +185,51 @@ describe("GPT-5.6 token usage accounting and GraphQL convergence", () => {
       prices: { input: 10, cacheRead: 1, cacheWrite: 12.5, output: 45 },
       costs: { standard: 2.5, cacheRead: 0.02, cacheWrite: 0.375, input: 2.895, output: 0.045, total: 2.94 },
     },
-  ])("preserves exact generic components and costs through the $label", async (testCase) => {
+    {
+      modelId: "gpt-5.6-terra",
+      label: "standard <=272K tier",
+      grossInputTokens: 1_000,
+      cacheReadTokens: 200,
+      cacheWriteTokens: 300,
+      outputTokens: 100,
+      tierId: "standard_le_272k",
+      prices: { input: 2, cacheRead: 0.2, cacheWrite: 2.5, output: 12 },
+      costs: { standard: 0.001, cacheRead: 0.00004, cacheWrite: 0.00075, input: 0.00179, output: 0.0012, total: 0.00299 },
+    },
+    {
+      modelId: "gpt-5.6-terra",
+      label: "long-context >272K tier",
+      grossInputTokens: 300_000,
+      cacheReadTokens: 20_000,
+      cacheWriteTokens: 30_000,
+      outputTokens: 1_000,
+      tierId: "long_context_gt_272k",
+      prices: { input: 4, cacheRead: 0.4, cacheWrite: 5, output: 18 },
+      costs: { standard: 1, cacheRead: 0.008, cacheWrite: 0.15, input: 1.158, output: 0.018, total: 1.176 },
+    },
+    {
+      modelId: "gpt-5.6-luna",
+      label: "standard <=272K tier",
+      grossInputTokens: 1_000,
+      cacheReadTokens: 200,
+      cacheWriteTokens: 300,
+      outputTokens: 100,
+      tierId: "standard_le_272k",
+      prices: { input: 0.2, cacheRead: 0.02, cacheWrite: 0.25, output: 1.2 },
+      costs: { standard: 0.0001, cacheRead: 0.000004, cacheWrite: 0.000075, input: 0.000179, output: 0.00012, total: 0.000299 },
+    },
+    {
+      modelId: "gpt-5.6-luna",
+      label: "long-context >272K tier",
+      grossInputTokens: 300_000,
+      cacheReadTokens: 20_000,
+      cacheWriteTokens: 30_000,
+      outputTokens: 1_000,
+      tierId: "long_context_gt_272k",
+      prices: { input: 0.4, cacheRead: 0.04, cacheWrite: 0.5, output: 1.8 },
+      costs: { standard: 0.1, cacheRead: 0.0008, cacheWrite: 0.015, input: 0.1158, output: 0.0018, total: 0.1176 },
+    },
+  ])("preserves exact generic components and costs for $modelId through the $label", async (testCase) => {
     const runId = `gpt56-accounting-${randomUUID()}`;
     createdRunIds.add(runId);
     const standardInputTokens = testCase.grossInputTokens - testCase.cacheReadTokens - testCase.cacheWriteTokens;
@@ -221,10 +270,10 @@ describe("GPT-5.6 token usage accounting and GraphQL convergence", () => {
       run_id: runId,
       cache_creation_input_tokens: testCase.cacheWriteTokens,
       cached_input_write_price_per_million: testCase.prices.cacheWrite,
-      estimated_api_cache_creation_input_cost: testCase.costs.cacheWrite,
-      estimated_api_input_cost: testCase.costs.input,
-      estimated_api_total_cost: testCase.costs.total,
     });
+    expect(liveMessage.payload.estimated_api_cache_creation_input_cost).toBeCloseTo(testCase.costs.cacheWrite, 12);
+    expect(liveMessage.payload.estimated_api_input_cost).toBeCloseTo(testCase.costs.input, 12);
+    expect(liveMessage.payload.estimated_api_total_cost).toBeCloseTo(testCase.costs.total, 12);
 
     await store.appendTokenUsageEvent(priced);
     const hydrated = await execSummary(runId);
@@ -237,7 +286,7 @@ describe("GPT-5.6 token usage accounting and GraphQL convergence", () => {
       outputTokens: testCase.outputTokens,
       apiCostStatus: "estimated",
       selectedPricingTierId: testCase.tierId,
-      latestModelIdentifier: "gpt-5.6-sol",
+      latestModelIdentifier: testCase.modelId,
       unitPrices: {
         standardInput: { status: "single", pricePerMillion: testCase.prices.input },
         cacheReadInput: { status: "single", pricePerMillion: testCase.prices.cacheRead },
