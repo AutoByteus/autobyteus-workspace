@@ -13,7 +13,10 @@ Owns the platform-run worker lifecycle for one installed application: prepare st
 
 ## Main Service And Supporting Owners
 
-- `src/application-engine/services/application-engine-host-service.ts`
+- `src/application-engine/services/application-engine-controller.ts`
+- `src/application-engine/services/application-engine-launcher.ts`
+- `src/application-engine/services/application-engine-state-registry.ts`
+- `src/application-engine/services/application-engine-context-capability-handler.ts`
 - `src/application-engine/runtime/application-worker-supervisor.ts`
 - `src/application-engine/runtime/application-engine-client.ts`
 - `src/application-engine/runtime/protocol.ts`
@@ -36,7 +39,7 @@ Owns the platform-run worker lifecycle for one installed application: prepare st
 
 ## Startup Contract
 
-For a given `applicationId`, the host service:
+For a given `applicationId`, `ApplicationEngineLauncher`:
 
 1. validates the bundle exists,
 2. prepares per-app storage through `ApplicationStorageLifecycleService.ensureStoragePrepared(...)`,
@@ -60,7 +63,7 @@ Startup is de-duplicated per application so concurrent callers share one in-flig
 
 ## Invocation Boundary
 
-Once ready, the engine is the only owner used to invoke:
+Once ready, `ApplicationEngineController` is the only owner used to invoke:
 
 - application queries,
 - application commands,
@@ -101,18 +104,22 @@ post-listen recovery may restore recorded runs. Runtime shutdown is ordered so
 no new work can enter while owned capabilities are being dismantled:
 
 1. block new application Agent Tools session issue;
-2. stop dispatch, application communication, backend gateway/socket,
-   notification, and observer admission;
-3. stop application workers;
-4. use `ApplicationRunShutdownCoordinator` to stop runtime-owned team runs
-   before remaining runtime-owned agent runs;
-5. revoke the runtime's scoped Agent Tools sessions;
-6. close its bind-once `PublishedArtifactPublisher`; and
+2. stop execution-event dispatch and close application communication, backend
+   gateway/socket, and notification ingress;
+3. stop artifact-delivery intake and drain every accepted command through
+   launcher ensure plus controller invoke;
+4. dispose remaining run observers and stop application workers;
+5. use `ApplicationRunShutdownCoordinator` to stop runtime-owned team runs
+   before remaining runtime-owned agent runs; exact run removal also revokes
+   run sessions and detaches file/artifact/memory observers;
+6. close the runtime's scoped Agent Tools session manager/scope; and
 7. stop remaining streaming surfaces.
 
 The process-level `AgentToolsMcpRuntime` closes only after the application
-runtime has stopped. This ordering prevents a stopped application from
-retaining a publication capability or accepting new runtime-scoped work.
+runtime has stopped. There is no deferred publisher or handler state.
+This ordering prevents a stopped application from retaining a publication
+capability, accepting new runtime-scoped work, or abandoning accepted artifact
+delivery after a worker exit.
 
 ## Related Docs
 

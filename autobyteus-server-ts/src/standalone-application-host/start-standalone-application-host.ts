@@ -31,10 +31,11 @@ import {
   type AgentToolsMcpRuntime,
 } from "../agent-tools/mcp/agent-tools-mcp-runtime.js";
 import {
-  getPublishedArtifactPublicationService,
+  getGeneralProcessPublishedArtifactPublisher,
 } from "../services/published-artifacts/published-artifact-publication-service.js";
 import {
-  GeneralProcessRunSupervisor,
+  createGeneralProcessRunSupervisor,
+  type GeneralProcessRunSupervisor,
 } from "../agent-execution/runtime/general-process-run-supervisor.js";
 
 export type StandaloneApplicationHostHandle = Readonly<{
@@ -162,17 +163,17 @@ export const startStandaloneApplicationHost = async (
     agentToolsMcpRuntime =
       createAgentToolsMcpRuntime({
         generalProcessPublisher:
-          getPublishedArtifactPublicationService(),
+          getGeneralProcessPublishedArtifactPublisher(),
       });
     generalProcessRunSupervisor =
-      new GeneralProcessRunSupervisor(
+      createGeneralProcessRunSupervisor(
         agentToolsMcpRuntime.generalProcessSessionManager,
       );
     const applicationRuntime = buildApplicationPlatformRuntime({
       appConfig: processResources.appConfig,
       bundleService,
       ...definitionServices,
-      agentToolsSessionManagerFactory:
+      agentToolsSessionFactory:
         agentToolsMcpRuntime,
       selectedApplicationIds: new Set([selection.applicationId]),
     });

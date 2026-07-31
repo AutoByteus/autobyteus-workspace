@@ -1,13 +1,17 @@
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import type { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
+import type { ApplicationCapabilityService } from "../../application-capability/services/application-capability-service.js";
+import type { ApplicationPackageCommandService } from "../../application-packages/services/application-package-command-service.js";
 import type { ApplicationPackageRegistryService } from "../../application-packages/services/application-package-registry-service.js";
 
 type StudioApplicationApiServices = Readonly<{
   agentDefinitionService: AgentDefinitionService;
   agentTeamDefinitionService: AgentTeamDefinitionService;
   bundleService: ApplicationBundleService;
-  packageRegistryService: ApplicationPackageRegistryService;
+  capabilityService: ApplicationCapabilityService;
+  packageQueries: ApplicationPackageRegistryService;
+  packageCommands: ApplicationPackageCommandService;
 }>;
 
 let configuredServices: StudioApplicationApiServices | null = null;
@@ -21,31 +25,27 @@ export const configureStudioApplicationApiServices = (
   configuredServices = Object.freeze(services);
 };
 
-export const getStudioApplicationBundleService = (): ApplicationBundleService => {
+const requireConfiguredServices = (): StudioApplicationApiServices => {
   if (!configuredServices) {
     throw new Error("Studio application API services are not configured.");
   }
-  return configuredServices.bundleService;
+  return configuredServices;
 };
 
-export const getStudioAgentDefinitionService = (): AgentDefinitionService => {
-  if (!configuredServices) {
-    throw new Error("Studio application API services are not configured.");
-  }
-  return configuredServices.agentDefinitionService;
-};
+export const getStudioApplicationBundleService = (): ApplicationBundleService =>
+  requireConfiguredServices().bundleService;
 
-export const getStudioAgentTeamDefinitionService = (): AgentTeamDefinitionService => {
-  if (!configuredServices) {
-    throw new Error("Studio application API services are not configured.");
-  }
-  return configuredServices.agentTeamDefinitionService;
-};
+export const getStudioApplicationCapabilityService =
+(): ApplicationCapabilityService => requireConfiguredServices().capabilityService;
 
-export const getStudioApplicationPackageRegistryService =
-  (): ApplicationPackageRegistryService => {
-    if (!configuredServices) {
-      throw new Error("Studio application API services are not configured.");
-    }
-    return configuredServices.packageRegistryService;
-  };
+export const getStudioAgentDefinitionService = (): AgentDefinitionService =>
+  requireConfiguredServices().agentDefinitionService;
+
+export const getStudioAgentTeamDefinitionService = (): AgentTeamDefinitionService =>
+  requireConfiguredServices().agentTeamDefinitionService;
+
+export const getStudioApplicationPackageQueries =
+  (): ApplicationPackageRegistryService => requireConfiguredServices().packageQueries;
+
+export const getStudioApplicationPackageCommands =
+  (): ApplicationPackageCommandService => requireConfiguredServices().packageCommands;

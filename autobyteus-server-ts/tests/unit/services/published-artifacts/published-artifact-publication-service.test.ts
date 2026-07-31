@@ -55,7 +55,7 @@ describe("PublishedArtifactPublicationService", () => {
     snapshotStore?: PublishedArtifactSnapshotStore;
   }): PublishedArtifactPublicationService =>
     new PublishedArtifactPublicationService({
-      agentRunManager: {
+      activeRunReader: {
         getActiveRun: vi.fn().mockReturnValue(input.run),
       } as any,
       workspaceManager: {
@@ -501,7 +501,7 @@ describe("PublishedArtifactPublicationService", () => {
     const emitArtifactPersisted = vi.fn();
     const relayArtifactForExecutionContext = vi.fn().mockResolvedValue(undefined);
     const service = new PublishedArtifactPublicationService({
-      agentRunManager: {
+      activeRunReader: {
         getActiveRun: vi.fn().mockReturnValue(null),
       } as any,
       publishedArtifactRelayService: {
@@ -566,7 +566,7 @@ describe("PublishedArtifactPublicationService", () => {
     const projectionStore = new PublishedArtifactProjectionStore();
     const snapshotStore = new PublishedArtifactSnapshotStore();
     const service = new PublishedArtifactPublicationService({
-      agentRunManager: {
+      activeRunReader: {
         getActiveRun: vi.fn().mockReturnValue(null),
       } as any,
       projectionStore,

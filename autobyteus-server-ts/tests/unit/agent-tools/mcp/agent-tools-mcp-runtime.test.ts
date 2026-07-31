@@ -53,8 +53,11 @@ describe("AgentToolsMcpRuntime", () => {
       generalProcessPublisher: generalPublisher,
     });
     let applicationPublicationReady = true;
+    const applicationScope =
+      mcpRuntime.createApplicationSessionScope("application:test");
     const applicationSessionManager =
       mcpRuntime.createApplicationSessionManager({
+        scope: applicationScope,
         executionCapabilities: {
           publishedArtifactPublisher: applicationPublisher,
         },
@@ -135,6 +138,7 @@ describe("AgentToolsMcpRuntime", () => {
     ).toMatchObject({ ok: false, reason: "missing_session" });
     expect(() =>
       mcpRuntime.createApplicationSessionManager({
+        scope: mcpRuntime.createApplicationSessionScope("application:late"),
         executionCapabilities: {
           publishedArtifactPublisher: applicationPublisher,
         },

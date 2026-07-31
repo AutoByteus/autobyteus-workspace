@@ -9,16 +9,17 @@ import type {
   AgentToolMcpSessionOwnerIdentity,
   RedactedAgentToolMcpDescriptor,
 } from "./agent-tool-mcp-session.js";
+import type {
+  ApplicationAgentToolMcpSessionScope,
+} from "./application-agent-tool-mcp-session-scope.js";
 
 export class ScopedAgentToolMcpSessionManager
 implements AgentToolMcpSessionManager {
-  private readonly ownedSessions =
-    new Map<string, AgentToolMcpSessionOwnerIdentity>();
   private issueBlocked = false;
   private closeComplete = false;
-
   constructor(
     private readonly sessionService: AgentToolMcpSessionService,
+    private readonly scope: ApplicationAgentToolMcpSessionScope,
     private readonly assertExecutionCapabilitiesReady: () => void,
   ) {}
 
@@ -34,45 +35,31 @@ implements AgentToolMcpSessionManager {
   ): CreateAgentToolMcpSessionResult {
     this.assertReady();
     const result = this.sessionService.createAgentToolMcpSession(input);
-    this.ownedSessions.set(result.session.sessionId, result.session.owner);
+    try {
+      this.scope.recordIssuedSession(result.session.sessionId, result.session.owner);
+    } catch (error) {
+      this.sessionService.revokeAgentToolMcpSession(result.session.sessionId);
+      throw error;
+    }
     return result;
   }
 
   revokeAgentToolMcpSession(sessionId: string): boolean {
-    if (!this.ownedSessions.delete(sessionId)) {
-      return false;
-    }
     return this.sessionService.revokeAgentToolMcpSession(sessionId);
   }
 
   revokeAgentToolMcpSessionsForRun(runId: string): number {
-    const normalizedRunId = runId.trim();
-    return normalizedRunId
-      ? this.revokeMatching((owner) => owner.runId === normalizedRunId)
-      : 0;
+    return this.scope.revokeForRun(runId);
   }
 
   revokeAgentToolMcpSessionsForMemberRun(memberRunId: string): number {
-    const normalizedMemberRunId = memberRunId.trim();
-    return normalizedMemberRunId
-      ? this.revokeMatching(
-          (owner) => owner.memberRunId === normalizedMemberRunId,
-        )
-      : 0;
+    return this.scope.revokeForMemberRun(memberRunId);
   }
 
   revokeAgentToolMcpSessionsForOwner(
     owner: Partial<AgentToolMcpSessionOwnerIdentity>,
   ): number {
-    const keys = Object.keys(owner) as Array<
-      keyof AgentToolMcpSessionOwnerIdentity
-    >;
-    if (keys.length === 0) {
-      return 0;
-    }
-    return this.revokeMatching((candidate) =>
-      keys.every((key) => candidate[key] === owner[key]),
-    );
+    return this.scope.revokeForOwner(owner);
   }
 
   redactAgentToolMcpDescriptor(
@@ -83,6 +70,7 @@ implements AgentToolMcpSessionManager {
 
   blockNewSessions(): void {
     this.issueBlocked = true;
+    this.scope.blockNewSessions();
   }
 
   close(): void {
@@ -90,26 +78,7 @@ implements AgentToolMcpSessionManager {
       return;
     }
     this.blockNewSessions();
-    for (const sessionId of this.ownedSessions.keys()) {
-      this.sessionService.revokeAgentToolMcpSession(sessionId);
-    }
-    this.ownedSessions.clear();
+    this.scope.close();
     this.closeComplete = true;
-  }
-
-  private revokeMatching(
-    predicate: (owner: AgentToolMcpSessionOwnerIdentity) => boolean,
-  ): number {
-    let revokedCount = 0;
-    for (const [sessionId, owner] of this.ownedSessions) {
-      if (!predicate(owner)) {
-        continue;
-      }
-      this.ownedSessions.delete(sessionId);
-      if (this.sessionService.revokeAgentToolMcpSession(sessionId)) {
-        revokedCount += 1;
-      }
-    }
-    return revokedCount;
   }
 }

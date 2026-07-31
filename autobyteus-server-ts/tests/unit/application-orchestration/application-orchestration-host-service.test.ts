@@ -7,6 +7,7 @@ import { ApplicationExecutionEventIngressService } from "../../../src/applicatio
 import { ApplicationOrchestrationHostService } from "../../../src/application-orchestration/services/application-orchestration-host-service.js";
 import { ApplicationRunObserverService } from "../../../src/application-orchestration/services/application-run-observer-service.js";
 import { selectorToRouteKey } from "../../../src/agent-team-execution/domain/team-run-member-identity.js";
+import { AgentMemoryLocationService } from "../../../src/agent-memory/services/agent-memory-location-service.js";
 
 const applicationId = "app-1";
 const runId = "run-1";
@@ -141,15 +142,13 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
       }),
     };
 
-    const dispatchService = {
-      schedule: vi.fn(),
+    const dispatchQueue = {
+      enqueue: vi.fn(),
     };
 
     const ingressService = new ApplicationExecutionEventIngressService({
-      bindingStore: bindingStore as never,
-      lookupStore: lookupStore as never,
       journalStore: journalStore as never,
-      dispatchService: dispatchService as never,
+      dispatchQueue: dispatchQueue as never,
     });
 
     const lifecycleGateway = {
@@ -169,6 +168,9 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
       bindingStore: bindingStore as never,
       lookupStore: lookupStore as never,
       ingressService,
+      terminalTransitionService: {
+        transition: vi.fn(async () => null),
+      } as never,
     });
 
     const fakeRun = {
@@ -326,6 +328,7 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
       bindingStore: bindingStore as never,
       teamRunMetadataService: teamRunMetadataService as never,
       publishedArtifactProjectionService: publishedArtifactProjectionService as never,
+      memoryLocationService: new AgentMemoryLocationService({ memoryDir: "/tmp/memory" }),
     });
 
     await expect(
@@ -423,6 +426,7 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
         })),
       } as never,
       publishedArtifactProjectionService: publishedArtifactProjectionService as never,
+      memoryLocationService: new AgentMemoryLocationService({ memoryDir: "/tmp/memory" }),
     });
 
     await hostService.listRunPublishedArtifacts(applicationId, "reviewer-member-run-1");
@@ -450,6 +454,15 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
       } as never,
       teamRunService: {
         resolveTeamRun: vi.fn(async () => ({ postMessage })),
+      } as never,
+      agentTargetAuthorizationService: {
+        authorizeTarget: vi.fn(async (_applicationId, address) => ({
+          applicationId,
+          address,
+          runtimeSubject: "TEAM_RUN",
+          runtimeRunId: binding.runtime.runId,
+          producers: [],
+        })),
       } as never,
     });
 
@@ -482,6 +495,15 @@ describe("ApplicationOrchestrationHostService startAgent", () => {
       } as never,
       teamRunService: {
         resolveTeamRun: vi.fn(async () => ({ postMessage })),
+      } as never,
+      agentTargetAuthorizationService: {
+        authorizeTarget: vi.fn(async (_applicationId, address) => ({
+          applicationId,
+          address,
+          runtimeSubject: "TEAM_RUN",
+          runtimeRunId: binding.runtime.runId,
+          producers: [],
+        })),
       } as never,
     });
 

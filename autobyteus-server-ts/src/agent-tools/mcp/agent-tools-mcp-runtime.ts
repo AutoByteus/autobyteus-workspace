@@ -20,15 +20,19 @@ import { AgentToolsMcpResultMapper } from "./agent-tools-mcp-result-mapper.js";
 import { AgentToolsMcpSchemaMapper } from "./agent-tools-mcp-schema-mapper.js";
 import { ScopedAgentToolMcpSessionManager } from "./scoped-agent-tool-mcp-session-manager.js";
 import {
+  DefaultApplicationAgentToolMcpSessionScope,
+  type ApplicationAgentToolMcpSessionScope,
+} from "./application-agent-tool-mcp-session-scope.js";
+import {
   ConfiguredMcpAgentToolSourceResolver,
 } from "./configured-mcp/configured-mcp-agent-tool-source-resolver.js";
 import {
   buildDefaultAgentToolMcpAdapterProviders,
 } from "./providers/default-agent-tool-mcp-adapter-providers.js";
 
-export type ApplicationAgentToolsSessionManagerFactory = Pick<
+export type ApplicationAgentToolsSessionFactory = Pick<
   AgentToolsMcpRuntime,
-  "createApplicationSessionManager"
+  "createApplicationSessionScope" | "createApplicationSessionManager"
 >;
 
 export class AgentToolsMcpRuntime {
@@ -64,18 +68,36 @@ export class AgentToolsMcpRuntime {
       registry: this.registry,
       dispatcher,
     });
+    const generalProcessScope = this.createApplicationSessionScope(
+      "general-process",
+    );
     this.generalProcessSessionManager = this.createSessionManager({
-      publishedArtifactPublisher: input.generalProcessPublisher,
+      scope: generalProcessScope,
+      executionCapabilities: {
+        publishedArtifactPublisher: input.generalProcessPublisher,
+      },
     });
   }
 
+  createApplicationSessionScope(
+    scopeIdentity: string,
+  ): ApplicationAgentToolMcpSessionScope {
+    this.assertOpen();
+    return new DefaultApplicationAgentToolMcpSessionScope(
+      scopeIdentity,
+      this.createSessionService(null),
+    );
+  }
+
   createApplicationSessionManager(input: {
+    scope: ApplicationAgentToolMcpSessionScope;
     executionCapabilities: AgentToolMcpSessionExecutionCapabilities;
     assertExecutionCapabilitiesReady: () => void;
   }): ScopedAgentToolMcpSessionManager {
     this.assertOpen();
     return new ScopedAgentToolMcpSessionManager(
       this.createSessionService(input.executionCapabilities),
+      input.scope,
       () => {
         this.assertOpen();
         input.assertExecutionCapabilitiesReady();
@@ -91,17 +113,19 @@ export class AgentToolsMcpRuntime {
     this.registry.clear();
   }
 
-  private createSessionManager(
-    executionCapabilities: AgentToolMcpSessionExecutionCapabilities,
-  ): ScopedAgentToolMcpSessionManager {
+  private createSessionManager(input: {
+    scope: ApplicationAgentToolMcpSessionScope;
+    executionCapabilities: AgentToolMcpSessionExecutionCapabilities;
+  }): ScopedAgentToolMcpSessionManager {
     return new ScopedAgentToolMcpSessionManager(
-      this.createSessionService(executionCapabilities),
+      this.createSessionService(input.executionCapabilities),
+      input.scope,
       () => this.assertOpen(),
     );
   }
 
   private createSessionService(
-    executionCapabilities: AgentToolMcpSessionExecutionCapabilities,
+    executionCapabilities: AgentToolMcpSessionExecutionCapabilities | null,
   ): AgentToolMcpSessionService {
     return new AgentToolMcpSessionService({
       registry: this.registry,

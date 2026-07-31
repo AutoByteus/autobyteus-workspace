@@ -13,32 +13,20 @@ import type {
   ApplicationStartAgentTeamInput,
 } from "@autobyteus/application-sdk-contracts";
 import { requireApplicationAgentInputWithinLimits } from "../domain/application-agent-input-validator.js";
-import { AgentRunService, getAgentRunService } from "../../agent-execution/services/agent-run-service.js";
-import { TeamRunService, getTeamRunService } from "../../agent-team-execution/services/team-run-service.js";
-import { ApplicationExecutionEventIngressService } from "./application-execution-event-ingress-service.js";
-import {
-  ApplicationOrchestrationStartupGate,
-  getApplicationOrchestrationStartupGate,
-} from "./application-orchestration-startup-gate.js";
-import { ApplicationExecutionResourceResolver } from "./application-execution-resource-resolver.js";
-import { ApplicationRunBindingLaunchService } from "./application-run-binding-launch-service.js";
-import { ApplicationAvailabilityService, getApplicationAvailabilityService } from "./application-availability-service.js";
-import { ApplicationLaunchConfigurationService } from "../../application-platform/launch-configuration/application-launch-configuration-service.js";
-import { ApplicationRunObserverService, getApplicationRunObserverService } from "./application-run-observer-service.js";
-import { ApplicationRunBindingStore } from "../stores/application-run-binding-store.js";
-import { ApplicationRunLookupStore } from "../stores/application-run-lookup-store.js";
-import {
-  PublishedArtifactProjectionService,
-  getPublishedArtifactProjectionService,
-} from "../../run-history/services/published-artifact-projection-service.js";
-import {
-  TeamRunMetadataService,
-  getTeamRunMetadataService,
-} from "../../run-history/services/team-run-metadata-service.js";
-import {
-  AgentMemoryLocationService,
-  getAgentMemoryLocationService,
-} from "../../agent-memory/services/agent-memory-location-service.js";
+import type { AgentRunService } from "../../agent-execution/services/agent-run-service.js";
+import type { TeamRunService } from "../../agent-team-execution/services/team-run-service.js";
+import type { ApplicationExecutionEventIngressService } from "./application-execution-event-ingress-service.js";
+import type { ApplicationOrchestrationStartupGate } from "./application-orchestration-startup-gate.js";
+import type { ApplicationExecutionResourceResolver } from "./application-execution-resource-resolver.js";
+import type { ApplicationRunBindingLaunchService } from "./application-run-binding-launch-service.js";
+import type { ApplicationAvailabilityService } from "./application-availability-service.js";
+import type { ApplicationLaunchConfigurationService } from "../../application-platform/launch-configuration/application-launch-configuration-service.js";
+import type { ApplicationRunObserverService } from "./application-run-observer-service.js";
+import type { ApplicationRunBindingStore } from "../stores/application-run-binding-store.js";
+import type { ApplicationRunLookupStore } from "../stores/application-run-lookup-store.js";
+import type { PublishedArtifactProjectionService } from "../../run-history/services/published-artifact-projection-service.js";
+import type { TeamRunMetadataService } from "../../run-history/services/team-run-metadata-service.js";
+import type { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
 import { selectorFromMemberRouteKey } from "../../agent-team-execution/domain/team-run-member-identity.js";
 import {
   ApplicationAgentTargetAuthorizationService,
@@ -46,7 +34,6 @@ import {
 } from "./application-agent-target-authorization-service.js";
 import {
   ApplicationRunBindingTerminalTransitionService,
-  getApplicationRunBindingTerminalTransitionService,
 } from "./application-run-binding-terminal-transition-service.js";
 import {
   buildApplicationRuntimeInputTargetSelector,
@@ -58,126 +45,89 @@ import {
 const cloneBinding = (binding: ApplicationAgentBindingRecord): ApplicationAgentBindingRecord => structuredClone(binding);
 
 export class ApplicationOrchestrationHostService {
-  private static instance: ApplicationOrchestrationHostService | null = null;
-
-  static getInstance(
-    dependencies: ConstructorParameters<typeof ApplicationOrchestrationHostService>[0] = {},
-  ): ApplicationOrchestrationHostService {
-    if (!ApplicationOrchestrationHostService.instance) {
-      ApplicationOrchestrationHostService.instance = new ApplicationOrchestrationHostService(dependencies);
-    }
-    return ApplicationOrchestrationHostService.instance;
-  }
-
-  static resetInstance(): void {
-    ApplicationOrchestrationHostService.instance = null;
-    cachedApplicationOrchestrationHostService = null;
-  }
-
   constructor(
     private readonly dependencies: {
-      startupGate?: ApplicationOrchestrationStartupGate;
-      availabilityService?: ApplicationAvailabilityService;
-      executionResourceResolver?: ApplicationExecutionResourceResolver;
-      launchConfigurationService?: ApplicationLaunchConfigurationService;
-      runBindingLaunchService?: ApplicationRunBindingLaunchService;
-      bindingStore?: ApplicationRunBindingStore;
-      lookupStore?: ApplicationRunLookupStore;
-      runObserverService?: ApplicationRunObserverService;
-      agentRunService?: AgentRunService;
-      teamRunService?: TeamRunService;
-      teamRunMetadataService?: TeamRunMetadataService;
-      ingressService?: ApplicationExecutionEventIngressService;
-      publishedArtifactProjectionService?: PublishedArtifactProjectionService;
-      memoryLocationService?: AgentMemoryLocationService;
-      agentTargetAuthorizationService?: ApplicationAgentTargetAuthorizationService;
-      terminalTransitionService?: ApplicationRunBindingTerminalTransitionService;
-    } = {},
+      startupGate: ApplicationOrchestrationStartupGate;
+      availabilityService: ApplicationAvailabilityService;
+      executionResourceResolver: ApplicationExecutionResourceResolver;
+      launchConfigurationService: ApplicationLaunchConfigurationService;
+      runBindingLaunchService: ApplicationRunBindingLaunchService;
+      bindingStore: ApplicationRunBindingStore;
+      lookupStore: ApplicationRunLookupStore;
+      runObserverService: ApplicationRunObserverService;
+      agentRunService: AgentRunService;
+      teamRunService: TeamRunService;
+      teamRunMetadataService: TeamRunMetadataService;
+      ingressService: ApplicationExecutionEventIngressService;
+      publishedArtifactProjectionService: PublishedArtifactProjectionService;
+      memoryLocationService: AgentMemoryLocationService;
+      agentTargetAuthorizationService: ApplicationAgentTargetAuthorizationService;
+      terminalTransitionService: ApplicationRunBindingTerminalTransitionService;
+    },
   ) {}
 
   private get startupGate(): ApplicationOrchestrationStartupGate {
-    return this.dependencies.startupGate ?? getApplicationOrchestrationStartupGate();
+    return this.dependencies.startupGate;
   }
 
   private get availabilityService(): ApplicationAvailabilityService {
-    return this.dependencies.availabilityService ?? getApplicationAvailabilityService();
+    return this.dependencies.availabilityService;
   }
 
   private get executionResourceResolver(): ApplicationExecutionResourceResolver {
-    return this.dependencies.executionResourceResolver ?? new ApplicationExecutionResourceResolver();
+    return this.dependencies.executionResourceResolver;
   }
 
   private get launchConfigurationService(): ApplicationLaunchConfigurationService {
-    if (!this.dependencies.launchConfigurationService) {
-      throw new Error("Application launch configuration service is not configured.");
-    }
     return this.dependencies.launchConfigurationService;
   }
 
   private get runBindingLaunchService(): ApplicationRunBindingLaunchService {
-    return this.dependencies.runBindingLaunchService ?? new ApplicationRunBindingLaunchService({
-      executionResourceResolver: this.executionResourceResolver,
-      bindingStore: this.bindingStore,
-      lookupStore: this.lookupStore,
-      agentRunService: this.agentRunService,
-      teamRunService: this.teamRunService,
-    });
+    return this.dependencies.runBindingLaunchService;
   }
 
   private get bindingStore(): ApplicationRunBindingStore {
-    return this.dependencies.bindingStore ?? new ApplicationRunBindingStore();
+    return this.dependencies.bindingStore;
   }
 
   private get lookupStore(): ApplicationRunLookupStore {
-    return this.dependencies.lookupStore ?? new ApplicationRunLookupStore();
+    return this.dependencies.lookupStore;
   }
 
   private get runObserverService(): ApplicationRunObserverService {
-    return this.dependencies.runObserverService ?? getApplicationRunObserverService();
+    return this.dependencies.runObserverService;
   }
 
   private get agentRunService(): AgentRunService {
-    return this.dependencies.agentRunService ?? getAgentRunService();
+    return this.dependencies.agentRunService;
   }
 
   private get teamRunService(): TeamRunService {
-    return this.dependencies.teamRunService ?? getTeamRunService();
+    return this.dependencies.teamRunService;
   }
 
   private get teamRunMetadataService(): TeamRunMetadataService {
-    return this.dependencies.teamRunMetadataService ?? getTeamRunMetadataService();
+    return this.dependencies.teamRunMetadataService;
   }
 
   private get ingressService(): ApplicationExecutionEventIngressService {
-    return this.dependencies.ingressService ?? new ApplicationExecutionEventIngressService();
+    return this.dependencies.ingressService;
   }
 
   private get publishedArtifactProjectionService(): PublishedArtifactProjectionService {
-    return this.dependencies.publishedArtifactProjectionService ?? getPublishedArtifactProjectionService();
+    return this.dependencies.publishedArtifactProjectionService;
   }
 
   private get memoryLocationService(): AgentMemoryLocationService {
-    return this.dependencies.memoryLocationService ?? getAgentMemoryLocationService();
+    return this.dependencies.memoryLocationService;
   }
 
   private get agentTargetAuthorizationService(): ApplicationAgentTargetAuthorizationService {
-    return this.dependencies.agentTargetAuthorizationService ?? new ApplicationAgentTargetAuthorizationService({
-      startupGate: this.startupGate,
-      availabilityService: this.availabilityService,
-      bindingStore: this.bindingStore,
-    });
+    return this.dependencies.agentTargetAuthorizationService;
   }
 
   private get terminalTransitionService(): ApplicationRunBindingTerminalTransitionService {
-    if (this.dependencies.terminalTransitionService) return this.dependencies.terminalTransitionService;
-    if (this.dependencies.bindingStore || this.dependencies.lookupStore || this.dependencies.ingressService) {
-      return new ApplicationRunBindingTerminalTransitionService({
-        bindingStore: this.bindingStore,
-        lookupStore: this.lookupStore,
-        ingressService: this.ingressService,
-      });
-    }
-    return getApplicationRunBindingTerminalTransitionService();
+    return this.dependencies.terminalTransitionService;
   }
 
   private async requireApplicationActive(applicationId: string): Promise<void> {
@@ -527,12 +477,3 @@ export class ApplicationOrchestrationHostService {
     if (!result.accepted) throw new Error(result.message ?? "Application runtime rejected the input.");
   }
 }
-
-let cachedApplicationOrchestrationHostService: ApplicationOrchestrationHostService | null = null;
-
-export const getApplicationOrchestrationHostService = (): ApplicationOrchestrationHostService => {
-  if (!cachedApplicationOrchestrationHostService) {
-    cachedApplicationOrchestrationHostService = ApplicationOrchestrationHostService.getInstance();
-  }
-  return cachedApplicationOrchestrationHostService;
-};

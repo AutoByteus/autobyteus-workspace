@@ -9,7 +9,10 @@ import {
   Resolver,
   registerEnumType,
 } from "type-graphql";
-import { getStudioApplicationPackageRegistryService } from "../studio-application-api-services.js";
+import {
+  getStudioApplicationPackageCommands,
+  getStudioApplicationPackageQueries,
+} from "../studio-application-api-services.js";
 import type {
   ApplicationPackageDebugDetails as ApplicationPackageDebugDetailsModel,
   ApplicationPackageImportInput as ApplicationPackageImportInputModel,
@@ -140,7 +143,7 @@ const mapImportInput = (
 export class ApplicationPackageResolver {
   @Query(() => [ApplicationPackage])
   async applicationPackages(): Promise<ApplicationPackage[]> {
-    const service = getStudioApplicationPackageRegistryService();
+    const service = getStudioApplicationPackageQueries();
     const packages = await service.listApplicationPackages();
     return packages.map(mapApplicationPackage);
   }
@@ -149,7 +152,7 @@ export class ApplicationPackageResolver {
   async applicationPackageDetails(
     @Arg("packageId", () => String) packageId: string,
   ): Promise<ApplicationPackageDetails | null> {
-    const service = getStudioApplicationPackageRegistryService();
+    const service = getStudioApplicationPackageQueries();
     const packageDetails = await service.getApplicationPackageDetails(packageId);
     return packageDetails ? mapApplicationPackageDetails(packageDetails) : null;
   }
@@ -159,7 +162,7 @@ export class ApplicationPackageResolver {
     @Arg("input", () => ImportApplicationPackageInput)
     input: ImportApplicationPackageInput,
   ): Promise<ApplicationPackage[]> {
-    const service = getStudioApplicationPackageRegistryService();
+    const service = getStudioApplicationPackageCommands();
     const packages = await service.importApplicationPackage(mapImportInput(input));
     return packages.map(mapApplicationPackage);
   }
@@ -168,8 +171,8 @@ export class ApplicationPackageResolver {
   async reloadApplicationPackage(
     @Arg("packageId", () => String) packageId: string,
   ): Promise<ApplicationPackage[]> {
-    const service = getStudioApplicationPackageRegistryService();
-    const packages = await service.reloadPackage(packageId);
+    const service = getStudioApplicationPackageCommands();
+    const packages = await service.reloadApplicationPackage(packageId);
     return packages.map(mapApplicationPackage);
   }
 
@@ -177,7 +180,7 @@ export class ApplicationPackageResolver {
   async removeApplicationPackage(
     @Arg("packageId", () => String) packageId: string,
   ): Promise<ApplicationPackage[]> {
-    const service = getStudioApplicationPackageRegistryService();
+    const service = getStudioApplicationPackageCommands();
     const packages = await service.removeApplicationPackage(packageId);
     return packages.map(mapApplicationPackage);
   }

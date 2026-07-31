@@ -76,12 +76,3 @@ export class ApplicationBackendNotificationHub {
     this.applicationIdByConnectionId.clear();
   }
 }
-
-let cachedApplicationBackendNotificationHub: ApplicationBackendNotificationHub | null = null;
-
-export const getApplicationBackendNotificationHub = (): ApplicationBackendNotificationHub => {
-  if (!cachedApplicationBackendNotificationHub) {
-    cachedApplicationBackendNotificationHub = new ApplicationBackendNotificationHub();
-  }
-  return cachedApplicationBackendNotificationHub;
-};

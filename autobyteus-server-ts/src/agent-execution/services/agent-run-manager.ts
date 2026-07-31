@@ -27,7 +27,7 @@ import {
 } from "../../services/run-file-changes/run-file-change-service.js";
 import {
   ApplicationPublishedArtifactRelayService,
-  getApplicationPublishedArtifactRelayService,
+  createGeneralProcessPublishedArtifactRelayService,
 } from "../../application-orchestration/services/application-published-artifact-relay-service.js";
 import {
   AgentRunMemoryRecorder,
@@ -37,6 +37,11 @@ import {
   getAgentToolMcpSessionService,
   type AgentToolMcpSessionManager,
 } from "../../agent-tools/mcp/agent-tool-mcp-session-service.js";
+import {
+  ActiveAgentRunRegistry,
+  AgentRunRemovalCleanupError,
+} from "../runtime/active-agent-run-registry.js";
+import { AgentRunResourceManager } from "./agent-run-resource-manager.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -60,6 +65,7 @@ type AgentRunManagerOptions = {
   publishedArtifactRelayService?: ApplicationPublishedArtifactRelayService;
   memoryRecorder?: AgentRunMemoryRecorder;
   agentToolMcpSessionManager?: AgentToolMcpSessionManager;
+  activeRunRegistry?: ActiveAgentRunRegistry;
 };
 
 export class AgentRunManager {
@@ -67,14 +73,8 @@ export class AgentRunManager {
   private readonly autoByteusBackendFactory: AgentRunBackendFactory;
   private readonly codexBackendFactory: AgentRunBackendFactory;
   private readonly claudeBackendFactory: AgentRunBackendFactory;
-  private readonly runFileChangeService: RunFileChangeService;
-  private readonly publishedArtifactRelayService: ApplicationPublishedArtifactRelayService;
+  private readonly activeRunRegistry: ActiveAgentRunRegistry;
   private readonly memoryRecorder: AgentRunMemoryRecorder;
-  private readonly agentToolMcpSessionManager: AgentToolMcpSessionManager;
-  private activeRuns = new Map<string, AgentRun>();
-  private readonly runFileChangeUnsubscribers = new Map<string, () => void>();
-  private readonly publishedArtifactRelayUnsubscribers = new Map<string, () => void>();
-  private readonly memoryRecorderUnsubscribers = new Map<string, () => void>();
 
   static getInstance(options: AgentRunManagerOptions = {}): AgentRunManager {
     if (!AgentRunManager.instance) {
@@ -106,13 +106,30 @@ export class AgentRunManager {
       options.codexBackendFactory ?? getCodexAgentRunBackendFactory();
     this.claudeBackendFactory =
       options.claudeBackendFactory ?? getClaudeAgentRunBackendFactory();
-    this.runFileChangeService =
-      options.runFileChangeService ?? getRunFileChangeService();
-    this.publishedArtifactRelayService =
-      options.publishedArtifactRelayService ?? getApplicationPublishedArtifactRelayService();
     this.memoryRecorder = options.memoryRecorder ?? getAgentRunMemoryRecorder();
-    this.agentToolMcpSessionManager =
-      options.agentToolMcpSessionManager ?? getAgentToolMcpSessionService();
+    if (options.activeRunRegistry) {
+      this.activeRunRegistry = options.activeRunRegistry;
+    } else {
+      const runFileChangeService =
+        options.runFileChangeService ?? getRunFileChangeService();
+      const publishedArtifactRelayService =
+        options.publishedArtifactRelayService
+        ?? createGeneralProcessPublishedArtifactRelayService();
+      const memoryRecorder = this.memoryRecorder;
+      const agentToolMcpSessionManager =
+        options.agentToolMcpSessionManager ?? getAgentToolMcpSessionService();
+      this.activeRunRegistry = new ActiveAgentRunRegistry(
+        new AgentRunResourceManager({
+          sessionScope: {
+            revokeForRun: (runId) =>
+              agentToolMcpSessionManager.revokeAgentToolMcpSessionsForRun(runId),
+          },
+          runFileChangeService,
+          publishedArtifactRelayService,
+          memoryRecorder,
+        }),
+      );
+    }
     logger.info("AgentRunManager initialized.");
   }
 
@@ -139,7 +156,7 @@ export class AgentRunManager {
         `Runtime backend returned run id '${activeRun.runId}' but '${normalizedRunId}' was requested.`,
       );
     }
-    this.registerActiveRun(activeRun);
+    this.activeRunRegistry.register(activeRun);
     logger.info(`Successfully created ${runtimeKind} agent run '${activeRun.runId}'.`);
     return activeRun;
   }
@@ -164,7 +181,7 @@ export class AgentRunManager {
       backend,
       commandObservers: [this.memoryRecorder],
     });
-    this.registerActiveRun(activeRun);
+    this.activeRunRegistry.register(activeRun);
     logger.info(
       `Successfully restored ${runtimeKind} agent run '${runId}'.`,
     );
@@ -191,50 +208,54 @@ export class AgentRunManager {
   }
 
   getActiveRun(runId: string): AgentRun | null {
-    const activeRun = this.activeRuns.get(runId) ?? null;
-    if (!activeRun) {
-      return null;
-    }
-    if (!activeRun.isActive()) {
-      this.unregisterActiveRun(runId);
-      return null;
-    }
-    return activeRun;
+    return this.activeRunRegistry.getActiveRun(runId);
   }
 
   listActiveRuns(): string[] {
-    const activeRunIds: string[] = [];
-    for (const runId of this.activeRuns.keys()) {
-      if (this.getActiveRun(runId)) {
-        activeRunIds.push(runId);
-      }
-    }
-    return activeRunIds;
+    return this.activeRunRegistry.listActiveRuns().map((run) => run.runId);
   }
 
   async terminateAgentRun(runId: string): Promise<boolean> {
     try {
       const activeRun = this.getActiveRun(runId);
-      if (activeRun) {
-        const result = await activeRun.terminate();
-        if (!result.accepted) {
-          return false;
-        }
-        this.unregisterActiveRun(runId);
-        return true;
+      if (!activeRun) {
+        return false;
       }
-      return false;
+      const result = await activeRun.terminate();
+      if (!result.accepted) {
+        return false;
+      }
+      const removal = this.activeRunRegistry.removeIfCurrent({
+        runId,
+        expectedRun: activeRun,
+        reason: "explicit_termination",
+      });
+      this.activeRunRegistry.assertCleanupSucceeded(removal);
+      return removal.kind === "removed";
     } catch (error) {
       logger.error(`Failed to terminate agent run '${runId}': ${String(error)}`);
+      if (error instanceof AgentRunRemovalCleanupError) {
+        throw error;
+      }
       throw new AgentTerminationError(String(error));
     }
   }
 
   async stopAllAgentRuns(): Promise<void> {
     const errors: unknown[] = [];
-    for (const runId of this.listActiveRuns()) {
+    const activeRuns = [...this.activeRunRegistry.listActiveRuns()];
+    for (const activeRun of activeRuns) {
       try {
-        await this.terminateAgentRun(runId);
+        const termination = await activeRun.terminate();
+        if (!termination.accepted) {
+          continue;
+        }
+        const removal = this.activeRunRegistry.removeIfCurrent({
+          runId: activeRun.runId,
+          expectedRun: activeRun,
+          reason: "stop_all",
+        });
+        this.activeRunRegistry.assertCleanupSucceeded(removal);
       } catch (error) {
         errors.push(error);
       }
@@ -242,7 +263,7 @@ export class AgentRunManager {
     if (errors.length > 0) {
       throw new AggregateError(
         errors,
-        "Failed to stop all process agent runs.",
+        "Failed to stop all agent runs.",
       );
     }
   }
@@ -296,61 +317,5 @@ export class AgentRunManager {
     return null;
   }
 
-  private registerActiveRun(activeRun: AgentRun): void {
-    const existing = this.activeRuns.get(activeRun.runId) ?? null;
-    if (existing?.isActive()) {
-      throw new AgentCreationError(`Agent run '${activeRun.runId}' is already active.`);
-    }
-    if (existing) {
-      this.unregisterActiveRun(activeRun.runId);
-    }
-    this.activeRuns.set(activeRun.runId, activeRun);
-    this.runFileChangeUnsubscribers.set(
-      activeRun.runId,
-      this.runFileChangeService.attachToRun(activeRun),
-    );
-    this.publishedArtifactRelayUnsubscribers.set(
-      activeRun.runId,
-      this.publishedArtifactRelayService.attachToRun(activeRun),
-    );
-    this.memoryRecorderUnsubscribers.set(
-      activeRun.runId,
-      this.memoryRecorder.attachToRun(activeRun),
-    );
-  }
 
-  private unregisterActiveRun(runId: string): void {
-    this.activeRuns.delete(runId);
-    this.agentToolMcpSessionManager.revokeAgentToolMcpSessionsForRun(runId);
-    this.unregisterRunFileChanges(runId);
-    this.unregisterPublishedArtifactRelay(runId);
-    this.unregisterMemoryRecorder(runId);
-  }
-
-  private unregisterRunFileChanges(runId: string): void {
-    const unsubscribe = this.runFileChangeUnsubscribers.get(runId);
-    if (!unsubscribe) {
-      return;
-    }
-    this.runFileChangeUnsubscribers.delete(runId);
-    unsubscribe();
-  }
-
-  private unregisterPublishedArtifactRelay(runId: string): void {
-    const unsubscribe = this.publishedArtifactRelayUnsubscribers.get(runId);
-    if (!unsubscribe) {
-      return;
-    }
-    this.publishedArtifactRelayUnsubscribers.delete(runId);
-    unsubscribe();
-  }
-
-  private unregisterMemoryRecorder(runId: string): void {
-    const unsubscribe = this.memoryRecorderUnsubscribers.get(runId);
-    if (!unsubscribe) {
-      return;
-    }
-    this.memoryRecorderUnsubscribers.delete(runId);
-    unsubscribe();
-  }
 }

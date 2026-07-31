@@ -3,12 +3,12 @@ import type {
   ApplicationExecutionResourceRef,
   ApplicationLaunchOverride,
 } from "@autobyteus/application-sdk-contracts";
-import type { ApplicationOrchestrationHostService } from "../../application-orchestration/services/application-orchestration-host-service.js";
+import type { ApplicationExecutionResourceRestContract } from "../../application-platform/runtime/application-platform-runtime-contracts.js";
 import { sendApplicationRouteError } from "./application-route-error.js";
 
 export async function registerApplicationExecutionResourceRoutes(
   app: FastifyInstance,
-  orchestration: ApplicationOrchestrationHostService,
+  orchestration: ApplicationExecutionResourceRestContract,
 ): Promise<void> {
   app.get<{ Params: { applicationId: string } }>(
     "/applications/:applicationId/execution-resource-configurations",

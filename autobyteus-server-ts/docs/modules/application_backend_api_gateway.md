@@ -16,7 +16,8 @@ Owns the platform-facing transport boundary for application backends: engine sta
 - `src/application-backend-api-gateway/services/application-backend-api-gateway-service.ts`
 - `src/application-backend-api-gateway/notifications/application-backend-notification-hub.ts`
 - `src/application-backend-api-gateway/websockets/application-backend-websocket-session-service.ts`
-- `src/application-engine/services/application-engine-host-service.ts`
+- `src/application-engine/services/application-engine-controller.ts`
+- `src/application-engine/services/application-engine-launcher.ts`
 
 ## Authority Boundary
 
@@ -78,13 +79,13 @@ The gateway bridges worker-published notifications into a per-application websoc
 
 - `GET /ws/applications/:applicationId/backend/routes/*`
 
-The gateway validates active application/exposure state, forwards only normalized path, decoded business query/params, sanitized headers, and trusted application scope, and coordinates the network session with the Engine Host. The worker-owned `ApplicationBackendHost` selects one exact `webSocketRoutes` declaration and owns application handler execution. Framework readiness precedes application frames, text/binary delivery is bounded and ordered, and two-sided cleanup is exactly once.
+The gateway validates active application/exposure state, forwards only normalized path, decoded business query/params, sanitized headers, and trusted application scope, and coordinates the network session through the engine launcher and controller. The worker-owned `ApplicationBackendHost` selects one exact `webSocketRoutes` declaration and owns application handler execution. Framework readiness precedes application frames, text/binary delivery is bounded and ordered, and two-sided cleanup is exactly once.
 
 This escape hatch is not used to implement `applicationClient.agentCommunication.connect(address)`.
 
 ## Engine Handoff
 
-- `ensure-ready`, query, command, route, GraphQL, and event-handler dispatch invocations all rely on `ApplicationEngineHostService`.
+- `ApplicationEngineLauncher` owns ensure/start/restart/stop; `ApplicationEngineController` owns attached worker handles, status/listeners, and query/command/route/GraphQL/WebSocket/event/artifact invocation.
 - Status reads do not implicitly start the worker.
 - Worker notifications are subscribed once at the gateway/engine boundary and re-published through `ApplicationBackendNotificationHub`.
 - For a full overview of how backend notifications relate to other communication mechanisms (request/response, artifact relay, agent execution and resources), see [`application_communication_model.md`](./application_communication_model.md).

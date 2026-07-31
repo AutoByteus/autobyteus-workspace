@@ -15,11 +15,14 @@ import { registerApplicationAvailabilityRoutes } from "./application-availabilit
 import { registerApplicationExecutionResourceRoutes } from "./application-execution-resources.js";
 import { registerRemoteAccessRoutes } from "./remote-access.js";
 import { registerMemorySyncRoutes } from "./memory-sync.js";
-import type { ApplicationPlatformRuntime } from "../../application-platform/runtime/application-platform-runtime.js";
+import type { ApplicationPlatformLifecycleReadiness, ApplicationPlatformRestContracts } from "../../application-platform/runtime/application-platform-runtime-contracts.js";
 
 export async function registerRestRoutes(
   app: FastifyInstance,
-  applicationRuntime: ApplicationPlatformRuntime,
+  dependencies: {
+    lifecycleReadiness: ApplicationPlatformLifecycleReadiness;
+    application: ApplicationPlatformRestContracts;
+  },
 ): Promise<void> {
   await registerHealthRoutes(app);
   await registerRemoteAccessRoutes(app);
@@ -33,18 +36,18 @@ export async function registerRestRoutes(
   await registerTeamCommunicationRoutes(app);
   await registerTaskDelegationRoutes(app);
   await registerDefaultChannelIngressRoutes(app);
-  await registerApplicationBundleRoutes(app, applicationRuntime.bundleService);
+  await registerApplicationBundleRoutes(app, dependencies.application.assets);
   await registerApplicationBackendRoutes(app, {
-    gateway: applicationRuntime.backendGateway,
-    lifecycle: applicationRuntime.lifecycle,
+    gateway: dependencies.application.backend,
+    lifecycle: dependencies.lifecycleReadiness,
   });
   await registerApplicationAvailabilityRoutes(app, {
-    gateway: applicationRuntime.backendGateway,
-    availabilityService: applicationRuntime.availabilityService,
-    lifecycle: applicationRuntime.lifecycle,
+    gateway: dependencies.application.backend,
+    availabilityService: dependencies.application.availability,
+    lifecycle: dependencies.lifecycleReadiness,
   });
   await registerApplicationExecutionResourceRoutes(
     app,
-    applicationRuntime.orchestrationHostService,
+    dependencies.application.executionResources,
   );
 }

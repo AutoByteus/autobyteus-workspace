@@ -9,16 +9,14 @@ import type { ApplicationBackendApiGatewayService } from "../../application-back
 import type { ApplicationBackendWebSocketSessionService } from "../../application-backend-api-gateway/websockets/application-backend-websocket-session-service.js";
 import type { ApplicationBackendNotificationHub } from "../../application-backend-api-gateway/notifications/application-backend-notification-hub.js";
 import type { ApplicationRunObserverService } from "../../application-orchestration/services/application-run-observer-service.js";
-import type { ApplicationEngineHostService } from "../../application-engine/services/application-engine-host-service.js";
+import type { ApplicationEngineLauncher } from "../../application-engine/services/application-engine-launcher.js";
+import type { ApplicationPublishedArtifactDeliveryService } from "../../application-orchestration/services/application-published-artifact-delivery-service.js";
 import type { ApplicationAgentStreamingService } from "../../application-agent-streaming/services/application-agent-streaming-service.js";
 import type { AgentToolRegistryReadiness } from "../../startup/agent-tool-loader.js";
 import type { ApplicationDefinitionRuntimeReadiness } from "./application-definition-runtime-readiness.js";
 import type {
   ScopedAgentToolMcpSessionManager,
 } from "../../agent-tools/mcp/scoped-agent-tool-mcp-session-manager.js";
-import type {
-  BindOncePublishedArtifactPublisher,
-} from "./bind-once-published-artifact-publisher.js";
 import type {
   ApplicationRunShutdownCoordinator,
 } from "./application-run-shutdown-coordinator.js";
@@ -42,8 +40,6 @@ export type ApplicationPlatformLifecycleDependencies = {
     bootstrapBuiltInAgents: () => Promise<void>;
     definitionRuntimeReadiness: ApplicationDefinitionRuntimeReadiness;
     agentToolsSessionManager: ScopedAgentToolMcpSessionManager;
-    publishedArtifactPublisher:
-      BindOncePublishedArtifactPublisher;
   };
   bundleService: ApplicationBundleService;
   platformStateStore: ApplicationPlatformStateStore;
@@ -57,7 +53,8 @@ export type ApplicationPlatformLifecycleDependencies = {
   backendWebSocketSessionService: ApplicationBackendWebSocketSessionService;
   notificationHub: ApplicationBackendNotificationHub;
   runObserverService: ApplicationRunObserverService;
-  engineHostService: ApplicationEngineHostService;
+  artifactDeliveryService: ApplicationPublishedArtifactDeliveryService;
+  engineLauncher: ApplicationEngineLauncher;
   runShutdownCoordinator: ApplicationRunShutdownCoordinator;
   streamingService: ApplicationAgentStreamingService;
 };

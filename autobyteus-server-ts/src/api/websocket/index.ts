@@ -5,25 +5,28 @@ import { registerAgentWebsocket } from "./agent.js";
 import { registerApplicationBackendNotificationWebsocket } from "./application-backend-notifications.js";
 import { registerApplicationBackendWebsocket } from "./application-backends.js";
 import { registerApplicationAgentCommunicationWebsocket } from "./application-agent-communication.js";
-import type { ApplicationPlatformRuntime } from "../../application-platform/runtime/application-platform-runtime.js";
+import type { ApplicationPlatformLifecycleReadiness, ApplicationPlatformRealtimeContracts } from "../../application-platform/runtime/application-platform-runtime-contracts.js";
 
 export async function registerWebsocketRoutes(
   app: FastifyInstance,
-  applicationRuntime: ApplicationPlatformRuntime,
+  dependencies: {
+    lifecycleReadiness: ApplicationPlatformLifecycleReadiness;
+    application: ApplicationPlatformRealtimeContracts;
+  },
 ): Promise<void> {
   await registerFileExplorerWebsocket(app);
   await registerTerminalWebsocket(app);
   await registerAgentWebsocket(app);
   await registerApplicationBackendNotificationWebsocket(app, {
-    notificationHub: applicationRuntime.notificationHub,
-    lifecycle: applicationRuntime.lifecycle,
+    notificationHub: dependencies.application.notifications,
+    lifecycle: dependencies.lifecycleReadiness,
   });
   await registerApplicationBackendWebsocket(app, {
-    gateway: applicationRuntime.backendGateway,
-    lifecycle: applicationRuntime.lifecycle,
+    gateway: dependencies.application.backend,
+    lifecycle: dependencies.lifecycleReadiness,
   });
   await registerApplicationAgentCommunicationWebsocket(app, {
-    agentCommunicationService: applicationRuntime.agentCommunicationService,
-    lifecycle: applicationRuntime.lifecycle,
+    agentCommunicationService: dependencies.application.agentCommunication,
+    lifecycle: dependencies.lifecycleReadiness,
   });
 }

@@ -1,19 +1,6 @@
 export type ApplicationOrchestrationStartupGateState = "RECOVERING" | "READY" | "FAILED";
 
 export class ApplicationOrchestrationStartupGate {
-  private static instance: ApplicationOrchestrationStartupGate | null = null;
-
-  static getInstance(): ApplicationOrchestrationStartupGate {
-    if (!ApplicationOrchestrationStartupGate.instance) {
-      ApplicationOrchestrationStartupGate.instance = new ApplicationOrchestrationStartupGate();
-    }
-    return ApplicationOrchestrationStartupGate.instance;
-  }
-
-  static resetInstance(): void {
-    ApplicationOrchestrationStartupGate.instance = null;
-  }
-
   private state: ApplicationOrchestrationStartupGateState = "RECOVERING";
   private readyPromise: Promise<void>;
   private resolveReady!: () => void;
@@ -73,12 +60,3 @@ export class ApplicationOrchestrationStartupGate {
     await this.readyPromise;
   }
 }
-
-let cachedApplicationOrchestrationStartupGate: ApplicationOrchestrationStartupGate | null = null;
-
-export const getApplicationOrchestrationStartupGate = (): ApplicationOrchestrationStartupGate => {
-  if (!cachedApplicationOrchestrationStartupGate) {
-    cachedApplicationOrchestrationStartupGate = ApplicationOrchestrationStartupGate.getInstance();
-  }
-  return cachedApplicationOrchestrationStartupGate;
-};

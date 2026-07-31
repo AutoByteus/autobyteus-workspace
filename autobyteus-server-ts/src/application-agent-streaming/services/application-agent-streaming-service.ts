@@ -6,10 +6,7 @@ import {
 import {
   ApplicationAgentTargetAuthorizationError,
 } from "../../application-orchestration/services/application-agent-target-authorization-service.js";
-import {
-  ApplicationOrchestrationHostService,
-  getApplicationOrchestrationHostService,
-} from "../../application-orchestration/services/application-orchestration-host-service.js";
+import type { ApplicationOrchestrationHostService } from "../../application-orchestration/services/application-orchestration-host-service.js";
 import {
   ApplicationAgentStreamingEstablishmentError,
   type ApplicationAgentStreamEmitter,
@@ -27,18 +24,12 @@ export type PausedApplicationAgentStream = {
 };
 
 export class ApplicationAgentStreamingService {
-  private static instance: ApplicationAgentStreamingService | null = null;
-  static getInstance(dependencies: ConstructorParameters<typeof ApplicationAgentStreamingService>[0] = {}): ApplicationAgentStreamingService {
-    if (!this.instance) this.instance = new ApplicationAgentStreamingService(dependencies);
-    return this.instance;
-  }
-  static resetInstance(): void { this.instance = null; cachedApplicationAgentStreamingService = null; }
   private readonly subscriptions = new Map<string, ApplicationAgentStreamSubscription>();
   constructor(private readonly dependencies: {
-    orchestrationHostService?: ApplicationOrchestrationHostService;
-    runtimeSource?: ApplicationAgentStreamRuntimeSource;
-    mapper?: ApplicationAgentEventMapper;
-  } = {}) {}
+    orchestrationHostService: ApplicationOrchestrationHostService;
+    runtimeSource: ApplicationAgentStreamRuntimeSource;
+    mapper: ApplicationAgentEventMapper;
+  }) {}
 
   async subscribePaused(input: {
     applicationId: string;
@@ -52,9 +43,9 @@ export class ApplicationAgentStreamingService {
     if (this.subscriptions.has(key)) throw new ApplicationAgentStreamingEstablishmentError("TRANSPORT_FAILED");
     const subscription = new ApplicationAgentStreamSubscription({
       ...input,
-      orchestration: this.dependencies.orchestrationHostService ?? getApplicationOrchestrationHostService(),
-      runtimeSource: this.dependencies.runtimeSource ?? new ApplicationAgentStreamRuntimeSource(),
-      mapper: this.dependencies.mapper ?? new ApplicationAgentEventMapper(),
+      orchestration: this.dependencies.orchestrationHostService,
+      runtimeSource: this.dependencies.runtimeSource,
+      mapper: this.dependencies.mapper,
       onFinalized: () => { if (this.subscriptions.get(key) === subscription) this.subscriptions.delete(key); },
     });
     this.subscriptions.set(key, subscription);
@@ -134,10 +125,4 @@ const mapEstablishmentError = (error: unknown): Error => {
   return new ApplicationAgentEventStreamSubscribeError({
     code: "WORKER_TRANSPORT_FAILED", message: "The application agent event stream could not be established.", recoverable: true,
   });
-};
-
-let cachedApplicationAgentStreamingService: ApplicationAgentStreamingService | null = null;
-export const getApplicationAgentStreamingService = (): ApplicationAgentStreamingService => {
-  if (!cachedApplicationAgentStreamingService) cachedApplicationAgentStreamingService = ApplicationAgentStreamingService.getInstance();
-  return cachedApplicationAgentStreamingService;
 };

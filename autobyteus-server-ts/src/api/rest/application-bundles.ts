@@ -5,7 +5,7 @@ import type { ApplicationBundleService } from "../../application-bundles/service
 
 export async function registerApplicationBundleRoutes(
   app: FastifyInstance,
-  bundleService: ApplicationBundleService,
+  bundleService: Pick<ApplicationBundleService, "resolveUiAsset">,
 ): Promise<void> {
   app.get<{
     Params: { applicationId: string } & Record<string, string>;

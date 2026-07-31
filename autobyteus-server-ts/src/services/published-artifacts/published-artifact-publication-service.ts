@@ -2,9 +2,10 @@ import fs from "node:fs/promises";
 import { randomUUID } from "node:crypto";
 import { AgentRunEventType } from "../../agent-execution/domain/agent-run-event.js";
 import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
+import type { AgentRun } from "../../agent-execution/domain/agent-run.js";
 import {
   ApplicationPublishedArtifactRelayService,
-  getApplicationPublishedArtifactRelayService,
+  createGeneralProcessPublishedArtifactRelayService,
 } from "../../application-orchestration/services/application-published-artifact-relay-service.js";
 import { getWorkspaceManager, type WorkspaceManager } from "../../workspaces/workspace-manager.js";
 import { inferArtifactType } from "../../utils/artifact-utils.js";
@@ -53,11 +54,16 @@ const normalizeOptionalNonEmptyString = (value: string | null | undefined): stri
   return trimmed.length > 0 ? trimmed : null;
 };
 
+const createGeneralProcessActiveRunReader = (): Pick<AgentRunManager, "getActiveRun"> => ({
+  getActiveRun: (runId: string): AgentRun | null =>
+    AgentRunManager.getInstance().getActiveRun(runId),
+});
+
 export class PublishedArtifactPublicationService
 implements PublishedArtifactPublisher {
   constructor(
     private readonly dependencies: {
-      agentRunManager?: AgentRunManager;
+      activeRunReader?: Pick<AgentRunManager, "getActiveRun">;
       workspaceManager?: WorkspaceManager;
       publishedArtifactRelayService?: ApplicationPublishedArtifactRelayService;
       projectionStore?: PublishedArtifactProjectionStore;
@@ -65,8 +71,8 @@ implements PublishedArtifactPublisher {
     } = {},
   ) {}
 
-  private get agentRunManager(): AgentRunManager {
-    return this.dependencies.agentRunManager ?? AgentRunManager.getInstance();
+  private get activeRunReader(): Pick<AgentRunManager, "getActiveRun"> {
+    return this.dependencies.activeRunReader ?? createGeneralProcessActiveRunReader();
   }
 
   private get workspaceManager(): WorkspaceManager {
@@ -74,7 +80,8 @@ implements PublishedArtifactPublisher {
   }
 
   private get publishedArtifactRelayService(): ApplicationPublishedArtifactRelayService {
-    return this.dependencies.publishedArtifactRelayService ?? getApplicationPublishedArtifactRelayService();
+    return this.dependencies.publishedArtifactRelayService
+      ?? createGeneralProcessPublishedArtifactRelayService();
   }
 
   private get projectionStore(): PublishedArtifactProjectionStore {
@@ -91,7 +98,7 @@ implements PublishedArtifactPublisher {
     description?: string | null;
     fallbackRuntimeContext?: PublishedArtifactPublicationFallbackRuntimeContext | null;
   }): Promise<PublishedArtifactSummary> {
-    const run = this.agentRunManager.getActiveRun(input.runId);
+    const run = this.activeRunReader.getActiveRun(input.runId);
     const fallbackRuntimeContext = input.fallbackRuntimeContext ?? null;
     const emitArtifactPersisted = fallbackRuntimeContext?.emitArtifactPersisted ?? null;
     if (!run && !emitArtifactPersisted) {
@@ -142,6 +149,7 @@ implements PublishedArtifactPublisher {
       throw new Error(`Published artifact path '${canonicalPath}' could not be snapshotted: ${message}`);
     });
 
+    let projectionPersisted = false;
     try {
       const nextProjection = this.buildNextProjection({
         projection,
@@ -156,6 +164,7 @@ implements PublishedArtifactPublisher {
         sourceFileName: snapshot.sourceFileName,
       });
       await this.projectionStore.writeProjection(memoryDir, nextProjection);
+      projectionPersisted = true;
       const summary = nextProjection.summaries.find((candidate) => candidate.id === artifactId);
       if (!summary) {
         throw new Error(`Published artifact '${artifactId}' was not persisted.`);
@@ -185,7 +194,12 @@ implements PublishedArtifactPublisher {
 
       return clonedSummary;
     } catch (error) {
-      await this.snapshotStore.deleteRevisionSnapshot(memoryDir, snapshot.snapshotRelativePath).catch(() => undefined);
+      if (!projectionPersisted) {
+        await this.snapshotStore.deleteRevisionSnapshot(
+          memoryDir,
+          snapshot.snapshotRelativePath,
+        ).catch(() => undefined);
+      }
       throw error;
     }
   }
@@ -261,11 +275,18 @@ implements PublishedArtifactPublisher {
   }
 }
 
-let cachedPublishedArtifactPublicationService: PublishedArtifactPublicationService | null = null;
+export const createGeneralProcessPublishedArtifactPublisher =
+(): PublishedArtifactPublicationService =>
+  new PublishedArtifactPublicationService();
 
-export const getPublishedArtifactPublicationService = (): PublishedArtifactPublicationService => {
-  if (!cachedPublishedArtifactPublicationService) {
-    cachedPublishedArtifactPublicationService = new PublishedArtifactPublicationService();
+let cachedGeneralProcessPublishedArtifactPublisher:
+PublishedArtifactPublicationService | null = null;
+
+export const getGeneralProcessPublishedArtifactPublisher =
+(): PublishedArtifactPublicationService => {
+  if (!cachedGeneralProcessPublishedArtifactPublisher) {
+    cachedGeneralProcessPublishedArtifactPublisher =
+      createGeneralProcessPublishedArtifactPublisher();
   }
-  return cachedPublishedArtifactPublicationService;
+  return cachedGeneralProcessPublishedArtifactPublisher;
 };

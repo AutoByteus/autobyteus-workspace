@@ -5,7 +5,7 @@ import type {
   ApplicationRouteMethod,
   ApplicationRouteRequest,
 } from "@autobyteus/application-sdk-contracts";
-import type { ApplicationBackendApiGatewayService } from "../../application-backend-api-gateway/services/application-backend-api-gateway-service.js";
+import type { ApplicationBackendRestContract } from "../../application-platform/runtime/application-platform-runtime-contracts.js";
 
 export const buildApplicationRequestContext = (
   applicationId: string,
@@ -44,7 +44,7 @@ export const toApplicationHeaderRecord = (
 };
 
 export const invokeApplicationQuery = (input: {
-  gateway: ApplicationBackendApiGatewayService;
+  gateway: ApplicationBackendRestContract;
   applicationId: string;
   queryName: string;
   value: unknown;
@@ -56,7 +56,7 @@ export const invokeApplicationQuery = (input: {
 );
 
 export const invokeApplicationCommand = (input: {
-  gateway: ApplicationBackendApiGatewayService;
+  gateway: ApplicationBackendRestContract;
   applicationId: string;
   commandName: string;
   value: unknown;
@@ -68,7 +68,7 @@ export const invokeApplicationCommand = (input: {
 );
 
 export const invokeApplicationGraphql = (input: {
-  gateway: ApplicationBackendApiGatewayService;
+  gateway: ApplicationBackendRestContract;
   applicationId: string;
   request: ApplicationGraphqlRequest;
 }): Promise<unknown> => input.gateway.executeApplicationGraphql(
@@ -78,7 +78,7 @@ export const invokeApplicationGraphql = (input: {
 );
 
 export const invokeApplicationRoute = (input: {
-  gateway: ApplicationBackendApiGatewayService;
+  gateway: ApplicationBackendRestContract;
   applicationId: string;
   routePath: string;
   request: FastifyRequest;

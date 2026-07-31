@@ -4,7 +4,10 @@ import { appConfigProvider } from "../../config/app-config-provider.js";
 import { readJsonFile, writeJsonFile, writeRawFile } from "../../persistence/file/store-utils.js";
 import { AgentTeamDefinition, TeamMember } from "../domain/models.js";
 import { TeamMdParseError, parseTeamMd, serializeTeamMd } from "../utils/team-md-parser.js";
-import { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
+import {
+  ApplicationBundleService,
+  getGeneralProcessApplicationBundleService,
+} from "../../application-bundles/services/application-bundle-service.js";
 import type { AppConfig } from "../../config/app-config.js";
 import {
   buildCanonicalApplicationOwnedTeamId,
@@ -62,7 +65,8 @@ export class FileAgentTeamDefinitionProvider {
   ) {}
 
   private get applicationBundleService(): ApplicationBundleService {
-    return this.dependencies.applicationBundleService ?? ApplicationBundleService.getInstance();
+    return this.dependencies.applicationBundleService
+      ?? getGeneralProcessApplicationBundleService();
   }
 
   private get appConfig(): AppConfig {

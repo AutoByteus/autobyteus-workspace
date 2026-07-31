@@ -2,14 +2,25 @@ import type { AppConfig } from "../../config/app-config.js";
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import type { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
+import type { ApplicationStorageLifecycleService } from "../../application-storage/services/application-storage-lifecycle-service.js";
 import type { ApplicationPlatformStateStore } from "../../application-storage/stores/application-platform-state-store.js";
 import type { ApplicationGlobalPlatformStateStore } from "../../application-storage/stores/application-global-platform-state-store.js";
 import { ApplicationAgentCommunicationService } from "../../application-agent-communication/services/application-agent-communication-service.js";
 import { ApplicationAgentStreamingService } from "../../application-agent-streaming/services/application-agent-streaming-service.js";
+import { ApplicationAgentEventMapper } from "../../application-agent-streaming/services/application-agent-stream-event-mapper.js";
+import { ApplicationAgentStreamRuntimeSource } from "../../application-agent-streaming/services/application-agent-stream-runtime-source.js";
+import type { ApplicationAgentToolMcpSessionScope } from "../../agent-tools/mcp/application-agent-tool-mcp-session-scope.js";
+import type { ApplicationAgentToolsSessionFactory } from "../../agent-tools/mcp/agent-tools-mcp-runtime.js";
+import type { ApplicationEngineController } from "../../application-engine/services/application-engine-controller.js";
+import { ApplicationEngineLauncher } from "../../application-engine/services/application-engine-launcher.js";
 import { ApplicationAvailabilityService } from "../../application-orchestration/services/application-availability-service.js";
 import { ApplicationBoundRunLifecycleGateway } from "../../application-orchestration/services/application-bound-run-lifecycle-gateway.js";
 import { ApplicationExecutionEventDispatchService } from "../../application-orchestration/services/application-execution-event-dispatch-service.js";
+import type { ApplicationExecutionEventDispatchQueue } from "../../application-orchestration/services/application-execution-event-dispatch-queue.js";
 import { ApplicationExecutionEventIngressService } from "../../application-orchestration/services/application-execution-event-ingress-service.js";
+import { ApplicationPublishedArtifactDeliveryService } from "../../application-orchestration/services/application-published-artifact-delivery-service.js";
+import type { ApplicationPublishedArtifactDeliveryQueue } from "../../application-orchestration/services/application-published-artifact-delivery-queue.js";
+import { ApplicationReentryService } from "../../application-orchestration/services/application-reentry-service.js";
 import { ApplicationLaunchConfigurationService } from "../launch-configuration/application-launch-configuration-service.js";
 import { ApplicationLaunchHostCapabilityValidator } from "../launch-configuration/application-launch-host-capability-validator.js";
 import { ApplicationLaunchResourceBaselineBuilder } from "../launch-configuration/application-launch-resource-baseline-builder.js";
@@ -27,32 +38,28 @@ import { ApplicationLaunchOverrideStore } from "../../application-orchestration/
 import { ApplicationRunBindingStore } from "../../application-orchestration/stores/application-run-binding-store.js";
 import { ApplicationRunLookupStore } from "../../application-orchestration/stores/application-run-lookup-store.js";
 import type { ApplicationAvailabilityStateRegistry } from "./application-availability-state-registry.js";
-import type { BindOnceApplicationEngineEventHandler } from "./bind-once-application-engine-event-handler.js";
 import { createApplicationRunServices } from "./create-application-run-services.js";
 import { getRuntimeAvailabilityService } from "../../runtime-management/runtime-availability-service.js";
 import { getModelCatalogService } from "../../llm-management/services/model-catalog-service.js";
 import { getLlmProviderService } from "../../llm-management/llm-providers/services/llm-provider-service.js";
-import {
-  getCodexAppServerClientManager,
-} from "../../runtime-management/codex/client/codex-app-server-client-manager.js";
+import { getCodexAppServerClientManager } from "../../runtime-management/codex/client/codex-app-server-client-manager.js";
 import { buildApplicationStorageLayout } from "../../application-storage/utils/application-storage-paths.js";
-import {
-  ApplicationProviderCredentialReadinessAdapter,
-} from "../launch-configuration/application-provider-credential-readiness-adapter.js";
-import type {
-  ScopedAgentToolMcpSessionManager,
-} from "../../agent-tools/mcp/scoped-agent-tool-mcp-session-manager.js";
+import { ApplicationProviderCredentialReadinessAdapter } from "../launch-configuration/application-provider-credential-readiness-adapter.js";
 
 export const createApplicationOrchestrationServices = (input: {
   appConfig: AppConfig;
   bundleService: ApplicationBundleService;
+  storageLifecycleService: ApplicationStorageLifecycleService;
   platformStateStore: ApplicationPlatformStateStore;
   globalPlatformStateStore: ApplicationGlobalPlatformStateStore;
   availabilityRegistry: ApplicationAvailabilityStateRegistry;
-  bindOnceApplicationEngineEventHandler: BindOnceApplicationEngineEventHandler;
+  engineController: ApplicationEngineController;
+  eventDispatchQueue: ApplicationExecutionEventDispatchQueue;
+  artifactDeliveryQueue: ApplicationPublishedArtifactDeliveryQueue;
   agentDefinitionService: AgentDefinitionService;
   agentTeamDefinitionService: AgentTeamDefinitionService;
-  agentToolsSessionManager: ScopedAgentToolMcpSessionManager;
+  agentToolsSessionFactory: ApplicationAgentToolsSessionFactory;
+  sessionScope: ApplicationAgentToolMcpSessionScope;
 }) => {
   const runLookupStore = new ApplicationRunLookupStore({
     globalPlatformStateStore: input.globalPlatformStateStore,
@@ -67,16 +74,22 @@ export const createApplicationOrchestrationServices = (input: {
     platformStateStore: input.platformStateStore,
   });
   const startupGate = new ApplicationOrchestrationStartupGate();
-  const eventDispatchService = new ApplicationExecutionEventDispatchService({
+  const availabilityService = new ApplicationAvailabilityService({
     applicationBundleService: input.bundleService,
-    availabilityReader: input.availabilityRegistry.reader as never,
-    platformStateStore: input.platformStateStore,
-    journalStore,
-    engineHostService: input.bindOnceApplicationEngineEventHandler as never,
+    stateRegistry: input.availabilityRegistry,
+  });
+  const runServices = createApplicationRunServices({
+    appConfig: input.appConfig,
+    bindingStore,
+    artifactDeliveryQueue: input.artifactDeliveryQueue,
+    agentDefinitionService: input.agentDefinitionService,
+    agentTeamDefinitionService: input.agentTeamDefinitionService,
+    sessionScope: input.sessionScope,
+    agentToolsSessionFactory: input.agentToolsSessionFactory,
   });
   const ingressService = new ApplicationExecutionEventIngressService({
     journalStore,
-    dispatchService: eventDispatchService,
+    dispatchQueue: input.eventDispatchQueue,
   });
   const lifecycleHub = new ApplicationRunBindingLifecycleHub();
   const terminalTransitionService = new ApplicationRunBindingTerminalTransitionService({
@@ -84,10 +97,6 @@ export const createApplicationOrchestrationServices = (input: {
     lookupStore: runLookupStore,
     ingressService,
     lifecycleHub,
-  });
-  const runServices = createApplicationRunServices({
-    ...input,
-    bindingStore,
   });
   const lifecycleGateway = new ApplicationBoundRunLifecycleGateway({
     agentRunService: runServices.agentRunService,
@@ -108,13 +117,6 @@ export const createApplicationOrchestrationServices = (input: {
     runObserverService,
     ingressService,
     terminalTransitionService,
-  });
-  const availabilityService = new ApplicationAvailabilityService({
-    applicationBundleService: input.bundleService,
-    engineHostService: input.bindOnceApplicationEngineEventHandler as never,
-    recoveryService,
-    dispatchService: eventDispatchService,
-    stateRegistry: input.availabilityRegistry,
   });
   const executionResourceResolver = new ApplicationExecutionResourceResolver({
     applicationBundleService: input.bundleService,
@@ -176,16 +178,48 @@ export const createApplicationOrchestrationServices = (input: {
   });
   const agentStreamingService = new ApplicationAgentStreamingService({
     orchestrationHostService,
+    runtimeSource: new ApplicationAgentStreamRuntimeSource({
+      agentRunManager: runServices.agentRunManager,
+      teamRunManager: runServices.agentTeamRunManager,
+    }),
+    mapper: new ApplicationAgentEventMapper(),
   });
   const agentCommunicationService = new ApplicationAgentCommunicationService({
     streamingService: agentStreamingService,
     orchestrationService: orchestrationHostService,
   });
-
+  const engineLauncher = new ApplicationEngineLauncher({
+    applicationBundleService: input.bundleService,
+    storageLifecycleService: input.storageLifecycleService,
+    orchestrationHostService,
+    agentStreamingService,
+    controller: input.engineController,
+  });
+  const eventDispatchService = new ApplicationExecutionEventDispatchService({
+    applicationBundleService: input.bundleService,
+    availabilityReader: input.availabilityRegistry.reader,
+    platformStateStore: input.platformStateStore,
+    journalStore,
+    eventQueue: input.eventDispatchQueue,
+    engineLauncher,
+    engineController: input.engineController,
+  });
+  const artifactDeliveryService = new ApplicationPublishedArtifactDeliveryService({
+    queue: input.artifactDeliveryQueue,
+    launcher: engineLauncher,
+    controller: input.engineController,
+  });
+  const reentryService = new ApplicationReentryService({
+    bundleService: input.bundleService,
+    availabilityService,
+    recoveryService,
+    eventDispatchService,
+    engineLauncher,
+  });
   return {
-    runLookupStore,
     startupGate,
     eventDispatchService,
+    artifactDeliveryService,
     runObserverService,
     runShutdownCoordinator: runServices.runShutdownCoordinator,
     recoveryService,
@@ -193,8 +227,11 @@ export const createApplicationOrchestrationServices = (input: {
     configurationService,
     executionResourceResolver,
     publicationService: runServices.publicationService,
+    agentToolsSessionManager: runServices.agentToolsSessionManager,
     orchestrationHostService,
     agentStreamingService,
     agentCommunicationService,
+    engineLauncher,
+    reentryService,
   };
 };

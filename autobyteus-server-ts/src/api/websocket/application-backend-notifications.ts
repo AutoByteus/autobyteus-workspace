@@ -1,9 +1,6 @@
 import type { FastifyInstance, FastifyRequest } from "fastify";
-import {
-  type ApplicationBackendNotificationHubConnection,
-  type ApplicationBackendNotificationHub,
-} from "../../application-backend-api-gateway/notifications/application-backend-notification-hub.js";
-import type { ApplicationPlatformLifecycle } from "../../application-platform/runtime/application-platform-lifecycle.js";
+import type { ApplicationBackendNotificationHubConnection } from "../../application-backend-api-gateway/notifications/application-backend-notification-hub.js";
+import type { ApplicationBackendNotificationContract, ApplicationPlatformLifecycleReadiness } from "../../application-platform/runtime/application-platform-runtime-contracts.js";
 import {
   authorizeRemoteAccessWebSocket,
   closeSocketForRemoteAccessRejection,
@@ -17,8 +14,8 @@ type Params = {
 export async function registerApplicationBackendNotificationWebsocket(
   app: FastifyInstance,
   dependencies: {
-    notificationHub: ApplicationBackendNotificationHub;
-    lifecycle: ApplicationPlatformLifecycle;
+    notificationHub: ApplicationBackendNotificationContract;
+    lifecycle: ApplicationPlatformLifecycleReadiness;
   },
 ): Promise<void> {
   (app as any).get(

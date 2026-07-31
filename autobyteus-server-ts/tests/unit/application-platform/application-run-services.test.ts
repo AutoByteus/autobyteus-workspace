@@ -76,10 +76,18 @@ describe("application run services", () => {
         getMemoryDir: () => memoryDir,
       } as never,
       bindingStore: {} as never,
-      bindOnceApplicationEngineEventHandler: {} as never,
+      artifactDeliveryQueue: {
+        accept: vi.fn(),
+      } as never,
       agentDefinitionService: runtimeAgentDefinitionService as never,
       agentTeamDefinitionService: {} as never,
-      agentToolsSessionManager: runtimeAgentToolsSessionManager as never,
+      sessionScope: {
+        revokeForRun: vi.fn(() => 0),
+      } as never,
+      agentToolsSessionFactory: {
+        createApplicationSessionManager: vi.fn(() =>
+          runtimeAgentToolsSessionManager),
+      } as never,
     });
     const agentRunService =
       services.agentRunService as unknown as AgentRunServiceProbe;

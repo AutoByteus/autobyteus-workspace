@@ -155,19 +155,20 @@ export class ApplicationPlatformLifecycle {
       }
     };
 
-    this.dependencies.preparation.agentToolsSessionManager.blockNewSessions();
+    await runStep(() =>
+      this.dependencies.preparation.agentToolsSessionManager.blockNewSessions());
     await runStep(() => this.dependencies.eventDispatchService.stop());
     await runStep(() => this.dependencies.agentCommunicationService.closeAll());
     await runStep(() => this.dependencies.backendGateway.dispose());
     await runStep(() => this.dependencies.backendWebSocketSessionService.dispose());
     await runStep(() => this.dependencies.notificationHub.closeAll());
+    await runStep(() => this.dependencies.artifactDeliveryService.stopAccepting());
+    await runStep(() => this.dependencies.artifactDeliveryService.awaitDrained());
     await runStep(() => this.dependencies.runObserverService.dispose());
-    await runStep(() => this.dependencies.engineHostService.stopAllApplicationEngines());
+    await runStep(() => this.dependencies.engineLauncher.stopAll());
     await runStep(() => this.dependencies.runShutdownCoordinator.stopAllRuns());
     await runStep(() =>
       this.dependencies.preparation.agentToolsSessionManager.close());
-    await runStep(() =>
-      this.dependencies.preparation.publishedArtifactPublisher.close());
     await runStep(() => this.dependencies.streamingService.stopAll());
     this.state = "stopped";
     if (errors.length > 0) {

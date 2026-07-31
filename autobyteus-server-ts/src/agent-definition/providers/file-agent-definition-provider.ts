@@ -13,7 +13,10 @@ import {
   listTeamLocalAgentDefinitions,
   readTeamLocalAgentFromSourcePaths,
 } from "./team-local-agent-discovery.js";
-import { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
+import {
+  ApplicationBundleService,
+  getGeneralProcessApplicationBundleService,
+} from "../../application-bundles/services/application-bundle-service.js";
 import type { AppConfig } from "../../config/app-config.js";
 import {
   parseCanonicalApplicationOwnedAgentId,
@@ -62,7 +65,8 @@ export class FileAgentDefinitionProvider {
   ) {}
 
   private get applicationBundleService(): ApplicationBundleService {
-    return this.dependencies.applicationBundleService ?? ApplicationBundleService.getInstance();
+    return this.dependencies.applicationBundleService
+      ?? getGeneralProcessApplicationBundleService();
   }
 
   private get appConfig(): AppConfig {

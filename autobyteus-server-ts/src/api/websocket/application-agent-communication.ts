@@ -7,8 +7,7 @@ import {
   applicationAgentConnectionError,
   type ApplicationAgentCommunicationNetworkSocket,
 } from "../../application-agent-communication/domain/application-agent-communication-models.js";
-import type { ApplicationAgentCommunicationService } from "../../application-agent-communication/services/application-agent-communication-service.js";
-import type { ApplicationPlatformLifecycle } from "../../application-platform/runtime/application-platform-lifecycle.js";
+import type { ApplicationAgentCommunicationContract, ApplicationPlatformLifecycleReadiness } from "../../application-platform/runtime/application-platform-runtime-contracts.js";
 import {
   authorizeRemoteAccessWebSocket,
   closeSocketForRemoteAccessRejection,
@@ -20,8 +19,8 @@ type Params = { applicationId: string; "*": string };
 export async function registerApplicationAgentCommunicationWebsocket(
   app: FastifyInstance,
   dependencies: {
-    agentCommunicationService: ApplicationAgentCommunicationService;
-    lifecycle: ApplicationPlatformLifecycle;
+    agentCommunicationService: ApplicationAgentCommunicationContract;
+    lifecycle: ApplicationPlatformLifecycleReadiness;
   },
 ): Promise<void> {
   (app as any).get(

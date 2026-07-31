@@ -452,4 +452,44 @@ describe("AgentRunManager", () => {
       bearerToken: nonMatching.capabilityToken,
     }).ok).toBe(true);
   });
+
+  it("stop-all consumes exact registry removals after accepted termination", async () => {
+    const run = {
+      runId: "run-stop-all",
+      terminate: vi.fn(async () => ({ accepted: true })),
+    };
+    const removal = {
+      kind: "removed",
+      run,
+      reason: "stop_all",
+      resources: {
+        state: "released",
+        runId: run.runId,
+        revokedSessionCount: 1,
+        detached: {
+          fileChanges: true,
+          artifactRelay: true,
+          memoryRecorder: true,
+        },
+        errors: [],
+      },
+    };
+    const activeRunRegistry = {
+      listActiveRuns: vi.fn(() => [run]),
+      removeIfCurrent: vi.fn(() => removal),
+      assertCleanupSucceeded: vi.fn(),
+    };
+    const manager = new AgentRunManager({
+      activeRunRegistry: activeRunRegistry as never,
+    });
+
+    await expect(manager.stopAllAgentRuns()).resolves.toBeUndefined();
+    expect(run.terminate).toHaveBeenCalledOnce();
+    expect(activeRunRegistry.removeIfCurrent).toHaveBeenCalledWith({
+      runId: run.runId,
+      expectedRun: run,
+      reason: "stop_all",
+    });
+    expect(activeRunRegistry.assertCleanupSucceeded).toHaveBeenCalledWith(removal);
+  });
 });

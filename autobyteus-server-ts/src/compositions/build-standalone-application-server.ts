@@ -35,15 +35,15 @@ export const buildStandaloneApplicationServer = async (input: {
     await registerStandaloneApplicationRest(app, {
       selection: input.selection,
       lifecycle: input.applicationRuntime.lifecycle,
-      gateway: input.applicationRuntime.backendGateway,
+      gateway: input.applicationRuntime.rest.backend,
     });
     await registerStandaloneApplicationWebSockets(app, {
       selection: input.selection,
       lifecycle: input.applicationRuntime.lifecycle,
-      gateway: input.applicationRuntime.backendGateway,
-      notificationHub: input.applicationRuntime.notificationHub,
+      gateway: input.applicationRuntime.realtime.backend,
+      notificationHub: input.applicationRuntime.realtime.notifications,
       agentCommunicationService:
-        input.applicationRuntime.agentCommunicationService,
+        input.applicationRuntime.realtime.agentCommunication,
     });
     await registerAgentToolsMcpRoutes(
       app,

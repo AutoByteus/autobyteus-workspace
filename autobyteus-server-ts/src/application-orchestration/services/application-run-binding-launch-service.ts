@@ -17,10 +17,10 @@ import type {
 } from "@autobyteus/application-sdk-contracts";
 import { normalizeMemberRouteKey } from "../../agent-team-execution/domain/team-run-member-identity.js";
 import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
-import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
-import { AgentRunService, getAgentRunService } from "../../agent-execution/services/agent-run-service.js";
-import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
-import { TeamRunService, getTeamRunService } from "../../agent-team-execution/services/team-run-service.js";
+import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
+import type { AgentRunService } from "../../agent-execution/services/agent-run-service.js";
+import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
+import type { TeamRunService } from "../../agent-team-execution/services/team-run-service.js";
 import type { TeamMemberRunConfig } from "../../agent-team-execution/domain/team-run-config.js";
 import { buildMemberRouteKeyFromPath } from "../../agent-team-execution/domain/team-run-member-identity.js";
 import type { ApplicationExecutionContext } from "../domain/models.js";
@@ -96,42 +96,42 @@ const requireNonEmptyString = (value: string, fieldName: string): string => {
 export class ApplicationRunBindingLaunchService {
   constructor(
     private readonly dependencies: {
-      executionResourceResolver?: ApplicationExecutionResourceResolver;
-      bindingStore?: ApplicationRunBindingStore;
-      lookupStore?: ApplicationRunLookupStore;
-      agentRunService?: AgentRunService;
-      teamRunService?: TeamRunService;
-      agentDefinitionService?: AgentDefinitionService;
-      agentTeamDefinitionService?: AgentTeamDefinitionService;
-    } = {},
+      executionResourceResolver: ApplicationExecutionResourceResolver;
+      bindingStore: ApplicationRunBindingStore;
+      lookupStore: ApplicationRunLookupStore;
+      agentRunService: AgentRunService;
+      teamRunService: TeamRunService;
+      agentDefinitionService: AgentDefinitionService;
+      agentTeamDefinitionService: AgentTeamDefinitionService;
+    },
   ) {}
 
   private get executionResourceResolver(): ApplicationExecutionResourceResolver {
-    return this.dependencies.executionResourceResolver ?? new ApplicationExecutionResourceResolver();
+    return this.dependencies.executionResourceResolver;
   }
 
   private get bindingStore(): ApplicationRunBindingStore {
-    return this.dependencies.bindingStore ?? new ApplicationRunBindingStore();
+    return this.dependencies.bindingStore;
   }
 
   private get lookupStore(): ApplicationRunLookupStore {
-    return this.dependencies.lookupStore ?? new ApplicationRunLookupStore();
+    return this.dependencies.lookupStore;
   }
 
   private get agentRunService(): AgentRunService {
-    return this.dependencies.agentRunService ?? getAgentRunService();
+    return this.dependencies.agentRunService;
   }
 
   private get teamRunService(): TeamRunService {
-    return this.dependencies.teamRunService ?? getTeamRunService();
+    return this.dependencies.teamRunService;
   }
 
   private get agentDefinitionService(): AgentDefinitionService {
-    return this.dependencies.agentDefinitionService ?? AgentDefinitionService.getInstance();
+    return this.dependencies.agentDefinitionService;
   }
 
   private get agentTeamDefinitionService(): AgentTeamDefinitionService {
-    return this.dependencies.agentTeamDefinitionService ?? AgentTeamDefinitionService.getInstance();
+    return this.dependencies.agentTeamDefinitionService;
   }
 
   async startAgentRunBinding(

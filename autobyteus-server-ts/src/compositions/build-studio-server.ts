@@ -19,8 +19,11 @@ import { ApplicationPackageRootSettingsStore } from "../application-packages/sto
 import { ApplicationPackageRegistryStore } from "../application-packages/stores/application-package-registry-store.js";
 import { BuiltInApplicationPackageMaterializer } from "../application-packages/services/built-in-application-package-materializer.js";
 import { ApplicationPackageRegistryService } from "../application-packages/services/application-package-registry-service.js";
+import { ApplicationPackageCommandService } from "../application-packages/services/application-package-command-service.js";
+import { ApplicationCatalogRefreshCoordinator } from "../application-packages/services/application-catalog-refresh-coordinator.js";
 import { FileApplicationBundleProvider } from "../application-bundles/providers/file-application-bundle-provider.js";
 import { ApplicationBundleService } from "../application-bundles/services/application-bundle-service.js";
+import { ApplicationCapabilityService } from "../application-capability/services/application-capability-service.js";
 import { buildApplicationPlatformRuntime } from "../application-platform/runtime/build-application-platform-runtime.js";
 import type { ApplicationPlatformRuntime } from "../application-platform/runtime/application-platform-runtime.js";
 import { createApplicationDefinitionServices } from "../application-platform/runtime/create-application-definition-services.js";
@@ -36,10 +39,11 @@ import {
   type AgentToolsMcpRuntime,
 } from "../agent-tools/mcp/agent-tools-mcp-runtime.js";
 import {
-  getPublishedArtifactPublicationService,
+  getGeneralProcessPublishedArtifactPublisher,
 } from "../services/published-artifacts/published-artifact-publication-service.js";
 import {
-  GeneralProcessRunSupervisor,
+  createGeneralProcessRunSupervisor,
+  type GeneralProcessRunSupervisor,
 } from "../agent-execution/runtime/general-process-run-supervisor.js";
 
 export type StudioServer = Readonly<{
@@ -88,48 +92,41 @@ const createStudioApplicationServices = (
   appConfig: AppConfig,
   agentToolsMcpRuntime: AgentToolsMcpRuntime,
 ) => {
-  let bundleService!: ApplicationBundleService;
-  let applicationRuntime!: ApplicationPlatformRuntime;
-  let definitionServices!: ReturnType<typeof createApplicationDefinitionServices>;
   const packageRegistryService = new ApplicationPackageRegistryService({
     rootSettingsStore: new ApplicationPackageRootSettingsStore(appConfig),
     registryStore: new ApplicationPackageRegistryStore(appConfig),
     builtInMaterializer: new BuiltInApplicationPackageMaterializer(appConfig),
-    refreshApplicationBundles: () => bundleService.refresh(),
-    refreshAgentDefinitions: () => definitionServices.agentDefinitionService.refreshCache(),
-    refreshAgentTeams: () => definitionServices.agentTeamDefinitionService.refreshCache(),
-    validateApplicationPackageContents: (packageRoot, packageId) =>
-      bundleService.validatePackageRoot(packageRoot, packageId),
-    applicationBundleService: {
-      getCatalogSnapshot: () => bundleService.getCatalogSnapshot(),
-    },
-    availabilityService: {
-      reconcileCatalogSnapshotWithKnownApplications: (...args) =>
-        applicationRuntime.availabilityService
-          .reconcileCatalogSnapshotWithKnownApplications(...args),
-    },
-    platformStateStore: {
-      listKnownApplicationIds: () =>
-        applicationRuntime.platformStateStore.listKnownApplicationIds(),
-    },
   });
-  bundleService = new ApplicationBundleService({
-    provider: new FileApplicationBundleProvider(),
+  const bundleProvider = new FileApplicationBundleProvider();
+  const bundleService = new ApplicationBundleService({
+    provider: bundleProvider,
     packageRegistryService,
   });
-  definitionServices = createApplicationDefinitionServices({
+  const definitionServices = createApplicationDefinitionServices({
     appConfig,
     bundleService,
   });
-  applicationRuntime = buildApplicationPlatformRuntime({
+  const applicationRuntime = buildApplicationPlatformRuntime({
     appConfig,
     bundleService,
     ...definitionServices,
-    agentToolsSessionManagerFactory:
-      agentToolsMcpRuntime,
+    agentToolsSessionFactory: agentToolsMcpRuntime,
+  });
+  const catalogRefreshCoordinator = new ApplicationCatalogRefreshCoordinator({
+    bundleService,
+    catalogReconciliation:
+      applicationRuntime.hostManagement.catalogReconciliation,
+    agentDefinitionService: definitionServices.agentDefinitionService,
+    agentTeamDefinitionService: definitionServices.agentTeamDefinitionService,
+  });
+  const packageCommandService = new ApplicationPackageCommandService({
+    registry: packageRegistryService,
+    provider: bundleProvider,
+    refreshCoordinator: catalogRefreshCoordinator,
   });
   return {
     packageRegistryService,
+    packageCommandService,
     bundleService,
     applicationRuntime,
     ...definitionServices,
@@ -143,10 +140,10 @@ export const buildStudioServer = async (input: {
   const agentToolsMcpRuntime =
     createAgentToolsMcpRuntime({
       generalProcessPublisher:
-        getPublishedArtifactPublicationService(),
+        getGeneralProcessPublishedArtifactPublisher(),
     });
   const generalProcessRunSupervisor =
-    new GeneralProcessRunSupervisor(
+    createGeneralProcessRunSupervisor(
       agentToolsMcpRuntime.generalProcessSessionManager,
     );
   let studioServices:
@@ -165,6 +162,7 @@ export const buildStudioServer = async (input: {
   }
   const {
     packageRegistryService,
+    packageCommandService,
     bundleService,
     applicationRuntime,
     agentDefinitionService,
@@ -172,7 +170,11 @@ export const buildStudioServer = async (input: {
   } = studioServices;
   configureStudioApplicationApiServices({
     bundleService,
-    packageRegistryService,
+    capabilityService: new ApplicationCapabilityService({
+      applicationBundleService: bundleService,
+    }),
+    packageQueries: packageRegistryService,
+    packageCommands: packageCommandService,
     agentDefinitionService,
     agentTeamDefinitionService,
   });
@@ -213,10 +215,16 @@ export const buildStudioServer = async (input: {
     await registerRemoteAccessPolicyPlugin(app);
     await registerMobileWebStaticRoutes(app);
     await app.register(
-      async (restApp) => registerRestRoutes(restApp, applicationRuntime),
+      async (restApp) => registerRestRoutes(restApp, {
+        lifecycleReadiness: applicationRuntime.lifecycle,
+        application: applicationRuntime.rest,
+      }),
       { prefix: "/rest" },
     );
-    await registerWebsocketRoutes(app, applicationRuntime);
+    await registerWebsocketRoutes(app, {
+      lifecycleReadiness: applicationRuntime.lifecycle,
+      application: applicationRuntime.realtime,
+    });
     await registerGraphql(app);
     return Object.freeze({
       fastify: app,

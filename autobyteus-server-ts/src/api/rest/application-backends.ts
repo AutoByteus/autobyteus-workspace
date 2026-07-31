@@ -2,8 +2,7 @@ import type { FastifyInstance } from "fastify";
 import type {
   ApplicationGraphqlRequest,
 } from "@autobyteus/application-sdk-contracts";
-import type { ApplicationBackendApiGatewayService } from "../../application-backend-api-gateway/services/application-backend-api-gateway-service.js";
-import type { ApplicationPlatformLifecycle } from "../../application-platform/runtime/application-platform-lifecycle.js";
+import type { ApplicationBackendRestContract, ApplicationPlatformLifecycleReadiness } from "../../application-platform/runtime/application-platform-runtime-contracts.js";
 import { sendApplicationRouteError } from "./application-route-error.js";
 import {
   invokeApplicationCommand,
@@ -17,8 +16,8 @@ const APPLICATION_BACKEND_ROUTE_BASE = "/applications/:applicationId/backend";
 export async function registerApplicationBackendRoutes(
   app: FastifyInstance,
   dependencies: {
-    gateway: ApplicationBackendApiGatewayService;
-    lifecycle: ApplicationPlatformLifecycle;
+    gateway: ApplicationBackendRestContract;
+    lifecycle: ApplicationPlatformLifecycleReadiness;
   },
 ): Promise<void> {
   app.post<{

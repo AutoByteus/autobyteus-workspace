@@ -3,15 +3,12 @@ import {
   APPLICATION_AGENT_COMMUNICATION_PROTOCOL,
   decodeApplicationAgentTargetPath,
 } from "@autobyteus/application-sdk-contracts";
-import type { ApplicationBackendNotificationHub } from "../../application-backend-api-gateway/notifications/application-backend-notification-hub.js";
-import type { ApplicationBackendApiGatewayService } from "../../application-backend-api-gateway/services/application-backend-api-gateway-service.js";
+import type { ApplicationBackendNotificationContract, ApplicationBackendRealtimeContract, ApplicationAgentCommunicationContract, ApplicationPlatformLifecycleReadiness } from "../../application-platform/runtime/application-platform-runtime-contracts.js";
 import type { ApplicationBackendNetworkWebSocket } from "../../application-backend-api-gateway/websockets/application-backend-websocket-session-service.js";
-import type { ApplicationAgentCommunicationService } from "../../application-agent-communication/services/application-agent-communication-service.js";
 import {
   applicationAgentConnectionError,
   type ApplicationAgentCommunicationNetworkSocket,
 } from "../../application-agent-communication/domain/application-agent-communication-models.js";
-import type { ApplicationPlatformLifecycle } from "../../application-platform/runtime/application-platform-lifecycle.js";
 import type { StandaloneApplicationSelection } from "../domain/standalone-application-selection.js";
 import { assertStandaloneBrowserWebSocketOrigin } from "./standalone-browser-websocket-origin.js";
 
@@ -34,7 +31,7 @@ const rejectSocket = (
 };
 
 const authorize = async (
-  lifecycle: ApplicationPlatformLifecycle,
+  lifecycle: ApplicationPlatformLifecycleReadiness,
   request: FastifyRequest,
 ): Promise<void> => {
   assertStandaloneBrowserWebSocketOrigin(request);
@@ -45,10 +42,10 @@ export const registerStandaloneApplicationWebSockets = async (
   app: FastifyInstance,
   dependencies: {
     selection: StandaloneApplicationSelection;
-    lifecycle: ApplicationPlatformLifecycle;
-    gateway: ApplicationBackendApiGatewayService;
-    notificationHub: ApplicationBackendNotificationHub;
-    agentCommunicationService: ApplicationAgentCommunicationService;
+    lifecycle: ApplicationPlatformLifecycleReadiness;
+    gateway: ApplicationBackendRealtimeContract;
+    notificationHub: ApplicationBackendNotificationContract;
+    agentCommunicationService: ApplicationAgentCommunicationContract;
   },
 ): Promise<void> => {
   const { applicationId } = dependencies.selection;

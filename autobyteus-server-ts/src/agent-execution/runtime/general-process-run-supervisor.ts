@@ -106,3 +106,8 @@ export class GeneralProcessRunSupervisor {
     }
   }
 }
+
+export const createGeneralProcessRunSupervisor = (
+  agentToolsSessionManager: AgentToolMcpSessionManager,
+): GeneralProcessRunSupervisor =>
+  new GeneralProcessRunSupervisor(agentToolsSessionManager);

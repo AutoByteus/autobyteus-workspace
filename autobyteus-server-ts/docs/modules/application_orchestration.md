@@ -24,10 +24,13 @@ Owns application-authored runtime orchestration after an application backend is 
 - `src/application-orchestration/services/application-run-observer-service.ts`
 - `src/application-orchestration/services/application-bound-run-lifecycle-gateway.ts`
 - `src/application-orchestration/services/application-execution-event-ingress-service.ts`
+- `src/application-orchestration/services/application-execution-event-dispatch-queue.ts`
 - `src/application-orchestration/services/application-execution-event-dispatch-service.ts`
 - `src/application-orchestration/services/application-orchestration-recovery-service.ts`
 - `src/application-orchestration/services/application-orchestration-startup-gate.ts`
 - `src/application-orchestration/services/application-published-artifact-relay-service.ts`
+- `src/application-orchestration/services/application-published-artifact-delivery-queue.ts`
+- `src/application-orchestration/services/application-published-artifact-delivery-service.ts`
 - `src/application-orchestration/stores/application-launch-override-store.ts`
 - `src/application-orchestration/stores/application-run-binding-store.ts`
 - `src/application-orchestration/stores/application-run-lookup-store.ts`
@@ -183,7 +186,8 @@ Runtime-visible lifecycle events use the application-owned orchestration journal
 
 ### Lifecycle dispatch
 
-- `ApplicationExecutionEventDispatchService` drains one application journal in order.
+- `ApplicationExecutionEventIngressService` commits the journal record before it enqueues the application id on the closed `ApplicationExecutionEventDispatchQueue`.
+- `ApplicationExecutionEventDispatchService` consumes that coalesced wakeup and drains one application journal in order.
 - Delivery semantics are `AT_LEAST_ONCE`.
 - Retry backoff doubles from `1s` up to `60s`.
 - Missing app-side handlers are treated as acknowledged no-op dispatches by the worker/runtime protocol.
@@ -192,7 +196,8 @@ Runtime-visible lifecycle events use the application-owned orchestration journal
 ### Published-artifact relay and query
 
 - The shared `PublishedArtifactPublicationService` snapshots the requested workspace file, updates the durable projection, and emits runtime `ARTIFACT_PERSISTED`.
-- `ApplicationPublishedArtifactRelayService` listens for bound-run `ARTIFACT_PERSISTED` events, derives the bound application context, and invokes `artifactHandlers.persisted` through `ApplicationEngineHostService`.
+- `ApplicationPublishedArtifactRelayService` maps a bound-run `ARTIFACT_PERSISTED` event to one complete command on `ApplicationPublishedArtifactDeliveryQueue`.
+- `ApplicationPublishedArtifactDeliveryService` preserves FIFO per run and independent run lanes. For every accepted command it calls `ApplicationEngineLauncher.ensureReady(applicationId)` before `ApplicationEngineController.invokeApplicationArtifactHandler(...)`, so an exited worker is restarted before delivery.
 - Live artifact relay is intentionally best-effort. Relay failure logs a warning but does not roll back the published artifact or synthesize retry journal state.
 - Applications recover missed deliveries by calling `agentExecution.list(...)`, `publishedArtifacts.list(...)`, and `publishedArtifacts.readRevision(...)`, then applying their own idempotency keyed by `revisionId`.
 - For a full overview of how artifact relay, backend notifications, and named context capabilities relate to each other, see [`application_communication_model.md`](./application_communication_model.md).

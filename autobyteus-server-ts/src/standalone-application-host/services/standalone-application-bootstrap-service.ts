@@ -1,13 +1,12 @@
 import type { StandaloneApplicationBootstrapPayload } from "@autobyteus/application-sdk-contracts";
-import type { ApplicationPlatformLifecycle } from "../../application-platform/runtime/application-platform-lifecycle.js";
-import type { ApplicationBackendApiGatewayService } from "../../application-backend-api-gateway/services/application-backend-api-gateway-service.js";
+import type { ApplicationBackendRestContract, ApplicationPlatformLifecycleReadiness } from "../../application-platform/runtime/application-platform-runtime-contracts.js";
 import type { StandaloneApplicationSelection } from "../domain/standalone-application-selection.js";
 
 export class StandaloneApplicationBootstrapService {
   constructor(private readonly dependencies: {
     selection: StandaloneApplicationSelection;
-    lifecycle: ApplicationPlatformLifecycle;
-    gateway: ApplicationBackendApiGatewayService;
+    lifecycle: ApplicationPlatformLifecycleReadiness;
+    gateway: ApplicationBackendRestContract;
   }) {}
 
   async getBootstrap(): Promise<StandaloneApplicationBootstrapPayload> {

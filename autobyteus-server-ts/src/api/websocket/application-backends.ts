@@ -1,7 +1,6 @@
 import type { FastifyInstance, FastifyRequest } from "fastify";
 import type { ApplicationWebSocketRequest } from "@autobyteus/application-sdk-contracts";
-import type { ApplicationBackendApiGatewayService } from "../../application-backend-api-gateway/services/application-backend-api-gateway-service.js";
-import type { ApplicationPlatformLifecycle } from "../../application-platform/runtime/application-platform-lifecycle.js";
+import type { ApplicationBackendRealtimeContract, ApplicationPlatformLifecycleReadiness } from "../../application-platform/runtime/application-platform-runtime-contracts.js";
 import type { ApplicationBackendNetworkWebSocket } from "../../application-backend-api-gateway/websockets/application-backend-websocket-session-service.js";
 import { authorizeRemoteAccessWebSocket, closeSocketForRemoteAccessRejection } from "./remote-access-websocket-auth.js";
 import { observePendingWebSocketState } from "./pending-websocket-state.js";
@@ -31,8 +30,8 @@ const toQuery = (query: unknown): ApplicationWebSocketRequest["query"] => {
 export async function registerApplicationBackendWebsocket(
   app: FastifyInstance,
   dependencies: {
-    gateway: ApplicationBackendApiGatewayService;
-    lifecycle: ApplicationPlatformLifecycle;
+    gateway: ApplicationBackendRealtimeContract;
+    lifecycle: ApplicationPlatformLifecycleReadiness;
   },
 ): Promise<void> {
   (app as any).get(

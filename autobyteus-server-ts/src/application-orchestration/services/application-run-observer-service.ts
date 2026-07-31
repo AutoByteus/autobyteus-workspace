@@ -7,7 +7,6 @@ import { ApplicationRunBindingStore } from "../stores/application-run-binding-st
 import { ApplicationRunLookupStore } from "../stores/application-run-lookup-store.js";
 import {
   ApplicationRunBindingTerminalTransitionService,
-  getApplicationRunBindingTerminalTransitionService,
 } from "./application-run-binding-terminal-transition-service.js";
 
 const logger = {
@@ -55,60 +54,36 @@ const createDeferredPromise = (): DeferredPromise => {
 };
 
 export class ApplicationRunObserverService {
-  private static instance: ApplicationRunObserverService | null = null;
-
-  static getInstance(
-    dependencies: ConstructorParameters<typeof ApplicationRunObserverService>[0] = {},
-  ): ApplicationRunObserverService {
-    if (!ApplicationRunObserverService.instance) {
-      ApplicationRunObserverService.instance = new ApplicationRunObserverService(dependencies);
-    }
-    return ApplicationRunObserverService.instance;
-  }
-
-  static resetInstance(): void {
-    ApplicationRunObserverService.instance = null;
-    cachedApplicationRunObserverService = null;
-  }
-
   private readonly registrations = new Map<string, ObserverRegistration>();
 
   constructor(
     private readonly dependencies: {
-      lifecycleGateway?: ApplicationBoundRunLifecycleGateway;
-      bindingStore?: ApplicationRunBindingStore;
-      lookupStore?: ApplicationRunLookupStore;
-      ingressService?: ApplicationExecutionEventIngressService;
-      terminalTransitionService?: ApplicationRunBindingTerminalTransitionService;
-    } = {},
+      lifecycleGateway: ApplicationBoundRunLifecycleGateway;
+      bindingStore: ApplicationRunBindingStore;
+      lookupStore: ApplicationRunLookupStore;
+      ingressService: ApplicationExecutionEventIngressService;
+      terminalTransitionService: ApplicationRunBindingTerminalTransitionService;
+    },
   ) {}
 
   private get lifecycleGateway(): ApplicationBoundRunLifecycleGateway {
-    return this.dependencies.lifecycleGateway ?? new ApplicationBoundRunLifecycleGateway();
+    return this.dependencies.lifecycleGateway;
   }
 
   private get bindingStore(): ApplicationRunBindingStore {
-    return this.dependencies.bindingStore ?? new ApplicationRunBindingStore();
+    return this.dependencies.bindingStore;
   }
 
   private get lookupStore(): ApplicationRunLookupStore {
-    return this.dependencies.lookupStore ?? new ApplicationRunLookupStore();
+    return this.dependencies.lookupStore;
   }
 
   private get ingressService(): ApplicationExecutionEventIngressService {
-    return this.dependencies.ingressService ?? new ApplicationExecutionEventIngressService();
+    return this.dependencies.ingressService;
   }
 
   private get terminalTransitionService(): ApplicationRunBindingTerminalTransitionService {
-    if (this.dependencies.terminalTransitionService) return this.dependencies.terminalTransitionService;
-    if (this.dependencies.bindingStore || this.dependencies.lookupStore || this.dependencies.ingressService) {
-      return new ApplicationRunBindingTerminalTransitionService({
-        bindingStore: this.bindingStore,
-        lookupStore: this.lookupStore,
-        ingressService: this.ingressService,
-      });
-    }
-    return getApplicationRunBindingTerminalTransitionService();
+    return this.dependencies.terminalTransitionService;
   }
 
   async attachBinding(
@@ -342,12 +317,3 @@ export class ApplicationRunObserverService {
     }
   }
 }
-
-let cachedApplicationRunObserverService: ApplicationRunObserverService | null = null;
-
-export const getApplicationRunObserverService = (): ApplicationRunObserverService => {
-  if (!cachedApplicationRunObserverService) {
-    cachedApplicationRunObserverService = ApplicationRunObserverService.getInstance();
-  }
-  return cachedApplicationRunObserverService;
-};

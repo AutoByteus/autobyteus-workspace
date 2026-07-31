@@ -4,15 +4,9 @@ import type {
   ApplicationExecutionProducer,
 } from "@autobyteus/application-sdk-contracts";
 import { ApplicationRunBindingStore } from "../stores/application-run-binding-store.js";
-import {
-  ApplicationOrchestrationStartupGate,
-  getApplicationOrchestrationStartupGate,
-} from "./application-orchestration-startup-gate.js";
-import { ApplicationAvailabilityService, getApplicationAvailabilityService } from "./application-availability-service.js";
-import {
-  ApplicationRunBindingLifecycleHub,
-  getApplicationRunBindingLifecycleHub,
-} from "./application-run-binding-lifecycle-hub.js";
+import type { ApplicationOrchestrationStartupGate } from "./application-orchestration-startup-gate.js";
+import type { ApplicationAvailabilityService } from "./application-availability-service.js";
+import type { ApplicationRunBindingLifecycleHub } from "./application-run-binding-lifecycle-hub.js";
 
 export type ApplicationAgentTargetAuthorizationErrorCode =
   | "APPLICATION_NOT_AVAILABLE"
@@ -89,23 +83,23 @@ const validateTarget = (binding: ApplicationAgentBindingRecord, address: Applica
 
 export class ApplicationAgentTargetAuthorizationService {
   constructor(private readonly dependencies: {
-    startupGate?: ApplicationOrchestrationStartupGate;
-    availabilityService?: ApplicationAvailabilityService;
-    bindingStore?: ApplicationRunBindingStore;
-    lifecycleHub?: ApplicationRunBindingLifecycleHub;
-  } = {}) {}
+    startupGate: ApplicationOrchestrationStartupGate;
+    availabilityService: ApplicationAvailabilityService;
+    bindingStore: ApplicationRunBindingStore;
+    lifecycleHub: ApplicationRunBindingLifecycleHub;
+  }) {}
 
   private get startupGate(): ApplicationOrchestrationStartupGate {
-    return this.dependencies.startupGate ?? getApplicationOrchestrationStartupGate();
+    return this.dependencies.startupGate;
   }
   private get availabilityService(): ApplicationAvailabilityService {
-    return this.dependencies.availabilityService ?? getApplicationAvailabilityService();
+    return this.dependencies.availabilityService;
   }
   private get bindingStore(): ApplicationRunBindingStore {
-    return this.dependencies.bindingStore ?? new ApplicationRunBindingStore();
+    return this.dependencies.bindingStore;
   }
   private get lifecycleHub(): ApplicationRunBindingLifecycleHub {
-    return this.dependencies.lifecycleHub ?? getApplicationRunBindingLifecycleHub();
+    return this.dependencies.lifecycleHub;
   }
 
   async authorizeTarget(

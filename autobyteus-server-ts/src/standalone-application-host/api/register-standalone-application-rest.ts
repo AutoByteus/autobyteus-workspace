@@ -1,7 +1,6 @@
 import type { FastifyInstance, FastifyReply } from "fastify";
 import type { ApplicationGraphqlRequest } from "@autobyteus/application-sdk-contracts";
-import type { ApplicationPlatformLifecycle } from "../../application-platform/runtime/application-platform-lifecycle.js";
-import type { ApplicationBackendApiGatewayService } from "../../application-backend-api-gateway/services/application-backend-api-gateway-service.js";
+import type { ApplicationBackendRestContract, ApplicationPlatformLifecycleReadiness } from "../../application-platform/runtime/application-platform-runtime-contracts.js";
 import type { StandaloneApplicationSelection } from "../domain/standalone-application-selection.js";
 import { StandaloneApplicationBootstrapService } from "../services/standalone-application-bootstrap-service.js";
 import {
@@ -31,8 +30,8 @@ export const registerStandaloneApplicationRest = async (
   app: FastifyInstance,
   dependencies: {
     selection: StandaloneApplicationSelection;
-    lifecycle: ApplicationPlatformLifecycle;
-    gateway: ApplicationBackendApiGatewayService;
+    lifecycle: ApplicationPlatformLifecycleReadiness;
+    gateway: ApplicationBackendRestContract;
   },
 ): Promise<void> => {
   const { applicationId } = dependencies.selection;

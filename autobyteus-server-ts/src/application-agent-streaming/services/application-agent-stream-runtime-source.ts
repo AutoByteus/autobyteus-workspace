@@ -1,7 +1,7 @@
 import type { ApplicationExecutionProducer } from "@autobyteus/application-sdk-contracts";
-import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
+import type { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import { isAgentRunEvent } from "../../agent-execution/domain/agent-run-event.js";
-import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
+import type { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import { TeamRunEventSourceType, type TeamRunAgentEventPayload } from "../../agent-team-execution/domain/team-run-event.js";
 import type { AuthorizedApplicationAgentTargetDescriptor } from "../../application-orchestration/services/application-agent-target-authorization-service.js";
 import type { ApplicationAgentStreamSourceEvent } from "../domain/application-agent-streaming-models.js";
@@ -12,16 +12,16 @@ const runtimeNotActive = (): ApplicationAgentStreamingEstablishmentError =>
 
 export class ApplicationAgentStreamRuntimeSource {
   constructor(private readonly dependencies: {
-    agentRunManager?: Pick<AgentRunManager, "getActiveRun">;
-    teamRunManager?: Pick<AgentTeamRunManager, "getActiveRun">;
-  } = {}) {}
+    agentRunManager: Pick<AgentRunManager, "getActiveRun">;
+    teamRunManager: Pick<AgentTeamRunManager, "getActiveRun">;
+  }) {}
 
   attach(
     descriptor: AuthorizedApplicationAgentTargetDescriptor,
     listener: (event: ApplicationAgentStreamSourceEvent) => void,
   ): () => void {
     if (descriptor.runtimeSubject === "AGENT_RUN") {
-      const run = (this.dependencies.agentRunManager ?? AgentRunManager.getInstance())
+      const run = this.dependencies.agentRunManager
         .getActiveRun(descriptor.runtimeRunId);
       const producer = descriptor.producers[0];
       if (!run || !producer) throw runtimeNotActive();
@@ -31,7 +31,7 @@ export class ApplicationAgentStreamRuntimeSource {
       });
     }
 
-    const run = (this.dependencies.teamRunManager ?? AgentTeamRunManager.getInstance())
+    const run = this.dependencies.teamRunManager
       .getActiveRun(descriptor.runtimeRunId);
     if (!run) throw runtimeNotActive();
     const selectedRouteKey = descriptor.address.target.kind === "AGENT_TEAM_MEMBER"

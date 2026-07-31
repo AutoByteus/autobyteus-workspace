@@ -14,7 +14,7 @@ import {
   normalizePublishArtifactsToolInput,
 } from "../../services/published-artifacts/published-artifact-tool-contract.js";
 import {
-  getPublishedArtifactPublicationService,
+  getGeneralProcessPublishedArtifactPublisher,
   type PublishedArtifactPublicationService,
 } from "../../services/published-artifacts/published-artifact-publication-service.js";
 
@@ -147,7 +147,7 @@ const publishArtifacts = async (
 
   const input = normalizePublishArtifactsToolInput(rawArguments);
   const publicationRequest: Parameters<
-    ReturnType<typeof getPublishedArtifactPublicationService>["publishManyForRun"]
+    ReturnType<typeof getGeneralProcessPublishedArtifactPublisher>["publishManyForRun"]
   >[0] = {
     runId,
     artifacts: input.artifacts,
@@ -203,7 +203,7 @@ let cachedTool: BaseTool | null = null;
 
 export function registerPublishArtifactsTool(
   publicationService: PublishedArtifactPublicationService =
-    getPublishedArtifactPublicationService(),
+    getGeneralProcessPublishedArtifactPublisher(),
 ): BaseTool {
   const definition = new ToolDefinition(
     PUBLISH_ARTIFACTS_TOOL_NAME,

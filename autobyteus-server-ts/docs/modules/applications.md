@@ -100,7 +100,9 @@ These are authoring/sample roots, not current shipped built-ins. Future built-in
 
 ## Package Source Presentation
 
-- `ApplicationPackageService` is the authoritative settings-facing owner for application-package source summaries and debug details.
+- `ApplicationPackageRegistryService` owns package-root and registry-record state plus settings-facing source summaries and debug details.
+- `ApplicationPackageCommandService` owns import, reload, remove, validation, managed-install cleanup, and rollback.
+- `ApplicationCatalogRefreshCoordinator` is the only owner of the ordered bundle refresh, availability reconciliation, agent-definition refresh, and team-definition refresh sequence.
 - Default list rows hide empty platform-owned built-in packages, show non-empty built-ins as `Platform Applications`, and keep raw internal built-in paths behind explicit details.
 - Linked local package rows may show the user-chosen root path directly.
 - GitHub-installed package rows use repository identity by default; managed install paths stay in details/debug-only surfaces.
@@ -128,9 +130,11 @@ applications. Standalone builds one application runtime for its process and
 selects exactly one application from the configured package.
 
 Building `ApplicationPlatformRuntime` prepares managers, services, factories,
-and lifecycle owners; it starts no new agent or team run. Application business
-demand creates new execution, while the established recovery phase may restore
-recorded runs after the server listens.
+and lifecycle owners; it starts no new agent or team run. Its outward boundary
+contains exactly four immutable projections: `lifecycle`, `rest`, `realtime`,
+and `hostManagement`. Application business demand creates new execution, while
+the established recovery phase may restore recorded runs after the server
+listens.
 
 - Studio combines the application catalog, setup UI, iframe host, broad Studio
   APIs, the internal `/mcp/agent-tools/:sessionId` route, and the external
@@ -144,10 +148,13 @@ recorded runs after the server listens.
   bundle-owned package baseline is sufficient to start the same package.
 - Both hosts treat package bytes as immutable input; mutable storage, logs,
   credentials, and runtime state live outside the package root.
-- Each process owns one `AgentToolsMcpRuntime`. The application runtime receives
-  one `ScopedAgentToolMcpSessionManager` for its explicit scope and exact
-  `PublishedArtifactPublisher`; `/mcp/agent-tools/:sessionId` remains distinct
-  from Studio-only `/mcp/gateway`.
+- Each process owns one `AgentToolsMcpRuntime`. Application construction creates
+  an early `ApplicationAgentToolMcpSessionScope`, then its exact run-resource
+  manager/active-run registry and concrete `PublishedArtifactPublisher`, and
+  only then a `ScopedAgentToolMcpSessionManager`. This keeps run cleanup
+  synchronous and exact without deferred binding or process-global application
+  lookup. `/mcp/agent-tools/:sessionId` remains distinct from Studio-only
+  `/mcp/gateway`.
 
 Server assembly and standalone-host ownership live under
 `src/compositions/build-studio-server.ts`,

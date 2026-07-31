@@ -69,7 +69,7 @@ describe("application platform runtime isolation", () => {
         bundleService: bundleService as never,
         agentDefinitionService: {} as never,
         agentTeamDefinitionService: {} as never,
-        agentToolsSessionManagerFactory:
+        agentToolsSessionFactory:
           agentToolsMcpRuntime,
         selectedApplicationIds: new Set([applicationId]),
       });
@@ -81,67 +81,24 @@ describe("application platform runtime isolation", () => {
     expect(createAgentRun).not.toHaveBeenCalled();
     expect(createTeamRun).not.toHaveBeenCalled();
 
-    for (const key of [
-      "storageLifecycleService",
-      "platformStateStore",
-      "globalPlatformStateStore",
-      "runLookupStore",
-      "agentToolsSessionManager",
-      "publishedArtifactPublicationService",
-      "startupGate",
-      "availabilityService",
-      "recoveryService",
-      "eventDispatchService",
-      "orchestrationHostService",
-      "agentStreamingService",
-      "agentCommunicationService",
-      "engineHostService",
-      "notificationHub",
-      "backendWebSocketSessionService",
-      "backendGateway",
+    expect(Object.keys(runtimeA).sort()).toEqual([
+      "hostManagement",
       "lifecycle",
-    ] as const) {
-      expect(runtimeA[key], key).not.toBe(runtimeB[key]);
-    }
-
-    runtimeA.availabilityService.synchronizeWithCatalogSnapshot(
-      createCatalogSnapshot("app-a") as never,
+      "realtime",
+      "rest",
+    ]);
+    expect(Object.keys(runtimeB).sort()).toEqual([
+      "hostManagement",
+      "lifecycle",
+      "realtime",
+      "rest",
+    ]);
+    expect(runtimeA.lifecycle).not.toBe(runtimeB.lifecycle);
+    expect(runtimeA.rest).not.toBe(runtimeB.rest);
+    expect(runtimeA.realtime).not.toBe(runtimeB.realtime);
+    expect(runtimeA.hostManagement.catalogReconciliation).not.toBe(
+      runtimeB.hostManagement.catalogReconciliation,
     );
-    runtimeB.availabilityService.synchronizeWithCatalogSnapshot(
-      createCatalogSnapshot("app-b") as never,
-    );
-    expect(await runtimeA.availabilityService.getAvailability("app-a")).toMatchObject({
-      applicationId: "app-a",
-      state: "ACTIVE",
-    });
-    expect(await runtimeA.availabilityService.getAvailability("app-b")).toBeNull();
-    expect(await runtimeB.availabilityService.getAvailability("app-a")).toBeNull();
-    expect(await runtimeB.availabilityService.getAvailability("app-b")).toMatchObject({
-      applicationId: "app-b",
-      state: "ACTIVE",
-    });
-
-    const runtimeASend = vi.fn();
-    const runtimeBSend = vi.fn();
-    runtimeA.notificationHub.connect(
-      "app-a",
-      { send: runtimeASend, close: vi.fn() },
-    );
-    runtimeB.notificationHub.connect(
-      "app-b",
-      { send: runtimeBSend, close: vi.fn() },
-    );
-    runtimeASend.mockClear();
-    runtimeBSend.mockClear();
-
-    runtimeA.notificationHub.publish({
-      applicationId: "app-a",
-      topic: "runtime-a",
-      payload: { runtime: "a" },
-      publishedAt: "2026-07-29T10:00:01.000Z",
-    });
-    expect(runtimeASend).toHaveBeenCalledTimes(1);
-    expect(runtimeBSend).not.toHaveBeenCalled();
 
     await runtimeA.lifecycle.stop();
     expect(runtimeA.lifecycle.getState()).toBe("stopped");

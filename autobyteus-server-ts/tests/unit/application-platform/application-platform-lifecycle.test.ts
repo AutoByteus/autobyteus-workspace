@@ -17,9 +17,6 @@ const createDependencies = () => ({
       blockNewSessions: vi.fn(),
       close: vi.fn(),
     },
-    publishedArtifactPublisher: {
-      close: vi.fn(),
-    },
   },
   bundleService: {
     getCatalogSnapshot: vi.fn(async () => ({
@@ -58,7 +55,11 @@ const createDependencies = () => ({
   backendWebSocketSessionService: { dispose: vi.fn() },
   notificationHub: { closeAll: vi.fn() },
   runObserverService: { dispose: vi.fn(async () => undefined) },
-  engineHostService: { stopAllApplicationEngines: vi.fn(async () => undefined) },
+  artifactDeliveryService: {
+    stopAccepting: vi.fn(),
+    awaitDrained: vi.fn(async () => undefined),
+  },
+  engineLauncher: { stopAll: vi.fn(async () => undefined) },
   runShutdownCoordinator: { stopAllRuns: vi.fn(async () => undefined) },
   streamingService: { stopAll: vi.fn(async () => undefined) },
 });
@@ -118,15 +119,16 @@ describe("ApplicationPlatformLifecycle", () => {
     ) as never;
     dependencies.notificationHub.closeAll = record("notifications") as never;
     dependencies.runObserverService.dispose = record("observers");
-    dependencies.engineHostService.stopAllApplicationEngines = record("workers");
+    dependencies.artifactDeliveryService.stopAccepting =
+      vi.fn(() => order.push("artifact-intake-stop"));
+    dependencies.artifactDeliveryService.awaitDrained = record("artifact-drain");
+    dependencies.engineLauncher.stopAll = record("workers");
     dependencies.runShutdownCoordinator.stopAllRuns = record(
       "runs",
       new Error("runtime run shutdown failed"),
     );
     dependencies.preparation.agentToolsSessionManager.close =
       record("sessions") as never;
-    dependencies.preparation.publishedArtifactPublisher.close =
-      record("publication") as never;
     dependencies.streamingService.stopAll = record("streaming");
     const lifecycle = new ApplicationPlatformLifecycle(dependencies as never);
 
@@ -141,11 +143,12 @@ describe("ApplicationPlatformLifecycle", () => {
       "gateway",
       "backend-websockets",
       "notifications",
+      "artifact-intake-stop",
+      "artifact-drain",
       "observers",
       "workers",
       "runs",
       "sessions",
-      "publication",
       "streaming",
     ]);
     expect(lifecycle.getState()).toBe("stopped");
@@ -153,6 +156,6 @@ describe("ApplicationPlatformLifecycle", () => {
     await expect(lifecycle.stop()).rejects.toMatchObject({
       name: "AggregateError",
     });
-    expect(order).toHaveLength(12);
+    expect(order).toHaveLength(13);
   });
 });

@@ -1,9 +1,7 @@
 import { randomUUID } from "node:crypto";
 import type { ApplicationWebSocketRequest } from "@autobyteus/application-sdk-contracts";
-import {
-  ApplicationEngineHostService,
-  getApplicationEngineHostService,
-} from "../../application-engine/services/application-engine-host-service.js";
+import type { ApplicationEngineController } from "../../application-engine/services/application-engine-controller.js";
+import type { ApplicationEngineLauncher } from "../../application-engine/services/application-engine-launcher.js";
 import type {
   ApplicationWebSocketIpcFrame,
   ApplicationWorkerWebSocketActionInput,
@@ -52,19 +50,20 @@ const toIpcFrame = (data: unknown, isBinary: boolean): ApplicationWebSocketIpcFr
 export class ApplicationBackendWebSocketSessionService {
   private readonly sessions = new Map<string, Session>();
   private readonly unsubscribeEngineListeners: Array<() => void>;
-  constructor(private readonly dependencies: { engineHostService?: ApplicationEngineHostService } = {}) {
+  constructor(private readonly dependencies: {
+    engineController: ApplicationEngineController;
+    engineLauncher: ApplicationEngineLauncher;
+  }) {
     this.unsubscribeEngineListeners = [
-      this.engineHostService.onWebSocketAction(
+      this.dependencies.engineController.onWebSocketAction(
         (event) => this.handleWorkerAction(event.applicationId, event.action),
       ),
-      this.engineHostService.onWorkerClose(
+      this.dependencies.engineController.onWorkerClose(
         ({ applicationId }) => this.closeApplicationSessions(applicationId),
       ),
     ];
   }
-  private get engineHostService(): ApplicationEngineHostService {
-    return this.dependencies.engineHostService ?? getApplicationEngineHostService();
-  }
+
 
   connect(input: {
     applicationId: string;
@@ -95,7 +94,8 @@ export class ApplicationBackendWebSocketSessionService {
   ): Promise<void> {
     await input.requireApplication();
     if (session.state !== "PENDING_WORKER") return;
-    await this.engineHostService.openApplicationWebSocket(session.applicationId, {
+    await this.dependencies.engineLauncher.ensureReady(session.applicationId);
+    await this.dependencies.engineController.openApplicationWebSocket(session.applicationId, {
       sessionId: session.sessionId,
       request: input.request,
     });
@@ -137,7 +137,7 @@ export class ApplicationBackendWebSocketSessionService {
   private async drainInbound(session: Session): Promise<void> {
     try {
       while (session.state === "ACTIVE" && session.inbound.length > 0) {
-        await this.engineHostService.deliverApplicationWebSocketMessage(session.applicationId, {
+        await this.dependencies.engineController.deliverApplicationWebSocketMessage(session.applicationId, {
           sessionId: session.sessionId,
           frame: session.inbound.shift()!,
         });
@@ -196,7 +196,7 @@ export class ApplicationBackendWebSocketSessionService {
     try { session.socket.close(code, reason.slice(0, 123)); } finally { this.onNetworkClose(session, code, reason); }
   }
   private async closeWorker(session: Session, code: number, reason: string): Promise<void> {
-    await this.engineHostService.closeApplicationWebSocket(session.applicationId, {
+    await this.dependencies.engineController.closeApplicationWebSocket(session.applicationId, {
       sessionId: session.sessionId,
       code,
       reason,

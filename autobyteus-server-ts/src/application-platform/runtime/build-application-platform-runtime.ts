@@ -5,7 +5,9 @@ import type { ApplicationBundleService } from "../../application-bundles/service
 import { ApplicationBackendNotificationHub } from "../../application-backend-api-gateway/notifications/application-backend-notification-hub.js";
 import { ApplicationBackendApiGatewayService } from "../../application-backend-api-gateway/services/application-backend-api-gateway-service.js";
 import { ApplicationBackendWebSocketSessionService } from "../../application-backend-api-gateway/websockets/application-backend-websocket-session-service.js";
-import { ApplicationEngineHostService } from "../../application-engine/services/application-engine-host-service.js";
+import { ApplicationEngineController } from "../../application-engine/services/application-engine-controller.js";
+import { ApplicationExecutionEventDispatchQueue } from "../../application-orchestration/services/application-execution-event-dispatch-queue.js";
+import { ApplicationPublishedArtifactDeliveryQueue } from "../../application-orchestration/services/application-published-artifact-delivery-queue.js";
 import { ApplicationStorageLifecycleService } from "../../application-storage/services/application-storage-lifecycle-service.js";
 import { ApplicationGlobalPlatformStateStore } from "../../application-storage/stores/application-global-platform-state-store.js";
 import { ApplicationPlatformStateStore } from "../../application-storage/stores/application-platform-state-store.js";
@@ -16,23 +18,19 @@ import { bootstrapBuiltInAgents } from "../../built-in-agents/built-in-agent-boo
 import { getWorkspaceManager } from "../../workspaces/workspace-manager.js";
 import { SkillService } from "../../skills/services/skill-service.js";
 import { ApplicationAvailabilityStateRegistry } from "./application-availability-state-registry.js";
+import { ApplicationCatalogReconciliationService } from "./application-catalog-reconciliation-service.js";
 import { ApplicationDefinitionRuntimeReadiness } from "./application-definition-runtime-readiness.js";
 import { ApplicationPlatformLifecycle } from "./application-platform-lifecycle.js";
 import type { ApplicationPlatformRuntime } from "./application-platform-runtime.js";
 import { createApplicationOrchestrationServices } from "./create-application-orchestration-services.js";
-import { BindOnceApplicationEngineEventHandler } from "./bind-once-application-engine-event-handler.js";
-import { BindOncePublishedArtifactPublisher } from "./bind-once-published-artifact-publisher.js";
-import type {
-  ApplicationAgentToolsSessionManagerFactory,
-} from "../../agent-tools/mcp/agent-tools-mcp-runtime.js";
+import type { ApplicationAgentToolsSessionFactory } from "../../agent-tools/mcp/agent-tools-mcp-runtime.js";
 
 export const buildApplicationPlatformRuntime = (input: {
   appConfig: AppConfig;
   bundleService: ApplicationBundleService;
   agentDefinitionService: AgentDefinitionService;
   agentTeamDefinitionService: AgentTeamDefinitionService;
-  agentToolsSessionManagerFactory:
-    ApplicationAgentToolsSessionManagerFactory;
+  agentToolsSessionFactory: ApplicationAgentToolsSessionFactory;
   selectedApplicationIds?: ReadonlySet<string> | null;
 }): ApplicationPlatformRuntime => {
   const storageLifecycleService = new ApplicationStorageLifecycleService({
@@ -43,46 +41,39 @@ export const buildApplicationPlatformRuntime = (input: {
     appConfig: input.appConfig,
     storageLifecycleService,
   });
-  const globalPlatformStateStore = new ApplicationGlobalPlatformStateStore(input.appConfig);
+  const globalPlatformStateStore = new ApplicationGlobalPlatformStateStore(
+    input.appConfig,
+  );
   const availabilityRegistry = new ApplicationAvailabilityStateRegistry();
-  const bindOnceApplicationEngineEventHandler =
-    new BindOnceApplicationEngineEventHandler();
-  const bindOncePublishedArtifactPublisher =
-    new BindOncePublishedArtifactPublisher();
-  const agentToolsSessionManager =
-    input.agentToolsSessionManagerFactory
-      .createApplicationSessionManager({
-        executionCapabilities: {
-          publishedArtifactPublisher: bindOncePublishedArtifactPublisher,
-        },
-        assertExecutionCapabilitiesReady: () =>
-          bindOncePublishedArtifactPublisher.assertBound(),
-      });
+  const engineController = new ApplicationEngineController();
+  const eventDispatchQueue = new ApplicationExecutionEventDispatchQueue();
+  const artifactDeliveryQueue = new ApplicationPublishedArtifactDeliveryQueue();
+  const scopeIdentity = input.selectedApplicationIds
+    ? `application:${Array.from(input.selectedApplicationIds).sort().join(",")}`
+    : "application:studio";
+  const sessionScope = input.agentToolsSessionFactory
+    .createApplicationSessionScope(scopeIdentity);
   const services = createApplicationOrchestrationServices({
     ...input,
+    storageLifecycleService,
     platformStateStore,
     globalPlatformStateStore,
     availabilityRegistry,
-    bindOnceApplicationEngineEventHandler,
-    agentToolsSessionManager,
+    engineController,
+    eventDispatchQueue,
+    artifactDeliveryQueue,
+    sessionScope,
   });
-  bindOncePublishedArtifactPublisher.bind(services.publicationService);
-  const engineHostService = new ApplicationEngineHostService({
-    applicationBundleService: input.bundleService,
-    storageLifecycleService,
-    orchestrationHostService: services.orchestrationHostService,
-    agentStreamingService: services.agentStreamingService,
-  });
-  bindOnceApplicationEngineEventHandler.bind(engineHostService);
-
   const notificationHub = new ApplicationBackendNotificationHub();
   const backendWebSocketSessionService = new ApplicationBackendWebSocketSessionService({
-    engineHostService,
+    engineController,
+    engineLauncher: services.engineLauncher,
   });
   const backendGateway = new ApplicationBackendApiGatewayService({
     applicationBundleService: input.bundleService,
     availabilityService: services.availabilityService,
-    engineHostService,
+    engineController,
+    engineLauncher: services.engineLauncher,
     notificationHub,
     webSocketSessionService: backendWebSocketSessionService,
   });
@@ -94,6 +85,10 @@ export const buildApplicationPlatformRuntime = (input: {
     executionResourceResolver: services.executionResourceResolver,
     skillService: new SkillService({ config: input.appConfig }),
     activeApplicationIds: input.selectedApplicationIds,
+  });
+  const catalogReconciliation = new ApplicationCatalogReconciliationService({
+    platformStateStore,
+    availabilityService: services.availabilityService,
   });
   const lifecycle = new ApplicationPlatformLifecycle({
     preparation: {
@@ -112,8 +107,7 @@ export const buildApplicationPlatformRuntime = (input: {
         });
       },
       definitionRuntimeReadiness,
-      agentToolsSessionManager,
-      publishedArtifactPublisher: bindOncePublishedArtifactPublisher,
+      agentToolsSessionManager: services.agentToolsSessionManager,
     },
     bundleService: input.bundleService,
     platformStateStore,
@@ -127,30 +121,60 @@ export const buildApplicationPlatformRuntime = (input: {
     backendWebSocketSessionService,
     notificationHub,
     runObserverService: services.runObserverService,
-    engineHostService,
+    artifactDeliveryService: services.artifactDeliveryService,
+    engineLauncher: services.engineLauncher,
     runShutdownCoordinator: services.runShutdownCoordinator,
     streamingService: services.agentStreamingService,
   });
 
   return Object.freeze({
-    bundleService: input.bundleService,
-    storageLifecycleService,
-    platformStateStore,
-    globalPlatformStateStore,
-    runLookupStore: services.runLookupStore,
-    agentToolsSessionManager,
-    publishedArtifactPublicationService: services.publicationService,
-    startupGate: services.startupGate,
-    availabilityService: services.availabilityService,
-    recoveryService: services.recoveryService,
-    eventDispatchService: services.eventDispatchService,
-    orchestrationHostService: services.orchestrationHostService,
-    agentStreamingService: services.agentStreamingService,
-    agentCommunicationService: services.agentCommunicationService,
-    engineHostService,
-    notificationHub,
-    backendWebSocketSessionService,
-    backendGateway,
     lifecycle,
+    rest: Object.freeze({
+      assets: Object.freeze({
+        resolveUiAsset: (applicationId: string, relativePath: string) =>
+          input.bundleService.resolveUiAsset(applicationId, relativePath),
+      }),
+      backend: Object.freeze({
+        getApplicationEngineStatus: (applicationId: string) =>
+          backendGateway.getApplicationEngineStatus(applicationId),
+        ensureApplicationReady: (applicationId: string) =>
+          backendGateway.ensureApplicationReady(applicationId),
+        invokeApplicationQuery: backendGateway.invokeApplicationQuery.bind(backendGateway),
+        invokeApplicationCommand: backendGateway.invokeApplicationCommand.bind(backendGateway),
+        routeApplicationRequest: backendGateway.routeApplicationRequest.bind(backendGateway),
+        executeApplicationGraphql: backendGateway.executeApplicationGraphql.bind(backendGateway),
+      }),
+      availability: Object.freeze({
+        reloadAndReenter: services.reentryService.reloadAndReenter
+          .bind(services.reentryService),
+      }),
+      executionResources: Object.freeze({
+        getApplicationLaunchConfigurationView: services.orchestrationHostService
+          .getApplicationLaunchConfigurationView.bind(services.orchestrationHostService),
+        previewSelectedApplicationResource: services.orchestrationHostService
+          .previewSelectedApplicationResource.bind(services.orchestrationHostService),
+        listAvailableExecutionResources: services.orchestrationHostService
+          .listAvailableExecutionResources.bind(services.orchestrationHostService),
+        upsertApplicationLaunchOverride: services.orchestrationHostService
+          .upsertApplicationLaunchOverride.bind(services.orchestrationHostService),
+        removeApplicationLaunchOverride: services.orchestrationHostService
+          .removeApplicationLaunchOverride.bind(services.orchestrationHostService),
+      }),
+    }),
+    realtime: Object.freeze({
+      backend: Object.freeze({
+        connectApplicationWebSocket: backendGateway.connectApplicationWebSocket
+          .bind(backendGateway),
+      }),
+      notifications: Object.freeze({
+        connect: notificationHub.connect.bind(notificationHub),
+        disconnect: notificationHub.disconnect.bind(notificationHub),
+      }),
+      agentCommunication: Object.freeze({
+        connect: services.agentCommunicationService.connect
+          .bind(services.agentCommunicationService),
+      }),
+    }),
+    hostManagement: Object.freeze({ catalogReconciliation }),
   });
 };

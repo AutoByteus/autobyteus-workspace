@@ -1,7 +1,9 @@
 import type { FastifyInstance } from "fastify";
-import type { ApplicationBackendApiGatewayService } from "../../application-backend-api-gateway/services/application-backend-api-gateway-service.js";
-import type { ApplicationAvailabilityService } from "../../application-orchestration/services/application-availability-service.js";
-import type { ApplicationPlatformLifecycle } from "../../application-platform/runtime/application-platform-lifecycle.js";
+import type {
+  ApplicationAvailabilityRestContract,
+  ApplicationBackendRestContract,
+  ApplicationPlatformLifecycleReadiness,
+} from "../../application-platform/runtime/application-platform-runtime-contracts.js";
 import { sendApplicationRouteError } from "./application-route-error.js";
 
 const BASE = "/applications/:applicationId/backend";
@@ -9,9 +11,9 @@ const BASE = "/applications/:applicationId/backend";
 export async function registerApplicationAvailabilityRoutes(
   app: FastifyInstance,
   dependencies: {
-    gateway: ApplicationBackendApiGatewayService;
-    availabilityService: ApplicationAvailabilityService;
-    lifecycle: ApplicationPlatformLifecycle;
+    gateway: ApplicationBackendRestContract;
+    availabilityService: ApplicationAvailabilityRestContract;
+    lifecycle: ApplicationPlatformLifecycleReadiness;
   },
 ): Promise<void> {
   app.get<{ Params: { applicationId: string } }>(`${BASE}/status`, async (request, reply) => {
