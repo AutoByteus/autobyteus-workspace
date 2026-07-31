@@ -1008,6 +1008,11 @@ class ApplicationFrameworkBoundaryChecker {
       let blockSource = block.content;
       let sourceName = importer;
       if (block.src) {
+        const externalSourceEdge: ImportEdge = {
+          specifier: block.src,
+          line: block.loc.start.line,
+          column: block.loc.start.column,
+        };
         const resolution = this.resolveSpecifier(block.src, importer, profile);
         if (resolution.kind !== "source") {
           violations.push(this.violation({
@@ -1019,6 +1024,18 @@ class ApplicationFrameworkBoundaryChecker {
             subject: block.src,
             reason: "UNRESOLVED_GOVERNED_IMPORT",
           }));
+          continue;
+        }
+        const externalSourceViolation = this.evaluateImport(
+          policy,
+          profile,
+          importer,
+          importer,
+          externalSourceEdge,
+          resolution,
+        );
+        if (externalSourceViolation) {
+          violations.push(externalSourceViolation);
           continue;
         }
         sourceName = resolution.resolvedPath;
@@ -1910,6 +1927,83 @@ describe("application framework architecture boundaries", () => {
     expect(diagnostics[0]).toContain("resolved=autobyteus-server-ts/src/application-engine/services/application-engine-controller.ts");
     expect(diagnostics[0]).toContain("reason=HOST_IMPLEMENTATION_IMPORT");
     expect(diagnostics[0]).not.toContain("UNRESOLVED_GOVERNED_IMPORT");
+  });
+
+  it("governs Vue external-script targets under AFB-002 and AFB-005", () => {
+    const root = createFixtureRepository();
+    const hostRuntime = writeFixture(
+      root,
+      "autobyteus-server-ts/src/application-engine/services/application-engine-controller.ts",
+      "export const runtime = true;\n",
+    );
+
+    writeFixture(
+      root,
+      "autobyteus-web/components/applications/external/allowed.ts",
+      "export const allowed = true;\n",
+    );
+    const allowedStudioSfc = writeFixture(
+      root,
+      "autobyteus-web/components/applications/AllowedExternal.vue",
+      "<script lang='ts' src='./external/allowed.ts'></script>\n",
+    );
+    const forbiddenStudioSfcPath = join(
+      root,
+      "autobyteus-web/components/applications/ForbiddenExternal.vue",
+    );
+    const forbiddenStudioSpecifier = relativeModuleSpecifier(forbiddenStudioSfcPath, hostRuntime);
+    const forbiddenStudioSfc = writeFixture(
+      root,
+      "autobyteus-web/components/applications/ForbiddenExternal.vue",
+      `<script lang='ts' src=${JSON.stringify(forbiddenStudioSpecifier)}></script>\n`,
+    );
+
+    writeFixture(
+      root,
+      "applications/brief-studio/frontend-src/external/allowed.ts",
+      "export const allowed = true;\n",
+    );
+    const allowedBriefSfc = writeFixture(
+      root,
+      "applications/brief-studio/frontend-src/AllowedExternal.vue",
+      "<script lang='ts' src='./external/allowed.ts'></script>\n",
+    );
+    const forbiddenBriefSfcPath = join(
+      root,
+      "applications/brief-studio/frontend-src/ForbiddenExternal.vue",
+    );
+    const forbiddenBriefSpecifier = relativeModuleSpecifier(forbiddenBriefSfcPath, hostRuntime);
+    const forbiddenBriefSfc = writeFixture(
+      root,
+      "applications/brief-studio/frontend-src/ForbiddenExternal.vue",
+      `<script lang='ts' src=${JSON.stringify(forbiddenBriefSpecifier)}></script>\n`,
+    );
+
+    const checker = new ApplicationFrameworkBoundaryChecker(root);
+    expect(checker.checkOneFile(allowedStudioSfc, "AFB-002").map(formatViolation)).toEqual([]);
+    expect(checker.checkOneFile(allowedBriefSfc, "AFB-005").map(formatViolation)).toEqual([]);
+
+    const studioDiagnostics = checker.checkOneFile(forbiddenStudioSfc, "AFB-002").map(formatViolation);
+    expect(studioDiagnostics).toHaveLength(1);
+    expect(studioDiagnostics[0]).toContain(
+      "[AFB-002] profile=studio-web importer=autobyteus-web/components/applications/ForbiddenExternal.vue",
+    );
+    expect(studioDiagnostics[0]).toContain(`subject=${forbiddenStudioSpecifier}`);
+    expect(studioDiagnostics[0]).toContain(
+      "resolved=autobyteus-server-ts/src/application-engine/services/application-engine-controller.ts",
+    );
+    expect(studioDiagnostics[0]).toContain("reason=HOST_IMPLEMENTATION_IMPORT");
+
+    const briefDiagnostics = checker.checkOneFile(forbiddenBriefSfc, "AFB-005").map(formatViolation);
+    expect(briefDiagnostics).toHaveLength(1);
+    expect(briefDiagnostics[0]).toContain(
+      "[AFB-005] profile=brief-frontend importer=applications/brief-studio/frontend-src/ForbiddenExternal.vue",
+    );
+    expect(briefDiagnostics[0]).toContain(`subject=${forbiddenBriefSpecifier}`);
+    expect(briefDiagnostics[0]).toContain(
+      "resolved=autobyteus-server-ts/src/application-engine/services/application-engine-controller.ts",
+    );
+    expect(briefDiagnostics[0]).toContain("reason=PROJECT_ESCAPE_IMPORT");
   });
 
   it("resolves package imports only from the owning manifest", () => {
