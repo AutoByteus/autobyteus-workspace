@@ -24,21 +24,23 @@
 
 ## Current Implementation Summary
 
-`IR-017` implements the architecture-approved `SR-013` / `ARCH-REV-011` behavior-neutral application-framework simplification. The current source commit is `f7d17c744559238e7faa0a8bae182429cb3c0968`.
+`IR-018` completes the bounded `CRR-032` / `CR-022` stop-all continuation correction on top of the architecture-approved `SR-013` / `ARCH-REV-011` application-framework simplification. The correction commit is `e9b1a49f20bcb382632df23f53bf0d33ebdf7080`; the complete SR-013 baseline remains `f7d17c744559238e7faa0a8bae182429cb3c0968`.
 
 `ApplicationPlatformRuntime` now exposes exactly four immutable projections: `lifecycle`, `rest`, `realtime`, and `hostManagement`. REST, realtime, standalone, and Studio consumers receive only their exact subject contracts. Studio package state/query, mutation commands, and ordered catalog propagation are distinct owners with explicit rollback. Application run construction is acyclic through the early session scope, run-resource manager, exact active-run registry, concrete publication service, later scoped issuer, and run managers. Engine state/control and launch are split between controller and launcher; closed event and artifact queues break construction cycles without a generic bus or later handler binding. Artifact delivery preserves per-run FIFO and always ensures/restarts the application worker before invoking its artifact handler. Exact run removal revokes application sessions and detaches file-change, artifact-relay, and memory observers at most once.
+
+`ActiveAgentRunRegistry.snapshotActiveRuns()` now prunes every inactive exact run while retaining both the later active-run snapshot and all pruning cleanup errors. `AgentRunManager.stopAllAgentRuns()` seeds its error collection from that result, then attempts termination and exact removal for every retained run before throwing one aggregate. A cleanup failure in the first inactive run therefore cannot skip later active runs. Identity-checked replacement protection and at-most-once resource release remain intact.
 
 The two bind-once implementations, the broad `ApplicationEngineHostService`, the overloaded `ApplicationPackageService`, and their obsolete unit tests are removed with no alias, callback, compatibility wrapper, or application-path global fallback. Current server module documentation is synchronized. Runtime construction still creates zero new agent/team runs.
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-revision-record.md`
-- Current implementation revision ID: `IR-017`
+- Current implementation revision ID: `IR-018`
 - Related solution revision IDs: `SR-013` (retains accepted `SR-012` runtime/package directions)
 - Related architecture-review revision IDs: `ARCH-REV-011` (`ARCH-REV-010` prior Design Impact)
-- Related code-review revision IDs: `CRR-031` trigger; `CRR-029` prior source Pass; `CRR-030` prior proportional test review Pass
+- Related code-review revision IDs: `CRR-032` Local Fix trigger; `CRR-031` design trigger; `CRR-029` prior source Pass; `CRR-030` prior proportional test review Pass
 - Related API/E2E revision IDs: `API-REV-011` prior Pass / 98.9%
 - Related delivery revision IDs: `DR-003`, `DR-004`
-- Triggering finding IDs: `CR-019`, `CR-020`, `CR-021`, `AR-008`, `AR-009`
+- Triggering finding IDs: `CR-022` (the retained IR-017 baseline resolves `CR-019`–`CR-021`, `AR-008`, and `AR-009`)
 
 ## Reviewed Behavior Implementation Trace
 
@@ -46,7 +48,7 @@ The two bind-once implementations, the broad `ApplicationEngineHostService`, the
 | --- | --- | --- | --- |
 | `BEH-001`–`BEH-003` | Current manifest-v4 packages, identity, stored data, host bootstrap, and package bytes remain unchanged. | Existing package parser/data/SDK/devkit paths; server runtime/package owner refactor only. | Preserved; no manifest, package-producing source, database schema, or wire DTO changed. |
 | `BEH-004` | Preserve application-local execution, publication, handoff, and projection, including worker restart before artifact handling. | `PublishedArtifactPublicationService` -> queue-backed relay -> `ApplicationPublishedArtifactDeliveryQueue` -> `ApplicationPublishedArtifactDeliveryService` -> `ApplicationEngineLauncher.ensureReady()` -> `ApplicationEngineController.invokeApplicationArtifactHandler()`. | Implemented; focused tests prove ensure-before-invoke, worker-absent restart, per-run FIFO, independent lanes, and drain. |
-| `BEH-005` | Preserve exact application MCP scope/session identity and complete run-resource cleanup. | `ApplicationAgentToolMcpSessionScope` -> `AgentRunResourceManager` -> `ActiveAgentRunRegistry` -> concrete publisher -> `ScopedAgentToolMcpSessionManager` -> agent/team managers. | Implemented; inactive discovery/replacement, partial rollback, exact terminate/stop-all, identity mismatch, and at-most-once cleanup are covered. |
+| `BEH-005` | Preserve exact application MCP scope/session identity and complete run-resource cleanup. | `ApplicationAgentToolMcpSessionScope` -> `AgentRunResourceManager` -> `ActiveAgentRunRegistry` -> concrete publisher -> `ScopedAgentToolMcpSessionManager` -> agent/team managers. | Implemented; inactive discovery/replacement, partial rollback, exact terminate/stop-all, identity mismatch, at-most-once cleanup, and stop-all continuation after pruning/removal failures are covered. |
 | `BEH-006`–`BEH-008` | Preserve dual-host development, readiness/recovery/shutdown, routes, providers, native tools, and Studio-only gateway boundary. | `buildStudioServer`, `buildStandaloneApplicationServer`, narrow route registrars, `ApplicationPlatformLifecycle`, existing provider factories. | Preserved in source; no devkit/application/frontend production file changed. Full executable reconfirmation remains API/E2E-owned. |
 | `BEH-009` | Keep the previously passed responsibility vocabulary while deleting owners no longer needed. | Current server/runtime/manager/supervisor/coordinator names; removed both `BindOnce*` files. | Implemented cleanly; retired source/unit/doc scans are clear. |
 | `BEH-010` | Replace outward leakage, temporal package callbacks, and cyclic run/engine construction with the exact DS-015 owners. | Four runtime projections; `ApplicationPackageRegistryService` + `ApplicationPackageCommandService` + `ApplicationCatalogRefreshCoordinator`; early session/run registry and controller/queue owners; late launcher/delivery/dispatcher/reentry owners. | Implemented for `REQ-010`, `AC-019`–`AC-023`, and `UC-025`–`UC-027`. |
@@ -138,7 +140,8 @@ The two bind-once implementations, the broad `ApplicationEngineHostService`, the
 
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis`
 - Branch: `codex/universal-application-framework-proposal-analysis`
-- Implementation source commit: `f7d17c744559238e7faa0a8bae182429cb3c0968`
+- Complete SR-013 source commit: `f7d17c744559238e7faa0a8bae182429cb3c0968`
+- CR-022 correction commit: `e9b1a49f20bcb382632df23f53bf0d33ebdf7080`
 - No dependency, lockfile, schema, or application-package change was required.
 
 ## Local Implementation Checks Run
@@ -147,6 +150,7 @@ The two bind-once implementations, the broad `ApplicationEngineHostService`, the
 - Focused SR-013 unit selection — Pass: 18 files / 70 tests covering application lifecycle/runtime/run services, session scope, run resources/registry/manager, engine controller, artifact queue/delivery/publication, event dispatch, backend gateway, package commands/refresh, and shutdown.
 - Focused bundle/package ownership selection — Pass: 4 files / 27 tests.
 - Final post-audit targeted rerun — Pass: 3 files / 14 tests for lifecycle, artifact delivery, and agent-run manager.
+- CR-022 focused run/resource/shutdown selection — Pass: 5 files / 22 tests, including the real registry/resource-manager continuation case.
 - `git diff --check` — Pass.
 - Retired source/unit/module-doc symbol and file scan — Pass; zero current-owner matches.
 - Outward runtime/import, Studio late-assignment, no-package-delta, and changed-source size audits — Pass.
