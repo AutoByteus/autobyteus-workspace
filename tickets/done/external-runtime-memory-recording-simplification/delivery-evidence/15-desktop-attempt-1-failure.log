@@ -1,0 +1,717 @@
+Build Linux x64	Build Electron Linux x64	﻿2026-07-31T15:47:22.7925596Z ##[group]Run pnpm build:electron:linux:x64
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:22.7925975Z [36;1mpnpm build:electron:linux:x64[0m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:22.7953259Z shell: /usr/bin/bash -e {0}
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:22.7953571Z env:
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:22.7953890Z   PNPM_HOME: /home/runner/setup-pnpm/node_modules/.bin
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:22.7954198Z   AUTOBYTEUS_BUILD_FLAVOR: personal
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:22.7954442Z ##[endgroup]
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:23.1245330Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:23.1246546Z > autobyteus@1.4.34 build:electron:linux:x64 /home/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:23.1248786Z > cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && cross-env AUTOBYTEUS_ELECTRON_LINUX_TARGET_ARCH=x64 pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --linux --x64
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:23.1250208Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:23.3635815Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:23.3637286Z > autobyteus@1.4.34 guard:web-boundary /home/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:23.3638568Z > node ./scripts/guard-web-boundary.mjs
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:23.3638810Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:23.4437081Z [guard:web-boundary] Passed.
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:23.6552651Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:23.6553959Z > autobyteus@1.4.34 guard:localization-boundary /home/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:23.6554713Z > node ./scripts/guard-localization-boundary.mjs
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:23.6554995Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:23.7392697Z [guard:localization-boundary] Passed.
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:23.9572187Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:23.9573325Z > autobyteus@1.4.34 audit:localization-literals /home/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:23.9574044Z > node ./scripts/audit-localization-literals.mjs
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:23.9574239Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:24.4039091Z [audit:localization-literals] Passed with zero unresolved findings.
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:24.4041326Z (node:3066) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///home/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/localization/audit/migrationScopes.ts is not specified and it doesn't parse as CommonJS.
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:24.4042363Z Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:24.4043113Z To eliminate this warning, add "type": "module" to /home/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/package.json.
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:24.4043873Z (Use `node --trace-warnings ...` to show where the warning was created)
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:24.6654892Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:24.6656216Z > autobyteus@1.4.34 prepare-server /home/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:24.6657055Z > node ./scripts/prepare-server-dispatch.mjs
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:24.6657504Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:24.7003797Z [0;32m=======================================[0m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:24.7004398Z [0;32m   Preparing AutoByteus Server Files   [0m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:24.7004870Z [0;32m=======================================[0m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:24.7012245Z [0;32m✓[0m Linux server preparation target architecture: x64
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:24.7021904Z [0;32m✓[0m Created target directory: /home/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/resources/server
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:24.7022519Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:24.7022821Z [0;33mBuilding server and dependencies...[0m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:24.9202482Z Scope: all 11 workspace projects
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:26.2233979Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:26.2327235Z ../autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:26.2655986Z ../autobyteus-ts postinstall: [node-pty-fix] skipped: no spawn-helper found
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:26.2685932Z ../autobyteus-ts postinstall: Done
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:26.4046510Z Done in 1.6s using pnpm v10.28.2
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:26.9392487Z Prisma schema loaded from prisma/schema.prisma
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:28.9759948Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:28.9761812Z ✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 466ms
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:28.9763010Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:28.9763536Z Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:28.9764254Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:28.9764964Z Tip: Curious about the SQL queries Prisma ORM generates? Optimize helps you enhance your visibility: https://pris.ly/tip-2-optimize
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:28.9765848Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:29.4072544Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:29.4073528Z > autobyteus-server-ts@0.1.1 prebuild /home/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-server-ts
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:29.4074269Z > pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:29.4074508Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:29.6183417Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:29.6184797Z > autobyteus-server-ts@0.1.1 prepare:shared /home/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-server-ts
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:29.6185930Z > pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:29.6186472Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:29.8409705Z Scope: 3 of 11 workspace projects
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:29.8434799Z autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:29.8435860Z autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:31.1951998Z autobyteus-application-sdk-contracts build: Done
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:34.8920086Z autobyteus-ts build: [verify:runtime-deps] OK
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:34.8942617Z autobyteus-ts build: Done
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:34.8949017Z autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:35.4796371Z autobyteus-application-backend-sdk build: Done
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:36.0180048Z Prisma schema loaded from prisma/schema.prisma
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:36.8061222Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:36.8063086Z ✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 506ms
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:36.8064393Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:36.8064951Z Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:36.8065315Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:36.8065785Z Tip: Interested in query caching in just a few lines of code? Try Accelerate today! https://pris.ly/tip-3-accelerate
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:36.8066281Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:36.9135608Z ┌─────────────────────────────────────────────────────────┐
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:36.9136247Z │  Update available 5.22.0 -> 7.9.1                       │
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:36.9136813Z │                                                         │
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:36.9137249Z │  This is a major update - please follow the guide at    │
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:36.9137925Z │  https://pris.ly/d/major-version-upgrade                │
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:36.9138482Z │                                                         │
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:36.9138964Z │  Run the following to update                            │
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:36.9139391Z │    npm i --save-dev prisma@latest                       │
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:36.9139859Z │    npm i @prisma/client@latest                          │
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:36.9140268Z └─────────────────────────────────────────────────────────┘
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:37.0217751Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:37.0218871Z > autobyteus-server-ts@0.1.1 build /home/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-server-ts
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:37.0219423Z > pnpm run build:full
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:37.0219699Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:37.2317040Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:37.2318496Z > autobyteus-server-ts@0.1.1 build:full /home/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-server-ts
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:37.2319626Z > node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-managed-messaging-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:37.2320602Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:44.9329234Z Successfully registered tool definition: 'read_file'
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:44.9331697Z Successfully registered tool definition: 'write_file'
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:44.9333404Z Successfully registered tool definition: 'edit_file'
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:44.9334153Z Successfully registered tool definition: 'replace_in_file'
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:44.9334866Z Successfully registered tool definition: 'insert_in_file'
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:44.9335477Z Successfully registered tool definition: 'run_bash'
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:44.9336363Z Successfully registered tool definition: 'start_background_process'
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:44.9337211Z Successfully registered tool definition: 'get_background_processes'
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:44.9338041Z Successfully registered tool definition: 'get_process_output'
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:44.9341103Z Successfully registered tool definition: 'stop_background_process'
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:44.9342230Z Successfully registered tool definition: 'search_web'
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:44.9342841Z Successfully registered tool definition: 'read_media_file'
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:44.9343429Z Successfully registered tool definition: 'download_media'
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:44.9343943Z Successfully registered tool definition: 'read_url'
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:44.9344430Z Successfully registered tool definition: 'add_todo'
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:44.9344958Z Successfully registered tool definition: 'create_todo_list'
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:44.9345510Z Successfully registered tool definition: 'get_todo_list'
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:44.9346036Z Successfully registered tool definition: 'update_todo_status'
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:44.9346431Z AgentFactory (Singleton) initialized.
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:44.9508083Z (node:3445) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:44.9508778Z (Use `node --trace-warnings ...` to show where the warning was created)
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:44.9953036Z Built-in agents bootstrap smoke check passed.
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:45.0458579Z Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:45.0667284Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:45.0668503Z [0;33mBuilding mobile web assets...[0m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:45.2830210Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:45.2831575Z > autobyteus@1.4.34 build:mobile-web /home/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:45.2832415Z > node ./scripts/build-mobile-web.mjs
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:45.2832647Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:45.5179351Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:45.5180473Z > autobyteus@1.4.34 generate /home/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:45.5180984Z > nuxt generate
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:45.5181266Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:45.7417069Z [90m┌[39m  [36mBuilding Nuxt for production...[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:45.9620332Z [90m│[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:45.9622652Z [34m●[39m  [32mNuxt [1m3.21.1[22m[39m[90m (with [39m[90mNitro [1m2.13.1[22m[39m[90m, Vite [1m7.3.1[22m[39m[90m and Vue [1m3.5.28[22m[39m[90m)[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:46.3598658Z [log] isElectronBuild false
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:46.3838217Z [log] [Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:47.0112030Z [90m│[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:47.0112551Z [34m●[39m  Nitro preset: [36mstatic[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:47.7544036Z [info] Building client...
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:47.7637353Z [info] [36mvite v7.3.1 [32mbuilding client environment for production...[36m[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:47:47.7893067Z [info] transforming...
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:06.3134747Z [info] [32m✓[39m 3585 modules transformed.
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:07.3857564Z [info] rendering chunks...
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.2519338Z [info] computing gzip size...
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3652304Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size3-Regular.CTq5MqoE.woff          [39m[1m[2m    4.42 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3653690Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size4-Regular.Dl5lxZxV.woff2         [39m[1m[2m    4.93 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3655528Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size2-Regular.Dy4dx90m.woff2         [39m[1m[2m    5.21 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3657195Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size1-Regular.mCD8mA8B.woff2         [39m[1m[2m    5.47 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3660303Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size4-Regular.BF-4gkZK.woff          [39m[1m[2m    5.98 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3661590Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size2-Regular.oD1tc_U0.woff          [39m[1m[2m    6.19 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3662828Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size1-Regular.C195tn64.woff          [39m[1m[2m    6.50 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3664075Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Caligraphic-Regular.Di6jR-x-.woff2   [39m[1m[2m    6.91 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3665221Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Caligraphic-Bold.Dq_IR9rO.woff2      [39m[1m[2m    6.91 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3666402Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size3-Regular.DgpXs0kz.ttf           [39m[1m[2m    7.59 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3667542Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Caligraphic-Regular.CTRA-rTL.woff    [39m[1m[2m    7.66 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3669036Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Caligraphic-Bold.BEiXGLvX.woff       [39m[1m[2m    7.72 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3670222Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Script-Regular.D3wIWfF6.woff2        [39m[1m[2m    9.64 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3671443Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Regular.DDBCnlJ7.woff2     [39m[1m[2m   10.34 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3672609Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size4-Regular.DWFBv043.ttf           [39m[1m[2m   10.36 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3674022Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Script-Regular.D5yQViql.woff         [39m[1m[2m   10.59 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3675224Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Fraktur-Regular.CTYiF6lA.woff2       [39m[1m[2m   11.32 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3676359Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Fraktur-Bold.CL6g_b3V.woff2          [39m[1m[2m   11.35 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3677613Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size2-Regular.B7gKUWhC.ttf           [39m[1m[2m   11.51 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3678803Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Italic.C3H0VqGB.woff2      [39m[1m[2m   12.03 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3679874Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Bold.D1sUS0GD.woff2        [39m[1m[2m   12.22 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3680979Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size1-Regular.Dbsnue_I.ttf           [39m[1m[2m   12.23 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3682251Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Regular.CS6fqUqJ.woff      [39m[1m[2m   12.32 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3683419Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Caligraphic-Regular.wX97UBjC.ttf     [39m[1m[2m   12.34 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3684519Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Caligraphic-Bold.ATXxdsX0.ttf        [39m[1m[2m   12.37 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3685628Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Fraktur-Regular.Dxdc4cR9.woff        [39m[1m[2m   13.21 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3686683Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Fraktur-Bold.BsDP51OF.woff           [39m[1m[2m   13.30 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3693972Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Typewriter-Regular.CO6r4hn1.woff2    [39m[1m[2m   13.57 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3695805Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Italic.DN2j7dab.woff       [39m[1m[2m   14.11 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3697075Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Bold.DbIhKOiC.woff         [39m[1m[2m   14.41 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3698532Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Typewriter-Regular.C0xS9mPB.woff     [39m[1m[2m   16.03 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3699642Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Math-BoldItalic.CZnvNsCZ.woff2       [39m[1m[2m   16.40 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3700805Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Math-Italic.t53AETM-.woff2           [39m[1m[2m   16.44 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3701814Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Script-Regular.C5JkGWo-.ttf          [39m[1m[2m   16.65 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3703071Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-BoldItalic.DxDJ3AOS.woff2       [39m[1m[2m   16.78 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3704210Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Italic.NWA7e6Wa.woff2           [39m[1m[2m   16.99 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3705085Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Math-BoldItalic.iY-2wyZ7.woff        [39m[1m[2m   18.67 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3705915Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Math-Italic.DA0__PXp.woff            [39m[1m[2m   18.75 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3707129Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-BoldItalic.SpSLRI95.woff        [39m[1m[2m   19.41 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3708349Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Regular.BNo7hRIc.ttf       [39m[1m[2m   19.44 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3709972Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Fraktur-Regular.CB_wures.ttf         [39m[1m[2m   19.57 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3710772Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Fraktur-Bold.BdnERNNW.ttf            [39m[1m[2m   19.58 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3711805Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Italic.BMLOBm91.woff            [39m[1m[2m   19.68 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3712686Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Italic.YYjJ1zSn.ttf        [39m[1m[2m   22.36 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3713472Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Bold.CFMepnvq.ttf          [39m[1m[2m   24.50 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3714558Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Bold.Cx986IdX.woff2             [39m[1m[2m   25.32 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3715368Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Regular.B22Nviop.woff2          [39m[1m[2m   26.27 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3716483Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Typewriter-Regular.D3Ib7_Hf.ttf      [39m[1m[2m   27.56 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3717318Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_AMS-Regular.BQhdFMY1.woff2           [39m[1m[2m   28.08 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3718481Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Bold.Jm3AIy58.woff              [39m[1m[2m   29.91 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3719337Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Regular.Dr94JaBh.woff           [39m[1m[2m   30.77 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3720132Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Math-BoldItalic.B3XSjfu4.ttf         [39m[1m[2m   31.20 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3721579Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Math-Italic.flOr_0UB.ttf             [39m[1m[2m   31.31 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3722416Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-BoldItalic.DzxPMmG6.ttf         [39m[1m[2m   32.97 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3723451Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_AMS-Regular.DMm9YOAa.woff            [39m[1m[2m   33.52 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3724288Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Italic.3WenGoN9.ttf             [39m[1m[2m   33.58 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3725063Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Bold.waoOVXN0.ttf               [39m[1m[2m   51.34 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3726107Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Regular.ypZvNtVU.ttf            [39m[1m[2m   53.58 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3726931Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_AMS-Regular.DRggAlZN.ttf             [39m[1m[2m   63.63 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3727995Z [info] [2m.nuxt/dist/client/[22m[32mmanifest.json                                    [39m[1m[2m   65.88 kB[22m[1m[22m[2m │ gzip:     6.21 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3729140Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mConfirmationModal.CJV_gWfn.css             [39m[1m[2m    0.20 kB[22m[1m[22m[2m │ gzip:     0.12 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3730075Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mmedia.yjOJmL4q.css                         [39m[1m[2m    0.23 kB[22m[1m[22m[2m │ gzip:     0.13 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3731186Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mAgentDefinitionForm.B4uhkLvJ.css           [39m[1m[2m    0.28 kB[22m[1m[22m[2m │ gzip:     0.15 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3732173Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mFullScreenImageModal.aod6xn15.css          [39m[1m[2m    0.35 kB[22m[1m[22m[2m │ gzip:     0.17 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3733465Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mdefault.DkOS1umL.css                       [39m[1m[2m    0.86 kB[22m[1m[22m[2m │ gzip:     0.35 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3734454Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35msettings.Rq5VaJW6.css                      [39m[1m[2m    1.58 kB[22m[1m[22m[2m │ gzip:     0.66 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3735598Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mFileExplorerTabs.BrK5oVEn.css              [39m[1m[2m    3.20 kB[22m[1m[22m[2m │ gzip:     1.02 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3736719Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35museTeamRunRuntimeCatalogSync.Bm2otteo.css  [39m[1m[2m    3.51 kB[22m[1m[22m[2m │ gzip:     1.19 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3737914Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mworkspace.DrBQ9tPi.css                     [39m[1m[2m    9.99 kB[22m[1m[22m[2m │ gzip:     2.52 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3739017Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mskills.hZg4z6X7.css                        [39m[1m[2m   14.02 kB[22m[1m[22m[2m │ gzip:     3.04 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3740109Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35museWorkspaceFileExplorer.BK2VMqPO.css      [39m[1m[2m   50.71 kB[22m[1m[22m[2m │ gzip:    13.07 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3741238Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mentry.CGJ6UWKe.css                         [39m[1m[2m  118.27 kB[22m[1m[22m[2m │ gzip:    18.58 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3742249Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBKnP2VJn.js                                [39m[1m[2m    0.09 kB[22m[1m[22m[2m │ gzip:     0.10 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3743306Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mB3VkIO2S.js                                [39m[1m[2m    0.10 kB[22m[1m[22m[2m │ gzip:     0.11 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3744195Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mGi6I4Gst.js                                [39m[1m[2m    0.15 kB[22m[1m[22m[2m │ gzip:     0.13 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3745458Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCmt4U75G.js                                [39m[1m[2m    0.18 kB[22m[1m[22m[2m │ gzip:     0.15 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3746311Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mGlMDIidr.js                                [39m[1m[2m    0.21 kB[22m[1m[22m[2m │ gzip:     0.16 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3747335Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDL70H3Ud.js                                [39m[1m[2m    0.22 kB[22m[1m[22m[2m │ gzip:     0.20 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3748417Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mb0dH-aeN.js                                [39m[1m[2m    0.23 kB[22m[1m[22m[2m │ gzip:     0.20 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3749256Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mfndHc2F-.js                                [39m[1m[2m    0.26 kB[22m[1m[22m[2m │ gzip:     0.21 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3750406Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mD_pNpzDe.js                                [39m[1m[2m    0.35 kB[22m[1m[22m[2m │ gzip:     0.26 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3751269Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mI5DHAM1o.js                                [39m[1m[2m    0.39 kB[22m[1m[22m[2m │ gzip:     0.26 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3752075Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDGWq4Gww.js                                [39m[1m[2m    0.41 kB[22m[1m[22m[2m │ gzip:     0.27 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3753305Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBIm7xnbq.js                                [39m[1m[2m    0.41 kB[22m[1m[22m[2m │ gzip:     0.27 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3754127Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mD3HsGeb1.js                                [39m[1m[2m    0.49 kB[22m[1m[22m[2m │ gzip:     0.35 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3755346Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCL-4I2cF.js                                [39m[1m[2m    0.69 kB[22m[1m[22m[2m │ gzip:     0.44 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3756229Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCE1G-McA.js                                [39m[1m[2m    0.76 kB[22m[1m[22m[2m │ gzip:     0.40 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3757025Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBJusQvZr.js                                [39m[1m[2m    0.80 kB[22m[1m[22m[2m │ gzip:     0.41 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3758329Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mvX0vfb3P.js                                [39m[1m[2m    0.94 kB[22m[1m[22m[2m │ gzip:     0.45 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3759178Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mD-UfGi84.js                                [39m[1m[2m    0.94 kB[22m[1m[22m[2m │ gzip:     0.57 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3760238Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36m4MosoSq3.js                                [39m[1m[2m    1.08 kB[22m[1m[22m[2m │ gzip:     0.59 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3761143Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCmKTTxBW.js                                [39m[1m[2m    1.18 kB[22m[1m[22m[2m │ gzip:     0.57 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3762095Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mC9hgVtms.js                                [39m[1m[2m    1.42 kB[22m[1m[22m[2m │ gzip:     0.63 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3763137Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mISd2u543.js                                [39m[1m[2m    1.82 kB[22m[1m[22m[2m │ gzip:     0.83 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3764178Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mRbgmnY0J.js                                [39m[1m[2m    2.03 kB[22m[1m[22m[2m │ gzip:     0.96 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3765102Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBv4L8bhO.js                                [39m[1m[2m    2.39 kB[22m[1m[22m[2m │ gzip:     1.01 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3766287Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mngkOWFDH.js                                [39m[1m[2m    2.56 kB[22m[1m[22m[2m │ gzip:     1.27 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3767130Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mD7THQ1R6.js                                [39m[1m[2m    3.43 kB[22m[1m[22m[2m │ gzip:     1.48 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3768369Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCMdVwk0p.js                                [39m[1m[2m    3.50 kB[22m[1m[22m[2m │ gzip:     1.41 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3769458Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBEZHqT4E.js                                [39m[1m[2m    3.57 kB[22m[1m[22m[2m │ gzip:     1.29 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3770368Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCiR9511m.js                                [39m[1m[2m    3.83 kB[22m[1m[22m[2m │ gzip:     1.50 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3771436Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mD9hA9anl.js                                [39m[1m[2m    4.29 kB[22m[1m[22m[2m │ gzip:     1.85 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3772269Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDX6XiGOO.js                                [39m[1m[2m    4.69 kB[22m[1m[22m[2m │ gzip:     2.18 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3773375Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDHWKNUWH.js                                [39m[1m[2m    4.74 kB[22m[1m[22m[2m │ gzip:     1.85 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3774254Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDioA38Qa.js                                [39m[1m[2m    4.74 kB[22m[1m[22m[2m │ gzip:     1.88 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3775295Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mg502Je6p.js                                [39m[1m[2m    4.85 kB[22m[1m[22m[2m │ gzip:     1.46 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3776293Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDIv4LU9T.js                                [39m[1m[2m    4.95 kB[22m[1m[22m[2m │ gzip:     2.03 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3777392Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCJ0u63a9.js                                [39m[1m[2m    4.98 kB[22m[1m[22m[2m │ gzip:     1.87 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3778680Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDTzSWSrv.js                                [39m[1m[2m    5.21 kB[22m[1m[22m[2m │ gzip:     2.28 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3779546Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mztLp8x_c.js                                [39m[1m[2m    5.27 kB[22m[1m[22m[2m │ gzip:     2.11 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3780621Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mxYBn5Q9t.js                                [39m[1m[2m    5.63 kB[22m[1m[22m[2m │ gzip:     2.31 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3781516Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36myOj27dSM.js                                [39m[1m[2m    5.63 kB[22m[1m[22m[2m │ gzip:     2.29 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3782552Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mZTRlnGoz.js                                [39m[1m[2m    5.84 kB[22m[1m[22m[2m │ gzip:     2.33 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3783537Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mlxSHrEU1.js                                [39m[1m[2m    5.89 kB[22m[1m[22m[2m │ gzip:     2.46 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3784600Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBigxeLBQ.js                                [39m[1m[2m    5.90 kB[22m[1m[22m[2m │ gzip:     1.85 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3785495Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mB80b4mPa.js                                [39m[1m[2m    7.05 kB[22m[1m[22m[2m │ gzip:     1.84 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3786586Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDRcKBGup.js                                [39m[1m[2m    8.63 kB[22m[1m[22m[2m │ gzip:     1.79 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3787569Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBdR-kJsk.js                                [39m[1m[2m    9.24 kB[22m[1m[22m[2m │ gzip:     1.90 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3788915Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCzf1LE6O.js                                [39m[1m[2m   10.35 kB[22m[1m[22m[2m │ gzip:     3.60 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3789754Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBI-5IvbY.js                                [39m[1m[2m   11.00 kB[22m[1m[22m[2m │ gzip:     4.09 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3790600Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBAFoXdIS.js                                [39m[1m[2m   11.88 kB[22m[1m[22m[2m │ gzip:     4.64 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3791692Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBKT-tY3-.js                                [39m[1m[2m   13.22 kB[22m[1m[22m[2m │ gzip:     4.45 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3792555Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDXSYSZHq.js                                [39m[1m[2m   14.16 kB[22m[1m[22m[2m │ gzip:     4.43 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3793691Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCRIDuA7K.js                                [39m[1m[2m   15.81 kB[22m[1m[22m[2m │ gzip:     5.61 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3794518Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBNqEsHUA.js                                [39m[1m[2m   17.63 kB[22m[1m[22m[2m │ gzip:     5.16 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3795613Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mD0U-PDAX.js                                [39m[1m[2m   17.73 kB[22m[1m[22m[2m │ gzip:     4.52 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3796459Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCCfMfhZW.js                                [39m[1m[2m   18.47 kB[22m[1m[22m[2m │ gzip:     7.21 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3797820Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mp-7k7Q9S.js                                [39m[1m[2m   20.05 kB[22m[1m[22m[2m │ gzip:     6.90 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3798917Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCZgiO4Xp.js                                [39m[1m[2m   20.23 kB[22m[1m[22m[2m │ gzip:     7.17 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3799824Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCKqi7FIN.js                                [39m[1m[2m   21.57 kB[22m[1m[22m[2m │ gzip:     6.31 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3800785Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCGH1a_86.js                                [39m[1m[2m   22.15 kB[22m[1m[22m[2m │ gzip:     8.13 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3801735Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mqMdtuQwP.js                                [39m[1m[2m   23.55 kB[22m[1m[22m[2m │ gzip:     8.31 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3802631Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mC3xqsjjA.js                                [39m[1m[2m   23.63 kB[22m[1m[22m[2m │ gzip:     8.24 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3803667Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCUKiG4iD.js                                [39m[1m[2m   24.10 kB[22m[1m[22m[2m │ gzip:     7.39 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3804519Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mkkZwqK55.js                                [39m[1m[2m   25.24 kB[22m[1m[22m[2m │ gzip:     8.81 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3805593Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDgsB4xDJ.js                                [39m[1m[2m   25.61 kB[22m[1m[22m[2m │ gzip:    10.06 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3806441Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBuRbTYnL.js                                [39m[1m[2m   27.35 kB[22m[1m[22m[2m │ gzip:     9.69 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3807497Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDoYv9b-i.js                                [39m[1m[2m   28.19 kB[22m[1m[22m[2m │ gzip:     8.21 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3808713Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCe--qiWG.js                                [39m[1m[2m   30.09 kB[22m[1m[22m[2m │ gzip:     9.41 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3809834Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCi1YdEAN.js                                [39m[1m[2m   32.10 kB[22m[1m[22m[2m │ gzip:    10.09 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3810725Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBsTHT0ia.js                                [39m[1m[2m   33.85 kB[22m[1m[22m[2m │ gzip:     9.93 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3811795Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36m6GyXKKMs.js                                [39m[1m[2m   36.30 kB[22m[1m[22m[2m │ gzip:    11.79 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3812628Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDW-oPqOw.js                                [39m[1m[2m   36.41 kB[22m[1m[22m[2m │ gzip:     9.18 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3813745Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mMffnvuXW.js                                [39m[1m[2m   40.19 kB[22m[1m[22m[2m │ gzip:    11.34 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3814570Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCSziqIFQ.js                                [39m[1m[2m   45.25 kB[22m[1m[22m[2m │ gzip:    14.64 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3815430Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mEgNALjBS.js                                [39m[1m[2m   46.40 kB[22m[1m[22m[2m │ gzip:    10.15 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3816524Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mJSJI6sXN.js                                [39m[1m[2m   50.50 kB[22m[1m[22m[2m │ gzip:    13.44 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3817346Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mB9weGZ8g.js                                [39m[1m[2m   60.44 kB[22m[1m[22m[2m │ gzip:    19.39 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3818726Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mx0VS-40T.js                                [39m[1m[2m   61.10 kB[22m[1m[22m[2m │ gzip:    15.77 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3819584Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCFSYGmBq.js                                [39m[1m[2m   67.26 kB[22m[1m[22m[2m │ gzip:    15.75 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3820399Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDzgImwsJ.js                                [39m[1m[2m   68.32 kB[22m[1m[22m[2m │ gzip:    23.15 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3821549Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCR0360vQ.js                                [39m[1m[2m   70.16 kB[22m[1m[22m[2m │ gzip:    19.68 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3822374Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCFUFAUok.js                                [39m[1m[2m   71.78 kB[22m[1m[22m[2m │ gzip:    20.48 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3823458Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mC0OTZd1s.js                                [39m[1m[2m   74.04 kB[22m[1m[22m[2m │ gzip:    17.01 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3824377Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDpJ9cy5b.js                                [39m[1m[2m   74.80 kB[22m[1m[22m[2m │ gzip:    17.32 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3825530Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mu1aF3Z6e.js                                [39m[1m[2m   81.73 kB[22m[1m[22m[2m │ gzip:    22.48 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3826401Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mB71YjpQo.js                                [39m[1m[2m   86.07 kB[22m[1m[22m[2m │ gzip:    25.11 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3827510Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mCbu6m7lN.js                                [39m[1m[2m   97.81 kB[22m[1m[22m[2m │ gzip:    26.84 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3828636Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mD4XiCMoZ.js                                [39m[1m[2m  109.53 kB[22m[1m[22m[2m │ gzip:    29.51 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3829963Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36maeBe68sJ.js                                [39m[1m[2m  146.11 kB[22m[1m[22m[2m │ gzip:    38.58 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3830906Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mC2B5bclM.js                                [39m[1m[2m  148.60 kB[22m[1m[22m[2m │ gzip:    42.00 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3832056Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDFuzciZf.js                                [39m[1m[2m  150.98 kB[22m[1m[22m[2m │ gzip:    38.39 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3832888Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36m5J0xJHOV.js                                [39m[1m[2m  441.64 kB[22m[1m[22m[2m │ gzip:   141.47 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3834057Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mB1IK3yHW.js                                [39m[1m[2m  452.84 kB[22m[1m[22m[2m │ gzip:   107.01 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3834812Z [warn] [33m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3835207Z (!) Some chunks are larger than 500 kB after minification. Consider:
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3835903Z - Using dynamic import() to code-split the application
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3836564Z - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3837314Z - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3838309Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBhG_UDX2.js                                [39m[1m[2m  493.81 kB[22m[1m[22m[2m │ gzip:   129.65 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3839176Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mDRG-5Vbn.js                                [39m[1m[33m  657.33 kB[39m[22m[2m │ gzip:   177.21 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3840031Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mBTIcPllr.js                                [39m[1m[33m  960.51 kB[39m[22m[2m │ gzip:   262.87 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3840980Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mcm56P1Zn.js                                [39m[1m[33m3,764.09 kB[39m[22m[2m │ gzip: 1,211.52 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3841538Z [info] [32m✓ built in 20.60s[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3841862Z [success] Client built in 20614ms
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3842152Z [info] Building server...
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3842626Z [info] [36mvite v7.3.1 [32mbuilding ssr environment for production...[36m[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3843001Z [info] transforming...
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3843356Z [info] [32m✓[39m 1 modules transformed.
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3872203Z [info] rendering chunks...
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.3901406Z [info] [32m✓ built in 11ms[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.4214450Z [success] Server built in 49ms
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:08.4247344Z [info] [nitro] Initializing prerenderer
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:09.1800748Z [info] [nitro] Prerendering 15 initial routes with crawler
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:09.2135982Z [log] [nitro] [90m  ├─ /media (28ms)[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:09.2137604Z [log] [nitro] [90m  ├─ /nodes (27ms)[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:09.2139572Z [log] [nitro] [90m  ├─ /tools (27ms)[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:09.2141117Z [log] [nitro] [90m  ├─ /agents (28ms)[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:09.2142830Z [log] [nitro] [90m  ├─ /memory (28ms)[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:09.2144295Z [log] [nitro] [90m  ├─ /skills (28ms)[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:09.2145713Z [log] [nitro] [90m  ├─ /settings (29ms)[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:09.2148879Z [log] [nitro] [90m  ├─ /workspace (29ms)[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:09.2150845Z [log] [nitro] [90m  ├─ /agent-teams (30ms)[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:09.2169461Z [log] [nitro] [90m  ├─ /applications (30ms)[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:09.2170226Z [log] [nitro] [90m  ├─ / (27ms)[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:09.2170711Z [log] [nitro] [90m  ├─ /mobile (28ms)[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:09.2171210Z [log] [nitro] [90m  ├─ /404.html (30ms)[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:09.2171735Z [log] [nitro] [90m  ├─ /index.html (30ms)[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:09.2172258Z [log] [nitro] [90m  ├─ /200.html (30ms)[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:09.2172998Z [info] [nitro] Prerendered 15 routes in 0.767 seconds
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:09.3368696Z [success] [nitro] Generated public [36mdist/public[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:09.3522720Z [success] [nitro] You can preview this build using `npx serve dist/public`
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:09.3528313Z [log] [90m│[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:09.3529058Z [33m▲[39m  HTML content not prerendered because [36mssr: false[39m was set.
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:09.3529576Z [log] [90m│[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:09.3530145Z [34m●[39m  You can read more in [36mhttps://nuxt.com/docs/getting-started/deployment#static-hosting[39m.
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:09.3530651Z [log] [90m│[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:09.3531105Z [90m└[39m  ✨ You can now deploy [36mdist/public[39m to any static hosting!
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:09.6335356Z Mobile web assets written to /home/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/dist-mobile/public
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:09.6419569Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:09.6420565Z [0;33mDeploying server package into Electron resources...[0m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:11.2061686Z  WARN  Shared workspace lockfile detected but configuration forces legacy deploy implementation.
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:11.2705614Z Packages are copied from the content-addressable store to the virtual store.
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:11.2706308Z   Content-addressable store is at: /home/runner/setup-pnpm/node_modules/.bin/store/v10
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:11.2706957Z   Virtual store is at:             autobyteus-web/resources/server/node_modules/.pnpm
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:11.3389391Z Progress: resolved 1, reused 0, downloaded 0, added 0
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:12.3370364Z Progress: resolved 919, reused 0, downloaded 0, added 0
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:13.4395004Z Progress: resolved 1867, reused 1, downloaded 0, added 0
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:14.4395531Z Progress: resolved 1883, reused 1, downloaded 0, added 0
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:15.6301584Z  WARN  22 deprecated subdependencies found: @babel/plugin-proposal-class-properties@7.18.6, @babel/plugin-proposal-object-rest-spread@7.20.7, @graphql-tools/prisma-loader@8.0.17, @npmcli/move-file@2.0.1, are-we-there-yet@3.0.1, gauge@4.0.4, glob@10.5.0, glob@7.2.3, glob@8.1.0, har-validator@5.1.5, inflight@1.0.6, lodash.get@4.4.2, lodash.isequal@4.5.0, mkdirp@0.5.1, node-domexception@1.0.0, npmlog@6.0.2, phin@3.7.1, request@2.88.2, rimraf@3.0.2, tar@6.2.1, uuid@3.4.0, whatwg-encoding@3.1.1
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:15.6307267Z Progress: resolved 1883, reused 1, downloaded 0, added 0, done
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:15.6370149Z  WARN  Issues with peer dependencies found
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:15.6370691Z autobyteus-web
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:15.6371059Z └─┬ nuxt 3.21.1
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:15.6371650Z   └─┬ @nuxt/cli 3.33.1
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:15.6372142Z     ├── ✕ unmet peer @nuxt/schema@^4.3.0: found 3.21.1
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:15.6372677Z     └─┬ @bomb.sh/tab 0.0.12
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:15.6373145Z       └── ✕ unmet peer citty@^0.1.6: found 0.2.1
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:15.7068165Z .                                        | +415 ++++++++++++++++++++++++++++++++
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:17.2575843Z ╭ Warning ─────────────────────────────────────────────────────────────────────╮
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:17.2576550Z │                                                                              │
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:17.2577044Z │   Ignored build scripts: autobyteus-ts@file:autobyteus-ts.                   │
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:17.2577603Z │   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:17.2578212Z │   to run scripts.                                                            │
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:17.2578611Z │                                                                              │
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:17.2579061Z ╰──────────────────────────────────────────────────────────────────────────────╯
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:17.3012676Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:17.3013848Z [0;33mCleaning workspace symlinks in deployment...[0m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:17.3256800Z Removed 1 external symlinks from /home/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/resources/server/node_modules/.pnpm/node_modules
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:17.3274424Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:17.3274906Z [0;33mRemoving non-runtime test fixtures from deployed dependencies...[0m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:17.3863138Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:17.3864265Z [0;33mGenerating Prisma client (ensures engines are bundled)...[0m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:17.3873133Z [0;32m✓[0m Using PRISMA_CLI_BINARY_TARGETS=debian-openssl-1.1.x,debian-openssl-3.0.x
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:18.1389644Z Environment variables loaded from .env
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:18.1395971Z Prisma schema loaded from resources/server/prisma/schema.prisma
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:19.1319684Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:19.1321350Z ✔ Generated Prisma Client (v5.22.0) to ./resources/server/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 409ms
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:19.1321798Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:19.1322165Z Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:19.1322528Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:19.1323019Z Tip: Easily identify and fix slow SQL queries in your app. Optimize helps you enhance your visibility: https://pris.ly/--optimize
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:19.1323613Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:19.3414973Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:19.3416231Z [0;33mValidating bundled Prisma Linux engine targets...[0m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:19.3553807Z [0;32m✓[0m Prisma Linux x64 engine targets verified in /home/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:19.3846960Z [0;32m✓[0m Prisma client Linux x64 runtime engines verified in /home/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/resources/server/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:19.3847984Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:19.3848208Z [0;33mPruning native prebuilds for host platform...[0m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:19.3942226Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:19.3943053Z [0;33mRebuilding native modules for Electron...[0m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:19.6609569Z Searching dependency tree
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:19.7874426Z Building modules: node-pty, node-pty
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:23.2352171Z ✔ Rebuild Complete
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:23.2453923Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:23.2455013Z [0;33mNormalizing node-pty spawn-helper execute bits...[0m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:23.2926638Z [0;32m✓[0m Normalized execute bits on 2 node-pty spawn-helper file(s)
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:23.2927066Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:23.2927465Z [0;33mRemoving symlinks that point outside the bundle...[0m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:23.4671985Z Removed 0 external symlinks from /home/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/resources/server
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:23.4691434Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:23.4692223Z [0;32m=======================================[0m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:23.4692818Z [0;32m   Server files prepared successfully!   [0m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:23.4693168Z [0;32m=======================================[0m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:23.4693905Z Target directory: [0;33m/home/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/resources/server[0m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:23.4694635Z You can now build the Electron app with the server included
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:23.6604891Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:23.6605878Z > autobyteus@1.4.34 generate:electron /home/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:23.6606601Z > cross-env NODE_ENV=production BUILD_TARGET=electron nuxt generate
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:23.6606838Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:23.8473182Z [90m┌[39m  [36mBuilding Nuxt for production...[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:23.8847122Z [90m│[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:23.8848474Z [34m●[39m  [32mNuxt [1m3.21.1[22m[39m[90m (with [39m[90mNitro [1m2.13.1[22m[39m[90m, Vite [1m7.3.1[22m[39m[90m and Vue [1m3.5.28[22m[39m[90m)[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:24.1469488Z [log] isElectronBuild true
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:24.1657079Z [log] [Electron Module] Initializing electron module
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:24.1658700Z [log] [Electron Module] Applying default Electron configurations
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:24.1659511Z [log] [Electron Module] Configuring for Electron build target
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:24.1660655Z [log] [Electron Module] Configuring production settings
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:24.1661405Z [log] [Electron Module] Electron module initialization completed
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:24.5048341Z [90m│[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:24.5048980Z [34m●[39m  Nitro preset: [36mstatic[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:25.0632196Z [log] [Electron Module] Extending Vite config
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:25.0641199Z [info] Building client...
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:25.0714883Z [Electron Module] Vite config resolved: { mode: 'production', base: './', buildTarget: 'electron' }
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:25.0732602Z [info] [36mvite v7.3.1 [32mbuilding client environment for production...[36m[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:25.0983946Z [info] transforming...
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:43.3637526Z [info] [32m✓[39m 3585 modules transformed.
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:44.4387192Z [info] rendering chunks...
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.2529963Z [info] computing gzip size...
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.5929958Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size3-Regular.CTq5MqoE.woff            [39m[1m[2m    4.42 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.5931395Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size4-Regular.Dl5lxZxV.woff2           [39m[1m[2m    4.93 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.5959560Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size2-Regular.Dy4dx90m.woff2           [39m[1m[2m    5.21 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.5989455Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size1-Regular.mCD8mA8B.woff2           [39m[1m[2m    5.47 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6019400Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size4-Regular.BF-4gkZK.woff            [39m[1m[2m    5.98 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6049142Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size2-Regular.oD1tc_U0.woff            [39m[1m[2m    6.19 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6050331Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size1-Regular.C195tn64.woff            [39m[1m[2m    6.50 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6051895Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Caligraphic-Regular.Di6jR-x-.woff2     [39m[1m[2m    6.91 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6052941Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Caligraphic-Bold.Dq_IR9rO.woff2        [39m[1m[2m    6.91 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6054079Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size3-Regular.DgpXs0kz.ttf             [39m[1m[2m    7.59 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6079109Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Caligraphic-Regular.CTRA-rTL.woff      [39m[1m[2m    7.66 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6109121Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Caligraphic-Bold.BEiXGLvX.woff         [39m[1m[2m    7.72 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6110303Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Script-Regular.D3wIWfF6.woff2          [39m[1m[2m    9.64 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6139107Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Regular.DDBCnlJ7.woff2       [39m[1m[2m   10.34 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6168957Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size4-Regular.DWFBv043.ttf             [39m[1m[2m   10.36 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6198920Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Script-Regular.D5yQViql.woff           [39m[1m[2m   10.59 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6200263Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Fraktur-Regular.CTYiF6lA.woff2         [39m[1m[2m   11.32 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6228789Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Fraktur-Bold.CL6g_b3V.woff2            [39m[1m[2m   11.35 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6258924Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size2-Regular.B7gKUWhC.ttf             [39m[1m[2m   11.51 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6288821Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Italic.C3H0VqGB.woff2        [39m[1m[2m   12.03 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6290088Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Bold.D1sUS0GD.woff2          [39m[1m[2m   12.22 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6318852Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Size1-Regular.Dbsnue_I.ttf             [39m[1m[2m   12.23 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6348728Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Regular.CS6fqUqJ.woff        [39m[1m[2m   12.32 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6378928Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Caligraphic-Regular.wX97UBjC.ttf       [39m[1m[2m   12.34 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6380132Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Caligraphic-Bold.ATXxdsX0.ttf          [39m[1m[2m   12.37 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6408855Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Fraktur-Regular.Dxdc4cR9.woff          [39m[1m[2m   13.21 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6438780Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Fraktur-Bold.BsDP51OF.woff             [39m[1m[2m   13.30 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6468800Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Typewriter-Regular.CO6r4hn1.woff2      [39m[1m[2m   13.57 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6470076Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Italic.DN2j7dab.woff         [39m[1m[2m   14.11 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6498805Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Bold.DbIhKOiC.woff           [39m[1m[2m   14.41 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6528943Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Typewriter-Regular.C0xS9mPB.woff       [39m[1m[2m   16.03 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6538334Z [warn] [33m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6539117Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Math-BoldItalic.CZnvNsCZ.woff2         [39m[1m[2m   16.40 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6540247Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Math-Italic.t53AETM-.woff2             [39m[1m[2m   16.44 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6541291Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Script-Regular.C5JkGWo-.ttf            [39m[1m[2m   16.65 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6542330Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-BoldItalic.DxDJ3AOS.woff2         [39m[1m[2m   16.78 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6543348Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Italic.NWA7e6Wa.woff2             [39m[1m[2m   16.99 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6544365Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Math-BoldItalic.iY-2wyZ7.woff          [39m[1m[2m   18.67 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6545485Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Math-Italic.DA0__PXp.woff              [39m[1m[2m   18.75 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6558951Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-BoldItalic.SpSLRI95.woff          [39m[1m[2m   19.41 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6588516Z (!) Some chunks are larger than 500 kB after minification. Consider:
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6589609Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Regular.BNo7hRIc.ttf         [39m[1m[2m   19.44 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6598956Z - Using dynamic import() to code-split the application
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6601877Z - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6633355Z - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6634341Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Fraktur-Regular.CB_wures.ttf           [39m[1m[2m   19.57 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6648821Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Fraktur-Bold.BdnERNNW.ttf              [39m[1m[2m   19.58 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6719010Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Italic.BMLOBm91.woff              [39m[1m[2m   19.68 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6720250Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Italic.YYjJ1zSn.ttf          [39m[1m[2m   22.36 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6738935Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_SansSerif-Bold.CFMepnvq.ttf            [39m[1m[2m   24.50 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6768737Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Bold.Cx986IdX.woff2               [39m[1m[2m   25.32 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6798960Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Regular.B22Nviop.woff2            [39m[1m[2m   26.27 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6804290Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Typewriter-Regular.D3Ib7_Hf.ttf        [39m[1m[2m   27.56 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6829014Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_AMS-Regular.BQhdFMY1.woff2             [39m[1m[2m   28.08 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6858939Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Bold.Jm3AIy58.woff                [39m[1m[2m   29.91 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6888797Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Regular.Dr94JaBh.woff             [39m[1m[2m   30.77 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6898942Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Math-BoldItalic.B3XSjfu4.ttf           [39m[1m[2m   31.20 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6918844Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Math-Italic.flOr_0UB.ttf               [39m[1m[2m   31.31 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6948829Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-BoldItalic.DzxPMmG6.ttf           [39m[1m[2m   32.97 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6978868Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_AMS-Regular.DMm9YOAa.woff              [39m[1m[2m   33.52 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6988654Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Italic.3WenGoN9.ttf               [39m[1m[2m   33.58 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6989818Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Bold.waoOVXN0.ttf                 [39m[1m[2m   51.34 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6990810Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_Main-Regular.ypZvNtVU.ttf              [39m[1m[2m   53.58 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6991586Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[32mKaTeX_AMS-Regular.DRggAlZN.ttf               [39m[1m[2m   63.63 kB[22m[1m[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6992438Z [info] [2m.nuxt/dist/client/[22m[32mmanifest.json                                      [39m[1m[2m   75.01 kB[22m[1m[22m[2m │ gzip:     6.59 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6993259Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mConfirmationModal.CJV_gWfn.css               [39m[1m[2m    0.20 kB[22m[1m[22m[2m │ gzip:     0.12 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6994135Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mmedia.yjOJmL4q.css                           [39m[1m[2m    0.23 kB[22m[1m[22m[2m │ gzip:     0.13 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6994971Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mAgentDefinitionForm.B4uhkLvJ.css             [39m[1m[2m    0.28 kB[22m[1m[22m[2m │ gzip:     0.15 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6995809Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mFullScreenImageModal.aod6xn15.css            [39m[1m[2m    0.35 kB[22m[1m[22m[2m │ gzip:     0.17 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6996726Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mdefault.DkOS1umL.css                         [39m[1m[2m    0.86 kB[22m[1m[22m[2m │ gzip:     0.35 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6998036Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35msettings.Rq5VaJW6.css                        [39m[1m[2m    1.58 kB[22m[1m[22m[2m │ gzip:     0.66 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.6999180Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mFileExplorerTabs.BrK5oVEn.css                [39m[1m[2m    3.20 kB[22m[1m[22m[2m │ gzip:     1.02 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7000377Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35museTeamRunRuntimeCatalogSync.Bm2otteo.css    [39m[1m[2m    3.51 kB[22m[1m[22m[2m │ gzip:     1.19 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7001493Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mworkspace.DrBQ9tPi.css                       [39m[1m[2m    9.99 kB[22m[1m[22m[2m │ gzip:     2.52 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7002648Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mskills.hZg4z6X7.css                          [39m[1m[2m   14.02 kB[22m[1m[22m[2m │ gzip:     3.04 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7003815Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35museWorkspaceFileExplorer.BK2VMqPO.css        [39m[1m[2m   50.71 kB[22m[1m[22m[2m │ gzip:    13.07 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7004977Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[35mentry.CGJ6UWKe.css                           [39m[1m[2m  118.27 kB[22m[1m[22m[2m │ gzip:    18.58 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7006061Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mclone.BIDQPqdY.js                            [39m[1m[2m    0.10 kB[22m[1m[22m[2m │ gzip:     0.11 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7007224Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mchannel.BZrB_o1g.js                          [39m[1m[2m    0.13 kB[22m[1m[22m[2m │ gzip:     0.14 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7008618Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36minit.Gi6I4Gst.js                             [39m[1m[2m    0.15 kB[22m[1m[22m[2m │ gzip:     0.13 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7009890Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mchunk-QZHKN3VN.BUT04JzD.js                   [39m[1m[2m    0.21 kB[22m[1m[22m[2m │ gzip:     0.17 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7011009Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36msettings.b0dH-aeN.js                         [39m[1m[2m    0.23 kB[22m[1m[22m[2m │ gzip:     0.20 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7012140Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mchunk-4BX2VUAB.zjZjtUp8.js                   [39m[1m[2m    0.24 kB[22m[1m[22m[2m │ gzip:     0.18 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7013252Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mchunk-55IACEB6.CcqT21iY.js                   [39m[1m[2m    0.25 kB[22m[1m[22m[2m │ gzip:     0.22 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7014366Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mtools.C4UGqjyi.js                            [39m[1m[2m    0.31 kB[22m[1m[22m[2m │ gzip:     0.24 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7015449Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mchunk-FMBD7UC4.Ck2EnNjl.js                   [39m[1m[2m    0.38 kB[22m[1m[22m[2m │ gzip:     0.28 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7016550Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mstateDiagram-v2-4FDKWEC3.d05d-77k.js         [39m[1m[2m    0.49 kB[22m[1m[22m[2m │ gzip:     0.34 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7017650Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mchunk-QN33PNHL.DEQ5NP4D.js                   [39m[1m[2m    0.52 kB[22m[1m[22m[2m │ gzip:     0.37 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7018920Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mclassDiagram-2ON5EDUG.hN229qIF.js            [39m[1m[2m    0.53 kB[22m[1m[22m[2m │ gzip:     0.35 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7020098Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mclassDiagram-v2-WZHVMYZB.hN229qIF.js         [39m[1m[2m    0.53 kB[22m[1m[22m[2m │ gzip:     0.35 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7021220Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36m_commonjsHelpers.CE1G-McA.js                 [39m[1m[2m    0.76 kB[22m[1m[22m[2m │ gzip:     0.40 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7022471Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36minfoDiagram-HS3SLOUP.DBaYEC5w.js             [39m[1m[2m    0.79 kB[22m[1m[22m[2m │ gzip:     0.51 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7023603Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36museNativeFolderDialog.BJusQvZr.js            [39m[1m[2m    0.80 kB[22m[1m[22m[2m │ gzip:     0.41 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7024712Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mapi.vX0vfb3P.js                              [39m[1m[2m    0.94 kB[22m[1m[22m[2m │ gzip:     0.45 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7025796Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mordinal.BYWQX77i.js                          [39m[1m[2m    1.19 kB[22m[1m[22m[2m │ gzip:     0.57 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7026949Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mindex.BBj5pL_Q.js                            [39m[1m[2m    1.24 kB[22m[1m[22m[2m │ gzip:     0.75 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7028207Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mmobile.7LzMRto1.js                           [39m[1m[2m    1.38 kB[22m[1m[22m[2m │ gzip:     0.76 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7029273Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mchunk-TZMSLE5B._JEGhZ3I.js                   [39m[1m[2m    1.45 kB[22m[1m[22m[2m │ gzip:     0.65 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7030312Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mapplicationAssetUrl.ISd2u543.js              [39m[1m[2m    1.82 kB[22m[1m[22m[2m │ gzip:     0.83 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7031400Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mConfirmationModal.RbgmnY0J.js                [39m[1m[2m    2.03 kB[22m[1m[22m[2m │ gzip:     0.96 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7032514Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mfeaturedCatalogItems.Bv4L8bhO.js             [39m[1m[2m    2.39 kB[22m[1m[22m[2m │ gzip:     1.01 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7033596Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36m_basePickBy.D5UCoCNp.js                      [39m[1m[2m    2.60 kB[22m[1m[22m[2m │ gzip:     1.30 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7034635Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36marc.DF50YjrU.js                              [39m[1m[2m    3.45 kB[22m[1m[22m[2m │ gzip:     1.50 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7035692Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mmobileWorkStore.BEZHqT4E.js                  [39m[1m[2m    3.57 kB[22m[1m[22m[2m │ gzip:     1.29 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7036825Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36museEventMonitorFilePreview.D6K4fU_5.js       [39m[1m[2m    3.70 kB[22m[1m[22m[2m │ gzip:     1.49 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7038097Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mapplicationStore.CiR9511m.js                 [39m[1m[2m    3.83 kB[22m[1m[22m[2m │ gzip:     1.50 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7039383Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mdiagram-S2PKOQOG.yFPkq2o5.js                 [39m[1m[2m    4.41 kB[22m[1m[22m[2m │ gzip:     1.94 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7040482Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mdefaultLocale.DX6XiGOO.js                    [39m[1m[2m    4.69 kB[22m[1m[22m[2m │ gzip:     2.18 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7041541Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mindex.B6i1cXo1.js                            [39m[1m[2m    4.78 kB[22m[1m[22m[2m │ gzip:     1.89 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7042670Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mRuntimeModelConfigFields.vue.oqx-j7om.js     [39m[1m[2m    4.83 kB[22m[1m[22m[2m │ gzip:     1.90 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7043831Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mskillImprovementCapabilityStore.g502Je6p.js  [39m[1m[2m    4.85 kB[22m[1m[22m[2m │ gzip:     1.46 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7044970Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mFullScreenImageModal.DVNb6qnk.js             [39m[1m[2m    4.96 kB[22m[1m[22m[2m │ gzip:     2.03 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7046105Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36museRightPanel.CJ0u63a9.js                    [39m[1m[2m    4.98 kB[22m[1m[22m[2m │ gzip:     1.87 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7047183Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36museShellPrimaryNavigation.BENXDpey.js        [39m[1m[2m    5.28 kB[22m[1m[22m[2m │ gzip:     2.12 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7048684Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mpieDiagram-ADFJNKIX.a1r2Vgqb.js              [39m[1m[2m    5.34 kB[22m[1m[22m[2m │ gzip:     2.38 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7049799Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mSearchableGroupedSelect.vue.xYBn5Q9t.js      [39m[1m[2m    5.63 kB[22m[1m[22m[2m │ gzip:     2.31 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7051008Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mlinear.BN4uEr-D.js                           [39m[1m[2m    5.67 kB[22m[1m[22m[2m │ gzip:     2.32 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7052151Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mSearchableSelect.vue.ZTRlnGoz.js             [39m[1m[2m    5.84 kB[22m[1m[22m[2m │ gzip:     2.33 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7053223Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mgraph.DSQSPWzz.js                            [39m[1m[2m    5.93 kB[22m[1m[22m[2m │ gzip:     1.88 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7054314Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mdiagram-QEK2KX5R.-DDUHTD9.js                 [39m[1m[2m    6.01 kB[22m[1m[22m[2m │ gzip:     2.55 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7055399Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mserverSettings.B80b4mPa.js                   [39m[1m[2m    7.05 kB[22m[1m[22m[2m │ gzip:     1.84 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7056451Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mskillStore.DRcKBGup.js                       [39m[1m[2m    8.63 kB[22m[1m[22m[2m │ gzip:     1.79 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7057594Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mtoolManagementStore.BdR-kJsk.js              [39m[1m[2m    9.24 kB[22m[1m[22m[2m │ gzip:     1.90 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7059008Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mstateDiagram-FKZM4ZOC.Bf6fu8Uo.js            [39m[1m[2m   10.49 kB[22m[1m[22m[2m │ gzip:     3.70 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7060270Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mdagre-6UL2VRFP.MjuGjSpy.js                   [39m[1m[2m   11.11 kB[22m[1m[22m[2m │ gzip:     4.16 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7061324Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36m_baseUniq.SBGH8C1B.js                        [39m[1m[2m   11.90 kB[22m[1m[22m[2m │ gzip:     4.66 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7062344Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mmedia.DnQ1eW3g.js                            [39m[1m[2m   13.27 kB[22m[1m[22m[2m │ gzip:     4.48 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7063570Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mModelConfigSection.vue.D-j1Xp_V.js           [39m[1m[2m   14.20 kB[22m[1m[22m[2m │ gzip:     4.45 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7064704Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mdiagram-PSM6KHXK.NkpneTzt.js                 [39m[1m[2m   15.97 kB[22m[1m[22m[2m │ gzip:     5.73 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7065852Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mskills.C5zzXr0H.js                           [39m[1m[2m   17.74 kB[22m[1m[22m[2m │ gzip:     5.23 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7066931Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36museRuntimeScopedModelSelection.Bp9584cc.js   [39m[1m[2m   17.74 kB[22m[1m[22m[2m │ gzip:     4.52 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7068192Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36miconify.CCfMfhZW.js                          [39m[1m[2m   18.47 kB[22m[1m[22m[2m │ gzip:     7.21 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7069359Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mmindmap-definition-VGOIOE7T.xQWpUPTj.js      [39m[1m[2m   20.14 kB[22m[1m[22m[2m │ gzip:     6.96 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7070600Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mkanban-definition-3W4ZIXB7.BCP7afdk.js       [39m[1m[2m   20.30 kB[22m[1m[22m[2m │ gzip:     7.22 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7071775Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mvoiceInputStore.DdjtC9ql.js                  [39m[1m[2m   21.60 kB[22m[1m[22m[2m │ gzip:     6.32 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7072857Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36msankeyDiagram-TZEHDZUN.DzNWSq_M.js           [39m[1m[2m   22.22 kB[22m[1m[22m[2m │ gzip:     8.18 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7073960Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mjourneyDiagram-XKPGCS4Q.sIJc9Qed.js          [39m[1m[2m   23.64 kB[22m[1m[22m[2m │ gzip:     8.38 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7075277Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mtimeline-definition-IT6M3QCI.D8ZiDtC1.js     [39m[1m[2m   23.69 kB[22m[1m[22m[2m │ gzip:     8.29 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7076413Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mgitGraphDiagram-V2S2FVAM.DVhn_aV6.js         [39m[1m[2m   24.24 kB[22m[1m[22m[2m │ gzip:     7.49 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7077507Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36merDiagram-Q2GNP2WA.DPg7XLFY.js               [39m[1m[2m   25.34 kB[22m[1m[22m[2m │ gzip:     8.89 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7078787Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mqrCodeDataUrlService.BInqJ4D7.js             [39m[1m[2m   25.63 kB[22m[1m[22m[2m │ gzip:    10.07 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7079854Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mlayout.VgNZieA7.js                           [39m[1m[2m   27.40 kB[22m[1m[22m[2m │ gzip:     9.74 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7080908Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36magents.Cxkx6UFu.js                           [39m[1m[2m   28.43 kB[22m[1m[22m[2m │ gzip:     8.34 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7081998Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mrequirementDiagram-UZGBJVZJ.D8hNJidU.js      [39m[1m[2m   30.18 kB[22m[1m[22m[2m │ gzip:     9.48 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7083120Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mFileExplorerTabs.vue.CM1hdFot.js             [39m[1m[2m   32.15 kB[22m[1m[22m[2m │ gzip:    10.11 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7084318Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mquadrantDiagram-AYHSOK5B.w0ok_vRj.js         [39m[1m[2m   33.94 kB[22m[1m[22m[2m │ gzip:    10.00 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7085481Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mchunk-DI55MBZ5.X9-6QHYu.js                   [39m[1m[2m   36.36 kB[22m[1m[22m[2m │ gzip:    11.84 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7086633Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mAgentDefinitionForm.vue.BauL2m6o.js          [39m[1m[2m   36.49 kB[22m[1m[22m[2m │ gzip:     9.22 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7088092Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mxychartDiagram-PRI3JC2R.CgeG1iJ7.js          [39m[1m[2m   40.28 kB[22m[1m[22m[2m │ gzip:    11.40 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7089217Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mchunk-B4BG7PRW.FNY8ovrD.js                   [39m[1m[2m   45.32 kB[22m[1m[22m[2m │ gzip:    14.69 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7090275Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mmemory.EgNALjBS.js                           [39m[1m[2m   46.40 kB[22m[1m[22m[2m │ gzip:    10.15 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7091362Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mToolsManagementWorkspace.vue.CyPhM8Sc.js     [39m[1m[2m   50.52 kB[22m[1m[22m[2m │ gzip:    13.45 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7092537Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mflowDiagram-NV44I4VS.WyLGkL6j.js             [39m[1m[2m   60.55 kB[22m[1m[22m[2m │ gzip:    19.48 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7093652Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mdefault.C-huBCLm.js                          [39m[1m[2m   61.27 kB[22m[1m[22m[2m │ gzip:    15.89 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7094728Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36magent-teams.Db8h4AsU.js                      [39m[1m[2m   67.50 kB[22m[1m[22m[2m │ gzip:    15.88 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7095827Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mganttDiagram-JELNMOA3.BEfIuDRD.js            [39m[1m[2m   68.41 kB[22m[1m[22m[2m │ gzip:    23.20 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7096950Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mc4Diagram-YG6GDRKO.DKlSQ6tb.js               [39m[1m[2m   70.23 kB[22m[1m[22m[2m │ gzip:    19.74 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7098343Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mblockDiagram-VD42YOAC.D_7BI_8T.js            [39m[1m[2m   71.88 kB[22m[1m[22m[2m │ gzip:    20.56 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7099538Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36m_id_.IF_ST4w2.js                             [39m[1m[2m   74.21 kB[22m[1m[22m[2m │ gzip:    17.09 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7100554Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mnodes.BLJ-e44y.js                            [39m[1m[2m   74.85 kB[22m[1m[22m[2m │ gzip:    17.35 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7101656Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mcose-bilkent-S5V4N54A.DvKnuAcY.js            [39m[1m[2m   81.80 kB[22m[1m[22m[2m │ gzip:    22.54 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7102782Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36museTeamRunRuntimeCatalogSync.XasVbm3t.js     [39m[1m[2m   86.33 kB[22m[1m[22m[2m │ gzip:    25.22 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7103991Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36msequenceDiagram-WL72ISMW.-2EvELUm.js         [39m[1m[2m   97.90 kB[22m[1m[22m[2m │ gzip:    26.91 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7105195Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mMobileRemoteAccessShell.vue.BFirSUbs.js      [39m[1m[2m  109.68 kB[22m[1m[22m[2m │ gzip:    29.60 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7106358Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mworkspace.BznnMgHz.js                        [39m[1m[2m  146.13 kB[22m[1m[22m[2m │ gzip:    38.58 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7107521Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36marchitectureDiagram-VXUJARFQ.DjDl4i3W.js     [39m[1m[2m  148.74 kB[22m[1m[22m[2m │ gzip:    42.11 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7108797Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36magentRunStore.Cjzyl2oc.js                    [39m[1m[2m  151.02 kB[22m[1m[22m[2m │ gzip:    38.42 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7109921Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mcytoscape.esm.5J0xJHOV.js                    [39m[1m[2m  441.64 kB[22m[1m[22m[2m │ gzip:   141.47 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7111121Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mtreemap-GDKQZRPO.DhqtWJLb.js                 [39m[1m[2m  452.91 kB[22m[1m[22m[2m │ gzip:   107.07 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7112432Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36msettings.CLThuBo6.js                         [39m[1m[2m  494.12 kB[22m[1m[22m[2m │ gzip:   129.84 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7113499Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mworkspace.BxAFBSJE.js                        [39m[1m[33m  657.74 kB[39m[22m[2m │ gzip:   177.40 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7114587Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36mentry.DwKtNARz.js                            [39m[1m[33m  961.33 kB[39m[22m[2m │ gzip:   263.24 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7115752Z [info] [2m.nuxt/dist/client/[22m[2m_nuxt/[22m[36museWorkspaceFileExplorer.CEp4GXke.js         [39m[1m[33m3,765.68 kB[39m[22m[2m │ gzip: 1,212.52 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7116473Z [info] [32m✓ built in 20.58s[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7116871Z [success] Client built in 20593ms
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7117273Z [log] [Electron Module] Extending Vite config
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.7117632Z [info] Building server...
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.8697498Z [Electron Module] Vite config resolved: { mode: 'production', base: '/', buildTarget: 'electron' }
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.8729894Z [info] [36mvite v7.3.1 [32mbuilding ssr environment for production...[36m[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.8830790Z [info] transforming...
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.8859227Z [info] [32m✓[39m 1 modules transformed.
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.8905585Z [info] rendering chunks...
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.8939147Z [info] [32m✓ built in 21ms[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:45.8968694Z [log] [Electron Module] Processing build manifest
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:46.0221122Z [success] Server built in 338ms
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:46.0239282Z [log] [Electron Module] Build process completed
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:46.0239741Z [log] [Electron Module] Running production build steps
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:46.0240198Z [log] [Electron Module] Building entry: electron/main.ts
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:46.0370545Z [log] [36mvite v7.3.1 [32mbuilding client environment for production...[36m[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:46.0465478Z [log] transforming...
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:47.6410711Z [log] [32m✓[39m 414 modules transformed.
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:47.8718304Z [log] rendering chunks...
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:47.8757286Z [log] computing gzip size...
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:47.8896010Z [log] [2mdist/electron/[22m[36mmain.js  [39m[1m[33m806.79 kB[39m[22m[2m │ gzip: 212.49 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:47.8897451Z [log] [32m✓ built in 1.85s[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:47.8898220Z [log] [Electron Module] Building entry: electron/preload.ts
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:47.9009113Z [log] [36mvite v7.3.1 [32mbuilding client environment for production...[36m[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:47.9047101Z [log] transforming...
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:47.9065148Z [log] [32m✓[39m 1 modules transformed.
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:47.9090994Z [log] rendering chunks...
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:47.9122311Z [log] computing gzip size...
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:47.9127997Z [log] [2mdist/electron/[22m[36mpreload.js  [39m[1m[2m3.46 kB[22m[1m[22m[2m │ gzip: 0.96 kB[22m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:47.9129241Z [log] [32m✓ built in 12ms[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:47.9129915Z [log] [Electron Module] Production build completed successfully
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:47.9207427Z [info] [nitro] Initializing prerenderer
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:48.6757789Z [info] [nitro] Prerendering 3 initial routes with crawler
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:48.6971372Z [log] [nitro] [90m  ├─ /404.html (19ms)[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:48.6973665Z [log] [nitro] [90m  ├─ /200.html (19ms)[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:48.6975373Z [log] [nitro] [90m  ├─ /index.html (19ms)[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:48.6976146Z [info] [nitro] Prerendered 3 routes in 0.749 seconds
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:48.7950620Z [success] [nitro] Generated public [36mdist/renderer[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:48.8087001Z [success] [nitro] You can preview this build using `npx serve dist/renderer`
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:48.8091365Z [log] [90m│[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:48.8092089Z [33m▲[39m  HTML content not prerendered because [36mssr: false[39m was set.
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:48.8092748Z [log] [90m│[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:48.8093244Z [34m●[39m  You can read more in [36mhttps://nuxt.com/docs/getting-started/deployment#static-hosting[39m.
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:48.8093706Z [log] [90m│[39m
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:48.8094080Z [90m└[39m  ✨ You can now deploy [36mdist/renderer[39m to any static hosting!
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:49.1216653Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:49.1217779Z > autobyteus@1.4.34 transpile-electron /home/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:49.1218465Z > tsc -p electron/tsconfig.json
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:49.1218744Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:51.8355400Z Building with environment: production
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:51.8356163Z Using environment file: .env.production
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:51.8356666Z Resolved build flavor: personal
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:51.8357078Z Artifact base name: AutoByteus_personal
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:51.8357368Z Requested architecture: X64
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:51.8358028Z Updater publish config: [{"provider":"github","owner":"AutoByteus","repo":"autobyteus-workspace"}]
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:51.8362611Z Generating application icons...
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:51.8363147Z Generating 16x16 PNG icon...
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:51.8402950Z Generating 32x32 PNG icon...
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:51.8419040Z Generating 48x48 PNG icon...
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:51.8433154Z Generating 64x64 PNG icon...
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:51.8448327Z Generating 128x128 PNG icon...
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:51.8465861Z Generating 256x256 PNG icon...
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:51.8493929Z Generating 512x512 PNG icon...
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:51.8542315Z Generating 1024x1024 PNG icon...
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:51.8667491Z Generating Windows ICO icon...
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:51.9336613Z Generating macOS ICNS icon...
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:51.9476869Z Icon generation completed successfully
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:51.9477562Z Starting electron-builder...
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:51.9485356Z   • electron-builder  version=25.1.8 os=6.8.0-1062-azure
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:51.9560618Z   • @electron/rebuild already used by electron-builder, please consider to remove excess dependency from devDependencies
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:51.9561638Z
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:51.9562566Z To ensure your native dependencies are always matched electron version, simply add script `"postinstall": "electron-builder install-app-deps" to your `package.json`
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:52.0808296Z   • executing @electron/rebuild  electronVersion=42.4.1 arch=x64 buildFromSource=false appDir=./
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:52.0817009Z   • installing native dependencies  arch=x64
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:53.0528923Z   • completed installing native dependencies
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:53.0563143Z   • packaging       platform=linux arch=x64 electron=42.4.1 appOutDir=electron-dist/linux-unpacked
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:53.3036868Z   • downloading     url=https://github.com/electron/electron/releases/download/v42.4.1/electron-v42.4.1-linux-x64.zip size=124 MB parts=8
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:53.3359225Z   ⨯ Get "https://release-assets.githubusercontent.com/github-production-release-asset/9384267/3dc0f364-c026-4e95-938f-51abeac12a2e?sp=r&sv=2018-11-09&sr=b&spr=https&se=2026-07-31T16%3A34%3A37Z&rscd=attachment%3B+filename%3Delectron-v42.4.1-linux-x64.zip&rsct=application%2Foctet-stream&skoid=96c2d410-5711-43a1-aedd-ab1947aa7ab0&sktid=398a6654-997b-47e9-b12b-9515b896b4de&skt=2026-07-31T15%3A34%3A27Z&ske=2026-07-31T16%3A34%3A37Z&sks=b&skv=2018-11-09&sig=YlBFfvGOxzRH%2BA66oDXSPA3%2F3Z5l4h8S%2FAj8aq1OZMs%3D&jwt=***": read tcp 10.1.0.83:55160->185.199.108.133:443: read: connection reset by peer
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:53.3361390Z github.com/develar/app-builder/pkg/download.(*Part).doRequest
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:53.3361855Z 	/Users/runner/work/app-builder/app-builder/pkg/download/Part.go:108
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:53.3362306Z github.com/develar/app-builder/pkg/download.(*Part).download
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:53.3362743Z 	/Users/runner/work/app-builder/app-builder/pkg/download/Part.go:47
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:53.3363238Z github.com/develar/app-builder/pkg/download.(*Downloader).DownloadResolved.func1.1
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:53.3363734Z 	/Users/runner/work/app-builder/app-builder/pkg/download/downloader.go:155
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:53.3364208Z github.com/develar/app-builder/pkg/util.MapAsyncConcurrency.func2
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:53.3365031Z 	/Users/runner/work/app-builder/app-builder/pkg/util/async.go:68
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:53.3365383Z runtime.goexit
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:53.3365745Z 	/Users/runner/hostedtoolcache/go/1.21.13/arm64/src/runtime/asm_amd64.s:1650
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:53.3466036Z Build process failed: ExecError: /home/runner/work/autobyteus-workspace/autobyteus-workspace/node_modules/.pnpm/app-builder-bin@5.0.0-alpha.10/node_modules/app-builder-bin/linux/x64/app-builder process failed ERR_ELECTRON_BUILDER_CANNOT_EXECUTE
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:53.3467343Z Exit code:
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:53.3467844Z 1
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:53.3468943Z     at ChildProcess.<anonymous> (/home/runner/work/autobyteus-workspace/autobyteus-workspace/node_modules/.pnpm/builder-util@25.1.7/node_modules/builder-util/src/util.ts:255:14)
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:53.3469631Z     at Object.onceWrapper (node:events:634:26)
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:53.3470012Z     at ChildProcess.emit (node:events:519:28)
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:53.3470400Z     at maybeClose (node:internal/child_process:1101:16)
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:53.3470841Z     at Process.ChildProcess._handle.onexit (node:internal/child_process:304:5) {
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:53.3471226Z   exitCode: 1,
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:53.3471473Z   alreadyLogged: false,
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:53.3471770Z   code: 'ERR_ELECTRON_BUILDER_CANNOT_EXECUTE'
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:53.3472045Z }
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:53.3693031Z  ELIFECYCLE  Command failed with exit code 1.
+Build Linux x64	Build Electron Linux x64	2026-07-31T15:48:53.3823686Z ##[error]Process completed with exit code 1.

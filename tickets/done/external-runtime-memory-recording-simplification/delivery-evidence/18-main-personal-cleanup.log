@@ -1,0 +1,10 @@
+timestamp_utc=2026-07-31T16:17:13Z
+user_authorized_discard_of_unrelated_main_personal_changes=yes
+main_worktree=/Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+main_branch=personal
+main_head=ca16d88debbf75408223aef688af3ca6ec391fd9
+origin_personal=ca16d88debbf75408223aef688af3ca6ec391fd9
+main_status_entries=0
+discard_method=git reset --hard origin/personal plus git clean -fd/-ffd for user-authorized untracked content
+ticket_test_app_processes=7
+ticket_worktree_cleanup=deferred_while_user_test_app_runs
