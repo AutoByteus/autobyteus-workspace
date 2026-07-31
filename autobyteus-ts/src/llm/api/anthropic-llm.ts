@@ -58,6 +58,7 @@ const matchesAnthropicModelFamily = (modelValue: string, familyValue: string): b
 
 const resolveAnthropicModelRequestPolicy = (modelValue: string): AnthropicModelRequestPolicy => {
   const isCurrentAdaptiveModel = [
+    'claude-opus-5',
     'claude-opus-4-8',
     'claude-opus-4-7',
     'claude-sonnet-5',

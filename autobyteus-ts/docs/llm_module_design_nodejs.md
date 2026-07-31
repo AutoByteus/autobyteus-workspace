@@ -187,10 +187,11 @@ The current latest-model support set is summarized in
 `docs/provider_model_catalogs.md`. Notable LLM entries include:
 
 - OpenAI `gpt-5.6-sol`, `gpt-5.6-terra`, and `gpt-5.6-luna` (verified
-  2026-07-10), plus retained `gpt-5.5`. GPT-5.6 uses exact provider IDs with no
+  2026-07-30), plus retained `gpt-5.5`. GPT-5.6 uses exact provider IDs with no
   separate unsuffixed alias.
-- Anthropic `claude-fable-5`, `claude-opus-4.8`, and `claude-sonnet-5`
-  (verified 2026-07-07) with exact Claude API values and no
+- Anthropic `claude-opus-5` (verified 2026-07-31; standard pricing effective
+  2026-07-24), `claude-fable-5`, `claude-opus-4.8`, and `claude-sonnet-5`
+  with exact Claude API values and no
   `claude-sonnet-4.8` alias. Fable 5 is catalog-available only, not a default
   or fallback.
 - DeepSeek `deepseek-v4-flash` and `deepseek-v4-pro` (verified 2026-04-25).
@@ -213,8 +214,8 @@ Provider adapters own request-shape differences:
 - `OpenAILLM` keeps GPT-5.6 on the official Responses path. The shared OpenAI
   usage normalizer preserves gross input while mapping documented
   `cache_write_tokens` detail fields into generic cache-creation input usage.
-- `AnthropicLLM` maps current Claude adaptive-thinking config for Opus 4.8,
-  Opus 4.7, Sonnet 5, and Fable 5 without sending fixed thinking budgets,
+- `AnthropicLLM` maps current Claude adaptive-thinking config for Opus 5,
+  Opus 4.8, Opus 4.7, Sonnet 5, and Fable 5 without sending fixed thinking budgets,
   manual-budget overrides, or unsupported sampling fields (`temperature`,
   `top_p`, `top_k`). It also filters AutoByteus-internal invocation kwargs
   before Anthropic Messages API calls. Older Claude rows keep the legacy

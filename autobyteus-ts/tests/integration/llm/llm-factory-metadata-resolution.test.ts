@@ -114,6 +114,24 @@ describe('LLMFactory metadata resolution', () => {
       max_context_tokens: 1000000,
       max_output_tokens: 128000
     });
+    const claudeOpus5 = anthropicModels.find((model) => model.model_identifier === 'claude-opus-5');
+    expect(claudeOpus5).toMatchObject({
+      model_identifier: 'claude-opus-5',
+      display_name: 'claude-opus-5',
+      value: 'claude-opus-5',
+      canonical_name: 'claude-opus-5',
+      provider_type: LLMProvider.ANTHROPIC,
+      max_context_tokens: 1000000,
+      max_input_tokens: 1000000,
+      max_output_tokens: 128000
+    });
+    expect(claudeOpus5?.config_schema).toMatchObject({
+      properties: {
+        thinking_enabled: expect.objectContaining({ type: 'boolean' }),
+        thinking_display: expect.objectContaining({ enum: ['omitted', 'summarized'] })
+      }
+    });
+    expect(claudeOpus5?.config_schema?.properties ?? {}).not.toHaveProperty('thinking_budget_tokens');
     expect(anthropicModels.find((model) => model.model_identifier === 'claude-fable-5')).toMatchObject({
       provider_type: LLMProvider.ANTHROPIC,
       value: 'claude-fable-5',
