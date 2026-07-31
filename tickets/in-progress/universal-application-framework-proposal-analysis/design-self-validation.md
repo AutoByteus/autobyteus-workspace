@@ -6,7 +6,7 @@
 - **Conclusion:** **Pass — adopt only one bounded architecture test plus two existing-document updates.** The current production architecture remains sound and unchanged. Candidates 1 and 8 are adopted as DS-016; candidates 2, 3, and 7 are deferred behind named evidence gaps; candidates 4, 5, and 6 are rejected as unsupported churn.
 - **Current implementation evidence:** The fixed functional baseline is `CRR-033` source Pass / 97, `API-REV-012` dual-host Pass / 96.6%, and `CRR-034` proportional durable-test Pass. It proves the SR-013 four projections, package owners, acyclic construction, worker-exit ensure/restart, exact run cleanup, real standalone and Studio Codex/Luna publication/handoff/projection, restart/recovery/remount, route separation, cleanup, and exact 73/73 package parity.
 - **Authoritative product decision:** a standalone-capable package is self-contained for runtime/model selection. Studio overrides are optional host-owned overlays. Credentials, provider endpoints, installed runtime/model availability, and comparable machine-local prerequisites remain host-owned.
-- **Routing:** return the complete SR-014 package through `architecture_reviewer`; implementation and delivery remain paused until the bounded DS-016 design passes.
+- **Routing:** return the complete SR-015 package through `architecture_reviewer`; implementation and delivery remain paused until the corrected bounded DS-016 design passes.
 
 ## Inputs
 
@@ -111,11 +111,11 @@ Every row has a supported action, system event, or governing package/host contra
 | SV-C55 | Registration finds an inactive run with the same ID, or attachment fails after only some observers attach | DS-005, DS-014, DS-015 | Old exact run fully releases before replacement attaches; partial resources release before error; a stale completion cannot delete the replacement | Pass in CRR-033/API-REV-012 |
 | SV-C56 | Explicit terminate, stop-all, registration rollback, and duplicate/stale removal race with exact run identity | DS-005, DS-014, DS-015 | Accepted termination consumes `removed`; stop-all snapshots exact objects and aggregates; repeated removal is no-op; identity mismatch preserves the newer run; every resource revoker/disposer runs at most once | Pass in CRR-033/API-REV-012 |
 | SV-C57 | Contributor constructs and stops the full target owner chain | DS-003–DS-005, DS-014, DS-015 | Four projections/package owners remain; session scope/resource/registry/publication/issuer and controller/queues/launcher/consumers are acyclic; runtime build creates no run; stop drains/revokes/releases in order; no proxy, broad host, reverse callback, generic event bus/container/deferred handler, or migration appears | Pass in CRR-033/API-REV-012 |
-| SV-C58 | Contributor imports a private application-runtime owner from REST, WebSocket, standalone registrar, or GraphQL | DS-015, DS-016 | TypeScript parser/resolver identifies the exact source edge; AFB-001/AFB-002 fail with importer, dependency, policy, and exact contract correction; corresponding projection/declared-contract imports pass | Pass after SV-019 design; synthetic/current-tree proof required |
-| SV-C59 | Package/bundle code imports presentation/assembly/runtime implementation, or maintained application code imports a host/runtime internal | DS-007, DS-015, DS-016 | AFB-003/AFB-005 reject the resolved dependency; the exact catalog-refresh-to-reconciliation exception and local/SDK/declared-library application imports pass | Pass after SV-019 design; positive/negative fixtures required |
-| SV-C60 | Application runtime/scoped session/publish adapter introduces a process-global/default lookup while explicit general-process assembly remains supported | DS-014–DS-016 | AFB-004 rejects the application path and permits only the named general-process assembly factory; no broad singleton ban or allow-list exists | Pass after SV-019 design; exact path/factory fixtures required |
-| SV-C61 | Contributor reads architecture docs after an AFB failure | DS-016 | `docs/modules/applications.md`, `docs/ARCHITECTURE.md`, and the executable test use identical AFB IDs/meanings and point to contract/SDK/injection remediation without duplicating runtime truth | Pass after SV-019 design; link/ID agreement required |
-| SV-C62 | DS-016 is implemented and the full platform baseline is rerun | DS-001–DS-016 | Governed current tree passes; CRR-033/API-REV-012 behavior remains unchanged; package parity is 73/73; diff contains only the architecture test and two docs; no migration/generated output/production source change exists | Pass after SV-019 design; full source-review/API-E2E loop required |
+| SV-C58 | Contributor adds an allowed or forbidden dependency in governed server TS/JS or one of the eleven Studio application Vue SFCs | DS-015, DS-016 | Exact source-kind extraction and the server/Studio-web profile identify the edge; AFB-001/AFB-002 report profile, importer/location, dependency, policy, and correction; SFC parse errors fail; allowed projection/web-local/contract imports pass | Pass after corrected SV-019 design; TS/JS/Vue fixtures and current-tree enumeration required |
+| SV-C59 | Package/bundle code imports presentation/assembly/runtime implementation, or Brief/Socratic/template source uses a host internal, cross-project/escaping path, unresolved local alias, or undeclared library | DS-007, DS-015, DS-016 | AFB-003/AFB-005 use the exact project/config/root/manifest profile; only the catalog reconciliation seam plus local/SDK/own-manifest library/Node built-in imports pass; unresolved governed imports fail rather than disappear | Pass after corrected SV-019 design; per-project/cross-project fixtures required |
+| SV-C60 | Contributor calls a process-global/default owner directly or removes one required graph-local publication/resource, run, session/provider, or team/context constructor/factory input | DS-014–DS-016 | AFB-004 resolves exact bindings, rejects the seven direct callees and every table-driven omission/null/undefined/opaque-spread case, asserts the current construction sites, and permits only the two named server assembly call sites | Pass after corrected SV-019 design; complete and every-omission fixtures required |
+| SV-C61 | Contributor reads architecture docs after an import, resolution, or injection-obligation failure | DS-016 | `docs/modules/applications.md`, `docs/ARCHITECTURE.md`, and the executable test use identical AFB IDs, obligation families, project/manifest rules, and contract/SDK/declared-library/injection remediation without duplicating runtime truth | Pass after corrected SV-019 design; link/ID/obligation agreement required |
+| SV-C62 | Corrected DS-016 is implemented and the full platform baseline is rerun | DS-001–DS-016 | Install/focused test works without generated `.nuxt`; the governed current tree, eleven SFCs, and templates pass; direct parser is dev-only; CRR-033/API-REV-012 behavior and 73/73 parity remain unchanged; diff contains only the test, server dev manifest/lock entry, and two docs; no migration/generated package output/production source change exists | Pass after corrected SV-019 design; full source-review/API-E2E loop required |
 
 ## Reachable Product Use-Case Completeness Audit
 
@@ -148,7 +148,7 @@ Every row has a supported action, system event, or governing package/host contra
 | UC-025 — Preserve behavior while simplifying framework ownership and construction | SV-C45–SV-C57 | DS-003–DS-005, DS-014, DS-015 | Complete in CRR-033/API-REV-012 |
 | UC-026 — Publish after application-worker exit | SV-C52, SV-C53 | DS-004, DS-014, DS-015 | Complete in API-REV-012 |
 | UC-027 — Remove an inactive or terminated agent run | SV-C54–SV-C57 | DS-005, DS-014, DS-015 | Complete in CRR-033/API-REV-012 |
-| UC-028 — Contributor receives immediate feedback for a forbidden application-framework dependency | SV-C19, SV-C58–SV-C62 | DS-016 over DS-001–DS-015 boundaries | Complete at design level; architecture-test/docs implementation required |
+| UC-028 — Contributor receives immediate feedback for a forbidden application-framework dependency | SV-C19, SV-C58–SV-C62 | DS-016 over DS-001–DS-015 boundaries | Complete at corrected design level; architecture-test/dev-dependency/docs implementation required |
 
 ## Corrections Produced By The Validation
 
@@ -404,38 +404,44 @@ Shutdown first blocks session issuance and event intake/timers, then communicati
 
 **Result:** Pass at design level. SV-C52–SV-C57 cover the exact witnesses and full construction/stop path. SR-013 is ready for architecture re-review; implementation remains paused.
 
-### SV-019 — Adopt only evidence-backed architecture hardening
+### SV-019 — Adopt only evidence-backed architecture hardening, with truthful checker coverage
 
-**Trigger and current baseline:**
+**Trigger and fixed baseline:**
 
 1. The code reviewer requested proof, narrowing, deferral, or rejection of eight possible improvements rather than presuming another defect or refactor.
-2. SR-013 is implemented and passed: CRR-033 / 97, API-REV-012 / 96.6%, and CRR-034. The audit therefore treats all current production behavior and owner identity as fixed unless independent reachable evidence proves otherwise.
-3. Current source scans show the reviewed boundaries are obeyed. A TypeScript-resolution probe also shows representative forbidden imports would compile and resolve today, while no standard architecture test exists. Existing docs explain runtime roles but omit the exact enforceable direction table.
+2. SR-013 remains fully passed: CRR-033 / 97, API-REV-012 / 96.6%, and CRR-034. Every production behavior and owner identity remains fixed.
+3. SR-014 selected only one architecture test plus two document updates. `ARCH-REV-012` accepted that proportional decision but found two reachable test-design gaps: AFB-004 direct-callee matching misses optional injection omission, and a single TypeScript source/resolver path does not cover eleven Vue SFCs or separate server/web/application/template project authorities.
+4. Source inspection confirms four distinct graph-sensitive omission families—publication/resource, run, session/provider, and team/context—and current application construction explicitly supplies each required dependency. A direct SFC probe confirms `@vue/compiler-sfc` extracts all eleven current `<script setup lang="ts">` blocks with their imports and no SFC errors. Project inspection confirms separate server/web configs, two backend tsconfigs, app-config-owned frontend roots, and one manifest per application/template.
 
-**Decision by candidate:**
+**Decision by candidate remains unchanged:**
 
 | Candidate | Reachability / consequence | Decision |
 | --- | --- | --- |
-| Automated module-boundary enforcement | Reachable contributor change can reintroduce a private/global dependency without compiler failure; consequence is loss of the reviewed authority boundary | `Adopt Now`, only as AFB-001–AFB-005 test |
+| Automated module-boundary enforcement | Reachable contributor import or injection omission can reintroduce a private/global dependency without compiler failure | `Adopt Now`, only as corrected AFB-001–AFB-005 test |
 | Deliberate application-platform public API | No supported external consumer or current bypass; server package is private and internal roots are explicit | `Defer With Named Evidence Gap` |
-| Shared Studio/standalone conformance suite | Current durable suites have no measured duplicated same-layer requirement assertions; API/E2E already proves parity | `Defer With Named Evidence Gap` |
-| Common lifecycle vocabulary/state contract | Runtime, worker, run, session, queue, and server lifecycles have different valid states and no proven contradiction | `Reject` |
+| Shared Studio/standalone conformance suite | No measured duplicated same-layer requirement assertions; API/E2E already proves parity | `Defer With Named Evidence Gap` |
+| Common lifecycle vocabulary/state contract | Different subjects have different valid states and no proven contradiction | `Reject` |
 | Ownership-led directory moves | Current paths match SR-013 owners; no wrong-owner change/import evidence | `Reject` |
-| Standardized role suffixes | Current reviewed nouns match concrete responsibilities; another rename is preference churn | `Reject` |
-| Cross-boundary correlation infrastructure | Existing identities span application/binding/team/agent/session/revision; no supported diagnosis dead-end is demonstrated | `Defer With Named Evidence Gap` |
-| Executable architecture documentation | Current docs lack the exact boundary table and test link; adding them materially shortens correction without new source truth | `Adopt Now`, two existing docs only |
+| Standardized role suffixes | Current reviewed nouns match concrete responsibilities | `Reject` |
+| Cross-boundary correlation infrastructure | Existing identities span application/binding/team/agent/session/revision; no supported diagnosis dead end | `Defer With Named Evidence Gap` |
+| Executable architecture documentation | Exact policy/obligation/project rules materially shorten correction without a new source of behavior truth | `Adopt Now`, two existing docs only |
+
+**ARCH-REV-012 correction proof:**
+
+- **AR-010:** DS-016 now resolves exact constructor/factory bindings and requires explicit non-null/non-undefined inline inputs for every current graph-sensitive target. The table covers `AgentRunResourceManager`, publication/projection services, run manager/allocator/service, scoped session factory, provider bootstrappers/managers, member context/mixed-team factories/managers, team manager/history/service. Synthetic tests remove every required property/position, so every distinct fallback family has a rejected omission. The seven direct global/default callees remain rejected. Only the two named server assembly call sites may select the general-process supervisor/publisher.
+- **AR-011:** `.vue` uses a direct server test dev dependency on `@vue/compiler-sfc`; `<script>` and `<script setup>` are parsed by their actual language. The exact profiles are server, Studio web, Brief backend/frontend, Socratic backend/frontend, and each discovered devkit template. Each profile owns its config or explicit test-local profile, project root, aliases, and manifest. AFB-005 accepts only libraries declared in that manifest's four dependency fields plus Node built-ins; unresolved governed local/alias/manifest-import paths fail. Fixtures use the same current-tree path and include SFC/cross-project positives and negatives.
 
 **Design-principles result:**
 
-- Product Reachability Gate: only the contributor regression and documentation/correction path cross the materiality threshold.
-- Spine span: DS-016 has a complete contributor change -> parse/resolve -> policy result -> correction -> rerun spine and a diagnostic return path.
-- Ownership: one test owns execution; `docs/modules/applications.md` owns explanation; production owners remain untouched.
-- Empty-indirection control: no facade, DI container, service locator, generic event bus, mode-switched server builder, compatibility wrapper, new lifecycle abstraction, or generated documentation system is added.
-- Proportionality: exact inventory is one test Add plus two doc Modifies. There are no production Add/Modify/Rename/Move/Remove entries and no data migration.
-- Preservation: every Studio/standalone route, wire/package/database contract, readiness/default/override rule, session/auth behavior, tool projection, publication/handoff/projection, recovery/remount/restart, shutdown outcome, and 73/73 package byte remains fixed.
+- Product Reachability Gate: MP-ARCH-012-001/002 are supported contributor-contract witnesses; no speculative runtime state is added.
+- Spine span: contributor TS/JS/Vue or construction change -> source/profile selection -> extraction/resolution/binding/obligation check -> policy result -> exact remediation -> rerun.
+- Ownership: one test owns execution; one direct test-only parser supports the real governed file type; the applications module doc owns explanation; production owners remain untouched.
+- Authoritative boundary: project manifests cannot leak across applications/templates, generated `.nuxt` cannot become test authority, and optional general-process defaults cannot be selected from application construction by omission.
+- Empty-indirection control: no facade, DI container, service locator, generic event bus, mode-switched server builder, compatibility wrapper, generic lifecycle, generated documentation, or production helper is added.
+- Proportionality: Add one test; Modify the server dev manifest, workspace lockfile, and two docs; no production source Add/Modify/Rename/Move/Remove and no data migration.
+- Preservation: every Studio/standalone route, wire/package/database contract, readiness/default/override rule, session/auth behavior, tool projection, publication/handoff/projection, recovery/remount/restart, shutdown outcome, and `73/73` package byte remains fixed.
 
-**Result:** Pass at design level. SV-C58–SV-C62 cover the executable policy, documentation agreement, and full no-behavior-change gate. SR-014 is ready for architecture review; implementation and delivery remain paused.
-
+**Result:** Pass at design level after the bounded ARCH-REV-012 correction. SV-C58–SV-C62 now cover SFC/project resolution, fallback-by-omission, documentation agreement, test-only dependency ownership, and the full no-behavior-change gate. SR-015 is ready for architecture re-review; implementation and delivery remain paused.
 ## Data-Flow Coverage Check
 
 | In-Scope Concern | Primary / Return Spine | Authoritative Boundary | Result |
@@ -456,13 +462,13 @@ Shutdown first blocks session issuance and event intake/timers, then communicati
 | Package command, rollback, and catalog refresh | DS-015 | Package registry + command service + late refresh coordinator | Complete and passed in CRR-033/API-REV-012 |
 | Acyclic run/publication/session construction | DS-004, DS-005, DS-014, DS-015 | Application session scope -> run resources -> exact active registry -> concrete publisher -> scoped issuer -> run managers | Complete and passed in CRR-033/API-REV-012 |
 | Acyclic engine/event/artifact construction and recovery | DS-003–DS-005, DS-015 | Controller + closed queues -> launcher -> artifact delivery/journal dispatcher/reentry, with ensure-before-invoke | Complete and passed in CRR-033/API-REV-012 |
-| Executable application-framework dependency boundary | DS-016 over DS-001–DS-015 | AFB-001–AFB-005 parser/resolver-backed architecture test plus canonical module documentation | Complete after SV-019 design; test/docs and full API-REV-012 preservation proof required |
+| Executable application-framework dependency boundary | DS-016 over DS-001–DS-015 | AFB-001–AFB-005 TS/JS/Vue project resolver plus exact injection obligations and canonical module documentation | Complete after corrected SV-019 design; test/dev-dependency/docs and full API-REV-012 preservation proof required |
 
 ## Canonical Design-Principles Audit
 
 | Principle / Derived Check | Result | Validation |
 | --- | --- | --- |
-| Approved behavior and production reality | Pass | CRR-033/API-REV-012/CRR-034 are the fixed passed baseline. SR-014 adds only development-time enforcement and documentation. |
+| Approved behavior and production reality | Pass | CRR-033/API-REV-012/CRR-034 are the fixed passed baseline. SR-015 adds only development-time enforcement, one test-only parser declaration, and documentation. |
 | Spine span sufficiency | Pass | Product spines remain complete; DS-016 separately spans contributor change -> resolved dependency -> diagnostic/correction -> passing rerun without entering production runtime. |
 | Ownership clarity and boundary encapsulation | Pass after SV-019 | Implemented SR-013 owners remain unchanged; one architecture test makes their critical directions executable and existing application docs explain correction. |
 | Main-domain naming health | Pass | SR-011 names remain implemented and passed; SR-013 adds only concrete role nouns consistent with that vocabulary. |
@@ -494,6 +500,6 @@ The major architecture remains:
 
 > One immutable application package supplies its complete standalone launch baseline; two thin hosts normalize their ingress and build the same application platform runtime and business stack.
 
-SR-014 preserves the fully implemented and passed SR-013 architecture. It adds no runtime node or product path. DS-016 makes five critical dependency directions executable during development and gives contributors one canonical documentation table and correction path.
+SR-015 preserves the fully implemented and passed SR-013 architecture. It adds no runtime node or product path. Corrected DS-016 makes five critical dependency directions, including omission-triggered fallback, executable across the actual TS/JS/Vue project inputs and gives contributors one canonical documentation table and correction path.
 
-All 28 reachable use cases map to DS-001–DS-016 and at least one of 62 validation cases. The design adds no product status, route, project, UI, persistence, migration, manifest change, authentication system, host-specific build, compatibility alias, production runtime/tool behavior, external gateway, public facade, shared host harness, lifecycle abstraction, directory move, suffix rename, correlation infrastructure, generic container/event bus/deferred handler, or repository-wide refactor. SR-014 is ready for `architecture_reviewer`; no architecture approval or implementation completion is presumed.
+All 28 reachable use cases map to DS-001–DS-016 and at least one of 62 validation cases. The design adds no product status, route, project, UI, persistence, migration, manifest change, authentication system, host-specific build, compatibility alias, production runtime/tool behavior, external gateway, public facade, shared host harness, lifecycle abstraction, directory move, suffix rename, correlation infrastructure, generic container/event bus/deferred handler, or repository-wide refactor. SR-015 is ready for `architecture_reviewer`; no architecture approval or implementation completion is presumed.

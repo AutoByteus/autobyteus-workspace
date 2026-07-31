@@ -2,7 +2,7 @@
 
 ## Status And Purpose
 
-- **Evaluation status:** Complete for `SR-014`.
+- **Evaluation status:** Complete for `SR-015`; ARCH-REV-012 checker corrections incorporated.
 - **Approval applicability:** The evidence and rejected/deferred classifications are `N/A`; the two adopted, behavior-neutral hardening items require architecture approval as part of the revised solution package.
 - **Baseline:** `SR-013` / `ARCH-REV-011`, `IR-017` / `IR-018`, `CRR-033` Pass / 97, `API-REV-012` Pass / 96.6%, and `CRR-034` Pass.
 - **Scope:** Prove, narrow, defer, or reject eight proposed architecture improvements without changing the already-passed Studio or standalone product behavior.
@@ -14,7 +14,7 @@ This supplement is linked from [requirements.md](requirements.md), [investigatio
 
 | Candidate | Classification | Evidence-Based Decision |
 | --- | --- | --- |
-| 1. Automated module-boundary enforcement | **Adopt Now — bounded** | Current source is clean, but TypeScript resolves representative forbidden transport-to-runtime, GraphQL-to-runtime-state, and application-to-server-internal imports. The standard suite has no durable import/call-boundary check, despite AC-007/AC-019/AC-021 depending on those directions. Add one repository-owned architecture test; change no runtime source. |
+| 1. Automated module-boundary enforcement | **Adopt Now — bounded** | Current source is clean, but TypeScript resolves representative forbidden imports and optional reusable constructors allow a contributor to omit application-scoped dependencies without writing a forbidden callee. The standard suite has no durable import/call/constructor-obligation check. Add one repository-owned architecture test with exact TS/JS/Vue project resolution; change no runtime source. |
 | 2. Deliberate application-platform public API | **Defer With Named Evidence Gap** | `autobyteus-server-ts` is private. Its root exports are already explicit; the only package-root consumers outside the server are four devkit source files using the standalone start/handle/validator surface. No supported external publisher/host consumer or current deep package-name import exists. Revisit when the server package is published or a supported repository-external host consumer is introduced. |
 | 3. Shared Studio/standalone conformance suite | **Defer With Named Evidence Gap** | The current durable host-builder layer contains one standalone server integration with two cases and no equivalent Studio builder contract suite; therefore there are zero duplicated same-layer host assertions to extract. Real parity is already proven by API-REV-012. Revisit when at least two same-semantic assertions are duplicated across durable host harnesses or a parity regression escapes the focused route/runtime tests. |
 | 4. Consistent lifecycle vocabulary and transition contracts | **Reject** | Platform, worker, run, session, queue, and server lifecycles have different real subjects and transition needs. No contradictory reachable state or unsupported transition was found. One generic state machine would erase semantics and add empty indirection. |
@@ -39,6 +39,8 @@ This supplement is linked from [requirements.md](requirements.md), [investigatio
 | H-010 | Current central file/role inventory and docs | Central files are placed under application platform, packages, engine, orchestration, Agent Tools, and run execution according to the owner they implement. The approved role nouns match the code. |
 | H-011 | Session, binding, delivery-command, artifact, and log trace | Session owner identity carries run/team/member; application execution context carries application/binding; delivery commands carry run/application/binding/revision. Current live relay logs the canonical run ID, from which the stored binding maps to the application. No demonstrated diagnosis dead end exists. |
 | H-012 | `docs/ARCHITECTURE.md`, `docs/modules/applications.md`, orchestration/engine/Agent Tools docs, `docs/custom-application-development.md` | Current documentation explains the two servers, four runtime projections, on-demand execution, Agent Tools scope, artifact delivery, and lifecycles. The missing durable element is an exact dependency-direction table linked to enforcement. |
+| H-013 | `ARCH-REV-012`; reusable publication/run/team constructors; `create-application-run-services.ts` | Removing `activeRunReader`/relay, `activeRunRegistry`, or team/context inputs compiles and activates imported default branches without placing a forbidden callee in the governed construction file. |
+| H-014 | Eleven governed Vue SFCs; direct TypeScript/SFC probe; server/web/Brief/Socratic/template configs and manifests | Whole-SFC TypeScript parsing is not a valid import contract. Direct `@vue/compiler-sfc` parsing yields the eleven script-setup blocks and their imports with zero SFC errors. The projects have different configs/manifests, and the compiler is currently only transitive through Nuxt. |
 
 ## Candidate Proof Matrix
 
@@ -46,20 +48,20 @@ This supplement is linked from [requirements.md](requirements.md), [investigatio
 
 | Required Proof Dimension | Result |
 | --- | --- |
-| Current concrete source evidence | H-001–H-006. Current imports/calls satisfy the intended boundaries, but no standard check owns the invariant. The TypeScript probe proves forbidden imports compile-resolve. |
+| Current concrete source evidence | H-001–H-006 and H-013–H-014. Current imports and injections satisfy the intended boundaries, but no standard check owns the invariant. Forbidden imports compile-resolve; omitted optional graph dependencies can activate imported defaults; direct TypeScript parsing does not truthfully cover governed Vue SFCs. |
 | Independent supported trigger / governing contract | A contributor adds or changes an application route, Studio API, package command, application runtime service, Agent Tools publication adapter, or maintained application source. This is governed by AC-007, AC-019, AC-021, BEH-009/BEH-010, and the open-source contributor path. |
-| Forward production/lifecycle trace | Contributor import/call -> TypeScript resolution -> build/test -> host assembly/runtime. Without a check, a private owner or process-global fallback can become reachable through a supported route or run. |
+| Forward production/lifecycle trace | Contributor import, Vue script import, or application-construction omission -> project compiler accepts it -> ordinary build/test -> host assembly/runtime. Without the corrected check, a private owner or process-global fallback can become reachable through a supported route or run. |
 | Reachability | **Reachable.** The initiating change is a supported repository-development path, and the imported targets are real production owners. The probe uses no source mutation and establishes compiler acceptance. |
-| Material consequence / measurable benefit | Prevents recurrence of the exact boundary classes already corrected by CR-019/CR-021 and the application/server coupling prohibited by AC-007. Measurable proof: standard tests fail with policy ID, importer, and imported target/callee when a synthetic or real violation is present. |
-| Current owner / absorption | The `autobyteus-server-ts` architecture test suite can absorb the check. No runtime service, DI container, new package, or lint framework is needed. |
+| Material consequence / measurable benefit | Prevents recurrence of the exact boundary classes corrected by CR-019/CR-021, including fallback-by-omission. Measurable proof: standard tests fail with policy/profile/importer plus dependency/callee or missing injection path for TS, JS, and Vue current-tree/fixture inputs. |
+| Current owner / absorption | The `autobyteus-server-ts` architecture test suite can absorb the check. One direct test-only `@vue/compiler-sfc` dev dependency is necessary; no runtime service, DI container, new production package, or lint framework is needed. |
 | Before primary spine | Contributor change -> TypeScript resolves forbidden dependency -> ordinary compilation may pass -> human/source/API review must rediscover the violation. |
 | After primary spine | Contributor change -> repository-owned AST/import check -> exact policy diagnostic -> standard test fails before handoff. Runtime production spine is unchanged. |
 | Return/event spine | Diagnostic `{policyId, importer, dependency}` -> contributor replaces private/global dependency with runtime contract, SDK, explicit scoped dependency, or approved assembly root -> re-run passes. |
-| Exact allowed directions | Assembly roots -> runtime builders/private construction; transports -> `application-platform-runtime-contracts`; runtime builder -> injected domain owners; package refresh coordinator -> catalog reconciliation; application source -> SDK/local/declared library or Node built-in; application scoped publication/session code -> injected scoped capabilities. |
-| Exact forbidden directions | Transport/GraphQL -> runtime private builder/store/run/session/engine owners; application source -> server/web/Electron/devkit host internals; package/bundle -> presentation/API/composition/standalone host; application runtime/scoped publish path -> named process-global/default run/session/publication lookups. |
-| Add / Modify / Rename-Move / Remove | **Add:** `autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts`. **Modify:** two docs under candidate 8. **Rename-Move:** none. **Remove:** none. |
+| Exact allowed directions | Assembly roots -> runtime builders/private construction; transports -> runtime contracts; runtime builder -> every required graph-scoped owner; package refresh coordinator -> reconciliation; application source -> local/SDK/own-manifest library/Node built-in; Vue presentation -> web-local/contracts; application publication/session/team paths -> complete scoped inputs. |
+| Exact forbidden directions | Transport/GraphQL/Vue -> private runtime/server owners; application source -> host/runtime internals or undeclared/cross-project dependencies; package/bundle -> presentation/API/assembly/standalone host; application construction -> named direct globals or omission of required publication/run/session-provider/team-context inputs. |
+| Add / Modify / Rename-Move / Remove | **Add:** architecture test. **Modify:** server `package.json`, root `pnpm-lock.yaml`, and two docs. **Rename-Move/Remove:** none. Production source: none. |
 | Preserved behavior | Every Studio/standalone route, wire contract, package byte, database row/schema, provider/tool behavior, lifecycle, and executable result remains unchanged. |
-| Tests / executable evidence | Current-tree pass; synthetic rejected examples for each rule family; synthetic allowed examples; server TypeScript no-emit; focused architecture test; retained affected source/API-E2E gates proportionate to a test/docs-only change. |
+| Tests / executable evidence | Full current-tree pass including eleven SFCs/templates; TS/JS/Vue and cross-project positives/negatives; every required omission negative; exact assembly positives; install/test without generated `.nuxt`; server no-emit; retained affected source/API-E2E gates. |
 | Empty-indirection rejection | One test owns policy; no facade, runtime wrapper, service locator, generic DI, event bus, mode-switched builder, singleton fallback, compatibility alias, or production source churn. |
 
 ### 2 — Deliberate Application-Platform Public API
@@ -169,18 +171,60 @@ This supplement is linked from [requirements.md](requirements.md), [investigatio
 
 ## Adopted Boundary Policy
 
-The test implementation may use the TypeScript parser/resolver already present as a dev dependency, or an equivalently exact parser. It derives repository root from the test module, not process CWD; parses/resolves imports; and, for AFB-004, resolves imported bindings/static member calls to the exact closed callee set. Synthetic fixtures live only in a disposable temp directory. It must not use a broad substring scan that confuses comments, type names, declarations, or similarly named functions with dependencies or write generated fixtures into the repository.
+`ARCH-REV-012` does not change which candidates are adopted. It corrects how the one adopted checker must work.
+
+### Source extraction and project resolution
+
+The test owns one extraction path per real source kind:
+
+- `.ts` / `.tsx` / `.js` / `.jsx` / `.mjs` / `.cjs`: TypeScript AST with static import/export, literal `require`, literal dynamic `import()`, and `ImportTypeNode` collection;
+- `.vue`: direct test dev dependency `@vue/compiler-sfc` `^3.5.28` extracts `<script>` and `<script setup>`; TypeScript parses each block according to `lang`; SFC/compiler errors, unsupported script language, or unresolved script `src` fail closed;
+- comments, arbitrary strings, templates/styles, non-literal runtime module names, `.build/**`, and `dist/**` are not dependency edges.
+
+The test does not load generated `.nuxt`. Its importer profile table is:
+
+| Profile | Governing inputs | Config/root/manifest authority |
+| --- | --- | --- |
+| `server` | AFB-001 plus server AFB-002/003/004 | server `tsconfig.json`; server root; server `package.json` |
+| `studio-web` | closed AFB-002 web TS/JS/Vue paths | web `tsconfig.json` identifies the project; deterministic test-local Nuxt `~`/`@`/`~~`/`@@` source aliases; web root; web `package.json` |
+| `brief-backend` / `brief-frontend` | Brief `backend-src` / `frontend-src` | Brief backend tsconfig or explicit JS profile from app config; Brief root; Brief manifest |
+| `socratic-backend` / `socratic-frontend` | Socratic `backend-src` / `frontend-src` | Socratic backend tsconfig or explicit JS profile from app config; Socratic root; Socratic manifest |
+| `devkit-template:<name>` | each valid template `src` independently | template app config plus explicit NodeNext/allowJs profile; template root; template manifest |
+
+Relative, absolute, alias, and manifest-`imports` specifiers expected to name repository source must resolve or fail the enclosing AFB policy as `UNRESOLVED_GOVERNED_IMPORT`; they are never skipped. For AFB-005, a bare package is allowed only if its canonical package name is present in that importer's own `dependencies`, `devDependencies`, `peerDependencies`, or `optionalDependencies`. Another project/root manifest does not count. Node built-ins are allowed by `node:`/`builtinModules`. A forbidden host/runtime package is rejected even if declared. Checked-in application `frontend-src/generated/**` remains governed source; generated package/build directories do not.
+
+### Closed AFB rules
 
 | Policy ID | Importer Scope | Allowed | Rejected |
 | --- | --- | --- | --- |
-| `AFB-001` | `src/api/rest/**`, `src/api/websocket/**`, `src/standalone-application-host/api/**`, standalone bootstrap service | Application platform imports only from `application-platform-runtime-contracts.ts` | Direct runtime builder, lifecycle implementation, stores, recovery, run/session/publication, engine, or shutdown imports |
-| `AFB-002` | `src/api/graphql/**`; production files under `autobyteus-web/components/applications/**` and `autobyteus-web/utils/application/**`; `autobyteus-web/composables/useRuntimeScopedModelSelection.ts` (exclude tests/specs) | Existing GraphQL subject services/contracts and application SDK contracts/client plus presentation-local helpers | GraphQL import of application runtime internals or Studio application presentation import of server package/bundle/runtime implementation |
-| `AFB-003` | `src/application-packages/**`, `src/application-bundles/**` | Domain/store/installer/bundle dependencies; the reviewed catalog-refresh coordinator -> catalog reconciliation exception | API/presentation/composition/standalone-host imports; any other runtime-private import |
-| `AFB-004` | `src/application-platform/runtime/**`; application session scope; scoped session manager; publish adapter | Constructor-injected application run/session/publication dependencies | `AgentRunManager.getInstance`, `AgentTeamRunManager.getInstance`, `AgentToolMcpSessionService.getInstance`, `getAgentToolMcpSessionService`, `getGeneralProcessPublishedArtifactPublisher`, `createGeneralProcessPublishedArtifactPublisher`, or `createGeneralProcessPublishedArtifactRelayService` calls from a governed application path |
-| `AFB-005` | Brief/Socratic `frontend-src`/`backend-src` and devkit template `src` trees | Local source, application frontend/backend SDKs, Node built-ins, and otherwise valid declared libraries | Bare or resolved-relative imports into `autobyteus-server-ts`, `autobyteus-web`, Electron host code, or devkit host/runtime internals; generated output is excluded |
+| `AFB-001` | `src/api/rest/**`, `src/api/websocket/**`, `src/standalone-application-host/api/**`, standalone bootstrap service | Application platform imports only from `application-platform-runtime-contracts.ts` or exact subject inputs | Direct runtime builder, lifecycle, stores, recovery, availability, run/session/publication, engine/queue, or shutdown imports |
+| `AFB-002` | `src/api/graphql/**`; eleven current production Vue SFCs and other production files under the closed Studio application presentation paths | Existing GraphQL subject contracts and Studio application SDK/presentation-local dependencies | GraphQL import of application runtime internals or Studio presentation import of server package/bundle/runtime implementation |
+| `AFB-003` | `src/application-packages/**`, `src/application-bundles/**` | Domain/store/installer/bundle dependencies and exact catalog-refresh coordinator -> reconciliation seam | API/presentation/server assembly/standalone-host imports or any other private runtime dependency |
+| `AFB-004` | `src/application-platform/runtime/**`; application session scope; scoped session manager; publish adapter | Complete graph-sensitive application construction obligations plus injected scoped capabilities | Seven named direct global/default callees or omission/null/undefined/opaque spread of any required application construction dependency |
+| `AFB-005` | Brief/Socratic frontend/backend source and each valid devkit template source | Project-local source, application frontend/backend SDKs, Node built-ins, and the importer's own manifest-declared library | Server/web/Electron/standalone/devkit host/runtime imports, undeclared libraries, unresolved or project-escaping local/alias imports |
 
-Assembly roots are deliberately exempt from `AFB-004` when constructing the named general-process supervisor/publisher. The rule protects application-scoped construction; it does not outlaw established general-process behavior elsewhere in the server or unrelated process-scoped workspace/runtime/model capability getters used by the current runtime.
+The direct AFB-004 callee set remains `AgentRunManager.getInstance`, `AgentTeamRunManager.getInstance`, `AgentToolMcpSessionService.getInstance`, `getAgentToolMcpSessionService`, `getGeneralProcessPublishedArtifactPublisher`, `createGeneralProcessPublishedArtifactPublisher`, and `createGeneralProcessPublishedArtifactRelayService`. Named-import aliases and namespace members resolve to the exact export; similarly named declarations do not match.
 
+### AFB-004 omission protection
+
+AFB-004 additionally resolves the exact constructors/factory method used by `create-application-run-services.ts`. Required object arguments must be inline object literals with explicit, non-computed, non-null/non-undefined fields; spreads do not satisfy an obligation. Required positional arguments must be present and non-null/non-undefined. The current-tree check asserts every expected construction is still visible.
+
+| Family | Exact targets and required input paths |
+| --- | --- |
+| Publication / resource | `AgentRunResourceManager[0]`: `sessionScope`, `runFileChangeService`, `publishedArtifactRelayService`, `memoryRecorder`; `PublishedArtifactPublicationService[0]`: `activeRunReader`, `publishedArtifactRelayService`, `projectionStore`, `snapshotStore`; `PublishedArtifactProjectionService[0]`: `activeRunReader`, `metadataService`, `projectionStore`, `snapshotStore` |
+| Run | `AgentRunManager[0]`: all three backend factories, `activeRunRegistry`, `memoryRecorder`; `AgentRunIdentityAllocator[0]`: definitions, run manager, both metadata services, `memoryDir`; `AgentRunService[1]`: run manager, metadata service, identity allocator |
+| Session / provider | `createApplicationSessionManager[0]`: `scope`, `executionCapabilities.publishedArtifactPublisher`, readiness assertion; AutoByteus factory definition service; Codex bootstrapper arguments 2/7; Claude session manager argument 2; Claude bootstrapper argument 2 |
+| Team / context | Member context builder argument 0; mixed backend factory `memberTeamContextBuilder`/`createTeamManager`; mixed manager subteam/run/session/context inputs; team run manager factory/communication/file inputs; team history manager input; team run service manager/definition/metadata/identity/history/memory inputs |
+
+The complete symbol/property table is authoritative in DS-016. Synthetic tests remove every required field/position, which provides at least one omission negative for each family. This directly covers the ARCH-REV-012 witness without requiring reusable general-process constructors to change.
+
+Only `build-studio-server.ts` and `start-standalone-application-host.ts` may select the named general-process supervisor/publisher for process work. The corresponding definitions remain in `general-process-run-supervisor.ts` and `published-artifact-publication-service.ts`. No application-construction file is exempt, and the policy does not expand into unrelated process-scoped workspace/runtime/model capability getters.
+
+### Fixture and diagnostic proof
+
+Disposable fixtures use exactly the same parser, project map, manifest logic, resolver, binding matcher, and obligation evaluator as the current tree. They cover TS/JS policy directions; allowed and forbidden `<script>`/`<script setup>` SFC imports; SFC parse failure; per-project declared/undeclared/builtin/escaping imports; every required AFB-004 omission; direct callee negatives; and exact assembly positives. The full scan must enumerate all eleven current Vue SFCs and every valid template.
+
+Every failure includes AFB ID, profile, importer/location, original specifier or exact constructor/factory, resolved dependency when applicable, missing property path when applicable, and remediation. A fixture-only parser or resolver path is forbidden.
 ## Preserved Dual-Host Behavior Matrix
 
 | Behavior | Studio | Standalone | Hardening Effect |
@@ -207,10 +251,10 @@ The adopted hardening must not introduce:
 - a repository-wide directory move or suffix rename;
 - an ambient correlation context or new wire correlation field;
 - compatibility aliases, wrappers, dual paths, singleton fallback, or old/new enforcement modes;
-- production source changes merely to make a dependency checker easier to write.
+- production source changes merely to make a dependency checker easier to write; the only dependency change is the direct test-only SFC parser declaration and lock entry.
 
 ## Evaluation Conclusion
 
-This audit finds **one missing invariant and one documentation companion**, not a new runtime architecture defect. Adopt candidates 1 and 8 as a small test/docs-only hardening. Defer candidates 2, 3, and 7 until their named evidence gaps are satisfied. Reject candidates 4, 5, and 6 because current responsibilities are healthy and the proposed symmetry/churn has no owned production benefit.
+This audit finds **one missing invariant and one documentation companion**, not a new runtime architecture defect. Adopt candidates 1 and 8 as a small test/docs/dev-dependency-only hardening. Defer candidates 2, 3, and 7 until their named evidence gaps are satisfied. Reject candidates 4, 5, and 6 because current responsibilities are healthy and the proposed symmetry/churn has no owned production benefit.
 
 The already-passed dual-host implementation remains the functional authority. No route, runtime, package, persistence, provider, MCP, worker, run, session, artifact, UI, or shutdown behavior is redesigned.

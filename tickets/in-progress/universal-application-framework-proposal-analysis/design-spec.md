@@ -14,7 +14,7 @@ The Universal Application Dual-Host Foundation, the SR-011 naming correction, an
 
 The new eight-candidate audit finds no further runtime design defect. It finds one missing enforceable invariant: the current source follows the reviewed dependency directions, but TypeScript resolves representative forbidden imports and the standard suite has no architecture import/call check. Existing docs explain the architecture but do not publish one exact dependency table linked to enforcement.
 
-SR-014 is therefore test/docs-only. It adds one parser-based architecture test and publishes matching `AFB-001`–`AFB-005` rules in existing docs. It does not change production source, a public API, host conformance abstraction, lifecycle model, directory/suffix layout, observability correlation, route, schema, package, data, or runtime behavior. The complete proof and rejected/deferred alternatives are in [application-framework-hardening-evaluation.md](application-framework-hardening-evaluation.md).
+`ARCH-REV-012` accepts that bounded direction but identifies two implementation-blocking completeness gaps: a direct-callee-only AFB-004 misses optional-dependency omission, and a singular TypeScript parser/resolver does not cover Vue SFCs or the distinct server/web/application/template project authorities. SR-015 corrects those test mechanics. It still adds only one architecture test and two documentation updates, plus a direct test-only Vue parser declaration and lockfile entry. It does not change production source, a public API, host conformance abstraction, lifecycle model, directory/suffix layout, observability correlation, route, schema, package output, data, or runtime behavior. The complete proof and rejected/deferred alternatives are in [application-framework-hardening-evaluation.md](application-framework-hardening-evaluation.md).
 
 All earlier DS-014/SR-010/SR-011 references to bind-once cycle breakers describe the implemented and passed pre-SR-012 baseline only. DS-015 supersedes those construction mechanics. Their security, publisher identity, scoped revocation, exact cleanup, ensure/restart, and functional behavior remain mandatory; their proxy types/files do not.
 
@@ -136,9 +136,16 @@ The same design is exposed as a native application-folder workflow:
 | Cross-boundary observability correlation | **Defer With Named Evidence Gap** — hardening supplement identifier trace | Existing canonical identities remain; no ambient correlation/event machinery without a demonstrated diagnostic dead end. |
 | Executable architecture documentation | **Adopt Now** — DS-016 docs plan | Adds one matching table to existing docs and a pointer; no generator or duplicated diagram system. |
 
+### Architecture Review Round 12 Resolution Map
+
+| Finding | Resolution Location | Scope Effect |
+| --- | --- | --- |
+| `AR-010` / `MP-ARCH-012-001` | DS-016 AFB-004 obligation table, exact binding/shape rules, omission fixtures, hardening supplement, SV-019 | Adds fail-closed checks for optional application construction inputs across publication/resource, run, session/provider, and team/context families. Named general-process assembly remains explicit; no production constructor or runtime source changes. |
+| `AR-011` / `MP-ARCH-012-002` | DS-016 SFC extraction, seven project profiles, manifest/unresolved rules, parser dependency/file inventory, SFC/cross-project fixtures, hardening supplement, SV-019 | Governs all eleven Vue SFCs and every server/web/Brief/Socratic/template source with deterministic parsing and ownership. Adds one test-only direct dev dependency and lockfile entry; no generated `.nuxt` or runtime dependency. |
+
 ### Discussion-Stage Self-Validation Resolution Map
 
-The use-case, canonical-principles, refreshed-base, and downstream consistency audit is retained in [design-self-validation.md](design-self-validation.md). It produced nineteen bounded corrections across discussion and downstream rework:
+The use-case, canonical-principles, refreshed-base, and downstream consistency audit is retained in [design-self-validation.md](design-self-validation.md). It produced nineteen bounded corrections across discussion and downstream rework; SV-019 now includes the ARCH-REV-012 checker-completeness correction:
 
 | Finding | Resolution Location | Scope Effect |
 | --- | --- | --- |
@@ -160,7 +167,7 @@ The use-case, canonical-principles, refreshed-base, and downstream consistency a
 | SV-016 | Familiar role vocabulary, clean current-to-target map, source/export impact, and behavior-preservation proof | Resolved CR-018 without changing runtime behavior or expanding into an automatic repository-wide rename |
 | SV-017 | Initial narrow outward runtime contracts, explicit package refresh ownership, and proposed acyclic run/publication/engine/event construction | Resolves CR-019/CR-020; superseded for the two CR-021 lifecycle edges by SV-018 after ARCH-REV-010 |
 | SV-018 | Ensure-before-artifact delivery and exact acyclic run-resource cleanup | Resolves AR-008/AR-009 through a closed artifact-delivery queue/service and early session-scope/resource/registry chain while retaining every passed behavior and avoiding generic deferred machinery |
-| SV-019 | Eight-candidate proof and executable boundary policy | Adopts only one architecture test plus matching existing-doc table; defers/rejects unsupported abstractions and preserves all passed production behavior |
+| SV-019 | Eight-candidate proof and executable boundary policy, corrected for ARCH-REV-012 | Adopts only one architecture test plus matching existing-doc table; adds exact application-construction obligations and heterogeneous TS/JS/Vue project resolution; defers/rejects unsupported abstractions and preserves all passed production behavior |
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
@@ -201,7 +208,7 @@ The authoritative reachable use-case inventory is in [requirements.md](requireme
 | UC-013 | DS-008, DS-002 | DS-005 readiness | Complete |
 | UC-014 | DS-005 | Existing stop/cleanup spine | Complete |
 | UC-015 | DS-006, DS-007 | DS-005 process cleanup | Complete |
-| UC-016 | DS-007, then DS-001/DS-002 | Frontend startup state; DS-016 dependency check | Complete; durable enforcement added by SR-014 |
+| UC-016 | DS-007, then DS-001/DS-002 | Frontend startup state; DS-016 dependency check | Complete; durable enforcement refined by SR-015 |
 | UC-017 | DS-002, DS-008, DS-014 | Provider origin normalization, browser ingress origin policy, and established internal capability auth | Complete; CR-015 preserves route/security behavior |
 | UC-018 | DS-010–DS-012, DS-014, then DS-002/DS-008 | DS-005 production process lifecycle/stop | Complete after CR-015 bind/revoke/close correction |
 | UC-019 | DS-011 | Package-validation diagnostic return, including recursive portable-field policy | Complete after SR-006 correction |
@@ -223,16 +230,16 @@ The authoritative reachable use-case inventory is in [requirements.md](requireme
 | [proposal-critical-analysis.md](proposal-critical-analysis.md) | Repository-backed readiness assessment and bounded recommendation | REQ-001–REQ-010 / AC-001–AC-023 | Supplies the accepted/revised/deferred decisions that constrain this design | Approved/refined through 2026-07-30; implemented foundation baseline |
 | [design-self-validation.md](design-self-validation.md) | Use-case simulation, reachability classification, spine coverage, canonical design-principles audit, and latest-base reconciliation | REQ-001–REQ-011 / AC-001–AC-024 | Validates this design and records SV-001–SV-019 corrections through downstream rework and the hardening audit | Complete validation evidence; approval `N/A` |
 | [application-framework-architecture-simplification.md](application-framework-architecture-simplification.md) | Exact CRR-031/ARCH-REV-010 contracts, owners, spines, lifecycle, file inventory, sequence, and evidence | REQ-010 / AC-019–AC-023 | Defines the implemented behavior-neutral SR-013 architecture | Approved in ARCH-REV-011; implemented and passed through CRR-033/API-REV-012/CRR-034 |
-| [application-framework-hardening-evaluation.md](application-framework-hardening-evaluation.md) | Eight-candidate source/reachability/proportionality proof and exact AFB dependency policy | REQ-011 / AC-024 | Defines DS-016 and records why the other six candidates do not justify source architecture change | Added in SR-014; adopted test/docs scope requires architecture approval; evidence classifications `N/A` |
+| [application-framework-hardening-evaluation.md](application-framework-hardening-evaluation.md) | Eight-candidate source/reachability/proportionality proof and exact AFB dependency policy | REQ-011 / AC-024 | Defines DS-016 and records why the other six candidates do not justify source architecture change | Revised in SR-015 for ARCH-REV-012; adopted test/docs/dev-dependency scope requires architecture approval; evidence classifications `N/A` |
 
 ## Task Design Health Assessment (Mandatory)
 
 - Change posture: `Passed dual-host foundation plus bounded behavior-neutral architecture hardening`
 - Current design issue found: `Yes, but not a production-runtime design defect`
 - Root cause classification: `Missing Enforceable Invariant` plus `Documentation Discoverability`
-- Refactor needed now: `No production refactor; add one architecture test and update two existing architecture documents`
+- Refactor needed now: `No production refactor; add one architecture test, one direct test-only SFC parser declaration/lock entry, and update two existing architecture documents`
 - Evidence: CRR-033, API-REV-012, and CRR-034 prove the SR-013 runtime, package, run/publication/session, engine/event, recovery, shutdown, and dual-host behavior. The current tree obeys those owners, but TypeScript successfully resolves representative forbidden imports and the standard suite has no architecture rule that prevents transport-to-private-runtime, package-to-presentation, application-to-host-internal, or application-scope-to-process-global regressions. Existing module documentation explains the runtime but does not publish the exact permitted and forbidden directions.
-- Design response: retain every current production file and owner; add DS-016 as one source-only architecture test with five closed policy IDs, then publish the identical policy table in existing server documentation. The test reports the importer, resolved dependency, policy ID, and corrective public contract/SDK/injected-dependency direction.
+- Design response: retain every current production file and owner; add DS-016 as one source-only architecture test with five closed policy IDs, direct test-only Vue parsing, deterministic project/manifest resolution, and exact graph-sensitive injection obligations, then publish the identical policy/obligation guidance in existing server documentation. The test reports the profile, importer, source location, resolved dependency or constructor, missing property when applicable, policy ID, and corrective contract/SDK/declared-library/injected-dependency direction.
 - Proportionality: candidates for a public facade, shared host test harness, common lifecycle state machine, directory moves, suffix churn, and correlation infrastructure do not cross the current evidence threshold. They are rejected or deferred behind named production evidence gaps rather than used to justify another architecture refactor.
 - Intentional deferrals and residual risk: deliberate external/public API narrowing waits for a supported external consumer or bypass; shared contract-test extraction waits for duplicated same-layer assertions; cross-boundary correlation waits for a demonstrated diagnosis dead-end. Manifest/release vNext, packaged/versioned skill/tool dependencies, marketplace execution, optimized distribution, unrelated singleton cleanup, and `APIE2E-REPO-005` remain out of this bounded hardening.
 
@@ -1020,13 +1027,31 @@ Required proof covers exact four-field runtime shape, narrow registrar signature
 
 ### DS-016 — Executable application-framework dependency boundary
 
-DS-016 is the bounded SR-014 hardening selected by the eight-candidate proof in [application-framework-hardening-evaluation.md](application-framework-hardening-evaluation.md). It changes no production source, runtime object graph, route, wire contract, persisted data, package byte, lifecycle, or user-visible behavior. Its purpose is to make already-approved ownership directions fail in the standard server test suite when a future contributor violates them.
+DS-016 is the bounded SR-014/SR-015 hardening selected by the eight-candidate proof in [application-framework-hardening-evaluation.md](application-framework-hardening-evaluation.md). `ARCH-REV-012` accepts the Adopt/Defer/Reject result and narrows the rework to two checker-completeness defects: direct-callee matching did not catch fallback-by-omission, and one TypeScript resolver could not truthfully cover Vue plus multiple project contexts. The corrected target still changes no production source, runtime object graph, route, wire contract, persisted data, package byte, lifecycle, or user-visible behavior.
 
 #### Governing owner and check shape
 
-`autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts` is the sole executable owner. It derives the repository root from the test module location rather than process CWD; walks only the closed source families named below; parses static imports/exports and literal `require`/dynamic-import forms; resolves them with the repository TypeScript configuration; and applies policy to the resolved source path. For AFB-004 it also inspects resolved imported bindings and static member call expressions against the exact forbidden callee set below. It must not rely on broad substring matching, generated output, or a new lint/plugin/toolchain dependency. The same test creates small fixtures only in an OS/disposable temp directory and proves every policy's allowed/rejected directions independently of the current tree without writing the repository.
+`autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts` remains the sole executable policy owner. It derives the repository root from `import.meta.url`, never process CWD; owns one closed table for `AFB-001`–`AFB-005`; scans only the governed source families; extracts imports according to the actual source kind; maps every importer to one deterministic project profile; resolves repository-owned targets; and evaluates normalized real source paths. It parses static imports/exports, literal `require`, literal dynamic `import()`, and TypeScript `ImportTypeNode` specifiers. It does not inspect comments, arbitrary strings, generated package output, or non-literal runtime module names.
 
-Every failure reports the stable policy ID, importer, resolved dependency, violated direction, and correction: use a runtime contract projection, an application SDK/local dependency, or an explicitly injected application-scoped dependency as applicable.
+The test uses the existing direct `typescript` dev dependency for TS/JS AST and module resolution. It adds `@vue/compiler-sfc` `^3.5.28` as a direct **server test dev dependency** rather than relying on Nuxt's transitive installation. `parse()` extracts both `<script>` and `<script setup>` blocks. Each block is parsed as TS, TSX, JS, or JSX from its `lang`; compiler errors, an unsupported script language, or an unresolved external `src` block fail the enclosing AFB policy. Template markup and style imports are outside this JavaScript dependency policy. The test does not run `compileScript`, does not execute an SFC, and does not depend on generated `.nuxt` output.
+
+Every failure reports the stable policy ID, importer, source location, original specifier or constructor/factory symbol, resolved dependency when one exists, violated direction or missing injection path, owning project profile, and correction. The correction is one of: use an exact runtime projection; use the application SDK/local or manifest-declared dependency; inject the named application-scoped dependency; or move genuine general-process construction to a named assembly owner.
+
+#### Importer-to-project, config, and manifest map
+
+The resolver is a dependency-policy resolver, not a substitute for each project's build. Its closed profiles prevent one project's aliases or package declarations from leaking into another.
+
+| Profile | Governed importers | Config authority | Project root / owning manifest | Exact resolution behavior |
+| --- | --- | --- | --- | --- |
+| `server` | All AFB-001, server-side AFB-002/003/004 inputs | `autobyteus-server-ts/tsconfig.json` loaded with the TypeScript config API | `autobyteus-server-ts/` / `package.json` | `NodeNext` options and paths from the checked-in config; `.js` source imports may resolve to their `.ts` owner exactly as the server compiler does. |
+| `studio-web` | Production `.vue`, `.ts`, and `.js` inputs under the closed AFB-002 web paths | `autobyteus-web/tsconfig.json` identifies the Nuxt project; the test intentionally does not load its generated `.nuxt` parent | `autobyteus-web/` / `package.json` | Test-local deterministic Nuxt source aliases `~`, `@`, `~~`, and `@@` (with slash forms) resolve to the web root; relative and extensionless source candidates include `.vue`, `.ts`, `.tsx`, `.js`, `.jsx`, `.mjs`, `.cjs`, and `index.*`. Bare forbidden server packages are classified before physical package resolution. |
+| `brief-backend` | `applications/brief-studio/backend-src/**` | `applications/brief-studio/tsconfig.backend.json` | Brief root / Brief `package.json` | Checked-in `NodeNext` backend options; only local source, built-ins, SDKs, or manifest-declared libraries may be imported. |
+| `brief-frontend` | `applications/brief-studio/frontend-src/**` | No frontend tsconfig exists; `autobyteus-app.config.mjs#source.frontendDir` plus a test-local `NodeNext`/`allowJs` profile is authoritative | Brief root / Brief `package.json` | Relative JS source resolution plus the same manifest rule; checked-in `frontend-src/generated/**` is scanned because it is packaged source, while `.build/**` and `dist/**` are excluded. |
+| `socratic-backend` | `applications/socratic-math-teacher/backend-src/**` | `applications/socratic-math-teacher/tsconfig.backend.json` | Socratic root / Socratic `package.json` | Same backend rule as Brief with its own config and manifest. |
+| `socratic-frontend` | `applications/socratic-math-teacher/frontend-src/**` | No frontend tsconfig exists; its `autobyteus-app.config.mjs#source.frontendDir` plus the same explicit JS profile is authoritative | Socratic root / Socratic `package.json` | Same frontend rule as Brief with no cross-application manifest lookup. |
+| `devkit-template:<name>` | Each `autobyteus-application-devkit/templates/<name>/src/**` tree independently | The template's `autobyteus-app.config.mjs`; no template tsconfig is assumed | That template root / that template's `package.json` | Explicit `NodeNext`/`allowJs` profile; each future template is discovered only when both config and manifest exist, and never inherits the devkit host manifest. |
+
+For relative, absolute, Nuxt-alias, or package-`imports` specifiers that should resolve to repository source, resolution failure is a test failure under the enclosing AFB policy with reason `UNRESOLVED_GOVERNED_IMPORT`; it is never silently skipped. A `#` specifier is accepted only when the owning manifest declares an `imports` mapping that resolves within that project. A bare external package is reduced to its canonical name (`@scope/name` or first unscoped segment). For AFB-005 it is allowed only when that exact name appears in the owning manifest's `dependencies`, `devDependencies`, `peerDependencies`, or `optionalDependencies`; a declaration in the repository root, devkit host, or another application does not count. `node:` imports and unprefixed names in Node's `builtinModules` are allowed without a manifest entry. An explicitly forbidden host/runtime package remains forbidden even if someone adds it to the application manifest. For AFB-001–AFB-004, an external bare package that is not repository-owned is outside the cross-owner path test; known workspace/server package names and all local/alias imports are still resolved or classified fail-closed.
 
 #### Exact closed policy
 
@@ -1035,41 +1060,84 @@ Every failure reports the stable policy ID, importer, resolved dependency, viola
 | `AFB-001` | `src/api/rest/**`, `src/api/websocket/**`, `src/standalone-application-host/api/**`, and `standalone-application-bootstrap-service.ts` | Application runtime access through `application-platform-runtime-contracts.ts` and exact subject inputs supplied by an assembly root | Importing runtime builder, lifecycle implementation, stores, recovery, availability state, run/session/publication, engine, queue, or shutdown internals | None |
 | `AFB-002` | `src/api/graphql/**`; production files under `autobyteus-web/components/applications/**` and `autobyteus-web/utils/application/**`; `autobyteus-web/composables/useRuntimeScopedModelSelection.ts` (exclude `__tests__`, `*.spec.*`, `*.test.*`) | GraphQL receives declared package/query/command contracts; Studio presentation consumes application SDK contracts/client and presentation-local helpers | GraphQL directly importing application-runtime private owners; Studio presentation importing server package/bundle/runtime implementation | No exception for convenience in production files |
 | `AFB-003` | `src/application-packages/**`, `src/application-bundles/**` | Package stores/readers/commands and bundle providers depend inward on their own domain contracts | Imports from API/presentation, server assembly, standalone host, or application-runtime private implementation | `ApplicationCatalogRefreshCoordinator` may depend on the exact `ApplicationCatalogReconciliationService` contract required by its approved bundle -> reconciliation -> agent -> team sequence |
-| `AFB-004` | `src/application-platform/runtime/**`; `application-agent-tool-mcp-session-scope.ts`; `scoped-agent-tool-mcp-session-manager.ts`; `providers/publish-artifacts-mcp-adapter-provider.ts` | Required constructor/factory injection of the exact application-scoped run registry, session scope/manager, and publisher | Calls to `AgentRunManager.getInstance`, `AgentTeamRunManager.getInstance`, `AgentToolMcpSessionService.getInstance`, `getAgentToolMcpSessionService`, `getGeneralProcessPublishedArtifactPublisher`, `createGeneralProcessPublishedArtifactPublisher`, or `createGeneralProcessPublishedArtifactRelayService` from a governed application path | Explicit general-process assembly factories may call the general-process constructors/getters; application paths may not. Existing unrelated process-scoped workspace/runtime/model capability getters are not governed by this policy. |
-| `AFB-005` | `applications/brief-studio/{frontend-src,backend-src}/**`; `applications/socratic-math-teacher/{frontend-src,backend-src}/**`; `autobyteus-application-devkit/templates/**/src/**` | Local modules, application backend/frontend SDKs, Node built-ins, and valid declared third-party libraries | Bare or resolved imports into `autobyteus-server-ts`, `autobyteus-web`, Electron, standalone-host, or devkit host/runtime internals | None; generated package output is not scanned |
+| `AFB-004` | `src/application-platform/runtime/**`; `application-agent-tool-mcp-session-scope.ts`; `scoped-agent-tool-mcp-session-manager.ts`; `providers/publish-artifacts-mcp-adapter-provider.ts` | The complete application-scoped injection obligations below, plus no direct process-global/default call | A named direct global/default callee **or** omission/null/`undefined`/opaque-spread of a required constructor/factory dependency that would let the reusable implementation choose a general-process/default owner | Only `build-studio-server.ts` and `start-standalone-application-host.ts` may select the named general-process supervisor/publisher for process work. Their definitions remain in `general-process-run-supervisor.ts` and `published-artifact-publication-service.ts`; none is an application-construction exemption. Existing unrelated process-scoped workspace/runtime/model getters are not governed. |
+| `AFB-005` | Brief/Socratic `frontend-src`/`backend-src`; every valid devkit template `src` tree | Project-local modules, application backend/frontend SDKs, Node built-ins, and libraries declared in that importer's own manifest fields listed above | Bare or resolved imports into `autobyteus-server-ts`, `autobyteus-web`, Electron, standalone-host, or devkit host/runtime internals; undeclared libraries; local/alias paths escaping the owning project | None; package `dist/**` and `.build/**` are not scanned |
 
-The policy does not ban dependency injection, all singletons, all cross-folder imports, or every repository layer combination. It protects only dependencies already proven material to DS-001–DS-015. A new valid direction must first be assigned to a real owner and reviewed; contributors must not suppress a failure with a broad allow-list.
+The exact direct-callee set remains: `AgentRunManager.getInstance`, `AgentTeamRunManager.getInstance`, `AgentToolMcpSessionService.getInstance`, `getAgentToolMcpSessionService`, `getGeneralProcessPublishedArtifactPublisher`, `createGeneralProcessPublishedArtifactPublisher`, and `createGeneralProcessPublishedArtifactRelayService`. Binding resolution follows named-import aliases and namespace members to the exact source export; similarly named declarations do not match.
+
+#### AFB-004 application construction obligations
+
+The checker resolves constructor imports to the exact source module/export, scans all occurrences in governed application paths, and requires the specified argument/property shape. A required object argument must be an inline object literal; required properties must be explicit, non-computed, and non-`null`/non-`undefined`; a spread cannot satisfy an obligation. Required positional arguments must be present and non-`null`/non-`undefined`. The test also asserts the current construction site contains the expected occurrence so deletion or hiding the construction behind an unchecked helper fails. This enforces application-side completeness while leaving the reusable constructors' established general-process defaults untouched.
+
+| Fallback family | Exact target in `create-application-run-services.ts` | Required application-side shape |
+| --- | --- | --- |
+| Publication / run-resource identity | `new AgentRunResourceManager(...)` | argument 0: `sessionScope`, `runFileChangeService`, `publishedArtifactRelayService`, `memoryRecorder` |
+| Publication / run-resource identity | `new PublishedArtifactPublicationService(...)` | argument 0: `activeRunReader`, `publishedArtifactRelayService`, `projectionStore`, `snapshotStore` |
+| Publication / run-resource identity | `new PublishedArtifactProjectionService(...)` | argument 0: `activeRunReader`, `metadataService`, `projectionStore`, `snapshotStore` |
+| Run ownership and persistence | `new AgentRunManager(...)` | argument 0: `autoByteusBackendFactory`, `codexBackendFactory`, `claudeBackendFactory`, `activeRunRegistry`, `memoryRecorder` |
+| Run ownership and persistence | `new AgentRunIdentityAllocator(...)` | argument 0: `agentDefinitionService`, `agentRunManager`, `agentRunMetadataService`, `teamRunMetadataService`, `memoryDir` |
+| Run ownership and persistence | `new AgentRunService(...)` | argument 1: `agentRunManager`, `metadataService`, `agentRunIdentityAllocator` |
+| Session / provider scope | `ApplicationAgentToolsSessionFactory.createApplicationSessionManager(...)` | argument 0: `scope`, `executionCapabilities.publishedArtifactPublisher`, `assertExecutionCapabilitiesReady` |
+| Session / provider scope | `new AutoByteusAgentRunBackendFactory(...)` | argument 0: `agentDefinitionService` |
+| Session / provider scope | `new CodexThreadBootstrapper(...)` | argument 2 `agentDefinitionService`; argument 7 application `agentToolsSessionManager` |
+| Session / provider scope | `new ClaudeSessionManager(...)` | argument 2 application `agentToolsSessionManager` |
+| Session / provider scope | `new ClaudeSessionBootstrapper(...)` | argument 2 `agentDefinitionService` |
+| Team / context scope | `new MemberTeamContextBuilder(...)` | argument 0 `agentTeamDefinitionService` |
+| Team / context scope | `new MixedTeamRunBackendFactory(...)` | argument 0: `memberTeamContextBuilder`, `createTeamManager` |
+| Team / context scope | nested `new MixedTeamManager(...)` | argument 1: `subTeamRunFactory`, `agentRunManager`, `agentToolMcpSessionManager`, `memberTeamContextBuilder` |
+| Team / context scope | `new AgentTeamRunManager(...)` | argument 0: `mixedTeamRunBackendFactory`, `teamCommunicationService`, `runFileChangeService` |
+| Team / context scope | nested `new TeamRunHistoryCatalogService(...)` | argument 1: `teamRunManager` |
+| Team / context scope | `new TeamRunService(...)` | argument 0: `agentTeamRunManager`, `teamDefinitionService`, `teamRunMetadataService`, `agentRunIdentityAllocator`, `teamRunHistoryCatalogService`, `memoryDir`, `memoryLocationService` |
+
+This is a source architecture contract, not a demand that every reusable constructor become mandatory-only. If a target constructor signature or application composition legitimately changes, the obligation table, synthetic fixtures, docs, and architecture review change together; the checker is not bypassed by a compatibility wrapper or broad allow-list.
+
+#### Fixture and current-tree proof
+
+Synthetic fixtures use the same extractors, profiles, manifest rules, resolver, binding matcher, and obligation evaluator as the current-tree scan. They are created under an OS temp root with a miniature server/web/application/template layout and deleted in `finally`/test cleanup.
+
+Required fixture matrix:
+
+1. one allowed and one forbidden TS/JS import for each AFB import family;
+2. one allowed Vue `<script setup lang="ts">` alias import and one forbidden Vue server-runtime import, plus a `<script>` case and a parse-error case;
+3. Brief/Socratic/template examples showing the same bare library accepted only from the importing project's own manifest, an undeclared library rejected, a Node built-in accepted, and an escaping/unresolved relative path rejected;
+4. one allowed complete AFB-004 construction fixture for each of the four fallback families;
+5. table-driven omission negatives for every required property/positional argument above (therefore at least one rejected omission for publication, run ownership, session/provider, and team/context), plus direct forbidden-callee negatives and the exact two assembly-root positives;
+6. a full current-tree assertion covering all governed files, including all eleven current Vue SFCs and every discovered valid devkit template.
+
+Each negative asserts the exact AFB ID, profile, importer, dependency/callee or missing property path, and correction. A fixture cannot opt out of resolution or use a simplified parser unavailable to the current-tree path.
 
 #### Development-time primary and return spine
 
 ```text
-contributor changes governed TypeScript/JavaScript
-  -> standard server test command discovers architecture test
-  -> parser/resolver maps each governed import to its source owner
-  -> AFB-001..AFB-005 evaluate exact direction
+contributor changes governed TS / JS / Vue source or application construction
+  -> standard server test selects the exact project/config/manifest profile
+  -> source-kind extractor yields imports and AFB-004 construction calls
+  -> resolver/binding checker maps repository targets and required injection shapes
+  -> AFB-001..AFB-005 evaluate exact direction/completeness
   -> allowed: suite continues
-  -> forbidden: fail with policy/importer/dependency/correction
-  -> contributor replaces dependency with contract/SDK/injection
-  -> rerun passes
+  -> forbidden/unresolved/omitted: exact diagnostic returns to contributor
+  -> contributor uses contract/SDK/declared library/explicit scoped injection
+  -> same current-tree check reruns and passes
 ```
 
 This is a development/CI spine only. No checker, registry, middleware, or policy object is loaded in Studio or standalone production startup.
 
 #### Documentation contract
 
-`autobyteus-server-ts/docs/modules/applications.md` owns the human-readable AFB-001–AFB-005 table and explains the correction for each failure. `autobyteus-server-ts/docs/ARCHITECTURE.md` contains only a short boundary summary and a pointer to that module page and the executable test. Policy identifiers and meanings must match exactly; the test remains the executable source of truth. No generated documentation system or duplicate architecture reference is introduced.
+`autobyteus-server-ts/docs/modules/applications.md` owns the human-readable AFB-001–AFB-005 table, the four AFB-004 obligation families, the project/manifest rule, and the correction for each failure. `autobyteus-server-ts/docs/ARCHITECTURE.md` contains only a short boundary summary and a pointer to that module page and executable test. Policy identifiers and meanings must match exactly; the test remains the executable source of truth. No generated documentation system or duplicate architecture reference is introduced.
 
 #### Exact change inventory and proof
 
 | Disposition | File | Responsibility |
 | --- | --- | --- |
-| Add | `autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts` | Parser/resolver-backed current-tree checks plus synthetic positive/negative policy fixtures |
-| Modify | `autobyteus-server-ts/docs/modules/applications.md` | Exact allowed/forbidden dependency table, policy IDs, owner directions, and failure-remediation guidance |
+| Add | `autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts` | TypeScript/JavaScript/Vue extraction, project resolver profiles, AFB-004 obligations, current-tree checks, and synthetic positive/negative fixtures |
+| Modify | `autobyteus-server-ts/package.json` | Add direct test-only dev dependency `@vue/compiler-sfc` `^3.5.28`; no production dependency |
+| Modify | `pnpm-lock.yaml` | Record the direct server test dependency using the already-resolved compiler version |
+| Modify | `autobyteus-server-ts/docs/modules/applications.md` | Exact policies, injection families, project/manifest rules, and remediation guidance |
 | Modify | `autobyteus-server-ts/docs/ARCHITECTURE.md` | Concise architecture boundary summary and canonical links |
 | Production source change | None | Preserve the already-passed runtime and dual-host implementation exactly |
 
-Required proof is: each synthetic forbidden fixture fails only its intended AFB policy; allowed fixtures pass; the complete current governed tree passes; diagnostic contents are asserted; the existing affected server matrix and complete API-REV-012 dual-host characterization remain green; package parity remains `73/73`; and `git diff` confirms no production-source, package, schema, or generated-artifact change. No compatibility alias or data migration applies.
-
+Required proof is: every synthetic forbidden fixture fails only its intended AFB policy; every allowed fixture passes; all required omission variants fail; all eleven SFCs and the complete governed tree pass; diagnostics are asserted; dependency installation and the focused test work without pre-generated `.nuxt`; the existing affected server matrix and complete API-REV-012 dual-host characterization remain green; package parity remains `73/73`; and `git diff` confirms no production-source, runtime dependency, schema, package output, or generated-artifact change. No compatibility alias or data migration applies.
 ## Spine Actors / Main-Line Nodes
 
 - `startApplication` — thin public SDK entry.
@@ -2236,11 +2304,12 @@ The layering is derived from the spines. It is not a request to move every curre
 
 ### Sequence 11 — Make approved dependency directions executable
 
-1. Add the architecture test with a shared path normalizer, TypeScript parser/resolver helper, and closed AFB-001–AFB-005 rule table inside the test file. Do not add a production helper or new tool dependency.
-2. Add synthetic allowed/rejected fixtures in the test's temporary workspace and prove each forbidden fixture triggers exactly its intended policy with importer/dependency/correction diagnostics.
-3. Run the same rules over the current governed source families. Correct the test if it reports a path outside the closed policy; do not change production source or add a broad exception merely to make the test pass.
-4. Update `docs/modules/applications.md` with the exact policy table and remediation, then add the short pointer in `docs/ARCHITECTURE.md`. Assert policy IDs and links remain aligned.
-5. Run the architecture test, affected server test matrix, TypeScript checks, and the full API-REV-012 dual-host characterization baseline. Verify exact `73/73` package parity and inspect the change set for zero production-source/schema/package/generated-output changes.
+1. Add direct server test dev dependency `@vue/compiler-sfc` `^3.5.28` and update `pnpm-lock.yaml`; do not add a production/runtime dependency or rely on Nuxt's transitive compiler.
+2. Add the architecture test with TypeScript plus Vue SFC extractors, the seven exact project/config/manifest profiles, normalized resolution/unresolved policy, closed AFB-001–AFB-005 table, and AFB-004 constructor/factory obligation table inside the test file. Do not add a production helper.
+3. Add disposable synthetic fixtures that use the same current-tree machinery: TS/JS/Vue allowed/rejected imports; project-local manifest/builtin/unresolved cases; complete AFB-004 examples; and table-driven omission negatives for every required injection path.
+4. Run the same rules over the complete governed tree, including all eleven Vue SFCs and every valid devkit template. Correct the test if it reports outside the closed policy; do not edit production source or add a broad exception merely to make the test pass.
+5. Update `docs/modules/applications.md` with the exact policy, obligation-family, project/manifest, and remediation tables, then add the short pointer in `docs/ARCHITECTURE.md`. Assert policy IDs and links remain aligned.
+6. Run dependency installation/focused architecture test without generated `.nuxt`, the affected server test matrix, TypeScript checks, and the full API-REV-012 dual-host characterization baseline. Verify exact `73/73` package parity and inspect the change set for zero production-source/runtime-dependency/schema/package-output/generated-output changes.
 
 ## Key Tradeoffs
 
@@ -2363,7 +2432,7 @@ The layering is derived from the spines. It is not a request to move every curre
 - Apply the exact framework-name map as a clean internal rename. Do not retain old exports, wrappers, re-export aliases, duplicate files, or deprecated names.
 - Preserve the execution timing invariant explicitly: building `ApplicationPlatformRuntime` prepares services and managers only; it may restore recorded work in the established recovery phase, but it never starts a new agent/team until application business code requests one.
 - Keep the target vocabulary consistent in code, tests, diagrams, and affected developer/module documentation; use “composition” only for top-level assembly activity and “dependency graph” only for architecture relationships.
-- Implement DS-016 as a test/docs-only change. Do not edit production source to satisfy the new check unless a real current violation is independently proven and rerouted as design impact.
-- Resolve governed imports with the repository TypeScript configuration and evaluate normalized source paths. Cover static import/export plus literal `require`/dynamic import; do not use broad text matching or scan generated `dist` output.
-- Keep AFB-001–AFB-005 and their single catalog-reconciliation/general-process assembly exceptions closed. A new exception requires an owner, reachable production rationale, updated design/docs/test, and architecture review.
+- Implement DS-016 only as the exact test, test-dev-dependency/lockfile, and two-doc change. Do not edit production source to satisfy the new check unless a real current violation is independently proven and rerouted as design impact.
+- Resolve each governed importer with its DS-016 server/web/Brief/Socratic/template profile and owning manifest. Use `@vue/compiler-sfc` for SFC script blocks and TypeScript for TS/JS AST; cover static import/export, `ImportTypeNode`, and literal `require`/dynamic import. Fail unresolved governed local/alias paths; do not use broad text matching or scan `dist`/`.build`.
+- Keep AFB-001–AFB-005, the exact catalog-reconciliation seam, the two named general-process assembly call sites, and every AFB-004 injection obligation closed. A new exception or obligation change requires an owner, reachable production rationale, updated design/docs/test, and architecture review.
 - Run the complete existing behavior baseline after the architecture test even though no runtime change is intended; preserve exact Studio/standalone outputs and `73/73` package parity.
