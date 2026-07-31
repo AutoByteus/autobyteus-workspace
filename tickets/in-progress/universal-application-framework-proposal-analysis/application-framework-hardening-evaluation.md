@@ -2,7 +2,7 @@
 
 ## Status And Purpose
 
-- **Evaluation status:** Complete for `SR-015`; ARCH-REV-012 checker corrections incorporated.
+- **Evaluation status:** Complete for `SR-016`; ARCH-REV-013 final nested provider-factory correction incorporated.
 - **Approval applicability:** The evidence and rejected/deferred classifications are `N/A`; the two adopted, behavior-neutral hardening items require architecture approval as part of the revised solution package.
 - **Baseline:** `SR-013` / `ARCH-REV-011`, `IR-017` / `IR-018`, `CRR-033` Pass / 97, `API-REV-012` Pass / 96.6%, and `CRR-034` Pass.
 - **Scope:** Prove, narrow, defer, or reject eight proposed architecture improvements without changing the already-passed Studio or standalone product behavior.
@@ -41,6 +41,7 @@ This supplement is linked from [requirements.md](requirements.md), [investigatio
 | H-012 | `docs/ARCHITECTURE.md`, `docs/modules/applications.md`, orchestration/engine/Agent Tools docs, `docs/custom-application-development.md` | Current documentation explains the two servers, four runtime projections, on-demand execution, Agent Tools scope, artifact delivery, and lifecycles. The missing durable element is an exact dependency-direction table linked to enforcement. |
 | H-013 | `ARCH-REV-012`; reusable publication/run/team constructors; `create-application-run-services.ts` | Removing `activeRunReader`/relay, `activeRunRegistry`, or team/context inputs compiles and activates imported default branches without placing a forbidden callee in the governed construction file. |
 | H-014 | Eleven governed Vue SFCs; direct TypeScript/SFC probe; server/web/Brief/Socratic/template configs and manifests | Whole-SFC TypeScript parsing is not a valid import contract. Direct `@vue/compiler-sfc` parsing yields the eleven script-setup blocks and their imports with zero SFC errors. The projects have different configs/manifests, and the compiler is currently only transitive through Nuxt. |
+| H-015 | `ARCH-REV-013`; `CodexAgentRunBackendFactory`; `ClaudeAgentRunBackendFactory`; required-parent inline-value audit | Parent `codexBackendFactory`/`claudeBackendFactory` properties can remain non-null while their nested constructors omit the graph-local bootstrap/session links. Codex argument 1 and Claude arguments 0/1 are the only missing graph-sensitive child obligations; Codex arguments 0/2 and the other audited defaults remain approved process resources. |
 
 ## Candidate Proof Matrix
 
@@ -48,7 +49,7 @@ This supplement is linked from [requirements.md](requirements.md), [investigatio
 
 | Required Proof Dimension | Result |
 | --- | --- |
-| Current concrete source evidence | H-001–H-006 and H-013–H-014. Current imports and injections satisfy the intended boundaries, but no standard check owns the invariant. Forbidden imports compile-resolve; omitted optional graph dependencies can activate imported defaults; direct TypeScript parsing does not truthfully cover governed Vue SFCs. |
+| Current concrete source evidence | H-001–H-006 and H-013–H-015. Current imports and injections satisfy the intended boundaries, but no standard check owns the invariant. Forbidden imports compile-resolve; omitted optional or nested graph dependencies can activate imported defaults; direct TypeScript parsing does not truthfully cover governed Vue SFCs. |
 | Independent supported trigger / governing contract | A contributor adds or changes an application route, Studio API, package command, application runtime service, Agent Tools publication adapter, or maintained application source. This is governed by AC-007, AC-019, AC-021, BEH-009/BEH-010, and the open-source contributor path. |
 | Forward production/lifecycle trace | Contributor import, Vue script import, or application-construction omission -> project compiler accepts it -> ordinary build/test -> host assembly/runtime. Without the corrected check, a private owner or process-global fallback can become reachable through a supported route or run. |
 | Reachability | **Reachable.** The initiating change is a supported repository-development path, and the imported targets are real production owners. The probe uses no source mutation and establishes compiler acceptance. |
@@ -171,7 +172,7 @@ This supplement is linked from [requirements.md](requirements.md), [investigatio
 
 ## Adopted Boundary Policy
 
-`ARCH-REV-012` does not change which candidates are adopted. It corrects how the one adopted checker must work.
+`ARCH-REV-013` does not change which candidates are adopted. It accepts the AR-011 correction and completes only AFB-004's nested provider-factory coverage.
 
 ### Source extraction and project resolution
 
@@ -214,9 +215,10 @@ AFB-004 additionally resolves the exact constructors/factory method used by `cre
 | Publication / resource | `AgentRunResourceManager[0]`: `sessionScope`, `runFileChangeService`, `publishedArtifactRelayService`, `memoryRecorder`; `PublishedArtifactPublicationService[0]`: `activeRunReader`, `publishedArtifactRelayService`, `projectionStore`, `snapshotStore`; `PublishedArtifactProjectionService[0]`: `activeRunReader`, `metadataService`, `projectionStore`, `snapshotStore` |
 | Run | `AgentRunManager[0]`: all three backend factories, `activeRunRegistry`, `memoryRecorder`; `AgentRunIdentityAllocator[0]`: definitions, run manager, both metadata services, `memoryDir`; `AgentRunService[1]`: run manager, metadata service, identity allocator |
 | Session / provider | `createApplicationSessionManager[0]`: `scope`, `executionCapabilities.publishedArtifactPublisher`, readiness assertion; AutoByteus factory definition service; Codex bootstrapper arguments 2/7; Claude session manager argument 2; Claude bootstrapper argument 2 |
+| Session / provider — nested backend factories | `CodexAgentRunBackendFactory[1]`: graph-local Codex bootstrapper, with `[0]`/`[2]` deliberately process-scoped; `ClaudeAgentRunBackendFactory[0]`/`[1]`: graph-local session manager/bootstrapper |
 | Team / context | Member context builder argument 0; mixed backend factory `memberTeamContextBuilder`/`createTeamManager`; mixed manager subteam/run/session/context inputs; team run manager factory/communication/file inputs; team history manager input; team run service manager/definition/metadata/identity/history/memory inputs |
 
-The complete symbol/property table is authoritative in DS-016. Synthetic tests remove every required field/position, which provides at least one omission negative for each family. This directly covers the ARCH-REV-012 witness without requiring reusable general-process constructors to change.
+The complete symbol/property table and required-parent inline-value audit are authoritative in DS-016. Synthetic tests exercise omission, `null`, and `undefined` for Codex argument 1 and both Claude arguments while proving Codex positions 0/2 may remain omitted/`undefined`. All other required fields/positions retain their every-omission coverage. This closes MP-ARCH-012-001 without changing reusable constructors or adding a recursive rule.
 
 Only `build-studio-server.ts` and `start-standalone-application-host.ts` may select the named general-process supervisor/publisher for process work. The corresponding definitions remain in `general-process-run-supervisor.ts` and `published-artifact-publication-service.ts`. No application-construction file is exempt, and the policy does not expand into unrelated process-scoped workspace/runtime/model capability getters.
 

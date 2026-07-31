@@ -14,7 +14,7 @@ The Universal Application Dual-Host Foundation, the SR-011 naming correction, an
 
 The new eight-candidate audit finds no further runtime design defect. It finds one missing enforceable invariant: the current source follows the reviewed dependency directions, but TypeScript resolves representative forbidden imports and the standard suite has no architecture import/call check. Existing docs explain the architecture but do not publish one exact dependency table linked to enforcement.
 
-`ARCH-REV-012` accepts that bounded direction but identifies two implementation-blocking completeness gaps: a direct-callee-only AFB-004 misses optional-dependency omission, and a singular TypeScript parser/resolver does not cover Vue SFCs or the distinct server/web/application/template project authorities. SR-015 corrects those test mechanics. It still adds only one architecture test and two documentation updates, plus a direct test-only Vue parser declaration and lockfile entry. It does not change production source, a public API, host conformance abstraction, lifecycle model, directory/suffix layout, observability correlation, route, schema, package output, data, or runtime behavior. The complete proof and rejected/deferred alternatives are in [application-framework-hardening-evaluation.md](application-framework-hardening-evaluation.md).
+`ARCH-REV-013` accepts the bounded direction, the complete Vue/project correction, and the five-file inventory. It finds one remaining AFB-004 false-pass: the present parent run-manager properties can construct nested Codex/Claude backend factories without their graph-local bootstrap/session arguments. SR-016 adds only those exact positional obligations and fixtures. It still adds one architecture test and two documentation updates, plus a direct test-only Vue parser declaration and lockfile entry. It does not change production source, a public API, host conformance abstraction, lifecycle model, directory/suffix layout, observability correlation, route, schema, package output, data, or runtime behavior. The complete proof and rejected/deferred alternatives are in [application-framework-hardening-evaluation.md](application-framework-hardening-evaluation.md).
 
 All earlier DS-014/SR-010/SR-011 references to bind-once cycle breakers describe the implemented and passed pre-SR-012 baseline only. DS-015 supersedes those construction mechanics. Their security, publisher identity, scoped revocation, exact cleanup, ensure/restart, and functional behavior remain mandatory; their proxy types/files do not.
 
@@ -142,10 +142,11 @@ The same design is exposed as a native application-folder workflow:
 | --- | --- | --- |
 | `AR-010` / `MP-ARCH-012-001` | DS-016 AFB-004 obligation table, exact binding/shape rules, omission fixtures, hardening supplement, SV-019 | Adds fail-closed checks for optional application construction inputs across publication/resource, run, session/provider, and team/context families. Named general-process assembly remains explicit; no production constructor or runtime source changes. |
 | `AR-011` / `MP-ARCH-012-002` | DS-016 SFC extraction, seven project profiles, manifest/unresolved rules, parser dependency/file inventory, SFC/cross-project fixtures, hardening supplement, SV-019 | Governs all eleven Vue SFCs and every server/web/Brief/Socratic/template source with deterministic parsing and ownership. Adds one test-only direct dev dependency and lockfile entry; no generated `.nuxt` or runtime dependency. |
+| `AR-010` remaining in `ARCH-REV-013` | DS-016 nested-parent audit plus Codex/Claude backend-factory rows/fixtures, hardening supplement, SV-019/SV-C60 | Requires the exact graph-local provider bootstrap/session objects inside the present parent factory properties; preserves deliberately process-scoped Codex manager/cleanup and adds no recursive constructor rule. |
 
 ### Discussion-Stage Self-Validation Resolution Map
 
-The use-case, canonical-principles, refreshed-base, and downstream consistency audit is retained in [design-self-validation.md](design-self-validation.md). It produced nineteen bounded corrections across discussion and downstream rework; SV-019 now includes the ARCH-REV-012 checker-completeness correction:
+The use-case, canonical-principles, refreshed-base, and downstream consistency audit is retained in [design-self-validation.md](design-self-validation.md). It produced nineteen bounded corrections across discussion and downstream rework; SV-019 now includes the ARCH-REV-012/013 checker-completeness correction:
 
 | Finding | Resolution Location | Scope Effect |
 | --- | --- | --- |
@@ -167,7 +168,7 @@ The use-case, canonical-principles, refreshed-base, and downstream consistency a
 | SV-016 | Familiar role vocabulary, clean current-to-target map, source/export impact, and behavior-preservation proof | Resolved CR-018 without changing runtime behavior or expanding into an automatic repository-wide rename |
 | SV-017 | Initial narrow outward runtime contracts, explicit package refresh ownership, and proposed acyclic run/publication/engine/event construction | Resolves CR-019/CR-020; superseded for the two CR-021 lifecycle edges by SV-018 after ARCH-REV-010 |
 | SV-018 | Ensure-before-artifact delivery and exact acyclic run-resource cleanup | Resolves AR-008/AR-009 through a closed artifact-delivery queue/service and early session-scope/resource/registry chain while retaining every passed behavior and avoiding generic deferred machinery |
-| SV-019 | Eight-candidate proof and executable boundary policy, corrected for ARCH-REV-012 | Adopts only one architecture test plus matching existing-doc table; adds exact application-construction obligations and heterogeneous TS/JS/Vue project resolution; defers/rejects unsupported abstractions and preserves all passed production behavior |
+| SV-019 | Eight-candidate proof and executable boundary policy, corrected through ARCH-REV-013 | Adopts only one architecture test plus matching existing-doc table; adds complete application-construction obligations and heterogeneous TS/JS/Vue project resolution; defers/rejects unsupported abstractions and preserves all passed production behavior |
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
@@ -208,7 +209,7 @@ The authoritative reachable use-case inventory is in [requirements.md](requireme
 | UC-013 | DS-008, DS-002 | DS-005 readiness | Complete |
 | UC-014 | DS-005 | Existing stop/cleanup spine | Complete |
 | UC-015 | DS-006, DS-007 | DS-005 process cleanup | Complete |
-| UC-016 | DS-007, then DS-001/DS-002 | Frontend startup state; DS-016 dependency check | Complete; durable enforcement refined by SR-015 |
+| UC-016 | DS-007, then DS-001/DS-002 | Frontend startup state; DS-016 dependency check | Complete; durable enforcement refined by SR-016 |
 | UC-017 | DS-002, DS-008, DS-014 | Provider origin normalization, browser ingress origin policy, and established internal capability auth | Complete; CR-015 preserves route/security behavior |
 | UC-018 | DS-010–DS-012, DS-014, then DS-002/DS-008 | DS-005 production process lifecycle/stop | Complete after CR-015 bind/revoke/close correction |
 | UC-019 | DS-011 | Package-validation diagnostic return, including recursive portable-field policy | Complete after SR-006 correction |
@@ -230,7 +231,7 @@ The authoritative reachable use-case inventory is in [requirements.md](requireme
 | [proposal-critical-analysis.md](proposal-critical-analysis.md) | Repository-backed readiness assessment and bounded recommendation | REQ-001–REQ-010 / AC-001–AC-023 | Supplies the accepted/revised/deferred decisions that constrain this design | Approved/refined through 2026-07-30; implemented foundation baseline |
 | [design-self-validation.md](design-self-validation.md) | Use-case simulation, reachability classification, spine coverage, canonical design-principles audit, and latest-base reconciliation | REQ-001–REQ-011 / AC-001–AC-024 | Validates this design and records SV-001–SV-019 corrections through downstream rework and the hardening audit | Complete validation evidence; approval `N/A` |
 | [application-framework-architecture-simplification.md](application-framework-architecture-simplification.md) | Exact CRR-031/ARCH-REV-010 contracts, owners, spines, lifecycle, file inventory, sequence, and evidence | REQ-010 / AC-019–AC-023 | Defines the implemented behavior-neutral SR-013 architecture | Approved in ARCH-REV-011; implemented and passed through CRR-033/API-REV-012/CRR-034 |
-| [application-framework-hardening-evaluation.md](application-framework-hardening-evaluation.md) | Eight-candidate source/reachability/proportionality proof and exact AFB dependency policy | REQ-011 / AC-024 | Defines DS-016 and records why the other six candidates do not justify source architecture change | Revised in SR-015 for ARCH-REV-012; adopted test/docs/dev-dependency scope requires architecture approval; evidence classifications `N/A` |
+| [application-framework-hardening-evaluation.md](application-framework-hardening-evaluation.md) | Eight-candidate source/reachability/proportionality proof and exact AFB dependency policy | REQ-011 / AC-024 | Defines DS-016 and records why the other six candidates do not justify source architecture change | Revised in SR-016 for ARCH-REV-013; adopted test/docs/dev-dependency scope requires architecture approval; evidence classifications `N/A` |
 
 ## Task Design Health Assessment (Mandatory)
 
@@ -1027,7 +1028,7 @@ Required proof covers exact four-field runtime shape, narrow registrar signature
 
 ### DS-016 — Executable application-framework dependency boundary
 
-DS-016 is the bounded SR-014/SR-015 hardening selected by the eight-candidate proof in [application-framework-hardening-evaluation.md](application-framework-hardening-evaluation.md). `ARCH-REV-012` accepts the Adopt/Defer/Reject result and narrows the rework to two checker-completeness defects: direct-callee matching did not catch fallback-by-omission, and one TypeScript resolver could not truthfully cover Vue plus multiple project contexts. The corrected target still changes no production source, runtime object graph, route, wire contract, persisted data, package byte, lifecycle, or user-visible behavior.
+DS-016 is the bounded SR-014–SR-016 hardening selected by the eight-candidate proof in [application-framework-hardening-evaluation.md](application-framework-hardening-evaluation.md). `ARCH-REV-013` accepts the Adopt/Defer/Reject result, resolves AR-011, and narrows AR-010 to the nested provider factories inside present parent properties. The corrected target still changes no production source, runtime object graph, route, wire contract, persisted data, package byte, lifecycle, or user-visible behavior.
 
 #### Governing owner and check shape
 
@@ -1079,6 +1080,8 @@ The checker resolves constructor imports to the exact source module/export, scan
 | Run ownership and persistence | `new AgentRunService(...)` | argument 1: `agentRunManager`, `metadataService`, `agentRunIdentityAllocator` |
 | Session / provider scope | `ApplicationAgentToolsSessionFactory.createApplicationSessionManager(...)` | argument 0: `scope`, `executionCapabilities.publishedArtifactPublisher`, `assertExecutionCapabilitiesReady` |
 | Session / provider scope | `new AutoByteusAgentRunBackendFactory(...)` | argument 0: `agentDefinitionService` |
+| Session / provider scope | `new CodexAgentRunBackendFactory(...)` | positional argument 1: application `codexThreadBootstrapper`; positional arguments 0 (`threadManager`) and 2 (`threadCleanup`) may remain omitted/`undefined` because they are deliberately process-scoped under the approved one-server-per-process runtime inventory |
+| Session / provider scope | `new ClaudeAgentRunBackendFactory(...)` | positional argument 0: application `claudeSessionManager`; positional argument 1: application `claudeSessionBootstrapper` |
 | Session / provider scope | `new CodexThreadBootstrapper(...)` | argument 2 `agentDefinitionService`; argument 7 application `agentToolsSessionManager` |
 | Session / provider scope | `new ClaudeSessionManager(...)` | argument 2 application `agentToolsSessionManager` |
 | Session / provider scope | `new ClaudeSessionBootstrapper(...)` | argument 2 `agentDefinitionService` |
@@ -1091,6 +1094,19 @@ The checker resolves constructor imports to the exact source module/export, scan
 
 This is a source architecture contract, not a demand that every reusable constructor become mandatory-only. If a target constructor signature or application composition legitimately changes, the obligation table, synthetic fixtures, docs, and architecture review change together; the checker is not bypassed by a compatibility wrapper or broad allow-list.
 
+The required-parent nested-constructor audit is closed and non-recursive:
+
+| Required parent property / callback | Inline reusable owner | Audit result |
+| --- | --- | --- |
+| `AgentRunManager.autoByteusBackendFactory` | `AutoByteusAgentRunBackendFactory` | `agentDefinitionService` is already required. Its workspace, skill, processor, LLM, and agent-factory defaults are approved process runtime resources, not application definition/session/publication authorities. |
+| `AgentRunManager.codexBackendFactory` | `CodexAgentRunBackendFactory` | **Corrected in SR-016:** require argument 1 `codexThreadBootstrapper`. Arguments 0/2 remain deliberately process-scoped thread manager/cleanup. |
+| `AgentRunManager.claudeBackendFactory` | `ClaudeAgentRunBackendFactory` | **Corrected in SR-016:** require arguments 0/1 `claudeSessionManager` and `claudeSessionBootstrapper`. |
+| `AgentTeamRunManager.mixedTeamRunBackendFactory` and its `createTeamManager` callback | `MixedTeamRunBackendFactory` -> `MixedTeamManager` | Existing rows already require member context, team-manager factory, subteam/run/session/context inputs. The memory-location default is an approved process memory-layout resource. |
+| `AgentTeamRunManager.teamCommunicationService` | `TeamCommunicationService` | No additional graph-owner obligation: current source passes `memoryDir`; only the projection-store default remains, and it is an approved process data resource that does not choose application definitions, runs, sessions, or publication. |
+| `TeamRunService.teamRunHistoryCatalogService` | `TeamRunHistoryCatalogService` | Existing row already requires the graph-local `teamRunManager`; index/metadata stores are constructed from mandatory `memoryDir` and do not select another runtime authority. |
+
+This audit is an exact review of the current required parent value expressions, not a generic recursive-constructor policy. A future new inline defaulting owner requires a deliberate obligation-table/design update rather than implicit recursive rejection.
+
 #### Fixture and current-tree proof
 
 Synthetic fixtures use the same extractors, profiles, manifest rules, resolver, binding matcher, and obligation evaluator as the current-tree scan. They are created under an OS temp root with a miniature server/web/application/template layout and deleted in `finally`/test cleanup.
@@ -1100,8 +1116,8 @@ Required fixture matrix:
 1. one allowed and one forbidden TS/JS import for each AFB import family;
 2. one allowed Vue `<script setup lang="ts">` alias import and one forbidden Vue server-runtime import, plus a `<script>` case and a parse-error case;
 3. Brief/Socratic/template examples showing the same bare library accepted only from the importing project's own manifest, an undeclared library rejected, a Node built-in accepted, and an escaping/unresolved relative path rejected;
-4. one allowed complete AFB-004 construction fixture for each of the four fallback families;
-5. table-driven omission negatives for every required property/positional argument above (therefore at least one rejected omission for publication, run ownership, session/provider, and team/context), plus direct forbidden-callee negatives and the exact two assembly-root positives;
+4. one allowed complete AFB-004 construction fixture for each of the four fallback families, including `new CodexAgentRunBackendFactory(undefined, codexThreadBootstrapper)` and `new ClaudeAgentRunBackendFactory(claudeSessionManager, claudeSessionBootstrapper)`;
+5. table-driven omission negatives for every required property/positional argument above (therefore at least one rejected omission for publication, run ownership, session/provider, and team/context), plus direct forbidden-callee negatives and the exact two assembly-root positives. Provider-factory negatives cover Codex argument 1 and Claude arguments 0/1 independently for omitted, explicit `null`, and explicit `undefined`; Codex arguments 0/2 have allowed omission/`undefined` cases;
 6. a full current-tree assertion covering all governed files, including all eleven current Vue SFCs and every discovered valid devkit template.
 
 Each negative asserts the exact AFB ID, profile, importer, dependency/callee or missing property path, and correction. A fixture cannot opt out of resolution or use a simplified parser unavailable to the current-tree path.
