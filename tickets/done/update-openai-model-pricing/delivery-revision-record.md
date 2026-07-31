@@ -5,7 +5,7 @@
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | Initial delivery-stage refresh after `API-REV-001` Pass and `CRR-003` Pass | N/A | Pass — verification-ready; finalization held for explicit user verification | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-revision-record.md` |
-| DR-002 | Explicit user authorization for finalization and new-version release | Pass — verification-ready / user hold | Pass — finalized and released `v1.4.32`; hosted workflow completion monitored separately | `handoff-summary.md`, `release-deployment-report.md`, `delivery-revision-record.md`, archived `release-notes.md` |
+| DR-002 | Explicit user authorization for finalization and new-version release | Pass — verification-ready / user hold | Pass — finalized, released, and fully workflow-verified as `v1.4.32` | `handoff-summary.md`, `release-deployment-report.md`, `delivery-revision-record.md`, archived `release-notes.md` |
 
 ## Revision Entries
 
@@ -29,12 +29,12 @@
 - Delivery round and trigger: Follow-up delivery round after the user explicitly requested `finalize and release a new version.` on 2026-07-31.
 - Triggering upstream report, verification, or evidence: `DR-001`; user verification; final `git fetch origin --prune`; ticket archive commit `acaab165f`; target merge `dda4f2398`; release commit/tag `d03882153` / `v1.4.32`.
 - Prior authoritative result: `Pass — verification-ready; finalization held for explicit user verification` (`DR-001`).
-- Current authoritative result: `Pass — ticket finalized into personal and release v1.4.32 pushed; GitHub Actions publication workflows triggered.`
+- Current authoritative result: `Pass — ticket finalized into personal, release v1.4.32 published, and all five tag-triggered workflows completed successfully.`
 - Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/done/update-openai-model-pricing/docs-sync-report.md` — unchanged and still authoritative for the integrated reviewed behavior.
 - Handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/done/update-openai-model-pricing/handoff-summary.md` — updated to record finalization, release version, hashes, and remaining asynchronous workflow verification.
 - Release/publication/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/done/update-openai-model-pricing/release-deployment-report.md` — records archive, merge, release helper, tag push, package synchronization, and cleanup evidence.
-- Integration and post-integration verification: Final target refresh found no base advancement. Ticket branch was pushed, merged with `--no-ff` into the target, target branch was pushed, then release helper prepared version `1.4.32`; target and annotated tag both dereference to `d03882153`.
+- Integration and post-integration verification: Final target refresh found no base advancement. Ticket branch was pushed, merged with `--no-ff` into the target, target branch was pushed, then release helper prepared version `1.4.32`; target and annotated tag both dereference to `d03882153`. Final delivery evidence commit `1d79e908f` was pushed to `origin/personal`.
 - User verification/finalization state: User verification received; ticket archived under `tickets/done/update-openai-model-pricing/`; repository target `origin/personal` finalized and remote tag `v1.4.32` pushed.
 - Why this delivery revision is recorded: Captures the completed repository finalization and release action without misrepresenting asynchronous hosted workflow completion.
-- Next recipient/action: No team rework is required. Monitor the tag-triggered GitHub Actions release workflows and address any release-infrastructure failure separately if one occurs.
-- Remaining blockers, rollback concerns, or untested scope: No delivery blocker. Provider credential/entitlement, alternate database engines, host/media-fixture/network limitations, and Electron shell remain residual risks from the validated package. If the release workflow fails, do not re-run the release helper for the same tag; use the documented manual-dispatch recovery path after diagnosing the failed workflow.
+- Next recipient/action: No further team action is required; the published release and all tag-triggered workflows are verified.
+- Remaining blockers, rollback concerns, or untested scope: No delivery blocker. Provider credential/entitlement, alternate database engines, host/media-fixture/network limitations, and Electron shell remain residual risks from the validated package. If a post-release regression is found, use a follow-up fix/release or documented rollback; do not recreate the existing `v1.4.32` tag.
