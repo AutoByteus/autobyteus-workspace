@@ -7,31 +7,31 @@
 - Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/in-progress/update-openai-model-pricing/design-spec.md`
 - Supplemental Task Artifacts Reviewed: `None`
 - Solution Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/in-progress/update-openai-model-pricing/solution-revision-record.md`
-- Relevant Solution Revision IDs: `SR-001` (superseded baseline), `SR-002` (previous approved package), `SR-003` (current audit/rework)
+- Relevant Solution Revision IDs: `SR-001` (superseded baseline), `SR-002` (previous approved package), `SR-003` (blocked audit), `SR-004` (current resolved package)
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-openai-model-pricing/tickets/in-progress/update-openai-model-pricing/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-002`
-- Current Review Round: `2`
-- Trigger: SR-003 Claude pricing audit identified an unresolved Sonnet 5 promotional-versus-durable-standard policy choice.
-- Prior Review Round Reviewed: `ARCH-REV-001` — prior Pass for SR-002, now superseded by the refined requirements gate.
-- Latest Authoritative Round: `2`
-- Current-State Evidence Basis: Dedicated worktree based at `dfc0468b137cd231b79ff8096fa46750611b06e2`. The SR-003 investigation records the pre-implementation baseline and current Anthropic pricing audit. The worktree now also contains uncommitted implementation edits from the prior SR-002 handoff; those edits are preserved as downstream evidence but are not accepted as an architecture approval or reviewed implementation result in this round.
+- Current Architecture Review Revision ID: `ARCH-REV-003`
+- Current Review Round: `3`
+- Trigger: SR-004 resolved `REQ-GAP-001` by recording the user's durable Sonnet 5 standard-pricing decision.
+- Prior Review Round Reviewed: `ARCH-REV-002` — Blocked on `REQ-GAP-001`.
+- Latest Authoritative Round: `3`
+- Current-State Evidence Basis: Dedicated worktree at commit `777079e62` (`Update GPT-5.6 pricing and add Claude Opus 5`), clean and based on `dfc0468b1`. The cumulative package now records the approved durable Sonnet 5 policy and the design gate is resolved. The commit contains implementation/docs/test edits created during the blocked round; they are preserved as downstream evidence but are not architecture-approved or source-reviewed by this result.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Overall Basis Status (`Confirmed`/`Contradicted`/`Blocked`): `Blocked`
-- Approved requirements / intended behavior understood: The OpenAI refresh and exact Claude Opus 5 support remain understood. The current Anthropic Sonnet 5 policy is not implementation-approved: the catalog records durable standard `$3/$15`, while the current first-party page advertises a temporary `$2/$10` introductory rate through 2026-08-31.
-- Relevant existing behavior and evidence confirmed: The pre-change baseline in the investigation notes shows `supported-model-definitions.ts` owning the GPT-5.6 helper and Anthropic rows, `anthropic-llm.ts` owning family policy/request sanitization, `curated-model-metadata.ts` owning model limits, and generic `LLMFactory`/server pricing. The current worktree contains uncommitted Opus 5 edits from the prior implementation attempt; these do not resolve the SR-003 requirements gate.
+- Overall Basis Status (`Confirmed`/`Contradicted`/`Blocked`): `Confirmed`
+- Approved requirements / intended behavior understood: The OpenAI refresh, exact Claude Opus 5 support, and durable Sonnet 5 standard policy are approved. Sonnet 5 remains `$3/$15` with standard cache rates; Anthropic's temporary `$2/$10` introductory promotion and any expiry/temporal mechanism are explicitly excluded.
+- Relevant existing behavior and evidence confirmed: The investigation and current commit evidence `supported-model-definitions.ts` owning the GPT-5.6 helper and Anthropic rows, `anthropic-llm.ts` owning family policy/request sanitization, `curated-model-metadata.ts` owning model limits, and generic `LLMFactory`/server pricing. The implementation edits align with the approved design, but source correctness remains the downstream code-review responsibility.
 - Approved change, preserved behavior, and outside scope understood: Existing IDs, provider adapters, request transports, server accounting, public lookup shapes, historical snapshots, and existing model behavior remain unchanged. Fast mode, Batch, data residency, fallback, cloud variants, aliases, and new effort controls are excluded.
-- Remaining material ambiguity, if any: The user must choose durable standard Sonnet 5 pricing (recommended) or explicitly approve a bounded promotional-rate design with expiry/temporal handling. `TokenPricingConfig` currently has one effective date and no expiry or temporal selector.
+- Remaining material ambiguity, if any: `None` for the approved design. Future provider pricing changes remain an explicit refresh risk; no automatic promotional expiry is intended.
 
 | Behavior ID | Kind | Design Alignment With Approved Intent (`Pass`/`Fail`) | Approved Trigger / Contract And Current-State Evidence (`Pass`/`Fail`/`Unclear`) | Target Outcome / Path / Spine Coherence (`Pass`/`Fail`/`Unclear`) | Status (`Confirmed`/`Needs Correction`/`Unclear`) | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
 | `BEH-001` | Contract | Pass | Pass — existing GPT-5.6 catalog and `LLMFactory.getModelPricingInfo` are evidenced in source/tests; official OpenAI announcement/model pages support the target values. | Pass — `DS-001` carries centralized helper output through the unchanged factory/server policy path to accounting snapshots. | Confirmed | None. |
 | `BEH-002` | System | Pass | Pass — non-local token usage with model identity is the existing server accounting contract, with generic provider-neutral resolution and stored snapshots. | Pass — future resolutions use current catalog data while historical snapshots remain stored values; no server or persistence change is proposed. | Confirmed | None. |
-| `BEH-003` | Contract | Pass | Pass — catalog registration and Anthropic message creation are existing supported paths; current policy source confirms Opus 5 is absent and adaptive membership is the relevant boundary. | Pass — `DS-002` adds one exact catalog identity and one private family-list entry, then reuses the existing adaptive/sanitized Messages request path. | Confirmed | None. |
+| `BEH-003` | Contract | Pass | Pass — catalog registration and Anthropic message creation are existing supported paths; the pre-change evidence confirms Opus 5 was absent and adaptive membership is the relevant boundary. | Pass — `DS-002` adds one exact catalog identity and one private family-list entry, then reuses the existing adaptive/sanitized Messages request path. | Confirmed | None. |
 | `BEH-004` | Contract | Pass | Pass — existing curated metadata and Anthropic cache dimensions support the required shape; first-party Claude docs verify the 1M/128k limits and prices. | Pass — `DS-002`/`DS-003` add data to existing owners without changing lookup or projection interfaces. | Confirmed | None. |
 | `BEH-005` | Operational | Pass | Pass — maintainers use the active provider/module documentation as the documented current-state record; stale values and missing Opus 5 references are identified. | Pass — `DS-004` updates active docs while leaving historical tickets and runtime boundaries untouched. | Confirmed | None. |
-| `BEH-006` (provisional) | Contract | Unclear — the requirements retain durable standard Sonnet 5 values but do not record the user's final policy choice. | Pass — the current Anthropic pricing page independently establishes both the standard row and the time-bounded introductory offer. | Unclear — a static standard row is coherent, but a promotional row would require a bounded policy design not present in the package. | Unclear | Route the policy choice to `solution_designer`; update approved behavior, acceptance criteria, and design before implementation routing. |
+| `BEH-006` | Contract | Pass — SR-004 explicitly approves durable standard Sonnet 5 pricing and excludes the temporary promotion/temporal path. | Pass — current Anthropic source establishes the standard row and the excluded promotional offer; the user's decision is recorded in SR-004 and the requirements approval. | Pass — the existing static standard row remains unchanged and no expiry/temporal selector is added. | Confirmed | None. |
 
 ## Supplemental Artifact Coherence Verdict
 
@@ -45,7 +45,7 @@
 | Root-cause classification is explicit and evidence-backed | Pass | The missing Opus 5 row/family entry is a local implementation gap; existing ownership and boundaries are evidenced as healthy. | None. |
 | Refactor needed now / no refactor needed / deferred decision is explicit | Pass | Design explicitly chooses no refactor and defers Fast/Batch/cloud/fallback/effort variants. | None. |
 | Refactor decision is supported by the concrete design sections or residual-risk rationale | Pass | Existing catalog, metadata, adapter, factory, and server boundaries are reused with singular file responsibilities and no new abstraction. | None. |
-| Current pricing-policy decision is complete for implementation | Fail | SR-003 explicitly leaves Sonnet 5's temporary introductory rate versus durable standard policy open. | Record the user's choice and revise the requirements/design gate. |
+| Current pricing-policy decision is complete for implementation | Pass | SR-004 records the user's durable standard Sonnet 5 decision and the requirements/design gate now explicitly excludes the temporary promotion and temporal pricing. | None. |
 
 ## Spine Inventory Verdict
 
@@ -195,29 +195,23 @@ No new public interface or ambiguous selector is introduced. `claude-opus-5` is 
 
 | Item | Why It Matters | Required Action | Status |
 | --- | --- | --- | --- |
-| `REQ-GAP-001` / provisional `BEH-006`: Sonnet 5 pricing policy | The current Anthropic source advertises `$2/$10` plus proportional cache rates through 2026-08-31, while the static catalog records `$3/$15` durable standard values. The current config cannot safely express a temporary rate without expiry/temporal handling. | User chooses the recommended durable standard policy, or explicitly requests a bounded promotional-policy design; then update requirements/design and re-review. | Open |
+| `REQ-GAP-001` / `BEH-006`: Sonnet 5 pricing policy | The audit identified a temporary offer versus durable standard choice. SR-004 records the user's durable standard decision and explicitly excludes temporal pricing. | None; retain the standard row and proceed through independent source review. | Resolved |
 
 ## Review Decision
 
-`Blocked` — the SR-003 audit leaves one approved pricing-policy choice unresolved. The OpenAI/Opus 5 design is otherwise coherent, but implementation must not proceed until the Sonnet 5 policy is selected and the requirements/design gate is updated.
+`Pass` — the SR-004 behavior basis is confirmed, the durable Sonnet 5 policy is approved, and the combined design is actionable in the current codebase. Existing implementation edits are forwarded for independent source review and are not approved by this architecture result.
 
 ## Findings
 
-1. **Requirement Gap — `REQ-GAP-001` — Blocker**
-   - Affected approved behavior / contract: current Sonnet 5 catalog pricing and the combined package's active Claude pricing policy.
-   - Evidence: SR-003's first-party audit records standard `$3/$15` with `$0.30/$3.75/$6` cache rates and a temporary `$2/$10` with `$0.20/$2.50/$4` offer through 2026-08-31; `TokenPricingConfig` has no expiry or temporal selector.
-   - Material-premise validation: `N/A`; this is an unresolved approved-policy choice, not a speculative lifecycle premise.
-   - Required update: obtain the user's choice. For durable standard pricing, record approval and keep the current row. For promotional pricing, return through solution design with an explicit bounded policy/expiry decision and acceptance criteria.
-   - Proportionate response: do not add temporal machinery or change the Sonnet 5 literal until the intended policy is approved; the existing OpenAI/Opus 5 work remains unchanged.
-   - Recommended recipient: `solution_designer`.
+`None.` — `REQ-GAP-001` is resolved; no new architecture finding remains.
 
 ## Classification
 
-`Requirement Gap` — the current Sonnet 5 promotional-versus-durable-standard policy has not been approved.
+`N/A` — no current finding requires `Design Impact`, `Requirement Gap`, or `Unclear` classification.
 
 ## Recommended Recipient
 
-`solution_designer`
+`implementation_engineer`
 
 ## Residual Risks
 
@@ -226,10 +220,10 @@ No new public interface or ambiguous selector is introduced. `claude-opus-5` is 
 - Fast mode, Batch, data residency, fallback, cloud variants, and provider effort controls remain separate contracts and must not be inferred from this catalog entry.
 - Historical ledger snapshots intentionally retain the rates recorded at event time.
 - The `autobyteus-ts` package test script is intentionally nonfunctional; downstream validation must invoke the installed Vitest/package-specific commands and report setup blockers precisely.
-- Implementation is held until `REQ-GAP-001` is resolved; if durable standard pricing is approved, no new Sonnet 5 code is expected from this audit.
+- The pre-existing implementation commit must proceed through independent source review; architecture approval does not imply source approval. Its handoff/revision metadata should be reconciled to SR-004/ARCH-REV-003 during implementation/source review.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Blocked`
+- Review Decision: `Pass`
 - Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass`
-- Notes: `ARCH-REV-001`'s SR-002 Pass is superseded by SR-003's refined requirements gate. No structural design defect was found; implementation routing is held solely for `REQ-GAP-001`.
+- Notes: `ARCH-REV-002`'s `REQ-GAP-001` block is resolved by SR-004. The cumulative package is ready for implementation/source review; the existing commit remains independently reviewable downstream.
