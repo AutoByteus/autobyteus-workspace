@@ -1,0 +1,5 @@
+tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts(189,5): error TS2554: Expected 0-3 arguments, but got 4.
+tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts(221,9): error TS2353: Object literal may only specify known properties, and 'workspaceRootPath' does not exist in type '{ agentDefinitionId: string; llmModelIdentifier: string; autoExecuteTools: boolean; workspaceId?: string | null | undefined; memoryDir?: string | null | undefined; llmConfig?: Record<string, unknown> | null | undefined; skillAccessMode: SkillAccessMode; runtimeKind: RuntimeKind; memberTeamContext?: MemberTeamContext...'.
+tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts(412,11): error TS2353: Object literal may only specify known properties, and 'lastKnownStatus' does not exist in type 'AgentRunMetadata'.
+tests/integration/run-history/codex-mcp-tool-args-projection.integration.test.ts(146,24): error TS2339: Property 'invocationId' does not exist on type 'RunProjectionActivityEntry'.
+  Property 'invocationId' does not exist on type 'RunProjectionCompactionActivityEntry'.

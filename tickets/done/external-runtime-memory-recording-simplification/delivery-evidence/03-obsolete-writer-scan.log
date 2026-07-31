@@ -1,0 +1,2 @@
+$ production/test obsolete writer reference scan
+PASS: no obsolete RunMemoryWriter reference remains in production or durable tests

@@ -13,7 +13,10 @@ import { AgentRunMemoryRecorder } from "../../../src/agent-memory/services/agent
 import { AgentMemoryService } from "../../../src/agent-memory/services/agent-memory-service.js";
 import { MemoryFileStore } from "../../../src/agent-memory/store/memory-file-store.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
-import { RAW_TRACES_ACTIVE_MEMORY_FILE_NAME } from "autobyteus-ts/memory/store/memory-file-names.js";
+import {
+  RAW_TRACES_ACTIVE_MEMORY_FILE_NAME,
+  WORKING_CONTEXT_SNAPSHOT_FILE_NAME,
+} from "autobyteus-ts/memory/store/memory-file-names.js";
 
 const tempDirs = new Set<string>();
 
@@ -102,12 +105,17 @@ describe("AgentRunMemoryRecorder", () => {
       ["user", "hello"],
       ["assistant", "hi there"],
     ]);
+    expect(readView(memoryDir).workingContext).toBeNull();
+    await expect(fs.access(path.join(memoryDir, WORKING_CONTEXT_SNAPSHOT_FILE_NAME))).rejects.toThrow();
   });
 
-  it("skips native Autobyteus runs and detaches subscriptions", async () => {
+  it.each([
+    RuntimeKind.AUTOBYTEUS,
+    "future_runtime" as RuntimeKind,
+  ])("skips non-external runtime %s and detaches subscriptions", async (runtimeKind) => {
     const memoryDir = await mkTempDir();
     const recorder = new AgentRunMemoryRecorder();
-    const { run, listenerCount } = createRun({ runtimeKind: RuntimeKind.AUTOBYTEUS, memoryDir, recorder });
+    const { run, listenerCount } = createRun({ runtimeKind, memoryDir, recorder });
     const unsubscribe = recorder.attachToRun(run);
 
     expect(listenerCount()).toBe(0);
@@ -188,5 +196,7 @@ describe("AgentRunMemoryRecorder", () => {
     });
     expect(traces[1]?.toolArgs).toBeNull();
     expect(traces[1]?.toolName).toBe("send_message_to");
+    expect(readView(memoryDir).workingContext).toBeNull();
+    await expect(fs.access(path.join(memoryDir, WORKING_CONTEXT_SNAPSHOT_FILE_NAME))).rejects.toThrow();
   });
 });

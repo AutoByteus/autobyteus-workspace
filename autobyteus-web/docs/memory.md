@@ -105,7 +105,20 @@ Storage is server-owned and identity-opaque:
   `memory/imports/<sourceNodeId>/agent_teams/...`, plus hub-managed
   `source-node.json` and `sync-manifest.json`.
 
-Native AutoByteus runs are written by the native memory manager. Codex and Claude runs are written as storage-only server memory: active raw traces, optional segmented archive records, and working-context snapshots for inspection and fallback replay.
+Native AutoByteus runs are written by the native memory manager, including the
+WorkingContext snapshot used for native continuation. Codex and Claude runs use
+raw-trace-only server recording: active raw traces and optional complete rotated
+segments drive normal history replay and remain inspectable in the Raw Traces
+tab; provider thread/session state owns continuation. New external activity does
+not create or update `working_context_snapshot.json`.
+
+A required startup cleanup removes duplicate external snapshots only when
+current standalone or team-member metadata classifies the exact location as
+Codex or Claude. Native, imported, unclassified, and invalid-metadata snapshots
+are preserved. The inspector stays file-backed and runtime-agnostic: after
+successful cleanup an external run reports no WorkingContext, while a reported
+unlink failure can leave a stale snapshot visible until retry without affecting
+current raw traces or provider continuation.
 
 The frontend does not infer memory ownership from runtime-specific thread/session IDs, generated run-id strings, route-key slugs, or archive internals. It selects agent definition groups, unattributed groups, agent run IDs, or exposed team/member targets and lets the backend resolve memory directories, complete archive segments, ordering, and de-duplication.
 

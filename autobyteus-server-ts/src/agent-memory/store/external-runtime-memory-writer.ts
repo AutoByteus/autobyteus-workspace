@@ -1,15 +1,11 @@
-import path from "node:path";
 import { randomUUID } from "node:crypto";
-import { Message, MessageRole } from "autobyteus-ts/llm/utils/messages.js";
 import { RawTraceItem, type RawTraceItemOptions } from "autobyteus-ts/memory/models/raw-trace-item.js";
 import { RunMemoryFileStore } from "autobyteus-ts/memory/store/run-memory-file-store.js";
-import { buildToolTraceLifecycleIndex, type ToolTraceLifecycleGroup } from "autobyteus-ts/memory/tool-trace-lifecycle-index.js";
-import { WorkingContext } from "autobyteus-ts/memory/working-context.js";
-import type {
-  RuntimeMemorySnapshotUpdate,
-  RuntimeMemoryTraceInput,
-  RuntimeMemoryWriteOperation,
-} from "../domain/memory-recording-models.js";
+import {
+  buildToolTraceLifecycleIndex,
+  type ToolTraceLifecycleGroup,
+} from "autobyteus-ts/memory/tool-trace-lifecycle-index.js";
+import type { RuntimeMemoryTraceInput } from "../domain/memory-recording-models.js";
 
 const toTimestampSeconds = (value?: number | null): number => {
   if (typeof value === "number" && Number.isFinite(value) && value > 0) {
@@ -18,30 +14,17 @@ const toTimestampSeconds = (value?: number | null): number => {
   return Date.now() / 1000;
 };
 
-export class RunMemoryWriter {
-  private readonly agentId: string;
+export class ExternalRuntimeMemoryWriter {
   private readonly store: RunMemoryFileStore;
-  private readonly workingContext: WorkingContext;
   private readonly seqByTurn = new Map<string, number>();
 
-  constructor(input: { memoryDir: string; agentId?: string | null }) {
+  constructor(input: { memoryDir: string }) {
     const memoryDir = input.memoryDir.trim();
     if (!memoryDir) {
       throw new Error("memoryDir is required.");
     }
-    this.agentId = input.agentId?.trim() || path.basename(memoryDir);
     this.store = new RunMemoryFileStore(memoryDir);
-    this.workingContext = this.loadWorkingContext();
     this.initializeSequences();
-  }
-
-  write(operation: RuntimeMemoryWriteOperation): RawTraceItem {
-    const trace = this.appendRawTrace(operation.trace);
-    if (operation.snapshotUpdate) {
-      this.applySnapshotUpdate(operation.snapshotUpdate);
-      this.persistWorkingContextSnapshot();
-    }
-    return trace;
   }
 
   appendRawTrace(input: RuntimeMemoryTraceInput): RawTraceItem {
@@ -81,15 +64,6 @@ export class RunMemoryWriter {
 
   readToolTraceLifecycleGroups(): ReadonlyMap<string, ToolTraceLifecycleGroup> {
     return buildToolTraceLifecycleIndex(this.store.listRawTraceCorpusOrdered());
-  }
-
-  writeSnapshotUpdate(update: RuntimeMemorySnapshotUpdate): void {
-    this.applySnapshotUpdate(update);
-    this.persistWorkingContextSnapshot();
-  }
-
-  writeWorkingContextSnapshot(): void {
-    this.persistWorkingContextSnapshot();
   }
 
   getProviderCompactionBoundaryState(boundaryKey: string): {
@@ -145,53 +119,5 @@ export class RunMemoryWriter {
     if (seq > current) {
       this.seqByTurn.set(turnId, seq);
     }
-  }
-
-  private loadWorkingContext(): WorkingContext {
-    try {
-      return this.store.readWorkingContextSnapshotState()?.workingContext ?? new WorkingContext();
-    } catch {
-      return new WorkingContext();
-    }
-  }
-
-  private applySnapshotUpdate(update: RuntimeMemorySnapshotUpdate): void {
-    if (update.kind === "user") {
-      this.workingContext.appendMessage(
-        new Message(MessageRole.USER, {
-          content: update.content,
-          image_urls: update.media?.images ?? [],
-          audio_urls: update.media?.audio ?? [],
-          video_urls: update.media?.video ?? [],
-        }),
-      );
-      return;
-    }
-    if (update.kind === "assistant") {
-      this.workingContext.appendAssistant(update.content, update.reasoning ?? null);
-      return;
-    }
-    if (update.kind === "tool_call") {
-      this.workingContext.appendToolCalls([
-        {
-          id: update.toolCallId,
-          name: update.toolName,
-          arguments: update.toolArgs,
-        },
-      ]);
-      return;
-    }
-    this.workingContext.appendToolResult(
-      update.toolCallId,
-      update.toolName,
-      update.toolResult,
-      update.toolError ?? null,
-    );
-  }
-
-  private persistWorkingContextSnapshot(): void {
-    this.store.writeWorkingContextSnapshotState(this.workingContext, {
-      agentId: this.agentId,
-    });
   }
 }

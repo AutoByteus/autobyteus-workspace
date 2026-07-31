@@ -5,9 +5,12 @@ import type {
 } from "../../agent-execution/domain/agent-run-command-observer.js";
 import { isAgentRunEvent } from "../../agent-execution/domain/agent-run-event.js";
 import type { AgentRunConfig } from "../../agent-execution/domain/agent-run-config.js";
-import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import {
+  isExternalProviderRuntimeKind,
+  type RuntimeKind,
+} from "../../runtime-management/runtime-kind-enum.js";
 import { RuntimeMemoryEventAccumulator } from "./runtime-memory-event-accumulator.js";
-import { RunMemoryWriter } from "../store/run-memory-writer.js";
+import { ExternalRuntimeMemoryWriter } from "../store/external-runtime-memory-writer.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
@@ -96,7 +99,7 @@ export class AgentRunMemoryRecorder implements AgentRunCommandObserver {
     if (!memoryDir) {
       throw new Error("Cannot create memory recorder state without memoryDir.");
     }
-    const writer = new RunMemoryWriter({ memoryDir });
+    const writer = new ExternalRuntimeMemoryWriter({ memoryDir });
     const state: RecorderState = {
       accumulator: new RuntimeMemoryEventAccumulator({
         runId,
@@ -112,7 +115,7 @@ export class AgentRunMemoryRecorder implements AgentRunCommandObserver {
   }
 
   private isRecordable(runId: string, runtimeKind: RuntimeKind, config: AgentRunConfig): boolean {
-    if (runtimeKind === RuntimeKind.AUTOBYTEUS) {
+    if (!isExternalProviderRuntimeKind(runtimeKind)) {
       return false;
     }
     if (config.memoryDir?.trim()) {

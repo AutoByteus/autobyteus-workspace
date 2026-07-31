@@ -1,6 +1,6 @@
 import type { AgentRunEvent } from "../../agent-execution/domain/agent-run-event.js";
 import { AgentRunEventType } from "../../agent-execution/domain/agent-run-event.js";
-import type { RunMemoryWriter } from "../store/run-memory-writer.js";
+import type { ExternalRuntimeMemoryWriter } from "../store/external-runtime-memory-writer.js";
 import {
   createToolCallIdentity,
   toolCallIdentityKey,
@@ -36,7 +36,7 @@ export class RuntimeToolTraceSequencer {
 
   constructor(
     private readonly input: {
-      writer: RunMemoryWriter;
+      writer: ExternalRuntimeMemoryWriter;
       toolTraceLifecycleGroups: ReadonlyMap<string, ToolTraceLifecycleGroup>;
       flushReasoningBoundary: (turnId: string, sourceEvent: string) => void;
     },
@@ -155,23 +155,15 @@ export class RuntimeToolTraceSequencer {
 
   private persistToolCall(tool: RuntimeToolState, event: AgentRunEvent): void {
     if (tool.callRawTraceId || !this.isCallReady(tool)) return;
-    const trace = this.input.writer.write({
-      trace: {
-        traceType: "tool_call",
-        turnId: tool.identity.turnId,
-        content: "",
-        sourceEvent: event.eventType,
-        ts: extractTimestamp(event.payload),
-        toolName: tool.toolName,
-        toolCallId: tool.identity.toolCallId,
-        toolArgs: tool.toolArgs,
-      },
-      snapshotUpdate: {
-        kind: "tool_call",
-        toolCallId: tool.identity.toolCallId,
-        toolName: tool.toolName,
-        toolArgs: tool.toolArgs,
-      },
+    const trace = this.input.writer.appendRawTrace({
+      traceType: "tool_call",
+      turnId: tool.identity.turnId,
+      content: "",
+      sourceEvent: event.eventType,
+      ts: extractTimestamp(event.payload),
+      toolName: tool.toolName,
+      toolCallId: tool.identity.toolCallId,
+      toolArgs: tool.toolArgs,
     });
     tool.callObserved = true;
     tool.callRawTraceId = trace.id;
@@ -185,25 +177,16 @@ export class RuntimeToolTraceSequencer {
     content: string,
   ): void {
     if (tool.resultRawTraceId || !tool.callRawTraceId || !tool.toolName) return;
-    const trace = this.input.writer.write({
-      trace: {
-        traceType: "tool_result",
-        turnId: tool.identity.turnId,
-        content,
-        sourceEvent: event.eventType,
-        ts: extractTimestamp(event.payload),
-        toolName: tool.toolName,
-        toolCallId: tool.identity.toolCallId,
-        toolResult: result === undefined ? null : result,
-        toolError: error,
-      },
-      snapshotUpdate: {
-        kind: "tool_result",
-        toolCallId: tool.identity.toolCallId,
-        toolName: tool.toolName,
-        toolResult: result === undefined ? null : result,
-        toolError: error,
-      },
+    const trace = this.input.writer.appendRawTrace({
+      traceType: "tool_result",
+      turnId: tool.identity.turnId,
+      content,
+      sourceEvent: event.eventType,
+      ts: extractTimestamp(event.payload),
+      toolName: tool.toolName,
+      toolCallId: tool.identity.toolCallId,
+      toolResult: result === undefined ? null : result,
+      toolError: error,
     });
     tool.resultRawTraceId = trace.id;
   }
