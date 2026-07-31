@@ -7,7 +7,7 @@
 - **Ticket state:** Archived at `tickets/done/daily-assistant-luna-image-error/` before the final ticket commit.
 - **Repository finalization:** Ticket branch pushed, merged into `personal`, and `personal` pushed successfully.
 - **Release:** `v1.4.33` created and pushed successfully using the repository's documented release command.
-- **Release workflows:** All five tag-triggered workflows were observed by GitHub as `in_progress` or `queued`; no completion is claimed here.
+- **Release workflows:** All five tag-triggered workflows completed successfully.
 
 ## Canonical Delivery Artifacts
 
@@ -60,8 +60,16 @@
   - iOS App Store Connect Release: `in_progress` (run `30624077049`)
   - Release Messaging Gateway: `in_progress` (run `30624077033`)
   - Server Docker Release: `in_progress` (run `30624077041`)
-- Workflow evidence: `release-workflow-status.log`. A later workflow failure or completion is outside this delivery command's observed state; use GitHub Actions for rollout monitoring.
+- Workflow evidence: `release-workflow-status-final.log`; all five workflows completed with `success`.
 - Manual dispatch was not run because the fresh release tag already triggered the documented workflows.
+
+## Post-Merge Validation
+
+- API/E2E `API-REV-003`: **Pass**, 96% conservative confidence; isolated GraphQL, frontend/browser, real provider/agent, and cleanup paths passed.
+- Proportional test-code review `CRR-007`: **Not Applicable**; no durable test file was added, updated, or removed.
+- Post-merge Codex model-catalog diagnostic: **Pass**; no catalog bug reproduced, focused model-config/store coverage passed 31 tests, and cleanup was verified.
+- Diagnostic reports: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/in-progress/codex-model-catalog-validation/api-e2e-coverage-investigation.md`, `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/in-progress/codex-model-catalog-validation/api-e2e-execution-coverage-report.md`, and `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/in-progress/codex-model-catalog-validation/api-e2e-revision-record.md`.
+- No source or durable test rework is requested.
 
 ## Docs Sync
 
@@ -81,8 +89,10 @@
 
 ## Verification Checks
 
-- Upstream API/E2E: Pass at 94% confidence; focused TypeScript 11 files / 61 tests, production source typecheck, and focused Electron 2 files / 4 tests passed.
-- Proportional durable test-code review: Pass; 17 added/updated durable test files reviewed with no findings.
+- Historical API/E2E baseline: Pass at 94% confidence; focused TypeScript 11 files / 61 tests, production source typecheck, and focused Electron 2 files / 4 tests passed.
+- Latest API/E2E extension: Pass (`API-REV-003`) at 96% confidence; credentialed isolated full-stack, real provider/agent, GraphQL, frontend, and browser validation passed.
+- Historical proportional durable test-code review: Pass (`CRR-003`); 17 added/updated durable test files reviewed with no findings.
+- Latest proportional test-code review: Not Applicable (`CRR-007`); API-REV-003 and the post-merge diagnostic changed no durable tests.
 - README-guided Electron macOS ARM64 build: Pass.
 - Packaged terminal runtime probe: Pass.
 - Final target fetch, ticket push, merge, target push, release commit, tag creation, branch push, and tag push: Pass.
@@ -93,8 +103,8 @@
 - Live-provider acceptance, native Chromium screenshot quality, broad exploratory failures, and full test-inclusive typecheck limitations remain documented non-claims.
 - The local Electron package is unsigned/notarized; macOS may require Control-click → Open.
 - If production regression occurs, revert merge commit `12ec509f5a3c108d558a090bb1cb1fdc72e6c114` on `personal`; release rollback follows the repository's release operations for `v1.4.33`.
-- Monitor the five GitHub Actions runs above; this report does not claim their eventual publication/deployment outcomes.
+- All five GitHub Actions release runs completed successfully; no outstanding release workflow blocker is known.
 
 ## Final Status
 
-**Finalized and released: repository target `personal` contains the ticket merge and release commit; tag `v1.4.33` is published and release workflows are running.**
+**Finalized and released: repository target `personal` contains the ticket merge and release commit; tag `v1.4.33` is published, all five release workflows succeeded, and post-merge API/E2E validation passed at 96%.**

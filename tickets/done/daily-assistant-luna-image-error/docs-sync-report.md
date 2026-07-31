@@ -63,7 +63,7 @@
 ## Delivery Continuation
 
 - Result: `Pass`
-- Next delivery action: Update the ticket-local handoff and delivery/release report, then hold for explicit user verification before archive, commit, push, target-branch merge, release, deployment, or cleanup.
+- Next delivery action: Delivery record synchronization is complete; no archive, source, release, or deployment change is required for the post-merge diagnostic.
 - Notes: Delivery-owned docs were edited only after confirming the recorded base was current. No persisted-data migration is required; the approved transition remains `Not Affected`.
 
 ## Blocked Or Escalated Follow-Up (Use Only If Docs Sync Cannot Complete)
@@ -71,3 +71,11 @@
 - Classification: `N/A`
 - Recommended recipient: `N/A`
 - Why docs could not be finalized truthfully: `N/A`
+
+
+## Post-Merge Diagnostic Docs Decision
+
+- Trigger: API-REV-003 Pass at 96% confidence and post-merge Codex model-catalog diagnostic Pass.
+- Durable source/test impact: None; the diagnostic added, updated, and removed no durable test or production source file.
+- Long-lived docs impact: No new documentation change required. Existing model-catalog, runtime, browser, and release documentation remains accurate for the validated behavior.
+- Decision: **No additional docs change / N/A**. Delivery handoff and release records were synchronized with the diagnostic evidence and `CRR-007` Not Applicable result.

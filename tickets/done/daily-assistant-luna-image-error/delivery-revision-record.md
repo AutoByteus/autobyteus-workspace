@@ -6,6 +6,10 @@
 | --- | --- | --- | --- | --- |
 | DR-001 | Initial delivery round after API/E2E Pass and proportional durable test-code review Pass | N/A | Ready for explicit user verification | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md` |
 | DR-002 | User-requested README-guided Electron test build | Ready for explicit user verification | macOS ARM64 Electron package and packaged terminal runtime check passed; user verification remains pending | `electron-test-build-report.md`, `handoff-summary.md`, `release-deployment-report.md` |
+| DR-003 | Explicit completion authorization and finalization/release execution | User verification hold | Ticket archived; finalization and release executed | `release-notes.md`, `handoff-summary.md`, `release-deployment-report.md` |
+| DR-004 | Repository finalization and release completion | Finalization/release in progress | Ticket merge, `v1.4.33`, and release publication completed | `release-deployment-report.md`, `handoff-summary.md` |
+| DR-005 | Post-cleanup durable artifact checkout | Finalization/release complete | Canonical archived reports retained in inspectable checkout | `delivery-revision-record.md`, `handoff-summary.md` |
+| DR-006 | API-REV-003 and post-merge Codex diagnostic record synchronization | Finalized/released; awaiting post-merge record sync | API/E2E Pass at 96%, CRR-007 Not Applicable, no source/test rework, all release workflows successful | `api-e2e-test-review-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `docs-sync-report.md` |
 
 ## Revision Entries
 
@@ -68,3 +72,14 @@
 - Current authoritative result: **Pass**. A detached final-tip checkout is retained at `/Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error-delivery-records` so the canonical archived ticket records remain directly inspectable after removal of the task worktree.
 - Canonical report paths were updated to the retained checkout; no source, release, or target-branch behavior changed.
 - Remaining risks: Release workflows remain externally monitored; implementation residuals remain unchanged.
+
+
+### DR-006 — Post-merge API/E2E diagnostic and proportional-review synchronization
+
+- Delivery round and trigger: Round 6, triggered by the `code_reviewer` handoff for API-REV-003 and the post-merge Codex model-catalog diagnostic.
+- Prior authoritative result: Finalized and released; durable artifact checkout retained (`DR-005`).
+- Current authoritative result: **Pass**. API-REV-003 remains Pass at 96% confidence; the post-merge diagnostic passed without reproducing a catalog bug; `CRR-007` is Not Applicable because neither run changed durable tests.
+- Diagnostic evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/in-progress/codex-model-catalog-validation/api-e2e-coverage-investigation.md`, `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/in-progress/codex-model-catalog-validation/api-e2e-execution-coverage-report.md`, and `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/in-progress/codex-model-catalog-validation/api-e2e-revision-record.md`.
+- Release state rechecked: all five `v1.4.33` tag-triggered workflows completed successfully; no release blocker remains.
+- Delivery action: synchronized handoff, docs-sync, release/deployment, and revision records. No source, durable test, release, or deployment change was made.
+- Remaining risks: native Electron screenshot visual quality, provider-specific error classification, unconfigured Gemini AI Studio, and the broader execution notes remain explicitly documented.

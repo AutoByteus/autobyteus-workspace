@@ -10,6 +10,7 @@
 | CRR-004 | Focused API/E2E Failure-Origin Review | `API-REV-002` live-validation setup failed at server build | `IR-002`, `CRR-002`, `CRR-003`, `API-REV-002` | Fail; `CR-002` open | Local Fix -> `implementation_engineer` |
 | CRR-005 | Implementation Review | `IR-003` implementation rework for `CR-002` | `SR-004`, `ARCH-REV-003`, `IR-002`, `IR-003`, `CRR-004`, `API-REV-002` | Fail; `CR-003` open and `CR-002` resolved | Local Fix -> `implementation_engineer` |
 | CRR-006 | Implementation Review | `IR-004` implementation rework for `CR-003` | `SR-004`, `ARCH-REV-003`, `IR-003`, `IR-004`, `CRR-005`, `API-REV-002` | Pass; no open findings | `api_e2e_engineer` |
+| CRR-007 | Proportional API/E2E Test-Code Review | Post-merge Codex model-catalog diagnostic validation with no durable test changes | `CRR-006`, `API-REV-003`, post-merge diagnostic evidence | Not Applicable; no test-code findings | `delivery_engineer` |
 
 ## CRR-001 — Initial implementation-source review
 
@@ -64,3 +65,11 @@
 - Reachability/material premise: The server schema now matches `GET_AVAILABLE_LLM_PROVIDERS_WITH_MODELS`, the web store's model-catalog path, generated client types, existing documentation, and the server GraphQL E2E field contract. No live provider or browser execution was required for this source compatibility determination.
 - Evidence: `pnpm --filter autobyteus-server-ts build` passed through shared preparation, Prisma generation, server compilation, asset copy, and bootstrap smoke; `git diff --check` passed; source inspection confirms the existing field/enum names are restored and no shared provenance field or curated resolver authority was added.
 - Decision/routing: `Pass`; hand off the cumulative package to `api_e2e_engineer` for importer dry-run/import, isolated live-E2E server, and real agent/provider validation. No API/E2E or live-provider sign-off is claimed by this review.
+
+### CRR-007 — Proportional test-code review for post-merge Codex model-catalog diagnostic
+
+- Baseline/prior result: `CRR-006` is the latest implementation-source `Pass`; the prior proportional review (`CRR-003`) passed 17 changed/added durable tests, and the API-REV-003 proportional review was `Not Applicable` because it changed no durable tests. No test-code change is implied by a missing prior result.
+- Scope: The post-merge diagnostic used the main repository because the original ticket worktree was absent. It exercised existing frontend/model-config tests, GraphQL/browser probes, and a real Codex create-stream-restore-continue flow without adding, updating, or removing durable test files. Production source was not reopened.
+- Result: **Not Applicable**. No durable test source exists for this diagnostic to review; no test organization, determinism, assertion, fixture, or requirement-alignment finding was identified.
+- Evidence: The diagnostic API/E2E reports were supplied under `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/in-progress/codex-model-catalog-validation/`; reported focused frontend model-config/store coverage passed 31 tests. The diagnostic passed with no catalog bug reproduced. Nine broader existing mock failures and one token-usage idempotency warning remain execution notes, not changed-test defects.
+- Routing: `delivery_engineer` with the cumulative package, including the updated `api-e2e-test-review-report.md` and this revision record. The earlier CRR-003 `Pass` and API-REV-003 `Not Applicable` results remain authoritative for their respective scopes.

@@ -65,3 +65,18 @@ pnpm verify-packaged-terminal-runtime \
 ## User Testing
 
 Use the app bundle for direct testing or open the DMG/ZIP. The integrated backend starts automatically on loopback port `29695` when the Electron app launches. Manual GUI launch, smoke behavior, and user-facing acceptance remain pending explicit user verification.
+
+
+## Post-Release Main-Repository Build
+
+- Trigger: User requested that the local main `personal` repository be updated to latest and Electron be rebuilt from there.
+- Repository revision: local `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo` fast-forwarded to `origin/personal` at `44d0e3de00e78b2ba34c327fd947d8a2fd3d521e`; unrelated local edits were preserved and restored.
+- Command: `NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac` from `autobyteus-web`.
+- Result: **Pass** (`EXIT_CODE=0`) on macOS Darwin ARM64, package version `1.4.33`.
+- App bundle: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- DMG: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.33.dmg`
+- ZIP: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.33.zip`
+- SHA-256: DMG `291dc592644a09d70c8a95861b826472701e97f60ad5837d46785d93d6c0cccc`; ZIP `ebfb19e605b0e027cd10ef7036e5b3f0a330ae65d2c32890402a36398b5e4961`.
+- Packaged terminal runtime: **Pass**, including Darwin ARM64 `node-pty` helper validation and spawn probe.
+- Evidence: `electron-main-personal-build.log` and `electron-main-personal-runtime.log`.
+- Packaging remains unsigned/notarized; Control-click → **Open** may be required.

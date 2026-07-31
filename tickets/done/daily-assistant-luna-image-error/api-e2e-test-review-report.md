@@ -3,20 +3,21 @@
 ## Review Round Meta
 
 - Review entry point: Proportional API/E2E durable test-code review
-- Test-review round: 2
-- Trigger: API-REV-003 passed the full-stack/live validation extension with no durable test-code changes.
+- Test-review round: 3
+- Trigger: Post-merge Codex model-catalog diagnostic validation passed with no durable test-code changes.
 - Prior proportional test-code review: Round 1, Pass
-- Latest authoritative test-review round: 2
+- Latest authoritative test-review round: 3
 - Upstream implementation review: code-review-report.md Round 5 / CRR-006, Pass
 - Prior upstream API/E2E execution: api-e2e-execution-coverage-report.md, API-REV-001, Pass
-- Current upstream API/E2E execution: api-e2e-execution-coverage-report.md, API-REV-003, Pass at 96% confidence
+- Prior upstream API/E2E execution: api-e2e-execution-coverage-report.md, API-REV-003, Pass at 96% confidence
+- Current upstream API/E2E execution: post-merge `codex-model-catalog-validation` diagnostic, Pass; no catalog bug reproduced
 - Requirements: /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/requirements.md
 - Coverage investigation: /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/api-e2e-coverage-investigation.md
 - Execution report: /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/api-e2e-execution-coverage-report.md
 - API/E2E revision record: /Users/normy/autobyteus_org/autobyteus-worktrees/daily-assistant-luna-image-error/tickets/done/daily-assistant-luna-image-error/api-e2e-revision-record.md
-- Changed durable test files reviewed: 0 in API-REV-003; 17 in historical Round 1
+- Changed durable test files reviewed: 0 in the post-merge diagnostic; 0 in API-REV-003; 17 in historical Round 1
 - Removed durable test files: None
-- Review execution: Not Applicable for API-REV-003; no durable test file was added, updated, or removed.
+- Review execution: Not Applicable for the post-merge diagnostic and API-REV-003; no durable test file was added, updated, or removed.
 
 ## Review History
 
@@ -24,6 +25,7 @@
 | --- | --- | ---: | --- | --- |
 | 1 | API-REV-001 focused repository validation | 17 changed/added; none removed | Pass | `delivery_engineer` at that stage |
 | 2 | API-REV-003 full-stack/live validation extension | None | Not Applicable | `delivery_engineer` |
+| 3 | Post-merge Codex model-catalog diagnostic validation | None | Not Applicable | `delivery_engineer` |
 
 ## Historical Round 1 Review Scope
 
@@ -118,3 +120,13 @@ The direct CR-001 test is appropriately strong for this scope: it obtains the ac
 - Test-code review result: **Not Applicable**.
 - Findings: None; no changed durable test code exists to review.
 - Routing: `delivery_engineer` with the cumulative package. The prior Round 1 Pass remains valid for its 17 changed/added durable test files.
+
+## Post-merge Codex Model-Catalog Diagnostic Proportional Test-Code Review
+
+- Durable test files added, updated, or removed: **None**. The diagnostic ran against the main repository because the original ticket worktree was absent; it changed no durable coverage.
+- Evidence: the API/E2E diagnostic package under `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/in-progress/codex-model-catalog-validation/` records the isolated GraphQL, frontend/browser, real Codex websocket, and focused frontend validation. The reported focused model-config/store suite passed 31 tests.
+- Review scope: No test source was reopened or rerun. This was diagnostic post-merge validation of existing repository behavior, not a durable test change.
+- Test-code review result: **Not Applicable**.
+- Findings: None. The broader selected frontend command's nine existing `getCompactionActivities` mock failures and the token-usage idempotency warning are recorded execution limitations, not changed-test findings.
+- Diagnostic result: **Pass**; no Codex runtime model-catalog bug reproduced. The isolated endpoint exposed `codex_app_server` and seven OpenAI models, the frontend rendered the catalog and controls, and the real create-stream-restore-continue scenario passed. Cleanup was verified.
+- Routing: `delivery_engineer` with the cumulative package for durable record synchronization. The historical Round 1 Pass and API-REV-003 Not Applicable result remain unchanged.
