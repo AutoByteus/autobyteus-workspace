@@ -1,0 +1,1734 @@
+import { builtinModules } from "node:module";
+import {
+  existsSync,
+  mkdtempSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  realpathSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from "node:fs";
+import { tmpdir } from "node:os";
+import {
+  dirname,
+  extname,
+  isAbsolute,
+  join,
+  relative,
+  resolve,
+  sep,
+} from "node:path";
+import { fileURLToPath } from "node:url";
+import { parse as parseVueSfc } from "@vue/compiler-sfc";
+import ts from "typescript";
+import { afterEach, describe, expect, it } from "vitest";
+
+type AfbPolicyId = "AFB-001" | "AFB-002" | "AFB-003" | "AFB-004" | "AFB-005";
+
+type ProjectProfileName =
+  | "server"
+  | "studio-web"
+  | "brief-backend"
+  | "brief-frontend"
+  | "socratic-backend"
+  | "socratic-frontend"
+  | `devkit-template:${string}`;
+
+type ProjectProfile = {
+  name: ProjectProfileName;
+  projectRoot: string;
+  manifestPath: string;
+  compilerOptions: ts.CompilerOptions;
+};
+
+type Resolution =
+  | { kind: "source"; resolvedPath: string }
+  | { kind: "builtin"; packageName: string }
+  | { kind: "bare"; packageName: string }
+  | { kind: "unresolved" };
+
+type ImportEdge = {
+  specifier: string;
+  line: number;
+  column: number;
+};
+
+type ImportBinding = {
+  kind: "named" | "namespace";
+  exportedName?: string;
+  resolution: Resolution;
+};
+
+type ParsedSource = {
+  importer: string;
+  sourceFile: ts.SourceFile;
+  lineOffset: number;
+  edges: ImportEdge[];
+  bindings: Map<string, ImportBinding>;
+};
+
+type BoundaryViolation = {
+  policy: AfbPolicyId;
+  profile: ProjectProfileName;
+  importer: string;
+  line: number;
+  column: number;
+  subject: string;
+  resolvedDependency?: string;
+  reason: string;
+  correction: string;
+};
+
+type RequiredInput =
+  | { kind: "object-property"; argumentIndex: number; path: string }
+  | { kind: "positional"; argumentIndex: number; label: string };
+
+type ConstructionObligation = {
+  family: "publication-resource" | "run" | "session-provider" | "team-context";
+  symbol: string;
+  moduleSuffix?: string;
+  kind: "new" | "method";
+  requiredInputs: readonly RequiredInput[];
+};
+
+type ConstructionOccurrence = {
+  obligation: ConstructionObligation;
+  node: ts.NewExpression | ts.CallExpression;
+  parsed: ParsedSource;
+};
+
+type CheckResult = {
+  violations: BoundaryViolation[];
+  governedFiles: Map<AfbPolicyId, string[]>;
+  constructionCounts: Map<string, number>;
+  vueFiles: string[];
+  templateProfiles: string[];
+};
+
+type DirectGlobalCallee = {
+  symbol: string;
+  exportName: string;
+  member?: string;
+  moduleSuffix: string;
+};
+
+const THIS_FILE = fileURLToPath(import.meta.url);
+const REPOSITORY_ROOT = resolve(dirname(THIS_FILE), "../../..");
+const SOURCE_EXTENSIONS = new Set([".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".vue"]);
+const NODE_BUILTINS = new Set(
+  builtinModules.flatMap((name) => [name, name.replace(/^node:/, "")]),
+);
+
+const CORRECTIONS: Record<AfbPolicyId, string> = {
+  "AFB-001": "Use application-platform-runtime-contracts.ts or an exact subject input supplied by the assembly root.",
+  "AFB-002": "Use the declared GraphQL package/query/command contract or an application SDK/presentation-local helper.",
+  "AFB-003": "Keep package/bundle code on its owned contracts; only the catalog refresh coordinator may call catalog reconciliation.",
+  "AFB-004": "Inject the named application-scoped dependency; move genuine process construction to a named assembly owner.",
+  "AFB-005": "Use project-local source, an application SDK, a Node built-in, or a library declared by this project's manifest.",
+};
+
+const DIRECT_GLOBAL_CALLEES: readonly DirectGlobalCallee[] = [
+  {
+    symbol: "AgentRunManager.getInstance",
+    exportName: "AgentRunManager",
+    member: "getInstance",
+    moduleSuffix: "autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts",
+  },
+  {
+    symbol: "AgentTeamRunManager.getInstance",
+    exportName: "AgentTeamRunManager",
+    member: "getInstance",
+    moduleSuffix: "autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts",
+  },
+  {
+    symbol: "AgentToolMcpSessionService.getInstance",
+    exportName: "AgentToolMcpSessionService",
+    member: "getInstance",
+    moduleSuffix: "autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-service.ts",
+  },
+  {
+    symbol: "getAgentToolMcpSessionService",
+    exportName: "getAgentToolMcpSessionService",
+    moduleSuffix: "autobyteus-server-ts/src/agent-tools/mcp/agent-tool-mcp-session-service.ts",
+  },
+  {
+    symbol: "getGeneralProcessPublishedArtifactPublisher",
+    exportName: "getGeneralProcessPublishedArtifactPublisher",
+    moduleSuffix: "autobyteus-server-ts/src/services/published-artifacts/published-artifact-publication-service.ts",
+  },
+  {
+    symbol: "createGeneralProcessPublishedArtifactPublisher",
+    exportName: "createGeneralProcessPublishedArtifactPublisher",
+    moduleSuffix: "autobyteus-server-ts/src/services/published-artifacts/published-artifact-publication-service.ts",
+  },
+  {
+    symbol: "createGeneralProcessPublishedArtifactRelayService",
+    exportName: "createGeneralProcessPublishedArtifactRelayService",
+    moduleSuffix: "autobyteus-server-ts/src/application-orchestration/services/application-published-artifact-relay-service.ts",
+  },
+];
+
+const CONSTRUCTION_OBLIGATIONS: readonly ConstructionObligation[] = [
+  {
+    family: "publication-resource",
+    symbol: "AgentRunResourceManager",
+    moduleSuffix: "autobyteus-server-ts/src/agent-execution/services/agent-run-resource-manager.ts",
+    kind: "new",
+    requiredInputs: ["sessionScope", "runFileChangeService", "publishedArtifactRelayService", "memoryRecorder"].map(
+      (path) => ({ kind: "object-property" as const, argumentIndex: 0, path }),
+    ),
+  },
+  {
+    family: "publication-resource",
+    symbol: "PublishedArtifactPublicationService",
+    moduleSuffix: "autobyteus-server-ts/src/services/published-artifacts/published-artifact-publication-service.ts",
+    kind: "new",
+    requiredInputs: ["activeRunReader", "publishedArtifactRelayService", "projectionStore", "snapshotStore"].map(
+      (path) => ({ kind: "object-property" as const, argumentIndex: 0, path }),
+    ),
+  },
+  {
+    family: "publication-resource",
+    symbol: "PublishedArtifactProjectionService",
+    moduleSuffix: "autobyteus-server-ts/src/run-history/services/published-artifact-projection-service.ts",
+    kind: "new",
+    requiredInputs: ["activeRunReader", "metadataService", "projectionStore", "snapshotStore"].map(
+      (path) => ({ kind: "object-property" as const, argumentIndex: 0, path }),
+    ),
+  },
+  {
+    family: "run",
+    symbol: "AgentRunManager",
+    moduleSuffix: "autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts",
+    kind: "new",
+    requiredInputs: ["autoByteusBackendFactory", "codexBackendFactory", "claudeBackendFactory", "activeRunRegistry", "memoryRecorder"].map(
+      (path) => ({ kind: "object-property" as const, argumentIndex: 0, path }),
+    ),
+  },
+  {
+    family: "run",
+    symbol: "AgentRunIdentityAllocator",
+    moduleSuffix: "autobyteus-server-ts/src/agent-execution/services/agent-run-identity-allocator.ts",
+    kind: "new",
+    requiredInputs: ["agentDefinitionService", "agentRunManager", "agentRunMetadataService", "teamRunMetadataService", "memoryDir"].map(
+      (path) => ({ kind: "object-property" as const, argumentIndex: 0, path }),
+    ),
+  },
+  {
+    family: "run",
+    symbol: "AgentRunService",
+    moduleSuffix: "autobyteus-server-ts/src/agent-execution/services/agent-run-service.ts",
+    kind: "new",
+    requiredInputs: ["agentRunManager", "metadataService", "agentRunIdentityAllocator"].map((path) => ({
+      kind: "object-property" as const,
+      argumentIndex: 1,
+      path,
+    })),
+  },
+  {
+    family: "session-provider",
+    symbol: "ApplicationAgentToolsSessionFactory.createApplicationSessionManager",
+    kind: "method",
+    requiredInputs: [
+      { kind: "object-property", argumentIndex: 0, path: "scope" },
+      { kind: "object-property", argumentIndex: 0, path: "executionCapabilities.publishedArtifactPublisher" },
+      { kind: "object-property", argumentIndex: 0, path: "assertExecutionCapabilitiesReady" },
+    ],
+  },
+  {
+    family: "session-provider",
+    symbol: "AutoByteusAgentRunBackendFactory",
+    moduleSuffix: "autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts",
+    kind: "new",
+    requiredInputs: [{ kind: "object-property", argumentIndex: 0, path: "agentDefinitionService" }],
+  },
+  {
+    family: "session-provider",
+    symbol: "CodexAgentRunBackendFactory",
+    moduleSuffix: "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend-factory.ts",
+    kind: "new",
+    requiredInputs: [{ kind: "positional", argumentIndex: 1, label: "codexThreadBootstrapper" }],
+  },
+  {
+    family: "session-provider",
+    symbol: "ClaudeAgentRunBackendFactory",
+    moduleSuffix: "autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-agent-run-backend-factory.ts",
+    kind: "new",
+    requiredInputs: [
+      { kind: "positional", argumentIndex: 0, label: "claudeSessionManager" },
+      { kind: "positional", argumentIndex: 1, label: "claudeSessionBootstrapper" },
+    ],
+  },
+  {
+    family: "session-provider",
+    symbol: "CodexThreadBootstrapper",
+    moduleSuffix: "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts",
+    kind: "new",
+    requiredInputs: [
+      { kind: "positional", argumentIndex: 2, label: "agentDefinitionService" },
+      { kind: "positional", argumentIndex: 7, label: "agentToolsSessionManager" },
+    ],
+  },
+  {
+    family: "session-provider",
+    symbol: "ClaudeSessionManager",
+    moduleSuffix: "autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-manager.ts",
+    kind: "new",
+    requiredInputs: [{ kind: "positional", argumentIndex: 2, label: "agentToolsSessionManager" }],
+  },
+  {
+    family: "session-provider",
+    symbol: "ClaudeSessionBootstrapper",
+    moduleSuffix: "autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts",
+    kind: "new",
+    requiredInputs: [{ kind: "positional", argumentIndex: 2, label: "agentDefinitionService" }],
+  },
+  {
+    family: "team-context",
+    symbol: "MemberTeamContextBuilder",
+    moduleSuffix: "autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts",
+    kind: "new",
+    requiredInputs: [{ kind: "positional", argumentIndex: 0, label: "agentTeamDefinitionService" }],
+  },
+  {
+    family: "team-context",
+    symbol: "MixedTeamRunBackendFactory",
+    moduleSuffix: "autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-run-backend-factory.ts",
+    kind: "new",
+    requiredInputs: ["memberTeamContextBuilder", "createTeamManager"].map((path) => ({
+      kind: "object-property" as const,
+      argumentIndex: 0,
+      path,
+    })),
+  },
+  {
+    family: "team-context",
+    symbol: "MixedTeamManager",
+    moduleSuffix: "autobyteus-server-ts/src/agent-team-execution/backends/mixed/mixed-team-manager.ts",
+    kind: "new",
+    requiredInputs: ["subTeamRunFactory", "agentRunManager", "agentToolMcpSessionManager", "memberTeamContextBuilder"].map(
+      (path) => ({ kind: "object-property" as const, argumentIndex: 1, path }),
+    ),
+  },
+  {
+    family: "team-context",
+    symbol: "AgentTeamRunManager",
+    moduleSuffix: "autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts",
+    kind: "new",
+    requiredInputs: ["mixedTeamRunBackendFactory", "teamCommunicationService", "runFileChangeService"].map((path) => ({
+      kind: "object-property" as const,
+      argumentIndex: 0,
+      path,
+    })),
+  },
+  {
+    family: "team-context",
+    symbol: "TeamRunHistoryCatalogService",
+    moduleSuffix: "autobyteus-server-ts/src/run-history/services/team-run-history-catalog-service.ts",
+    kind: "new",
+    requiredInputs: [{ kind: "object-property", argumentIndex: 1, path: "teamRunManager" }],
+  },
+  {
+    family: "team-context",
+    symbol: "TeamRunService",
+    moduleSuffix: "autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts",
+    kind: "new",
+    requiredInputs: [
+      "agentTeamRunManager",
+      "teamDefinitionService",
+      "teamRunMetadataService",
+      "agentRunIdentityAllocator",
+      "teamRunHistoryCatalogService",
+      "memoryDir",
+      "memoryLocationService",
+    ].map((path) => ({ kind: "object-property" as const, argumentIndex: 0, path })),
+  },
+];
+
+const normalizePath = (path: string): string => path.split(sep).join("/");
+
+const pathIsInside = (candidate: string, parent: string): boolean => {
+  const relativePath = relative(parent, candidate);
+  return relativePath === "" || (!relativePath.startsWith("..") && !isAbsolute(relativePath));
+};
+
+const canonicalPackageName = (specifier: string): string => {
+  if (specifier.startsWith("@")) {
+    return specifier.split("/").slice(0, 2).join("/");
+  }
+  return specifier.split("/")[0] ?? specifier;
+};
+
+const isNullOrUndefined = (node: ts.Expression | undefined): boolean =>
+  !node
+  || node.kind === ts.SyntaxKind.NullKeyword
+  || (ts.isIdentifier(node) && node.text === "undefined")
+  || ts.isVoidExpression(node);
+
+const propertyNameText = (name: ts.PropertyName): string | null => {
+  if (ts.isIdentifier(name) || ts.isStringLiteral(name) || ts.isNumericLiteral(name)) {
+    return name.text;
+  }
+  return null;
+};
+
+const objectPropertyValue = (
+  object: ts.ObjectLiteralExpression,
+  pathParts: readonly string[],
+): ts.Expression | undefined => {
+  const [head, ...rest] = pathParts;
+  if (!head) {
+    return object;
+  }
+  for (const property of object.properties) {
+    if (ts.isSpreadAssignment(property) || !property.name || propertyNameText(property.name) !== head) {
+      continue;
+    }
+    let value: ts.Expression | undefined;
+    if (ts.isPropertyAssignment(property)) {
+      value = property.initializer;
+    } else if (ts.isShorthandPropertyAssignment(property)) {
+      value = property.name;
+    } else if (ts.isMethodDeclaration(property) && ts.isIdentifier(property.name)) {
+      value = property.name;
+    }
+    if (rest.length === 0) {
+      return value;
+    }
+    if (!value || !ts.isObjectLiteralExpression(value)) {
+      return undefined;
+    }
+    return objectPropertyValue(value, rest);
+  }
+  return undefined;
+};
+
+const objectContainsSpread = (object: ts.ObjectLiteralExpression): boolean =>
+  object.properties.some((property) => {
+    if (ts.isSpreadAssignment(property)) {
+      return true;
+    }
+    return ts.isPropertyAssignment(property)
+      && ts.isObjectLiteralExpression(property.initializer)
+      && objectContainsSpread(property.initializer);
+  });
+
+const scriptKindFor = (filePath: string, language?: string): ts.ScriptKind => {
+  const normalizedLanguage = language?.toLowerCase();
+  if (normalizedLanguage === "ts") return ts.ScriptKind.TS;
+  if (normalizedLanguage === "tsx") return ts.ScriptKind.TSX;
+  if (normalizedLanguage === "js") return ts.ScriptKind.JS;
+  if (normalizedLanguage === "jsx") return ts.ScriptKind.JSX;
+  switch (extname(filePath)) {
+    case ".tsx": return ts.ScriptKind.TSX;
+    case ".js":
+    case ".mjs":
+    case ".cjs": return ts.ScriptKind.JS;
+    case ".jsx": return ts.ScriptKind.JSX;
+    default: return ts.ScriptKind.TS;
+  }
+};
+
+const walkSourceFiles = (root: string): string[] => {
+  if (!existsSync(root)) return [];
+  const files: string[] = [];
+  const visit = (current: string): void => {
+    for (const entry of readdirSync(current, { withFileTypes: true })) {
+      if (["node_modules", "dist", ".build", ".nuxt"].includes(entry.name)) continue;
+      const fullPath = join(current, entry.name);
+      if (entry.isDirectory()) {
+        visit(fullPath);
+      } else if (SOURCE_EXTENSIONS.has(extname(entry.name)) && !entry.name.endsWith(".d.ts")) {
+        files.push(fullPath);
+      }
+    }
+  };
+  visit(root);
+  return files.sort();
+};
+
+const readJson = (filePath: string): Record<string, unknown> =>
+  JSON.parse(readFileSync(filePath, "utf8")) as Record<string, unknown>;
+
+const loadTsConfig = (configPath: string, projectRoot: string): ts.CompilerOptions => {
+  const loaded = ts.readConfigFile(configPath, ts.sys.readFile);
+  if (loaded.error) {
+    throw new Error(ts.flattenDiagnosticMessageText(loaded.error.messageText, "\n"));
+  }
+  const parsed = ts.parseJsonConfigFileContent(loaded.config, ts.sys, projectRoot, undefined, configPath);
+  if (parsed.errors.length > 0) {
+    throw new Error(parsed.errors.map((error) => ts.flattenDiagnosticMessageText(error.messageText, "\n")).join("\n"));
+  }
+  return parsed.options;
+};
+
+class ApplicationFrameworkBoundaryChecker {
+  readonly repositoryRoot: string;
+  readonly serverRoot: string;
+  readonly webRoot: string;
+  readonly briefRoot: string;
+  readonly socraticRoot: string;
+  readonly templatesRoot: string;
+  private readonly profileCache = new Map<ProjectProfileName, ProjectProfile>();
+
+  constructor(repositoryRoot: string) {
+    this.repositoryRoot = realpathSync(repositoryRoot);
+    this.serverRoot = join(this.repositoryRoot, "autobyteus-server-ts");
+    this.webRoot = join(this.repositoryRoot, "autobyteus-web");
+    this.briefRoot = join(this.repositoryRoot, "applications/brief-studio");
+    this.socraticRoot = join(this.repositoryRoot, "applications/socratic-math-teacher");
+    this.templatesRoot = join(this.repositoryRoot, "autobyteus-application-devkit/templates");
+  }
+
+  checkCurrentTree(assertOccurrences = true): CheckResult {
+    const governedFiles = this.discoverGovernedFiles();
+    const violations: BoundaryViolation[] = [];
+    const constructionCounts = new Map<string, number>();
+    const vueFiles = new Set<string>();
+
+    for (const [policy, files] of governedFiles) {
+      for (const importer of files) {
+        if (extname(importer) === ".vue") vueFiles.add(importer);
+        const profile = this.profileFor(importer);
+        const parsedResult = this.parseImporter(importer, profile, policy);
+        violations.push(...parsedResult.violations);
+        for (const parsed of parsedResult.sources) {
+          for (const edge of parsed.edges) {
+            const resolution = this.resolveSpecifier(edge.specifier, importer, profile);
+            const violation = this.evaluateImport(policy, profile, importer, edge, resolution);
+            if (violation) violations.push(violation);
+          }
+          if (policy === "AFB-004") {
+            const constructionResult = this.evaluateApplicationConstruction(profile, parsed);
+            violations.push(...constructionResult.violations);
+            for (const occurrence of constructionResult.occurrences) {
+              constructionCounts.set(
+                occurrence.obligation.symbol,
+                (constructionCounts.get(occurrence.obligation.symbol) ?? 0) + 1,
+              );
+            }
+            violations.push(...this.evaluateDirectGlobalCalls(profile, parsed));
+          }
+        }
+      }
+    }
+
+    if (assertOccurrences) {
+      const expectedImporter = join(
+        this.serverRoot,
+        "src/application-platform/runtime/create-application-run-services.ts",
+      );
+      for (const obligation of CONSTRUCTION_OBLIGATIONS) {
+        const count = constructionCounts.get(obligation.symbol) ?? 0;
+        if (count !== 1) {
+          violations.push(this.violation({
+            policy: "AFB-004",
+            profile: this.profileFor(expectedImporter),
+            importer: expectedImporter,
+            line: 1,
+            column: 1,
+            subject: obligation.symbol,
+            reason: `CURRENT_TREE_OCCURRENCE_MISMATCH expected=1 actual=${count}`,
+          }));
+        }
+      }
+    }
+
+    return {
+      violations,
+      governedFiles,
+      constructionCounts,
+      vueFiles: [...vueFiles].sort(),
+      templateProfiles: this.discoverTemplateProfiles(),
+    };
+  }
+
+  checkOneFile(importer: string, policy: AfbPolicyId): BoundaryViolation[] {
+    const canonicalImporter = realpathSync(importer);
+    const profile = this.profileFor(canonicalImporter);
+    const result = this.parseImporter(canonicalImporter, profile, policy);
+    const violations = [...result.violations];
+    for (const parsed of result.sources) {
+      for (const edge of parsed.edges) {
+        const resolution = this.resolveSpecifier(edge.specifier, canonicalImporter, profile);
+        const violation = this.evaluateImport(policy, profile, canonicalImporter, edge, resolution);
+        if (violation) violations.push(violation);
+      }
+      if (policy === "AFB-004") {
+        violations.push(...this.evaluateApplicationConstruction(profile, parsed).violations);
+        violations.push(...this.evaluateDirectGlobalCalls(profile, parsed));
+      }
+    }
+    return violations;
+  }
+
+  extractSpecifiers(importer: string): string[] {
+    const canonicalImporter = realpathSync(importer);
+    const profile = this.profileFor(canonicalImporter);
+    const result = this.parseImporter(
+      canonicalImporter,
+      profile,
+      this.policiesFor(canonicalImporter)[0] ?? "AFB-005",
+    );
+    if (result.violations.length > 0) throw new Error(result.violations.map(formatViolation).join("\n"));
+    return result.sources.flatMap((source) => source.edges.map((edge) => edge.specifier));
+  }
+
+  assertNamedAssemblySelections(): void {
+    const assemblyFiles = [
+      join(this.serverRoot, "src/compositions/build-studio-server.ts"),
+      join(this.serverRoot, "src/standalone-application-host/start-standalone-application-host.ts"),
+    ];
+    for (const importer of assemblyFiles) {
+      const source = readFileSync(importer, "utf8");
+      expect(source).toContain("getGeneralProcessPublishedArtifactPublisher");
+      expect(source).toContain("createGeneralProcessRunSupervisor");
+    }
+    const applicationConstruction = join(
+      this.serverRoot,
+      "src/application-platform/runtime/create-application-run-services.ts",
+    );
+    const source = readFileSync(applicationConstruction, "utf8");
+    expect(source).not.toContain("getGeneralProcessPublishedArtifactPublisher");
+    expect(source).not.toContain("createGeneralProcessPublishedArtifactPublisher");
+    expect(source).not.toContain("createGeneralProcessPublishedArtifactRelayService");
+    expect(source).not.toContain("createGeneralProcessRunSupervisor");
+  }
+
+  private discoverGovernedFiles(): Map<AfbPolicyId, string[]> {
+    const result = new Map<AfbPolicyId, string[]>();
+    const add = (policy: AfbPolicyId, files: string[]): void => {
+      result.set(policy, [...new Set(files)].sort());
+    };
+
+    add("AFB-001", [
+      ...walkSourceFiles(join(this.serverRoot, "src/api/rest")),
+      ...walkSourceFiles(join(this.serverRoot, "src/api/websocket")),
+      ...walkSourceFiles(join(this.serverRoot, "src/standalone-application-host/api")),
+      join(this.serverRoot, "src/standalone-application-host/services/standalone-application-bootstrap-service.ts"),
+    ].filter(existsSync));
+
+    const webFiles = [
+      ...walkSourceFiles(join(this.webRoot, "components/applications")),
+      ...walkSourceFiles(join(this.webRoot, "utils/application")),
+      join(this.webRoot, "composables/useRuntimeScopedModelSelection.ts"),
+    ].filter((file) => existsSync(file) && !this.isTestFile(file));
+    add("AFB-002", [
+      ...walkSourceFiles(join(this.serverRoot, "src/api/graphql")),
+      ...webFiles,
+    ]);
+
+    add("AFB-003", [
+      ...walkSourceFiles(join(this.serverRoot, "src/application-packages")),
+      ...walkSourceFiles(join(this.serverRoot, "src/application-bundles")),
+    ]);
+
+    add("AFB-004", [
+      ...walkSourceFiles(join(this.serverRoot, "src/application-platform/runtime")),
+      join(this.serverRoot, "src/agent-tools/mcp/application-agent-tool-mcp-session-scope.ts"),
+      join(this.serverRoot, "src/agent-tools/mcp/scoped-agent-tool-mcp-session-manager.ts"),
+      join(this.serverRoot, "src/agent-tools/mcp/providers/publish-artifacts-mcp-adapter-provider.ts"),
+    ].filter(existsSync));
+
+    const applicationFiles = [
+      ...walkSourceFiles(this.frontendRootFor(this.briefRoot)),
+      ...walkSourceFiles(join(this.briefRoot, "backend-src")),
+      ...walkSourceFiles(this.frontendRootFor(this.socraticRoot)),
+      ...walkSourceFiles(join(this.socraticRoot, "backend-src")),
+    ];
+    for (const profileName of this.discoverTemplateProfiles()) {
+      const templateName = profileName.slice("devkit-template:".length);
+      applicationFiles.push(...walkSourceFiles(join(this.templatesRoot, templateName, "src")));
+    }
+    add("AFB-005", applicationFiles);
+    return result;
+  }
+
+  private policiesFor(importer: string): AfbPolicyId[] {
+    const result: AfbPolicyId[] = [];
+    for (const [policy, files] of this.discoverGovernedFiles()) {
+      if (files.includes(importer)) result.push(policy);
+    }
+    return result;
+  }
+
+  private isTestFile(file: string): boolean {
+    const normalized = normalizePath(file);
+    return normalized.includes("/__tests__/") || /\.(?:spec|test)\.[cm]?[jt]sx?$/.test(normalized);
+  }
+
+  private frontendRootFor(applicationRoot: string): string {
+    const configPath = join(applicationRoot, "autobyteus-app.config.mjs");
+    const config = readFileSync(configPath, "utf8");
+    const match = config.match(/frontendDir\s*:\s*["']([^"']+)["']/);
+    if (!match?.[1]) throw new Error(`Missing source.frontendDir in ${configPath}`);
+    return join(applicationRoot, match[1]);
+  }
+
+  private discoverTemplateProfiles(): `devkit-template:${string}`[] {
+    if (!existsSync(this.templatesRoot)) return [];
+    return readdirSync(this.templatesRoot, { withFileTypes: true })
+      .filter((entry) => entry.isDirectory())
+      .filter((entry) =>
+        existsSync(join(this.templatesRoot, entry.name, "autobyteus-app.config.mjs"))
+        && existsSync(join(this.templatesRoot, entry.name, "package.json")))
+      .map((entry) => `devkit-template:${entry.name}` as const)
+      .sort();
+  }
+
+  private profileFor(importer: string): ProjectProfile {
+    importer = realpathSync(importer);
+    let name: ProjectProfileName;
+    if (pathIsInside(importer, this.serverRoot)) name = "server";
+    else if (pathIsInside(importer, this.webRoot)) name = "studio-web";
+    else if (pathIsInside(importer, join(this.briefRoot, "backend-src"))) name = "brief-backend";
+    else if (pathIsInside(importer, this.frontendRootFor(this.briefRoot))) name = "brief-frontend";
+    else if (pathIsInside(importer, join(this.socraticRoot, "backend-src"))) name = "socratic-backend";
+    else if (pathIsInside(importer, this.frontendRootFor(this.socraticRoot))) name = "socratic-frontend";
+    else {
+      const templateRoot = readdirSync(this.templatesRoot, { withFileTypes: true })
+        .filter((entry) => entry.isDirectory())
+        .map((entry) => entry.name)
+        .find((templateName) => pathIsInside(importer, join(this.templatesRoot, templateName, "src")));
+      if (!templateRoot) throw new Error(`No governed project profile for ${importer}`);
+      name = `devkit-template:${templateRoot}`;
+    }
+
+    const cached = this.profileCache.get(name);
+    if (cached) return cached;
+    let profile: ProjectProfile;
+    if (name === "server") {
+      profile = {
+        name,
+        projectRoot: this.serverRoot,
+        manifestPath: join(this.serverRoot, "package.json"),
+        compilerOptions: loadTsConfig(join(this.serverRoot, "tsconfig.json"), this.serverRoot),
+      };
+    } else if (name === "studio-web") {
+      const configPath = join(this.webRoot, "tsconfig.json");
+      const loaded = ts.readConfigFile(configPath, ts.sys.readFile);
+      if (loaded.error) throw new Error(ts.flattenDiagnosticMessageText(loaded.error.messageText, "\n"));
+      profile = {
+        name,
+        projectRoot: this.webRoot,
+        manifestPath: join(this.webRoot, "package.json"),
+        compilerOptions: {
+          target: ts.ScriptTarget.ES2022,
+          module: ts.ModuleKind.NodeNext,
+          moduleResolution: ts.ModuleResolutionKind.NodeNext,
+          allowJs: true,
+        },
+      };
+    } else if (name.endsWith("-backend")) {
+      const projectRoot = name.startsWith("brief") ? this.briefRoot : this.socraticRoot;
+      profile = {
+        name,
+        projectRoot,
+        manifestPath: join(projectRoot, "package.json"),
+        compilerOptions: loadTsConfig(join(projectRoot, "tsconfig.backend.json"), projectRoot),
+      };
+    } else {
+      const projectRoot = name === "brief-frontend"
+        ? this.briefRoot
+        : name === "socratic-frontend"
+          ? this.socraticRoot
+          : join(this.templatesRoot, name.slice("devkit-template:".length));
+      if (name.startsWith("devkit-template:")) {
+        readFileSync(join(projectRoot, "autobyteus-app.config.mjs"), "utf8");
+      } else {
+        this.frontendRootFor(projectRoot);
+      }
+      profile = {
+        name,
+        projectRoot,
+        manifestPath: join(projectRoot, "package.json"),
+        compilerOptions: {
+          target: ts.ScriptTarget.ES2022,
+          module: ts.ModuleKind.NodeNext,
+          moduleResolution: ts.ModuleResolutionKind.NodeNext,
+          allowJs: true,
+        },
+      };
+    }
+    this.profileCache.set(name, profile);
+    return profile;
+  }
+
+  private resolveSpecifier(specifier: string, importer: string, profile: ProjectProfile): Resolution {
+    const withoutNodePrefix = specifier.replace(/^node:/, "");
+    if (specifier.startsWith("node:") || NODE_BUILTINS.has(withoutNodePrefix)) {
+      return { kind: "builtin", packageName: withoutNodePrefix };
+    }
+
+    let governedBase: string | null = null;
+    if (profile.name === "studio-web") {
+      const alias = specifier.match(/^(~|@|~~|@@)(?:\/(.*))?$/);
+      if (alias) governedBase = join(profile.projectRoot, alias[2] ?? "");
+    }
+    if (specifier.startsWith(".")) governedBase = resolve(dirname(importer), specifier);
+    else if (isAbsolute(specifier)) governedBase = specifier;
+    else if (specifier.startsWith("#")) {
+      const target = this.resolveManifestImport(specifier, profile);
+      if (!target) return { kind: "unresolved" };
+      governedBase = target;
+    }
+
+    if (governedBase) {
+      const resolvedSource = this.resolveSourceCandidate(governedBase);
+      return resolvedSource ? { kind: "source", resolvedPath: resolvedSource } : { kind: "unresolved" };
+    }
+
+    if (profile.name !== "server" && !specifier.startsWith(".")) {
+      return { kind: "bare", packageName: canonicalPackageName(specifier) };
+    }
+
+    const resolution = ts.resolveModuleName(
+      specifier,
+      importer,
+      profile.compilerOptions,
+      ts.sys,
+    ).resolvedModule;
+    if (resolution?.resolvedFileName) {
+      const resolvedPath = existsSync(resolution.resolvedFileName)
+        ? realpathSync(resolution.resolvedFileName)
+        : resolve(resolution.resolvedFileName);
+      if (pathIsInside(resolvedPath, this.repositoryRoot) && !normalizePath(resolvedPath).includes("/node_modules/")) {
+        return { kind: "source", resolvedPath };
+      }
+    }
+    return { kind: "bare", packageName: canonicalPackageName(specifier) };
+  }
+
+  private resolveManifestImport(specifier: string, profile: ProjectProfile): string | null {
+    const manifest = readJson(profile.manifestPath);
+    const imports = manifest.imports;
+    if (!imports || typeof imports !== "object" || Array.isArray(imports)) return null;
+    const entries = Object.entries(imports as Record<string, unknown>);
+    for (const [key, rawTarget] of entries) {
+      let wildcard = "";
+      if (key.includes("*")) {
+        const [prefix, suffix = ""] = key.split("*");
+        if (!specifier.startsWith(prefix) || !specifier.endsWith(suffix)) continue;
+        wildcard = specifier.slice(prefix.length, specifier.length - suffix.length);
+      } else if (key !== specifier) continue;
+      const selectTarget = (value: unknown): string | null => {
+        if (typeof value === "string") return value;
+        if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+        const record = value as Record<string, unknown>;
+        return selectTarget(record.import ?? record.default ?? Object.values(record)[0]);
+      };
+      const target = selectTarget(rawTarget);
+      if (!target?.startsWith("./")) return null;
+      return resolve(profile.projectRoot, target.replace("*", wildcard));
+    }
+    return null;
+  }
+
+  private resolveSourceCandidate(base: string): string | null {
+    const candidates = new Set<string>([base]);
+    const extension = extname(base);
+    if ([".js", ".jsx", ".mjs", ".cjs"].includes(extension)) {
+      const stem = base.slice(0, -extension.length);
+      for (const next of [".ts", ".tsx", extension, ".vue"]) candidates.add(`${stem}${next}`);
+    } else if (!extension) {
+      for (const next of [".vue", ".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs"]) {
+        candidates.add(`${base}${next}`);
+        candidates.add(join(base, `index${next}`));
+      }
+    }
+    for (const candidate of candidates) {
+      if (existsSync(candidate) && statSync(candidate).isFile()) return realpathSync(candidate);
+    }
+    return null;
+  }
+
+  private parseImporter(
+    importer: string,
+    profile: ProjectProfile,
+    policy: AfbPolicyId,
+  ): { sources: ParsedSource[]; violations: BoundaryViolation[] } {
+    if (extname(importer) !== ".vue") {
+      return this.parseScript(importer, readFileSync(importer, "utf8"), profile, policy, 0);
+    }
+    const source = readFileSync(importer, "utf8");
+    const result = parseVueSfc(source, { filename: importer });
+    if (result.errors.length > 0) {
+      return {
+        sources: [],
+        violations: [this.violation({
+          policy,
+          profile,
+          importer,
+          line: 1,
+          column: 1,
+          subject: "<vue-sfc>",
+          reason: `SOURCE_PARSE_ERROR ${String(result.errors[0])}`,
+        })],
+      };
+    }
+    const sources: ParsedSource[] = [];
+    const violations: BoundaryViolation[] = [];
+    for (const block of [result.descriptor.script, result.descriptor.scriptSetup]) {
+      if (!block) continue;
+      const language = (block.lang ?? "js").toLowerCase();
+      if (!["ts", "tsx", "js", "jsx"].includes(language)) {
+        violations.push(this.violation({
+          policy,
+          profile,
+          importer,
+          line: block.loc.start.line,
+          column: block.loc.start.column,
+          subject: `<script lang=${language}>`,
+          reason: "UNSUPPORTED_SCRIPT_LANGUAGE",
+        }));
+        continue;
+      }
+      let blockSource = block.content;
+      let sourceName = importer;
+      if (block.src) {
+        const resolution = this.resolveSpecifier(block.src, importer, profile);
+        if (resolution.kind !== "source") {
+          violations.push(this.violation({
+            policy,
+            profile,
+            importer,
+            line: block.loc.start.line,
+            column: block.loc.start.column,
+            subject: block.src,
+            reason: "UNRESOLVED_GOVERNED_IMPORT",
+          }));
+          continue;
+        }
+        sourceName = resolution.resolvedPath;
+        blockSource = readFileSync(sourceName, "utf8");
+      }
+      const parsed = this.parseScript(
+        sourceName,
+        blockSource,
+        profile,
+        policy,
+        block.src ? 0 : Math.max(0, block.loc.start.line - 1),
+        importer,
+        language,
+      );
+      sources.push(...parsed.sources);
+      violations.push(...parsed.violations);
+    }
+    return { sources, violations };
+  }
+
+  private parseScript(
+    sourceName: string,
+    source: string,
+    profile: ProjectProfile,
+    policy: AfbPolicyId,
+    lineOffset: number,
+    importer = sourceName,
+    language?: string,
+  ): { sources: ParsedSource[]; violations: BoundaryViolation[] } {
+    const sourceFile = ts.createSourceFile(
+      sourceName,
+      source,
+      ts.ScriptTarget.Latest,
+      true,
+      scriptKindFor(sourceName, language),
+    );
+    const parseDiagnostics = (sourceFile as ts.SourceFile & { parseDiagnostics?: readonly ts.Diagnostic[] }).parseDiagnostics ?? [];
+    if (parseDiagnostics.length > 0) {
+      const position = sourceFile.getLineAndCharacterOfPosition(parseDiagnostics[0]?.start ?? 0);
+      return {
+        sources: [],
+        violations: [this.violation({
+          policy,
+          profile,
+          importer,
+          line: position.line + 1 + lineOffset,
+          column: position.character + 1,
+          subject: "<source>",
+          reason: `SOURCE_PARSE_ERROR ${ts.flattenDiagnosticMessageText(parseDiagnostics[0]!.messageText, "\n")}`,
+        })],
+      };
+    }
+
+    const edges: ImportEdge[] = [];
+    const bindings = new Map<string, ImportBinding>();
+    const addEdge = (literal: ts.StringLiteralLike): void => {
+      const position = sourceFile.getLineAndCharacterOfPosition(literal.getStart(sourceFile));
+      edges.push({
+        specifier: literal.text,
+        line: position.line + 1 + lineOffset,
+        column: position.character + 1,
+      });
+    };
+
+    for (const statement of sourceFile.statements) {
+      if (ts.isImportDeclaration(statement) && ts.isStringLiteralLike(statement.moduleSpecifier)) {
+        addEdge(statement.moduleSpecifier);
+        const resolution = this.resolveSpecifier(statement.moduleSpecifier.text, importer, profile);
+        const clause = statement.importClause;
+        if (clause?.name) bindings.set(clause.name.text, { kind: "named", exportedName: "default", resolution });
+        if (clause?.namedBindings && ts.isNamespaceImport(clause.namedBindings)) {
+          bindings.set(clause.namedBindings.name.text, { kind: "namespace", resolution });
+        } else if (clause?.namedBindings && ts.isNamedImports(clause.namedBindings)) {
+          for (const element of clause.namedBindings.elements) {
+            bindings.set(element.name.text, {
+              kind: "named",
+              exportedName: element.propertyName?.text ?? element.name.text,
+              resolution,
+            });
+          }
+        }
+      } else if (ts.isExportDeclaration(statement) && statement.moduleSpecifier && ts.isStringLiteralLike(statement.moduleSpecifier)) {
+        addEdge(statement.moduleSpecifier);
+      } else if (ts.isImportEqualsDeclaration(statement)
+        && ts.isExternalModuleReference(statement.moduleReference)
+        && statement.moduleReference.expression
+        && ts.isStringLiteralLike(statement.moduleReference.expression)) {
+        addEdge(statement.moduleReference.expression);
+        bindings.set(statement.name.text, {
+          kind: "namespace",
+          resolution: this.resolveSpecifier(statement.moduleReference.expression.text, importer, profile),
+        });
+      }
+    }
+
+    const visit = (node: ts.Node): void => {
+      if (ts.isCallExpression(node)
+        && (node.expression.kind === ts.SyntaxKind.ImportKeyword
+          || (ts.isIdentifier(node.expression) && node.expression.text === "require"))
+        && node.arguments.length === 1
+        && ts.isStringLiteralLike(node.arguments[0]!)) {
+        addEdge(node.arguments[0]!);
+      }
+      if (ts.isImportTypeNode(node)
+        && ts.isLiteralTypeNode(node.argument)
+        && ts.isStringLiteralLike(node.argument.literal)) {
+        addEdge(node.argument.literal);
+      }
+      ts.forEachChild(node, visit);
+    };
+    visit(sourceFile);
+    return { sources: [{ importer, sourceFile, lineOffset, edges, bindings }], violations: [] };
+  }
+
+  private evaluateImport(
+    policy: AfbPolicyId,
+    profile: ProjectProfile,
+    importer: string,
+    edge: ImportEdge,
+    resolution: Resolution,
+  ): BoundaryViolation | null {
+    if (resolution.kind === "unresolved") {
+      return this.violation({
+        policy,
+        profile,
+        importer,
+        line: edge.line,
+        column: edge.column,
+        subject: edge.specifier,
+        reason: "UNRESOLVED_GOVERNED_IMPORT",
+      });
+    }
+
+    if (policy === "AFB-001" && resolution.kind === "source") {
+      const relativeTarget = normalizePath(relative(this.repositoryRoot, resolution.resolvedPath));
+      const runtimePrefix = "autobyteus-server-ts/src/application-platform/runtime/";
+      const forbiddenPrefixes = [
+        "autobyteus-server-ts/src/application-engine/",
+        "autobyteus-server-ts/src/agent-tools/mcp/",
+        "autobyteus-server-ts/src/agent-execution/runtime/",
+      ];
+      if ((relativeTarget.startsWith(runtimePrefix)
+          && !relativeTarget.endsWith("application-platform-runtime-contracts.ts"))
+        || forbiddenPrefixes.some((prefix) => relativeTarget.startsWith(prefix))) {
+        return this.importViolation(policy, profile, importer, edge, resolution, "PRIVATE_RUNTIME_IMPORT");
+      }
+    }
+
+    if (policy === "AFB-002") {
+      if (resolution.kind === "bare"
+        && pathIsInside(importer, this.webRoot)
+        && ["autobyteus-server-ts", "autobyteus"].includes(resolution.packageName)) {
+        return this.importViolation(policy, profile, importer, edge, resolution, "HOST_IMPLEMENTATION_IMPORT");
+      }
+      if (resolution.kind === "source") {
+        const relativeTarget = normalizePath(relative(this.repositoryRoot, resolution.resolvedPath));
+        if (pathIsInside(importer, this.serverRoot)
+          && relativeTarget.startsWith("autobyteus-server-ts/src/application-platform/runtime/")
+          && !relativeTarget.endsWith("application-platform-runtime-contracts.ts")) {
+          return this.importViolation(policy, profile, importer, edge, resolution, "PRIVATE_RUNTIME_IMPORT");
+        }
+        if (pathIsInside(importer, this.webRoot)
+          && (relativeTarget.startsWith("autobyteus-server-ts/src/application-platform/")
+            || relativeTarget.startsWith("autobyteus-server-ts/src/application-packages/")
+            || relativeTarget.startsWith("autobyteus-server-ts/src/application-bundles/"))) {
+          return this.importViolation(policy, profile, importer, edge, resolution, "HOST_IMPLEMENTATION_IMPORT");
+        }
+      }
+    }
+
+    if (policy === "AFB-003" && resolution.kind === "source") {
+      const relativeTarget = normalizePath(relative(this.repositoryRoot, resolution.resolvedPath));
+      const importerRelative = normalizePath(relative(this.repositoryRoot, importer));
+      const exactException = importerRelative.endsWith(
+        "autobyteus-server-ts/src/application-packages/services/application-catalog-refresh-coordinator.ts",
+      ) && relativeTarget.endsWith(
+        "autobyteus-server-ts/src/application-platform/runtime/application-catalog-reconciliation-service.ts",
+      );
+      const forbiddenPrefixes = [
+        "autobyteus-server-ts/src/api/",
+        "autobyteus-server-ts/src/compositions/",
+        "autobyteus-server-ts/src/standalone-application-host/",
+        "autobyteus-server-ts/src/application-platform/runtime/",
+      ];
+      if (!exactException && forbiddenPrefixes.some((prefix) => relativeTarget.startsWith(prefix))) {
+        return this.importViolation(policy, profile, importer, edge, resolution, "OUTWARD_OWNER_IMPORT");
+      }
+    }
+
+    if (policy === "AFB-005") {
+      if (resolution.kind === "source") {
+        if (!pathIsInside(resolution.resolvedPath, profile.projectRoot)) {
+          return this.importViolation(policy, profile, importer, edge, resolution, "PROJECT_ESCAPE_IMPORT");
+        }
+      } else if (resolution.kind === "bare") {
+        const forbiddenPackages = new Set([
+          "autobyteus-server-ts",
+          "autobyteus",
+          "electron",
+          "@autobyteus/application-devkit",
+        ]);
+        if (forbiddenPackages.has(resolution.packageName)) {
+          return this.importViolation(policy, profile, importer, edge, resolution, "HOST_RUNTIME_PACKAGE_IMPORT");
+        }
+        if (!this.manifestDeclares(profile.manifestPath, resolution.packageName)) {
+          return this.importViolation(policy, profile, importer, edge, resolution, "UNDECLARED_LIBRARY_IMPORT");
+        }
+      }
+    }
+    return null;
+  }
+
+  private manifestDeclares(manifestPath: string, packageName: string): boolean {
+    const manifest = readJson(manifestPath);
+    return ["dependencies", "devDependencies", "peerDependencies", "optionalDependencies"].some((field) => {
+      const dependencies = manifest[field];
+      return dependencies && typeof dependencies === "object" && !Array.isArray(dependencies)
+        && Object.hasOwn(dependencies, packageName);
+    });
+  }
+
+  private evaluateDirectGlobalCalls(profile: ProjectProfile, parsed: ParsedSource): BoundaryViolation[] {
+    const violations: BoundaryViolation[] = [];
+    const allowedAssemblyFiles = new Set([
+      normalizePath(join(this.serverRoot, "src/compositions/build-studio-server.ts")),
+      normalizePath(join(this.serverRoot, "src/standalone-application-host/start-standalone-application-host.ts")),
+    ]);
+    const visit = (node: ts.Node): void => {
+      if (ts.isCallExpression(node)) {
+        const match = this.matchDirectCallee(node.expression, parsed);
+        if (match && !allowedAssemblyFiles.has(normalizePath(parsed.importer))) {
+          const position = parsed.sourceFile.getLineAndCharacterOfPosition(node.expression.getStart(parsed.sourceFile));
+          violations.push(this.violation({
+            policy: "AFB-004",
+            profile,
+            importer: parsed.importer,
+            line: position.line + 1 + parsed.lineOffset,
+            column: position.character + 1,
+            subject: match.symbol,
+            resolvedDependency: match.moduleSuffix,
+            reason: "DIRECT_GLOBAL_DEFAULT_CALL",
+          }));
+        }
+      }
+      ts.forEachChild(node, visit);
+    };
+    visit(parsed.sourceFile);
+    return violations;
+  }
+
+  private matchDirectCallee(
+    expression: ts.LeftHandSideExpression,
+    parsed: ParsedSource,
+  ): DirectGlobalCallee | null {
+    for (const candidate of DIRECT_GLOBAL_CALLEES) {
+      if (candidate.member) {
+        if (!ts.isPropertyAccessExpression(expression) || expression.name.text !== candidate.member) continue;
+        const binding = this.resolveExpressionBinding(expression.expression, parsed);
+        if (binding && binding.exportedName === candidate.exportName
+          && this.resolutionEndsWith(binding.resolution, candidate.moduleSuffix)) return candidate;
+      } else {
+        const binding = this.resolveExpressionBinding(expression, parsed);
+        if (binding && binding.exportedName === candidate.exportName
+          && this.resolutionEndsWith(binding.resolution, candidate.moduleSuffix)) return candidate;
+      }
+    }
+    return null;
+  }
+
+  private resolveExpressionBinding(
+    expression: ts.Expression,
+    parsed: ParsedSource,
+  ): { exportedName: string; resolution: Resolution } | null {
+    if (ts.isIdentifier(expression)) {
+      const binding = parsed.bindings.get(expression.text);
+      if (binding?.kind === "named" && binding.exportedName) {
+        return { exportedName: binding.exportedName, resolution: binding.resolution };
+      }
+      return null;
+    }
+    if (ts.isPropertyAccessExpression(expression) && ts.isIdentifier(expression.expression)) {
+      const binding = parsed.bindings.get(expression.expression.text);
+      if (binding?.kind === "namespace") {
+        return { exportedName: expression.name.text, resolution: binding.resolution };
+      }
+    }
+    return null;
+  }
+
+  private resolutionEndsWith(resolution: Resolution, suffix: string): boolean {
+    return resolution.kind === "source"
+      && normalizePath(resolution.resolvedPath).endsWith(normalizePath(suffix));
+  }
+
+  private evaluateApplicationConstruction(
+    profile: ProjectProfile,
+    parsed: ParsedSource,
+  ): { violations: BoundaryViolation[]; occurrences: ConstructionOccurrence[] } {
+    const violations: BoundaryViolation[] = [];
+    const occurrences: ConstructionOccurrence[] = [];
+    const visit = (node: ts.Node): void => {
+      const obligation = this.matchConstruction(node, parsed);
+      if (obligation) {
+        const occurrence = { obligation, node: node as ts.NewExpression | ts.CallExpression, parsed };
+        occurrences.push(occurrence);
+        violations.push(...this.evaluateConstructionOccurrence(profile, occurrence));
+      }
+      ts.forEachChild(node, visit);
+    };
+    visit(parsed.sourceFile);
+    return { violations, occurrences };
+  }
+
+  private matchConstruction(node: ts.Node, parsed: ParsedSource): ConstructionObligation | null {
+    if (ts.isNewExpression(node)) {
+      const binding = this.resolveExpressionBinding(node.expression, parsed);
+      if (!binding) return null;
+      return CONSTRUCTION_OBLIGATIONS.find((obligation) =>
+        obligation.kind === "new"
+        && obligation.symbol === binding.exportedName
+        && obligation.moduleSuffix
+        && this.resolutionEndsWith(binding.resolution, obligation.moduleSuffix)) ?? null;
+    }
+    if (ts.isCallExpression(node)
+      && ts.isPropertyAccessExpression(node.expression)
+      && node.expression.name.text === "createApplicationSessionManager"
+      && normalizePath(parsed.importer).endsWith(
+        "autobyteus-server-ts/src/application-platform/runtime/create-application-run-services.ts",
+      )) {
+      return CONSTRUCTION_OBLIGATIONS.find((obligation) => obligation.kind === "method") ?? null;
+    }
+    return null;
+  }
+
+  private evaluateConstructionOccurrence(
+    profile: ProjectProfile,
+    occurrence: ConstructionOccurrence,
+  ): BoundaryViolation[] {
+    const violations: BoundaryViolation[] = [];
+    const argumentsList = occurrence.node.arguments ? [...occurrence.node.arguments] : [];
+    for (const required of occurrence.obligation.requiredInputs) {
+      const position = occurrence.parsed.sourceFile.getLineAndCharacterOfPosition(
+        occurrence.node.getStart(occurrence.parsed.sourceFile),
+      );
+      if (required.kind === "positional") {
+        const argument = argumentsList[required.argumentIndex];
+        if (!argument || ts.isSpreadElement(argument) || isNullOrUndefined(argument)) {
+          const reason = !argument
+            ? argumentsList.some(ts.isSpreadElement) ? "OPAQUE_SPREAD_REQUIRED_INJECTION" : "MISSING_REQUIRED_INJECTION"
+            : ts.isSpreadElement(argument) ? "OPAQUE_SPREAD_REQUIRED_INJECTION"
+              : argument.kind === ts.SyntaxKind.NullKeyword ? "NULL_REQUIRED_INJECTION" : "UNDEFINED_REQUIRED_INJECTION";
+          violations.push(this.violation({
+            policy: "AFB-004",
+            profile,
+            importer: occurrence.parsed.importer,
+            line: position.line + 1 + occurrence.parsed.lineOffset,
+            column: position.character + 1,
+            subject: `${occurrence.obligation.symbol}.argument[${required.argumentIndex}](${required.label})`,
+            resolvedDependency: occurrence.obligation.moduleSuffix,
+            reason,
+          }));
+        }
+        continue;
+      }
+      const argument = argumentsList[required.argumentIndex];
+      if (!argument || !ts.isObjectLiteralExpression(argument)) {
+        violations.push(this.violation({
+          policy: "AFB-004",
+          profile,
+          importer: occurrence.parsed.importer,
+          line: position.line + 1 + occurrence.parsed.lineOffset,
+          column: position.character + 1,
+          subject: `${occurrence.obligation.symbol}.argument[${required.argumentIndex}].${required.path}`,
+          resolvedDependency: occurrence.obligation.moduleSuffix,
+          reason: argument && ts.isSpreadElement(argument)
+            ? "OPAQUE_SPREAD_REQUIRED_INJECTION"
+            : "INLINE_OBJECT_REQUIRED",
+        }));
+        continue;
+      }
+      const value = objectPropertyValue(argument, required.path.split("."));
+      if (!value || isNullOrUndefined(value)) {
+        const reason = !value
+          ? objectContainsSpread(argument) ? "OPAQUE_SPREAD_REQUIRED_INJECTION" : "MISSING_REQUIRED_INJECTION"
+          : value.kind === ts.SyntaxKind.NullKeyword ? "NULL_REQUIRED_INJECTION" : "UNDEFINED_REQUIRED_INJECTION";
+        violations.push(this.violation({
+          policy: "AFB-004",
+          profile,
+          importer: occurrence.parsed.importer,
+          line: position.line + 1 + occurrence.parsed.lineOffset,
+          column: position.character + 1,
+          subject: `${occurrence.obligation.symbol}.argument[${required.argumentIndex}].${required.path}`,
+          resolvedDependency: occurrence.obligation.moduleSuffix,
+          reason,
+        }));
+      }
+    }
+    return violations;
+  }
+
+  private importViolation(
+    policy: AfbPolicyId,
+    profile: ProjectProfile,
+    importer: string,
+    edge: ImportEdge,
+    resolution: Resolution,
+    reason: string,
+  ): BoundaryViolation {
+    return this.violation({
+      policy,
+      profile,
+      importer,
+      line: edge.line,
+      column: edge.column,
+      subject: edge.specifier,
+      resolvedDependency: resolution.kind === "source"
+        ? normalizePath(relative(this.repositoryRoot, resolution.resolvedPath))
+        : resolution.kind === "unresolved" ? undefined : resolution.packageName,
+      reason,
+    });
+  }
+
+  private violation(input: {
+    policy: AfbPolicyId;
+    profile: ProjectProfile;
+    importer: string;
+    line: number;
+    column: number;
+    subject: string;
+    resolvedDependency?: string;
+    reason: string;
+  }): BoundaryViolation {
+    return {
+      policy: input.policy,
+      profile: input.profile.name,
+      importer: normalizePath(relative(this.repositoryRoot, input.importer)),
+      line: input.line,
+      column: input.column,
+      subject: input.subject,
+      resolvedDependency: input.resolvedDependency,
+      reason: input.reason,
+      correction: CORRECTIONS[input.policy],
+    };
+  }
+}
+
+const formatViolation = (violation: BoundaryViolation): string =>
+  `[${violation.policy}] profile=${violation.profile} importer=${violation.importer}:${violation.line}:${violation.column}`
+  + ` subject=${violation.subject}`
+  + ` resolved=${violation.resolvedDependency ?? "N/A"}`
+  + ` reason=${violation.reason}`
+  + ` correction=${violation.correction}`;
+
+const temporaryRoots: string[] = [];
+
+const writeFixture = (root: string, relativePath: string, content: string): string => {
+  const filePath = join(root, relativePath);
+  mkdirSync(dirname(filePath), { recursive: true });
+  writeFileSync(filePath, content);
+  return filePath;
+};
+
+const createFixtureRepository = (): string => {
+  const root = mkdtempSync(join(tmpdir(), "application-framework-boundaries-"));
+  temporaryRoots.push(root);
+  writeFixture(root, "autobyteus-server-ts/package.json", JSON.stringify({ name: "autobyteus-server-ts", type: "module" }));
+  writeFixture(root, "autobyteus-server-ts/tsconfig.json", JSON.stringify({ compilerOptions: { module: "NodeNext", moduleResolution: "NodeNext", allowJs: true } }));
+  writeFixture(root, "autobyteus-web/package.json", JSON.stringify({ name: "autobyteus", dependencies: { vue: "*", "@autobyteus/application-sdk-contracts": "*" } }));
+  writeFixture(root, "autobyteus-web/tsconfig.json", JSON.stringify({ extends: "./.nuxt/tsconfig.json" }));
+  for (const application of ["brief-studio", "socratic-math-teacher"]) {
+    const appRoot = `applications/${application}`;
+    writeFixture(root, `${appRoot}/package.json`, JSON.stringify({
+      name: `fixture-${application}`,
+      type: "module",
+      dependencies: {
+        "@autobyteus/application-backend-sdk": "*",
+        "@autobyteus/application-frontend-sdk": "*",
+        ...(application === "brief-studio" ? { "declared-lib": "*" } : {}),
+      },
+    }));
+    writeFixture(root, `${appRoot}/autobyteus-app.config.mjs`, "export default { source: { frontendDir: 'frontend-src', backendDir: 'backend-src' } };\n");
+    writeFixture(root, `${appRoot}/tsconfig.backend.json`, JSON.stringify({ compilerOptions: { module: "NodeNext", moduleResolution: "NodeNext" } }));
+    mkdirSync(join(root, appRoot, "frontend-src"), { recursive: true });
+    mkdirSync(join(root, appRoot, "backend-src"), { recursive: true });
+  }
+  writeFixture(root, "autobyteus-application-devkit/templates/basic/package.json", JSON.stringify({
+    name: "fixture-template",
+    type: "module",
+    dependencies: { "template-lib": "*" },
+  }));
+  writeFixture(root, "autobyteus-application-devkit/templates/basic/autobyteus-app.config.mjs", "export default { source: { frontendDir: 'src/frontend', backendDir: 'src/backend' } };\n");
+  mkdirSync(join(root, "autobyteus-application-devkit/templates/basic/src"), { recursive: true });
+  return root;
+};
+
+const relativeModuleSpecifier = (fromFile: string, targetFile: string): string => {
+  let specifier = normalizePath(relative(dirname(fromFile), targetFile)).replace(/\.ts$/, ".js");
+  if (!specifier.startsWith(".")) specifier = `./${specifier}`;
+  return specifier;
+};
+
+interface ObjectTree {
+  [key: string]: string | ObjectTree;
+}
+
+const buildObjectTree = (
+  paths: readonly string[],
+  selectedPath?: string,
+  selectedValue?: string,
+): ObjectTree => {
+  const root: ObjectTree = {};
+  for (const path of paths) {
+    const parts = path.split(".");
+    let cursor = root;
+    for (const [index, part] of parts.entries()) {
+      if (index === parts.length - 1) {
+        cursor[part] = path === selectedPath ? selectedValue ?? part : part;
+      } else {
+        const existing = cursor[part];
+        if (!existing || typeof existing === "string") cursor[part] = {};
+        cursor = cursor[part] as ObjectTree;
+      }
+    }
+  }
+  return root;
+};
+
+const renderObjectTree = (tree: ObjectTree, includeSpread = false): string => {
+  const properties = Object.entries(tree).map(([key, value]) =>
+    `${key}: ${typeof value === "string" ? value : renderObjectTree(value)}`);
+  if (includeSpread) properties.push("...opaque");
+  return `{ ${properties.join(", ")} }`;
+};
+
+const constructionSnippet = (
+  obligation: ConstructionObligation,
+  mutation?: { required: RequiredInput; kind: "omitted" | "null" | "undefined" | "spread" },
+): string => {
+  const positional = obligation.requiredInputs.filter((required): required is Extract<RequiredInput, { kind: "positional" }> => required.kind === "positional");
+  const objectInputs = obligation.requiredInputs.filter((required): required is Extract<RequiredInput, { kind: "object-property" }> => required.kind === "object-property");
+  const maxIndex = Math.max(-1, ...obligation.requiredInputs.map((required) => required.argumentIndex));
+  const args = Array.from({ length: maxIndex + 1 }, () => "undefined");
+
+  for (const required of positional) args[required.argumentIndex] = required.label;
+  const byArgument = new Map<number, Extract<RequiredInput, { kind: "object-property" }>[]>();
+  for (const required of objectInputs) {
+    const group = byArgument.get(required.argumentIndex) ?? [];
+    group.push(required);
+    byArgument.set(required.argumentIndex, group);
+  }
+  for (const [argumentIndex, inputs] of byArgument) {
+    const selected = mutation?.required.kind === "object-property"
+      && mutation.required.argumentIndex === argumentIndex ? mutation : undefined;
+    const selectedPath = selected && selected.required.kind === "object-property"
+      ? selected.required.path
+      : undefined;
+    const paths = inputs
+      .filter((required) => !(selected?.kind === "omitted" || selected?.kind === "spread") || required.path !== selectedPath)
+      .map((required) => required.path);
+    const tree = buildObjectTree(
+      paths,
+      selected && ["null", "undefined"].includes(selected.kind) ? selectedPath : undefined,
+      selected?.kind,
+    );
+    args[argumentIndex] = renderObjectTree(tree, selected?.kind === "spread");
+  }
+
+  if (mutation?.required.kind === "positional") {
+    const index = mutation.required.argumentIndex;
+    if (mutation.kind === "omitted") {
+      args.splice(index);
+    } else if (mutation.kind === "spread") {
+      args.splice(0, args.length, "...opaque");
+    } else {
+      args[index] = mutation.kind;
+    }
+  }
+
+  const call = obligation.kind === "method"
+    ? `input.agentToolsSessionFactory.createApplicationSessionManager(${args.join(", ")});`
+    : `new Target(${args.join(", ")});`;
+  return `const opaque = {}; const input = { agentToolsSessionFactory: { createApplicationSessionManager: (_value: unknown) => ({}) } };\n${call}\n`;
+};
+
+const installConstructionTarget = (
+  root: string,
+  obligation: ConstructionObligation,
+): { importer: string; importLine: string } => {
+  const importer = join(root, "autobyteus-server-ts/src/application-platform/runtime/create-application-run-services.ts");
+  if (obligation.kind === "method") return { importer, importLine: "" };
+  const target = join(root, obligation.moduleSuffix!);
+  writeFixture(root, normalizePath(relative(root, target)), `export class ${obligation.symbol} {}\n`);
+  return {
+    importer,
+    importLine: `import { ${obligation.symbol} as Target } from ${JSON.stringify(relativeModuleSpecifier(importer, target))};\n`,
+  };
+};
+
+afterEach(() => {
+  while (temporaryRoots.length > 0) {
+    rmSync(temporaryRoots.pop()!, { recursive: true, force: true });
+  }
+});
+
+describe("application framework architecture boundaries", () => {
+  it("keeps the complete current TS/JS/Vue tree inside AFB-001 through AFB-005", () => {
+    const checker = new ApplicationFrameworkBoundaryChecker(REPOSITORY_ROOT);
+    const result = checker.checkCurrentTree();
+    expect(result.violations.map(formatViolation)).toEqual([]);
+    expect(result.vueFiles).toHaveLength(11);
+    expect(result.templateProfiles).toEqual(["devkit-template:basic"]);
+    expect([...result.constructionCounts.entries()].sort()).toEqual(
+      CONSTRUCTION_OBLIGATIONS.map((obligation) => [obligation.symbol, 1] as const).sort(),
+    );
+    checker.assertNamedAssemblySelections();
+  });
+
+  it("extracts every governed import form without reading comments or arbitrary strings", () => {
+    const root = createFixtureRepository();
+    const importer = writeFixture(root, "applications/brief-studio/backend-src/import-forms.ts", `
+      import "./static.js";
+      export * from "./exported.js";
+      const required = require("./required.js");
+      const dynamic = import("./dynamic.js");
+      type Imported = import("./type-only.js").Imported;
+      // import "./comment.js";
+      const text = "import('./string.js')";
+    `);
+    for (const name of ["static", "exported", "required", "dynamic", "type-only"]) {
+      writeFixture(root, `applications/brief-studio/backend-src/${name}.ts`, "export {};\n");
+    }
+    const checker = new ApplicationFrameworkBoundaryChecker(root);
+    expect(checker.extractSpecifiers(importer).sort()).toEqual([
+      "./dynamic.js",
+      "./exported.js",
+      "./required.js",
+      "./static.js",
+      "./type-only.js",
+    ]);
+  });
+
+  it("enforces allowed and forbidden directions for AFB-001, AFB-002, and AFB-003", () => {
+    const root = createFixtureRepository();
+    writeFixture(root, "autobyteus-server-ts/src/application-platform/runtime/application-platform-runtime-contracts.ts", "export type Contract = {};\n");
+    writeFixture(root, "autobyteus-server-ts/src/application-platform/runtime/build-application-platform-runtime.ts", "export const build = () => {};\n");
+    writeFixture(root, "autobyteus-server-ts/src/api/rest/allowed.ts", "import type { Contract } from '../../application-platform/runtime/application-platform-runtime-contracts.js';\n");
+    writeFixture(root, "autobyteus-server-ts/src/api/rest/forbidden.ts", "import { build } from '../../application-platform/runtime/build-application-platform-runtime.js';\n");
+
+    writeFixture(root, "autobyteus-server-ts/src/application-packages/services/application-package-registry-service.ts", "export type Registry = {};\n");
+    writeFixture(root, "autobyteus-server-ts/src/api/graphql/allowed.ts", "import type { Registry } from '../../application-packages/services/application-package-registry-service.js';\n");
+    writeFixture(root, "autobyteus-server-ts/src/api/graphql/forbidden.ts", "import { build } from '../../application-platform/runtime/build-application-platform-runtime.js';\n");
+    writeFixture(root, "autobyteus-web/utils/application/local.ts", "export const local = true;\n");
+    writeFixture(root, "autobyteus-web/components/applications/Allowed.vue", "<script setup lang='ts'>\nimport { local } from '~/utils/application/local'\n</script>\n");
+    writeFixture(root, "autobyteus-web/components/applications/Forbidden.vue", "<script>\nimport 'autobyteus-server-ts/application-platform/runtime'\n</script>\n");
+
+    writeFixture(root, "autobyteus-server-ts/src/application-packages/types.ts", "export type Package = {};\n");
+    writeFixture(root, "autobyteus-server-ts/src/application-packages/allowed.ts", "import type { Package } from './types.js';\n");
+    writeFixture(root, "autobyteus-server-ts/src/compositions/build-studio-server.ts", "export const build = () => {};\n");
+    writeFixture(root, "autobyteus-server-ts/src/application-bundles/forbidden.ts", "import { build } from '../compositions/build-studio-server.js';\n");
+    writeFixture(root, "autobyteus-server-ts/src/application-platform/runtime/application-catalog-reconciliation-service.ts", "export type Reconcile = {};\n");
+    writeFixture(root, "autobyteus-server-ts/src/application-packages/services/application-catalog-refresh-coordinator.ts", "import type { Reconcile } from '../../application-platform/runtime/application-catalog-reconciliation-service.js';\n");
+
+    const result = new ApplicationFrameworkBoundaryChecker(root).checkCurrentTree(false);
+    const diagnostics = result.violations.map(formatViolation);
+    expect(diagnostics).toHaveLength(4);
+    expect(diagnostics).toEqual(expect.arrayContaining([
+      expect.stringContaining("[AFB-001] profile=server importer=autobyteus-server-ts/src/api/rest/forbidden.ts"),
+      expect.stringContaining("[AFB-002] profile=server importer=autobyteus-server-ts/src/api/graphql/forbidden.ts"),
+      expect.stringContaining("[AFB-002] profile=studio-web importer=autobyteus-web/components/applications/Forbidden.vue"),
+      expect.stringContaining("[AFB-003] profile=server importer=autobyteus-server-ts/src/application-bundles/forbidden.ts"),
+    ]));
+    for (const diagnostic of diagnostics) {
+      expect(diagnostic).toContain("resolved=");
+      expect(diagnostic).toContain("correction=");
+    }
+  });
+
+  it("fails closed for malformed Vue and unresolved governed source", () => {
+    const root = createFixtureRepository();
+    const malformed = writeFixture(root, "autobyteus-web/components/applications/Malformed.vue", "<script setup lang='ts'>\nconst =\n</script>\n");
+    const unsupported = writeFixture(root, "autobyteus-web/components/applications/Unsupported.vue", "<script setup lang='coffee'>\nvalue = true\n</script>\n");
+    const external = writeFixture(root, "autobyteus-web/components/applications/External.vue", "<script src='./missing-script.ts'></script>\n");
+    const unresolved = writeFixture(root, "applications/brief-studio/frontend-src/unresolved.js", "import './missing.js';\n");
+    const checker = new ApplicationFrameworkBoundaryChecker(root);
+    expect(checker.checkOneFile(malformed, "AFB-002").map(formatViolation)[0]).toMatch(
+      /\[AFB-002\].*profile=studio-web.*SOURCE_PARSE_ERROR.*correction=/,
+    );
+    expect(checker.checkOneFile(unsupported, "AFB-002").map(formatViolation)[0]).toMatch(
+      /\[AFB-002\].*profile=studio-web.*UNSUPPORTED_SCRIPT_LANGUAGE.*correction=/,
+    );
+    expect(checker.checkOneFile(external, "AFB-002").map(formatViolation)[0]).toMatch(
+      /\[AFB-002\].*profile=studio-web.*missing-script\.ts.*UNRESOLVED_GOVERNED_IMPORT.*correction=/,
+    );
+    expect(checker.checkOneFile(unresolved, "AFB-005").map(formatViolation)[0]).toMatch(
+      /\[AFB-005\].*profile=brief-frontend.*subject=\.\/missing\.js.*UNRESOLVED_GOVERNED_IMPORT.*correction=/,
+    );
+  });
+
+  it("resolves package imports only from the owning manifest", () => {
+    const root = createFixtureRepository();
+    const manifestPath = join(root, "applications/brief-studio/package.json");
+    const manifest = readJson(manifestPath);
+    writeFileSync(manifestPath, JSON.stringify({ ...manifest, imports: { "#domain/*": "./backend-src/domain/*.ts" } }));
+    writeFixture(root, "applications/brief-studio/backend-src/domain/value.ts", "export const value = true;\n");
+    const allowed = writeFixture(root, "applications/brief-studio/backend-src/manifest-import.ts", "import { value } from '#domain/value';\n");
+    const rejected = writeFixture(root, "applications/socratic-math-teacher/backend-src/manifest-import.ts", "import '#domain/value';\n");
+    const checker = new ApplicationFrameworkBoundaryChecker(root);
+    expect(checker.checkOneFile(allowed, "AFB-005").map(formatViolation)).toEqual([]);
+    expect(checker.checkOneFile(rejected, "AFB-005").map(formatViolation)[0]).toMatch(
+      /\[AFB-005\].*profile=socratic-backend.*subject=#domain\/value.*UNRESOLVED_GOVERNED_IMPORT.*correction=/,
+    );
+  });
+
+  it("uses each AFB-005 importer's own manifest and project root", () => {
+    const root = createFixtureRepository();
+    writeFixture(root, "applications/brief-studio/backend-src/allowed.ts", "import 'declared-lib'; import 'node:path';\n");
+    writeFixture(root, "applications/socratic-math-teacher/backend-src/undeclared.ts", "import 'declared-lib';\n");
+    writeFixture(root, "autobyteus-application-devkit/templates/basic/src/allowed.ts", "import 'template-lib'; import 'node:fs';\n");
+    writeFixture(root, "autobyteus-server-ts/src/index.ts", "export {};\n");
+    writeFixture(root, "applications/brief-studio/backend-src/escape.ts", "import '../../../autobyteus-server-ts/src/index.js';\n");
+    writeFixture(root, "applications/brief-studio/frontend-src/forbidden.js", "import 'autobyteus-server-ts/runtime';\n");
+
+    const diagnostics = new ApplicationFrameworkBoundaryChecker(root).checkCurrentTree(false).violations.map(formatViolation);
+    expect(diagnostics).toHaveLength(3);
+    expect(diagnostics).toEqual(expect.arrayContaining([
+      expect.stringContaining("profile=socratic-backend importer=applications/socratic-math-teacher/backend-src/undeclared.ts"),
+      expect.stringContaining("profile=brief-backend importer=applications/brief-studio/backend-src/escape.ts"),
+      expect.stringContaining("profile=brief-frontend importer=applications/brief-studio/frontend-src/forbidden.js"),
+    ]));
+    expect(diagnostics.join("\n")).toContain("UNDECLARED_LIBRARY_IMPORT");
+    expect(diagnostics.join("\n")).toContain("PROJECT_ESCAPE_IMPORT");
+    expect(diagnostics.join("\n")).toContain("HOST_RUNTIME_PACKAGE_IMPORT");
+  });
+
+  it("resolves named aliases and namespace members for every direct AFB-004 callee", () => {
+    const root = createFixtureRepository();
+    const runtimeFile = join(root, "autobyteus-server-ts/src/application-platform/runtime/direct-defaults.ts");
+    const statements: string[] = [];
+    DIRECT_GLOBAL_CALLEES.forEach((callee, index) => {
+      const target = join(root, callee.moduleSuffix);
+      writeFixture(
+        root,
+        normalizePath(relative(root, target)),
+        callee.member
+          ? `export class ${callee.exportName} { static ${callee.member}() {} }\n`
+          : `export const ${callee.exportName} = () => {};\n`,
+      );
+      const specifier = relativeModuleSpecifier(runtimeFile, target);
+      if (index % 2 === 0) {
+        statements.push(`import { ${callee.exportName} as Alias${index} } from ${JSON.stringify(specifier)};`);
+        statements.push(callee.member ? `Alias${index}.${callee.member}();` : `Alias${index}();`);
+      } else {
+        statements.push(`import * as Namespace${index} from ${JSON.stringify(specifier)};`);
+        statements.push(callee.member
+          ? `Namespace${index}.${callee.exportName}.${callee.member}();`
+          : `Namespace${index}.${callee.exportName}();`);
+      }
+    });
+    statements.push("class AgentRunManager { static getInstance() {} }", "AgentRunManager.getInstance();");
+    writeFixture(root, normalizePath(relative(root, runtimeFile)), statements.join("\n"));
+    const diagnostics = new ApplicationFrameworkBoundaryChecker(root).checkOneFile(runtimeFile, "AFB-004").map(formatViolation);
+    expect(diagnostics).toHaveLength(DIRECT_GLOBAL_CALLEES.length);
+    for (const callee of DIRECT_GLOBAL_CALLEES) {
+      expect(diagnostics.join("\n")).toContain(`subject=${callee.symbol}`);
+    }
+  });
+
+  it("accepts only the two named assembly roots as general-process selection exemptions", () => {
+    const root = createFixtureRepository();
+    const target = join(root, "autobyteus-server-ts/src/services/published-artifacts/published-artifact-publication-service.ts");
+    writeFixture(root, normalizePath(relative(root, target)), "export const getGeneralProcessPublishedArtifactPublisher = () => ({});\n");
+    const files = [
+      "autobyteus-server-ts/src/compositions/build-studio-server.ts",
+      "autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts",
+      "autobyteus-server-ts/src/application-platform/runtime/forbidden.ts",
+    ];
+    const checker = new ApplicationFrameworkBoundaryChecker(root);
+    const diagnostics: string[] = [];
+    files.forEach((relativePath) => {
+      const importer = join(root, relativePath);
+      const specifier = relativeModuleSpecifier(importer, target);
+      writeFixture(root, relativePath, `import { getGeneralProcessPublishedArtifactPublisher as selectPublisher } from ${JSON.stringify(specifier)};\nselectPublisher();\n`);
+      diagnostics.push(...checker.checkOneFile(importer, "AFB-004").map(formatViolation));
+    });
+    expect(diagnostics).toHaveLength(1);
+    expect(diagnostics[0]).toContain("importer=autobyteus-server-ts/src/application-platform/runtime/forbidden.ts");
+  });
+
+  it("accepts complete construction shapes and rejects every omission, null, undefined, and opaque spread", () => {
+    for (const obligation of CONSTRUCTION_OBLIGATIONS) {
+      const root = createFixtureRepository();
+      const { importer, importLine } = installConstructionTarget(root, obligation);
+      const checker = new ApplicationFrameworkBoundaryChecker(root);
+      writeFixture(root, normalizePath(relative(root, importer)), importLine + constructionSnippet(obligation));
+      expect(checker.checkOneFile(importer, "AFB-004").map(formatViolation), obligation.symbol).toEqual([]);
+
+      for (const required of obligation.requiredInputs) {
+        for (const kind of ["omitted", "null", "undefined", "spread"] as const) {
+          writeFixture(
+            root,
+            normalizePath(relative(root, importer)),
+            importLine + constructionSnippet(obligation, { required, kind }),
+          );
+          const diagnostics = checker.checkOneFile(importer, "AFB-004").map(formatViolation);
+          const subject = required.kind === "positional"
+            ? `${obligation.symbol}.argument[${required.argumentIndex}](${required.label})`
+            : `${obligation.symbol}.argument[${required.argumentIndex}].${required.path}`;
+          expect(diagnostics.join("\n"), `${obligation.symbol} ${subject} ${kind}`).toContain(`subject=${subject}`);
+          expect(diagnostics.join("\n")).toContain(
+            "[AFB-004] profile=server importer=autobyteus-server-ts/src/application-platform/runtime/create-application-run-services.ts",
+          );
+          expect(diagnostics.join("\n")).toContain("resolved=");
+          expect(diagnostics.join("\n")).toContain("reason=");
+          expect(diagnostics.join("\n")).toContain("correction=Inject the named application-scoped dependency");
+        }
+      }
+    }
+  }, 30_000);
+
+  it("preserves deliberately process-scoped Codex positions zero and two", () => {
+    const root = createFixtureRepository();
+    const obligation = CONSTRUCTION_OBLIGATIONS.find((candidate) => candidate.symbol === "CodexAgentRunBackendFactory")!;
+    const { importer, importLine } = installConstructionTarget(root, obligation);
+    const checker = new ApplicationFrameworkBoundaryChecker(root);
+    for (const expression of [
+      "new Target(undefined, codexThreadBootstrapper);",
+      "new Target(undefined, codexThreadBootstrapper, undefined);",
+    ]) {
+      writeFixture(root, normalizePath(relative(root, importer)), `${importLine}const codexThreadBootstrapper = {};\n${expression}\n`);
+      expect(checker.checkOneFile(importer, "AFB-004").map(formatViolation)).toEqual([]);
+    }
+  });
+});

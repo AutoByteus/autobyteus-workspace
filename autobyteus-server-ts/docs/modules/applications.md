@@ -161,6 +161,70 @@ Server assembly and standalone-host ownership live under
 `src/compositions/build-standalone-application-server.ts`,
 `src/standalone-application-host`, and `src/application-platform`.
 
+## Executable Application-Framework Boundaries
+
+`tests/architecture/application-framework-boundaries.test.ts` is the executable
+source of truth for the contributor-facing application-framework dependency
+rules below. It parses governed TypeScript, JavaScript, and Vue `<script>` /
+`<script setup>` source, resolves repository imports against the owning project,
+and reports the policy ID, project profile, importer/location, dependency or
+missing injection path, and the required correction. The checker is test-only;
+it is not loaded by Studio or standalone startup.
+
+| Policy | Governed source | Allowed direction | Rejected direction | Correction |
+| --- | --- | --- | --- | --- |
+| `AFB-001` | REST, WebSocket, standalone application APIs, and standalone bootstrap | `application-platform-runtime-contracts.ts` and exact subject inputs supplied by assembly | Runtime builder/lifecycle, stores, recovery/availability state, run/session/publication, engine/queue, or shutdown internals | Depend on the exact runtime projection or have the assembly root supply the subject input. |
+| `AFB-002` | Studio GraphQL and production application presentation source | GraphQL package/query/command contracts; application SDK contracts/client and presentation-local helpers | GraphQL access to private application runtime owners; Studio presentation access to server package/bundle/runtime implementation | Use the declared GraphQL contract or an application SDK/presentation-local helper. |
+| `AFB-003` | Application package and bundle owners | Their own stores, readers, commands, providers, and domain contracts | API/presentation, server assembly, standalone host, or private application runtime | Keep the dependency inside the package/bundle owner. The sole cross-owner seam is `ApplicationCatalogRefreshCoordinator` -> `ApplicationCatalogReconciliationService`. |
+| `AFB-004` | Application runtime construction, application MCP session scope/manager, and publish adapter | Complete application-scoped publication/run/session-provider/team-context injection | Direct process-global/default calls or omission, `null`, `undefined`, or opaque spread of a required graph-local input | Inject the named application-scoped dependency. Genuine general-process selection belongs only in `build-studio-server.ts` or `start-standalone-application-host.ts`. |
+| `AFB-005` | Maintained Brief/Socratic frontend/backend source and every valid devkit template `src` tree | Project-local source, application SDKs, Node built-ins, and libraries declared by the importer's own manifest | Server/web/Electron/standalone/devkit host internals, undeclared libraries, or local/alias paths escaping the owning project | Use local/SDK source or declare a genuine library in that project's own manifest; do not borrow another project's declaration. |
+
+### Project and manifest resolution
+
+Every importer belongs to one closed profile: `server`, `studio-web`,
+`brief-backend`, `brief-frontend`, `socratic-backend`, `socratic-frontend`, or
+`devkit-template:<name>`. Server and backend profiles use their checked-in
+TypeScript configuration. Studio uses deterministic Nuxt source aliases without
+loading generated `.nuxt` state. Frontend and template profiles use their
+checked-in application config and explicit JavaScript/NodeNext resolution.
+
+AFB-005 checks `dependencies`, `devDependencies`, `peerDependencies`, and
+`optionalDependencies` only in the importing application's or template's own
+`package.json`. Node built-ins need no declaration. Relative, absolute, Nuxt
+alias, and manifest-`imports` specifiers that should name repository source fail
+as `UNRESOLVED_GOVERNED_IMPORT` when they cannot be resolved; they are never
+silently skipped. Checked-in application `frontend-src/generated/**` remains
+governed, while package `dist/**`, `.build/**`, and generated `.nuxt/**` do not.
+
+### AFB-004 injection families
+
+AFB-004 keeps four graph-sensitive construction families complete:
+
+1. **Publication/resource identity:** run session scope, file-change relay,
+   memory observer, active-run reader, artifact relay, projection, and snapshot
+   stores.
+2. **Run ownership/persistence:** all three backend factories, active registry,
+   memory recorder, definition/run/team metadata services, identity allocator,
+   and run service.
+3. **Session/provider scope:** application session scope and publisher,
+   AutoByteus definition service, Codex bootstrapper, Claude session
+   manager/bootstrapper, and provider Agent Tools session manager. Application
+   construction must supply `CodexAgentRunBackendFactory` argument 1 and
+   `ClaudeAgentRunBackendFactory` arguments 0 and 1; Codex thread-manager and
+   cleanup positions 0 and 2 deliberately remain process-scoped.
+4. **Team/context scope:** team-definition context, mixed-team factory/manager,
+   team communication and file-change services, run-history manager, identity,
+   metadata, and memory inputs.
+
+Required object inputs are inline object literals with explicit non-computed,
+non-null properties; a spread does not satisfy an obligation. Required
+positional inputs must be present and non-null/non-`undefined`. Reusable
+constructors retain their legitimate general-process defaults, but application
+construction may not select them by omission. Any genuine obligation or
+exception change updates this table, the executable checker and fixtures, and
+the reviewed architecture together—never a compatibility wrapper or broad
+allow-list.
+
 ## Integrity Rules
 
 - Missing `ui` assets, a missing backend bundle manifest, or a missing backend entry module make the bundle invalid.
