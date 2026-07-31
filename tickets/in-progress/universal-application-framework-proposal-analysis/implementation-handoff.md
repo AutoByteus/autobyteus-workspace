@@ -25,29 +25,27 @@
 
 ## Current Implementation Summary
 
-`IR-020` closes the two bounded architecture-checker defects returned by `CRR-035` without changing the approved five-file SR-016 baseline or any production source. Corrective commit `4d5a137b7b61b19811bda61ac090633479187801` changes only `autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts`.
+`IR-021` closes the remaining bounded Vue external-script target edge returned by `CRR-036`. Corrective commit `4711c6170ab0a8a1aafd555fce1709eb42095a54` changes only `autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts`; no production source or other SR-016 file changed.
 
-For `CR-023`, the checker now implements the closed AFB-001 target categories for runtime builder, lifecycle, stores, recovery, availability, run, session, publication, engine, queue, and shutdown internals while retaining the exact runtime contract and current error/subject inputs. AFB-002 separately rejects GraphQL private runtime owners and Studio imports of server package, bundle, and runtime implementation. AFB-003 now rejects API, Studio presentation, server assembly, standalone-host, and private runtime directions while preserving the sole exact catalog-refresh-coordinator to catalog-reconciliation contract seam. Individual allowed and forbidden fixtures exercise every named direction rather than one representative per policy.
+When a Vue `<script src>` resolves to source, `parseImporter()` now represents the attribute as an `ImportEdge` at the owning SFC block location and passes that resolved dependency through the existing enclosing AFB evaluator before reading the external file. A forbidden target is reported against the SFC and is not parsed. An allowed local target is then read normally, and its imports/bindings continue to resolve from the external file under the CR-024 diagnostic-owner/resolution-origin model.
 
-For `CR-024`, parsed Vue sources now carry two distinct identities: the diagnostic-owning SFC and the actual source/resolution origin. Resolved external `<script src>` imports and direct-callee bindings resolve relative to the external script, while violations remain attached to the governed SFC and report the external source path. A focused fixture proves a sibling local import is allowed and a server runtime import is rejected without a false `UNRESOLVED_GOVERNED_IMPORT`.
-
-The retained IR-019 baseline still provides the direct test-only `@vue/compiler-sfc` dependency/lock entry and synchronized architecture documents. No dependency, documentation, production runtime, route, schema, package output, persisted data, or generated artifact changed in this corrective round.
+Direct fixtures prove AFB-002 allows a Studio-local external script but rejects a server application-engine target, and AFB-005 allows a Brief-local external script but rejects the same host-runtime project escape. The retained IR-020 classifier/fixture corrections continue to cover all CR-023 directions and CR-024 external-file import resolution. The retained IR-019 baseline still provides the direct test-only Vue parser dependency/lock entry and synchronized architecture documents.
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-revision-record.md`
-- Current implementation revision ID: `IR-020`
+- Current implementation revision ID: `IR-021`
 - Related solution revision IDs: `SR-016`; retained `SR-015`, `SR-014`, and passed production baseline `SR-013`
 - Related architecture-review revision IDs: `ARCH-REV-014`; retained `ARCH-REV-013`, `ARCH-REV-012`, and production baseline `ARCH-REV-011`
-- Related code-review revision IDs: `CRR-035`; retained production source Pass `CRR-033` and proportional test review Pass `CRR-034`
+- Related code-review revision IDs: `CRR-036`; retained `CRR-035`, production source Pass `CRR-033`, and proportional test review Pass `CRR-034`
 - Related API/E2E revision IDs: retained pre-hardening baseline `API-REV-012` / 96.6%
 - Related delivery revision IDs: `DR-005`
-- Triggering finding IDs: `CR-023`, `CR-024`
+- Triggering finding IDs: `CR-025`; `CR-023` and `CR-024` remain resolved
 
 ## Reviewed Behavior Implementation Trace
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
-| `BEH-001`–`BEH-010` | Preserve the passed dual-host application product, narrow/acyclic runtime, exact cleanup, provider execution, package bytes, and user-visible behavior. | Existing SR-013 production source and API-REV-012 durable coverage; no production or application/package-producing source changed in IR-019 or IR-020. | Preserved by zero production-source/package-output delta. Full executable reconfirmation remains downstream-owned. |
+| `BEH-001`–`BEH-010` | Preserve the passed dual-host application product, narrow/acyclic runtime, exact cleanup, provider execution, package bytes, and user-visible behavior. | Existing SR-013 production source and API-REV-012 durable coverage; no production or application/package-producing source changed in IR-019, IR-020, or IR-021. | Preserved by zero production-source/package-output delta. Full executable reconfirmation remains downstream-owned. |
 | `BEH-011` | Reject contributor-introduced application-framework dependency and injection regressions with exact diagnostics. | `tests/architecture/application-framework-boundaries.test.ts`; server test manifest/lock; synchronized applications module and architecture guide. | Implemented for `REQ-011`, `AC-024`, `UC-028`, `DS-016`, `SV-019`, and `SV-C60`–`SV-C62`. |
 
 ## Key Files Or Areas
@@ -107,13 +105,14 @@ The retained IR-019 baseline still provides the direct test-only `@vue/compiler-
 - Branch: `codex/universal-application-framework-proposal-analysis`
 - Reviewed solution commit: `724996e970d589e70b9f714c3580c3bd12d38674`
 - Baseline source/test/docs commit: `30257a0a896b7f29b09537c16c6021340274f82b`
-- Corrective architecture-test commit: `4d5a137b7b61b19811bda61ac090633479187801`
+- IR-020 architecture-test commit: `4d5a137b7b61b19811bda61ac090633479187801`
+- IR-021 external-target commit: `4711c6170ab0a8a1aafd555fce1709eb42095a54`
 - Added only direct server `devDependency` `@vue/compiler-sfc: ^3.5.28`; `pnpm-lock.yaml` reuses resolved version `3.5.28`.
 - `pnpm install --lockfile-only --frozen-lockfile` passes across all eleven workspace projects.
 
 ## Local Implementation Checks Run
 
-- `pnpm -C autobyteus-server-ts exec vitest run tests/architecture/application-framework-boundaries.test.ts --reporter=verbose` — Pass: 1 file / 13 tests. This includes the complete current tree, every named AFB-001 category, GraphQL and Studio AFB-002 directions, every AFB-003 outward direction plus the exact reconciliation seam, resolved external-script local/forbidden imports, all nineteen AFB-004 occurrences, and retained AFB-005/project/manifest coverage.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/architecture/application-framework-boundaries.test.ts --reporter=verbose` — Pass: 1 file / 14 tests. This includes direct allowed/rejected AFB-002 and AFB-005 external-`src` targets, external-file local/forbidden imports, the complete current tree, every named AFB-001–AFB-003 direction, all nineteen AFB-004 occurrences, and retained AFB-005/project/manifest coverage.
 - Direct architecture-test TypeScript no-emit with NodeNext, strict mode, Node and Vitest types — Pass.
 - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` — Pass.
 - `pnpm install --lockfile-only --frozen-lockfile` — Pass across all eleven workspace projects; the corrective round changed no manifest or lockfile.
@@ -124,16 +123,16 @@ These are implementation-scoped checks, not API/E2E sign-off.
 
 ## Frontend Rendered-Result Check
 
-Not Applicable. IR-020 changes only the test-owned architecture checker; no rendered frontend or user interaction source changed.
+Not Applicable. IR-021 changes only the test-owned architecture checker; no rendered frontend or user interaction source changed.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
 1. Review the checker as the sole policy owner: actual source-kind extraction, seven profile/config/manifest forms, normalized resolution, and fail-closed governed imports.
-2. Confirm the complete AFB-001 category table, the GraphQL/Studio AFB-002 split, every AFB-003 outward direction, the exact catalog-reconciliation seam, and exact two general-process assembly exemptions without a broad allow-list.
+2. Confirm external `<script src>` targets themselves enter the enclosing AFB evaluator for Studio and maintained applications; then confirm the complete AFB-001 category table, the GraphQL/Studio AFB-002 split, every AFB-003 outward direction, the exact catalog-reconciliation seam, and exact two general-process assembly exemptions without a broad allow-list.
 3. Confirm resolved Vue external scripts use the external file for relative resolution while diagnostics retain the governing SFC and external source identity; then confirm direct-callee alias/namespace binding and all nineteen AFB-004 current-tree occurrence assertions still use the same evaluator as synthetic omission/`null`/`undefined`/spread cases.
 4. Confirm Codex argument 1 and Claude arguments 0/1 are independently protected while Codex positions 0/2 remain allowed process inputs.
 5. After source Pass, rerun the API-REV-012 affected server matrix and complete Studio/standalone characterization, including worker restart, publication/message/handoff/projection, cleanup/recovery/remount, route inventory, and exact `73/73` package parity.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Yes. Implementation proved the corrected architecture contract locally and preserved a zero-production-source delta. After implementation-source review passes, `api_e2e_engineer` must independently validate the durable test/dependency integration and proportionally reconfirm the retained real dual-host and package-integrity baseline before proportional test review and delivery resume.
+Yes. Implementation proved the completed external-script architecture contract locally and preserved a zero-production-source delta. After implementation-source review passes, `api_e2e_engineer` must independently validate the durable test/dependency integration and proportionally reconfirm the retained real dual-host and package-integrity baseline before proportional test review and delivery resume.

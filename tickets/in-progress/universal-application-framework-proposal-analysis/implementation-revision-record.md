@@ -26,6 +26,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-018 | Code reviewer; `code-review-report.md`; `CRR-032` | `CR-022` | `Local Fix` | `SR-013`, `ARCH-REV-011`, `CRR-032`, `API-REV-011`, `DR-003`, `DR-004` | `Ready for source re-review` |
 | IR-019 | Architecture reviewer; `design-review-report.md`; `ARCH-REV-014`, after `ARCH-REV-012`–`ARCH-REV-013` | `AR-010`, `AR-011` | `Design Impact` | `SR-016`, `ARCH-REV-014`, `CRR-033`, `CRR-034`, `API-REV-012`, `DR-005` | `Ready for source re-review` |
 | IR-020 | Code reviewer; `code-review-report.md`; `CRR-035` | `CR-023`, `CR-024` | `Local Fix` | `SR-016`, `ARCH-REV-014`, `CRR-035`, `API-REV-012`, `DR-005` | `Ready for source re-review` |
+| IR-021 | Code reviewer; `code-review-report.md`; `CRR-036` | `CR-025` | `Local Fix` | `SR-016`, `ARCH-REV-014`, `CRR-036`, `API-REV-012`, `DR-005` | `Ready for source re-review` |
 
 ## Revision Entries
 
@@ -429,3 +430,23 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: focused architecture suite passed 1 file / 13 tests; direct strict NodeNext architecture-test TypeScript no-emit passed; server build-config TypeScript no-emit passed; workspace frozen lockfile-only install passed; corrective scope audit confirmed one changed architecture test and zero production-source delta; `git diff --check` passed.
 - Next recipient or routing: `code_reviewer` for complete affected implementation-source and structural re-review. After Pass, route through `api_e2e_engineer` for proportional durable integration and reconfirmation of the retained API-REV-012 dual-host/package baseline before proportional test review and delivery resumes.
 - Remaining limitations or risks: the checker intentionally fails closed when future legitimate architecture changes are not synchronized through design/docs/test review. Implementation did not rerun real hosts, authenticated provider execution, browser projection, or the exact `73/73` package matrix because production source did not change and those remain API/E2E-owned. Other roles' dirty delivery artifacts/evidence and generated devkit output remain preserved; `APIE2E-REPO-005` remains separate and `Unclear`.
+
+### IR-021 — Govern the resolved Vue external-script target edge
+
+- Triggering role, report path, and round: code reviewer; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`; complete IR-020 affected source review `CRR-036`.
+- Triggering finding IDs: `CR-025`
+- Classification: `Local Fix`
+- Prior authoritative result: `IR-020` was `Ready for source re-review`; `CRR-036` confirmed `CR-023` and `CR-024` resolved and returned only the external-`src` target edge as `Fail — Local Fix`.
+- Current authoritative result: `Ready for source re-review`
+- Related solution revision IDs: `SR-016`
+- Related architecture-review revision IDs: `ARCH-REV-014`
+- Related code-review revision IDs: `CRR-036`; retained `CRR-035` and pre-hardening production source/test-review passes `CRR-033`, `CRR-034`
+- Related API/E2E revision IDs: `API-REV-012` retained production baseline
+- Related delivery revision IDs: `DR-005`
+- Why this implementation revision is recorded: IR-020 correctly resolved imports inside an external Vue script from that file, but the resolved `<script src>` attribute itself did not enter the enclosing AFB evaluator. Studio or maintained-application SFCs could therefore select a server runtime file directly while returning no violation.
+- Approved behavior or requirement IDs affected: `BEH-011`; `REQ-011`; `AC-024`; `UC-028`; DS-016 AFB-002/AFB-005 and resolved external-`src` contracts; `CR-025`.
+- Implementation delta: `parseImporter()` now constructs an `ImportEdge` for every resolved external-script target at the owning SFC block location and evaluates it through the existing policy before reading the target. Forbidden targets stop there with the standard SFC-owned diagnostic. Allowed local targets continue through the retained external-file parse/resolution flow. Added direct Studio AFB-002 and Brief AFB-005 local-positive plus server-runtime-negative fixtures, including exact subject/resolved target/reason assertions. CR-023 classification and CR-024 source identity remain unchanged.
+- Changed files or areas: only `autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts`; corrective commit `4711c6170ab0a8a1aafd555fce1709eb42095a54`; canonical implementation handoff and this revision record. No production source, manifest, lockfile, documentation, application package source/output, or other owner's dirty artifact changed.
+- Local validation and result: focused architecture suite passed 1 file / 14 tests; direct strict NodeNext architecture-test TypeScript no-emit passed; server build-config TypeScript no-emit passed; workspace frozen lockfile-only install passed; corrective scope audit confirmed one changed architecture test and zero production-source delta; `git diff --check` passed.
+- Next recipient or routing: `code_reviewer` for complete affected implementation-source and structural re-review. After Pass, route through `api_e2e_engineer` for proportional durable integration and reconfirmation of the retained API-REV-012 dual-host/package baseline before proportional test review and delivery resumes.
+- Remaining limitations or risks: the checker intentionally fails closed when future legitimate architecture changes are not synchronized through design/docs/test review. Implementation did not rerun real hosts, authenticated provider execution, browser projection, or exact `73/73` package parity because production source did not change and those remain API/E2E-owned. Other roles' dirty delivery artifacts/evidence and generated devkit output remain preserved; `APIE2E-REPO-005` remains separate and `Unclear`.
