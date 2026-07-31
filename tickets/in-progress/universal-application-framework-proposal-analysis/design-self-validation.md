@@ -2,11 +2,11 @@
 
 ## Status
 
-- **Validation round:** `SV-017`, validating the behavior-neutral application-framework boundary, package-refresh, and construction-cycle simplification required by `CRR-031`.
-- **Conclusion:** **Pass — revised design is internally coherent and ready for architecture review.** The target exposes four narrow runtime projections, constructs package refresh only after its dependencies exist, and removes both bind-once construction proxies through explicit acyclic owners. Building `ApplicationPlatformRuntime` still prepares infrastructure and starts no new agent/team run.
-- **Current implementation evidence:** The fixed functional baseline is `CRR-029` source Pass / 97, `API-REV-011` Pass / 98.9%, and `CRR-030` proportional test-code Pass. It proves real standalone and Studio Codex/Luna publication, recipient-name handoff, projection, restart/recovery, remount, route separation, cleanup, and exact 73/73 package parity. `CRR-031` reports only the behavior-neutral structural findings `CR-019`–`CR-021`.
+- **Validation round:** `SV-018`, correcting the two source-grounded lifecycle gaps reported by `ARCH-REV-010` while preserving the accepted SR-012 runtime/package-owner simplification.
+- **Conclusion:** **Pass — revised design is internally coherent and ready for architecture re-review.** The target retains four narrow runtime projections and late package refresh, adds a closed artifact-command delivery path that preserves worker ensure/restart, and gives every run-removal origin an exact acyclic session/observer cleanup contract. Building `ApplicationPlatformRuntime` still prepares infrastructure and starts no new agent/team run.
+- **Current implementation evidence:** The fixed functional baseline is `CRR-029` source Pass / 97, `API-REV-011` Pass / 98.9%, and `CRR-030` proportional test-code Pass. It proves real standalone and Studio Codex/Luna publication, recipient-name handoff, projection, restart/recovery, remount, route separation, cleanup, and exact 73/73 package parity. `ARCH-REV-010` confirms `CR-019`/`CR-020` resolved at design level and identifies only `AR-008`/`AR-009` inside `CR-021`.
 - **Authoritative product decision:** a standalone-capable package is self-contained for runtime/model selection. Studio overrides are optional host-owned overlays. Credentials, provider endpoints, installed runtime/model availability, and comparable machine-local prerequisites remain host-owned.
-- **Routing:** return the complete SR-012 package through `architecture_reviewer`; implementation and delivery remain paused until the simplification design passes.
+- **Routing:** return the complete SR-013 package through `architecture_reviewer`; implementation and delivery remain paused until the corrected simplification design passes.
 
 ## Inputs
 
@@ -16,7 +16,7 @@
 4. Proposal assessment in [proposal-critical-analysis.md](proposal-critical-analysis.md).
 5. Architecture history in [design-review-report.md](design-review-report.md) and [architecture-review-revision-record.md](architecture-review-revision-record.md).
 6. Implementation handoff/history in [implementation-handoff.md](implementation-handoff.md) and [implementation-revision-record.md](implementation-revision-record.md).
-7. Current design-impact authority `CRR-031` / `CR-019`–`CR-021` in [code-review-report.md](code-review-report.md) and [code-review-revision-record.md](code-review-revision-record.md).
+7. Design-impact origin `CRR-031` / `CR-019`–`CR-021` in [code-review-report.md](code-review-report.md) and [code-review-revision-record.md](code-review-revision-record.md), plus current architecture authority `ARCH-REV-010` / `AR-008`–`AR-009` in [design-review-report.md](design-review-report.md).
 8. Fixed executable baseline in [api-e2e-coverage-investigation.md](api-e2e-coverage-investigation.md), [api-e2e-execution-coverage-report.md](api-e2e-execution-coverage-report.md), [api-e2e-revision-record.md](api-e2e-revision-record.md), and [api-e2e-test-review-report.md](api-e2e-test-review-report.md).
 9. Intended architecture supplement [application-framework-architecture-simplification.md](application-framework-architecture-simplification.md).
 10. Canonical design principles in the `solution-designer` skill.
@@ -42,8 +42,9 @@
 17. **Prepared runtime is not an execution:** building `ApplicationPlatformRuntime` creates the required managers/factories/services but no new agent/team run. Normal execution starts only through application business demand; established recovery may restore legitimate recorded runs.
 18. **Narrow outward runtime boundary:** `ApplicationPlatformRuntime` exposes exactly `lifecycle`, `rest`, `realtime`, and `hostManagement`. Transport registrars and Studio assembly depend on the appropriate projection and cannot reach runtime stores, recovery, active runs, publication, engine internals, dispatch state, or shutdown internals.
 19. **Late package refresh without temporal callbacks:** the package registry owns package state and roots; package commands own install/reload/remove/validation/rollback; one late `ApplicationCatalogRefreshCoordinator` owns the exact bundle -> availability/reconciliation -> agent -> team refresh order after every dependency exists.
-20. **Acyclic run/publication construction:** `ActiveAgentRunRegistry` is created before the concrete application publisher; scoped Agent Tools sessions receive that publisher; run managers launch/restore/terminate later. `BindOncePublishedArtifactPublisher` is removed, and application paths have no process-global publication fallback.
-21. **Acyclic engine/event construction:** an early `ApplicationEngineController` owns worker handles/status/invocation, a later `ApplicationEngineLauncher` owns worker launch/ensure/stop, and a closed application-ID `ApplicationExecutionEventDispatchQueue` wakes the durable journal dispatcher. `BindOnceApplicationEngineEventHandler` and the broad engine host are removed without a generic container or event bus.
+20. **Acyclic run/publication construction:** an early application MCP session scope owns exact revocation, `AgentRunResourceManager` owns per-run session/file/artifact/memory resources, and `ActiveAgentRunRegistry` owns identity transitions before the concrete publisher, later scoped issuer, and run managers. `BindOncePublishedArtifactPublisher` is removed, and application paths have no reverse callback or process-global publication fallback.
+21. **Acyclic engine/event construction:** an early `ApplicationEngineController` and closed event/artifact queues precede the later `ApplicationEngineLauncher`, journal dispatcher, and artifact delivery service. `BindOnceApplicationEngineEventHandler` and the broad engine host are removed without a generic container, deferred handler, or event bus.
+22. **Preserved lifecycle edges:** every accepted artifact command calls launcher ensure/restart before controller artifact-handler invoke and is drainable before engine stop; inactive discovery/replacement, explicit terminate, stop-all, rollback, and stale duplicate removal identity-release exact resources once before reporting null/success.
 
 ## Scenario Validation Matrix
 
@@ -90,18 +91,24 @@ Every row has a supported action, system event, or governing package/host contra
 | SV-C37 | Internal Agent Tools route receives no bearer, an unknown/revoked session, or a request outside projection | DS-014, DS-005 | Missing bearer remains 401; unknown/wrong/revoked remains 404; no out-of-projection tool; security semantics remain independent of application-runtime capability selection | Pass; focused regression retained |
 | SV-C38 | Studio and standalone compose Agent Tools transport while only Studio owns general external MCP gateway/MCP state | DS-005, DS-014 | Both use one explicit process MCP runtime for internal route/session family; standalone omits `/mcp/gateway` and Studio MCP inheritance; no provider-native/application-MCP expansion | Pass in API-REV-011 |
 | SV-C39 | Default publish provider is exercised while process-global and application-runtime run managers are deliberately distinct | DS-014, DS-004 | Authenticated application session dispatches only through its application-runtime publisher; global service observes no run/event/journal/projection | Pass in CRR-029/API-REV-011 |
-| SV-C40 | Either host constructs the application publication/session capability family | DS-014, DS-005, DS-015 | The concrete application publisher exists before any scoped session manager is returned; missing publication dependencies fail construction, and stopped scopes retain no usable session reference; no bind/rebind state exists | Pass after SV-017 design; structural regression required |
+| SV-C40 | Either host constructs the application publication/session capability family | DS-014, DS-005, DS-015 | Early application session scope and resource/identity owners exist before publication; the concrete publisher exists before the later scoped issuer; stopped scopes retain no usable session reference and no bind/rebind or reverse callback exists | Pass after SV-018 design; structural regression required |
 | SV-C41 | One application Agent Tools scope closes while another process/general scope exists | DS-014, DS-005 | New issue is blocked; only scope-owned sessions revoke; process registry/catalog remain coherent; old descriptors fail; restart creates a new scope | Pass in CRR-029/API-REV-011 |
 | SV-C42 | Maintained Brief/Socratic adapter inventory is reviewed | DS-014 | Only application-runtime-sensitive `publish_artifacts` uses the scoped publisher; proven recipient-name messaging remains session-context delivery; browser/media/task/configured-MCP/native tools gain no speculative machinery | Pass in CRR-029/API-REV-011 |
 | SV-C43 | Contributor follows Studio or standalone construction into application services, Agent Tools sessions, run lifetime, publication, and stop | DS-003–DS-005, DS-014 | Each central type/factory/file states a familiar concrete role and scope; code, tests, diagrams, and module/developer docs use the same vocabulary; retired names have no source compatibility alias | Pass in CRR-029/API-REV-011 |
 | SV-C44 | Either server builds `ApplicationPlatformRuntime` before any application business action | DS-003, DS-005, DS-014 | Required managers/factories/services are prepared and zero new agent/team runs exist; a later guarded business request starts a run and established recovery restores only recorded runs | Pass after SV-016 design; structural regression required |
-| SV-C45 | A Studio or standalone server registers application REST and realtime routes or Studio performs host-level package work | DS-003–DS-005, DS-015 | `ApplicationPlatformRuntime` exposes exactly four projections; each caller receives only its subject contract and cannot select private stores, recovery, runs, sessions, publication, engine, dispatch, or shutdown services | Pass after SV-017 design; structural proof required |
-| SV-C46 | Studio imports, reloads, or removes a package successfully | DS-015 | Package command commits package state, then one coordinator performs bundle refresh -> catalog snapshot -> runtime reconcile/availability -> agent definitions -> team definitions exactly once; subsequent query/launch observes the reconciled catalog | Pass after SV-017 design; focused package regressions required |
-| SV-C47 | Studio package import/reload/remove fails during validation, install, or refresh | DS-015 | The package command applies the documented rollback, invokes only the bounded best-effort post-rollback reconciliation, preserves the original failure, and exposes no half-refreshed authoritative package state | Pass after SV-017 design; failure-path proof required |
-| SV-C48 | Either host constructs application run/publication/session services before business demand | DS-004, DS-005, DS-014, DS-015 | `ActiveAgentRunRegistry` -> concrete application publisher -> scoped Agent Tools sessions -> run managers/services is acyclic; zero new runs exist; no bind-once publisher or process-global fallback remains | Pass after SV-017 design; structural and dual-host proof required |
-| SV-C49 | A worker starts, emits a journal-backed event, crashes/restarts, or an application remounts | DS-003–DS-005, DS-015 | Stable engine controller, late launcher, closed wakeup queue, journal dispatcher, and reentry service preserve ensure/ack/fail/retry/backoff/recovery/remount semantics and do not create a generic event bus | Pass after SV-017 design; API-REV-011 characterization rerun required |
-| SV-C50 | Contributor audits the target framework dependency graph and retired source | DS-015 | No runtime consumer bypasses a projection; no package callback closes over later variables; both bind-once proxies and broad engine host are absent; named general-process factories are explicit; no service locator/container/compatibility alias/dual path exists | Pass after SV-017 design; retired-pattern scan required |
-| SV-C51 | The complete refactor is exercised in both hosts with existing data and packages | DS-001–DS-015 | All API-REV-011 behavior remains unchanged, exact package parity remains 73/73, current stores open directly, and no package/database/wire migration occurs | Pass after SV-017 design; complete source-review/API-E2E loop required |
+| SV-C45 | A Studio or standalone server registers application REST and realtime routes or Studio performs host-level package work | DS-003–DS-005, DS-015 | `ApplicationPlatformRuntime` exposes exactly four projections; each caller receives only its subject contract and cannot select private stores, recovery, runs, sessions, publication, engine, dispatch, or shutdown services | Pass in ARCH-REV-010 design review; structural proof required |
+| SV-C46 | Studio imports, reloads, or removes a package successfully | DS-015 | Package command commits package state, then one coordinator performs bundle refresh -> catalog snapshot -> runtime reconcile/availability -> agent definitions -> team definitions exactly once; subsequent query/launch observes the reconciled catalog | Pass in ARCH-REV-010 design review; focused package regressions required |
+| SV-C47 | Studio package import/reload/remove fails during validation, install, or refresh | DS-015 | The package command applies the documented rollback, invokes only the bounded best-effort post-rollback reconciliation, preserves the original failure, and exposes no half-refreshed authoritative package state | Pass in ARCH-REV-010 design review; failure-path proof required |
+| SV-C48 | Either host constructs application run/publication/session services before business demand | DS-004, DS-005, DS-014, DS-015 | Application session scope -> run resources -> identity registry -> concrete publisher -> scoped issuer -> run managers/services is acyclic; zero new runs exist; no bind-once publisher, reverse callback, or process-global fallback remains | Pass after SV-018 design; structural and dual-host proof required |
+| SV-C49 | A worker starts, emits a journal-backed event, crashes/restarts, or an application remounts | DS-003–DS-005, DS-015 | Stable engine controller, late launcher, closed event wakeup queue, journal dispatcher, and reentry service preserve ensure/ack/fail/retry/backoff/recovery/remount semantics and do not create a generic event bus | Pass after SV-018 design; API-REV-011 characterization rerun required |
+| SV-C50 | Contributor audits the target framework dependency graph and retired source | DS-015 | No runtime consumer bypasses a projection; no package callback closes over later variables; both bind-once proxies and broad engine host are absent; named general-process factories are explicit; no service locator/container/reverse callback/generic deferred handler/compatibility alias/dual path exists | Pass after SV-018 design; retired-pattern scan required |
+| SV-C51 | The complete refactor is exercised in both hosts with existing data and packages | DS-001–DS-015 | All API-REV-011 behavior remains unchanged, exact package parity remains 73/73, current stores open directly, and no package/database/wire migration occurs | Pass after SV-018 design; complete source-review/API-E2E loop required |
+| SV-C52 | An application worker exits while a maintained provider run remains active, then that run calls `publish_artifacts` | DS-004, DS-014, DS-015 | Relay maps one complete command; artifact delivery calls launcher `ensureReady`, restarts/coalesces the worker, then controller invokes the application artifact handler; persisted projection remains and the UI receives the event | Pass after SV-018 design; exact witness regression required |
+| SV-C53 | Active-run event relay and no-active-run fallback publish concurrently across one or more runs, then shutdown begins | DS-004, DS-005, DS-015 | One run preserves FIFO; different run lanes progress independently; active listener remains fire-and-forget/logged, fallback awaits completion; intake stops and accepted commands drain before engine stop; delivery failure does not roll back persisted projection | Pass after SV-018 design; queue/lifecycle proof required |
+| SV-C54 | `getActiveRun` discovers an inactive exact run | DS-005, DS-014, DS-015 | Registry deletes that identity and resource ownership, revokes its application MCP sessions, detaches file/artifact/memory observers once, attempts all cleanup, then returns null or surfaces aggregate cleanup error; no later callback exists | Pass after SV-018 design; exact cleanup regression required |
+| SV-C55 | Registration finds an inactive run with the same ID, or attachment fails after only some observers attach | DS-005, DS-014, DS-015 | Old exact run fully releases before replacement attaches; partial resources release before error; a stale completion cannot delete the replacement | Pass after SV-018 design; replacement/partial-attach proof required |
+| SV-C56 | Explicit terminate, stop-all, registration rollback, and duplicate/stale removal race with exact run identity | DS-005, DS-014, DS-015 | Accepted termination consumes `removed`; stop-all snapshots exact objects and aggregates; repeated removal is no-op; identity mismatch preserves the newer run; every resource revoker/disposer runs at most once | Pass after SV-018 design; multi-origin proof required |
+| SV-C57 | Contributor constructs and stops the full target owner chain | DS-003–DS-005, DS-014, DS-015 | Four projections/package owners remain; session scope/resource/registry/publication/issuer and controller/queues/launcher/consumers are acyclic; runtime build creates no run; stop drains/revokes/releases in order; no proxy, broad host, reverse callback, generic event bus/container/deferred handler, or migration appears | Pass after SV-018 design; structural and full-baseline proof required |
 
 ## Reachable Product Use-Case Completeness Audit
 
@@ -120,18 +127,20 @@ Every row has a supported action, system event, or governing package/host contra
 | UC-011 — Restart and recovery | SV-C12, SV-C13 | DS-004, DS-005 | Complete |
 | UC-012 — Required readiness or worker failure | SV-C09, SV-C14, SV-C27 | DS-005, DS-012 | Complete after SV-009 |
 | UC-013 — Standalone root/assets/navigation/boundary | SV-C04, SV-C16, SV-C17 | DS-002, DS-008 | Complete |
-| UC-014 — Graceful process stop | SV-C15, SV-C37–SV-C41, SV-C43, SV-C49, SV-C51 | DS-005, DS-010, DS-014, DS-015 | Baseline complete in API-REV-011; SR-012 owner-order proof pending |
+| UC-014 — Graceful process stop | SV-C15, SV-C37–SV-C41, SV-C43, SV-C49, SV-C51, SV-C53–SV-C57 | DS-005, DS-010, DS-014, DS-015 | Baseline complete in API-REV-011; SR-013 owner-order/exact-cleanup proof pending |
 | UC-015 — Native application-folder development | SV-C18, SV-C21 | DS-006, DS-011 | Complete after SV-009 |
 | UC-016 — Host-neutral application authoring | SV-C01, SV-C19 | DS-001, DS-002, DS-007 | Complete |
 | UC-017 — Local/trusted-network standalone access | SV-C04, SV-C17, SV-C37, SV-C38 | DS-002, DS-008, DS-014 | Complete; naming correction preserves network boundary |
-| UC-018 — Build, validate, start production | SV-C03, SV-C15, SV-C21, SV-C23, SV-C24, SV-C27, SV-C36, SV-C38–SV-C41, SV-C44, SV-C48–SV-C51 | DS-010–DS-012, DS-014, DS-015 | Baseline complete in API-REV-011; SR-012 characterization rerun pending |
+| UC-018 — Build, validate, start production | SV-C03, SV-C15, SV-C21, SV-C23, SV-C24, SV-C27, SV-C36, SV-C38–SV-C41, SV-C44, SV-C48–SV-C57 | DS-010–DS-012, DS-014, DS-015 | Baseline complete in API-REV-011; SR-013 characterization rerun pending |
 | UC-019 — Reject invalid standalone package | SV-C21, SV-C25, SV-C35 | DS-011 | Complete after SV-011 |
 | UC-020 — Studio alternate-resource sparse override and reset | SV-C22, SV-C26, SV-C30, SV-C33, SV-C34 | DS-009, DS-012 | Complete after SV-011 |
 | UC-021 — Missing host requirement | SV-C09, SV-C27 | DS-005, DS-012 | Complete after SV-009 |
 | UC-022 — Package team prompt semantics | SV-C29 | DS-013 | Complete after SV-009 |
 | UC-023 — Invalidated Studio override | SV-C31, SV-C32 | DS-012 | Complete after SV-010 |
-| UC-024 — Navigate the application framework by responsibility | SV-C43–SV-C45, SV-C48–SV-C50 | DS-003–DS-005, DS-014, DS-015 | SR-011 naming passed; SR-012 boundary simplification requires implementation proof |
-| UC-025 — Preserve behavior while simplifying framework ownership and construction | SV-C45–SV-C51 | DS-003–DS-005, DS-014, DS-015 | Complete after SV-017 design; full characterization rerun required |
+| UC-024 — Navigate the application framework by responsibility | SV-C43–SV-C45, SV-C48–SV-C50, SV-C57 | DS-003–DS-005, DS-014, DS-015 | SR-011 naming passed; SR-013 boundary/lifecycle simplification requires implementation proof |
+| UC-025 — Preserve behavior while simplifying framework ownership and construction | SV-C45–SV-C57 | DS-003–DS-005, DS-014, DS-015 | Complete after SV-018 design; full characterization rerun required |
+| UC-026 — Publish after application-worker exit | SV-C52, SV-C53 | DS-004, DS-014, DS-015 | Complete after SV-018 design; worker-exit real publication proof required |
+| UC-027 — Remove an inactive or terminated agent run | SV-C54–SV-C57 | DS-005, DS-014, DS-015 | Complete after SV-018 design; exact multi-origin cleanup proof required |
 
 ## Corrections Produced By The Validation
 
@@ -348,8 +357,44 @@ Shutdown first blocks session issuance and event intake/timers, then communicati
 7. **Product reachability:** package import/reload/remove, application run/publication, worker events/recovery, route registration, and shutdown are established product paths already exercised by API-REV-011.
 8. **Persisted data:** source construction and internal interfaces change; package bytes, database schema, stored configuration, journals, projections, and worker/wire protocols remain directly usable without migration.
 
-**Result:** Pass at design level. The correction is behavior-neutral but implementation-significant and requires architecture approval plus the complete source-review/API-E2E loop.
+**Result:** Superseded as the complete target by SV-018. ARCH-REV-010 confirms the four-projection and package-owner portions, but rejects the initial controller-only artifact relay and later manager-callback cleanup mechanics.
 
+### SV-018 — Preserve worker ensure/restart and exact run cleanup without restoring cycles
+
+**Trigger and material premises:**
+
+1. `ARCH-REV-010` confirms CR-019 and CR-020 resolved at design level and leaves only two bounded CR-021 edges.
+2. `MP-ARCH-010-001` is product-reachable: an application worker may exit while a supported provider run remains active, then `publish_artifacts` reaches the current relay. Current source calls engine-host `ensureApplicationEngine` before handler invocation; an attached-handle-only controller would drop that behavior.
+3. `MP-ARCH-010-002` is product-reachable: inactive discovery/replacement, accepted termination, and stop-all remove exact application runs. Current source synchronously revokes run MCP sessions and detaches file-change, artifact-relay, and memory observers before returning.
+4. A registry callback into a later `AgentRunManager` recreates the dependency cycle; omitting it loses cleanup. A generic deferred handler or event bus would hide rather than solve ownership.
+
+**Artifact-delivery correction:**
+
+- `ApplicationPublishedArtifactRelayService` retains binding lookup/event mapping and submits one complete `{runId, applicationId, bindingId, revisionId, event}` command to `ApplicationPublishedArtifactDeliveryQueue`.
+- The queue is closed to that command, owns per-run FIFO/independent lanes/completion/intake-stop/drain, and exposes no topic, subscriber, callback registration, or later handler bind.
+- `ApplicationPublishedArtifactDeliveryService`, created after launcher/controller, consumes the queue and always calls `ApplicationEngineLauncher.ensureReady(applicationId)` before `ApplicationEngineController.invokeApplicationArtifactHandler`.
+- The active-run event listener remains fire-and-forget with logged failure; the no-active-run fallback remains awaited. An artifact snapshot/projection already persisted is not rolled back by later delivery failure.
+- Lifecycle stops new artifact intake and drains accepted commands while launcher/controller remain live, then stops engine startups/workers.
+
+**Run-resource correction:**
+
+- `ApplicationAgentToolMcpSessionScope` is created from the exact process MCP family before publication. It records/revokes application session identities only and has no publisher/catalog/run-manager dependency.
+- `AgentRunResourceManager.attach/release` owns run-session revocation plus file-change, artifact-relay, and memory observer disposers. It removes ownership before cleanup, attempts every category, aggregates errors, releases partial attachment, and makes repeats `already_released` no-ops.
+- `ActiveAgentRunRegistry.removeIfCurrent({runId, expectedRun, reason})` identity-deletes only the expected object and returns `removed`, `not_found`, or `identity_mismatch`. It synchronously delegates exact cleanup and never calls back into a later manager.
+- Inactive discovery cleans before null; inactive replacement cleans before new attach; explicit terminate removes only after accepted termination; stop-all snapshots/removes exact objects and aggregates; stale/duplicate removal cannot affect a replacement.
+- `AgentRunManager` retains create/restore/terminate/stop commands but loses active/disposer maps. No global/default cleanup path is introduced.
+
+**Acyclic construction and principles:**
+
+1. Early controller + event/artifact queues precede stores/gate.
+2. Application session scope + exact observer capabilities + queue-backed relay precede run resource manager and active registry.
+3. Registry precedes concrete publication; concrete publication and scope precede the later scoped issuer; issuer/registry precede run managers.
+4. Orchestration/streaming precede launcher; launcher/controller precede artifact delivery service and event dispatcher.
+5. Each new type owns real state, identity, sequencing, or lifecycle; none is a pass-through-only factory, service locator, generic container, event bus, or deferred handler.
+6. The accepted four outward projections, package refresh owners, routes, wire/package/database schemas, Codex/Luna defaults, override semantics, session/auth behavior, provider execution, publication/handoff/projection, recovery/remount/restart, shutdown outcomes, and 73/73 package parity remain fixed.
+7. Runtime construction still creates no new run, and no data migration is required.
+
+**Result:** Pass at design level. SV-C52–SV-C57 cover the exact witnesses and full construction/stop path. SR-013 is ready for architecture re-review; implementation remains paused.
 
 ## Data-Flow Coverage Check
 
@@ -367,42 +412,43 @@ Shutdown first blocks session issuance and event intake/timers, then communicati
 | Package-team prompt semantics | DS-013 | Exact application team-definition service and context builder | Complete and functionally passed |
 | Internal Agent Tools configured-tool transport | DS-014 with DS-004/DS-005 | `AgentToolsMcpRuntime` -> scoped session manager -> authenticated publisher/member context -> journal/projection/handoff | Complete and functionally passed |
 | Framework navigation and runtime/execution distinction | DS-003–DS-005, DS-014 | Exact SR-011 role vocabulary and name/file map | Functionally passed in API-REV-011 |
-| Narrow runtime outward boundary | DS-003–DS-005, DS-015 | Four exact runtime projections and subject-specific registrars | Complete after SV-017 design; structural proof required |
-| Package command, rollback, and catalog refresh | DS-015 | Package registry + command service + late refresh coordinator | Complete after SV-017 design; success/failure regressions required |
-| Acyclic run/publication/session construction | DS-004, DS-005, DS-014, DS-015 | Active run registry -> concrete publisher -> scoped sessions -> run managers | Complete after SV-017 design; bind/global removal proof required |
-| Acyclic engine/event construction and recovery | DS-003–DS-005, DS-015 | Engine controller -> launcher + closed wakeup queue -> journal dispatcher/reentry | Complete after SV-017 design; API-REV-011 rerun required |
+| Narrow runtime outward boundary | DS-003–DS-005, DS-015 | Four exact runtime projections and subject-specific registrars | Complete after SV-018 design; structural proof required |
+| Package command, rollback, and catalog refresh | DS-015 | Package registry + command service + late refresh coordinator | Complete after SV-018 design; success/failure regressions required |
+| Acyclic run/publication/session construction | DS-004, DS-005, DS-014, DS-015 | Application session scope -> run resources -> exact active registry -> concrete publisher -> scoped issuer -> run managers | Complete after SV-018 design; exact cleanup/bind/global removal proof required |
+| Acyclic engine/event/artifact construction and recovery | DS-003–DS-005, DS-015 | Controller + closed queues -> launcher -> artifact delivery/journal dispatcher/reentry, with ensure-before-invoke | Complete after SV-018 design; worker-exit and API-REV-011 rerun required |
 
 ## Canonical Design-Principles Audit
 
 | Principle / Derived Check | Result | Validation |
 | --- | --- | --- |
-| Approved behavior and production reality | Pass | CRR-029/API-REV-011/CRR-030 are the fixed baseline. SR-012 changes internal boundaries and construction only. |
+| Approved behavior and production reality | Pass | CRR-029/API-REV-011/CRR-030 are the fixed baseline. SR-013 changes internal boundaries/construction only and restores the two current lifecycle edges omitted by SR-012. |
 | Spine span sufficiency | Pass | Target primary and return spines still span host/server -> narrow runtime boundary -> business-triggered run -> authenticated tools/journal -> projection/recovery -> ordered stop. |
-| Ownership clarity and boundary encapsulation | Pass after SV-017 | Four runtime projections replace mixed-level access; package state, commands, refresh, active runs, publication, engine control, launch, dispatch, and reentry each have one owner. |
-| Main-domain naming health | Pass | SR-011 names remain implemented and passed; SR-012 adds only concrete role nouns consistent with that vocabulary. |
+| Ownership clarity and boundary encapsulation | Pass after SV-018 | Four projections replace mixed access; package state/commands/refresh, session scope, run resources/identity, publication, controller/launch, artifact delivery, event dispatch, and reentry each have one owner. |
+| Main-domain naming health | Pass | SR-011 names remain implemented and passed; SR-013 adds only concrete role nouns consistent with that vocabulary. |
 | Off-spine support remains subordinate | Pass | Auth, origin, descriptors, diagnostics, cleanup, registry lookup, and the closed wakeup queue remain subordinate to their owners; no generic event bus/container appears. |
 | Current-schema persisted-data transition | Pass | Internal construction changes only; current package/database/configuration/journal/projection data remains directly usable with no migration. |
-| Product-reachability gate | Pass | All 25 use cases and 51 scenarios are supported actions, observed behavior, or governing contracts. UC-025 covers established package/run/event/lifecycle paths. |
-| Clean-cut replacement | Pass after SV-017 | Both bind-once proxies and the broad engine host are removed with no alias, wrapper, fallback, generic deferred replacement, or dual path. |
-| Interface and semantic tightness | Pass after SV-017 | Outward projections are exact; the dispatch queue carries application-ID wakeups only; active-run registry owns only active-run state. |
+| Product-reachability gate | Pass | All 27 use cases and 57 scenarios are supported actions, observed behavior, or governing contracts. UC-026/UC-027 cover the exact ARCH-REV-010 witnesses. |
+| Clean-cut replacement | Pass after SV-018 | Both bind-once proxies and the broad engine host are removed with no alias, wrapper, fallback, reverse callback, generic deferred replacement, or dual path. |
+| Interface and semantic tightness | Pass after SV-018 | Outward projections are exact; event queue carries only IDs; artifact queue carries complete commands; session scope, resource manager, and registry own distinct revocation/resource/identity meanings. |
 | Existing capability reuse | Pass | Existing package, availability, run, publication, Agent Tools, engine, journal, recovery, and transport capabilities are decomposed, not replaced by a new platform. |
-| Server/runtime dependency control | Pass after SV-017 | Exact acyclic construction order replaces temporal callbacks and bind-once seams while preserving on-demand run creation, recovery, session isolation, and stop order. |
-| File/folder placement and removal | Pass after SV-017 | New files map to real owners; mixed package/engine files split; obsolete proxy and broad-host files are deleted. |
+| Server/runtime dependency control | Pass after SV-018 | Exact acyclic construction replaces temporal callbacks/bind-once seams while preserving on-demand creation, ensure/restart delivery, exact resource cleanup, recovery, session isolation, and stop order. |
+| File/folder placement and removal | Pass after SV-018 | New files map to real session/resource/identity/queue/delivery owners; mixed package/engine files split; obsolete proxy and broad-host files are deleted. |
 | Failure semantics | Pass | Package rollback/original-error preservation, journal retry/ack/fail, readiness, route auth, provider execution, and shutdown behavior remain fixed. |
 | Compatibility rejection | Pass | No compatibility alias, old/new constructor path, application global fallback, or migration branch is permitted. |
 
 ## Residual Risks And Required Downstream Evidence
 
-1. Architecture review must verify the four outward projections are complete but do not leak internals, and that no transport/Studio caller still requires the 19-field runtime collection.
-2. Architecture review must verify package state, command/rollback, and refresh/reconciliation ownership, including exact successful and failed refresh ordering and original-error preservation.
-3. Architecture review must verify the two construction graphs are genuinely acyclic and that no pass-through-only owner or generic deferred/event container has been introduced.
-4. Implementation must preserve exact runtime object identity, provider/session/run ownership, worker and event journal semantics, recovery/remount behavior, and shutdown order while splitting owners.
-5. Structural checks must assert exactly four runtime keys, narrow registrar signatures, no late-assigned package callback capture, no `BindOncePublishedArtifactPublisher`, no `BindOnceApplicationEngineEventHandler`, no broad `ApplicationEngineHostService`, and no application-path global fallback.
-6. Package regressions must cover import/reload/remove success, validation/install failure, refresh failure, rollback, best-effort reconciliation, and unchanged GraphQL/wire behavior.
-7. Run/publication/session regressions must prove zero new runs on runtime build, concrete application publisher identity, scoped capability/revocation, on-demand launch, recovery, and named general-process isolation.
-8. Engine/event regressions must prove process start coalescing, invocation, journal wake/claim/ack/fail/retry/backoff, worker crash, restart/recovery, remount, and ordered stop.
-9. After source review passes, API/E2E must rerun the complete API-REV-011 characterization baseline, including real Studio and standalone Codex/Luna publication/handoff/projection/restart/remount/route separation/cleanup and exact 73/73 package parity.
-10. `APIE2E-REPO-005` remains `Unclear` and separate. Application-owned MCP provisioning, optimized distribution, public-internet hosting, user authentication, marketplace isolation, and repository-wide cleanup remain out of scope.
+1. Architecture review must verify the four outward projections and package state/command/refresh ownership remain exactly as accepted in ARCH-REV-010.
+2. Architecture review must verify artifact relay submits a complete command and that the delivery service—not the relay/controller alone—always performs launcher ensure/restart before controller artifact-handler invoke.
+3. Architecture review must verify queue caller semantics, per-run FIFO/independent progress, delivery-failure policy, and drain-before-engine-stop preserve current behavior without duplicating the durable journal.
+4. Architecture review must verify the early application session scope, run resource manager, and active registry are acyclic and that no registry-to-manager callback, service locator, generic deferred handler/container, or event bus appears.
+5. Implementation must preserve exact removal semantics for inactive discovery/replacement, accepted explicit terminate, stop-all, registration rollback, duplicate/stale identity, partial attachment, aggregate cleanup error, and at-most-once disposer/revoker execution.
+6. Structural checks must assert exactly four runtime keys, narrow registrar signatures, no late-assigned package callback capture, no manager-owned active/disposer maps, no `BindOnce*`, no broad `ApplicationEngineHostService`, and no application-path global fallback.
+7. Package regressions must cover import/reload/remove success, validation/install failure, refresh failure, rollback, best-effort reconciliation, and unchanged GraphQL/wire behavior.
+8. Run/publication/session regressions must prove zero new runs on runtime build, exact publisher/process-family identity, scope issue rollback, all removal origins, partial cleanup, on-demand launch, recovery, and named general-process isolation.
+9. Engine/event/artifact regressions must prove process-start coalescing, worker-exit-before-publication restart/invoke, active-versus-fallback relay semantics, artifact queue drain, journal wake/claim/ack/fail/retry/backoff, recovery/remount, and ordered stop.
+10. After source review passes, API/E2E must rerun the complete API-REV-011 characterization baseline, including real Studio and standalone Codex/Luna publication/handoff/projection/restart/remount/route separation/cleanup and exact 73/73 package parity.
+11. `APIE2E-REPO-005` remains `Unclear` and separate. Application-owned MCP provisioning, optimized distribution, public-internet hosting, user authentication, marketplace isolation, and repository-wide cleanup remain out of scope.
 
 ## Self-Validation Decision
 
@@ -410,6 +456,6 @@ The major architecture remains:
 
 > One immutable application package supplies its complete standalone launch baseline; two thin hosts normalize their ingress and build the same application platform runtime and business stack.
 
-SR-012 keeps that architecture and makes its implementation boundaries simpler: the runtime exposes four subject contracts rather than 19 internals; package commands invoke one late reconciliation owner rather than future-dependent callbacks; active-run state enables concrete publication before sessions and launch managers; stable engine control enables later launch and journal dispatch without bind-once callbacks. Building the application runtime still starts no new agent/team execution; application business demand remains the normal trigger and legitimate recovery only restores recorded runs.
+SR-013 keeps that architecture and the accepted SR-012 four-projection/package-owner correction. It completes the acyclic implementation design with two distinct paths: application session scope -> run resource manager -> exact run registry -> publication -> scoped issuer/managers, and controller/closed queues -> launcher -> artifact delivery plus journal dispatcher. The artifact path always ensures/restarts the worker before invoke; every run-removal origin releases exact sessions and file/artifact/memory observers once. Building the runtime still starts no new execution; business demand remains the normal trigger and legitimate recovery only restores recorded runs.
 
-All 25 reachable use cases map to DS-001–DS-015 and at least one of 51 validation cases. The design adds no product status, route, project, UI, persistence, migration, manifest change, authentication system, host-specific build, compatibility alias, runtime/tool behavior, external gateway, generic container/event bus, or repository-wide refactor. SR-012 is ready for `architecture_reviewer`; no architecture approval or implementation completion is presumed.
+All 27 reachable use cases map to DS-001–DS-015 and at least one of 57 validation cases. The design adds no product status, route, project, UI, persistence, migration, manifest change, authentication system, host-specific build, compatibility alias, runtime/tool behavior, external gateway, reverse callback, generic container/event bus/deferred handler, or repository-wide refactor. SR-013 is ready for `architecture_reviewer`; no architecture approval or implementation completion is presumed.

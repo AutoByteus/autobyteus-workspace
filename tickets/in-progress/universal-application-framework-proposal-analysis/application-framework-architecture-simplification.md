@@ -2,15 +2,16 @@
 
 ## Status And Authority
 
-- Solution revision: `SR-012`
-- Trigger: `CRR-031` / `CR-019`–`CR-021`
+- Solution revision: `SR-013`
+- Trigger: `ARCH-REV-010` / `AR-008` / `AR-009`, refining `CRR-031` / `CR-019`–`CR-021`
 - Status: `Proposed — architecture approval required`
 - Scope: behavior-neutral internal architecture correction
-- Requirements basis: `BEH-010`, `REQ-010`, `AC-019`–`AC-021`, `UC-025`
+- Requirements basis: `BEH-004`, `BEH-005`, `BEH-010`, `REQ-010`, `AC-019`–`AC-023`, `UC-025`–`UC-027`
 - Canonical functional baseline: `CRR-029` Pass / 97, `API-REV-011` Pass / 98.9%, and `CRR-030` Pass
+- Prior architecture result: `ARCH-REV-010` confirms CR-019 and CR-020 resolved in design and returns two bounded CR-021 lifecycle edges
 - Persisted-data outcome: `Directly Usable — No Migration`
 
-This supplement defines the complete internal target for the CRR-031 correction. It complements, and does not replace, the authoritative requirements and design spec. Because it defines intended architecture, it is part of the approval basis.
+This supplement defines the complete internal target for the CRR-031 correction and the two ARCH-REV-010 refinements. It complements, and does not replace, the authoritative requirements and design spec. Because it defines intended architecture, it is part of the approval basis.
 
 ## Fixed Behavior Contract
 
@@ -18,16 +19,27 @@ The refactor must preserve all of the following:
 
 1. the two explicit assembly roots, `buildStudioServer` and `buildStandaloneApplicationServer`;
 2. all HTTP, WebSocket, GraphQL, MCP, worker-protocol, environment, package, manifest, and database contracts;
-3. the same package bytes and the exact `73/73` Studio/standalone package parity result;
+3. the same package bytes and the exact `73/73` Studio/standalone package-parity result;
 4. package-owned Codex / GPT-5.6 Luna defaults, sparse Studio overrides, reset semantics, and readiness classifications;
 5. the same AutoByteus, Codex, and Claude provider execution behavior;
 6. the capability-scoped `/mcp/agent-tools/:sessionId` route, exact process/session identity, tool projection, authorization, and revocation;
 7. application-runtime-scoped `publish_artifacts`, recipient-name `send_message_to`, team handoff, event journal, artifact projection, and business UI result;
 8. Studio import/remove/reload diagnostics, identity, refresh order, and rollback;
 9. startup, recovery, remount, worker-failure, restart, and shutdown behavior;
-10. the invariant that runtime construction prepares infrastructure but creates no new agent/team run; only a business request or legitimate recorded-run recovery creates/restores one.
+10. live artifact delivery must call the worker only after `ensureReady(applicationId)` has retained or restarted it, including when the worker exits while the provider run remains active;
+11. inactive-run discovery, explicit termination, inactive replacement, stop-all, and duplicate removal must synchronously revoke that run's MCP sessions and detach file-change, artifact-relay, and memory observers exactly once;
+12. runtime construction prepares infrastructure but creates no new agent/team run; only a business request or legitimate recorded-run recovery creates/restores one.
 
-The refactor must not add `buildServer(mode)`, a service locator, a generic dependency container, a generic event bus, an optional-field shared base runtime, a compatibility alias, a dual path, or an application-path singleton/global fallback.
+The refactor must not add `buildServer(mode)`, a service locator, a generic dependency container, a generic event bus, a generic deferred handler, an optional-field shared base runtime, a later-bound reverse callback, a compatibility alias, a dual path, or an application-path singleton/global fallback.
+
+## Reachable Premise Record
+
+| Premise ID | Independent Trigger / Governing Contract | Current Path And State | Material Consequence | Classification |
+| --- | --- | --- | --- | --- |
+| `MP-ARCH-010-001` | A maintained Studio or standalone application owns an active provider run; its application worker exits; the provider subsequently calls the supported `publish_artifacts` tool. | `PublishedArtifactPublicationService` persists the artifact and the relay calls `ApplicationEngineHostService.invokeApplicationArtifactHandler`, which first calls `ensureApplicationEngine`. | A controller-only relay would fail on the absent handle instead of restarting the worker and delivering the application artifact event. | `Reachable` |
+| `MP-ARCH-010-002` | Any supported lookup, duplicate registration, explicit termination, or stop-all path encounters an inactive application-owned agent run. | `AgentRunManager.getActiveRun`/registration/termination removes the map entry, revokes run sessions, and detaches file-change, artifact-relay, and memory observers. | A registry that removes state without the exact cleanup leaks resources; a later registry-to-manager callback recreates the construction cycle. | `Reachable` |
+
+Neither correction is speculative. Both preserve current product behavior and remove only the ownership/cycle defect.
 
 ## Current Primary And Return Spines
 
@@ -45,7 +57,7 @@ flowchart LR
     RunManager --> Provider[Codex / Claude / AutoByteus]
 ```
 
-### Current publication and event return spine
+### Current publication return spine
 
 ```mermaid
 flowchart RL
@@ -54,10 +66,21 @@ flowchart RL
     DeferredPublisher --> Publication[PublishedArtifactPublicationService]
     Publication --> RunManager[AgentRunManager active-run lookup]
     RunManager --> Relay[ApplicationPublishedArtifactRelayService]
-    Relay --> DeferredEngine[BindOnceApplicationEngineEventHandler]
-    DeferredEngine --> Engine[ApplicationEngineHostService]
+    Relay --> Engine[ApplicationEngineHostService ensure + invoke]
     Engine --> Worker[Application worker]
     Worker --> Projection[Application business state / UI]
+```
+
+### Current active-run removal spine
+
+```text
+getActiveRun / register replacement / terminate / stop-all
+  -> AgentRunManager active map
+  -> unregisterActiveRun
+  -> revoke run MCP sessions
+  -> detach file-change observer
+  -> detach artifact-relay observer
+  -> detach memory observer
 ```
 
 The runtime behavior is correct, but the returned runtime exposes internals, Studio package construction closes over later-assigned services, and the two bind-once objects permanently encode construction cycles.
@@ -83,7 +106,7 @@ flowchart LR
     RunLaunch --> Provider[Codex / Claude / AutoByteus]
 ```
 
-### Target publication and event return spine
+### Target publication return spine
 
 ```mermaid
 flowchart RL
@@ -91,18 +114,42 @@ flowchart RL
     Session --> Publication[PublishedArtifactPublicationService]
     Publication --> ActiveRuns[ActiveAgentRunRegistry]
     ActiveRuns --> Relay[ApplicationPublishedArtifactRelayService]
-    Relay --> Controller[ApplicationEngineController]
-    Controller --> Worker[Attached application worker]
+    Relay --> DeliveryQueue[ApplicationPublishedArtifactDeliveryQueue]
+    DeliveryQueue --> Delivery[ApplicationPublishedArtifactDeliveryService]
+    Delivery --> Launcher[ApplicationEngineLauncher.ensureReady]
+    Launcher --> Controller[ApplicationEngineController.invokeArtifactHandler]
+    Controller --> Worker[Application worker]
     Worker --> Projection[Application business state / UI]
 
     RunEvent[Run lifecycle event] --> Journal[Durable execution-event journal]
-    Journal --> Queue[ApplicationExecutionEventDispatchQueue]
-    Queue --> Dispatcher[ApplicationExecutionEventDispatchService]
-    Dispatcher --> Launcher[ApplicationEngineLauncher]
-    Launcher --> Controller
+    Journal --> EventQueue[ApplicationExecutionEventDispatchQueue]
+    EventQueue --> Dispatcher[ApplicationExecutionEventDispatchService]
+    Dispatcher --> Launcher
 ```
 
-The dispatch queue carries only coalesced application IDs after the authoritative event is committed to the existing journal. It is a closed, domain-specific wake-up queue with no arbitrary topics, payload publication, or subscriber API. It is not a generic event bus.
+The two queues have different subjects and contracts:
+
+- `ApplicationExecutionEventDispatchQueue` carries only coalesced application-ID wakeups after the durable event journal commit.
+- `ApplicationPublishedArtifactDeliveryQueue` carries complete in-memory artifact-delivery commands after publication/projection and binding resolution. It preserves FIFO per run and exposes completion to the existing awaited fallback relay.
+
+Neither queue exposes arbitrary topics, payload publication, subscriber registration, or a late handler binding. They are closed, domain-specific runtime mechanisms, not generic event buses or deferred containers.
+
+### Target active-run removal spine
+
+```mermaid
+flowchart LR
+    Trigger[Inactive lookup / replacement / terminate / stop-all] --> Registry[ActiveAgentRunRegistry]
+    Registry --> Identity[Delete only exact expected run]
+    Identity --> Resources[AgentRunResourceManager.release]
+    Resources --> Sessions[ApplicationAgentToolMcpSessionScope revoke run]
+    Resources --> File[Detach file changes]
+    Resources --> Relay[Detach artifact relay]
+    Resources --> Memory[Detach memory recorder]
+    Registry --> Result[Exact removal result]
+    Result --> Manager[AgentRunManager consumes explicit-operation result]
+```
+
+There is no `Registry -> AgentRunManager` callback. The registry receives the resource manager at construction, and the resource manager depends only on early session-revocation and observer capabilities.
 
 ## Narrow `ApplicationPlatformRuntime` Boundary
 
@@ -180,8 +227,9 @@ The following remain closure-private to `buildApplicationPlatformRuntime` and li
 
 - storage/global/platform/run/binding/override/journal stores;
 - availability state, recovery, event dispatch queue and dispatcher;
-- active-run registry, run managers, run observers, run shutdown;
-- application-scoped Agent Tools session manager and publisher;
+- active-run registry, run resource manager, run managers, run shutdown;
+- application Agent Tools session scope, scoped session manager, and publisher;
+- published-artifact delivery queue/service and relay;
 - engine controller and launcher;
 - streaming, gateway session, notifications, and cleanup owners.
 
@@ -244,33 +292,127 @@ No command or GraphQL resolver may reproduce this sequence.
 
 The GraphQL wire schema and field names remain unchanged. Its configured Studio services hold separate query and command contracts instead of one overloaded registry object.
 
-## Acyclic Run, Publication, And Session Construction
+## Acyclic Run, Publication, Session, And Cleanup Construction
+
+### Early application MCP session scope
+
+`ApplicationAgentToolMcpSessionScope` is created from the exact process MCP session service/registry before the application publisher exists. `AgentToolsMcpRuntime` exposes one narrow `ApplicationAgentToolsSessionFactory` with `createApplicationSessionScope(scopeIdentity)` for that early owner and `createApplicationSessionManager({ scope, executionCapabilities, assertExecutionCapabilitiesReady })` for the later concrete-publisher issuer. Both operations use the same private process registry/catalog family; neither exposes those internals. The scope owns only application-scope session ownership and revocation:
+
+```ts
+interface ApplicationAgentToolMcpSessionScope {
+  recordIssuedSession(sessionId: string, owner: AgentToolMcpSessionOwnerIdentity): void;
+  revokeForRun(runId: string): number;
+  revokeForMemberRun(memberRunId: string): number;
+  revokeForOwner(owner: Partial<AgentToolMcpSessionOwnerIdentity>): number;
+  blockNewSessions(): void;
+  close(): void;
+}
+```
+
+Rules:
+
+- it does not create descriptors, choose tools, carry a publisher, or know an `AgentRunManager`;
+- `recordIssuedSession` fails after block/close and rejects duplicate ownership;
+- if later session issuance succeeds in the process registry but scope recording fails, the scoped manager immediately revokes that exact newly created session before propagating the error;
+- all revoke methods delete scope ownership before invoking process-registry revocation and are idempotent;
+- `close` blocks recording, revokes every remaining owned session once, clears ownership, and is idempotent.
+
+The later `ScopedAgentToolMcpSessionManager` combines the same scope, the exact process session service/catalog, and the concrete application publisher. It owns session issuance and descriptor redaction. Run cleanup depends only on the early scope's revocation contract, never on the later issuer or publisher.
+
+### `AgentRunResourceManager`
+
+`AgentRunResourceManager` is created before the active registry. It receives only:
+
+- the early application MCP session-scope revoker;
+- `RunFileChangeService`;
+- the queue-backed `ApplicationPublishedArtifactRelayService`;
+- `AgentRunMemoryRecorder`.
+
+It owns the exact resource set attached to one active agent run:
+
+```ts
+type AgentRunResourceReleaseResult = Readonly<{
+  state: "released" | "already_released";
+  runId: string;
+  revokedSessionCount: number;
+  detached: Readonly<{
+    fileChanges: boolean;
+    artifactRelay: boolean;
+    memoryRecorder: boolean;
+  }>;
+  errors: readonly Error[];
+}>;
+
+interface AgentRunResourceManager {
+  attach(run: AgentRun): void;
+  release(runId: string, expectedRun: AgentRun): AgentRunResourceReleaseResult;
+}
+```
+
+`attach` creates the resource record before registering observers and records each disposer immediately after successful attachment. If any attachment fails, it releases every partial attachment and reports the original plus cleanup errors. `release` removes its resource record before revoking/detaching, attempts every cleanup action, and returns one result. Repeated or competing release is `already_released`; it never invokes a disposer or revoker twice.
 
 ### `ActiveAgentRunRegistry`
 
-`ActiveAgentRunRegistry` is created before publication and owns only:
+The registry owns the active map, exact-run identity transitions, inactive pruning, and the rule that removal is not complete until the resource manager has run:
 
-- `register(run)`
-- `getActiveRun(runId)`
-- `hasActiveRun(runId)`
-- `listActiveRunIds()`
-- `remove(runId, reason)`
+```ts
+type AgentRunRemovalReason =
+  | "inactive_discovery"
+  | "explicit_termination"
+  | "inactive_replacement"
+  | "stop_all"
+  | "registration_rollback";
 
-It owns the active-run map and the rule that an inactive run is removed before being returned. It does not create backends, allocate identities, launch/restore/terminate runs, persist metadata, issue Agent Tools sessions, or resolve process globals.
+type AgentRunRemovalResult =
+  | Readonly<{
+      kind: "removed";
+      run: AgentRun;
+      reason: AgentRunRemovalReason;
+      resources: AgentRunResourceReleaseResult;
+    }>
+  | Readonly<{ kind: "not_found"; runId: string; reason: AgentRunRemovalReason }>
+  | Readonly<{
+      kind: "identity_mismatch";
+      runId: string;
+      expectedRun: AgentRun;
+      currentRun: AgentRun;
+      reason: AgentRunRemovalReason;
+    }>;
 
-`AgentRunManager` receives the registry and explicit backend/attachment/session dependencies. It remains the owner of create, restore, terminate, and stop-all operations. Run removal triggers the same file-change, artifact-relay, memory-recorder, and session-revocation cleanup exactly once through a run-lifecycle callback owned by the manager. The callback is registered during construction before runtime readiness; it is not a general event bus.
+interface ActiveAgentRunRegistry {
+  register(run: AgentRun): void;
+  getActiveRun(runId: string): AgentRun | null;
+  listActiveRuns(): readonly AgentRun[];
+  removeIfCurrent(input: {
+    runId: string;
+    expectedRun: AgentRun;
+    reason: AgentRunRemovalReason;
+  }): AgentRunRemovalResult;
+}
+```
 
-### Construction order
+Exact transition rules:
 
-1. create the application engine controller and application stores;
-2. create `ActiveAgentRunRegistry`;
-3. create the application artifact relay with the exact binding store and engine controller;
-4. create `PublishedArtifactPublicationService` with the exact active-run reader, workspace manager, projection/snapshot stores, and relay;
-5. create the scoped Agent Tools session manager with that concrete publisher;
-6. create explicit provider factories and `AgentRunManager`/`AgentTeamRunManager` with the registry and scoped session manager;
-7. create run services, projection services, observers, recovery, and shutdown coordination.
+1. **Registration:** an active duplicate is rejected. An inactive existing run is removed with `inactive_replacement` and completely cleaned before the new run is stored. The new run is then stored and resources are attached. Attachment failure deletes only that exact run, releases partial resources with `registration_rollback`, and propagates the attachment/cleanup error.
+2. **Inactive discovery:** `getActiveRun` checks the current object. If inactive, it calls `removeIfCurrent` with that exact object and `inactive_discovery`; cleanup completes synchronously before `null` is returned. Cleanup errors are surfaced after all cleanup actions were attempted.
+3. **Explicit termination:** `AgentRunManager` reads the exact run, awaits its termination, and only on accepted termination calls `removeIfCurrent(expectedRun, "explicit_termination")`. It consumes the result and never removes a replacement.
+4. **Stop-all:** the manager snapshots `listActiveRuns()`, terminates each exact object, and calls `removeIfCurrent(expectedRun, "stop_all")`; inactive discovery during the snapshot is already pruned/cleaned. Failures are aggregated after every snapshot entry is attempted.
+5. **Duplicate/late removal:** `not_found` or `identity_mismatch` is a no-op for resources. A replacement run can never be removed by a stale termination/removal completion.
+6. **Cleanup failure:** map/resource ownership is already removed and all four cleanup categories are attempted. Registry/manager operations surface one aggregate error carrying the removal result; they do not return a false clean success or re-run cleanup.
 
-`BindOncePublishedArtifactPublisher` is removed. A scoped session cannot exist without a concrete publisher, so readiness no longer checks a later binding.
+`AgentRunManager` retains backend selection, create, restore, terminate, and stop-all. It no longer owns the active map or observer/session disposer maps. No registry callback references the manager.
+
+### Construction order for this subgraph
+
+1. create the application MCP session scope from the exact process MCP family;
+2. create file-change and memory observer services plus the artifact-delivery queue and queue-backed relay;
+3. create `AgentRunResourceManager` from those early capabilities;
+4. create `ActiveAgentRunRegistry(resourceManager)`;
+5. create the concrete `PublishedArtifactPublicationService` from the active-run reader and queue-backed relay;
+6. create `ScopedAgentToolMcpSessionManager` from the exact session scope/process family and concrete publisher;
+7. create explicit provider factories and `AgentRunManager`/`AgentTeamRunManager` from the registry and scoped issuer.
+
+`BindOncePublishedArtifactPublisher` is removed. A scoped session cannot be issued without a concrete publisher, while cleanup can still revoke sessions through the earlier scope. No generic deferred value, later callback, or application default/global path is introduced.
 
 ### General-process isolation
 
@@ -281,7 +423,7 @@ Application-path constructors require explicit dependencies. Existing supported 
 
 Those factories may supply the established process manager/stores/relay, but application assembly may not call them or fall back to them. This is a bounded seam correction, not a repository-wide singleton rewrite.
 
-## Acyclic Engine And Event Construction
+## Acyclic Engine, Artifact Delivery, And Event Construction
 
 ### Engine controller
 
@@ -307,7 +449,43 @@ It does not discover bundles, prepare storage, create worker processes, load def
 - attachment/detachment through the exact controller;
 - `ensureReady`, stop-one, and stop-all coordination.
 
-The backend gateway and event dispatcher use the launcher to ensure readiness and the controller to invoke. The publication relay uses the controller for the already-attached worker that originated a live application-bound run. Missing/closed handles retain the current best-effort relay failure and durable projection behavior; restart/recovery/remount characterization must prove no user-visible regression.
+The backend gateway, event dispatcher, and artifact delivery service use the launcher to ensure readiness and the controller to invoke. No caller that needs lazy-start/restart behavior invokes the controller directly.
+
+### Published-artifact delivery queue
+
+`ApplicationPublishedArtifactRelayService` continues to own binding lookup, application-event mapping, malformed/unbound diagnostics, and the distinction between fire-and-forget active-run events and awaited fallback publication. Instead of calling an engine service, it enqueues:
+
+```ts
+type ApplicationPublishedArtifactDeliveryCommand = Readonly<{
+  runId: string;
+  applicationId: string;
+  bindingId: string;
+  revisionId: string;
+  event: ApplicationPublishedArtifactEvent;
+}>;
+```
+
+`ApplicationPublishedArtifactDeliveryQueue` owns:
+
+- FIFO delivery within one `runId`;
+- concurrent readiness of different run lanes;
+- one completion promise per accepted command;
+- delivery leases that make the next command in a run ready only after the current lease completes/fails;
+- `stopAccepting()` and `awaitDrained()` lifecycle, with no handler registration.
+
+The relay awaits `enqueue(command)` internally. The active-run event subscription still invokes the relay without awaiting it and logs delivery failure; the fallback no-active-run path awaits relay completion. This preserves the existing caller-visible distinction. A delivery failure never rolls back the already persisted artifact snapshot/projection.
+
+### Published-artifact delivery service
+
+`ApplicationPublishedArtifactDeliveryService` is created after the launcher/controller and owns the queue-consumer loop:
+
+1. take an artifact-delivery lease;
+2. `await applicationEngineLauncher.ensureReady(command.applicationId)`;
+3. `await applicationEngineController.invokeApplicationArtifactHandler(command.applicationId, { event })`;
+4. complete or fail the lease;
+5. continue the same run lane only after settlement.
+
+The service starts before lifecycle readiness or recorded-run recovery. If the worker exited after the application started, step 2 coalesces/restarts it before step 3. It never treats an absent controller handle as the expected steady-state outcome.
 
 ### Event dispatch queue
 
@@ -333,21 +511,22 @@ This lets orchestration depend on stable availability state without making the s
 
 ```mermaid
 flowchart TD
-    A[1. Bundle, storage, platform stores, availability state] --> B[2. Engine controller + event dispatch queue]
+    A[1. Bundle, storage, platform stores, availability state] --> B[2. Engine controller + event dispatch queue + artifact delivery queue]
     B --> C[3. Run/binding/override/journal stores + startup gate]
-    C --> D[4. Active run registry + artifact relay]
-    D --> E[5. Publication service]
-    E --> F[6. Scoped Agent Tools sessions]
-    F --> G[7. Agent/team run managers and services]
-    G --> H[8. Event ingress, recovery, orchestration, streaming, communication]
-    H --> I[9. Engine launcher]
-    I --> J[10. Event dispatcher + re-entry]
-    J --> K[11. Backend gateway, WebSocket sessions, notifications]
-    K --> L[12. Catalog reconciliation + lifecycle]
-    L --> M[13. Freeze narrow runtime projections]
+    C --> D[4. Application MCP session scope + file/memory observers + queue-backed artifact relay]
+    D --> E[5. Agent run resource manager + active run registry]
+    E --> F[6. Concrete publication service]
+    F --> G[7. Scoped Agent Tools session issuer]
+    G --> H[8. Agent/team run managers and services]
+    H --> I[9. Event ingress, recovery, orchestration, streaming, communication]
+    I --> J[10. Engine launcher]
+    J --> K[11. Artifact delivery service + event dispatcher + re-entry]
+    K --> L[12. Backend gateway, WebSocket sessions, notifications]
+    L --> M[13. Catalog reconciliation + lifecycle]
+    M --> N[14. Freeze narrow runtime projections]
 ```
 
-At no point does construction create or restore a run. Recovery occurs only in `recoverAfterListen`; new execution occurs only after a business launch request.
+At no point does construction create or restore a run. The artifact delivery service and event dispatcher are started before `recoverAfterListen`; recovery alone restores recorded runs, and new execution occurs only after a business launch request.
 
 ## Ownership And Forbidden-Dependency Map
 
@@ -357,12 +536,16 @@ At no point does construction create or restore a run. Recovery occurs only in `
 | Package registry | package settings/record stores and materializer | bundle/definition/runtime/availability globals |
 | Package command service | registry, installer, file provider validator, refresh coordinator | direct definition refresh or platform-state access |
 | Catalog refresh coordinator | bundle, catalog reconciliation, agent/team definitions | package mutation/installer, runtime stores |
-| Active run registry | active `AgentRun` values only | backend factories, session manager, global manager |
+| Application MCP session scope | exact process session revoker/registry and owned session identities | publisher, catalog selection, run manager, runtime aggregate |
+| Agent run resource manager | session-scope revoker and exact three observer attachments | active map, backend factories, scoped issuer/publisher, manager callback |
+| Active run registry | run map plus resource manager | backend factories, scoped issuer, publisher, `AgentRunManager` callback/global |
 | Application publication service | active-run reader and explicit stores/relay/workspace | `AgentRunManager.getInstance`, default publication service |
-| Scoped session manager | process MCP registry/catalog plus concrete application publisher | general-process publisher or global run manager |
+| Scoped session manager | process MCP session/catalog, application session scope, concrete application publisher | general-process publisher or global run manager |
+| Artifact relay | binding store and artifact-delivery queue | engine controller, launcher, broad engine host, global relay default |
+| Artifact delivery service | artifact queue, launcher, controller | run manager/registry, generic handler registry, runtime aggregate |
 | Engine controller | attached worker handles/status/listeners | bundle, storage, orchestration, global engine service |
 | Engine launcher | bundle, storage, controller, orchestration, streaming | application runtime aggregate or hidden global service |
-| Event dispatcher | journal, dispatch queue, availability reader, launcher, controller | bind-once handler, runtime aggregate, generic event bus |
+| Event dispatcher | journal, event queue, availability reader, launcher, controller | bind-once handler, runtime aggregate, generic event bus |
 | Lifecycle | explicit private stop/start participants | returned 19-field service collection |
 
 ## Source Inventory
@@ -373,19 +556,24 @@ At no point does construction create or restore a run. Recovery occurs only in `
 - `application-platform/runtime/application-catalog-reconciliation-service.ts`
 - `application-packages/services/application-package-command-service.ts`
 - `application-packages/services/application-catalog-refresh-coordinator.ts`
+- `agent-tools/mcp/application-agent-tool-mcp-session-scope.ts`
 - `agent-execution/runtime/active-agent-run-registry.ts`
+- `agent-execution/services/agent-run-resource-manager.ts`
 - `application-engine/services/application-engine-controller.ts`
 - `application-engine/services/application-engine-launcher.ts`
 - `application-orchestration/services/application-execution-event-dispatch-queue.ts`
+- `application-orchestration/services/application-published-artifact-delivery-queue.ts`
+- `application-orchestration/services/application-published-artifact-delivery-service.ts`
 - `application-orchestration/services/application-reentry-service.ts`
-- named general-process publication/run assembly factory files if a current process consumer still requires default construction
+- named general-process publication/run assembly factory files only if a current process consumer still requires default construction
 
 ### Modify
 
 - both explicit server builders and `server-runtime.ts`;
-- `application-platform-runtime.ts`, its builder, lifecycle, lifecycle contracts, and the current orchestration/run construction builders;
+- `application-platform-runtime.ts`, its builder, lifecycle, lifecycle contracts, and current orchestration/run construction builders;
 - REST, WebSocket, standalone REST/WebSocket registrars;
 - package registry, bundle service, Studio GraphQL service configuration, and application-package resolver;
+- `agent-tools-mcp-runtime.ts`, `scoped-agent-tool-mcp-session-manager.ts`, and their `ApplicationAgentToolsSessionFactory`/process-session contracts;
 - agent run manager, publication/projection service, artifact relay, event ingress/dispatch, availability, engine gateway/WebSocket session, recovery, and streaming seams;
 - focused unit/integration tests and the application/backend/orchestration/developer module documentation named in the design spec.
 
@@ -394,40 +582,42 @@ At no point does construction create or restore a run. Recovery occurs only in `
 - `application-platform/runtime/bind-once-published-artifact-publisher.ts`
 - `application-platform/runtime/bind-once-application-engine-event-handler.ts`
 - `application-engine/services/application-engine-host-service.ts` after its responsibilities move to controller/launcher
-- application-path optional/global dependency branches made obsolete by the explicit assembly
+- manager-owned active-map and observer/session-unsubscriber collections superseded by registry/resource manager/scope
+- application-path optional/global dependency branches made obsolete by explicit assembly
 - tests that assert the removed broad runtime or bind-once contracts, replaced by target-owner tests
 
 Old symbols/files are deleted in the same implementation. No compatibility export or alias remains.
 
 ## Refactor Sequence
 
-1. Add characterization assertions for the 19-field consumer inventory, package refresh/rollback order, run creation trigger, event retry, artifact relay, recovery/remount, and stop order.
+1. Add characterization assertions for current ensure-before-artifact invocation, worker-exit-before-publication, inactive discovery/replacement/termination/stop-all cleanup, the 19-field consumer inventory, package refresh/rollback order, run creation trigger, event retry, recovery/remount, and stop order.
 2. Introduce the narrow runtime contract types and move route/host consumers to exact projections while the underlying services remain unchanged.
 3. Split package registry query/state from package commands; add the refresh coordinator; remove all late-assigned Studio callbacks and application-path defaults.
-4. Introduce `ActiveAgentRunRegistry`; migrate publication/projection and the run manager to it; construct the concrete application publisher before scoped sessions; remove the publisher bind-once proxy.
-5. Split engine controller from launcher; add the closed dispatch queue; migrate event ingress/dispatch and re-entry; remove the engine-handler bind-once proxy and old engine-host service.
-6. Rebuild lifecycle construction and stop order from explicit private participants; freeze only the four outward runtime projections.
-7. Remove old files, optional/default application-path branches, imports, and tests. Run retired-symbol and no-alias scans.
-8. Run implementation review, the complete API-REV-011 dual-host characterization baseline, proportional durable-test review, and integrated-state checks.
+4. Introduce the early application MCP session scope, queue-backed artifact relay, `AgentRunResourceManager`, and `ActiveAgentRunRegistry`; migrate active-map and attachment/session cleanup atomically.
+5. Build the concrete application publisher from the registry, build the scoped issuer from scope/process family/publisher, then migrate run managers; remove the publisher bind-once proxy.
+6. Split engine controller from launcher; add the closed artifact-delivery queue/service and event-dispatch queue; migrate relay, event ingress/dispatch, and re-entry; remove the engine-handler bind-once proxy and old engine-host service.
+7. Rebuild lifecycle construction and stop order from explicit private participants; freeze only the four outward runtime projections.
+8. Remove old files, old manager collections, optional/default application paths, imports, and tests. Run retired-symbol and no-alias scans.
+9. Run implementation review, the complete API-REV-011 dual-host characterization baseline, focused worker-loss delivery and exact-once cleanup tests, proportional durable-test review, and integrated-state checks.
 
 Each sequence is a clean cut; no old/new runtime path runs in parallel.
 
 ## Shutdown Order
 
-The externally observed order remains:
+Fastify close stops accepting new HTTP/WebSocket/MCP work and drains accepted transport work before its runtime `onClose` hook. The application lifecycle then preserves current external shutdown behavior with these exact private participants:
 
-1. block new application Agent Tools sessions;
-2. stop event-dispatch intake/timers;
-3. close direct agent communication;
-4. dispose backend gateway/WebSocket sessions/notifications;
-5. dispose run observers;
+1. block new application Agent Tools session issuance;
+2. stop durable execution-event dispatch intake/timers;
+3. close direct agent communication and dispose backend gateway/WebSocket/notification ingress;
+4. stop accepting new artifact-delivery commands and drain every already accepted command through launcher ensure + controller invoke while workers may still run/restart;
+5. dispose remaining runtime-level run observers;
 6. stop engine startups and attached workers through launcher/controller;
-7. stop team runs, then agent runs;
-8. close scoped Agent Tools sessions;
+7. stop team runs, then agent runs; each exact agent-run removal releases its observers and run sessions through registry/resource manager;
+8. close the application MCP session scope/scoped issuer, revoking any remaining owned sessions;
 9. stop streaming;
-10. stop process-level MCP/general-run/channel/vault/Prisma resources in the existing server-owned order.
+10. stop process-level MCP/general-run/channel/event/vault/Prisma resources in the existing server-owned order.
 
-There is no publisher-bind close step because the concrete publisher is owned directly and becomes unreachable after scoped sessions/runs stop.
+No accepted artifact command is abandoned because a worker handle disappeared. No artifact delivery is accepted after step 4. There is no publisher-bind close step and no later callback to detach resources.
 
 ## Validation Contract
 
@@ -438,12 +628,17 @@ Required structural and executable evidence:
 3. Studio construction has no late non-null service variables or callbacks over later assignments;
 4. import/remove/reload preserve exact refresh order and rollback, including a refresh-failure case;
 5. runtime construction yields zero new/restored agent/team runs;
-6. active-run identity used by publication/projection is the exact application registry, while general-process sentinels remain distinct;
-7. scoped sessions receive a concrete publisher at construction; both bind-once files and symbols are absent;
-8. event ingress commits before enqueue, dispatcher preserves retry/backoff/resume, and engine launcher/controller identity is exact;
-9. worker crash, restart/recovery, remount, real publication/handoff/projection, and shutdown pass in both hosts;
-10. route, schema, database, package digest, and `73/73` parity evidence matches API-REV-011.
+6. application session scope exists before publication, tracks/revokes only its exact process-registry sessions, and session issuance rolls back if scope recording fails;
+7. active-run identity used by publication/projection is the exact application registry, while general-process sentinels remain distinct;
+8. inactive lookup cleans before null; inactive replacement cleans before attach; explicit terminate and stop-all consume exact removal results; stale/duplicate removal cannot remove a replacement; every run revokes sessions and detaches file/artifact/memory observers exactly once;
+9. scoped sessions receive a concrete publisher at construction; both bind-once files and symbols are absent;
+10. active-run artifact events preserve per-run order and fire-and-forget relay semantics; fallback publication awaits relay; relay failure does not roll back persisted snapshots/projection;
+11. when the worker exits while an application provider run remains active, a subsequent real `publish_artifacts` command is dequeued, `ensureReady` restarts the worker, the controller invokes the artifact handler, and the business projection/UI receives the event;
+12. event ingress commits before enqueue, dispatcher preserves retry/backoff/resume, and engine launcher/controller identity is exact;
+13. artifact-delivery queue/service and execution-event queue are closed domain contracts with no generic topics/subscribers/handler binding;
+14. worker crash, restart/recovery, remount, real publication/handoff/projection, and shutdown pass in both hosts;
+15. route, schema, database, package digest, and `73/73` parity evidence matches API-REV-011.
 
 ## Data And Migration Decision
 
-No serialized or persisted representation changes. Existing package files, manifests, application/platform databases, launch-override rows, event journals, run lookup state, projections, and migration ledgers remain directly usable. No migration, copy, seeding, dual read/write, or compatibility code is permitted.
+No serialized or persisted representation changes. Existing package files, manifests, application/platform databases, launch-override rows, event journals, run lookup state, projections, and migration ledgers remain directly usable. The two new queues, session-scope ownership, active-run map, resource records, and removal results are process memory only. No migration, copy, seeding, dual read/write, or compatibility code is permitted.

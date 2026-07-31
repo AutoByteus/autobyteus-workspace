@@ -10,15 +10,15 @@ The Universal Application Dual-Host Foundation and the SR-011 naming correction 
 - real Studio/standalone publication, recipient-name handoff, projection, restart/recovery, remount, cleanup, and exact `73/73` package parity pass at 98.9% in `API-REV-011`;
 - proportional durable-test review passes in `CRR-030`.
 
-`CRR-031` identifies no runtime defect and does not reopen `CR-018`. It finds three remaining structural design impacts:
+`CRR-031` identifies no runtime defect and does not reopen `CR-018`. It finds three structural design impacts: broad runtime exposure, temporal/mixed package ownership, and two avoidable construction cycles. `ARCH-REV-010` then establishes a narrower current result:
 
-1. `ApplicationPlatformRuntime` exposes 19 mixed-level fields; REST/WebSocket registrars and Studio assembly select internal stores/services from that aggregate.
-2. Studio package construction closes callbacks over later-assigned bundle, definition, and runtime services; `ApplicationPackageRegistryService` mixes package state/commands/rollback with ordered catalog/availability/definition refresh.
-3. active-run/publication/session and engine/event/orchestration ownership still form construction cycles represented permanently by `BindOncePublishedArtifactPublisher` and `BindOnceApplicationEngineEventHandler`.
+1. `CR-019` is resolved in design by the exact four-projection runtime boundary.
+2. `CR-020` is resolved in design by separate package registry, command, reconciliation, and refresh owners.
+3. `CR-021` remains partially open because SR-012 removed two source-grounded lifecycle edges: current artifact relay ensures/restarts the worker before handler invocation (`AR-008`), and current inactive-run removal synchronously revokes sessions plus detaches file/artifact/memory observers (`AR-009`).
 
-The required correction is behavior-neutral. `ApplicationPlatformRuntime` becomes four outward projections (`lifecycle`, `rest`, `realtime`, `hostManagement`); a late `ApplicationCatalogRefreshCoordinator` owns package-to-catalog propagation; `ActiveAgentRunRegistry` precedes publication/sessions/run launch; and an early `ApplicationEngineController` plus later `ApplicationEngineLauncher` and journal-wakeup dispatch queue remove both bind-once proxies. The exact normative target, file inventory, sequence, and validation contract are in [application-framework-architecture-simplification.md](application-framework-architecture-simplification.md).
+The SR-013 correction is behavior-neutral and bounded. It retains every passing SR-012 direction, adds a closed artifact-delivery queue plus a late delivery service that always performs launcher ensure before controller invoke, and constructs an early application session scope plus `AgentRunResourceManager` under an identity-checked `ActiveAgentRunRegistry`. The exact normative target, file inventory, sequence, and validation contract are in [application-framework-architecture-simplification.md](application-framework-architecture-simplification.md).
 
-All earlier DS-014/SR-010/SR-011 references to bind-once cycle breakers describe the implemented and passed pre-SR-012 baseline only. DS-015 supersedes those construction mechanics. Their security, publisher identity, scoped revocation, and functional behavior remain mandatory; their proxy types/files do not.
+All earlier DS-014/SR-010/SR-011 references to bind-once cycle breakers describe the implemented and passed pre-SR-012 baseline only. DS-015 supersedes those construction mechanics. Their security, publisher identity, scoped revocation, exact cleanup, ensure/restart, and functional behavior remain mandatory; their proxy types/files do not.
 
 ## Intended Change
 
@@ -103,7 +103,7 @@ The same design is exposed as a native application-folder workflow:
 
 | Finding | Resolution Location | Scope Effect |
 | --- | --- | --- |
-| `CR-018` / `CRR-028` | Current-state read; terminology; role vocabulary; exact current-to-target name/file map; dependency diagram; main-domain naming check; server/runtime-critical inventory; docs/test/export plan; SV-016 | Resolved through ARCH-REV-009, IR-016, CRR-029, API-REV-011, and CRR-030. SR-012 preserves the familiar vocabulary while removing the two now-unnecessary bind-once roles. |
+| `CR-018` / `CRR-028` | Current-state read; terminology; role vocabulary; exact current-to-target name/file map; dependency diagram; main-domain naming check; server/runtime-critical inventory; docs/test/export plan; SV-016 | Resolved through ARCH-REV-009, IR-016, CRR-029, API-REV-011, and CRR-030. SR-013 preserves the familiar vocabulary while removing the two now-unnecessary bind-once roles and making the replacement lifecycle owners explicit. |
 
 ### Code Review Round 31 Architecture-Simplification Resolution Map
 
@@ -111,11 +111,19 @@ The same design is exposed as a native application-folder workflow:
 | --- | --- | --- |
 | `CR-019` | DS-015; narrow runtime boundary; exact REST/realtime/host-management contracts; registrar and file maps; SV-017 | Replaces a 19-field outward service collection with four immutable projections; private stores/recovery/run/engine/session/shutdown owners stay inside runtime construction. No route or wire change. |
 | `CR-020` | DS-015 package ownership, construction, refresh/rollback sequence, GraphQL mapping, file inventory; SV-017 | Separates package state/query, package commands, and ordered bundle -> availability -> agent -> team propagation. Removes later-bound callbacks and application-path defaults without changing package/UI behavior. |
-| `CR-021` | DS-015 active-run registry, controller/launcher, dispatch queue, construction/stop order, removal and verification maps; SV-017 | Removes both bind-once proxies and the broad engine-host service through acyclic owners. Preserves session security, publication/handoff/projection, recovery/remount/restart, and shutdown. |
+| `CR-021` | Initial DS-015 target in SV-017; corrected DS-015 artifact-delivery and run-cleanup contracts in SV-018 | SR-012's general direction was proportionate but incomplete. SR-013 removes both proxies/broad host while preserving ensure/restart and exact cleanup through closed queues and early lifecycle owners. |
+
+### Architecture Review Round 10 Resolution Map
+
+| Finding | Resolution Location | Scope Effect |
+| --- | --- | --- |
+| `AR-008` / `MP-ARCH-010-001` | DS-015 artifact-delivery queue/service; return spine; lifecycle; construction/file/validation maps; SV-018 | Preserves current worker ensure/restart before application artifact-handler invocation after the controller/launcher split. Adds one closed domain queue and real consumer; does not restore the broad engine host or add a deferred handler. |
+| `AR-009` / `MP-ARCH-010-002` | DS-015 application session scope, `AgentRunResourceManager`, exact registry methods/results, cleanup sequence, file/validation maps; SV-018 | Preserves inactive-discovery/replacement/terminate/stop cleanup through early dependencies. Removes the later registry-to-manager callback and does not add a generic event bus or global fallback. |
+| `CR-019`, `CR-020` | Retained DS-015 four projections and package owner sequence | ARCH-REV-010 confirms both resolved in design; SR-013 does not reopen them. |
 
 ### Discussion-Stage Self-Validation Resolution Map
 
-The use-case, canonical-principles, refreshed-base, and downstream consistency audit is retained in [design-self-validation.md](design-self-validation.md). It produced seventeen bounded corrections across discussion and downstream rework:
+The use-case, canonical-principles, refreshed-base, and downstream consistency audit is retained in [design-self-validation.md](design-self-validation.md). It produced eighteen bounded corrections across discussion and downstream rework:
 
 | Finding | Resolution Location | Scope Effect |
 | --- | --- | --- |
@@ -135,7 +143,8 @@ The use-case, canonical-principles, refreshed-base, and downstream consistency a
 | SV-014 | General gateway purpose, Studio MCP-state boundary, deferred application-owned MCP provisioning, and upstream runtime-tool exclusion | Makes the final user-confirmed ownership explicit without changing CR-013 source scope or architecture |
 | SV-015 | Application-runtime-scoped publication authority, exact process/session family, bind-once cycle break, scoped revocation, and bounded adapter proof | Corrects the publication premise disproven by API-REV-007 without reopening native tools, configured MCP provisioning, or the general gateway |
 | SV-016 | Familiar role vocabulary, clean current-to-target map, source/export impact, and behavior-preservation proof | Resolved CR-018 without changing runtime behavior or expanding into an automatic repository-wide rename |
-| SV-017 | Narrow outward runtime contracts, explicit package refresh ownership, and acyclic run/publication/engine/event construction | Resolves CR-019–CR-021 while retaining the complete API-REV-011 behavioral baseline and removing rather than generalizing deferred machinery |
+| SV-017 | Initial narrow outward runtime contracts, explicit package refresh ownership, and proposed acyclic run/publication/engine/event construction | Resolves CR-019/CR-020; superseded for the two CR-021 lifecycle edges by SV-018 after ARCH-REV-010 |
+| SV-018 | Ensure-before-artifact delivery and exact acyclic run-resource cleanup | Resolves AR-008/AR-009 through a closed artifact-delivery queue/service and early session-scope/resource/registry chain while retaining every passed behavior and avoiding generic deferred machinery |
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
@@ -144,13 +153,13 @@ The use-case, canonical-principles, refreshed-base, and downstream consistency a
 | BEH-001 | Operational | REQ-001, REQ-004 / AC-001, AC-003, AC-006 | Select/enter/reload/exit an installed app in Studio or start a configured standalone host | Investigation “Relevant Existing Behavior,” BEH-001 | Preserve complete Studio presentation lifecycle; add standalone root over the same bundle/runtime | Build/use: DS-007; Studio start: DS-001; Studio reload/exit: DS-009; standalone: DS-002/DS-008; shared invocation: DS-003 |
 | BEH-002 | Contract | REQ-002 / AC-002, AC-003, AC-007 | Application calls `startApplication` | Investigation BEH-002; frontend SDK probe | Replace iframe-owned application entry with provider-owned bootstrap and one client construction path | DS-001, DS-002, DS-009 |
 | BEH-003 | Contract | REQ-003 / AC-001, AC-004, AC-008 | Validate/discover package root and local application ID | Investigation BEH-003 | Reuse one read-only manifest-v4 package unchanged; standalone selection is configuration | DS-002, DS-005, DS-007, DS-008 |
-| BEH-004 | System | REQ-004, REQ-005, REQ-007, REQ-009 / AC-005, AC-006, AC-010, AC-014–AC-016, AC-018 | Backend starts a configured real run and receives its issued Agent Tools session for eligible server/MCP tools | Investigation BEH-004; API-REV-009/010 | Preserve the passed launch/route/publication/messaging/projection path and exact application-runtime dependency identity while applying the concrete role vocabulary | DS-011, DS-012, DS-003, DS-004, DS-014 |
-| BEH-005 | Operational | REQ-005, REQ-009 / AC-003, AC-009, AC-010, AC-018 | Start Studio server or standalone application server | Investigation BEH-005; API-REV-011; CRR-029/030 | Preserve split servers and route surfaces; rename server assembly, application runtime, process MCP runtime, scoped session manager, run supervisor, and shutdown coordinator by their real roles | DS-005, DS-014, then DS-001/DS-002 |
+| BEH-004 | System | REQ-004, REQ-005, REQ-007, REQ-009, REQ-010 / AC-005, AC-006, AC-010, AC-014–AC-016, AC-018, AC-022 | Backend starts a configured real run, or an active run publishes after its application worker exits | Investigation BEH-004; API-REV-009/010; MP-ARCH-010-001 | Preserve launch/route/publication/messaging/projection identity and worker ensure/restart before artifact handler invocation | DS-011, DS-012, DS-003, DS-004, DS-014, DS-015 |
+| BEH-005 | Operational | REQ-005, REQ-009, REQ-010 / AC-003, AC-009, AC-010, AC-018, AC-023 | Start/stop either server or discover/replace/terminate an application run | Investigation BEH-005; API-REV-011; MP-ARCH-010-002 | Preserve split surfaces, scoped session identity, and synchronous exact-run session/file/artifact/memory cleanup through familiar owners | DS-005, DS-014, DS-015, then DS-001/DS-002 |
 | BEH-006 | Operational | REQ-004–REQ-007, REQ-009 / AC-005, AC-006, AC-010, AC-011, AC-013–AC-016, AC-018 | Developer runs application-folder development/build/validate/start commands or conformance | API-REV-011 / CRR-030 | Preserve passed commands, canonical package parity, real-host execution, and cleanup; update names/imports/tests/docs without changing output bytes or behavior | DS-006, DS-007, DS-010–DS-012, DS-014 |
 | BEH-007 | System | REQ-004, REQ-005, REQ-007 / AC-006, AC-012, AC-015, AC-016 | Backend ensure-ready, host override save/invalidation/reset, and recovery | Storage/orchestration/configuration investigation; AR-007 | Reuse current schemas/rows; preserve invalid saved rows as host-override diagnostics, block launch, and remove the row only on explicit reset | DS-003, DS-004, DS-005, DS-012 |
 | BEH-008 | System | REQ-008 / AC-017 | Real package-team run constructs member prompts | Investigation BEH-008; CR-008 | Carry the exact application-runtime-scoped team definition service through member context so package team instructions reach prompts | DS-013, then DS-004 |
 | BEH-009 | Developer / Contract | REQ-009 / AC-018 | Contributor follows either server construction into the application runtime, Agent Tools session handling, run lifecycle, and cleanup | IR-016; CRR-029; API-REV-011; CRR-030 | Preserve the implemented responsibility vocabulary while removing the two superseded bind-once implementations | Cross-cutting vocabulary over DS-001–DS-005, DS-014, and DS-015 |
-| BEH-010 | Developer / Contract | REQ-010 / AC-019–AC-021 | Contributor changes a route, package command/refresh flow, run publication path, event dispatch, or engine lifecycle | CRR-031 / CR-019–CR-021; source responsibility trace | Follow the four runtime projections and acyclic owner sequence without private-store access, later-bound callback, global fallback, or deferred binding | DS-015 plus unchanged DS-001–DS-014 product spines |
+| BEH-010 | Developer / Contract | REQ-010 / AC-019–AC-023 | Contributor changes a route, package command/refresh flow, run cleanup/publication, event/artifact delivery, or engine lifecycle | CRR-031; ARCH-REV-010; MP-ARCH-010-001/002 | Follow the four projections, package owners, exact session-scope/resource/registry chain, and ensure-before-invoke delivery without private access, callbacks, globals, or deferred binding | DS-015 plus unchanged DS-001–DS-014 product spines |
 
 The behavior map defines the real behavior this design serves. The spines below show how the target structure carries it.
 
@@ -184,16 +193,18 @@ The authoritative reachable use-case inventory is in [requirements.md](requireme
 | UC-022 | DS-013, then DS-004 | Member prompt semantic assertion | Complete after SR-004 correction |
 | UC-023 | DS-012 | Saved shared-resource deletion/stale-member invalidation -> host-override issue -> blocked launch -> explicit reset/delete -> package-default reevaluation | Complete after SR-005 correction |
 | UC-024 | Naming projection over DS-001–DS-005 and DS-014 | Structural import/export/file/doc map plus retained behavioral regression | Complete and passed through CRR-030 |
-| UC-025 | DS-015 narrow route/package/run/engine ownership | DS-001–DS-014 unchanged request/return/recovery/shutdown behavior | Complete after SV-017 design; architecture/implementation proof pending |
+| UC-025 | DS-015 narrow route/package/run/engine ownership | DS-001–DS-014 unchanged request/return/recovery/shutdown behavior | Complete after SV-018 design; architecture/implementation proof pending |
+| UC-026 | DS-014 publication, then DS-015 artifact delivery | Worker-exit -> queue lease -> launcher ensure/restart -> controller artifact invoke -> projection | Complete after SV-018 design; focused proof required |
+| UC-027 | DS-015 exact active-run removal | Inactive discovery/replacement/terminate/stop-all -> resource release -> result | Complete after SV-018 design; focused exact-once proof required |
 
 ## Relevant Supplemental Task Artifacts
 
 | Artifact Path | Purpose | Related Requirement / Acceptance-Criteria IDs | Relationship To This Design | Status / Approval Applicability |
 | --- | --- | --- | --- | --- |
-| [sources/autobyteus-vertical-application-developer-experience-proposal.md](sources/autobyteus-vertical-application-developer-experience-proposal.md) | Original universal-application vision | REQ-001–REQ-009 / AC-001–AC-018 | Product-direction input; illustrative contracts are not copied directly | Input source; approval `N/A` |
-| [proposal-critical-analysis.md](proposal-critical-analysis.md) | Repository-backed readiness assessment and bounded recommendation | REQ-001–REQ-010 / AC-001–AC-021 | Supplies the accepted/revised/deferred decisions that constrain this design | Approved/refined through 2026-07-30; SR-012 adds the proposed behavior-neutral structural correction |
-| [design-self-validation.md](design-self-validation.md) | Use-case simulation, reachability classification, spine coverage, canonical design-principles audit, and latest-base reconciliation | REQ-001–REQ-010 / AC-001–AC-021 | Validates this design and records SV-001–SV-017 corrections through downstream rework | Complete validation evidence; approval `N/A` |
-| [application-framework-architecture-simplification.md](application-framework-architecture-simplification.md) | Exact CRR-031 contracts, owners, spines, construction, file inventory, sequence, and evidence | REQ-010 / AC-019–AC-021 | Defines the intended behavior-neutral SR-012 architecture | Proposed; architecture approval required |
+| [sources/autobyteus-vertical-application-developer-experience-proposal.md](sources/autobyteus-vertical-application-developer-experience-proposal.md) | Original universal-application vision | REQ-001–REQ-010 / AC-001–AC-023 | Product-direction input; illustrative contracts are not copied directly | Input source; approval `N/A` |
+| [proposal-critical-analysis.md](proposal-critical-analysis.md) | Repository-backed readiness assessment and bounded recommendation | REQ-001–REQ-010 / AC-001–AC-023 | Supplies the accepted/revised/deferred decisions that constrain this design | Approved/refined through 2026-07-30; SR-013 refines the behavior-neutral structural correction |
+| [design-self-validation.md](design-self-validation.md) | Use-case simulation, reachability classification, spine coverage, canonical design-principles audit, and latest-base reconciliation | REQ-001–REQ-010 / AC-001–AC-023 | Validates this design and records SV-001–SV-018 corrections through downstream rework | Complete validation evidence; approval `N/A` |
+| [application-framework-architecture-simplification.md](application-framework-architecture-simplification.md) | Exact CRR-031/ARCH-REV-010 contracts, owners, spines, lifecycle, file inventory, sequence, and evidence | REQ-010 / AC-019–AC-023 | Defines the intended behavior-neutral SR-013 architecture | Revised; architecture approval required |
 
 ## Task Design Health Assessment (Mandatory)
 
@@ -202,7 +213,7 @@ The authoritative reachable use-case inventory is in [requirements.md](requireme
 - Root cause classification: `Boundary Or Ownership Issue` plus `Duplicated Policy Or Coordination`
 - Refactor needed now: `Yes, bounded to the CRR-031 runtime, package-refresh, run/publication/session, and engine/event construction spines`
 - Evidence: API-REV-011 proves runtime correctness and CR-018 naming is resolved. CRR-031 shows that callers still receive mixed-level internals and that ownership/construction order still requires implementation reconstruction despite the clearer names.
-- Design response: preserve the exact passed behavior while replacing the 19-field outward runtime with four subject projections, separating package state/commands from one late reconciliation coordinator, and reordering stable active-run/engine-control owners before publication/session/run-launch and engine-launch/event-dispatch services. Remove both bind-once proxies and the broad engine host cleanly; do not add wrappers, aliases, generic containers/event buses, application fallbacks, or unrelated repository-wide refactors.
+- Design response: preserve the exact passed behavior while retaining the confirmed four projections and package owners, then complete CR-021 through an early application session scope/run resource/exact registry chain and closed artifact/event queues around controller/launcher. Remove both bind-once proxies and the broad engine host cleanly; do not add wrappers, aliases, reverse callbacks, generic deferred handlers/containers/event buses, application fallbacks, or unrelated repository-wide refactors.
 - Refactor rationale: a design-led map prevents ad hoc synonyms and preserves one name per responsibility. Because names are source-only and the server package is private with no external repository consumer of its Studio builder export, a clean cut is lower risk than compatibility aliases.
 - Intentional deferrals and residual risk: Manifest/release vNext, packaged/versioned skill/tool dependencies, marketplace execution, optimized distribution, and unrelated singleton cleanup remain deferred. `APIE2E-REPO-005` remains separately Unclear.
 
@@ -224,7 +235,7 @@ The authoritative reachable use-case inventory is in [requirements.md](requireme
 - **Scoped Agent Tools session manager:** Owns creation, tracking, redaction, selective revocation, issue blocking, and close for one session collection. One instance serves general process runs and a distinct instance serves each application platform runtime.
 - **General process run supervisor:** Constructs and releases the process-level agent/team run managers and stops their runs during process cleanup.
 - **Application run shutdown coordinator:** Idempotently stops application team runs and then agent runs while aggregating failures. It neither starts nor manages runs.
-- **Acyclic state owners:** `ActiveAgentRunRegistry` and `ApplicationEngineController` are stable state owners created before the services that publish, launch, dispatch, or attach. The former bind-once publisher/handler are removed rather than generalized.
+- **Acyclic lifecycle owners:** `ApplicationAgentToolMcpSessionScope`, `AgentRunResourceManager`, `ActiveAgentRunRegistry`, `ApplicationEngineController`, and the two closed queues are created before the services that issue sessions, publish, launch, or dispatch. The former bind-once publisher/handler are removed rather than generalized.
 - **Selected application:** The single standalone bundle resolved from `{packageRoot, localApplicationId}`.
 - **Application command facade:** `autobyteus-app`, which owns application-project config, packaging, validation, development orchestration, and the thin `start` delegation. It does not own server assembly or the application runtime.
 - **Standalone process API:** `startStandaloneApplicationHost(config)` in `autobyteus-server-ts`, which owns construction/listen/signal-independent close for one standalone server process.
@@ -798,7 +809,7 @@ interface AgentToolMcpSessionExecutionCapabilities {
 
 #### Acyclic publication construction
 
-SR-012 replaces the implemented bind-once baseline. One `ActiveAgentRunRegistry` is created before publication, scoped sessions, and run launch. The exact application `PublishedArtifactPublicationService` receives that registry's reader and explicit stores/relay. `ScopedAgentToolMcpSessionManager` receives the concrete publisher at construction, and provider/run managers then receive the exact session manager and registry. No application session can exist without its publisher, and no application path can resolve the general-process manager/publisher. Session revocation and run attachment cleanup remain unchanged; `BindOncePublishedArtifactPublisher` is removed.
+SR-013 replaces the implemented bind-once baseline. `ApplicationAgentToolMcpSessionScope`, the queue-backed relay, `AgentRunResourceManager`, and `ActiveAgentRunRegistry` are created before publication. The exact application `PublishedArtifactPublicationService` receives that registry's reader and explicit stores/relay. `ScopedAgentToolMcpSessionManager` then receives the early scope, exact process family, and concrete publisher; provider/run managers receive the exact issuer and registry. Session revocation and observer detach occur through the resource manager during registry removal, so no reverse manager callback is required. No application session can exist without its publisher, and no application path can resolve the general-process manager/publisher. `BindOncePublishedArtifactPublisher` is removed.
 
 #### Server assembly and route contract
 
@@ -808,9 +819,11 @@ Both server assembly roots perform the same relevant construction:
 server assembly root
   -> createAgentToolsMcpRuntime()
   -> buildApplicationPlatformRuntime({ sessionManagerFactory })
-       -> create ActiveAgentRunRegistry
+       -> create ApplicationAgentToolMcpSessionScope
+       -> create queue-backed relay + AgentRunResourceManager
+       -> create ActiveAgentRunRegistry(resource manager)
        -> create concrete application publication service
-       -> create ScopedAgentToolMcpSessionManager(concrete publisher)
+       -> create ScopedAgentToolMcpSessionManager(scope, concrete publisher)
        -> create application run managers against the same registry/session manager
   -> registerAgentToolsMcpRoutes(app, agentToolsMcpRuntime.routeDependencies)
 ```
@@ -835,61 +848,156 @@ The naming change must keep the already-passed identity and lifecycle evidence:
 
 ### DS-015 — Narrow runtime boundary and acyclic application framework
 
-DS-015 is the authoritative SR-012 correction for CR-019–CR-021 and incorporates [application-framework-architecture-simplification.md](application-framework-architecture-simplification.md). It supersedes only the earlier construction mechanics that use the two `BindOnce*` objects; all DS-014 transport/session/publication behavior remains mandatory.
+DS-015 is the authoritative SR-013 correction for CR-019–CR-021 and incorporates [application-framework-architecture-simplification.md](application-framework-architecture-simplification.md). ARCH-REV-010 confirms the outward runtime and package-owner subsections; the run/artifact/engine subsections below supersede SR-012's controller-only relay and manager-callback cleanup mechanics. All DS-014 transport/session/publication behavior remains mandatory.
 
-#### Outward boundary
+#### Outward boundary — retained and architecture-confirmed
 
 `ApplicationPlatformRuntime` freezes exactly four fields: `lifecycle`, `rest`, `realtime`, and `hostManagement`. `rest` has exact assets/backend/availability/execution-resource contracts. `realtime` has exact backend/notification/agent-communication contracts. `hostManagement` exposes only `catalogReconciliation`. REST/WebSocket/standalone registrars accept lifecycle readiness plus their exact projection and cannot receive the runtime aggregate. Storage/global/platform/run stores, recovery, availability state, dispatch, run/session/publication, engine, and shutdown participants remain private to runtime construction/lifecycle.
 
-#### Package owner sequence
+#### Package owner sequence — retained and architecture-confirmed
 
 Studio constructs package settings/record stores and `ApplicationPackageRegistryService` first; constructs `ApplicationBundleService` from the exact registry reader and `FileApplicationBundleProvider`; constructs definition services and the runtime; then constructs `ApplicationCatalogRefreshCoordinator` and `ApplicationPackageCommandService`. No callback closes over a later assignment. The coordinator alone performs bundle refresh -> snapshot -> runtime catalog reconciliation -> agent-definition refresh -> team-definition refresh. Commands preserve validation, diagnostics, identity, managed-install cleanup, rollback, and one best-effort post-rollback reconciliation. GraphQL keeps its existing wire and receives separate query/command contracts.
 
-#### Run/publication/session sequence
+#### Run/publication/session sequence — corrected for AR-009
 
-The application engine controller and `ActiveAgentRunRegistry` are created before publication. The registry owns only active run identity/state. The application publication service receives its exact active-run reader and stores/relay. The scoped Agent Tools session manager receives that concrete publisher at construction. Provider factories and run managers then receive the registry/session manager explicitly. `AgentRunManager` retains create/restore/terminate/stop and exact attachment/session-revocation cleanup. There is no publisher binding phase, no application fallback to the general-process manager/publisher, and no `BindOncePublishedArtifactPublisher` file.
+The construction order is:
 
-#### Engine/event sequence
+```text
+ApplicationAgentToolMcpSessionScope
+  -> queue-backed ApplicationPublishedArtifactRelayService + file/memory observers
+  -> AgentRunResourceManager
+  -> ActiveAgentRunRegistry
+  -> PublishedArtifactPublicationService
+  -> ScopedAgentToolMcpSessionManager
+  -> AgentRunManager / AgentTeamRunManager
+```
 
-`ApplicationEngineController` owns worker handles, statuses, listener collections, attached-handle invocation, and attached-worker stop. It does not discover bundles, prepare storage, launch processes, load definitions, or route application context capabilities. After run/orchestration/streaming services exist, `ApplicationEngineLauncher` owns coalesced startup, bundle/storage preparation, worker/client creation, definition load, context-capability/stream wiring, and controller attach/detach.
+`ApplicationAgentToolMcpSessionScope` is created from the exact process session service/registry before the publisher. It owns only application-scope session ownership and revocation: record an issued session; revoke by run/member/owner; block new recording; close/revoke the scope. It does not choose tools, create descriptors, carry a publisher, or know a run manager. If later session issuance succeeds but scope recording fails, the scoped issuer immediately revokes that exact newly created process session.
 
-Event ingress appends the existing durable journal and enqueues only the application ID in `ApplicationExecutionEventDispatchQueue`. The late event dispatcher consumes that closed queue, checks availability, ensures through the launcher, invokes through the controller, and retains existing acknowledge/failure/retry/backoff/resume/suspend/stop semantics. The queue has no arbitrary topic/payload/subscriber API and is not a generic event bus. `ApplicationReentryService` owns the explicit stop/reload/reconcile/recover/resume transition. There is no `BindOnceApplicationEngineEventHandler` or broad `ApplicationEngineHostService` target.
+`AgentRunResourceManager` receives only that early scope revoker and the file-change, queue-backed artifact-relay, and memory observer capabilities. `attach(run)` records each disposer as it succeeds. `release(runId, expectedRun)` removes its resource record before cleanup, revokes run sessions, attempts all three observer disposers, and returns a release result. Repeated release is an `already_released` no-op; no disposer/revoker runs twice. Partial attachment failure releases every recorded partial resource before it propagates.
+
+`ActiveAgentRunRegistry` owns the active map and exact identity transitions. Its authoritative contract is:
+
+```ts
+type AgentRunRemovalReason =
+  | "inactive_discovery"
+  | "explicit_termination"
+  | "inactive_replacement"
+  | "stop_all"
+  | "registration_rollback";
+
+type AgentRunRemovalResult =
+  | { kind: "removed"; run: AgentRun; reason: AgentRunRemovalReason; resources: AgentRunResourceReleaseResult }
+  | { kind: "not_found"; runId: string; reason: AgentRunRemovalReason }
+  | { kind: "identity_mismatch"; runId: string; expectedRun: AgentRun; currentRun: AgentRun; reason: AgentRunRemovalReason };
+
+interface ActiveAgentRunRegistry {
+  register(run: AgentRun): void;
+  getActiveRun(runId: string): AgentRun | null;
+  listActiveRuns(): readonly AgentRun[];
+  removeIfCurrent(input: {
+    runId: string;
+    expectedRun: AgentRun;
+    reason: AgentRunRemovalReason;
+  }): AgentRunRemovalResult;
+}
+```
+
+Exact transition rules:
+
+1. registration rejects an active duplicate; an inactive existing run is identity-removed and fully cleaned before the replacement is stored/attached;
+2. `getActiveRun` discovers an inactive exact object, synchronously removes/releases it with `inactive_discovery`, then returns null; cleanup errors surface only after all cleanup actions were attempted;
+3. explicit terminate awaits the exact run's accepted termination, calls `removeIfCurrent(expectedRun, "explicit_termination")`, and consumes the result;
+4. stop-all snapshots exact active objects, terminates/removes each with `stop_all`, and aggregates failures after every snapshot entry;
+5. stale/duplicate completion returns `not_found` or `identity_mismatch` and cannot remove or clean a replacement;
+6. map/resource ownership is deleted before cleanup. Cleanup errors carry the removal result and are never converted to a false clean success or retried implicitly.
+
+`AgentRunManager` retains backend selection, create, restore, terminate, and stop-all. It no longer owns the active map or observer/session disposer maps. There is no registry-to-manager callback, publisher binding phase, application fallback to a general-process manager/publisher, or `BindOncePublishedArtifactPublisher` file.
+
+#### Engine, artifact-delivery, and event sequence — corrected for AR-008
+
+`ApplicationEngineController` owns worker handles, statuses, listener collections, attached-handle invocation, and attached-worker stop. It does not discover bundles, prepare storage, launch processes, load definitions, or route application context capabilities. After run/orchestration/streaming services exist, `ApplicationEngineLauncher` owns coalesced startup, bundle/storage preparation, worker/client creation, definition load, context-capability/stream wiring, controller attach/detach, `ensureReady`, and worker stop.
+
+`ApplicationPublishedArtifactRelayService` retains binding lookup, malformed/unbound diagnostics, application-event mapping, and current caller semantics. It no longer calls the controller or a broad engine service. It enqueues this exact in-memory command:
+
+```ts
+type ApplicationPublishedArtifactDeliveryCommand = Readonly<{
+  runId: string;
+  applicationId: string;
+  bindingId: string;
+  revisionId: string;
+  event: ApplicationPublishedArtifactEvent;
+}>;
+```
+
+`ApplicationPublishedArtifactDeliveryQueue` is created early and owns FIFO within one run, independent progress across run lanes, one completion promise per accepted command, lease settlement, `stopAccepting`, and `awaitDrained`. It has no arbitrary topic, subscriber, callback, or handler-binding API. The relay awaits enqueue internally. The active-run event listener still invokes relay fire-and-forget and logs failure; the fallback no-active-run publication path still awaits relay completion. Delivery failure does not roll back the already persisted artifact snapshot/projection.
+
+`ApplicationPublishedArtifactDeliveryService` is constructed after launcher/controller and consumes the queue:
+
+```text
+lease command
+  -> ApplicationEngineLauncher.ensureReady(applicationId)
+  -> ApplicationEngineController.invokeApplicationArtifactHandler(applicationId, event)
+  -> complete/fail lease
+```
+
+It starts before lifecycle readiness or recorded-run recovery. A worker exit while a provider run remains active is therefore followed by coalesced restart before handler invocation. An absent handle is not treated as the current steady-state relay outcome.
+
+Event ingress separately appends the existing durable journal and enqueues only the application ID in `ApplicationExecutionEventDispatchQueue`. The late event dispatcher consumes that closed queue, checks availability, ensures through launcher, invokes through controller, and retains existing acknowledge/failure/retry/backoff/resume/suspend/stop semantics. `ApplicationReentryService` retains the explicit stop/reload/reconcile/recover/resume transition. There is no `BindOnceApplicationEngineEventHandler` or broad `ApplicationEngineHostService` target.
 
 #### Complete construction order
 
 1. bundle, storage, platform stores, availability state;
-2. engine controller and event dispatch queue;
+2. engine controller, application-ID event queue, and artifact-delivery queue;
 3. run/binding/override/journal stores and startup gate;
-4. active-run registry and exact artifact relay;
-5. concrete application publication service;
-6. application-scoped Agent Tools session manager;
-7. agent/team run managers and run services;
-8. event ingress, recovery, orchestration, streaming, communication;
-9. engine launcher;
-10. event dispatcher and re-entry service;
-11. backend gateway, WebSocket sessions, notifications;
-12. catalog reconciliation and lifecycle;
-13. frozen four-projection runtime.
+4. application MCP session scope, file/memory observer capabilities, and queue-backed artifact relay;
+5. `AgentRunResourceManager` and `ActiveAgentRunRegistry`;
+6. concrete application publication service;
+7. application-scoped Agent Tools session issuer with concrete publisher;
+8. agent/team run managers and run services;
+9. event ingress, recovery, orchestration, streaming, communication;
+10. engine launcher;
+11. artifact delivery service, event dispatcher, and re-entry service;
+12. backend gateway, WebSocket sessions, notifications;
+13. catalog reconciliation and lifecycle;
+14. frozen four-projection runtime.
 
-Construction starts no run. `recoverAfterListen` alone restores recorded runs; business context operations alone start new runs.
+Construction starts no run. Delivery/event consumers start before recovery; `recoverAfterListen` alone restores recorded runs; business context operations alone start new runs.
+
+#### Lifecycle stop order
+
+Fastify stops accepting/drains transport work before runtime `onClose`. The private runtime then:
+
+1. blocks new application Agent Tools session issuance;
+2. stops execution-event intake/timers;
+3. closes direct communication and disposes gateway/WebSocket/notification ingress;
+4. stops artifact-delivery intake and drains already accepted commands through launcher ensure + controller invoke;
+5. disposes remaining runtime-level run observers;
+6. stops engine startups/workers through launcher/controller;
+7. stops team then agent runs, whose exact registry removals release run sessions and file/artifact/memory observers;
+8. closes the application session scope/scoped issuer and revokes any remaining sessions;
+9. stops streaming;
+10. lets the server close process MCP/general-run/channel/event/vault/Prisma owners in their established order.
+
+No accepted artifact command is abandoned because a worker handle disappeared. There is no publisher-bind close or later cleanup callback.
 
 #### Clean removal and fixed proof
 
-Remove both `BindOnce*` files/symbols/tests, `ApplicationEngineHostService`, the 19-field runtime shape, late-assigned Studio callbacks, and application-path optional/global dependency branches in the same implementation. Named general-process assembly factories preserve supported process behavior without becoming an application fallback. No alias, dual path, migration, service locator, generic container/event bus, or `buildServer(mode)` is permitted.
+Remove both `BindOnce*` files/symbols/tests, `ApplicationEngineHostService`, the 19-field runtime shape, late-assigned Studio callbacks, manager-owned active/disposer collections, and application-path optional/global dependency branches in the same implementation. Named general-process assembly factories preserve supported process behavior without becoming an application fallback. No alias, dual path, migration, service locator, generic container/event bus/deferred handler, reverse callback, or `buildServer(mode)` is permitted.
 
-Required proof covers exact four-field runtime shape, narrow registrar signatures, package refresh/rollback, zero run on construction, exact active-run/publication/session identity, journal-before-enqueue and retry, worker failure/recovery/remount, real Studio/standalone Codex/Luna publication/handoff/projection, shutdown, and unchanged `73/73` package parity.
+Required proof covers exact four-field runtime shape, narrow registrar signatures, package refresh/rollback, zero run on construction, exact session-scope/resource/registry/publication/issuer identity, all removal origins and stale duplicate identity, journal-before-enqueue and retry, per-run artifact FIFO/caller semantics, worker-exit-before-publication ensure/restart/invoke, real Studio/standalone Codex/Luna publication/handoff/projection, shutdown, and unchanged `73/73` package parity.
 
-#### SR-012 file overlay
+#### SR-013 file overlay
 
 | Disposition | Exact files / areas | Target responsibility |
 | --- | --- | --- |
 | Add | `application-platform/runtime/application-platform-runtime-contracts.ts`; `application-catalog-reconciliation-service.ts` | Four outward projections and the sole host catalog-reconciliation command |
 | Add | `application-packages/services/application-package-command-service.ts`; `application-catalog-refresh-coordinator.ts` | Package command/rollback owner and exact ordered propagation owner |
-| Add | `agent-execution/runtime/active-agent-run-registry.ts` | Active application run identity/state only |
+| Add | `agent-tools/mcp/application-agent-tool-mcp-session-scope.ts`; `agent-execution/services/agent-run-resource-manager.ts`; `agent-execution/runtime/active-agent-run-registry.ts` | Early application session revocation, exact per-run resources, and active run identity/removal |
 | Add | `application-engine/services/application-engine-controller.ts`; `application-engine-launcher.ts` | Stable handle/status/invocation owner and later process/startup owner |
-| Add | `application-orchestration/services/application-execution-event-dispatch-queue.ts`; `application-reentry-service.ts` | Closed journal wakeup queue and reload/re-enter coordination |
-| Modify | both server builders; runtime builder/contracts/lifecycle; REST/WebSocket/standalone registrars; package registry/bundle/GraphQL configuration; run/publication/projection/relay; event/availability/recovery; gateway/WebSocket/streaming seams | Apply the exact outward boundary and construction order |
-| Remove | both `bind-once-*.ts` files; `application-engine-host-service.ts`; 19-field runtime fields; later-assigned Studio callbacks; application-path optional/global dependency branches; proxy/broad-runtime tests | Clean replacement with no alias, dual path, or data migration |
+| Add | `application-orchestration/services/application-execution-event-dispatch-queue.ts`; `application-published-artifact-delivery-queue.ts`; `application-published-artifact-delivery-service.ts`; `application-reentry-service.ts` | Closed journal wakeup, closed per-run artifact delivery with ensure/invoke, and reload/re-enter coordination |
+| Modify | both server builders; runtime builder/contracts/lifecycle; REST/WebSocket/standalone registrars; package registry/bundle/GraphQL configuration; scoped MCP session manager/factory; run/publication/projection/relay; event/availability/recovery; gateway/WebSocket/streaming seams | Apply exact outward boundary, cleanup contracts, and construction order |
+| Remove | both `bind-once-*.ts` files; `application-engine-host-service.ts`; manager active/disposer maps; 19-field runtime fields; later-assigned Studio callbacks; application-path optional/global branches; proxy/broad-runtime tests | Clean replacement with no alias, reverse callback, dual path, or data migration |
 
 ## Spine Actors / Main-Line Nodes
 
@@ -949,7 +1057,7 @@ Required proof covers exact four-field runtime shape, narrow registrar signature
 
 | Item To Remove / Decommission | Why It Becomes Unnecessary | Replaced By Which Owner / File / Structure | Scope | Notes |
 | --- | --- | --- | --- | --- |
-| Central application-framework `*Composition`, `*Graph`, `*Authority`, and bind-once `*Port` symbols/files from the SR-011 map | The ambiguous names were replaced in IR-016 | Familiar `Server`, `Runtime`, `Manager`, `Supervisor`, `Coordinator`, `Service`, `Publisher`, and `Handler` names; SR-012 removes the two `BindOnce*` implementations after eliminating their cycles | Completed naming change plus SR-012 cleanup | Preserve the implemented vocabulary; delete the two proxy files/symbols/tests with no replacement alias |
+| Central application-framework `*Composition`, `*Graph`, `*Authority`, and bind-once `*Port` symbols/files from the SR-011 map | The ambiguous names were replaced in IR-016 | Familiar `Server`, `Runtime`, `Manager`, `Supervisor`, `Coordinator`, `Service`, `Publisher`, and `Handler` names; SR-013 removes the two `BindOnce*` implementations after eliminating their cycles | Completed naming change plus SR-013 cleanup | Preserve the implemented vocabulary; delete the two proxy files/symbols/tests with no replacement alias |
 | `autobyteus-application-frontend-sdk/src/hosted-application-startup.ts` | Encodes one host as the universal app entry | `src/application-startup/application-startup-coordinator.ts` plus providers | In This Change | Delete exports/types/tests after migrations |
 | Version-suffixed application contract symbols/files (`*V1`, `*V4`, `*_V1`, `*_V4`, iframe contract doc filename) | Current code has one accepted version of each contract and the suffixes add symbol noise | Unversioned current-contract names in the exact naming inventory; numeric version fields remain serialized data | In This Change | Clean rename across contracts, SDK, devkit, server, Studio, tests/docs, dist/vendor/importable outputs; no aliases |
 | `startHostedApplication` imports in both sample apps and starter template | Old app-facing contract | Package import of `startApplication` | In This Change | Starter and sample sources migrate; devkit/esbuild bundles the SDK into generated package output |
@@ -961,7 +1069,7 @@ Required proof covers exact four-field runtime shape, narrow registrar signature
 | New server-construction-path global singleton lookups | Hide which application runtime a host uses | Explicit constructor/registrar dependencies | In This Change | Existing unrelated internals may be follow-up |
 | Default publish-provider capture of `getPublishedArtifactPublicationService()` / process-global manager | Bypasses the authenticated application session and exact application-runtime publication owner | `session.executionCapabilities.publishedArtifactPublisher` | In This Change | Remove cleanly; no request-time fallback or compatibility branch |
 | Independent default Agent Tools registry/catalog/dispatcher resolution in runtime/route construction paths | Can issue sessions against a different provider family than the registered route | One server-owned `AgentToolsMcpRuntime` | In This Change | General process consumers use an explicit process session manager; application paths use their scoped manager |
-| Global/default Agent Tools session service inside application run/member cleanup | Revocation can target a registry other than the issuing scope | Required injected `ScopedAgentToolMcpSessionManager` revoker | In This Change | Cover AgentRunManager and mixed new/restored handle paths |
+| Manager/global Agent Tools session service inside application run cleanup | Revocation can target the wrong registry and creates a reverse cleanup dependency | Early `ApplicationAgentToolMcpSessionScope` used only through `AgentRunResourceManager` | In This Change | Scoped issuer records into the same scope; run removal never depends on issuer/publisher/manager |
 | Unapproved broad SR-007 aggregate runtime/ports redesign | Was based on the false claim that all package tools belonged in the gateway | Narrow process MCP runtime + one session publication publisher justified by CRR-020 | Remains Removed | Do not restore its native-tool/configured-MCP/general-runtime expansion |
 | `ApplicationExecutionResourceConfigurationStatus.READY` and ambiguous configured/effective DTO use | Conflates selected resource, saved override, effective profile, and host runnable state | Package baseline/override/effective types plus `ApplicationLaunchReadiness` | In This Change | Clean-cut contract/source/UI/test update; no alias |
 | Brief hard-coded `BRIEF_STUDIO_TEAM_RESOURCE`, `fallbackExecutionResourceRef`, request-model rescue, and null-profile preset builder path | Bypasses the authoritative package/effective configuration owner | `context.agentResources.requireRunnable` plus complete effective-profile builder | In This Change | Business schemas may remove unused model input; no fallback retained |
@@ -974,7 +1082,7 @@ Required proof covers exact four-field runtime shape, narrow registrar signature
 
 ### DS-004 — Runtime return/event flow
 
-`Application backend context call -> ApplicationOrchestrationHostService -> AgentRunManager/team runtime -> durable binding + global lookup -> lifecycle event journal -> application event handler -> backend notification and/or published artifact -> frontend subscriptions/reconciliation`
+`Application backend context call -> ApplicationOrchestrationHostService -> AgentRunManager/team runtime -> durable binding + global lookup -> lifecycle event journal and/or published artifact projection -> queue-backed application event/artifact delivery -> ApplicationEngineLauncher.ensureReady -> ApplicationEngineController.invoke -> application worker handler -> backend notification/frontend reconciliation`
 
 The host type is not present in this spine. That absence is an invariant: Studio and standalone differ only before the shared client ingress and at endpoint mounting. Eligible server/selected available MCP-origin calls traverse DS-014's same existing callback in either host before returning to event/artifact projection. Runtime internals are outside this spine.
 
@@ -1117,7 +1225,7 @@ The two server builders use the same lifecycle collaborators but may make differ
 
 ### Application lifecycle stop order
 
-After Fastify stops accepting new ingress and drains admitted handlers, `ApplicationPlatformLifecycle.stop()` runs once in this order: (1) set `stopping`, block new runs, block new application Agent Tools sessions, and stop dispatch-queue intake/timers; (2) close application-agent communication; (3) dispose backend gateway/custom-WebSocket sessions and notifications; (4) dispose run observers; (5) stop pending engine startups and attached workers through launcher/controller; (6) stop application team runs and then agent runs, preserving exact attachment and session revocation; (7) close remaining scoped Agent Tools sessions; (8) stop streaming; (9) mark `stopped`. There is no bind-once publisher close step because sessions received the concrete publisher and run/session shutdown removes every reference to it.
+After Fastify stops accepting new ingress and drains admitted handlers, `ApplicationPlatformLifecycle.stop()` runs once in this order: (1) set `stopping`, block new runs and new application Agent Tools session issuance, and stop execution-event intake/timers; (2) close application-agent communication; (3) dispose backend gateway/custom-WebSocket sessions and notifications; (4) stop artifact-delivery intake and drain every already accepted command through launcher ensure + controller invoke while workers remain available; (5) dispose remaining runtime-level run observers; (6) stop pending engine startups and attached workers through launcher/controller; (7) stop application team runs and then agent runs, where identity-checked registry removal synchronously revokes each run's sessions and detaches file/artifact/memory observers; (8) close the application session scope/scoped issuer and revoke any remaining sessions; (9) stop streaming; (10) mark `stopped`. There is no bind-once publisher close or later cleanup callback.
 
 The process handle then closes process-scoped resources in dependency order: Studio alone stops memory sync, channel output, gateway callback, external MCP, and managed messaging owners; both hosts close `AgentToolsMcpRuntime` after every application scope has revoked, stop the default agent-run event pipeline, close the secret-vault runtime, and finally call `shutdownPrisma()`. Application platform stores hold no long-lived per-app SQLite connection, while repository Prisma is explicitly process-lived. Each close step runs in `finally`-style nesting so a failure cannot skip later session, vault, or database cleanup. `startStandaloneApplicationHost` returns an idempotent close handle used by development restart and tests; only the CLI main installs SIGINT/SIGTERM handlers. A bounded shutdown timeout is a process concern, and timeout expiry exits non-zero after preserving logs.
 
@@ -1137,7 +1245,7 @@ The process handle then closes process-scoped resources in dependency order: Stu
 | Internal MCP capability security | DS-014 | `AgentToolsMcpRuntime` and existing route/session gate | Preserve current bearer/session and 401/404 behavior | Runtime callback is network-reachable even without user accounts | Application-runtime-specific logic leaks into route auth or bypasses registrar |
 | Runtime callback base URL | DS-014 | Existing process endpoint owner plus scoped session manager | Preserve current descriptor URL behavior already proven in standalone | Descriptor must reach the registered listener | A second URL/path contract is invented |
 | Publication capability selection | DS-014 | Authenticated session execution capabilities | Carry the exact application-runtime publisher without exposing runtime internals | Server adapter must act on the same run/journal/relay owner | Provider captures a global service or route looks up an application runtime at request time |
-| Acyclic construction | DS-005, DS-014, DS-015 | Application platform runtime | Create active-run registry/controller before publisher/session/run/launcher/dispatcher; remove both bind-once proxies | Exact identity without temporal binding | Mutable singleton, generic deferred container, or service locator |
+| Acyclic construction | DS-005, DS-014, DS-015 | Application platform runtime | Create session scope/run resources/registry, controller, and closed queues before publisher/session/launcher/delivery/dispatcher; remove both proxies | Exact identity, ensure, and cleanup without temporal binding | Mutable singleton, reverse callback, generic deferred container/handler, or service locator |
 | Process cleanup | DS-005, DS-006, DS-010, DS-014 | Lifecycle/server assembly/CLI | Programmatic close, scoped session revoke and direct publisher release, child cleanup, event-pipeline/vault/Prisma stop, timeout | Reliable development restart and standalone exit | Devkit owns internals or sessions outlive their runtime |
 | Content digest evidence | DS-006, DS-007 | Conformance harness | Prove the same read-only package files and entry digests serve both hosts before and after both runs | Supports AC-001 | Runtime mutates the distribution package or performs host-specific rebuilds |
 
@@ -1159,7 +1267,9 @@ The process handle then closes process-scoped resources in dependency order: Stu
 14. **Runtime configuration -> tool projection:** the Agent Tools process catalog projects only eligible server adapters and selected available MCP-origin tools into its descriptor. Package `toolNames` are not copied into that projection.
 15. **Server assembly -> internal Agent Tools route/session:** one `AgentToolsMcpRuntime` supplies the exact registry/catalog/executor/dispatcher family to both the registrar and scoped session-manager creation. Neither side independently resolves defaults.
 16. **Authenticated session -> publication:** `PublishArtifactsMcpAdapterProvider` uses only the session’s `PublishedArtifactPublisher`; it may not capture/discover a global service or resolve an application runtime from request identity.
-17. **Application runtime -> publisher lifecycle:** the runtime creates `ActiveAgentRunRegistry`, then the exact publication service, then scoped sessions and run managers. Sessions receive the concrete publisher once at construction; application paths never bind, rebind, or fall back.
+17. **Application runtime -> publisher lifecycle:** the runtime creates application session scope -> run resources -> active registry -> exact publication service -> scoped issuer -> run managers. Sessions receive the concrete publisher once at issue; cleanup uses the early scope and never binds, calls back, or falls back.
+18. **Artifact relay -> application worker:** the relay resolves binding/maps the event and enqueues one command; the late delivery service always asks launcher to ensure/restart before controller invoke.
+19. **Run removal -> resources:** the registry identity-checks/deletes the exact run and synchronously delegates once to `AgentRunResourceManager`; no manager callback or application global is involved.
 
 ## Exact Application Runtime Dependency Wiring
 
@@ -1167,27 +1277,31 @@ The process handle then closes process-scoped resources in dependency order: Stu
 
 1. **Process prerequisites:** initialized config/database location -> core migration -> protected DB/key paths -> Prisma -> secret vault. No application/tool/definition readiness precedes this chain.
 2. **Catalog/storage:** explicit package-registry reader -> one file provider -> one bundle service; config/bundle -> storage lifecycle -> platform/global state and application stores.
-3. **Stable early state:** availability state, `ApplicationEngineController`, `ApplicationExecutionEventDispatchQueue`, and `ActiveAgentRunRegistry`.
-4. **Publication/session/run:** exact binding store + controller -> artifact relay; active-run registry + explicit workspace/projection/snapshot/relay -> publication service; concrete publisher + process MCP family -> scoped session manager; then explicit provider factories, agent/team run managers, services, attachments, and shutdown coordinator.
-5. **Configuration/orchestration:** bundle/definitions/override/host adapters -> launch configuration; journal + dispatch queue -> ingress; binding/lookup/ingress -> observers/recovery/terminal transition; exact run services -> orchestration; orchestration -> streaming/communication.
-6. **Engine/event:** bundle/storage/orchestration/streaming/controller -> `ApplicationEngineLauncher`; queue/journal/availability reader/launcher/controller -> event dispatcher; launcher/controller/recovery/dispatcher/availability state -> re-entry service.
-7. **Gateway/lifecycle:** controller/launcher + notification/WebSocket owners -> backend gateway; private preparation/recovery/dispatch/session/run/engine/streaming disposables -> lifecycle; private state + availability -> catalog reconciliation.
-8. **Outward result:** freeze exactly `lifecycle`, `rest`, `realtime`, and `hostManagement`. Server builders pass only exact projections to registrars and keep the complete lifecycle for prepare/recover/stop.
+3. **Stable early state:** availability state, `ApplicationEngineController`, `ApplicationExecutionEventDispatchQueue`, and `ApplicationPublishedArtifactDeliveryQueue`.
+4. **Early cleanup capabilities:** application MCP session scope over the exact process registry; file-change and memory services; binding store + artifact queue -> queue-backed artifact relay.
+5. **Run identity/resources:** session-scope revoker + exact three observer capabilities -> `AgentRunResourceManager`; resource manager -> `ActiveAgentRunRegistry`.
+6. **Publication/session/run:** active-run reader + explicit workspace/projection/snapshot/relay -> concrete publication service; concrete publisher + session scope + process MCP family -> scoped issuer; then explicit provider factories, agent/team run managers, run services, and shutdown coordinator.
+7. **Configuration/orchestration:** bundle/definitions/override/host adapters -> launch configuration; journal + event queue -> ingress; binding/lookup/ingress -> recovery/terminal transition; exact run services -> orchestration; orchestration -> streaming/communication.
+8. **Engine/event/artifact:** bundle/storage/orchestration/streaming/controller -> `ApplicationEngineLauncher`; artifact queue/launcher/controller -> artifact delivery service; event queue/journal/availability/launcher/controller -> event dispatcher; launcher/controller/recovery/dispatcher/availability -> re-entry.
+9. **Gateway/lifecycle:** controller/launcher + notification/WebSocket owners -> backend gateway; private preparation/recovery/queues/delivery/session/run/engine/streaming disposables -> lifecycle; private state + availability -> catalog reconciliation.
+10. **Outward result:** freeze exactly `lifecycle`, `rest`, `realtime`, and `hostManagement`. Server builders pass only exact projections to registrars and keep the complete lifecycle for prepare/recover/stop.
 
 ```text
 PackageRegistryReader -> BundleService -> DefinitionServices
         |                    |                 |
         +--------------------+-----------------+-> ApplicationPlatformRuntime builder
 
-EngineController ------------------------------+-> ArtifactRelay
-ActiveAgentRunRegistry -> PublicationService -> ScopedSessionManager -> RunManagers
+ProcessMcpFamily -> ApplicationSessionScope -> AgentRunResourceManager -> ActiveAgentRunRegistry
+ArtifactDeliveryQueue -> QueueBackedRelay -----^                |
+ActiveAgentRunRegistry -> PublicationService -> ScopedSessionIssuer -> RunManagers
 RunManagers + Stores -> Orchestration -> Streaming -> EngineLauncher -> EngineController.attach
-Journal -> DispatchQueue -> EventDispatcher -> EngineLauncher.ensure -> EngineController.invoke
+ArtifactDeliveryQueue -> ArtifactDeliveryService -> EngineLauncher.ensure -> EngineController.invokeArtifact
+Journal -> EventDispatchQueue -> EventDispatcher -> EngineLauncher.ensure -> EngineController.invokeEvent
 Private owners -> Lifecycle / CatalogReconciliation
 Lifecycle + REST + Realtime + HostManagement -> outward ApplicationPlatformRuntime
 ```
 
-There is no whole-runtime consumer below server assembly, no bind phase, and no run creation during construction.
+There is no whole-runtime consumer below server assembly, no bind phase, no registry-to-manager callback, no relay-to-controller bypass, and no run creation during construction.
 
 ### Application runtime output shape
 
@@ -1204,7 +1318,7 @@ type ApplicationPlatformRuntime = Readonly<{
 
 ## Server / Application-Runtime-Critical Modify / Retain Inventory
 
-This table retains the cumulative foundation inventory so downstream work does not lose earlier ownership decisions. For every overlapping file or accessor, the DS-015 **SR-012 file overlay** and [application-framework-architecture-simplification.md](application-framework-architecture-simplification.md) are the current disposition authority. Earlier `Rename`/`Create` wording records already-completed SR-011/foundation work and must not be repeated.
+This table retains the cumulative foundation inventory so downstream work does not lose earlier ownership decisions. For every overlapping file or accessor, the DS-015 **SR-013 file overlay** and [application-framework-architecture-simplification.md](application-framework-architecture-simplification.md) are the current disposition authority. Earlier `Rename`/`Create` wording records already-completed SR-011/foundation work and must not be repeated.
 
 | Current file / accessor | Disposition | Exact target instance and fallback policy | Rationale / shutdown ownership |
 | --- | --- | --- | --- |
@@ -1213,14 +1327,14 @@ This table retains the cumulative foundation inventory so downstream work does n
 | `repository_prisma` `initializePrisma`/`shutdownPrisma`, `config/prisma-client-factory.ts` | Retain process runtime; make server ownership explicit | Both server builders initialize once from the exact database URL before repository consumers. Runtime-owned/current callsites that create clients resolve the same initialized location; process close shuts Prisma down last. | Refreshed base makes repository Prisma an actual process dependency. One server per process avoids cross-root ambiguity. |
 | `secret-management/secret-vault-runtime.ts` and `autobyteus-ts/tools/file/workspace-path-utils.ts` denied-path configuration | Retain process-scoped runtime/config; make startup/stop explicit in both server builders | Initialize vault with the exact `ApplicationDatabaseLocation`; deny DB/root-key/sidecar paths before tool registration; close vault after event/runtime consumers and before Prisma. No host or devkit code reads secret values. | Provider/model/media/search execution now depends on the vault. This is runtime configuration, not authentication. |
 | `agent-tools/search/register-search-tool.ts` | Move into strict tool-readiness owner | `AgentToolRegistryReadiness` registers Search as the seventh named group after vault readiness; `buildApp()` no longer performs hidden tool registration. | Route construction must not mutate a required application tool registry. |
-| `agent-tools/mcp/agent-tools-mcp-runtime.ts` | Rename from current authority file; retain behavior | Construct exactly one registry, catalog/provider family, executor, dispatcher; expose narrow `routeDependencies` and scoped-session-manager construction only | Server process owns runtime identity and close; no locator or whole-container injection |
+| `agent-tools/mcp/agent-tools-mcp-runtime.ts` | Rename from current authority file; retain behavior | Construct exactly one registry, catalog/provider family, executor, dispatcher; expose narrow `routeDependencies` plus early application-session-scope and later concrete-publisher manager creation only | Server process owns runtime identity and close; no locator or whole-container injection |
 | `agent-tools/mcp/agent-tool-mcp-session.ts` | Modify names only | Rename the non-wire field to `executionCapabilities` containing the narrow `publishedArtifactPublisher`; never serialize/log/persist it | Authenticated session is the exact run-scope capability boundary |
 | `agent-tools/mcp/agent-tool-mcp-session-registry.ts` | Modify names only; retain semantics | Retain the exact in-memory session object through authentication/dispatch; preserve token hashing and revoke behavior | Route must see the same publisher issued by the application-runtime scope |
 | `agent-tools/mcp/agent-tool-mcp-session-service.ts` plus `scoped-agent-tool-mcp-session-manager.ts` | Rename current interface/implementation; retain behavior | Accept exact registry/catalog and execution capabilities; each scope tracks issue/revoke/close; remove application-path default service lookup | Session issuance, route lookup, and cleanup share one family |
 | `agent-tools/mcp/{agent-tool-mcp-catalog,agent-tool-mcp-tool-executor,agent-tools-mcp-method-dispatcher}.ts` | Modify construction only | Require explicit process-owned instances in server/runtime construction paths; provider execution receives the authenticated session | Preserve tool projection/protocol while removing mismatched default families |
 | `agent-tools/mcp/providers/publish-artifacts-mcp-adapter-provider.ts` | Modify names only; retain passed behavior | Require `session.executionCapabilities.publishedArtifactPublisher` per call; no cached/default publication service | Exact application run/journal/relay owner; missing/unbound/closed fails before mutation |
 | `services/published-artifacts/published-artifact-publisher.ts` | Retain narrow contract | One-method publisher implemented by the explicit application publication service | Prevent adapter dependence on manager/relay/service locator |
-| `application-platform/runtime/bind-once-published-artifact-publisher.ts` | Delete in SR-012 | Replaced by `ActiveAgentRunRegistry -> concrete publication service -> scoped sessions` construction | Removes the publication/session cycle without alias or deferred state |
+| `application-platform/runtime/bind-once-published-artifact-publisher.ts` | Delete in SR-013 | Replaced by `ApplicationAgentToolMcpSessionScope -> AgentRunResourceManager -> ActiveAgentRunRegistry -> concrete publication service -> ScopedAgentToolMcpSessionManager` construction | Removes the publication/session/cleanup cycle without alias, reverse callback, or deferred state |
 | `agent-tools/mcp/agent-tools-mcp-routes.ts` | Modify names/imports only; preserve protocol | Registrar requires exact MCP-runtime route dependencies; both servers pass them | Preserve path/auth/401/404/origin/content behavior without default discovery |
 | `mcp-gateway/mcp-gateway-routes.ts` | Retain Studio-only | Keep optional external gateway under the Studio server only; it cannot resolve Agent Tools run sessions. | Avoid conflating external integration with required runtime callback. |
 | `server-runtime-endpoints.ts`, Studio and standalone process entries | Retain endpoint contract; rename construction variables | Preserve proven descriptor URL; construct one `AgentToolsMcpRuntime`, pass it to application-runtime builder and route, close it after scoped managers | No second URL/path or reflected request host |
@@ -1241,7 +1355,7 @@ This table retains the cumulative foundation inventory so downstream work does n
 | `application-orchestration-recovery-service.ts` | Modify | Exact bundle/platform/binding/lookup/observer/ingress/terminal instances; no global fallbacks. | Recovery must reconcile only the application runtime's catalog/data. |
 | `application-execution-resource-{resolver,configuration-service}.ts`, `application-run-binding-launch-service.ts`, `application-agent-target-authorization-service.ts` | Modify | Exact bundle, definitions, configuration/binding stores, availability reader, startup gate, run services. | Selected resources and authorization use one application runtime. |
 | `application-orchestration-host-service.ts` | Modify | Require exact gate, availability reader, resolver/configuration/launch, stores, observer, run/history/artifact/memory services. Remove application-runtime-path getters. | Core orchestration owner remains; construction becomes explicit. |
-| `application-published-artifact-relay-service.ts`, `services/published-artifacts/published-artifact-publication-service.ts`, `agent-execution/services/agent-run-manager.ts` | Modify construction/lifecycle only | Keep application-runtime-scoped manager/relay/service semantics; publication service implements `PublishedArtifactPublisher`; manager receives the exact scoped session revoker | Correct owner already exists; connect it rather than changing publication business behavior |
+| `application-published-artifact-relay-service.ts`, `services/published-artifacts/published-artifact-publication-service.ts`, `agent-execution/services/agent-run-manager.ts` | Modify construction/lifecycle only | Relay maps the current event then submits a complete command to the closed artifact queue; publication reads the exact active registry; manager keeps create/restore/terminate/stop commands but delegates identity transitions to the registry and resource cleanup to `AgentRunResourceManager` | Preserve publication/event/manager semantics while making ensure-before-invoke and exact cleanup explicit and acyclic |
 | application Codex/Claude bootstrap/session construction | Modify application construction only | Inject the application-runtime-scoped session manager for application-created runs; do not change provider-native tool behavior | Runtime session issue must attach the exact application-runtime execution capabilities |
 | general-process Codex/Claude Agent Tools session construction | Modify construction only as required by shared provider contract | Receive the explicit general-process session manager from the server assembly root; attach the existing general-process publication publisher | Preserve non-application behavior after provider stops capturing a service; never reuse this manager in an application runtime |
 | mixed team manager/member registries/handles cleanup | Modify bounded construction only | Carry the same scoped session revoker through new/restored member paths | Every created application session is revoked by its issuing scope |
@@ -1279,7 +1393,9 @@ All cached `getApplication*` accessors in modified application-runtime construct
 | `ApplicationLaunchConfigurationService` | Resource baseline builder, selection preview, override store/normalizer, host capability adapters | Studio setup, lifecycle projection, backend context, standalone server | Caller reads definitions/store/catalog or infers selected baseline from package/effective state | Strengthen view/preview/command/require-runnable API |
 | Application-runtime-scoped run services | Mixed manager/registries/member context builder | Application team execution | Member handle calls global builder/team service | Pass exact builder through construction |
 | `AgentToolsMcpRuntime` | Registry, catalog/provider family, executor, dispatcher, route dependencies | Studio/standalone servers and application-runtime scoped-session-manager factory | Server/route/session independently resolves defaults or receives the whole application runtime | Add a narrow route/scoped-session-manager method on the runtime |
-| `ScopedAgentToolMcpSessionManager` | Session issue tracking, execution-capability attachment, revoke/close for one explicit scope | Application Codex/Claude factories and run/member cleanup | Runtime factory calls global session service or cleanup revokes another registry | Extend scoped issue/revoke API |
+| `ApplicationAgentToolMcpSessionScope` + `ScopedAgentToolMcpSessionManager` | Early ownership/revocation plus later issue/execution-capability attachment | Application Codex/Claude factories; run cleanup uses only the scope | Runtime factory calls global service, or cleanup depends on issuer/publisher | Split exact scope lifecycle from later issuance without duplicating ownership |
+| `AgentRunResourceManager` + `ActiveAgentRunRegistry` | Exact per-run session/observer resources plus current-run identity transitions | Application publication, run manager commands, lifecycle shutdown | Manager-owned active/disposer maps, later callback, or stale completion deleting a replacement | Extend the typed removal/release results; never add a reverse callback |
+| `ApplicationPublishedArtifactDeliveryQueue` + `ApplicationPublishedArtifactDeliveryService` | Accepted artifact commands, per-run FIFO, drain, worker ensure/restart, controller invoke | Application artifact relay and lifecycle | Relay invoking a controller-only handle, generic event bus, or deferred handler binding | Extend the closed command/completion contract or delivery service |
 | Authenticated `AgentToolMcpSession.executionCapabilities` | Exact application-runtime `PublishedArtifactPublisher` | Tool executor/providers after route authentication | Provider captures global publication service or resolves runtime identity by request IDs | Add the narrowly typed publisher capability |
 
 ## Dependency Rules
@@ -1301,7 +1417,7 @@ All cached `getApplication*` accessors in modified application-runtime construct
 - Both servers call `registerAgentToolsMcpRoutes(app, agentToolsMcpRuntime.routeDependencies)`; standalone does so before its static wildcard. Only Studio registers external `/mcp/gateway`; neither route aliases or proxies the other.
 - Process route registration and application session creation use the exact same process MCP runtime family. The registrar/session service may not independently call default registry/catalog/dispatcher accessors.
 - Application-created sessions carry the exact application runtime `PublishedArtifactPublisher`. Publish providers may not capture `getPublishedArtifactPublicationService()`, call `AgentRunManager.getInstance()`, resolve application-runtime identity at request time, or silently use a process default.
-- The application scoped-session manager is constructed with the concrete application publisher before P6A readiness. It blocks new issue and revokes its sessions during stop; restart creates a new publisher, registry, and scoped session manager.
+- The early application session scope is created before publication and records/revokes exact process-family sessions. The later scoped-session manager is constructed with that scope and the concrete application publisher before P6A readiness. Stop blocks issue/recording, run removal revokes per-run sessions, scope close revokes any remainder, and restart creates a new scope/publisher/registry/issuer set.
 - Existing Agent Tools bearer/session gates and descriptor behavior remain unchanged. The correction must preserve the established 401/404 path rather than implement another authorization layer.
 - The descriptor exposes only configured eligible static server adapters and selected available `ToolOrigin.MCP` definitions; tests inspect the descriptor/`tools/list` rather than package `toolNames`. Runtime-internal tools are outside the changed/tested boundary.
 - Studio MCP Server Management may populate the Studio process registry and `/mcp/gateway`, but standalone may not read or copy that host state. The current proof does not promise configured MCP-origin tools in standalone.
@@ -1338,10 +1454,15 @@ All cached `getApplication*` accessors in modified application-runtime construct
 | `/_autobyteus/backend/ws/*` | Selected app custom sockets | Fixed-app backend WS mount | Selected canonical ID + route path | Existing WS session service |
 | `/_autobyteus/agent/*` | Selected app direct agent communication | Fixed-app target connection | Selected canonical ID + binding/target path | Existing communication service |
 | `POST/GET /mcp/agent-tools/:sessionId` | One internal runtime tool session | Authorize bearer, dispatch MCP against session-enabled configured tools/context/capabilities | Server-issued session ID + bearer only | Required in both hosts; exact MCP-runtime route dependencies; no application selector/body-selected capability; `cors:false`; not external gateway |
-| `AgentToolsMcpRuntime.createApplicationSessionManager(input)` | One application session scope | Reuse exact process registry/catalog and attach application-runtime execution capabilities | Scope identity + narrow execution capabilities | Does not expose catalog/registry internals |
-| `ScopedAgentToolMcpSessionManager.createAgentToolMcpSession(input)` | One scoped runtime session | Issue descriptor/session and record scope ownership | Existing execution/team/member/tool context | Uses exact process family; rejects after close |
-| `ScopedAgentToolMcpSessionManager.close()` | One application session scope | Block issue and revoke only scope-created sessions | Scope-owned session IDs | Idempotent; lifecycle owns call |
-| `ActiveAgentRunRegistry` construction and injection | One application runtime | Supply exact active-run identity to publication/projection before scoped sessions/run managers | Concrete registry reader | No bind/rebind state; construction fails if missing |
+| `AgentToolsMcpRuntime.createApplicationSessionScope(scopeIdentity)` | One early application session scope | Reuse the exact process session service/registry for ownership and revocation before a publisher exists | Explicit application-runtime scope identity | Does not choose tools, create descriptors, or carry publisher/run-manager state |
+| `AgentToolsMcpRuntime.createApplicationSessionManager(input)` | One later application session issuer | Reuse exact process registry/catalog, existing application session scope, and concrete execution capabilities | Scope object + narrow execution capabilities | Does not expose catalog/registry internals; created only after concrete publisher |
+| `ScopedAgentToolMcpSessionManager.createAgentToolMcpSession(input)` | One scoped runtime session | Issue descriptor/session with concrete publisher, then record exact scope ownership | Existing execution/team/member/tool context | Uses exact process family; on record failure revokes that new session; rejects after close |
+| `ApplicationAgentToolMcpSessionScope.close()` | One application session scope | Block recording and revoke every remaining scope-created session | Scope-owned session IDs | Idempotent; lifecycle owns call |
+| `AgentRunResourceManager.attach(run)` | One exact application agent run | Attach file-change, artifact-relay, and memory observers while recording every successful disposer | Exact `AgentRun` object | Partial failure releases recorded resources before propagating |
+| `AgentRunResourceManager.release(runId, expectedRun)` | One exact application agent run | Remove resource ownership, revoke run sessions, detach all recorded observers, and aggregate failures exactly once | Run ID + exact expected object | Repeated release is `already_released`; no callback to run manager |
+| `ActiveAgentRunRegistry.removeIfCurrent(...)` | One exact application agent run | Identity-delete and synchronously release its four resource categories | `{runId, expectedRun, reason}` | Returns removed/not-found/identity-mismatch; stale completion cannot remove replacement |
+| `ApplicationPublishedArtifactDeliveryQueue.accept(command)` | One accepted artifact relay command | Enqueue complete mapped event with per-run FIFO and return its completion | `{runId, applicationId, bindingId, revisionId, event}` | Rejects after intake stop; no topic/subscriber/handler API |
+| `ApplicationPublishedArtifactDeliveryService` | Accepted artifact delivery commands | Consume, call `launcher.ensureReady(applicationId)`, then controller artifact-handler invoke and settle completion | Queue lease + complete command | Drained before engine stop; active listener remains fire-and-forget while fallback awaits |
 | `buildStudioServer()` | Studio server | Full existing platform + app surface | Multi-app catalog | Current product server |
 | `buildStandaloneApplicationServer(config)` | Standalone server | Selected app browser surface plus existing Agent Tools callback only | Package root + local app ID | Calls existing registrar before static wildcard; no Studio/admin registries or external MCP gateway |
 | `validateStandaloneApplicationPackage(input)` | One standalone artifact | Pure package baseline completeness and recursive portable-field validation | Package root + local app ID | Existing bundle/definition parser plus `ApplicationPortableLaunchConfigPolicy`; no host state |
@@ -1382,7 +1503,7 @@ All cached `getApplication*` accessors in modified application-runtime construct
 | `Coordinator` | A small owner that sequences peer operations and aggregates their outcome | Resource storage, lookup, or construction | `ApplicationRunShutdownCoordinator` |
 | `Service` | The authoritative owner of one domain capability or workflow | A miscellaneous dependency bag | `ApplicationLaunchConfigurationService`; `createApplicationOrchestrationServices` returns named services |
 | `Publisher` / `Handler` | A narrow callable capability named by the action it performs | A generic “port” without a developer-visible role | `PublishedArtifactPublisher`; `ApplicationEngineEventHandler` |
-| `ActiveAgentRunRegistry` / `ApplicationEngineController` | Stable state owners created before services that publish/launch/dispatch/attach | A generic deferred container, service locator, or event bus | Exact run identity and worker-handle control |
+| Session scope / run resource manager / active registry / engine controller / closed queues | Stable early lifecycle owners created before services that issue/publish/launch/dispatch | A reverse callback, generic deferred container/handler, service locator, or event bus | Exact run resources/identity and worker delivery control |
 | `Registry` | Keyed in-memory identity lookup/registration | Orchestration or lifecycle | `AgentToolMcpSessionRegistry`; `ApplicationAvailabilityStateRegistry` |
 | `Gateway` | A protocol/request boundary translating external or worker-facing calls into services | Process construction or a shared runtime | Existing application backend and external MCP gateways |
 | `Store` | Durable or explicitly stateful persistence access | Runtime coordination | Existing binding, override, event, and lookup stores |
@@ -1393,7 +1514,7 @@ All cached `getApplication*` accessors in modified application-runtime construct
 - `compositions/` is retained as the folder containing top-level server assembly roots; no type, returned value, parameter, or variable carries `Composition`.
 - “Dependency graph” may describe the construction diagram below, but no code symbol, filename, property, or variable carries `Graph`.
 - `Authority` is removed from this central naming scope because none of the affected types adds a unique authorization or command-sovereignty meaning. Security authorization remains explicitly named in the existing bearer/session authorization code.
-- The SR-011 `BindOnce*` names correctly described the then-current proxies. SR-012 removes both proxies after eliminating their cycles; it does not replace them with another deferred abstraction.
+- The SR-011 `BindOnce*` names correctly described the then-current proxies. SR-013 removes both proxies after eliminating their cycles; it does not replace them with another deferred abstraction.
 
 ## Exact Current-To-Target Naming And Responsibility Map
 
@@ -1409,7 +1530,7 @@ All cached `getApplication*` accessors in modified application-runtime construct
 | `AgentToolsMcpProcessAuthority`; `createAgentToolsMcpProcessAuthority`; `agent-tools-mcp-process-authority.ts` | `AgentToolsMcpRuntime`; `createAgentToolsMcpRuntime`; `agent-tools-mcp-runtime.ts` | Own the process registry/catalog/executor/dispatcher family, route dependencies, general session manager, scoped manager creation, and registry clear | One server process | Studio/standalone process cleanup closes after scoped managers/runs | Internal clean rename; test becomes `agent-tools-mcp-runtime.test.ts` |
 | `ApplicationAgentToolsSessionAuthority`; `application-agent-tools-session-authority.ts` | `ScopedAgentToolMcpSessionManager`; `scoped-agent-tool-mcp-session-manager.ts` | Create, track, redact, selectively revoke, block, and close sessions for one explicit scope; used for both general-process and application-runtime scopes | One manager per scope | General run supervisor or application lifecycle | Internal clean rename; removes inaccurate `Application` label from the general scope |
 | `AgentToolMcpSessionAuthority` | `AgentToolMcpSessionManager` | Minimal session create/revoke/redact contract consumed by run backends/managers | Consumer interface; implementation scope explicit at construction | Implementing manager | Internal symbol rename across exact consumers |
-| `ApplicationAgentToolsSessionAuthorityFactory`; `createApplicationSessionAuthority`; `generalProcessSessionAuthority` | `ApplicationAgentToolsSessionManagerFactory`; `createApplicationSessionManager`; `generalProcessSessionManager` | Expose only scoped-manager creation from the process MCP runtime and identify its general scope | One process runtime | Process MCP runtime | Internal property/type/method rename |
+| `ApplicationAgentToolsSessionAuthorityFactory`; `createApplicationSessionAuthority`; `generalProcessSessionAuthority` | SR-011 `ApplicationAgentToolsSessionManagerFactory` / SR-013 `ApplicationAgentToolsSessionFactory`; `createApplicationSessionScope`; `createApplicationSessionManager`; `generalProcessSessionManager` | Expose early application session-scope creation and later concrete-publisher session-manager creation from the same process MCP runtime; identify the general scope separately | One process runtime | Process MCP runtime | Internal clean evolution; no alias or second registry/catalog family |
 | `createSessionAuthority`; `agentToolsSessionAuthority`; `agentToolMcpSessionAuthority` | `createSessionManager`; `agentToolsSessionManager`; `agentToolMcpSessionManager` | Name private construction and injected/returned manager references consistently | MCP runtime, runtime output, and agent/team construction call sites | The referenced scoped manager | Source-only rename; no object replacement |
 | `AgentToolMcpSessionExecutionAuthorities`; `executionAuthorities`; `publishedArtifactPublication` | `AgentToolMcpSessionExecutionCapabilities`; `executionCapabilities`; `publishedArtifactPublisher` | Carry the narrow non-wire callable capabilities selected for one authenticated session | One in-memory session | Issuing scoped session manager; never persisted/serialized | Internal type/property rename; descriptor and wire schema unchanged |
 | `assertExecutionAuthoritiesReady`; `generalProcessPublication` | `assertExecutionCapabilitiesReady`; `generalProcessPublisher` | State exactly which session capabilities are validated and which publisher is supplied for general-process sessions | MCP runtime construction | MCP runtime and supplied publisher | Source-only parameter/callback rename |
@@ -1417,9 +1538,9 @@ All cached `getApplication*` accessors in modified application-runtime construct
 | `ApplicationRunShutdownAuthority`; `application-run-shutdown-authority.ts` | `ApplicationRunShutdownCoordinator`; `application-run-shutdown-coordinator.ts` | Idempotently stop all application team runs, then agent runs, aggregating failures | One application platform runtime | `ApplicationPlatformLifecycle.stop()` | Internal clean rename; test filename follows |
 | `ApplicationTeamRunShutdownPort`; `ApplicationAgentRunShutdownPort` | `ApplicationTeamRunStopper`; `ApplicationAgentRunStopper` | Narrow structural dependencies exposing only stop operations | Shutdown coordinator constructor | No independent lifecycle | Internal type rename |
 | `PublishedArtifactPublicationPort`; `published-artifact-publication-port.ts` | `PublishedArtifactPublisher`; `published-artifact-publisher.ts` | Narrow capability used to publish artifact batches for a run | General or application-runtime publisher selected by authenticated session | Implementing publication service/proxy | Internal interface/file rename; request/result shapes unchanged |
-| `DeferredPublishedArtifactPublicationPort` -> SR-011 `BindOncePublishedArtifactPublisher` | Removed in SR-012 | Replaced by early `ActiveAgentRunRegistry` and concrete publisher-before-session construction | One application platform runtime | Session/run shutdown drops publisher references | Clean deletion; no alias |
-| `DeferredPublicationPortState` -> SR-011 bind-once state | Removed in SR-012 | No replacement state machine; exact publisher is a constructor dependency | Application runtime builder | Application lifecycle | Clean deletion |
-| `ApplicationEngineEventHandlerPort` -> SR-011 `BindOnceApplicationEngineEventHandler` | Removed in SR-012 | Replaced by early `ApplicationEngineController`, later `ApplicationEngineLauncher`, and journal-backed dispatch queue | One application platform runtime | Controller/launcher/lifecycle own worker stop | Clean deletion |
+| `DeferredPublishedArtifactPublicationPort` -> SR-011 `BindOncePublishedArtifactPublisher` | Removed in SR-013 | Replaced by early application session scope, run resource manager, identity registry, and concrete publisher-before-issuer construction | One application platform runtime | Registry removal releases run resources; lifecycle closes the scope | Clean deletion; no alias |
+| `DeferredPublicationPortState` -> SR-011 bind-once state | Removed in SR-013 | No replacement state machine; exact publisher is a constructor dependency of the later scoped issuer | Application runtime builder | Application lifecycle | Clean deletion |
+| `ApplicationEngineEventHandlerPort` -> SR-011 `BindOnceApplicationEngineEventHandler` | Removed in SR-013 | Replaced by early controller and two closed queues plus late launcher, event dispatcher, and artifact delivery service | One application platform runtime | Queue intake/drain and launcher/controller stop are lifecycle-owned | Clean deletion |
 | `createApplicationOrchestrationAuthorities`; `create-application-orchestration-authorities.ts` | `createApplicationOrchestrationServices`; `create-application-orchestration-services.ts` | Construct the named orchestration/configuration/event/communication services returned to the runtime builder | Runtime construction only | Returned services retain their existing owners | Internal factory/file rename; locals `authorities` -> `services` |
 | `createApplicationRunAuthorities`; `create-application-run-authorities.ts` | `createApplicationRunServices`; `create-application-run-services.ts` | Construct application-runtime run/team services, publisher/projection, metadata/memory, and shutdown coordinator | Runtime construction only | Runtime lifecycle through returned services | Internal factory/file rename; locals `runAuthorities` -> `runServices` |
 | `applicationRunShutdownAuthority` | `applicationRunShutdownCoordinator` | Name the returned stop-only coordinator used by lifecycle | One application runtime | `ApplicationPlatformLifecycle.stop()` | Source-only property/local rename |
@@ -1459,8 +1580,8 @@ Test and source filenames that repeat a replaced role follow the same clean map:
 | Scoped session collection | `ScopedAgentToolMcpSessionManager` | Yes | Low | Scope is explicit at construction/property names; class is valid for general and application runtime scopes |
 | General run-manager lifetime | `GeneralProcessRunSupervisor` | Yes | Low | Supervisor constructs/releases managers; it is not the application runtime |
 | Application run stopping | `ApplicationRunShutdownCoordinator` | Yes | Low | Coordinator sequences stop only; it does not own run creation |
-| Publication construction | `ActiveAgentRunRegistry` + concrete publisher-before-session order | Yes | Low | Concrete state owner; no deferred binding |
-| Engine/event construction | `ApplicationEngineController` + `ApplicationEngineLauncher` + dispatch queue | Yes | Low | Separate stable handle state from later launching; no generic port |
+| Run identity and cleanup | `ApplicationAgentToolMcpSessionScope` + `AgentRunResourceManager` + `ActiveAgentRunRegistry` | Yes | Low | Exact identity/removal results; no manager callback or deferred binding |
+| Engine delivery construction | `ApplicationEngineController` + `ApplicationEngineLauncher` + event queue/dispatcher + artifact queue/delivery service | Yes | Low | Separate stable handle state, process ensure, durable event wakeup, and complete artifact delivery; no generic port |
 | Agent Tools/general-gateway projection | Eligible Agent Tools adapters / selected available MCP-origin tools / process-level external gateway catalog | Yes | Medium | Do not treat package `toolNames` or the Studio gateway catalog as the run descriptor |
 
 ## Existing Capability / Subsystem Reuse Check
@@ -1483,7 +1604,7 @@ Test and source filenames that repeat a replaced role follow the same clean map:
 | Host runtime/model/credential preflight | Runtime availability, model catalog, provider/vault services | Adapt | Existing capability owners contain real host knowledge | Add narrow application-runtime-scoped adapters, not generic secret logic |
 | Package team prompt context | MemberTeamContextBuilder + mixed construction | Refactor | Existing builder owns semantics but receives the wrong team-definition service | Inject the exact application-runtime service through the bounded path |
 | Internal Agent Tools MCP session transport | Existing route/session/catalog/dispatcher/tool adapters | Bounded refactor | Protocol/security behavior already works; construction/selection needs one explicit runtime | Add process MCP runtime and application-runtime-scoped session manager; preserve wire behavior |
-| Application publication execution | Existing application-runtime-scoped publication service plus default MCP adapter | Refactor dependency boundary | Business owner is correct; application path must use exact active-run registry | Session-bound concrete publisher constructed before scoped sessions |
+| Application publication execution | Existing application-runtime-scoped publication service, relay, and default MCP adapter | Refactor dependency boundary | Business owner is correct; application path must use exact active-run registry and ensure-before-invoke delivery | Session-bound concrete publisher plus closed artifact queue/delivery service |
 | External MCP gateway | Existing MCP gateway | Retain Studio-only | Different generic integration purpose and authorization | Do not reuse it for Agent Tools sessions or expose it in standalone |
 
 ## Subsystem / Capability-Area Allocation
@@ -1502,6 +1623,8 @@ Test and source filenames that repeat a replaced role follow the same clean map:
 | Mixed Team Prompt Context | Exact builder propagation and prompt semantics | DS-013, DS-004 | Application run services | Bounded refactor | No catalog merge/global fallback |
 | Agent Tools MCP Process Runtime | Registry/catalog/executor/dispatcher and route dependencies | DS-014, DS-004 | `AgentToolsMcpRuntime` | Refactor grouping over existing owners | One process family; distinct from external gateway |
 | Scoped Agent Tools Sessions | Session issue/execution capabilities/revocation | DS-014, DS-005 | `ScopedAgentToolMcpSessionManager` | Rename existing bounded owner | One explicit scope over process family |
+| Application Run Identity/Resources | Active run identity, exact removal, session revocation, file/artifact/memory observer detach | DS-015, DS-014 | `ApplicationAgentToolMcpSessionScope`, `AgentRunResourceManager`, `ActiveAgentRunRegistry` | Bounded decomposition | Manager retains run commands; no reverse callback |
+| Application Artifact Delivery | Mapped artifact command queue, per-run FIFO/drain, worker ensure/restart, controller invoke | DS-015, DS-004, DS-014 | `ApplicationPublishedArtifactDeliveryQueue`, `ApplicationPublishedArtifactDeliveryService` | Bounded decomposition | Distinct from durable event-journal wakeup queue |
 | Application Published Artifacts | Exact run validation, journal/relay/projection | DS-014, DS-004 | Existing `PublishedArtifactPublicationService` behind `PublishedArtifactPublisher` | Rename boundary only | No change to publication semantics |
 
 ## Draft File Responsibility Mapping
@@ -1517,12 +1640,17 @@ Test and source filenames that repeat a replaced role follow the same clean map:
 | `application-platform-lifecycle.ts` | Application platform | Lifecycle owner | Named P4–P9 including P6A, R1–R3 recovery, scope revoke/ready/stop | One state machine | Exact readiness/disposable collaborators |
 | `application-definition-runtime-readiness.ts` | Application platform | Runtime readiness owner | Definition refresh/resource/runtime preflight | One readiness concern | Bundle/definitions/runtime availability |
 | `agent-tool-registry-readiness.ts` | Application platform | Tool readiness owner | Strict results for the exact seven named groups including Search | One readiness concern | Current six-group loader plus provisioned Search registration |
-| `agent-tools/mcp/agent-tools-mcp-runtime.ts` | Agent Tools MCP | Process runtime | Construct exact registry/catalog/executor/dispatcher and expose route dependencies/scoped-manager creation | One process ownership concern | Existing components |
+| `agent-tools/mcp/agent-tools-mcp-runtime.ts` | Agent Tools MCP | Process runtime | Construct exact registry/catalog/executor/dispatcher and expose route dependencies plus the two-operation application session factory | One process ownership concern | Existing components |
 | `agent-tools/mcp/scoped-agent-tool-mcp-session-manager.ts` | Agent Tools MCP | Scoped session manager | Attach execution capabilities, issue/track/revoke/close | One scoped lifecycle concern | MCP runtime + session service |
+| `agent-tools/mcp/application-agent-tool-mcp-session-scope.ts` | Agent Tools MCP | Early application session scope | Record/revoke exact process-family sessions by run/member/owner; block/close | One revocation/ownership lifecycle independent of publisher | Process session service/registry |
+| `agent-execution/services/agent-run-resource-manager.ts` | Agent Execution | Run resource cleanup owner | Attach/dispose file, artifact, memory observers and revoke run sessions exactly once | One four-category cleanup concern | Early application session scope |
+| `agent-execution/runtime/active-agent-run-registry.ts` | Agent Execution | Run identity owner | Register/read/list/remove exact active run identity and return typed removal results | One keyed identity concern | Run resource manager |
+| `application-orchestration/services/application-published-artifact-delivery-queue.ts` | Application Orchestration | Closed artifact command queue | Per-run FIFO, independent lanes, intake stop, completion, drain | One domain queue; no arbitrary topics | Mapped application artifact event |
+| `application-orchestration/services/application-published-artifact-delivery-service.ts` | Application Orchestration | Artifact delivery consumer | Pull command, ensure/restart worker, invoke controller handler, settle lease | One executable delivery path | Queue + launcher + controller |
 | `agent-tools/mcp/agent-tools-mcp-routes.ts` | Agent Tools MCP | Route registrar | Preserve bearer/session/protocol handling with required route dependencies | One established transport concern | MCP runtime route dependencies |
 | `services/published-artifacts/published-artifact-publisher.ts` | Retain narrow contract | One-method publisher implemented by the explicit application publication service | Prevent adapter dependence on manager/relay/service locator |
-| `application-platform/runtime/bind-once-published-artifact-publisher.ts` | Delete in SR-012 | Replaced by `ActiveAgentRunRegistry -> concrete publication service -> scoped sessions` construction | Removes the publication/session cycle without alias or deferred state |
-| `application-platform/runtime/bind-once-application-engine-event-handler.ts` | Application platform | Delete in SR-012 | Replaced by controller/launcher/dispatch-queue owners | No remaining construction concern | No replacement alias |
+| `application-platform/runtime/bind-once-published-artifact-publisher.ts` | Delete in SR-013 | Replaced by `ApplicationAgentToolMcpSessionScope -> AgentRunResourceManager -> ActiveAgentRunRegistry -> concrete publication service -> ScopedAgentToolMcpSessionManager` construction | Removes the publication/session/cleanup cycle without alias, reverse callback, or deferred state |
+| `application-platform/runtime/bind-once-application-engine-event-handler.ts` | Application platform | Delete in SR-013 | Replaced by controller, launcher, event queue/dispatcher, and artifact delivery queue/service owners | No remaining construction concern | No replacement alias |
 | `compositions/build-{studio,standalone-application}-server.ts` | Server assembly | Construction roots | Build servers/register chosen surfaces | One file per product server | Shared application runtime/lifecycle/registrars |
 | route handler/registrar files | API transport | Thin adapters | Shared handler logic + distinct mounts | Split by HTTP/WS and host cardinality | Existing gateway/communication services |
 | `commands/dev.ts` | Devkit | Dev command facade | Parse `--host`, select one development-session owner | One command boundary | Standalone/Studio session interfaces |
@@ -1552,7 +1680,8 @@ Test and source filenames that repeat a replaced role follow the same clean map:
 | Portable launch field policy | `application-portable-launch-config-policy.ts` | Application launch configuration | Package validator/runtime schemas need one recursive accept/reject rule | Yes | Yes: removes broad token exceptions | Secret scanner or app-specific allowlist |
 | Agent Tools route registration | existing `agent-tools-mcp-routes.ts` | Agent Tools MCP | Both servers need the same established registrar | N/A: reuse | Yes: avoids a second route implementation | External gateway or unrelated runtime changes |
 | Agent Tools process family | `agent-tools-mcp-runtime.ts` | Agent Tools MCP | Route and scoped-session-manager creation share one registry/catalog/dispatcher identity | Yes: removes repeated default construction | Yes | General service container |
-| Application-runtime publication invocation | `published-artifact-publisher.ts` + `active-agent-run-registry.ts` | Published artifacts / agent execution | Exact active-run reader and one semantic command | Yes: hides manager/relay | Yes | Runtime/service locator |
+| Application-runtime publication invocation | `published-artifact-publisher.ts` + `active-agent-run-registry.ts` | Published artifacts / agent execution | Exact active-run reader and one semantic command | Yes: hides manager identity | Yes | Runtime/service locator |
+| Application artifact worker delivery | `application-published-artifact-delivery-{queue,service}.ts` | Application orchestration / engine | Relay and lifecycle share one closed accepted-command/drain contract | Yes: removes controller-only shortcut | Yes | Generic event bus, callback registry, or journal duplicate |
 
 ## Shared Structure / Data Model Tightness Check
 
@@ -1591,12 +1720,13 @@ Test and source filenames that repeat a replaced role follow the same clean map:
 | `.../application-platform/runtime/build-application-platform-runtime.ts` | Application Platform | Runtime builder | Construct private owners in DS-015 order and freeze four outward projections | One assembly concern | MCP runtime + explicit constructors |
 | `.../application-platform/runtime/application-catalog-reconciliation-service.ts` | Application Platform | Host catalog reconciliation | Reconcile one supplied catalog snapshot against private known-state and availability owners | One host-management command | Platform state + availability |
 | `.../application-platform/runtime/application-availability-state-registry.ts` | Application Platform | Availability state core | Reader/writer capabilities | Break one concrete constructor cycle | Availability record |
-| `.../application-platform/runtime/bind-once-application-engine-event-handler.ts` | Application Platform | Delete | Controller/launcher/dispatch queue remove cycle | Clean removal concern | None |
-| `.../application-platform/runtime/bind-once-published-artifact-publisher.ts` | Application Platform | Delete | Active-run registry and concrete publisher-before-session order remove cycle | Clean removal concern | None |
+| `.../application-platform/runtime/bind-once-application-engine-event-handler.ts` | Application Platform | Delete | Controller/launcher plus closed event and artifact delivery paths remove cycle while preserving ensure/restart | Clean removal concern | None |
+| `.../application-platform/runtime/bind-once-published-artifact-publisher.ts` | Application Platform | Delete | Early session scope/resource manager/registry and concrete publisher-before-issuer order remove cycle | Clean removal concern | None |
 | `.../application-platform/runtime/application-definition-runtime-readiness.ts` | Application Platform | Required runtime readiness | Definitions/resources/runtime mappings | One readiness boundary | Current providers/availability |
 | `.../application-platform/runtime/agent-tool-registry-readiness.ts` | Application Platform | Required tool readiness | Strict result for exactly seven named groups: Skills, Browser, Task Delegation, Agent Communication, Published Artifact, Media, and Search Tools | One readiness boundary | Current six-group loader plus provisioned Search registration |
-| `.../agent-tools/mcp/agent-tools-mcp-runtime.ts` | Agent Tools MCP Transport | Process runtime | Own exact registry/catalog/executor/dispatcher and route/scoped-session-manager boundaries | One process identity/lifecycle | Existing components |
+| `.../agent-tools/mcp/agent-tools-mcp-runtime.ts` | Agent Tools MCP Transport | Process runtime | Own exact registry/catalog/executor/dispatcher, route dependencies, and early-scope/later-manager application session factory | One process identity/lifecycle | Existing components |
 | `.../agent-tools/mcp/scoped-agent-tool-mcp-session-manager.ts` | Agent Tools MCP Transport | Scoped session manager | Attach execution capabilities, issue/track/revoke/close sessions | One explicit scope lifecycle | MCP runtime/session service |
+| `.../agent-tools/mcp/application-agent-tool-mcp-session-scope.ts` | Agent Tools MCP Transport | Early application session scope | Record/revoke application sessions by exact run/member/owner; block/close | One ownership/revocation lifecycle | Exact process session service/registry |
 | `.../agent-tools/mcp/agent-tool-mcp-session.ts` | Agent Tools MCP Transport | Authenticated session | Carry non-wire `executionCapabilities` | One in-memory session subject | Published-artifact publisher |
 | `.../agent-tools/mcp/providers/publish-artifacts-mcp-adapter-provider.ts` | Agent Tools MCP Transport | Publish adapter | Delegate only through authenticated session publisher | One adapter concern | Existing publish input/result |
 | `.../services/published-artifacts/published-artifact-publisher.ts` | Published Artifacts | Narrow publisher | One publication command contract | One runtime-sensitive capability | Existing publication DTO/result |
@@ -1614,10 +1744,13 @@ Test and source filenames that repeat a replaced role follow the same clean map:
 | `.../application-platform/runtime/create-application-orchestration-services.ts` | Application Platform | Internal service builder | Construct named orchestration/configuration/event/communication services | One internal construction concern | Existing services/stores |
 | `.../application-platform/runtime/create-application-run-services.ts` | Application Platform | Internal run-service builder | Construct exact application run/team services, publisher/projection, memory/metadata, and shutdown coordinator | One internal construction concern | Existing managers/factories |
 | `.../application-platform/runtime/application-run-shutdown-coordinator.ts` | Application Platform | Shutdown coordinator | Stop team runs then agent runs; aggregate failures idempotently | One stop-sequencing concern | Exact run stoppers |
-| `.../agent-execution/runtime/active-agent-run-registry.ts` | Agent Execution | Active-run state owner | Register/read/list/remove active application runs only | One state concern needed before publication | Existing `AgentRun` identity |
+| `.../agent-execution/services/agent-run-resource-manager.ts` | Agent Execution | Exact run-resource cleanup | Attach/release session plus file/artifact/memory observers, including partial attach | One cleanup lifecycle independent of commands | Application session scope + observer capabilities |
+| `.../agent-execution/runtime/active-agent-run-registry.ts` | Agent Execution | Active-run identity owner | Register/read/list and identity-remove with typed reason/result; synchronously delegates exact cleanup | One state concern needed before publication | Existing `AgentRun` identity + resource manager |
 | `.../agent-execution/runtime/general-process-run-supervisor.ts` | Agent Execution | Process run supervisor | Construct/release process agent/team managers and stop them in order | One process lifecycle | General scoped session manager |
 | `.../application-engine/services/application-engine-controller.ts` | Application Engine | Attached-worker control | Worker handle/status/listener state, invocation, attach/detach, attached stop | One stable early owner | Existing worker handle/status contracts |
 | `.../application-engine/services/application-engine-launcher.ts` | Application Engine | Worker launch lifecycle | Bundle/storage preparation, process/client launch, definitions/capabilities/stream wiring, ensure/stop | One late launch owner | Controller + existing launch dependencies |
+| `.../application-orchestration/services/application-published-artifact-delivery-queue.ts` | Application Orchestration | Artifact command queue | Accept complete mapped events, per-run FIFO, independent lanes, completion, intake stop/drain | One closed domain queue | Application artifact event |
+| `.../application-orchestration/services/application-published-artifact-delivery-service.ts` | Application Orchestration | Artifact delivery consumer | Ensure/restart worker then invoke controller artifact handler and settle queue lease | One executable delivery path | Artifact queue + launcher/controller |
 | `.../application-orchestration/services/application-execution-event-dispatch-queue.ts` | Application Orchestration | Journal wakeup queue | Coalesce application IDs after durable append; no arbitrary payload/topic API | One closed bounded-local queue | Application ID only |
 | `.../application-orchestration/services/application-reentry-service.ts` | Application Orchestration | Re-entry transition owner | Stop/reload/reconcile/recover/resume and availability transition | One explicit state transition | Launcher/controller/recovery/dispatcher |
 | `.../application-packages/services/application-package-registry-service.ts` | Application Packages | Package registry state/query | Package roots, records, snapshots, list/details, diagnostics, command-facing state mutations | One package-state owner | Existing settings/record stores |
@@ -1658,7 +1791,8 @@ Test and source filenames that repeat a replaced role follow the same clean map:
 - **Adapter normalization:** Studio iframe v4 and standalone `contractVersion: "1"` wire payloads normalize before client creation; app business code sees one unversioned current SDK type.
 - **Capability-scoped internal transport:** an issued bearer session closes runtime-to-host configured-tool callbacks without creating user authentication or an external gateway.
 - **Process MCP runtime plus scoped managers:** one runtime controls registry/catalog/dispatcher identity; explicit scopes attach exact execution capabilities without duplicating the route or catalog.
-- **Early active-run registry:** publication/projection read exact application run state before sessions and run launch services exist; no deferred publisher remains.
+- **Early run identity/resource owners:** application session scope, run resource manager, and identity registry exist before publication/issuance; every removal path releases the exact resources once and no deferred publisher or reverse callback remains.
+- **Closed delivery queues:** a journal-wakeup queue drives durable event retry while a complete-command queue drives artifact ensure/invoke/drain. Neither is a generic event bus or handler registry.
 
 ## Target Subsystem / Folder / File Mapping
 
@@ -1929,7 +2063,7 @@ The layering is derived from the spines. It is not a request to move every curre
 
 1. Move application route registration out of broad REST/WebSocket indices into Studio application registrars.
 2. Extract shared backend HTTP handler functions that always receive an explicit application ID and delegate to the existing gateway.
-3. Historical implemented baseline: availability registry plus bind-once engine handler. SR-012 Sequence 10 supersedes the handler with controller/launcher/dispatch-queue owners.
+3. Historical implemented baseline: availability registry plus bind-once engine handler. SR-013 Sequence 10 supersedes the handler with controller/launcher and two closed queue/consumer pairs while preserving ensure-before-artifact-invoke.
 4. Preserve the refreshed-base process prerequisite chain in explicit `buildStudioServer` code: `AppConfig/database location -> core migration -> protected DB/root-key/sidecar path registration -> Prisma -> secret vault`; move provisioned Search registration into the strict seventh tool group.
 5. Add `ApplicationPlatformLifecycle` with P4–P9 and R1–R3 named collaborators; split required startup work from Studio-only B1–B3 tasks.
 6. Apply every `Modify` row and add the specified `stop`/`dispose` APIs; route registrars receive exact fields and no production application-runtime accessor fallback remains.
@@ -1977,10 +2111,10 @@ The layering is derived from the spines. It is not a request to move every curre
 ### Sequence 7 — Bind application Agent Tools sessions to the application-runtime publisher
 
 1. Preserve the route path, descriptor, token security, endpoint seeding, eligible tool projection, configured-MCP resolver, recipient-name messaging, and external-gateway boundary.
-2. Retain `PublishedArtifactPublisher`; SR-012 constructs its concrete application implementation from `ActiveAgentRunRegistry` before scoped sessions.
+2. Retain `PublishedArtifactPublisher`; SR-013 constructs its concrete application implementation from `ActiveAgentRunRegistry` before the later scoped session issuer.
 3. Add `AgentToolsMcpRuntime` over the existing registry/catalog/executor/dispatcher and require exact route dependencies. Remove default runtime discovery from the two server assembly paths.
 4. Retain `ScopedAgentToolMcpSessionManager`; attach the concrete application publisher to each issued session and inject the manager into application Codex/Claude construction.
-5. SR-012 order is active-run registry -> publication service -> scoped session manager -> run manager/relay attachments. P6A asserts concrete capabilities; cached/global provider capture remains forbidden.
+5. SR-013 order is application session scope -> queue-backed relay/resource manager -> active-run registry -> publication service -> scoped session issuer -> run managers. P6A asserts concrete capabilities; cached/global provider capture remains forbidden.
 6. Carry the exact scoped session revoker through `AgentRunManager` and mixed new/restored member cleanup. Stop blocks issue, revokes scope sessions, stops runs, releases the concrete publisher with the private runtime, and later closes the process MCP runtime.
 7. Register both hosts’ existing internal route with `agentToolsMcpRuntime.routeDependencies`; standalone remains before static fallback and lacks external `/mcp/gateway`.
 8. Add deliberately distinct general-process-versus-application-runtime publication proof, missing/wrong-scope/revoked-session negatives, and maintained adapter inventory checks. Then rerun real standalone and Studio Brief publication/message/handoff/journal/projection.
@@ -1995,7 +2129,7 @@ The layering is derived from the spines. It is not a request to move every curre
 
 ### Sequence 9 — Clean-cut framework vocabulary correction
 
-1. Historical SR-011 step: rename the callable contracts and bind-once implementations. SR-012 preserves the callable `PublishedArtifactPublisher` contract but removes both proxy implementations in Sequence 10.
+1. Historical SR-011 step: rename the callable contracts and bind-once implementations. SR-013 preserves the callable `PublishedArtifactPublisher` contract but removes both proxy implementations in Sequence 10.
 2. Rename the scoped session implementation/interface/factory, process MCP runtime, general run supervisor, and application shutdown coordinator. Preserve the exact instances, construction order, session registry, close order, and token behavior.
 3. Rename the application orchestration/run builder functions from `*Authorities` to `*Services`, then rename `ApplicationPlatformRuntimeGraph`/factory/files to `ApplicationPlatformRuntime`/`buildApplicationPlatformRuntime`. Replace code fields and locals such as `graph`, `applicationGraph`, `authorities`, and `runAuthorities` with their mapped role names.
 4. Rename the Studio and standalone returned server types/builders/files last, then update the private root export and all repository consumers. Keep the `compositions/` folder only as the explicit assembly-activity boundary.
@@ -2006,13 +2140,14 @@ The layering is derived from the spines. It is not a request to move every curre
 
 ### Sequence 10 — Narrow boundaries and remove construction cycles
 
-1. Add characterization coverage for the current runtime consumers, package refresh/rollback sequence, zero-run-on-build invariant, event retry, publication relay, recovery/remount, and shutdown.
+1. Add characterization coverage for current runtime consumers, package refresh/rollback, zero-run-on-build, event retry, artifact publication, worker-exit-before-publication, inactive discovery/replacement, explicit terminate, stop-all, recovery/remount, and shutdown.
 2. Add `ApplicationPlatformRestContracts`, `ApplicationPlatformRealtimeContracts`, and `ApplicationPlatformHostManagementContracts`; migrate registrars/host assembly to exact projections; then remove the 19-field outward shape.
 3. Split early package registry state/query from late package commands. Construct `ApplicationCatalogRefreshCoordinator` only after bundle, runtime catalog reconciliation, and definition services exist; remove every late-assigned Studio callback and package-path default.
-4. Add `ActiveAgentRunRegistry`; move publication/projection lookup and `AgentRunManager` registration/cleanup to it; construct the concrete application publisher before the scoped session manager and run managers; remove `BindOncePublishedArtifactPublisher`.
-5. Split `ApplicationEngineController` from `ApplicationEngineLauncher`; add the closed application-ID dispatch queue; move journal ingress, dispatch/retry, re-entry, gateway, relay, and lifecycle dependencies to the exact owner; remove `BindOnceApplicationEngineEventHandler` and `ApplicationEngineHostService`.
-6. Rebuild lifecycle stop from private participants and freeze only the four runtime projections. Remove application-path optional/global branches; keep supported general-process defaults only in named assembly factories.
-7. Delete superseded files/tests/imports in the same change, run retired-symbol/no-alias/no-whole-runtime scans, then complete source review and the full API-REV-011 dual-host characterization loop.
+4. Create `ApplicationEngineController`, `ApplicationExecutionEventDispatchQueue`, and `ApplicationPublishedArtifactDeliveryQueue` as early stable owners. Create the application MCP session scope and queue-backed artifact relay, then `AgentRunResourceManager` and identity-checked `ActiveAgentRunRegistry`. Construct the concrete publisher from that registry before the later scoped session issuer and run managers; remove `BindOncePublishedArtifactPublisher` without a reverse callback.
+5. Split `ApplicationEngineLauncher` from the controller. After orchestration/streaming exist, construct `ApplicationPublishedArtifactDeliveryService` and the journal event dispatcher. Both call launcher ensure before controller invoke; only the event dispatcher owns journal acknowledge/retry. Remove `BindOnceApplicationEngineEventHandler` and `ApplicationEngineHostService`.
+6. Move every active-run transition to the exact registry/resource contract: inactive discovery, inactive replacement, accepted explicit termination, stop-all, registration rollback, and stale duplicate removal. Delete map/resource ownership before cleanup, attempt session revocation plus all three observer detaches exactly once, and surface aggregate errors without deleting a newer replacement.
+7. Rebuild lifecycle stop from private participants: block session/event/artifact intake, terminate/remove runs, drain accepted artifact commands while launcher/controller remain live, close the application session scope, then stop engines and later process resources. Freeze only the four runtime projections. Remove application-path optional/global branches; keep supported general-process defaults only in named assembly factories.
+8. Delete superseded files/tests/imports in the same change, run retired-symbol/no-alias/no-whole-runtime/no-reverse-callback scans, then complete source review and the full API-REV-011 dual-host characterization loop plus SV-C52–SV-C57.
 
 ## Key Tradeoffs
 
@@ -2040,8 +2175,8 @@ The layering is derived from the spines. It is not a request to move every curre
 - **Runtime internals versus Agent Tools projection:** Runtime internals are not part of the designed or validated path. Eligible publication/message and selected available MCP-origin tools remain reachable through the existing session route.
 - **Four outward projections versus one service collection:** Exact lifecycle/REST/realtime/host-management views add several small contract types but prevent every route/host caller from depending on private stores and runtime mechanics.
 - **Late catalog coordinator versus callbacks into future services:** One explicit coordinator adds a real sequencing owner and permits acyclic construction. The alternative hides temporal coupling in non-null variables and makes rollback/refresh order harder to prove.
-- **Active-run registry versus publication depending on the full run manager:** A narrow state owner slightly decomposes run management but lets publication and sessions be constructed in natural order and keeps launch/restore/terminate behavior with `AgentRunManager`.
-- **Engine controller/launcher split versus permanent callback proxy:** The split creates two concrete roles plus one closed journal-wakeup queue. That is more source files than one host service, but each owns stable state, process launch, or dispatch sequencing, removes temporal binding, and preserves the same worker protocol.
+- **Run identity/resource split versus publication depending on the full run manager:** An early identity registry plus resource manager slightly decomposes run management, but it lets publication and sessions be constructed in natural order while keeping create/restore/terminate commands with `AgentRunManager`. Exact identity removal prevents stale completion from deleting a replacement and centralizes session/observer cleanup without a reverse callback.
+- **Controller/launcher plus two closed delivery paths versus a permanent callback proxy:** The split creates two engine roles, one journal-wakeup queue/dispatcher, and one complete artifact-command queue/delivery service. That is more source files than one host service, but each has one protocol-specific lifecycle; both delivery paths preserve ensure/restart before controller invocation without a generic deferred handler.
 
 ## Risks
 
@@ -2081,7 +2216,8 @@ The layering is derived from the spines. It is not a request to move every curre
 34. **Narrow-contract drift:** a registrar may regain the whole runtime or reconstruct a private service. Mitigation: compile-time exact registrar inputs, runtime-key assertion, import-boundary scan, and no outward store/recovery/run/engine fields.
 35. **Package rollback divergence:** splitting commands from refresh could change cleanup order or mask the original error. Mitigation: command-level state snapshots, exact success/failure sequence tests, one best-effort post-rollback refresh, and unchanged GraphQL responses/diagnostics.
 36. **Lazy engine/event regression:** splitting controller/launcher and adding a wakeup queue could change ensure, retry, crash, or remount timing. Mitigation: the journal remains authoritative; event ingress appends before enqueue; dispatcher retains current backoff/ack semantics; API-REV-011 restart/recovery/remount is a mandatory gate.
-37. **Run cleanup/identity regression:** an active-run registry could detach file/artifact/memory/session cleanup from terminate or inactive-run discovery. Mitigation: one manager-owned removal callback registered before readiness, exact-once attachment cleanup tests, deliberately distinct general/application registries, and real publication/handoff evidence.
+37. **Run cleanup/identity regression:** an active-run registry could detach file/artifact/memory/session cleanup from terminate, inactive discovery/replacement, stop-all, rollback, or stale duplicate removal. Mitigation: `removeIfCurrent` identity results plus `AgentRunResourceManager.release`; delete ownership before attempting all four cleanup categories, never callback into a later manager, and test exact-once cleanup with deliberately distinct general/application scopes.
+38. **Artifact relay restart regression:** a controller-only relay could fail after a worker exits even though the current path restarts it. Mitigation: every accepted artifact command passes through `ApplicationPublishedArtifactDeliveryService -> ApplicationEngineLauncher.ensureReady -> ApplicationEngineController.invokeApplicationArtifactHandler`; lifecycle drains accepted commands before engine stop and SV-C52 proves the worker-exit witness.
 
 ## Guidance For Implementation
 
@@ -2120,10 +2256,10 @@ The layering is derived from the spines. It is not a request to move every curre
 - Do not include Codex/Claude runtime-internal tooling in the application-framework implementation or test scope; untouched upstream behavior remains in place by default.
 - Construct one `AgentToolsMcpRuntime` per server and pass its exact route dependencies to the registrar and its scoped-session-manager factory to the application runtime. Never pass the whole runtime alongside its internals.
 - Attach only `PublishedArtifactPublisher` to application sessions. Remove cached/default publication service use from the provider; do not resolve an application runtime from application/package/run identity.
-- Create `ActiveAgentRunRegistry`, then the concrete application publisher, then scoped sessions and run managers. Remove both bind-once source files/tests and prove no deferred binding or application fallback remains.
-- Inject the application-scoped session manager into application Codex/Claude session creation and every new/restored run/member cleanup path. Do not change provider-native tool behavior.
-- Stop new issue and dispatch intake, revoke the scope’s sessions, stop runs/workers, and release private runtime owners. Tests must prove an old descriptor cannot dispatch after stop/restart.
-- Construct `ApplicationEngineController` before artifact relay/run services and `ApplicationEngineLauncher` only after orchestration/streaming. Event ingress must append the existing journal before enqueueing an application ID; the dispatcher alone consumes, ensures, invokes, acknowledges, retries, resumes, suspends, and stops.
+- Create the application session scope, queue-backed artifact relay, run resource manager, and identity registry before the concrete publisher; create the scoped session issuer and run managers afterward. Remove both bind-once source files/tests and prove no deferred binding, reverse callback, or application fallback remains.
+- Inject the later application-scoped session issuer into application Codex/Claude session creation; record every issued session in the early scope, and route every new/restored run/member cleanup through registry identity removal and the resource manager. Do not change provider-native tool behavior.
+- Stop new issue/event/artifact intake, terminate and identity-remove runs, drain accepted artifact commands while launcher/controller remain live, close the application session scope, then stop workers and private runtime owners in the specified order. Tests must prove an old descriptor cannot dispatch after stop/restart.
+- Construct `ApplicationEngineController` and both closed queues before run/publication services, then construct `ApplicationEngineLauncher`, the artifact delivery service, and event dispatcher after orchestration/streaming. Event ingress appends the journal before its application-ID wakeup; artifact relay enqueues the complete artifact command. Both consumers call launcher ensure before controller invoke; only the event dispatcher acknowledges/retries the journal.
 - Keep internal `/mcp/agent-tools/:sessionId` and external `/mcp/gateway` separate. Standalone registers only the former and adds no alias/proxy.
 - Implementation proves exact process-family identity, session-bound publisher dispatch, missing/wrong-scope/revoked-session negatives, the existing route's 401/404 gates, and external-gateway absence. API/E2E inspects descriptor/`tools/list` and proves application-runtime-scoped `publish_artifacts`, recipient-name `send_message_to`, handoff, journal, and application projection in standalone and Studio.
 - Do not change application storage schemas or create a data migration.
