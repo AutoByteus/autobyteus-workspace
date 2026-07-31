@@ -2,7 +2,7 @@
 
 ## Status (`Draft`/`Design-ready`/`Refined`)
 
-`Design-ready — SR-003 user clarification` — the approved external raw-trace-only direction remains unchanged. After CRR-001 / CR-001 exposed a cleanup-failure/inspector wording conflict, the user explicitly chose to retain the simple generic file-backed inspector behavior rather than add defensive runtime-qualified filtering.
+`Design-ready — SR-004 approval provenance clarified` — the approved external raw-trace-only direction remains unchanged. After CRR-001 / CR-001 exposed a cleanup-failure/inspector wording conflict, the user explicitly chose to retain the simple generic file-backed inspector behavior rather than add defensive runtime-qualified filtering. SR-004 records the exact decision chronology requested by CRR-002; it does not change the selected behavior.
 
 ## Goal / Problem Statement
 
@@ -192,4 +192,6 @@ Approved by the user on 2026-07-31. The approval followed explicit confirmation 
 2. The frontend event monitor and normal run projection come from raw traces rather than the snapshot.
 3. The approved requirements retain Raw Traces, remove future external WorkingContext production, make successfully cleaned external WorkingContext unavailable, delete only exact metadata-classified local external snapshots on startup, and preserve native, imported, missing/unmatched-metadata, and otherwise unclassified snapshots.
 
-On 2026-07-31, after CRR-001 / CR-001, the user clarified the failure edge case: when an eligible deletion fails, reporting the failure and keeping the application/provider/raw paths working is sufficient. The user explicitly accepts that the unchanged generic Memory Inspector may display the retained stale snapshot until cleanup succeeds and does not want extra runtime-qualified or UI-specific suppression logic.
+On 2026-07-31, after CRR-001 / CR-001, the user discussed the failure edge case. The user initially said they were unsure and wanted to discuss the tradeoff; that statement was not treated as approval. After the simplicity-first option was explained—best-effort deletion, truthful failure reporting, healthy application/provider/raw behavior, generic file-backed inspection, and retry/manual removal without runtime/UI suppression—the user made the later final decision: **“yes. lets do it. but mostly it will be successful for removing. but i agree with your best approach”**.
+
+That later direct approval supersedes the earlier uncertainty. The approved contract is therefore: successful cleanup/new external runs have no WorkingContext snapshot; a reported deletion failure may retain a stale file that the unchanged generic Memory Inspector can display until retry/manual removal; the application, provider continuation, raw recording, and raw-backed projection remain unaffected; no runtime-qualified read or UI hiding machinery is added.

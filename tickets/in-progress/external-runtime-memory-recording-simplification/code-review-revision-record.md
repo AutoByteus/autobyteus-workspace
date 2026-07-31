@@ -7,6 +7,7 @@ The current `code-review-report.md` or `api-e2e-test-review-report.md` remains a
 | Revision ID | Canonical Review Report | Entry Point / Trigger | Prior Result | Current Result | Affected Finding IDs |
 | --- | --- | --- | --- | --- | --- |
 | `CRR-001` | `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/in-progress/external-runtime-memory-recording-simplification/code-review-report.md` | Implementation Review / initial `IR-001` source handoff | `N/A` | `Fail — Design Impact` | `CR-001` |
+| `CRR-002` | `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/in-progress/external-runtime-memory-recording-simplification/code-review-report.md` | Implementation Review / `IR-002` re-entry under purported SR-003 approval | `Fail — Design Impact` | `Blocked — Requirement Gap` | `CR-001` |
 
 ## Revision Entries
 
@@ -32,3 +33,28 @@ None.
 - Material score or classification changes: Initial score `8.8/10` (`88.1/100`); `Design Impact` because the implementation faithfully follows an incomplete reviewed read-side design.
 - Recommended recipient: `solution_designer`
 - Remaining risks or uncertainty: Revised design must preserve native WorkingContext and the approved import/unclassified deletion exclusions while enforcing external absence after cleanup failure. API/E2E, durable test changes, and docs synchronization remain pending after re-review.
+
+### CRR-002 — Re-entry blocked by unapproved cleanup-failure outcome
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/in-progress/external-runtime-memory-recording-simplification/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round 2
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/in-progress/external-runtime-memory-recording-simplification/implementation-handoff.md`; `IR-002`, `CR-001`, `CR-MP-001`
+- Relevant solution revision IDs: `SR-003` with `SR-002` history
+- Relevant architecture-review revision IDs: `ARCH-REV-002` with `ARCH-REV-001` history
+- Relevant implementation revision IDs: `IR-002` with `IR-001` baseline
+- Relevant API/E2E revision IDs: `N/A`
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: `Fail — Design Impact` (`CRR-001`)
+- Current authoritative result: `Blocked — Requirement Gap`; `CR-001` remains unresolved
+- What changed in the review result and why: The source is unchanged, structurally sound, and technically aligned with SR-003's candidate residual. However, SR-003 / ARCH-REV-002 / IR-002 claim an explicit user approval that conflicts with the direct user statement that no decision was made and discussion is still required. The review therefore cannot close the finding or impose the opposite behavior.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-001` | Blocking `Design Impact` under `SR-002` / `ARCH-REV-001` | `Unresolved — Requirement Gap`; material lifecycle remains reachable but its product consequence is undecided | `CRR-001`, `SR-003`, `ARCH-REV-002`, `IR-002`, `CRR-002` | Direct user statement of uncertainty contradicts the revised artifacts' explicit-approval claim; source alignment and temporary probes prove mechanics only, not approval |
+
+- New or remaining finding IDs: `CR-001`
+- Material score or classification changes: Score rises from `8.8/10` to `9.4/10` because no source/design defect is established under the candidate behavior; classification changes from `Design Impact` to `Requirement Gap`, and the result is blocked pending explicit user decision.
+- Recommended recipient: `solution_designer`
+- Remaining risks or uncertainty: Exact user intent for failed-retained generic inspector visibility; durable tests/API/E2E/docs must wait; no implementation source fix is currently justified.

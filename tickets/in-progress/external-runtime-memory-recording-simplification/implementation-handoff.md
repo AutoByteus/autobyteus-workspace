@@ -9,20 +9,20 @@
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/in-progress/external-runtime-memory-recording-simplification/solution-revision-record.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/in-progress/external-runtime-memory-recording-simplification/design-review-report.md`
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/in-progress/external-runtime-memory-recording-simplification/architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/in-progress/external-runtime-memory-recording-simplification/code-review-report.md` and `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/in-progress/external-runtime-memory-recording-simplification/code-review-revision-record.md` (`CRR-001`, `CR-001`, `CR-MP-001`).
+- Triggering rework report, revision record, or evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/in-progress/external-runtime-memory-recording-simplification/code-review-report.md` and `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/in-progress/external-runtime-memory-recording-simplification/code-review-revision-record.md` (`CRR-002`, with `CRR-001` history; `CR-001`, `CR-MP-001`).
 
 ## Current Implementation Summary
 
-The implementation remains the production source from commit `8cd193e81` on `codex/external-runtime-memory-recording-simplification`; the SR-003 / ARCH-REV-002 alignment check required no source change. The mixed `RunMemoryWriter` and snapshot-only recording models/state/calls are removed. `ExternalRuntimeMemoryWriter` retains raw field construction, active-plus-complete-archive sequence hydration, tool lifecycle indexing, and provider-boundary archive access. Recorder and cleanup eligibility use the exact Codex/Claude predicate. The registered startup cleanup derives exact standalone and recursive team-member targets from current metadata plus owned layout/location services, inventories only local `agents` and `agent_teams` roots without traversing directory symlinks, preserves native/imported/unclassified/task-history data, and reports idempotent skip/failure results without blocking startup.
+The implementation remains the production source from commit `8cd193e81` on `codex/external-runtime-memory-recording-simplification`; the SR-004 / ARCH-REV-003 provenance alignment check required no source change. The mixed `RunMemoryWriter` and snapshot-only recording models/state/calls are removed. `ExternalRuntimeMemoryWriter` retains raw field construction, active-plus-complete-archive sequence hydration, tool lifecycle indexing, and provider-boundary archive access. Recorder and cleanup eligibility use the exact Codex/Claude predicate. The registered startup cleanup derives exact standalone and recursive team-member targets from current metadata plus owned layout/location services, inventories only local `agents` and `agent_teams` roots without traversing directory symlinks, preserves native/imported/unclassified/task-history data, and reports idempotent skip/failure results without blocking startup.
 
-SR-003 explicitly distinguishes two inspection outcomes. New external runs and successfully cleaned external runs naturally have no WorkingContext snapshot. If an eligible non-`ENOENT` unlink fails, the migration truthfully reports and retains the file; startup, provider continuation, and raw-backed behavior stay healthy; and the unchanged generic file-backed Memory Inspector may show the stale snapshot until retry or manual removal. This reachable residual is approved and must not be hidden through runtime-qualified reads, migration-status coupling, UI policy, or broader deletion.
+SR-004 preserves SR-003's two inspection outcomes and completes the approval provenance. The user's earlier statement, “I'm not sure. That's why I want to discuss with you.” requested discussion; after the simplicity-first consequence was explained, the later statement, “yes. lets do it. but mostly it will be successful for removing. but i agree with your best approach”, approved it. New external runs and successfully cleaned external runs naturally have no WorkingContext snapshot. If an eligible non-`ENOENT` unlink fails, the migration truthfully reports and retains the file; startup, provider continuation, and raw-backed behavior stay healthy; and the unchanged generic file-backed Memory Inspector may show the stale snapshot until retry or manual removal. This reachable residual is approved and must not be hidden through runtime-qualified reads, migration-status coupling, UI policy, or broader deletion.
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/in-progress/external-runtime-memory-recording-simplification/implementation-revision-record.md`
-- Current implementation revision ID: `IR-002`
-- Related solution revision IDs: `SR-003` (with `SR-002` / `SR-001` history)
-- Related architecture-review revision IDs: `ARCH-REV-002` (superseding `ARCH-REV-001` for current work)
-- Related code-review revision IDs: `CRR-001`
+- Current implementation revision ID: `IR-003`
+- Related solution revision IDs: `SR-004` (with `SR-003` / `SR-002` / `SR-001` history)
+- Related architecture-review revision IDs: `ARCH-REV-003` (superseding `ARCH-REV-002` for current work)
+- Related code-review revision IDs: `CRR-002` (with `CRR-001` history)
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
 - Triggering finding IDs: `CR-001`; material premise `CR-MP-001`
@@ -34,7 +34,7 @@ SR-003 explicitly distinguishes two inspection outcomes. New external runs and s
 | BEH-001 | Preserve provider-owned Codex/Claude continuation and keep local WorkingContext out of provider bootstrap. | Runtime bootstrap/provider source is unchanged; external recorder source owns raw evidence only. | Preserved by non-interference; later API/E2E must exercise representative provider continuation. |
 | BEH-002 | Preserve normalized user/assistant/reasoning/tool raw traces, ordering, and restart lifecycle hydration while removing parallel snapshot updates. | `agent-run-memory-recorder.ts` → accumulator/sequencer → `external-runtime-memory-writer.ts#appendRawTrace` → `RunMemoryFileStore`; `memory-recording-models.ts` contains only raw/boundary contracts. | Implemented. Raw field construction remains exact; open reasoning flushes and compound tool identity remain. |
 | BEH-003 | Preserve all-runtime raw-backed run/event-monitor projection and paging. | Existing projection/read paths remain unchanged. | Preserved by non-interference; downstream executable coverage remains required. |
-| BEH-004 | Stop future external snapshot production; successful cleanup/new runs show no WorkingContext; a failed-retained file may remain generically inspectable while Raw Traces stay independent. | Recording path contains no snapshot read/write. Existing `AgentMemoryService` / `MemoryFileStore` optional physical-file read remains runtime-agnostic and unchanged. | Implemented and aligned with SR-003. Focused validation observed the approved failed-cleanup stale WorkingContext and independent current raw trace together. |
+| BEH-004 | Stop future external snapshot production; successful cleanup/new runs show no WorkingContext; a failed-retained file may remain generically inspectable while Raw Traces stay independent. | Recording path contains no snapshot read/write. Existing `AgentMemoryService` / `MemoryFileStore` optional physical-file read remains runtime-agnostic and unchanged. | Implemented and aligned with the approval chronology recorded in SR-004. Focused validation observed the approved failed-cleanup stale WorkingContext and independent current raw trace together. |
 | BEH-005 | Preserve provider-boundary deduplication, retry, rotation, and active boundary marker. | `provider-compaction-boundary-recorder.ts` depends on `ExternalRuntimeMemoryWriter`; writer archive methods are unchanged. | Implemented; IR-001 focused rotation probe retained the marker active and produced one complete archived trace. |
 | BEH-006 | Perform exact metadata-classified, idempotent, non-blocking external snapshot disposal; retain and report a failed item for retry/manual removal. | `remove-external-runtime-working-context-snapshots-migration.ts`, registered immediately after `TeamRunMetadataMemberTreeMigration`; shared predicate in `runtime-kind-enum.ts`. | Implemented. Exact non-`ENOENT` unlink failure produces a failed detail and retains the file; the runner can continue startup and exposes retry. |
 
@@ -61,9 +61,9 @@ SR-003 explicitly distinguishes two inspection outcomes. New external runs and s
 
 ## Known Risks
 
-- A failed eligible cleanup can leave stale optional external WorkingContext visible and consume disk until retry/manual removal. SR-003 explicitly accepts this residual in exchange for truthful evidence and healthy startup/provider/raw behavior.
+- A failed eligible cleanup can leave stale optional external WorkingContext visible and consume disk until retry/manual removal. SR-004 preserves the explicitly approved SR-003 residual in exchange for truthful evidence and healthy startup/provider/raw behavior.
 - Missing, invalid, mismatched, imported, task-like, future-runtime, and otherwise unclassified snapshots intentionally remain preserved and file-backed.
-- Durable test files still contain obsolete writer imports and pre-SR-003 snapshot expectations. `api_e2e_engineer` must decide validity and make durable test changes after source review.
+- Durable test files still contain obsolete writer imports and pre-SR-004 snapshot expectations. `api_e2e_engineer` must decide validity and make durable test changes after source review.
 - Durable module documentation still describes external snapshot persistence without the successful-versus-failed cleanup distinction. `delivery_engineer` owns synchronization after executable coverage passes.
 
 ## Task Design Health Assessment Implementation Check
@@ -72,8 +72,8 @@ SR-003 explicitly distinguishes two inspection outcomes. New external runs and s
 - Reviewed root-cause classification: `Boundary Or Ownership Issue`, `Duplicated Policy Or Coordination`, and `Shared Structure Looseness`
 - Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `Refactor Needed Now`
 - Implementation matched the reviewed assessment (`Yes`/`No`): `Yes`
-- If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `Yes` — CRR-001 / CR-001 returned through SR-003 and ARCH-REV-002 before implementation resumed.
-- Evidence / notes: The source cleanly removes future external snapshot production and preserves one generic inspection boundary. ARCH-REV-002 confirms that adding runtime/migration/UI hiding would be unapproved defensive machinery. The current source therefore aligns without a patch.
+- If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `Yes` — CRR-001 returned through SR-003 / ARCH-REV-002; CRR-002's approval-provenance requirement gap returned through SR-004 / ARCH-REV-003 before implementation resumed.
+- Evidence / notes: The source cleanly removes future external snapshot production and preserves one generic inspection boundary. ARCH-REV-003 confirms the complete user decision chronology and that runtime/migration/UI hiding would be unapproved defensive machinery. The current source therefore aligns without a patch.
 
 ## Legacy / Compatibility Removal Check
 
@@ -83,7 +83,7 @@ SR-003 explicitly distinguishes two inspection outcomes. New external runs and s
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`
-- Notes: The cleanup migration is 299 effective non-empty lines. Its greater-than-220 delta remains a reviewed cohesive operational transaction; no source delta was made in IR-002.
+- Notes: The cleanup migration is 299 effective non-empty lines. Its greater-than-220 delta remains a reviewed cohesive operational transaction; no source delta was made in IR-002 or IR-003.
 
 ## Persisted Data Transition Check (When Applicable)
 
@@ -100,6 +100,12 @@ SR-003 explicitly distinguishes two inspection outcomes. New external runs and s
 - Focused probes used temporary directories and removed them in `finally` cleanup. No external service, provider call, browser, or real user memory root was used.
 
 ## Local Implementation Checks Run
+
+IR-003 provenance alignment checks:
+
+- `git diff --quiet 8cd193e81 -- autobyteus-server-ts/src` — passed; SR-004 / ARCH-REV-003 changes approval provenance only, with no product behavior or production-source delta.
+- Re-read the exact ordered user-decision evidence in requirements, investigation notes, design provenance, SR-004, and ARCH-REV-003; the current implementation behavior matches the later direct approval.
+- Current source TypeScript was rechecked with `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` — passed.
 
 IR-002 alignment checks:
 
@@ -118,7 +124,7 @@ IR-001 implementation checks retained as baseline evidence:
 
 ## Frontend Rendered-Result Check (When Applicable)
 
-`Not Applicable` — no frontend production file or rendered interaction changed. The existing generic Memory Inspector already renders physical presence or absence; SR-003 rejects runtime-specific hiding. Independent browser/API evidence remains downstream-owned.
+`Not Applicable` — no frontend production file or rendered interaction changed. The existing generic Memory Inspector already renders physical presence or absence; SR-004 preserves the approved rejection of runtime-specific hiding. Independent browser/API evidence remains downstream-owned.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 

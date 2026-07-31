@@ -8,6 +8,7 @@ The latest `design-review-report.md` remains authoritative. This record is the c
 | --- | --- | --- | --- | --- | --- |
 | `ARCH-REV-001` | Round 1 / initial architecture gate requested by solution designer | `SR-002` (`SR-001` baseline read) | `N/A` | `Pass` | None |
 | `ARCH-REV-002` | Round 2 / `CRR-001` design-impact re-entry after explicit user clarification | `SR-003` (with `SR-002` / `SR-001` history) | `Pass` | `Pass` | `CR-001`, `CR-MP-001` |
+| `ARCH-REV-003` | Round 3 / `CRR-002` requirement-gap re-entry with complete user decision chronology | `SR-004` (with `SR-003` / `SR-002` / `SR-001` history) | `Pass` | `Pass` | `CR-001`, `CR-MP-001` |
 
 ## Revision Entries
 
@@ -51,3 +52,25 @@ None.
 - Material classification changes: `CR-MP-001` remains `Reachable`; only its review consequence changes because the user approved stale optional display/delayed reclamation and explicitly rejected defensive hiding machinery.
 - Recommended recipient: `implementation_engineer` to refresh the implementation handoff/revision basis against `SR-003` / `ARCH-REV-002`, then return the unchanged or adjusted package through source review.
 - Remaining risks or uncertainty: Reported failed items can remain inspectable and occupy disk until retry/manual removal; conservative unclassified/imported preservation remains; API/E2E still owns durable test validity, execution breadth, and realistic evidence after source review passes.
+
+### ARCH-REV-003 — Confirm the complete direct-user approval chronology
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/in-progress/external-runtime-memory-recording-simplification/design-review-report.md`
+- Review round and trigger: Round 3; architecture re-entry after `CRR-002` reclassified `CR-001` as a requirement gap based on the user's earlier uncertainty, followed by `SR-004` recording the later direct approval that CRR-002 omitted.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/in-progress/external-runtime-memory-recording-simplification/code-review-report.md` and `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/in-progress/external-runtime-memory-recording-simplification/code-review-revision-record.md`; `CR-001`, `CR-MP-001`.
+- Relevant solution revision IDs: `SR-004` (with `SR-003` / `SR-002` / `SR-001` history reviewed)
+- Prior authoritative decision: `Pass` (`ARCH-REV-002` against `SR-003`)
+- Current authoritative decision: `Pass` (`ARCH-REV-003` against `SR-004`)
+- What changed in the review result or what baseline was established: Confirmed that the direct-user chronology contains two distinct stages: “I'm not sure. That's why I want to discuss with you.” was a request for discussion, not approval; after the simplicity-first retained-file behavior and tradeoff were explained, “yes. lets do it. but mostly it will be successful for removing. but i agree with your best approach” was the later final approval. Product behavior, `DS-006`, `DS-011`, and source commit `8cd193e81` remain unchanged from the `SR-003` / `ARCH-REV-002` basis.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-001` | Blocking `Requirement Gap` under `CRR-002`; approval claimed by `SR-003` was considered unsupported | Resolved at the solution/architecture provenance basis; pending code-review closure after implementation alignment | `CRR-002`, `SR-004`, `ARCH-REV-003` | Requirements Approval Status, investigation source log, design Decision Provenance, and `SR-004` record both the earlier uncertainty and later direct approval in sequence |
+| `CR-MP-001` | `Reachable`; consequence marked `Unclear` by `CRR-002` solely because approval provenance was considered incomplete | `Reachable`; consequence is an explicitly approved operational residual | `CRR-001`, `CRR-002`, `SR-004`, `ARCH-REV-003` | Final direct approval follows the explained simplicity-first option; technical reachability and healthy provider/raw/application consequence remain unchanged |
+
+- New or remaining finding IDs: None at architecture review.
+- Material classification changes: Reachability does not change. `CRR-002`'s `Unclear` consequence classification is cleared by the later direct approval now preserved in the canonical artifacts; no design or source mechanism changes.
+- Recommended recipient: `implementation_engineer` to align its canonical handoff/revision provenance to `SR-004` / `ARCH-REV-003`, then return the unchanged or adjusted cumulative package through source review.
+- Remaining risks or uncertainty: The approved failed-retained item can remain inspectable and occupy disk until retry/manual removal; conservative native/imported/unclassified preservation remains; API/E2E still owns durable test validity, execution breadth, and realistic evidence after source review passes.

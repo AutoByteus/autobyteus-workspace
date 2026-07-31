@@ -15,6 +15,10 @@ Investigation also found an exact current cleanup boundary: standalone run metad
 
 CRR-001 / CR-001 later proved that an eligible non-`ENOENT` unlink failure retains the old file while startup continues, after which the unchanged generic Memory Inspector can still display it. The user explicitly accepts that rare stale optional display and delayed disk reclamation. The governing guarantees are no future external snapshot writes, healthy application/provider continuation, preserved raw recording/projection, truthful cleanup failure reporting, and safe retry/manual removal—not unconditional inspector absence after a failed physical delete.
 
+### Decision Provenance
+
+The cleanup-failure consequence was not approved at the moment the user said, “I'm not sure. That's why I want to discuss with you.” After the simplicity-first option and its physical-file consequence were explained, the user made the later final decision: **“yes. lets do it. but mostly it will be successful for removing. but i agree with your best approach”**. SR-004 records this complete chronology in response to CRR-002. It does not alter DS-006, DS-011, or any target implementation behavior from SR-003.
+
 ## Intended Change
 
 Make the Codex/Claude recorder raw-trace-only:

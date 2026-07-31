@@ -8,19 +8,19 @@
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/in-progress/external-runtime-memory-recording-simplification/design-spec.md`
 - Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/in-progress/external-runtime-memory-recording-simplification/persisted-snapshot-inventory.md`
 - Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/in-progress/external-runtime-memory-recording-simplification/solution-revision-record.md`
-- Relevant Solution Revision IDs: `SR-002` (`SR-001` baseline also read)
+- Relevant Solution Revision IDs: `SR-003` with `SR-002` / `SR-001` history
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/in-progress/external-runtime-memory-recording-simplification/design-review-report.md`
 - Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/in-progress/external-runtime-memory-recording-simplification/architecture-review-revision-record.md`
-- Relevant Architecture Review Revision IDs: `ARCH-REV-001`
+- Relevant Architecture Review Revision IDs: `ARCH-REV-002` with `ARCH-REV-001` history
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/in-progress/external-runtime-memory-recording-simplification/implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/in-progress/external-runtime-memory-recording-simplification/implementation-revision-record.md`
-- Relevant Implementation Revision IDs: `IR-001`
+- Relevant Implementation Revision IDs: `IR-002` with `IR-001` baseline
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-runtime-memory-recording-simplification/tickets/in-progress/external-runtime-memory-recording-simplification/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: `1`
-- Trigger: Initial implementation-source and structural review of source commit `8cd193e81` and handoff commit `3f0c143a8`.
-- Prior Review Round Reviewed: `N/A`
-- Latest Authoritative Round: `1`
+- Current Code Review Revision ID: `CRR-002`
+- Current Review Round: `2`
+- Trigger: `IR-002` unchanged-source alignment re-entry after `SR-003` / `ARCH-REV-002` purported to resolve `CR-001`.
+- Prior Review Round Reviewed: `CRR-001` / round 1 `Fail — Design Impact`
+- Latest Authoritative Round: `2`
 - Coverage Investigation Reviewed (failure-origin entry point): `N/A`
 - Execution Coverage Report Reviewed (failure-origin entry point): `N/A`
 - API/E2E Revision Record Reviewed (failure-origin entry point): `N/A`
@@ -33,146 +33,146 @@
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: clean-cut external raw-only writer/model/service contraction; explicit external-runtime classification; startup disposal registration, classification, physical inventory, unlink, idempotence, and reporting; preserved provider continuation, raw projection, tool lifecycle, and provider-boundary behavior; approved Memory Inspector absence contract.
-- Files / areas reviewed: all nine changed implementation-source files; existing metadata/layout/location, app-data runner, raw store/archive, optional memory-read GraphQL/service/store, provider continuation, and projection paths needed to verify BEH-001 through BEH-006; implementation diff, handoff, and local evidence.
-- Explicit exclusions: durable test validity/change review, API/E2E execution, browser/live-provider validation, durable documentation synchronization, and delivery integration. These remain owned by later stages after source review passes.
+- Changed implementation and behavior reviewed: unchanged production source at `8cd193e81`; revised BEH-004/BEH-006 cleanup-failure residual; updated requirements/design/architecture and implementation alignment artifacts; prior `CR-001` / `CR-MP-001`.
+- Files / areas reviewed: cumulative artifact package, revision records, all nine changed source files and the existing generic memory-read path relevant to the prior finding.
+- Explicit exclusions: durable test changes and API/E2E execution remain downstream-owned and cannot begin until the intended cleanup-failure inspector behavior is actually approved.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: Codex and Claude retain provider continuation and canonical raw traces, stop owning external WorkingContext snapshots, and report WorkingContext unavailable while raw traces remain; startup cleanup is exact, idempotent, non-blocking, and failure-truthful.
-- Design-spec behavior map verified against the implementation: BEH-001, BEH-002, BEH-003, BEH-005, and cleanup mechanics in BEH-006 are confirmed. BEH-004 is contradicted under the approved non-blocking cleanup-failure lifecycle.
-- Design review report and round confirmed: `ARCH-REV-001` / round 1 was read; its assumption that unchanged optional reads naturally yield absence is incomplete when an eligible unlink fails and the file is intentionally retained.
-- Behavior-basis status: `Contradicted`
-- Changed or newly discovered behavior, if any: None. The contradiction is an interaction between two already-approved behaviors, BEH-004 and BEH-006.
-- Remaining material ambiguity, if any: None in approved intent. The reviewed design lacks a behavior-complete enforcement mechanism for external WorkingContext absence when physical disposal is incomplete.
+- Approved requirements basis understood: The original raw-only direction remains approved. The cleanup-failure inspector consequence is not currently approved: the latest direct user statement was that they were not sure and wanted discussion.
+- Design-spec behavior map verified against the implementation: The source technically matches the SR-003 candidate behavior, including DS-011. Whether that candidate is intended product behavior remains unresolved.
+- Design review report and round confirmed: `ARCH-REV-002` was read, but its repeated claim of an explicit user decision is contradicted by the direct user message in the active thread and by the correction sent to `solution_designer` stating no decision had been made.
+- Behavior-basis status: `Unclear`
+- Changed or newly discovered behavior, if any: None. Only the material consequence/acceptability of the existing CR-MP-001 lifecycle is undecided.
+- Remaining material ambiguity, if any: Whether a failed-retained external snapshot may remain visible in the generic Memory Inspector, or whether absence must still be enforced.
 
 | Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence |
 | --- | --- | --- | --- |
-| `BEH-001` | `Confirmed` | Provider bootstrap/continuation source is unchanged; the changed recorder has no WorkingContext input or provider-session responsibility. | N/A |
-| `BEH-002` | `Confirmed` | `AgentRunMemoryRecorder` accepts the exact external kinds, queues events, and routes accumulator/sequencer output to `ExternalRuntimeMemoryWriter.appendRawTrace`; active plus complete archives hydrate sequence and tool lifecycle state. | N/A |
-| `BEH-003` | `Confirmed` | Existing `LocalMemoryRunViewProjectionProvider` remains raw-backed with WorkingContext/episodic/semantic reads disabled; no projection source changed. | N/A |
-| `BEH-004` | `Contradicted` | New recording code no longer constructs, reads, or writes snapshots, but unchanged `MemoryViewResolver -> AgentMemoryService.getRunMemoryView -> MemoryFileStore.readWorkingContextSnapshot` still returns any retained file. | Under the REQ-012/AC-013 cleanup-failure contract, `removeEligibleTarget` reports `FAILED` and retains the eligible file while startup continues. A focused temporary probe produced `migrationStatus: FAILED`, `snapshotStillExists: true`, and a non-null external `workingContext`. See `CR-MP-001` and `CR-001`. |
-| `BEH-005` | `Confirmed` | Boundary recorder uses the renamed writer; correlation lookup, retry, active-to-archive rotation, and active-marker behavior are otherwise unchanged. | N/A |
-| `BEH-006` | `Confirmed` | Startup registry order, metadata/layout-derived targets, recursive physical inventory without directory-symlink traversal, exact path matching, native/unclassified preservation, idempotent absence, and non-blocking failure details match the approved cleanup contract. | Its reachable failure state exposes the BEH-004 read-side gap; the cleanup implementation itself is faithful to the reviewed contract. |
+| `BEH-001` | `Confirmed` | Provider continuation source remains unchanged and independent of WorkingContext. | N/A |
+| `BEH-002` | `Confirmed` | Exact external eligibility, queueing, normalization, raw append, sequence hydration, and tool lifecycle hydration remain intact. | N/A |
+| `BEH-003` | `Confirmed` | Normal run/event-monitor projection remains raw-backed and unchanged. | N/A |
+| `BEH-004` | `Unclear` | Source stops future external snapshot production and generically displays any failed-retained file, exactly as DS-011 describes. | SR-003 says the user explicitly accepted this residual; the direct user message instead says, “I'm not sure. That's why I want to discuss with you.” No final product decision exists. |
+| `BEH-005` | `Confirmed` | Provider-boundary correlation, retry, rotation, archive, and active marker paths are unchanged except for the writer type rename. | N/A |
+| `BEH-006` | `Unclear` | Exact cleanup, truthful non-blocking failure, file retention, and retry are confirmed. | The operational mechanics are approved; the acceptability of their stale generic inspector consequence remains undecided with BEH-004. |
 
 ## Structural / Design Checks
 
 | Check | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | `Fail` | Writer/model contraction addresses the documented duplicated ownership, but retained eligible files remain externally readable after an approved cleanup failure. | Revise the design-health response to cover the cleanup-to-inspector lifecycle before implementation resumes. |
-| Implementation matches approved behavior-defining supplemental artifacts | `Pass` | The evidentiary inventory supports exact classified disposal and preservation exclusions; implementation does not broaden deletion. | None. |
-| Data-flow spine inventory clarity and preservation under shared principles | `Fail` | Individual DS-005 and DS-006 paths are readable, but their reachable composition was omitted: failed exact unlink -> startup continues -> inspector reads retained file. | Add and review the cross-spine lifecycle/invariant that enforces BEH-004 under BEH-006 failure. |
-| Ownership boundary preservation and clarity | `Fail` | Recording and cleanup ownership are clear; no authoritative owner currently enforces external WorkingContext absence when deletion is incomplete. | Assign the runtime-qualified read/availability invariant to an authoritative boundary without weakening native reads. |
-| Off-spine concern clarity | `Pass` | Predicate, metadata/layout facts, archive storage, and migration ledger serve explicit owners and do not compete with the recording spine. | None. |
-| Existing capability/subsystem reuse check | `Fail` | Reusing the optional memory read unchanged is not behavior-complete because it is file-presence-only and runtime-agnostic. | Redesign whether the existing read boundary is strengthened or another reviewed owner enforces the invariant. |
-| Reusable owned structures check | `Pass` | Exact runtime classification is shared once; raw input remains a tight owned union; migration summary logic is local to its sole owner. | None. |
-| Shared-structure/data-model tightness check | `Pass` | Snapshot update/write-operation structures are removed; no kitchen-sink or parallel trace model remains. | None. |
-| Repeated coordination ownership check | `Pass` | Eligibility policy is centralized and queue/tool/boundary coordination remains with existing owners. | None. |
-| Empty indirection check | `Pass` | No pass-through-only layer or alias/re-export was added. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | `Pass` | Writer, accumulator, tool sequencer, boundary recorder, predicate, registry, and cleanup responsibilities remain distinct and cohesive. | None beyond `CR-001`. |
-| Ownership-driven dependency check | `Pass` | Changed dependencies point from services to the external writer/predicate and from cleanup to metadata/layout facts; no cycle or store-owned deletion policy was introduced. | None. |
-| Authoritative Boundary Rule check | `Pass` | No changed caller depends on both an outer owner and one of that owner's internals. | None. |
-| File placement check | `Pass` | All changed files remain under their owning runtime-management, agent-memory, or app-data-migration areas. | None. |
-| Flat-vs-over-split layout judgment | `Pass` | Existing flat service layout preserves distinct bounded state machines; the 299-effective-line cleanup is one operational transaction and remains below the hard limit. | None. |
-| Interface/API/query/command/service-method boundary clarity | `Fail` | `getRunMemoryView(runId, options)` has no runtime-qualified policy and directly reflects snapshot file presence, so it cannot express the approved external absence invariant across cleanup failure. | Review and define a singular, explicit identity/policy boundary for runtime-qualified inspection. |
-| Naming quality and naming-to-responsibility alignment check | `Pass` | `ExternalRuntimeMemoryWriter`, the exact predicate, and cleanup migration name their subjects accurately; obsolete writer name is gone from production source. | None. |
-| No unjustified duplication of code / repeated structures in changed scope | `Pass` | Raw construction remains centralized; the exact runtime predicate is not duplicated. | None. |
-| Patch-on-patch complexity control | `Pass` | The implementation removes parallel state rather than layering flags, fallbacks, or adapters. | None. |
-| Dead/obsolete code cleanup completeness in changed scope | `Fail` | Snapshot-only recording code is removed, but the old external snapshot can still drive the generic inspector for a classified external run after a supported cleanup failure. | Close the external read path while retaining native WorkingContext behavior. |
-| Relevant test scenarios and assertions are clear and requirement-aligned | `Pass` | No durable test was changed at this stage; the handoff identifies exact writer, cleanup, inspector, projection, provider, and native scenarios for the API/E2E owner. | Revisit after the redesigned source passes review. |
-| Test fixtures/helpers are reasonably reusable and test structure remains coherent | `Pass` | No durable test-code delta exists in this entry point; downstream test ownership is explicit. | None at this stage. |
-| No stale, duplicated, or compatibility-only tests are retained in changed scope | `Pass` | Production-source scope contains no tests; known obsolete durable imports/assertions are explicitly inventoried for the API/E2E-owned validity/update stage rather than accepted as passing coverage. | Do not advance them until source/design rework is complete. |
-| API/E2E readiness for the next workflow stage | `Fail` | API/E2E cannot validate AC-012 truthfully while the approved cleanup-failure path returns old external WorkingContext. | Resolve `CR-001`, return through architecture review and source review, then advance. |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | `Pass` | The clean-cut writer/model contraction and exact disposal boundary remain evidence-backed. | None. |
+| Implementation matches approved behavior-defining supplemental artifacts | `Pass` | The retained inventory is evidentiary and unchanged; source preserves its classification/deletion boundaries. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | `Pass` | DS-011 now accurately exposes the failed unlink -> retained file -> healthy startup -> generic inspection -> retry lifecycle. | Approval of its consequence remains upstream work, not a source-structure defect. |
+| Ownership boundary preservation and clarity | `Pass` | Recorder, writer, cleanup, generic inspector, and native owners are technically distinct. | None pending requirement decision. |
+| Off-spine concern clarity | `Pass` | Runtime classification, metadata/layout facts, archive storage, and migration ledger remain attached to clear owners. | None. |
+| Existing capability/subsystem reuse check | `Fail` | Reusing the generic inspector unchanged is one coherent option, but SR-003 incorrectly presents it as approved. | Obtain the user's actual behavior decision before accepting or rejecting this reuse choice. |
+| Reusable owned structures check | `Pass` | Exact runtime classification and raw input contracts remain centralized and tight. | None. |
+| Shared-structure/data-model tightness check | `Pass` | Snapshot update/write-operation models remain removed; no overlapping representation was introduced. | None. |
+| Repeated coordination ownership check | `Pass` | Eligibility and event/tool/boundary coordination each have one owner. | None. |
+| Empty indirection check | `Pass` | No alias, re-export, pass-through layer, or defensive wrapper was added. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | `Pass` | Changed files remain cohesive and reduced in responsibility. | None. |
+| Ownership-driven dependency check | `Pass` | No forbidden shortcut or cycle exists. | None. |
+| Authoritative Boundary Rule check | `Pass` | No caller bypasses an outer authoritative boundary to use its internals. | None. |
+| File placement check | `Pass` | Runtime, memory, and migration files remain under the correct owning areas. | None. |
+| Flat-vs-over-split layout judgment | `Pass` | Existing bounded service files and the cohesive cleanup transaction remain proportionate. | None. |
+| Interface/API/query/command/service-method boundary clarity | `Pass` | The generic physical-file memory view is a clear interface for the candidate behavior; no conclusion is made about whether that behavior should be approved. | None pending requirement decision. |
+| Naming quality and naming-to-responsibility alignment check | `Pass` | External writer, predicate, and cleanup names accurately state their subjects. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | `Pass` | No duplicated predicate or raw construction exists. | None. |
+| Patch-on-patch complexity control | `Pass` | No defensive patch was added while the requirement is undecided. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | `Pass` | Snapshot-only recorder source is removed. Generic inspection cannot be classified as obsolete or required until the user decides the residual behavior. | None pending requirement decision. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | `Fail` | SR-003 maps a failed-retained stale-visibility assertion, but its expected outcome lacks actual approval. | Finalize the requirement before durable tests encode either outcome. |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | `Pass` | No durable test-code delta exists in this entry point. | None. |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | `Pass` | Known obsolete durable tests are inventoried for the API/E2E-owned update stage; no test result is being accepted prematurely. | None at source stage. |
+| API/E2E readiness for the next workflow stage | `Fail` | API/E2E cannot truthfully decide the expected cleanup-failure inspector result while the user is still considering it. | Resolve the requirement gap and return through architecture/source review. |
 
 ## Source File Size And Structure Audit
 
 | Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
 | --- | ---: | --- | --- | --- | --- | --- | --- |
 | `src/agent-memory/domain/memory-recording-models.ts` | 84 | `Pass` | `Pass` | Tight raw/boundary contracts | `Pass` | Pass | None |
-| `src/agent-memory/services/agent-run-memory-recorder.ts` | 128 | `Pass` | `Pass` | Exact eligibility, state, and queue facade | `Pass` | Pass | None |
+| `src/agent-memory/services/agent-run-memory-recorder.ts` | 128 | `Pass` | `Pass` | Exact eligibility, lifecycle, and queue facade | `Pass` | Pass | None |
 | `src/agent-memory/services/provider-compaction-boundary-recorder.ts` | 129 | `Pass` | `Pass` | Cohesive boundary lifecycle | `Pass` | Pass | None |
-| `src/agent-memory/services/runtime-memory-event-accumulator.ts` | 262 | `Pass` | `Pass` — net reduction from 303 | Cohesive bounded event state machine | `Pass` | Pass after assessment | None |
-| `src/agent-memory/services/runtime-tool-trace-sequencer.ts` | 259 | `Pass` | `Pass` — net reduction from 276 | Cohesive compound-identity tool lifecycle | `Pass` | Pass after assessment | None |
-| `src/agent-memory/store/external-runtime-memory-writer.ts` | 112 | `Pass` | `Pass` | Singular external raw persistence/lifecycle owner | `Pass` | Pass | None |
+| `src/agent-memory/services/runtime-memory-event-accumulator.ts` | 262 | `Pass` | `Pass` — reduced from 303 | Cohesive bounded event state machine | `Pass` | Pass after assessment | None |
+| `src/agent-memory/services/runtime-tool-trace-sequencer.ts` | 259 | `Pass` | `Pass` — reduced from 276 | Cohesive compound-identity lifecycle | `Pass` | Pass after assessment | None |
+| `src/agent-memory/store/external-runtime-memory-writer.ts` | 112 | `Pass` | `Pass` | Singular raw persistence/lifecycle owner | `Pass` | Pass | None |
 | `src/app-data-migrations/app-data-migration-registry.ts` | 56 | `Pass` | `Pass` | Registration/order only | `Pass` | Pass | None |
-| `src/app-data-migrations/migrations/remove-external-runtime-working-context-snapshots-migration.ts` | 299 | `Pass` | `Pass after assessment` — new +299 file | Candidate classification, safe inventory, exact action, and result summary form one operational transaction; splitting would add indirection without another owner | `Pass` | Pass after assessment | None |
-| `src/runtime-management/runtime-kind-enum.ts` | 25 | `Pass` | `Pass` | Enum plus exact current classification | `Pass` | Pass | None |
+| `src/app-data-migrations/migrations/remove-external-runtime-working-context-snapshots-migration.ts` | 299 | `Pass` | `Pass after assessment` — new +299 file | One metadata classification/inventory/action/report transaction | `Pass` | Pass after assessment | None |
+| `src/runtime-management/runtime-kind-enum.ts` | 25 | `Pass` | `Pass` | Enum plus exact classification | `Pass` | Pass | None |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | `Pass` | No aliases, dual writes, old-file fallbacks, flags, or raw-to-snapshot reconstruction were added. |
-| No legacy old-behavior retention in changed scope | `Fail` | A retained old external snapshot still appears in the inspector after an approved cleanup failure. |
-| Dead/obsolete code cleanup completeness in changed scope | `Fail` | External snapshot production is gone, but the external read consequence remains reachable. Native generic snapshot APIs themselves are not obsolete. |
-| Approved persisted-data transition decision is followed without unnecessary migration work | `Fail` | Exact disposal is proportionate, but the transition does not achieve external inspection absence when disposal is incomplete. |
+| No backward-compatibility mechanisms in changed scope | `Pass` | No aliases, dual writes, fallbacks, flags, or reconstruction exist. |
+| No legacy old-behavior retention in changed scope | `Fail` | The retained-file inspector outcome cannot be classified until the intended behavior is approved. This is not a proven source defect. |
+| Dead/obsolete code cleanup completeness in changed scope | `Pass` | Snapshot-only recording code is gone; generic native/import inspection remains supported. |
+| Approved persisted-data transition decision is followed without unnecessary migration work | `Fail` | Disposal mechanics are correct, but the intended user-visible result after a failed disposal is unresolved. |
 | No version-specific dual reads/writes or request-time old-shape fallback exists | `Pass` | None found. |
-| Approved transition mechanics match the reviewed design, including migration safety only when required | `Pass` | Implementation faithfully matches the reviewed disposal design; `CR-001` is a design-impact gap in that design. |
+| Approved transition mechanics match the reviewed design, including migration safety only when required | `Fail` | Source matches SR-003 technically, but SR-003's claimed user approval is invalid. |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal
 
-| Item / Path | Type | Evidence | Why It Must Be Removed | Required Action |
-| --- | --- | --- | --- | --- |
-| External snapshot visibility through `src/agent-memory/services/agent-memory-service.ts:44-48` and `src/agent-memory/store/memory-file-store.ts:126-128` for a current metadata-classified Codex/Claude run | `DormantPath` | `src/app-data-migrations/migrations/remove-external-runtime-working-context-snapshots-migration.ts:300-316` retains the file on unlink failure; unchanged read code returns it solely from file presence. Focused probe confirmed non-null WorkingContext after a failed eligible unlink. | Violates REQ-011/AC-012 under the explicitly supported REQ-012/AC-013 non-blocking failure lifecycle. | Redesign and remove only the external-runtime visibility path; preserve native snapshot APIs and native inspection. |
+None established in round 2. The prior external visibility item depends on an unresolved product decision and cannot drive removal or defensive machinery while `CR-MP-001`'s consequence is unclear.
 
 ## Docs-Impact Verdict
 
 - Docs impact: `Yes`
-- Why: Durable docs still describe `RunMemoryWriter` and external snapshot persistence, and the final design must document raw-only external memory plus the runtime-qualified absence invariant.
-- Files or areas likely affected: `autobyteus-server-ts/docs/modules/agent_memory.md`, `codex_integration.md`, `run_history.md`, and possibly `agent_execution.md` after source/API/E2E pass.
+- Why: Final docs must describe whichever cleanup-failure inspection contract the user actually chooses, plus the raw-only recorder and successful-cleanup behavior.
+- Files or areas likely affected: `agent_memory.md`, `codex_integration.md`, `run_history.md`, and possibly `agent_execution.md` after downstream pass.
 
 ## Material Premise Validation
 
 ### Upstream Design-Review Material-Premise Decisions
 
-None. `ARCH-REV-001` recorded no separate material-premise decisions.
+| Premise ID | Current Status | Changed Evidence / Reason |
+| --- | --- | --- |
+| `CR-MP-001` | `Reclassified` | Reachability remains confirmed. ARCH-REV-002 classifies stale display as accepted, but the direct user statement says no decision was made and discussion is still required. The consequence is therefore `Unclear`, not approved. |
 
 ### `CR-MP-001` — A classified external snapshot remains readable after a non-blocking cleanup failure
 
-- Origin: `New`
-- Related approved requirement or established contract: REQ-011 and AC-012 require external WorkingContext inspection absence; REQ-012 and AC-013 explicitly require deletion/classification failures to be reported without blocking startup.
+- Origin: `Reclassified from ARCH-REV-002's use of CR-MP-001`
+- Related approved requirement or established contract: Exact non-blocking cleanup failure/reporting is approved; the failed-retained inspector result is not yet approved.
 - Relevant behavior ID(s): `BEH-004`, `BEH-006`
 - Initiating basis kind: `Contract`
-- Independent product-supported initiating trigger or applicable governing contract: The approved startup-cleanup contract expressly admits an eligible snapshot deletion failure, requires the file to be retained for retry, and requires server startup to continue.
-- Support evidence: `requirements.md` REQ-012/AC-013; `removeEligibleTarget` returns `FAILED` without removing the file; `AppDataMigrationRunner.runPending` records the result and continues; implementation handoff reports a forced unlink-failure probe as an intended supported outcome.
-- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: `ServerRuntime startup -> AppDataMigrationRunner.runPending -> RemoveExternalRuntimeWorkingContextSnapshotsMigration.execute -> exact eligible fs.unlink -> failure detail/file retained -> startup continues -> user opens Memory Inspector for that current Codex/Claude run -> GraphQL MemoryViewResolver -> AgentMemoryService.getRunMemoryView(includeWorkingContext=true) -> MemoryFileStore.readWorkingContextSnapshot -> retained messages returned`.
-- Lifecycle preconditions and material consequence at the claimed point: Authoritative current metadata classifies the run as Codex/Claude and an old snapshot exists. Deletion fails, so the approved availability behavior leaves the file in place. The unchanged read path has no runtime check and exposes the obsolete transcript, contradicting the approved unavailable/null result.
+- Independent product-supported initiating trigger or applicable governing contract: Cleanup must truthfully retain/report a non-`ENOENT` eligible unlink failure and allow startup to continue.
+- Support evidence: Cleanup source, app-data runner, CRR-001 probe, and IR-002 probe all confirm the lifecycle.
+- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: `startup -> migration runner -> exact eligible unlink failure -> failure detail/file retained -> startup continues -> user opens Memory Inspector -> generic memory view reads retained file`; provider continuation and normal projection remain independently provider/raw-backed.
+- Lifecycle preconditions and material consequence at the claimed point: An eligible old file remains and can be displayed; storage reclamation is delayed, but runtime continuation and projection are healthy.
 - Reachability: `Reachable`
-- Review consequence / proportionate response: `CR-001` is a blocking `Design Impact`. The solution must define an authoritative runtime-qualified read/availability invariant that remains true when disposal is incomplete, while preserving native AutoByteus and explicitly preserved data boundaries. The revised package must return through architecture review before implementation rework.
+- Review consequence / proportionate response: `Unclear`. Do not require defensive filtering and do not approve stale display until the user decides whether the diagnostic/storage residual is acceptable. Route the requirement gap upstream.
 
 ## Review Scorecard
 
-- Overall score (`/10`): `8.8`
-- Overall score (`/100`): `88.1`
-- Score calculation note: Simple average of the ten category scores; the blocking behavior contradiction and sub-9 categories determine the decision, not the average.
+- Overall score (`/10`): `9.4`
+- Overall score (`/100`): `93.5`
+- Score calculation note: Simple average. Strong source structure does not override the blocked behavior basis or the sub-9 API/E2E-readiness score.
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | ---: | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | 8.5 | Recording, projection, boundary, and cleanup spines are otherwise explicit and traceable. | DS-005 failure was not composed forward into DS-006 inspection. | Add the cross-spine lifecycle and invariant. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | 8.6 | Changed writer, sequencer, recorder, and cleanup owners are clean. | No authoritative owner enforces external inspection absence when deletion is incomplete. | Assign and encapsulate the runtime-qualified read invariant. |
-| `3` | `API / Interface / Query / Command Clarity` | 8.7 | New raw and cleanup interfaces are singular and explicit. | The unchanged memory view boundary is file-presence-only and cannot express the approved runtime-specific outcome. | Strengthen the reviewed read/availability contract. |
-| `4` | `Separation of Concerns and File Placement` | 9.4 | Changed responsibilities and paths align well with their owning subsystems. | The missing read-side policy prevents a higher score but does not make the changed files mixed. | Place the revised invariant with its authoritative read/identity owner. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.7 | Parallel snapshot/update shapes are removed and exact runtime classification is shared once. | No material weakness beyond downstream design re-entry. | Preserve the tight shapes. |
-| `6` | `Naming Quality and Local Readability` | 9.5 | Names reflect external raw persistence and exact disposal; local code is readable. | Several long lines are stylistic pressure only, not a structural defect. | Normal formatter cleanup may occur with the owning rework. |
-| `7` | `API/E2E Readiness` | 8.2 | The handoff gives strong scenario coverage hints and source TypeScript passes. | AC-012 cannot pass truthfully under the supported cleanup-failure path. | Resolve `CR-001` before API/E2E. |
-| `8` | `Runtime Correctness And Behavioral Fidelity` | 8.0 | Raw fidelity, exact eligibility, archive behavior, and cleanup safety are preserved. | Approved external WorkingContext absence is violated after a reachable failed unlink. | Enforce absence independently of successful physical cleanup. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | 8.7 | No compatibility machinery was added and the mixed writer is removed cleanly. | An old external file can still drive visible legacy inspector behavior. | Remove the external visibility path without harming native reads. |
-| `10` | `Cleanup Completeness` | 8.8 | Snapshot-only source and exact eligible files are comprehensively targeted. | Cleanup failure correctly retains the file, but the overall transition lacks a read-side guard for that retained state. | Complete the behavior transition across cleanup and inspection. |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.5 | DS-011 now exposes the complete real cleanup-failure lifecycle. | Its product consequence is undecided, not structurally hidden. | Obtain approval without changing the accurate spine. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.5 | Source owners and boundaries are distinct and coherent. | Final policy ownership depends on the user's choice. | Revalidate after the requirement decision. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.5 | Current APIs clearly implement generic physical inspection and raw-only recording. | Whether generic inspection is the desired failure outcome is unapproved. | Do not reshape the API speculatively. |
+| `4` | `Separation of Concerns and File Placement` | 9.5 | Changed files remain cohesive and well placed. | No material source weakness. | Preserve this structure. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.7 | Parallel snapshot/update shapes are removed and shared policy is tight. | No material weakness. | Preserve the tight contracts. |
+| `6` | `Naming Quality and Local Readability` | 9.5 | Names align with responsibilities and the removal is easy to follow. | Minor long-line style only. | Normal formatting during future owned work if any. |
+| `7` | `API/E2E Readiness` | 8.5 | Execution paths and scenarios are well inventoried. | One expected user-visible outcome is falsely labeled approved and cannot be asserted truthfully. | Secure an explicit user decision first. |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.2 | Source correctly implements the stable raw/provider/cleanup contracts and one candidate inspector outcome. | Fidelity for the disputed outcome cannot be finalized. | Re-review against the actual approved choice. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.2 | No compatibility machinery exists. | Classification of failed-retained generic display remains requirement-dependent. | Resolve the requirement; add no speculative machinery. |
+| `10` | `Cleanup Completeness` | 9.4 | Exact deletion, exclusions, idempotence, reporting, and retry are implemented cleanly. | Product handling of a retained failed item is undecided. | Confirm the accepted residual or revise the design. |
 
 ## Findings
 
-### `CR-001` — Failed eligible cleanup leaves obsolete external WorkingContext visible
+### `CR-001` — Cleanup-failure inspector consequence lacks an approved product decision
 
-- Severity / classification: Blocking / `Design Impact`
-- Affected approved behavior: BEH-004 and BEH-006; REQ-011, REQ-012; AC-012, AC-013.
-- Material premise: `CR-MP-001` (`Reachable`).
-- Evidence: `removeEligibleTarget` retains an eligible file on non-`ENOENT` unlink failure and returns a failure detail. Startup is intentionally non-blocking. `AgentMemoryService.getRunMemoryView` and `MemoryFileStore.readWorkingContextSnapshot` remain runtime-agnostic and return the retained snapshot. A temporary, non-durable review probe with current Codex metadata and a denied unlink produced `FAILED`, one failed item, `snapshotStillExists: true`, and the retained assistant message in `workingContext`.
-- Consequence: A user can open the exposed Memory Inspector after startup and see the obsolete Codex/Claude duplicate even though approved behavior requires WorkingContext to be unavailable/null after the cutover. Manual retry is optional, and warning results are not automatically rerun on later startup, so the contradiction can persist.
-- Required action: Revise the solution package to define the runtime-qualified read/availability behavior for retained eligible external snapshots, including owner, identity source, standalone/team path, cleanup-failure lifecycle, native preservation, and test mapping. Return through architecture review before implementation resumes. Do not solve this by weakening failure reporting/startup availability or deleting native/imported/unclassified data.
+- Current classification: Blocking `Requirement Gap` (reclassified from round-1 `Design Impact`).
+- Affected behavior: BEH-004/BEH-006; REQ-011/REQ-012; AC-012/AC-013.
+- Material premise: `CR-MP-001` remains `Reachable`; its consequence is `Unclear`.
+- Evidence: SR-003, ARCH-REV-002, IR-002, and current core artifacts repeatedly say the user explicitly accepted stale generic inspection and rejected defensive filtering. The direct user message instead states they are not sure and want discussion. A correction was delivered to `solution_designer` that the prior candidate interpretation was not a final decision.
+- Consequence: Neither source outcome can be approved yet. Passing would encode stale visibility without approval; requiring runtime/UI suppression would impose defensive machinery without approval.
+- Required action: Restore the cleanup-failure inspector outcome to proposed/undecided status, discuss the concrete tradeoff with the user, obtain an explicit decision, revise the core/revision artifacts truthfully, and return through architecture review. No implementation-source change is requested at this time.
 
 ## Classification
 
-`Design Impact` — the implementation follows the reviewed "unchanged optional read" design, but that design does not satisfy two approved behaviors together.
+`Requirement Gap` — the canonical package asserts approval that the user expressly has not given.
 
 ## Recommended Recipient
 
@@ -180,16 +180,16 @@ None. `ARCH-REV-001` recorded no separate material-premise decisions.
 
 ## Residual Risks
 
-- The API/E2E owner still must validate and update durable tests after the redesigned implementation passes source review; current test imports/assertions intentionally still reference the removed writer/snapshot contract.
-- Unclassified/imported historical snapshot inspection policy should remain within the approved preservation boundary and must not be broadened implicitly while resolving `CR-001`.
-- Cleanup scale, raw ordering, tool lifecycle hydration, provider continuation, projection, boundary rotation, and native non-regression remain downstream executable risks; no defect was found in their reviewed source paths.
+- The unchanged source is structurally sound and source TypeScript passes; no source defect is established in round 2.
+- Durable tests must not encode either cleanup-failure inspector result until the user decides.
+- All original raw ordering, tool lifecycle, provider continuation, projection, native preservation, and cleanup execution risks remain for later API/E2E validation after the requirement gate clears.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
+- Review Decision: `Blocked`
 - Review Entry Point: `Implementation Review`
-- Material-Premise Gate: `Pass`
-- Score Summary: `8.8/10` (`88.1/100`); blocking sub-9 behavior/ownership/readiness categories.
-- Failure Origin (when applicable): `N/A` — not an API/E2E failure-origin entry point.
+- Material-Premise Gate: `Blocked`
+- Score Summary: `9.4/10` (`93.5/100`); source quality is strong, but API/E2E readiness is below pass because the intended behavior is unapproved.
+- Failure Origin (when applicable): `N/A`
 - Recommended Recipient (when applicable): `solution_designer`
-- Notes: `CRR-001`; one blocking design-impact finding (`CR-001`). Source-only TypeScript and source diff checks pass, but the reviewed behavior basis is contradicted and the package must not advance to API/E2E.
+- Notes: `CRR-002`; `CR-001` is reclassified to `Requirement Gap`. Source remains unchanged at `8cd193e81`; source alignment, diff check, and TypeScript check pass. Do not advance to API/E2E.

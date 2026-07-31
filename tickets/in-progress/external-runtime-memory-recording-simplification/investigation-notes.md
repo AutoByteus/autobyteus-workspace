@@ -3,7 +3,7 @@
 ## Investigation Status
 
 - Bootstrap Status: Complete
-- Current Status: CRR-001 / CR-001 follow-up complete. The user resolved the cleanup-failure/inspector tradeoff in favor of simple generic file-backed inspection; revised requirements/design are being prepared for architecture re-review.
+- Current Status: CRR-002 / CR-001 requirement-gap follow-up complete. The user's exact decision chronology is now recorded: earlier uncertainty was followed by discussion and then direct approval of simple generic file-backed inspection. The behavior defined in SR-003 is unchanged; SR-004 is being prepared for architecture re-review.
 - Investigation Goal: Establish the real Codex/Claude recording and continuation paths, determine every effect of removing their duplicate WorkingContext snapshots, and bound a safe raw-trace-only implementation and cleanup.
 - Scope Classification: `Medium`
 - Scope Classification Rationale: The source removal is bounded, but it crosses event accumulation, raw persistence, lifecycle hydration, persisted-data cleanup, generic memory inspection, tests, and durable documentation.
@@ -30,7 +30,7 @@ The ticket asks to simplify server-owned external-runtime memory recording after
 - Expected Finalization Target: `personal`
 - Remote Refresh Result: `git fetch origin --prune` succeeded on 2026-07-31. Task `HEAD` and refreshed `origin/personal` both resolved to `ea6d6b011035d71dc9594d61ad035470985fca8e`.
 - Existing Task Changes At Investigation Start: The four bootstrapped ticket artifacts were untracked; no implementation source was changed.
-- Current Downstream Baseline: implementation source commit `8cd193e81`; handoff commit/current branch head `3f0c143a8`; implementation record `IR-001`; architecture baseline `ARCH-REV-001`; blocking review against the prior wording `CRR-001` / `CR-001`.
+- Current Downstream Baseline: implementation source commit `8cd193e81`; current branch head `e293b107e`; implementation record `IR-002`; architecture baseline `ARCH-REV-002`; blocking source review `CRR-002` / `CR-001` against the approval provenance stated in SR-003.
 - Bootstrap Blockers: None.
 
 ## Supplemental Task Artifact Inventory
@@ -63,7 +63,9 @@ The ticket asks to simplify server-owned external-runtime memory recording after
 | 2026-07-31 | User approval | Conversation confirming external runtime ownership, all-runtime raw-trace-backed event monitor/normal run projection, and Codex/Claude-only snapshot removal | Lock refined requirement basis | User explicitly stated alignment and approval after the Memory Inspector distinction was clarified | No |
 | 2026-07-31 | Code review | `code-review-report.md`, `code-review-revision-record.md`; CRR-001 / CR-001 / CR-MP-001 | Investigate downstream design impact | Review proved a reachable composition: eligible unlink fails, file remains, startup continues, and the unchanged generic Memory Inspector can still read it, contradicting the prior unconditional REQ-011/AC-012 wording | User product decision required |
 | 2026-07-31 | Focused probe evidence | Temporary CR-MP-001 probe described in `code-review-report.md` | Validate reachability | Forced eligible unlink failure returned `FAILED`, retained the file, and a later generic read returned non-null WorkingContext | Evidence accepted; product consequence clarified by user |
-| 2026-07-31 | User clarification | Follow-up discussion of cleanup-failure tradeoff | Resolve whether the reachable inspector state is material | User accepts stale optional inspector visibility and delayed disk reclamation after a reported rare failure; application/provider/raw paths working is the meaningful guarantee. User does not want defensive runtime/UI logic for this edge case and accepts cleanup retry/manual removal | Revise old unconditional wording; no source-policy addition |
+| 2026-07-31 | User discussion | Follow-up discussion of cleanup-failure tradeoff | Resolve whether the reachable inspector state is material | The user first said, “I'm not sure. That's why I want to discuss with you.” This was an explicit request for discussion, not a final decision | Explain the concrete choices and tradeoff before treating either outcome as approved |
+| 2026-07-31 | User final decision | Direct message after the simplicity-first recommendation was explained | Establish the authoritative cleanup-failure inspector contract | The user then stated, “yes. lets do it. but mostly it will be successful for removing. but i agree with your best approach”. This later message explicitly approves best-effort cleanup plus unchanged generic file-backed inspection, retry/manual removal, and no runtime/UI suppression | Treat this later direct approval as superseding the earlier uncertainty |
+| 2026-07-31 | Code review | `code-review-report.md`, `code-review-revision-record.md`; CRR-002 / CR-001 | Investigate the reclassified requirement-gap result | The source is structurally sound and aligned with SR-003, but the reviewer cited only the earlier uncertainty and requested explicit approval provenance | Record the complete chronology and exact final quote in SR-004; return through architecture review; no behavior or source redesign |
 
 ## Relevant Existing Behavior And Production Paths
 
@@ -208,4 +210,4 @@ The code-review concern was not that provider continuation, raw recording, or no
 
 ## Notes For Architecture Reviewer
 
-SR-003 is ready for architecture re-review in response to CRR-001 / CR-001 and the subsequent user decision. The user-approved raw-only outcome is unchanged. The revised basis removes the old unconditional inspector-absence guarantee: successful cleanup yields absence, while a reported failed unlink may leave stale generic inspector visibility until retry/manual removal. No defensive read/UI machinery is desired. Review the requirements/design consistency and executable mapping before implementation/source review resumes.
+SR-004 is ready for architecture re-review in response to CRR-002 / CR-001. The product behavior remains exactly the SR-003 behavior; the revision corrects approval provenance by distinguishing the user's earlier request for discussion from the later direct approval: “yes. lets do it. but mostly it will be successful for removing. but i agree with your best approach”. Successful cleanup yields absence, while a reported failed unlink may leave stale generic inspector visibility until retry/manual removal. No defensive read/UI machinery is desired. Review the provenance and unchanged requirements/design consistency before implementation/source review resumes.
