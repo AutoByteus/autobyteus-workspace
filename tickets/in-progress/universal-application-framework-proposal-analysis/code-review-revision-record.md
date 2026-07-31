@@ -38,6 +38,7 @@
 | `CRR-032` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-017` | `Fail — Design Impact` | `Fail — Local Fix` | `CR-022` |
 | `CRR-033` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-018` | `Fail — Local Fix` | `Pass` | `CR-022` |
 | `CRR-034` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-test-review-report.md` | Proportional API/E2E Test-Code Review / `API-REV-012` | `N/A` | `Pass` | `N/A` |
+| `CRR-035` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-019` | `Pass` (`CRR-033` source; `API-REV-012`; `CRR-034` test review) | `Fail — Local Fix` | `CR-023`, `CR-024` |
 
 ## Revision Entries
 
@@ -948,3 +949,31 @@ None for proportional test code. `CR-019`–`CR-021` were design-impact findings
 - Material score or classification changes: no source scorecard or API/E2E confidence recomputation. Proportional test-code result is `Pass`; `API-REV-012` remains `Pass / 96.6%`.
 - Recommended recipient: `delivery_engineer`
 - Remaining risks or uncertainty: historical `APIE2E-REPO-005` remains separate, unattributed `Unclear` whole-suite diagnostic debt and is not current requirement evidence. Delivery may resume integrated-state, documentation, handoff, and any in-scope release work without reopening the implementation scorecard.
+
+### CRR-035 — IR-019 executable boundary checker requires two bounded correctness fixes
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `35`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-handoff.md`; `IR-019`; new findings `CR-023`, `CR-024`; runtime scenario IDs `N/A`
+- Relevant solution revision IDs: `SR-016`; retained `SR-015`, `SR-014`, and production baseline `SR-013`
+- Relevant architecture-review revision IDs: `ARCH-REV-014`; retained `ARCH-REV-013`, `ARCH-REV-012`, and production baseline `ARCH-REV-011`
+- Relevant implementation revision IDs: `IR-019`; retained production implementation `IR-017`, `IR-018`
+- Relevant API/E2E revision IDs: retained `API-REV-012`
+- Relevant delivery revision IDs: `DR-005`
+- Prior authoritative result: `CRR-033` source Pass / 97, `API-REV-012` Pass / 96.6%, and `CRR-034` proportional test review Pass; no production behavior was reopened by IR-019
+- Current authoritative result: `Fail — Local Fix / 94`
+- What changed in the review result and why: IR-019 correctly retains an exact five-file, zero-production-source scope and implements most of the SR-016 test/dev-dependency/docs hardening. The original 10-test architecture suite, server build TypeScript, frozen lockfile-only install, and diff checks pass. Complete source review plus a disposable same-checker probe found two bounded AC-024 gaps: AFB-001/002/003 admit representative imports explicitly forbidden by DS-016, and a valid resolved Vue external script resolves its internal relative imports from the parent SFC path and is falsely rejected. The probe reproduced both paths without hidden-state mutation.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-019`, `CR-020`, `CR-021` | Resolved | Remain Resolved | `SR-013`, `ARCH-REV-011`, `IR-017`, `CRR-032`, `API-REV-012` | IR-019 changes no runtime construction, package owner, engine, run/session, publication, route, or lifecycle source. |
+| `CR-022` | Resolved | Remain Resolved | `IR-018`, `CRR-033`, `API-REV-012`, `CRR-034` | No run-manager/registry/resource source changed. |
+| `AR-010`, `AR-011` | Resolved in reviewed design | Substantially implemented; `CR-024` is a bounded source-kind implementation defect, not a new design gap | `SR-016`, `ARCH-REV-014`, `IR-019`, `CRR-035` | AFB-004 obligation families and direct SFC parsing exist; the external-script resolution origin is locally wrong. |
+| `APIE2E-REPO-005` | Historical `Unclear` / unattributed | Remains separate and unchanged | `API-REV-005`–`API-REV-012` | No supported connection to IR-019 or the two checker findings. |
+
+- New or remaining finding IDs: `CR-023`, `CR-024`
+- Material score or classification changes: latest implementation result is `Fail — Local Fix / 94`; Ownership `8.6`, API clarity `8.8`, and API/E2E Readiness `8.4` are below the clean-pass target. Runtime Correctness remains `10.0` because production source did not change.
+- Recommended recipient: `implementation_engineer`
+- Remaining risks or uncertainty: fix only the exact DS-016 policy classifier and external-script resolution/fixtures. Do not broaden the architecture, change production source or correct docs, restore deferred/rejected candidates, or split policy ownership. After source Pass, the proportional API-REV-012 dual-host/package-parity loop remains required. Historical `APIE2E-REPO-005` stays separate.
