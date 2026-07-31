@@ -1038,3 +1038,31 @@ None for proportional test code. `CR-019`–`CR-021` were design-impact findings
 - Material score or classification changes: result improves from `Fail — Local Fix / 95` to `Pass / 98`; every scorecard category is now `>=9.5`.
 - Recommended recipient: `api_e2e_engineer`
 - Remaining risks or uncertainty: API/E2E must run the proportional SR-016/API-REV-012-equivalent architecture/durable integration, dual-host execution, route separation, and package-integrity confirmation, then return a Pass through proportional test review before delivery resumes. Historical `APIE2E-REPO-005` remains separate.
+
+### CRR-038 — API-REV-013 executable-boundary coverage passes proportional review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-test-review-report.md`
+- Review entry point and round: `Proportional API/E2E Test-Code Review`, round `38` overall / fifth proportional review
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-execution-coverage-report.md`; `API-REV-013`; `AFB-001`–`AFB-005`, `BEH-011`, `REQ-011`, `AC-024`, `UC-028`
+- Relevant solution revision IDs: `SR-016`; retained production baseline `SR-013`
+- Relevant architecture-review revision IDs: `ARCH-REV-014`; retained production baseline `ARCH-REV-011`
+- Relevant implementation revision IDs: `IR-019`, `IR-020`, `IR-021`; retained production `IR-017`, `IR-018`
+- Relevant API/E2E revision IDs: `API-REV-013`; retained baseline `API-REV-012`
+- Relevant delivery revision IDs: retained context through `DR-005`
+- Prior authoritative result: `N/A` for this cumulative proportional delta; implementation source is `CRR-037 Pass / 98`, and prior proportional reviews have no unresolved findings
+- Current authoritative result: `Pass`
+- What changed in the review result and why: reviewed the sole 2,143-line architecture-policy test plus its direct test-only Vue parser declaration and exact lock integration. The durable test uses one current-tree/synthetic parser, project resolver, policy evaluator, and AFB-004 constructor-shape evaluator; covers all five approved rule families, seven project profiles, every required omission/null/undefined/spread case, named/namespace bindings, exact exemptions, Vue parse and external-source behavior, and actionable diagnostics; and cleans each temporary fixture root deterministically. The size is proportionate to being the reviewed single policy owner and avoids a second truth in production or helper source. API-REV-013 passes the architecture gate 14/14, the architecture/runtime matrix 32 files/130 tests, real Studio and standalone publication/handoff/projection/restart/remount, route separation, 73/73 package parity, and cleanup.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-023` | Resolved in source | Execution-confirmed resolved | `CRR-035`, `IR-020`, `CRR-036`, `CRR-037`, `API-REV-013`, `CRR-038` | Complete AFB-001/002/003 direction categories and exact fixtures pass in the current 14-test architecture suite and 130-test matrix. |
+| `CR-024` | Resolved in source | Execution-confirmed resolved | same | Allowed external scripts resolve imports and bindings from the external file while retaining SFC-owned diagnostics. |
+| `CR-025` | Resolved in source | Execution-confirmed resolved | `CRR-036`, `IR-021`, `CRR-037`, `API-REV-013`, `CRR-038` | External `src` targets are evaluated through AFB-002/005 before parse; local targets pass and forbidden cross-boundary targets fail. |
+| `APIE2E-REPO-005` | Historical `Unclear` / unattributed | Remains separate and unchanged | `API-REV-005`–`API-REV-013` | No supported connection to SR-016/IR-021; it is neither a test finding nor Pass evidence. |
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: no source scorecard or API/E2E confidence recomputation. Proportional test-code result is `Pass`; `API-REV-013` remains `Pass / 98.3%` and `CRR-037` remains source `Pass / 98`.
+- Recommended recipient: `delivery_engineer`
+- Remaining risks or uncertainty: no requirement-linked durable-test defect remains. Historical `APIE2E-REPO-005` remains separate diagnostic debt. Delivery may resume latest-base integrated-state, documentation, handoff, and in-scope release work without reopening the implementation scorecard.
