@@ -25,27 +25,29 @@
 
 ## Current Implementation Summary
 
-`IR-019` implements the architecture-approved `SR-016` / `ARCH-REV-014` application-framework boundary hardening in the exact five-file scope. Commit `30257a0a896b7f29b09537c16c6021340274f82b` adds one test-only executable policy owner, declares its direct Vue SFC parser dependency, updates the lockfile, and synchronizes the two existing server architecture documents. No production source, runtime object graph, route, schema, application package, persisted data, or generated artifact changed.
+`IR-020` closes the two bounded architecture-checker defects returned by `CRR-035` without changing the approved five-file SR-016 baseline or any production source. Corrective commit `4d5a137b7b61b19811bda61ac090633479187801` changes only `autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts`.
 
-`tests/architecture/application-framework-boundaries.test.ts` derives the repository root from `import.meta.url`, enumerates the closed AFB-001–AFB-005 source families, extracts static/export/`require`/dynamic/import-type dependencies from TS/JS ASTs, extracts Vue `<script>` and `<script setup>` blocks directly through `@vue/compiler-sfc`, maps every importer to one of the seven reviewed project/profile forms, and resolves governed source fail-closed. It enforces the exact transport, GraphQL/presentation, package/bundle, application construction, and maintained application/template directions with stable actionable diagnostics.
+For `CR-023`, the checker now implements the closed AFB-001 target categories for runtime builder, lifecycle, stores, recovery, availability, run, session, publication, engine, queue, and shutdown internals while retaining the exact runtime contract and current error/subject inputs. AFB-002 separately rejects GraphQL private runtime owners and Studio imports of server package, bundle, and runtime implementation. AFB-003 now rejects API, Studio presentation, server assembly, standalone-host, and private runtime directions while preserving the sole exact catalog-refresh-coordinator to catalog-reconciliation contract seam. Individual allowed and forbidden fixtures exercise every named direction rather than one representative per policy.
 
-AFB-004 uses the same exact binding/shape evaluator for the current tree and synthetic fixtures. It resolves named aliases and namespace members, rejects the seven named global/default callees in application construction, checks all nineteen reviewed constructor/factory occurrences, and tests every required omission, `null`, `undefined`, and opaque-spread variant. `CodexAgentRunBackendFactory` argument 1 and `ClaudeAgentRunBackendFactory` arguments 0/1 are mandatory in application construction; Codex positions 0/2 remain deliberately process-scoped. The two named general-process assembly roots remain the only explicit selection exemptions.
+For `CR-024`, parsed Vue sources now carry two distinct identities: the diagnostic-owning SFC and the actual source/resolution origin. Resolved external `<script src>` imports and direct-callee bindings resolve relative to the external script, while violations remain attached to the governed SFC and report the external source path. A focused fixture proves a sibling local import is allowed and a server runtime import is rejected without a false `UNRESOLVED_GOVERNED_IMPORT`.
+
+The retained IR-019 baseline still provides the direct test-only `@vue/compiler-sfc` dependency/lock entry and synchronized architecture documents. No dependency, documentation, production runtime, route, schema, package output, persisted data, or generated artifact changed in this corrective round.
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/implementation-revision-record.md`
-- Current implementation revision ID: `IR-019`
+- Current implementation revision ID: `IR-020`
 - Related solution revision IDs: `SR-016`; retained `SR-015`, `SR-014`, and passed production baseline `SR-013`
 - Related architecture-review revision IDs: `ARCH-REV-014`; retained `ARCH-REV-013`, `ARCH-REV-012`, and production baseline `ARCH-REV-011`
-- Related code-review revision IDs: retained production source Pass `CRR-033` and proportional test review Pass `CRR-034`
+- Related code-review revision IDs: `CRR-035`; retained production source Pass `CRR-033` and proportional test review Pass `CRR-034`
 - Related API/E2E revision IDs: retained pre-hardening baseline `API-REV-012` / 96.6%
 - Related delivery revision IDs: `DR-005`
-- Triggering finding IDs: `AR-010`, `AR-011`; no open production-source finding
+- Triggering finding IDs: `CR-023`, `CR-024`
 
 ## Reviewed Behavior Implementation Trace
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
-| `BEH-001`–`BEH-010` | Preserve the passed dual-host application product, narrow/acyclic runtime, exact cleanup, provider execution, package bytes, and user-visible behavior. | Existing SR-013 production source and API-REV-012 durable coverage; no production or application/package-producing source in the IR-019 commit. | Preserved by zero production-source/package-output delta. Full executable reconfirmation remains downstream-owned. |
+| `BEH-001`–`BEH-010` | Preserve the passed dual-host application product, narrow/acyclic runtime, exact cleanup, provider execution, package bytes, and user-visible behavior. | Existing SR-013 production source and API-REV-012 durable coverage; no production or application/package-producing source changed in IR-019 or IR-020. | Preserved by zero production-source/package-output delta. Full executable reconfirmation remains downstream-owned. |
 | `BEH-011` | Reject contributor-introduced application-framework dependency and injection regressions with exact diagnostics. | `tests/architecture/application-framework-boundaries.test.ts`; server test manifest/lock; synchronized applications module and architecture guide. | Implemented for `REQ-011`, `AC-024`, `UC-028`, `DS-016`, `SV-019`, and `SV-C60`–`SV-C62`. |
 
 ## Key Files Or Areas
@@ -104,35 +106,34 @@ AFB-004 uses the same exact binding/shape evaluator for the current tree and syn
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis`
 - Branch: `codex/universal-application-framework-proposal-analysis`
 - Reviewed solution commit: `724996e970d589e70b9f714c3580c3bd12d38674`
-- Implementation source/test/docs commit: `30257a0a896b7f29b09537c16c6021340274f82b`
+- Baseline source/test/docs commit: `30257a0a896b7f29b09537c16c6021340274f82b`
+- Corrective architecture-test commit: `4d5a137b7b61b19811bda61ac090633479187801`
 - Added only direct server `devDependency` `@vue/compiler-sfc: ^3.5.28`; `pnpm-lock.yaml` reuses resolved version `3.5.28`.
 - `pnpm install --lockfile-only --frozen-lockfile` passes across all eleven workspace projects.
 
 ## Local Implementation Checks Run
 
-- `pnpm -C autobyteus-server-ts exec vitest run tests/architecture/application-framework-boundaries.test.ts` — Pass: 1 file / 10 tests. The complete current tree, all eleven governed Vue SFCs, the valid basic template, all nineteen current AFB-004 construction occurrences, every required mutation variant, exact general-process exemptions, SFC parse/error/src behavior, and project/manifest fixtures pass.
-- Direct architecture-test TypeScript no-emit with NodeNext/strict/Vitest types — Pass.
-- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` — Pass; production TypeScript remains green.
-- `pnpm install --lockfile-only --frozen-lockfile` — Pass.
-- Exact implementation inventory audit — Pass: one new architecture test plus server manifest, workspace lockfile, and two existing docs; no additional implementation file.
-- Production/package-output delta audit — Pass: no server production source, maintained application source, devkit source/template, schema, or generated package output changed.
-- AFB ID synchronization and documentation-link audit — Pass: AFB-001–AFB-005 appear in the test and both docs; all relative documentation links resolve.
-- `git diff --check` — Pass.
+- `pnpm -C autobyteus-server-ts exec vitest run tests/architecture/application-framework-boundaries.test.ts --reporter=verbose` — Pass: 1 file / 13 tests. This includes the complete current tree, every named AFB-001 category, GraphQL and Studio AFB-002 directions, every AFB-003 outward direction plus the exact reconciliation seam, resolved external-script local/forbidden imports, all nineteen AFB-004 occurrences, and retained AFB-005/project/manifest coverage.
+- Direct architecture-test TypeScript no-emit with NodeNext, strict mode, Node and Vitest types — Pass.
+- `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` — Pass.
+- `pnpm install --lockfile-only --frozen-lockfile` — Pass across all eleven workspace projects; the corrective round changed no manifest or lockfile.
+- Exact corrective-scope audit — Pass: only `autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts` changed; production-source delta count is zero.
+- `git diff --check` — Pass before the implementation commit.
 
 These are implementation-scoped checks, not API/E2E sign-off.
 
 ## Frontend Rendered-Result Check
 
-Not Applicable. IR-019 changes a test-only architecture checker, a test dev dependency/lock entry, and documentation; no rendered frontend or user interaction source changed.
+Not Applicable. IR-020 changes only the test-owned architecture checker; no rendered frontend or user interaction source changed.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
 1. Review the checker as the sole policy owner: actual source-kind extraction, seven profile/config/manifest forms, normalized resolution, and fail-closed governed imports.
-2. Confirm AFB-001–AFB-005 import directions, exact catalog-reconciliation exception, and exact two general-process assembly exemptions without a broad allow-list.
-3. Confirm direct-callee alias/namespace binding and all nineteen AFB-004 current-tree occurrence assertions use the same evaluator as synthetic omission/`null`/`undefined`/spread cases.
+2. Confirm the complete AFB-001 category table, the GraphQL/Studio AFB-002 split, every AFB-003 outward direction, the exact catalog-reconciliation seam, and exact two general-process assembly exemptions without a broad allow-list.
+3. Confirm resolved Vue external scripts use the external file for relative resolution while diagnostics retain the governing SFC and external source identity; then confirm direct-callee alias/namespace binding and all nineteen AFB-004 current-tree occurrence assertions still use the same evaluator as synthetic omission/`null`/`undefined`/spread cases.
 4. Confirm Codex argument 1 and Claude arguments 0/1 are independently protected while Codex positions 0/2 remain allowed process inputs.
 5. After source Pass, rerun the API-REV-012 affected server matrix and complete Studio/standalone characterization, including worker restart, publication/message/handoff/projection, cleanup/recovery/remount, route inventory, and exact `73/73` package parity.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Yes. Implementation proved the new architecture contract locally and preserved a zero-production-source delta. After implementation-source review passes, `api_e2e_engineer` must independently validate the durable test/dependency integration and proportionally reconfirm the retained real dual-host and package-integrity baseline before proportional test review and delivery resume.
+Yes. Implementation proved the corrected architecture contract locally and preserved a zero-production-source delta. After implementation-source review passes, `api_e2e_engineer` must independently validate the durable test/dependency integration and proportionally reconfirm the retained real dual-host and package-integrity baseline before proportional test review and delivery resume.
