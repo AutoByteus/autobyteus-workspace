@@ -259,3 +259,60 @@ None — API-REV-003 was already `Pass`. This revision supersedes its two-percen
   - Both models retained task-critical facts and continued exactly, but natural-language compaction quality and latency remain model-dependent; one realistic task is not a general evaluation corpus.
   - Process termination between normal publication writes remains explicitly out of scope.
   - Browser/Electron remains inapplicable because no UI or shell boundary changed.
+
+### API-REV-007 — Natural compactor sizing, canonical history, and prompt-audit 2
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/code-review-report.md`; `CRR-009 Pass`; API/E2E execution round 7.
+- Triggering finding or scenario IDs: `SCN-019` newly records the SR-010 natural-count/canonical-history/audit transition; `SCN-001`–`SCN-018` were rechecked as preserved or realistic continuation coverage. No open prior failure ID existed.
+- Related solution, architecture-review, implementation, code-review, or delivery revision IDs: `SR-010`, `ARCH-REV-006`, `IR-003`, `CRR-009`; prior delivery baseline `DR-001`–`DR-005` retained as upstream evidence.
+- Why this coverage/execution revision was recorded: IR-003 removes fixed 1–3 episode / 20-fact policy, makes the renderer/finalizer the sole canonical history owner, preserves every structurally valid natural output through accepted publication, writes prompt audit value 2, and directly reads supported immutable audit 1/2 chains. Existing durable tests contained stale fixed-count, duplicate-prompt, removed-schema, old-injection, and fail-open migration expectations.
+- Implementation/integrated commit executed: `c6c60b9996d61ef373236b66437844cd8b315af8` plus the API-REV-007 test/harness-only delta.
+- Coverage decisions or durable test paths changed:
+  - Updated `autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-templates.test.ts` for the exact approved full-file prompt golden and fixed-count/internal-policy absence.
+  - Updated core builder, summarizer, parser, normalizer, lineage store/resolver, and manager/tool-lifecycle tests for exact renderer ownership, canonical one-User-turn reconstruction, boundary/media/tool preservation, input non-mutation, 4+/20+ accepted output, mixed audit 1 -> 2, audit 3 rejection, exact current projection and typed origins.
+  - Updated the shared live harness and outer server E2E to require prompt audit 2 for every completed record without a preferred/max output count.
+  - Updated three server compactor fixtures to current output/resolver contracts and two required-migration E2Es to the approved fail-closed aggregate/retry contract.
+  - Round-7 durable delta: `15 Updated`, `0 Added`, `0 Removed`; production source unchanged.
+- Scenarios added, changed, removed, or rechecked:
+  - `SCN-019`: exact 2,788-byte prompt; builder byte-equals renderer; one canonical User turn; reserved boundary/tool/media behavior; 5 episodes/25 facts through parser, 4 episodes/25 facts through normalization and accepted manager publication; archive/output/lineage/current projection/origin; new audit 2; mixed 1 -> 2; unsupported 3 rejection.
+  - `SCN-001`–`SCN-016`: recurrent current authority, R(n)-only archive, v5 snapshot/tool/media restore, reset/fail-closed startup, trusted interruption, retry non-mutation, scope/provider/launch, Event Monitor and Work Evidence rechecked through complete memory, affected server and full deterministic root E2E coverage.
+  - `SCN-018`: managed `deepseek-v4-flash`, exact 5% trigger 49,936 at effective context 1,000,000, one product compaction, model-chosen 1 episode/8 facts, audit 2, exactly two reads/one write/zero failed tools, exact continuation.
+  - `SCN-017`: keyless local `qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234`, exact 5% trigger 13,043 at effective context 262,144, two recurrent product compactions, model-chosen 1 episode/3 facts then 1 episode/0 facts, audits `[2,2]`, exact tools/current projection/continuation.
+- Commands, environment, fixture, or broader-validation delta:
+  - Focused natural contract passed 6 files/28 tests; complete core memory passed 33/150; runtime selection passed 3/15; prompt/harness passed 16/16; focused server compactor passed 17/17; affected server passed 88/88.
+  - The final deterministic root E2E passed 50 files/174 tests with 14 files/49 tests explicitly gated; current core/shared/server build and sanitized built-in bootstrap smoke passed.
+  - Used documented `pnpm secrets:import` into the canonical ignored test DB/vault; never sourced or modified the owner-private assignment file; `.env.test` remained unchanged. Qwen required no API key.
+  - The installed full-file prompt SHA was `944dbdbd3db1146f80fdb7fe5ec2817422eec74f8eca3f4743a336169a2a8348`; the frontmatter-stripped system-prompt SHA recorded by both live child runs was `73aaff91c63d2b68b91467f00302bfe2940c0037b9e08d1fa6373d1f96274dc7`.
+  - Removed the imported DB/key/sidecars, runtime/temp workspaces and loaded Qwen model; verified no owned process; scanned 20 Round-7 evidence logs against 12 nonblank API-key values in exact, URL-encoded and base64 forms with zero matches.
+
+#### Prior Failure Resolution
+
+- No unresolved prior failure existed. `TCR-001` remains resolved: both current live journeys returned and asserted zero failed tools.
+- Initial round-7 failures were bounded API/E2E-owned stale coverage, not implementation failures: fixed-count/duplicate-prompt expectations, three removed-schema/injection fixtures, and two required-migration E2Es expecting startup after `FAILED`. All were corrected and passed focused plus broader reruns.
+- No new failure ID remains.
+
+- Canonical artifacts and sections updated:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/execution-coverage-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/api-e2e-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/evidence/api-e2e/api-rev-007-natural-contract-focused-02.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/evidence/api-e2e/api-rev-007-core-memory-broad-02.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/evidence/api-e2e/api-rev-007-core-runtime-broad-02.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/evidence/api-e2e/api-rev-007-server-prompt-harness-unit-01.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/evidence/api-e2e/api-rev-007-server-compactor-focused-02.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/evidence/api-e2e/api-rev-007-server-affected-broad-01.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/evidence/api-e2e/api-rev-007-root-deterministic-e2e-02.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/evidence/api-e2e/api-rev-007-core-server-build-01.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/evidence/api-e2e/api-rev-007-deepseek-natural-compactor-five-percent.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/evidence/api-e2e/api-rev-007-lmstudio-qwen36-natural-compactor-five-percent.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/evidence/api-e2e/api-rev-007-cleanup.log`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/evidence/api-e2e/api-rev-007-secret-leak-scan.log`
+- Prior result and confidence: `Pass / 98%` (`API-REV-006`).
+- Current result and confidence: `Pass / 98%`.
+- New or remaining failure IDs: `None`.
+- Recommended recipient: `code_reviewer` for proportional review of the 15 updated durable test/harness paths.
+- Remaining risks, blocked evidence, or untested scope:
+  - Model-chosen semantic density and latency are probabilistic. Qwen was slower and sparser than DeepSeek, but both current journeys preserved all continuation anchors and exact task completion.
+  - The two-model live sample is strong boundary evidence, not a general compaction-quality benchmark corpus.
+  - Process termination between normal publication writes remains explicitly outside approved scope.
+  - Browser/Electron is inapplicable because no UI, renderer, IPC, preload, or desktop-shell boundary changed.

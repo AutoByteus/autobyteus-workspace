@@ -10,6 +10,7 @@
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/use-case-data-flow-spine-map.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/provenance-methodology-analysis.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/compacted-memory-message-role-analysis.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/memory-compactor-prompt-content-contract.md`
 - Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/solution-revision-record.md`
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/design-review-report.md`
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/architecture-review-revision-record.md`
@@ -18,13 +19,87 @@
 - Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/code-review-report.md`
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/code-review-revision-record.md`
 - Delivery Revision Record (delivery re-entry only): `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/delivery-revision-record.md`
-- Relevant Delivery Revision IDs: `DR-001`
+- Relevant Delivery Revision IDs: `DR-001` through `DR-005`
 - API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-006`
-- Current Investigation Round: `6`
-- Trigger: user-directed correction that live quality coverage must respect the actual built-in Memory Compactor agent and compare DeepSeek and LM Studio Qwen under the same canonical product prompt, rather than a test-owned shortened prompt.
-- Prior Investigation Reviewed: This file, rounds 1–5 / `API-REV-001`–`API-REV-005`
-- Latest Authoritative Investigation: This file, round 6
+- Current API/E2E Revision ID: `API-REV-007`
+- Current Investigation Round: `7`
+- Trigger: `CRR-009` source-review `Pass` for `IR-003` / `SR-010` at commit `c6c60b9996d61ef373236b66437844cd8b315af8`; validate natural model-chosen counts, exact canonical prompt/history composition, full accepted publication and mixed prompt-audit lineage, preserved SR-004 boundaries, and realistic product compactor quality.
+- Prior Investigation Reviewed: This file, rounds 1–6 / `API-REV-001`–`API-REV-006`
+- Latest Completed Authoritative Investigation: This file, round 7
+
+## Round 7 Natural Semantic Sizing And Canonical History Investigation
+
+### Approved Delta And Changed Boundaries
+
+- Current reviewed basis: `SR-010`, `ARCH-REV-006 Pass`, `IR-003`, `CRR-009 Pass`. The integrated implementation commit under validation is `c6c60b9996d61ef373236b66437844cd8b315af8`.
+- Prompt boundary: `autobyteus-server-ts/src/built-in-agents/templates/memory-compactor/agent.md` must byte-equal the user-approved supplement. It removes the fixed 1–3 episode / 20-fact policy, instructs the model to choose the smallest sufficient episode structure and the facts actually required, retains the exact six-field JSON object, and introduces no ticket-specific token ceiling or internal storage/lineage terminology.
+- Operation-message boundary: `WorkingContextCompactionPromptBuilder` returns exactly one renderer-owned `<conversation_history>` block. `CompactionConversationHistoryRenderer` uses `WorkingContextFinalizer` before labels, so adjacent compatible earlier-summary and retained/current user constituents are one canonical `User:` turn; assistant, complete tool protocol, selected media, reserved-boundary escaping, deterministic head/tail bounds, redaction, and source input immutability remain intact.
+- Accepted-output boundary: parser, result normalizer, accepted builder, lineage-record normalizer/store, committer, current-head loader/projector, and typed origin resolver must retain every structurally valid natural output item. At least one episode, per-entry character bounds, exact fields, cleanup, deduplication, noise filtering, positive salience, unique IDs, safe archives, scope/predecessor integrity, and complete output existence remain enforced.
+- Audit boundary: new accepted records write `promptContractVersion: 2`; immutable supported predecessor value `1` remains directly usable in a mixed `1 -> 2` chain without content decoding or rewrite; unsupported value `3` fails validation.
+- Preserved boundaries: R(n)-only archive membership, manager-owned publication, lineage-tail current authority, message-only v5 snapshots, startup reset/fail-closed start, trusted interruption recovery, Event Monitor active-only behavior, Work Evidence separation, scope/provider/launch configuration, and no compatibility reader/alias/state pointer.
+
+### Existing Coverage Validity Decisions
+
+| Path / Scenario | Decision | Investigation Basis / Required Maintenance |
+| --- | --- | --- |
+| `autobyteus-ts/tests/unit/memory/working-context-compaction-prompt-builder.test.ts` | `Needs Update` | Stale assertions expect two consecutive `User:` labels and injected JSON/count policy. Replace with exact builder-equals-renderer, one canonical user turn, reserved-boundary escaping, assistant/Tool/media preservation, source non-mutation, and history-only negative assertions. Its incomplete-protocol mutation changes metadata while leaving messages complete; make the actual message protocol incomplete. |
+| `autobyteus-ts/tests/unit/memory/compaction-response-parser.test.ts` | `Needs Update` | Stale 3/20 truncation and error text failed discovery. Prove >3/>20 retention while preserving configured per-entry clamps, exact-field checks, required arrays, and at-least-one episode. |
+| `autobyteus-ts/tests/unit/memory/compaction-result-normalizer.test.ts` | `Needs Update` | Stale fourth-episode drop failed discovery. Prove natural episode/fact retention plus deterministic order, dedupe, noise filtering and positive salience. |
+| `autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-templates.test.ts` | `Needs Update` | Existing substring expectations describe the superseded prompt (`someone`, manual pasted-history guidance, `episodic_summary`). Replace with an exact full-file golden and explicit absence of fixed-count/internal-policy leakage. |
+| `autobyteus-ts/tests/unit/memory/file-compaction-lineage-store.test.ts` | `Needs Update` | Existing chain/current-tail/integrity coverage remains valid but uses only audit 1 and one output item. Add 4/25 head membership, mixed 1/2 preservation, exact projection, and unsupported-audit immutable rejection. |
+| `autobyteus-ts/tests/unit/memory/compaction-lineage-resolver.test.ts` | `Needs Update` | Existing direct/root typed integrity scenarios remain valid. Extend the predecessor/head audit values to 1/2 and resolve the tail episode plus twenty-fifth fact recursively. |
+| `autobyteus-ts/tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts` | `Needs Update` | Existing real manager/tool-safe publication remains valid. Expand deterministic runner output to 4 episodes/25 facts and assert archive/output/lineage version 2/current projection/origin instead of relying only on the implementation probe. |
+| `autobyteus-ts/tests/integration/agent/runtime/agent-runtime-compaction.test.ts` | `Still Valid / Recheck` | Runtime request/compaction/retry and current-user continuation remain requirement-linked and count-neutral; add only audit/current projection assertions if the focused publication test does not cover them directly. |
+| Startup reset, v5 snapshot/bootstrap, trusted interruption, Event Monitor, Work Evidence, scope, launch/provider and server-start suites recorded in API-REV-001/002 | `Still Valid / Recheck` | SR-010 preserves these boundaries; execute the focused affected selections and current builds rather than rewriting unchanged contracts. |
+| SCN-017/018 server live compactor journeys | `Needs Update / Re-execute` | Harness already uses the real product `ServerCompactionAgentRunner` and dynamically compares the installed definition to `agent.md`, but API-REV-006 prompt hash/semantic output is superseded. Re-run with the new exact prompt and inspect phase separation/continuation anchors without exact episode/fact counts. |
+
+### Discovery Evidence And Initial Plan
+
+- Authoritative commands discovered: core uses direct `pnpm exec vitest run ... --no-watch` and `pnpm build`; server `AGENTS.md` requires `pnpm -C autobyteus-server-ts exec vitest run <path> --no-watch`; root scripts provide `pnpm test:e2e`, `pnpm test:e2e:real:preflight`, `pnpm test:e2e:real`, and documented `pnpm secrets:import`.
+- Focused pre-maintenance discovery executed five directly affected core unit files. Result: `3 failed / 2 passed` files and `5 failed / 20 passed` tests. Every failure is a stale fixed-count/canonical-turn expectation: parser expected 3/20 and obsolete error text, normalizer expected the fourth episode to be dropped, builder expected two user labels and injected prompt schema, and the incomplete-protocol test mutated only unit metadata while keeping a complete message protocol.
+- Evidence: `evidence/api-e2e/api-rev-007-stale-focused-discovery.log`.
+- No discovery failure is classified as an implementation defect. The approved SR-010 behavior requires replacing these assertions rather than restoring fixed caps or duplicate operation policy.
+- Durable coverage plan: update the seven affected paths above and add no parallel compatibility suite. If exact full prompt coverage fits cleanly in the existing built-in-template file, update it rather than add a redundant file.
+- Repository execution plan: narrow updated prompt/parser/normalizer/lineage/resolver tests; integration accepted-publication/runtime tests; complete current core memory suite; focused server template/launch/reset/scope/presentation tests; core/server builds; broader root E2E as warranted by post-repository confidence.
+- Broader-validation decision at investigation gate: `Required`. The user explicitly requested semantic quality through the actual built-in compactor, and the prompt itself is the changed provider-facing behavior. Re-run both managed DeepSeek and keyless LM Studio Qwen at five percent, inspect exact installed prompt identity, output phase separation, current projected memory, retained active history, new current-user constituent, exact continuation, tools, lineage/audit version, and logs. Do not assert a preferred item count or perfect future semantics.
+- Browser/desktop decision: `Not Applicable`. SR-010 changes backend/core prompt, parsing, persistence audit, and generated history; no renderer, browser API, IPC, preload, window, or packaging boundary changed.
+
+### Round 7 Maintenance Completed
+
+- Updated `autobyteus-server-ts/tests/unit/built-in-agents/built-in-agent-templates.test.ts` to byte-check the complete approved `agent.md` and reject fixed count/internal contract text.
+- Updated the core prompt builder, summarizer, parser, normalizer, lineage store, lineage resolver, and manager/tool-lifecycle coverage. The deterministic accepted-publication path now carries `4` episodes and `25` facts through archive/output publication, prompt audit `2`, current-tail projection, and typed direct/root origin resolution.
+- Added mixed immutable prompt-audit coverage for a supported `1 -> 2` chain and immutable rejection of unsupported audit `3`.
+- Updated the shared live harness and outer server E2E to require audit `2` for every completed real compaction without imposing an episode/fact count.
+- Repaired stale server fixtures rather than production behavior:
+  - current `episodes` output replaced removed `episodic_summary` fixtures;
+  - the parent-fallback integration now uses the current `createLLM` injection and registered provider metadata;
+  - two token-usage migration E2Es now expect the approved required-migration aggregate rejection on `FAILED`, then prove the persisted result and successful unresolved-row retry.
+- API/E2E changed test/harness code only. No production source, compatibility reader, alias, cap, or legacy output contract was added.
+
+### Round 7 Final Execution And Quality Decision
+
+- Focused natural-contract selection: `6 files / 28 tests` passed.
+- Complete current core memory suite: `33 files / 150 tests` passed. Runtime/manager lifecycle selection: `3 files / 15 tests` passed.
+- Focused server compactor selection: `3 files / 17 tests` passed. Broader affected server selection: `15 files / 88 tests` passed.
+- Full deterministic server E2E after stale required-migration repair: `50 files / 174 tests` passed; `14 files / 49 tests` were explicitly environment-gated and skipped.
+- Current core/shared/server build and sanitized built-in bootstrap smoke passed.
+- Managed DeepSeek at exact five percent completed one real product-child compaction, chose `1` episode and `8` facts, wrote audit `2`, performed exactly two reads and one write with zero failures, and produced the exact continuation artifact. Its summary was concise, phase-correct, and retained every selected anchor.
+- Local LM Studio Qwen at exact five percent completed two recurrent real product-child compactions, chose `1` episode / `3` facts and then `1` episode / `0` facts, wrote audits `[2, 2]`, performed exactly two reads and one write with zero failures, and produced the exact continuation artifact. Its first boundary correctly recorded pending work; the current head replaced that state with the successful read and all selected anchors. It was slower and sparser than DeepSeek but continuation-ready.
+- Both real journeys used built-in definition `autobyteus-memory-compactor`, the approved `2,788`-byte file (`SHA-256 944dbdbd3db1146f80fdb7fe5ec2817422eec74f8eca3f4743a336169a2a8348`), extracted system-prompt hash `73aaff91c63d2b68b91467f00302bfe2940c0037b9e08d1fa6373d1f96274dc7`, the default `ServerCompactionAgentRunner`, nonblank child run IDs, actual current-memory projection, retained natural history, and the exact new current-user constituent.
+- Result: `Pass / 98%`. Natural output quantity is now model-chosen, structural preservation above the old caps is directly proven, and two realistic models continued exactly. Residual uncertainty is model-dependent language quality/latency, not a known implementation failure.
+
+### Round 7 Authoritative Evidence
+
+| Surface | Result | Evidence |
+| --- | --- | --- |
+| Focused natural contract | Pass: 6 files / 28 tests | `evidence/api-e2e/api-rev-007-natural-contract-focused-02.log` |
+| Core memory and runtime | Pass: 33 files / 150 tests; runtime selection 3 files / 15 tests | `evidence/api-e2e/api-rev-007-core-memory-broad-02.log`; `api-rev-007-core-runtime-broad-02.log` |
+| Server prompt, runner, affected integration | Pass: prompt/harness 16/16; compactor 17/17; affected 88/88 | `evidence/api-e2e/api-rev-007-server-prompt-harness-unit-01.log`; `api-rev-007-server-compactor-focused-02.log`; `api-rev-007-server-affected-broad-01.log` |
+| Required-migration stale E2E repair | Pass: 4/4; full deterministic E2E 174 passed / 49 gated skips | `evidence/api-e2e/api-rev-007-required-migration-stale-e2e-fix-01.log`; `api-rev-007-root-deterministic-e2e-02.log` |
+| Build/bootstrap | Pass | `evidence/api-e2e/api-rev-007-core-server-build-01.log` |
+| Managed DeepSeek real compaction | Pass 2/2; one compaction; 1 episode / 8 facts; audit 2; exact continuation | `evidence/api-e2e/api-rev-007-deepseek-natural-compactor-five-percent.log` |
+| Local Qwen real compaction | Pass 2/2; two compactions; natural sparse counts; audits 2/2; exact continuation | `evidence/api-e2e/api-rev-007-lmstudio-qwen36-natural-compactor-five-percent.log` |
+| Cleanup/security | Pass; owned DB/vault/temp/model/process state removed; 20 evidence files scanned against 12 values in three encodings, zero matches | `evidence/api-e2e/api-rev-007-cleanup.log`; `api-rev-007-secret-leak-scan.log` |
 
 ## Round 6 Canonical Product Compactor Agent Validation
 

@@ -4,6 +4,7 @@ import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AgentFactory, AgentInputUserMessage } from "autobyteus-ts";
 import { BaseLLM } from "autobyteus-ts/llm/base.js";
+import { LLMFactory } from "autobyteus-ts/llm/llm-factory.js";
 import { LLMModel } from "autobyteus-ts/llm/models.js";
 import { LLMProvider } from "autobyteus-ts/llm/providers.js";
 import { LLMConfig } from "autobyteus-ts/llm/utils/llm-config.js";
@@ -27,7 +28,7 @@ import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enu
 const PARENT_AGENT_DEFINITION_ID = "parent-agent";
 const COMPACTOR_AGENT_DEFINITION_ID = "autobyteus-memory-compactor";
 const COMPACTION_OUTPUT = JSON.stringify({
-  episodic_summary: "The parent run compacted prior seed turns.",
+  episodes: [{ summary: "The parent run compacted prior seed turns." }],
   critical_issues: [],
   unresolved_work: [],
   durable_facts: [
@@ -153,6 +154,14 @@ const createMainModel = () =>
     maxOutputTokens: 20,
   });
 
+const createLaunchResolverModel = (modelIdentifier: string) =>
+  new LLMModel({
+    name: modelIdentifier,
+    value: modelIdentifier,
+    canonicalName: modelIdentifier,
+    provider: LLMProvider.OPENAI,
+  });
+
 const createParentDefinition = () =>
   new AgentDefinition({
     id: PARENT_AGENT_DEFINITION_ID,
@@ -239,6 +248,9 @@ describe("compaction agent parent runtime/model fallback executable validation",
     await Promise.all(
       agentFactory.listActiveAgentIds().map((agentId) => agentFactory.removeAgent(agentId).catch(() => false)),
     );
+    await LLMFactory.ensureInitialized();
+    LLMFactory.registerModel(createLaunchResolverModel("parent-model"));
+    LLMFactory.registerModel(createLaunchResolverModel("explicit-compactor-model"));
     vi.spyOn(console, "debug").mockImplementation(() => undefined);
     vi.spyOn(console, "info").mockImplementation(() => undefined);
     vi.spyOn(console, "warn").mockImplementation(() => undefined);
@@ -292,9 +304,7 @@ describe("compaction agent parent runtime/model fallback executable validation",
         getFreshAgentDefinitionById: vi.fn(async () => createParentDefinition()),
         getAgentDefinitionById: vi.fn(),
       } as never,
-      llmFactory: {
-        createLLM: vi.fn(async () => parentLLM),
-      } as never,
+      createLLM: vi.fn(async () => parentLLM),
       workspaceManager: {
         getWorkspaceById: () => null,
         getOrCreateTempWorkspace: async () => ({

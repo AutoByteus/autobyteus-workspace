@@ -90,6 +90,90 @@ describe('FileCompactionLineageStore', () => {
     expect(store.readHead()?.compactionId).toBe('c-1');
   });
 
+  it('preserves a mixed audit 1 -> 2 chain and projects the exact natural-count head', () => {
+    const memoryStore = new FileMemoryStore(dir, scope.runId, { agentRootSubdir: '' });
+    const predecessorEpisode = new EpisodicItem({
+      id: 'episode-v1',
+      ts: 1,
+      summary: 'Immutable fixed-contract predecessor.',
+    });
+    const predecessorSemantic = new SemanticItem({
+      id: 'semantic-v1',
+      ts: 1,
+      category: 'durable_fact',
+      fact: 'Prompt audit one remains directly usable.',
+      salience: 200,
+    });
+    const headEpisodes = Array.from({ length: 4 }, (_, index) => new EpisodicItem({
+      id: `episode-v2-${index + 1}`,
+      ts: 2,
+      summary: `Natural phase ${index + 1}`,
+    }));
+    const headSemantics = Array.from({ length: 25 }, (_, index) => new SemanticItem({
+      id: `semantic-v2-${index + 1}`,
+      ts: 2,
+      category: 'durable_fact',
+      fact: `Natural continuation fact ${index + 1}`,
+      salience: Math.max(1, 200 - index),
+    }));
+    memoryStore.add([
+      predecessorEpisode,
+      predecessorSemantic,
+      ...headEpisodes,
+      ...headSemantics,
+    ]);
+    store.appendNext(null, record(1, null, {
+      episodeIds: [predecessorEpisode.id],
+      semanticIds: [predecessorSemantic.id],
+      execution: {
+        ...record(1, null).execution,
+        promptContractVersion: 1,
+      },
+    }));
+    store.appendNext('c-1', record(2, 'c-1', {
+      episodeIds: headEpisodes.map(({ id }) => id),
+      semanticIds: headSemantics.map(({ id }) => id),
+      execution: {
+        ...record(2, 'c-1').execution,
+        promptContractVersion: 2,
+      },
+    }));
+
+    expect(store.list().map(({ execution }) => execution.promptContractVersion)).toEqual([1, 2]);
+    expect(store.readHead()).toMatchObject({
+      compactionId: 'c-2',
+      previousCompactionId: 'c-1',
+      episodeIds: headEpisodes.map(({ id }) => id),
+      semanticIds: headSemantics.map(({ id }) => id),
+      execution: { promptContractVersion: 2 },
+    });
+    const current = new CurrentCompactionOutputLoader(store, memoryStore).loadCurrent()!;
+    expect(current.episodes).toHaveLength(4);
+    expect(current.semantics).toHaveLength(25);
+    const rendered = new CompactedMemoryContextProjector().project({
+      systemPrompt: 'System',
+      continuationMessages: [],
+      bundle: current,
+    }).buildMessages();
+    expect(rendered[1]?.content).toContain('Natural phase 4');
+    expect(rendered[1]?.content).toContain('Natural continuation fact 25');
+    expect(rendered[1]?.content).not.toContain('Immutable fixed-contract predecessor');
+
+    const file = path.join(dir, 'compaction_lineage.jsonl');
+    const before = fs.readFileSync(file, 'utf-8');
+    const unsupported = {
+      ...record(3, 'c-2'),
+      execution: {
+        ...record(3, 'c-2').execution,
+        promptContractVersion: 3,
+      },
+    } as unknown as CompactionLineageRecord;
+    expect(() => store.appendNext('c-2', unsupported))
+      .toThrow('Unsupported compaction selection or prompt contract version');
+    expect(fs.readFileSync(file, 'utf-8')).toBe(before);
+    expect(store.readHead()?.compactionId).toBe('c-2');
+  });
+
   it('reads the exact tail after 1,000 recurrent appends without a mutable state pointer', () => {
     const memoryStore = new FileMemoryStore(dir, scope.runId, { agentRootSubdir: '' });
     let previous: string | null = null;

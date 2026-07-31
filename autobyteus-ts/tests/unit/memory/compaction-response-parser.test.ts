@@ -38,11 +38,10 @@ describe('CompactionResponseParser', () => {
     ]);
   });
 
-  it('enforces one-to-three episodes, twenty facts, and configured text bounds', () => {
+  it('retains natural episode/fact counts while enforcing configured per-entry text bounds', () => {
     const parser = new CompactionResponseParser({
-      maxEpisodeChars: 8,
-      maxFactChars: 6,
-      maxFactCount: 20,
+      maxEpisodeChars: 16,
+      maxFactChars: 18,
     });
     const result = parser.parse(JSON.stringify(currentResponse({
       episodes: Array.from({ length: 5 }, (_, index) => ({
@@ -57,10 +56,12 @@ describe('CompactionResponseParser', () => {
       important_artifacts: [],
     })));
 
-    expect(result.episodes).toHaveLength(3);
-    expect(result.episodes.every(({ summary }) => summary.length <= 8)).toBe(true);
-    expect(result.criticalIssues).toHaveLength(20);
-    expect(result.criticalIssues.every(({ fact }) => fact.length <= 6)).toBe(true);
+    expect(result.episodes).toHaveLength(5);
+    expect(result.episodes.every(({ summary }) => summary.length <= 16)).toBe(true);
+    expect(result.episodes.at(-1)?.summary).toContain('episode-5');
+    expect(result.criticalIssues).toHaveLength(25);
+    expect(result.criticalIssues.every(({ fact }) => fact.length <= 18)).toBe(true);
+    expect(result.criticalIssues.at(-1)?.fact).toContain('fact-25');
   });
 
   it('rejects removed aliases, stale entry metadata, and incomplete current responses', () => {
@@ -73,7 +74,7 @@ describe('CompactionResponseParser', () => {
     })))).toThrow('may contain only fact');
     expect(() => new CompactionResponseParser().parse(JSON.stringify(currentResponse({
       episodes: [],
-    })))).toThrow('one to three non-empty episodes');
+    })))).toThrow('at least one non-empty episode');
     expect(() => new CompactionResponseParser().parse(JSON.stringify({
       episodes: [{ summary: 'only field present' }],
     }))).toThrow('missing a critical_issues array');

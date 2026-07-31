@@ -271,7 +271,7 @@ describe('token usage provider-name snapshot backfill startup e2e', () => {
     expect((await readRows(rowIds)).map(withoutProviderName)).toEqual(beforePreservedRows);
   });
 
-  it('continues startup after a failed provider-name update and retries only the unresolved row', async () => {
+  it('blocks startup after a failed provider-name update and retries only the unresolved row', async () => {
     const providerId = `provider_${randomUUID()}`;
     const rawModel = `openai-compatible:${providerId}:org/model:tag`;
     const runId = `provider-name-failure-${randomUUID()}`;
@@ -290,7 +290,16 @@ describe('token usage provider-name snapshot backfill startup e2e', () => {
       siblingExecutions += 1;
     });
 
-    const failed = await runner.runPending();
+    let failed: Awaited<ReturnType<typeof runner.runPending>> = [];
+    try {
+      await runner.runPending();
+      throw new Error('Expected required migration aggregation to reject.');
+    } catch (error) {
+      expect(error).toMatchObject({
+        code: 'REQUIRED_APP_DATA_MIGRATION_FAILED',
+      });
+      failed = (error as { results: Awaited<ReturnType<typeof runner.runPending>> }).results;
+    }
     expect(failed).toEqual(expect.arrayContaining([
       expect.objectContaining({
         migrationId: TOKEN_USAGE_PROVIDER_NAME_SNAPSHOT_BACKFILL_MIGRATION_ID,

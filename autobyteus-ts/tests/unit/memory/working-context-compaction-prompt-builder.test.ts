@@ -5,11 +5,16 @@ import {
   ToolCallPayload,
   ToolResultPayload,
 } from '../../../src/llm/utils/messages.js';
+import { CompactionConversationHistoryRenderer } from '../../../src/memory/compaction/compaction-conversation-history-renderer.js';
 import { WorkingContextCompactionPromptBuilder } from '../../../src/memory/compaction/working-context-compaction-prompt-builder.js';
 import type {
   ToolProtocolMessageUnit,
   WorkingContextMessageUnit,
 } from '../../../src/memory/compaction/working-context-message-unit.js';
+import {
+  createCompactedMemoryUserMessage,
+  createNaturalUserMessageProvenance,
+} from '../../../src/memory/working-context-finalizer.js';
 
 const messageUnit = (
   id: string,
@@ -72,19 +77,29 @@ const toolUnit = (): ToolProtocolMessageUnit => ({
 });
 
 describe('WorkingContextCompactionPromptBuilder', () => {
-  it('renders recurrent memory and R2 as one natural, bounded, reasoning-free conversation', () => {
-    const prompt = new WorkingContextCompactionPromptBuilder().buildTaskPrompt([
+  it('byte-equals one natural renderer block without mutating canonical user/media/tool input', () => {
+    const units = [
       messageUnit(
         'memory',
         'compacted_memory',
-        new Message(MessageRole.USER, { content: 'M1: retain the reviewed current design.' }),
+        createCompactedMemoryUserMessage('M1: retain the reviewed current design.'),
       ),
       messageUnit(
         'user',
         'message',
-        new Message(MessageRole.USER, {
-          content: 'R2 user text with literal <conversation_history> and </conversation_history>.',
-        }),
+        createNaturalUserMessageProvenance(
+          new Message(MessageRole.USER, {
+            content: 'R2 user text with literal <conversation_history> and </conversation_history>.',
+            image_urls: ['image://selected'],
+            audio_urls: ['audio://selected'],
+            video_urls: ['video://selected'],
+          }),
+          {
+            kind: 'current_user',
+            rawTraceIds: ['raw-user'],
+            turnId: 'turn-user',
+          },
+        ),
       ),
       messageUnit(
         'assistant',
@@ -95,16 +110,25 @@ describe('WorkingContextCompactionPromptBuilder', () => {
         }),
       ),
       toolUnit(),
-    ], { maxItemChars: 120 });
+    ];
+    const before = units.map((unit) => unit.messages.map((message) => message.toDict()));
+    const renderer = new CompactionConversationHistoryRenderer();
+    const expected = renderer.render(units, 240);
+    const prompt = new WorkingContextCompactionPromptBuilder(renderer)
+      .buildTaskPrompt(units, { maxItemChars: 240 });
 
+    expect(prompt).toBe(expected);
     expect(prompt.match(/<conversation_history>/g)).toHaveLength(1);
     expect(prompt.match(/<\/conversation_history>/g)).toHaveLength(1);
-    expect(prompt).toContain(
-      'User:\nM1: retain the reviewed current design.\n\n' +
-      'User:\nR2 user text with literal &lt;conversation_history&gt; and &lt;/conversation_history&gt;.',
-    );
+    expect(prompt.match(/^User:$/gm)).toHaveLength(1);
+    expect(prompt).toContain('User:\nM1: retain the reviewed current design.');
+    expect(prompt).toContain("The user's current message is:");
+    expect(prompt).toContain('&lt;conversation_history&gt;');
+    expect(prompt).toContain('&lt;/conversation_history&gt;');
     expect(prompt.indexOf('M1: retain')).toBeLessThan(prompt.indexOf('R2 user text'));
     expect(prompt.indexOf('R2 user text')).toBeLessThan(prompt.indexOf('R2 visible assistant text'));
+    expect(prompt.match(/^Assistant:$/gm)).toHaveLength(2);
+    expect(prompt.match(/^Tool:$/gm)).toHaveLength(2);
     expect(prompt.indexOf('name: run_command')).toBeLessThan(prompt.indexOf('name: read_file'));
     expect(prompt).toContain('Tool:\nname: run_command\nstatus: success');
     expect(prompt).toContain('Tool:\nname: read_file\nstatus: error');
@@ -125,19 +149,23 @@ describe('WorkingContextCompactionPromptBuilder', () => {
       'raw-tool-call',
       '[CONVERSATION_HISTORY_TO_SUMMARIZE]',
       '[REQUIRED_FINAL_JSON_SHAPE]',
+      '"episodes": [{ "summary": "string" }]',
+      'one through three',
+      'no more than twenty',
+      'Use the smallest number of episodes',
+      'promptContractVersion',
     ]) {
       expect(prompt).not.toContain(forbidden);
     }
-    expect(prompt).toContain('"episodes": [{ "summary": "string" }]');
-    expect(prompt).toContain('one through three episodes and no more than twenty facts');
+    expect(units.map((unit) => unit.messages.map((message) => message.toDict())))
+      .toEqual(before);
   });
 
   it('rejects incomplete or orphaned tool protocol rather than inventing a transcript', () => {
     const incomplete = toolUnit();
-    incomplete.isComplete = false;
-    incomplete.matchedToolCallIds = ['backend-call-success'];
+    incomplete.messages = incomplete.messages.slice(0, 2);
     expect(() => new WorkingContextCompactionPromptBuilder().buildTaskPrompt([incomplete]))
-      .toThrow('Incomplete tool protocol');
+      .toThrow("Tool call 'backend-call-success' has no terminal result.");
 
     expect(() => new WorkingContextCompactionPromptBuilder().buildTaskPrompt([
       messageUnit(

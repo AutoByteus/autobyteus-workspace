@@ -98,6 +98,7 @@ export type LiveE2eCompactionAgentFlowResult = {
   observedBelowThreshold: true;
   observedAtOrAboveThreshold: true;
   completedCompactionCount: number;
+  promptContractVersions: 2[];
   successfulToolCount: number;
   recoverableToolFailureCount: number;
   exactRetainedArtifactVerified: true;
@@ -766,7 +767,13 @@ export class LiveE2eScenarioExecution {
         runId,
         memberId: null,
       });
-      if (lineageStore.list().length !== completedCompactions.length) {
+      const lineageRecords = lineageStore.list();
+      const promptContractVersions = lineageRecords
+        .map(({ execution }) => execution.promptContractVersion);
+      if (
+        lineageRecords.length !== completedCompactions.length
+        || promptContractVersions.some((version) => version !== 2)
+      ) {
         throw new Error('LIVE_E2E_COMPACTION_LINEAGE_COUNT_MISMATCH');
       }
 
@@ -798,6 +805,7 @@ export class LiveE2eScenarioExecution {
         completedCompactionCount: completedCompactions.length,
         compactionAgentDefinitionIds,
         compactionRunIds,
+        promptContractVersions,
         canonicalCompactorPromptSha256: canonicalCompactor.promptSha256,
         persistedMemory: {
           episodes,
@@ -840,6 +848,7 @@ export class LiveE2eScenarioExecution {
         observedBelowThreshold: true,
         observedAtOrAboveThreshold: true,
         completedCompactionCount: completedCompactions.length,
+        promptContractVersions: promptContractVersions as 2[],
         successfulToolCount: successfulTools.length,
         recoverableToolFailureCount: failedTools.length,
         exactRetainedArtifactVerified: true,

@@ -24,15 +24,21 @@ const lineage = (
   compactionId: id,
   previousCompactionId,
   rawTraceArchiveFile: `raw_traces_archive/${id}.jsonl`,
-  episodeIds: [`episode-${id}`],
-  semanticIds: [`semantic-${id}`],
+  episodeIds: id === 'c2'
+    ? Array.from({ length: 4 }, (_, index) =>
+        `episode-${id}${index === 0 ? '' : `-${index + 1}`}`)
+    : [`episode-${id}`],
+  semanticIds: id === 'c2'
+    ? Array.from({ length: 25 }, (_, index) =>
+        `semantic-${id}${index === 0 ? '' : `-${index + 1}`}`)
+    : [`semantic-${id}`],
   derivedAt: id === 'c1' ? '2026-07-30T10:00:00.000Z' : '2026-07-30T11:00:00.000Z',
   execution: {
     runtimeKind: 'autobyteus',
     provider: 'openai',
     model: 'current-model',
     selectionPolicyVersion: 1,
-    promptContractVersion: 1,
+    promptContractVersion: id === 'c1' ? 1 : 2,
   },
 });
 
@@ -67,17 +73,17 @@ const makeHarness = () => {
       status: 'complete',
     }]),
   );
-  const episodes = records.map((record) => new EpisodicItem({
-    id: record.episodeIds[0]!,
+  const episodes = records.flatMap((record) => record.episodeIds.map((id) => new EpisodicItem({
+    id,
     ts: 30,
-    summary: `episode ${record.compactionId}`,
-  }));
-  const semantics = records.map((record) => new SemanticItem({
-    id: record.semanticIds[0]!,
+    summary: `episode ${id}`,
+  })));
+  const semantics = records.flatMap((record) => record.semanticIds.map((id) => new SemanticItem({
+    id,
     ts: 30,
     category: 'durable_fact',
-    fact: `fact ${record.compactionId}`,
-  }));
+    fact: `fact ${id}`,
+  })));
   const lineageStore: CompactionLineageStore = {
     appendNext: () => undefined,
     list: () => records,
@@ -118,10 +124,10 @@ const makeHarness = () => {
 
 describe('CompactionLineageResolver', () => {
   it.each([
-    ['episode', 'episode-c2'],
-    ['semantic', 'semantic-c2'],
+    ['episode', 'episode-c2-4'],
+    ['semantic', 'semantic-c2-25'],
   ] as const)('resolves %s direct R2 sources and transitive R1/R2 roots', (kind, id) => {
-    const { resolver } = makeHarness();
+    const { records, resolver } = makeHarness();
 
     const result = resolver.resolve({ kind, id });
 
@@ -141,6 +147,7 @@ describe('CompactionLineageResolver', () => {
     if (result.status !== 'complete') throw new Error('expected complete');
     expect(result.direct.rawTraces.map(({ id: rawId }) => rawId)).toEqual(['raw-r2']);
     expect(result.roots.map(({ trace: root }) => root.id)).toEqual(['raw-r1', 'raw-r2']);
+    expect(records.map(({ execution }) => execution.promptContractVersion)).toEqual([1, 2]);
   });
 
   it('returns a typed not_found result for unknown artifacts', () => {
@@ -168,9 +175,9 @@ describe('CompactionLineageResolver', () => {
     const harness = makeHarness();
     mutate(harness);
 
-    expect(() => harness.resolver.resolve({ kind: 'episode', id: 'episode-c2' }))
+    expect(() => harness.resolver.resolve({ kind: 'episode', id: 'episode-c2-4' }))
       .toThrow(MemoryOriginIntegrityError);
-    expect(() => harness.resolver.resolve({ kind: 'episode', id: 'episode-c2' }))
+    expect(() => harness.resolver.resolve({ kind: 'episode', id: 'episode-c2-4' }))
       .toThrow(message);
   });
 
@@ -178,7 +185,7 @@ describe('CompactionLineageResolver', () => {
     const harness = makeHarness();
     harness.records[0] = lineage('c1', 'c2');
 
-    expect(() => harness.resolver.resolve({ kind: 'episode', id: 'episode-c2' }))
+    expect(() => harness.resolver.resolve({ kind: 'episode', id: 'episode-c2-4' }))
       .toThrow(/cycle detected/);
   });
 
@@ -188,9 +195,9 @@ describe('CompactionLineageResolver', () => {
       throw new Error('duplicate compaction IDs');
     };
 
-    expect(() => harness.resolver.resolve({ kind: 'episode', id: 'episode-c2' }))
+    expect(() => harness.resolver.resolve({ kind: 'episode', id: 'episode-c2-4' }))
       .toThrow(MemoryOriginIntegrityError);
-    expect(() => harness.resolver.resolve({ kind: 'episode', id: 'episode-c2' }))
+    expect(() => harness.resolver.resolve({ kind: 'episode', id: 'episode-c2-4' }))
       .toThrow(/failed validation.*duplicate/);
   });
 });

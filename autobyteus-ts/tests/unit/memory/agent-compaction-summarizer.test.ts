@@ -63,7 +63,10 @@ describe('AgentCompactionSummarizer', () => {
       traceCount: 1,
     });
     expect(runner.calls[0]?.prompt).toContain('<conversation_history>');
-    expect(runner.calls[0]?.prompt).toContain('Your final answer must be one JSON object with this exact shape');
+    expect(runner.calls[0]?.prompt).toContain('User:');
+    expect(runner.calls[0]?.prompt).not.toContain(
+      'Your final answer must be one JSON object with this exact shape',
+    );
     expect(summarizer.getLastCompactionExecutionMetadata()).toMatchObject({
       compactionAgentDefinitionId: 'memory-compactor',
       compactionAgentName: 'Memory Compactor',

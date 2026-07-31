@@ -83,7 +83,7 @@ describe("ServerCompactionAgentRunner", () => {
       createEvent(AgentRunEventType.SEGMENT_CONTENT, {
         id: "message-1",
         segment_type: "text",
-        delta: '{"episodic_summary":"ok"}',
+        delta: '{"episodes":[{"summary":"ok"}]}',
       }),
       createEvent(AgentRunEventType.TURN_COMPLETED, { turn_id: "turn-1" }, "IDLE"),
     ]);
@@ -129,7 +129,7 @@ describe("ServerCompactionAgentRunner", () => {
       },
     });
     expect(result).toEqual({
-      outputText: '{"episodic_summary":"ok"}',
+      outputText: '{"episodes":[{"summary":"ok"}]}',
       metadata: {
         compactionAgentDefinitionId: "autobyteus-memory-compactor",
         compactionAgentName: "Memory Compactor",

@@ -139,6 +139,9 @@ run('value-safe one-database-vault managed-provider capabilities', () => {
         expect(result.effectiveContextWindowTokens).toBeGreaterThan(0);
         expect(result.triggerThresholdTokens).toBeGreaterThan(0);
         expect(result.completedCompactionCount).toBeGreaterThanOrEqual(1);
+        expect(result.promptContractVersions).toHaveLength(result.completedCompactionCount);
+        expect(result.promptContractVersions.every((version) => version === 2)).toBe(true);
+        expect(result.qualityEvidence.persistedMemory.episodes.length).toBeGreaterThanOrEqual(1);
         expect(result.recoverableToolFailureCount).toBe(0);
         process.stdout.write(`${JSON.stringify(result)}\n`);
         return;
