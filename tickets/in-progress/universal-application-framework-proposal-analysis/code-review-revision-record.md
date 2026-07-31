@@ -34,6 +34,7 @@
 | `CRR-028` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Fresh Implementation Review / user-requested framework naming audit | `Pass` (`CRR-026` source; `CRR-027` test review) | `Fail — Design Impact` | `CR-018` |
 | `CRR-029` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Implementation Review / `IR-016` | `Fail — Design Impact` | `Pass` | `CR-018` |
 | `CRR-030` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/api-e2e-test-review-report.md` | Proportional API/E2E Test-Code Review / `API-REV-011` | `N/A` | `Pass` | `N/A` |
+| `CRR-031` | `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md` | Fresh Implementation Review / user-requested behavior-neutral architecture simplification audit | `Pass` (`CRR-029` source; `API-REV-011`; `CRR-030` test review) | `Fail — Design Impact` | `CR-019`, `CR-020`, `CR-021` |
 
 ## Revision Entries
 
@@ -834,3 +835,30 @@ None. `CRR-023` and `CRR-027` had no unresolved proportional test-review finding
 - Material score or classification changes: no source scorecard or API/E2E confidence recomputation. Proportional test-code result is `Pass`; `API-REV-011` remains `Pass / 98.9%`.
 - Recommended recipient: `delivery_engineer`
 - Remaining risks or uncertainty: historical `APIE2E-REPO-005` remains separate, unattributed `Unclear` whole-suite debt and is not requirement evidence. Delivery should resume final integrated-state, documentation/no-impact, and handoff work without reopening the source scorecard.
+
+### CRR-031 — Remaining accidental application-framework complexity requires design-led simplification
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/universal-application-framework-proposal-analysis/tickets/in-progress/universal-application-framework-proposal-analysis/code-review-report.md`
+- Review entry point and round: `Implementation Review` (fresh behavior-neutral architecture simplification audit), round `31`
+- Triggering role, report path, and finding or scenario IDs: user-requested design-principles audit after `CRR-029`, `API-REV-011`, and `CRR-030`; `code-review-report.md`; new findings `CR-019`, `CR-020`, `CR-021`; runtime failure IDs `N/A`
+- Relevant solution revision IDs: `SR-011`; retained functional basis `SR-010`, `SR-006`
+- Relevant architecture-review revision IDs: `ARCH-REV-009`; retained functional basis `ARCH-REV-008`, `ARCH-REV-006`
+- Relevant implementation revision IDs: cumulative through `IR-016`
+- Relevant API/E2E revision IDs: `API-REV-011`; retained `API-REV-010`, `API-REV-008`
+- Relevant delivery revision IDs: `DR-001`
+- Prior authoritative result: source `CRR-029` Pass / 97, `API-REV-011` Pass / 98.9%, and proportional durable-test review `CRR-030` Pass
+- Current authoritative result: `Fail — Design Impact`
+- What changed in the review result and why: the user explicitly required a second, behavior-neutral architecture pass after accepting the improved vocabulary. The complete current construction and consumer trace confirms three remaining structural gaps: `ApplicationPlatformRuntime` exposes a 19-field mixed-level service collection to route/host callers; Studio package construction closes over later-assigned bundle/definition/runtime services while `ApplicationPackageRegistryService` mixes registry and ordered refresh ownership; and run/publication/session plus engine/event/orchestration cycles require two permanent bind-once proxies. These are not runtime defects—API-REV-011 remains strong evidence—but they are accidental complexity under the shared ownership, authoritative-boundary, acyclic-dependency, and file-responsibility principles.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-018` | Source-resolved; API/E2E confirmation pending | Resolved | `SR-011`, `ARCH-REV-009`, `IR-016`, `CRR-029`, `API-REV-011`, `CRR-030` | Current names remain clear; exact dual-host behavior and renamed durable coverage pass. CRR-031 preserves this vocabulary. |
+| `CR-001`–`CR-017` | Resolved | Remain Resolved | cumulative through `CRR-030` | The new findings request internal structural simplification only and do not reopen the passed functional behaviors. |
+| `APIE2E-REPO-005` | Historical `Unclear` / unattributed | Remains separate and unchanged | `API-REV-005`–`API-REV-011` | No supported connection to `CR-019`–`CR-021`; it is neither finding evidence nor a blocker for the design classification. |
+
+- New or remaining finding IDs: `CR-019`, `CR-020`, `CR-021`
+- Material score or classification changes: latest full review changes from source `Pass / 97` plus API/E2E/test-review Pass to `Fail — Design Impact / 91`. Runtime correctness, naming, and test evidence remain excellent; ownership/boundary/interface/separation fall below the clean-pass target.
+- Recommended recipient: `solution_designer`
+- Remaining risks or uncertainty: preserve every route, schema, package byte, model/configuration behavior, worker protocol, Agent Tools capability, publication/handoff/projection result, recovery, remount, restart, and shutdown invariant. Avoid replacing current accidental complexity with a generic façade, event bus, dependency container, mode-switched server builder, compatibility layer, or pass-through-only factory. The revised package must return through architecture review before implementation.
