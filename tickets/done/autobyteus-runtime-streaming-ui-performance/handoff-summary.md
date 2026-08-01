@@ -2,7 +2,7 @@
 
 ## Status
 
-- Delivery status: **User verified the integrated macOS package and authorized finalization plus release; archival is complete and release v1.4.37 is being finalized**.
+- Delivery status: **Finalized and released successfully as v1.4.37; all five platform/service release workflows passed**.
 - Ticket: `autobyteus-runtime-streaming-ui-performance`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance`
 - Ticket branch: `codex/autobyteus-runtime-streaming-ui-performance`
