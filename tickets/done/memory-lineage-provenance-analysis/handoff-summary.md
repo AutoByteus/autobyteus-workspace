@@ -3,17 +3,17 @@
 ## Delivery State
 
 - Ticket: `memory-lineage-provenance-analysis`
-- Status: `Live migration verified; existing-run continuation confirmation pending`
-- Delivery revision: `DR-009`
+- Status: `User verified; repository finalization and v1.4.35 release in progress`
+- Delivery revision: `DR-009 complete; DR-010 in progress`
 - Ticket branch: `codex/memory-lineage-provenance-analysis`
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis`
 - Implementation commit: `d9753e69c1244bf88c0bc6816306495430047a35`
 - Reviewed API/E2E checkpoint: `89cfd4ebcffac9612d5f64d1fe95d7468ae4101d`
 - Integrated tracked base: `origin/personal@9615dcc88e73f0584e67623a3cfe1f0d2afd4617`
-- Base refresh result: already contained; no merge required; 15 ahead / 0 behind at delivery refresh and DR-009 recheck
+- Base refresh result: already contained; no merge required; 16 ahead / 0 behind at the finalization refresh
 - Finalization target: `origin/personal` / local `personal`
-- User verification: `Partial — running package, migration ledger, product data, and restore-readiness verified; no specific run has yet been restored/continued in this session`
-- Final commit/push/target merge/release/deployment/archive/cleanup: `Not performed`
+- User verification: `Pass — the user explicitly confirmed the ticket is done and the tested Electron behavior is working`
+- Final commit/push/target merge/release/deployment/archive/cleanup: `Authorized and in progress`
 
 ## Review Authority
 
@@ -116,15 +116,15 @@ Updated long-lived docs:
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/docs/modules/agent_memory.md`
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/docs/design/startup_initialization_and_lazy_services.md`
 
-Authoritative report: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/docs-sync-report.md`.
+Authoritative report: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/done/memory-lineage-provenance-analysis/docs-sync-report.md`.
 
 ## Residual Risks / Scope Limits
 
-- Live data audit covers all `347` converted native snapshots, but the user's specific formerly failing run has not yet been opened/continued in this session.
+- The live audit did not identify a run ID for the formerly failing run, but the user subsequently completed hands-on verification and explicitly confirmed the ticket is done and working.
 - Truthful omission can reduce old context, including to an empty current message list.
 - A migration filesystem failure remains retryable while the server starts; an affected existing run can still fail strict restore until conversion succeeds.
 - Normal multi-file compaction publication remains non-crash-atomic and has no recovery journal.
-- The package is unsigned/unnotarized; live startup is healthy, but hands-on continuation behavior is not yet user-confirmed.
+- The local verification package is unsigned/unnotarized; it is not the release artifact.
 - No UI, renderer, preload, IPC, or desktop-shell boundary changed; separate browser/Electron interaction coverage was not applicable.
 
 ## Canonical Artifact Package
@@ -137,12 +137,8 @@ Authoritative report: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-l
 - Delivery: `docs-sync-report.md`; `handoff-summary.md`; `release-deployment-report.md`; `delivery-revision-record.md`
 - Evidence: `evidence/implementation/`; `evidence/code-review/`; `evidence/api-e2e/`; `evidence/delivery/`
 
-All relative ticket paths above are under `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/`.
+All relative ticket paths above are under `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/done/memory-lineage-provenance-analysis/`.
 
 ## Required User Action
 
-1. In the currently running Electron app, open the same native AutoByteus run that previously failed with unsupported snapshot schema `4`.
-2. Continue it with one normal message or Tool turn.
-3. Report success or the exact visible defect and explicitly confirm completion. Do not manually rerun or edit migration data.
-
-Delivery will not archive, push, merge to `personal`, release/deploy, or clean the worktree/branch before that confirmation. After confirmation, delivery must refresh `origin/personal` again and request renewed verification if the candidate materially changes.
+None. The user explicitly completed verification and authorized finalization plus a new release. Delivery is archiving the ticket, merging the verified state to `personal`, and releasing `v1.4.35` through the documented release helper. Any release or workflow failure will be recorded here rather than hidden.

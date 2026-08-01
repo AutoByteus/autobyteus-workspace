@@ -3,11 +3,11 @@
 ## Scope
 
 - Ticket: `memory-lineage-provenance-analysis`
-- Trigger: user-approved `SR-015`; `ARCH-REV-009 Pass`; implementation `IR-005` at `d9753e69c1244bf88c0bc6816306495430047a35`; source review `CRR-012 Pass / 9.3`; current `API-REV-009 Pass / 98%`; proportional review `CRR-014 Pass`; DR-009 read-only live migration verification
+- Trigger: user-approved `SR-015`; `ARCH-REV-009 Pass`; implementation `IR-005` at `d9753e69c1244bf88c0bc6816306495430047a35`; source review `CRR-012 Pass / 9.3`; current `API-REV-009 Pass / 98%`; proportional review `CRR-014 Pass`; DR-009 read-only live migration verification; explicit user completion and release authorization
 - Prior delivery baseline: `DR-001` through `DR-007`; not evidence that SR-015 was already delivered
 - Integrated tracked base: `origin/personal@9615dcc88e73f0584e67623a3cfe1f0d2afd4617`
 - Reviewed API/E2E checkpoint: `89cfd4ebcffac9612d5f64d1fe95d7468ae4101d`
-- Integration state: latest base already contained; branch 15 ahead / 0 behind at the initial delivery refresh
+- Integration state: latest base already contained; branch 16 ahead / 0 behind at the finalization refresh
 
 ## Why Docs Were Updated
 
@@ -52,8 +52,8 @@ SR-015 replaces the earlier destructive pre-lineage reset and fail-closed global
 ## Persisted-Data Transition
 
 - Approved decision: `Migration Required` for exact native absent/zero-byte-lineage snapshots; `Not Affected` for nonempty-lineage and excluded locations.
-- Delivery execution against user/product data: `Not performed`. API/E2E used isolated roots and did not read or mutate owner product data.
-- Packaged behavior: the local Electron 1.4.34 candidate contains the migration and will execute the normal startup migration lifecycle against the selected app-data root.
+- Delivery execution against user/product data: `Read-only verification only`. The running product authored the migration state; delivery did not rerun, repair, rewrite, or remove owner data.
+- Packaged behavior: the local Electron 1.4.34 candidate executed the normal startup migration lifecycle successfully; the ledger recorded 347 migrated / 342 skipped / 0 failed and all 347 converted snapshots passed strict-v5 restore-readiness checks.
 - Operational caution: back up `~/.autobyteus/server-data` before hands-on package testing. Successful eligible conversion can replace a snapshot and remove obsolete episode/semantic/manifest files; code rollback alone is not a product-data rollback.
 
 ## Validation And Continuation
@@ -65,7 +65,8 @@ SR-015 replaces the earlier destructive pre-lineage reset and fail-closed global
 - README-guided local macOS ARM64 Electron 1.4.34 build and artifact validation: Pass.
 - Docs sync result: `Pass`.
 - DR-009 live-product result: no additional long-lived documentation change required. The exact delivered migration behavior was observed: 347/347 converted snapshots are strict v5, identity-correct, and deserializable; cleanup and preservation boundaries match the existing docs. Current delivery artifacts and value-safe evidence record operational counts without duplicating ephemeral owner-data inventory into durable project design docs.
-- Next action: user opens/continues the previously failing native run in the already running 1.4.34 app, reports success or defects, and explicitly confirms completion. Delivery must refresh `origin/personal` again after that confirmation and before finalization.
+- User verification: `Pass`; the user explicitly confirmed the ticket is done and the tested behavior is working.
+- Next action: delivery finalizes the verified branch to `personal` and releases `v1.4.35`. No additional durable documentation change is required for the release-only version bump.
 
 ## Blocked Or Escalated Follow-Up
 
