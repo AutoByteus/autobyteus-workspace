@@ -170,6 +170,56 @@ describe('voiceInputStore', () => {
     expect(addToastMock).not.toHaveBeenCalled()
   })
 
+  it('clears starting state and preserves the permission-denied error path', async () => {
+    permissionsQueryMock.mockResolvedValue({ state: 'denied' })
+    const store = useVoiceInputStore()
+
+    await store.startRecording('composer')
+
+    expect(getUserMediaMock).not.toHaveBeenCalled()
+    expect(store.isStarting).toBe(false)
+    expect(store.isRecording).toBe(false)
+    expect(store.recordingSource).toBe(null)
+    expect(store.microphonePermissionState).toBe('denied')
+    expect(store.latestResult?.outcome).toBe('error')
+    expect(store.latestResult?.error).toContain('permission is denied')
+    expect(addToastMock).toHaveBeenCalledWith(
+      expect.stringContaining('permission is denied'),
+      'error',
+    )
+  })
+
+  it('disposes acquired resources and clears starting when AudioWorklet setup fails', async () => {
+    const stopMock = vi.fn()
+    const closeMock = vi.fn().mockResolvedValue(undefined)
+    const addModuleMock = vi.fn().mockRejectedValue(new Error('worklet setup failed'))
+    getUserMediaMock.mockResolvedValue({
+      getTracks: () => [{ stop: stopMock }],
+    })
+
+    vi.stubGlobal('AudioContext', class {
+      state = 'running'
+      audioWorklet = { addModule: addModuleMock }
+      resume = vi.fn().mockResolvedValue(undefined)
+      close = closeMock
+    } as any)
+
+    const store = useVoiceInputStore()
+
+    await store.startRecording('settings-test')
+
+    expect(addModuleMock).toHaveBeenCalledOnce()
+    expect(stopMock).toHaveBeenCalledOnce()
+    expect(closeMock).toHaveBeenCalledOnce()
+    expect(store.isStarting).toBe(false)
+    expect(store.isRecording).toBe(false)
+    expect(store.recordingSource).toBe(null)
+    expect(store.latestResult?.outcome).toBe('error')
+    expect(store.latestResult?.error).toContain('worklet setup failed')
+
+    vi.unstubAllGlobals()
+  })
+
   it('cancels only the matching recording source and preserves transcription', async () => {
     const stopMock = vi.fn()
     const closeMock = vi.fn().mockResolvedValue(undefined)

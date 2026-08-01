@@ -44,7 +44,7 @@ describe('AgentStreamingService', () => {
             updatedAt: '',
         };
         mockAgentContext = {
-            state: { 
+            state: {
                 runId: 'test-agent-id',
                 conversation: mockConversation,
                 compactionStatus: null,
@@ -68,7 +68,7 @@ describe('AgentStreamingService', () => {
     it('should connect and set agent context', async () => {
         const agentRunId = 'test-agent-id';
         service.connect(agentRunId, mockAgentContext);
-        
+
         expect((service as any).context).toBe(mockAgentContext);
         const clientMock = (service as any).wsClient;
         expect(clientMock.connect).toHaveBeenCalledWith(expect.stringContaining(agentRunId));
@@ -425,6 +425,46 @@ describe('AgentStreamingService', () => {
 
         expect(mockConversation.messages[0].segments[0].content).toBe('final bytes');
         expect((scheduledService as any).context).toBe(null);
+    });
+
+    it('flushes the previous context before replacement and the current context on remote disconnect', () => {
+        const callbacks = new Map<string, (payload?: any) => void>();
+        const wsClient = {
+            state: 'disconnected', connect: vi.fn(), disconnect: vi.fn(), send: vi.fn(), off: vi.fn(),
+            on: vi.fn((event: string, callback: (payload?: any) => void) => callbacks.set(event, callback)),
+        } as any;
+        const scheduledService = new AgentStreamingService('ws://localhost:8000/ws/agent', { wsClient });
+        scheduledService.connect('test-agent-id', mockAgentContext);
+        (scheduledService as any).contentPresentationScheduler.enqueue(mockAgentContext, {
+            payload: { id: 'old-segment', turn_id: 'turn-old', segment_type: 'text', delta: 'old bytes' },
+            receivedAt: '2026-08-01T10:00:00.000Z',
+        });
+
+        const replacementConversation = { messages: [], updatedAt: '' };
+        const replacementContext = {
+            ...mockAgentContext,
+            state: {
+                ...mockAgentContext.state,
+                conversation: replacementConversation,
+                eventMonitorPresentationRevision: 0,
+            },
+            conversation: replacementConversation,
+            isSubscribed: true,
+        };
+        scheduledService.attachContext(replacementContext as any);
+
+        expect(mockConversation.messages[0].segments[0].content).toBe('old bytes');
+        expect(mockAgentContext.state.eventMonitorPresentationRevision).toBe(1);
+
+        (scheduledService as any).contentPresentationScheduler.enqueue(replacementContext, {
+            payload: { id: 'new-segment', turn_id: 'turn-new', segment_type: 'text', delta: 'new bytes' },
+            receivedAt: '2026-08-01T10:00:00.100Z',
+        });
+        callbacks.get('onDisconnect')?.('remote closed');
+
+        expect(replacementConversation.messages[0].segments[0].content).toBe('new bytes');
+        expect(replacementContext.state.eventMonitorPresentationRevision).toBe(1);
+        expect(replacementContext.isSubscribed).toBe(false);
     });
 
     it('does not revise the center presentation for supported tool log and result-only traffic', () => {

@@ -1,0 +1,1332 @@
+{
+  "startedAt": "2026-08-01T09:48:58.323Z",
+  "topology": {
+    "electron": "42.4.1",
+    "chrome": "148.0.7778.265",
+    "pageUrl": "http://127.0.0.1:3000/settings",
+    "preload": "/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/in-progress/autobyteus-runtime-streaming-ui-performance/api-e2e-execution-evidence/electron-voice-preload.cjs",
+    "userDataPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-api-e2e-voice-j197KA",
+    "media": "Electron/Chromium fake audio input device"
+  },
+  "ipc": {
+    "transcriptions": [
+      {
+        "at": "2026-08-01T09:49:00.555Z",
+        "bytes": 118060
+      }
+    ],
+    "trackStops": 2
+  },
+  "console": [
+    {
+      "window": "success",
+      "level": 0,
+      "message": "[vite] connecting...",
+      "line": 733,
+      "source": "http://127.0.0.1:3000/_nuxt/@vite/client"
+    },
+    {
+      "window": "success",
+      "level": 0,
+      "message": "[vite] connected.",
+      "line": 827,
+      "source": "http://127.0.0.1:3000/_nuxt/@vite/client"
+    },
+    {
+      "window": "success",
+      "level": 2,
+      "message": "%cElectron Security Warning (Insecure Content-Security-Policy) font-weight: bold; This renderer process has either no Content Security\n  Policy set or a policy with \"unsafe-eval\" enabled. This exposes users of\n  this app to unnecessary security risks.\n\nFor more information and help, consult\nhttps://electronjs.org/docs/tutorial/security.\nThis warning will not show up\nonce the app is packaged.",
+      "line": 2,
+      "source": "node:electron/js2c/renderer_init"
+    },
+    {
+      "window": "success",
+      "level": 1,
+      "message": "serverStore: Initializing server config",
+      "line": 51,
+      "source": "http://127.0.0.1:3000/_nuxt/stores/serverStore.ts"
+    },
+    {
+      "window": "success",
+      "level": 1,
+      "message": "serverStore: Log file path: ",
+      "line": 68,
+      "source": "http://127.0.0.1:3000/_nuxt/stores/serverStore.ts"
+    },
+    {
+      "window": "success",
+      "level": 1,
+      "message": "serverStore: Received server status: [object Object]",
+      "line": 119,
+      "source": "http://127.0.0.1:3000/_nuxt/stores/serverStore.ts"
+    },
+    {
+      "window": "success",
+      "level": 1,
+      "message": "serverStore: Updating server status with: [object Object]",
+      "line": 223,
+      "source": "http://127.0.0.1:3000/_nuxt/stores/serverStore.ts"
+    },
+    {
+      "window": "success",
+      "level": 1,
+      "message": "<Suspense> is an experimental feature and its API will likely change.",
+      "line": 7177,
+      "source": "http://127.0.0.1:3000/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=8596da6c"
+    },
+    {
+      "window": "success",
+      "level": 1,
+      "message": "ServerLoading: Component mounted with status: running",
+      "line": 32,
+      "source": "http://127.0.0.1:3000/_nuxt/components/server/ServerLoading.vue"
+    },
+    {
+      "window": "denied",
+      "level": 0,
+      "message": "[vite] connecting...",
+      "line": 733,
+      "source": "http://127.0.0.1:3000/_nuxt/@vite/client"
+    },
+    {
+      "window": "denied",
+      "level": 0,
+      "message": "[vite] connected.",
+      "line": 827,
+      "source": "http://127.0.0.1:3000/_nuxt/@vite/client"
+    },
+    {
+      "window": "denied",
+      "level": 2,
+      "message": "%cElectron Security Warning (Insecure Content-Security-Policy) font-weight: bold; This renderer process has either no Content Security\n  Policy set or a policy with \"unsafe-eval\" enabled. This exposes users of\n  this app to unnecessary security risks.\n\nFor more information and help, consult\nhttps://electronjs.org/docs/tutorial/security.\nThis warning will not show up\nonce the app is packaged.",
+      "line": 2,
+      "source": "node:electron/js2c/renderer_init"
+    },
+    {
+      "window": "denied",
+      "level": 1,
+      "message": "serverStore: Initializing server config",
+      "line": 51,
+      "source": "http://127.0.0.1:3000/_nuxt/stores/serverStore.ts"
+    },
+    {
+      "window": "denied",
+      "level": 1,
+      "message": "serverStore: Log file path: ",
+      "line": 68,
+      "source": "http://127.0.0.1:3000/_nuxt/stores/serverStore.ts"
+    },
+    {
+      "window": "denied",
+      "level": 1,
+      "message": "serverStore: Received server status: [object Object]",
+      "line": 119,
+      "source": "http://127.0.0.1:3000/_nuxt/stores/serverStore.ts"
+    },
+    {
+      "window": "denied",
+      "level": 1,
+      "message": "serverStore: Updating server status with: [object Object]",
+      "line": 223,
+      "source": "http://127.0.0.1:3000/_nuxt/stores/serverStore.ts"
+    },
+    {
+      "window": "denied",
+      "level": 1,
+      "message": "<Suspense> is an experimental feature and its API will likely change.",
+      "line": 7177,
+      "source": "http://127.0.0.1:3000/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=8596da6c"
+    },
+    {
+      "window": "denied",
+      "level": 1,
+      "message": "ServerLoading: Component mounted with status: running",
+      "line": 32,
+      "source": "http://127.0.0.1:3000/_nuxt/components/server/ServerLoading.vue"
+    }
+  ],
+  "pageErrors": [],
+  "success": {
+    "permissionDecisions": [
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483",
+          "isMainFrame": true,
+          "mediaType": "video",
+          "requestingUrl": ""
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483",
+          "isMainFrame": true,
+          "mediaType": "audio",
+          "requestingUrl": ""
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "web-app-installation",
+        "requestingOrigin": "",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483",
+          "isMainFrame": true,
+          "requestingUrl": ""
+        },
+        "allowed": false
+      },
+      {
+        "type": "check",
+        "permission": "geolocation",
+        "requestingOrigin": "",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483",
+          "isMainFrame": true,
+          "requestingUrl": ""
+        },
+        "allowed": false
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "mediaType": "video",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "mediaType": "audio",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "web-app-installation",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483"
+        },
+        "allowed": false
+      },
+      {
+        "type": "check",
+        "permission": "geolocation",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483"
+        },
+        "allowed": false
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "mediaType": "video",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "mediaType": "audio",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "web-app-installation",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483"
+        },
+        "allowed": false
+      },
+      {
+        "type": "check",
+        "permission": "geolocation",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483"
+        },
+        "allowed": false
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "mediaType": "video",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "mediaType": "audio",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "web-app-installation",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483"
+        },
+        "allowed": false
+      },
+      {
+        "type": "check",
+        "permission": "geolocation",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483"
+        },
+        "allowed": false
+      },
+      {
+        "type": "check",
+        "permission": "background-sync",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483"
+        },
+        "allowed": false
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "mediaType": "audio",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "mediaType": "audio",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "isMainFrame": true,
+          "mediaType": "audio",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483",
+          "securityOrigin": "http://127.0.0.1:3000/"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "speaker-selection",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483"
+        },
+        "allowed": false
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "isMainFrame": true,
+          "mediaType": "video",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483",
+          "securityOrigin": "http://127.0.0.1:3000/"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "mediaType": "audio",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "isMainFrame": true,
+          "mediaType": "audio",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483",
+          "securityOrigin": "http://127.0.0.1:3000/"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "speaker-selection",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483"
+        },
+        "allowed": false
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "isMainFrame": true,
+          "mediaType": "video",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483",
+          "securityOrigin": "http://127.0.0.1:3000/"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "mediaType": "audio",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "isMainFrame": true,
+          "mediaType": "audio",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483",
+          "securityOrigin": "http://127.0.0.1:3000/"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "speaker-selection",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483"
+        },
+        "allowed": false
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "isMainFrame": true,
+          "mediaType": "video",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483",
+          "securityOrigin": "http://127.0.0.1:3000/"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "isMainFrame": true,
+          "mediaType": "audio",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483",
+          "securityOrigin": "http://127.0.0.1:3000/"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "speaker-selection",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483"
+        },
+        "allowed": false
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "isMainFrame": true,
+          "mediaType": "video",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483",
+          "securityOrigin": "http://127.0.0.1:3000/"
+        },
+        "allowed": true
+      },
+      {
+        "type": "request",
+        "permission": "media",
+        "details": {
+          "isMainFrame": true,
+          "mediaTypes": [
+            "audio"
+          ],
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483",
+          "securityOrigin": "http://127.0.0.1:3000/"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "isMainFrame": true,
+          "mediaType": "audio",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483",
+          "securityOrigin": "http://127.0.0.1:3000/"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "speaker-selection",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483"
+        },
+        "allowed": false
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "mediaType": "audio",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "isMainFrame": true,
+          "mediaType": "audio",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483",
+          "securityOrigin": "http://127.0.0.1:3000/"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "speaker-selection",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483"
+        },
+        "allowed": false
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "isMainFrame": true,
+          "mediaType": "video",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483",
+          "securityOrigin": "http://127.0.0.1:3000/"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "mediaType": "audio",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "mediaType": "audio",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "isMainFrame": true,
+          "mediaType": "audio",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483",
+          "securityOrigin": "http://127.0.0.1:3000/"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "speaker-selection",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483"
+        },
+        "allowed": false
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "isMainFrame": true,
+          "mediaType": "video",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483",
+          "securityOrigin": "http://127.0.0.1:3000/"
+        },
+        "allowed": true
+      },
+      {
+        "type": "request",
+        "permission": "media",
+        "details": {
+          "isMainFrame": true,
+          "mediaTypes": [
+            "audio"
+          ],
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483",
+          "securityOrigin": "http://127.0.0.1:3000/"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "isMainFrame": true,
+          "mediaType": "audio",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483",
+          "securityOrigin": "http://127.0.0.1:3000/"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "speaker-selection",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483"
+        },
+        "allowed": false
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "mediaType": "audio",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "isMainFrame": true,
+          "mediaType": "audio",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483",
+          "securityOrigin": "http://127.0.0.1:3000/"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "speaker-selection",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483"
+        },
+        "allowed": false
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "isMainFrame": true,
+          "mediaType": "video",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483",
+          "securityOrigin": "http://127.0.0.1:3000/"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "mediaType": "audio",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483"
+        },
+        "allowed": true
+      }
+    ],
+    "startingTransition": {
+      "before": {
+        "text": "Start Test",
+        "ariaBusy": null,
+        "disabled": false
+      },
+      "immediate": {
+        "text": "Start Test",
+        "ariaBusy": null,
+        "disabled": false
+      },
+      "microtask": {
+        "text": "Starting microphone...",
+        "ariaBusy": "true",
+        "disabled": true
+      },
+      "nextRender": {
+        "text": "Starting microphone...",
+        "ariaBusy": "true",
+        "disabled": true
+      }
+    },
+    "recordingState": {
+      "button": {
+        "text": "Stop Test",
+        "ariaBusy": null,
+        "disabled": false
+      },
+      "instrument": {
+        "getUserMediaCalls": 1,
+        "trackStops": 0
+      },
+      "deviceLabels": [
+        "Auto",
+        "English",
+        "Chinese",
+        "System default",
+        "Fake Audio Input 1",
+        "Fake Audio Input 2"
+      ],
+      "cardText": "Voice Input\n\nControlled API/E2E Electron renderer fixture.\n\nInstalled\nEnabled\n\nVoice Input is installed and enabled.\n\nLanguage\nAuto\nEnglish\nChinese\nAudio source\nRefresh\nSystem default\nFake Audio Input 1\nFake Audio Input 2\n\nSelected source: System default. 2 audio input sources available.\n\nTest Voice Input\n\nRecord a short sample here to verify microphone capture and local transcription before using the composer.\n\nStop Test\nReset Test\nInput level\n0%\nRecording a test sample...\n\nLast Test Result\n\nRecording\n\nRecording is in progress.\n\nManaged locally in your AutoByteus extensions folder.\n\nRuntime: probe-1 \u00b7 Model: probe-1 \u00b7 Backend: faster-whisper\nDisable\nOpen Folder\nRemove\nReinstall",
+      "workletResources": []
+    },
+    "duplicateGetUserMediaCalls": 1,
+    "finalState": {
+      "button": {
+        "text": "Start Test",
+        "ariaBusy": null,
+        "disabled": false
+      },
+      "cardText": "Voice Input\n\nControlled API/E2E Electron renderer fixture.\n\nInstalled\nEnabled\n\nVoice Input is installed and enabled.\n\nLanguage\nAuto\nEnglish\nChinese\nAudio source\nRefresh\nSystem default\nFake Audio Input 1\nFake Audio Input 2\n\nSelected source: System default. 2 audio input sources available.\n\nTest Voice Input\n\nRecord a short sample here to verify microphone capture and local transcription before using the composer.\n\nStart Test\nInput level\n0%\n\nLast Test Result\n\nTranscript Ready\n\nisolated electron transcript\n\nInput: 48000 Hz\nWAV: 48000 Hz\nDuration: 1.23s\nRMS: 0.087\nPeak: 1.000\nLanguage: en\n\nManaged locally in your AutoByteus extensions folder.\n\nRuntime: probe-1 \u00b7 Model: probe-1 \u00b7 Backend: faster-whisper\nDisable\nOpen Folder\nRemove\nReinstall",
+      "instrument": {
+        "getUserMediaCalls": 1,
+        "trackStops": 1
+      }
+    },
+    "unmountStartTransition": {
+      "before": {
+        "text": "Start Test",
+        "ariaBusy": null,
+        "disabled": false
+      },
+      "immediate": {
+        "text": "Start Test",
+        "ariaBusy": null,
+        "disabled": false
+      },
+      "microtask": {
+        "text": "Starting microphone...",
+        "ariaBusy": "true",
+        "disabled": true
+      },
+      "nextRender": {
+        "text": "Starting microphone...",
+        "ariaBusy": "true",
+        "disabled": true
+      }
+    },
+    "unmountState": {
+      "stopsBeforeUnmount": 1,
+      "stopsAfterUnmount": 2,
+      "extensionsUnmounted": true
+    }
+  },
+  "denied": {
+    "permissionDecisions": [
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/settings?apiE2EVoice=denied-1785577741370",
+          "isMainFrame": true,
+          "mediaType": "video",
+          "requestingUrl": ""
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/settings?apiE2EVoice=denied-1785577741370",
+          "isMainFrame": true,
+          "mediaType": "audio",
+          "requestingUrl": ""
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "web-app-installation",
+        "requestingOrigin": "",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/settings?apiE2EVoice=denied-1785577741370",
+          "isMainFrame": true,
+          "requestingUrl": ""
+        },
+        "allowed": false
+      },
+      {
+        "type": "check",
+        "permission": "geolocation",
+        "requestingOrigin": "",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/settings?apiE2EVoice=denied-1785577741370",
+          "isMainFrame": true,
+          "requestingUrl": ""
+        },
+        "allowed": false
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "mediaType": "video",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=denied-1785577741370"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "mediaType": "audio",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=denied-1785577741370"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "web-app-installation",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=denied-1785577741370"
+        },
+        "allowed": false
+      },
+      {
+        "type": "check",
+        "permission": "geolocation",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=denied-1785577741370"
+        },
+        "allowed": false
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "mediaType": "video",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=denied-1785577741370"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "mediaType": "audio",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=denied-1785577741370"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "web-app-installation",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=denied-1785577741370"
+        },
+        "allowed": false
+      },
+      {
+        "type": "check",
+        "permission": "geolocation",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=denied-1785577741370"
+        },
+        "allowed": false
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "mediaType": "video",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=denied-1785577741370"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "mediaType": "audio",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=denied-1785577741370"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "web-app-installation",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=denied-1785577741370"
+        },
+        "allowed": false
+      },
+      {
+        "type": "check",
+        "permission": "geolocation",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=denied-1785577741370"
+        },
+        "allowed": false
+      },
+      {
+        "type": "check",
+        "permission": "background-sync",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=denied-1785577741370"
+        },
+        "allowed": false
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "mediaType": "audio",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=denied-1785577741370"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "mediaType": "audio",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=denied-1785577741370"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "isMainFrame": true,
+          "mediaType": "audio",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=denied-1785577741370",
+          "securityOrigin": "http://127.0.0.1:3000/"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "speaker-selection",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=denied-1785577741370"
+        },
+        "allowed": false
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "isMainFrame": true,
+          "mediaType": "video",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=denied-1785577741370",
+          "securityOrigin": "http://127.0.0.1:3000/"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "mediaType": "audio",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=denied-1785577741370"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "isMainFrame": true,
+          "mediaType": "audio",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=denied-1785577741370",
+          "securityOrigin": "http://127.0.0.1:3000/"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "speaker-selection",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=denied-1785577741370"
+        },
+        "allowed": false
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "isMainFrame": true,
+          "mediaType": "video",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=denied-1785577741370",
+          "securityOrigin": "http://127.0.0.1:3000/"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "mediaType": "audio",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=denied-1785577741370"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "isMainFrame": true,
+          "mediaType": "audio",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=denied-1785577741370",
+          "securityOrigin": "http://127.0.0.1:3000/"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "speaker-selection",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=denied-1785577741370"
+        },
+        "allowed": false
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "isMainFrame": true,
+          "mediaType": "video",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=denied-1785577741370",
+          "securityOrigin": "http://127.0.0.1:3000/"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "isMainFrame": true,
+          "mediaType": "audio",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=denied-1785577741370",
+          "securityOrigin": "http://127.0.0.1:3000/"
+        },
+        "allowed": true
+      },
+      {
+        "type": "check",
+        "permission": "speaker-selection",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "embeddingOrigin": "http://127.0.0.1:3000/",
+          "isMainFrame": true,
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=denied-1785577741370"
+        },
+        "allowed": false
+      },
+      {
+        "type": "check",
+        "permission": "media",
+        "requestingOrigin": "http://127.0.0.1:3000/",
+        "details": {
+          "isMainFrame": true,
+          "mediaType": "video",
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=denied-1785577741370",
+          "securityOrigin": "http://127.0.0.1:3000/"
+        },
+        "allowed": true
+      },
+      {
+        "type": "request",
+        "permission": "media",
+        "details": {
+          "isMainFrame": true,
+          "mediaTypes": [
+            "audio"
+          ],
+          "requestingUrl": "http://127.0.0.1:3000/settings?apiE2EVoice=denied-1785577741370",
+          "securityOrigin": "http://127.0.0.1:3000/"
+        },
+        "allowed": false
+      }
+    ],
+    "startingTransition": {
+      "before": {
+        "text": "Start Test",
+        "ariaBusy": null,
+        "disabled": false
+      },
+      "immediate": {
+        "text": "Start Test",
+        "ariaBusy": null,
+        "disabled": false
+      },
+      "microtask": {
+        "text": "Starting microphone...",
+        "ariaBusy": "true",
+        "disabled": true
+      },
+      "nextRender": {
+        "text": "Start Test",
+        "ariaBusy": null,
+        "disabled": true
+      }
+    },
+    "finalState": {
+      "button": {
+        "text": "Start Test",
+        "ariaBusy": null,
+        "disabled": true
+      },
+      "cardText": "Voice Input\n\nControlled API/E2E Electron renderer fixture.\n\nInstalled\nEnabled\n\nVoice Input is installed and enabled.\n\nLanguage\nAuto\nEnglish\nChinese\nAudio source\nRefresh\nSystem default\nFake Audio Input 1\nFake Audio Input 2\n\nMicrophone access is denied. Allow microphone access for AutoByteus, then refresh sources.\n\nTest Voice Input\n\nRecord a short sample here to verify microphone capture and local transcription before using the composer.\n\nStart Test\nReset Test\nInput level\n0%\n\nLast Test Result\n\nError\n\nMicrophone permission is denied. Allow microphone access for AutoByteus and try again.\n\nManaged locally in your AutoByteus extensions folder.\n\nRuntime: probe-1 \u00b7 Model: probe-1 \u00b7 Backend: faster-whisper\nDisable\nOpen Folder\nRemove\nReinstall",
+      "instrument": {
+        "getUserMediaCalls": 1,
+        "trackStops": 0
+      }
+    }
+  },
+  "errors": [],
+  "cleanup": {
+    "windowsRemaining": 0,
+    "userDataPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-api-e2e-voice-j197KA",
+    "completedAt": "2026-08-01T09:49:01.943Z",
+    "ownedUserDataRemoved": true,
+    "removedUserDataPaths": [
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-api-e2e-voice-D25aQs",
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-api-e2e-voice-SEJZiF",
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-api-e2e-voice-XI4sDF",
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-api-e2e-voice-j197KA",
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-api-e2e-voice-lZ2p9o",
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-api-e2e-voice-5sgU0t",
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-api-e2e-voice-IK4XVi",
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-api-e2e-voice-iPu20S",
+      "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-api-e2e-voice-lIeS9b"
+    ]
+  },
+  "completedAt": "2026-08-01T09:49:01.943Z",
+  "durationMs": 3620
+}

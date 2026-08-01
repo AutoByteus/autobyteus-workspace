@@ -1,0 +1,210 @@
+{
+  "probeId": "ACTIVE-STREAM-FILES-001",
+  "startedAt": "2026-08-01T09:56:01.096Z",
+  "topology": {
+    "frontend": "http://127.0.0.1:3000",
+    "backend": "http://127.0.0.1:29695",
+    "workspace": "Temp Workspace",
+    "teamDefinition": "Software Engineering Team",
+    "runtime": "autobyteus",
+    "model": "deepseek-v4-flash"
+  },
+  "run": {
+    "teamRunId": "software_engineering_team_ab8afdd9a4ba42dcbfd06f93104e72f0",
+    "contentAtFirstOpen": 1309,
+    "contentAtLastOpen": 3317,
+    "contentEventsDuringOpenWindow": 410
+  },
+  "opens": [
+    {
+      "index": 1,
+      "name": "article.md",
+      "latencyMs": 32.54254099999889,
+      "streamBefore": {
+        "contentEvents": 239,
+        "contentChars": 1309,
+        "lastContentAt": 8570.899999976158,
+        "recentContentAgeMs": 20.899999976158142
+      },
+      "streamAfter": {
+        "contentEvents": 262,
+        "contentChars": 1409,
+        "lastContentAt": 8713.600000023842,
+        "recentContentAgeMs": 10.699999928474426
+      }
+    },
+    {
+      "index": 2,
+      "name": "README.md",
+      "latencyMs": 39.668916000002355,
+      "streamBefore": {
+        "contentEvents": 446,
+        "contentChars": 2321,
+        "lastContentAt": 10055.5,
+        "recentContentAgeMs": 20.5
+      },
+      "streamAfter": {
+        "contentEvents": 459,
+        "contentChars": 2384,
+        "lastContentAt": 10207,
+        "recentContentAgeMs": 8.600000023841858
+      }
+    },
+    {
+      "index": 3,
+      "name": "article.md",
+      "latencyMs": 36.00049999999828,
+      "streamBefore": {
+        "contentEvents": 467,
+        "contentChars": 2433,
+        "lastContentAt": 10281.699999928474,
+        "recentContentAgeMs": 11.600000023841858
+      },
+      "streamAfter": {
+        "contentEvents": 476,
+        "contentChars": 2477,
+        "lastContentAt": 10360.600000023842,
+        "recentContentAgeMs": 68.59999990463257
+      }
+    },
+    {
+      "index": 4,
+      "name": "README.md",
+      "latencyMs": 20.206333999998606,
+      "streamBefore": {
+        "contentEvents": 491,
+        "contentChars": 2554,
+        "lastContentAt": 10481.600000023842,
+        "recentContentAgeMs": 10.799999952316284
+      },
+      "streamAfter": {
+        "contentEvents": 512,
+        "contentChars": 2643,
+        "lastContentAt": 10600.299999952316,
+        "recentContentAgeMs": 12.100000023841858
+      }
+    },
+    {
+      "index": 5,
+      "name": "article.md",
+      "latencyMs": 23.02258300000176,
+      "streamBefore": {
+        "contentEvents": 520,
+        "contentChars": 2682,
+        "lastContentAt": 10670.199999928474,
+        "recentContentAgeMs": 1.9000000953674316
+      },
+      "streamAfter": {
+        "contentEvents": 533,
+        "contentChars": 2738,
+        "lastContentAt": 10785,
+        "recentContentAgeMs": 10.100000023841858
+      }
+    },
+    {
+      "index": 6,
+      "name": "README.md",
+      "latencyMs": 19.77770800000144,
+      "streamBefore": {
+        "contentEvents": 547,
+        "contentChars": 2787,
+        "lastContentAt": 10875.199999928474,
+        "recentContentAgeMs": 0.8000000715255737
+      },
+      "streamAfter": {
+        "contentEvents": 561,
+        "contentChars": 2865,
+        "lastContentAt": 10992.100000023842,
+        "recentContentAgeMs": 3.799999952316284
+      }
+    },
+    {
+      "index": 7,
+      "name": "article.md",
+      "latencyMs": 24.27995799999917,
+      "streamBefore": {
+        "contentEvents": 569,
+        "contentChars": 2905,
+        "lastContentAt": 11041.600000023842,
+        "recentContentAgeMs": 11.899999976158142
+      },
+      "streamAfter": {
+        "contentEvents": 581,
+        "contentChars": 2969,
+        "lastContentAt": 11166.799999952316,
+        "recentContentAgeMs": 10.899999976158142
+      }
+    },
+    {
+      "index": 8,
+      "name": "README.md",
+      "latencyMs": 22.375582999997278,
+      "streamBefore": {
+        "contentEvents": 589,
+        "contentChars": 3006,
+        "lastContentAt": 11244.100000023842,
+        "recentContentAgeMs": 12.5
+      },
+      "streamAfter": {
+        "contentEvents": 598,
+        "contentChars": 3050,
+        "lastContentAt": 11337.799999952316,
+        "recentContentAgeMs": 41
+      }
+    },
+    {
+      "index": 9,
+      "name": "article.md",
+      "latencyMs": 24.098375000001397,
+      "streamBefore": {
+        "contentEvents": 604,
+        "contentChars": 3087,
+        "lastContentAt": 11428.399999976158,
+        "recentContentAgeMs": 12.100000023841858
+      },
+      "streamAfter": {
+        "contentEvents": 618,
+        "contentChars": 3148,
+        "lastContentAt": 11546.5,
+        "recentContentAgeMs": 18
+      }
+    },
+    {
+      "index": 10,
+      "name": "README.md",
+      "latencyMs": 20.450874999998632,
+      "streamBefore": {
+        "contentEvents": 639,
+        "contentChars": 3262,
+        "lastContentAt": 11709,
+        "recentContentAgeMs": 6.699999928474426
+      },
+      "streamAfter": {
+        "contentEvents": 649,
+        "contentChars": 3317,
+        "lastContentAt": 11825.199999928474,
+        "recentContentAgeMs": 11
+      }
+    }
+  ],
+  "errors": [],
+  "cleanup": {
+    "terminateTeam": {
+      "status": 200,
+      "body": {
+        "data": {
+          "terminateAgentTeamRun": {
+            "success": true,
+            "message": "Agent team run terminated successfully."
+          }
+        }
+      }
+    },
+    "browserClosed": true,
+    "completedAt": "2026-08-01T09:56:19.377Z"
+  },
+  "openP95Ms": 39.668916000002355,
+  "allOpenedWhileFreshStream": true,
+  "completedAt": "2026-08-01T09:56:19.246Z",
+  "durationMs": 18281
+}

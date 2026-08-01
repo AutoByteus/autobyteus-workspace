@@ -1,0 +1,21 @@
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/autobyteus-web/electron
+
+stdout | browser/__tests__/browser-tab-manager.spec.ts
+[2026-08-01T09:07:44.748Z] [INFO] [electron] Application started
+
+stderr | browser/__tests__/browser-tab-manager.spec.ts > BrowserTabManager > aborts popup adoption when Electron provides popup webContents from a foreign session
+[2026-08-01T09:07:44.828Z] [WARN] [electron] Aborted popup browser child creation from '150eb2' to 'https://accounts.google.com/o/oauth2/v2/auth': Popup webContents session does not match the Browser-owned session.
+
+stderr | browser/__tests__/browser-tab-manager.spec.ts > BrowserTabManager > denies popup requests from sessions that are not attached to a shell
+[2026-08-01T09:07:44.828Z] [WARN] [electron] Blocked browser popup request from 'eccb7a' to 'https://accounts.google.com/o/oauth2/v2/auth': Popup requests require the opener session 'eccb7a' to be attached to a shell.
+
+stderr | browser/__tests__/browser-tab-manager.spec.ts > BrowserTabManager > caps popup fan-out per opener session
+[2026-08-01T09:07:44.829Z] [WARN] [electron] Blocked browser popup request from '38cc5e' to 'https://accounts.google.com/o/oauth2/v2/auth?attempt=overflow': Popup request limit reached for opener session '38cc5e'.
+
+ ✓ browser/__tests__/browser-tab-manager.spec.ts (14 tests) 77ms
+
+ Test Files  1 passed (1)
+      Tests  14 passed (14)
+   Start at  11:07:44
+   Duration  407ms (transform 77ms, setup 0ms, collect 96ms, tests 77ms, environment 0ms, prepare 52ms)

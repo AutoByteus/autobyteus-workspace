@@ -498,6 +498,32 @@ describe('TeamStreamingService', () => {
     expect(coordinator.conversation.updatedAt).toBe('2026-08-01T10:00:00.002Z');
     expect(worker.state.eventMonitorPresentationRevision).toBe(1);
     expect(coordinator.state.eventMonitorPresentationRevision).toBe(1);
+
+    sendContent('worker', 'worker-run-1', 'C1', '2026-08-01T10:00:00.004Z');
+    onMessage(JSON.stringify({
+      type: 'SEGMENT_CONTENT',
+      payload: {
+        id: 'segment-worker-2',
+        turn_id: 'turn-1',
+        segment_type: 'reasoning',
+        delta: 'C2',
+        agent_id: 'worker-run-1',
+        member_route_key: 'worker',
+        member_path: ['worker'],
+        source_route_key: 'worker',
+        source_path: ['worker'],
+      },
+    }));
+    expect(worker.conversation.messages[0].segments).toHaveLength(1);
+
+    teamContext.isSubscribed = true;
+    callbacks.get('onDisconnect')?.('remote closed');
+
+    expect(worker.conversation.messages[0].segments).toHaveLength(2);
+    expect(worker.conversation.messages[0].segments[0].content).toBe('A1A2C1');
+    expect(worker.conversation.messages[0].segments[1].content).toBe('C2');
+    expect(worker.state.eventMonitorPresentationRevision).toBe(2);
+    expect(teamContext.isSubscribed).toBe(false);
     vi.useRealTimers();
   });
 

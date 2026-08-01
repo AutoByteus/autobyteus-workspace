@@ -1,0 +1,15 @@
+top 2026-08-01T09:48:58.323Z pid=98934
+before-ready isReady=false
+will-finish-launching
+ready-event
+whenReady
+testSuccess start
+createWindow success start
+createWindow success browser-created
+createWindow success load http://127.0.0.1:3000/settings?apiE2EVoice=success-1785577738483
+createWindow success loaded
+testDenied start
+createWindow denied start
+createWindow denied browser-created
+createWindow denied load http://127.0.0.1:3000/settings?apiE2EVoice=denied-1785577741370
+createWindow denied loaded
