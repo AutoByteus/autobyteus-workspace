@@ -97,3 +97,14 @@
 - Remaining rollout: Desktop Release workflow `30694463850`, Server Docker Release workflow `30694463837`, and iOS App Store Connect workflow `30694463821` were still running/queued at this record point; desktop and remaining platform assets are not yet claimed as published.
 - Current authoritative result: **Pass — repository finalization and release publication started successfully; rollout monitoring remains active.**
 - Cleanup: held until release workflows and final rollout evidence are settled.
+
+### DR-007 — Rollout verification update
+
+- Desktop Release workflow `30694463850`: **Success**. macOS ARM64, macOS x64, Windows x64, Linux x64, and Linux ARM64 builds and verification jobs passed; GitHub Release assets are published.
+- Release Messaging Gateway workflow `30694463846`: **Success**; gateway assets published.
+- Android APK Release workflow `30694463840`: **Success**; APK assets published.
+- iOS App Store Connect Release workflow `30694463821`: **Success**.
+- Server Docker Release workflow `30694463837`: **In progress** at this record point; default and zh multi-architecture image publication is still running.
+- GitHub Release evidence: `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.36`; published release assets include macOS ARM64/x64, Windows, Linux ARM64/x64, Android, gateway, updater metadata, and release manifest.
+- Current authoritative result: **Pass — v1.4.36 release and desktop/mobile/gateway/iOS publication verified; Server Docker rollout remains an external in-progress deployment.**
+- Cleanup: held pending the Server Docker workflow's terminal result.
