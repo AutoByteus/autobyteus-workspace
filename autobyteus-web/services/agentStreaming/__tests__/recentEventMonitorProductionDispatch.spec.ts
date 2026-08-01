@@ -11,6 +11,7 @@ import { getStreamSegmentIdentity, setStreamSegmentIdentity } from '../handlers/
 import { buildRecentEventMonitorPresentation } from '~/services/eventMonitor/recentEventMonitorWindow';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { hydrateContextAttachment } from '~/utils/contextFiles/contextAttachmentModel';
+import { projectStreamContentBatch } from '../presentation/streamContentBatchProjector';
 
 vi.mock('../transport', () => ({
   WebSocketClient: vi.fn().mockImplementation(() => ({
@@ -118,13 +119,40 @@ const fillWithMutablePresentation = (context: AgentContext) => {
   return message;
 };
 
+const dispatchScheduledContent = (
+  message: ServerMessage,
+  context: AgentContext,
+): boolean => {
+  if (message.type !== 'SEGMENT_CONTENT') return false;
+  projectStreamContentBatch(context, {
+    contentPayloads: [message.payload],
+    latestActivityAt: new Date().toISOString(),
+  });
+  return true;
+};
+
+const standaloneDispatcher = () => {
+  const service = new AgentStreamingService('ws://localhost:8000/ws/agent');
+  return (message: ServerMessage, context: AgentContext) => {
+    if (!dispatchScheduledContent(message, context)) {
+      (service as any).dispatchMessage(message, context);
+    }
+  };
+};
+
+const teamMemberDispatcher = (message: ServerMessage, context: AgentContext) => {
+  if (!dispatchScheduledContent(message, context)) {
+    dispatchGenericTeamMemberMessage(message, context);
+  }
+};
+
 describe('recent Event Monitor production dispatch coverage', () => {
   beforeEach(() => setActivePinia(createPinia()));
 
   it('keeps standalone center and Activity state bounded and duplicate-free after 1,001 mixed live messages', () => {
     const context = buildContext('standalone-stress');
-    const service = new AgentStreamingService('ws://localhost:8000/ws/agent');
-    const dispatch = (message: ServerMessage) => (service as any).dispatchMessage(message, context);
+    const apply = standaloneDispatcher();
+    const dispatch = (message: ServerMessage) => apply(message, context);
     let delivered = 0;
 
     for (let index = 0; index < 143; index += 1) {
@@ -148,7 +176,7 @@ describe('recent Event Monitor production dispatch coverage', () => {
     let delivered = 0;
     for (let index = 0; index < 143; index += 1) {
       for (const message of liveMessagesForCycle(index)) {
-        dispatchGenericTeamMemberMessage(message, context);
+        teamMemberDispatcher(message, context);
         delivered += 1;
       }
     }
@@ -158,11 +186,8 @@ describe('recent Event Monitor production dispatch coverage', () => {
   }, 20_000);
 
   it.each([
-    ['standalone', (message: ServerMessage, context: AgentContext) => {
-      const service = new AgentStreamingService('ws://localhost:8000/ws/agent');
-      (service as any).dispatchMessage(message, context);
-    }],
-    ['team member', dispatchGenericTeamMemberMessage],
+    ['standalone', standaloneDispatcher()],
+    ['team member', teamMemberDispatcher],
   ])('keeps terminal tools in the latest-100 %s feed when interleaved reasoning receives generic ends', (_label, dispatch) => {
     const context = buildContext(`reasoning-tool-retention-${_label}`);
 
@@ -256,10 +281,7 @@ describe('recent Event Monitor production dispatch coverage', () => {
   });
 
   it.each([
-    ['standalone', (message: ServerMessage, context: AgentContext) => {
-      const service = new AgentStreamingService('ws://localhost:8000/ws/agent');
-      (service as any).dispatchMessage(message, context);
-    }],
+    ['standalone', standaloneDispatcher()],
     ['team member', dispatchGenericTeamMemberMessage],
   ])('does not revise the %s MP-CR-001 transient append production path', (_label, dispatch) => {
     const context = buildContext(`mp-cr-001-${_label}`);
@@ -276,10 +298,7 @@ describe('recent Event Monitor production dispatch coverage', () => {
   });
 
   it.each([
-    ['standalone', (message: ServerMessage, context: AgentContext) => {
-      const service = new AgentStreamingService('ws://localhost:8000/ws/agent');
-      (service as any).dispatchMessage(message, context);
-    }],
+    ['standalone', standaloneDispatcher()],
     ['team member', dispatchGenericTeamMemberMessage],
   ])('keeps %s MP-AR-003 logs/results revision-neutral but revises a real tool summary', (_label, dispatch) => {
     const context = buildContext(`mp-ar-003-${_label}`);

@@ -39,3 +39,12 @@ export const commitRecentEventMonitorMutation = (
   if (presentationChanged) context.state.markEventMonitorPresentationChanged();
   return { ...enforcement, presentationChanged };
 };
+
+export const commitKnownRecentEventMonitorPresentationMutation = (
+  context: AgentContext,
+): RecentEventMonitorMutationCommitResult => {
+  const enforcement = enforceRecentConversationWindow(context.conversation);
+  if (enforcement.retentionChanged) context.state.hasEarlierActiveTraceEvents = true;
+  context.state.markEventMonitorPresentationChanged();
+  return { ...enforcement, presentationChanged: true };
+};

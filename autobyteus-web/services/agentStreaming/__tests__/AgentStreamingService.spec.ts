@@ -166,7 +166,6 @@ describe('AgentStreamingService', () => {
     it.each([
         ['TURN_STARTED', { turn_id: 'turn-a' }],
         ['SEGMENT_START', { id: 'segment-1', turn_id: 'turn-a', segment_type: 'text' }],
-        ['SEGMENT_CONTENT', { id: 'segment-1', turn_id: 'turn-a', delta: 'late' }],
         ['TOOL_APPROVAL_REQUESTED', { invocation_id: 'call-1', tool_name: 'run', turn_id: 'turn-a', arguments: {} }],
         ['TOOL_EXECUTION_STARTED', { invocation_id: 'call-1', tool_name: 'run', turn_id: 'turn-a' }],
         ['TOOL_EXECUTION_SUCCEEDED', { invocation_id: 'call-1', tool_name: 'run', turn_id: 'turn-a', result: 'done' }],
@@ -360,11 +359,72 @@ describe('AgentStreamingService', () => {
         (service as any).dispatchMessage(start, mockAgentContext);
         expect(mockAgentContext.state.eventMonitorPresentationRevision).toBe(1);
 
-        (service as any).dispatchMessage({
+        (service as any).contentPresentationScheduler.enqueue(mockAgentContext, {
+            payload: { id: 'segment-1', turn_id: 'turn-1', segment_type: 'text', delta: 'hello' },
+            receivedAt: '2026-08-01T10:00:00.000Z',
+        });
+        (service as any).contentPresentationScheduler.flush();
+        expect(mockAgentContext.state.eventMonitorPresentationRevision).toBe(2);
+    });
+
+    it('batches standalone content at receipt-time cadence and flushes before segment end', () => {
+        vi.useFakeTimers();
+        const callbacks = new Map<string, (payload?: any) => void>();
+        const wsClient = {
+            state: 'disconnected', connect: vi.fn(), disconnect: vi.fn(), send: vi.fn(), off: vi.fn(),
+            on: vi.fn((event: string, callback: (payload?: any) => void) => callbacks.set(event, callback)),
+        } as any;
+        const scheduledService = new AgentStreamingService('ws://localhost:8000/ws/agent', { wsClient });
+        scheduledService.connect('test-agent-id', mockAgentContext);
+        const onMessage = callbacks.get('onMessage')!;
+
+        onMessage(JSON.stringify({
+            type: 'SEGMENT_START',
+            payload: { id: 'segment-1', turn_id: 'turn-1', segment_type: 'text' },
+        }));
+        vi.setSystemTime(new Date('2026-08-01T10:00:00.001Z'));
+        onMessage(JSON.stringify({
             type: 'SEGMENT_CONTENT',
             payload: { id: 'segment-1', turn_id: 'turn-1', segment_type: 'text', delta: 'hello' },
-        }, mockAgentContext);
+        }));
+        vi.setSystemTime(new Date('2026-08-01T10:00:00.050Z'));
+        onMessage(JSON.stringify({
+            type: 'SEGMENT_CONTENT',
+            payload: { id: 'segment-1', turn_id: 'turn-1', segment_type: 'text', delta: ' world' },
+        }));
+
+        expect(mockConversation.messages[0].segments[0].content).toBe('');
+        vi.advanceTimersByTime(100);
+        expect(mockConversation.messages[0].segments[0].content).toBe('hello world');
+        expect(mockConversation.updatedAt).toBe('2026-08-01T10:00:00.050Z');
         expect(mockAgentContext.state.eventMonitorPresentationRevision).toBe(2);
+
+        vi.setSystemTime(new Date('2026-08-01T10:00:00.100Z'));
+        onMessage(JSON.stringify({
+            type: 'SEGMENT_CONTENT',
+            payload: { id: 'segment-1', turn_id: 'turn-1', segment_type: 'text', delta: '!' },
+        }));
+        onMessage(JSON.stringify({
+            type: 'SEGMENT_END',
+            payload: { id: 'segment-1', turn_id: 'turn-1', segment_type: 'text' },
+        }));
+        expect(mockConversation.messages[0].segments[0].content).toBe('hello world!');
+        expect(mockConversation.messages[0].segments[0]._streamSegmentIdentity.presentationComplete).toBe(true);
+        vi.useRealTimers();
+    });
+
+    it('flushes pending standalone content before explicit disconnect detaches context', () => {
+        const scheduledService = new AgentStreamingService('ws://localhost:8000/ws/agent');
+        scheduledService.attachContext(mockAgentContext);
+        (scheduledService as any).contentPresentationScheduler.enqueue(mockAgentContext, {
+            payload: { id: 'segment-1', turn_id: 'turn-1', segment_type: 'text', delta: 'final bytes' },
+            receivedAt: '2026-08-01T10:00:00.000Z',
+        });
+
+        scheduledService.disconnect();
+
+        expect(mockConversation.messages[0].segments[0].content).toBe('final bytes');
+        expect((scheduledService as any).context).toBe(null);
     });
 
     it('does not revise the center presentation for supported tool log and result-only traffic', () => {
