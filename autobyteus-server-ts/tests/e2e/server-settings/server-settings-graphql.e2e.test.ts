@@ -13,9 +13,16 @@ import { defaultWorkingContextCompactionStrategyRegistry } from "autobyteus-ts/m
 import { PendingCompactionExecutor } from "autobyteus-ts/memory/compaction/pending-compaction-executor.js";
 import { AUTOBYTEUS_COMPACTION_STRATEGY } from "autobyteus-ts/memory/compaction/working-context-compaction-strategy-setting.js";
 import { WorkingContextCompactionStrategyResolver } from "autobyteus-ts/memory/compaction/working-context-compaction-strategy-resolver.js";
+import type { CompactionLineageScope } from "autobyteus-ts/memory/lineage/compaction-lineage-scope.js";
 import { MemoryManager } from "autobyteus-ts/memory/memory-manager.js";
+import { RawTraceItem } from "autobyteus-ts/memory/models/raw-trace-item.js";
+import { FileCompactionLineageStore } from "autobyteus-ts/memory/store/file-compaction-lineage-store.js";
 import { FileMemoryStore } from "autobyteus-ts/memory/store/file-store.js";
-import { WorkingContext } from "autobyteus-ts/memory/working-context.js";
+import { WorkingContextSnapshotStore } from "autobyteus-ts/memory/store/working-context-snapshot-store.js";
+import {
+  createNaturalUserMessageProvenance,
+  WorkingContextFinalizer,
+} from "autobyteus-ts/memory/working-context-finalizer.js";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { normalizeSandboxMode } from "../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js";
@@ -650,30 +657,77 @@ describe("Server settings GraphQL e2e", () => {
         create: () => ({
           id: testStrategyId,
           name: "GraphQL Test Direct",
-          compact: async (input) => new WorkingContext([
-            input.buildMessages()[0]!,
-            new Message(MessageRole.USER, { content: "selected by GraphQL update" }),
-          ]),
+          propose: async () => ({
+            selectedNewRawTraceIds: ["settings-raw-1"],
+            retainedMessages: [],
+            output: {
+              episodes: [{ summary: "selected by GraphQL update" }],
+              semanticEntries: [],
+            },
+            execution: {
+              runtimeKind: "autobyteus",
+              provider: "test-provider",
+              modelIdentifier: "test-model",
+              taskId: "settings-compaction-task",
+              renderedInputSha256: "a".repeat(64),
+            },
+          }),
         }),
       });
     }
 
+    const agentId = "existing-runtime-agent";
+    const scope: CompactionLineageScope = {
+      targetKind: "agent_run",
+      runId: agentId,
+      memberId: null,
+    };
     const memoryStore = new FileMemoryStore(
       path.join(tempDir, "existing-runtime-memory"),
-      "existing-runtime-agent",
+      agentId,
     );
-    const manager = new MemoryManager({ store: memoryStore });
-    manager.replaceWorkingContext(new WorkingContext([
-      new Message(MessageRole.SYSTEM, { content: "System" }),
-      new Message(MessageRole.USER, { content: "old context" }),
-    ]));
+    const lineageStore = new FileCompactionLineageStore(memoryStore.agentDir, scope);
+    const snapshotStore = new WorkingContextSnapshotStore(
+      path.join(tempDir, "existing-runtime-memory"),
+      agentId,
+    );
+    memoryStore.add([new RawTraceItem({
+      id: "settings-raw-1",
+      ts: 1,
+      turnId: "turn-before-setting-update",
+      seq: 1,
+      traceType: "user",
+      content: "old context",
+      sourceEvent: "api-e2e",
+    })]);
+    const initialContext = new WorkingContextFinalizer().finalize({
+      messages: [
+        new Message(MessageRole.SYSTEM, { content: "System" }),
+        createNaturalUserMessageProvenance(
+          new Message(MessageRole.USER, { content: "old context" }),
+          {
+            kind: "current_user",
+            rawTraceIds: ["settings-raw-1"],
+            turnId: "turn-before-setting-update",
+          },
+        ),
+      ],
+    });
+    const manager = new MemoryManager({
+      store: memoryStore,
+      lineageStore,
+      lineageScope: scope,
+      workingContextSnapshotStore: snapshotStore,
+      workingContext: initialContext,
+      agentId,
+    });
+    manager.persistWorkingContextSnapshot();
     manager.requestCompaction("turn-before-setting-update");
     const strategyResolver = new WorkingContextCompactionStrategyResolver({
       registry: defaultWorkingContextCompactionStrategyRegistry,
       settingsResolver: new CompactionRuntimeSettingsResolver(),
       constructionContext: {
-        agentId: "existing-runtime-agent",
-        memoryStore,
+        agentId,
         compactionAgentRunner: null,
         inputBudgetTokens: 100,
         maxItemChars: 200,
@@ -703,19 +757,32 @@ describe("Server settings GraphQL e2e", () => {
 
     const request = await assembler.prepareRequest(
       "after GraphQL update",
-      "turn-after-setting-update",
+      {
+        turnId: "turn-after-setting-update",
+        requestId: "turn-after-setting-update:llm:1",
+      },
       "System",
     );
-    expect(request.messages.map((message) => message.content)).toEqual([
-      "System",
-      "selected by GraphQL update",
-      "after GraphQL update",
-    ]);
+    expect(request.didCompact).toBe(true);
+    expect(request.canonicalMessages).toHaveLength(2);
+    expect(request.canonicalMessages[0]?.content).toBe("System");
+    expect(request.canonicalMessages[1]?.content).toContain("selected by GraphQL update");
+    expect(request.canonicalMessages[1]?.content).toContain("after GraphQL update");
     expect(request.renderedPayload).toEqual([
       { role: MessageRole.SYSTEM, content: "System" },
-      { role: MessageRole.USER, content: "selected by GraphQL update" },
-      { role: MessageRole.USER, content: "after GraphQL update" },
+      {
+        role: MessageRole.USER,
+        content: expect.stringContaining("selected by GraphQL update"),
+      },
     ]);
+    expect(lineageStore.readHead()).toMatchObject({
+      scope,
+      execution: {
+        runtimeKind: "autobyteus",
+        provider: "test-provider",
+        model: "test-model",
+      },
+    });
 
     const invalid = await execGraphql<{ updateServerSetting: string }>(updateMutation, {
       key: WORKING_CONTEXT_COMPACTION_STRATEGY_SETTING_KEY,

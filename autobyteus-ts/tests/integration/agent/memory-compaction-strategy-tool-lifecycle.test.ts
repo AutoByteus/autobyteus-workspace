@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { AgentTurn } from '../../../src/agent/agent-turn.js';
 import type { CompactionStatusPayload } from '../../../src/agent/compaction/compaction-runtime-reporter.js';
 import { AgentConfig } from '../../../src/agent/context/agent-config.js';
@@ -25,9 +25,15 @@ import type {
   CompactionAgentTask,
 } from '../../../src/memory/compaction/compaction-agent-runner.js';
 import { AUTOBYTEUS_COMPACTION_STRATEGY } from '../../../src/memory/compaction/working-context-compaction-strategy-setting.js';
+import { CompactionLineageResolver } from '../../../src/memory/lineage/compaction-lineage-resolver.js';
 import { MemoryManager } from '../../../src/memory/memory-manager.js';
+import { MemoryType } from '../../../src/memory/models/memory-types.js';
 import { CompactionPolicy } from '../../../src/memory/policies/compaction-policy.js';
+import { CompactedMemoryContextProjector } from '../../../src/memory/projection/compacted-memory-context-projector.js';
+import { CurrentCompactionOutputLoader } from '../../../src/memory/projection/current-compaction-output-loader.js';
+import { FileCompactionLineageStore } from '../../../src/memory/store/file-compaction-lineage-store.js';
 import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
+import { RawTraceArchiveManager } from '../../../src/memory/store/raw-trace-archive-manager.js';
 import { WorkingContext } from '../../../src/memory/working-context.js';
 import { registerReadFileTool } from '../../../src/tools/file/read-file.js';
 import { defaultToolRegistry } from '../../../src/tools/registry/tool-registry.js';
@@ -88,13 +94,26 @@ class RecordingCompactionRunner implements CompactionAgentRunner {
     this.tasks.push(task);
     return {
       outputText: JSON.stringify({
-        episodic_summary: 'Settled history before the active tool protocol.',
+        episodes: Array.from({ length: 4 }, (_, index) => ({
+          summary: `Settled natural phase ${index + 1} before the active tool protocol.`,
+        })),
         critical_issues: [],
         unresolved_work: [],
-        durable_facts: [{ fact: 'The active lookup result must remain available.' }],
+        durable_facts: Array.from({ length: 25 }, (_, index) => ({
+          fact: `Continuation-critical natural fact ${index + 1}.`,
+        })),
         user_preferences: [],
         important_artifacts: [],
       }),
+      metadata: {
+        compactionAgentDefinitionId: 'memory-compactor',
+        compactionAgentName: 'Memory Compactor',
+        runtimeKind: 'autobyteus',
+        modelIdentifier: 'tool-lifecycle-model',
+        provider: 'openai',
+        compactionRunId: 'tool-lifecycle-compaction-run',
+        taskId: task.taskId,
+      },
     };
   }
 }
@@ -138,12 +157,25 @@ describe('structured strategy tool-safe lifecycle', () => {
     process.env[AUTOBYTEUS_COMPACTION_STRATEGY] = 'structured-json';
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'structured-tool-lifecycle-'));
     const registrySnapshot = defaultToolRegistry.snapshot();
+    let now = Date.now();
+    const dateNowSpy = vi.spyOn(Date, 'now').mockImplementation(() => now++);
     try {
-      fs.writeFileSync(path.join(tempDir, 'runtime-status.txt'), 'runtime status: ready\n', 'utf8');
+      const runtimeStatusPath = path.join(tempDir, 'runtime-status.txt');
+      fs.writeFileSync(runtimeStatusPath, 'runtime status: ready\n', 'utf8');
       const readFileTool = registerReadFileTool();
+      const store = new FileMemoryStore(tempDir, 'tool-lifecycle-agent');
+      const lineageScope = {
+        targetKind: 'agent_run' as const,
+        runId: 'tool-lifecycle-agent',
+        memberId: null,
+      };
+      const lineageStore = new FileCompactionLineageStore(store.agentDir, lineageScope);
       const manager = new MemoryManager({
-        store: new FileMemoryStore(tempDir, 'tool-lifecycle-agent'),
+        store,
         compactionPolicy: new CompactionPolicy({ triggerRatio: 0.1, safetyMarginTokens: 0 }),
+        lineageStore,
+        lineageScope,
+        agentId: 'tool-lifecycle-agent',
       });
       seedSettledHistory(manager);
       const runner = new RecordingCompactionRunner();
@@ -154,7 +186,10 @@ describe('structured strategy tool-safe lifecycle', () => {
             index: 0,
             call_id: 'call-lookup-1',
             name: 'read_file',
-            arguments_delta: '{"path":"runtime-status.txt","include_line_numbers":false}',
+            arguments_delta: JSON.stringify({
+              path: runtimeStatusPath,
+              include_line_numbers: false,
+            }),
           }],
           is_complete: true,
           usage: usage(200),
@@ -236,8 +271,55 @@ describe('structured strategy tool-safe lifecycle', () => {
       expect(statuses[2]).toMatchObject({
         compaction_strategy_id: 'structured-json',
         compaction_strategy_name: 'Structured JSON',
+        semantic_fact_count: 25,
       });
       expect(manager.compactionRequired).toBe(false);
+
+      expect(store.list(MemoryType.EPISODIC)).toHaveLength(4);
+      expect(store.list(MemoryType.SEMANTIC)).toHaveLength(25);
+      expect(store.readArchiveRawTraces().length).toBeGreaterThan(0);
+      const head = lineageStore.readHead()!;
+      expect(head).toMatchObject({
+        previousCompactionId: null,
+        execution: {
+          promptContractVersion: 2,
+          selectionPolicyVersion: 1,
+        },
+      });
+      expect(head.episodeIds).toHaveLength(4);
+      expect(head.semanticIds).toHaveLength(25);
+
+      const current = new CurrentCompactionOutputLoader(lineageStore, store).loadCurrent()!;
+      expect(current.episodes).toHaveLength(4);
+      expect(current.semantics).toHaveLength(25);
+      const projected = new CompactedMemoryContextProjector().project({
+        systemPrompt: 'System prompt',
+        continuationMessages: [],
+        bundle: current,
+      }).buildMessages();
+      expect(projected[1]?.content).toContain('Settled natural phase 4');
+      expect(projected[1]?.content).toContain('Continuation-critical natural fact 25.');
+
+      const resolver = new CompactionLineageResolver(
+        lineageScope,
+        lineageStore,
+        new RawTraceArchiveManager(store.agentDir),
+        store,
+      );
+      for (const artifact of [
+        { kind: 'episode' as const, id: head.episodeIds.at(-1)! },
+        { kind: 'semantic' as const, id: head.semanticIds.at(-1)! },
+      ]) {
+        const origin = resolver.resolve(artifact);
+        expect(origin).toMatchObject({
+          status: 'complete',
+          producingCompactionId: head.compactionId,
+          artifact,
+        });
+        if (origin.status !== 'complete') throw new Error('expected complete origin');
+        expect(origin.direct.rawTraces.length).toBeGreaterThan(0);
+        expect(origin.roots.length).toBeGreaterThan(0);
+      }
 
       const nextRequest = llm.requests[1]!;
       const toolCallIndex = nextRequest.findIndex((message) =>
@@ -247,6 +329,8 @@ describe('structured strategy tool-safe lifecycle', () => {
       expect(nextRequest[toolCallIndex + 1]?.tool_payload).toBeInstanceOf(ToolResultPayload);
       expect((nextRequest[toolCallIndex + 1]?.tool_payload as ToolResultPayload).toolCallId)
         .toBe('call-lookup-1');
+      expect(runner.tasks[0]?.prompt.match(/<conversation_history>/g)).toHaveLength(1);
+      expect(runner.tasks[0]?.prompt.match(/<\/conversation_history>/g)).toHaveLength(1);
       expect(runner.tasks[0]?.prompt).not.toContain('call-lookup-1');
 
       const rendered = llm.renderedPayloads[1] as Array<Record<string, any>>;
@@ -258,6 +342,7 @@ describe('structured strategy tool-safe lifecycle', () => {
         tool_call_id: 'call-lookup-1',
       });
     } finally {
+      dateNowSpy.mockRestore();
       defaultToolRegistry.restore(registrySnapshot);
       fs.rmSync(tempDir, { recursive: true, force: true });
     }

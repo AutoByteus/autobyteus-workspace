@@ -1,0 +1,23 @@
+verification_timestamp_utc=2026-08-01T03:36:26Z
+audit_mode=read-only product/process inspection
+server_pid=35437
+parent_electron_pid=34832
+34832     1 normy Sat Aug  1 05:27:18 2026     09:08 /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+35437 34832 normy Sat Aug  1 05:27:23 2026     09:03 /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js --port 29695 --data-dir /Users/normy/.autobyteus/server-data
+listener=AutoByteu 35437 normy   26u  IPv4 0xab4ca3c9d60b3f9c      0t0  TCP *:29695 (LISTEN)
+server_cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+server_executable=/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+bundle_identifier=com.autobyteus.app
+bundle_short_version=1.4.34
+bundle_version=1.4.34
+bundle_architecture=/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+codesign_summary=Identifier=Electron;Signature=adhoc;TeamIdentifier=not set
+health_http={"status":"ok","message":"Server is running"}
+c0bf182389ea930585e3b0bf5c4f16529461e02bf3be751cb364d0e25f2257e0  /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+2d58401f1f734802d1c3a5cc253fd82aac27b044426dad875578affafd137416  /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5-migration.js
+2d58401f1f734802d1c3a5cc253fd82aac27b044426dad875578affafd137416  autobyteus-server-ts/dist/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5-migration.js
+dd5220fadcea23fb29486e974018807b32fb586e47b2fabdf4f8571d024d2c8f  /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.34.dmg
+49bb172ebbcb399c8f614e0c381ef394df8d85454a7758546aa9720c6c306231  /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.34.zip
+packaged_migration_matches_worktree_build=pass
+process_path_matches_built_app=pass
+health_result=pass

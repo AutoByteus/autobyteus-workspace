@@ -2,59 +2,117 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { LLMRequestAssembler } from '../../../src/agent/llm-request-assembler.js';
-import { BasePromptRenderer } from '../../../src/llm/prompt-renderers/base-prompt-renderer.js';
 import { Message, MessageRole } from '../../../src/llm/utils/messages.js';
-import { CompactionRuntimeSettingsResolver } from '../../../src/memory/compaction/compaction-runtime-settings.js';
+import type { WorkingContextCompactionProposal } from '../../../src/memory/compaction/working-context-compaction-proposal.js';
 import { PendingCompactionExecutor } from '../../../src/memory/compaction/pending-compaction-executor.js';
-import { AUTOBYTEUS_COMPACTION_STRATEGY } from '../../../src/memory/compaction/working-context-compaction-strategy-setting.js';
 import { WorkingContextCompactionStrategyRegistry } from '../../../src/memory/compaction/working-context-compaction-strategy-registry.js';
 import { WorkingContextCompactionStrategyResolver } from '../../../src/memory/compaction/working-context-compaction-strategy-resolver.js';
+import type { CompactionLineageScope } from '../../../src/memory/lineage/compaction-lineage-scope.js';
 import { MemoryManager } from '../../../src/memory/memory-manager.js';
+import { RawTraceItem } from '../../../src/memory/models/raw-trace-item.js';
+import { FileCompactionLineageStore } from '../../../src/memory/store/file-compaction-lineage-store.js';
 import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
-import { WorkingContext } from '../../../src/memory/working-context.js';
+import { WorkingContextSnapshotStore } from '../../../src/memory/store/working-context-snapshot-store.js';
+import {
+  createNaturalUserMessageProvenance,
+  WorkingContextFinalizer,
+} from '../../../src/memory/working-context-finalizer.js';
+import { WorkingContextSnapshotSerializer } from '../../../src/memory/working-context-snapshot-serializer.js';
 
 const tempDirs: string[] = [];
-const originalStrategyId = process.env[AUTOBYTEUS_COMPACTION_STRATEGY];
+
 afterEach(() => {
   tempDirs.splice(0).forEach((dir) => fs.rmSync(dir, { recursive: true, force: true }));
-  if (originalStrategyId === undefined) {
-    delete process.env[AUTOBYTEUS_COMPACTION_STRATEGY];
-  } else {
-    process.env[AUTOBYTEUS_COMPACTION_STRATEGY] = originalStrategyId;
-  }
   vi.restoreAllMocks();
 });
 
-class TestRenderer extends BasePromptRenderer {
-  async render(messages: Message[]): Promise<Array<Record<string, unknown>>> {
-    return messages.map((message) => ({ role: message.role, content: message.content }));
-  }
-}
+const proposal = (): WorkingContextCompactionProposal => ({
+  selectedNewRawTraceIds: ['raw-1'],
+  retainedMessages: [],
+  output: {
+    episodes: [{ summary: 'Current compacted episode' }],
+    semanticEntries: [{
+      category: 'durable_fact',
+      fact: 'Current durable fact',
+      salience: 200,
+    }],
+  },
+  execution: {
+    runtimeKind: 'autobyteus',
+    provider: 'openai',
+    modelIdentifier: 'test-model',
+    taskId: 'task-current',
+    renderedInputSha256: 'a'.repeat(64),
+  },
+});
 
-const makeManager = () => {
+const makeHarness = () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pending-compaction-executor-'));
   tempDirs.push(dir);
-  const manager = new MemoryManager({ store: new FileMemoryStore(dir, 'agent-1') });
-  manager.replaceWorkingContext(new WorkingContext([
-    new Message(MessageRole.SYSTEM, { content: 'System' }),
-    new Message(MessageRole.USER, { content: 'old' }),
-  ]));
-  manager.requestCompaction('turn-requested');
-  return manager;
+  const agentId = 'agent-1';
+  const scope: CompactionLineageScope = {
+    targetKind: 'agent_run',
+    runId: agentId,
+    memberId: null,
+  };
+  const store = new FileMemoryStore(dir, agentId);
+  const lineageStore = new FileCompactionLineageStore(store.agentDir, scope);
+  const snapshotStore = new WorkingContextSnapshotStore(dir, agentId);
+  store.add([new RawTraceItem({
+    id: 'raw-1',
+    ts: 1,
+    turnId: 'turn-1',
+    seq: 1,
+    traceType: 'user',
+    content: 'old',
+    sourceEvent: 'UserMessageReceivedEvent',
+  })]);
+  const workingContext = new WorkingContextFinalizer().finalize({
+    messages: [
+      new Message(MessageRole.SYSTEM, { content: 'System' }),
+      createNaturalUserMessageProvenance(
+        new Message(MessageRole.USER, { content: 'old' }),
+        {
+          kind: 'current_user',
+          rawTraceIds: ['raw-1'],
+          turnId: 'turn-1',
+        },
+      ),
+    ],
+  });
+  const manager = new MemoryManager({
+    store,
+    lineageStore,
+    lineageScope: scope,
+    workingContextSnapshotStore: snapshotStore,
+    workingContext,
+    agentId,
+  });
+  manager.persistWorkingContextSnapshot();
+  const operationId = manager.requestCompaction('turn-requested');
+  return { dir, store, lineageStore, snapshotStore, manager, operationId };
 };
 
 const resolverFor = (
-  create: () => { id: string; name: string; compact(context: WorkingContext): Promise<WorkingContext> },
+  propose: (input: unknown) => Promise<WorkingContextCompactionProposal>,
 ) => {
   const registry = new WorkingContextCompactionStrategyRegistry();
-  registry.register({ id: 'test-strategy', name: 'Test Strategy', create });
+  registry.register({
+    id: 'test-strategy',
+    name: 'Test Strategy',
+    create: () => ({
+      id: 'test-strategy',
+      name: 'Test Strategy',
+      propose: propose as any,
+    }),
+  });
   return new WorkingContextCompactionStrategyResolver({
     registry,
-    settingsResolver: { resolve: () => ({ strategyId: 'test-strategy' }) } as CompactionRuntimeSettingsResolver,
+    settingsResolver: {
+      resolve: () => ({ strategyId: 'test-strategy' }),
+    } as any,
     constructionContext: {
       agentId: 'agent-1',
-      memoryStore: {} as any,
       compactionAgentRunner: null,
       inputBudgetTokens: 100,
       maxItemChars: 200,
@@ -64,214 +122,111 @@ const resolverFor = (
 };
 
 describe('PendingCompactionExecutor', () => {
-  it('uses a registered second strategy without executor branches and preserves success ordering', async () => {
-    const manager = makeManager();
-    const compact = vi.fn(async (input: WorkingContext) => new WorkingContext([
-      input.buildMessages()[0]!,
-      new Message(MessageRole.USER, { content: 'custom compacted memory' }),
-    ]));
-    const resolver = resolverFor(() => ({ id: 'test-strategy', name: 'Test Strategy', compact }));
-    const replace = vi.spyOn(manager, 'replaceWorkingContext');
-    const clear = vi.spyOn(manager, 'clearCompactionRequest');
-    replace.mockClear();
+  it('uses the manager-owned accept/commit path and reports success only after durable commit', async () => {
+    const harness = makeHarness();
+    const propose = vi.fn(async () => proposal());
     const reporter = { emitStatus: vi.fn() };
-
-    await expect(new PendingCompactionExecutor(manager, {
-      strategyResolver: resolver,
+    const executor = new PendingCompactionExecutor(harness.manager, {
+      strategyResolver: resolverFor(propose),
       reporter: reporter as any,
-    }).executeIfRequired({ turnId: 'turn-execution' })).resolves.toBe(true);
+    });
 
-    expect(compact).toHaveBeenCalledTimes(1);
-    const strategyInput = compact.mock.calls[0]![0];
-    expect(strategyInput).not.toBe(manager.getWorkingContext());
-    expect(replace).toHaveBeenCalledTimes(1);
-    expect(replace.mock.invocationCallOrder[0]).toBeLessThan(clear.mock.invocationCallOrder[0]);
-    expect(manager.getWorkingContextMessages().at(-1)?.content).toBe('custom compacted memory');
-    expect(manager.getPendingCompactionRequest()).toBeNull();
-    expect(reporter.emitStatus.mock.calls.map(([payload]) => payload.phase)).toEqual(['started', 'completed']);
+    await expect(executor.executeIfRequired({ turnId: 'turn-execution' }))
+      .resolves.toBe(true);
+
+    expect(propose).toHaveBeenCalledTimes(1);
+    expect(harness.manager.getPendingCompactionRequest()).toBeNull();
+    expect(harness.lineageStore.readHead()?.compactionId).toBe(harness.operationId);
+    expect(harness.store.readArchiveRawTraces().map(({ id }) => id)).toEqual(['raw-1']);
+    expect(harness.manager.requireCurrentCompactionOutput()).toMatchObject({
+      lineageHead: { compactionId: harness.operationId },
+      episodes: [{ summary: 'Current compacted episode' }],
+      semantics: [{ fact: 'Current durable fact' }],
+    });
+    const snapshot = harness.snapshotStore.read('agent-1')!;
+    expect(WorkingContextSnapshotSerializer.validate(snapshot)).toBe(true);
+    expect(JSON.stringify(snapshot)).not.toContain(harness.operationId);
+    expect(reporter.emitStatus.mock.calls.map(([payload]) => payload.phase))
+      .toEqual(['started', 'completed']);
     expect(reporter.emitStatus).toHaveBeenLastCalledWith(expect.objectContaining({
       phase: 'completed',
+      compaction_operation_id: harness.operationId,
       compaction_strategy_id: 'test-strategy',
-      compaction_strategy_name: 'Test Strategy',
     }));
   });
 
-  it('re-reads the process-global selection for each pending operation and renders the selected replacement', async () => {
-    const manager = makeManager();
+  it.each([
+    ['runner', new Error('compaction runner unavailable')],
+    ['parser', new Error('Could not parse a valid JSON object from the compaction response.')],
+  ])('preserves the same pending ID and every durable surface across a %s failure, then retries', async (_kind, failure) => {
+    const harness = makeHarness();
+    const beforeContext = harness.manager.getWorkingContextMessages().map((message) => message.toDict());
+    const beforeSnapshot = fs.readFileSync(
+      path.join(harness.dir, 'agents', 'agent-1', 'working_context_snapshot.json'),
+      'utf-8',
+    );
+    const propose = vi.fn()
+      .mockRejectedValueOnce(failure)
+      .mockResolvedValueOnce(proposal());
+    const reporter = { emitStatus: vi.fn() };
+    const executor = new PendingCompactionExecutor(harness.manager, {
+      strategyResolver: resolverFor(propose),
+      reporter: reporter as any,
+    });
+
+    await expect(executor.executeIfRequired({ turnId: 'turn-failed' }))
+      .rejects.toThrow(failure.message);
+
+    expect(harness.manager.requirePendingCompactionRequest().operationId)
+      .toBe(harness.operationId);
+    expect(harness.manager.getWorkingContextMessages().map((message) => message.toDict()))
+      .toEqual(beforeContext);
+    expect(fs.readFileSync(
+      path.join(harness.dir, 'agents', 'agent-1', 'working_context_snapshot.json'),
+      'utf-8',
+    )).toBe(beforeSnapshot);
+    expect(harness.lineageStore.list()).toEqual([]);
+    expect(harness.store.readArchiveRawTraces()).toEqual([]);
+    expect(harness.store.listRawTracesOrdered().map(({ id }) => id)).toEqual(['raw-1']);
+
+    await expect(executor.executeIfRequired({ turnId: 'turn-retry' }))
+      .resolves.toBe(true);
+    expect(harness.lineageStore.readHead()?.compactionId).toBe(harness.operationId);
+    expect(reporter.emitStatus.mock.calls.map(([payload]) => payload.phase))
+      .toEqual(['started', 'failed', 'started', 'completed']);
+  });
+
+  it('fails an unknown selected strategy without creating partial artifacts', async () => {
+    const harness = makeHarness();
     const registry = new WorkingContextCompactionStrategyRegistry();
-    const registerReplacement = (id: string, name: string, content: string) => {
-      registry.register({
-        id,
-        name,
-        create: () => ({
-          id,
-          name,
-          compact: async (input) => new WorkingContext([
-            input.buildMessages()[0]!,
-            new Message(MessageRole.USER, { content }),
-          ]),
-        }),
-      });
-    };
-    registerReplacement('first-test', 'First Test', 'first selected replacement');
-    registerReplacement('second-test', 'Second Test', 'second selected replacement');
-
-    const resolver = new WorkingContextCompactionStrategyResolver({
-      registry,
-      settingsResolver: new CompactionRuntimeSettingsResolver(),
-      constructionContext: {
-        agentId: 'agent-1',
-        memoryStore: manager.store,
-        compactionAgentRunner: null,
-        inputBudgetTokens: 100,
-        maxItemChars: 200,
-        diagnostics: null,
-      },
+    const executor = new PendingCompactionExecutor(harness.manager, {
+      strategyResolver: new WorkingContextCompactionStrategyResolver({
+        registry,
+        settingsResolver: { resolve: () => ({ strategyId: 'unknown' }) } as any,
+        constructionContext: {
+          agentId: 'agent-1',
+          compactionAgentRunner: null,
+          inputBudgetTokens: null,
+          maxItemChars: 200,
+          diagnostics: null,
+        },
+      }),
     });
-    const executor = new PendingCompactionExecutor(manager, { strategyResolver: resolver });
-    const assembler = new LLMRequestAssembler(manager, new TestRenderer(), executor);
 
-    process.env[AUTOBYTEUS_COMPACTION_STRATEGY] = 'second-test';
-    const secondRequest = await assembler.prepareRequest('after second', 'turn-second', 'System');
-    expect(secondRequest.canonicalMessages.map((message) => message.content)).toEqual([
-      'System',
-      'second selected replacement',
-      'after second',
-    ]);
-    expect(secondRequest.renderedPayload).toEqual([
-      { role: MessageRole.SYSTEM, content: 'System' },
-      { role: MessageRole.USER, content: 'second selected replacement' },
-      { role: MessageRole.USER, content: 'after second' },
-    ]);
-
-    manager.requestCompaction('turn-requested-again');
-    process.env[AUTOBYTEUS_COMPACTION_STRATEGY] = 'first-test';
-    const firstRequest = await assembler.prepareRequest('after first', 'turn-first', 'System');
-    expect(firstRequest.canonicalMessages.map((message) => message.content)).toEqual([
-      'System',
-      'first selected replacement',
-      'after first',
-    ]);
+    await expect(executor.executeIfRequired()).rejects.toThrow("Unknown working-context compaction strategy 'unknown'");
+    expect(harness.manager.requirePendingCompactionRequest().operationId).toBe(harness.operationId);
+    expect(harness.lineageStore.list()).toEqual([]);
+    expect(harness.store.readArchiveRawTraces()).toEqual([]);
   });
 
-  it('retains live context and pending request when output validation fails', async () => {
-    const manager = makeManager();
-    const before = manager.getWorkingContextMessages().map((message) => message.toDict());
-    const resolver = resolverFor(() => ({
-      id: 'test-strategy',
-      name: 'Test Strategy',
-      compact: async (input) => {
-        input.replaceMessage(0, new Message(MessageRole.SYSTEM, { content: 'mutated' }));
-        return input.copy();
-      },
-    }));
-    const replace = vi.spyOn(manager, 'replaceWorkingContext');
-    replace.mockClear();
-    const reporter = { emitStatus: vi.fn() };
-
-    await expect(new PendingCompactionExecutor(manager, {
-      strategyResolver: resolver,
-      reporter: reporter as any,
-    }).executeIfRequired({ turnId: 'turn-execution' })).rejects.toThrow('[changed-required-head]');
-
-    expect(replace).not.toHaveBeenCalled();
-    expect(manager.getWorkingContextMessages().map((message) => message.toDict())).toEqual(before);
-    expect(manager.getPendingCompactionRequest()).not.toBeNull();
-    expect(reporter.emitStatus.mock.calls.map(([payload]) => payload.phase)).toEqual(['started', 'failed']);
-  });
-
-  it('reports malformed leading output with a stable invariant and no success mutation', async () => {
-    const manager = makeManager();
-    const before = manager.getWorkingContextMessages().map((message) => message.toDict());
-    const resolver = resolverFor(() => ({
-      id: 'test-strategy',
-      name: 'Test Strategy',
-      compact: async () => new WorkingContext([
-        { role: MessageRole.SYSTEM, content: 'System' } as Message,
-      ]),
-    }));
-    const replace = vi.spyOn(manager, 'replaceWorkingContext');
-    replace.mockClear();
-    const clear = vi.spyOn(manager, 'clearCompactionRequest');
-    const reporter = { emitStatus: vi.fn() };
-
-    await expect(new PendingCompactionExecutor(manager, {
-      strategyResolver: resolver,
-      reporter: reporter as any,
-    }).executeIfRequired()).rejects.toThrow('[invalid-message-shape]');
-
-    expect(replace).not.toHaveBeenCalled();
-    expect(clear).not.toHaveBeenCalled();
-    expect(manager.getWorkingContextMessages().map((message) => message.toDict())).toEqual(before);
-    expect(manager.getPendingCompactionRequest()).not.toBeNull();
-    expect(reporter.emitStatus.mock.calls.map(([payload]) => payload.phase)).toEqual(['started', 'failed']);
-    expect(reporter.emitStatus).toHaveBeenLastCalledWith(expect.objectContaining({
-      phase: 'failed',
-      error_message: expect.stringContaining('[invalid-message-shape]'),
-    }));
-  });
-
-  it('rejects an aliased return without replace, clear, or completed', async () => {
-    const manager = makeManager();
-    const resolver = resolverFor(() => ({
-      id: 'test-strategy',
-      name: 'Test Strategy',
-      compact: async (input) => input,
-    }));
-    const replace = vi.spyOn(manager, 'replaceWorkingContext');
-    replace.mockClear();
-    const clear = vi.spyOn(manager, 'clearCompactionRequest');
-    const reporter = { emitStatus: vi.fn() };
-
-    await expect(new PendingCompactionExecutor(manager, {
-      strategyResolver: resolver,
-      reporter: reporter as any,
-    }).executeIfRequired()).rejects.toThrow('[aliased-context]');
-    expect(replace).not.toHaveBeenCalled();
-    expect(clear).not.toHaveBeenCalled();
-    expect(reporter.emitStatus.mock.calls.map(([payload]) => payload.phase)).toEqual(['started', 'failed']);
-  });
-
-  it('fails an unknown explicit global strategy without replacement, clear, or fallback', async () => {
-    const manager = makeManager();
-    const before = manager.getWorkingContextMessages().map((message) => message.toDict());
-    process.env[AUTOBYTEUS_COMPACTION_STRATEGY] = 'unknown-test-strategy';
-    const resolver = new WorkingContextCompactionStrategyResolver({
-      registry: new WorkingContextCompactionStrategyRegistry(),
-      settingsResolver: new CompactionRuntimeSettingsResolver(),
-      constructionContext: {
-        agentId: 'agent-1',
-        memoryStore: manager.store,
-        compactionAgentRunner: null,
-        inputBudgetTokens: 100,
-        maxItemChars: 200,
-        diagnostics: null,
-      },
-    });
-    const replace = vi.spyOn(manager, 'replaceWorkingContext');
-    replace.mockClear();
-    const clear = vi.spyOn(manager, 'clearCompactionRequest');
-    const reporter = { emitStatus: vi.fn() };
-
-    await expect(new PendingCompactionExecutor(manager, {
-      strategyResolver: resolver,
-      reporter: reporter as any,
-    }).executeIfRequired()).rejects.toThrow("unknown-test-strategy");
-
-    expect(replace).not.toHaveBeenCalled();
-    expect(clear).not.toHaveBeenCalled();
-    expect(manager.getWorkingContextMessages().map((message) => message.toDict())).toEqual(before);
-    expect(manager.getPendingCompactionRequest()).not.toBeNull();
-    expect(reporter.emitStatus.mock.calls.map(([payload]) => payload.phase)).toEqual(['failed']);
-  });
-
-  it('resolves only when compaction is pending', async () => {
-    const manager = makeManager();
-    manager.clearCompactionRequest();
+  it('does not resolve a strategy when no compaction is pending', async () => {
+    const harness = makeHarness();
+    harness.manager.clearCompactionRequest();
     const resolve = vi.fn();
-    const executor = new PendingCompactionExecutor(manager, {
+    const executor = new PendingCompactionExecutor(harness.manager, {
       strategyResolver: { resolve } as any,
     });
+
     await expect(executor.executeIfRequired()).resolves.toBe(false);
     expect(resolve).not.toHaveBeenCalled();
   });

@@ -1,0 +1,37 @@
+$ autobyteus-ts: pnpm build
+PASS: TypeScript build and runtime-dependency verification completed.
+
+$ autobyteus-server-ts: pnpm build
+PASS: shared builds, Prisma generation, server TypeScript build, managed-asset copy, and sanitized built-in-agent bootstrap smoke completed.
+
+$ native converter focused in-process proof
+{"v4Mode":"converted_with_omissions","v4Messages":4,"v1Messages":1,"parseInvalidMessages":0,"incompleteGroups":1,"v5Mode":"converted"}
+
+$ native migration standalone/lineage/idempotence/identity focused in-process proof
+{"first":"SUCCEEDED_WITH_WARNINGS","firstMigrated":2,"firstSkipped":1,"second":"SUCCEEDED","nonemptyPreserved":true,"parseInvalidEmpty":0,"identity":"FAILED"}
+
+$ team-member classifier and new-ID tolerant conversion focused in-process proof
+{"subject":{"kind":"team_member","rootTeamRunId":"team1","memberRunId":"member_new_id","memberRouteKey":"worker","memberPath":["worker"]},"agentId":"member_new_id","status":"SUCCEEDED_WITH_WARNINGS"}
+
+$ post-compaction request recovery focused in-process proof
+{"postCompactionRestore":["M2","U5"],"recoveryTraces":2,"toolCheckpoint":true}
+PASS: post-capture assembly failure restored M2 with the durable pending operation still clear; provider-style restore settled once; successful normal and tool-continuation packages released once.
+
+$ strict-v5-only restore focused in-process proof
+{"missing":"rejected","v4":"rejected","v5":"restored"}
+
+$ ordinary app-data runner failure-status focused in-process proof
+{"returned":"FAILED","attempts":1}
+PASS: the runner persisted and returned the failed required migration status without an aggregate startup exception.
+
+$ pnpm exec vitest run tests/unit/app-data-migrations/remove-external-runtime-working-context-snapshots-migration.test.ts --config vitest.config.ts
+PASS: 1 file, 4 tests. External cleanup retained its exact eligibility, path-safety, symlink, idempotence, and retry behavior after classifier extraction.
+
+$ prompt supplement byte comparison
+prompt_byte_match=True
+
+$ source structure and whitespace checks
+PASS: no production reference to WorkingContextRecoveryProjector, the destructive reset, RequiredAppDataMigrationError, or the old reset ID; request recovery capture occurs only in LLMRequestAssembler; git diff --check passed.
+
+$ pnpm exec vitest run tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts --config vitest.config.ts
+EXPECTED STALE DURABLE COVERAGE: 2 assertions still expect pre-SR-010 adjacent user rows instead of the delivered canonical composed-user message. Both fail before exercising the SR-015 settlement delta. Durable test reconciliation and broader execution remain API/E2E-owned after source review.

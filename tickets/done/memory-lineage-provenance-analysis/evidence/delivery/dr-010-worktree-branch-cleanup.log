@@ -1,0 +1,33 @@
+timestamp_utc=2026-08-01T04:46:38Z
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis
+branch=codex/memory-lineage-provenance-analysis
+ticket_commit=9f747dae9c2284225fb549ccdd039a01214c79dc
+merged_into_personal=yes
+error: failed to delete '/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis': Directory not empty
+worktree_removed=no
+Deleted branch codex/memory-lineage-provenance-analysis (was 9f747dae9).
+remote:
+remote: GitHub found 677 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (18 critical, 283 high, 320 moderate, 56 low). To find out more, visit:
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot
+remote:
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+ - [deleted]             codex/memory-lineage-provenance-analysis
+local_branch_present=no
+remote_branch_present=no
+residual_cleanup_utc=2026-08-01T04:47:28Z
+registered_before=0
+residual_size_before=652M
+Traceback (most recent call last):
+  File "<stdin>", line 6, in <module>
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/shutil.py", line 722, in rmtree
+    onerror(os.rmdir, path, sys.exc_info())
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/shutil.py", line 720, in rmtree
+    os.rmdir(path)
+OSError: [Errno 66] Directory not empty: '/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis'
+worktree_path_exists_after=yes
+registered_after=0
+residual_cleanup_retry=removed sole .DS_Store after generated-content cleanup
+worktree_path_exists_final=no
+registered_final=0
+local_branch_present_final=no
+remote_branch_present_final=no

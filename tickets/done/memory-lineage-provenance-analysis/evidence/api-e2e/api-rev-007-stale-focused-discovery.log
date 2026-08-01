@@ -1,0 +1,175 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-ts
+
+ ✓ tests/unit/memory/compaction-response-parser.test.ts > CompactionResponseParser > parses the exact current replacement bundle from fenced JSON 2ms
+ × tests/unit/memory/compaction-response-parser.test.ts > CompactionResponseParser > enforces one-to-three episodes, twenty facts, and configured text bounds 4ms
+   → expected [ { summary: 'episode-' }, …(4) ] to have a length of 3 but got 5
+ × tests/unit/memory/compaction-response-parser.test.ts > CompactionResponseParser > rejects removed aliases, stale entry metadata, and incomplete current responses 3ms
+   → expected [Function] to throw error including 'one to three non-empty episodes' but got 'Compaction response requires at least…'
+ × tests/unit/memory/compaction-result-normalizer.test.ts > CompactionResultNormalizer > normalizes bounded episodes, preserves categories, and deduplicates by priority 6ms
+   → expected [ …(4) ] to deeply equal [ …(3) ]
+ ✓ tests/unit/memory/compaction-result-normalizer.test.ts > CompactionResultNormalizer > drops low-value operational noise outside critical and unresolved categories 1ms
+ ✓ tests/unit/memory/compaction-lineage-resolver.test.ts > CompactionLineageResolver > resolves episode direct R2 sources and transitive R1/R2 roots 2ms
+ ✓ tests/unit/memory/compaction-lineage-resolver.test.ts > CompactionLineageResolver > resolves semantic direct R2 sources and transitive R1/R2 roots 0ms
+ ✓ tests/unit/memory/compaction-lineage-resolver.test.ts > CompactionLineageResolver > returns a typed not_found result for unknown artifacts 0ms
+ ✓ tests/unit/memory/compaction-lineage-resolver.test.ts > CompactionLineageResolver > raises MemoryOriginIntegrityError for missing archive 1ms
+ ✓ tests/unit/memory/compaction-lineage-resolver.test.ts > CompactionLineageResolver > raises MemoryOriginIntegrityError for record-count mismatch 0ms
+ ✓ tests/unit/memory/compaction-lineage-resolver.test.ts > CompactionLineageResolver > raises MemoryOriginIntegrityError for identity mismatch 0ms
+ ✓ tests/unit/memory/compaction-lineage-resolver.test.ts > CompactionLineageResolver > raises MemoryOriginIntegrityError for missing output row 0ms
+ ✓ tests/unit/memory/compaction-lineage-resolver.test.ts > CompactionLineageResolver > raises MemoryOriginIntegrityError for missing predecessor 0ms
+ ✓ tests/unit/memory/compaction-lineage-resolver.test.ts > CompactionLineageResolver > detects a lineage cycle even when a backing adapter bypasses file-chain validation 0ms
+ ✓ tests/unit/memory/compaction-lineage-resolver.test.ts > CompactionLineageResolver > wraps backing lineage validation failures as integrity errors 0ms
+ × tests/unit/memory/working-context-compaction-prompt-builder.test.ts > WorkingContextCompactionPromptBuilder > renders recurrent memory and R2 as one natural, bounded, reasoning-free conversation 13ms
+   → expected '<conversation_history>\nUser:\nM1: re…' to contain 'User:\nM1: retain the reviewed curren…'
+ × tests/unit/memory/working-context-compaction-prompt-builder.test.ts > WorkingContextCompactionPromptBuilder > rejects incomplete or orphaned tool protocol rather than inventing a transcript 2ms
+   → expected [Function] to throw an error
+ ✓ tests/unit/memory/file-compaction-lineage-store.test.ts > FileCompactionLineageStore > appends a linear immutable chain and resolves typed producing records 3ms
+ ✓ tests/unit/memory/file-compaction-lineage-store.test.ts > FileCompactionLineageStore > rejects duplicate ID without changing the append-only file 2ms
+ ✓ tests/unit/memory/file-compaction-lineage-store.test.ts > FileCompactionLineageStore > rejects stale expected head without changing the append-only file 2ms
+ ✓ tests/unit/memory/file-compaction-lineage-store.test.ts > FileCompactionLineageStore > rejects record predecessor mismatch without changing the append-only file 1ms
+ ✓ tests/unit/memory/file-compaction-lineage-store.test.ts > FileCompactionLineageStore > rejects scope mismatch without changing the append-only file 1ms
+ ✓ tests/unit/memory/file-compaction-lineage-store.test.ts > FileCompactionLineageStore > rejects unsafe archive path without changing the append-only file 1ms
+ ✓ tests/unit/memory/file-compaction-lineage-store.test.ts > FileCompactionLineageStore > reads the exact tail after 1,000 recurrent appends without a mutable state pointer 1662ms
+ ✓ tests/unit/memory/file-compaction-lineage-store.test.ts > FileCompactionLineageStore > rejects an externally corrupted non-linear file instead of selecting a plausible tail 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/memory/compaction-response-parser.test.ts > CompactionResponseParser > enforces one-to-three episodes, twenty facts, and configured text bounds
+AssertionError: expected [ { summary: 'episode-' }, …(4) ] to have a length of 3 but got 5
+
+- Expected
++ Received
+
+- 3
++ 5
+
+ ❯ tests/unit/memory/compaction-response-parser.test.ts:60:29
+     58|     })));
+     59| 
+     60|     expect(result.episodes).toHaveLength(3);
+       |                             ^
+     61|     expect(result.episodes.every(({ summary }) => summary.length <= 8)…
+     62|     expect(result.criticalIssues).toHaveLength(20);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  tests/unit/memory/compaction-response-parser.test.ts > CompactionResponseParser > rejects removed aliases, stale entry metadata, and incomplete current responses
+AssertionError: expected [Function] to throw error including 'one to three non-empty episodes' but got 'Compaction response requires at least…'
+
+Expected: "one to three non-empty episodes"
+Received: "Compaction response requires at least one non-empty episode."
+
+ ❯ tests/unit/memory/compaction-response-parser.test.ts:76:11
+     74|     expect(() => new CompactionResponseParser().parse(JSON.stringify(c…
+     75|       episodes: [],
+     76|     })))).toThrow('one to three non-empty episodes');
+       |           ^
+     77|     expect(() => new CompactionResponseParser().parse(JSON.stringify({
+     78|       episodes: [{ summary: 'only field present' }],
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  tests/unit/memory/compaction-result-normalizer.test.ts > CompactionResultNormalizer > normalizes bounded episodes, preserves categories, and deduplicates by priority
+AssertionError: expected [ …(4) ] to deeply equal [ …(3) ]
+
+- Expected
++ Received
+
+@@ -6,6 +6,9 @@
+      "summary": "Second episode.",
+    },
+    {
+      "summary": "Third episode.",
+    },
++   {
++     "summary": "Fourth is deterministically ignored.",
++   },
+  ]
+
+ ❯ tests/unit/memory/compaction-result-normalizer.test.ts:24:33
+     22|     }));
+     23| 
+     24|     expect(normalized.episodes).toEqual([
+       |                                 ^
+     25|       { summary: 'First complete replacement episode.' },
+     26|       { summary: 'Second episode.' },
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  tests/unit/memory/working-context-compaction-prompt-builder.test.ts > WorkingContextCompactionPromptBuilder > renders recurrent memory and R2 as one natural, bounded, reasoning-free conversation
+AssertionError: expected '<conversation_history>\nUser:\nM1: re…' to contain 'User:\nM1: retain the reviewed curren…'
+
+- Expected
++ Received
+
++ <conversation_history>
+  User:
+  M1: retain the reviewed current design.
+
+- User:
+- R2 user text with literal &lt;conversation_history&gt; and &lt;/conversation_history&gt;.
++ The ne… [62 characters omitted] …ersation_history> and &lt;/conversation_history&gt;.
++
++ Assistant:
++ R2 visible assistant text.
++
++ Assistant:
++ I will inspect both values.
++
++ Tool:
++ name: run_command
++ status: success
++ arguments:
++   {
++     "command": "head-xxxxxxxxxxxxxxxxxxxxxxxxx… [209 characters omitted] …xxxxxx-tail",
++     "api_key": <redacted-secret>
++   }
++ result:
++   result-head-rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr… [172 characters omitted] …rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr-result-tail
++
++ Tool:
++ name: read_file
++ status: error
++ arguments:
++   {
++     "path": "/tmp/short.txt"
++   }
++ error:
++   error-head-eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee… [170 characters omitted] …eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-error-tail
++ </conversation_history>
+
+ ❯ tests/unit/memory/working-context-compaction-prompt-builder.test.ts:102:20
+    100|     expect(prompt.match(/<conversation_history>/g)).toHaveLength(1);
+    101|     expect(prompt.match(/<\/conversation_history>/g)).toHaveLength(1);
+    102|     expect(prompt).toContain(
+       |                    ^
+    103|       'User:\nM1: retain the reviewed current design.\n\n' +
+    104|       'User:\nR2 user text with literal &lt;conversation_history&gt; a…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  tests/unit/memory/working-context-compaction-prompt-builder.test.ts > WorkingContextCompactionPromptBuilder > rejects incomplete or orphaned tool protocol rather than inventing a transcript
+AssertionError: expected [Function] to throw an error
+
+- Expected: 
+null
+
++ Received: 
+undefined
+
+ ❯ tests/unit/memory/working-context-compaction-prompt-builder.test.ts:140:8
+    138|     incomplete.matchedToolCallIds = ['backend-call-success'];
+    139|     expect(() => new WorkingContextCompactionPromptBuilder().buildTask…
+    140|       .toThrow('Incomplete tool protocol');
+       |        ^
+    141| 
+    142|     expect(() => new WorkingContextCompactionPromptBuilder().buildTask…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  3 failed | 2 passed (5)
+      Tests  5 failed | 20 passed (25)
+   Start at  10:20:27
+   Duration  2.01s (transform 417ms, setup 95ms, import 473ms, tests 1.71s, environment 0ms)
+

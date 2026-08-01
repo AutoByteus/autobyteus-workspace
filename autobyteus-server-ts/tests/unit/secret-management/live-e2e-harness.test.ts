@@ -145,7 +145,16 @@ describe('one-database live E2E runtime and evidence boundary', () => {
   it('keeps all native model fixtures in code and mapped to their static product factories', () => {
     for (const [scenarioId, scenario] of Object.entries(liveE2eScenarios)) {
       if (!scenario.model) continue;
-      if (scenario.operation === 'llm' || scenario.operation === 'agent-flow') {
+      if (scenario.providerId === 'LMSTUDIO') {
+        expect(scenario.operation, scenarioId).toBe('compaction-agent-flow');
+        expect(scenario.requiredSecretId, scenarioId).toBeNull();
+        continue;
+      }
+      if (
+        scenario.operation === 'llm'
+        || scenario.operation === 'agent-flow'
+        || scenario.operation === 'compaction-agent-flow'
+      ) {
         const matches = supportedModelDefinitions.filter((definition) =>
           (definition.modelIdentifierOverride?.trim() || definition.name) === scenario.model);
         expect(matches, scenarioId).toHaveLength(1);
@@ -166,7 +175,8 @@ describe('one-database live E2E runtime and evidence boundary', () => {
       }
     }
     expect(Object.values(liveE2eScenarios).every((scenario) =>
-      scenario.requiredSecretId.startsWith('provider.')
+      scenario.requiredSecretId === null
+      || scenario.requiredSecretId.startsWith('provider.')
       || scenario.requiredSecretId.startsWith('search.'))).toBe(true);
   });
 
@@ -180,6 +190,24 @@ describe('one-database live E2E runtime and evidence boundary', () => {
     expect(() => selectedLiveE2eScenarioIds()).toThrow(
       'LIVE_E2E_SCENARIO_UNKNOWN:unknown.scenario',
     );
+  });
+
+  it('registers managed DeepSeek compaction as a five-percent real agent flow', () => {
+    expect(liveE2eScenarios['deepseek.compaction-agent-flow']).toEqual({
+      operation: 'compaction-agent-flow',
+      providerId: 'DEEPSEEK',
+      requiredSecretId: 'provider.deepseek.api-key',
+      model: 'deepseek-v4-flash',
+    });
+  });
+
+  it('registers local Qwen compaction without a provider secret', () => {
+    expect(liveE2eScenarios['lmstudio.qwen36.compaction-agent-flow']).toEqual({
+      operation: 'compaction-agent-flow',
+      providerId: 'LMSTUDIO',
+      requiredSecretId: null,
+      model: 'qwen/qwen3.6-35b-a3b',
+    });
   });
 
   it('classifies only the exact value-free AutoByteus discovery-unavailable boundary', () => {

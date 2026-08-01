@@ -271,7 +271,7 @@ describe('token usage provider-name snapshot backfill startup e2e', () => {
     expect((await readRows(rowIds)).map(withoutProviderName)).toEqual(beforePreservedRows);
   });
 
-  it('continues startup after a failed provider-name update and retries only the unresolved row', async () => {
+  it('blocks startup after a failed provider-name update and retries only the unresolved row', async () => {
     const providerId = `provider_${randomUUID()}`;
     const rawModel = `openai-compatible:${providerId}:org/model:tag`;
     const runId = `provider-name-failure-${randomUUID()}`;

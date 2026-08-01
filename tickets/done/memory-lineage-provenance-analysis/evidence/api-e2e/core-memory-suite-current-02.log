@@ -1,0 +1,10 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-ts
+
+····················································································································································
+
+ Test Files  33 passed (33)
+      Tests  148 passed (148)
+   Start at  18:00:55
+   Duration  2.89s (transform 2.62s, setup 413ms, import 5.22s, tests 3.06s, environment 5ms)
+

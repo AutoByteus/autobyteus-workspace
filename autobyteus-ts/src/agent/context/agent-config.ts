@@ -9,6 +9,7 @@ import type { BaseToolExecutionResultProcessor } from '../tool-execution-result-
 import type { BaseLLMResponseProcessor } from '../llm-response-processor/base-processor.js';
 import type { BaseLifecycleEventProcessor } from '../lifecycle/base-processor.js';
 import type { CompactionAgentRunner } from '../../memory/compaction/compaction-agent-runner.js';
+import type { CompactionLineageScope } from '../../memory/lineage/compaction-lineage-scope.js';
 
 function deepClone<T>(value: T): T {
   if (value === null || value === undefined) {
@@ -46,6 +47,7 @@ export class AgentConfig {
   skillAccessMode: SkillAccessMode;
   memoryDir?: string | null;
   compactionAgentRunner: CompactionAgentRunner | null;
+  compactionLineageScope: CompactionLineageScope | null;
 
   constructor(
     name: string,
@@ -66,7 +68,8 @@ export class AgentConfig {
     skills: string[] | null = null,
     memoryDir: string | null = null,
     skillAccessMode: SkillAccessMode | null = null,
-    compactionAgentRunner: CompactionAgentRunner | null = null
+    compactionAgentRunner: CompactionAgentRunner | null = null,
+    compactionLineageScope: CompactionLineageScope | null = null,
   ) {
     this.name = name;
     this.role = role;
@@ -96,6 +99,9 @@ export class AgentConfig {
     this.skillAccessMode = resolveSkillAccessMode(skillAccessMode, this.skills.length);
     this.memoryDir = memoryDir ?? undefined;
     this.compactionAgentRunner = compactionAgentRunner ?? null;
+    this.compactionLineageScope = compactionLineageScope
+      ? { ...compactionLineageScope }
+      : null;
 
     const toolCallFormat = resolveToolCallFormat();
     if (toolCallFormat === 'api_tool_call') {
@@ -131,7 +137,8 @@ export class AgentConfig {
       this.skills.slice(),
       this.memoryDir ?? null,
       this.skillAccessMode,
-      this.compactionAgentRunner
+      this.compactionAgentRunner,
+      this.compactionLineageScope,
     );
   }
 

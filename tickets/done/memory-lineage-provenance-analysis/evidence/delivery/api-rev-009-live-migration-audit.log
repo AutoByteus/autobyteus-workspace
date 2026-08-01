@@ -1,0 +1,84 @@
+{
+  "generatedAt": "2026-08-01T03:36:01.270Z",
+  "ledger": {
+    "migrationId": "20260731_migrate_native_working_context_snapshots_v5",
+    "displayName": "Migrate native WorkingContext snapshots to strict v5",
+    "status": "SUCCEEDED_WITH_WARNINGS",
+    "attempts": 1,
+    "startedAt": "2026-08-01T03:27:24.852Z",
+    "completedAt": "2026-08-01T03:27:26.660Z",
+    "errorPresent": false,
+    "summary": {
+      "scannedCount": 689,
+      "migratedCount": 347,
+      "skippedCount": 342,
+      "failedCount": 0
+    },
+    "categoryCounts": {
+      "MIGRATED:native_migrated_clean": 4,
+      "MIGRATED:native_migrated_with_omissions": 343,
+      "SKIPPED:diagnostic_metadata_missing": 195,
+      "SKIPPED:native_no_snapshot": 147
+    },
+    "log": {
+      "fileName": "20260731_migrate_native_working_context_snapshots_v5-2026-08-01T03-27-26-659Z.log",
+      "sha256": "18ceaec26930457b101c5db835a9fa3ee0c7ae5b1ed4a7e884071e6d2a116613",
+      "detailCount": 689,
+      "detailsMatchLedgerSummary": true
+    }
+  },
+  "classification": {
+    "locationCount": 2835,
+    "diagnosticCount": 195,
+    "runtimeKindCounts": {
+      "autobyteus": 494,
+      "claude_agent_sdk": 65,
+      "codex_app_server": 2274,
+      "unsupported_or_unknown": 2
+    },
+    "nativeLocationCount": 494,
+    "nativeLedgerMatchCount": 494
+  },
+  "nativeResultChecks": {
+    "migratedCount": 347,
+    "migratedWithOmissionsCount": 343,
+    "migratedWithoutOmissionsCount": 4,
+    "skippedNonemptyLineageCount": 0,
+    "skippedNoSnapshotCount": 147,
+    "failedOrRejectedCount": 0,
+    "migratedSnapshotsPresentCount": 347,
+    "migratedSnapshotsStrictV5ValidCount": 347,
+    "migratedSnapshotsIdentityMatchCount": 347,
+    "migratedSnapshotsRestorableCount": 347,
+    "migratedSnapshotsModifiedAfterMigrationCount": 0,
+    "migratedTargetsWithCurrentObsoleteFileCount": 0,
+    "migratedCurrentObsoleteFileCount": 0,
+    "migratedCurrentObsoleteFilesWrittenAfterMigrationCount": 0,
+    "migratedCurrentObsoleteFilesNotPostMigrationCount": 0,
+    "migratedRawEvidenceFileCount": 400,
+    "migratedRawEvidenceFilesModifiedWithinMigrationWindowCount": 0,
+    "nonemptyLineageSnapshotViolations": 0,
+    "noSnapshotTargetsNowHavingSnapshotCount": 0
+  },
+  "preservationChecks": {
+    "filesModifiedDuringNativeWindowCount": 347,
+    "migratedSnapshotFilesModifiedDuringNativeWindowCount": 347,
+    "otherMemoryFilesModifiedDuringNativeWindowCount": 0,
+    "externalOrUnsupportedLocationCount": 2341,
+    "externalOrUnsupportedRawFilesModifiedWithinMigrationWindowCount": 0,
+    "externalOrUnsupportedSnapshotsModifiedWithinMigrationWindowCount": 0,
+    "unclassifiedSnapshotCount": 259,
+    "unclassifiedSnapshotsModifiedWithinMigrationWindowCount": 0,
+    "importedFileCount": 445,
+    "importedFilesModifiedWithinMigrationWindowCount": 0,
+    "importedAggregateSha256": "98739d426aebc86ebd565a435187d612e42b54d8976fae6e0b8487a41b0d8426"
+  },
+  "verdict": {
+    "ledgerSucceededWithoutFailedItems": true,
+    "allMigratedSnapshotsStrictV5IdentityMatchedAndRestorable": true,
+    "cleanupBoundaryValidAtAudit": true,
+    "noRawOrExcludedMutationObservedInNativeWindow": true,
+    "migrationSuccessful": true
+  },
+  "evidencePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/evidence/delivery/api-rev-009-live-migration-audit.json"
+}

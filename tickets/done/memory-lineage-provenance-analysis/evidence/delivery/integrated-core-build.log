@@ -1,0 +1,12 @@
+COMMAND: pnpm build
+WORKDIR: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-ts
+INTEGRATED_HEAD: e13e6b2481fd8922c186e967dfe846d98d20d95d
+BASE: dfc0468b137cd231b79ff8096fa46750611b06e2
+START: 2026-07-30T16:37:41Z
+
+> autobyteus-ts@1.0.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-ts
+> node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+
+[verify:runtime-deps] OK
+EXIT: 0
+END: 2026-07-30T16:37:46Z

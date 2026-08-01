@@ -1,0 +1,28 @@
+# API-REV-009 final structural evidence
+
+HEAD: d9753e69c1244bf88c0bc6816306495430047a35
+
+## git diff --check
+PASS: git diff --check returned 0 with no output.
+
+## Production source delta
+0 paths (Pass)
+
+## API-REV-009 durable test delta
+autobyteus-ts/tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts
+autobyteus-server-ts/tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts
+Round delta: 0 added / 2 updated / 0 removed.
+Cumulative SR-015 delta: 2 added / 18 updated / 1 removed.
+
+## Authoritative round execution summaries
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+ Test Files  4 passed (4)
+      Tests  23 passed (23)
+ Test Files  16 passed (16)
+      Tests  71 passed (71)
+
+Scenario mapping: SCN-020=request recovery; SCN-021=native migration.
+Result: Pass.

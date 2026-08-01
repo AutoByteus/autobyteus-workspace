@@ -4,13 +4,20 @@ import {
   ToolCallPayload,
   ToolResultPayload,
 } from '../../llm/utils/messages.js';
-import { getMessageProvenance, getMessageRawTraceIds } from '../message-provenance.js';
+import {
+  getMessageRawTraceIds,
+  getWorkingContextMessageProvenance,
+  setWorkingContextMessageProvenance,
+} from '../working-context-provenance.js';
+import {
+  createCompactedMemoryUserMessage,
+  createNaturalUserMessageProvenance,
+} from '../working-context-finalizer.js';
+import { WorkingContext } from '../working-context.js';
 import type {
   WorkingContextMessageUnit,
   ToolProtocolMessageUnit,
 } from './working-context-message-unit.js';
-
-const COMPACTED_MEMORY_PREFIX = 'You are continuing an ongoing task. Here is a concise summary of earlier work to help you resume.';
 
 export class WorkingContextMessageUnitBuilder {
   build(messages: Message[]): WorkingContextMessageUnit[] {
@@ -31,30 +38,62 @@ export class WorkingContextMessageUnitBuilder {
         continue;
       }
 
-      units.push(this.buildSingleMessageUnit(message, index));
+      units.push(...this.buildSingleMessageUnits(message, index));
       index += 1;
     }
 
     return units;
   }
 
-  private buildSingleMessageUnit(message: Message, index: number): WorkingContextMessageUnit {
-    const provenance = getMessageProvenance(message);
-    const kind = message.role === MessageRole.SYSTEM
-      ? 'system'
-      : provenance?.sourceKind === 'compacted_memory' ||
-          message.content?.startsWith(COMPACTED_MEMORY_PREFIX)
-        ? 'compacted_memory'
-        : 'message';
-
-    return {
+  private buildSingleMessageUnits(message: Message, index: number): WorkingContextMessageUnit[] {
+    const provenance = getWorkingContextMessageProvenance(message);
+    if (message.role === MessageRole.USER && provenance?.kind === 'composed_user') {
+      return provenance.constituents.map((constituent, constituentIndex) => {
+        const content = constituent.textRange
+          ? (message.content ?? '').slice(constituent.textRange.start, constituent.textRange.end)
+          : null;
+        const unitMessage = constituent.kind === 'compacted_memory'
+          ? createCompactedMemoryUserMessage(content ?? '')
+          : createNaturalUserMessageProvenance(new Message(MessageRole.USER, {
+              content,
+              image_urls: message.image_urls.slice(
+                constituent.imageRange.start,
+                constituent.imageRange.end,
+              ),
+              audio_urls: message.audio_urls.slice(
+                constituent.audioRange.start,
+                constituent.audioRange.end,
+              ),
+              video_urls: message.video_urls.slice(
+                constituent.videoRange.start,
+                constituent.videoRange.end,
+              ),
+            }), {
+              kind: constituent.kind,
+              rawTraceIds: constituent.rawTraceIds,
+              turnId: constituent.turnId,
+            });
+        return {
+          id: `unit_${index}_${constituentIndex}`,
+          kind: constituent.kind === 'compacted_memory' ? 'compacted_memory' : 'message',
+          startIndex: index,
+          endIndex: index,
+          messages: [unitMessage],
+          rawTraceIds: constituent.kind === 'compacted_memory' ? [] : [...constituent.rawTraceIds],
+        } as WorkingContextMessageUnit;
+      });
+    }
+    const kind = message.role === MessageRole.SYSTEM ? 'system' : 'message';
+    const copied = new WorkingContext([message]).buildMessages()[0]!;
+    if (provenance) setWorkingContextMessageProvenance(copied, provenance);
+    return [{
       id: `unit_${index}`,
       kind,
       startIndex: index,
       endIndex: index,
-      messages: [message],
+      messages: [copied],
       rawTraceIds: getMessageRawTraceIds(message),
-    } as WorkingContextMessageUnit;
+    } as WorkingContextMessageUnit];
   }
 
   private buildToolProtocolUnit(messages: Message[], startIndex: number): ToolProtocolMessageUnit {

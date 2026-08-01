@@ -1,0 +1,519 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-ts
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+Discovering Ollama models from host: http://127.0.0.1:11434
+
+stderr | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+Finished LM Studio discovery. Total models registered: 14
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+Discovering Ollama models from host: http://127.0.0.1:11434
+
+stderr | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+Finished LM Studio discovery. Total models registered: 14
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentFactory (Singleton) initialized.
+AgentRuntimeState initialized for agent_id 'reallmstudiocompactionagent_incident_response_analyst_6968'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'reallmstudiocompactionagent_incident_response_analyst_6968': LLM instance 'LMStudioLLM' and 2 tools prepared and stored in state.
+AgentContext composed for agent_id 'reallmstudiocompactionagent_incident_response_analyst_6968'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'reallmstudiocompactionagent_incident_response_analyst_6968' with config: 'RealLmstudioCompactionAgent'.
+AgentWorker initialized for agent_id 'reallmstudiocompactionagent_incident_response_analyst_6968'.
+Registered AgentContext for agent_id 'reallmstudiocompactionagent_incident_response_analyst_6968'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'reallmstudiocompactionagent_incident_response_analyst_6968'. Context registered.
+Agent facade initialized for agent_id 'reallmstudiocompactionagent_incident_response_analyst_6968'.
+Agent 'reallmstudiocompactionagent_incident_response_analyst_6968' created and stored successfully.
+Agent 'reallmstudiocompactionagent_incident_response_analyst_6968' requesting runtime to start.
+AgentRuntime for 'reallmstudiocompactionagent_incident_response_analyst_6968': Starting worker.
+AgentWorker 'reallmstudiocompactionagent_incident_response_analyst_6968': Starting...
+AgentWorker 'reallmstudiocompactionagent_incident_response_analyst_6968' asyncRun(): Starting.
+Agent 'reallmstudiocompactionagent_incident_response_analyst_6968': Runtime init completed (event store initialized).
+Agent 'reallmstudiocompactionagent_incident_response_analyst_6968': Runtime init completed (status deriver initialized).
+Agent 'reallmstudiocompactionagent_incident_response_analyst_6968': Runtime init completed (AgentEventInbox initialized).
+Agent 'reallmstudiocompactionagent_incident_response_analyst_6968': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+Agent 'reallmstudiocompactionagent_incident_response_analyst_6968': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+Agent 'reallmstudiocompactionagent_incident_response_analyst_6968': Bootstrapper starting direct lifecycle execution.
+Agent 'reallmstudiocompactionagent_incident_response_analyst_6968': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'reallmstudiocompactionagent_incident_response_analyst_6968': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+Agent 'reallmstudiocompactionagent_incident_response_analyst_6968': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'reallmstudiocompactionagent_incident_response_analyst_6968': Executing SystemPromptProcessingStep.
+Agent 'reallmstudiocompactionagent_incident_response_analyst_6968': No configured skills. Skipping injection.
+Agent 'reallmstudiocompactionagent_incident_response_analyst_6968': Final processed system prompt configured on LLM instance. Final length: 369.
+Agent 'reallmstudiocompactionagent_incident_response_analyst_6968': Final processed system prompt:
+---
+You are an incident response analyst. Follow the requested file-tool sequence exactly and use provider-native tool calls. Never invent incident values. Preserve exact literal values from tool evidence. For write_file, preserve the exact path and base_dir values supplied by the user. When asked to write a report, use write_file and only finish after the tool succeeds.
+---
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+Agent 'reallmstudiocompactionagent_incident_response_analyst_6968': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentWorker 'reallmstudiocompactionagent_incident_response_analyst_6968' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'reallmstudiocompactionagent_incident_response_analyst_6968',
+  prompt_tokens: 1120,
+  effective_total_context_tokens: 262144,
+  context_derived_input_cap_tokens: 261120,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 261120,
+  reserved_output_tokens: 1024,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 260864,
+  compaction_ratio: 0.05,
+  trigger_threshold_tokens: 13043,
+  override_active: false,
+  compaction_required: false
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'reallmstudiocompactionagent_incident_response_analyst_6968',
+  prompt_tokens: 4943,
+  effective_total_context_tokens: 262144,
+  context_derived_input_cap_tokens: 261120,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 261120,
+  reserved_output_tokens: 1024,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 260864,
+  compaction_ratio: 0.05,
+  trigger_threshold_tokens: 13043,
+  override_active: false,
+  compaction_required: false
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'reallmstudiocompactionagent_incident_response_analyst_6968',
+  prompt_tokens: 5105,
+  effective_total_context_tokens: 262144,
+  context_derived_input_cap_tokens: 261120,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 261120,
+  reserved_output_tokens: 1024,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 260864,
+  compaction_ratio: 0.05,
+  trigger_threshold_tokens: 13043,
+  override_active: false,
+  compaction_required: false
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'reallmstudiocompactionagent_incident_response_analyst_6968',
+  prompt_tokens: 14418,
+  effective_total_context_tokens: 262144,
+  context_derived_input_cap_tokens: 261120,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 261120,
+  reserved_output_tokens: 1024,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 260864,
+  compaction_ratio: 0.05,
+  trigger_threshold_tokens: 13043,
+  override_active: false,
+  compaction_required: true
+}
+compaction_requested {
+  agent_id: 'reallmstudiocompactionagent_incident_response_analyst_6968',
+  phase: 'requested',
+  turn_id: 'turn_0002',
+  compaction_operation_id: 'compaction_operation_ms7xfhpo_1',
+  requested_turn_id: 'turn_0002',
+  execution_turn_id: null,
+  selected_block_count: null,
+  compacted_block_count: null,
+  raw_trace_count: null,
+  semantic_fact_count: null
+}
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: 'reallmstudiocompactionagent_incident_response_analyst_6968',
+  phase: 'started',
+  turn_id: 'turn_0002',
+  compaction_operation_id: 'compaction_operation_ms7xfhpo_1',
+  requested_turn_id: 'turn_0002',
+  execution_turn_id: 'turn_0002',
+  compaction_strategy_id: 'structured-json',
+  compaction_strategy_name: 'Structured JSON',
+  selected_block_count: null,
+  compacted_block_count: null
+}
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+compaction_execution_context {
+  agent_id: 'reallmstudiocompactionagent_incident_response_analyst_6968',
+  turn_id: 'turn_0002',
+  compaction_operation_id: 'compaction_operation_ms7xfhpo_1',
+  requested_turn_id: 'turn_0002',
+  execution_turn_id: 'turn_0002',
+  pending_compaction: true,
+  selected_unit_count: 2,
+  protected_suffix_unit_count: 0,
+  retained_unit_count: 4,
+  working_context_message_count: 9,
+  raw_trace_count: 4
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+compaction_result_summary {
+  agent_id: 'reallmstudiocompactionagent_incident_response_analyst_6968',
+  turn_id: 'turn_0002',
+  compaction_operation_id: 'compaction_operation_ms7xfhpo_1',
+  requested_turn_id: 'turn_0002',
+  execution_turn_id: 'turn_0002',
+  selected_block_count: 2,
+  compacted_block_count: 2,
+  raw_trace_count: 4,
+  episode_summary_length: 480,
+  semantic_fact_count: 11,
+  compaction_agent_definition_id: 'lmstudio-real-memory-compactor',
+  compaction_agent_name: 'LM Studio Real Memory Compactor',
+  compaction_runtime_kind: 'lmstudio',
+  compaction_model_identifier: 'qwen/qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234',
+  compaction_run_id: 'lmstudio_compaction_e5fb4e8cd3ca4928b64f27deec4c54de',
+  compaction_task_id: 'compaction_task_e2067df14aa54ed595d3dd66ab7b458f'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+compaction_completed {
+  agent_id: 'reallmstudiocompactionagent_incident_response_analyst_6968',
+  phase: 'completed',
+  turn_id: 'turn_0002',
+  compaction_operation_id: 'compaction_operation_ms7xfhpo_1',
+  requested_turn_id: 'turn_0002',
+  execution_turn_id: 'turn_0002',
+  compaction_strategy_id: 'structured-json',
+  compaction_strategy_name: 'Structured JSON',
+  selected_block_count: 2,
+  compacted_block_count: 2,
+  raw_trace_count: 4,
+  semantic_fact_count: 11,
+  compaction_agent_definition_id: 'lmstudio-real-memory-compactor',
+  compaction_agent_name: 'LM Studio Real Memory Compactor',
+  compaction_runtime_kind: 'lmstudio',
+  compaction_model_identifier: 'qwen/qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234',
+  compaction_run_id: 'lmstudio_compaction_e5fb4e8cd3ca4928b64f27deec4c54de',
+  compaction_task_id: 'compaction_task_e2067df14aa54ed595d3dd66ab7b458f'
+}
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'reallmstudiocompactionagent_incident_response_analyst_6968',
+  prompt_tokens: 11117,
+  effective_total_context_tokens: 262144,
+  context_derived_input_cap_tokens: 261120,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 261120,
+  reserved_output_tokens: 1024,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 260864,
+  compaction_ratio: 0.05,
+  trigger_threshold_tokens: 13043,
+  override_active: false,
+  compaction_required: false
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'reallmstudiocompactionagent_incident_response_analyst_6968',
+  prompt_tokens: 11246,
+  effective_total_context_tokens: 262144,
+  context_derived_input_cap_tokens: 261120,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 261120,
+  reserved_output_tokens: 1024,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 260864,
+  compaction_ratio: 0.05,
+  trigger_threshold_tokens: 13043,
+  override_active: false,
+  compaction_required: false
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'reallmstudiocompactionagent_incident_response_analyst_6968',
+  prompt_tokens: 11382,
+  effective_total_context_tokens: 262144,
+  context_derived_input_cap_tokens: 261120,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 261120,
+  reserved_output_tokens: 1024,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 260864,
+  compaction_ratio: 0.05,
+  trigger_threshold_tokens: 13043,
+  override_active: false,
+  compaction_required: false
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+Agent 'reallmstudiocompactionagent_incident_response_analyst_6968' requesting runtime to stop (timeout: 30s).
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentWorker 'reallmstudiocompactionagent_incident_response_analyst_6968': Stop requested.
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentExternalEventNotifier (NotifierID: 01639504-6d1c-46a5-adc4-8e1cdab4ebad, AgentID: reallmstudiocompactionagent_incident_response_analyst_6968) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentWorker 'reallmstudiocompactionagent_incident_response_analyst_6968' asyncRun() loop has finished.
+AgentWorker 'reallmstudiocompactionagent_incident_response_analyst_6968': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentWorker 'reallmstudiocompactionagent_incident_response_analyst_6968': Shutdown resource cleanup completed successfully.
+AgentWorker 'reallmstudiocompactionagent_incident_response_analyst_6968': Shutdown sequence completed.
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+Unregistered AgentContext for agent_id 'reallmstudiocompactionagent_incident_response_analyst_6968'.
+AgentRuntime for 'reallmstudiocompactionagent_incident_response_analyst_6968': Context unregistered.
+
+stdout | tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AgentRuntime for 'reallmstudiocompactionagent_incident_response_analyst_6968' stop() method completed.
+
+ × tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts 146653ms
+   → expected false to be true // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts > Agent runtime real compaction (LM Studio) > compacts a meaningful tool task at five percent and continues from projected retained facts
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts:509:48
+    507|         await waitForTurn(4);
+    508| 
+    509|         expect(fs.existsSync(finalReportPath)).toBe(true);
+       |                                                ^
+    510|         const finalReport = JSON.parse(fs.readFileSync(finalReportPath…
+    511|         expect(finalReport).toEqual({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  21:47:21
+   Duration  149.13s (transform 1.37s, setup 30ms, import 2.33s, tests 146.65s, environment 0ms)
+

@@ -1,5 +1,8 @@
 import { Message, MessageRole, ToolCallPayload, ToolCallSpec, ToolResultPayload } from '../llm/utils/messages.js';
 import { WorkingContext } from './working-context.js';
+import { WorkingContextFinalizer } from './working-context-finalizer.js';
+import { getWorkingContextMessageProvenance } from './working-context-provenance.js';
+import { assertWorkingContextMessagesStructurallyValid } from './compaction/working-context-compaction-output-validator.js';
 
 export type SnapshotMetadata = {
   schema_version?: number;
@@ -22,7 +25,7 @@ const safeJsonValue = (value: unknown): unknown => {
 };
 
 export class WorkingContextSnapshotSerializer {
-  static readonly CURRENT_SCHEMA_VERSION = 4;
+  static readonly CURRENT_SCHEMA_VERSION = 5;
 
   static serialize(workingContext: WorkingContext, metadata: SnapshotMetadata = {}): SerializedPayload {
     return {
@@ -42,7 +45,7 @@ export class WorkingContextSnapshotSerializer {
     const workingContext = new WorkingContext(messages);
     const metadata: SnapshotMetadata = {
       schema_version: typeof payload.schema_version === 'number' ? payload.schema_version : undefined,
-      agent_id: typeof payload.agent_id === 'string' ? payload.agent_id : undefined
+      agent_id: typeof payload.agent_id === 'string' ? payload.agent_id : undefined,
     };
 
 
@@ -56,9 +59,11 @@ export class WorkingContextSnapshotSerializer {
     if (payload.schema_version !== this.CURRENT_SCHEMA_VERSION) {
       return false;
     }
-    if (typeof payload.agent_id !== 'string') {
+    if (typeof payload.agent_id !== 'string' || !payload.agent_id.trim()) {
       return false;
     }
+    const allowedRootFields = new Set(['schema_version', 'agent_id', 'messages']);
+    if (Object.keys(payload).some((field) => !allowedRootFields.has(field))) return false;
     if (!Array.isArray(payload.messages)) {
       return false;
     }
@@ -70,7 +75,22 @@ export class WorkingContextSnapshotSerializer {
         return false;
       }
     }
-    return true;
+    try {
+      const { workingContext } = this.deserialize(payload);
+      const messages = workingContext.buildMessages();
+      assertWorkingContextMessagesStructurallyValid(messages);
+      for (const message of messages) {
+        if (!getWorkingContextMessageProvenance(message)) return false;
+      }
+      const finalized = new WorkingContextFinalizer().finalize({ messages });
+      if (
+        JSON.stringify(finalized.buildMessages().map((message) => this.serializeMessage(message)))
+        !== JSON.stringify(messages.map((message) => this.serializeMessage(message)))
+      ) return false;
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   private static serializeMessage(message: Message): SerializedMessage {

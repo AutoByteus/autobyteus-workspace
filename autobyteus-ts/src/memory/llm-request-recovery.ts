@@ -14,7 +14,6 @@ export type LlmRequestRecoverySnapshot = {
 export type LlmRequestRecoveryInput = {
   turnId: string;
   requestId: string;
-  sourceEvent?: string | null;
 };
 
 export type LlmRequestRecoveryProvenance = {

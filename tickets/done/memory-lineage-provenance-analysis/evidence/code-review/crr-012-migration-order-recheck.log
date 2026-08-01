@@ -1,0 +1,59 @@
+$ git show --format= --no-ext-diff d9753e69^..d9753e69 -- autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts
+diff --git a/autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts b/autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts
+index 5a2a63115..1783a2c6b 100644
+--- a/autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts
++++ b/autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts
+@@ -30,6 +30,9 @@ export class AppDataMigrationRegistry {
+       new RemoveExternalRuntimeWorkingContextSnapshotsMigration(
+         appConfigProvider.config.getMemoryDir(),
+       ),
++      // Native snapshot conversion resolves provenance through the current raw-trace layout.
++      new RawTraceRotationLayoutMigration(appConfigProvider.config.getMemoryDir()),
++      new RawTraceActiveFileNameMigration(appConfigProvider.config.getMemoryDir()),
+       new MigrateNativeWorkingContextSnapshotsV5Migration(
+         appConfigProvider.config.getMemoryDir(),
+       ),
+@@ -38,8 +41,6 @@ export class AppDataMigrationRegistry {
+       new TokenUsageCustomProviderModelValueBackfillMigration(),
+       new TokenUsageProviderNameSnapshotBackfillMigration(),
+       new TokenUsageLegacyPathColumnsDropMigration(),
+-      new RawTraceRotationLayoutMigration(appConfigProvider.config.getMemoryDir()),
+-      new RawTraceActiveFileNameMigration(appConfigProvider.config.getMemoryDir()),
+       new RemoveSelfEvolutionRunMetadataMigration(appConfigProvider.config.getMemoryDir()),
+       new TeamRunHistoryIndexV2AppDataMigration(appConfigProvider.config.getMemoryDir()),
+       new RunHistoryIndexV2AppDataMigration(appConfigProvider.config.getMemoryDir()),
+
+$ current-built-code direct-upgrade recheck
+{
+  "registryOrder": {
+    "rotationIndex": 4,
+    "renameIndex": 5,
+    "nativeIndex": 6
+  },
+  "statuses": {
+    "rotation": "SUCCEEDED",
+    "rename": "SUCCEEDED",
+    "native": "SUCCEEDED_WITH_WARNINGS"
+  },
+  "snapshot": {
+    "schemaVersion": 5,
+    "messageCount": 1,
+    "role": "user",
+    "content": "must survive"
+  },
+  "rawTrace": {
+    "activeBytesPreserved": true,
+    "legacyFileRemoved": true
+  }
+}
+
+Reviewer note: this minimal fixture reports SUCCEEDED_WITH_WARNINGS only because its v4 row omits optional fields; the supported user row survives exactly, which is the CR-F-002 consequence under review. IR-005 focused evidence records SUCCEEDED for its complete exact fixture.
+
+$ pnpm exec tsc -p tsconfig.build.json --noEmit
+PASS (exit 0; no diagnostics)
+
+$ native old-name compatibility search
+PASS: no native/runtime old-filename reader or fallback found
+
+$ git diff --check d9753e69^ d9753e69
+PASS

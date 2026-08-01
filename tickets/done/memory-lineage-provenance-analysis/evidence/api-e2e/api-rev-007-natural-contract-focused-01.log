@@ -1,0 +1,214 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-ts
+
+ ✓ tests/unit/memory/compaction-response-parser.test.ts > CompactionResponseParser > parses the exact current replacement bundle from fenced JSON 2ms
+ ✓ tests/unit/memory/compaction-response-parser.test.ts > CompactionResponseParser > retains natural episode/fact counts while enforcing configured per-entry text bounds 1ms
+ ✓ tests/unit/memory/compaction-response-parser.test.ts > CompactionResponseParser > rejects removed aliases, stale entry metadata, and incomplete current responses 1ms
+ ✓ tests/unit/memory/compaction-result-normalizer.test.ts > CompactionResultNormalizer > preserves natural episodes/categories and deduplicates by priority 2ms
+ ✓ tests/unit/memory/compaction-result-normalizer.test.ts > CompactionResultNormalizer > retains more than twenty continuation-critical facts with positive salience 1ms
+ ✓ tests/unit/memory/compaction-result-normalizer.test.ts > CompactionResultNormalizer > drops low-value operational noise outside critical and unresolved categories 0ms
+ ✓ tests/unit/memory/compaction-lineage-resolver.test.ts > CompactionLineageResolver > resolves episode direct R2 sources and transitive R1/R2 roots 2ms
+ ✓ tests/unit/memory/compaction-lineage-resolver.test.ts > CompactionLineageResolver > resolves semantic direct R2 sources and transitive R1/R2 roots 0ms
+ ✓ tests/unit/memory/compaction-lineage-resolver.test.ts > CompactionLineageResolver > returns a typed not_found result for unknown artifacts 0ms
+ ✓ tests/unit/memory/compaction-lineage-resolver.test.ts > CompactionLineageResolver > raises MemoryOriginIntegrityError for missing archive 1ms
+ ✓ tests/unit/memory/compaction-lineage-resolver.test.ts > CompactionLineageResolver > raises MemoryOriginIntegrityError for record-count mismatch 0ms
+ ✓ tests/unit/memory/compaction-lineage-resolver.test.ts > CompactionLineageResolver > raises MemoryOriginIntegrityError for identity mismatch 0ms
+ ✓ tests/unit/memory/compaction-lineage-resolver.test.ts > CompactionLineageResolver > raises MemoryOriginIntegrityError for missing output row 0ms
+ ✓ tests/unit/memory/compaction-lineage-resolver.test.ts > CompactionLineageResolver > raises MemoryOriginIntegrityError for missing predecessor 0ms
+ ✓ tests/unit/memory/compaction-lineage-resolver.test.ts > CompactionLineageResolver > detects a lineage cycle even when a backing adapter bypasses file-chain validation 0ms
+ ✓ tests/unit/memory/compaction-lineage-resolver.test.ts > CompactionLineageResolver > wraps backing lineage validation failures as integrity errors 0ms
+ × tests/unit/memory/working-context-compaction-prompt-builder.test.ts > WorkingContextCompactionPromptBuilder > byte-equals one natural renderer block without mutating canonical user/media/tool input 10ms
+   → expected '<conversation_history>\nUser:\nM1: re…' to contain 'The user\'s current message is:'
+ ✓ tests/unit/memory/working-context-compaction-prompt-builder.test.ts > WorkingContextCompactionPromptBuilder > rejects incomplete or orphaned tool protocol rather than inventing a transcript 1ms
+stdout | tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts > structured strategy tool-safe lifecycle > waits for the terminal result, compacts through the current strategy, and renders the complete native tool group
+Successfully registered tool definition: 'read_file'
+AgentConfig created for name='agent', role='role'. Tool call format: api_tool_call
+AgentRuntimeState initialized for agent_id 'tool-lifecycle-agent'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'tool-lifecycle-agent'. Config and State linked.
+
+stdout | tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts > structured strategy tool-safe lifecycle > waits for the terminal result, compacts through the current strategy, and renders the complete native tool group
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+compaction_budget_evaluated {
+  agent_id: 'tool-lifecycle-agent',
+  prompt_tokens: 200,
+  effective_total_context_tokens: null,
+  context_derived_input_cap_tokens: null,
+  provider_input_cap_tokens: 1000,
+  effective_input_cap_tokens: 1000,
+  reserved_output_tokens: 64,
+  safety_margin_tokens: 0,
+  input_budget_tokens: 1000,
+  compaction_ratio: 0.1,
+  trigger_threshold_tokens: 100,
+  override_active: false,
+  compaction_required: true
+}
+compaction_requested {
+  agent_id: 'tool-lifecycle-agent',
+  phase: 'requested',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_ms8ojmo8_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: null,
+  selected_block_count: null,
+  compacted_block_count: null,
+  raw_trace_count: null,
+  semantic_fact_count: null
+}
+
+stdout | tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts > structured strategy tool-safe lifecycle > waits for the terminal result, compacts through the current strategy, and renders the complete native tool group
+compaction_started {
+  agent_id: 'tool-lifecycle-agent',
+  phase: 'started',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_ms8ojmo8_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0004',
+  compaction_strategy_id: 'structured-json',
+  compaction_strategy_name: 'Structured JSON',
+  selected_block_count: null,
+  compacted_block_count: null
+}
+compaction_execution_context {
+  agent_id: 'tool-lifecycle-agent',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_ms8ojmo8_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0004',
+  pending_compaction: true,
+  selected_unit_count: 3,
+  protected_suffix_unit_count: 1,
+  retained_unit_count: 5,
+  working_context_message_count: 9,
+  raw_trace_count: 1
+}
+
+stdout | tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts > structured strategy tool-safe lifecycle > waits for the terminal result, compacts through the current strategy, and renders the complete native tool group
+compaction_result_summary {
+  agent_id: 'tool-lifecycle-agent',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_ms8ojmo8_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  compacted_block_count: 3,
+  raw_trace_count: 1,
+  episode_summary_length: 224,
+  semantic_fact_count: 25,
+  compaction_agent_definition_id: 'memory-compactor',
+  compaction_agent_name: 'Memory Compactor',
+  compaction_runtime_kind: 'autobyteus',
+  compaction_model_identifier: 'tool-lifecycle-model',
+  compaction_run_id: 'tool-lifecycle-compaction-run',
+  compaction_task_id: 'compaction_task_3d1d4d55b4444c54a7c474352e8b7818'
+}
+
+stdout | tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts > structured strategy tool-safe lifecycle > waits for the terminal result, compacts through the current strategy, and renders the complete native tool group
+compaction_completed {
+  agent_id: 'tool-lifecycle-agent',
+  phase: 'completed',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_ms8ojmo8_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0004',
+  compaction_strategy_id: 'structured-json',
+  compaction_strategy_name: 'Structured JSON',
+  selected_block_count: 3,
+  compacted_block_count: 3,
+  raw_trace_count: 1,
+  semantic_fact_count: 25,
+  compaction_agent_definition_id: 'memory-compactor',
+  compaction_agent_name: 'Memory Compactor',
+  compaction_runtime_kind: 'autobyteus',
+  compaction_model_identifier: 'tool-lifecycle-model',
+  compaction_run_id: 'tool-lifecycle-compaction-run',
+  compaction_task_id: 'compaction_task_3d1d4d55b4444c54a7c474352e8b7818'
+}
+
+stdout | tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts > structured strategy tool-safe lifecycle > waits for the terminal result, compacts through the current strategy, and renders the complete native tool group
+compaction_budget_evaluated {
+  agent_id: 'tool-lifecycle-agent',
+  prompt_tokens: 10,
+  effective_total_context_tokens: null,
+  context_derived_input_cap_tokens: null,
+  provider_input_cap_tokens: 1000,
+  effective_input_cap_tokens: 1000,
+  reserved_output_tokens: 64,
+  safety_margin_tokens: 0,
+  input_budget_tokens: 1000,
+  compaction_ratio: 0.1,
+  trigger_threshold_tokens: 100,
+  override_active: false,
+  compaction_required: false
+}
+
+ ✓ tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts > structured strategy tool-safe lifecycle > waits for the terminal result, compacts through the current strategy, and renders the complete native tool group 66ms
+ ✓ tests/unit/memory/file-compaction-lineage-store.test.ts > FileCompactionLineageStore > appends a linear immutable chain and resolves typed producing records 3ms
+ ✓ tests/unit/memory/file-compaction-lineage-store.test.ts > FileCompactionLineageStore > rejects duplicate ID without changing the append-only file 1ms
+ ✓ tests/unit/memory/file-compaction-lineage-store.test.ts > FileCompactionLineageStore > rejects stale expected head without changing the append-only file 1ms
+ ✓ tests/unit/memory/file-compaction-lineage-store.test.ts > FileCompactionLineageStore > rejects record predecessor mismatch without changing the append-only file 1ms
+ ✓ tests/unit/memory/file-compaction-lineage-store.test.ts > FileCompactionLineageStore > rejects scope mismatch without changing the append-only file 1ms
+ ✓ tests/unit/memory/file-compaction-lineage-store.test.ts > FileCompactionLineageStore > rejects unsafe archive path without changing the append-only file 1ms
+ ✓ tests/unit/memory/file-compaction-lineage-store.test.ts > FileCompactionLineageStore > preserves a mixed audit 1 -> 2 chain and projects the exact natural-count head 6ms
+ ✓ tests/unit/memory/file-compaction-lineage-store.test.ts > FileCompactionLineageStore > reads the exact tail after 1,000 recurrent appends without a mutable state pointer 1494ms
+ ✓ tests/unit/memory/file-compaction-lineage-store.test.ts > FileCompactionLineageStore > rejects an externally corrupted non-linear file instead of selecting a plausible tail 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/memory/working-context-compaction-prompt-builder.test.ts > WorkingContextCompactionPromptBuilder > byte-equals one natural renderer block without mutating canonical user/media/tool input
+AssertionError: expected '<conversation_history>\nUser:\nM1: re…' to contain 'The user\'s current message is:'
+
+- Expected
++ Received
+
+- The user's current message is:
++ <conversation_history>
++ User:
++ M1: retain the reviewed current design.
++
++ The us… [57 characters omitted] …ersation_history> and &lt;/conversation_history&gt;.
++
++ Assistant:
++ R2 visible assistant text.
++
++ Assistant:
++ I will inspect both values.
++
++ Tool:
++ name: run_command
++ status: success
++ arguments:
++   {
++     "command": "head-xxxxxxxxxxxxxxxxxxxxxxxxx… [209 characters omitted] …xxxxxx-tail",
++     "api_key": <redacted-secret>
++   }
++ result:
++   result-head-rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr… [172 characters omitted] …rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr-result-tail
++
++ Tool:
++ name: read_file
++ status: error
++ arguments:
++   {
++     "path": "/tmp/short.txt"
++   }
++ error:
++   error-head-eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee… [170 characters omitted] …eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-error-tail
++ </conversation_history>
+
+ ❯ tests/unit/memory/working-context-compaction-prompt-builder.test.ts:125:20
+    123|     expect(prompt.match(/^User:$/gm)).toHaveLength(1);
+    124|     expect(prompt).toContain('User:\nM1: retain the reviewed current d…
+    125|     expect(prompt).toContain("The user's current message is:");
+       |                    ^
+    126|     expect(prompt).toContain('&lt;conversation_history&gt;');
+    127|     expect(prompt).toContain('&lt;/conversation_history&gt;');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 5 passed (6)
+      Tests  1 failed | 27 passed (28)
+   Start at  10:27:50
+   Duration  1.87s (transform 1.10s, setup 110ms, import 1.38s, tests 1.60s, environment 0ms)
+

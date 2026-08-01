@@ -8,29 +8,17 @@ import { CompactionResult, type CompactionSemanticEntry } from './compaction-res
 export type CompactedMemoryEntryCandidate = {
   category: CompactedMemoryCategory;
   fact: string;
-  id?: string | null;
-  ts?: number | null;
 };
 
 export type NormalizedCompactedMemoryEntry = {
   category: CompactedMemoryCategory;
   fact: string;
   salience: number;
-  id?: string | null;
-  ts?: number | null;
 };
 
 export type NormalizedCompactionResult = {
-  episodicSummary: string;
+  episodes: Array<{ summary: string }>;
   semanticEntries: NormalizedCompactedMemoryEntry[];
-};
-
-const CATEGORY_LIMITS: Record<CompactedMemoryCategory, number> = {
-  critical_issue: 6,
-  unresolved_work: 6,
-  user_preference: 6,
-  durable_fact: 8,
-  important_artifact: 6,
 };
 
 const LOW_VALUE_NOISE_PATTERNS = [
@@ -64,7 +52,9 @@ const compareCandidates = (left: CompactedMemoryEntryCandidate, right: Compacted
 export class CompactionResultNormalizer {
   normalize(result: CompactionResult): NormalizedCompactionResult {
     return {
-      episodicSummary: collapseWhitespace(result.episodicSummary),
+      episodes: result.episodes
+        .map(({ summary }) => ({ summary: collapseWhitespace(summary) }))
+        .filter(({ summary }) => Boolean(summary)),
       semanticEntries: this.normalizeEntries([
         ...this.toCandidates('critical_issue', result.criticalIssues),
         ...this.toCandidates('unresolved_work', result.unresolvedWork),
@@ -98,17 +88,14 @@ export class CompactionResultNormalizer {
       }
 
       const currentCount = perCategoryCounts.get(candidate.category) ?? 0;
-      if (currentCount >= CATEGORY_LIMITS[candidate.category]) {
-        continue;
-      }
-
       perCategoryCounts.set(candidate.category, currentCount + 1);
       normalized.push({
         category: candidate.category,
         fact: candidate.fact,
-        salience: COMPACTED_MEMORY_CATEGORY_BASE_SALIENCE[candidate.category] - currentCount,
-        id: candidate.id ?? null,
-        ts: candidate.ts ?? null,
+        salience: Math.max(
+          1,
+          COMPACTED_MEMORY_CATEGORY_BASE_SALIENCE[candidate.category] - currentCount,
+        ),
       });
     }
 
@@ -131,8 +118,6 @@ export class CompactionResultNormalizer {
     return {
       category: candidate.category,
       fact,
-      id: candidate.id ?? null,
-      ts: typeof candidate.ts === 'number' && Number.isFinite(candidate.ts) ? candidate.ts : null,
     };
   }
 }

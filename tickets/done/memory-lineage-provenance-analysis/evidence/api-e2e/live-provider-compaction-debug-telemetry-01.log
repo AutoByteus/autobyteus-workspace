@@ -1,0 +1,95 @@
+{
+  "result": "PASS",
+  "mode": "credential-backed-built-server-graphql-websocket-provider-matrix",
+  "detailedCompactionLogsEnabled": true,
+  "results": [
+    {
+      "provider": "OPENAI",
+      "model": {
+        "identifier": "gpt-5.4-mini",
+        "maxContextTokens": 400000,
+        "activeContextTokens": null,
+        "maxInputTokens": null,
+        "maxOutputTokens": 128000,
+        "metadataProvenance": "CURATED_ONLY"
+      },
+      "runConfig": {
+        "compactionRatio": 0.0001,
+        "maxTokens": 1024,
+        "triggerScope": "parent-run-llm-config-only"
+      },
+      "budgetLog": {
+        "promptTokens": 226,
+        "effectiveTotalContextTokens": 400000,
+        "contextDerivedInputCapTokens": 398976,
+        "providerInputCapTokens": null,
+        "effectiveInputCapTokens": 398976,
+        "reservedOutputTokens": 1024,
+        "safetyMarginTokens": 256,
+        "inputBudgetTokens": 398720,
+        "compactionRatio": 0.0001,
+        "triggerThresholdTokens": 39,
+        "overrideActive": false,
+        "compactionRequired": true
+      },
+      "streamedCompaction": {
+        "phases": [
+          "requested",
+          "started",
+          "completed"
+        ],
+        "selectedBlockCount": 1,
+        "compactedBlockCount": 1,
+        "rawTraceCount": 1,
+        "semanticFactCount": 5,
+        "runtimeKind": "autobyteus",
+        "modelIdentifier": "gpt-5.4-mini"
+      }
+    },
+    {
+      "provider": "DEEPSEEK",
+      "model": {
+        "identifier": "deepseek-v4-flash",
+        "maxContextTokens": 1000000,
+        "activeContextTokens": null,
+        "maxInputTokens": null,
+        "maxOutputTokens": 384000,
+        "metadataProvenance": "CURATED_ONLY"
+      },
+      "runConfig": {
+        "compactionRatio": 0.0001,
+        "maxTokens": 1024,
+        "triggerScope": "parent-run-llm-config-only"
+      },
+      "budgetLog": {
+        "promptTokens": 220,
+        "effectiveTotalContextTokens": 1000000,
+        "contextDerivedInputCapTokens": 998976,
+        "providerInputCapTokens": null,
+        "effectiveInputCapTokens": 998976,
+        "reservedOutputTokens": 1024,
+        "safetyMarginTokens": 256,
+        "inputBudgetTokens": 998720,
+        "compactionRatio": 0.0001,
+        "triggerThresholdTokens": 99,
+        "overrideActive": false,
+        "compactionRequired": true
+      },
+      "streamedCompaction": {
+        "phases": [
+          "requested",
+          "started",
+          "completed"
+        ],
+        "selectedBlockCount": 1,
+        "compactedBlockCount": 1,
+        "rawTraceCount": 1,
+        "semanticFactCount": 0,
+        "runtimeKind": "autobyteus",
+        "modelIdentifier": "deepseek-v4-flash"
+      }
+    }
+  ],
+  "arithmeticVerified": true,
+  "sourceSecretValueLeakObserved": false
+}

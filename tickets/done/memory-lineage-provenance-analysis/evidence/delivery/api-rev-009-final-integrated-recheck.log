@@ -1,0 +1,18 @@
+DR-008 final integrated-state recheck
+timestamp_utc=2026-08-01T00:04:14Z
+head_before=89cfd4ebcffac9612d5f64d1fe95d7468ae4101d
+base_before=9615dcc88e73f0584e67623a3cfe1f0d2afd4617
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+base_after=9615dcc88e73f0584e67623a3cfe1f0d2afd4617
+ahead_behind=15	0
+base_contained=yes
+implementation_commit=d9753e69c1244bf88c0bc6816306495430047a35
+api_checkpoint=89cfd4ebcffac9612d5f64d1fe95d7468ae4101d
+dmg_sha256=dd5220fadcea23fb29486e974018807b32fb586e47b2fabdf4f8571d024d2c8f
+zip_sha256=49bb172ebbcb399c8f614e0c381ef394df8d85454a7758546aa9720c6c306231
+port_29695_listener=AutoByteu 71823 normy   26u  IPv4 0xecff68063c211fc4      0t0  TCP *:29695 (LISTEN)
+git_diff_check=pass
+memory_doc_mirror=pass
+user_verification=pending
+repository_finalization=held

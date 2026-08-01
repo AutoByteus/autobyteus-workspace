@@ -1,4 +1,4 @@
-import { randomUUID } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 import { CompactionResult } from './compaction-result.js';
 import { CompactionResponseParser } from './compaction-response-parser.js';
 import { WorkingContextCompactionPromptBuilder } from './working-context-compaction-prompt-builder.js';
@@ -38,14 +38,20 @@ export class AgentCompactionSummarizer {
   }
 
   async summarizeMessageUnits(units: WorkingContextMessageUnit[]): Promise<CompactionResult> {
+    this.lastExecutionMetadata = null;
     const taskId = this.taskIdFactory();
+    const prompt = this.messagePromptBuilder.buildTaskPrompt(
+      units,
+      { maxItemChars: this.maxItemChars },
+    );
+    const renderedInputSha256 = createHash('sha256').update(prompt, 'utf8').digest('hex');
     let result: CompactionAgentRunnerResult;
     try {
       result = await this.runner.runCompactionTask({
         taskId,
         parentAgentId: this.parentAgentId,
         parentTurnId: null,
-        prompt: this.messagePromptBuilder.buildTaskPrompt(units, { maxItemChars: this.maxItemChars }),
+        prompt,
         blockCount: units.length,
         traceCount: units.reduce((count, unit) => count + unit.rawTraceIds.length, 0),
       });
@@ -55,6 +61,7 @@ export class AgentCompactionSummarizer {
         this.lastExecutionMetadata = {
           ...errorMetadata,
           taskId: errorMetadata.taskId ?? taskId,
+          renderedInputSha256,
         };
       }
       throw error;
@@ -63,6 +70,7 @@ export class AgentCompactionSummarizer {
     this.lastExecutionMetadata = {
       ...(result.metadata ?? {}),
       taskId: result.metadata?.taskId ?? taskId,
+      renderedInputSha256,
     };
     return this.responseParser.parse(result.outputText ?? '');
   }

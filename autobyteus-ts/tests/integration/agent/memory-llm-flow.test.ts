@@ -29,7 +29,11 @@ runIntegration('Memory assembler with LM Studio', () => {
       memoryManager.ingestUserMessage(userMessage, turnId, 'LLMUserMessageReadyEvent');
 
       const assembler = new LLMRequestAssembler(memoryManager, new OpenAIChatRenderer());
-      const request = await assembler.prepareRequest(userMessage, turnId, llm.config.systemMessage);
+      const request = await assembler.prepareRequest(
+        userMessage,
+        { turnId, requestId: `${turnId}:llm:1` },
+        llm.config.systemMessage,
+      );
 
       let response;
       try {
