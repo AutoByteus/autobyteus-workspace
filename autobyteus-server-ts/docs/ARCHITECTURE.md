@@ -171,12 +171,25 @@ resolver validates output membership, completed raw archives, predecessor chains
 and cycles; unknown episode/semantic IDs return `not_found`, while broken
 current-format state is an integrity error.
 
-Server startup migration `20260730_reset_pre_lineage_memory` removes only old
-episode, semantic, pre-v5 snapshot, and compacted-memory-manifest files while
-preserving raw traces and raw-trace manifests. It is required and fail-closed:
-non-startable results are persisted, `AppDataMigrationRunner.runPending()`
-throws, and `startConfiguredServer()` rethrows before built-in-agent bootstrap,
-application construction, or listen.
+Server startup migration `20260731_migrate_native_working_context_snapshots_v5`
+replaces the destructive pre-lineage reset. One exact runtime-location classifier
+identifies native standalone/team-member targets and supplies `runId` or
+`memberRunId`. External snapshot cleanup and the retained raw rotation-layout /
+active-filename migrations run first. Native conversion then applies only when
+lineage is absent or zero-byte; any nonempty lineage skips the location untouched.
+The migration validates a strict-v5 candidate built only from truthfully backed
+same-location active facts before replacing the snapshot, then removes only old
+episode, semantic, and compacted-memory-manifest files. It never mutates raw
+traces/manifests or lineage. Ordinary warning/failure results remain recorded and
+retryable, but the runner returns them and server startup continues. Runtime
+restore accepts strict v5 only; it has no pre-v5 reader or raw-history projector.
+
+LLM request recovery is anchored after any pending compaction. The request
+assembler captures the stable post-compaction checkpoint immediately before
+request-specific mutation and carries it in the request package. Assembly or
+provider failure restores it; normal final output, real Tool ingestion, and
+supported retained interruption release it exactly once. Recovery never rolls
+back accepted archive/output/lineage state.
 
 `ServerSettingsService` exposes the global strategy setting through the existing
 `.env`/`process.env` path and rejects values absent from production registry

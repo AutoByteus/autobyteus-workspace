@@ -17,8 +17,10 @@ The server must execute these steps in order:
    and no WAL request.
 7. Initialize or verify the secret vault through that shared repository
    lifecycle.
-8. Run required app-data migrations and reject startup if any required result is non-startable.
-9. Bootstrap built-in agents, construct the application, and start transports/background tasks only after the app-data gate passes.
+8. Run registered app-data migration attempts in registry order and persist their
+   ordinary results.
+9. Log migration failures/warnings, then bootstrap built-in agents, construct the
+   application, and start transports/background tasks.
 
 ## Why This Exists
 
@@ -29,8 +31,22 @@ The server must execute these steps in order:
 - App-data migrations may read both SQL rows and memory files, so they must run
   after configuration and schema expansion but before runtime/API reads expose
   partially migrated data.
-- Required migration `20260730_reset_pre_lineage_memory` starts a clean native-memory lineage epoch. It deletes only pre-lineage `episodic.jsonl`, `semantic.jsonl`, `working_context_snapshot.json`, and `compacted_memory_manifest.json` targets across standalone and team-member run directories. Active/archive raw traces and `raw_traces_manifest.json` remain untouched.
-- A discovery or deletion failure from that reset is `FAILED`, never warning-success. `AppDataMigrationRunner` persists all attempted required results and throws for any non-startable result; `startConfiguredServer` logs and rethrows before `bootstrapBuiltInAgents`, `buildApp`, or `app.listen`.
+- The destructive `20260730_reset_pre_lineage_memory` migration is removed.
+  Registry order is external-runtime snapshot cleanup, raw-trace rotation-layout,
+  raw active-filename normalization, then
+  `20260731_migrate_native_working_context_snapshots_v5`.
+- The native migration classifies exact AutoByteus standalone/team-member
+  locations. It skips missing snapshots and every nonempty-lineage location;
+  absent/zero-byte lineage permits a forward-only v1/v3/v4/v5-to-strict-v5
+  conversion backed only by same-location active raw facts. It validates the
+  complete candidate before snapshot replacement and only then removes obsolete
+  episode, semantic, and compacted-memory-manifest files. Raw traces/manifests and
+  lineage remain untouched.
+- `AppDataMigrationRunner` attempts every registered pending migration and
+  persists/returns `SUCCEEDED`, warning, or `FAILED` results without an aggregate
+  startup exception. `startConfiguredServer` logs infrastructure/result failures
+  and continues normal bootstrap. Failed attempts remain retryable; strict runtime
+  restore still rejects an unconverted or missing existing-run snapshot.
 - Shutdown drains the default token persistence processor, closes/zeroizes the
   secret runtime, and only then shuts down the shared repository client.
 
@@ -50,7 +66,9 @@ Use lazy service access patterns to avoid import-time construction:
 - `src/config/app-config-provider.ts`
 - `src/startup/background-runner.ts`
 - `src/app-data-migrations/app-data-migration-runner.ts`
-- `src/app-data-migrations/migrations/reset-pre-lineage-memory-app-data-migration.ts`
+- `src/app-data-migrations/app-data-migration-registry.ts`
+- `src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5-migration.ts`
+- `src/agent-memory/services/runtime-memory-location-classifier.ts`
 
 ## Observed Risk Areas
 

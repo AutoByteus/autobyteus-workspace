@@ -154,9 +154,9 @@ Restore rules are current-only:
 - a lineage head requires a v5 snapshot with exactly one compacted-memory
   constituent;
 - no lineage head permits no compacted-memory constituent;
-- when both snapshot and lineage are absent, bootstrap builds system plus active
-  continuation and may retain only the trusted non-blank interruption boundary
-  recorded from `AgentTurnInterruptedEvent`; and
+- explicit existing-run restore requires a snapshot and fails when it is absent;
+- new-run initialization is a separate product path that creates and persists
+  its own current context; and
 - archived raw traces are never replayed as current conversation activity.
 
 Tool-protocol repair runs before the next LLM request. Broken current-format
@@ -187,27 +187,37 @@ Mixed immutable `1 -> 2` chains are valid without rewriting or decoding earlier
 records. Any other prompt-contract value is rejected without mutating the
 append-only lineage file.
 
-## 8. Clean Pre-Lineage Transition
+## 8. Forward-Only Native Snapshot Migration
 
-Server startup runs required app-data migration
-`20260730_reset_pre_lineage_memory` before built-in-agent bootstrap, application
-construction, or listen. Across standalone and team-member run directories it
-deletes only:
+Server startup migration `20260731_migrate_native_working_context_snapshots_v5`
+replaces the superseded destructive reset. The server classifies exact native
+standalone and team-member locations, derives the expected `runId` or
+`memberRunId`, and runs the existing raw-trace rotation-layout and active-file-name
+migrations before native conversion consumes current active facts.
 
-- `episodic.jsonl`;
-- `semantic.jsonl`;
-- `working_context_snapshot.json`; and
-- `compacted_memory_manifest.json`.
+Eligibility is intentionally narrow:
 
-Active/archive raw traces and `raw_traces_manifest.json` are preserved. Missing
-targets are successful no-ops. Discovery or deletion failure records `FAILED`,
-remains retryable, and causes `AppDataMigrationRunner.runPending()` and
-`startConfiguredServer()` to reject. Existing successful and warning-success
-migration results remain startable.
+- a missing snapshot is a no-op;
+- every nonempty `compaction_lineage.jsonl` location is skipped byte-for-byte
+  before snapshot inspection or cleanup; and
+- an absent or zero-byte lineage file permits conversion of historical v1/v3/v4
+  or strict-v5 snapshot content.
 
-Normal runtime has no reader, fallback, dual path, or inferred provenance for the
-removed pre-lineage derived state. The first successful compaction after the
-reset creates a head with `previousCompactionId: null`.
+The pure migration converter is the only historical snapshot decoder. It retains
+only logical units with truthful same-location active-raw backing, omits
+unsupported, invalid, unsourced, old-compacted, and incomplete/ambiguous Tool
+units, and may produce a valid metadata-identified `messages: []` snapshot when
+nothing survives. A parseable identity conflict rejects the location without
+mutation. The complete strict-v5 candidate is finalized and validated before
+replacement; only then may the migration remove obsolete `episodic.jsonl`,
+`semantic.jsonl`, and `compacted_memory_manifest.json`. Raw traces, raw manifests,
+archives, and lineage are never created, rewritten, inferred, or deleted.
+
+Ordinary warning/failure results remain recorded and retryable, but the migration
+runner returns them and server startup continues. Normal runtime restores strict
+v5 only and has no pre-v5 reader or raw-history recovery projector. The first
+successful compaction for a migrated absent/empty-lineage run uses
+`previousCompactionId: null`.
 
 ## 9. Direct And Recursive Origin Resolution
 
@@ -233,20 +243,23 @@ an internal service boundary; no provenance UI is implied.
 
 ## 10. LLM Request Recovery Boundary
 
-`MemoryManager` exposes the named LLM request recovery API used by `LlmPhase`:
+`MemoryManager` exposes the named LLM request recovery API. The
+`LLMRequestAssembler` first completes any pending compaction, then captures the
+stable post-compaction checkpoint immediately before request-specific context
+mutation and returns it in `RequestPackage`:
 
-1. capture a request snapshot before system-prompt insertion, compaction, or
-   user/tool-continuation append;
-2. commit it only after provider response ingestion succeeds; or
-3. restore the working context and compaction state on request assembly or
-   provider-stream failure.
+1. an assembly failure after capture restores locally;
+2. a provider/stream failure restores through `LlmPhase`; and
+3. normal final output, real Tool ingestion, and supported retained interruption
+   release the exact captured checkpoint without restore.
 
 The recovery snapshot is limited to active working context and compaction
 state. Restore persists the recovered working-context snapshot and appends a
 correlated `llm_request_recovery` raw trace with the request id, reason, and
 source event. Raw traces and tool facts committed before the request remain
-durable. Recovery returns one diagnostic and does not retry or select a
-fallback model.
+durable. An accepted compaction is never rolled back. Every returned checkpoint
+settles exactly once; recovery returns one diagnostic and does not retry or
+select a fallback model.
 
 ## 11. Natural Compactor Conversation
 
@@ -310,7 +323,9 @@ provenance markers and rotate raw traces; they do not select the native
 strategy, write episodic/semantic memory, resolve or inject AutoByteus compacted
 memory, or change provider session state. The server owns the
 metadata-classified, best-effort startup cleanup for pre-cutover external
-snapshot copies; native `MemoryManager` snapshot behavior is unchanged.
+snapshot copies. A separate exact-native startup migration converts eligible
+absent/empty-lineage snapshots to strict v5 without making external snapshots or
+imported corpora native continuation state.
 
 ## 14. Runtime Settings
 
@@ -357,12 +372,17 @@ Lineage, projection, and restore:
 - `src/memory/projection/compacted-memory-context-projector.ts`
 - `src/memory/working-context-snapshot-serializer.ts`
 - `src/memory/restore/working-context-snapshot-bootstrapper.ts`
+- `src/memory/migration/native-working-context-snapshot-v5-converter.ts`
+- `src/memory/migration/native-working-context-snapshot-v5-conversion.ts`
+- `src/memory/migration/native-working-context-snapshot-v5-omissions.ts`
 
 Server composition and transition:
 
 - `autobyteus-server-ts/src/agent-execution/backends/autobyteus/compaction-lineage-scope-resolver.ts`
 - `autobyteus-server-ts/src/memory-lineage/services/agent-memory-origin-service.ts`
-- `autobyteus-server-ts/src/app-data-migrations/migrations/reset-pre-lineage-memory-app-data-migration.ts`
+- `autobyteus-server-ts/src/agent-memory/services/runtime-memory-location-classifier.ts`
+- `autobyteus-server-ts/src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5-migration.ts`
+- `autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts`
 - `autobyteus-server-ts/src/app-data-migrations/app-data-migration-runner.ts`
 - `autobyteus-server-ts/src/server-runtime.ts`
 - `autobyteus-server-ts/src/agent-work-traces/services/agent-work-trace-renderer.ts`

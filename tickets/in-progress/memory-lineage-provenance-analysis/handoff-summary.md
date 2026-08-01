@@ -3,111 +3,146 @@
 ## Delivery State
 
 - Ticket: `memory-lineage-provenance-analysis`
-- Current status: `Ready for explicit user verification`
-- Delivery revision: `DR-007`
+- Status: `Live migration verified; existing-run continuation confirmation pending`
+- Delivery revision: `DR-009`
 - Ticket branch: `codex/memory-lineage-provenance-analysis`
-- Dedicated worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis`
-- Current implementation commit: `c6c60b9996d61ef373236b66437844cd8b315af8`
-- API/E2E and review checkpoint: `70aa1d08a09e59185efd93596695b16c9d1d1a62`
-- Integrated tracked base: `origin/personal@80d6693c1b0df5abdfd2c3dc0ec01ff885425847`
-- Integrated ticket revision: `b9fd12e572ddac036fd52ead3186cabe630176fd`
-- Integration method/result: conflict-free merge of the latest tracked base after protecting the reviewed package
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis`
+- Implementation commit: `d9753e69c1244bf88c0bc6816306495430047a35`
+- Reviewed API/E2E checkpoint: `89cfd4ebcffac9612d5f64d1fe95d7468ae4101d`
+- Integrated tracked base: `origin/personal@9615dcc88e73f0584e67623a3cfe1f0d2afd4617`
+- Base refresh result: already contained; no merge required; 15 ahead / 0 behind at delivery refresh and DR-009 recheck
 - Finalization target: `origin/personal` / local `personal`
-- User verification: `Pending — the README-guided Electron 1.4.32 natural-compactor package was rebuilt again at the user's request and is ready for hands-on testing`
-- Repository finalization/release/deployment: `Not performed`
+- User verification: `Partial — running package, migration ledger, product data, and restore-readiness verified; no specific run has yet been restored/continued in this session`
+- Final commit/push/target merge/release/deployment/archive/cleanup: `Not performed`
 
-## Delivered Behavior
+## Review Authority
 
-- Native structured compaction produces an ID-less proposal; `MemoryManager` owns baseline verification, output identity assignment, candidate finalization, and ordered publication.
-- Recurrent compaction implements `M(n) = compact(M(n-1) + R(n))`, archives only newly selected `R(n)`, and uses the append-only lineage tail as sole current-output authority.
-- The built-in Memory Compactor now chooses the natural number of continuation-relevant episodes and semantic facts. At least one episode remains required; the former total 1–3 episode / 20-fact caps are absent through parsing, normalization, acceptance, persistence, current projection, and typed origin resolution.
-- The persisted `autobyteus-memory-compactor` system prompt is the sole stable task/natural-sizing/schema owner. Each operation sends exactly one renderer-produced `<conversation_history>` block with no duplicated task, schema, count policy, or platform internals.
-- `WorkingContextFinalizer` composes canonical turns before history rendering, so compatible prior-memory/current-user constituents become one natural User turn while assistant and Tool ordering, reserved-boundary escaping, reasoning/ID omission, redaction, value bounds, and input non-mutation remain enforced.
-- New lineage records write `promptContractVersion: 2`. Existing immutable value-1 records remain directly readable, mixed `1 -> 2` chains remain valid, and unsupported values reject without mutation or compatibility decoding.
-- Current WorkingContext projection contains only the exact episode/semantic bundle selected by the current lineage head. Strict schema-v5 snapshot, fail-closed pre-lineage reset, raw-evidence preservation, typed direct/recursive origin, and storage-only external-runtime boundaries remain unchanged.
+- Solution: `SR-015`, user-approved.
+- Architecture: `ARCH-REV-009 Pass`.
+- Implementation: `IR-005`; source review `CRR-012 Pass / 9.3`.
+- API/E2E: `API-REV-009 Pass / 98%`; canonical `SCN-020` request recovery and `SCN-021` native migration Pass; preserved `SCN-001`–`SCN-019` Pass.
+- Proportional durable-test review: `CRR-014 Pass`; `TCR-002` and `TCR-003` resolved; no unresolved source/test/API failure ID.
+- Cumulative SR-015 durable delta: 2 added, 18 updated, 1 obsolete destructive-reset test removed; API/E2E changed no production source.
 
-## Review And Validation Authority
+## Delivered SR-015 Behavior
 
-- Current solution: `SR-010`; architecture: `ARCH-REV-006 Pass`.
-- Current implementation: `IR-003`; implementation source review: `CRR-009 Pass`, score `9.4/10`.
-- Current API/E2E: `API-REV-007 Pass / 98%`; new `SCN-019` plus preserved `SCN-001`–`SCN-018` Pass.
-- Current proportional test-code review: `CRR-010 Pass`; no unresolved findings; `TCR-001` remains resolved.
-- API/E2E round-7 durable delta: 15 updated, 0 added, 0 removed test/support paths; no API/E2E production-source change.
-- The removed ambient-key DeepSeek test remains absent. No stale fixed-count, duplicate-prompt, removed-schema, compatibility-only, disabled, or fail-open migration expectation remains in the changed test hunks.
+### Forward-Only Native Snapshot Migration
 
-## Natural Memory Compactor Evidence
+- Startup migration `20260731_migrate_native_working_context_snapshots_v5` replaces the destructive pre-lineage reset.
+- One classifier selects exact AutoByteus standalone/team-member locations and derives expected `runId` / `memberRunId` identity. Imported, external, unclassified, and conflicting locations remain outside native conversion.
+- Registry order is external snapshot cleanup -> raw rotation-layout -> raw active-filename normalization -> native v5 conversion, so conversion sees current active facts.
+- Missing snapshot is a no-op. Any nonempty lineage skips the location byte-for-byte before inspection or cleanup. Absent and zero-byte lineage are eligible.
+- The pure converter is the only v1/v3/v4/v5 decoder. It retains only truthfully active-backed logical units; omits unsupported, invalid, unsourced, old-compacted, and incomplete/ambiguous Tool units; and may publish a valid metadata-identified `messages: []` snapshot.
+- A parseable identity conflict rejects without mutation. A complete strict-v5 candidate is finalized and validated before replacement; only then are obsolete `episodic.jsonl`, `semantic.jsonl`, and `compacted_memory_manifest.json` removed.
+- Raw traces, raw manifests, archives, and lineage are never created, rewritten, inferred, or deleted. Migration warnings/failures remain persisted and retryable while ordinary server startup continues.
+- Existing-run restore accepts strict v5 only. Missing explicit snapshot fails; new-run creation remains separate; no raw-history projector or pre-v5 runtime reader remains.
 
-- Exact installed full template: 2,788 bytes, SHA-256 `944dbdbd3db1146f80fdb7fe5ec2817422eec74f8eca3f4743a336169a2a8348`; frontmatter-stripped system prompt SHA-256 `73aaff91c63d2b68b91467f00302bfe2940c0037b9e08d1fa6373d1f96274dc7`.
-- Focused natural contract: 6 files / 28 tests Pass; proves exact prompt/history, one canonical User turn, 5 episodes/25 facts through parsing, 4 episodes/25 facts through accepted manager publication/current projection/origin, mixed audit `1 -> 2`, and unsupported audit 3 rejection without mutation.
-- Complete memory: 33 files / 150 tests Pass. Runtime selection: 3 files / 15 tests Pass. Prompt/harness: 16/16 Pass. Focused server compactor: 17/17 Pass. Affected server: 15 files / 88 tests Pass. Root deterministic E2E: 50 files / 174 passed tests, with 14 files / 49 tests explicitly environment-gated.
-- Managed DeepSeek `deepseek-v4-flash`: exact five-percent budget; one canonical product child compaction; model-chosen 1 episode / 8 facts; audit 2; exactly two reads plus one write; zero failed tools; exact continuation artifact.
-- Keyless LM Studio Qwen: exact five-percent budget; two recurrent product child compactions; model-chosen 1 episode / 3 facts then 1 episode / 0 facts; audits `[2,2]`; exact tools/current projection/continuation and zero failed tools.
-- Cleanup and credential-value scan: Pass; 20 evidence logs checked against 12 nonblank API-key values in exact, URL-encoded, and base64 forms with zero matches.
-- Authoritative evidence: `evidence/api-e2e/api-rev-007-natural-contract-focused-02.log`; `api-rev-007-core-memory-broad-02.log`; `api-rev-007-server-prompt-harness-unit-01.log`; `api-rev-007-deepseek-natural-compactor-five-percent.log`; `api-rev-007-lmstudio-qwen36-natural-compactor-five-percent.log`; `api-rev-007-cleanup.log`; `api-rev-007-secret-leak-scan.log`.
+### Stable-Base LLM Request Recovery
 
-## Latest-Base Integration And Delivery Checks
+- `LLMRequestAssembler` completes pending compaction before capturing the recovery checkpoint and captures immediately before request-specific context mutation.
+- The checkpoint travels in `RequestPackage`. Post-capture assembly or provider failure restores it.
+- Normal final output, real Tool ingestion, and supported retained interruption release the exact captured checkpoint once without restore.
+- Recovery never rolls back accepted compaction archives, outputs, lineage, raw facts, or Tool facts.
 
-- API/E2E/review checkpoint `70aa1d08a09e59185efd93596695b16c9d1d1a62` protected the complete round-7 durable/evidence package.
-- Latest `origin/personal@80d6693c1b0df5abdfd2c3dc0ec01ff885425847` added only unrelated v1.4.32 pricing-ticket delivery cleanup records and merged without conflict at `b9fd12e572ddac036fd52ead3186cabe630176fd`.
-- Integrated natural-contract selection: Pass, 6 files / 28 tests.
-- Integrated server prompt/harness selection: Pass, 2 files / 16 tests.
-- Integrated server/shared/core build, Prisma generation, TypeScript build, built-in bootstrap smoke, and sanitized no-`DATABASE_URL` smoke: Pass.
-- Evidence: `evidence/delivery/api-rev-007-base-refresh.log`; `api-rev-007-integrated-natural-contract.log`; `api-rev-007-integrated-server-prompt-harness.log`; `api-rev-007-integrated-server-build.log`.
-- The post-request fetch again confirmed `origin/personal@80d6693c1b0df5abdfd2c3dc0ec01ff885425847` unchanged and the branch 10 ahead / 0 behind. Evidence: `evidence/delivery/dr-007-user-request-electron-base-recheck.log`.
+### Preserved Delivered Baseline
 
-## Local Electron Package For User Testing
+The SR-010 natural Memory Compactor remains unchanged: manager-owned proposal/accept/commit, lineage-tail current authority, strict message-only v5, natural uncapped episode/fact sizing, exact system-prompt/canonical-history ownership, prompt audit `1 | 2` with current writes at 2, typed origin, and shared readable rendering.
 
-- README basis: root `README.md` and `autobyteus-web/README.md`; documented no-notarization command `NO_TIMESTAMP=1 APPLE_TEAM_ID= ... pnpm build:electron:mac`.
-- The package was rebuilt again after the user's current request, following the README's macOS no-notarization command, so the embedded backend contains the integrated IR-003 natural-compactor source.
-- Build result: Pass on macOS ARM64 using Electron `42.4.1`; web/localization guards, integrated server preparation/build, Prisma generation, native `node-pty` rebuild, Electron generation/transpilation, and electron-builder packaging completed.
-- Test DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.32.dmg`
-- Test ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.32.zip`
+## Integrated-State Evidence
+
+- API/E2E/review checkpoint: `89cfd4ebcffac9612d5f64d1fe95d7468ae4101d`.
+- Base refresh: `origin/personal@9615dcc88e73f0584e67623a3cfe1f0d2afd4617` already contained; no new base commit required integration.
+- Request recovery: 4 files / 23 tests Pass.
+- Core converter and strict restore: 2 files / 16 tests Pass.
+- Server native migration, prerequisite order, runner, and startup: 4 files / 17 tests Pass.
+- Server/shared/core production build, Prisma generation, built-in-agent bootstrap smoke, and sanitized no-`DATABASE_URL` smoke: Pass.
+- Evidence:
+  - `evidence/delivery/api-rev-009-base-refresh.log`
+  - `evidence/delivery/api-rev-009-integrated-request-recovery.log`
+  - `evidence/delivery/api-rev-009-integrated-core-migration.log`
+  - `evidence/delivery/api-rev-009-integrated-server-migration.log`
+  - `evidence/delivery/api-rev-009-integrated-server-build.log`
+  - `evidence/delivery/api-rev-009-final-integrated-recheck.log`
+  - `evidence/delivery/api-rev-009-delivery-cleanup.log`
+
+## Live Product Migration Verification (DR-009)
+
+- Audit mode: read-only inspection of the running product and product-authored state. No migration was rerun, and no product file, ledger row, snapshot, trace, lineage, or manifest was repaired, rewritten, removed, or created by the audit.
+- Running product: Electron parent PID `34832` and embedded server PID `35437` execute the built `AutoByteus.app` path; bundle `com.autobyteus.app` version `1.4.34`, native ARM64, ad-hoc signed; `/rest/health` returns `status: ok` on port `29695`.
+- Package provenance: packaged migration JavaScript SHA-256 `2d58401f1f734802d1c3a5cc253fd82aac27b044426dad875578affafd137416`, byte-identical to the worktree build at checkpoint `89cfd4ebcffac9612d5f64d1fe95d7468ae4101d`.
+- Ledger: `20260731_migrate_native_working_context_snapshots_v5` is `SUCCEEDED_WITH_WARNINGS`, attempt `1`, `2026-08-01T03:27:24.852Z`–`03:27:26.660Z`, no error; scanned `689`, migrated `347`, skipped `342`, failed `0`.
+- Exact result split: `4` native snapshots migrated without omissions; `343` migrated with bounded omission warnings; `147` exact native targets skipped because no snapshot existed; `195` unclassified standalone directories skipped because current metadata was absent; nonempty-lineage skips `0`; identity rejection/failure `0`.
+- Current classifier reconciliation: `2,835` exact locations (`494` AutoByteus, `2,274` Codex, `65` Claude, `2` unsupported/unknown) plus `195` diagnostics. All `494` exact native locations reconcile one-to-one with ledger details.
+- Strict restore readiness: all `347/347` migrated snapshots exist, pass the packaged strict-v5 validator, have the metadata-derived standalone `runId` or team `memberRunId` identity, and deserialize successfully through the packaged serializer.
+- Cleanup boundary: none of the `347` migrated targets retains `episodic.jsonl`, `semantic.jsonl`, or `compacted_memory_manifest.json`; no no-snapshot, nonempty-lineage, rejected, or failed target was cleaned by this migration.
+- Preservation boundary: exactly `347` files under the memory root changed during the native migration window, and all `347` were the expected migrated snapshots. Zero other memory files changed in that window. The `400` current raw trace/manifest/archive files under migrated locations, `2,341` external/unsupported classified locations, `259` unclassified snapshots, and `445` imported files show zero modification during the native migration window.
+- Ledger/log agreement: the product log contains `689` item details byte-for-structure equal to the ledger summary; log SHA-256 `18ceaec26930457b101c5db835a9fa3ee0c7ae5b1ed4a7e884071e6d2a116613`.
+- Current-session restore evidence: no unsupported-schema, snapshot-restore, activation, or `SEND_MESSAGE` failure appears after the current server-listen marker. No AutoByteus run restore success appears either, so the user's formerly failing run has not yet been precisely identified or exercised in this session.
+- Base recheck: `origin/personal@9615dcc88e73f0584e67623a3cfe1f0d2afd4617` remains contained; 15 ahead / 0 behind. No integration was performed while the user is exercising the current candidate.
+- Verdict: `Pass — the forward-only native snapshot migration succeeded on live product data; hands-on continuation of the previously failing run remains the final user action.`
+- Value-safe evidence:
+  - `evidence/delivery/api-rev-009-live-product-process-health.log`
+  - `evidence/delivery/api-rev-009-live-migration-audit.log`
+  - `evidence/delivery/api-rev-009-live-migration-audit.json`
+  - `evidence/delivery/api-rev-009-live-migration-audit.mjs`
+  - `evidence/delivery/api-rev-009-live-restore-log-audit.log`
+  - `evidence/delivery/dr-009-live-verification-base-recheck.log`
+
+## Local Electron Package For Testing
+
+- README basis: root `README.md` and `autobyteus-web/README.md`; documented local no-notarization macOS command.
+- Build result: Pass on macOS ARM64, Electron `42.4.1`, product version `1.4.34`; embedded backend includes SR-015.
+- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.34.dmg`
+- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.34.zip`
 - Unpacked app: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
-- Validation: DMG verification Pass; native `Mach-O 64-bit arm64`; bundle ID `com.autobyteus.app`; version `1.4.32`.
-- SHA-256: DMG `b2abc72e9b48f9af0387c0f1cd7795bbd63ad452ea536eebd8b1fa8873151031`; ZIP `3d7dd868464156fcc5457dc255f3e42bff90c59f879fc1c8ee1efd5dcf7e5824`.
-- Signing scope: local test package only; signing identity is null and notarization/timestamping are intentionally disabled. This is not a release artifact.
-- Launch condition: another AutoByteus process owns embedded backend port `29695`. Delivery did not terminate it or claim packaged startup. Quit the running AutoByteus instance before opening this package.
-- Current rebuild evidence: `evidence/delivery/api-rev-007-electron-macos-1.4.32-user-request-rebuild.log`; `api-rev-007-electron-macos-1.4.32-user-request-validation.log`.
+- Validation: DMG valid; native Mach-O ARM64; bundle `com.autobyteus.app`; version `1.4.34`.
+- SHA-256: DMG `dd5220fadcea23fb29486e974018807b32fb586e47b2fabdf4f8571d024d2c8f`; ZIP `49bb172ebbcb399c8f614e0c381ef394df8d85454a7758546aa9720c6c306231`.
+- Signing: ad-hoc/local only; no Apple team identity, notarization, or timestamp. This is not a release artifact.
+- Packaged startup: observed and healthy in DR-009. Electron PID `34832` owns embedded server PID `35437`, which listens on `29695` from the exact built app path.
+- Test residue cleanup: delivery-owned temporary server-test database and journal were removed; the pre-existing AutoByteus process was preserved.
+- Evidence: `evidence/delivery/api-rev-009-electron-macos-1.4.34-build.log`; `api-rev-009-electron-macos-1.4.34-validation.log`.
+
+## Persisted-Data Operational Caution
+
+SR-015 is a real startup data migration. API/E2E used isolated roots; DR-009 subsequently performed a read-only audit of owner product data after the product-authored migration completed. The audit confirmed the conversion and cleanup boundaries above, but uninstalling or reverting code does not reverse migrated files; restore the pre-launch backup if rollback is required.
 
 ## Docs Sync
 
-Long-lived docs were updated for natural output sizing, system-prompt versus renderer-only operation ownership, canonical User-turn composition, and prompt audit 1/2:
+Updated long-lived docs:
 
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-ts/docs/agent_memory_design.md`
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-ts/docs/agent_memory_design_nodejs.md`
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/docs/ARCHITECTURE.md`
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/docs/modules/agent_memory.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/docs/modules/agent_work_traces.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/docs/design/startup_initialization_and_lazy_services.md`
 
-The startup lifecycle doc remains accurate and needed no round-7 change. Authoritative report: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/docs-sync-report.md`.
+Authoritative report: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/docs-sync-report.md`.
 
-## Persisted-Data And Operational Note
+## Residual Risks / Scope Limits
 
-The approved transition remains `Discard or Rebuild`, not content migration or lineage backfill. On first startup, the reset removes existing `episodic.jsonl`, `semantic.jsonl`, `working_context_snapshot.json`, and `compacted_memory_manifest.json` while preserving active/archive raw traces and `raw_traces_manifest.json`. A reset failure is recorded and blocks startup for retry.
-
-## Residual Risks / Explicit Scope Limits
-
-- Normal publication spans multiple files and has no crash-atomic journal/recovery contract.
-- Model-selected semantic density and latency remain externally variable; two live model families on one controlled task are not a benchmark corpus.
-- The local Electron package is unsigned/unnotarized and packaged startup remains pending because another AutoByteus instance owns port `29695`.
-- UI/preload/IPC/renderer behavior did not change; separate browser/Electron interaction coverage was inapplicable.
-- The startup reset intentionally discards old derived state; code rollback cannot reconstruct those files, though original raw evidence remains preserved.
+- Live data audit covers all `347` converted native snapshots, but the user's specific formerly failing run has not yet been opened/continued in this session.
+- Truthful omission can reduce old context, including to an empty current message list.
+- A migration filesystem failure remains retryable while the server starts; an affected existing run can still fail strict restore until conversion succeeds.
+- Normal multi-file compaction publication remains non-crash-atomic and has no recovery journal.
+- The package is unsigned/unnotarized; live startup is healthy, but hands-on continuation behavior is not yet user-confirmed.
+- No UI, renderer, preload, IPC, or desktop-shell boundary changed; separate browser/Electron interaction coverage was not applicable.
 
 ## Canonical Artifact Package
 
-- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/requirements.md`
-- Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/investigation-notes.md`
-- Design: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/design-spec.md`
+- Requirements/investigation/design: `requirements.md`; `investigation-notes.md`; `design-spec.md`
 - Supplements: `memory-context-and-lineage-contract.md`; `use-case-data-flow-spine-map.md`; `provenance-methodology-analysis.md`; `compacted-memory-message-role-analysis.md`; `memory-compactor-prompt-content-contract.md`
-- Solution/design review: `solution-revision-record.md`; `design-review-report.md`; `architecture-review-revision-record.md`
-- Implementation: `implementation-handoff.md`; `implementation-revision-record.md`
-- Code review: `code-review-report.md`; `code-review-revision-record.md`
+- Solution/architecture: `solution-revision-record.md`; `design-review-report.md`; `architecture-review-revision-record.md`
+- Implementation/review: `implementation-handoff.md`; `implementation-revision-record.md`; `code-review-report.md`; `code-review-revision-record.md`
 - API/E2E: `coverage-investigation.md`; `execution-coverage-report.md`; `api-e2e-revision-record.md`; `api-e2e-test-review-report.md`
 - Delivery: `docs-sync-report.md`; `handoff-summary.md`; `release-deployment-report.md`; `delivery-revision-record.md`
-- Evidence: `evidence/api-e2e/`; `evidence/delivery/`
+- Evidence: `evidence/implementation/`; `evidence/code-review/`; `evidence/api-e2e/`; `evidence/delivery/`
 
-All relative paths above are under `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/`.
+All relative ticket paths above are under `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/in-progress/memory-lineage-provenance-analysis/`.
 
 ## Required User Action
 
-Quit the currently running AutoByteus instance, open `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.32.dmg`, and test the natural-compactor candidate. Report success or defects and explicitly confirm completion. Until that signal, delivery will not archive the ticket, push, merge to `personal`, release/deploy, or clean the ticket worktree/branch. After confirmation, delivery must refresh `origin/personal` again and request renewed verification if that materially changes the handoff state.
+1. In the currently running Electron app, open the same native AutoByteus run that previously failed with unsupported snapshot schema `4`.
+2. Continue it with one normal message or Tool turn.
+3. Report success or the exact visible defect and explicitly confirm completion. Do not manually rerun or edit migration data.
+
+Delivery will not archive, push, merge to `personal`, release/deploy, or clean the worktree/branch before that confirmation. After confirmation, delivery must refresh `origin/personal` again and request renewed verification if the candidate materially changes.

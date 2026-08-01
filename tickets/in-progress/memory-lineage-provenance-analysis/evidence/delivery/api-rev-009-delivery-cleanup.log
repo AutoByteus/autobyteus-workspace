@@ -1,0 +1,25 @@
+timestamp_utc=2026-08-01T00:05:47.458035+00:00
+before path=autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db exists=True
+after path=autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db exists=False
+before path=autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db-journal exists=True
+after path=autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db-journal exists=False
+cleanup_result=pass
+
+active_autobyteus_processes_after_cleanup:
+510
+23337
+23642
+70622
+70623
+71218
+71220
+71221
+71224
+71823
+71918
+71920
+78726
+
+port_29695_after_cleanup:
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 71823 normy   26u  IPv4 0xecff68063c211fc4      0t0  TCP *:29695 (LISTEN)
