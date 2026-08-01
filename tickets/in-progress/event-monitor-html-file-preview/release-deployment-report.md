@@ -3,20 +3,21 @@
 ## Scope and Status
 
 - Ticket: `event-monitor-html-file-preview`.
-- Delivery round: `DR-001` initial integrated handoff.
-- Status: `Prepared — local test package ready; finalization held for explicit user verification`.
-- Release/publication/deployment scope: `Not applicable` for the current request. No release notes, version bump, tag, publication, or deployment was performed.
+- Delivery round: `DR-003` latest-base refresh and release preparation.
+- Status: `Prepared — latest-base integration and checks passed; current integrated package rebuild and renewed user verification required before finalization/release`.
+- Release/publication/deployment scope: **In scope by explicit user request**, planned as `v1.4.36`; no version bump, tag, publication, or deployment has started.
 
 ## Integrated State
 
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview`.
 - Branch: `codex/event-monitor-html-file-preview`.
-- Validated implementation checkpoint: `a6ab5cc77b5324a1743c4bc121ccf1bb518163e7`.
+- Validated implementation checkpoint: `a6ab5cc77b5324a1743c4bc121ccf1bb518163e7` (historical review checkpoint).
+- Latest integrated checkpoint: `bdc275d4d746288d1a25c6320b93b94e1079b180`.
 - Recorded base/finalization target: `origin/personal` / `personal`.
-- Latest tracked base after `git fetch origin personal`: `9615dcc88e73f0584e67623a3cfe1f0d2afd4617`.
-- Integration: no merge required; the ticket branch was already based on the latest tracked base.
-- Post-integration check: `git diff --check` passed; evidence is `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/test-results/event-monitor-html-file-preview/delivery-integration-check.log`.
-- Additional executable rerun: not required because no base commit was integrated and delivery-owned changes are documentation/ticket records only. API/E2E `API-REV-001` passed on the checkpoint source.
+- Latest tracked base after `git fetch origin personal`: `d5618bffdd73d2b47f83e33852853a5d8886ccc2`.
+- Integration: `origin/personal` advanced; merged without conflicts with `git merge --no-commit --no-ff origin/personal`, committed as `bdc275d4d746288d1a25c6320b93b94e1079b180`.
+- Post-integration check: focused frontend 6 files / 80 tests, preservation 3 files / 22 tests, server REST 2 files / 8 tests, and Electron boundary 4 files / 19 tests passed. The diff check completed with pre-existing whitespace warnings from imported evidence files. Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/test-results/event-monitor-html-file-preview/finalization-integrated-recheck.log`.
+- Additional executable rerun: required and completed because new base commits were integrated; all focused checks above passed against the integrated state.
 
 ## Delivery Round 2 — Local Electron Test Package
 
@@ -47,11 +48,11 @@
 
 ## Repository Finalization
 
-Repository finalization has not started. The ticket remains under `tickets/in-progress`; no ticket branch push, archive transition, target-branch merge, target push, release, publication, deployment, tag, or cleanup has occurred. This is intentional: the delivery workflow requires explicit user verification before those actions.
+Repository finalization has not started. The ticket remains under `tickets/in-progress`; no ticket branch push, archive transition, target-branch merge, target push, release, publication, deployment, tag, or cleanup has occurred. The previous `1.4.34` package verification cannot be carried forward because the finalization target advanced; renewed verification of the current integrated `1.4.35` package is required first.
 
 ## Release / Deployment Decision
 
-No release or deployment work is authorized or required by the current handoff. The change is a frontend viewer behavior correction with no persisted-data migration, server configuration change, or deployment-specific action. If the user later requests release work, delivery must create release notes, refresh `personal` again, and follow the repository's documented release path only after verification and finalization.
+Release work is authorized by the user and planned for `v1.4.36`; `personal` already contains `v1.4.35`. Ticket-local release notes are prepared at `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/release-notes.md`. The release helper must run only after renewed verification, ticket archival, ticket-branch push, finalization-target refresh/merge/push, and a clean worktree.
 
 ## Residual Risks and Blocked Scope
 
@@ -61,4 +62,4 @@ No release or deployment work is authorized or required by the current handoff. 
 
 ## Next Action
 
-User: test the supplied Electron package, verify the handoff, and explicitly authorize completion/finalization if satisfied. On receipt, delivery must refresh `origin/personal`, protect/reintegrate any changed target state, rerun required checks if the user-facing state changes, then archive and finalize according to the recorded `personal` target.
+Build and provide the current integrated `1.4.35` package for renewed user verification. On explicit confirmation, refresh `origin/personal` again, archive and finalize according to the recorded `personal` target, then run the documented release helper for `v1.4.36` and record tag/publication evidence.

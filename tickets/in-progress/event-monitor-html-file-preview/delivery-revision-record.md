@@ -45,3 +45,16 @@
 - User verification/finalization state: Explicit verification has not been received. No push, archive, target merge, release, publication, deployment, or cleanup occurred.
 - Next recipient/action: User tests the DMG or ZIP, reports the behavioral result, and explicitly authorizes finalization if satisfied. Delivery must refresh `origin/personal` again before any finalization.
 - Remaining risks: Packaged Electron IPC/window/server lifecycle remains user-tested rather than delivery-launched; full authenticated feed click and local HTML relative-asset fidelity remain bounded residuals.
+
+### DR-003 — Latest-base refresh and integrated-state recheck before finalization
+
+- Delivery round and trigger: Round 3, triggered by the user's request to finalize and release after hands-on testing.
+- Prior authoritative result: `DR-002` — the personal-flavor unsigned macOS ARM64 `1.4.34` package passed artifact checks; user verification applied to that package, while repository finalization remained held.
+- Finalization-target refresh: `git fetch origin personal` passed. The tracked finalization target advanced from the prior recorded base `9615dcc88e73f0584e67623a3cfe1f0d2afd4617` to `d5618bffdd73d2b47f83e33852853a5d8886ccc2` (including the already released `v1.4.35` state).
+- Integration: `git merge --no-commit --no-ff origin/personal` completed without conflicts, and the merge was committed as `bdc275d4d746288d1a25c6320b93b94e1079b180` on `codex/event-monitor-html-file-preview`.
+- Integrated-state checks: focused frontend `6 files / 80 tests` passed; preservation `3 files / 22 tests` passed; server REST `2 files / 8 tests` passed; Electron boundary `4 files / 19 tests` passed. `git diff --check` and cached diff checking completed; the imported target evidence contains pre-existing whitespace warnings, recorded in the integrated recheck log, with no implementation check failure.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/test-results/event-monitor-html-file-preview/finalization-integrated-recheck.log`.
+- Current authoritative result: `Pass` for latest-base integration and executable recheck; finalization and release remain held because the previously user-tested `1.4.34` package is stale relative to the integrated `1.4.35` source state.
+- Release decision: the next release version is `1.4.36` because `personal` already contains `v1.4.35`. Release notes are prepared at `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/release-notes.md`; no tag, release commit, publication, or deployment has started.
+- Next action: build the current integrated personal-flavor macOS ARM64 package, provide its absolute DMG/ZIP paths for renewed user verification, then refresh `origin/personal` once more and finalize only after that verification remains current.
+- Remaining risks: packaged Electron IPC/window/server lifecycle, full authenticated Event Monitor feed click, and local HTML relative CSS/image/script asset fidelity remain bounded residuals.
