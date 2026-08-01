@@ -2,9 +2,9 @@
 
 ## Execution Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/in-progress/autobyteus-runtime-streaming-ui-performance/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/in-progress/autobyteus-runtime-streaming-ui-performance/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/in-progress/autobyteus-runtime-streaming-ui-performance/design-spec.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/done/autobyteus-runtime-streaming-ui-performance/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/done/autobyteus-runtime-streaming-ui-performance/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/done/autobyteus-runtime-streaming-ui-performance/design-spec.md`
 - Supplemental Task Artifacts: `performance-evidence.md`; `implementation-render-evidence/voice-starting-wide.png`; `implementation-render-evidence/voice-starting-narrow.png`
 - Solution Revision Record: `solution-revision-record.md` (`SR-001`, `SR-002`)
 - Design Review Report: `design-review-report.md`
@@ -22,11 +22,11 @@
 - Prior Round Reviewed: `N/A`
 - Latest Authoritative Round: this report
 
-All relative paths above are under `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/in-progress/autobyteus-runtime-streaming-ui-performance/`.
+All relative paths above are under `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/done/autobyteus-runtime-streaming-ui-performance/`.
 
 ## Investigation And Execution Basis
 
-- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/in-progress/autobyteus-runtime-streaming-ui-performance/api-e2e-coverage-investigation.md`
+- Coverage investigation artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/done/autobyteus-runtime-streaming-ui-performance/api-e2e-coverage-investigation.md`
 - Investigation completed before durable coverage changes or final execution: `Yes`
 - Investigation plan followed: `Yes`. Chrome/browser covered web-equivalent rendering and Electron-backend integration; an isolated Electron 42 renderer covered shell/media behavior. The additional `ACTIVE-STREAM-FILES-001` probe closed the first probe's bounded uncertainty that only two of its ten local file opens coincided with fresh content receipts.
 - Existing coverage decisions revised during execution: none. The three planned durable test files were updated; no stale test was removed.
@@ -148,7 +148,7 @@ No stale or obsolete test was removed.
 
 ## Other Execution Artifacts
 
-The retained directory is `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/in-progress/autobyteus-runtime-streaming-ui-performance/api-e2e-execution-evidence/`.
+The retained directory is `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/done/autobyteus-runtime-streaming-ui-performance/api-e2e-execution-evidence/`.
 
 | Artifact | Purpose |
 | --- | --- |

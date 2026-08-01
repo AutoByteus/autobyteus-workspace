@@ -10,7 +10,7 @@
 
 ### API-REV-001 — Durable lifecycle gaps closed and AC-01–AC-07 directly validated
 
-- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/in-progress/autobyteus-runtime-streaming-ui-performance/code-review-report.md`; API/E2E round 1.
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/done/autobyteus-runtime-streaming-ui-performance/code-review-report.md`; API/E2E round 1.
 - Triggering finding or scenario IDs: no code-review finding; outstanding `STR-AC01-NATIVE`, `FILE-AC02`, `REF-AC02`, `VOICE-AC03-*`, `STR-AC04-LIFECYCLE`, `CTRL-AC05-CODEX`, `CTRL-AC05-IDLE`, `PERSIST-AC06`, `EVIDENCE-AC07`.
 - Related upstream revision IDs: `SR-001`, `SR-002`, `ARCH-REV-001`, `ARCH-REV-002`, `IR-001`, `CRR-001`.
 - Why recorded: initial completed API/E2E baseline after the implementation review Pass.

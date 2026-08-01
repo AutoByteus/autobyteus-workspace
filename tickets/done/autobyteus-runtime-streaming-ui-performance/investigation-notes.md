@@ -19,7 +19,7 @@ Six context screenshots are locally available under the current solution-designe
 
 - Project Type: `Git`
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/in-progress/autobyteus-runtime-streaming-ui-performance`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/done/autobyteus-runtime-streaming-ui-performance`
 - Current Branch: `codex/autobyteus-runtime-streaming-ui-performance`
 - Current Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance`
 - Bootstrap Base: `origin/personal` at `d5618bffdd73d2b47f83e33852853a5d8886ccc2`
@@ -32,7 +32,7 @@ Six context screenshots are locally available under the current solution-designe
 
 | Artifact Path | Purpose And Scope | Core Artifact(s) Supported | Related IDs | Status | Approval Applicability / State |
 | --- | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/in-progress/autobyteus-runtime-streaming-ui-performance/performance-evidence.md` | Durable evidence summary for isolated and Electron-backed probes, UI timings, CPU/health, file persistence, logs, and source paths. | `requirements.md`, later `design-spec.md` | BEH-001..BEH-005, FR-01..FR-07, AC-01..AC-07 | Current | `N/A` — evidence only |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/done/autobyteus-runtime-streaming-ui-performance/performance-evidence.md` | Durable evidence summary for isolated and Electron-backed probes, UI timings, CPU/health, file persistence, logs, and source paths. | `requirements.md`, later `design-spec.md` | BEH-001..BEH-005, FR-01..FR-07, AC-01..AC-07 | Current | `N/A` — evidence only |
 
 Raw JSONL probes under `probe-scratch/` are retained locally as investigation intermediates, not canonical supplements.
 

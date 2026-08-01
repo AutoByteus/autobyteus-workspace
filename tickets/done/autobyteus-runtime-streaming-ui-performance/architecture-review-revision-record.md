@@ -1,6 +1,6 @@
 # Architecture Review Revision Record — Runtime-Agnostic Stream Presentation Backpressure
 
-The latest `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/in-progress/autobyteus-runtime-streaming-ui-performance/design-review-report.md` remains authoritative. This record preserves only the architecture-review baseline and later deltas.
+The latest `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/done/autobyteus-runtime-streaming-ui-performance/design-review-report.md` remains authoritative. This record preserves only the architecture-review baseline and later deltas.
 
 ## Revision Index
 
@@ -13,7 +13,7 @@ The latest `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-
 
 ### ARCH-REV-001 — Initial design-impact baseline
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/in-progress/autobyteus-runtime-streaming-ui-performance/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/done/autobyteus-runtime-streaming-ui-performance/design-review-report.md`
 - Review round and trigger: Round 1; initial architecture review requested by `solution_designer` after approved requirements and `SR-001`.
 - Triggering role, report path, and finding IDs: `solution_designer`; no prior downstream report; `N/A` prior findings.
 - Relevant solution revision IDs: `SR-001`
@@ -32,9 +32,9 @@ None.
 
 ### ARCH-REV-002 — Recency and voice-unmount findings resolved
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/in-progress/autobyteus-runtime-streaming-ui-performance/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/done/autobyteus-runtime-streaming-ui-performance/design-review-report.md`
 - Review round and trigger: Round 2; `SR-002` rework of `AR-F-001` and `AR-F-002` after `ARCH-REV-001`.
-- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/in-progress/autobyteus-runtime-streaming-ui-performance/solution-revision-record.md`; `AR-F-001`, `AR-F-002`.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/done/autobyteus-runtime-streaming-ui-performance/solution-revision-record.md`; `AR-F-001`, `AR-F-002`.
 - Relevant solution revision IDs: `SR-001`, `SR-002`
 - Prior authoritative decision: `Fail`
 - Current authoritative decision: `Pass`

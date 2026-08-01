@@ -28,7 +28,7 @@ The latest `requirements.md`, `investigation-notes.md`, `design-spec.md`, and `p
 
 ### SR-002 — Recency-preserving batches and source-owned voice unmount
 
-- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/in-progress/autobyteus-runtime-streaming-ui-performance/design-review-report.md`; architecture review round 1, `ARCH-REV-001` in `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/in-progress/autobyteus-runtime-streaming-ui-performance/architecture-review-revision-record.md`.
+- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/done/autobyteus-runtime-streaming-ui-performance/design-review-report.md`; architecture review round 1, `ARCH-REV-001` in `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/done/autobyteus-runtime-streaming-ui-performance/architecture-review-revision-record.md`.
 - Triggering finding IDs: `AR-F-001`, `AR-F-002`.
 - Prior authoritative result: Architecture review `Fail — Design Impact` for SR-001.
 - Current authoritative result: Both blocking design omissions are resolved in the canonical design and investigation notes; the package is ready for architecture review round 2.

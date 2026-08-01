@@ -2,13 +2,13 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/in-progress/autobyteus-runtime-streaming-ui-performance/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/in-progress/autobyteus-runtime-streaming-ui-performance/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/in-progress/autobyteus-runtime-streaming-ui-performance/design-spec.md`
-- Supplemental task artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/in-progress/autobyteus-runtime-streaming-ui-performance/performance-evidence.md`
-- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/in-progress/autobyteus-runtime-streaming-ui-performance/solution-revision-record.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/in-progress/autobyteus-runtime-streaming-ui-performance/design-review-report.md`
-- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/in-progress/autobyteus-runtime-streaming-ui-performance/architecture-review-revision-record.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/done/autobyteus-runtime-streaming-ui-performance/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/done/autobyteus-runtime-streaming-ui-performance/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/done/autobyteus-runtime-streaming-ui-performance/design-spec.md`
+- Supplemental task artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/done/autobyteus-runtime-streaming-ui-performance/performance-evidence.md`
+- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/done/autobyteus-runtime-streaming-ui-performance/solution-revision-record.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/done/autobyteus-runtime-streaming-ui-performance/design-review-report.md`
+- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/done/autobyteus-runtime-streaming-ui-performance/architecture-review-revision-record.md`
 - Triggering rework report, revision record, or evidence: `N/A` (initial implementation after `ARCH-REV-002` Pass)
 
 ## Current Implementation Summary
@@ -18,7 +18,7 @@ The reviewed runtime-agnostic stream-presentation cadence and voice-start lifecy
 Voice startup now commits a synchronous `isStarting` state, guards duplicate attempts, invalidates stale async completions, disposes locally acquired resources, and exposes source-isolated cancellation. Composer and Settings render starting state and cancel only their fixed source on unmount. Settings startup presentation was also polished for narrow layouts without changing the established visual system.
 
 - Implementation cycle: `Initial`
-- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/in-progress/autobyteus-runtime-streaming-ui-performance/implementation-revision-record.md`
+- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/done/autobyteus-runtime-streaming-ui-performance/implementation-revision-record.md`
 - Current implementation revision ID: `IR-001`
 - Related solution revision IDs: `SR-001`, `SR-002`
 - Related architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`
@@ -117,7 +117,7 @@ Voice startup now commits a synchronous `isStarting` state, guards duplicate att
 - Rendered surface used: project-supported Nuxt development renderer in headless Chrome against the existing local backend. Because the Extensions surface hides voice controls outside Electron, a temporary local Nuxt preview route mounted the production `VoiceInputExtensionCard`; the route was removed after inspection and is not repository coverage.
 - States, layouts, viewports, and interactions inspected: idle -> starting -> idle; 1200x900 and 390x844; starting text/spinner, `aria-busy`, start-button disablement, refresh disablement, status hierarchy, and horizontal overflow.
 - Visual or interaction issues found and corrected: the existing top action row and new long starting label crowded/overflowed at 390 px. Responsive wrapping/stacking was added to the production card; the final narrow render has `scrollWidth === viewport width` and a readable stacked test section.
-- Supporting evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/in-progress/autobyteus-runtime-streaming-ui-performance/implementation-render-evidence/voice-starting-wide.png` and `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/in-progress/autobyteus-runtime-streaming-ui-performance/implementation-render-evidence/voice-starting-narrow.png`.
+- Supporting evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/done/autobyteus-runtime-streaming-ui-performance/implementation-render-evidence/voice-starting-wide.png` and `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/done/autobyteus-runtime-streaming-ui-performance/implementation-render-evidence/voice-starting-narrow.png`.
 - Remaining unverified states / limitations: a live Electron microphone could not be exercised through the browser-equivalent renderer; actual permission prompts, device failures, worklet failures, and composer rendering under an active runtime remain for downstream independent execution.
 
 ## Downstream Coverage Hints / Suggested Scenarios

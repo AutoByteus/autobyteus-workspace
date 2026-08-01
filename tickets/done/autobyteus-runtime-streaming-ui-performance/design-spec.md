@@ -44,7 +44,7 @@ The behavior map defines the production behavior served by the design. The spine
 
 | Artifact Path | Purpose | Related Requirement / Acceptance-Criteria IDs (When Applicable) | Relationship To This Design | Status / Approval Applicability |
 | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/in-progress/autobyteus-runtime-streaming-ui-performance/performance-evidence.md` | Retained native/Codex CPU, event-shape, UI-latency, endpoint, persistence, and source-path evidence | FR-01–FR-07 / AC-01, AC-02, AC-05–AC-07 | Establishes the cadence-sensitive renderer owner and rules out backend/file/persistence as the primary fix site | Current; evidence-only; approval `N/A` |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/done/autobyteus-runtime-streaming-ui-performance/performance-evidence.md` | Retained native/Codex CPU, event-shape, UI-latency, endpoint, persistence, and source-path evidence | FR-01–FR-07 / AC-01, AC-02, AC-05–AC-07 | Establishes the cadence-sensitive renderer owner and rules out backend/file/persistence as the primary fix site | Current; evidence-only; approval `N/A` |
 
 ## Task Design Health Assessment (Mandatory)
 

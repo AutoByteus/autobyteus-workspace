@@ -12,7 +12,7 @@ The current source and `implementation-handoff.md` are authoritative. This recor
 
 ### IR-001 — Shared Stream Cadence And Guarded Voice Startup Baseline
 
-- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/in-progress/autobyteus-runtime-streaming-ui-performance/design-review-report.md`; `ARCH-REV-002` Pass
+- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/done/autobyteus-runtime-streaming-ui-performance/design-review-report.md`; `ARCH-REV-002` Pass
 - Triggering finding IDs: `N/A` (architecture findings `AR-F-001` and `AR-F-002` were resolved upstream before implementation)
 - Classification: `Initial Baseline`
 - Prior authoritative result: `N/A`

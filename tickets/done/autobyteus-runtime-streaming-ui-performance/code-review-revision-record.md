@@ -6,16 +6,16 @@ The latest canonical `code-review-report.md` or `api-e2e-test-review-report.md` 
 
 | Revision ID | Canonical Review Report | Entry Point / Trigger | Prior Result | Current Result | Affected Finding IDs |
 | --- | --- | --- | --- | --- | --- |
-| CRR-001 | `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/in-progress/autobyteus-runtime-streaming-ui-performance/code-review-report.md` | Implementation Review / `IR-001` handoff | N/A | Pass | None |
-| CRR-002 | `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/in-progress/autobyteus-runtime-streaming-ui-performance/api-e2e-test-review-report.md` | Proportional Test Review / `API-REV-001` Pass | Pass | Pass | None |
+| CRR-001 | `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/done/autobyteus-runtime-streaming-ui-performance/code-review-report.md` | Implementation Review / `IR-001` handoff | N/A | Pass | None |
+| CRR-002 | `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/done/autobyteus-runtime-streaming-ui-performance/api-e2e-test-review-report.md` | Proportional Test Review / `API-REV-001` Pass | Pass | Pass | None |
 
 ## Revision Entries
 
 ### CRR-001 — Initial implementation-source review pass
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/in-progress/autobyteus-runtime-streaming-ui-performance/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/done/autobyteus-runtime-streaming-ui-performance/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round `1`
-- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/in-progress/autobyteus-runtime-streaming-ui-performance/implementation-handoff.md`; findings/scenarios `N/A`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/done/autobyteus-runtime-streaming-ui-performance/implementation-handoff.md`; findings/scenarios `N/A`
 - Relevant solution revision IDs: `SR-001`, `SR-002`
 - Relevant architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`
 - Relevant implementation revision IDs: `IR-001`
@@ -36,9 +36,9 @@ None.
 
 ### CRR-002 — Post-API/E2E durable-test review pass
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/in-progress/autobyteus-runtime-streaming-ui-performance/api-e2e-test-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/done/autobyteus-runtime-streaming-ui-performance/api-e2e-test-review-report.md`
 - Review entry point and round: `Proportional Test Review`, round `1`
-- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/in-progress/autobyteus-runtime-streaming-ui-performance/api-e2e-execution-coverage-report.md`; `STR-AC04-LIFECYCLE`, `VOICE-AC03-DENIED`, `VOICE-AC03-WORKLET`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/tickets/done/autobyteus-runtime-streaming-ui-performance/api-e2e-execution-coverage-report.md`; `STR-AC04-LIFECYCLE`, `VOICE-AC03-DENIED`, `VOICE-AC03-WORKLET`
 - Relevant solution revision IDs: `SR-001`, `SR-002`
 - Relevant architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`
 - Relevant implementation revision IDs: `IR-001`
