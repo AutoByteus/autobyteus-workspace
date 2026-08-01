@@ -2,7 +2,7 @@
 
 ## Status
 
-- Delivery status: **Repository finalized and v1.4.36 release published; platform release workflows are still running**.
+- Delivery status: **Repository finalized; v1.4.36 release published with desktop/mobile/gateway assets; Server Docker rollout remains in progress**.
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview`.
 - Branch: `codex/event-monitor-html-file-preview`.
 - Validated implementation checkpoint: `a6ab5cc77b5324a1743c4bc121ccf1bb518163e7` (historical review checkpoint).
@@ -111,7 +111,7 @@ User verification received: **verified release**. The user confirmed the current
 
 ## Finalization State
 
-The user verification gate is satisfied. The ticket archive was committed and pushed; it was merged into `personal`, and the target was pushed. Release commit `488121b5173a611ace855c716d0c91d9ae6e0e8c` and tag `v1.4.36` are published. Platform workflows remain in progress; cleanup is held until rollout evidence is complete.
+The user verification gate is satisfied. The ticket archive was committed and pushed; it was merged into `personal`, and the target was pushed. Release commit `488121b5173a611ace855c716d0c91d9ae6e0e8c` and tag `v1.4.36` are published. Desktop, Android, iOS, and messaging workflows completed successfully; Server Docker workflow `30694463837` remains in progress. Cleanup is held until rollout evidence is complete.
 
 ## Canonical Delivery Artifacts
 

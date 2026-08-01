@@ -4,7 +4,7 @@
 
 - Ticket: `event-monitor-html-file-preview`.
 - Delivery round: `DR-003` latest-base refresh and release preparation.
-- Status: `Repository finalized; v1.4.36 GitHub Release published; platform workflows in progress`.
+- Status: `Repository finalized; v1.4.36 GitHub Release published; desktop/mobile/gateway rollout passed; Server Docker rollout in progress`.
 - Release/publication/deployment scope: **In scope by explicit user request**, planned as `v1.4.36`; no version bump, tag, publication, or deployment has started.
 
 ## Integrated State
