@@ -1,0 +1,47 @@
+timestamp_utc=2026-08-01T04:46:21Z
+--- tag=1.4.35 ---
+{
+  "name": "1.4.35",
+  "full_size": 1816384581,
+  "last_updated": "2026-08-01T04:13:15.472235Z",
+  "digest": "sha256:8c02988f59d4bc2635fb511ed7c331ecab50ee4228f40a8f96332571a4665b3d",
+  "images": [
+    {
+      "architecture": "amd64",
+      "os": "linux",
+      "digest": "sha256:a4d08fe1ae94e0397210ef355fddeed13d392c3df0c9da146d01463566ba3f45",
+      "status": "active",
+      "last_pushed": "2026-08-01T04:13:14.176487385Z"
+    },
+    {
+      "architecture": "arm64",
+      "os": "linux",
+      "digest": "sha256:e8862a0f21739bf52b5a875aa23e4af044464fa7e38e92e976790b2cbc315f90",
+      "status": "active",
+      "last_pushed": "2026-08-01T04:13:14.805664684Z"
+    }
+  ]
+}
+--- tag=latest ---
+{
+  "name": "latest",
+  "full_size": 1816384581,
+  "last_updated": "2026-08-01T04:13:17.126752Z",
+  "digest": "sha256:8c02988f59d4bc2635fb511ed7c331ecab50ee4228f40a8f96332571a4665b3d",
+  "images": [
+    {
+      "architecture": "amd64",
+      "os": "linux",
+      "digest": "sha256:a4d08fe1ae94e0397210ef355fddeed13d392c3df0c9da146d01463566ba3f45",
+      "status": "active",
+      "last_pushed": "2026-08-01T04:13:14.176487385Z"
+    },
+    {
+      "architecture": "arm64",
+      "os": "linux",
+      "digest": "sha256:e8862a0f21739bf52b5a875aa23e4af044464fa7e38e92e976790b2cbc315f90",
+      "status": "active",
+      "last_pushed": "2026-08-01T04:13:14.805664684Z"
+    }
+  ]
+}

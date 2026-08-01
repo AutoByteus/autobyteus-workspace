@@ -1,144 +1,123 @@
 # Delivery / Release / Deployment Report
 
-## Release / Publication / Deployment Scope
+## Final Scope And Result
 
-DR-009 records the successful read-only live verification of the running SR-015 Electron 1.4.34 package and its product-authored native snapshot migration. The user subsequently confirmed the ticket is done and working and explicitly authorized finalization plus a new release. DR-010 repository finalization and the documented `v1.4.35` release are now in progress.
+- Ticket: `memory-lineage-provenance-analysis`
+- Delivery revision: `DR-010`
+- Final result: `Pass — finalized, released, published, and cleaned up`
+- User verification: `Pass`; the user explicitly confirmed the ticket is done and the tested Electron behavior works, then requested finalization and a new release.
+- Review authority: `SR-015`; `ARCH-REV-009 Pass`; `IR-005`; `CRR-012 Pass / 9.3`; `API-REV-009 Pass / 98%`; `CRR-014 Pass`; no unresolved finding.
+- Reviewed candidate: `89cfd4ebcffac9612d5f64d1fe95d7468ae4101d`
+- Implementation commit: `d9753e69c1244bf88c0bc6816306495430047a35`
 
-## Handoff Summary
+## Latest-Base Finalization Check
 
-- Handoff artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/done/memory-lineage-provenance-analysis/handoff-summary.md`
-- Status: `Updated — user verification passed; finalization and release in progress`
-- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/done/memory-lineage-provenance-analysis/delivery-revision-record.md`
-- Current delivery revision: `DR-009 complete; DR-010 in progress`
-- Solution/architecture: `SR-015`; `ARCH-REV-009 Pass`
-- Implementation/source review: `IR-005`; `CRR-012 Pass / 9.3`
-- API/E2E/test review: `API-REV-009 Pass / 98%`; `CRR-014 Pass`; no unresolved finding
-- Integrated candidate revision: `89cfd4ebcffac9612d5f64d1fe95d7468ae4101d`
-
-## Initial Delivery Integration Refresh
-
-- Bootstrap base: `origin/personal@34f3fe97a281a9b85e02409bd753ad132df13d20`
-- Previous delivery base: `origin/personal@80d6693c1b0df5abdfd2c3dc0ec01ff885425847`
-- SR-015 implementation commits: `2cb36ca96` and `d9753e69c1244bf88c0bc6816306495430047a35`
-- Reviewed API/E2E checkpoint: `89cfd4ebcffac9612d5f64d1fe95d7468ae4101d`
-- Latest tracked base checked: `origin/personal@9615dcc88e73f0584e67623a3cfe1f0d2afd4617`
-- Base advanced since prior delivery: `Yes`; it was already merged into the SR-015 implementation branch before delivery re-entry
-- New base commit integrated during DR-008: `No — latest tracked base already contained`
-- Integration method: `Already current`
-- Integration result: `Pass`
-- Initial refresh relationship: 15 ahead / 0 behind
-- Post-refresh checks: `Pass`
-- Evidence: `evidence/delivery/api-rev-009-base-refresh.log`
-- Final pre-handoff recheck: `Pass`; tracked base unchanged and contained; branch 15 ahead / 0 behind
-- Final recheck evidence: `evidence/delivery/api-rev-009-final-integrated-recheck.log`
-- DR-009 recheck: `origin/personal` unchanged at `9615dcc88e73f0584e67623a3cfe1f0d2afd4617`; base contained; 15 ahead / 0 behind; no integration while the user is exercising the running candidate
-- DR-009 recheck evidence: `evidence/delivery/dr-009-live-verification-base-recheck.log`
-- Finalization refresh: `origin/personal@9615dcc88e73f0584e67623a3cfe1f0d2afd4617` unchanged and contained; branch 16 ahead / 0 behind; no candidate change and no renewed verification required
-- Finalization refresh evidence: `evidence/delivery/dr-010-finalization-base-refresh.log`
-
-## User Verification
-
-- Explicit user completion/verification received: `Yes`
-- Verification target: local unsigned macOS ARM64 Electron 1.4.34 package containing SR-015
-- Verification state: `Pass — user confirmed the ticket is done and the tested behavior works`
-- Repository finalization hold: `Released by explicit user instruction`
-- Remaining user action: `None`
-
-## Docs Sync Result
-
-- Artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/done/memory-lineage-provenance-analysis/docs-sync-report.md`
-- Result: `Updated / Pass`
-- Updated docs:
-  - `autobyteus-ts/docs/agent_memory_design.md`
-  - `autobyteus-ts/docs/agent_memory_design_nodejs.md`
-  - `autobyteus-server-ts/docs/ARCHITECTURE.md`
-  - `autobyteus-server-ts/docs/modules/agent_memory.md`
-  - `autobyteus-server-ts/docs/design/startup_initialization_and_lazy_services.md`
-- No-impact docs: root and web READMEs; `agent_work_traces.md`
-
-## Ticket State Transition
-
-- Moved to `tickets/done/<ticket-name>`: `Yes — staged for the ticket-branch finalization commit`
-- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/done/memory-lineage-provenance-analysis`
-
-## Version / Tag / Release Commit
-
-- Version bump/tag/release commit: `Planned through the documented root release helper after repository finalization`
-- Current package version: `1.4.34`, inherited from the tracked base
-- Next release version: `1.4.35`
+- Finalization target: `origin/personal` / local `personal`
+- Latest tracked base: `9615dcc88e73f0584e67623a3cfe1f0d2afd4617`
+- Result: base unchanged and already contained; ticket branch was 16 ahead / 0 behind.
+- Candidate impact: none; no merge or renewed verification was required.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/memory-lineage-provenance-analysis/evidence/delivery/dr-010-finalization-base-refresh.log`
 
 ## Repository Finalization
 
-- Ticket branch: `codex/memory-lineage-provenance-analysis`
-- Finalization target: `origin/personal` / local `personal`
-- Reviewed production implementation commit: `d9753e69c1244bf88c0bc6816306495430047a35`
-- API/E2E checkpoint commit: `89cfd4ebcffac9612d5f64d1fe95d7468ae4101d`
-- Delivery-owned docs/evidence: archived and being committed on the ticket branch
-- Ticket branch push: `Pending`
-- Target update/merge/push: `Pending`
-- Finalization status: `In progress; no execution failure`
+- Archived ticket: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/memory-lineage-provenance-analysis`
+- Ticket archive/finalization commit: `9f747dae9c2284225fb549ccdd039a01214c79dc`
+- Ticket branch push: `Pass`
+- Target update: `personal` was already current with `origin/personal`.
+- Merge method: `--no-ff`
+- Target merge commit: `8ffe1735c9054d5543ec938c70897d27381a2dc1`
+- Target push: `Pass`
+- Evidence: `evidence/delivery/dr-010-personal-merge.log`
 
-## Release / Publication / Deployment
+## Version / Tag / Release Commit
 
-- Applicable now: `Yes`
-- Method: `pnpm release 1.4.35 -- --release-notes tickets/done/memory-lineage-provenance-analysis/release-notes.md`
-- Result: `Pending repository finalization`
-- Release notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/done/memory-lineage-provenance-analysis/release-notes.md`
+- Previous version: `1.4.34`
+- Released version: `1.4.35`
+- Documented command: `pnpm release 1.4.35 -- --release-notes tickets/done/memory-lineage-provenance-analysis/release-notes.md`
+- Release commit: `8b8ae4c304928b391bdd5466b2262f87d43cf272`
+- Annotated tag: `v1.4.35`, dereferencing to the release commit
+- Version sync: `autobyteus-web` and `autobyteus-message-gateway` both `1.4.35`; managed messaging release manifest synchronized.
+- Branch/tag push: `Pass`
+- Curated notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/memory-lineage-provenance-analysis/release-notes.md`
+- Helper evidence: `evidence/delivery/dr-010-release-helper-v1.4.35.log`
+
+## Release Workflows
+
+| Workflow | Run | Attempt | Result |
+| --- | --- | --- | --- |
+| Server Docker Release | [30682822430](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30682822430) | 1 | Pass |
+| Android APK Release | [30682822429](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30682822429) | 1 | Pass |
+| Desktop Release | [30682822428](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30682822428) | 2 | Pass |
+| iOS App Store Connect Release | [30682822426](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30682822426) | 1 | Pass |
+| Release Messaging Gateway | [30682822404](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30682822404) | 1 | Pass |
+
+The first desktop attempt was cancelled after its Ubuntu Linux x64 runner remained stuck in `apt-get` for about 45 minutes while every other build had completed. The proportional `--failed` rerun reused the successful jobs, completed Linux x64 in under four minutes, published the release, and ended `success`. This was an infrastructure retry only; no source, tag, or release input changed.
+
+Evidence:
+- `evidence/delivery/dr-010-release-workflows-initial.log`
+- `evidence/delivery/dr-010-desktop-infra-retry.log`
+- `evidence/delivery/dr-010-desktop-rerun-workflow.log`
+- `evidence/delivery/dr-010-release-v1.4.35-validation.log`
+
+## Published Artifacts
+
+- GitHub release: [v1.4.35](https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.35)
+- Release state: published, non-draft, non-prerelease; curated notes match the ticket release notes.
+- Asset count: `21`.
+- Desktop: macOS ARM64/x64 DMG + ZIP + blockmaps; Linux x64/ARM64 AppImage; Windows x64 executable; updater metadata.
+- Android: signed release APK plus SHA-256 file.
+- Messaging gateway: runtime tarball, metadata, checksum, and release manifest.
+- iOS: build/test, secret validation, archive, and App Store Connect upload all passed. Final public App Store review/release remains external to this repository workflow.
+- Docker Hub: `autobyteus/autobyteus-server:1.4.35` and `:latest` are active multi-arch `linux/amd64` + `linux/arm64` manifests with shared digest `sha256:8c02988f59d4bc2635fb511ed7c331ecab50ee4228f40a8f96332571a4665b3d`.
+- Docker evidence: `evidence/delivery/dr-010-dockerhub-v1.4.35-validation.log`
+
+## Docs Sync Result
+
+- Report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/memory-lineage-provenance-analysis/docs-sync-report.md`
+- Result: `Updated / Pass`.
+- Five durable memory/startup docs were synchronized before user verification. The release-only version bump required no additional behavioral documentation change.
+
+## Persisted-Data Transition And Verification
+
+- Migration ID: `20260731_migrate_native_working_context_snapshots_v5`
+- Live ledger: `SUCCEEDED_WITH_WARNINGS`; 689 scanned / 347 migrated / 342 skipped / 0 failed.
+- Converted targets: 347/347 strict-v5 valid, metadata-identity correct, and deserializable/restorable.
+- Cleanup/preservation: obsolete derived files were removed only for successfully converted eligible targets; raw traces/manifests, lineage, excluded locations, and imported data remained untouched.
+- User result: hands-on behavior confirmed working.
+- Rollback caution: code rollback does not reverse already migrated product data; restore the pre-launch backup if product-data rollback is ever required.
 
 ## Post-Finalization Cleanup
 
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis`
-- Worktree/branch cleanup: `Pending successful repository finalization and release`
-- Delivery test-residue cleanup: `Pass`; removed the generated server-test database and journal while preserving the pre-existing AutoByteus process on port `29695`
-- Cleanup evidence: `evidence/delivery/api-rev-009-delivery-cleanup.log`
-- Remote branch cleanup: `Pending successful finalization`
+- Ticket worktree: removed.
+- Local ticket branch: deleted.
+- Remote ticket branch: deleted.
+- Generated local Electron package and dependency residue: removed with the worktree after the released artifacts were published.
+- Cleanup result: `Pass`; no ticket worktree or local/remote ticket branch remains.
+- Evidence: `evidence/delivery/dr-010-worktree-branch-cleanup.log`
 
-## Environment Or Persisted-Data Transition Notes
+## Residual Risks / External Actions
 
-- Approved decision: `Migration Required` for exact native absent/zero-byte-lineage snapshots; `Not Affected` for excluded/nonempty-lineage locations
-- Migration ID: `20260731_migrate_native_working_context_snapshots_v5`
-- Delivery execution against user/product data: `Read-only verification only`; the running product authored the migration state, and delivery did not rerun, repair, rewrite, or remove product data
-- Packaged execution: observed on the live 1.4.34 app; ledger status `SUCCEEDED_WITH_WARNINGS`, 347 migrated / 342 skipped / 0 failed
-- Mutation boundary: validate strict-v5 replacement first; then delete only obsolete `episodic.jsonl`, `semantic.jsonl`, and `compacted_memory_manifest.json`; preserve raw evidence/manifests/archives and lineage
-- Rollback prerequisite: back up `~/.autobyteus/server-data`; code rollback alone does not reverse migrated files
+- Truthful migration omission can reduce unsupported or unbacked legacy context, including to an empty current message list.
+- A future filesystem migration failure remains retryable while startup continues; an affected run may fail strict restore until conversion succeeds.
+- Normal multi-file compaction publication remains non-crash-atomic and has no recovery journal.
+- Semantic density/latency remains model-dependent; the two live model families are not a benchmark corpus.
+- Public App Store approval and rollout are external after the successful App Store Connect upload.
+- Repository security tooling reports pre-existing dependency advisories on the default branch; they were not introduced or remediated by this ticket.
 
-## Verification Checks
+## Evidence Inventory
 
-- `API-REV-009` — Pass / 98%; canonical `SCN-020` request recovery and `SCN-021` native migration Pass.
-- `CRR-014` — Pass; `TCR-002` and `TCR-003` resolved; cumulative durable delta 2 added / 18 updated / 1 removed.
-- Integrated request recovery — Pass, 4 files / 23 tests.
-- Integrated converter/strict restore — Pass, 2 files / 16 tests.
-- Integrated native migration/order/runner/startup — Pass, 4 files / 17 tests.
-- `pnpm --filter autobyteus-server-ts build` — Pass; shared/core build, Prisma, server TypeScript, built-in-agent bootstrap smoke, and sanitized no-`DATABASE_URL` smoke.
-- `NO_TIMESTAMP=1 APPLE_TEAM_ID= ... pnpm -C autobyteus-web build:electron:mac` — Pass.
-- Electron validation — DMG valid; Mach-O ARM64; bundle `com.autobyteus.app`; version 1.4.34; ad-hoc/local signing only.
-- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.34.dmg` — SHA-256 `dd5220fadcea23fb29486e974018807b32fb586e47b2fabdf4f8571d024d2c8f`.
-- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.34.zip` — SHA-256 `49bb172ebbcb399c8f614e0c381ef394df8d85454a7758546aa9720c6c306231`.
-- Packaged startup and health: Pass; Electron PID `34832`, embedded server PID `35437`, exact built-app path, `/rest/health` `status: ok` on port `29695`.
-- Packaged migration provenance: SHA-256 `2d58401f1f734802d1c3a5cc253fd82aac27b044426dad875578affafd137416`, byte-identical to the worktree build.
-- Live ledger: `SUCCEEDED_WITH_WARNINGS`, attempt 1, 689 scanned / 347 migrated / 342 skipped / 0 failed; split 4 migrated clean, 343 migrated with omissions, 147 no-snapshot skips, 195 missing-metadata diagnostic skips, 0 nonempty-lineage skips, 0 rejection/failure.
-- Live strict-v5 check: 347/347 converted snapshots present, packaged-validator valid, metadata-identity matched, and deserializable/restorable.
-- Live cleanup check: zero migrated target retains the three obsolete files.
-- Live preservation check: exactly 347 memory files changed in the native migration window and all were expected snapshots; zero raw, external/unsupported, unclassified, imported, or other memory file changed in that window.
-- Current-session restore log: zero unsupported-schema/restore/activation/`SEND_MESSAGE` failure; the user subsequently completed hands-on verification and confirmed the ticket is done and working.
-- Live value-safe evidence: `api-rev-009-live-product-process-health.log`; `api-rev-009-live-migration-audit.log`; `api-rev-009-live-migration-audit.json`; `api-rev-009-live-migration-audit.mjs`; `api-rev-009-live-restore-log-audit.log`.
-- DR-008 delivery-owned temporary server-test database/journal cleanup — Pass; it did not terminate the then-running product process. DR-009 current-process evidence supersedes that pre-launch PID observation.
-- Evidence directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/tickets/done/memory-lineage-provenance-analysis/evidence/delivery/`.
+All paths below are under `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/memory-lineage-provenance-analysis/evidence/delivery/`:
 
-## Escalation / Reroute
-
-- Classification: `N/A`
-- Recommended recipient: `N/A`
-- Reason: no delivery failure
-
-## Rollback Criteria
-
-- The finalization refresh found no new base commit, so the user-verified candidate did not materially change and renewed verification was not required.
-- Before testing, preserve an app-data backup. If migration/restore behavior is unacceptable, quit the test app and restore that backup before returning to an older build.
-- Stop finalization if the base advances, conflicts occur, integrated checks fail, or user defects remain unresolved.
-- Truthful omission may reduce legacy context, and successful cleanup removes old derived files; raw evidence remains preserved but does not reconstruct omitted context automatically.
-- Normal multi-file compaction publication remains non-crash-atomic and out of SR-015 scope.
+- `dr-010-finalization-base-refresh.log`
+- `dr-010-personal-merge.log`
+- `dr-010-release-helper-v1.4.35.log`
+- `dr-010-release-workflows-initial.log`
+- `dr-010-desktop-infra-retry.log`
+- `dr-010-desktop-rerun-workflow.log`
+- `dr-010-release-v1.4.35-validation.log`
+- `dr-010-dockerhub-v1.4.35-validation.log`
+- `dr-010-worktree-branch-cleanup.log`
 
 ## Final Status
 
-`In progress — SR-015 passed review, integrated checks, live migration verification, and explicit user verification. The ticket is archived and repository finalization plus the documented v1.4.35 release are authorized and underway.`
+`Pass — the user-verified SR-015 package was archived, merged and pushed to personal, released as v1.4.35, published across every documented workflow, validated on GitHub Release and Docker Hub, and cleaned up. No user action remains for repository finalization; App Store review/public release is the only external publication step.`

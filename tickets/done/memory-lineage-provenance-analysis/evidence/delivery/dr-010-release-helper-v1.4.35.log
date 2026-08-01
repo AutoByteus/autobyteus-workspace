@@ -1,0 +1,46 @@
+timestamp_utc=2026-08-01T03:52:04Z
+command=pnpm release 1.4.35 -- --release-notes tickets/done/memory-lineage-provenance-analysis/release-notes.md
+
+> autobyteus-workspace@ release /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+> bash scripts/desktop-release.sh release 1.4.35 -- --release-notes tickets/done/memory-lineage-provenance-analysis/release-notes.md
+
+Updating autobyteus-web/package.json: 1.4.34 -> 1.4.35
+Updating autobyteus-message-gateway/package.json: 1.4.34 -> 1.4.35
+Synced curated release notes to .github/release-notes/release-notes.md
+Syncing managed messaging release manifest to v1.4.35
+[32mSynced default release manifest: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/managed-capabilities/messaging-gateway/release-manifest.json[0m
+[32mRelease tag: v1.4.35[0m
+[32mServer version: 0.1.1[0m
+[personal 8b8ae4c30] chore(release): bump workspace release version to 1.4.35
+ Committer: normy <normy@macbookpro.speedport.ip>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 4 files changed, 12 insertions(+), 11 deletions(-)
+remote:
+remote: GitHub found 677 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (18 critical, 283 high, 320 moderate, 56 low). To find out more, visit:
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot
+remote:
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+   8ffe1735c..8b8ae4c30  personal -> personal
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+ * [new tag]             v1.4.35 -> v1.4.35
+Release complete and pushed: branch 'personal', tag 'v1.4.35'.
+exit_code=0
+post_head=8b8ae4c304928b391bdd5466b2262f87d43cf272
+tag_commit=8b8ae4c304928b391bdd5466b2262f87d43cf272
+/bin/bash: command substitution: line 9: syntax error near unexpected token `('
+/bin/bash: command substitution: line 9: `node -p \"require('./autobyteus-web/package.json').version\"'
+web_version=
+/bin/bash: command substitution: line 10: syntax error near unexpected token `('
+/bin/bash: command substitution: line 10: `node -p \"require('./autobyteus-message-gateway/package.json').version\"'
+gateway_version=

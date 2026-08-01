@@ -1,0 +1,22 @@
+timestamp_utc=2026-08-01T04:48:28Z
+personal_head=8b8ae4c304928b391bdd5466b2262f87d43cf272
+origin_personal=8b8ae4c304928b391bdd5466b2262f87d43cf272
+tag_commit=8b8ae4c304928b391bdd5466b2262f87d43cf272
+remote_tag=132b5aafa797d9c21edca75df0e3349ea7c03f7b
+web_version=1.4.35
+gateway_version=1.4.35
+release_url=https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.35
+--- workflows ---
+30682822430	1	Server Docker Release	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30682822430
+30682822429	1	Android APK Release	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30682822429
+30682822428	2	Desktop Release	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30682822428
+30682822426	1	iOS App Store Connect Release	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30682822426
+30682822404	1	Release Messaging Gateway	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30682822404
+--- release metadata ---
+{"body":"## What's New\n- Added evidence-linked memory lineage for native AutoByteus compaction so current context and its source history remain inspectable across repeated compactions.\n\n## Improvements\n- Existing native AutoByteus runs now upgrade their historical WorkingContext snapshots to the current format during startup instead of discarding their resumable context.\n- Memory Compactor summaries now use natural episode and fact selection while preserving exact tool history, current-context projection, and continuation behavior.\n\n## Fixes\n- Fixed older native runs failing to reopen because their stored WorkingContext snapshot used a pre-v5 schema.\n- Fixed provider or request failures after compaction restoring stale pre-compaction context while durable memory changes remained committed.\n","isDraft":false,"isPrerelease":false,"name":"v1.4.35","publishedAt":"2026-08-01T03:54:42Z","tagName":"v1.4.35","url":"https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.35"}
+--- release assets ---
+{"count":21,"names":["autobyteus-message-gateway-1.4.35-node-generic.tar.gz","autobyteus-message-gateway-1.4.35-node-generic.tar.gz.json","autobyteus-message-gateway-1.4.35-node-generic.tar.gz.sha256","AutoByteus_personal_android-1.4.35-release.apk","AutoByteus_personal_android-1.4.35-release.apk.sha256","AutoByteus_personal_linux-arm64-1.4.35.AppImage","AutoByteus_personal_linux-x64-1.4.35.AppImage","AutoByteus_personal_macos-arm64-1.4.35.dmg","AutoByteus_personal_macos-arm64-1.4.35.dmg.blockmap","AutoByteus_personal_macos-arm64-1.4.35.zip","AutoByteus_personal_macos-arm64-1.4.35.zip.blockmap","AutoByteus_personal_macos-x64-1.4.35.dmg","AutoByteus_personal_macos-x64-1.4.35.dmg.blockmap","AutoByteus_personal_macos-x64-1.4.35.zip","AutoByteus_personal_macos-x64-1.4.35.zip.blockmap","AutoByteus_personal_windows-1.4.35.exe","latest-linux-arm64.yml","latest-linux.yml","latest-mac.yml","latest.yml","release-manifest.json"]}
+--- final branch cleanup ---
+ticket_worktree_exists=no
+local_ticket_branch_exists=no
+remote_ticket_branch_exists=no

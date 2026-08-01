@@ -4,10 +4,10 @@
 
 - Ticket: `memory-lineage-provenance-analysis`
 - Trigger: user-approved `SR-015`; `ARCH-REV-009 Pass`; implementation `IR-005` at `d9753e69c1244bf88c0bc6816306495430047a35`; source review `CRR-012 Pass / 9.3`; current `API-REV-009 Pass / 98%`; proportional review `CRR-014 Pass`; DR-009 read-only live migration verification; explicit user completion and release authorization
-- Prior delivery baseline: `DR-001` through `DR-007`; not evidence that SR-015 was already delivered
+- Prior delivery baseline: `DR-001` through `DR-009`; DR-010 is the finalization/release result
 - Integrated tracked base: `origin/personal@9615dcc88e73f0584e67623a3cfe1f0d2afd4617`
 - Reviewed API/E2E checkpoint: `89cfd4ebcffac9612d5f64d1fe95d7468ae4101d`
-- Integration state: latest base already contained; branch 16 ahead / 0 behind at the finalization refresh
+- Integration state: latest base already contained; branch 16 ahead / 0 behind at the finalization refresh; archived ticket commit `9f747dae9`, target merge `8ffe1735c`, release commit/tag `8b8ae4c30` / `v1.4.35`
 
 ## Why Docs Were Updated
 
@@ -17,14 +17,14 @@ SR-015 replaces the earlier destructive pre-lineage reset and fail-closed global
 
 | Doc Path | Result | Notes |
 | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-ts/docs/agent_memory_design.md` | Updated | Replaces reset/raw-replay/pre-compaction recovery with the native v5 migration, strict restore, and stable-base settlement contract. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-ts/docs/agent_memory_design_nodejs.md` | Updated | Kept byte-aligned below the TypeScript-specific title. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/docs/ARCHITECTURE.md` | Updated | Records server classifier/migration composition, ordinary startup result handling, and request recovery placement. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/docs/modules/agent_memory.md` | Updated | Records exact migration eligibility/order/publication, strict restore, and exactly-once checkpoint settlement. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/docs/design/startup_initialization_and_lazy_services.md` | Updated | Replaces the obsolete global fail-closed reset gate with the current ordered, result-persisting migration lifecycle. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/docs/modules/agent_work_traces.md` | No change | Raw active-filename handling is already migration-only and Work Evidence remains separate; SR-015 does not change its sources or output. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/README.md` | No change | Root onboarding links the module docs; duplicating the deep migration/recovery contract would blur scope. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-web/README.md` | No change | The documented macOS no-notarization Electron build path remains correct and was used for the current package. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/docs/agent_memory_design.md` | Updated | Replaces reset/raw-replay/pre-compaction recovery with the native v5 migration, strict restore, and stable-base settlement contract. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/docs/agent_memory_design_nodejs.md` | Updated | Kept byte-aligned below the TypeScript-specific title. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docs/ARCHITECTURE.md` | Updated | Records server classifier/migration composition, ordinary startup result handling, and request recovery placement. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docs/modules/agent_memory.md` | Updated | Records exact migration eligibility/order/publication, strict restore, and exactly-once checkpoint settlement. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docs/design/startup_initialization_and_lazy_services.md` | Updated | Replaces the obsolete global fail-closed reset gate with the current ordered, result-persisting migration lifecycle. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/docs/modules/agent_work_traces.md` | No change | Raw active-filename handling is already migration-only and Work Evidence remains separate; SR-015 does not change its sources or output. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/README.md` | No change | Root onboarding links the module docs; duplicating the deep migration/recovery contract would blur scope. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/README.md` | No change | The documented macOS no-notarization Electron build path remains correct and was used for the current package. |
 
 ## Durable Knowledge Promoted
 
@@ -66,7 +66,8 @@ SR-015 replaces the earlier destructive pre-lineage reset and fail-closed global
 - Docs sync result: `Pass`.
 - DR-009 live-product result: no additional long-lived documentation change required. The exact delivered migration behavior was observed: 347/347 converted snapshots are strict v5, identity-correct, and deserializable; cleanup and preservation boundaries match the existing docs. Current delivery artifacts and value-safe evidence record operational counts without duplicating ephemeral owner-data inventory into durable project design docs.
 - User verification: `Pass`; the user explicitly confirmed the ticket is done and the tested behavior is working.
-- Next action: delivery finalizes the verified branch to `personal` and releases `v1.4.35`. No additional durable documentation change is required for the release-only version bump.
+- Release result: `Pass`; `v1.4.35` is published and all documented release workflows completed successfully. The release-only version bump required no additional behavioral documentation change.
+- Next action: none for repository documentation. App Store review/public release remains external after successful App Store Connect upload.
 
 ## Blocked Or Escalated Follow-Up
 
