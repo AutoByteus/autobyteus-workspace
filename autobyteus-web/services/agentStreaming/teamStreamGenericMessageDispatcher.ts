@@ -2,7 +2,6 @@ import type { AgentContext } from '~/types/agent/AgentContext';
 import type { ServerMessage } from './protocol';
 import {
   handleSegmentStart,
-  handleSegmentContent,
   handleSegmentEnd,
   handleToolApprovalRequested,
   handleToolApproved,
@@ -41,9 +40,6 @@ export const dispatchGenericTeamMemberMessage = (
   switch (message.type) {
     case 'SEGMENT_START':
       handleSegmentStart(message.payload, memberContext);
-      break;
-    case 'SEGMENT_CONTENT':
-      handleSegmentContent(message.payload, memberContext);
       break;
     case 'SEGMENT_END':
       handleSegmentEnd(message.payload, memberContext);

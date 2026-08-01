@@ -724,6 +724,30 @@ Where:
   - macOS arm64 uses the MLX worker bundle
   - macOS x64, Linux x64, and Windows x64 use the `faster-whisper` worker bundle
 
+#### Capture Startup And Ownership
+
+The renderer's `voiceInputStore` owns one shared capture lifecycle for the
+composer and the Settings test control:
+
+- activation commits `isStarting` synchronously, before permission, device,
+  `getUserMedia`, `AudioContext`, or AudioWorklet initialization, so the
+  initiating control can render immediate pending feedback and reject duplicate
+  starts;
+- capture resources stay local to the pending attempt and are published to the
+  store only after the same attempt and source are still current; denial,
+  worklet failure, cancellation, and unmount stop/close any partially acquired
+  stream or audio context;
+- `recordingSource` distinguishes `composer` from `settings-test`.
+  `cancelOperationForSource(...)` only cancels a matching start or recording,
+  so unmounting one surface cannot stop the other surface's operation; and
+- successful startup transitions from starting to recording, while stop moves
+  the captured audio into transcription. Source-scoped cancellation does not
+  discard a transcription that no longer depends on the initiating component.
+
+These are frontend state/resource rules only. They do not change the managed
+extension assets, local transcription runtime/model, IPC result contract, or
+persisted data.
+
 ## Related Documentation
 
 - **[System Architecture](../ARCHITECTURE.md)**: High-level overview of the system including the Electron integration.

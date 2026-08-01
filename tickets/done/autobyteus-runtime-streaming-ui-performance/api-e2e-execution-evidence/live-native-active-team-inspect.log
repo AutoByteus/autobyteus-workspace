@@ -1,0 +1,912 @@
+row 1
+url http://127.0.0.1:3000/workspace
+Agents
+Agent Teams
+Applications
+Skills
+Memory
+Nodes
+Workspaces
+2026-05-25-roma-fuqi-church
+2026-07-18-hackathon
+autobyteus_company_operation
+autobyteus_mcps
+autobyteus_private_mcps
+autobyteus_rpa_llm_workspace
+autobyteus-agents
+autobyteus-com-workspace
+autobyteus-investor-applications
+autobyteus-manga-videos
+autobyteus-marketing-workspace
+autobyteus-private-agents
+autobyteus-social-media
+autobyteus-tutorial-videos
+autobyteus-workspace-superrepo
+bible_children_manga_book
+browser_docker
+church
+enpal-smart-energy-companion
+german_online_practice
+model-eval-analysis
+normy_job_search
+reonic_hackerthon
+repository_prisma
+Temp Workspace
+A
+AudioTranscriber
+(2)
+C
+Codex
+(6)
+DA
+Daily Assistant
+(6)
+MC
+Memory Compactor
+(6)
+PD
+PPT Designer
+(1)
+PP
+Product Prototyper
+(1)
+RE
+research engineer
+(1)
+RD
+Resume Designer
+(1)
+RS
+Retrospective Skill Improver
+(2)
+TEAMS
+SE
+Software Engineering Team
+(24)
+API/E2E validation task (do not alter any code repository): In the Temp Workspace only, create a ...
+4m
+S
+solution_designer
+4m
+A
+architecture_reviewer
+4m
+I
+implementation_engineer
+4m
+C
+code_reviewer
+4m
+A
+api_e2e_engineer
+4m
+D
+delivery_engineer
+4m
+API/E2E validation task (do not alter any code repository): In the Temp Workspace only, create a ...
+7m
+Build a minimal Vue Apple shop prototype in a new folder named codex-luna-apple-shop. One page on...
+2h
+Create a minimal Vue prototype: one page with four Apple product cards and an Add to Bag button t...
+3h
+create a demo apple shopping website, use nuxt ssr for the technlogy. make sure you
+4h
+As you can see that I have a bug currently when I click the setting the token statistics I got er...
+4d
+lets brain storm on this /Users/normy/2026-07-18-hackathon
+2w
+create a apple fruit shot wensite
+2w
+create a fancy jet shooting game in html
+2w
+hello
+6w
+create a website to sell sushi, and you create those features. since its demo, you can decide. no...
+7w
+create a jet game in html, you only do design. put in your own folder. This is not a git repo. so...
+7w
+You create a html based schoolbag ecommerce website, since its only for demo, so you fancy stuff....
+7w
+create a html based shoe ecommerce website, since its only for demo, so you fancy stuff. you desi...
+7w
+create a very simple jet game in html, you follow your skill. the purpose is i wann test whethe r...
+7w
+hello
+7w
+create a jet game in html, you are solution designer, you dont write code. you use your skill to ...
+7w
+create a small jet game in html
+7w
+create a really nice jet stricking game using the tehnicnogy you feel most suitable for
+8w
+create a shoes shopping demo website, using nuxt ssr thanks. you decide the features. no need to ...
+8w
+develop a website to sell kleber(glues) using nuxt ssr. you design the fea...
+11w
+create a animal toys shopping website, you design the features, because it...
+11w
+create a shoes shopping website, you design the features, because its for ...
+11w
+create a fruit shopping website, you design the features, because its for ...
+11w
+CS
+Classroom Simulation Team
+(21)
+NC
+Nested Classroom Test Team
+(4)
+BS
+Bible Study Group
+(5)
+DT
+Data2Story Team
+(1)
+NO
+Northstar Operating Company
+(3)
+VT
+Video Tutorial Creation Team
+(7)
+JS
+Job Search Application Team
+(1)
+MT
+Marketing Team
+(2)
+Settings
+S
+solution_designer
+Running
+You
+**[User Requirement]**
+API/E2E validation task (do not alter any code repository): In the Temp Workspace only, create a single Markdown file named api-e2e-validation-marker.md containing a heading and a short marker that this is the 2026-08-01 streaming validation. Proceed through the normal Software Engineering Team workflow so solution design prepares the ordinary required artifacts and sends a reference-bearing handoff to architecture review; downstream members may validate the one-file result. Keep every task artifact inside the Temp Workspace. Do not modify source repositories, install dependencies, release, or deploy. This is a disposable one-off validation run.
+S
+solution_designer
+read_file
+· solution-designer/design-principles.md
+run_bash
+· pwd; echo "---"; ls -la; echo "---"; ls -la ~ 2>/dev/null | head -50
+improve skills
+Context Files (0)
+(drag, paste, or upload)
+Files
+Team
+Terminal
+Activity
+Token
+Artifacts
+VNC Viewer
+To-Do
+0 Tasks
+Activity
+2 Events
+read_file
+#call_0
+PARSED
+Arguments
+run_bash
+#call_0
+PARSED
+Arguments
+[
+  {
+    "text": "",
+    "title": "Remove from Workspaces",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "normy_job_search",
+    "title": "",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Remove from Workspaces",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "reonic_hackerthon",
+    "title": "",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Remove from Workspaces",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "repository_prisma",
+    "title": "",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Remove from Workspaces",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "Temp Workspace",
+    "title": "",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "A\nAudioTranscriber\n(2)",
+    "title": "",
+    "test": "workspace-agent-row",
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "New run with this agent",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "C\nCodex\n(6)",
+    "title": "",
+    "test": "workspace-agent-row",
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "New run with this agent",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "DA\nDaily Assistant\n(6)",
+    "title": "",
+    "test": "workspace-agent-row",
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "New run with this agent",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "MC\nMemory Compactor\n(6)",
+    "title": "",
+    "test": "workspace-agent-row",
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "New run with this agent",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "PD\nPPT Designer\n(1)",
+    "title": "",
+    "test": "workspace-agent-row",
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "New run with this agent",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "PP\nProduct Prototyper\n(1)",
+    "title": "",
+    "test": "workspace-agent-row",
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "New run with this agent",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "RE\nresearch engineer\n(1)",
+    "title": "",
+    "test": "workspace-agent-row",
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "New run with this agent",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "RD\nResume Designer\n(1)",
+    "title": "",
+    "test": "workspace-agent-row",
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "New run with this agent",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "RS\nRetrospective Skill Improver\n(2)",
+    "title": "",
+    "test": "workspace-agent-row",
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "New run with this agent",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "SE\nSoftware Engineering Team\n(24)",
+    "title": "",
+    "test": "workspace-team-definition-row-software-engineering-team",
+    "disabled": false
+  },
+  {
+    "text": "API/E2E validation task (do not alter any code repository): In the Temp Workspace only, create a ...",
+    "title": "",
+    "test": "workspace-team-row-software_engineering_team_985b0fa4443e45ed82d7a3fadb041024",
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Terminate team",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "API/E2E validation task (do not alter any code repository): In the Temp Workspace only, create a ...",
+    "title": "",
+    "test": "workspace-team-row-software_engineering_team_29246d8b6775462f92542441b1bb00af",
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Archive team history",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Delete team history permanently",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "Build a minimal Vue Apple shop prototype in a new folder named codex-luna-apple-shop. One page on...",
+    "title": "",
+    "test": "workspace-team-row-software_engineering_team_21f81d9055df4fb28659e73ac274049e",
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Archive team history",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Delete team history permanently",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "Create a minimal Vue prototype: one page with four Apple product cards and an Add to Bag button t...",
+    "title": "",
+    "test": "workspace-team-row-software_engineering_team_ac1ca45270184f35bfc2ff7a207d8ebc",
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Archive team history",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Delete team history permanently",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "create a demo apple shopping website, use nuxt ssr for the technlogy. make sure you",
+    "title": "",
+    "test": "workspace-team-row-software_engineering_team_83eb7b773f9040cfb6fd8694632235aa",
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Archive team history",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Delete team history permanently",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "As you can see that I have a bug currently when I click the setting the token statistics I got er...",
+    "title": "",
+    "test": "workspace-team-row-software_engineering_team_bcf926e63e3a44d58a8e40dd530fb989",
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Archive team history",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Delete team history permanently",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "lets brain storm on this /Users/normy/2026-07-18-hackathon",
+    "title": "",
+    "test": "workspace-team-row-software_engineering_team_c2ca89c020d549b5b053ce031b65f9f5",
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Archive team history",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Delete team history permanently",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "create a apple fruit shot wensite",
+    "title": "",
+    "test": "workspace-team-row-software_engineering_team_38875f5b514442cc862d3e9a96cccbea",
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Archive team history",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Delete team history permanently",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "create a fancy jet shooting game in html",
+    "title": "",
+    "test": "workspace-team-row-software_engineering_team_ec2b65c561dd4023a70e5b78b65bafa0",
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Archive team history",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Delete team history permanently",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "hello",
+    "title": "",
+    "test": "workspace-team-row-software_engineering_team_457c4641caa749ae838a4197ffde2dd2",
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Archive team history",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Delete team history permanently",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "create a website to sell sushi, and you create those features. since its demo, you can decide. no...",
+    "title": "",
+    "test": "workspace-team-row-software_engineering_team_6b9ab51c7bf640639de5e827a6ef4924",
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Archive team history",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Delete team history permanently",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "create a jet game in html, you only do design. put in your own folder. This is not a git repo. so...",
+    "title": "",
+    "test": "workspace-team-row-software_engineering_team_d20b5e11c83b4eb28a702eda96c9a3a0",
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Archive team history",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Delete team history permanently",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "You create a html based schoolbag ecommerce website, since its only for demo, so you fancy stuff....",
+    "title": "",
+    "test": "workspace-team-row-team_software-engineering-team_5f2eec12",
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Archive team history",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Delete team history permanently",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "create a html based shoe ecommerce website, since its only for demo, so you fancy stuff. you desi...",
+    "title": "",
+    "test": "workspace-team-row-team_software-engineering-team_866ec110",
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Archive team history",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Delete team history permanently",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "create a very simple jet game in html, you follow your skill. the purpose is i wann test whethe r...",
+    "title": "",
+    "test": "workspace-team-row-team_software-engineering-team_5ecc1027",
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Archive team history",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Delete team history permanently",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "hello",
+    "title": "",
+    "test": "workspace-team-row-team_software-engineering-team_84813e88",
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Archive team history",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Delete team history permanently",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "create a jet game in html, you are solution designer, you dont write code. you use your skill to ...",
+    "title": "",
+    "test": "workspace-team-row-team_software-engineering-team_6a1b9910",
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Archive team history",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Delete team history permanently",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "create a small jet game in html",
+    "title": "",
+    "test": "workspace-team-row-team_software-engineering-team_edbbe55c",
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Archive team history",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Delete team history permanently",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "create a really nice jet stricking game using the tehnicnogy you feel most suitable for",
+    "title": "",
+    "test": "workspace-team-row-team_software-engineering-team_01a0f635",
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Archive team history",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Delete team history permanently",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "create a shoes shopping demo website, using nuxt ssr thanks. you decide the features. no need to ...",
+    "title": "",
+    "test": "workspace-team-row-team_software-engineering-team_e296a744",
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Archive team history",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Delete team history permanently",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "develop a website to sell kleber(glues) using nuxt ssr. you design the fea...",
+    "title": "",
+    "test": "workspace-team-row-team_software-engineering-team_1d82e959",
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Archive team history",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Delete team history permanently",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "create a animal toys shopping website, you design the features, because it...",
+    "title": "",
+    "test": "workspace-team-row-team_software-engineering-team_cf98b5e0",
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Archive team history",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Delete team history permanently",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "create a shoes shopping website, you design the features, because its for ...",
+    "title": "",
+    "test": "workspace-team-row-team_software-engineering-team_dacafd83",
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Archive team history",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Delete team history permanently",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "create a fruit shopping website, you design the features, because its for ...",
+    "title": "",
+    "test": "workspace-team-row-team_software-engineering-team_2ce060ac",
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Archive team history",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Delete team history permanently",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "CS\nClassroom Simulation Team\n(21)",
+    "title": "",
+    "test": "workspace-team-definition-row-classroom-simulation-team",
+    "disabled": false
+  },
+  {
+    "text": "NC\nNested Classroom Test Team\n(4)",
+    "title": "",
+    "test": "workspace-team-definition-row-nested-classroom-test",
+    "disabled": false
+  },
+  {
+    "text": "BS\nBible Study Group\n(5)",
+    "title": "",
+    "test": "workspace-team-definition-row-bible-study-group",
+    "disabled": false
+  },
+  {
+    "text": "DT\nData2Story Team\n(1)",
+    "title": "",
+    "test": "workspace-team-definition-row-data2story-team",
+    "disabled": false
+  },
+  {
+    "text": "NO\nNorthstar Operating Company\n(3)",
+    "title": "",
+    "test": "workspace-team-definition-row-northstar-operating-company",
+    "disabled": false
+  },
+  {
+    "text": "VT\nVideo Tutorial Creation Team\n(7)",
+    "title": "",
+    "test": "workspace-team-definition-row-video-tutorial-creation-team",
+    "disabled": false
+  },
+  {
+    "text": "JS\nJob Search Application Team\n(1)",
+    "title": "",
+    "test": "workspace-team-definition-row-job-search-application-team",
+    "disabled": false
+  },
+  {
+    "text": "MT\nMarketing Team\n(2)",
+    "title": "",
+    "test": "workspace-team-definition-row-marketing-team",
+    "disabled": false
+  },
+  {
+    "text": "Settings",
+    "title": "",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "",
+    "test": "workspace-header-edit-config",
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "",
+    "test": "workspace-header-new-run",
+    "disabled": false
+  },
+  {
+    "text": "improve skills",
+    "title": "Start a visible Retrospective Skill Improver for this member's run. It may update configured skill packages or make no changes.",
+    "test": "skill-improvement-composer-cta",
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Upload files",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Stop generation",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "Files",
+    "title": "",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "Team",
+    "title": "",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "Terminal",
+    "title": "",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "Activity",
+    "title": "",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "Token",
+    "title": "",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "Artifacts",
+    "title": "",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "VNC Viewer",
+    "title": "",
+    "test": null,
+    "disabled": false
+  },
+  {
+    "text": "",
+    "title": "Toggle Sidebar",
+    "test": "right-side-panel-toggle",
+    "disabled": false
+  }
+]

@@ -21,17 +21,19 @@
       ></textarea>
 
       <button
-        v-if="voiceInputStore.isAvailable || voiceInputStore.isRecording || voiceInputStore.isTranscribing"
+        v-if="voiceInputStore.isAvailable || voiceInputStore.isStarting || voiceInputStore.isRecording || voiceInputStore.isTranscribing"
         type="button"
         @click="handleVoiceAction"
-        :disabled="voiceInputStore.isTranscribing || !activeContextStore.activeAgentContext"
+        :disabled="voiceInputStore.isStarting || voiceInputStore.isTranscribing || !activeContextStore.activeAgentContext"
         :title="voiceButtonTitle"
+        :aria-busy="voiceInputStore.isStarting ? 'true' : undefined"
         class="absolute bottom-2 right-14 flex items-center justify-center p-2 rounded-full focus:outline-none focus:ring-2 transition-all duration-200 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
         :class="voiceButtonClass"
       >
         <Icon
-          :icon="voiceInputStore.isRecording ? 'heroicons:stop-solid' : 'heroicons:microphone-solid'"
+          :icon="voiceInputStore.isRecording ? 'heroicons:stop-solid' : voiceInputStore.isStarting ? 'heroicons:arrow-path-solid' : 'heroicons:microphone-solid'"
           class="h-5 w-5"
+          :class="voiceInputStore.isStarting ? 'animate-spin' : ''"
         />
       </button>
 
@@ -50,12 +52,17 @@
     </div>
 
     <div
-      v-if="voiceInputStore.isRecording || voiceInputStore.isTranscribing"
+      v-if="voiceInputStore.isStarting || voiceInputStore.isRecording || voiceInputStore.isTranscribing"
       class="mx-3 mb-2 flex items-center justify-between rounded-lg border px-3 py-2 text-xs font-medium"
       :class="voiceStatusClass"
     >
       <div class="flex items-center gap-2">
         <span
+          v-if="voiceInputStore.isStarting"
+          class="h-3 w-3 animate-spin rounded-full border-2 border-blue-200 border-t-blue-600"
+        ></span>
+        <span
+          v-else
           class="h-2.5 w-2.5 rounded-full"
           :class="voiceInputStore.isRecording ? 'animate-pulse bg-red-500' : 'bg-blue-500'"
         ></span>
@@ -108,6 +115,9 @@ const isActionDisabled = computed(() => {
   return isSending.value || contextFileUploadStore.isUploading || !internalRequirement.value.trim();
 });
 const voiceButtonTitle = computed(() => {
+  if (voiceInputStore.isStarting) {
+    return 'Starting microphone...';
+  }
   if (voiceInputStore.isTranscribing) {
     return 'Transcribing...';
   }
@@ -120,6 +130,9 @@ const voiceButtonClass = computed(() => {
   return 'bg-slate-100 text-slate-700 hover:bg-slate-200 focus:ring-slate-400/50';
 });
 const voiceStatusText = computed(() => {
+  if (voiceInputStore.isStarting) {
+    return 'Starting microphone...';
+  }
   if (voiceInputStore.isRecording) {
     return 'Recording... Tap stop when you are done.';
   }
@@ -441,7 +454,7 @@ onMounted(async () => {
 
 onUnmounted(() => {
   flushDebouncedUpdateStore();
-  void voiceInputStore.cleanup();
+  void voiceInputStore.cancelOperationForSource('composer');
   stopRecordingTimer();
   window.removeEventListener('resize', handleResize);
 });

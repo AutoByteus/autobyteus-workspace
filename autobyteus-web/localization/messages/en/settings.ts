@@ -245,6 +245,7 @@ const settingsMessages = {
   'settings.components.settings.VoiceInputExtensionCard.installPhase.installingVoiceInput': 'Installing Voice Input',
   'settings.components.settings.VoiceInputExtensionCard.test.start': 'Start Test',
   'settings.components.settings.VoiceInputExtensionCard.test.stop': 'Stop Test',
+  'settings.components.settings.VoiceInputExtensionCard.test.starting': 'Starting microphone...',
   'settings.components.settings.VoiceInputExtensionCard.test.recording': 'Recording a test sample...',
   'settings.components.settings.VoiceInputExtensionCard.test.transcribing': 'Transcribing the test sample...',
   'settings.components.settings.VoiceInputExtensionCard.audioStatus.permissionDenied': 'Microphone access is denied. Allow microphone access for AutoByteus, then refresh sources.',

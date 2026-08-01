@@ -28,10 +28,12 @@ const activeContextStoreMock = reactive({
 
 const voiceInputStoreMock = reactive({
   isAvailable: false,
+  isStarting: false,
   isRecording: false,
   isTranscribing: false,
   initialize: vi.fn().mockResolvedValue(undefined),
   cleanup: vi.fn().mockResolvedValue(undefined),
+  cancelOperationForSource: vi.fn().mockResolvedValue(undefined),
   toggleRecording: vi.fn().mockResolvedValue(undefined),
 })
 
@@ -119,6 +121,7 @@ describe('AgentUserInputTextArea', () => {
     activeContextStoreMock.canInterrupt = false
     contextFileUploadStoreMock.isUploading = false
     voiceInputStoreMock.isAvailable = false
+    voiceInputStoreMock.isStarting = false
     voiceInputStoreMock.isRecording = false
     voiceInputStoreMock.isTranscribing = false
   })
@@ -152,6 +155,23 @@ describe('AgentUserInputTextArea', () => {
 
     expect(wrapper.text()).toContain('Recording... Tap stop when you are done.')
     expect(wrapper.find('button[title="Stop recording"]').exists()).toBe(true)
+  })
+
+  it('shows immediate starting feedback, guards duplicate activation, and cancels only composer on unmount', async () => {
+    voiceInputStoreMock.isAvailable = true
+    voiceInputStoreMock.isStarting = true
+
+    const wrapper = mount(AgentUserInputTextArea)
+    await nextTick()
+
+    const button = wrapper.find('button[title="Starting microphone..."]')
+    expect(button.exists()).toBe(true)
+    expect(button.attributes('disabled')).toBeDefined()
+    expect(button.attributes('aria-busy')).toBe('true')
+    expect(wrapper.text()).toContain('Starting microphone...')
+
+    wrapper.unmount()
+    expect(voiceInputStoreMock.cancelOperationForSource).toHaveBeenCalledWith('composer')
   })
 
   it('disables send while context files are still uploading', async () => {

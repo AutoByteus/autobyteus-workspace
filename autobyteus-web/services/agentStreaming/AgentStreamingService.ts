@@ -10,7 +10,6 @@ import { WebSocketClient, ConnectionState, type IWebSocketClient } from './trans
 import { parseServerMessage, serializeClientMessage, type ServerMessage, type ClientMessage } from './protocol';
 import {
   handleSegmentStart,
-  handleSegmentContent,
   handleSegmentEnd,
   handleExternalUserMessage,
   handleToolApprovalRequested,
@@ -39,6 +38,8 @@ import {
   beginRecentEventMonitorMutation,
   commitRecentEventMonitorMutation,
 } from '~/services/eventMonitor/recentEventMonitorMutationCommit';
+import { StreamContentPresentationScheduler } from './presentation/StreamContentPresentationScheduler';
+import { projectStreamContentBatch } from './presentation/streamContentBatchProjector';
 
 const shouldLogStreaming = (): boolean => {
   if (typeof window === 'undefined') return false;
@@ -66,6 +67,7 @@ export class AgentStreamingService {
   private wsClient: IWebSocketClient;
   private context: AgentContext | null = null;
   private wsEndpoint: string;
+  private readonly contentPresentationScheduler: StreamContentPresentationScheduler;
 
   /**
    * Create an AgentStreamingService.
@@ -76,6 +78,9 @@ export class AgentStreamingService {
   constructor(wsEndpoint: string, options: AgentStreamingServiceOptions = {}) {
     this.wsClient = options.wsClient || new WebSocketClient();
     this.wsEndpoint = wsEndpoint;
+    this.contentPresentationScheduler = new StreamContentPresentationScheduler(
+      projectStreamContentBatch,
+    );
   }
 
   get connectionState(): ConnectionState {
@@ -83,6 +88,7 @@ export class AgentStreamingService {
   }
 
   attachContext(context: AgentContext): void {
+    this.contentPresentationScheduler.flush();
     this.context = context;
   }
 
@@ -90,7 +96,7 @@ export class AgentStreamingService {
    * Connect to an agent's WebSocket stream.
    */
   connect(agentRunId: string, context: AgentContext): void {
-    this.context = context;
+    this.attachContext(context);
     
     this.wsClient.on('onMessage', this.handleMessage);
     this.wsClient.on('onConnect', this.handleConnect);
@@ -107,6 +113,7 @@ export class AgentStreamingService {
    * Disconnect from the WebSocket stream.
    */
   disconnect(): void {
+    this.contentPresentationScheduler.flush();
     this.wsClient.off('onMessage', this.handleMessage);
     this.wsClient.off('onConnect', this.handleConnect);
     this.wsClient.off('onDisconnect', this.handleDisconnect);
@@ -179,7 +186,18 @@ export class AgentStreamingService {
 
     try {
       const message = parseServerMessage(raw);
+      const receivedAt = message.type === 'SEGMENT_CONTENT'
+        ? new Date().toISOString()
+        : null;
       this.logMessage(message);
+      if (message.type === 'SEGMENT_CONTENT') {
+        this.contentPresentationScheduler.enqueue(this.context, {
+          payload: message.payload,
+          receivedAt: receivedAt!,
+        });
+        return;
+      }
+      this.contentPresentationScheduler.flush();
       this.dispatchMessage(message, this.context);
     } catch (e) {
       console.error('Failed to parse WebSocket message:', e);
@@ -195,6 +213,7 @@ export class AgentStreamingService {
 
   private handleDisconnect = (reason?: string): void => {
     console.log('Agent WebSocket disconnected:', reason);
+    this.contentPresentationScheduler.flush();
     if (this.context) {
       this.context.isSubscribed = false;
     }
@@ -245,10 +264,6 @@ export class AgentStreamingService {
     switch (message.type) {
       case 'SEGMENT_START':
         handleSegmentStart(message.payload, context);
-        break;
-
-      case 'SEGMENT_CONTENT':
-        handleSegmentContent(message.payload, context);
         break;
 
       case 'SEGMENT_END':

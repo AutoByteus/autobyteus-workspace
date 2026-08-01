@@ -1,0 +1,222 @@
+{
+  "probeId": "RUNTIME-CONTROLS-PERSIST-001",
+  "startedAt": "2026-08-01T09:52:50.614Z",
+  "topology": {
+    "frontend": "http://127.0.0.1:3000",
+    "backend": "Electron-started backend at http://127.0.0.1:29695",
+    "workspace": "Temp Workspace",
+    "browser": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "mode": "read-only historical current-reader and idle control"
+  },
+  "persistedData": {
+    "approvedDecision": "Directly Usable — No Migration",
+    "before": {
+      "codex": [
+        {
+          "relativePath": "architecture_reviewer_dc6b3fc9f1774895b7c8751cec76c881/raw_traces_active.jsonl",
+          "size": 88598,
+          "mtimeMs": 1785568276719.4307,
+          "sha256": "08908bf7a0514924e195f82f404f627260bb29f3067de409f81950933e22595a"
+        },
+        {
+          "relativePath": "implementation_engineer_8b2910b5b9a741248d0ec564d242c17e/raw_traces_active.jsonl",
+          "size": 101679,
+          "mtimeMs": 1785568406055.322,
+          "sha256": "15bcb13f3640bbbe1cbe2d88af16e819b02914e8e6d987a96b20f5bf868ba34e"
+        },
+        {
+          "relativePath": "solution_designer_39cb3aef1480475a99055ce40293be3d/raw_traces_active.jsonl",
+          "size": 136243,
+          "mtimeMs": 1785568081884.4663,
+          "sha256": "0ca2c55e255153147daa624babfe9d1159f6f7544ebb4f108bfb8ae7a52c736b"
+        },
+        {
+          "relativePath": "team_communication_messages.json",
+          "size": 9993,
+          "mtimeMs": 1785568274297.8691,
+          "sha256": "e24c4d0362b9bd717fb606e80e03ebcd21ae5536f80d97b5711a256fa213d940"
+        },
+        {
+          "relativePath": "team_run_metadata.json",
+          "size": 4907,
+          "mtimeMs": 1785568413468.5955,
+          "sha256": "6a843c3fa6d850b932c81f1d713a0400b988e6ff61be4861dbd60b7275a6a3e5"
+        }
+      ],
+      "native": [
+        {
+          "relativePath": "architecture_reviewer_4caf505a70f04b7c8e1239abfcc88a29/raw_traces_active.jsonl",
+          "size": 4215,
+          "mtimeMs": 1785576878001.8042,
+          "sha256": "2f1cb78502fa678440a21af58aa286d4a06e62bcb60300dc5f5445f2db6ea1f5"
+        },
+        {
+          "relativePath": "architecture_reviewer_4caf505a70f04b7c8e1239abfcc88a29/working_context_snapshot.json",
+          "size": 29247,
+          "mtimeMs": 1785576878002.464,
+          "sha256": "8cdb672570f2d93734fa06f34742c3ae9c0f4b2a850a993a0f1bfe8782fd2b74"
+        },
+        {
+          "relativePath": "solution_designer_043cd3fc6a0342349ee3834263264b30/file_changes.json",
+          "size": 2127,
+          "mtimeMs": 1785576863048.4888,
+          "sha256": "a5d03a82b652cb8e62abdeb668a0a36ba74e123793615dd320b830c9dc41ab15"
+        },
+        {
+          "relativePath": "solution_designer_043cd3fc6a0342349ee3834263264b30/raw_traces_active.jsonl",
+          "size": 194495,
+          "mtimeMs": 1785576877995.3384,
+          "sha256": "22f55dff4cf8a4c872b7409b2d2df29b68583d35ccfc8ef756c401cfc51a872f"
+        },
+        {
+          "relativePath": "solution_designer_043cd3fc6a0342349ee3834263264b30/working_context_snapshot.json",
+          "size": 280549,
+          "mtimeMs": 1785576877999.425,
+          "sha256": "8935891911cd9ac5a47506708bfcbd34b2dd84ef0d8a43f790a5d3b1c83c9c12"
+        },
+        {
+          "relativePath": "team_communication_messages.json",
+          "size": 4581,
+          "mtimeMs": 1785576874869.702,
+          "sha256": "562b832a2888f0908e92c8f2052be6f50f701f76ae5febd64082a6ed2639a75f"
+        },
+        {
+          "relativePath": "team_run_metadata.json",
+          "size": 4905,
+          "mtimeMs": 1785576878265.3494,
+          "sha256": "80e87903ec7fe204c51befa48a45c4af49b0343aff941872ed7714a23e7d7843"
+        }
+      ]
+    },
+    "after": {
+      "codex": [
+        {
+          "relativePath": "architecture_reviewer_dc6b3fc9f1774895b7c8751cec76c881/raw_traces_active.jsonl",
+          "size": 88598,
+          "mtimeMs": 1785568276719.4307,
+          "sha256": "08908bf7a0514924e195f82f404f627260bb29f3067de409f81950933e22595a"
+        },
+        {
+          "relativePath": "implementation_engineer_8b2910b5b9a741248d0ec564d242c17e/raw_traces_active.jsonl",
+          "size": 101679,
+          "mtimeMs": 1785568406055.322,
+          "sha256": "15bcb13f3640bbbe1cbe2d88af16e819b02914e8e6d987a96b20f5bf868ba34e"
+        },
+        {
+          "relativePath": "solution_designer_39cb3aef1480475a99055ce40293be3d/raw_traces_active.jsonl",
+          "size": 136243,
+          "mtimeMs": 1785568081884.4663,
+          "sha256": "0ca2c55e255153147daa624babfe9d1159f6f7544ebb4f108bfb8ae7a52c736b"
+        },
+        {
+          "relativePath": "team_communication_messages.json",
+          "size": 9993,
+          "mtimeMs": 1785568274297.8691,
+          "sha256": "e24c4d0362b9bd717fb606e80e03ebcd21ae5536f80d97b5711a256fa213d940"
+        },
+        {
+          "relativePath": "team_run_metadata.json",
+          "size": 4907,
+          "mtimeMs": 1785568413468.5955,
+          "sha256": "6a843c3fa6d850b932c81f1d713a0400b988e6ff61be4861dbd60b7275a6a3e5"
+        }
+      ],
+      "native": [
+        {
+          "relativePath": "architecture_reviewer_4caf505a70f04b7c8e1239abfcc88a29/raw_traces_active.jsonl",
+          "size": 4215,
+          "mtimeMs": 1785576878001.8042,
+          "sha256": "2f1cb78502fa678440a21af58aa286d4a06e62bcb60300dc5f5445f2db6ea1f5"
+        },
+        {
+          "relativePath": "architecture_reviewer_4caf505a70f04b7c8e1239abfcc88a29/working_context_snapshot.json",
+          "size": 29247,
+          "mtimeMs": 1785576878002.464,
+          "sha256": "8cdb672570f2d93734fa06f34742c3ae9c0f4b2a850a993a0f1bfe8782fd2b74"
+        },
+        {
+          "relativePath": "solution_designer_043cd3fc6a0342349ee3834263264b30/file_changes.json",
+          "size": 2127,
+          "mtimeMs": 1785576863048.4888,
+          "sha256": "a5d03a82b652cb8e62abdeb668a0a36ba74e123793615dd320b830c9dc41ab15"
+        },
+        {
+          "relativePath": "solution_designer_043cd3fc6a0342349ee3834263264b30/raw_traces_active.jsonl",
+          "size": 194495,
+          "mtimeMs": 1785576877995.3384,
+          "sha256": "22f55dff4cf8a4c872b7409b2d2df29b68583d35ccfc8ef756c401cfc51a872f"
+        },
+        {
+          "relativePath": "solution_designer_043cd3fc6a0342349ee3834263264b30/working_context_snapshot.json",
+          "size": 280549,
+          "mtimeMs": 1785576877999.425,
+          "sha256": "8935891911cd9ac5a47506708bfcbd34b2dd84ef0d8a43f790a5d3b1c83c9c12"
+        },
+        {
+          "relativePath": "team_communication_messages.json",
+          "size": 4581,
+          "mtimeMs": 1785576874869.702,
+          "sha256": "562b832a2888f0908e92c8f2052be6f50f701f76ae5febd64082a6ed2639a75f"
+        },
+        {
+          "relativePath": "team_run_metadata.json",
+          "size": 4905,
+          "mtimeMs": 1785576878265.3494,
+          "sha256": "80e87903ec7fe204c51befa48a45c4af49b0343aff941872ed7714a23e7d7843"
+        }
+      ]
+    },
+    "unchangedAfterRead": {
+      "codex": true,
+      "native": true
+    }
+  },
+  "codexControl": {
+    "historyOpenLatencyMs": 128.22966600000018,
+    "centerSample": "S\nsolution_designer\nOffline\nYou\nBuild a minimal Vue Apple shop prototype in a new folder named codex-luna-apple-shop. One page only: four Apple product cards, an Add to Bag button on each card, and a visible bag count. No backend, router, research, images, or extra features. Requirements are already approved. Do not ask questions or wait for approval. Keep all required artifacts extremely concise and hand off immediately. This is a runtime performance test.\nS\nsolution_designer\nThinking\nrun_bash\n· /bin/bash -lc \"pwd && ls -la && find . -maxdepth 3 -type f | sed 's#\"'^./##'\"' | head -200\"\nrun_bash\n· /bin/bash -lc \"cat /Users/normy/autobyteus_org/autobyteus-agents/agent-teams/software-engineering-team/agents/solution-designer/skills/solution-designer/SKILL.md && printf '\\\\n--- WORKFLOW ---\\\\n' && cat /Users/normy/autobyteus_org/autobyteus-skills/software-engineering-workflow-skill/SKILL.md && printf '\\\\n--- GIT ---\\\\n' && git status --short --branch && git log -5 --oneline --decorate\"\nTool execution failed.\nThinking\nrun_bash\n· /bin/bash -lc \"printf '%s\\\\n' '--- git config ---'; git remote -v; git branch --all; printf '%s\\\\n' '--- workflow templates ---'; find /Users/normy/autobyteus_o",
+    "readmeLatencyMs": 22.23016699999971,
+    "reference": {
+      "label": "requirements-doc.md",
+      "latencyMs": 30.219582999999147,
+      "sample": "requirements-doc.md\n/Users/normy/.autobyteus/server-data/temp_workspace/codex-luna-apple-shop/requirements-doc.md\nRequirements Doc\nStatus\n\nDesign-ready — approved requirements supplied by user.\n\nGoal / Problem Statement\n\nCreate a minimal one-page Vue Apple shop prototype in codex-luna-apple-shop.\n\nCurrent And Desired Behavior\nBehavior ID\tCurrent Behavior\tDesired Behavior\tPreserved / Unchanged Behavior\nBEH-001\tNo current supported behavior in the new folder.\tOne page visibly presents exactly four"
+    }
+  },
+  "nativeCurrentReader": {
+    "historyOpenLatencyMs": 91.81837499999892,
+    "centerSample": "S\nsolution_designer\nOffline\nYou\n**[User Requirement]**\nAPI/E2E validation task (do not alter any code repository): In the Temp Workspace only, create a single Markdown file named api-e2e-validation-marker.md containing a heading and a short marker that this is the 2026-08-01 streaming validation. Proceed through the normal Software Engineering Team workflow so solution design prepares the ordinary required artifacts and sends a reference-bearing handoff to architecture review; downstream members may validate the one-file result. Keep every task artifact inside the Temp Workspace. Do not modify source repositories, install dependencies, release, or deploy. This is a disposable one-off validation run.\nS\nsolution_designer\nread_file\n· solution-designer/design-principles.md\nrun_bash\n· pwd; echo \"---\"; ls -la; echo \"---\"; ls -la ~ 2>/dev/null | head -50\n\nThe current working directory is the Temp Workspace (/Users/normy/.autobyteus/server-data/temp_workspace), which contains a .git directory. Let me inspect its repository state and the existing task-folder conventions before bootstrapping.\n\nrun_bash\n· cd /Users/normy/.autobyteus/server-data/temp_workspace && echo \"=== git status ===\" && g",
+    "reference": {
+      "label": "requirements-doc.md",
+      "latencyMs": 37.51024999999936,
+      "sample": "requirements-doc.md\n/Users/normy/.autobyteus/server-data/temp_workspace/codex/api-e2e-validation-2026-08-01/requirements-doc.md\nRequirements Doc\n\nWrite this artifact to a canonical file path in the assigned task workspace before any handoff message.\n\nStatus (Draft/Design-ready/Refined)\n\nDesign-ready — investigation complete (see investigation-notes.md); requirements basis approved by the user task packet for this disposable one-off validation run.\n\nGoal / Problem Statement\n\nDisposable one-off AP"
+    }
+  },
+  "idle": {
+    "durationMs": 10012,
+    "timerSamples": 220,
+    "timerDriftP95Ms": 1.100000023841858,
+    "timerGapMaxMs": 155,
+    "segmentContentEvents": 0
+  },
+  "network": {
+    "referenceResponses": [
+      {
+        "url": "http://127.0.0.1:29695/rest/team-runs/software_engineering_team_21f81d9055df4fb28659e73ac274049e/team-communication/messages/teammsg_13y8curSrvt5ws69rXzqKfuCCv-oVQk7/references/teamref_P2gbeumi2jjwyi9wDelfhoHNTI0RhQmk/content",
+        "status": 200,
+        "at": "2026-08-01T09:52:57.243Z"
+      },
+      {
+        "url": "http://127.0.0.1:29695/rest/team-runs/software_engineering_team_985b0fa4443e45ed82d7a3fadb041024/team-communication/messages/teammsg_qJQfRkod8fMTLLzgAha9w0NSrf3rX_lv/references/teamref_dtGfqvbCLKi8pn6m7hiAF0I1I2EMuYfE/content",
+        "status": 200,
+        "at": "2026-08-01T09:53:07.518Z"
+      }
+    ],
+    "failedRequests": []
+  },
+  "cleanup": {
+    "browserClosed": true,
+    "completedAt": "2026-08-01T09:53:07.710Z"
+  },
+  "errors": [],
+  "completedAt": "2026-08-01T09:53:07.614Z",
+  "durationMs": 17096
+}
