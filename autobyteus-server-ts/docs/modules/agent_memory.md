@@ -36,11 +36,18 @@ Canonical active memory file names are imported from `autobyteus-ts/memory/store
 
 Common files/directories:
 
-- `raw_traces_active.jsonl` — active ordered raw trace records.
-- `working_context_snapshot.json` — native AutoByteus continuation state. New native writes contain schema version, agent id, and messages; the generic inspector can also read a physically present historical/imported snapshot, but Codex and Claude recording no longer creates or updates this file.
-- `raw_traces_manifest.json` — rotated raw-trace manifest owned internally by `RawTraceArchiveManager`.
-- `raw_traces_<zero-padded-index>.jsonl` — immutable rotated raw-trace segment files in the same run memory directory, one complete segment per native compaction or provider-boundary rotation.
-- `episodic.jsonl`, `semantic.jsonl`, `compacted_memory_manifest.json` — native AutoByteus compacted memory artifacts when native semantic/episodic compaction has run.
+- `raw_traces_active.jsonl` — active ordered original raw trace records.
+- `raw_traces_manifest.json` — completed raw-trace archive descriptors owned by `RawTraceArchiveManager`.
+- `raw_traces_<zero-padded-index>.jsonl` — immutable raw-trace archives, including one exact-new-activity archive per successful native compaction.
+- `episodic.jsonl` and `semantic.jsonl` — immutable native compacted output rows.
+- `compaction_lineage.jsonl` — append-only successful native-compaction lineage. Its last valid record is the only current-compaction head and lists exact current output IDs plus the run-relative completed raw archive.
+- `working_context_snapshot.json` — native AutoByteus continuation state: strict schema-v5 finalized provider-neutral messages and message-local constituent ranges. It contains no output identity, lineage object, or mutable current-state field. Codex and Claude recording no longer creates or updates this file.
+
+There is no current `compacted_memory_manifest.json` or compaction-state/pointer
+file. The destructive `20260730_reset_pre_lineage_memory` path is removed.
+Normal runtime never reads old episodic/semantic/manifest state or a pre-v5
+snapshot; eligible historical native snapshots are handled only by the
+forward-only startup migration described below.
 
 Startup app-data migration `20260707_raw_trace_active_file_name` renames existing active `raw_traces.jsonl` files to `raw_traces_active.jsonl` for local and imported memory corpora. Runtime steady state reads and writes only `raw_traces_active.jsonl`; the old active filename is not a compatibility alias.
 
@@ -57,6 +64,25 @@ retains the stale file for retry, so the runtime-agnostic inspector may still
 show that old copy while current external raw recording and provider
 continuation remain healthy.
 
+After external cleanup, the registry runs the existing raw-trace rotation-layout
+and active-filename migrations before
+`20260731_migrate_native_working_context_snapshots_v5`. One shared classifier
+selects exact AutoByteus standalone/team-member locations and derives the strict
+snapshot identity from `runId` or `memberRunId`; imported, external,
+unclassified, and conflicting locations remain untouched.
+
+The native migration skips a missing snapshot and skips every nonempty-lineage
+location byte-for-byte before content inspection or cleanup. Absent or zero-byte
+lineage permits the pure core converter to decode historical v1/v3/v4 or strict-v5
+content. It retains only logical units with exact same-location active-raw
+backing, omits unsupported/invalid/unsourced/old-compacted/incomplete Tool units,
+and may publish a valid `messages: []` snapshot when nothing survives. A
+parseable identity conflict rejects without mutation. The complete strict-v5
+candidate is validated before replacement; only afterward are obsolete
+`episodic.jsonl`, `semantic.jsonl`, and `compacted_memory_manifest.json` removed.
+Raw traces, manifests, archives, and lineage are never mutated. Warning/failure
+results are recorded and retryable while ordinary server startup continues.
+
 The old monolithic `raw_traces_archive.jsonl` file is no longer an active read/write target. Historical monolithic archive files are intentionally not read by the approved no-compatibility policy.
 
 Memory Sync does not move or wrap local runtime memory. `memory/agents` and
@@ -67,7 +93,40 @@ runtime memory provider.
 
 ## Runtime Ownership
 
-Native AutoByteus runs remain owned by the `autobyteus-ts` `MemoryManager`. The server-side recorder must skip `RuntimeKind.AUTOBYTEUS` so native traces, snapshots, archives, and compacted memory are not duplicated. Native AutoByteus compaction is a pluggable context-to-context boundary: the executor resolves the process-global strategy for each pending operation, validates its returned detached `WorkingContext`, and only then asks `MemoryManager` to replace/persist it. The current `structured-json` strategy preserves semantic/episodic writes and rotates selected raw traces through shared direct segments with `boundary_type = "native_compaction"`.
+Native AutoByteus runs remain owned by the `autobyteus-ts` `MemoryManager`. The server-side recorder must skip `RuntimeKind.AUTOBYTEUS` so native traces, snapshots, archives, outputs, and lineage are not duplicated.
+
+Native compaction is a proposal / accept / commit boundary. The executor resolves the process-global strategy, captures the manager-owned WorkingContext and lineage-head baseline, and requests an ID-less proposal. `MemoryManager` verifies the baseline, assigns output identities, finalizes the candidate, and commits exact new-raw archive -> output rows -> lineage append -> finalized context -> schema-v5 snapshot -> pending clear. Recurrent compaction consumes the current head output plus new raw-backed work but archives only the new raw evidence. The lineage tail selects the exact current complete replacement bundle; older successful outputs remain historical rather than being mixed into normal projection.
+
+The built-in Memory Compactor chooses the natural number of episodes and
+semantic facts needed for safe continuation. Accepted output requires at least
+one episode, but no fixed total episode/fact cap is imposed during parsing,
+normalization, publication, lineage read/write, current-head projection, or
+typed origin lookup. Per-entry bounds, structural validation, cleanup,
+deduplication, and positive salience remain enforced.
+
+The persisted `autobyteus-memory-compactor` system prompt owns the stable task,
+natural-sizing guidance, and exact response schema. Each operation sends only
+the core renderer's canonical `<conversation_history>` block. The renderer
+reuses `WorkingContextFinalizer`, so compatible prior-memory and current-user
+regions become one natural User turn and assistant/Tool boundaries remain
+ordered. It omits reasoning, backend IDs, duplicated schema/count policy, and
+platform internals while preserving redaction, explicit value bounds, and
+reserved-boundary escaping.
+
+New successful lineage records use `promptContractVersion: 2`. Existing
+immutable value-1 records remain directly usable, mixed `1 -> 2` chains are
+valid, and unsupported values reject without rewriting or compatibility
+decoding.
+
+Explicit existing-run restore requires a strict-v5 snapshot; no raw-history
+projector or pre-v5 runtime reader remains. `LLMRequestAssembler` completes any
+pending compaction before capturing the request-recovery checkpoint and captures
+immediately before current request mutation. Assembly/provider failures restore
+that stable base, while final output, real Tool ingestion, and supported retained
+interruption release it exactly once. Accepted archive/output/lineage state is
+never rolled back.
+
+`AgentMemoryOriginService` composes the core run-scoped resolver for explicit standalone/team-member targets and typed episode/semantic IDs. It returns direct and recursive raw origin for valid current-format chains, `not_found` for unknown artifacts, and an integrity error for broken lineage/archive/output membership.
 
 ### Global Compaction Strategy Setting
 
@@ -330,8 +389,9 @@ duplicated or late/effective name/arguments remain readable through the normal
 logical read-only projection; that historical overlay is never fed back into
 recorder/writer decisions. Existing raw files are directly usable: this contract
 requires no raw-file rewrite, schema branch, or Memory Sync change. The separate
-required startup migration removes only metadata-classified duplicate external
-snapshots as described above.
+startup transitions remove metadata-classified duplicate external snapshots and
+convert only eligible exact-native absent/empty-lineage snapshots as described
+above.
 
 ## Key Source Files
 

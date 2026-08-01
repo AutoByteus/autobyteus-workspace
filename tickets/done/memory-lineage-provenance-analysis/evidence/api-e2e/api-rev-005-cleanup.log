@@ -1,0 +1,11 @@
+API-REV-005 cleanup audit
+removed_or_absent=autobyteus-server-ts/db/test.db
+removed_or_absent=autobyteus-server-ts/db/test.db.secret.key
+removed_or_absent=autobyteus-server-ts/db/test.db-journal
+removed_or_absent=autobyteus-server-ts/db/test.db-wal
+removed_or_absent=autobyteus-server-ts/db/test.db-shm
+removed_or_absent=autobyteus-server-ts/tests/.tmp
+remaining_owned_files:
+remaining_owned_processes:
+source_assignment_preserved:
+yes

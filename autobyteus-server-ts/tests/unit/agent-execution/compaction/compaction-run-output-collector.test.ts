@@ -21,10 +21,10 @@ describe("CompactionRunOutputCollector", () => {
     const collector = new CompactionRunOutputCollector({ runId: "compaction-run-1" });
     const output = collector.waitForFinalOutput(1_000);
 
-    collector.observe(event(AgentRunEventType.ASSISTANT_COMPLETE, { content: '{"episodic_summary":"auto"}' }));
+    collector.observe(event(AgentRunEventType.ASSISTANT_COMPLETE, { content: '{"episodes":[{"summary":"auto"}]}' }));
     collector.observe(event(AgentRunEventType.TURN_COMPLETED, { turn_id: "turn-1" }, "IDLE"));
 
-    await expect(output).resolves.toBe('{"episodic_summary":"auto"}');
+    await expect(output).resolves.toBe('{"episodes":[{"summary":"auto"}]}');
   });
 
   it("collects Codex text segment deltas while ignoring reasoning", async () => {
@@ -39,16 +39,16 @@ describe("CompactionRunOutputCollector", () => {
     collector.observe(event(AgentRunEventType.SEGMENT_CONTENT, {
       id: "message-1",
       segment_type: "text",
-      delta: '{"episodic_',
+      delta: '{"episodes":[{"sum',
     }));
     collector.observe(event(AgentRunEventType.SEGMENT_CONTENT, {
       id: "message-1",
       segment_type: "text",
-      delta: 'summary":"codex"}',
+      delta: 'mary":"codex"}]}',
     }));
     collector.observe(event(AgentRunEventType.TURN_COMPLETED, { turnId: "turn-1" }, "IDLE"));
 
-    await expect(output).resolves.toBe('{"episodic_summary":"codex"}');
+    await expect(output).resolves.toBe('{"episodes":[{"summary":"codex"}]}');
   });
 
   it("collects Claude text deltas and completes on idle status", async () => {
@@ -58,14 +58,14 @@ describe("CompactionRunOutputCollector", () => {
     collector.observe(event(AgentRunEventType.SEGMENT_CONTENT, {
       id: "msg-1",
       segment_type: "text",
-      delta: '{"episodic_summary":"claude"}',
+      delta: '{"episodes":[{"summary":"claude"}]}',
     }));
     collector.observe(event(AgentRunEventType.AGENT_STATUS, {
       status: "idle",
       can_interrupt: false,
     }, "IDLE"));
 
-    await expect(output).resolves.toBe('{"episodic_summary":"claude"}');
+    await expect(output).resolves.toBe('{"episodes":[{"summary":"claude"}]}');
   });
 
   it("keeps classified diagnostics as content-only before normal completion", async () => {
@@ -78,10 +78,10 @@ describe("CompactionRunOutputCollector", () => {
       error_effect: "diagnostic",
       turn_id: "turn-1",
     }));
-    collector.observe(event(AgentRunEventType.ASSISTANT_COMPLETE, { content: '{"episodic_summary":"ok"}' }));
+    collector.observe(event(AgentRunEventType.ASSISTANT_COMPLETE, { content: '{"episodes":[{"summary":"ok"}]}' }));
     collector.observe(event(AgentRunEventType.TURN_COMPLETED, { turn_id: "turn-1" }, "IDLE"));
 
-    await expect(output).resolves.toBe('{"episodic_summary":"ok"}');
+    await expect(output).resolves.toBe('{"episodes":[{"summary":"ok"}]}');
   });
 
   it("fails immediately on classified terminal error evidence", async () => {

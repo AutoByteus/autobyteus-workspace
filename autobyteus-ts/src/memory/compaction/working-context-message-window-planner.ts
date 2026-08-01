@@ -1,5 +1,4 @@
 import type { Message } from '../../llm/utils/messages.js';
-import { collectMessageRawTraceIds } from '../message-provenance.js';
 import {
   EstimatedMessageBudgetStrategy,
   type MessageBudgetStrategy,
@@ -30,7 +29,6 @@ export class WorkingContextMessageWindowPlanner {
     });
     const protectedSuffixUnits = this.resolveProtectedSuffixUnits(units);
     const protectedIds = new Set(protectedSuffixUnits.map((unit) => unit.id));
-    const headUnits = units.filter((unit) => unit.kind === 'system');
     const retainedCandidateUnits = units.filter((unit) =>
       unit.kind !== 'system' &&
       unit.kind !== 'compacted_memory' &&
@@ -58,17 +56,19 @@ export class WorkingContextMessageWindowPlanner {
       ...retainedRecentUnits.map((unit) => unit.id),
       ...protectedIds,
     ]);
-    const compactableUnits = retainedCandidateUnits.filter((unit) => !retainedIds.has(unit.id));
+    const compactableUnits = units.filter((unit) =>
+      unit.kind !== 'system'
+      && !protectedIds.has(unit.id)
+      && !retainedIds.has(unit.id));
     const retainedUnits = units.filter((unit) => retainedIds.has(unit.id));
 
     return {
       units,
-      headMessages: headUnits.flatMap((unit) => unit.messages),
       compactableUnits,
       retainedUnits,
       protectedSuffixUnits,
       retainedMessages: retainedUnits.flatMap((unit) => unit.messages),
-      rawTraceIdsToArchive: collectMessageRawTraceIds(compactableUnits.flatMap((unit) => unit.messages)),
+      rawTraceIdsToArchive: [...new Set(compactableUnits.flatMap((unit) => unit.rawTraceIds))],
       estimatedRetainedTokens: this.sumCosts(retainedUnits, budget.costByUnitId),
       estimatedCompactedTokens: this.sumCosts(compactableUnits, budget.costByUnitId),
     };

@@ -9,7 +9,10 @@ import {
   repairWorkingContextToolProtocol,
   SYNTHETIC_INTERRUPTED_TOOL_RESULT_CONTENT,
 } from '../../../src/memory/working-context-tool-protocol-repairer.js';
-import { setMessageProvenance } from '../../../src/memory/message-provenance.js';
+import {
+  buildSingleMessageProvenance,
+  setWorkingContextMessageProvenance,
+} from '../../../src/memory/working-context-provenance.js';
 import { toolCallIdentityKey } from '../../../src/memory/models/tool-call-identity.js';
 
 const assistantToolCall = (ids: string[]) => new Message(MessageRole.ASSISTANT, {
@@ -67,7 +70,10 @@ describe('repairWorkingContextToolProtocol', () => {
   });
 
   it('preserves completed raw facts in partial batches and synthesizes only missing calls', () => {
-    const messages = [setMessageProvenance(assistantToolCall(['call_A', 'call_B']), { turnId: 'turn_1' })];
+    const messages = [setWorkingContextMessageProvenance(
+      assistantToolCall(['call_A', 'call_B']),
+      buildSingleMessageProvenance([], 'turn_1'),
+    )];
 
     const repaired = repairWorkingContextToolProtocol(messages, {
       completedToolResultsByIdentity: new Map([

@@ -45,6 +45,7 @@ import { buildAutoByteusManagedTeamContext } from "./autobyteus-managed-team-con
 import { composeAutoByteusMemberSystemPrompt } from "./autobyteus-member-system-prompt-composer.js";
 import { resolveAutoByteusAgentTools } from "./autobyteus-agent-tool-resolver.js";
 import { createLlmProviderApiKeyResolver } from "../../../secret-management/resolution/secret-management-provider-api-key-resolver.js";
+import { resolveCompactionLineageScope } from "./compaction-lineage-scope-resolver.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -503,6 +504,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
         null,
         skillAccessMode ?? SkillAccessMode.PRELOADED_ONLY,
         compactionAgentRunner,
+        resolveCompactionLineageScope(runId, options.memberTeamContext),
       ),
     };
   }

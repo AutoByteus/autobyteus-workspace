@@ -3,6 +3,8 @@ export type CompactionAgentExecutionMetadata = {
   compactionAgentName?: string | null;
   runtimeKind?: string | null;
   modelIdentifier?: string | null;
+  provider?: string | null;
+  renderedInputSha256?: string | null;
   compactionRunId?: string | null;
   taskId?: string | null;
 };

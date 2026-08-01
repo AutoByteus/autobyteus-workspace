@@ -1,14 +1,20 @@
 import { CompactionResult, type CompactionSemanticEntry } from './compaction-result.js';
 
 export type CompactionResponseParserOptions = {
-  maxSummaryChars?: number;
+  maxEpisodeChars?: number;
   maxFactChars?: number;
-  maxFactCount?: number;
 };
 
-const DEFAULT_MAX_SUMMARY_CHARS = 4000;
+const DEFAULT_MAX_EPISODE_CHARS = 4000;
 const DEFAULT_MAX_FACT_CHARS = 500;
-const DEFAULT_MAX_FACT_COUNT = 20;
+const RESPONSE_FIELDS = [
+  'episodes',
+  'critical_issues',
+  'unresolved_work',
+  'durable_facts',
+  'user_preferences',
+  'important_artifacts',
+] as const;
 
 const clampText = (value: string, limit: number): string => value.length <= limit ? value : value.slice(0, limit).trim();
 
@@ -63,13 +69,6 @@ const extractBalancedJsonObjects = (text: string): string[] => {
   return results;
 };
 
-const getObjectField = (record: Record<string, unknown>, snakeCaseKey: string, camelCaseKey: string): unknown => {
-  if (record[snakeCaseKey] !== undefined) {
-    return record[snakeCaseKey];
-  }
-  return record[camelCaseKey];
-};
-
 export class CompactionResponseParseError extends Error {
   constructor(message: string) {
     super(message);
@@ -78,37 +77,60 @@ export class CompactionResponseParseError extends Error {
 }
 
 export class CompactionResponseParser {
-  private readonly maxSummaryChars: number;
+  private readonly maxEpisodeChars: number;
   private readonly maxFactChars: number;
-  private readonly maxFactCount: number;
 
   constructor(options: CompactionResponseParserOptions = {}) {
-    this.maxSummaryChars = options.maxSummaryChars ?? DEFAULT_MAX_SUMMARY_CHARS;
+    this.maxEpisodeChars = options.maxEpisodeChars ?? DEFAULT_MAX_EPISODE_CHARS;
     this.maxFactChars = options.maxFactChars ?? DEFAULT_MAX_FACT_CHARS;
-    this.maxFactCount = options.maxFactCount ?? DEFAULT_MAX_FACT_COUNT;
   }
 
   parse(text: string): CompactionResult {
     const parsedObject = this.parseObject(text);
-    const episodicSummary = getObjectField(parsedObject, 'episodic_summary', 'episodicSummary');
-
-    if (typeof episodicSummary !== 'string' || !episodicSummary.trim()) {
-      throw new CompactionResponseParseError('Compaction response is missing a non-empty episodic_summary string.');
+    const unexpectedFields = Object.keys(parsedObject)
+      .filter((field) => !RESPONSE_FIELDS.includes(field as typeof RESPONSE_FIELDS[number]));
+    if (unexpectedFields.length) {
+      throw new CompactionResponseParseError(
+        `Compaction response contains unsupported fields: ${unexpectedFields.join(', ')}.`,
+      );
     }
-
-    return new CompactionResult(clampText(episodicSummary.trim(), this.maxSummaryChars), {
-      criticalIssues: this.parseEntries(parsedObject, 'critical_issues', 'criticalIssues'),
-      unresolvedWork: this.parseEntries(parsedObject, 'unresolved_work', 'unresolvedWork'),
-      durableFacts: this.parseEntries(parsedObject, 'durable_facts', 'durableFacts'),
-      userPreferences: this.parseEntries(parsedObject, 'user_preferences', 'userPreferences'),
-      importantArtifacts: this.parseEntries(parsedObject, 'important_artifacts', 'importantArtifacts'),
+    if (!Array.isArray(parsedObject.episodes)) {
+      throw new CompactionResponseParseError('Compaction response is missing an episodes array.');
+    }
+    const episodes = parsedObject.episodes.flatMap((entry) => {
+      if (!entry || typeof entry !== 'object' || Array.isArray(entry)) return [];
+      const fields = Object.keys(entry);
+      if (fields.some((field) => field !== 'summary')) {
+        throw new CompactionResponseParseError(
+          'Compaction episode entries may contain only summary.',
+        );
+      }
+      const rawSummary = (entry as Record<string, unknown>).summary;
+      const summary = typeof rawSummary === 'string'
+        ? clampText(rawSummary.trim(), this.maxEpisodeChars)
+        : '';
+      return summary ? [{ summary }] : [];
+    });
+    if (!episodes.length) {
+      throw new CompactionResponseParseError('Compaction response requires at least one non-empty episode.');
+    }
+    return new CompactionResult({
+      episodes,
+      criticalIssues: this.parseEntries(parsedObject, 'critical_issues'),
+      unresolvedWork: this.parseEntries(parsedObject, 'unresolved_work'),
+      durableFacts: this.parseEntries(parsedObject, 'durable_facts'),
+      userPreferences: this.parseEntries(parsedObject, 'user_preferences'),
+      importantArtifacts: this.parseEntries(parsedObject, 'important_artifacts'),
     });
   }
 
-  private parseEntries(parsedObject: Record<string, unknown>, snakeCaseKey: string, camelCaseKey: string): CompactionSemanticEntry[] {
-    const fieldValue = getObjectField(parsedObject, snakeCaseKey, camelCaseKey);
+  private parseEntries(
+    parsedObject: Record<string, unknown>,
+    key: string,
+  ): CompactionSemanticEntry[] {
+    const fieldValue = parsedObject[key];
     if (!Array.isArray(fieldValue)) {
-      throw new CompactionResponseParseError(`Compaction response is missing a ${snakeCaseKey} array.`);
+      throw new CompactionResponseParseError(`Compaction response is missing a ${key} array.`);
     }
 
     const entries: CompactionSemanticEntry[] = [];
@@ -117,6 +139,11 @@ export class CompactionResponseParser {
         continue;
       }
       const entryRecord = entryValue as Record<string, unknown>;
+      if (Object.keys(entryRecord).some((field) => field !== 'fact')) {
+        throw new CompactionResponseParseError(
+          `Compaction ${key} entries may contain only fact.`,
+        );
+      }
       const fact = typeof entryRecord.fact === 'string' ? clampText(entryRecord.fact.trim(), this.maxFactChars) : '';
       if (!fact) {
         continue;
@@ -125,10 +152,6 @@ export class CompactionResponseParser {
       entries.push({
         fact,
       });
-
-      if (entries.length >= this.maxFactCount) {
-        break;
-      }
     }
 
     return entries;

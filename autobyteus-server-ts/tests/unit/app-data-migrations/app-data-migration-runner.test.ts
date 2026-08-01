@@ -170,29 +170,81 @@ describe("AppDataMigrationRunner", () => {
     ]);
   });
 
-  it("continues later required startup migrations after a failed migration result", async () => {
+  it("attempts, persists, and returns every required result without an aggregate startup throw", async () => {
     const repository = new InMemoryMigrationRepository();
-    const laterExecute = vi.fn(async () => ({ status: "SUCCEEDED" as const, summary }));
+    const executions: string[] = [];
     const runner = new AppDataMigrationRunner(
       new AppDataMigrationRegistry([
-        createDefinition("cleanup-failed", async () => ({
-          status: "FAILED",
-          summary: { ...summary, failedCount: 1 },
-          errorMessage: "eligible snapshot unlink failed",
-        })),
-        createDefinition("later-startup-work", laterExecute),
+        createDefinition("m-fail", async () => {
+          executions.push("m-fail");
+          return {
+            status: "FAILED",
+            summary: { ...summary, failedCount: 1 },
+            errorMessage: "failed item",
+          };
+        }),
+        createDefinition("m-success", async () => {
+          executions.push("m-success");
+          return { status: "SUCCEEDED", summary };
+        }),
+        createDefinition("m-throws", async () => {
+          executions.push("m-throws");
+          throw new Error("definition crashed");
+        }),
       ]),
       repository,
       { logsDir: tempDir },
     );
 
-    const statuses = await runner.runPending();
+    const results = await runner.runPending();
 
-    expect(statuses).toMatchObject([
-      { migrationId: "cleanup-failed", status: "FAILED", canRetry: true },
-      { migrationId: "later-startup-work", status: "SUCCEEDED", canRetry: false },
+    expect(executions).toEqual(["m-fail", "m-success", "m-throws"]);
+    expect(results.map(({ migrationId, status }) => ({ migrationId, status })))
+      .toEqual([
+        { migrationId: "m-fail", status: "FAILED" },
+        { migrationId: "m-success", status: "SUCCEEDED" },
+        { migrationId: "m-throws", status: "FAILED" },
+      ]);
+    expect((await repository.getRecord("m-fail"))?.errorMessage).toBe("failed item");
+    expect((await repository.getRecord("m-success"))?.status).toBe("SUCCEEDED");
+    expect((await repository.getRecord("m-throws"))?.errorMessage).toBe("definition crashed");
+  });
+
+  it("accepts persisted SUCCEEDED and SUCCEEDED_WITH_WARNINGS results without rerunning them", async () => {
+    const repository = new InMemoryMigrationRepository();
+    const executeSucceeded = vi.fn();
+    const executeWarnings = vi.fn();
+    for (const [migrationId, status] of [
+      ["m-success", "SUCCEEDED"],
+      ["m-warning", "SUCCEEDED_WITH_WARNINGS"],
+    ] as const) {
+      repository.records.set(migrationId, {
+        migrationId,
+        displayName: `Migration ${migrationId}`,
+        status,
+        attempts: 1,
+        startedAt: new Date(),
+        completedAt: new Date(),
+        summaryJson: JSON.stringify(summary),
+        errorMessage: null,
+        logPath: null,
+      });
+    }
+    const runner = new AppDataMigrationRunner(
+      new AppDataMigrationRegistry([
+        createDefinition("m-success", executeSucceeded),
+        createDefinition("m-warning", executeWarnings),
+      ]),
+      repository,
+      { logsDir: tempDir },
+    );
+
+    await expect(runner.runPending()).resolves.toMatchObject([
+      { migrationId: "m-success", status: "SUCCEEDED" },
+      { migrationId: "m-warning", status: "SUCCEEDED_WITH_WARNINGS" },
     ]);
-    expect(laterExecute).toHaveBeenCalledTimes(1);
+    expect(executeSucceeded).not.toHaveBeenCalled();
+    expect(executeWarnings).not.toHaveBeenCalled();
   });
 
   it("exposes warning results for manual retry and records a successful retry attempt", async () => {

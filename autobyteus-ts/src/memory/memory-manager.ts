@@ -9,14 +9,35 @@ import { toolCallIdentityKey } from './models/tool-call-identity.js';
 import { MemoryType } from './models/memory-types.js';
 import { CompactionPolicy } from './policies/compaction-policy.js';
 import { MemoryStore } from './store/base-store.js';
+import type { CompactionLineageStore } from './lineage/compaction-lineage-store.js';
+import type { CompactionLineageScope } from './lineage/compaction-lineage-scope.js';
 import { TurnTracker } from './turn-tracker.js';
 import { WorkingContext } from './working-context.js';
-import { WorkingContextSnapshotSerializer } from './working-context-snapshot-serializer.js';
 import { WorkingContextSnapshotStore } from './store/working-context-snapshot-store.js';
 import { buildToolInteractions } from './tool-interaction-builder.js';
 import { AGENT_INTERRUPTED_TOOL_RESULT_CONTENT, type WorkingContextToolProtocolRepairResult } from './working-context-tool-protocol-repairer.js';
 import { ensureMemoryManagerWorkingContextToolProtocolSafe, type MemoryManagerToolProtocolSafetyInput } from './memory-manager-tool-protocol-safety.js';
-import { getMessageProvenance, setMessageProvenance, type MessageProvenance } from './message-provenance.js';
+import {
+  buildSingleMessageProvenance,
+  getWorkingContextMessageProvenance,
+  setWorkingContextMessageProvenance,
+} from './working-context-provenance.js';
+import type {
+  AcceptedWorkingContextCompaction,
+  WorkingContextCompactionProposal,
+} from './compaction/working-context-compaction-proposal.js';
+import type { CompactedMemoryProjectionBundle } from './projection/compacted-memory-projection-bundle.js';
+import {
+  MemoryManagerCompactionCoordinator,
+  type CompactionOperationId,
+  type MemoryManagerCompactionBaseline,
+  type PendingCompactionRequest,
+} from './memory-manager-compaction-coordinator.js';
+export type {
+  CompactionOperationId,
+  MemoryManagerCompactionBaseline,
+  PendingCompactionRequest,
+} from './memory-manager-compaction-coordinator.js';
 import {
   buildNativeToolCallTrace,
   buildNativeToolResultTrace,
@@ -24,13 +45,26 @@ import {
   normalizeNativeToolResultBatch,
   type NativeToolCallRegistration,
 } from './raw-trace-ingestion.js';
-import { buildToolTraceLifecycleIndex, type ToolTraceLifecycleGroup } from './tool-trace-lifecycle-index.js';
-import { LlmRequestRecoveryBoundary, type LlmRequestRecoveryInput, type LlmRequestRecoveryProvenance, type LlmRequestRecoverySnapshot, type PendingCompactionRequest } from './llm-request-recovery.js';
-export type { LlmRequestRecoveryInput, LlmRequestRecoveryProvenance, LlmRequestRecoverySnapshot, PendingCompactionRequest } from './llm-request-recovery.js';
+import { ToolTraceLifecycleState } from './tool-trace-lifecycle-state.js';
+import {
+  LlmRequestRecoveryBoundary,
+  type LlmRequestRecoveryInput,
+  type LlmRequestRecoveryProvenance,
+  type LlmRequestRecoverySnapshot,
+} from './llm-request-recovery.js';
+export type {
+  LlmRequestRecoveryInput,
+  LlmRequestRecoveryProvenance,
+  LlmRequestRecoverySnapshot,
+} from './llm-request-recovery.js';
 
 export type ToolIntentIngestionOptions = { appendToWorkingContext?: boolean; assistantContent?: string | null; assistantReasoning?: string | null };
 export type ToolResultIngestionOptions = { source?: string; appendToWorkingContext?: boolean };
-export type WorkingContextAppendOptions = MessageProvenance & { persist?: boolean };
+import {
+  MemoryManagerWorkingContextController,
+  type WorkingContextAppendOptions,
+} from './memory-manager-working-context-controller.js';
+export type { WorkingContextAppendOptions } from './memory-manager-working-context-controller.js';
 export type MemoryProjectionScope = { kind: 'agent_turn'; id: string };
 
 export type AppendRawTraceInput = RawTraceItem | (Omit<RawTraceItemOptions, 'id' | 'ts' | 'seq'> & Partial<Pick<RawTraceItemOptions, 'id' | 'ts' | 'seq'>>);
@@ -41,8 +75,6 @@ export type EnsureWorkingContextToolProtocolSafeForNextLlmInput = MemoryManagerT
 
 export type OperationBoundaryNoteInput = { scope: MemoryProjectionScope; reason?: string | null };
 
-export type CompactionOperationId = string;
-
 const OPERATION_BOUNDARY_TRACE_TYPE = 'operation_boundary';
 
 export class MemoryManager {
@@ -50,30 +82,46 @@ export class MemoryManager {
   turnTracker: TurnTracker;
   compactionPolicy: CompactionPolicy;
   memoryTypes = MemoryType;
-  private workingContext: WorkingContext;
+  private readonly workingContextController: MemoryManagerWorkingContextController;
   workingContextSnapshotStore: WorkingContextSnapshotStore | null;
-  compactionRequired = false;
-  private pendingCompactionRequest: PendingCompactionRequest | null = null;
-  private compactionOperationCounter = 0;
+  private readonly compactionCoordinator: MemoryManagerCompactionCoordinator;
   private readonly llmRequestRecovery: LlmRequestRecoveryBoundary;
   private seqByTurn = new Map<string, number>();
-  private readonly toolLifecycleGroups = new Map<string, ToolTraceLifecycleGroup>();
+  private readonly toolLifecycleState: ToolTraceLifecycleState;
 
   constructor(options: { store: MemoryStore; turnTracker?: TurnTracker; compactionPolicy?: CompactionPolicy;
     workingContext?: WorkingContext;
-    workingContextSnapshotStore?: WorkingContextSnapshotStore | null }) {
+    workingContextSnapshotStore?: WorkingContextSnapshotStore | null;
+    lineageStore?: CompactionLineageStore | null;
+    lineageScope?: CompactionLineageScope | null;
+    agentId?: string | null }) {
     this.store = options.store;
     this.turnTracker = options.turnTracker ?? new TurnTracker();
     this.compactionPolicy = options.compactionPolicy ?? new CompactionPolicy();
-    this.workingContext = options.workingContext?.copy() ?? new WorkingContext();
     this.workingContextSnapshotStore = options.workingContextSnapshotStore ?? null;
-    this.llmRequestRecovery = new LlmRequestRecoveryBoundary({
-      getWorkingContext: () => this.workingContext, setWorkingContext: (workingContext) => { this.workingContext = workingContext.copy(); },
-      getCompactionState: () => ({ compactionRequired: this.compactionRequired, pendingCompactionRequest: this.pendingCompactionRequest }),
-      setCompactionState: (state) => { this.compactionRequired = state.compactionRequired; this.pendingCompactionRequest = state.pendingCompactionRequest; },
-      persistWorkingContextSnapshot: () => this.persistWorkingContextSnapshot(), appendRawTrace: (input) => this.appendRawTrace(input),
+    this.workingContextController = new MemoryManagerWorkingContextController({
+      workingContext: options.workingContext,
+      snapshotStore: this.workingContextSnapshotStore,
+      fallbackAgentId: options.agentId ?? (this.store as MemoryStore & { agentId?: string }).agentId ?? null,
     });
-    this.hydrateToolLifecycleGroups();
+    this.compactionCoordinator = new MemoryManagerCompactionCoordinator({
+      store: this.store,
+      lineageStore: options.lineageStore ?? null,
+      lineageScope: options.lineageScope ?? null,
+      snapshotStore: this.workingContextSnapshotStore,
+      agentId: options.agentId ?? this.workingContextSnapshotStore?.agentId ?? null,
+      getContext: () => this.workingContextController.getContext(),
+      installContext: (context) => this.workingContextController.install(context),
+    });
+    this.toolLifecycleState = new ToolTraceLifecycleState(this.store.listRawTraceCorpusOrdered());
+    this.llmRequestRecovery = new LlmRequestRecoveryBoundary({
+      getWorkingContext: () => this.workingContextController.getContext(),
+      setWorkingContext: (workingContext) => this.workingContextController.install(workingContext),
+      getCompactionState: () => this.compactionCoordinator.capturePendingState(),
+      setCompactionState: (state) => this.compactionCoordinator.restorePendingState(state),
+      persistWorkingContextSnapshot: () => this.persistWorkingContextSnapshot(),
+      appendRawTrace: (input) => this.appendRawTrace(input),
+    });
   }
 
   startTurn(): string {
@@ -81,37 +129,27 @@ export class MemoryManager {
   }
 
   requestCompaction(requestedTurnId?: string | null): CompactionOperationId {
-    this.compactionRequired = true;
-    if (!this.pendingCompactionRequest) {
-      this.pendingCompactionRequest = {
-        operationId: this.createCompactionOperationId(),
-        requestedTurnId: requestedTurnId ?? null,
-      };
-    } else if (!this.pendingCompactionRequest.requestedTurnId && requestedTurnId) {
-      this.pendingCompactionRequest.requestedTurnId = requestedTurnId;
-    }
-    return this.pendingCompactionRequest.operationId;
+    return this.compactionCoordinator.request(requestedTurnId);
   }
 
   getPendingCompactionRequest(): PendingCompactionRequest | null {
-    return this.pendingCompactionRequest;
+    return this.compactionCoordinator.getPending();
   }
 
   requirePendingCompactionRequest(): PendingCompactionRequest {
-    if (!this.pendingCompactionRequest) {
-      this.requestCompaction();
-    }
-    return this.pendingCompactionRequest!;
+    return this.compactionCoordinator.requirePending();
   }
 
   clearCompactionRequest(): void {
-    this.compactionRequired = false;
-    this.pendingCompactionRequest = null;
+    this.compactionCoordinator.clear();
   }
 
-  private createCompactionOperationId(): CompactionOperationId {
-    this.compactionOperationCounter += 1;
-    return `compaction_operation_${Date.now().toString(36)}_${this.compactionOperationCounter}`;
+  get compactionRequired(): boolean {
+    return this.compactionCoordinator.compactionRequired;
+  }
+
+  set compactionRequired(value: boolean) {
+    this.compactionCoordinator.compactionRequired = value;
   }
 
   private nextSeq(turnId: string): number {
@@ -157,7 +195,7 @@ export class MemoryManager {
     }
     this.appendWorkingContextMessage(
       new Message(MessageRole.SYSTEM, { content }),
-      { sourceKind: 'system_prompt', ...options }
+      options
     );
     return true;
   }
@@ -174,7 +212,7 @@ export class MemoryManager {
           })
         : new Message(MessageRole.USER, { content: String(input) });
     const rawTraceIds = options.rawTraceIds ?? this.findRecentRawTraceIds(options.turnId, 'user', message.content);
-    this.appendWorkingContextMessage(message, { sourceKind: 'user_input', ...options, rawTraceIds });
+    this.appendWorkingContextMessage(message, { ...options, rawTraceIds });
   }
 
   appendWorkingContextAssistantMessage(response: CompleteResponse, turnId: string, options: WorkingContextAppendOptions = {}): void {
@@ -186,7 +224,7 @@ export class MemoryManager {
         content: response.content ?? null,
         reasoning_content: response.reasoning ?? null,
       }),
-      { sourceKind: 'assistant_response', turnId, ...options }
+      { turnId, ...options }
     );
   }
 
@@ -207,7 +245,7 @@ export class MemoryManager {
       const key = toolCallIdentityKey(registration.identity);
       if (seen.has(key)) return false;
       seen.add(key);
-      const existing = this.toolLifecycleGroups.get(key);
+      const existing = this.toolLifecycleState.get(key);
       return !existing?.call && !existing?.result;
     });
     if (!accepted.length) return;
@@ -225,10 +263,8 @@ export class MemoryManager {
           tool_payload: new ToolCallPayload(accepted.map(({ toolCall }) => toolCall)),
         }),
         {
-          sourceKind: 'assistant_tool_response',
           turnId: accepted[0]!.identity.turnId,
           rawTraceIds: traces.map((trace) => trace.id),
-          toolCallIds: accepted.map(({ identity }) => identity.toolCallId),
         }
       );
     }
@@ -247,16 +283,20 @@ export class MemoryManager {
       assistantContent: response.content ?? null,
       assistantReasoning: response.reasoning ?? null,
     });
-    const messages = this.workingContext.buildMessages();
+    const messages = this.workingContextController.getMessages();
     const latestIndex = messages.length - 1;
     const latest = messages[latestIndex];
     if (messages.length > workingContextMessageCount && latest?.tool_payload instanceof ToolCallPayload && assistantTraceIds.length) {
-      const provenance = getMessageProvenance(latest) ?? {};
-      setMessageProvenance(latest, {
-        ...provenance,
-        rawTraceIds: [...assistantTraceIds, ...(provenance.rawTraceIds ?? [])],
-      });
-      this.workingContext.replaceMessage(latestIndex, latest);
+      const provenance = getWorkingContextMessageProvenance(latest);
+      const rawTraceIds = provenance?.kind === 'single' ? provenance.rawTraceIds : [];
+      setWorkingContextMessageProvenance(
+        latest,
+        buildSingleMessageProvenance(
+          [...assistantTraceIds, ...rawTraceIds],
+          provenance?.kind === 'single' ? provenance.turnId : turnId,
+        ),
+      );
+      this.workingContextController.replaceMessage(latestIndex, latest);
       this.persistWorkingContextSnapshot();
     }
   }
@@ -280,7 +320,7 @@ export class MemoryManager {
     for (const registration of registrations) {
       const { identity } = registration;
       const identityKey = toolCallIdentityKey(identity);
-      const group = this.toolLifecycleGroups.get(identityKey);
+      const group = this.toolLifecycleState.get(identityKey);
       if (group?.result || batchIdentityKeys.has(identityKey)) continue;
       if (!group?.call) {
         throw new Error(
@@ -321,10 +361,8 @@ export class MemoryManager {
           ),
         }),
         {
-          sourceKind: 'tool_result',
           turnId: trace.turnId,
           rawTraceIds: [trace.id],
-          toolCallIds: [trace.toolCallId!],
         }
       );
     }
@@ -332,7 +370,7 @@ export class MemoryManager {
 
   finalizePendingToolCallsForTurn(turnId: string, reason: string, options: ToolResultIngestionOptions = {}): void {
     const normalizedReason = reason.trim() || 'Tool execution interrupted.';
-    const events = [...this.toolLifecycleGroups.values()]
+    const events = [...this.toolLifecycleState.values()]
       .filter((group) => group.identity.turnId === turnId && group.call && !group.result)
       .flatMap((group) => group.call?.toolName?.trim() ? [new ToolResultEvent(
         group.call.toolName,
@@ -362,7 +400,6 @@ export class MemoryManager {
     this.store.add([trace]);
     if (appendToWorkingContext && (response.content || response.reasoning)) {
       this.appendWorkingContextAssistantMessage(response, turnId, {
-        sourceKind: 'assistant_response',
         rawTraceIds: [trace.id],
         persist: false,
       });
@@ -430,7 +467,7 @@ export class MemoryManager {
     if (boundaryContent && !this.getWorkingContextMessages().some((message) => message.content === boundaryContent)) {
       this.appendWorkingContextMessage(
         new Message(MessageRole.SYSTEM, { content: boundaryContent }),
-        { sourceKind: 'recovery', turnId: fenceTurnId }
+        { turnId: fenceTurnId }
       );
     }
   }
@@ -448,11 +485,11 @@ export class MemoryManager {
   }
 
   getWorkingContextMessages(): Message[] {
-    return this.workingContext.buildMessages();
+    return this.workingContextController.getMessages();
   }
 
   getWorkingContext(): WorkingContext {
-    return this.workingContext.copy();
+    return this.workingContextController.getContext();
   }
 
   captureLlmRequestRecoverySnapshot(input: LlmRequestRecoveryInput): LlmRequestRecoverySnapshot { return this.llmRequestRecovery.capture(input); }
@@ -462,32 +499,30 @@ export class MemoryManager {
   commitLlmRequestRecoverySnapshot(snapshot: LlmRequestRecoverySnapshot): void { this.llmRequestRecovery.commit(snapshot); }
 
   replaceWorkingContext(workingContext: WorkingContext): void {
-    this.workingContext = workingContext.copy();
-    this.persistWorkingContextSnapshot();
+    this.workingContextController.replace(workingContext);
   }
 
-  persistWorkingContextSnapshot(): void {
-    if (!this.workingContextSnapshotStore) {
-      return;
-    }
-    const agentId = this.workingContextSnapshotStore.agentId ?? (this.store as any).agentId;
-    if (!agentId) {
-      return;
-    }
-    const payload = WorkingContextSnapshotSerializer.serialize(this.workingContext, {
-      schema_version: WorkingContextSnapshotSerializer.CURRENT_SCHEMA_VERSION,
-      agent_id: agentId,
-    });
-    this.workingContextSnapshotStore.write(agentId, payload);
+  installWorkingContextWithoutSnapshot(workingContext: WorkingContext): void { this.workingContextController.install(workingContext); }
+
+  requireCurrentCompactionOutput(): CompactedMemoryProjectionBundle { return this.compactionCoordinator.requireCurrentOutput(); }
+
+  loadCurrentCompactionOutput(): CompactedMemoryProjectionBundle | null { return this.compactionCoordinator.loadCurrentOutput(); }
+
+  captureCompactionBaseline(): MemoryManagerCompactionBaseline { return this.compactionCoordinator.captureBaseline(); }
+
+  prepareCompaction(
+    baseline: MemoryManagerCompactionBaseline,
+    proposal: WorkingContextCompactionProposal,
+  ): AcceptedWorkingContextCompaction {
+    return this.compactionCoordinator.prepare(baseline, proposal);
   }
+
+  commitAcceptedCompaction(accepted: AcceptedWorkingContextCompaction): void { this.compactionCoordinator.commit(accepted); }
+
+  persistWorkingContextSnapshot(): void { this.workingContextController.persist(); }
 
   private appendWorkingContextMessage(message: Message, options: WorkingContextAppendOptions = {}): void {
-    const copiedMessage = new WorkingContext([message]).buildMessages()[0]!;
-    setMessageProvenance(copiedMessage, options);
-    this.workingContext.appendMessage(copiedMessage);
-    if (options.persist !== false) {
-      this.persistWorkingContextSnapshot();
-    }
+    this.workingContextController.append(message, options);
   }
 
   private findRecentRawTraceIds(
@@ -534,22 +569,8 @@ export class MemoryManager {
     return marker?.content ?? null;
   }
 
-  private hydrateToolLifecycleGroups(): void {
-    for (const [key, group] of buildToolTraceLifecycleIndex(this.store.listRawTraceCorpusOrdered())) {
-      this.toolLifecycleGroups.set(key, group);
-    }
-  }
-
   private recordPhysicalToolTrace(trace: RawTraceItem): void {
-    if (trace.traceType !== 'tool_call' && trace.traceType !== 'tool_result') return;
-    for (const [key, incoming] of buildToolTraceLifecycleIndex([trace])) {
-      const existing = this.toolLifecycleGroups.get(key);
-      this.toolLifecycleGroups.set(key, {
-        identity: incoming.identity,
-        call: existing?.call ?? incoming.call,
-        result: existing?.result ?? incoming.result,
-      });
-    }
+    this.toolLifecycleState.record(trace);
   }
 
 }

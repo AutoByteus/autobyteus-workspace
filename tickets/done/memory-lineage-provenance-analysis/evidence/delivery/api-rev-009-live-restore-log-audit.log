@@ -1,0 +1,19 @@
+{
+  "logPath": "/Users/normy/.autobyteus/server-data/logs/server.log",
+  "logSizeBytes": 219353221,
+  "tailWindowBytes": 80000000,
+  "lastServerListenMarkerFound": true,
+  "sessionBytes": 17028,
+  "counts": {
+    "server_listening": 1,
+    "unsupported_snapshot_schema": 0,
+    "snapshot_restore_step_failed": 0,
+    "missing_snapshot": 0,
+    "autobyteus_restore_success": 0,
+    "core_agent_restore_success": 0,
+    "agent_activation_failure": 0,
+    "send_message_failure": 0
+  },
+  "successfulRestoreTokens": [],
+  "noCurrentRestoreFailureObserved": true
+}

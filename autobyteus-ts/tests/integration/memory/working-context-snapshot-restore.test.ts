@@ -1,140 +1,203 @@
-import { describe, it, expect } from 'vitest';
-import { WorkingContext } from '../../../src/memory/working-context.js';
-import { WorkingContextSnapshotSerializer } from '../../../src/memory/working-context-snapshot-serializer.js';
-import { WorkingContextSnapshotBootstrapper, WorkingContextSnapshotBootstrapOptions } from '../../../src/memory/restore/working-context-snapshot-bootstrapper.js';
-import { MemoryManager } from '../../../src/memory/memory-manager.js';
-import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
-import { WorkingContextSnapshotStore } from '../../../src/memory/store/working-context-snapshot-store.js';
-import { Message, MessageRole } from '../../../src/llm/utils/messages.js';
-import { EpisodicItem } from '../../../src/memory/models/episodic-item.js';
-import { SemanticItem } from '../../../src/memory/models/semantic-item.js';
-import { MemoryType } from '../../../src/memory/models/memory-types.js';
-import { RawTraceItem } from '../../../src/memory/models/raw-trace-item.js';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { Message, MessageRole } from '../../../src/llm/utils/messages.js';
+import type { WorkingContextCompactionProposal } from '../../../src/memory/compaction/working-context-compaction-proposal.js';
+import type { CompactionLineageScope } from '../../../src/memory/lineage/compaction-lineage-scope.js';
+import { MemoryManager } from '../../../src/memory/memory-manager.js';
+import { MemoryType } from '../../../src/memory/models/memory-types.js';
+import { RawTraceItem } from '../../../src/memory/models/raw-trace-item.js';
+import { FileCompactionLineageStore } from '../../../src/memory/store/file-compaction-lineage-store.js';
+import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
+import { WorkingContextSnapshotStore } from '../../../src/memory/store/working-context-snapshot-store.js';
+import {
+  createNaturalUserMessageProvenance,
+  WorkingContextFinalizer,
+} from '../../../src/memory/working-context-finalizer.js';
+import { getWorkingContextMessageProvenance } from '../../../src/memory/working-context-provenance.js';
+import { WorkingContextSnapshotSerializer } from '../../../src/memory/working-context-snapshot-serializer.js';
 
-const makeTempDir = () => fs.mkdtempSync(path.join(os.tmpdir(), 'snapshot-restore-'));
+const agentId = 'current-memory-lifecycle';
+const scope: CompactionLineageScope = {
+  targetKind: 'agent_run',
+  runId: agentId,
+  memberId: null,
+};
 
-describe('WorkingContextSnapshot restore integration', () => {
-  it('uses cache when valid', () => {
-    const tempDir = makeTempDir();
-    try {
-      const snapshot = new WorkingContext();
-      snapshot.appendMessage(new Message(MessageRole.SYSTEM, { content: 'System' }));
-      snapshot.appendMessage(new Message(MessageRole.USER, { content: 'Hello' }));
+const proposal = (
+  selectedNewRawTraceIds: string[],
+  episode: string,
+  fact: string,
+): WorkingContextCompactionProposal => ({
+  selectedNewRawTraceIds,
+  retainedMessages: [],
+  output: {
+    episodes: [{ summary: episode }],
+    semanticEntries: [{
+      category: 'durable_fact',
+      fact,
+      salience: 200,
+    }],
+  },
+  execution: {
+    runtimeKind: 'autobyteus',
+    provider: 'openai',
+    modelIdentifier: 'model-current',
+    taskId: `task-${episode}`,
+    renderedInputSha256: 'a'.repeat(64),
+  },
+});
 
-      const payload = WorkingContextSnapshotSerializer.serialize(snapshot, {
-        schema_version: WorkingContextSnapshotSerializer.CURRENT_SCHEMA_VERSION,
-        agent_id: 'agent_cache'
-      });
+describe('current-only recurrent compaction lifecycle integration', () => {
+  let tempDir: string;
+  let store: FileMemoryStore;
+  let lineageStore: FileCompactionLineageStore;
+  let snapshotStore: WorkingContextSnapshotStore;
+  let manager: MemoryManager;
 
-      const snapshotStore = new WorkingContextSnapshotStore(tempDir, 'agent_cache');
-      snapshotStore.write('agent_cache', payload);
-
-      const store = new FileMemoryStore(tempDir, 'agent_cache');
-      const manager = new MemoryManager({ store, workingContextSnapshotStore: snapshotStore });
-
-      const bootstrapper = new WorkingContextSnapshotBootstrapper(snapshotStore);
-      bootstrapper.bootstrap(manager, 'System', new WorkingContextSnapshotBootstrapOptions());
-
-      const messages = manager.getWorkingContextMessages();
-      expect(messages.map((message) => message.role)).toEqual([MessageRole.SYSTEM, MessageRole.USER]);
-      expect(messages[1].content).toBe('Hello');
-    } finally {
-      fs.rmSync(tempDir, { recursive: true, force: true });
-    }
+  beforeEach(() => {
+    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'current-memory-integration-'));
+    store = new FileMemoryStore(tempDir, agentId);
+    lineageStore = new FileCompactionLineageStore(store.agentDir, scope);
+    snapshotStore = new WorkingContextSnapshotStore(tempDir, agentId);
+    const r1 = new RawTraceItem({
+      id: 'raw-r1',
+      ts: 1,
+      turnId: 'turn-r1',
+      seq: 1,
+      traceType: 'user',
+      content: 'R1 original work',
+      sourceEvent: 'UserMessageReceivedEvent',
+    });
+    store.add([r1]);
+    const initial = new WorkingContextFinalizer().finalize({
+      messages: [
+        new Message(MessageRole.SYSTEM, { content: 'System' }),
+        createNaturalUserMessageProvenance(
+          new Message(MessageRole.USER, { content: 'R1 original work' }),
+          {
+            kind: 'current_user',
+            rawTraceIds: ['raw-r1'],
+            turnId: 'turn-r1',
+          },
+        ),
+      ],
+    });
+    manager = new MemoryManager({
+      store,
+      lineageStore,
+      lineageScope: scope,
+      workingContextSnapshotStore: snapshotStore,
+      workingContext: initial,
+      agentId,
+    });
   });
 
-  it('falls back to rebuild when cache missing', () => {
-    const tempDir = makeTempDir();
-    try {
-      const store = new FileMemoryStore(tempDir, 'agent_fallback');
-      const snapshotStore = new WorkingContextSnapshotStore(tempDir, 'agent_fallback');
-      const manager = new MemoryManager({ store, workingContextSnapshotStore: snapshotStore });
+  afterEach(() => {
+    fs.rmSync(tempDir, { recursive: true, force: true });
+  });
 
-      const episodic = new EpisodicItem({
-        id: 'ep_1',
-        ts: Date.now() / 1000,
-        turnIds: ['turn_0001'],
-        summary: 'User asked about memory.'
-      });
-      const semantic = new SemanticItem({
-        id: 'sem_1',
-        ts: Date.now() / 1000,
-        category: 'user_preference',
-        fact: 'User prefers concise answers.',
-        salience: 300,
-      });
-      const rawTail = new RawTraceItem({
-        id: 'rt_1',
-        ts: Date.now() / 1000,
-        turnId: 'turn_0002',
+  it('commits C1/C2 through manager-owned acceptance and keeps only M2 current', () => {
+    const c1Id = manager.requestCompaction('turn-r1');
+    const c1Baseline = manager.captureCompactionBaseline();
+    const c1 = manager.prepareCompaction(
+      c1Baseline,
+      proposal(['raw-r1'], 'M1 complete replacement', 'M1 fact'),
+    );
+
+    expect(c1.compactionId).toBe(c1Id);
+    expect(c1.expectedPreviousCompactionId).toBeNull();
+    expect(c1.episodicItems).toHaveLength(1);
+    expect(c1.semanticItems).toHaveLength(1);
+    expect(c1.lineageDraft).not.toHaveProperty('rawTraceArchiveFile');
+    manager.commitAcceptedCompaction(c1);
+
+    expect(manager.compactionRequired).toBe(false);
+    expect(lineageStore.readHead()).toMatchObject({
+      compactionId: c1Id,
+      previousCompactionId: null,
+      episodeIds: [c1.episodicItems[0]!.id],
+      semanticIds: [c1.semanticItems[0]!.id],
+    });
+    expect(manager.getWorkingContextMessages()[1]?.content).toContain('M1 complete replacement');
+
+    store.add([
+      new RawTraceItem({
+        id: 'raw-r2',
+        ts: 2,
+        turnId: 'turn-r2',
         seq: 1,
         traceType: 'user',
-        content: 'Current question',
-        sourceEvent: 'LLMUserMessageReadyEvent'
-      });
-      store.add([episodic, semantic, rawTail]);
+        content: 'R2 new work',
+        sourceEvent: 'UserMessageReceivedEvent',
+      }),
+      new RawTraceItem({
+        id: 'raw-unselected',
+        ts: 3,
+        turnId: 'turn-unselected',
+        seq: 1,
+        traceType: 'assistant',
+        content: 'Must remain active',
+        sourceEvent: 'OtherEvent',
+      }),
+    ]);
+    manager.appendWorkingContextUserMessage('R2 new work', {
+      rawTraceIds: ['raw-r2'],
+      turnId: 'turn-r2',
+    });
 
-      const bootstrapper = new WorkingContextSnapshotBootstrapper(snapshotStore);
-      const options = new WorkingContextSnapshotBootstrapOptions({ maxEpisodic: 3, maxSemantic: 20 });
-      bootstrapper.bootstrap(manager, 'System', options);
+    const c2Id = manager.requestCompaction('turn-r2');
+    const c2Baseline = manager.captureCompactionBaseline();
+    const baselineUser = c2Baseline.context.buildMessages()[1]!;
+    expect(getWorkingContextMessageProvenance(baselineUser)).toMatchObject({
+      kind: 'composed_user',
+      constituents: [
+        { kind: 'compacted_memory' },
+        { kind: 'current_user', rawTraceIds: ['raw-r2'] },
+      ],
+    });
+    const c2 = manager.prepareCompaction(
+      c2Baseline,
+      proposal(['raw-r2'], 'M2 complete replacement', 'M2 fact'),
+    );
+    expect(c2.expectedPreviousCompactionId).toBe(c1Id);
+    manager.commitAcceptedCompaction(c2);
 
-      const messages = manager.getWorkingContextMessages();
-      expect(messages[0].role).toBe(MessageRole.SYSTEM);
-      expect(messages[1].role).toBe(MessageRole.USER);
-      expect(messages[1].content).toContain('Earlier progress:');
-      expect(messages[1].content).toContain('User preferences:');
-    } finally {
-      fs.rmSync(tempDir, { recursive: true, force: true });
-    }
-  });
+    expect(lineageStore.list().map((record) => ({
+      id: record.compactionId,
+      previous: record.previousCompactionId,
+    }))).toEqual([
+      { id: c1Id, previous: null },
+      { id: c2Id, previous: c1Id },
+    ]);
+    expect(store.readArchiveRawTraces().map(({ id }) => id)).toEqual([
+      'raw-r1',
+      'raw-r2',
+    ]);
+    expect(store.listRawTracesOrdered().map(({ id }) => id)).toEqual(['raw-unselected']);
+    expect(store.list(MemoryType.EPISODIC)).toHaveLength(2);
+    expect(store.list(MemoryType.SEMANTIC)).toHaveLength(2);
 
-  it('clears stale semantic memory and starts clean when schema-reset leaves no canonical rebuild inputs', () => {
-    const tempDir = makeTempDir();
-    try {
-      const store = new FileMemoryStore(tempDir, 'agent_schema_reset');
-      const snapshotStore = new WorkingContextSnapshotStore(tempDir, 'agent_schema_reset');
-      const semanticPath = path.join(tempDir, 'agents', 'agent_schema_reset', 'semantic.jsonl');
-      fs.mkdirSync(path.dirname(semanticPath), { recursive: true });
-      fs.writeFileSync(
-        semanticPath,
-        `${JSON.stringify({ id: 'legacy_1', ts: 100, fact: 'legacy flat semantic memory', confidence: 0.9 })}\n`,
-        'utf-8'
-      );
+    const current = manager.requireCurrentCompactionOutput();
+    expect(current.lineageHead.compactionId).toBe(c2Id);
+    expect(current.episodes.map(({ summary }) => summary)).toEqual(['M2 complete replacement']);
+    expect(current.semantics.map(({ fact }) => fact)).toEqual(['M2 fact']);
+    const currentMessages = manager.getWorkingContextMessages();
+    expect(JSON.stringify(currentMessages)).toContain('M2 complete replacement');
+    expect(JSON.stringify(currentMessages)).not.toContain('M1 complete replacement');
+    const userProvenance = getWorkingContextMessageProvenance(currentMessages[1]!);
+    expect(userProvenance).toMatchObject({
+      kind: 'composed_user',
+      constituents: [{ kind: 'compacted_memory' }],
+    });
 
-      const staleSnapshot = new WorkingContext();
-      staleSnapshot.appendMessage(new Message(MessageRole.SYSTEM, { content: 'System' }));
-      staleSnapshot.appendMessage(new Message(MessageRole.USER, { content: 'Stale semantic-derived context' }));
-      snapshotStore.write('agent_schema_reset', WorkingContextSnapshotSerializer.serialize(staleSnapshot, {
-        schema_version: WorkingContextSnapshotSerializer.CURRENT_SCHEMA_VERSION,
-        agent_id: 'agent_schema_reset'
-      }));
-
-      const manager = new MemoryManager({ store, workingContextSnapshotStore: snapshotStore });
-      const bootstrapper = new WorkingContextSnapshotBootstrapper(snapshotStore);
-      bootstrapper.bootstrap(manager, 'System', new WorkingContextSnapshotBootstrapOptions());
-
-      const messages = manager.getWorkingContextMessages();
-      expect(messages).toHaveLength(1);
-      expect(messages[0]?.role).toBe(MessageRole.SYSTEM);
-      expect(messages[0]?.content).toBe('System');
-      expect(store.list(MemoryType.SEMANTIC)).toEqual([]);
-      const rebuiltPayload = snapshotStore.read('agent_schema_reset');
-      expect(rebuiltPayload).not.toBeNull();
-      if (!rebuiltPayload) {
-        throw new Error('Expected rebuilt snapshot payload to be persisted after schema reset.');
-      }
-      expect(WorkingContextSnapshotSerializer.validate(rebuiltPayload)).toBe(true);
-      const { workingContext: rebuiltSnapshot } = WorkingContextSnapshotSerializer.deserialize(rebuiltPayload);
-      const rebuiltMessages = rebuiltSnapshot.buildMessages();
-      expect(rebuiltMessages).toHaveLength(1);
-      expect(rebuiltMessages[0]?.role).toBe(MessageRole.SYSTEM);
-      expect(rebuiltMessages[0]?.content).toBe('System');
-      expect(JSON.stringify(rebuiltPayload)).not.toContain('Stale semantic-derived context');
-    } finally {
-      fs.rmSync(tempDir, { recursive: true, force: true });
-    }
+    const snapshot = snapshotStore.read(agentId)!;
+    expect(WorkingContextSnapshotSerializer.validate(snapshot)).toBe(true);
+    expect(JSON.stringify(snapshot)).not.toContain(c1Id);
+    expect(JSON.stringify(snapshot)).not.toContain(c2Id);
+    expect(JSON.stringify(snapshot)).not.toContain(c2.episodicItems[0]!.id);
+    expect(fs.existsSync(path.join(store.agentDir, 'compaction_state.json'))).toBe(false);
+    expect(fs.existsSync(path.join(store.agentDir, 'compacted_memory_manifest.json'))).toBe(false);
   });
 });

@@ -1,0 +1,10 @@
+COMMAND: pnpm exec tsc -p tsconfig.build.json --noEmit
+WORKDIR: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts
+INTEGRATED_HEAD: e13e6b2481fd8922c186e967dfe846d98d20d95d
+BASE: dfc0468b137cd231b79ff8096fa46750611b06e2
+CORE_LINK: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-ts
+START: 2026-07-30T16:38:38Z
+src/token-usage/repositories/sql/token-usage-ledger-repository.ts(63,3): error TS2353: Object literal may only specify known properties, and 'providerName' does not exist in type 'TokenUsageLedgerEventCreateInput'.
+src/token-usage/repositories/sql/token-usage-ledger-repository.ts(166,27): error TS2339: Property 'providerName' does not exist on type '{ runId: string; agentDefinitionId: string | null; agentName: string | null; rootTeamRunId: string | null; runtimeKind: string; memberName: string | null; id: number; memberRouteKey: string | null; ... 70 more ...; contextWindowUsagePercent: number | null; }'.
+EXIT: 2
+END: 2026-07-30T16:38:45Z

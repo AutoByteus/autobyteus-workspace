@@ -1,4 +1,3 @@
-import type { MemoryStore } from '../store/base-store.js';
 import type { WorkingContext } from '../working-context.js';
 import type {
   CompactionAgentExecutionMetadata,
@@ -18,7 +17,7 @@ export type WorkingContextCompactionResultDiagnostics = Readonly<{
   compactedUnitCount: number;
   rawTraceCount: number;
   semanticFactCount: number;
-  episodicSummaryLength: number;
+  episodeSummaryLength: number;
   compactionMetadata: CompactionAgentExecutionMetadata | null;
 }>;
 
@@ -32,14 +31,14 @@ export interface WorkingContextCompactionStrategy {
   readonly id: string;
   readonly name: string;
 
-  compact(workingContext: WorkingContext): Promise<WorkingContext>;
+  propose(workingContext: WorkingContext): Promise<WorkingContextCompactionProposal>;
 }
 
 export type WorkingContextCompactionStrategyConstructionContext = Readonly<{
   agentId: string;
-  memoryStore: MemoryStore;
   compactionAgentRunner: CompactionAgentRunner | null;
   inputBudgetTokens: number | null;
   maxItemChars: number;
   diagnostics: WorkingContextCompactionDiagnostics | null;
 }>;
+import type { WorkingContextCompactionProposal } from './working-context-compaction-proposal.js';

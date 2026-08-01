@@ -1,6 +1,7 @@
 export type LiveE2eOperation =
   | 'llm'
   | 'agent-flow'
+  | 'compaction-agent-flow'
   | 'search'
   | 'audio'
   | 'image'
@@ -12,7 +13,7 @@ export type LiveE2eOperation =
 export type LiveE2eScenario = Readonly<{
   operation: LiveE2eOperation;
   providerId: string;
-  requiredSecretId: string;
+  requiredSecretId: string | null;
   model?: string;
   geminiMode?: 'AI_STUDIO' | 'VERTEX_EXPRESS';
   hosts?: readonly string[];

@@ -23,6 +23,7 @@ export type MemoryManagerToolProtocolSafetyInput = {
   includeCommittedFacts?: boolean;
   syntheticInterruptedToolResultContent?: string;
   recoverySourceEvent?: string;
+  rawTraceScope?: 'active' | 'corpus';
 };
 
 type AppendRawTraceLikeInput = Omit<RawTraceItemOptions, 'id' | 'ts' | 'seq'> &
@@ -44,7 +45,9 @@ export function ensureMemoryManagerWorkingContextToolProtocolSafe(
   memoryManager: MemoryManagerToolProtocolSafetyBoundary,
   input: MemoryManagerToolProtocolSafetyInput = {},
 ): WorkingContextToolProtocolRepairResult {
-  const rawTraces = memoryManager.listRawTraceCorpusOrdered();
+  const rawTraces = input.rawTraceScope === 'active'
+    ? memoryManager.listRawTracesOrdered()
+    : memoryManager.listRawTraceCorpusOrdered();
   const interactions = buildToolInteractions(rawTraces);
   const result = repairWorkingContextToolProtocol(
     memoryManager.getWorkingContextMessages(),

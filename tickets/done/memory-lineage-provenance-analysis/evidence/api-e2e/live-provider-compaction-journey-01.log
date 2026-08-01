@@ -1,0 +1,51 @@
+{
+  "result": "PASS",
+  "mode": "credential-backed-built-server-websocket",
+  "provider": "OPENAI",
+  "model": "gpt-5.4-mini",
+  "triggerRatio": 0.0001,
+  "triggerScope": "parent-run-llm-config-only",
+  "turnsCompleted": 2,
+  "lineageRecords": 2,
+  "c1PreviousIsNull": true,
+  "c2LinksToC1": true,
+  "distinctArchives": 2,
+  "archiveRecordCounts": [
+    1,
+    1
+  ],
+  "episodeCounts": [
+    1,
+    1
+  ],
+  "semanticCounts": [
+    4,
+    4
+  ],
+  "snapshotSchemaVersion": 5,
+  "snapshotMessageCount": 3,
+  "firstTurnObservedTypes": [
+    "AGENT_COMMAND_ACK",
+    "AGENT_STATUS",
+    "ASSISTANT_COMPLETE",
+    "COMPACTION_STATUS",
+    "SEGMENT_CONTENT",
+    "SEGMENT_END",
+    "SEGMENT_START",
+    "TOKEN_USAGE_UPDATED",
+    "TURN_COMPLETED",
+    "TURN_STARTED"
+  ],
+  "secondTurnObservedTypes": [
+    "AGENT_COMMAND_ACK",
+    "AGENT_STATUS",
+    "ASSISTANT_COMPLETE",
+    "COMPACTION_STATUS",
+    "SEGMENT_CONTENT",
+    "SEGMENT_END",
+    "SEGMENT_START",
+    "TOKEN_USAGE_UPDATED",
+    "TURN_COMPLETED",
+    "TURN_STARTED"
+  ]
+}

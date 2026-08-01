@@ -3,7 +3,6 @@ import { MemoryItem, MemoryType } from './memory-types.js';
 export type EpisodicItemOptions = {
   id: string;
   ts: number;
-  turnIds: string[];
   summary: string;
   salience?: number;
 };
@@ -11,14 +10,12 @@ export type EpisodicItemOptions = {
 export class EpisodicItem implements MemoryItem {
   id: string;
   ts: number;
-  turnIds: string[];
   summary: string;
   salience: number;
 
   constructor(options: EpisodicItemOptions) {
     this.id = options.id;
     this.ts = options.ts;
-    this.turnIds = options.turnIds ?? [];
     this.summary = options.summary;
     this.salience = options.salience ?? 0.0;
   }
@@ -31,18 +28,34 @@ export class EpisodicItem implements MemoryItem {
     return {
       id: this.id,
       ts: this.ts,
-      turn_ids: this.turnIds,
       summary: this.summary,
       salience: this.salience
     };
   }
 
+  static isSerializedDict(data: Record<string, unknown>): boolean {
+    return (
+      typeof data.id === 'string'
+      && data.id.trim().length > 0
+      && typeof data.ts === 'number'
+      && Number.isFinite(data.ts)
+      && typeof data.summary === 'string'
+      && data.summary.trim().length > 0
+      && (
+        data.salience === undefined
+        || (typeof data.salience === 'number' && Number.isFinite(data.salience))
+      )
+    );
+  }
+
   static fromDict(data: Record<string, unknown>): EpisodicItem {
+    if (!this.isSerializedDict(data)) {
+      throw new Error('EpisodicItem.fromDict requires the current episodic-memory schema.');
+    }
     return new EpisodicItem({
-      id: String(data.id),
-      ts: Number(data.ts),
-      turnIds: Array.isArray(data.turn_ids) ? (data.turn_ids as string[]) : [],
-      summary: typeof data.summary === 'string' ? data.summary : '',
+      id: String(data.id).trim(),
+      ts: data.ts as number,
+      summary: String(data.summary).trim(),
       salience: typeof data.salience === 'number' ? data.salience : 0.0
     });
   }

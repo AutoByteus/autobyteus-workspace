@@ -1,4 +1,5 @@
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import { LLMFactory } from "autobyteus-ts/llm/llm-factory.js";
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import { MEMORY_COMPACTOR_AGENT_DEFINITION_ID } from "../../built-in-agents/built-in-agent-registry.js";
 import { runtimeKindFromString, type RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
@@ -8,6 +9,7 @@ export type ResolvedMemoryCompactorAgentLaunch = {
   agentName: string;
   runtimeKind: RuntimeKind;
   llmModelIdentifier: string;
+  provider: string;
   llmConfig: Record<string, unknown> | null;
   skillAccessMode: SkillAccessMode;
 };
@@ -69,12 +71,19 @@ export class MemoryCompactorAgentLaunchResolver {
         `Built-in Memory Compactor '${MEMORY_COMPACTOR_AGENT_DEFINITION_ID}' is missing a default model identifier and ${this.formatFallbackSource(parentLaunchFallback)} did not provide a parent model identifier fallback.`,
       );
     }
+    const provider = await LLMFactory.getProvider(llmModelIdentifier);
+    if (!provider) {
+      throw new Error(
+        `Built-in Memory Compactor model '${llmModelIdentifier}' has no resolvable provider metadata.`,
+      );
+    }
 
     return {
       agentDefinitionId: MEMORY_COMPACTOR_AGENT_DEFINITION_ID,
       agentName: definition.name,
       runtimeKind,
       llmModelIdentifier,
+      provider: String(provider),
       llmConfig: asObjectRecord(launchConfig?.llmConfig),
       skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
     };

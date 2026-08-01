@@ -1,5 +1,7 @@
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import { LLMFactory } from "autobyteus-ts/llm/llm-factory.js";
+import { LLMProvider } from "autobyteus-ts/llm/providers.js";
 import { AgentDefinition } from "../../../../src/agent-definition/domain/models.js";
 import { MemoryCompactorAgentLaunchResolver } from "../../../../src/agent-execution/compaction/memory-compactor-agent-launch-resolver.js";
 import { MEMORY_COMPACTOR_AGENT_DEFINITION_ID } from "../../../../src/built-in-agents/built-in-agent-registry.js";
@@ -32,6 +34,10 @@ const createResolver = (definition: AgentDefinition | null) => {
 };
 
 describe("MemoryCompactorAgentLaunchResolver", () => {
+  beforeEach(() => {
+    vi.spyOn(LLMFactory, "getProvider").mockResolvedValue(LLMProvider.OPENAI);
+  });
+
   it("resolves only the fixed built-in Memory Compactor launch config", async () => {
     const { resolver, getFreshAgentDefinitionById } = createResolver(createDefinition());
 
@@ -40,6 +46,7 @@ describe("MemoryCompactorAgentLaunchResolver", () => {
       agentName: "Memory Compactor",
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       llmModelIdentifier: "codex:gpt-5",
+      provider: LLMProvider.OPENAI,
       llmConfig: { reasoning_effort: "medium" },
       skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
     });
@@ -60,6 +67,7 @@ describe("MemoryCompactorAgentLaunchResolver", () => {
       agentDefinitionId: MEMORY_COMPACTOR_AGENT_DEFINITION_ID,
       runtimeKind: RuntimeKind.AUTOBYTEUS,
       llmModelIdentifier: "parent-model",
+      provider: LLMProvider.OPENAI,
       llmConfig: null,
     });
   });

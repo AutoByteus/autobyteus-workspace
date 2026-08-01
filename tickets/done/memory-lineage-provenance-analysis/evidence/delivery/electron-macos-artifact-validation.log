@@ -1,0 +1,26 @@
+TIME: 2026-07-30T17:38:06Z
+COMMAND: file app executable; read bundle metadata; hdiutil verify DMG; shasum -a 256 DMG ZIP
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+CFBundleIdentifier: com.autobyteus.app
+CFBundleShortVersionString: 1.4.31
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $8DA7980E
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $54F1B0E5
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $DA9C2983
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $BB145221
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $DA9C2983
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $5201926F
+Die überprüfte CRC32-Prüfsumme ist $D4276BE0
+hdiutil: verify: checksum of "autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.31.dmg" is VALID
+70c451d8841c4f9209f2eff64c27d648d295b317a42878ad1e4d66c5d485484e  autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.31.dmg
+80b1868381938e51b9ba77bd578b08041b7678f9e7948cd058a494e1482a3cab  autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.31.zip
+RESULT: Pass

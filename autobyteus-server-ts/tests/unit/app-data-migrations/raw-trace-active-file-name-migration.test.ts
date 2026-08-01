@@ -15,6 +15,14 @@ import {
   RAW_TRACE_ROTATION_LAYOUT_MIGRATION_ID,
   RawTraceRotationLayoutMigration,
 } from "../../../src/app-data-migrations/migrations/raw-trace-rotation-layout-migration.js";
+import {
+  MIGRATE_NATIVE_WORKING_CONTEXT_SNAPSHOTS_V5_MIGRATION_ID,
+  MigrateNativeWorkingContextSnapshotsV5Migration,
+} from "../../../src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5-migration.js";
+import {
+  REMOVE_EXTERNAL_RUNTIME_WORKING_CONTEXT_SNAPSHOTS_MIGRATION_ID,
+  RemoveExternalRuntimeWorkingContextSnapshotsMigration,
+} from "../../../src/app-data-migrations/migrations/remove-external-runtime-working-context-snapshots-migration.js";
 
 type MemorySyncManifestFixture = {
   sourceNodeId: string;
@@ -126,15 +134,25 @@ describe("RawTraceActiveFileNameMigration", () => {
     expect(updated.totals.fileCount).toBe(3);
   });
 
-  it("is registered after the raw trace rotation layout migration", () => {
+  it("registers external cleanup then both raw-layout prerequisites before native snapshot conversion", () => {
     const definitions = new AppDataMigrationRegistry().listDefinitions();
     const definitionIds = definitions.map((definition) => definition.id);
 
+    expect(definitions.find((definition) =>
+      definition.id === REMOVE_EXTERNAL_RUNTIME_WORKING_CONTEXT_SNAPSHOTS_MIGRATION_ID))
+      .toBeInstanceOf(RemoveExternalRuntimeWorkingContextSnapshotsMigration);
     expect(definitions.find((definition) => definition.id === RAW_TRACE_ACTIVE_FILE_NAME_MIGRATION_ID))
       .toBeInstanceOf(RawTraceActiveFileNameMigration);
     expect(definitions.find((definition) => definition.id === RAW_TRACE_ROTATION_LAYOUT_MIGRATION_ID))
       .toBeInstanceOf(RawTraceRotationLayoutMigration);
-    expect(definitionIds.indexOf(RAW_TRACE_ACTIVE_FILE_NAME_MIGRATION_ID))
-      .toBeGreaterThan(definitionIds.indexOf(RAW_TRACE_ROTATION_LAYOUT_MIGRATION_ID));
+    expect(definitions.find((definition) =>
+      definition.id === MIGRATE_NATIVE_WORKING_CONTEXT_SNAPSHOTS_V5_MIGRATION_ID))
+      .toBeInstanceOf(MigrateNativeWorkingContextSnapshotsV5Migration);
+    expect([
+      definitionIds.indexOf(REMOVE_EXTERNAL_RUNTIME_WORKING_CONTEXT_SNAPSHOTS_MIGRATION_ID),
+      definitionIds.indexOf(RAW_TRACE_ROTATION_LAYOUT_MIGRATION_ID),
+      definitionIds.indexOf(RAW_TRACE_ACTIVE_FILE_NAME_MIGRATION_ID),
+      definitionIds.indexOf(MIGRATE_NATIVE_WORKING_CONTEXT_SNAPSHOTS_V5_MIGRATION_ID),
+    ]).toEqual([3, 4, 5, 6]);
   });
 });

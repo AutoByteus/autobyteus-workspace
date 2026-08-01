@@ -45,13 +45,13 @@ describe('WorkingContextCompactionOutputValidator', () => {
     expectCode(() => validator.assertValid(current, input, input), 'aliased-context');
   });
 
-  it('compares the leading system run against the stable baseline', () => {
+  it('detects mutation of the isolated strategy input before head comparison', () => {
     const current = baseline();
     const input = current.copy();
     input.replaceMessage(0, new Message(MessageRole.SYSTEM, { content: 'mutated input' }));
     expectCode(
       () => validator.assertValid(current, input, new WorkingContext(input.buildMessages())),
-      'changed-required-head',
+      'mutated-strategy-input',
     );
   });
 

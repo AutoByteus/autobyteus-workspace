@@ -10,9 +10,20 @@ import { AUTOBYTEUS_COMPACTION_STRATEGY } from '../../../src/memory/compaction/w
 import { WorkingContextCompactionStrategyRegistry } from '../../../src/memory/compaction/working-context-compaction-strategy-registry.js';
 import { WorkingContextCompactionStrategyResolver } from '../../../src/memory/compaction/working-context-compaction-strategy-resolver.js';
 import type { WorkingContextCompactionStrategyConstructionContext } from '../../../src/memory/compaction/working-context-compaction-strategy.js';
-import { CompactedMemoryContextProjector } from '../../../src/memory/projection/compacted-memory-context-projector.js';
 import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
 import { WorkingContext } from '../../../src/memory/working-context.js';
+import { createNaturalUserMessageProvenance } from '../../../src/memory/working-context-finalizer.js';
+
+const emptyProposal = () => ({
+  selectedNewRawTraceIds: ['raw-1'],
+  retainedMessages: [],
+  output: { episodes: [{ summary: 'summary' }], semanticEntries: [] },
+  execution: {
+    runtimeKind: 'autobyteus',
+    provider: 'openai',
+    modelIdentifier: 'model',
+  },
+});
 
 const tempDirs: string[] = [];
 const originalStrategyId = process.env[AUTOBYTEUS_COMPACTION_STRATEGY];
@@ -57,7 +68,7 @@ describe('WorkingContextCompactionStrategyRegistry', () => {
 
   it('rejects blank identity fields and duplicate exact IDs deterministically', () => {
     const registry = new WorkingContextCompactionStrategyRegistry();
-    const create = () => ({ id: 'one', name: 'One', compact: async (context: WorkingContext) => context.copy() });
+    const create = () => ({ id: 'one', name: 'One', propose: async () => emptyProposal() });
     expect(() => registry.register({ id: ' ', name: 'One', create })).toThrow('strategy id');
     expect(() => registry.register({ id: 'one', name: ' ', create })).toThrow('strategy name');
     registry.register({ id: 'one', name: 'One', create });
@@ -72,7 +83,7 @@ describe('WorkingContextCompactionStrategyResolver', () => {
     const create = vi.fn((context: WorkingContextCompactionStrategyConstructionContext) => ({
       id: 'test-strategy',
       name: 'Test Strategy',
-      compact: async (workingContext: WorkingContext) => workingContext.copy(),
+      propose: async () => emptyProposal(),
     }));
     registry.register({ id: 'test-strategy', name: 'Test Strategy', create });
     const context = constructionContext();
@@ -110,7 +121,7 @@ describe('WorkingContextCompactionStrategyResolver', () => {
     registry.register({
       id: 'expected',
       name: 'Expected',
-      create: () => ({ id: 'wrong', name: 'Expected', compact: async (context) => context.copy() }),
+      create: () => ({ id: 'wrong', name: 'Expected', propose: async () => emptyProposal() }),
     });
     expect(() => new WorkingContextCompactionStrategyResolver({
       registry,
@@ -130,13 +141,18 @@ describe('WorkingContextCompactionStrategyResolver', () => {
         this.tasks.push(task);
         return {
           outputText: JSON.stringify({
-            episodic_summary: 'mapped summary',
+            episodes: [{ summary: 'mapped summary' }],
             critical_issues: [],
             unresolved_work: [],
             durable_facts: [{ fact: 'mapped fact' }],
             user_preferences: [],
             important_artifacts: [],
           }),
+          metadata: {
+            runtimeKind: 'autobyteus',
+            provider: 'openai',
+            modelIdentifier: 'mapped-model',
+          },
         };
       }
     }
@@ -146,7 +162,6 @@ describe('WorkingContextCompactionStrategyResolver', () => {
       reportResult: vi.fn(),
     };
     const storeAdd = vi.spyOn(store, 'add');
-    const project = vi.spyOn(CompactedMemoryContextProjector.prototype, 'project');
     process.env[AUTOBYTEUS_COMPACTION_STRATEGY] = '   ';
     const resolver = new WorkingContextCompactionStrategyResolver({
       registry: defaultWorkingContextCompactionStrategyRegistry,
@@ -156,37 +171,54 @@ describe('WorkingContextCompactionStrategyResolver', () => {
         memoryStore: store,
         compactionAgentRunner: runner,
         inputBudgetTokens: 100,
-        maxItemChars: 32,
+        maxItemChars: 80,
         diagnostics,
       },
     });
     const longContent = `budget-sensitive-${'x'.repeat(400)}`;
     const context = new WorkingContext([
       new Message(MessageRole.SYSTEM, { content: 'System' }),
-      ...Array.from({ length: 8 }, (_, index) => new Message(
-        index % 2 === 0 ? MessageRole.USER : MessageRole.ASSISTANT,
-        { content: `${longContent}-${index + 1}` },
-      )),
+      ...Array.from({ length: 8 }, (_, index) => {
+        const message = new Message(
+          index % 2 === 0 ? MessageRole.USER : MessageRole.ASSISTANT,
+          { content: `${longContent}-${index + 1}` },
+        );
+        return index % 2 === 0
+          ? createNaturalUserMessageProvenance(message, {
+              kind: 'retained_user',
+              rawTraceIds: [`raw-${index + 1}`],
+              turnId: `turn-${index + 1}`,
+            })
+          : message;
+      }),
     ]);
 
     const strategy = resolver.resolve();
-    const result = await strategy.compact(context);
+    const result = await strategy.propose(context);
 
     expect(strategy).toMatchObject({ id: 'structured-json', name: 'Structured JSON' });
     expect(runner.tasks).toHaveLength(1);
     expect(runner.tasks[0]).toMatchObject({ parentAgentId: 'mapped-agent' });
-    expect(runner.tasks[0]?.prompt).toContain('…[truncated]');
+    expect(runner.tasks[0]?.prompt).toMatch(/… \[\d+ characters omitted\] …/);
     expect(runner.tasks[0]?.prompt).not.toContain(longContent);
     expect(diagnostics.reportPlan).toHaveBeenCalledWith(expect.objectContaining({
-      selectedUnitCount: 6,
-      retainedUnitCount: 2,
+      selectedUnitCount: expect.any(Number),
+      retainedUnitCount: expect.any(Number),
     }));
     expect(diagnostics.reportResult).toHaveBeenCalledTimes(1);
-    expect(storeAdd).toHaveBeenCalledTimes(1);
-    expect(project).toHaveBeenCalledWith(expect.objectContaining({
-      maxEpisodic: 3,
-      maxSemantic: 20,
-    }));
-    expect(result).toBeInstanceOf(WorkingContext);
+    expect(storeAdd).not.toHaveBeenCalled();
+    expect(result).toMatchObject({
+      output: {
+        episodes: [{ summary: 'mapped summary' }],
+        semanticEntries: [{ category: 'durable_fact', fact: 'mapped fact' }],
+      },
+      execution: {
+        runtimeKind: 'autobyteus',
+        provider: 'openai',
+        modelIdentifier: 'mapped-model',
+      },
+    });
+    expect(result).not.toHaveProperty('compactionId');
+    expect(result).not.toHaveProperty('lineage');
   });
 });

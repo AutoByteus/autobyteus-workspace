@@ -1,0 +1,502 @@
+
+> autobyteus-workspace@ test:e2e:real /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis
+> pnpm --filter autobyteus-server-ts build && node test-support/live-e2e/run-live-e2e.mjs -- --scenarios=deepseek.compaction-agent-flow
+
+
+> autobyteus-server-ts@0.1.1 prebuild /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 11 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 132ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Want to react to database changes in your app as they happen? Discover how with Pulse: https://pris.ly/tip-1-pulse
+
+
+> autobyteus-server-ts@0.1.1 build /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts
+> pnpm run build:full
+
+
+> autobyteus-server-ts@0.1.1 build:full /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-managed-messaging-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+(node:71873) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/tests/.tmp/live-e2e-runtime
+Config file path: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/tests/.tmp/live-e2e-runtime/.env
+Loading environment from: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/tests/.tmp/live-e2e-runtime/.env
+[dotenv@17.3.1] injecting env (5) from tests/.tmp/live-e2e-runtime/.env -- tip: ⚙️  enable debug logging with { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:58159
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:58159
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/tests/.tmp/live-e2e-runtime
+DB DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/tests/.tmp/live-e2e-runtime/db
+LOGS DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/tests/.tmp/live-e2e-runtime/logs
+DOWNLOAD DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/tests/.tmp/live-e2e-runtime/download
+MEMORY DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/tests/.tmp/live-e2e-runtime/memory
+============================================================
+AppConfig initialization completed successfully
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities
+prisma:info Starting a sqlite pool with 21 connections.
+
+{"scenarioId":"deepseek.compaction-agent-flow","health":"READY","configured":["provider.deepseek.api-key"],"missing":[],"instructionCode":null}
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-r52SEF/workspace.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+Discovering Ollama models from host: http://localhost:11434
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+Discovering LM Studio models from host: http://localhost:1234
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+Finished LM Studio discovery. Total models registered: 14
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+Resolved system prompt from fresh definition instructions for AgentDefinition live-e2e-compaction-agent-flow.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+Using temp workspace (ID: live-e2e-compaction-agent-workspace) for agent.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentRuntimeState initialized for agent_id 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df': LLM instance 'DeepSeekLLM' and 2 tools prepared and stored in state.
+AgentContext composed for agent_id 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df' with config: 'Managed-provider live compaction E2E agent'.
+AgentWorker initialized for agent_id 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df'.
+Registered AgentContext for agent_id 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df'. Context registered.
+Agent facade initialized for agent_id 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df'.
+Agent 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df' created and stored successfully.
+Agent 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df' requesting runtime to start.
+AgentRuntime for 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df': Starting worker.
+AgentWorker 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df': Starting...
+AgentWorker 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df' asyncRun(): Starting.
+Agent 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df': Runtime init completed (event store initialized).
+Agent 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df': Runtime init completed (status deriver initialized).
+Agent 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df': Runtime init completed (AgentEventInbox initialized).
+Agent 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df' to become idle (timeout: 30s)...
+AgentEventStream (ID: 48bd28ce-ead9-4f3b-a3a2-4e1ab002cd2c) initialized for agent_id 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df'. Subscribed to notifier.
+Agent 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+Agent 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df': Bootstrapper starting direct lifecycle execution.
+Agent 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df': Executing McpServerPrewarmingStep.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+Agent 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df': Executing SystemPromptProcessingStep.
+Agent 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df': Final processed system prompt configured on LLM instance. Final length: 437.
+Agent 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df': Final processed system prompt:
+---
+You are a careful incident response analyst. Follow the requested file-tool sequence exactly and use provider-native tool calls. Never invent task values; preserve exact literal values from tool evidence. For write_file, use the exact absolute path supplied by the user. The write_file content argument must always be a string, including when that string contains serialized JSON. Do not finish a write request until write_file succeeds.
+---
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+Agent 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentWorker 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+Agent 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df' has become idle.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentEventStream (ID: 48bd28ce-ead9-4f3b-a3a2-4e1ab002cd2c) for 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentEventStream (ID: a435edd6-4eaa-4ed6-9f77-62c79c3d0391) initialized for agent_id 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df'. Subscribed to notifier.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_requested {
+  agent_id: 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df',
+  phase: 'requested',
+  turn_id: 'turn_0002',
+  compaction_operation_id: 'compaction_operation_ms7yopfs_1',
+  requested_turn_id: 'turn_0002',
+  execution_turn_id: null,
+  selected_block_count: null,
+  compacted_block_count: null,
+  raw_trace_count: null,
+  semantic_fact_count: null
+}
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df',
+  phase: 'started',
+  turn_id: 'turn_0002',
+  compaction_operation_id: 'compaction_operation_ms7yopfs_1',
+  requested_turn_id: 'turn_0002',
+  execution_turn_id: 'turn_0002',
+  compaction_strategy_id: 'structured-json',
+  compaction_strategy_name: 'Structured JSON',
+  selected_block_count: null,
+  compacted_block_count: null
+}
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+compaction_completed {
+  agent_id: 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df',
+  phase: 'completed',
+  turn_id: 'turn_0002',
+  compaction_operation_id: 'compaction_operation_ms7yopfs_1',
+  requested_turn_id: 'turn_0002',
+  execution_turn_id: 'turn_0002',
+  compaction_strategy_id: 'structured-json',
+  compaction_strategy_name: 'Structured JSON',
+  selected_block_count: 2,
+  compacted_block_count: 2,
+  raw_trace_count: 4,
+  semantic_fact_count: 5,
+  compaction_agent_definition_id: 'live-e2e-managed-memory-compactor',
+  compaction_agent_name: 'Managed-provider live E2E Memory Compactor',
+  compaction_runtime_kind: 'autobyteus',
+  compaction_model_identifier: 'deepseek-v4-flash',
+  compaction_run_id: 'live_e2e_compaction_bd3630e81a1d4dd3902cd328b0f71809',
+  compaction_task_id: 'compaction_task_3049463fa943432693ef9b3c240ce4cf'
+}
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+{"event":"managed_compaction_budget_probe","compactionRatio":0.05,"promptTokens":[1141,14434,14607,56153,43269,43543],"triggerThresholdTokens":49936,"phases":["requested","started","completed"]}
+{"event":"managed_compaction_output_probe","modelIdentifier":"deepseek-v4-flash","compactionRatio":0.05,"compactionOutputs":[{"episodes":[{"summary":"User instructed to read a specific JSONL evidence file exactly once, without writing. The tool read the file successfully. The file contains a task anchor record with customer, rollback action, safety rule, and verification values, plus 180 operational observations. The user then acknowledged ingestion with EVIDENCE_A_INGESTED and repeated the exact anchor values."}],"critical_issues":[],"unresolved_work":[],"durable_facts":[{"fact":"Evidence file A contains a task anchor: customer='Northwind Helios', rollback_action='restore the last stable payments build', safety_rule='the ledger delta must remain zero', verification='reconcile both ledgers before reopening retries'."},{"fact":"The file also contains 180 operational observations (sequences 0001-0180) across services payments-api and ledger-writer, shards checkout-01 through checkout-04."},{"fact":"The user confirmed ingestion with EVIDENCE_A_INGESTED and repeated the exact anchor values."}],"user_preferences":[{"fact":"User prefers concise responses that confirm task completion and repeat key extracted values."}],"important_artifacts":[{"fact":"File: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-r52SEF/workspace/incident-evidence-a.jsonl"}]}],"missingAnchorsByCompaction":[[]],"exactContinuationArtifact":{"customer":"Northwind Helios","rollback_action":"restore the last stable payments build","safety_rule":"the ledger delta must remain zero","verification":"reconcile both ledgers before reopening retries","owner":"Mira Chen","mitigation":"freeze payment retries","rejection_condition":"any duplicate ledger entry","communication_channel":"payments incident bridge","new_constraint":"preserve auditable rollback proof"}}
+{"event":"managed_compaction_quality_probe","modelIdentifier":"deepseek-v4-flash","compactionRatio":0.05,"completedCompactionCount":1,"compactionOutputs":[{"episodes":[{"summary":"User instructed to read a specific JSONL evidence file exactly once, without writing. The tool read the file successfully. The file contains a task anchor record with customer, rollback action, safety rule, and verification values, plus 180 operational observations. The user then acknowledged ingestion with EVIDENCE_A_INGESTED and repeated the exact anchor values."}],"critical_issues":[],"unresolved_work":[],"durable_facts":[{"fact":"Evidence file A contains a task anchor: customer='Northwind Helios', rollback_action='restore the last stable payments build', safety_rule='the ledger delta must remain zero', verification='reconcile both ledgers before reopening retries'."},{"fact":"The file also contains 180 operational observations (sequences 0001-0180) across services payments-api and ledger-writer, shards checkout-01 through checkout-04."},{"fact":"The user confirmed ingestion with EVIDENCE_A_INGESTED and repeated the exact anchor values."}],"user_preferences":[{"fact":"User prefers concise responses that confirm task completion and repeat key extracted values."}],"important_artifacts":[{"fact":"File: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-r52SEF/workspace/incident-evidence-a.jsonl"}]}],"projectedCompactedMemoryUserRegion":"You are continuing an ongoing task. Here is a concise summary of earlier work to help you resume.\nUse it as context for previous reasoning, actions, findings, decisions, constraints, and open work.\n\nEarlier progress:\n1. User instructed to read a specific JSONL evidence file exactly once, without writing. The tool read the file successfully. The file contains a task anchor record with customer, rollback action, safety rule, and verification values, plus 180 operational observations. The user then acknowledged ingestion with EVIDENCE_A_INGESTED and repeated the exact anchor values.\n\nUser preferences:\n- User prefers concise responses that confirm task completion and repeat key extracted values.\n\nDurable facts:\n- Evidence file A contains a task anchor: customer='Northwind Helios', rollback_action='restore the last stable payments build', safety_rule='the ledger delta must remain zero', verification='reconcile both ledgers before reopening retries'.\n- The file also contains 180 operational observations (sequences 0001-0180) across services payments-api and ledger-writer, shards checkout-01 through checkout-04.\n- The user confirmed ingestion with EVIDENCE_A_INGESTED and repeated the exact anchor values.\n\nImportant artifacts:\n- File: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-r52SEF/workspace/incident-evidence-a.jsonl","nextCurrentUserRegion":"The evidence files are deleted. Without rereading them, call write_file exactly once with the exact absolute path=\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-r52SEF/workspace/retained-incident-plan.json\". The content tool argument must be a string containing serialized JSON, not a nested object. Write one valid JSON object with exactly these keys: customer, rollback_action, safety_rule, verification, owner, mitigation, rejection_condition, communication_channel, new_constraint. Use the exact retained values and set new_constraint to \"preserve auditable rollback proof\". Do not write Markdown.","anchorPresence":{"Northwind Helios":true,"restore the last stable payments build":true,"the ledger delta must remain zero":true,"reconcile both ledgers before reopening retries":true,"Mira Chen":false,"freeze payment retries":false,"any duplicate ledger entry":false,"payments incident bridge":false},"projectedInvocationAnchorPresence":{"Northwind Helios":true,"restore the last stable payments build":true,"the ledger delta must remain zero":true,"reconcile both ledgers before reopening retries":true,"Mira Chen":true,"freeze payment retries":true,"any duplicate ledger entry":true,"payments incident bridge":true},"exactContinuationArtifact":{"customer":"Northwind Helios","rollback_action":"restore the last stable payments build","safety_rule":"the ledger delta must remain zero","verification":"reconcile both ledgers before reopening retries","owner":"Mira Chen","mitigation":"freeze payment retries","rejection_condition":"any duplicate ledger entry","communication_channel":"payments incident bridge","new_constraint":"preserve auditable rollback proof"}}
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentEventStream (ID: a435edd6-4eaa-4ed6-9f77-62c79c3d0391) for 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df': close() called. Unsubscribing all listeners and signaling.
+Removing agent 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df'. Attempting graceful shutdown.
+Agent 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentWorker 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df': Stop requested.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentExternalEventNotifier (NotifierID: e45f8698-c733-4c93-b059-4a998bdd377c, AgentID: live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentWorker 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df' asyncRun() loop has finished.
+AgentWorker 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df': Running shutdown sequence on worker loop.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentWorker 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df': Shutdown resource cleanup completed successfully.
+AgentWorker 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df': Shutdown sequence completed.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+Unregistered AgentContext for agent_id 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df'.
+AgentRuntime for 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df': Context unregistered.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+AgentRuntime for 'live_e2e_compaction_agent_ed27dd92ff8544319acec09183f259df' stop() method completed.
+
+stdout | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+Closing FileSystemWorkspace live-e2e-compaction-agent-workspace
+
+{"scenarioId":"deepseek.compaction-agent-flow","capability":"agent-compaction-turns","status":"PASSED","modelIdentifier":"deepseek-v4-flash","effectiveContextWindowTokens":1000000,"compactionRatio":0.05,"triggerThresholdTokens":49936,"observedBelowThreshold":true,"observedAtOrAboveThreshold":true,"completedCompactionCount":1,"successfulToolCount":3,"recoverableToolFailureCount":0,"exactRetainedArtifactVerified":true,"projectedMemoryAndCurrentUserVerified":true,"qualityEvidence":{"compactionOutputs":[{"episodes":[{"summary":"User instructed to read a specific JSONL evidence file exactly once, without writing. The tool read the file successfully. The file contains a task anchor record with customer, rollback action, safety rule, and verification values, plus 180 operational observations. The user then acknowledged ingestion with EVIDENCE_A_INGESTED and repeated the exact anchor values."}],"critical_issues":[],"unresolved_work":[],"durable_facts":[{"fact":"Evidence file A contains a task anchor: customer='Northwind Helios', rollback_action='restore the last stable payments build', safety_rule='the ledger delta must remain zero', verification='reconcile both ledgers before reopening retries'."},{"fact":"The file also contains 180 operational observations (sequences 0001-0180) across services payments-api and ledger-writer, shards checkout-01 through checkout-04."},{"fact":"The user confirmed ingestion with EVIDENCE_A_INGESTED and repeated the exact anchor values."}],"user_preferences":[{"fact":"User prefers concise responses that confirm task completion and repeat key extracted values."}],"important_artifacts":[{"fact":"File: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-r52SEF/workspace/incident-evidence-a.jsonl"}]}],"projectedCompactedMemoryUserRegion":"You are continuing an ongoing task. Here is a concise summary of earlier work to help you resume.\nUse it as context for previous reasoning, actions, findings, decisions, constraints, and open work.\n\nEarlier progress:\n1. User instructed to read a specific JSONL evidence file exactly once, without writing. The tool read the file successfully. The file contains a task anchor record with customer, rollback action, safety rule, and verification values, plus 180 operational observations. The user then acknowledged ingestion with EVIDENCE_A_INGESTED and repeated the exact anchor values.\n\nUser preferences:\n- User prefers concise responses that confirm task completion and repeat key extracted values.\n\nDurable facts:\n- Evidence file A contains a task anchor: customer='Northwind Helios', rollback_action='restore the last stable payments build', safety_rule='the ledger delta must remain zero', verification='reconcile both ledgers before reopening retries'.\n- The file also contains 180 operational observations (sequences 0001-0180) across services payments-api and ledger-writer, shards checkout-01 through checkout-04.\n- The user confirmed ingestion with EVIDENCE_A_INGESTED and repeated the exact anchor values.\n\nImportant artifacts:\n- File: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-r52SEF/workspace/incident-evidence-a.jsonl","nextCurrentUserRegion":"The evidence files are deleted. Without rereading them, call write_file exactly once with the exact absolute path=\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/live-e2e-compaction-agent-flow-r52SEF/workspace/retained-incident-plan.json\". The content tool argument must be a string containing serialized JSON, not a nested object. Write one valid JSON object with exactly these keys: customer, rollback_action, safety_rule, verification, owner, mitigation, rejection_condition, communication_channel, new_constraint. Use the exact retained values and set new_constraint to \"preserve auditable rollback proof\". Do not write Markdown."},"managedSecretResolverUsed":true}
+ ✓ tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts (2 tests) 16968ms
+     ✓ executes deepseek.compaction-agent-flow through its reviewed product boundary  16917ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  22:23:44
+   Duration  23.62s (transform 4.65s, setup 11ms, import 6.10s, tests 16.97s, environment 0ms)
+
+(node:71919) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stderr | tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts > value-safe one-database-vault managed-provider capabilities > executes deepseek.compaction-agent-flow through its reviewed product boundary
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+

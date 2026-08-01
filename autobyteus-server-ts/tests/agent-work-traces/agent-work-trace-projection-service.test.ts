@@ -372,4 +372,99 @@ describe("AgentWorkTraceProjectionService", () => {
     expect(secondContent).not.toContain("INTERNAL-LARGE-B");
     expect(secondContent).not.toContain("reasoning:");
   });
+
+  it("keeps Work Evidence on raw archive/active sources with shared redaction, head-tail omission, and genuine no-outcome rendering", async () => {
+    const longArgument = `ARGUMENT-HEAD-${"a".repeat(25_000)}-ARGUMENT-TAIL`;
+    const longResult = `RESULT-HEAD-${"r".repeat(25_000)}-RESULT-TAIL`;
+    await fs.writeFile(
+      path.join(memoryDir, "working_context_snapshot.json"),
+      JSON.stringify({
+        schema_version: 5,
+        agent_id: "target-run-1",
+        messages: [{
+          role: "assistant",
+          content: "SNAPSHOT_ONLY_MUST_NOT_BECOME_WORK_EVIDENCE",
+        }],
+      }),
+      "utf-8",
+    );
+    await writeActiveRawTraces(memoryDir, [
+      {
+        id: "visible-user",
+        trace_type: "user",
+        ts: 1_788_000_000,
+        turn_id: "turn-visible",
+        seq: 1,
+        content: [
+          "Visible request.",
+          "Authorization: Bearer super-secret-token-material",
+          "email=person@example.com",
+          "turn_id=backend-only",
+        ].join("\n"),
+      },
+      {
+        id: "reasoning-hidden",
+        trace_type: "reasoning",
+        ts: 1_788_000_001,
+        turn_id: "turn-visible",
+        seq: 2,
+        content: "PRIVATE_REASONING_MUST_NOT_RENDER",
+      },
+      {
+        id: "long-call",
+        trace_type: "tool_call",
+        tool_name: "run_bash",
+        tool_call_id: "call-long",
+        turn_id: "turn-visible",
+        seq: 3,
+        ts: 1_788_000_002,
+        tool_args: {
+          command: longArgument,
+          api_key: "sk-1234567890abcdefghijklmnopqrstuvwxyz",
+        },
+      },
+      {
+        id: "long-result",
+        trace_type: "tool_result",
+        tool_name: "run_bash",
+        tool_call_id: "call-long",
+        turn_id: "turn-visible",
+        seq: 4,
+        ts: 1_788_000_003,
+        tool_result: longResult,
+      },
+      {
+        id: "pending-call",
+        trace_type: "tool_call",
+        tool_name: "read_file",
+        tool_call_id: "call-pending",
+        turn_id: "turn-visible",
+        seq: 5,
+        ts: 1_788_000_004,
+        tool_args: { path: "/tmp/pending" },
+      },
+    ]);
+
+    const result = await new AgentWorkTraceProjectionService().ensureCurrent(context);
+    const content = await fs.readFile(result.manifest.files[0]!.filePath, "utf-8");
+
+    expect(result.manifest.files.map(({ sourceId }) => sourceId)).toEqual(["active"]);
+    expect(content).toContain("Visible request.");
+    expect(content).toContain("Authorization: Bearer <redacted-token>");
+    expect(content).toContain("<redacted-email>");
+    expect(content).toContain("<redacted-backend-field>");
+    expect(content).toContain("ARGUMENT-HEAD-");
+    expect(content).toContain("-ARGUMENT-TAIL");
+    expect(content).toContain("RESULT-HEAD-");
+    expect(content).toContain("-RESULT-TAIL");
+    expect(content).toMatch(/… \[\d+ characters omitted\] …/);
+    expect(content).toContain("tool:\nname: read_file\nstatus: parsed");
+    expect(content).toContain("result: not available");
+    expect(content).not.toContain("super-secret-token-material");
+    expect(content).not.toContain("sk-1234567890");
+    expect(content).not.toContain("person@example.com");
+    expect(content).not.toContain("backend-only");
+    expect(content).not.toContain("PRIVATE_REASONING_MUST_NOT_RENDER");
+    expect(content).not.toContain("SNAPSHOT_ONLY_MUST_NOT_BECOME_WORK_EVIDENCE");
+  });
 });

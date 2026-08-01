@@ -32,15 +32,10 @@ export class WorkingContextSnapshotStore {
 
   write(agentId: string, payload: Record<string, unknown>): void {
     const filePath = this.getPath(agentId);
+    const temporaryPath = `${filePath}.tmp`;
     fs.mkdirSync(path.dirname(filePath), { recursive: true });
-    fs.writeFileSync(filePath, JSON.stringify(payload), 'utf-8');
-  }
-
-  delete(agentId: string): void {
-    const filePath = this.getPath(agentId);
-    if (fs.existsSync(filePath)) {
-      fs.rmSync(filePath, { force: true });
-    }
+    fs.writeFileSync(temporaryPath, JSON.stringify(payload), 'utf-8');
+    fs.renameSync(temporaryPath, filePath);
   }
 
   private getPath(agentId: string): string {

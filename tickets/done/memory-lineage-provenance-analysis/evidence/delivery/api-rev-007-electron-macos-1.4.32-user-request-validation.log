@@ -1,0 +1,30 @@
+README-guided user-request Electron rebuild validation
+timestamp_utc=2026-07-31T10:00:29Z
+revision=b9fd12e572ddac036fd52ead3186cabe630176fd
+branch=codex/memory-lineage-provenance-analysis
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $8EA83A8D
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $19B472A7
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $CDCFCAAD
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $0D9E5C99
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $CDCFCAAD
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $905BC5EA
+Die überprüfte CRC32-Prüfsumme ist $32BD457E
+hdiutil: verify: checksum of "autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.32.dmg" is VALID
+b2abc72e9b48f9af0387c0f1cd7795bbd63ad452ea536eebd8b1fa8873151031  autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.32.dmg
+3d7dd868464156fcc5457dc255f3e42bff90c59f879fc1c8ee1efd5dcf7e5824  autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.32.zip
+executable=autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+bundle_id=com.autobyteus.app
+short_version=1.4.32
+bundle_version=1.4.32
+signing=Executable=/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus Identifier=Electron Format=app bundle with Mach-O thin (arm64) CodeDirectory v=20400 size=392 flags=0x20002(adhoc,linker-signed) hashes=9+0 location=embedded Signature=adhoc Info.plist=not bound TeamIdentifier=not set Sealed Resources=none Internal requirements=none 
+port_29695_listener=AutoByteu 96773 normy   28u  IPv4 0x2d64f166e26535ba      0t0  TCP *:29695 (LISTEN)

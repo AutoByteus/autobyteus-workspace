@@ -8,9 +8,11 @@ work trace files that other features can pass around by path. Work traces are
 derived generated artifacts, not canonical evidence; raw traces remain
 authoritative.
 
-The first consumer is manual Skill Improvement. Future memory compaction work
-should consume this shared package instead of importing skill-improvement internals
-or duplicating rendering policy.
+The first consumer is manual Skill Improvement. Native memory compaction does
+not consume this generated Markdown package: it renders selected WorkingContext
+units directly. Both paths instead reuse the core-owned readable value and
+condensed tool-body policy while preserving distinct sources, envelopes, bounds,
+and artifact ownership.
 
 ## Public Boundary
 
@@ -105,12 +107,23 @@ Separate assistant/internal reasoning records are omitted from the readable body
 and from the improver-visible summary hash. Visible rationale written as normal
 assistant message content remains visible as `assistant:` content.
 
-`AgentWorkTraceRedactor` hides backend/protocol noise and common sensitive
-values before content reaches the Markdown files. Hidden or redacted content
-includes raw trace ids, turn/sequence/source/correlation/tool-call/provider ids,
-raw JSON envelopes, provider internals, tokens, secrets, credentials, and email
-addresses. Exact work trace paths remain visible because consumers need file
-references.
+`AgentWorkTraceRenderer` uses the core-owned `ReadableValueRenderer` and
+`CondensedToolCallRenderer`. The shared policy deterministically serializes
+visible values, redacts common secrets and backend/protocol fields, and bounds
+each variable value to 20,000 characters with explicit head/tail retention and an
+omitted-character count. A tool block has name, terminal status, arguments, and
+exactly one result/error section; a genuinely missing terminal record renders its
+truthful status and `result: not available`.
+
+The Work Evidence layer still owns timestamps, Markdown headings, file/manifests,
+raw-trace source selection, correlation, and the larger consumer bound. Native
+compaction owns its natural conversation/XML envelope and smaller bound. Its
+operation message is only the compaction renderer's canonical
+`<conversation_history>` block, composed through `WorkingContextFinalizer`; the
+stable task, natural-sizing guidance, and response schema live only in the
+built-in Memory Compactor system prompt. Native compaction never reads Work
+Evidence Markdown or manifests as memory input or provenance.
+Exact work trace paths remain visible because consumers need file references.
 
 ## Consumer Contract
 
@@ -137,5 +150,6 @@ provided on demand by each `ensureCurrent()` call.
   `AgentWorkTraceRenderer`, or `AgentWorkTraceStore` directly.
 - Do not add compatibility wrappers, dual paths, old manifest fallback, or old
   generated-path reads for `<memoryDir>/skill_improvement/work_traces/`.
-- Keep compaction-specific fields out of the shared package until the memory
-  compaction redesign defines them.
+- Keep compaction lineage, output identity, prompt structure, and selected-input
+  ownership out of the Work Evidence package. Only the consumer-neutral readable
+  value/tool-body policy is shared with native compaction.
