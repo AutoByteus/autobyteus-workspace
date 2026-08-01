@@ -31,17 +31,6 @@
 - Verification/finalization state: Explicit user verification is pending. After it arrives, delivery must fetch `origin/personal` again and re-integrate/reverify if the target advanced materially before archival or repository finalization.
 - Product iteration: inactive; Product Manager acceptance callback `Not Required`.
 
-### DR-004 — Repository finalization and v1.4.37 rollout
-
-- Date: 2026-08-01
-- Prior authoritative result: `DR-003` — verification gate satisfied, target unchanged, ticket archived, and release authorized.
-- Ticket branch finalization: committed as `d8fc4bf5a00c69720366db679a0c0e95d97cc0f9` and pushed.
-- Target finalization: merged to `personal` as `ad45a222830789207b5a42286ad7e7ab62ca9539` and pushed.
-- Release: repository helper synchronized version `1.4.37`, created release commit `a123bcd2c8fd1eb1c7c6737f52a2fc1f8ed96140`, and pushed tag `v1.4.37`.
-- Publication: `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.37` published with 21 assets.
-- Rollout: Desktop, Android, iOS App Store Connect, messaging-gateway, and server Docker tag-push workflows all completed successfully.
-- Cleanup: the dedicated worktree and ticket branches were retained after the user indicated the task was already finished; this does not block the merged/published delivery.
-- Current authoritative result: `Pass — finalized and released`.
 - Remaining risk: physical microphone acoustics, host-specific device behavior, and local transcription-model accuracy remain the explicitly accepted manual check. Broad Nuxt baseline-red failures are recorded upstream; changed-boundary and broader realistic validation passed.
 - Next recipient/action: User verifies the integrated behavior and either approves finalization or reports a reproducible issue.
 
@@ -80,3 +69,15 @@
 - Docs sync result: no additional long-lived docs change; the previously updated architecture and packaging docs remain authoritative.
 - Current result: `Pass`; archival is complete and repository finalization/release execution is authorized and in progress.
 - Product iteration: inactive; Product Manager acceptance callback `Not Required`.
+
+### DR-004 — Repository finalization and v1.4.37 rollout
+
+- Date: 2026-08-01
+- Prior authoritative result: `DR-003` — verification gate satisfied, target unchanged, ticket archived, and release authorized.
+- Ticket branch finalization: committed as `d8fc4bf5a00c69720366db679a0c0e95d97cc0f9` and pushed.
+- Target finalization: merged to `personal` as `ad45a222830789207b5a42286ad7e7ab62ca9539` and pushed.
+- Release: repository helper synchronized version `1.4.37`, created release commit `a123bcd2c8fd1eb1c7c6737f52a2fc1f8ed96140`, and pushed tag `v1.4.37`.
+- Publication: `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.37` published with 21 assets.
+- Rollout: Desktop, Android, iOS App Store Connect, messaging-gateway, and server Docker tag-push workflows all completed successfully.
+- Cleanup: the dedicated worktree and ticket branches were retained after the user indicated the task was already finished; this does not block the merged/published delivery.
+- Current authoritative result: `Pass — finalized and released`.
