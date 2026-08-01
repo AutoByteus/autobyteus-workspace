@@ -224,6 +224,32 @@ resolved lexically below the selected workspace root, and absolute or sibling
 prefix traversal candidates are rejected even if a client bypasses frontend
 normalization. Existing symlink semantics are unchanged.
 
+### HTML Preview Source Selection
+
+`FileViewer.vue` forwards the file's optional `relativeResourceContext` to
+`HtmlPreviewer.vue`. The HTML adapter chooses its iframe source from that
+explicit resource identity; it must not infer workspace authority from a
+global active-workspace store or from the file path alone.
+
+- Workspace-relative HTML with `{ kind: "workspace", workspaceId }` uses the
+  bound REST static route, with each path segment encoded:
+  `/rest/workspaces/<workspaceId>/static/<relative-path>`.
+- Local absolute HTML and HTML without workspace resource context use the
+  already-loaded content in a managed `Blob` URL. The adapter does not send
+  the host absolute path to a workspace route. Blob URLs are revoked when the
+  source changes or the viewer unmounts.
+- The iframe remains sandboxed with `allow-scripts allow-same-origin` for both
+  source strategies. Mobile workspace HTML continues to use the raw,
+  read-only mobile presentation described above rather than this rich iframe
+  path.
+
+The backend static route remains the containment authority. An absolute path
+or traversal candidate must not be converted into a workspace static URL or
+used to bypass the workspace boundary; the server rejects such candidates
+without returning the outside file payload. Relative local HTML assets loaded
+from the existing Blob base may retain browser-origin limitations; changing
+that behavior requires a separate trusted-resource design.
+
 ### Mermaid Support
 
 AutoByteus supports rendering Mermaid diagrams directly within markdown files. This is handled by a custom client-side renderer that replaces the need for backend generation (like PlantUML).

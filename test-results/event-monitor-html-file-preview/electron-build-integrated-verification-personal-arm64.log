@@ -1,0 +1,45 @@
+Integrated package verification 2026-08-01T09:05:37Z
+SOURCE_HEAD=e234af3e78bcec73d72c3f1d8e1f5f1704dc5b00
+PACKAGE_VERSION=1.4.35
+HOST=Darwin/arm64
+
+== staged server runtime ==
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+
+== final packaged server runtime and spawn probe ==
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+
+== disk image ==
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $64DD5A75
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $F4F8EF3D
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $76614CF4
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $1568AE51
+Prüfsumme für GPT Partition Data (Backup GPT Table : 5) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $76614CF4
+Prüfsumme für GPT Header (Backup GPT Header : 6) berechnen …
+  GPT Header (Backup GPT Header : 6): Die überprüfte CRC32-Prüfsumme ist $FEE12E43
+Die überprüfte CRC32-Prüfsumme ist $82B114DF
+hdiutil: verify: checksum of "autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.35.dmg" is VALID
+
+== zip ==
+No errors detected in compressed data of autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.35.zip.
+
+== hashes and binary architecture ==
+66ca950ae1a22ad25084c5da9f44436b4546d72d5dd85575a6e22cce8f8c9e67  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.35.dmg
+fad321f0c8ae070e09370007d931f0d1d851099b9b25c1455c5babff187ca3e5  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.35.dmg.blockmap
+0d3c0ff16253ad128cd50f3bfee2cca58abd157537b84ee3f951b7a3fda86d19  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.35.zip
+b3177d1b8bb98300a77a260e11de04d98ed3fa19ff7842cca8f752b1e8f29c1a  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.35.zip.blockmap
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+
+Integrated Electron package verification: PASS
