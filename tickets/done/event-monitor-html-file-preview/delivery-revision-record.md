@@ -86,3 +86,14 @@
 - Current authoritative result: **Pass — verification gate satisfied; ticket archive committed next, followed by ticket-branch push, `personal` target merge/push, and release helper execution for `v1.4.36`.**
 - Release/deployment: authorized and in progress; no release tag, publication, or deployment has been claimed yet.
 - Next action: commit the archived ticket and final handoff, push the ticket branch, refresh/merge/push `personal`, run `scripts/desktop-release.sh release 1.4.36 --release-notes <archived release-notes.md> --branch personal`, then verify tag/workflow/publication evidence.
+
+### DR-006 — Repository finalized and v1.4.36 release published
+
+- Delivery round and trigger: Round 6, after explicit user verification and authorized release execution.
+- Ticket archive/finalization: archived-ticket commit `5c08df946` was pushed on `codex/event-monitor-html-file-preview`; refreshed `personal` target merged it as `ebe499977` and pushed successfully.
+- Release execution: `scripts/desktop-release.sh release 1.4.36 --release-notes /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/event-monitor-html-file-preview/release-notes.md --branch personal` completed successfully.
+- Release commit/tag: release commit `488121b5173a611ace855c716d0c91d9ae6e0e8c`; annotated tag `v1.4.36` points to that commit and is present on `origin`.
+- GitHub publication: GitHub Release `v1.4.36` is published at `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.36` (`publishedAt: 2026-08-01T09:50:43Z`). Release Messaging Gateway and Android APK workflows completed successfully and uploaded assets.
+- Remaining rollout: Desktop Release workflow `30694463850`, Server Docker Release workflow `30694463837`, and iOS App Store Connect workflow `30694463821` were still running/queued at this record point; desktop and remaining platform assets are not yet claimed as published.
+- Current authoritative result: **Pass — repository finalization and release publication started successfully; rollout monitoring remains active.**
+- Cleanup: held until release workflows and final rollout evidence are settled.

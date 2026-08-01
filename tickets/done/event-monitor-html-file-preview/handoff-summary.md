@@ -2,7 +2,7 @@
 
 ## Status
 
-- Delivery status: **User verified the current integrated package; ticket archived and finalization/release in progress**.
+- Delivery status: **Repository finalized and v1.4.36 release published; platform release workflows are still running**.
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview`.
 - Branch: `codex/event-monitor-html-file-preview`.
 - Validated implementation checkpoint: `a6ab5cc77b5324a1743c4bc121ccf1bb518163e7` (historical review checkpoint).
@@ -94,7 +94,7 @@ Verification passed for staged and final packaged Terminal runtime, matching-hos
 
 ## Current Release Candidate
 
-- Planned next release: `v1.4.36` (the integrated target already contains `v1.4.35`).
+- Released version: `v1.4.36` (release commit `488121b5173a611ace855c716d0c91d9ae6e0e8c`; tag pushed and GitHub Release published).
 - Current package build: **Pass** from `HEAD e234af3e78bcec73d72c3f1d8e1f5f1704dc5b00`; integrated source package version `1.4.35` is ready.
 - Renewed user verification: **Received** — user confirmed release of the current integrated `1.4.35` package.
 
@@ -111,7 +111,7 @@ User verification received: **verified release**. The user confirmed the current
 
 ## Finalization State
 
-The user verification gate is satisfied. The ticket has been moved to `tickets/done/event-monitor-html-file-preview`; delivery is committing the archive, then will push the ticket branch, merge it into the refreshed `personal` target, push the target, and run the documented `v1.4.36` release path. Publication and cleanup remain pending those steps.
+The user verification gate is satisfied. The ticket archive was committed and pushed; it was merged into `personal`, and the target was pushed. Release commit `488121b5173a611ace855c716d0c91d9ae6e0e8c` and tag `v1.4.36` are published. Platform workflows remain in progress; cleanup is held until rollout evidence is complete.
 
 ## Canonical Delivery Artifacts
 

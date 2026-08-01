@@ -4,7 +4,7 @@
 
 - Ticket: `event-monitor-html-file-preview`.
 - Delivery round: `DR-003` latest-base refresh and release preparation.
-- Status: `Finalization in progress — user verification received; release v1.4.36 authorized but not yet executed`.
+- Status: `Repository finalized; v1.4.36 GitHub Release published; platform workflows in progress`.
 - Release/publication/deployment scope: **In scope by explicit user request**, planned as `v1.4.36`; no version bump, tag, publication, or deployment has started.
 
 ## Integrated State
@@ -80,5 +80,5 @@ Build and provide the current integrated `1.4.35` package for renewed user verif
 - User verification: **Received** — explicit response `verified release` for the current integrated `1.4.35` package.
 - Finalization-target refresh: `git fetch origin personal` passed; target remains `d5618bffdd73d2b47f83e33852853a5d8886ccc2`, equal to the integrated merge base. No new base commits required integration or rerun.
 - Archive: completed locally; canonical ticket folder is now `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview`.
-- Current state: archived-ticket commit and branch push are next; target merge/push and `v1.4.36` release are authorized but not yet completed.
+- Current state: archived-ticket commit `5c08df946`, ticket branch push, target merge/push commit `ebe499977`, and release commit/tag `488121b51` / `v1.4.36` are complete. Platform publication workflows remain in progress.
 - Release notes input: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/release-notes.md`.
