@@ -4,7 +4,7 @@
 
 - Ticket: `event-monitor-html-file-preview`.
 - Delivery round: `DR-003` latest-base refresh and release preparation.
-- Status: `Prepared — latest-base integration and checks passed; current integrated package rebuild and renewed user verification required before finalization/release`.
+- Status: `Finalization in progress — user verification received; release v1.4.36 authorized but not yet executed`.
 - Release/publication/deployment scope: **In scope by explicit user request**, planned as `v1.4.36`; no version bump, tag, publication, or deployment has started.
 
 ## Integrated State
@@ -42,7 +42,7 @@
 ## Documentation
 
 - Docs sync: `Updated` / `Pass`.
-- Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/docs-sync-report.md`.
+- Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/docs-sync-report.md`.
 - Updated durable docs: `autobyteus-web/docs/content_rendering.md`, `autobyteus-web/docs/file_explorer.md`.
 - No-impact docs: Electron packaging, remote access, architecture index, and README remain accurate.
 
@@ -52,7 +52,7 @@ Repository finalization has not started. The ticket remains under `tickets/in-pr
 
 ## Release / Deployment Decision
 
-Release work is authorized by the user and planned for `v1.4.36`; `personal` already contains `v1.4.35`. Ticket-local release notes are prepared at `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/release-notes.md`. The release helper must run only after renewed verification, ticket archival, ticket-branch push, finalization-target refresh/merge/push, and a clean worktree.
+Release work is authorized by the user and planned for `v1.4.36`; `personal` already contains `v1.4.35`. Ticket-local release notes are prepared at `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/release-notes.md`. The release helper must run only after renewed verification, ticket archival, ticket-branch push, finalization-target refresh/merge/push, and a clean worktree.
 
 ## Residual Risks and Blocked Scope
 
@@ -71,6 +71,14 @@ Build and provide the current integrated `1.4.35` package for renewed user verif
 - Build outcome record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/test-results/event-monitor-html-file-preview/electron-build-integrated-personal-arm64-final.log`.
 - Verification result: **Pass** for staged/final Terminal runtime checks, matching-host spawn probe, `hdiutil verify`, `unzip -tq`, SHA-256 calculation, and ARM64 binary inspection.
 - Verification evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/test-results/event-monitor-html-file-preview/electron-build-integrated-verification-personal-arm64.log`.
-- Current package artifact paths and hashes: authoritative in `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/handoff-summary.md`.
+- Current package artifact paths and hashes: authoritative in `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/handoff-summary.md`.
 - User verification state: **Pending renewed verification** for the current integrated `1.4.35` package. The prior `1.4.34` verification is stale for finalization purposes.
 - Planned release: `v1.4.36` after renewed verification, ticket archival, branch/target finalization, and a clean release-helper precondition. No release commit, tag, publication, or deployment has started.
+
+## Delivery Round 5 — User verification and finalization start
+
+- User verification: **Received** — explicit response `verified release` for the current integrated `1.4.35` package.
+- Finalization-target refresh: `git fetch origin personal` passed; target remains `d5618bffdd73d2b47f83e33852853a5d8886ccc2`, equal to the integrated merge base. No new base commits required integration or rerun.
+- Archive: completed locally; canonical ticket folder is now `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview`.
+- Current state: archived-ticket commit and branch push are next; target merge/push and `v1.4.36` release are authorized but not yet completed.
+- Release notes input: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/release-notes.md`.

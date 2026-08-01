@@ -2,20 +2,20 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/design-spec.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/design-spec.md`
 - Supplemental Task Artifacts: `None`
-- Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/solution-revision-record.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/design-review-report.md`
-- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/architecture-review-revision-record.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/implementation-handoff.md`
-- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/implementation-revision-record.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/code-review-report.md`
-- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/code-review-revision-record.md`
+- Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/solution-revision-record.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/design-review-report.md`
+- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/architecture-review-revision-record.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/implementation-handoff.md`
+- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/implementation-revision-record.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/code-review-report.md`
+- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/code-review-revision-record.md`
 - Delivery Revision Record (delivery re-entry only): `N/A`
 - Relevant Delivery Revision IDs: `N/A`
-- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/api-e2e-revision-record.md`
+- API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/api-e2e-revision-record.md`
 - Current API/E2E Revision ID: `API-REV-001`
 - Current Investigation Round: `1`
 - Trigger: `code_reviewer` implementation-source review `CRR-001` passed for commit `0d35457b2`.

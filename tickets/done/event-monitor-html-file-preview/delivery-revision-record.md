@@ -12,7 +12,7 @@
 ### DR-001 — Initial integrated delivery handoff and docs synchronization
 
 - Delivery round and trigger: Initial delivery round after API/E2E `API-REV-001` passed at 95% confidence and proportional durable test-code review `CRR-002` passed with no findings.
-- Triggering upstream reports and evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/api-e2e-test-review-report.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/execution-coverage-report.md`, and `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/code-review-report.md`.
+- Triggering upstream reports and evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/api-e2e-test-review-report.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/execution-coverage-report.md`, and `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/code-review-report.md`.
 - Prior authoritative result (`N/A` for `DR-001`): `N/A`; no prior delivery record existed.
 - Validated implementation checkpoint: `a6ab5cc77b5324a1743c4bc121ccf1bb518163e7`.
 - Recorded base/finalization target: `origin/personal` / `personal`.
@@ -20,8 +20,8 @@
 - Post-integration check: `git diff --check` passed. No additional executable rerun was required because no base commit was integrated and delivery-owned changes are documentation/ticket records only; API/E2E had already passed on the checkpoint source. Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/test-results/event-monitor-html-file-preview/delivery-integration-check.log`.
 - Current authoritative result: `Pass` for integrated delivery preparation and docs synchronization. The handoff is ready for explicit user verification; repository finalization, archival, push, target merge, release, deployment, and cleanup have not started.
 - Docs sync: `Updated` / `Pass`; `autobyteus-web/docs/content_rendering.md` and `autobyteus-web/docs/file_explorer.md` now document explicit workspace HTML resource identity, local/content-only Blob fallback, containment, sandbox/cleanup, and bounded relative-asset limitations. Other reviewed docs had no impact.
-- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/handoff-summary.md` — current integrated behavior, evidence, residual risks, cumulative package, and verification hold.
-- Release/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/release-deployment-report.md` — no release/deployment in scope; finalization remains pending verification.
+- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/handoff-summary.md` — current integrated behavior, evidence, residual risks, cumulative package, and verification hold.
+- Release/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/release-deployment-report.md` — no release/deployment in scope; finalization remains pending verification.
 - User verification/finalization state: Explicit user verification has not been received. Ticket remains under `tickets/in-progress`; no push, archive, target merge, release, deployment, or cleanup was performed.
 - Why this baseline is recorded: Establish the first authoritative delivery result without inferring a prior result from the missing record, preserve the latest-base check, promote the durable viewer contract into project docs, and make the verification hold explicit.
 - Next recipient/action: User verifies the integrated handoff and explicitly authorizes completion/finalization. After that signal, delivery must refresh `origin/personal` again and proceed only if the verified handoff remains current.
@@ -55,7 +55,7 @@
 - Integrated-state checks: focused frontend `6 files / 80 tests` passed; preservation `3 files / 22 tests` passed; server REST `2 files / 8 tests` passed; Electron boundary `4 files / 19 tests` passed. `git diff --check` and cached diff checking completed; the imported target evidence contains pre-existing whitespace warnings, recorded in the integrated recheck log, with no implementation check failure.
 - Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/test-results/event-monitor-html-file-preview/finalization-integrated-recheck.log`.
 - Current authoritative result: `Pass` for latest-base integration and executable recheck; finalization and release remain held because the previously user-tested `1.4.34` package is stale relative to the integrated `1.4.35` source state.
-- Release decision: the next release version is `1.4.36` because `personal` already contains `v1.4.35`. Release notes are prepared at `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/release-notes.md`; no tag, release commit, publication, or deployment has started.
+- Release decision: the next release version is `1.4.36` because `personal` already contains `v1.4.35`. Release notes are prepared at `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/release-notes.md`; no tag, release commit, publication, or deployment has started.
 - Next action: build the current integrated personal-flavor macOS ARM64 package, provide its absolute DMG/ZIP paths for renewed user verification, then refresh `origin/personal` once more and finalize only after that verification remains current.
 - Remaining risks: packaged Electron IPC/window/server lifecycle, full authenticated Event Monitor feed click, and local HTML relative CSS/image/script asset fidelity remain bounded residuals.
 
@@ -75,3 +75,14 @@
 - Current authoritative result: `Pass` for the current integrated package and integrity checks; explicit renewed user verification is now required before archive, push, finalization-target merge, release, publication, deployment, or cleanup.
 - Release plan: after renewed verification and repository finalization, run the documented release path for `v1.4.36`; no release tag or publication has started.
 - Remaining risks: packaged Electron IPC/window/server lifecycle, full authenticated Event Monitor feed click, and local HTML relative CSS/image/script asset fidelity remain bounded residuals.
+
+### DR-005 — User verification received; archival and release finalization in progress
+
+- Delivery round and trigger: Round 5, triggered by explicit user response: `verified release`.
+- Prior authoritative result: `DR-004` — current integrated `1.4.35` Electron package and integrity checks passed; renewed user verification was pending.
+- Finalization-target refresh: `git fetch origin personal` passed after verification; `origin/personal` remains `d5618bffdd73d2b47f83e33852853a5d8886ccc2`, unchanged from the integrated verified state. `git merge-base HEAD origin/personal` equals that target SHA; no additional merge or executable rerun was required.
+- User verification: **Received**. The user confirmed the current package works and authorized release.
+- Archive transition: completed locally with `git mv tickets/in-progress/event-monitor-html-file-preview tickets/done/event-monitor-html-file-preview`; all cumulative artifact references were updated to the archived absolute paths.
+- Current authoritative result: **Pass — verification gate satisfied; ticket archive committed next, followed by ticket-branch push, `personal` target merge/push, and release helper execution for `v1.4.36`.**
+- Release/deployment: authorized and in progress; no release tag, publication, or deployment has been claimed yet.
+- Next action: commit the archived ticket and final handoff, push the ticket branch, refresh/merge/push `personal`, run `scripts/desktop-release.sh release 1.4.36 --release-notes <archived release-notes.md> --branch personal`, then verify tag/workflow/publication evidence.

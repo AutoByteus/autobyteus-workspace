@@ -2,7 +2,7 @@
 
 ## Status
 
-- Delivery status: **Latest-base integration passed; rebuild of the current personal-flavor macOS ARM64 Electron artifact required for renewed user verification before finalization/release**.
+- Delivery status: **User verified the current integrated package; ticket archived and finalization/release in progress**.
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview`.
 - Branch: `codex/event-monitor-html-file-preview`.
 - Validated implementation checkpoint: `a6ab5cc77b5324a1743c4bc121ccf1bb518163e7` (historical review checkpoint).
@@ -96,7 +96,7 @@ Verification passed for staged and final packaged Terminal runtime, matching-hos
 
 - Planned next release: `v1.4.36` (the integrated target already contains `v1.4.35`).
 - Current package build: **Pass** from `HEAD e234af3e78bcec73d72c3f1d8e1f5f1704dc5b00`; integrated source package version `1.4.35` is ready.
-- Renewed user verification: **Required** for the current package. Until confirmation, ticket archive, branch push, target merge, release, publication, deployment, and cleanup remain held.
+- Renewed user verification: **Received** — user confirmed release of the current integrated `1.4.35` package.
 
 ## Residual Risks
 
@@ -105,33 +105,33 @@ Verification passed for staged and final packaged Terminal runtime, matching-hos
 - Local HTML relative CSS/image/script asset fidelity retains the existing Blob-base limitation. Do not relax the workspace static route to address it without a separate trusted-resource design.
 - The broad web typecheck retains the unrelated baseline diagnostics recorded in `implementation-handoff.md`; no changed-file diagnostic was reported.
 
-## User Verification Request
+## User Verification
 
-The previously supplied `1.4.34` package is historical because the finalization target advanced. Please test the current integrated `1.4.35` DMG or ZIP above, verify the HTML preview behavior—especially local absolute Event Monitor HTML versus workspace-relative HTML—and explicitly confirm whether delivery may finalize and release `v1.4.36`. Explicit user verification is required before ticket archival, branch push, merge into `personal`, release/publication/deployment, or cleanup.
+User verification received: **verified release**. The user confirmed the current integrated `1.4.35` package is working and authorized finalization and release of `v1.4.36`. Explicit user verification is required before ticket archival, branch push, merge into `personal`, release/publication/deployment, or cleanup.
 
-## Finalization Hold
+## Finalization State
 
-No repository finalization, release, publication, deployment, or cleanup has occurred. After explicit user verification, delivery will refresh `origin/personal` again, re-check the target state, archive the ticket before the final ticket commit, and perform only the authorized finalization steps.
+The user verification gate is satisfied. The ticket has been moved to `tickets/done/event-monitor-html-file-preview`; delivery is committing the archive, then will push the ticket branch, merge it into the refreshed `personal` target, push the target, and run the documented `v1.4.36` release path. Publication and cleanup remain pending those steps.
 
 ## Canonical Delivery Artifacts
 
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/docs-sync-report.md`
-- Release/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/release-deployment-report.md`
-- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/delivery-revision-record.md`
-- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/design-spec.md`
-- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/solution-revision-record.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/design-review-report.md`
-- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/architecture-review-revision-record.md`
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/implementation-handoff.md`
-- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/implementation-revision-record.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/code-review-report.md`
-- Code review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/code-review-revision-record.md`
-- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/coverage-investigation.md`
-- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/execution-coverage-report.md`
-- API/E2E revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/api-e2e-revision-record.md`
-- API/E2E test review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/api-e2e-test-review-report.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/docs-sync-report.md`
+- Release/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/release-deployment-report.md`
+- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/delivery-revision-record.md`
+- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/design-spec.md`
+- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/solution-revision-record.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/design-review-report.md`
+- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/architecture-review-revision-record.md`
+- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/implementation-handoff.md`
+- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/implementation-revision-record.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/code-review-report.md`
+- Code review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/code-review-revision-record.md`
+- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/coverage-investigation.md`
+- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/execution-coverage-report.md`
+- API/E2E revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/api-e2e-revision-record.md`
+- API/E2E test review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/api-e2e-test-review-report.md`
 - Durable test update: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-server-ts/tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts`
 - Production viewer: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/components/fileExplorer/viewers/HtmlPreviewer.vue`
 - Focused frontend tests: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/components/fileExplorer/viewers/__tests__/HtmlPreviewer.spec.ts`, `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/components/fileExplorer/__tests__/FileViewer.spec.ts`
@@ -141,4 +141,4 @@ No repository finalization, release, publication, deployment, or cleanup has occ
 - Integrated recheck evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/test-results/event-monitor-html-file-preview/finalization-integrated-recheck.log`
 - Integrated Electron build outcome: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/test-results/event-monitor-html-file-preview/electron-build-integrated-personal-arm64-final.log`
 - Integrated Electron verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/test-results/event-monitor-html-file-preview/electron-build-integrated-verification-personal-arm64.log`
-- Planned release notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/release-notes.md`
+- Planned release notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/release-notes.md`

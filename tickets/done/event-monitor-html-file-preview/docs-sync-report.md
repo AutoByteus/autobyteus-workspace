@@ -40,10 +40,10 @@ The HTML viewer now has a durable resource-selection contract: workspace static 
 | --- | --- |
 | `autobyteus-web/docs/content_rendering.md` | Documents explicit workspace identity for REST static HTML, Blob fallback for local/content-only HTML, iframe sandboxing and cleanup, server containment, and the bounded local relative-asset limitation. |
 | `autobyteus-web/docs/file_explorer.md` | Documents `relativeResourceContext` forwarding, workspace-relative static URL selection, local absolute/content-only Blob behavior, and the prohibition on path-only/global-workspace inference. |
-| `tickets/in-progress/event-monitor-html-file-preview/docs-sync-report.md` | Records the integrated-state docs decision and evidence. |
-| `tickets/in-progress/event-monitor-html-file-preview/handoff-summary.md` | Records the current integrated handoff, verification hold, and residual risks. |
-| `tickets/in-progress/event-monitor-html-file-preview/release-deployment-report.md` | Records that no release/deployment action is in scope and finalization remains held. |
-| `tickets/in-progress/event-monitor-html-file-preview/delivery-revision-record.md` | Records `DR-001`, the first delivery-stage result. |
+| `tickets/done/event-monitor-html-file-preview/docs-sync-report.md` | Records the integrated-state docs decision and evidence. |
+| `tickets/done/event-monitor-html-file-preview/handoff-summary.md` | Records the current integrated handoff, verification hold, and residual risks. |
+| `tickets/done/event-monitor-html-file-preview/release-deployment-report.md` | Records that no release/deployment action is in scope and finalization remains held. |
+| `tickets/done/event-monitor-html-file-preview/delivery-revision-record.md` | Records `DR-001`, the first delivery-stage result. |
 
 ## Durable Design / Runtime Knowledge Promoted
 
@@ -85,3 +85,11 @@ No impact was found for persisted data, migration, server configuration, Electro
 - Docs impact: no additional long-lived documentation changes; this round validates packaging of the already documented HTML preview contract.
 - User verification: renewed verification is pending for the current `1.4.35` package. The prior `1.4.34` verification is not carried forward.
 - Release plan: after verification and finalization, release `v1.4.36` through the documented helper; no release action has started.
+
+## Delivery Round 5 — Verification and archival
+
+- User verification: **Received** via explicit `verified release` response.
+- Finalization-target refresh after verification: `origin/personal @ d5618bffdd73d2b47f83e33852853a5d8886ccc2`; unchanged from the integrated verified state. No additional merge or rerun was required.
+- Archive transition: ticket moved to `tickets/done/event-monitor-html-file-preview`; cumulative artifact references were updated to the archived paths.
+- Docs impact: no additional long-lived documentation changes; the documented HTML preview contract and current release notes remain accurate.
+- Release scope: authorized `v1.4.36`; release execution and publication evidence remain pending.

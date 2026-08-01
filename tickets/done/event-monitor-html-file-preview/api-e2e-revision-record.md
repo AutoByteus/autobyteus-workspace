@@ -10,7 +10,7 @@
 
 ### API-REV-001 — Initial API/E2E, browser, Electron-boundary, and REST validation
 
-- Triggering role, report path, and round: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/execution-coverage-report.md`; Round 1.
+- Triggering role, report path, and round: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/execution-coverage-report.md`; Round 1.
 - Triggering finding or scenario IDs: `SC-HTML-001` through `SC-HTML-007`; no upstream finding.
 - Related solution, architecture-review, implementation, code-review, or delivery revision IDs: `SR-001`, `ARCH-REV-001`, `IR-001`, `CRR-001`.
 - Why this baseline or coverage/execution revision was recorded: First completed API/E2E result; no prior API/E2E record or confidence exists.

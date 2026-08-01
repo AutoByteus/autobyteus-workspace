@@ -4,16 +4,16 @@
 
 | Revision ID | Canonical Review Report | Entry Point / Trigger | Prior Result | Current Result | Affected Finding IDs |
 | --- | --- | --- | --- | --- | --- |
-| CRR-001 | `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/code-review-report.md` | Implementation Review; implementation handoff at `0d35457b2` | N/A | Pass | None |
-| CRR-002 | `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/api-e2e-test-review-report.md` | Proportional API/E2E test-code review; `API-REV-001` Pass | Pass | Pass | None |
+| CRR-001 | `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/code-review-report.md` | Implementation Review; implementation handoff at `0d35457b2` | N/A | Pass | None |
+| CRR-002 | `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/api-e2e-test-review-report.md` | Proportional API/E2E test-code review; `API-REV-001` Pass | Pass | Pass | None |
 
 ## Revision Entries
 
 ### CRR-001 — Explicit HTML resource-identity implementation review baseline
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round 1.
-- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/implementation-handoff.md`; no findings.
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/implementation-handoff.md`; no findings.
 - Relevant solution revision IDs: `SR-001`
 - Relevant architecture-review revision IDs: `ARCH-REV-001`
 - Relevant implementation revision IDs: `IR-001`
@@ -34,9 +34,9 @@ None.
 
 ### CRR-002 — Proportional review of the static-route containment regression test
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/api-e2e-test-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/api-e2e-test-review-report.md`
 - Review entry point and round: `Successful API/E2E proportional test-code review`, round 1.
-- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/execution-coverage-report.md`; `SC-HTML-006`; no findings.
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/execution-coverage-report.md`; `SC-HTML-006`; no findings.
 - Relevant solution revision IDs: `SR-001`
 - Relevant architecture-review revision IDs: `ARCH-REV-001`
 - Relevant implementation revision IDs: `IR-001`

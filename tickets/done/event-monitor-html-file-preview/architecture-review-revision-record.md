@@ -10,9 +10,9 @@
 
 ### ARCH-REV-001 — HTML preview resource-identity design baseline
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/design-review-report.md`
 - Review round and trigger: Round 1; initial architecture review of the complete requirements, investigation, design, and solution-revision package.
-- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/solution-revision-record.md`; no findings.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/solution-revision-record.md`; no findings.
 - Relevant solution revision IDs: `SR-001`
 - Prior authoritative decision: `N/A`
 - Current authoritative decision: `Pass`

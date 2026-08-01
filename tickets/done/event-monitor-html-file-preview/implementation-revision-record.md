@@ -9,7 +9,7 @@
 
 ### IR-001 — Explicit HTML resource identity at the viewer boundary
 
-- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/design-review-report.md`; architecture review round 1.
+- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview/design-review-report.md`; architecture review round 1.
 - Triggering finding IDs: `N/A` — architecture decision `Pass` with no findings.
 - Classification: `Initial Baseline`
 - Prior authoritative result: `N/A`

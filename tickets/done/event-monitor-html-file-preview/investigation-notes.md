@@ -23,7 +23,7 @@ User reports: “when i click the md file in the event monitor area, it could be
 
 - Project Type (`Git`/`Non-Git`): Git monorepo/superrepo.
 - Task Workspace Root: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview`
-- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview`
+- Task Artifact Folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/done/event-monitor-html-file-preview`
 - Current Branch: `codex/event-monitor-html-file-preview`
 - Current Worktree / Working Directory: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview`
 - Bootstrap Base Branch: `origin/personal`
