@@ -5,8 +5,8 @@ import { MemoryType, MemoryItem } from '../models/memory-types.js';
 import { RawTraceItem } from '../models/raw-trace-item.js';
 import { EpisodicItem } from '../models/episodic-item.js';
 import { SemanticItem } from '../models/semantic-item.js';
-import type { CompactedMemoryManifest } from './compacted-memory-manifest.js';
 import { RunMemoryFileStore } from './run-memory-file-store.js';
+import type { CompletedRawTraceArchiveDescriptor } from './raw-trace-archive-manager.js';
 
 export class FileMemoryStore extends MemoryStore {
   baseDir: string;
@@ -34,9 +34,9 @@ export class FileMemoryStore extends MemoryStore {
   }
 
   list(memoryType: MemoryType, limit?: number): MemoryItem[] {
-    return this.runStore
-      .readMemoryDicts(memoryType, limit)
-      .map((record) => this.deserialize(memoryType, record));
+    const records = this.runStore.readMemoryDicts(memoryType);
+    const items = records.map((record) => this.deserialize(memoryType, record));
+    return typeof limit === 'number' ? items.slice(-limit) : items;
   }
 
   listRawTracesOrdered(limit?: number): RawTraceItem[] {
@@ -51,24 +51,26 @@ export class FileMemoryStore extends MemoryStore {
     return this.runStore.listRawTraceDicts();
   }
 
-  override readSemanticDicts(): Record<string, unknown>[] {
-    return this.runStore.readSemanticDicts();
+  override findEpisodicItemsByIds(ids: readonly string[]): EpisodicItem[] {
+    return this.runStore.findEpisodicItemsByIds(ids);
   }
 
-  replaceSemanticItems(items: Iterable<SemanticItem>): void {
-    this.runStore.replaceSemanticDicts(Array.from(items, (item) => item.toDict()));
+  override findSemanticItemsByIds(ids: readonly string[]): SemanticItem[] {
+    return this.runStore.findSemanticItemsByIds(ids);
   }
 
-  override clearSemanticItems(): void {
-    this.runStore.clearSemanticItems();
+  override hasMemoryArtifactIds(input: {
+    episodeIds: readonly string[];
+    semanticIds: readonly string[];
+  }): boolean {
+    return this.runStore.hasMemoryArtifactIds(input);
   }
 
-  override readCompactedMemoryManifest(): CompactedMemoryManifest | null {
-    return this.runStore.readCompactedMemoryManifest();
-  }
-
-  override writeCompactedMemoryManifest(manifest: CompactedMemoryManifest): void {
-    this.runStore.writeCompactedMemoryManifest(manifest);
+  override archiveExactRawTraces(
+    traceIds: readonly string[],
+    compactionId: string,
+  ): CompletedRawTraceArchiveDescriptor {
+    return this.runStore.archiveExactRawTraces(traceIds, compactionId);
   }
 
   readArchiveRawTraces(): Record<string, unknown>[] {

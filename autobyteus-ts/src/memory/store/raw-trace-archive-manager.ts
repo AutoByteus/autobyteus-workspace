@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
+import { RawTraceItem } from '../models/raw-trace-item.js';
 import {
   buildRawTraceSegmentFileName,
   createEmptyRawTraceArchiveManifest,
@@ -56,6 +57,15 @@ export type RawTraceArchiveResult = RawTraceArchiveSegmentEntry | null;
 export type RawTraceArchiveWriteResult = {
   segment: RawTraceArchiveSegmentEntry;
   created: boolean;
+};
+
+export type CompletedRawTraceArchiveDescriptor = {
+  fileName: string;
+  recordCount: number;
+  firstTraceId: string | null;
+  lastTraceId: string | null;
+  firstObservedAt: number | null;
+  lastObservedAt: number | null;
 };
 
 export class RawTraceArchiveManager {
@@ -120,6 +130,11 @@ export class RawTraceArchiveManager {
   readCompleteSegmentRawTraceDictsByFileName(fileName: string): Record<string, unknown>[] | null {
     const segment = this.findCompleteSegmentByFileName(fileName);
     return segment ? this.readSegmentRawTraceDicts(segment) : null;
+  }
+
+  readCompleteSegmentRawTracesByFileName(fileName: string): RawTraceItem[] | null {
+    const records = this.readCompleteSegmentRawTraceDictsByFileName(fileName);
+    return records?.map((record) => RawTraceItem.fromDict(record)) ?? null;
   }
 
   hasCompleteSegment(boundaryKey: string): boolean {

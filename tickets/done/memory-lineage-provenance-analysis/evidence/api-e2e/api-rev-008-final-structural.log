@@ -1,0 +1,31 @@
+HEAD=d9753e69c1244bf88c0bc6816306495430047a35
+PRODUCTION_SOURCE_DELTA_COUNT=0
+DURABLE_TEST_TRACKED_DELTA
+M	autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts
+M	autobyteus-server-ts/tests/e2e/token-usage/token-usage-custom-provider-model-value-backfill-startup.e2e.test.ts
+M	autobyteus-server-ts/tests/e2e/token-usage/token-usage-legacy-path-columns-drop-startup.e2e.test.ts
+M	autobyteus-server-ts/tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts
+M	autobyteus-server-ts/tests/unit/app-data-migrations/app-data-migration-runner.test.ts
+M	autobyteus-server-ts/tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts
+D	autobyteus-server-ts/tests/unit/app-data-migrations/reset-pre-lineage-memory-app-data-migration.test.ts
+M	autobyteus-server-ts/tests/unit/server-runtime-app-data-migration-gate.test.ts
+M	autobyteus-ts/tests/integration/agent/incomplete-tool-call-resume-recovery.test.ts
+M	autobyteus-ts/tests/integration/agent/memory-llm-flow.test.ts
+M	autobyteus-ts/tests/integration/agent/memory-tool-call-flow.test.ts
+M	autobyteus-ts/tests/integration/agent/read-media-file-continuation-flow.test.ts
+M	autobyteus-ts/tests/integration/agent/runtime/agent-runtime.test.ts
+M	autobyteus-ts/tests/integration/agent/working-context-snapshot-restore-flow.test.ts
+M	autobyteus-ts/tests/unit/agent/llm-request-assembler.test.ts
+M	autobyteus-ts/tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts
+M	autobyteus-ts/tests/unit/memory/llm-request-recovery.test.ts
+M	autobyteus-ts/tests/unit/memory/memory-tool-continuation-reasoning.test.ts
+M	autobyteus-ts/tests/unit/memory/working-context-snapshot-bootstrapper.test.ts
+DURABLE_TEST_UNTRACKED_ADDITIONS
+?? autobyteus-server-ts/tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts
+?? autobyteus-ts/tests/unit/memory/native-working-context-snapshot-v5-converter.test.ts
+OBSOLETE_CONTRACT_SEARCH
+DIFF_CHECK
+ROOT_FINAL_SUMMARY
+4626: Test Files  50 passed | 14 skipped (64)
+4627:      Tests  175 passed | 49 skipped (224)
+4629:   Duration  110.80s (transform 4.88s, setup 186ms, import 54.84s, tests 49.97s, environment 4ms)

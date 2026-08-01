@@ -1,0 +1,12 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-ts
+
+ ✓ tests/unit/memory/compaction-lineage-resolver.test.ts (10 tests) 5ms
+ ✓ tests/unit/memory/file-compaction-lineage-store.test.ts (8 tests) 1250ms
+     ✓ reads the exact tail after 1,000 recurrent appends without a mutable state pointer  1241ms
+
+ Test Files  2 passed (2)
+      Tests  18 passed (18)
+   Start at  17:32:46
+   Duration  1.40s (transform 102ms, setup 32ms, import 100ms, tests 1.25s, environment 0ms)
+

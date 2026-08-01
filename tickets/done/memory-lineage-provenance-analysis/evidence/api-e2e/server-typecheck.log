@@ -1,0 +1,10 @@
+src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts(507,9): error TS2554: Expected 4-19 arguments, but got 20.
+src/agent-execution/backends/autobyteus/compaction-lineage-scope-resolver.ts(1,45): error TS2307: Cannot find module 'autobyteus-ts/memory/lineage/compaction-lineage-scope.js' or its corresponding type declarations.
+src/agent-execution/compaction/server-compaction-agent-runner.ts(97,11): error TS2353: Object literal may only specify known properties, and 'provider' does not exist in type 'CompactionAgentExecutionMetadata'.
+src/agent-execution/compaction/server-compaction-agent-runner.ts(146,7): error TS2353: Object literal may only specify known properties, and 'provider' does not exist in type 'CompactionAgentExecutionMetadata'.
+src/agent-work-traces/services/agent-work-trace-renderer.ts(4,43): error TS2307: Cannot find module 'autobyteus-ts/memory/presentation/condensed-tool-call-renderer.js' or its corresponding type declarations.
+src/agent-work-traces/services/agent-work-trace-renderer.ts(5,39): error TS2307: Cannot find module 'autobyteus-ts/memory/presentation/readable-value-renderer.js' or its corresponding type declarations.
+src/memory-lineage/services/agent-memory-origin-service.ts(1,43): error TS2307: Cannot find module 'autobyteus-ts/memory/lineage/compaction-lineage-resolver.js' or its corresponding type declarations.
+src/memory-lineage/services/agent-memory-origin-service.ts(2,45): error TS2307: Cannot find module 'autobyteus-ts/memory/lineage/compaction-lineage-scope.js' or its corresponding type declarations.
+src/memory-lineage/services/agent-memory-origin-service.ts(6,8): error TS2307: Cannot find module 'autobyteus-ts/memory/lineage/memory-origin-resolution.js' or its corresponding type declarations.
+src/memory-lineage/services/agent-memory-origin-service.ts(7,44): error TS2307: Cannot find module 'autobyteus-ts/memory/store/file-compaction-lineage-store.js' or its corresponding type declarations.

@@ -196,7 +196,7 @@ describe('token usage custom-provider model-value backfill startup e2e', () => {
     expect(database.listCalls).toBe(4);
   });
 
-  it('continues startup after a failed row, durably retries only the unresolved row, and records attempts', async () => {
+  it('blocks startup after a failed row, durably retries only the unresolved row, and records attempts', async () => {
     const providerId = `provider_${randomUUID()}`;
     const rawModel = `openai-compatible:${providerId}:org/model:tag`;
     const runId = `migration-failure-${randomUUID()}`;

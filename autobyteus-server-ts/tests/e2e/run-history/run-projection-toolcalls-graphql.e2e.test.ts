@@ -15,7 +15,7 @@ import { TeamRunMetadataStore } from "../../../src/run-history/store/team-run-me
 import type { TeamRunMetadata } from "../../../src/run-history/store/team-run-metadata-types.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import { RuntimeMemoryEventAccumulator } from "../../../src/agent-memory/services/runtime-memory-event-accumulator.js";
-import { RunMemoryWriter } from "../../../src/agent-memory/store/run-memory-writer.js";
+import { ExternalRuntimeMemoryWriter } from "../../../src/agent-memory/store/external-runtime-memory-writer.js";
 import {
   AgentRunEventType,
   type AgentRunEvent,
@@ -329,7 +329,7 @@ describe("Run projection tool-call GraphQL e2e", () => {
       platformAgentRunId: "native-thread-should-not-recover-cross-file",
     } satisfies AgentRunMetadata);
 
-    const writer = new RunMemoryWriter({ memoryDir: runDir });
+    const writer = new ExternalRuntimeMemoryWriter({ memoryDir: runDir });
     writer.appendRawTrace({
       traceType: "tool_call",
       turnId: "turn-cross-file",
@@ -438,7 +438,7 @@ describe("Run projection tool-call GraphQL e2e", () => {
       platformAgentRunId: "native-thread-should-not-recover-reasoning",
     } satisfies AgentRunMetadata);
 
-    const writer = new RunMemoryWriter({ memoryDir: runDir });
+    const writer = new ExternalRuntimeMemoryWriter({ memoryDir: runDir });
     const accumulator = new RuntimeMemoryEventAccumulator({
       runId,
       writer,
@@ -651,7 +651,7 @@ describe("Run projection tool-call GraphQL e2e", () => {
       platformAgentRunId: "native-thread-must-not-recover-ordered-tool-reasoning",
     } satisfies AgentRunMetadata);
 
-    const writer = new RunMemoryWriter({ memoryDir: runDir });
+    const writer = new ExternalRuntimeMemoryWriter({ memoryDir: runDir });
     const accumulator = new RuntimeMemoryEventAccumulator({
       runId,
       writer,

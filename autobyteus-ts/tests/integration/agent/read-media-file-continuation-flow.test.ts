@@ -94,7 +94,7 @@ describe('read_media_file continuation flow (integration)', () => {
       geminiDefinition!.staticMetadata.multimodalCapabilities,
     ).prepareRequest(
       pipelineResult.llmUserMessage,
-      turn.turnId,
+      { turnId: turn.turnId, requestId: `${turn.turnId}:llm:1` },
       'System prompt'
     );
 

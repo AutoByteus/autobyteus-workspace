@@ -1,0 +1,11 @@
+API-REV-008 cleanup
+Timestamp: 2026-07-31T23:19:45.875471+00:00
+Scope: resources created by round-8 Vitest/server E2E execution only.
+Removed: autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db and SQLite sidecars.
+Removed: three exact residual test temp roots created by the executed token-usage/certificate suites.
+Owned process count after cleanup: 0
+Owned test database file count after cleanup: 0
+Exact residual temp-root count after cleanup: 0
+Private credential source /Users/normy/.autobyteus/server-data/.env: not read, sourced, modified, or imported in API-REV-008.
+Repository .env.test: not modified by API-REV-008.
+Result: Pass

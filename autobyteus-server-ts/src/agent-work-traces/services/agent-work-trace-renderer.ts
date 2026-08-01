@@ -1,7 +1,8 @@
 import type { HistoricalReplayEvent, HistoricalReplayToolEvent } from "../../run-history/projection/historical-replay-event-types.js";
 import { buildHistoricalReplayEvents, type HistoricalReplayBuildOptions } from "../../run-history/projection/transformers/raw-trace-to-historical-replay-events.js";
 import type { AgentWorkTraceSource } from "../domain/work-traces.js";
-import { AgentWorkTraceRedactor } from "./agent-work-trace-redactor.js";
+import { CondensedToolCallRenderer } from "autobyteus-ts/memory/presentation/condensed-tool-call-renderer.js";
+import { ReadableValueRenderer } from "autobyteus-ts/memory/presentation/readable-value-renderer.js";
 
 export type AgentWorkTraceToolProjection = Required<Pick<
   HistoricalReplayBuildOptions,
@@ -16,22 +17,11 @@ const toIso = (ts: number | null): string => {
   return new Date(0).toISOString();
 };
 
-const stringifyVisible = (value: unknown): string => {
-  if (value === null || value === undefined) {
-    return "null";
-  }
-  if (typeof value === "string") {
-    return value;
-  }
-  try {
-    return JSON.stringify(value, null, 2);
-  } catch {
-    return String(value);
-  }
-};
-
 export class AgentWorkTraceRenderer {
-  constructor(private readonly deps: { redactor?: AgentWorkTraceRedactor } = {}) {}
+  constructor(
+    private readonly valueRenderer = new ReadableValueRenderer(),
+    private readonly toolRenderer = new CondensedToolCallRenderer(valueRenderer),
+  ) {}
 
   renderSource(
     source: AgentWorkTraceSource,
@@ -73,36 +63,22 @@ export class AgentWorkTraceRenderer {
   }
 
   private renderTool(event: HistoricalReplayToolEvent): string {
-    const lines: string[] = [];
-    lines.push(`[${toIso(event.ts)}] tool:`);
-    lines.push(`name: ${this.clean(event.toolName)}`);
-    lines.push(`status: ${event.status}`);
-    if (event.toolArgs && Object.keys(event.toolArgs).length > 0) {
-      lines.push("arguments:");
-      lines.push(this.indent(this.clean(stringifyVisible(event.toolArgs))));
-    }
-    if (event.toolError) {
-      lines.push("error:");
-      lines.push(this.indent(this.clean(event.toolError)));
-    } else if (event.toolResult !== null && event.toolResult !== undefined) {
-      lines.push("result:");
-      lines.push(this.indent(this.clean(stringifyVisible(event.toolResult))));
-    } else if (event.content) {
-      lines.push("result:");
-      lines.push(this.indent(this.clean(event.content)));
-    }
-    return lines.join("\n");
-  }
-
-  private indent(value: string): string {
-    return value.split("\n").map((line) => `  ${line}`).join("\n");
+    const outcome = event.toolError !== null || event.status === "error"
+      ? { kind: "error" as const, value: event.toolError ?? event.content ?? "not available" }
+      : event.toolResult !== null && event.toolResult !== undefined || event.status === "success"
+        ? { kind: "result" as const, value: event.toolResult }
+        : { kind: "no_outcome" as const, status: event.status };
+    return [
+      `[${toIso(event.ts)}] tool:`,
+      this.toolRenderer.render({
+        name: event.toolName,
+        arguments: event.toolArgs ?? {},
+        outcome,
+      }, { maxValueChars: 20_000 }),
+    ].join("\n");
   }
 
   private clean(value: string): string {
-    return this.redactor.redact(value).trim();
-  }
-
-  private get redactor(): AgentWorkTraceRedactor {
-    return this.deps.redactor ?? new AgentWorkTraceRedactor();
+    return this.valueRenderer.render(value, { maxChars: 20_000 }).trim();
   }
 }

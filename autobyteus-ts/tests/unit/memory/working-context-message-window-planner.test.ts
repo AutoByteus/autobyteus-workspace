@@ -6,6 +6,10 @@ import {
   ToolResultPayload,
 } from '../../../src/llm/utils/messages.js';
 import { WorkingContextMessageWindowPlanner } from '../../../src/memory/compaction/working-context-message-window-planner.js';
+import {
+  createCompactedMemoryUserMessage,
+  createNaturalUserMessageProvenance,
+} from '../../../src/memory/working-context-finalizer.js';
 import type {
   MessageBudgetStrategy,
   MessageBudgetStrategyResult,
@@ -35,12 +39,45 @@ describe('WorkingContextMessageWindowPlanner', () => {
 
     const plan = planner.plan({ messages, minRecentNaturalUnits: 2 });
 
-    expect(plan.headMessages.map((message) => message.role)).toEqual([MessageRole.SYSTEM]);
+    expect(plan.units.filter(({ kind }) => kind === 'system')
+      .flatMap(({ messages: unitMessages }) => unitMessages)
+      .map(({ role }) => role)).toEqual([MessageRole.SYSTEM]);
     expect(plan.compactableUnits.flatMap((unit) => unit.messages.map((message) => message.content))).toEqual([
       'old user',
       'old assistant',
     ]);
     expect(plan.retainedMessages.map((message) => message.content)).toEqual(['recent user', 'recent assistant']);
+  });
+
+  it('includes M1 in the recurrent compactor prefix while archiving only raw-backed R2', () => {
+    const planner = new WorkingContextMessageWindowPlanner(undefined, new FixedBudgetStrategy(100));
+    const memory = createCompactedMemoryUserMessage('M1 current compacted memory');
+    const r2 = createNaturalUserMessageProvenance(
+      new Message(MessageRole.USER, { content: 'R2 newly selected work' }),
+      { kind: 'retained_user', rawTraceIds: ['raw-r2'], turnId: 'turn-r2' },
+    );
+
+    const plan = planner.plan({
+      messages: [
+        new Message(MessageRole.SYSTEM, { content: 'System' }),
+        memory,
+        r2,
+        new Message(MessageRole.ASSISTANT, { content: 'Retained tail' }),
+      ],
+      minRecentNaturalUnits: 1,
+    });
+
+    expect(plan.compactableUnits.map(({ kind }) => kind)).toEqual([
+      'compacted_memory',
+      'message',
+    ]);
+    expect(plan.compactableUnits.flatMap(({ messages }) =>
+      messages.map(({ content }) => content))).toEqual([
+      'M1 current compacted memory',
+      'R2 newly selected work',
+    ]);
+    expect(plan.rawTraceIdsToArchive).toEqual(['raw-r2']);
+    expect(plan.retainedMessages.map(({ content }) => content)).toEqual(['Retained tail']);
   });
 
   it('protects only the latest live tool-call/result group as structured messages', () => {

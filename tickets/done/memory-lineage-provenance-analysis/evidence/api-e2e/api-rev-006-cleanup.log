@@ -1,0 +1,13 @@
+API-REV-006 cleanup audit
+removed_or_absent=autobyteus-server-ts/db/test.db
+removed_or_absent=autobyteus-server-ts/db/test.db.secret.key
+removed_or_absent=autobyteus-server-ts/db/test.db-journal
+removed_or_absent=autobyteus-server-ts/db/test.db-wal
+removed_or_absent=autobyteus-server-ts/db/test.db-shm
+removed_or_absent=autobyteus-server-ts/tests/.tmp
+lmstudio_qwen_loaded_instance_count=0
+remaining_owned_processes:
+source_assignment_preserved:
+yes
+tracked_test_env_mutated:
+no

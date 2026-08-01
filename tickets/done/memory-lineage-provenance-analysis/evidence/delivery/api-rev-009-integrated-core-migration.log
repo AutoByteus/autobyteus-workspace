@@ -1,0 +1,24 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-ts
+
+ ✓ tests/unit/memory/native-working-context-snapshot-v5-converter.test.ts > NativeWorkingContextSnapshotV5Converter > converts schema v1 system, media user, and complete Tool protocol with exact active provenance 5ms
+ ✓ tests/unit/memory/native-working-context-snapshot-v5-converter.test.ts > NativeWorkingContextSnapshotV5Converter > converts schema v3 system, media user, and complete Tool protocol with exact active provenance 1ms
+ ✓ tests/unit/memory/native-working-context-snapshot-v5-converter.test.ts > NativeWorkingContextSnapshotV5Converter > converts schema v4 system, media user, and complete Tool protocol with exact active provenance 1ms
+ ✓ tests/unit/memory/native-working-context-snapshot-v5-converter.test.ts > NativeWorkingContextSnapshotV5Converter > converts schema v5 system, media user, and complete Tool protocol with exact active provenance 1ms
+ ✓ tests/unit/memory/native-working-context-snapshot-v5-converter.test.ts > NativeWorkingContextSnapshotV5Converter > keeps only truthfully backed current-user constituents and omits old compacted memory 1ms
+ ✓ tests/unit/memory/native-working-context-snapshot-v5-converter.test.ts > NativeWorkingContextSnapshotV5Converter > omits incomplete Tool groups rather than synthesizing results or recovery text 0ms
+ ✓ tests/unit/memory/native-working-context-snapshot-v5-converter.test.ts > NativeWorkingContextSnapshotV5Converter > publishes a metadata-identified empty strict v5 candidate for invalid JSON 0ms
+ ✓ tests/unit/memory/native-working-context-snapshot-v5-converter.test.ts > NativeWorkingContextSnapshotV5Converter > publishes a metadata-identified empty strict v5 candidate for unsupported schema 0ms
+ ✓ tests/unit/memory/native-working-context-snapshot-v5-converter.test.ts > NativeWorkingContextSnapshotV5Converter > publishes a metadata-identified empty strict v5 candidate for fully unsourced content 0ms
+ ✓ tests/unit/memory/native-working-context-snapshot-v5-converter.test.ts > NativeWorkingContextSnapshotV5Converter > rejects parseable identity conflict missing_source_agent_id without producing a candidate 0ms
+ ✓ tests/unit/memory/native-working-context-snapshot-v5-converter.test.ts > NativeWorkingContextSnapshotV5Converter > rejects parseable identity conflict source_agent_id_mismatch without producing a candidate 0ms
+ ✓ tests/unit/memory/working-context-snapshot-bootstrapper.test.ts > WorkingContextSnapshotBootstrapper current-only restore > restores a valid v5 snapshot directly and preserves exact current memory shape 6ms
+ ✓ tests/unit/memory/working-context-snapshot-bootstrapper.test.ts > WorkingContextSnapshotBootstrapper current-only restore > requires a strict v5 snapshot instead of replaying raw history 1ms
+ ✓ tests/unit/memory/working-context-snapshot-bootstrapper.test.ts > WorkingContextSnapshotBootstrapper current-only restore > rejects historical snapshot schemas without an old-schema reader 1ms
+ ✓ tests/unit/memory/working-context-snapshot-bootstrapper.test.ts > WorkingContextSnapshotBootstrapper current-only restore > rejects a compacted-memory snapshot when lineage is absent 2ms
+ ✓ tests/unit/memory/working-context-snapshot-bootstrapper.test.ts > WorkingContextSnapshotBootstrapper current-only restore > rejects a valid strict-v5 payload whose agent identity conflicts with the run 1ms
+
+ Test Files  2 passed (2)
+      Tests  16 passed (16)
+   Start at  01:52:31
+   Duration  312ms (transform 237ms, setup 26ms, import 310ms, tests 23ms, environment 0ms)

@@ -1,0 +1,5 @@
+$ node /tmp/memory-lineage-sr010-focused-proof.mjs
+{"status":"passed","agentPromptExact":true,"operationMessageRendererOnly":true,"canonicalUserLabels":1,"selectedMediaPreserved":true,"rendererInputUnchanged":true,"parsedEpisodes":4,"normalizedEpisodes":4,"normalizedFacts":25,"persistedEpisodes":4,"persistedFacts":25,"auditVersions":[1,2],"episodeOriginRoots":["raw-1","raw-2"],"semanticOriginRoots":["raw-1","raw-2"],"unsupportedAuditRejected":true}
+
+$ shasum -a 256 autobyteus-server-ts/src/built-in-agents/templates/memory-compactor/agent.md
+944dbdbd3db1146f80fdb7fe5ec2817422eec74f8eca3f4743a336169a2a8348  autobyteus-server-ts/src/built-in-agents/templates/memory-compactor/agent.md

@@ -61,15 +61,16 @@ export class SemanticItem implements MemoryItem {
   static isSerializedDict(data: Record<string, unknown>): boolean {
     return (
       typeof data.id === 'string' &&
+      data.id.trim().length > 0 &&
       typeof data.ts === 'number' &&
       Number.isFinite(data.ts) &&
       isCompactedMemoryCategory(data.category) &&
       typeof data.fact === 'string' &&
       data.fact.trim().length > 0 &&
-      !('reference' in data) &&
-      !('tags' in data) &&
-      typeof data.salience === 'number' &&
-      Number.isFinite(data.salience)
+      (
+        data.salience === undefined
+        || (typeof data.salience === 'number' && Number.isFinite(data.salience))
+      )
     );
   }
 
@@ -79,11 +80,13 @@ export class SemanticItem implements MemoryItem {
     }
 
     return new SemanticItem({
-      id: String(data.id),
+      id: String(data.id).trim(),
       ts: Number(data.ts),
       category: data.category as CompactedMemoryCategory,
       fact: String(data.fact).trim(),
-      salience: Number(data.salience),
+      salience: typeof data.salience === 'number'
+        ? data.salience
+        : COMPACTED_MEMORY_CATEGORY_BASE_SALIENCE[data.category as CompactedMemoryCategory],
     });
   }
 }

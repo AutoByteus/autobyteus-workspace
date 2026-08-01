@@ -11,6 +11,12 @@ import {
   sanitizeMediaInputMessages,
   type MediaInputDiagnostic,
 } from '../llm/utils/media-input-sanitizer.js';
+import type { LlmRequestRecoverySnapshot } from '../memory/llm-request-recovery.js';
+
+export type LlmRequestAssemblyIdentity = Readonly<{
+  turnId: string;
+  requestId: string;
+}>;
 
 export type RequestPackage = {
   canonicalMessages: Message[];
@@ -18,6 +24,7 @@ export type RequestPackage = {
   renderedPayload: unknown;
   mediaDiagnostics: MediaInputDiagnostic[];
   didCompact: boolean;
+  recoverySnapshot: LlmRequestRecoverySnapshot;
 };
 
 export class LLMRequestAssembler {
@@ -30,7 +37,7 @@ export class LLMRequestAssembler {
 
   async prepareRequest(
     processedUserInput: string | LLMUserMessage,
-    turnId?: string | null,
+    identity: LlmRequestAssemblyIdentity,
     systemPrompt?: string | null,
   ): Promise<RequestPackage> {
     const userMessage = this.buildUserMessage(processedUserInput);
@@ -41,20 +48,29 @@ export class LLMRequestAssembler {
 
     const didCompact = this.pendingCompactionExecutor
       ? await this.pendingCompactionExecutor.executeIfRequired({
-          turnId,
+          turnId: identity.turnId,
         })
       : false;
 
-    this.memoryManager.appendWorkingContextUserMessage(userMessage, { turnId });
-    this.memoryManager.ensureWorkingContextToolProtocolSafeForNextLlm({
-      recoverySourceEvent: 'LLMRequestAssembler.preRender',
-    });
-    const finalMessages = this.memoryManager.getWorkingContextMessages();
-    return this.buildRequestPackage(finalMessages, didCompact);
+    const recoverySnapshot = this.captureRecoverySnapshot(identity);
+    try {
+      this.memoryManager.appendWorkingContextUserMessage(userMessage, { turnId: identity.turnId });
+      this.memoryManager.ensureWorkingContextToolProtocolSafeForNextLlm({
+        recoverySourceEvent: 'LLMRequestAssembler.preRender',
+      });
+      const finalMessages = this.memoryManager.getWorkingContextMessages();
+      return await this.buildRequestPackage(finalMessages, didCompact, recoverySnapshot);
+    } catch (error) {
+      this.memoryManager.restoreLlmRequestRecoverySnapshot(recoverySnapshot, {
+        reason: 'request assembly failed after the stable-base checkpoint',
+        sourceEvent: 'LLMRequestAssembler.prepareRequest',
+      });
+      throw error;
+    }
   }
 
   async prepareToolContinuationRequest(
-    turnId?: string | null,
+    identity: LlmRequestAssemblyIdentity,
     systemPrompt?: string | null,
   ): Promise<RequestPackage> {
     this.ensureSystemPrompt(systemPrompt ?? undefined);
@@ -64,15 +80,24 @@ export class LLMRequestAssembler {
 
     const didCompact = this.pendingCompactionExecutor
       ? await this.pendingCompactionExecutor.executeIfRequired({
-          turnId,
+          turnId: identity.turnId,
         })
       : false;
 
-    this.memoryManager.ensureWorkingContextToolProtocolSafeForNextLlm({
-      recoverySourceEvent: 'LLMRequestAssembler.preRender',
-    });
-    const finalMessages = this.memoryManager.getWorkingContextMessages();
-    return this.buildRequestPackage(finalMessages, didCompact);
+    const recoverySnapshot = this.captureRecoverySnapshot(identity);
+    try {
+      this.memoryManager.ensureWorkingContextToolProtocolSafeForNextLlm({
+        recoverySourceEvent: 'LLMRequestAssembler.preRender',
+      });
+      const finalMessages = this.memoryManager.getWorkingContextMessages();
+      return await this.buildRequestPackage(finalMessages, didCompact, recoverySnapshot);
+    } catch (error) {
+      this.memoryManager.restoreLlmRequestRecoverySnapshot(recoverySnapshot, {
+        reason: 'tool-continuation assembly failed after the stable-base checkpoint',
+        sourceEvent: 'LLMRequestAssembler.prepareToolContinuationRequest',
+      });
+      throw error;
+    }
   }
 
   async renderPayload(messages: Message[]): Promise<unknown> {
@@ -82,6 +107,7 @@ export class LLMRequestAssembler {
   private async buildRequestPackage(
     canonicalMessages: Message[],
     didCompact: boolean,
+    recoverySnapshot: LlmRequestRecoverySnapshot,
   ): Promise<RequestPackage> {
     const sanitized = await sanitizeMediaInputMessages(canonicalMessages, this.multimodalCapabilities);
     for (const diagnostic of sanitized.diagnostics) {
@@ -93,7 +119,17 @@ export class LLMRequestAssembler {
       renderedPayload: await this.renderPayload(sanitized.outboundMessages),
       mediaDiagnostics: sanitized.diagnostics,
       didCompact,
+      recoverySnapshot,
     };
+  }
+
+  private captureRecoverySnapshot(
+    identity: LlmRequestAssemblyIdentity,
+  ): LlmRequestRecoverySnapshot {
+    return this.memoryManager.captureLlmRequestRecoverySnapshot({
+      turnId: identity.turnId,
+      requestId: identity.requestId,
+    });
   }
 
   private buildUserMessage(processedUserInput: string | LLMUserMessage): Message {

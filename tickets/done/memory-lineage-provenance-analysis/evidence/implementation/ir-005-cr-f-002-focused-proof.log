@@ -1,0 +1,33 @@
+$ autobyteus-server-ts: pnpm build
+PASS: shared/core builds, Prisma generation, server TypeScript build, managed-asset copy, and sanitized built-in-agent bootstrap smoke completed.
+
+$ current-built-code direct-upgrade proof
+Fixture: exact standalone AutoByteus/current metadata; absent lineage; schema-v4 User message referencing raw-1; raw-1 present only in legacy raw_traces.jsonl.
+Execution: assert default registry order, then run the existing raw-trace rotation migration, existing active-filename migration, and new native snapshot-v5 migration against one isolated temporary memory root.
+{
+  "registryOrder": {
+    "externalCleanup": 3,
+    "rawTraceRotation": 4,
+    "rawTraceActiveFileName": 5,
+    "nativeSnapshotV5": 6
+  },
+  "statuses": {
+    "rotation": "SUCCEEDED",
+    "rename": "SUCCEEDED",
+    "native": "SUCCEEDED"
+  },
+  "snapshot": {
+    "schemaVersion": 5,
+    "messageCount": 1,
+    "role": "user",
+    "content": "must survive"
+  },
+  "rawTrace": {
+    "activeBytesPreserved": true,
+    "legacyFileRemoved": true
+  }
+}
+PASS: external cleanup remains first; both current raw-layout prerequisites precede native fact consumption; the source-backed v4 message survives as one strict-v5 user message; raw bytes are unchanged by the rename; no native old-filename reader/fallback was added.
+
+$ structural and whitespace checks
+PASS: registry order is external cleanup -> raw-trace rotation -> active filename -> native v5; native converter/migration/runtime contain no raw_traces.jsonl compatibility read; git diff --check passed.

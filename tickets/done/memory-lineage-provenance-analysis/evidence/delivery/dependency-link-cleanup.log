@@ -1,0 +1,15 @@
+START: 2026-07-30T16:44:22.415956+00:00
+MAIN_SERVER_CORE_LINK_BEFORE: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-ts
+MAIN_SERVER_CORE_LINK_AFTER: ../../autobyteus-ts
+REMOVE_WORKTREE_LINK: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/node_modules -> /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/node_modules
+REMOVE_WORKTREE_LINK: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-ts/node_modules -> /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/node_modules
+REMOVE_WORKTREE_LINK: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/node_modules -> /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/node_modules
+REMOVE_WORKTREE_LINK: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-application-backend-sdk/node_modules -> /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-application-backend-sdk/node_modules
+REMOVE_WORKTREE_LINK: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-application-sdk-contracts/node_modules -> /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-application-sdk-contracts/node_modules
+END: 2026-07-30T16:44:22.416836+00:00
+REMOVE_API_E2E_TEMP_SCAFFOLD: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/.api-e2e-compaction-debug-probe.mjs
+REMOVE_API_E2E_TEMP_SCAFFOLD: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/.api-e2e-server-wrapper.mjs
+RECHECK: 2026-07-30T16:48:15.702012+00:00
+WORKTREE_DEPENDENCY_LINKS_PRESENT: retained/re-provisioned as untracked verification dependencies; excluded from delivery commit
+TEMP_API_E2E_PROBE_SCRIPTS_PRESENT: no
+MAIN_SERVER_CORE_LINK_CURRENT: ../../autobyteus-ts

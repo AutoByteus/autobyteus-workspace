@@ -45,8 +45,8 @@ export class PendingCompactionExecutor {
         compaction_strategy_id: strategy.id,
         compaction_strategy_name: strategy.name,
       };
-      const baseline = this.memoryManager.getWorkingContext();
-      const strategyInput = baseline.copy();
+      const baseline = this.memoryManager.captureCompactionBaseline();
+      const strategyInput = baseline.context.copy();
 
       this.reporter?.emitStatus({
         phase: 'started',
@@ -57,10 +57,14 @@ export class PendingCompactionExecutor {
         compacted_block_count: null,
       });
 
-      const next = await strategy.compact(strategyInput);
-      this.outputValidator.assertValid(baseline, strategyInput, next);
-      this.memoryManager.replaceWorkingContext(next);
-      this.memoryManager.clearCompactionRequest();
+      const proposal = await strategy.propose(strategyInput);
+      const accepted = this.memoryManager.prepareCompaction(baseline, proposal);
+      this.outputValidator.assertValid(
+        baseline.context,
+        strategyInput,
+        accepted.finalizedContext,
+      );
+      this.memoryManager.commitAcceptedCompaction(accepted);
       this.reporter?.emitStatus({
         phase: 'completed',
         turn_id: input.turnId ?? null,

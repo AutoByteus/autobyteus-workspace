@@ -1,0 +1,27 @@
+API-REV-007 delivery final pre-handoff base recheck
+timestamp_utc=2026-07-31T09:28:54Z
+branch=codex/memory-lineage-provenance-analysis
+head_before=b9fd12e572ddac036fd52ead3186cabe630176fd
+base_before=80d6693c1b0df5abdfd2c3dc0ec01ff885425847
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+base_after=80d6693c1b0df5abdfd2c3dc0ec01ff885425847
+ahead_behind=10	0
+base_contained=yes
+
+artifact_recheck
+2f3a3b70c69762ea322f544be86588549162a8a5fcf98467a177afb962dd19b5  autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.32.dmg
+f465a1fc66b76694a9e00683aaf40602f5101041ad296639f4736ebb5476f0c7  autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.32.zip
+dmg_exists=yes
+zip_exists=yes
+app_exists=yes
+
+port_29695_listener
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 96773 normy   28u  IPv4 0x2d64f166e26535ba      0t0  TCP *:29695 (LISTEN)
+
+workspace_checks
+git_diff_check=pass
+memory_doc_mirror=pass
+user_verification=pending
+repository_finalization=held

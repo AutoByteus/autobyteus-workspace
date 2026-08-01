@@ -1,0 +1,531 @@
+$ pnpm -C autobyteus-ts exec vitest run tests/unit/agent/llm-request-assembler.test.ts tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts tests/unit/memory/llm-request-recovery.test.ts tests/unit/memory/working-context-snapshot-bootstrapper.test.ts tests/integration/agent/working-context-snapshot-restore-flow.test.ts tests/integration/agent/incomplete-tool-call-resume-recovery.test.ts --no-watch
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-ts
+
+ ✓ tests/unit/memory/llm-request-recovery.test.ts (1 test) 6ms
+ ❯ tests/unit/agent/llm-request-assembler.test.ts (4 tests | 3 failed) 9ms
+     × appends the system prompt and user message without compaction 3ms
+     × delegates pending compaction execution before appending the current user message 1ms
+     × repairs already-poisoned native tool-call history before OpenAI-compatible render 4ms
+     ✓ propagates compaction preparation errors 1ms
+ ❯ tests/unit/memory/working-context-snapshot-bootstrapper.test.ts (4 tests | 2 failed) 18ms
+     ✓ restores a valid v5 snapshot directly and preserves exact current memory shape 7ms
+     × recovers only the trusted active interruption fence with provenance after reset 3ms
+     × fails closed when a lineage head exists without its required v5 snapshot 5ms
+     ✓ rejects a compacted-memory snapshot when lineage is absent 2ms
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase incomplete native tool-call resume recovery > kicks off LLM execution after one additional user prompt with provider-safe rendered history
+AgentRuntimeState initialized for agent_id 'agent_resume_repair'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentConfig created for name='agent', role='role'. Tool call format: api_tool_call
+AgentContext composed for agent_id 'agent_resume_repair'. Config and State linked.
+
+ ❯ tests/integration/agent/incomplete-tool-call-resume-recovery.test.ts (1 test | 1 failed) 6ms
+     × restores a cached poisoned snapshot and starts LLM execution after one additional user prompt 5ms
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase incomplete native tool-call resume recovery > kicks off LLM execution after one additional user prompt with provider-safe rendered history
+compaction_budget_skipped_no_usage {
+  agent_id: 'agent_resume_repair',
+  turn_id: 'turn_after_restart',
+  reason: 'missing_usage'
+}
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase unknown-capability provider recovery > rolls back one failed image request and accepts the next text-only turn without retrying
+AgentRuntimeState initialized for agent_id 'agent_provider_recovery'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentConfig created for name='agent', role='role'. Tool call format: api_tool_call
+AgentContext composed for agent_id 'agent_provider_recovery'. Config and State linked.
+
+ ❯ tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts (2 tests | 2 failed) 18ms
+     × kicks off LLM execution after one additional user prompt with provider-safe rendered history 14ms
+     × rolls back one failed image request and accepts the next text-only turn without retrying 4ms
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > loads a schema-v4 superset during bootstrap and contracts it on the next ordinary write
+AgentFactory (Singleton) initialized.
+AgentRuntimeState initialized for agent_id 'agent_restore'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'agent_restore': No tools provided in config.
+Agent 'agent_restore': LLM instance 'DummyLLM' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'agent_restore'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'agent_restore' with config: 'RestoreAgent'.
+AgentWorker initialized for agent_id 'agent_restore'.
+Registered AgentContext for agent_id 'agent_restore'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'agent_restore'. Context registered.
+Agent facade initialized for agent_id 'agent_restore'.
+Agent 'agent_restore' restored and stored successfully.
+Agent 'agent_restore' requesting runtime to start.
+AgentRuntime for 'agent_restore': Starting worker.
+AgentWorker 'agent_restore': Starting...
+AgentWorker 'agent_restore' asyncRun(): Starting.
+Agent 'agent_restore': Runtime init completed (event store initialized).
+Agent 'agent_restore': Runtime init completed (status deriver initialized).
+Agent 'agent_restore': Runtime init completed (AgentEventInbox initialized).
+Agent 'agent_restore': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > loads a schema-v4 superset during bootstrap and contracts it on the next ordinary write
+Agent 'agent_restore': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > loads a schema-v4 superset during bootstrap and contracts it on the next ordinary write
+AgentExternalEventNotifier (NotifierID: 81930add-7045-4fbb-a887-443cc75f2128, AgentID: agent_restore) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > loads a schema-v4 superset during bootstrap and contracts it on the next ordinary write
+Agent 'agent_restore': Bootstrapper starting direct lifecycle execution.
+Agent 'agent_restore': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'agent_restore': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > loads a schema-v4 superset during bootstrap and contracts it on the next ordinary write
+Agent 'agent_restore': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'agent_restore': Executing SystemPromptProcessingStep.
+Agent 'agent_restore': No configured skills. Skipping injection.
+Agent 'agent_restore': Final processed system prompt configured on LLM instance. Final length: 28.
+Agent 'agent_restore': Final processed system prompt:
+---
+You are a helpful assistant.
+---
+
+stderr | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > loads a schema-v4 superset during bootstrap and contracts it on the next ordinary write
+WorkingContextSnapshotRestoreStep failed: Error: Working-context v5 snapshot failed strict integrity validation.
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > loads a schema-v4 superset during bootstrap and contracts it on the next ordinary write
+Agent 'agent_restore': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stderr | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > loads a schema-v4 superset during bootstrap and contracts it on the next ordinary write
+Agent 'agent_restore': Bootstrap step WorkingContextSnapshotRestoreStep failed.
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > loads a schema-v4 superset during bootstrap and contracts it on the next ordinary write
+AgentExternalEventNotifier (NotifierID: 81930add-7045-4fbb-a887-443cc75f2128, AgentID: agent_restore) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stderr | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > loads a schema-v4 superset during bootstrap and contracts it on the next ordinary write
+AgentWorker 'agent_restore' failed to initialize. Worker is shutting down.
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > loads a schema-v4 superset during bootstrap and contracts it on the next ordinary write
+AgentWorker 'agent_restore' asyncRun() loop has finished.
+AgentWorker 'agent_restore': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > loads a schema-v4 superset during bootstrap and contracts it on the next ordinary write
+AgentWorker 'agent_restore': Shutdown resource cleanup completed successfully.
+AgentWorker 'agent_restore': Shutdown sequence completed.
+
+ ❯ tests/integration/agent/working-context-snapshot-restore-flow.test.ts (1 test | 1 failed) 36ms
+     × loads a schema-v4 superset during bootstrap and contracts it on the next ordinary write 35ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent/incomplete-tool-call-resume-recovery.test.ts > incomplete native tool-call persisted resume recovery (API/E2E) > restores a cached poisoned snapshot and starts LLM execution after one additional user prompt
+Error: Working-context v5 snapshot failed strict integrity validation.
+ ❯ WorkingContextSnapshotBootstrapper.bootstrap src/memory/restore/working-context-snapshot-bootstrapper.ts:46:13
+     44|     }
+     45|     if (!WorkingContextSnapshotSerializer.validate(payload)) {
+     46|       throw new Error('Working-context v5 snapshot failed strict integ…
+       |             ^
+     47|     }
+     48|     const { workingContext, metadata } = WorkingContextSnapshotSeriali…
+ ❯ tests/integration/agent/incomplete-tool-call-resume-recovery.test.ts:106:61
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  tests/integration/agent/working-context-snapshot-restore-flow.test.ts > Working context snapshot restore flow (agent) > loads a schema-v4 superset during bootstrap and contracts it on the next ordinary write
+AssertionError: expected 'error' to be 'idle' // Object.is equality
+
+Expected: "idle"
+Received: "error"
+
+ ❯ tests/integration/agent/working-context-snapshot-restore-flow.test.ts:130:41
+    128|     const ready = await waitForStatus(agent.agentId, () => agent.conte…
+    129|     expect(ready).toBe(true);
+    130|     expect(agent.context.currentStatus).toBe(AgentStatus.IDLE);
+       |                                         ^
+    131| 
+    132|     const messages = agent.context.state.memoryManager?.getWorkingCont…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+ FAIL  tests/unit/agent/llm-request-assembler.test.ts > LLMRequestAssembler > appends the system prompt and user message without compaction
+TypeError: Cannot read properties of null (reading 'turnId')
+ ❯ LLMRequestAssembler.captureRecoverySnapshot src/agent/llm-request-assembler.ts:130:24
+    128|   ): LlmRequestRecoverySnapshot {
+    129|     return this.memoryManager.captureLlmRequestRecoverySnapshot({
+    130|       turnId: identity.turnId,
+       |                        ^
+    131|       requestId: identity.requestId,
+    132|     });
+ ❯ LLMRequestAssembler.prepareRequest src/agent/llm-request-assembler.ts:55:35
+ ❯ tests/unit/agent/llm-request-assembler.test.ts:53:37
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯
+
+ FAIL  tests/unit/agent/llm-request-assembler.test.ts > LLMRequestAssembler > delegates pending compaction execution before appending the current user message
+TypeError: this.memoryManager.captureLlmRequestRecoverySnapshot is not a function
+ ❯ LLMRequestAssembler.captureRecoverySnapshot src/agent/llm-request-assembler.ts:129:31
+    127|     identity: LlmRequestAssemblyIdentity,
+    128|   ): LlmRequestRecoverySnapshot {
+    129|     return this.memoryManager.captureLlmRequestRecoverySnapshot({
+       |                               ^
+    130|       turnId: identity.turnId,
+    131|       requestId: identity.requestId,
+ ❯ LLMRequestAssembler.prepareRequest src/agent/llm-request-assembler.ts:55:35
+ ❯ tests/unit/agent/llm-request-assembler.test.ts:77:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/9]⎯
+
+ FAIL  tests/unit/agent/llm-request-assembler.test.ts > LLMRequestAssembler > repairs already-poisoned native tool-call history before OpenAI-compatible render
+TypeError: Cannot read properties of undefined (reading 'trim')
+ ❯ LlmRequestRecoveryBoundary.capture src/memory/llm-request-recovery.ts:52:23
+     50| 
+     51|   capture(input: LlmRequestRecoveryInput): LlmRequestRecoverySnapshot {
+     52|     if (!input.turnId.trim() || !input.requestId.trim()) {
+       |                       ^
+     53|       throw new Error('LLM request recovery snapshots require non-empt…
+     54|     }
+ ❯ MemoryManager.captureLlmRequestRecoverySnapshot src/memory/memory-manager.ts:495:130
+ ❯ LLMRequestAssembler.captureRecoverySnapshot src/agent/llm-request-assembler.ts:129:31
+ ❯ LLMRequestAssembler.prepareRequest src/agent/llm-request-assembler.ts:55:35
+ ❯ tests/unit/agent/llm-request-assembler.test.ts:131:9
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/9]⎯
+
+ FAIL  tests/unit/memory/working-context-snapshot-bootstrapper.test.ts > WorkingContextSnapshotBootstrapper current-only restore > recovers only the trusted active interruption fence with provenance after reset
+Error: Explicit WorkingContext restore requires a strict v5 snapshot for agent 'agent-bootstrap'.
+ ❯ WorkingContextSnapshotBootstrapper.bootstrap src/memory/restore/working-context-snapshot-bootstrapper.ts:36:13
+     34|     const payload = snapshotStore && agentId ? snapshotStore.read(agen…
+     35|     if (!payload) {
+     36|       throw new Error(
+       |             ^
+     37|         `Explicit WorkingContext restore requires a strict v5 snapshot…
+     38|       );
+ ❯ tests/unit/memory/working-context-snapshot-bootstrapper.test.ts:138:59
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/9]⎯
+
+ FAIL  tests/unit/memory/working-context-snapshot-bootstrapper.test.ts > WorkingContextSnapshotBootstrapper current-only restore > fails closed when a lineage head exists without its required v5 snapshot
+AssertionError: expected [Function] to throw error including 'Current lineage head \'c1\' requires …' but got 'Explicit WorkingContext restore requi…'
+
+Expected: "Current lineage head 'c1' requires a v5 message snapshot"
+Received: "Explicit WorkingContext restore requires a strict v5 snapshot for agent 'agent-bootstrap'."
+
+ ❯ tests/unit/memory/working-context-snapshot-bootstrapper.test.ts:173:8
+    171|       'System',
+    172|       { maxItemChars: null },
+    173|     )).toThrow("Current lineage head 'c1' requires a v5 message snapsh…
+       |        ^
+    174|   });
+    175| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/9]⎯
+
+ FAIL  tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase incomplete native tool-call resume recovery > kicks off LLM execution after one additional user prompt with provider-safe rendered history
+AssertionError: expected { role: 'user', …(1) } to match object { role: 'user', …(1) }
+
+- Expected
++ Received
+
+  {
+-   "content": "earlier failed continue attempt",
++   "content": "earlier failed continue attempt
++
++ The user's current message is:
++
++ please continue there was a shutdown",
+    "role": "user",
+  }
+
+ ❯ tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts:154:44
+    152|         'Tool execution was interrupted by runtime shutdown before a r…
+    153|       );
+    154|       expect(rendered[assistantIndex + 2]).toMatchObject({
+       |                                            ^
+    155|         role: 'user',
+    156|         content: 'earlier failed continue attempt',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/9]⎯
+
+ FAIL  tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase unknown-capability provider recovery > rolls back one failed image request and accepts the next text-only turn without retrying
+AssertionError: expected Message{ role: 'user', …(7) } to match object { role: 'user', …(2) }
+(6 matching properties omitted from actual)
+
+- Expected
++ Received
+
+- {
+-   "content": "inspect this image",
++ Message {
++   "content": "baseline context
++
++ The user's current message is:
++
++ inspect this image",
+    "image_urls": [
+      "data:image/png;base64,aW1hZ2U=",
+    ],
+    "role": "user",
+  }
+
+ ❯ tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts:202:44
+    200|         .toContain('provider rejected image input');
+    201|       expect(llm.streamCaptures).toHaveLength(1);
+    202|       expect(llm.streamCaptures[0].at(-1)).toMatchObject({
+       |                                            ^
+    203|         role: MessageRole.USER,
+    204|         content: 'inspect this image',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/9]⎯
+
+
+ Test Files  5 failed | 1 passed (6)
+      Tests  9 failed | 4 passed (13)
+   Start at  00:19:43
+   Duration  1.18s (transform 2.16s, setup 102ms, import 3.24s, tests 93ms, environment 0ms)
+
+core_exit=1
+
+$ pnpm -C autobyteus-server-ts exec vitest run tests/unit/app-data-migrations/reset-pre-lineage-memory-app-data-migration.test.ts tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts tests/unit/app-data-migrations/app-data-migration-runner.test.ts tests/unit/server-runtime-app-data-migration-gate.test.ts --no-watch
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+
+stdout | tests/unit/app-data-migrations/app-data-migration-runner.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:55141) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/app-data-migrations/app-data-migration-runner.test.ts (6 tests | 1 failed) 12ms
+     ✓ rejects true duplicate concurrent retry attempts 4ms
+     ✓ treats stale RUNNING records as retryable 1ms
+     ✓ lists registered migrations that do not have DB records 1ms
+     × attempts and persists every required migration before throwing the aggregate typed failure 4ms
+     ✓ accepts persisted SUCCEEDED and SUCCEEDED_WITH_WARNINGS results without rerunning them 1ms
+     ✓ exposes warning results for manual retry and records a successful retry attempt 1ms
+stdout | tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:55142) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts > RawTraceActiveFileNameMigration > is registered after the raw trace rotation layout migration
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts
+
+ ✓ tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts (3 tests) 20ms
+ ❯ tests/unit/app-data-migrations/reset-pre-lineage-memory-app-data-migration.test.ts (0 test)
+stdout | tests/unit/server-runtime-app-data-migration-gate.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:55145) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/server-runtime-app-data-migration-gate.test.ts > startConfiguredServer required app-data migration gate > rethrows required migration failure before built-in bootstrap, app construction, or listen
+Successfully registered tool definition: 'search_web'
+
+stderr | tests/unit/server-runtime-app-data-migration-gate.test.ts > startConfiguredServer required app-data migration gate > rethrows required migration failure before built-in bootstrap, app construction, or listen
+Overwriting existing tool definition for name: 'search_web'
+
+ ❯ tests/unit/server-runtime-app-data-migration-gate.test.ts (1 test | 1 failed) 7ms
+     × rethrows required migration failure before built-in bootstrap, app construction, or listen 6ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/app-data-migrations/reset-pre-lineage-memory-app-data-migration.test.ts [ tests/unit/app-data-migrations/reset-pre-lineage-memory-app-data-migration.test.ts ]
+Error: Cannot find module '../../../src/app-data-migrations/migrations/reset-pre-lineage-memory-files.js' imported from '/Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-server-ts/tests/unit/app-data-migrations/reset-pre-lineage-memory-app-data-migration.test.ts'
+ ❯ tests/unit/app-data-migrations/reset-pre-lineage-memory-app-data-migration.test.ts:5:1
+      3| import path from "node:path";
+      4| import { afterEach, beforeEach, describe, expect, it } from "vitest";
+      5| import {
+       | ^
+      6|   PRE_LINEAGE_DERIVED_MEMORY_FILE_NAMES,
+      7| } from "../../../src/app-data-migrations/migrations/reset-pre-lineage-…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/server-runtime-app-data-migration-gate.test.ts > startConfiguredServer required app-data migration gate > rethrows required migration failure before built-in bootstrap, app construction, or listen
+AssertionError: expected TypeError: __vite_ssr_import_3__.appConfi… to be RequiredAppDataMigrationError: Required a… { …(2) } // Object.is equality
+
+- Expected
++ Received
+
+- RequiredAppDataMigrationError {
+-   "message": "Required app data migrations are not startable: reset:FAILED.",
+-   "name": "RequiredAppDataMigrationError",
+-   "code": "REQUIRED_APP_DATA_MIGRATION_FAILED",
+-   "results": [
+-     {
+-       "migrationId": "reset",
+-       "status": "FAILED",
+-     },
+-   ],
++ TypeError {
++   "message": "__vite_ssr_import_3__.appConfigProvider.config.get is not a function",
+  }
+
+ ❯ tests/unit/server-runtime-app-data-migration-gate.test.ts:101:5
+     99|     mocks.runPending.mockRejectedValueOnce(requiredFailure);
+    100| 
+    101|     await expect(startConfiguredServer({ host: "127.0.0.1", port: 0 }))
+       |     ^
+    102|       .rejects.toBe(requiredFailure);
+    103| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/unit/app-data-migrations/app-data-migration-runner.test.ts > AppDataMigrationRunner > attempts and persists every required migration before throwing the aggregate typed failure
+AssertionError: expected undefined to be 'REQUIRED_APP_DATA_MIGRATION_FAILED' // Object.is equality
+
+- Expected: 
+"REQUIRED_APP_DATA_MIGRATION_FAILED"
+
++ Received: 
+undefined
+
+ ❯ tests/unit/app-data-migrations/app-data-migration-runner.test.ts:209:27
+    207| 
+    208|     expect(executions).toEqual(["m-fail", "m-success", "m-throws"]);
+    209|     expect(failure?.code).toBe("REQUIRED_APP_DATA_MIGRATION_FAILED");
+       |                           ^
+    210|     expect(failure?.results.map(({ migrationId, status }) => ({ migrat…
+    211|       .toEqual([
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  3 failed | 1 passed (4)
+      Tests  2 failed | 8 passed (10)
+   Start at  00:19:44
+   Duration  7.36s (transform 3.68s, setup 16ms, import 6.59s, tests 39ms, environment 0ms)
+
+server_exit=1

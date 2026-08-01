@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -25,6 +25,29 @@ import { MemoryManager } from '../../../../src/memory/memory-manager.js';
 import { WorkingContext } from '../../../../src/memory/working-context.js';
 import { RawTraceItem } from '../../../../src/memory/models/raw-trace-item.js';
 import { FileMemoryStore } from '../../../../src/memory/store/file-store.js';
+import { BaseTool } from '../../../../src/tools/base-tool.js';
+import { defaultToolRegistry } from '../../../../src/tools/registry/tool-registry.js';
+import { registerToolClass } from '../../../../src/tools/tool-meta.js';
+
+const RECOVERY_TOOL_NAME = 'request_recovery_test_tool';
+
+class RequestRecoveryTestTool extends BaseTool {
+  static getName(): string {
+    return RECOVERY_TOOL_NAME;
+  }
+
+  static getDescription(): string {
+    return 'Reads one deterministic path for request-recovery settlement tests.';
+  }
+
+  static getArgumentSchema() {
+    return null;
+  }
+
+  protected async _execute(): Promise<string> {
+    return 'unused';
+  }
+}
 
 class CapturingResumeLLM extends BaseLLM {
   public readonly _renderer = new OpenAIChatRenderer();
@@ -44,6 +67,10 @@ class CapturingResumeLLM extends BaseLLM {
 
   protected async _sendMessagesToLLM(): Promise<CompleteResponse> {
     return new CompleteResponse({ content: 'unused' });
+  }
+
+  protected async *_streamMessagesToLLM(): AsyncGenerator<ChunkResponse, void, unknown> {
+    throw new Error('unused: streamMessages is overridden by this test double');
   }
 
   override async *streamMessages(
@@ -77,6 +104,10 @@ class FailingThenRecoveringLLM extends BaseLLM {
     return new CompleteResponse({ content: 'unused' });
   }
 
+  protected async *_streamMessagesToLLM(): AsyncGenerator<ChunkResponse, void, unknown> {
+    throw new Error('unused: streamMessages is overridden by this test double');
+  }
+
   override async *streamMessages(
     messages: Message[],
     _renderedPayload: unknown = null,
@@ -90,6 +121,236 @@ class FailingThenRecoveringLLM extends BaseLLM {
     yield new ChunkResponse({ content: 'recovered', is_complete: true });
   }
 }
+
+class ToolCallingRecoveryLLM extends BaseLLM {
+  public readonly _renderer = new OpenAIChatRenderer();
+  public readonly streamCaptures: Message[][] = [];
+
+  constructor() {
+    super(
+      new LLMModel({
+        name: 'tool-recovery-openai-compatible',
+        value: 'tool-recovery-openai-compatible',
+        canonicalName: 'tool-recovery-openai-compatible',
+        provider: LLMProvider.OPENAI,
+      }),
+      new LLMConfig({ systemMessage: 'System prompt', maxTokens: 64 }),
+    );
+  }
+
+  protected async _sendMessagesToLLM(): Promise<CompleteResponse> {
+    return new CompleteResponse({ content: 'unused' });
+  }
+
+  protected async *_streamMessagesToLLM(): AsyncGenerator<ChunkResponse, void, unknown> {
+    throw new Error('unused: streamMessages is overridden by this test double');
+  }
+
+  override async *streamMessages(
+    messages: Message[],
+    _renderedPayload: unknown = null,
+    _kwargs: Record<string, unknown> = {},
+    _options: LLMInvocationOptions = {},
+  ): AsyncGenerator<ChunkResponse, void, unknown> {
+    this.streamCaptures.push([...messages]);
+    yield new ChunkResponse({
+      content: 'I will inspect the retained context.',
+      tool_calls: [{
+        index: 0,
+        call_id: 'call_recovery_tool',
+        name: RECOVERY_TOOL_NAME,
+        arguments_delta: '{"path":"/tmp/context.txt"}',
+      }],
+    });
+    yield new ChunkResponse({ content: '', is_complete: true });
+  }
+}
+
+class InterruptingPartialRecoveryLLM extends BaseLLM {
+  public readonly _renderer = new OpenAIChatRenderer();
+  public readonly streamCaptures: Message[][] = [];
+
+  constructor(private readonly interrupt: () => void) {
+    super(
+      new LLMModel({
+        name: 'interruption-recovery-openai-compatible',
+        value: 'interruption-recovery-openai-compatible',
+        canonicalName: 'interruption-recovery-openai-compatible',
+        provider: LLMProvider.OPENAI,
+      }),
+      new LLMConfig({ systemMessage: 'System prompt', maxTokens: 64 }),
+    );
+  }
+
+  protected async _sendMessagesToLLM(): Promise<CompleteResponse> {
+    return new CompleteResponse({ content: 'unused' });
+  }
+
+  protected async *_streamMessagesToLLM(): AsyncGenerator<ChunkResponse, void, unknown> {
+    throw new Error('unused: streamMessages is overridden by this test double');
+  }
+
+  override async *streamMessages(
+    messages: Message[],
+    _renderedPayload: unknown = null,
+    _kwargs: Record<string, unknown> = {},
+    _options: LLMInvocationOptions = {},
+  ): AsyncGenerator<ChunkResponse, void, unknown> {
+    this.streamCaptures.push([...messages]);
+    yield new ChunkResponse({ content: 'partial response retained before interruption' });
+    this.interrupt();
+    yield new ChunkResponse({ content: 'must not be retained', is_complete: true });
+  }
+}
+
+const makePhaseInput = (turnId: string, content: string) => ({
+  llmUserMessage: new LLMUserMessage({ content }),
+  turnId,
+  sourceEvent: new UserMessageReceivedEvent(new AgentInputUserMessage(content)),
+});
+
+describe('LlmPhase successful retained-outcome recovery settlement', () => {
+  it('captures once and releases once after real Tool-invocation ingestion without restoring retained context', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'llm-phase-tool-recovery-'));
+    const registrySnapshot = defaultToolRegistry.snapshot();
+    try {
+      expect(registerToolClass(RequestRecoveryTestTool)).toBe(true);
+      const store = new FileMemoryStore(tempDir, 'agent_tool_recovery');
+      const memoryManager = new MemoryManager({ store });
+      memoryManager.replaceWorkingContext(new WorkingContext([
+        new Message(MessageRole.SYSTEM, { content: 'System prompt' }),
+        new Message(MessageRole.USER, { content: 'baseline context' }),
+      ]));
+      const captureRecovery = vi.spyOn(memoryManager, 'captureLlmRequestRecoverySnapshot');
+      const restoreRecovery = vi.spyOn(memoryManager, 'restoreLlmRequestRecoverySnapshot');
+      const commitRecovery = vi.spyOn(memoryManager, 'commitLlmRequestRecoverySnapshot');
+
+      const llm = new ToolCallingRecoveryLLM();
+      const state = new AgentRuntimeState('agent_tool_recovery');
+      state.llmInstance = llm;
+      state.memoryManager = memoryManager;
+      const tool = new RequestRecoveryTestTool();
+      state.toolInstances = { [RECOVERY_TOOL_NAME]: tool };
+      const config = new AgentConfig('agent', 'role', 'description', llm, 'System prompt', [tool]);
+      const context = new AgentContext('agent_tool_recovery', config, state);
+      const turn = new AgentTurn('turn_tool_recovery');
+
+      const outcome = await new LlmPhase().run(
+        makePhaseInput(turn.turnId, 'read the retained context'),
+        context,
+        turn,
+        null,
+      );
+
+      expect(outcome).toMatchObject({
+        kind: 'tool_invocations',
+        toolInvocations: [{
+          id: 'call_recovery_tool',
+          name: RECOVERY_TOOL_NAME,
+          arguments: { path: '/tmp/context.txt' },
+          turnId: turn.turnId,
+        }],
+      });
+      expect(captureRecovery).toHaveBeenCalledTimes(1);
+      expect(commitRecovery).toHaveBeenCalledTimes(1);
+      expect(restoreRecovery).not.toHaveBeenCalled();
+      const captured = captureRecovery.mock.results[0]?.value;
+      expect(captured).toBeDefined();
+      expect(commitRecovery).toHaveBeenCalledWith(captured);
+
+      const retained = memoryManager.getWorkingContextMessages();
+      expect(retained.at(-1)).toMatchObject({
+        role: MessageRole.ASSISTANT,
+        content: 'I will inspect the retained context.',
+      });
+      expect(retained.at(-1)?.tool_payload).toBeInstanceOf(ToolCallPayload);
+      expect((retained.at(-1)?.tool_payload as ToolCallPayload).toolCalls).toEqual([
+        expect.objectContaining({
+          id: 'call_recovery_tool',
+          name: RECOVERY_TOOL_NAME,
+          arguments: { path: '/tmp/context.txt' },
+        }),
+      ]);
+      expect(memoryManager.listRawTracesOrdered()).toEqual(expect.arrayContaining([
+        expect.objectContaining({
+          traceType: 'tool_call',
+          toolCallId: 'call_recovery_tool',
+          turnId: turn.turnId,
+        }),
+      ]));
+    } finally {
+      defaultToolRegistry.restore(registrySnapshot);
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('captures once and releases once on retained partial interruption without restoring or settling twice', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'llm-phase-interruption-recovery-'));
+    try {
+      const store = new FileMemoryStore(tempDir, 'agent_interruption_recovery');
+      const memoryManager = new MemoryManager({ store });
+      memoryManager.replaceWorkingContext(new WorkingContext([
+        new Message(MessageRole.SYSTEM, { content: 'System prompt' }),
+        new Message(MessageRole.USER, { content: 'baseline context' }),
+      ]));
+      const captureRecovery = vi.spyOn(memoryManager, 'captureLlmRequestRecoverySnapshot');
+      const restoreRecovery = vi.spyOn(memoryManager, 'restoreLlmRequestRecoverySnapshot');
+      const commitRecovery = vi.spyOn(memoryManager, 'commitLlmRequestRecoverySnapshot');
+
+      const turn = new AgentTurn('turn_interruption_recovery');
+      const llm = new InterruptingPartialRecoveryLLM(() => {
+        expect(turn.interrupt('user_interrupt')).toMatchObject({ accepted: true, status: 'accepted' });
+      });
+      const state = new AgentRuntimeState('agent_interruption_recovery');
+      state.llmInstance = llm;
+      state.memoryManager = memoryManager;
+      const config = new AgentConfig('agent', 'role', 'description', llm, 'System prompt', []);
+      const context = new AgentContext('agent_interruption_recovery', config, state);
+
+      await expect(new LlmPhase().run(
+        makePhaseInput(turn.turnId, 'retain this interrupted request'),
+        context,
+        turn,
+        null,
+      )).rejects.toMatchObject({
+        name: 'AgentInterruptionError',
+        turnId: turn.turnId,
+        reason: 'user_interrupt',
+      });
+
+      expect(captureRecovery).toHaveBeenCalledTimes(1);
+      expect(commitRecovery).toHaveBeenCalledTimes(1);
+      expect(restoreRecovery).not.toHaveBeenCalled();
+      const captured = captureRecovery.mock.results[0]?.value;
+      expect(captured).toBeDefined();
+      expect(commitRecovery).toHaveBeenCalledWith(captured);
+
+      const retained = memoryManager.getWorkingContextMessages();
+      expect(retained.some((message) =>
+        message.role === MessageRole.USER &&
+        message.content?.includes('baseline context') &&
+        message.content?.includes('retain this interrupted request')
+      )).toBe(true);
+      expect(retained).toEqual(expect.arrayContaining([
+        expect.objectContaining({
+          role: MessageRole.ASSISTANT,
+          content: 'partial response retained before interruption',
+        }),
+      ]));
+      expect(retained.some((message) => message.content === 'must not be retained')).toBe(false);
+      expect(memoryManager.listRawTracesOrdered()).toEqual(expect.arrayContaining([
+        expect.objectContaining({
+          traceType: 'assistant',
+          sourceEvent: 'LlmPhaseInterruptedPartial',
+          content: 'partial response retained before interruption',
+          turnId: turn.turnId,
+        }),
+      ]));
+    } finally {
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+});
 
 describe('LlmPhase incomplete native tool-call resume recovery', () => {
   it('kicks off LLM execution after one additional user prompt with provider-safe rendered history', async () => {
@@ -121,6 +382,9 @@ describe('LlmPhase incomplete native tool-call resume recovery', () => {
         }),
         new Message(MessageRole.USER, { content: 'earlier failed continue attempt' }),
       ]));
+      const captureRecovery = vi.spyOn(memoryManager, 'captureLlmRequestRecoverySnapshot');
+      const restoreRecovery = vi.spyOn(memoryManager, 'restoreLlmRequestRecoverySnapshot');
+      const commitRecovery = vi.spyOn(memoryManager, 'commitLlmRequestRecoverySnapshot');
 
       const llm = new CapturingResumeLLM();
       const state = new AgentRuntimeState('agent_resume_repair');
@@ -151,14 +415,14 @@ describe('LlmPhase incomplete native tool-call resume recovery', () => {
       expect(rendered[assistantIndex + 1].content).toContain(
         'Tool execution was interrupted by runtime shutdown before a result was recorded.'
       );
-      expect(rendered[assistantIndex + 2]).toMatchObject({
-        role: 'user',
-        content: 'earlier failed continue attempt',
-      });
-      expect(rendered.at(-1)).toMatchObject({
-        role: 'user',
-        content: 'please continue there was a shutdown',
-      });
+      expect(rendered[assistantIndex + 2]).toMatchObject({ role: 'user' });
+      expect(rendered[assistantIndex + 2].content).toContain('earlier failed continue attempt');
+      expect(rendered[assistantIndex + 2].content).toContain('The user\'s current message is:');
+      expect(rendered[assistantIndex + 2].content).toContain('please continue there was a shutdown');
+      expect(rendered.at(-1)).toEqual(rendered[assistantIndex + 2]);
+      expect(captureRecovery).toHaveBeenCalledTimes(1);
+      expect(restoreRecovery).not.toHaveBeenCalled();
+      expect(commitRecovery).toHaveBeenCalledTimes(1);
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }
@@ -175,6 +439,9 @@ describe('LlmPhase unknown-capability provider recovery', () => {
         new Message(MessageRole.SYSTEM, { content: 'System prompt' }),
         new Message(MessageRole.USER, { content: 'baseline context' }),
       ]));
+      const captureRecovery = vi.spyOn(memoryManager, 'captureLlmRequestRecoverySnapshot');
+      const restoreRecovery = vi.spyOn(memoryManager, 'restoreLlmRequestRecoverySnapshot');
+      const commitRecovery = vi.spyOn(memoryManager, 'commitLlmRequestRecoverySnapshot');
 
       const llm = new FailingThenRecoveringLLM();
       const state = new AgentRuntimeState('agent_provider_recovery');
@@ -201,13 +468,18 @@ describe('LlmPhase unknown-capability provider recovery', () => {
       expect(llm.streamCaptures).toHaveLength(1);
       expect(llm.streamCaptures[0].at(-1)).toMatchObject({
         role: MessageRole.USER,
-        content: 'inspect this image',
         image_urls: ['data:image/png;base64,aW1hZ2U='],
       });
+      expect(llm.streamCaptures[0].at(-1)?.content).toContain('baseline context');
+      expect(llm.streamCaptures[0].at(-1)?.content).toContain('The user\'s current message is:');
+      expect(llm.streamCaptures[0].at(-1)?.content).toContain('inspect this image');
       expect(memoryManager.getWorkingContextMessages()).toEqual([
         expect.objectContaining({ role: MessageRole.SYSTEM, content: 'System prompt' }),
         expect.objectContaining({ role: MessageRole.USER, content: 'baseline context' }),
       ]);
+      expect(captureRecovery).toHaveBeenCalledTimes(1);
+      expect(restoreRecovery).toHaveBeenCalledTimes(1);
+      expect(commitRecovery).not.toHaveBeenCalled();
 
       const recoveryTurn = new AgentTurn('turn_provider_recovery');
       const recoveryOutcome = await new LlmPhase().run({
@@ -221,15 +493,17 @@ describe('LlmPhase unknown-capability provider recovery', () => {
       expect(recoveryOutcome.kind).toBe('final');
       expect('isError' in recoveryOutcome && recoveryOutcome.isError).toBe(false);
       expect(llm.streamCaptures).toHaveLength(2);
-      expect(llm.streamCaptures[1].at(-1)).toMatchObject({
-        role: MessageRole.USER,
-        content: 'continue with text only',
-        image_urls: [],
-      });
+      expect(llm.streamCaptures[1].at(-1)).toMatchObject({ role: MessageRole.USER, image_urls: [] });
+      expect(llm.streamCaptures[1].at(-1)?.content).toContain('baseline context');
+      expect(llm.streamCaptures[1].at(-1)?.content).toContain('The user\'s current message is:');
+      expect(llm.streamCaptures[1].at(-1)?.content).toContain('continue with text only');
       expect(llm.streamCaptures[1].some((message) => message.image_urls.length > 0)).toBe(false);
       expect(memoryManager.getWorkingContextMessages().some((message) =>
         message.image_urls.includes('data:image/png;base64,aW1hZ2U=')
       )).toBe(false);
+      expect(captureRecovery).toHaveBeenCalledTimes(2);
+      expect(restoreRecovery).toHaveBeenCalledTimes(1);
+      expect(commitRecovery).toHaveBeenCalledTimes(1);
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }

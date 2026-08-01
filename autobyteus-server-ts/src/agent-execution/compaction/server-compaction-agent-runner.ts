@@ -94,6 +94,7 @@ export class ServerCompactionAgentRunner implements CompactionAgentRunner {
           compactionAgentName: resolved.agentName,
           runtimeKind: resolved.runtimeKind,
           modelIdentifier: resolved.llmModelIdentifier,
+          provider: resolved.provider,
           compactionRunId: runId,
           taskId: task.taskId,
         },
@@ -142,6 +143,7 @@ export class ServerCompactionAgentRunner implements CompactionAgentRunner {
       compactionAgentName: resolved.agentName,
       runtimeKind: resolved.runtimeKind,
       modelIdentifier: resolved.llmModelIdentifier,
+      provider: resolved.provider,
       compactionRunId: runId,
       taskId,
     };

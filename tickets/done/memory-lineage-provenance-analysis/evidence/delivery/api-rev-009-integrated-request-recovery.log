@@ -1,0 +1,1545 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/memory-lineage-provenance-analysis/autobyteus-ts
+
+ ✓ tests/unit/memory/llm-request-recovery.test.ts > LLM request recovery boundary > restores the pre-request working context and compaction state while preserving recovery traces 6ms
+ ✓ tests/unit/memory/llm-request-recovery.test.ts > LLM request recovery boundary > settles each captured request exactly once for either restore or commit 3ms
+ ✓ tests/unit/agent/llm-request-assembler.test.ts > LLMRequestAssembler > appends the system prompt and user message without compaction 2ms
+ ✓ tests/unit/agent/llm-request-assembler.test.ts > LLMRequestAssembler > delegates pending compaction execution before appending the current user message 1ms
+ ✓ tests/unit/agent/llm-request-assembler.test.ts > LLMRequestAssembler > repairs already-poisoned native tool-call history before OpenAI-compatible render 5ms
+ ✓ tests/unit/agent/llm-request-assembler.test.ts > LLMRequestAssembler > propagates compaction preparation errors 1ms
+ ✓ tests/unit/agent/llm-request-assembler.test.ts > LLMRequestAssembler > restores the post-compaction stable base when rendering fails after request capture 1ms
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase successful retained-outcome recovery settlement > captures once and releases once after real Tool-invocation ingestion without restoring retained context
+Successfully registered tool definition: 'request_recovery_test_tool'
+AgentRuntimeState initialized for agent_id 'agent_tool_recovery'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentConfig created for name='agent', role='role'. Tool call format: api_tool_call
+AgentContext composed for agent_id 'agent_tool_recovery'. Config and State linked.
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase successful retained-outcome recovery settlement > captures once and releases once after real Tool-invocation ingestion without restoring retained context
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+compaction_budget_skipped_no_usage {
+  agent_id: 'agent_tool_recovery',
+  turn_id: 'turn_tool_recovery',
+  reason: 'missing_usage'
+}
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase successful retained-outcome recovery settlement > captures once and releases once on retained partial interruption without restoring or settling twice
+AgentRuntimeState initialized for agent_id 'agent_interruption_recovery'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentConfig created for name='agent', role='role'. Tool call format: api_tool_call
+AgentContext composed for agent_id 'agent_interruption_recovery'. Config and State linked.
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase incomplete native tool-call resume recovery > kicks off LLM execution after one additional user prompt with provider-safe rendered history
+AgentRuntimeState initialized for agent_id 'agent_resume_repair'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentConfig created for name='agent', role='role'. Tool call format: api_tool_call
+AgentContext composed for agent_id 'agent_resume_repair'. Config and State linked.
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase incomplete native tool-call resume recovery > kicks off LLM execution after one additional user prompt with provider-safe rendered history
+compaction_budget_skipped_no_usage {
+  agent_id: 'agent_resume_repair',
+  turn_id: 'turn_after_restart',
+  reason: 'missing_usage'
+}
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase unknown-capability provider recovery > rolls back one failed image request and accepts the next text-only turn without retrying
+AgentRuntimeState initialized for agent_id 'agent_provider_recovery'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentConfig created for name='agent', role='role'. Tool call format: api_tool_call
+AgentContext composed for agent_id 'agent_provider_recovery'. Config and State linked.
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase unknown-capability provider recovery > rolls back one failed image request and accepts the next text-only turn without retrying
+compaction_budget_skipped_no_usage {
+  agent_id: 'agent_provider_recovery',
+  turn_id: 'turn_provider_recovery',
+  reason: 'missing_usage'
+}
+
+ ✓ tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase successful retained-outcome recovery settlement > captures once and releases once after real Tool-invocation ingestion without restoring retained context 10ms
+ ✓ tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase successful retained-outcome recovery settlement > captures once and releases once on retained partial interruption without restoring or settling twice 3ms
+ ✓ tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase incomplete native tool-call resume recovery > kicks off LLM execution after one additional user prompt with provider-safe rendered history 9ms
+ ✓ tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase unknown-capability provider recovery > rolls back one failed image request and accepts the next text-only turn without retrying 5ms
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > starts and stops AgentRuntime cleanly without legacy handler registry wiring
+AgentRuntimeState initialized for agent_id 'runtime_1785541936701'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'runtime_1785541936701'. Config and State linked.
+AgentWorker initialized for agent_id 'runtime_1785541936701'.
+Registered AgentContext for agent_id 'runtime_1785541936701'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'runtime_1785541936701'. Context registered.
+AgentRuntime for 'runtime_1785541936701': Starting worker.
+AgentWorker 'runtime_1785541936701': Starting...
+AgentWorker 'runtime_1785541936701' asyncRun(): Starting.
+Agent 'runtime_1785541936701': Runtime init completed (event store initialized).
+Agent 'runtime_1785541936701': Runtime init completed (status deriver initialized).
+Agent 'runtime_1785541936701': Runtime init completed (AgentEventInbox initialized).
+Agent 'runtime_1785541936701': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > starts and stops AgentRuntime cleanly without legacy handler registry wiring
+Agent 'runtime_1785541936701': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > starts and stops AgentRuntime cleanly without legacy handler registry wiring
+AgentExternalEventNotifier (NotifierID: fc6f8cc6-015b-4abb-b66f-3848f9dd4a63, AgentID: runtime_1785541936701) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > starts and stops AgentRuntime cleanly without legacy handler registry wiring
+Agent 'runtime_1785541936701': Bootstrapper starting direct lifecycle execution.
+Agent 'runtime_1785541936701': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'runtime_1785541936701': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > starts and stops AgentRuntime cleanly without legacy handler registry wiring
+Agent 'runtime_1785541936701': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'runtime_1785541936701': Executing SystemPromptProcessingStep.
+Agent 'runtime_1785541936701': No configured skills. Skipping injection.
+Agent 'runtime_1785541936701': Final processed system prompt configured on LLM instance. Final length: 28.
+Agent 'runtime_1785541936701': Final processed system prompt:
+---
+You are a helpful assistant.
+---
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > starts and stops AgentRuntime cleanly without legacy handler registry wiring
+Agent 'runtime_1785541936701': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > starts and stops AgentRuntime cleanly without legacy handler registry wiring
+AgentExternalEventNotifier (NotifierID: fc6f8cc6-015b-4abb-b66f-3848f9dd4a63, AgentID: runtime_1785541936701) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > starts and stops AgentRuntime cleanly without legacy handler registry wiring
+AgentWorker 'runtime_1785541936701' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > starts and stops AgentRuntime cleanly without legacy handler registry wiring
+AgentExternalEventNotifier (NotifierID: fc6f8cc6-015b-4abb-b66f-3848f9dd4a63, AgentID: runtime_1785541936701) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > starts and stops AgentRuntime cleanly without legacy handler registry wiring
+AgentWorker 'runtime_1785541936701': Stop requested.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > starts and stops AgentRuntime cleanly without legacy handler registry wiring
+AgentExternalEventNotifier (NotifierID: fc6f8cc6-015b-4abb-b66f-3848f9dd4a63, AgentID: runtime_1785541936701) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > starts and stops AgentRuntime cleanly without legacy handler registry wiring
+AgentWorker 'runtime_1785541936701' asyncRun() loop has finished.
+AgentWorker 'runtime_1785541936701': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > starts and stops AgentRuntime cleanly without legacy handler registry wiring
+AgentWorker 'runtime_1785541936701': Shutdown resource cleanup completed successfully.
+AgentWorker 'runtime_1785541936701': Shutdown sequence completed.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > starts and stops AgentRuntime cleanly without legacy handler registry wiring
+Unregistered AgentContext for agent_id 'runtime_1785541936701'.
+AgentRuntime for 'runtime_1785541936701': Context unregistered.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > starts and stops AgentRuntime cleanly without legacy handler registry wiring
+AgentRuntime for 'runtime_1785541936701' stop() method completed.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > Agent facade delegates start/stop to runtime
+AgentFactory (Singleton) initialized.
+AgentRuntimeState initialized for agent_id 'runtimetestagent_tester_7257'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'runtimetestagent_tester_7257': No tools provided in config.
+Agent 'runtimetestagent_tester_7257': LLM instance 'DummyLLM' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'runtimetestagent_tester_7257'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'runtimetestagent_tester_7257' with config: 'RuntimeTestAgent'.
+AgentWorker initialized for agent_id 'runtimetestagent_tester_7257'.
+Registered AgentContext for agent_id 'runtimetestagent_tester_7257'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'runtimetestagent_tester_7257'. Context registered.
+Agent facade initialized for agent_id 'runtimetestagent_tester_7257'.
+Agent 'runtimetestagent_tester_7257' created and stored successfully.
+Agent 'runtimetestagent_tester_7257' requesting runtime to start.
+AgentRuntime for 'runtimetestagent_tester_7257': Starting worker.
+AgentWorker 'runtimetestagent_tester_7257': Starting...
+AgentWorker 'runtimetestagent_tester_7257' asyncRun(): Starting.
+Agent 'runtimetestagent_tester_7257': Runtime init completed (event store initialized).
+Agent 'runtimetestagent_tester_7257': Runtime init completed (status deriver initialized).
+Agent 'runtimetestagent_tester_7257': Runtime init completed (AgentEventInbox initialized).
+Agent 'runtimetestagent_tester_7257': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > Agent facade delegates start/stop to runtime
+Agent 'runtimetestagent_tester_7257': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > Agent facade delegates start/stop to runtime
+AgentExternalEventNotifier (NotifierID: 4ec5232d-7d27-4248-a42c-f775f0004828, AgentID: runtimetestagent_tester_7257) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > Agent facade delegates start/stop to runtime
+Agent 'runtimetestagent_tester_7257': Bootstrapper starting direct lifecycle execution.
+Agent 'runtimetestagent_tester_7257': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'runtimetestagent_tester_7257': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > Agent facade delegates start/stop to runtime
+Agent 'runtimetestagent_tester_7257': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'runtimetestagent_tester_7257': Executing SystemPromptProcessingStep.
+Agent 'runtimetestagent_tester_7257': No configured skills. Skipping injection.
+Agent 'runtimetestagent_tester_7257': Final processed system prompt configured on LLM instance. Final length: 28.
+Agent 'runtimetestagent_tester_7257': Final processed system prompt:
+---
+You are a helpful assistant.
+---
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > Agent facade delegates start/stop to runtime
+Agent 'runtimetestagent_tester_7257': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > Agent facade delegates start/stop to runtime
+AgentExternalEventNotifier (NotifierID: 4ec5232d-7d27-4248-a42c-f775f0004828, AgentID: runtimetestagent_tester_7257) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > Agent facade delegates start/stop to runtime
+AgentWorker 'runtimetestagent_tester_7257' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > Agent facade delegates start/stop to runtime
+Agent 'runtimetestagent_tester_7257' requesting runtime to stop (timeout: 5s).
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > Agent facade delegates start/stop to runtime
+AgentExternalEventNotifier (NotifierID: 4ec5232d-7d27-4248-a42c-f775f0004828, AgentID: runtimetestagent_tester_7257) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > Agent facade delegates start/stop to runtime
+AgentWorker 'runtimetestagent_tester_7257': Stop requested.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > Agent facade delegates start/stop to runtime
+AgentExternalEventNotifier (NotifierID: 4ec5232d-7d27-4248-a42c-f775f0004828, AgentID: runtimetestagent_tester_7257) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > Agent facade delegates start/stop to runtime
+AgentWorker 'runtimetestagent_tester_7257' asyncRun() loop has finished.
+AgentWorker 'runtimetestagent_tester_7257': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > Agent facade delegates start/stop to runtime
+AgentWorker 'runtimetestagent_tester_7257': Shutdown resource cleanup completed successfully.
+AgentWorker 'runtimetestagent_tester_7257': Shutdown sequence completed.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > Agent facade delegates start/stop to runtime
+Unregistered AgentContext for agent_id 'runtimetestagent_tester_7257'.
+AgentRuntime for 'runtimetestagent_tester_7257': Context unregistered.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > Agent facade delegates start/stop to runtime
+AgentRuntime for 'runtimetestagent_tester_7257' stop() method completed.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > keeps a later external user message queued while one AgentTurnRunner is active
+AgentRuntimeState initialized for agent_id 'runtime_queue_1785541936762'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'runtime_queue_1785541936762'. Config and State linked.
+AgentWorker initialized for agent_id 'runtime_queue_1785541936762'.
+Registered AgentContext for agent_id 'runtime_queue_1785541936762'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'runtime_queue_1785541936762'. Context registered.
+AgentRuntime for 'runtime_queue_1785541936762': Starting worker.
+AgentWorker 'runtime_queue_1785541936762': Starting...
+AgentWorker 'runtime_queue_1785541936762' asyncRun(): Starting.
+Agent 'runtime_queue_1785541936762': Runtime init completed (event store initialized).
+Agent 'runtime_queue_1785541936762': Runtime init completed (status deriver initialized).
+Agent 'runtime_queue_1785541936762': Runtime init completed (AgentEventInbox initialized).
+Agent 'runtime_queue_1785541936762': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > keeps a later external user message queued while one AgentTurnRunner is active
+Agent 'runtime_queue_1785541936762': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > keeps a later external user message queued while one AgentTurnRunner is active
+AgentExternalEventNotifier (NotifierID: b3eaed34-4935-48d6-b010-eaf9200765b0, AgentID: runtime_queue_1785541936762) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > keeps a later external user message queued while one AgentTurnRunner is active
+Agent 'runtime_queue_1785541936762': Bootstrapper starting direct lifecycle execution.
+Agent 'runtime_queue_1785541936762': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'runtime_queue_1785541936762': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > keeps a later external user message queued while one AgentTurnRunner is active
+Agent 'runtime_queue_1785541936762': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'runtime_queue_1785541936762': Executing SystemPromptProcessingStep.
+Agent 'runtime_queue_1785541936762': No configured skills. Skipping injection.
+Agent 'runtime_queue_1785541936762': Final processed system prompt configured on LLM instance. Final length: 28.
+Agent 'runtime_queue_1785541936762': Final processed system prompt:
+---
+You are a helpful assistant.
+---
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > keeps a later external user message queued while one AgentTurnRunner is active
+Agent 'runtime_queue_1785541936762': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > keeps a later external user message queued while one AgentTurnRunner is active
+AgentExternalEventNotifier (NotifierID: b3eaed34-4935-48d6-b010-eaf9200765b0, AgentID: runtime_queue_1785541936762) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > keeps a later external user message queued while one AgentTurnRunner is active
+AgentWorker 'runtime_queue_1785541936762' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > keeps a later external user message queued while one AgentTurnRunner is active
+AgentExternalEventNotifier (NotifierID: b3eaed34-4935-48d6-b010-eaf9200765b0, AgentID: runtime_queue_1785541936762) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > keeps a later external user message queued while one AgentTurnRunner is active
+AgentExternalEventNotifier (NotifierID: b3eaed34-4935-48d6-b010-eaf9200765b0, AgentID: runtime_queue_1785541936762) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > keeps a later external user message queued while one AgentTurnRunner is active
+AgentExternalEventNotifier (NotifierID: b3eaed34-4935-48d6-b010-eaf9200765b0, AgentID: runtime_queue_1785541936762) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+ ✓ tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > starts and stops AgentRuntime cleanly without legacy handler registry wiring 31ms
+ ✓ tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > Agent facade delegates start/stop to runtime 31ms
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > keeps a later external user message queued while one AgentTurnRunner is active
+compaction_budget_skipped_no_usage {
+  agent_id: 'runtime_queue_1785541936762',
+  turn_id: 'turn_0001',
+  reason: 'missing_usage'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > keeps a later external user message queued while one AgentTurnRunner is active
+AgentExternalEventNotifier (NotifierID: b3eaed34-4935-48d6-b010-eaf9200765b0, AgentID: runtime_queue_1785541936762) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > keeps a later external user message queued while one AgentTurnRunner is active
+AgentExternalEventNotifier (NotifierID: b3eaed34-4935-48d6-b010-eaf9200765b0, AgentID: runtime_queue_1785541936762) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > keeps a later external user message queued while one AgentTurnRunner is active
+AgentExternalEventNotifier (NotifierID: b3eaed34-4935-48d6-b010-eaf9200765b0, AgentID: runtime_queue_1785541936762) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > keeps a later external user message queued while one AgentTurnRunner is active
+AgentExternalEventNotifier (NotifierID: b3eaed34-4935-48d6-b010-eaf9200765b0, AgentID: runtime_queue_1785541936762) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > keeps a later external user message queued while one AgentTurnRunner is active
+AgentExternalEventNotifier (NotifierID: b3eaed34-4935-48d6-b010-eaf9200765b0, AgentID: runtime_queue_1785541936762) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > keeps a later external user message queued while one AgentTurnRunner is active
+AgentExternalEventNotifier (NotifierID: b3eaed34-4935-48d6-b010-eaf9200765b0, AgentID: runtime_queue_1785541936762) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > keeps a later external user message queued while one AgentTurnRunner is active
+AgentExternalEventNotifier (NotifierID: b3eaed34-4935-48d6-b010-eaf9200765b0, AgentID: runtime_queue_1785541936762) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > keeps a later external user message queued while one AgentTurnRunner is active
+compaction_budget_skipped_no_usage {
+  agent_id: 'runtime_queue_1785541936762',
+  turn_id: 'turn_0002',
+  reason: 'missing_usage'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > keeps a later external user message queued while one AgentTurnRunner is active
+AgentExternalEventNotifier (NotifierID: b3eaed34-4935-48d6-b010-eaf9200765b0, AgentID: runtime_queue_1785541936762) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > keeps a later external user message queued while one AgentTurnRunner is active
+AgentExternalEventNotifier (NotifierID: b3eaed34-4935-48d6-b010-eaf9200765b0, AgentID: runtime_queue_1785541936762) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > keeps a later external user message queued while one AgentTurnRunner is active
+AgentExternalEventNotifier (NotifierID: b3eaed34-4935-48d6-b010-eaf9200765b0, AgentID: runtime_queue_1785541936762) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > keeps a later external user message queued while one AgentTurnRunner is active
+AgentExternalEventNotifier (NotifierID: b3eaed34-4935-48d6-b010-eaf9200765b0, AgentID: runtime_queue_1785541936762) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > keeps a later external user message queued while one AgentTurnRunner is active
+AgentExternalEventNotifier (NotifierID: b3eaed34-4935-48d6-b010-eaf9200765b0, AgentID: runtime_queue_1785541936762) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > keeps a later external user message queued while one AgentTurnRunner is active
+AgentWorker 'runtime_queue_1785541936762': Stop requested.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > keeps a later external user message queued while one AgentTurnRunner is active
+AgentExternalEventNotifier (NotifierID: b3eaed34-4935-48d6-b010-eaf9200765b0, AgentID: runtime_queue_1785541936762) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > keeps a later external user message queued while one AgentTurnRunner is active
+AgentWorker 'runtime_queue_1785541936762' asyncRun() loop has finished.
+AgentWorker 'runtime_queue_1785541936762': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > keeps a later external user message queued while one AgentTurnRunner is active
+AgentWorker 'runtime_queue_1785541936762': Shutdown resource cleanup completed successfully.
+AgentWorker 'runtime_queue_1785541936762': Shutdown sequence completed.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > keeps a later external user message queued while one AgentTurnRunner is active
+Unregistered AgentContext for agent_id 'runtime_queue_1785541936762'.
+AgentRuntime for 'runtime_queue_1785541936762': Context unregistered.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > keeps a later external user message queued while one AgentTurnRunner is active
+AgentRuntime for 'runtime_queue_1785541936762' stop() method completed.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts an in-flight LLM turn without stopping the runtime
+AgentRuntimeState initialized for agent_id 'runtime_interrupt_1785541936927'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'runtime_interrupt_1785541936927'. Config and State linked.
+AgentWorker initialized for agent_id 'runtime_interrupt_1785541936927'.
+Registered AgentContext for agent_id 'runtime_interrupt_1785541936927'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'runtime_interrupt_1785541936927'. Context registered.
+AgentRuntime for 'runtime_interrupt_1785541936927': Starting worker.
+AgentWorker 'runtime_interrupt_1785541936927': Starting...
+AgentWorker 'runtime_interrupt_1785541936927' asyncRun(): Starting.
+Agent 'runtime_interrupt_1785541936927': Runtime init completed (event store initialized).
+Agent 'runtime_interrupt_1785541936927': Runtime init completed (status deriver initialized).
+Agent 'runtime_interrupt_1785541936927': Runtime init completed (AgentEventInbox initialized).
+Agent 'runtime_interrupt_1785541936927': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts an in-flight LLM turn without stopping the runtime
+Agent 'runtime_interrupt_1785541936927': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts an in-flight LLM turn without stopping the runtime
+AgentExternalEventNotifier (NotifierID: b58b27c4-0587-4f33-8743-5e64cfa714e1, AgentID: runtime_interrupt_1785541936927) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts an in-flight LLM turn without stopping the runtime
+Agent 'runtime_interrupt_1785541936927': Bootstrapper starting direct lifecycle execution.
+Agent 'runtime_interrupt_1785541936927': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'runtime_interrupt_1785541936927': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts an in-flight LLM turn without stopping the runtime
+Agent 'runtime_interrupt_1785541936927': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'runtime_interrupt_1785541936927': Executing SystemPromptProcessingStep.
+Agent 'runtime_interrupt_1785541936927': No configured skills. Skipping injection.
+Agent 'runtime_interrupt_1785541936927': Final processed system prompt configured on LLM instance. Final length: 28.
+Agent 'runtime_interrupt_1785541936927': Final processed system prompt:
+---
+You are a helpful assistant.
+---
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts an in-flight LLM turn without stopping the runtime
+Agent 'runtime_interrupt_1785541936927': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts an in-flight LLM turn without stopping the runtime
+AgentExternalEventNotifier (NotifierID: b58b27c4-0587-4f33-8743-5e64cfa714e1, AgentID: runtime_interrupt_1785541936927) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts an in-flight LLM turn without stopping the runtime
+AgentWorker 'runtime_interrupt_1785541936927' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts an in-flight LLM turn without stopping the runtime
+AgentExternalEventNotifier (NotifierID: b58b27c4-0587-4f33-8743-5e64cfa714e1, AgentID: runtime_interrupt_1785541936927) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts an in-flight LLM turn without stopping the runtime
+AgentExternalEventNotifier (NotifierID: b58b27c4-0587-4f33-8743-5e64cfa714e1, AgentID: runtime_interrupt_1785541936927) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts an in-flight LLM turn without stopping the runtime
+AgentExternalEventNotifier (NotifierID: b58b27c4-0587-4f33-8743-5e64cfa714e1, AgentID: runtime_interrupt_1785541936927) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts an in-flight LLM turn without stopping the runtime
+AgentExternalEventNotifier (NotifierID: b58b27c4-0587-4f33-8743-5e64cfa714e1, AgentID: runtime_interrupt_1785541936927) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts an in-flight LLM turn without stopping the runtime
+AgentExternalEventNotifier (NotifierID: b58b27c4-0587-4f33-8743-5e64cfa714e1, AgentID: runtime_interrupt_1785541936927) emitted agent_turn_interrupted. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts an in-flight LLM turn without stopping the runtime
+AgentExternalEventNotifier (NotifierID: b58b27c4-0587-4f33-8743-5e64cfa714e1, AgentID: runtime_interrupt_1785541936927) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts an in-flight LLM turn without stopping the runtime
+AgentExternalEventNotifier (NotifierID: b58b27c4-0587-4f33-8743-5e64cfa714e1, AgentID: runtime_interrupt_1785541936927) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts an in-flight LLM turn without stopping the runtime
+AgentExternalEventNotifier (NotifierID: b58b27c4-0587-4f33-8743-5e64cfa714e1, AgentID: runtime_interrupt_1785541936927) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts an in-flight LLM turn without stopping the runtime
+AgentExternalEventNotifier (NotifierID: b58b27c4-0587-4f33-8743-5e64cfa714e1, AgentID: runtime_interrupt_1785541936927) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts an in-flight LLM turn without stopping the runtime
+compaction_budget_skipped_no_usage {
+  agent_id: 'runtime_interrupt_1785541936927',
+  turn_id: 'turn_0002',
+  reason: 'missing_usage'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts an in-flight LLM turn without stopping the runtime
+AgentExternalEventNotifier (NotifierID: b58b27c4-0587-4f33-8743-5e64cfa714e1, AgentID: runtime_interrupt_1785541936927) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts an in-flight LLM turn without stopping the runtime
+AgentExternalEventNotifier (NotifierID: b58b27c4-0587-4f33-8743-5e64cfa714e1, AgentID: runtime_interrupt_1785541936927) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts an in-flight LLM turn without stopping the runtime
+AgentExternalEventNotifier (NotifierID: b58b27c4-0587-4f33-8743-5e64cfa714e1, AgentID: runtime_interrupt_1785541936927) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts an in-flight LLM turn without stopping the runtime
+AgentExternalEventNotifier (NotifierID: b58b27c4-0587-4f33-8743-5e64cfa714e1, AgentID: runtime_interrupt_1785541936927) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts an in-flight LLM turn without stopping the runtime
+AgentExternalEventNotifier (NotifierID: b58b27c4-0587-4f33-8743-5e64cfa714e1, AgentID: runtime_interrupt_1785541936927) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts an in-flight LLM turn without stopping the runtime
+AgentWorker 'runtime_interrupt_1785541936927': Stop requested.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts an in-flight LLM turn without stopping the runtime
+AgentExternalEventNotifier (NotifierID: b58b27c4-0587-4f33-8743-5e64cfa714e1, AgentID: runtime_interrupt_1785541936927) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts an in-flight LLM turn without stopping the runtime
+AgentWorker 'runtime_interrupt_1785541936927' asyncRun() loop has finished.
+AgentWorker 'runtime_interrupt_1785541936927': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts an in-flight LLM turn without stopping the runtime
+AgentWorker 'runtime_interrupt_1785541936927': Shutdown resource cleanup completed successfully.
+AgentWorker 'runtime_interrupt_1785541936927': Shutdown sequence completed.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts an in-flight LLM turn without stopping the runtime
+Unregistered AgentContext for agent_id 'runtime_interrupt_1785541936927'.
+AgentRuntime for 'runtime_interrupt_1785541936927': Context unregistered.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts an in-flight LLM turn without stopping the runtime
+AgentRuntime for 'runtime_interrupt_1785541936927' stop() method completed.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > rejects restore without a strict v5 snapshot and leaves interruption raw evidence untouched
+AgentFactory (Singleton) initialized.
+AgentRuntimeState initialized for agent_id 'runtime_reset_interrupt_1785541936985'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'runtime_reset_interrupt_1785541936985': No tools provided in config.
+Agent 'runtime_reset_interrupt_1785541936985': LLM instance 'ControllableLLM' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'runtime_reset_interrupt_1785541936985'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'runtime_reset_interrupt_1785541936985' with config: 'RuntimeResetInterruptAgent'.
+AgentWorker initialized for agent_id 'runtime_reset_interrupt_1785541936985'.
+Registered AgentContext for agent_id 'runtime_reset_interrupt_1785541936985'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'runtime_reset_interrupt_1785541936985'. Context registered.
+Agent facade initialized for agent_id 'runtime_reset_interrupt_1785541936985'.
+Agent 'runtime_reset_interrupt_1785541936985' created and stored successfully.
+Agent 'runtime_reset_interrupt_1785541936985' requesting runtime to start.
+AgentRuntime for 'runtime_reset_interrupt_1785541936985': Starting worker.
+AgentWorker 'runtime_reset_interrupt_1785541936985': Starting...
+AgentWorker 'runtime_reset_interrupt_1785541936985' asyncRun(): Starting.
+Agent 'runtime_reset_interrupt_1785541936985': Runtime init completed (event store initialized).
+Agent 'runtime_reset_interrupt_1785541936985': Runtime init completed (status deriver initialized).
+Agent 'runtime_reset_interrupt_1785541936985': Runtime init completed (AgentEventInbox initialized).
+Agent 'runtime_reset_interrupt_1785541936985': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > rejects restore without a strict v5 snapshot and leaves interruption raw evidence untouched
+Agent 'runtime_reset_interrupt_1785541936985': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > rejects restore without a strict v5 snapshot and leaves interruption raw evidence untouched
+AgentExternalEventNotifier (NotifierID: cd9830af-fa94-4d8d-bea1-aa1ae578fa56, AgentID: runtime_reset_interrupt_1785541936985) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > rejects restore without a strict v5 snapshot and leaves interruption raw evidence untouched
+Agent 'runtime_reset_interrupt_1785541936985': Bootstrapper starting direct lifecycle execution.
+Agent 'runtime_reset_interrupt_1785541936985': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'runtime_reset_interrupt_1785541936985': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > rejects restore without a strict v5 snapshot and leaves interruption raw evidence untouched
+Agent 'runtime_reset_interrupt_1785541936985': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'runtime_reset_interrupt_1785541936985': Executing SystemPromptProcessingStep.
+Agent 'runtime_reset_interrupt_1785541936985': No configured skills. Skipping injection.
+Agent 'runtime_reset_interrupt_1785541936985': Final processed system prompt configured on LLM instance. Final length: 18.
+Agent 'runtime_reset_interrupt_1785541936985': Final processed system prompt:
+---
+BASE SYSTEM PROMPT
+---
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > rejects restore without a strict v5 snapshot and leaves interruption raw evidence untouched
+Agent 'runtime_reset_interrupt_1785541936985': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > rejects restore without a strict v5 snapshot and leaves interruption raw evidence untouched
+AgentExternalEventNotifier (NotifierID: cd9830af-fa94-4d8d-bea1-aa1ae578fa56, AgentID: runtime_reset_interrupt_1785541936985) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > rejects restore without a strict v5 snapshot and leaves interruption raw evidence untouched
+AgentWorker 'runtime_reset_interrupt_1785541936985' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > rejects restore without a strict v5 snapshot and leaves interruption raw evidence untouched
+AgentExternalEventNotifier (NotifierID: cd9830af-fa94-4d8d-bea1-aa1ae578fa56, AgentID: runtime_reset_interrupt_1785541936985) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > rejects restore without a strict v5 snapshot and leaves interruption raw evidence untouched
+AgentExternalEventNotifier (NotifierID: cd9830af-fa94-4d8d-bea1-aa1ae578fa56, AgentID: runtime_reset_interrupt_1785541936985) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > rejects restore without a strict v5 snapshot and leaves interruption raw evidence untouched
+AgentExternalEventNotifier (NotifierID: cd9830af-fa94-4d8d-bea1-aa1ae578fa56, AgentID: runtime_reset_interrupt_1785541936985) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > rejects restore without a strict v5 snapshot and leaves interruption raw evidence untouched
+Agent 'runtime_reset_interrupt_1785541936985' requesting runtime interrupt.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > rejects restore without a strict v5 snapshot and leaves interruption raw evidence untouched
+AgentExternalEventNotifier (NotifierID: cd9830af-fa94-4d8d-bea1-aa1ae578fa56, AgentID: runtime_reset_interrupt_1785541936985) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > rejects restore without a strict v5 snapshot and leaves interruption raw evidence untouched
+AgentExternalEventNotifier (NotifierID: cd9830af-fa94-4d8d-bea1-aa1ae578fa56, AgentID: runtime_reset_interrupt_1785541936985) emitted agent_turn_interrupted. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > rejects restore without a strict v5 snapshot and leaves interruption raw evidence untouched
+AgentExternalEventNotifier (NotifierID: cd9830af-fa94-4d8d-bea1-aa1ae578fa56, AgentID: runtime_reset_interrupt_1785541936985) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > rejects restore without a strict v5 snapshot and leaves interruption raw evidence untouched
+Removing agent 'runtime_reset_interrupt_1785541936985'. Attempting graceful shutdown.
+Agent 'runtime_reset_interrupt_1785541936985' requesting runtime to stop (timeout: 2s).
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > rejects restore without a strict v5 snapshot and leaves interruption raw evidence untouched
+AgentExternalEventNotifier (NotifierID: cd9830af-fa94-4d8d-bea1-aa1ae578fa56, AgentID: runtime_reset_interrupt_1785541936985) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > rejects restore without a strict v5 snapshot and leaves interruption raw evidence untouched
+AgentWorker 'runtime_reset_interrupt_1785541936985': Stop requested.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > rejects restore without a strict v5 snapshot and leaves interruption raw evidence untouched
+AgentWorker 'runtime_reset_interrupt_1785541936985': Drained 1 queued inbox event(s) during shutdown.
+AgentWorker 'runtime_reset_interrupt_1785541936985' asyncRun() loop has finished.
+AgentWorker 'runtime_reset_interrupt_1785541936985': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > rejects restore without a strict v5 snapshot and leaves interruption raw evidence untouched
+AgentWorker 'runtime_reset_interrupt_1785541936985': Shutdown resource cleanup completed successfully.
+AgentWorker 'runtime_reset_interrupt_1785541936985': Shutdown sequence completed.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > rejects restore without a strict v5 snapshot and leaves interruption raw evidence untouched
+AgentExternalEventNotifier (NotifierID: cd9830af-fa94-4d8d-bea1-aa1ae578fa56, AgentID: runtime_reset_interrupt_1785541936985) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > rejects restore without a strict v5 snapshot and leaves interruption raw evidence untouched
+Unregistered AgentContext for agent_id 'runtime_reset_interrupt_1785541936985'.
+AgentRuntime for 'runtime_reset_interrupt_1785541936985': Context unregistered.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > rejects restore without a strict v5 snapshot and leaves interruption raw evidence untouched
+AgentRuntime for 'runtime_reset_interrupt_1785541936985' stop() method completed.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > rejects restore without a strict v5 snapshot and leaves interruption raw evidence untouched
+AgentRuntimeState initialized for agent_id 'runtime_reset_interrupt_1785541936985'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'runtime_reset_interrupt_1785541936985': No tools provided in config.
+Agent 'runtime_reset_interrupt_1785541936985': LLM instance 'ControllableLLM' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'runtime_reset_interrupt_1785541936985'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'runtime_reset_interrupt_1785541936985' with config: 'RuntimeResetInterruptAgent'.
+AgentWorker initialized for agent_id 'runtime_reset_interrupt_1785541936985'.
+Registered AgentContext for agent_id 'runtime_reset_interrupt_1785541936985'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'runtime_reset_interrupt_1785541936985'. Context registered.
+Agent facade initialized for agent_id 'runtime_reset_interrupt_1785541936985'.
+Agent 'runtime_reset_interrupt_1785541936985' restored and stored successfully.
+Agent 'runtime_reset_interrupt_1785541936985' requesting runtime to start.
+AgentRuntime for 'runtime_reset_interrupt_1785541936985': Starting worker.
+AgentWorker 'runtime_reset_interrupt_1785541936985': Starting...
+AgentWorker 'runtime_reset_interrupt_1785541936985' asyncRun(): Starting.
+Agent 'runtime_reset_interrupt_1785541936985': Runtime init completed (event store initialized).
+Agent 'runtime_reset_interrupt_1785541936985': Runtime init completed (status deriver initialized).
+Agent 'runtime_reset_interrupt_1785541936985': Runtime init completed (AgentEventInbox initialized).
+Agent 'runtime_reset_interrupt_1785541936985': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > rejects restore without a strict v5 snapshot and leaves interruption raw evidence untouched
+Agent 'runtime_reset_interrupt_1785541936985': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > rejects restore without a strict v5 snapshot and leaves interruption raw evidence untouched
+AgentExternalEventNotifier (NotifierID: 5a56e168-d1c0-4768-a1b7-ec06d511cd2b, AgentID: runtime_reset_interrupt_1785541936985) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > rejects restore without a strict v5 snapshot and leaves interruption raw evidence untouched
+Agent 'runtime_reset_interrupt_1785541936985': Bootstrapper starting direct lifecycle execution.
+Agent 'runtime_reset_interrupt_1785541936985': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'runtime_reset_interrupt_1785541936985': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > rejects restore without a strict v5 snapshot and leaves interruption raw evidence untouched
+Agent 'runtime_reset_interrupt_1785541936985': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'runtime_reset_interrupt_1785541936985': Executing SystemPromptProcessingStep.
+Agent 'runtime_reset_interrupt_1785541936985': No configured skills. Skipping injection.
+Agent 'runtime_reset_interrupt_1785541936985': Final processed system prompt configured on LLM instance. Final length: 18.
+Agent 'runtime_reset_interrupt_1785541936985': Final processed system prompt:
+---
+BASE SYSTEM PROMPT
+---
+
+stderr | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > rejects restore without a strict v5 snapshot and leaves interruption raw evidence untouched
+WorkingContextSnapshotRestoreStep failed: Error: Explicit WorkingContext restore requires a strict v5 snapshot for agent 'runtime_reset_interrupt_1785541936985'.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > rejects restore without a strict v5 snapshot and leaves interruption raw evidence untouched
+Agent 'runtime_reset_interrupt_1785541936985': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stderr | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > rejects restore without a strict v5 snapshot and leaves interruption raw evidence untouched
+Agent 'runtime_reset_interrupt_1785541936985': Bootstrap step WorkingContextSnapshotRestoreStep failed.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > rejects restore without a strict v5 snapshot and leaves interruption raw evidence untouched
+AgentExternalEventNotifier (NotifierID: 5a56e168-d1c0-4768-a1b7-ec06d511cd2b, AgentID: runtime_reset_interrupt_1785541936985) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stderr | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > rejects restore without a strict v5 snapshot and leaves interruption raw evidence untouched
+AgentWorker 'runtime_reset_interrupt_1785541936985' failed to initialize. Worker is shutting down.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > rejects restore without a strict v5 snapshot and leaves interruption raw evidence untouched
+AgentWorker 'runtime_reset_interrupt_1785541936985' asyncRun() loop has finished.
+AgentWorker 'runtime_reset_interrupt_1785541936985': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > rejects restore without a strict v5 snapshot and leaves interruption raw evidence untouched
+AgentWorker 'runtime_reset_interrupt_1785541936985': Shutdown resource cleanup completed successfully.
+AgentWorker 'runtime_reset_interrupt_1785541936985': Shutdown sequence completed.
+
+ ✓ tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > keeps a later external user message queued while one AgentTurnRunner is active 164ms
+ ✓ tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts an in-flight LLM turn without stopping the runtime 58ms
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > rejects restore without a strict v5 snapshot and leaves interruption raw evidence untouched
+Removing agent 'runtime_reset_interrupt_1785541936985'. Attempting graceful shutdown.
+Agent 'runtime_reset_interrupt_1785541936985' requesting runtime to stop (timeout: 2s).
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains interrupted streamed assistant text while fencing partial native tool payloads
+AgentRuntimeState initialized for agent_id 'runtime_segment_interrupt_1785541937064'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'runtime_segment_interrupt_1785541937064'. Config and State linked.
+AgentWorker initialized for agent_id 'runtime_segment_interrupt_1785541937064'.
+Registered AgentContext for agent_id 'runtime_segment_interrupt_1785541937064'. Total registered contexts: 2
+AgentRuntime initialized for agent_id 'runtime_segment_interrupt_1785541937064'. Context registered.
+AgentRuntime for 'runtime_segment_interrupt_1785541937064': Starting worker.
+AgentWorker 'runtime_segment_interrupt_1785541937064': Starting...
+AgentWorker 'runtime_segment_interrupt_1785541937064' asyncRun(): Starting.
+Agent 'runtime_segment_interrupt_1785541937064': Runtime init completed (event store initialized).
+Agent 'runtime_segment_interrupt_1785541937064': Runtime init completed (status deriver initialized).
+Agent 'runtime_segment_interrupt_1785541937064': Runtime init completed (AgentEventInbox initialized).
+Agent 'runtime_segment_interrupt_1785541937064': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains interrupted streamed assistant text while fencing partial native tool payloads
+Agent 'runtime_segment_interrupt_1785541937064': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains interrupted streamed assistant text while fencing partial native tool payloads
+AgentExternalEventNotifier (NotifierID: 1f1e304f-3174-41a0-88f8-bd8ddc82a1e5, AgentID: runtime_segment_interrupt_1785541937064) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains interrupted streamed assistant text while fencing partial native tool payloads
+Agent 'runtime_segment_interrupt_1785541937064': Bootstrapper starting direct lifecycle execution.
+Agent 'runtime_segment_interrupt_1785541937064': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'runtime_segment_interrupt_1785541937064': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains interrupted streamed assistant text while fencing partial native tool payloads
+Agent 'runtime_segment_interrupt_1785541937064': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'runtime_segment_interrupt_1785541937064': Executing SystemPromptProcessingStep.
+Agent 'runtime_segment_interrupt_1785541937064': No configured skills. Skipping injection.
+Agent 'runtime_segment_interrupt_1785541937064': Final processed system prompt configured on LLM instance. Final length: 28.
+Agent 'runtime_segment_interrupt_1785541937064': Final processed system prompt:
+---
+You are a helpful assistant.
+---
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains interrupted streamed assistant text while fencing partial native tool payloads
+Agent 'runtime_segment_interrupt_1785541937064': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains interrupted streamed assistant text while fencing partial native tool payloads
+AgentExternalEventNotifier (NotifierID: 1f1e304f-3174-41a0-88f8-bd8ddc82a1e5, AgentID: runtime_segment_interrupt_1785541937064) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains interrupted streamed assistant text while fencing partial native tool payloads
+AgentWorker 'runtime_segment_interrupt_1785541937064' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains interrupted streamed assistant text while fencing partial native tool payloads
+AgentExternalEventNotifier (NotifierID: 1f1e304f-3174-41a0-88f8-bd8ddc82a1e5, AgentID: runtime_segment_interrupt_1785541937064) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains interrupted streamed assistant text while fencing partial native tool payloads
+AgentExternalEventNotifier (NotifierID: 1f1e304f-3174-41a0-88f8-bd8ddc82a1e5, AgentID: runtime_segment_interrupt_1785541937064) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains interrupted streamed assistant text while fencing partial native tool payloads
+AgentExternalEventNotifier (NotifierID: 1f1e304f-3174-41a0-88f8-bd8ddc82a1e5, AgentID: runtime_segment_interrupt_1785541937064) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stderr | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains interrupted streamed assistant text while fencing partial native tool payloads
+Tool 'approval_tool' not found in registry.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains interrupted streamed assistant text while fencing partial native tool payloads
+AgentExternalEventNotifier (NotifierID: 1f1e304f-3174-41a0-88f8-bd8ddc82a1e5, AgentID: runtime_segment_interrupt_1785541937064) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains interrupted streamed assistant text while fencing partial native tool payloads
+AgentExternalEventNotifier (NotifierID: 1f1e304f-3174-41a0-88f8-bd8ddc82a1e5, AgentID: runtime_segment_interrupt_1785541937064) emitted agent_turn_interrupted. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains interrupted streamed assistant text while fencing partial native tool payloads
+AgentExternalEventNotifier (NotifierID: 1f1e304f-3174-41a0-88f8-bd8ddc82a1e5, AgentID: runtime_segment_interrupt_1785541937064) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains interrupted streamed assistant text while fencing partial native tool payloads
+AgentExternalEventNotifier (NotifierID: 1f1e304f-3174-41a0-88f8-bd8ddc82a1e5, AgentID: runtime_segment_interrupt_1785541937064) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains interrupted streamed assistant text while fencing partial native tool payloads
+AgentExternalEventNotifier (NotifierID: 1f1e304f-3174-41a0-88f8-bd8ddc82a1e5, AgentID: runtime_segment_interrupt_1785541937064) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains interrupted streamed assistant text while fencing partial native tool payloads
+AgentExternalEventNotifier (NotifierID: 1f1e304f-3174-41a0-88f8-bd8ddc82a1e5, AgentID: runtime_segment_interrupt_1785541937064) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stderr | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains interrupted streamed assistant text while fencing partial native tool payloads
+Tool 'approval_tool' not found in registry.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains interrupted streamed assistant text while fencing partial native tool payloads
+compaction_budget_skipped_no_usage {
+  agent_id: 'runtime_segment_interrupt_1785541937064',
+  turn_id: 'turn_0002',
+  reason: 'missing_usage'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains interrupted streamed assistant text while fencing partial native tool payloads
+AgentExternalEventNotifier (NotifierID: 1f1e304f-3174-41a0-88f8-bd8ddc82a1e5, AgentID: runtime_segment_interrupt_1785541937064) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains interrupted streamed assistant text while fencing partial native tool payloads
+AgentExternalEventNotifier (NotifierID: 1f1e304f-3174-41a0-88f8-bd8ddc82a1e5, AgentID: runtime_segment_interrupt_1785541937064) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains interrupted streamed assistant text while fencing partial native tool payloads
+AgentExternalEventNotifier (NotifierID: 1f1e304f-3174-41a0-88f8-bd8ddc82a1e5, AgentID: runtime_segment_interrupt_1785541937064) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains interrupted streamed assistant text while fencing partial native tool payloads
+AgentExternalEventNotifier (NotifierID: 1f1e304f-3174-41a0-88f8-bd8ddc82a1e5, AgentID: runtime_segment_interrupt_1785541937064) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains interrupted streamed assistant text while fencing partial native tool payloads
+AgentExternalEventNotifier (NotifierID: 1f1e304f-3174-41a0-88f8-bd8ddc82a1e5, AgentID: runtime_segment_interrupt_1785541937064) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains interrupted streamed assistant text while fencing partial native tool payloads
+AgentWorker 'runtime_segment_interrupt_1785541937064': Stop requested.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains interrupted streamed assistant text while fencing partial native tool payloads
+AgentExternalEventNotifier (NotifierID: 1f1e304f-3174-41a0-88f8-bd8ddc82a1e5, AgentID: runtime_segment_interrupt_1785541937064) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains interrupted streamed assistant text while fencing partial native tool payloads
+AgentWorker 'runtime_segment_interrupt_1785541937064' asyncRun() loop has finished.
+AgentWorker 'runtime_segment_interrupt_1785541937064': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains interrupted streamed assistant text while fencing partial native tool payloads
+AgentWorker 'runtime_segment_interrupt_1785541937064': Shutdown resource cleanup completed successfully.
+AgentWorker 'runtime_segment_interrupt_1785541937064': Shutdown sequence completed.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains interrupted streamed assistant text while fencing partial native tool payloads
+Unregistered AgentContext for agent_id 'runtime_segment_interrupt_1785541937064'.
+AgentRuntime for 'runtime_segment_interrupt_1785541937064': Context unregistered.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains interrupted streamed assistant text while fencing partial native tool payloads
+AgentRuntime for 'runtime_segment_interrupt_1785541937064' stop() method completed.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > closes active streamed text and tool segments as failed when LLM stream throws
+AgentRuntimeState initialized for agent_id 'runtime_segment_failure_1785541937127'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'runtime_segment_failure_1785541937127'. Config and State linked.
+AgentWorker initialized for agent_id 'runtime_segment_failure_1785541937127'.
+Registered AgentContext for agent_id 'runtime_segment_failure_1785541937127'. Total registered contexts: 2
+AgentRuntime initialized for agent_id 'runtime_segment_failure_1785541937127'. Context registered.
+AgentRuntime for 'runtime_segment_failure_1785541937127': Starting worker.
+AgentWorker 'runtime_segment_failure_1785541937127': Starting...
+AgentWorker 'runtime_segment_failure_1785541937127' asyncRun(): Starting.
+Agent 'runtime_segment_failure_1785541937127': Runtime init completed (event store initialized).
+Agent 'runtime_segment_failure_1785541937127': Runtime init completed (status deriver initialized).
+Agent 'runtime_segment_failure_1785541937127': Runtime init completed (AgentEventInbox initialized).
+Agent 'runtime_segment_failure_1785541937127': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > closes active streamed text and tool segments as failed when LLM stream throws
+Agent 'runtime_segment_failure_1785541937127': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > closes active streamed text and tool segments as failed when LLM stream throws
+AgentExternalEventNotifier (NotifierID: f68bc6a8-95c0-4524-b563-e3d0a545d916, AgentID: runtime_segment_failure_1785541937127) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > closes active streamed text and tool segments as failed when LLM stream throws
+Agent 'runtime_segment_failure_1785541937127': Bootstrapper starting direct lifecycle execution.
+Agent 'runtime_segment_failure_1785541937127': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'runtime_segment_failure_1785541937127': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > closes active streamed text and tool segments as failed when LLM stream throws
+Agent 'runtime_segment_failure_1785541937127': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'runtime_segment_failure_1785541937127': Executing SystemPromptProcessingStep.
+Agent 'runtime_segment_failure_1785541937127': No configured skills. Skipping injection.
+Agent 'runtime_segment_failure_1785541937127': Final processed system prompt configured on LLM instance. Final length: 28.
+Agent 'runtime_segment_failure_1785541937127': Final processed system prompt:
+---
+You are a helpful assistant.
+---
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > closes active streamed text and tool segments as failed when LLM stream throws
+Agent 'runtime_segment_failure_1785541937127': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > closes active streamed text and tool segments as failed when LLM stream throws
+AgentExternalEventNotifier (NotifierID: f68bc6a8-95c0-4524-b563-e3d0a545d916, AgentID: runtime_segment_failure_1785541937127) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > closes active streamed text and tool segments as failed when LLM stream throws
+AgentWorker 'runtime_segment_failure_1785541937127' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > closes active streamed text and tool segments as failed when LLM stream throws
+AgentExternalEventNotifier (NotifierID: f68bc6a8-95c0-4524-b563-e3d0a545d916, AgentID: runtime_segment_failure_1785541937127) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > closes active streamed text and tool segments as failed when LLM stream throws
+AgentExternalEventNotifier (NotifierID: f68bc6a8-95c0-4524-b563-e3d0a545d916, AgentID: runtime_segment_failure_1785541937127) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > closes active streamed text and tool segments as failed when LLM stream throws
+AgentExternalEventNotifier (NotifierID: f68bc6a8-95c0-4524-b563-e3d0a545d916, AgentID: runtime_segment_failure_1785541937127) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stderr | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > closes active streamed text and tool segments as failed when LLM stream throws
+Tool 'approval_tool' not found in registry.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > closes active streamed text and tool segments as failed when LLM stream throws
+AgentExternalEventNotifier (NotifierID: f68bc6a8-95c0-4524-b563-e3d0a545d916, AgentID: runtime_segment_failure_1785541937127) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > closes active streamed text and tool segments as failed when LLM stream throws
+AgentExternalEventNotifier (NotifierID: f68bc6a8-95c0-4524-b563-e3d0a545d916, AgentID: runtime_segment_failure_1785541937127) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > closes active streamed text and tool segments as failed when LLM stream throws
+AgentExternalEventNotifier (NotifierID: f68bc6a8-95c0-4524-b563-e3d0a545d916, AgentID: runtime_segment_failure_1785541937127) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > closes active streamed text and tool segments as failed when LLM stream throws
+AgentExternalEventNotifier (NotifierID: f68bc6a8-95c0-4524-b563-e3d0a545d916, AgentID: runtime_segment_failure_1785541937127) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > closes active streamed text and tool segments as failed when LLM stream throws
+AgentExternalEventNotifier (NotifierID: f68bc6a8-95c0-4524-b563-e3d0a545d916, AgentID: runtime_segment_failure_1785541937127) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+ ✓ tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > rejects restore without a strict v5 snapshot and leaves interruption raw evidence untouched 80ms
+ ✓ tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains interrupted streamed assistant text while fencing partial native tool payloads 62ms
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > closes active streamed text and tool segments as failed when LLM stream throws
+AgentExternalEventNotifier (NotifierID: f68bc6a8-95c0-4524-b563-e3d0a545d916, AgentID: runtime_segment_failure_1785541937127) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > closes active streamed text and tool segments as failed when LLM stream throws
+AgentWorker 'runtime_segment_failure_1785541937127': Stop requested.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > closes active streamed text and tool segments as failed when LLM stream throws
+AgentExternalEventNotifier (NotifierID: f68bc6a8-95c0-4524-b563-e3d0a545d916, AgentID: runtime_segment_failure_1785541937127) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > closes active streamed text and tool segments as failed when LLM stream throws
+AgentWorker 'runtime_segment_failure_1785541937127' asyncRun() loop has finished.
+AgentWorker 'runtime_segment_failure_1785541937127': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > closes active streamed text and tool segments as failed when LLM stream throws
+AgentWorker 'runtime_segment_failure_1785541937127': Shutdown resource cleanup completed successfully.
+AgentWorker 'runtime_segment_failure_1785541937127': Shutdown sequence completed.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > closes active streamed text and tool segments as failed when LLM stream throws
+Unregistered AgentContext for agent_id 'runtime_segment_failure_1785541937127'.
+AgentRuntime for 'runtime_segment_failure_1785541937127': Context unregistered.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > closes active streamed text and tool segments as failed when LLM stream throws
+AgentRuntime for 'runtime_segment_failure_1785541937127' stop() method completed.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts pending tool approval with a terminal tool lifecycle and memory-owned provider-safe context
+AgentRuntimeState initialized for agent_id 'runtime_approval_interrupt_1785541937182'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'runtime_approval_interrupt_1785541937182'. Config and State linked.
+AgentWorker initialized for agent_id 'runtime_approval_interrupt_1785541937182'.
+Registered AgentContext for agent_id 'runtime_approval_interrupt_1785541937182'. Total registered contexts: 2
+AgentRuntime initialized for agent_id 'runtime_approval_interrupt_1785541937182'. Context registered.
+AgentRuntime for 'runtime_approval_interrupt_1785541937182': Starting worker.
+AgentWorker 'runtime_approval_interrupt_1785541937182': Starting...
+AgentWorker 'runtime_approval_interrupt_1785541937182' asyncRun(): Starting.
+Agent 'runtime_approval_interrupt_1785541937182': Runtime init completed (event store initialized).
+Agent 'runtime_approval_interrupt_1785541937182': Runtime init completed (status deriver initialized).
+Agent 'runtime_approval_interrupt_1785541937182': Runtime init completed (AgentEventInbox initialized).
+Agent 'runtime_approval_interrupt_1785541937182': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts pending tool approval with a terminal tool lifecycle and memory-owned provider-safe context
+Agent 'runtime_approval_interrupt_1785541937182': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts pending tool approval with a terminal tool lifecycle and memory-owned provider-safe context
+AgentExternalEventNotifier (NotifierID: 45fec1ff-e749-482d-b14a-2981157b3603, AgentID: runtime_approval_interrupt_1785541937182) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts pending tool approval with a terminal tool lifecycle and memory-owned provider-safe context
+Agent 'runtime_approval_interrupt_1785541937182': Bootstrapper starting direct lifecycle execution.
+Agent 'runtime_approval_interrupt_1785541937182': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'runtime_approval_interrupt_1785541937182': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts pending tool approval with a terminal tool lifecycle and memory-owned provider-safe context
+Agent 'runtime_approval_interrupt_1785541937182': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'runtime_approval_interrupt_1785541937182': Executing SystemPromptProcessingStep.
+Agent 'runtime_approval_interrupt_1785541937182': No configured skills. Skipping injection.
+Agent 'runtime_approval_interrupt_1785541937182': Final processed system prompt configured on LLM instance. Final length: 28.
+Agent 'runtime_approval_interrupt_1785541937182': Final processed system prompt:
+---
+You are a helpful assistant.
+---
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts pending tool approval with a terminal tool lifecycle and memory-owned provider-safe context
+Agent 'runtime_approval_interrupt_1785541937182': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts pending tool approval with a terminal tool lifecycle and memory-owned provider-safe context
+AgentExternalEventNotifier (NotifierID: 45fec1ff-e749-482d-b14a-2981157b3603, AgentID: runtime_approval_interrupt_1785541937182) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts pending tool approval with a terminal tool lifecycle and memory-owned provider-safe context
+AgentWorker 'runtime_approval_interrupt_1785541937182' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts pending tool approval with a terminal tool lifecycle and memory-owned provider-safe context
+AgentExternalEventNotifier (NotifierID: 45fec1ff-e749-482d-b14a-2981157b3603, AgentID: runtime_approval_interrupt_1785541937182) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts pending tool approval with a terminal tool lifecycle and memory-owned provider-safe context
+AgentExternalEventNotifier (NotifierID: 45fec1ff-e749-482d-b14a-2981157b3603, AgentID: runtime_approval_interrupt_1785541937182) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts pending tool approval with a terminal tool lifecycle and memory-owned provider-safe context
+AgentExternalEventNotifier (NotifierID: 45fec1ff-e749-482d-b14a-2981157b3603, AgentID: runtime_approval_interrupt_1785541937182) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stderr | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts pending tool approval with a terminal tool lifecycle and memory-owned provider-safe context
+Tool 'approval_tool' not found in registry.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts pending tool approval with a terminal tool lifecycle and memory-owned provider-safe context
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+compaction_budget_skipped_no_usage {
+  agent_id: 'runtime_approval_interrupt_1785541937182',
+  turn_id: 'turn_0001',
+  reason: 'missing_usage'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts pending tool approval with a terminal tool lifecycle and memory-owned provider-safe context
+AgentExternalEventNotifier (NotifierID: 45fec1ff-e749-482d-b14a-2981157b3603, AgentID: runtime_approval_interrupt_1785541937182) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts pending tool approval with a terminal tool lifecycle and memory-owned provider-safe context
+Agent 'runtime_approval_interrupt_1785541937182': Stored pending tool invocation 'call_approval_1' (approval_tool).
+AgentExternalEventNotifier (NotifierID: 45fec1ff-e749-482d-b14a-2981157b3603, AgentID: runtime_approval_interrupt_1785541937182) emitted agent_tool_approval_requested. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts pending tool approval with a terminal tool lifecycle and memory-owned provider-safe context
+AgentExternalEventNotifier (NotifierID: 45fec1ff-e749-482d-b14a-2981157b3603, AgentID: runtime_approval_interrupt_1785541937182) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts pending tool approval with a terminal tool lifecycle and memory-owned provider-safe context
+AgentExternalEventNotifier (NotifierID: 45fec1ff-e749-482d-b14a-2981157b3603, AgentID: runtime_approval_interrupt_1785541937182) emitted agent_tool_execution_interrupted. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 45fec1ff-e749-482d-b14a-2981157b3603, AgentID: runtime_approval_interrupt_1785541937182) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts pending tool approval with a terminal tool lifecycle and memory-owned provider-safe context
+AgentExternalEventNotifier (NotifierID: 45fec1ff-e749-482d-b14a-2981157b3603, AgentID: runtime_approval_interrupt_1785541937182) emitted agent_turn_interrupted. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts pending tool approval with a terminal tool lifecycle and memory-owned provider-safe context
+AgentExternalEventNotifier (NotifierID: 45fec1ff-e749-482d-b14a-2981157b3603, AgentID: runtime_approval_interrupt_1785541937182) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+ ✓ tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > closes active streamed text and tool segments as failed when LLM stream throws 56ms
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts pending tool approval with a terminal tool lifecycle and memory-owned provider-safe context
+AgentExternalEventNotifier (NotifierID: 45fec1ff-e749-482d-b14a-2981157b3603, AgentID: runtime_approval_interrupt_1785541937182) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts pending tool approval with a terminal tool lifecycle and memory-owned provider-safe context
+AgentExternalEventNotifier (NotifierID: 45fec1ff-e749-482d-b14a-2981157b3603, AgentID: runtime_approval_interrupt_1785541937182) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts pending tool approval with a terminal tool lifecycle and memory-owned provider-safe context
+AgentExternalEventNotifier (NotifierID: 45fec1ff-e749-482d-b14a-2981157b3603, AgentID: runtime_approval_interrupt_1785541937182) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stderr | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts pending tool approval with a terminal tool lifecycle and memory-owned provider-safe context
+Tool 'approval_tool' not found in registry.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts pending tool approval with a terminal tool lifecycle and memory-owned provider-safe context
+compaction_budget_skipped_no_usage {
+  agent_id: 'runtime_approval_interrupt_1785541937182',
+  turn_id: 'turn_0002',
+  reason: 'missing_usage'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts pending tool approval with a terminal tool lifecycle and memory-owned provider-safe context
+AgentExternalEventNotifier (NotifierID: 45fec1ff-e749-482d-b14a-2981157b3603, AgentID: runtime_approval_interrupt_1785541937182) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts pending tool approval with a terminal tool lifecycle and memory-owned provider-safe context
+AgentExternalEventNotifier (NotifierID: 45fec1ff-e749-482d-b14a-2981157b3603, AgentID: runtime_approval_interrupt_1785541937182) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts pending tool approval with a terminal tool lifecycle and memory-owned provider-safe context
+AgentExternalEventNotifier (NotifierID: 45fec1ff-e749-482d-b14a-2981157b3603, AgentID: runtime_approval_interrupt_1785541937182) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts pending tool approval with a terminal tool lifecycle and memory-owned provider-safe context
+AgentExternalEventNotifier (NotifierID: 45fec1ff-e749-482d-b14a-2981157b3603, AgentID: runtime_approval_interrupt_1785541937182) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts pending tool approval with a terminal tool lifecycle and memory-owned provider-safe context
+AgentExternalEventNotifier (NotifierID: 45fec1ff-e749-482d-b14a-2981157b3603, AgentID: runtime_approval_interrupt_1785541937182) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts pending tool approval with a terminal tool lifecycle and memory-owned provider-safe context
+AgentWorker 'runtime_approval_interrupt_1785541937182': Stop requested.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts pending tool approval with a terminal tool lifecycle and memory-owned provider-safe context
+AgentExternalEventNotifier (NotifierID: 45fec1ff-e749-482d-b14a-2981157b3603, AgentID: runtime_approval_interrupt_1785541937182) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts pending tool approval with a terminal tool lifecycle and memory-owned provider-safe context
+AgentWorker 'runtime_approval_interrupt_1785541937182' asyncRun() loop has finished.
+AgentWorker 'runtime_approval_interrupt_1785541937182': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts pending tool approval with a terminal tool lifecycle and memory-owned provider-safe context
+AgentWorker 'runtime_approval_interrupt_1785541937182': Shutdown resource cleanup completed successfully.
+AgentWorker 'runtime_approval_interrupt_1785541937182': Shutdown sequence completed.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts pending tool approval with a terminal tool lifecycle and memory-owned provider-safe context
+Unregistered AgentContext for agent_id 'runtime_approval_interrupt_1785541937182'.
+AgentRuntime for 'runtime_approval_interrupt_1785541937182': Context unregistered.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts pending tool approval with a terminal tool lifecycle and memory-owned provider-safe context
+AgentRuntime for 'runtime_approval_interrupt_1785541937182' stop() method completed.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains completed tool result facts when a later tool in the batch is interrupted
+AgentRuntimeState initialized for agent_id 'runtime_partial_tool_interrupt_1785541937331'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'runtime_partial_tool_interrupt_1785541937331'. Config and State linked.
+AgentWorker initialized for agent_id 'runtime_partial_tool_interrupt_1785541937331'.
+Registered AgentContext for agent_id 'runtime_partial_tool_interrupt_1785541937331'. Total registered contexts: 2
+AgentRuntime initialized for agent_id 'runtime_partial_tool_interrupt_1785541937331'. Context registered.
+AgentRuntime for 'runtime_partial_tool_interrupt_1785541937331': Starting worker.
+AgentWorker 'runtime_partial_tool_interrupt_1785541937331': Starting...
+AgentWorker 'runtime_partial_tool_interrupt_1785541937331' asyncRun(): Starting.
+Agent 'runtime_partial_tool_interrupt_1785541937331': Runtime init completed (event store initialized).
+Agent 'runtime_partial_tool_interrupt_1785541937331': Runtime init completed (status deriver initialized).
+Agent 'runtime_partial_tool_interrupt_1785541937331': Runtime init completed (AgentEventInbox initialized).
+Agent 'runtime_partial_tool_interrupt_1785541937331': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains completed tool result facts when a later tool in the batch is interrupted
+Agent 'runtime_partial_tool_interrupt_1785541937331': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains completed tool result facts when a later tool in the batch is interrupted
+AgentExternalEventNotifier (NotifierID: 42a064bc-d3af-456f-a568-779f91d3c5a0, AgentID: runtime_partial_tool_interrupt_1785541937331) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains completed tool result facts when a later tool in the batch is interrupted
+Agent 'runtime_partial_tool_interrupt_1785541937331': Bootstrapper starting direct lifecycle execution.
+Agent 'runtime_partial_tool_interrupt_1785541937331': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'runtime_partial_tool_interrupt_1785541937331': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains completed tool result facts when a later tool in the batch is interrupted
+Agent 'runtime_partial_tool_interrupt_1785541937331': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'runtime_partial_tool_interrupt_1785541937331': Executing SystemPromptProcessingStep.
+Agent 'runtime_partial_tool_interrupt_1785541937331': No configured skills. Skipping injection.
+Agent 'runtime_partial_tool_interrupt_1785541937331': Final processed system prompt configured on LLM instance. Final length: 28.
+Agent 'runtime_partial_tool_interrupt_1785541937331': Final processed system prompt:
+---
+You are a helpful assistant.
+---
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains completed tool result facts when a later tool in the batch is interrupted
+Agent 'runtime_partial_tool_interrupt_1785541937331': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains completed tool result facts when a later tool in the batch is interrupted
+AgentExternalEventNotifier (NotifierID: 42a064bc-d3af-456f-a568-779f91d3c5a0, AgentID: runtime_partial_tool_interrupt_1785541937331) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains completed tool result facts when a later tool in the batch is interrupted
+AgentWorker 'runtime_partial_tool_interrupt_1785541937331' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains completed tool result facts when a later tool in the batch is interrupted
+AgentExternalEventNotifier (NotifierID: 42a064bc-d3af-456f-a568-779f91d3c5a0, AgentID: runtime_partial_tool_interrupt_1785541937331) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains completed tool result facts when a later tool in the batch is interrupted
+AgentExternalEventNotifier (NotifierID: 42a064bc-d3af-456f-a568-779f91d3c5a0, AgentID: runtime_partial_tool_interrupt_1785541937331) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains completed tool result facts when a later tool in the batch is interrupted
+AgentExternalEventNotifier (NotifierID: 42a064bc-d3af-456f-a568-779f91d3c5a0, AgentID: runtime_partial_tool_interrupt_1785541937331) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stderr | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains completed tool result facts when a later tool in the batch is interrupted
+Tool 'safe_fact_tool' not found in registry.
+Tool 'blocking_tool' not found in registry.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains completed tool result facts when a later tool in the batch is interrupted
+ApiToolCallStreamingResponseHandler finalized 2 tool invocations.
+compaction_budget_skipped_no_usage {
+  agent_id: 'runtime_partial_tool_interrupt_1785541937331',
+  turn_id: 'turn_0001',
+  reason: 'missing_usage'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains completed tool result facts when a later tool in the batch is interrupted
+AgentExternalEventNotifier (NotifierID: 42a064bc-d3af-456f-a568-779f91d3c5a0, AgentID: runtime_partial_tool_interrupt_1785541937331) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains completed tool result facts when a later tool in the batch is interrupted
+AgentExternalEventNotifier (NotifierID: 42a064bc-d3af-456f-a568-779f91d3c5a0, AgentID: runtime_partial_tool_interrupt_1785541937331) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 42a064bc-d3af-456f-a568-779f91d3c5a0, AgentID: runtime_partial_tool_interrupt_1785541937331) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains completed tool result facts when a later tool in the batch is interrupted
+AgentExternalEventNotifier (NotifierID: 42a064bc-d3af-456f-a568-779f91d3c5a0, AgentID: runtime_partial_tool_interrupt_1785541937331) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains completed tool result facts when a later tool in the batch is interrupted
+AgentExternalEventNotifier (NotifierID: 42a064bc-d3af-456f-a568-779f91d3c5a0, AgentID: runtime_partial_tool_interrupt_1785541937331) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 42a064bc-d3af-456f-a568-779f91d3c5a0, AgentID: runtime_partial_tool_interrupt_1785541937331) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains completed tool result facts when a later tool in the batch is interrupted
+AgentExternalEventNotifier (NotifierID: 42a064bc-d3af-456f-a568-779f91d3c5a0, AgentID: runtime_partial_tool_interrupt_1785541937331) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains completed tool result facts when a later tool in the batch is interrupted
+AgentExternalEventNotifier (NotifierID: 42a064bc-d3af-456f-a568-779f91d3c5a0, AgentID: runtime_partial_tool_interrupt_1785541937331) emitted agent_tool_execution_interrupted. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 42a064bc-d3af-456f-a568-779f91d3c5a0, AgentID: runtime_partial_tool_interrupt_1785541937331) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains completed tool result facts when a later tool in the batch is interrupted
+AgentExternalEventNotifier (NotifierID: 42a064bc-d3af-456f-a568-779f91d3c5a0, AgentID: runtime_partial_tool_interrupt_1785541937331) emitted agent_turn_interrupted. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains completed tool result facts when a later tool in the batch is interrupted
+AgentExternalEventNotifier (NotifierID: 42a064bc-d3af-456f-a568-779f91d3c5a0, AgentID: runtime_partial_tool_interrupt_1785541937331) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains completed tool result facts when a later tool in the batch is interrupted
+AgentExternalEventNotifier (NotifierID: 42a064bc-d3af-456f-a568-779f91d3c5a0, AgentID: runtime_partial_tool_interrupt_1785541937331) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains completed tool result facts when a later tool in the batch is interrupted
+AgentExternalEventNotifier (NotifierID: 42a064bc-d3af-456f-a568-779f91d3c5a0, AgentID: runtime_partial_tool_interrupt_1785541937331) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains completed tool result facts when a later tool in the batch is interrupted
+AgentExternalEventNotifier (NotifierID: 42a064bc-d3af-456f-a568-779f91d3c5a0, AgentID: runtime_partial_tool_interrupt_1785541937331) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stderr | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains completed tool result facts when a later tool in the batch is interrupted
+Tool 'safe_fact_tool' not found in registry.
+Tool 'blocking_tool' not found in registry.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains completed tool result facts when a later tool in the batch is interrupted
+compaction_budget_skipped_no_usage {
+  agent_id: 'runtime_partial_tool_interrupt_1785541937331',
+  turn_id: 'turn_0002',
+  reason: 'missing_usage'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains completed tool result facts when a later tool in the batch is interrupted
+AgentExternalEventNotifier (NotifierID: 42a064bc-d3af-456f-a568-779f91d3c5a0, AgentID: runtime_partial_tool_interrupt_1785541937331) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains completed tool result facts when a later tool in the batch is interrupted
+AgentExternalEventNotifier (NotifierID: 42a064bc-d3af-456f-a568-779f91d3c5a0, AgentID: runtime_partial_tool_interrupt_1785541937331) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains completed tool result facts when a later tool in the batch is interrupted
+AgentExternalEventNotifier (NotifierID: 42a064bc-d3af-456f-a568-779f91d3c5a0, AgentID: runtime_partial_tool_interrupt_1785541937331) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains completed tool result facts when a later tool in the batch is interrupted
+AgentExternalEventNotifier (NotifierID: 42a064bc-d3af-456f-a568-779f91d3c5a0, AgentID: runtime_partial_tool_interrupt_1785541937331) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains completed tool result facts when a later tool in the batch is interrupted
+AgentExternalEventNotifier (NotifierID: 42a064bc-d3af-456f-a568-779f91d3c5a0, AgentID: runtime_partial_tool_interrupt_1785541937331) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains completed tool result facts when a later tool in the batch is interrupted
+AgentWorker 'runtime_partial_tool_interrupt_1785541937331': Stop requested.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains completed tool result facts when a later tool in the batch is interrupted
+AgentExternalEventNotifier (NotifierID: 42a064bc-d3af-456f-a568-779f91d3c5a0, AgentID: runtime_partial_tool_interrupt_1785541937331) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains completed tool result facts when a later tool in the batch is interrupted
+AgentWorker 'runtime_partial_tool_interrupt_1785541937331' asyncRun() loop has finished.
+AgentWorker 'runtime_partial_tool_interrupt_1785541937331': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains completed tool result facts when a later tool in the batch is interrupted
+AgentWorker 'runtime_partial_tool_interrupt_1785541937331': Shutdown resource cleanup completed successfully.
+AgentWorker 'runtime_partial_tool_interrupt_1785541937331': Shutdown sequence completed.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains completed tool result facts when a later tool in the batch is interrupted
+Unregistered AgentContext for agent_id 'runtime_partial_tool_interrupt_1785541937331'.
+AgentRuntime for 'runtime_partial_tool_interrupt_1785541937331': Context unregistered.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains completed tool result facts when a later tool in the batch is interrupted
+AgentRuntime for 'runtime_partial_tool_interrupt_1785541937331' stop() method completed.
+
+ ✓ tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > interrupts pending tool approval with a terminal tool lifecycle and memory-owned provider-safe context 147ms
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > routes an external async tool result through inbox dispatch into ToolPhase continuation
+AgentRuntimeState initialized for agent_id 'runtime_external_tool_result_1785541937428'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'runtime_external_tool_result_1785541937428'. Config and State linked.
+AgentWorker initialized for agent_id 'runtime_external_tool_result_1785541937428'.
+Registered AgentContext for agent_id 'runtime_external_tool_result_1785541937428'. Total registered contexts: 2
+AgentRuntime initialized for agent_id 'runtime_external_tool_result_1785541937428'. Context registered.
+AgentRuntime for 'runtime_external_tool_result_1785541937428': Starting worker.
+AgentWorker 'runtime_external_tool_result_1785541937428': Starting...
+AgentWorker 'runtime_external_tool_result_1785541937428' asyncRun(): Starting.
+Agent 'runtime_external_tool_result_1785541937428': Runtime init completed (event store initialized).
+Agent 'runtime_external_tool_result_1785541937428': Runtime init completed (status deriver initialized).
+Agent 'runtime_external_tool_result_1785541937428': Runtime init completed (AgentEventInbox initialized).
+Agent 'runtime_external_tool_result_1785541937428': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > routes an external async tool result through inbox dispatch into ToolPhase continuation
+Agent 'runtime_external_tool_result_1785541937428': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > routes an external async tool result through inbox dispatch into ToolPhase continuation
+AgentExternalEventNotifier (NotifierID: 24427e81-fe3f-40b2-912b-5fddc50fa8c9, AgentID: runtime_external_tool_result_1785541937428) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > routes an external async tool result through inbox dispatch into ToolPhase continuation
+Agent 'runtime_external_tool_result_1785541937428': Bootstrapper starting direct lifecycle execution.
+Agent 'runtime_external_tool_result_1785541937428': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'runtime_external_tool_result_1785541937428': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > routes an external async tool result through inbox dispatch into ToolPhase continuation
+Agent 'runtime_external_tool_result_1785541937428': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'runtime_external_tool_result_1785541937428': Executing SystemPromptProcessingStep.
+Agent 'runtime_external_tool_result_1785541937428': No configured skills. Skipping injection.
+Agent 'runtime_external_tool_result_1785541937428': Final processed system prompt configured on LLM instance. Final length: 28.
+Agent 'runtime_external_tool_result_1785541937428': Final processed system prompt:
+---
+You are a helpful assistant.
+---
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > routes an external async tool result through inbox dispatch into ToolPhase continuation
+Agent 'runtime_external_tool_result_1785541937428': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > routes an external async tool result through inbox dispatch into ToolPhase continuation
+AgentExternalEventNotifier (NotifierID: 24427e81-fe3f-40b2-912b-5fddc50fa8c9, AgentID: runtime_external_tool_result_1785541937428) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > routes an external async tool result through inbox dispatch into ToolPhase continuation
+AgentWorker 'runtime_external_tool_result_1785541937428' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > routes an external async tool result through inbox dispatch into ToolPhase continuation
+AgentExternalEventNotifier (NotifierID: 24427e81-fe3f-40b2-912b-5fddc50fa8c9, AgentID: runtime_external_tool_result_1785541937428) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > routes an external async tool result through inbox dispatch into ToolPhase continuation
+AgentExternalEventNotifier (NotifierID: 24427e81-fe3f-40b2-912b-5fddc50fa8c9, AgentID: runtime_external_tool_result_1785541937428) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > routes an external async tool result through inbox dispatch into ToolPhase continuation
+AgentExternalEventNotifier (NotifierID: 24427e81-fe3f-40b2-912b-5fddc50fa8c9, AgentID: runtime_external_tool_result_1785541937428) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stderr | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > routes an external async tool result through inbox dispatch into ToolPhase continuation
+Tool 'external_result_tool' not found in registry.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > routes an external async tool result through inbox dispatch into ToolPhase continuation
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+compaction_budget_skipped_no_usage {
+  agent_id: 'runtime_external_tool_result_1785541937428',
+  turn_id: 'turn_0001',
+  reason: 'missing_usage'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > routes an external async tool result through inbox dispatch into ToolPhase continuation
+AgentExternalEventNotifier (NotifierID: 24427e81-fe3f-40b2-912b-5fddc50fa8c9, AgentID: runtime_external_tool_result_1785541937428) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > routes an external async tool result through inbox dispatch into ToolPhase continuation
+AgentExternalEventNotifier (NotifierID: 24427e81-fe3f-40b2-912b-5fddc50fa8c9, AgentID: runtime_external_tool_result_1785541937428) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 24427e81-fe3f-40b2-912b-5fddc50fa8c9, AgentID: runtime_external_tool_result_1785541937428) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 24427e81-fe3f-40b2-912b-5fddc50fa8c9, AgentID: runtime_external_tool_result_1785541937428) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > routes an external async tool result through inbox dispatch into ToolPhase continuation
+AgentExternalEventNotifier (NotifierID: 24427e81-fe3f-40b2-912b-5fddc50fa8c9, AgentID: runtime_external_tool_result_1785541937428) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > routes an external async tool result through inbox dispatch into ToolPhase continuation
+AgentExternalEventNotifier (NotifierID: 24427e81-fe3f-40b2-912b-5fddc50fa8c9, AgentID: runtime_external_tool_result_1785541937428) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > routes an external async tool result through inbox dispatch into ToolPhase continuation
+AgentExternalEventNotifier (NotifierID: 24427e81-fe3f-40b2-912b-5fddc50fa8c9, AgentID: runtime_external_tool_result_1785541937428) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 24427e81-fe3f-40b2-912b-5fddc50fa8c9, AgentID: runtime_external_tool_result_1785541937428) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > routes an external async tool result through inbox dispatch into ToolPhase continuation
+AgentExternalEventNotifier (NotifierID: 24427e81-fe3f-40b2-912b-5fddc50fa8c9, AgentID: runtime_external_tool_result_1785541937428) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > routes an external async tool result through inbox dispatch into ToolPhase continuation
+AgentExternalEventNotifier (NotifierID: 24427e81-fe3f-40b2-912b-5fddc50fa8c9, AgentID: runtime_external_tool_result_1785541937428) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stderr | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > routes an external async tool result through inbox dispatch into ToolPhase continuation
+Tool 'external_result_tool' not found in registry.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > routes an external async tool result through inbox dispatch into ToolPhase continuation
+compaction_budget_skipped_no_usage {
+  agent_id: 'runtime_external_tool_result_1785541937428',
+  turn_id: 'turn_0001',
+  reason: 'missing_usage'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > routes an external async tool result through inbox dispatch into ToolPhase continuation
+AgentExternalEventNotifier (NotifierID: 24427e81-fe3f-40b2-912b-5fddc50fa8c9, AgentID: runtime_external_tool_result_1785541937428) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > routes an external async tool result through inbox dispatch into ToolPhase continuation
+AgentExternalEventNotifier (NotifierID: 24427e81-fe3f-40b2-912b-5fddc50fa8c9, AgentID: runtime_external_tool_result_1785541937428) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > routes an external async tool result through inbox dispatch into ToolPhase continuation
+AgentExternalEventNotifier (NotifierID: 24427e81-fe3f-40b2-912b-5fddc50fa8c9, AgentID: runtime_external_tool_result_1785541937428) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > routes an external async tool result through inbox dispatch into ToolPhase continuation
+AgentExternalEventNotifier (NotifierID: 24427e81-fe3f-40b2-912b-5fddc50fa8c9, AgentID: runtime_external_tool_result_1785541937428) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > routes an external async tool result through inbox dispatch into ToolPhase continuation
+AgentExternalEventNotifier (NotifierID: 24427e81-fe3f-40b2-912b-5fddc50fa8c9, AgentID: runtime_external_tool_result_1785541937428) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > routes an external async tool result through inbox dispatch into ToolPhase continuation
+AgentWorker 'runtime_external_tool_result_1785541937428': Stop requested.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > routes an external async tool result through inbox dispatch into ToolPhase continuation
+AgentExternalEventNotifier (NotifierID: 24427e81-fe3f-40b2-912b-5fddc50fa8c9, AgentID: runtime_external_tool_result_1785541937428) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > routes an external async tool result through inbox dispatch into ToolPhase continuation
+AgentWorker 'runtime_external_tool_result_1785541937428' asyncRun() loop has finished.
+AgentWorker 'runtime_external_tool_result_1785541937428': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > routes an external async tool result through inbox dispatch into ToolPhase continuation
+AgentWorker 'runtime_external_tool_result_1785541937428': Shutdown resource cleanup completed successfully.
+AgentWorker 'runtime_external_tool_result_1785541937428': Shutdown sequence completed.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > routes an external async tool result through inbox dispatch into ToolPhase continuation
+Unregistered AgentContext for agent_id 'runtime_external_tool_result_1785541937428'.
+AgentRuntime for 'runtime_external_tool_result_1785541937428': Context unregistered.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > routes an external async tool result through inbox dispatch into ToolPhase continuation
+AgentRuntime for 'runtime_external_tool_result_1785541937428' stop() method completed.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when preflight rejects invalid args
+AgentRuntimeState initialized for agent_id 'runtime_external_tool_preflight_1785541937520'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'runtime_external_tool_preflight_1785541937520'. Config and State linked.
+AgentWorker initialized for agent_id 'runtime_external_tool_preflight_1785541937520'.
+Registered AgentContext for agent_id 'runtime_external_tool_preflight_1785541937520'. Total registered contexts: 2
+AgentRuntime initialized for agent_id 'runtime_external_tool_preflight_1785541937520'. Context registered.
+AgentRuntime for 'runtime_external_tool_preflight_1785541937520': Starting worker.
+AgentWorker 'runtime_external_tool_preflight_1785541937520': Starting...
+AgentWorker 'runtime_external_tool_preflight_1785541937520' asyncRun(): Starting.
+Agent 'runtime_external_tool_preflight_1785541937520': Runtime init completed (event store initialized).
+Agent 'runtime_external_tool_preflight_1785541937520': Runtime init completed (status deriver initialized).
+Agent 'runtime_external_tool_preflight_1785541937520': Runtime init completed (AgentEventInbox initialized).
+Agent 'runtime_external_tool_preflight_1785541937520': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when preflight rejects invalid args
+Agent 'runtime_external_tool_preflight_1785541937520': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when preflight rejects invalid args
+AgentExternalEventNotifier (NotifierID: cee1d153-b64b-427b-a865-cf8d2e244b90, AgentID: runtime_external_tool_preflight_1785541937520) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when preflight rejects invalid args
+Agent 'runtime_external_tool_preflight_1785541937520': Bootstrapper starting direct lifecycle execution.
+Agent 'runtime_external_tool_preflight_1785541937520': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'runtime_external_tool_preflight_1785541937520': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when preflight rejects invalid args
+Agent 'runtime_external_tool_preflight_1785541937520': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'runtime_external_tool_preflight_1785541937520': Executing SystemPromptProcessingStep.
+Agent 'runtime_external_tool_preflight_1785541937520': No configured skills. Skipping injection.
+Agent 'runtime_external_tool_preflight_1785541937520': Final processed system prompt configured on LLM instance. Final length: 28.
+Agent 'runtime_external_tool_preflight_1785541937520': Final processed system prompt:
+---
+You are a helpful assistant.
+---
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when preflight rejects invalid args
+Agent 'runtime_external_tool_preflight_1785541937520': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when preflight rejects invalid args
+AgentExternalEventNotifier (NotifierID: cee1d153-b64b-427b-a865-cf8d2e244b90, AgentID: runtime_external_tool_preflight_1785541937520) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when preflight rejects invalid args
+AgentWorker 'runtime_external_tool_preflight_1785541937520' initialized successfully. Entering main event scheduler loop.
+
+ ✓ tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > retains completed tool result facts when a later tool in the batch is interrupted 98ms
+ ✓ tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > routes an external async tool result through inbox dispatch into ToolPhase continuation 92ms
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when preflight rejects invalid args
+AgentExternalEventNotifier (NotifierID: cee1d153-b64b-427b-a865-cf8d2e244b90, AgentID: runtime_external_tool_preflight_1785541937520) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when preflight rejects invalid args
+AgentExternalEventNotifier (NotifierID: cee1d153-b64b-427b-a865-cf8d2e244b90, AgentID: runtime_external_tool_preflight_1785541937520) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when preflight rejects invalid args
+AgentExternalEventNotifier (NotifierID: cee1d153-b64b-427b-a865-cf8d2e244b90, AgentID: runtime_external_tool_preflight_1785541937520) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stderr | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when preflight rejects invalid args
+Tool 'external_result_tool' not found in registry.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when preflight rejects invalid args
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+compaction_budget_skipped_no_usage {
+  agent_id: 'runtime_external_tool_preflight_1785541937520',
+  turn_id: 'turn_0001',
+  reason: 'missing_usage'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when preflight rejects invalid args
+AgentExternalEventNotifier (NotifierID: cee1d153-b64b-427b-a865-cf8d2e244b90, AgentID: runtime_external_tool_preflight_1785541937520) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stderr | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when preflight rejects invalid args
+Invalid arguments for tool 'external_result_tool': Required parameter 'job' is missing.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when preflight rejects invalid args
+AgentExternalEventNotifier (NotifierID: cee1d153-b64b-427b-a865-cf8d2e244b90, AgentID: runtime_external_tool_preflight_1785541937520) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: cee1d153-b64b-427b-a865-cf8d2e244b90, AgentID: runtime_external_tool_preflight_1785541937520) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when preflight rejects invalid args
+AgentExternalEventNotifier (NotifierID: cee1d153-b64b-427b-a865-cf8d2e244b90, AgentID: runtime_external_tool_preflight_1785541937520) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when preflight rejects invalid args
+AgentExternalEventNotifier (NotifierID: cee1d153-b64b-427b-a865-cf8d2e244b90, AgentID: runtime_external_tool_preflight_1785541937520) emitted agent_tool_execution_failed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when preflight rejects invalid args
+AgentExternalEventNotifier (NotifierID: cee1d153-b64b-427b-a865-cf8d2e244b90, AgentID: runtime_external_tool_preflight_1785541937520) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when preflight rejects invalid args
+AgentExternalEventNotifier (NotifierID: cee1d153-b64b-427b-a865-cf8d2e244b90, AgentID: runtime_external_tool_preflight_1785541937520) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stderr | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when preflight rejects invalid args
+Tool 'external_result_tool' not found in registry.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when preflight rejects invalid args
+compaction_budget_skipped_no_usage {
+  agent_id: 'runtime_external_tool_preflight_1785541937520',
+  turn_id: 'turn_0001',
+  reason: 'missing_usage'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when preflight rejects invalid args
+AgentExternalEventNotifier (NotifierID: cee1d153-b64b-427b-a865-cf8d2e244b90, AgentID: runtime_external_tool_preflight_1785541937520) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when preflight rejects invalid args
+AgentExternalEventNotifier (NotifierID: cee1d153-b64b-427b-a865-cf8d2e244b90, AgentID: runtime_external_tool_preflight_1785541937520) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when preflight rejects invalid args
+AgentExternalEventNotifier (NotifierID: cee1d153-b64b-427b-a865-cf8d2e244b90, AgentID: runtime_external_tool_preflight_1785541937520) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when preflight rejects invalid args
+AgentExternalEventNotifier (NotifierID: cee1d153-b64b-427b-a865-cf8d2e244b90, AgentID: runtime_external_tool_preflight_1785541937520) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when preflight rejects invalid args
+AgentExternalEventNotifier (NotifierID: cee1d153-b64b-427b-a865-cf8d2e244b90, AgentID: runtime_external_tool_preflight_1785541937520) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when preflight rejects invalid args
+AgentWorker 'runtime_external_tool_preflight_1785541937520': Stop requested.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when preflight rejects invalid args
+AgentExternalEventNotifier (NotifierID: cee1d153-b64b-427b-a865-cf8d2e244b90, AgentID: runtime_external_tool_preflight_1785541937520) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when preflight rejects invalid args
+AgentWorker 'runtime_external_tool_preflight_1785541937520' asyncRun() loop has finished.
+AgentWorker 'runtime_external_tool_preflight_1785541937520': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when preflight rejects invalid args
+AgentWorker 'runtime_external_tool_preflight_1785541937520': Shutdown resource cleanup completed successfully.
+AgentWorker 'runtime_external_tool_preflight_1785541937520': Shutdown sequence completed.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when preflight rejects invalid args
+Unregistered AgentContext for agent_id 'runtime_external_tool_preflight_1785541937520'.
+AgentRuntime for 'runtime_external_tool_preflight_1785541937520': Context unregistered.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when preflight rejects invalid args
+AgentRuntime for 'runtime_external_tool_preflight_1785541937520' stop() method completed.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when mode resolution throws
+AgentRuntimeState initialized for agent_id 'runtime_external_tool_mode_failure_1785541937577'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'runtime_external_tool_mode_failure_1785541937577'. Config and State linked.
+AgentWorker initialized for agent_id 'runtime_external_tool_mode_failure_1785541937577'.
+Registered AgentContext for agent_id 'runtime_external_tool_mode_failure_1785541937577'. Total registered contexts: 2
+AgentRuntime initialized for agent_id 'runtime_external_tool_mode_failure_1785541937577'. Context registered.
+AgentRuntime for 'runtime_external_tool_mode_failure_1785541937577': Starting worker.
+AgentWorker 'runtime_external_tool_mode_failure_1785541937577': Starting...
+AgentWorker 'runtime_external_tool_mode_failure_1785541937577' asyncRun(): Starting.
+Agent 'runtime_external_tool_mode_failure_1785541937577': Runtime init completed (event store initialized).
+Agent 'runtime_external_tool_mode_failure_1785541937577': Runtime init completed (status deriver initialized).
+Agent 'runtime_external_tool_mode_failure_1785541937577': Runtime init completed (AgentEventInbox initialized).
+Agent 'runtime_external_tool_mode_failure_1785541937577': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when mode resolution throws
+Agent 'runtime_external_tool_mode_failure_1785541937577': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when mode resolution throws
+AgentExternalEventNotifier (NotifierID: a0f4b916-967b-4e45-aee6-06846a03e869, AgentID: runtime_external_tool_mode_failure_1785541937577) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when mode resolution throws
+Agent 'runtime_external_tool_mode_failure_1785541937577': Bootstrapper starting direct lifecycle execution.
+Agent 'runtime_external_tool_mode_failure_1785541937577': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'runtime_external_tool_mode_failure_1785541937577': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when mode resolution throws
+Agent 'runtime_external_tool_mode_failure_1785541937577': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'runtime_external_tool_mode_failure_1785541937577': Executing SystemPromptProcessingStep.
+Agent 'runtime_external_tool_mode_failure_1785541937577': No configured skills. Skipping injection.
+Agent 'runtime_external_tool_mode_failure_1785541937577': Final processed system prompt configured on LLM instance. Final length: 28.
+Agent 'runtime_external_tool_mode_failure_1785541937577': Final processed system prompt:
+---
+You are a helpful assistant.
+---
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when mode resolution throws
+Agent 'runtime_external_tool_mode_failure_1785541937577': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when mode resolution throws
+AgentExternalEventNotifier (NotifierID: a0f4b916-967b-4e45-aee6-06846a03e869, AgentID: runtime_external_tool_mode_failure_1785541937577) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when mode resolution throws
+AgentWorker 'runtime_external_tool_mode_failure_1785541937577' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when mode resolution throws
+AgentExternalEventNotifier (NotifierID: a0f4b916-967b-4e45-aee6-06846a03e869, AgentID: runtime_external_tool_mode_failure_1785541937577) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when mode resolution throws
+AgentExternalEventNotifier (NotifierID: a0f4b916-967b-4e45-aee6-06846a03e869, AgentID: runtime_external_tool_mode_failure_1785541937577) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when mode resolution throws
+AgentExternalEventNotifier (NotifierID: a0f4b916-967b-4e45-aee6-06846a03e869, AgentID: runtime_external_tool_mode_failure_1785541937577) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stderr | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when mode resolution throws
+Tool 'failing_mode_external_result_tool' not found in registry.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when mode resolution throws
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+compaction_budget_skipped_no_usage {
+  agent_id: 'runtime_external_tool_mode_failure_1785541937577',
+  turn_id: 'turn_0001',
+  reason: 'missing_usage'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when mode resolution throws
+AgentExternalEventNotifier (NotifierID: a0f4b916-967b-4e45-aee6-06846a03e869, AgentID: runtime_external_tool_mode_failure_1785541937577) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when mode resolution throws
+AgentExternalEventNotifier (NotifierID: a0f4b916-967b-4e45-aee6-06846a03e869, AgentID: runtime_external_tool_mode_failure_1785541937577) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: a0f4b916-967b-4e45-aee6-06846a03e869, AgentID: runtime_external_tool_mode_failure_1785541937577) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when mode resolution throws
+AgentExternalEventNotifier (NotifierID: a0f4b916-967b-4e45-aee6-06846a03e869, AgentID: runtime_external_tool_mode_failure_1785541937577) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when mode resolution throws
+AgentExternalEventNotifier (NotifierID: a0f4b916-967b-4e45-aee6-06846a03e869, AgentID: runtime_external_tool_mode_failure_1785541937577) emitted agent_tool_execution_failed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when mode resolution throws
+AgentExternalEventNotifier (NotifierID: a0f4b916-967b-4e45-aee6-06846a03e869, AgentID: runtime_external_tool_mode_failure_1785541937577) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when mode resolution throws
+AgentExternalEventNotifier (NotifierID: a0f4b916-967b-4e45-aee6-06846a03e869, AgentID: runtime_external_tool_mode_failure_1785541937577) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stderr | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when mode resolution throws
+Tool 'failing_mode_external_result_tool' not found in registry.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when mode resolution throws
+compaction_budget_skipped_no_usage {
+  agent_id: 'runtime_external_tool_mode_failure_1785541937577',
+  turn_id: 'turn_0001',
+  reason: 'missing_usage'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when mode resolution throws
+AgentExternalEventNotifier (NotifierID: a0f4b916-967b-4e45-aee6-06846a03e869, AgentID: runtime_external_tool_mode_failure_1785541937577) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when mode resolution throws
+AgentExternalEventNotifier (NotifierID: a0f4b916-967b-4e45-aee6-06846a03e869, AgentID: runtime_external_tool_mode_failure_1785541937577) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when mode resolution throws
+AgentExternalEventNotifier (NotifierID: a0f4b916-967b-4e45-aee6-06846a03e869, AgentID: runtime_external_tool_mode_failure_1785541937577) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when mode resolution throws
+AgentExternalEventNotifier (NotifierID: a0f4b916-967b-4e45-aee6-06846a03e869, AgentID: runtime_external_tool_mode_failure_1785541937577) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when mode resolution throws
+AgentExternalEventNotifier (NotifierID: a0f4b916-967b-4e45-aee6-06846a03e869, AgentID: runtime_external_tool_mode_failure_1785541937577) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when mode resolution throws
+AgentWorker 'runtime_external_tool_mode_failure_1785541937577': Stop requested.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when mode resolution throws
+AgentExternalEventNotifier (NotifierID: a0f4b916-967b-4e45-aee6-06846a03e869, AgentID: runtime_external_tool_mode_failure_1785541937577) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when mode resolution throws
+AgentWorker 'runtime_external_tool_mode_failure_1785541937577' asyncRun() loop has finished.
+AgentWorker 'runtime_external_tool_mode_failure_1785541937577': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when mode resolution throws
+AgentWorker 'runtime_external_tool_mode_failure_1785541937577': Shutdown resource cleanup completed successfully.
+AgentWorker 'runtime_external_tool_mode_failure_1785541937577': Shutdown sequence completed.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when mode resolution throws
+Unregistered AgentContext for agent_id 'runtime_external_tool_mode_failure_1785541937577'.
+AgentRuntime for 'runtime_external_tool_mode_failure_1785541937577': Context unregistered.
+
+stdout | tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when mode resolution throws
+AgentRuntime for 'runtime_external_tool_mode_failure_1785541937577' stop() method completed.
+
+ ✓ tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when preflight rejects invalid args 57ms
+ ✓ tests/integration/agent/runtime/agent-runtime.test.ts > Agent runtime integration > fails an external-result tool before publishing started when mode resolution throws 56ms
+
+ Test Files  4 passed (4)
+      Tests  23 passed (23)
+   Start at  01:52:15
+   Duration  1.89s (transform 1.36s, setup 59ms, import 1.97s, tests 982ms, environment 0ms)

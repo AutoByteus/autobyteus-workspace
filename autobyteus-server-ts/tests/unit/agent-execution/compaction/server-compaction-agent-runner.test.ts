@@ -71,6 +71,7 @@ const createLaunchResolver = () => ({
     agentName: "Memory Compactor",
     runtimeKind: RuntimeKind.CODEX_APP_SERVER,
     llmModelIdentifier: "codex:gpt-5",
+    provider: "openai",
     llmConfig: { reasoning_effort: "medium" },
     skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
   })),
@@ -82,7 +83,7 @@ describe("ServerCompactionAgentRunner", () => {
       createEvent(AgentRunEventType.SEGMENT_CONTENT, {
         id: "message-1",
         segment_type: "text",
-        delta: '{"episodic_summary":"ok"}',
+        delta: '{"episodes":[{"summary":"ok"}]}',
       }),
       createEvent(AgentRunEventType.TURN_COMPLETED, { turn_id: "turn-1" }, "IDLE"),
     ]);
@@ -128,12 +129,13 @@ describe("ServerCompactionAgentRunner", () => {
       },
     });
     expect(result).toEqual({
-      outputText: '{"episodic_summary":"ok"}',
+      outputText: '{"episodes":[{"summary":"ok"}]}',
       metadata: {
         compactionAgentDefinitionId: "autobyteus-memory-compactor",
         compactionAgentName: "Memory Compactor",
         runtimeKind: RuntimeKind.CODEX_APP_SERVER,
         modelIdentifier: "codex:gpt-5",
+        provider: "openai",
         compactionRunId: "compaction-run-1",
         taskId: "task-1",
       },
@@ -184,7 +186,14 @@ describe("ServerCompactionAgentRunner", () => {
     {
       name: "runtime error event",
       events: [
-        createEvent(AgentRunEventType.ERROR, { message: "provider exploded" }, "ERROR"),
+        createEvent(AgentRunEventType.ERROR, {
+          message: "provider exploded",
+          error_scope: "runtime",
+          error_effect: "terminal",
+        }, "ERROR"),
+        createEvent(AgentRunEventType.AGENT_STATUS, {
+          status: "ERROR",
+        }, "ERROR"),
       ],
       timeoutMs: 1_000,
       expectedMessage: /provider exploded/,

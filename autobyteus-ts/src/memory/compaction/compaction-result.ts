@@ -2,7 +2,12 @@ export type CompactionSemanticEntry = {
   fact: string;
 };
 
+export type CompactionEpisodeEntry = {
+  summary: string;
+};
+
 export type CompactionResultInit = {
+  episodes: CompactionEpisodeEntry[];
   criticalIssues?: CompactionSemanticEntry[];
   unresolvedWork?: CompactionSemanticEntry[];
   durableFacts?: CompactionSemanticEntry[];
@@ -11,15 +16,15 @@ export type CompactionResultInit = {
 };
 
 export class CompactionResult {
-  episodicSummary: string;
+  episodes: CompactionEpisodeEntry[];
   criticalIssues: CompactionSemanticEntry[];
   unresolvedWork: CompactionSemanticEntry[];
   durableFacts: CompactionSemanticEntry[];
   userPreferences: CompactionSemanticEntry[];
   importantArtifacts: CompactionSemanticEntry[];
 
-  constructor(episodicSummary: string, init: CompactionResultInit = {}) {
-    this.episodicSummary = episodicSummary;
+  constructor(init: CompactionResultInit) {
+    this.episodes = init.episodes;
     this.criticalIssues = init.criticalIssues ?? [];
     this.unresolvedWork = init.unresolvedWork ?? [];
     this.durableFacts = init.durableFacts ?? [];

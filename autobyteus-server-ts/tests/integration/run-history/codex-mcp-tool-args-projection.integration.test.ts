@@ -10,7 +10,7 @@ import {
 import { AgentMemoryService } from "../../../src/agent-memory/services/agent-memory-service.js";
 import { RuntimeMemoryEventAccumulator } from "../../../src/agent-memory/services/runtime-memory-event-accumulator.js";
 import { MemoryFileStore } from "../../../src/agent-memory/store/memory-file-store.js";
-import { RunMemoryWriter } from "../../../src/agent-memory/store/run-memory-writer.js";
+import { ExternalRuntimeMemoryWriter } from "../../../src/agent-memory/store/external-runtime-memory-writer.js";
 import { buildRunProjectionBundleFromEvents } from "../../../src/run-history/projection/run-projection-utils.js";
 import { buildHistoricalReplayEvents } from "../../../src/run-history/projection/transformers/raw-trace-to-historical-replay-events.js";
 
@@ -53,7 +53,7 @@ const readPhysicalRawTraces = async (memoryDir: string): Promise<Record<string, 
 describe("Codex MCP tool arguments memory/projection integration", () => {
   it("persists an early MCP call plus minimal result and projects both UI surfaces", async () => {
     const memoryDir = await mkTempDir();
-    const writer = new RunMemoryWriter({ memoryDir });
+    const writer = new ExternalRuntimeMemoryWriter({ memoryDir });
     const accumulator = new RuntimeMemoryEventAccumulator({
       runId: "run-1",
       writer,

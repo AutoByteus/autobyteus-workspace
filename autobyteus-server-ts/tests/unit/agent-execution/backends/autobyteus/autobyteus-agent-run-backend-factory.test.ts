@@ -228,9 +228,9 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       "dummy-model",
       { temperature: 0.2 },
       expect.objectContaining({
-        getStatus: expect.any(Function),
         resolve: expect.any(Function),
       }),
+      undefined,
     );
   });
 

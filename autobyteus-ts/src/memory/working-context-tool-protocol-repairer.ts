@@ -5,7 +5,11 @@ import {
   ToolResultPayload,
   type ToolCallSpec,
 } from '../llm/utils/messages.js';
-import { getMessageProvenance, setMessageProvenance } from './message-provenance.js';
+import {
+  buildSingleMessageProvenance,
+  getWorkingContextMessageProvenance,
+  setWorkingContextMessageProvenance,
+} from './working-context-provenance.js';
 import { createToolCallIdentity, toolCallIdentityKey } from './models/tool-call-identity.js';
 
 export const SYNTHETIC_INTERRUPTED_TOOL_RESULT_CONTENT = [
@@ -150,9 +154,12 @@ function buildInsertedToolResultMessage(
   options: WorkingContextToolProtocolRepairOptions,
 ): { message: Message; repair: InterruptedToolResultRepair } {
   const callId = normalizeToolCallId(call.id)!;
-  const assistantProvenance = getMessageProvenance(assistantMessage);
+  const assistantProvenance = getWorkingContextMessageProvenance(assistantMessage);
+  const assistantTurnId = assistantProvenance?.kind === 'single'
+    ? assistantProvenance.turnId
+    : null;
   const identity = createToolCallIdentity(
-    assistantProvenance?.turnId ?? options.fallbackTurnId,
+    assistantTurnId ?? options.fallbackTurnId,
     callId,
   );
   const identityKey = identity
@@ -165,7 +172,7 @@ function buildInsertedToolResultMessage(
     ? options.toolCallFactsByIdentity?.get(identityKey) ?? null
     : null;
   const toolName = completed?.toolName || call.name || callFact?.toolName || 'unknown_tool';
-  const turnId = completed?.turnId ?? assistantProvenance?.turnId ?? callFact?.turnId ?? options.fallbackTurnId ?? null;
+  const turnId = completed?.turnId ?? assistantTurnId ?? callFact?.turnId ?? options.fallbackTurnId ?? null;
   const source = completed ? 'raw_completed_result' : 'synthetic_interrupted';
   const toolResult = completed
     ? completed.toolResult
@@ -176,12 +183,10 @@ function buildInsertedToolResultMessage(
     tool_payload: new ToolResultPayload(callId, toolName, toolResult, toolError),
   });
 
-  setMessageProvenance(message, {
-    sourceKind: completed ? 'tool_result' : 'recovery',
-    turnId,
-    rawTraceIds: completed?.rawTraceId ? [completed.rawTraceId] : undefined,
-    toolCallIds: [callId],
-  });
+  setWorkingContextMessageProvenance(
+    message,
+    buildSingleMessageProvenance(completed?.rawTraceId ? [completed.rawTraceId] : [], turnId),
+  );
 
   return {
     message,
