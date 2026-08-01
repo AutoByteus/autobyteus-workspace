@@ -1,10 +1,18 @@
-## What's New
-- Added evidence-linked memory lineage for native AutoByteus compaction so current context and its source history remain inspectable across repeated compactions.
+# AutoByteus v1.4.36
 
-## Improvements
-- Existing native AutoByteus runs now upgrade their historical WorkingContext snapshots to the current format during startup instead of discarding their resumable context.
-- Memory Compactor summaries now use natural episode and fact selection while preserving exact tool history, current-context projection, and continuation behavior.
+## HTML file preview safety and correctness
 
-## Fixes
-- Fixed older native runs failing to reopen because their stored WorkingContext snapshot used a pre-v5 schema.
-- Fixed provider or request failures after compaction restoring stale pre-compaction context while durable memory changes remained committed.
+- Use explicit workspace resource identity for workspace-relative HTML previews.
+- Render local or context-free absolute HTML from the already-loaded content Blob instead of sending host paths to the workspace static route.
+- Preserve iframe sandboxing and Blob URL cleanup behavior.
+- Keep server-side static-route containment enforced for absolute and traversal candidates, with no outside HTML payload exposure.
+
+## Validation
+
+- Frontend focused: 6 files / 80 tests passed.
+- Preservation: 3 files / 22 tests passed.
+- Server REST: 2 files / 8 tests passed.
+- Electron boundary: 4 files / 19 tests passed.
+- Browser direct and launcher probes passed in the upstream coverage run.
+
+This is a local unsigned/notarization-disabled ARM64 build validation; release publication remains subject to the final packaged-artifact verification and repository release workflow.
