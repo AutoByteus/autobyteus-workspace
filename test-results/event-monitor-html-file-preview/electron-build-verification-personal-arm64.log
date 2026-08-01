@@ -1,0 +1,44 @@
+Verification started: 2026-07-31T17:38:33Z
+Git HEAD: 807e1d44c3e98745628a5ba5544488a1711dab5f
+DMG: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.34.dmg
+ZIP: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.34.zip
+--- staged server terminal runtime ---
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+--- final app terminal runtime + spawn probe ---
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+--- DMG integrity ---
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $5E547826
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $7AFCE7C8
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $0950763F
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $DC29AEEB
+Prüfsumme für GPT Partition Data (Backup GPT Table : 5) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $0950763F
+Prüfsumme für GPT Header (Backup GPT Header : 6) berechnen …
+  GPT Header (Backup GPT Header : 6): Die überprüfte CRC32-Prüfsumme ist $A533523C
+Die überprüfte CRC32-Prüfsumme ist $2A8794B1
+hdiutil: verify: checksum of "/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.34.dmg" is VALID
+--- ZIP integrity ---
+No errors detected in compressed data of /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.34.zip.
+--- artifact metadata ---
+/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.34.dmg 402350844 bytes
+/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.34.dmg.blockmap 418072 bytes
+/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.34.zip 397974189 bytes
+/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.34.zip.blockmap 409830 bytes
+5b322f3510dc1ba77049a6810182db67d9f0b645854604117c88a24f73a85686  /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.34.dmg
+739ce15278a14951e17dc6ad03d0b7a7e86e4008355622fe8c18c14d3e9c4e98  /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.34.dmg.blockmap
+d58dabb770b4dd1a1922bd601481f7899b2a6b320901721b2d145219440eb8fc  /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.34.zip
+b728b5be9cbfa064fa5b496e3ae7b1122b6e9c7c4a823223c798c949971085d6  /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.34.zip.blockmap
+--- app architecture ---
+/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+Verification finished: 2026-07-31T17:38:52Z

@@ -1,0 +1,18 @@
+Integrated Electron build outcome
+
+Command:
+AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* node build/dist/build.js --mac --arm64
+
+Build source: e234af3e78bcec73d72c3f1d8e1f5f1704dc5b00
+Package version: 1.4.35
+Host/target: Darwin arm64 / macOS arm64
+Result: PASS
+
+Artifacts:
+- autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.35.dmg
+- autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.35.dmg.blockmap
+- autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.35.zip
+- autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.35.zip.blockmap
+
+Packaging: unsigned/notarization-disabled (identity: null); electron-builder completed successfully.
+Detailed artifact integrity evidence: electron-build-integrated-verification-personal-arm64.log
