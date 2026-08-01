@@ -58,3 +58,20 @@
 - Release decision: the next release version is `1.4.36` because `personal` already contains `v1.4.35`. Release notes are prepared at `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/release-notes.md`; no tag, release commit, publication, or deployment has started.
 - Next action: build the current integrated personal-flavor macOS ARM64 package, provide its absolute DMG/ZIP paths for renewed user verification, then refresh `origin/personal` once more and finalize only after that verification remains current.
 - Remaining risks: packaged Electron IPC/window/server lifecycle, full authenticated Event Monitor feed click, and local HTML relative CSS/image/script asset fidelity remain bounded residuals.
+
+### DR-004 — Current integrated Electron package ready for renewed verification
+
+- Delivery round and trigger: Round 4, current-package build after `DR-003` latest-base integration passed.
+- Prior authoritative result: `DR-003` — integration and focused executable checks passed, but the prior user-tested `1.4.34` package was stale against the integrated `1.4.35` source.
+- Build source: `HEAD e234af3e78bcec73d72c3f1d8e1f5f1704dc5b00`, containing integrated checkpoint `bdc275d4d746288d1a25c6320b93b94e1079b180`; package version `1.4.35`; host/target `Darwin arm64` / macOS ARM64.
+- Build command: `AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* node build/dist/build.js --mac --arm64` from `autobyteus-web` after the README-guided preparation pipeline.
+- Build result: `Pass`; electron-builder produced the personal-flavor unsigned/notarization-disabled DMG, ZIP, and blockmaps.
+- Artifacts:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.35.dmg` — 402,429,017 bytes; SHA-256 `66ca950ae1a22ad25084c5da9f44436b4546d72d5dd85575a6e22cce8f8c9e67`.
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.35.dmg.blockmap` — 419,297 bytes; SHA-256 `fad321f0c8ae070e09370007d931f0d1d851099b9b25c1455c5babff187ca3e5`.
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.35.zip` — 398,094,209 bytes; SHA-256 `0d3c0ff16253ad128cd50f3bfee2cca58abd157537b84ee3f951b7a3fda86d19`.
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.35.zip.blockmap` — 409,597 bytes; SHA-256 `b3177d1b8bb98300a77a260e11de04d98ed3fa19ff7842cca8f752b1e8f29c1a`.
+- Package verification: staged and final packaged Terminal runtime checks passed; matching-host `node-pty` spawn probe passed; `hdiutil verify` passed; `unzip -tq` passed; package binary reported `Mach-O 64-bit executable arm64`. Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/test-results/event-monitor-html-file-preview/electron-build-integrated-verification-personal-arm64.log`.
+- Current authoritative result: `Pass` for the current integrated package and integrity checks; explicit renewed user verification is now required before archive, push, finalization-target merge, release, publication, deployment, or cleanup.
+- Release plan: after renewed verification and repository finalization, run the documented release path for `v1.4.36`; no release tag or publication has started.
+- Remaining risks: packaged Electron IPC/window/server lifecycle, full authenticated Event Monitor feed click, and local HTML relative CSS/image/script asset fidelity remain bounded residuals.

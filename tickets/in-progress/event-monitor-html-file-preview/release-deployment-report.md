@@ -63,3 +63,14 @@ Release work is authorized by the user and planned for `v1.4.36`; `personal` alr
 ## Next Action
 
 Build and provide the current integrated `1.4.35` package for renewed user verification. On explicit confirmation, refresh `origin/personal` again, archive and finalize according to the recorded `personal` target, then run the documented release helper for `v1.4.36` and record tag/publication evidence.
+
+## Delivery Round 4 — Current package verification handoff
+
+- Current integrated source: `HEAD e234af3e78bcec73d72c3f1d8e1f5f1704dc5b00`; integrated target checkpoint `bdc275d4d746288d1a25c6320b93b94e1079b180`; package version `1.4.35`.
+- Build result: **Pass**. Personal-flavor unsigned/notarization-disabled macOS ARM64 DMG, ZIP, and blockmaps were produced.
+- Build outcome record: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/test-results/event-monitor-html-file-preview/electron-build-integrated-personal-arm64-final.log`.
+- Verification result: **Pass** for staged/final Terminal runtime checks, matching-host spawn probe, `hdiutil verify`, `unzip -tq`, SHA-256 calculation, and ARM64 binary inspection.
+- Verification evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/test-results/event-monitor-html-file-preview/electron-build-integrated-verification-personal-arm64.log`.
+- Current package artifact paths and hashes: authoritative in `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/handoff-summary.md`.
+- User verification state: **Pending renewed verification** for the current integrated `1.4.35` package. The prior `1.4.34` verification is stale for finalization purposes.
+- Planned release: `v1.4.36` after renewed verification, ticket archival, branch/target finalization, and a clean release-helper precondition. No release commit, tag, publication, or deployment has started.

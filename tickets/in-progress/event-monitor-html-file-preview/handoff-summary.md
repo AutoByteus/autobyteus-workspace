@@ -71,11 +71,32 @@ matching-host spawn probe, DMG checksum, ZIP contents, and ARM64 app binary.
 The local package is unsigned and not notarized (`identity: null`); macOS may
 require explicit approval before opening it.
 
+## Current Integrated Electron Package (1.4.35)
+
+Build command (from `autobyteus-web` after the README-guided preparation pipeline):
+
+```bash
+AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_TEAM_ID= \
+DEBUG=electron-builder,electron-builder:* \
+node build/dist/build.js --mac --arm64
+```
+
+Build source: `HEAD e234af3e78bcec73d72c3f1d8e1f5f1704dc5b00`; integrated checkpoint: `bdc275d4d746288d1a25c6320b93b94e1079b180`. Result: **Pass**. Package is unsigned/notarization-disabled (`identity: null`).
+
+| Artifact | SHA-256 | Size |
+| --- | --- | ---: |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.35.dmg` | `66ca950ae1a22ad25084c5da9f44436b4546d72d5dd85575a6e22cce8f8c9e67` | 402,429,017 bytes |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.35.dmg.blockmap` | `fad321f0c8ae070e09370007d931f0d1d851099b9b25c1455c5babff187ca3e5` | 419,297 bytes |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.35.zip` | `0d3c0ff16253ad128cd50f3bfee2cca58abd157537b84ee3f951b7a3fda86d19` | 398,094,209 bytes |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.35.zip.blockmap` | `b3177d1b8bb98300a77a260e11de04d98ed3fa19ff7842cca8f752b1e8f29c1a` | 409,597 bytes |
+
+Verification passed for staged and final packaged Terminal runtime, matching-host spawn probe, DMG checksum, ZIP contents, and ARM64 app binary. Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/test-results/event-monitor-html-file-preview/electron-build-integrated-verification-personal-arm64.log`.
+
 ## Current Release Candidate
 
 - Planned next release: `v1.4.36` (the integrated target already contains `v1.4.35`).
-- Current package build: **Pending** from integrated `HEAD bdc275d4d746288d1a25c6320b93b94e1079b180`; the old `1.4.34` package must not be used as final-release verification.
-- Renewed user verification: **Required** after the current `1.4.35` package is built. Until then, ticket archive, branch push, target merge, release, publication, deployment, and cleanup remain held.
+- Current package build: **Pass** from `HEAD e234af3e78bcec73d72c3f1d8e1f5f1704dc5b00`; integrated source package version `1.4.35` is ready.
+- Renewed user verification: **Required** for the current package. Until confirmation, ticket archive, branch push, target merge, release, publication, deployment, and cleanup remain held.
 
 ## Residual Risks
 
@@ -86,7 +107,7 @@ require explicit approval before opening it.
 
 ## User Verification Request
 
-The previously supplied `1.4.34` package is historical because the finalization target advanced. Delivery will provide a rebuilt current integrated `1.4.35` DMG/ZIP. Please test that current package, verify the HTML preview behavior—especially local absolute Event Monitor HTML versus workspace-relative HTML—and explicitly confirm whether delivery may finalize and release `v1.4.36`. Explicit user verification is required before ticket archival, branch push, merge into `personal`, release/publication/deployment, or cleanup.
+The previously supplied `1.4.34` package is historical because the finalization target advanced. Please test the current integrated `1.4.35` DMG or ZIP above, verify the HTML preview behavior—especially local absolute Event Monitor HTML versus workspace-relative HTML—and explicitly confirm whether delivery may finalize and release `v1.4.36`. Explicit user verification is required before ticket archival, branch push, merge into `personal`, release/publication/deployment, or cleanup.
 
 ## Finalization Hold
 
@@ -118,4 +139,6 @@ No repository finalization, release, publication, deployment, or cleanup has occ
 - Historical Electron build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/test-results/event-monitor-html-file-preview/electron-build-personal-arm64.log`
 - Historical Electron build verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/test-results/event-monitor-html-file-preview/electron-build-verification-personal-arm64.log`
 - Integrated recheck evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/test-results/event-monitor-html-file-preview/finalization-integrated-recheck.log`
+- Integrated Electron build outcome: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/test-results/event-monitor-html-file-preview/electron-build-integrated-personal-arm64-final.log`
+- Integrated Electron verification: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/test-results/event-monitor-html-file-preview/electron-build-integrated-verification-personal-arm64.log`
 - Planned release notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/tickets/in-progress/event-monitor-html-file-preview/release-notes.md`

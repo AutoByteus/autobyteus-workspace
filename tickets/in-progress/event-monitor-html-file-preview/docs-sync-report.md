@@ -75,3 +75,13 @@ No impact was found for persisted data, migration, server configuration, Electro
 - Docs impact decision: the HTML preview contract remains accurate after the target refresh. No additional long-lived documentation change is required for the imported target commits; this report and the handoff are updated to reflect the integrated revision and renewed verification requirement.
 - Release planning: `personal` is already at version `1.4.35`, so the next release is planned as `v1.4.36`. Ticket-local release notes are prepared before the renewed verification handoff.
 - User verification state: the prior `1.4.34` package verification cannot be carried forward to the integrated `1.4.35` package. Finalization, archive, push, target merge, release, publication, and deployment remain held pending renewed verification of the rebuilt current package.
+
+## Delivery Round 4 — Current integrated Electron package
+
+- Build source: `HEAD e234af3e78bcec73d72c3f1d8e1f5f1704dc5b00`; integrated checkpoint remains `bdc275d4d746288d1a25c6320b93b94e1079b180`.
+- Package: personal-flavor unsigned/notarization-disabled macOS ARM64 `1.4.35` DMG/ZIP plus blockmaps.
+- Build outcome: `Pass`; artifact paths, sizes, and hashes are recorded in `handoff-summary.md` and `delivery-revision-record.md`.
+- Verification outcome: staged/final packaged Terminal runtime checks, matching-host spawn probe, `hdiutil verify`, `unzip -tq`, SHA-256 calculation, and ARM64 binary inspection passed. Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/test-results/event-monitor-html-file-preview/electron-build-integrated-verification-personal-arm64.log`.
+- Docs impact: no additional long-lived documentation changes; this round validates packaging of the already documented HTML preview contract.
+- User verification: renewed verification is pending for the current `1.4.35` package. The prior `1.4.34` verification is not carried forward.
+- Release plan: after verification and finalization, release `v1.4.36` through the documented helper; no release action has started.
