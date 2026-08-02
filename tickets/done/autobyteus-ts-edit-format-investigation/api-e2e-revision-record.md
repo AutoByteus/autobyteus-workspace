@@ -12,7 +12,7 @@ The latest coverage investigation and execution coverage report are authoritativ
 
 ### API-REV-001 — Initial deterministic and native live-agent validation baseline
 
-- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/in-progress/autobyteus-ts-edit-format-investigation/code-review-report.md`; API/E2E execution round 1.
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/code-review-report.md`; API/E2E execution round 1.
 - Triggering finding or scenario IDs: `CRR-002` Pass resolving `CR-001`; user-requested fresh production-level agent benchmark; `REP-001`-`REP-007`, `LIVE-001`-`LIVE-006`.
 - Related solution, architecture-review, implementation, code-review, or delivery revision IDs: `SR-002`, `ARCH-REV-002`, `IR-002`, `CRR-002`; delivery `N/A`.
 - Why this baseline or coverage/execution revision was recorded: First completed API/E2E result for the reviewed clean-cut context-patch implementation and catalog contraction.
@@ -24,7 +24,7 @@ The latest coverage investigation and execution coverage report are authoritativ
 
 None.
 
-- Canonical artifacts and sections updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/in-progress/autobyteus-ts-edit-format-investigation/api-e2e-coverage-investigation.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/in-progress/autobyteus-ts-edit-format-investigation/api-e2e-execution-coverage-report.md`; this revision record; retained evidence under `benchmark-evidence/`.
+- Canonical artifacts and sections updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/api-e2e-coverage-investigation.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/api-e2e-execution-coverage-report.md`; this revision record; retained evidence under `benchmark-evidence/`.
 - Prior result and confidence: `N/A`
 - Current result and confidence: `Pass / 98.3%`
 - New or remaining failure IDs: None. Known unrelated baseline failures remain five core-unit and two approval-flow assertions; schema-only provider drift remains dated evidence, not an unresolved product failure.

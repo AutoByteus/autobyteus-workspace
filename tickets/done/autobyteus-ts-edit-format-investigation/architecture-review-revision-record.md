@@ -11,7 +11,7 @@
 
 ### ARCH-REV-001 — Structurally sound design held for supplemental-package integrity
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/in-progress/autobyteus-ts-edit-format-investigation/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/design-review-report.md`
 - Review round and trigger: Round 1; initial architecture review after user approval and `SR-001` handoff.
 - Triggering role, report path, and finding IDs: `solution_designer`; initial baseline package; no prior findings.
 - Relevant solution revision IDs: `SR-001`
@@ -30,9 +30,9 @@ None.
 
 ### ARCH-REV-002 — Corrected evidence and four-tool contraction approved
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/in-progress/autobyteus-ts-edit-format-investigation/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/design-review-report.md`
 - Review round and trigger: Round 2; `SR-002` correction of both prior findings plus the user-approved removal of `replace_in_file` and `insert_in_file`.
-- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/in-progress/autobyteus-ts-edit-format-investigation/solution-revision-record.md`; `DR-ECF-001`, `DR-ECF-002`.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/solution-revision-record.md`; `DR-ECF-001`, `DR-ECF-002`.
 - Relevant solution revision IDs: `SR-001`, `SR-002`
 - Prior authoritative decision: `Fail`
 - Current authoritative decision: `Pass`

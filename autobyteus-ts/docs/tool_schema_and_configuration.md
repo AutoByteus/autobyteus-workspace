@@ -53,6 +53,54 @@ fallback wording. This contract supports configured skill references and
 external project worktrees without introducing a second per-path approval
 workflow; tool/run approval remains the separate invocation gate.
 
+## 2.2 `edit_file` Context-Patch Contract
+
+`edit_file` applies context-located hunks rather than line-number-located
+unified diffs. The model-facing canonical format is:
+
+```diff
+@@
+ unchanged context
+-content to remove
++replacement content
+```
+
+- Every hunk starts with a bare `@@` line. Each hunk body line starts with one
+  space for unchanged context, `-` for a removal, or `+` for an addition.
+- Unchanged and removal lines form the location anchor. Addition-only hunks are
+  rejected because they do not identify a safe location.
+- Each hunk must match exactly one eligible location after the preceding hunk.
+  Missing or ambiguous context is rejected with guidance to read the file again
+  and include more unique context.
+- Matching tries exact content first, then a whitespace-tolerant retry. The
+  complete multi-hunk result is constructed before the file is written, so a
+  failed hunk does not leave a partial edit.
+- A conventional numeric-decorated header such as
+  `@@ -10,2 +10,3 @@` may be accepted as model-output noise, but its coordinates
+  and counts are discarded and never affect matching. Schemas, examples, and
+  generated prompts must request the bare `@@` form.
+- File headers, line labels, `Begin/End Patch` wrappers, and arbitrary header
+  suffixes are not part of the grammar. XML sentinel tags are transport framing
+  only and are stripped before the patch reaches this semantic boundary.
+
+The semantic owner is `src/tools/file/context-patch.ts`; path resolution,
+existing-file validation, and write-after-success behavior remain owned by
+`src/tools/file/edit-file.ts`.
+
+## 2.3 File-Tool Surface And Stored Tool Names
+
+The supported file-change routes are surgical `edit_file`, deliberate
+whole-file `write_file`, and explicit `run_bash`; `read_file` provides file
+inspection. The default registry does not define the retired
+`replace_in_file` or `insert_in_file` tools and no compatibility alias restores
+them.
+
+Agent definitions persist tool names as strings. Existing configurations are
+not rewritten when a registered tool is removed: the normal AutoByteus resolver
+warns and skips an unknown name while continuing to instantiate the remaining
+registered tools. A stale name may therefore remain visible until a user edits
+the definition, but it is inactive and requires no data migration.
+
 ---
 
 ## 3. Core Architecture

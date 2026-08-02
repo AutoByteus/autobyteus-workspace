@@ -6,17 +6,17 @@ The latest `code-review-report.md` or `api-e2e-test-review-report.md` remains au
 
 | Revision ID | Canonical Review Report | Entry Point / Trigger | Prior Result | Current Result | Affected Finding IDs |
 | --- | --- | --- | --- | --- | --- |
-| `CRR-001` | `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/in-progress/autobyteus-ts-edit-format-investigation/code-review-report.md` | Implementation Review / initial `IR-001` source review | `N/A` | `Fail` / `Local Fix` | `CR-001` |
-| `CRR-002` | `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/in-progress/autobyteus-ts-edit-format-investigation/code-review-report.md` | Implementation Review / `IR-002` re-review | `Fail` / `Local Fix` | `Pass` | `CR-001` resolved |
-| `CRR-003` | `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/in-progress/autobyteus-ts-edit-format-investigation/api-e2e-test-review-report.md` | Successful API/E2E Test-Code Review / `API-REV-001` | `Pass` | `Not Applicable` | None |
+| `CRR-001` | `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/code-review-report.md` | Implementation Review / initial `IR-001` source review | `N/A` | `Fail` / `Local Fix` | `CR-001` |
+| `CRR-002` | `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/code-review-report.md` | Implementation Review / `IR-002` re-review | `Fail` / `Local Fix` | `Pass` | `CR-001` resolved |
+| `CRR-003` | `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/api-e2e-test-review-report.md` | Successful API/E2E Test-Code Review / `API-REV-001` | `Pass` | `Not Applicable` | None |
 
 ## Revision Entries
 
 ### CRR-001 — Initial source review finds delimiter/context token collision
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/in-progress/autobyteus-ts-edit-format-investigation/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round `1`
-- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/in-progress/autobyteus-ts-edit-format-investigation/implementation-handoff.md`; initial review, finding `CR-001`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/implementation-handoff.md`; initial review, finding `CR-001`
 - Relevant solution revision IDs: `SR-002`
 - Relevant architecture-review revision IDs: `ARCH-REV-002`
 - Relevant implementation revision IDs: `IR-001`
@@ -33,13 +33,13 @@ None.
 - New or remaining finding IDs: `CR-001` (open, blocking)
 - Material score or classification changes: Initial score `9.2/10` (`91.6/100`); runtime correctness `7.4` and API/E2E readiness `8.0`; classification `Local Fix`.
 - Recommended recipient: `implementation_engineer`
-- Remaining risks or uncertainty: Known baseline test failures, provider drift, inactive stale configured names, and delivery-stage base integration remain as recorded upstream. API/E2E has not begun. The `CR-001` production premise is `Reachable`, not speculative; exact reproduction is at `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/in-progress/autobyteus-ts-edit-format-investigation/benchmark-evidence/code-review-cr-001-reproduction.log`.
+- Remaining risks or uncertainty: Known baseline test failures, provider drift, inactive stale configured names, and delivery-stage base integration remain as recorded upstream. API/E2E has not begun. The `CR-001` production premise is `Reachable`, not speculative; exact reproduction is at `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/benchmark-evidence/code-review-cr-001-reproduction.log`.
 
 ### CRR-002 — IR-002 restores unprefixed header/body distinction
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/in-progress/autobyteus-ts-edit-format-investigation/code-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/code-review-report.md`
 - Review entry point and round: `Implementation Review`, round `2`
-- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/in-progress/autobyteus-ts-edit-format-investigation/implementation-handoff.md`; `CR-001`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/implementation-handoff.md`; `CR-001`
 - Relevant solution revision IDs: `SR-002`
 - Relevant architecture-review revision IDs: `ARCH-REV-002`
 - Relevant implementation revision IDs: `IR-001`, `IR-002`
@@ -53,7 +53,7 @@ None.
 
 | Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
 | --- | --- | --- | --- | --- |
-| `CR-001` | Open / blocking | Resolved | `IR-002`, `CRR-002` | Source diff at commit `25319ebdc7a611b9e633e1c10e20f04476b29174`; 31-case context suite and 13-case edit-file suite within the independent 50/50 focused rerun; clean build; freshly built verification at `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/in-progress/autobyteus-ts-edit-format-investigation/benchmark-evidence/code-review-cr-001-resolution-verification.log` proves prefixed bare/numeric context, CRLF, strict padded-header rejection, and noncontiguous no-write. |
+| `CR-001` | Open / blocking | Resolved | `IR-002`, `CRR-002` | Source diff at commit `25319ebdc7a611b9e633e1c10e20f04476b29174`; 31-case context suite and 13-case edit-file suite within the independent 50/50 focused rerun; clean build; freshly built verification at `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/benchmark-evidence/code-review-cr-001-resolution-verification.log` proves prefixed bare/numeric context, CRLF, strict padded-header rejection, and noncontiguous no-write. |
 
 - New or remaining finding IDs: None
 - Material score or classification changes: Score improves from `9.2/10` (`91.6/100`) to `9.6/10` (`95.6/100`); runtime correctness improves from 7.4 to 9.5 and API/E2E readiness from 8.0 to 9.4; result changes from `Fail / Local Fix` to `Pass`.
@@ -62,9 +62,9 @@ None.
 
 ### CRR-003 — API-REV-001 changed no durable test code
 
-- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/in-progress/autobyteus-ts-edit-format-investigation/api-e2e-test-review-report.md`
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/api-e2e-test-review-report.md`
 - Review entry point and round: `Successful API/E2E Test-Code Review`, round `1`
-- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/in-progress/autobyteus-ts-edit-format-investigation/api-e2e-execution-coverage-report.md`; `API-REV-001`; no failing scenario/finding ID
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/api-e2e-execution-coverage-report.md`; `API-REV-001`; no failing scenario/finding ID
 - Relevant solution revision IDs: `SR-002`
 - Relevant architecture-review revision IDs: `ARCH-REV-002`
 - Relevant implementation revision IDs: `IR-002`
