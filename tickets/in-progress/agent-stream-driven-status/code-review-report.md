@@ -16,13 +16,13 @@
 - Relevant Architecture Review Revision IDs: `ARCH-REV-002`
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/implementation-revision-record.md`
-- Relevant Implementation Revision IDs: `IR-001`
+- Relevant Implementation Revision IDs: `IR-001`, `IR-002`
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: `1`
-- Trigger: `implementation_engineer` requested source/architecture review of implementation commit `b1e96b73f0b40427bebe07f9b4f9609007a766fe` and handoff commit `e1b5e8e4b3d02ba1071da1de9a05fdc52b17c943`.
-- Prior Review Round Reviewed: `N/A`
-- Latest Authoritative Round: `1`
+- Current Code Review Revision ID: `CRR-002`
+- Current Review Round: `2`
+- Trigger: `implementation_engineer` requested source re-review of `IR-002`, source/test commit `f453286d829ffde874a700d350f9c8ade80af4c9`, for `CODE-FIND-001`.
+- Prior Review Round Reviewed: `1` (`CRR-001`, `Fail / Local Fix`)
+- Latest Authoritative Round: `2`
 - Coverage Investigation Reviewed (failure-origin entry point): `N/A`
 - Execution Coverage Report Reviewed (failure-origin entry point): `N/A`
 - API/E2E Revision Record Reviewed (failure-origin entry point): `N/A`
@@ -35,23 +35,23 @@
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: status-only public lifecycle; per-run source/local/processor event convergence; lifecycle current/retired-turn precedence; command/start/snapshot reconciliation; team identity wrapping and exact interrupt routing; frontend live/hydration status precedence; submission pending and shared click/Enter/store primary-action admission.
-- Files / areas reviewed: the complete production diff from `4b29481d5b6eaea64aebb20abcb5e4d784ea1178` through `b1e96b73f0b40427bebe07f9b4f9609007a766fe`, relevant surrounding runtime/streaming callers, focused changed tests, and the existing standalone/team content-presentation schedulers reached by the new companion stream.
+- Changed implementation and behavior reviewed: the complete `IR-001` status-only lifecycle implementation, plus the `IR-002` correction that keeps `AGENT_STATUS` dispatch immediate while making it presentation-transparent in standalone and team streaming.
+- Files / areas reviewed: the complete production diff from `4b29481d5b6eaea64aebb20abcb5e4d784ea1178` through `f453286d829ffde874a700d350f9c8ade80af4c9`; the bounded `IR-002` diff in both streaming services, the shared flush policy, and companion-interleaved unit coverage; relevant server finalization ordering and presentation scheduler behavior.
 - Explicit exclusions: durable API/E2E investigation and cross-provider realistic execution remain downstream-owned; pre-existing repository-wide typecheck and fixture failures were reviewed only to confirm the handoff's baseline classification.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
 - Approved requirements basis understood: `Yes`. `running` is the sole public busy/interruptible state; every final non-status `AgentRunEvent` receives a canonical companion; current/retired turn identity governs lifecycle; matching terminal/error/offline evidence settles state; click, Enter, and store admission share one action decision.
-- Design-spec behavior map verified against the implementation: `Yes`, subject to `CODE-FIND-001` on the downstream presentation consequence of the newly mandatory companion sequence.
+- Design-spec behavior map verified against the implementation: `Yes`. `IR-002` resolves the prior downstream presentation consequence without changing the approved server companion sequence.
 - Design review report and round confirmed: `ARCH-REV-002` / `Pass` for `SR-002`.
 - Behavior-basis status: `Confirmed`
-- Changed or newly discovered behavior, if any: No new supported behavior. Review found an implementation consequence on the established BEH-002 streaming path.
+- Changed or newly discovered behavior, if any: `None`. `IR-002` is a bounded implementation correction on established BEH-002.
 - Remaining material ambiguity, if any: `None`.
 
 | Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence |
 | --- | --- | --- | --- |
 | BEH-001 | Confirmed | `AgentTurnLifecycleState.status` exposes `running` only for an open identified/anonymous turn; status-only DTO reaches `resolveAgentPrimaryAction`; `AgentUserInputTextArea.vue` and `activeContextStore` both route `running` to the existing standalone or exact member interrupt command. | N/A |
-| BEH-002 | Confirmed | Runtime source batches and awaited local events enter `AgentRun`'s per-run queue; processors precede `LifecycleStatusEventTransformer`; every final non-status event receives exactly one ordered status; mixed-member mapping adds exact identity. `CODE-FIND-001` concerns preservation of existing frontend content batching after this confirmed companion path. | N/A |
+| BEH-002 | Confirmed | Runtime source batches and awaited local events enter `AgentRun`'s per-run queue; processors precede `LifecycleStatusEventTransformer`; every final non-status event receives exactly one ordered status; mixed-member mapping adds exact identity. In both frontend services, `AGENT_STATUS` is applied immediately without flushing pending content, while every other non-content segment, semantic, or terminal message still flushes before dispatch. | N/A |
 | BEH-003 | Confirmed | Command facts, fresh backend lifecycle snapshots, final events, termination, and `getStatusSnapshot()` reconcile the same run-owned state; active-run projection precedes the pre-runtime overlay; stream bind precedes the fresh status read. | N/A |
 | BEH-004 | Confirmed | Identified/anonymous active state plus `retiredTurnIds` preserves B across stale terminal/activity for A and prevents retired snapshot/activity from reopening A; focused unit evidence passed. | N/A |
 | BEH-005 | Confirmed | `resolveAgentPrimaryAction` is consumed by button rendering/execution, Enter, and `activeContextStore` send/interrupt rechecks; exact team member route/run validation is retained. | N/A |
@@ -65,25 +65,25 @@
 | Data-flow spine inventory clarity and preservation under shared principles | Pass | DS-001–DS-009 remain traceable through command, run gateway, runtime/local return, team identity, snapshot, and frontend action paths. | None |
 | Ownership boundary preservation and clarity | Pass | `AgentRun` owns one source subscription, queue, lifecycle state, listener set, publication API, and snapshot; provider backends expose only source batches and internal lifecycle evidence. | None |
 | Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Runtime projectors, error/turn resolvers, overlays, mappers, hydration, and submission policy remain bounded around their governing owners. | None |
-| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | Existing lifecycle, pipeline, run, team, status, and submission areas are extended; the only new frontend policy file is specific and proportionate. | None |
-| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | One internal lifecycle snapshot type, one status builder, one lifecycle state, and one action resolver replace repeated shapes/policy. | None |
+| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | Existing lifecycle, pipeline, run, team, status, submission, and content-presentation scheduler areas are extended; the new flush policy is a specific presentation concern shared by both streaming services. | None |
+| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | One internal lifecycle snapshot type, one status builder, one lifecycle state, one action resolver, and one presentation flush classification replace repeated shapes/policy. | None |
 | Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | `can_interrupt`/`canInterrupt` and broad `isSending` lifecycle meaning are removed; runtime evidence remains internal and distinct from the public DTO. | None |
-| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | Lifecycle precedence is in `AgentTurnLifecycleState`; primary-action admission is in `resolveAgentPrimaryAction`; active status reads flow through `AgentRun`. | None |
+| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | Lifecycle precedence is in `AgentTurnLifecycleState`; primary-action admission is in `resolveAgentPrimaryAction`; active status reads flow through `AgentRun`; both streaming clients consume `shouldFlushPendingContentBefore`. | None |
 | Empty indirection check (no pass-through-only boundary) | Pass | New and changed boundaries own concrete state, sequencing, conversion, or policy. | None |
 | Scope-appropriate separation of concerns and file responsibility clarity | Pass | Gateway, state machine, finalizer, provider projectors, local producers, frontend status, action policy, and presentation component remain separated. | None |
 | Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | Production scan found runtime dispatch only from `AgentRun`; local producers await `publishEvent`; active-run status broadcaster replacement is removed. | None |
 | Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | Callers use `AgentRun` rather than backend listeners/provider state/dispatcher; frontend callers use status/action/store boundaries rather than a parallel permission model. | None |
-| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | New lifecycle evidence and action policy files are placed in the reviewed domain/submission capability areas. | None |
+| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | New lifecycle evidence, action policy, and content-presentation flush policy files are placed in their reviewed domain/submission/presentation capability areas. | None |
 | Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | The run and lifecycle-state files are cohesive owners despite the approved replacement delta; provider and policy concerns remain separate. | None |
 | Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Pass | Backend source/snapshot contracts, awaited run publication, public snapshot, and exact interrupt selectors remain singular and explicit. | None |
-| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | `AgentRuntimeLifecycleSnapshot`, `publishEvent`, `submissionPending`, and `AgentPrimaryAction` accurately name their bounded concerns. | None |
-| No unjustified duplication of code / repeated structures in changed scope | Pass | Status/action duplication is contracted and runtime projectors share one internal evidence shape. | None |
+| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | `AgentRuntimeLifecycleSnapshot`, `publishEvent`, `submissionPending`, `AgentPrimaryAction`, and `shouldFlushPendingContentBefore` accurately name their bounded concerns. | None |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | Status/action duplication is contracted, runtime projectors share one internal evidence shape, and standalone/team clients share one flush classification. | None |
 | Patch-on-patch complexity control | Pass | Clean contract removal replaces compatibility/override layering; no fallback permission path or alternate event bus remains. | None |
 | Dead/obsolete code cleanup completeness in changed scope | Pass | Production scans found no per-agent `can_interrupt`, `canInterrupt`, `emitLocalEvent`, `AgentContext.isSending`, or agent-execution `statusOverride`. | None |
-| Relevant test scenarios and assertions are clear and requirement-aligned | Fail | Lifecycle/action tests are strong, but standalone/team streaming tests do not exercise the now-required `[AGENT_STATUS, SEGMENT_CONTENT]` repetition and therefore miss `CODE-FIND-001`. | Add companion-interleaved content batching tests for both streaming services. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Standalone and team fake-timer cases exercise multiple `[AGENT_STATUS(running), SEGMENT_CONTENT]` pairs inside 100 ms, immediate status projection, and coalesced presentation; standalone asserts segment-boundary flushing and team exercises the terminal path governed by the same shared classification. | None |
 | Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Existing harnesses cover lifecycle, coordinator, component, stores, and streaming services without compatibility fixtures. | None |
 | No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | Removed permission fields and direct backend/publication seams are not preserved in focused coverage. | None |
-| API/E2E readiness for the next workflow stage | Fail | `CODE-FIND-001` is a source-detectable production regression on the mandatory live companion path; the implementation must be corrected and re-reviewed before API/E2E. | Route to `implementation_engineer`; repeat source review after the bounded fix. |
+| API/E2E readiness for the next workflow stage | Pass | `CODE-FIND-001` is resolved in source and focused regression coverage; the complete focused frontend reviewer scope passes. Realistic cross-provider and WebSocket evidence remains the intended downstream stage. | Proceed to `api_e2e_engineer`. |
 
 ## Source File Size And Structure Audit
 
@@ -106,6 +106,9 @@ Changed implementation-source files only; tests, fixtures, generated files, and 
 | `autobyteus-server-ts/src/services/published-artifacts/published-artifact-publication-service.ts` | 246 | Pass | Reviewed; bounded persistence/publication failure ordering | Pass | Pass | Pass | None |
 | `autobyteus-web/components/agentInput/AgentUserInputTextArea.vue` | 433 | Pass | Reviewed; cohesive action-policy consumption | Pass | Pass | Pass | None |
 | `autobyteus-web/services/agentStreaming/protocol/messageTypes.ts` | 426 | Pass | Reviewed; one-field contract removal | Pass | Pass | Pass | None |
+| `autobyteus-web/services/agentStreaming/AgentStreamingService.ts` | 328 | Pass | `IR-002` delta 4 additions / 1 deletion | Pass | Pass | Pass | None |
+| `autobyteus-web/services/agentStreaming/TeamStreamingService.ts` | 489 | Pass | `IR-002` delta 5 additions / 1 deletion | Pass | Pass | Pass | None |
+| `autobyteus-web/services/agentStreaming/presentation/streamContentPresentationFlushPolicy.ts` | 9 | Pass | `IR-002` delta 10 additions | Pass; one shared semantic classification | Pass | Pass | None |
 | `autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts` | 241 | Pass | Reviewed; one-option status cleanup | Pass | Pass | Pass | None |
 | `autobyteus-web/stores/activeContextStore.ts` | 229 | Pass | Reviewed; cohesive selected-context action facade | Pass | Pass | Pass | None |
 | `autobyteus-web/stores/agentTeamRunStore.ts` | 460 | Pass | Reviewed; one-field local-state rename | Pass | Pass | Pass | None |
@@ -113,7 +116,7 @@ Changed implementation-source files only; tests, fixtures, generated files, and 
 | `autobyteus-web/stores/runHistoryTeamMemberProjectionHydrator.ts` | 300 | Pass | Reviewed; bounded live-status preservation option | Pass | Pass | Pass | None |
 | Remaining 32 changed implementation files (all individually inspected; range 13–200 effective lines) | 13–200 | Pass | Not triggered | Pass | Pass | Pass | None |
 
-`CODE-FIND-001` is in relevant existing streaming-source behavior reached by the changed wire sequence, not a changed file-size defect.
+The `IR-002` correction stays well below both source thresholds and keeps the shared classification in the owning presentation area.
 
 ## Legacy / Backward-Compatibility Verdict
 
@@ -145,83 +148,70 @@ None.
 | MP-001 | Confirmed | Production local origins now enter awaited `AgentRun.publishEvent`; no alternate local/backend public finalizer path remains. |
 | MP-002 | Confirmed | `statusOverride` and active-run broadcaster replacement are removed; fresh runtime evidence reconciles the same state used by event finalization and snapshot reads. |
 
-### `CR-MP-001` — Mandatory per-delta status companions force the existing content scheduler to flush every prior delta
+### `CR-MP-001` — Mandatory per-delta status companions exercise the existing content-presentation boundary
 
-- Origin: `New`
+- Origin: `New` in `CRR-001`; revalidated against `IR-002`.
 - Related approved requirement or established contract: REQ-003 and REQ-010 require one ordered canonical status companion for every final non-status event; the approved constraints preserve existing content-delta presentation batching while companion ordering/repair is maintained.
 - Relevant behavior ID(s): `BEH-002`
 - Initiating basis kind: `User`
 - Independent product-supported initiating trigger or applicable governing contract: On the exposed standalone or exact team-member composer, the user sends a message and a supported AutoByteus, Codex, or Claude runtime streams multiple current-turn content deltas.
-- Support evidence: The composer Send paths are DS-001/DS-002; ORIGIN-001 is the supported provider stream; `LifecycleStatusEventTransformer` lines 51–52 emits `AGENT_STATUS` immediately before every nonterminal event; the standalone and team WebSocket clients are the supported rendered product surfaces.
-- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: `Composer Send -> AgentRun/current runtime turn -> provider SEGMENT_CONTENT deltas -> AgentRun finalizer emits [AGENT_STATUS(running), SEGMENT_CONTENT] for each delta -> standalone/team WebSocket -> AgentStreamingService.handleMessage or TeamStreamingService.handleMessage -> StreamContentPresentationScheduler`.
-- Lifecycle preconditions and material consequence at the claimed point: The current turn is open and emits at least two content deltas within the scheduler's 100 ms batching interval. Delta 1 is queued; the required status before delta 2 is a non-content message, so line 200 of `AgentStreamingService.ts` or lines 239–240 of `TeamStreamingService.ts` flushes delta 1 immediately. Repetition therefore limits batches to one delta and defeats the existing cadence/coalescing behavior on every normal streamed response.
+- Support evidence: The composer Send paths are DS-001/DS-002; ORIGIN-001 is the supported provider stream; `LifecycleStatusEventTransformer` emits `AGENT_STATUS` immediately before every nonterminal event; the standalone and team WebSocket clients are the supported rendered product surfaces.
+- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: `Composer Send -> AgentRun/current runtime turn -> provider SEGMENT_CONTENT deltas -> AgentRun finalizer emits [AGENT_STATUS(running), SEGMENT_CONTENT] for each delta -> standalone/team WebSocket -> AgentStreamingService.handleMessage or TeamStreamingService.handleMessage -> shared flush policy -> StreamContentPresentationScheduler`.
+- Lifecycle preconditions and material consequence at the claimed point: The current turn is open and emits at least two content deltas within 100 ms. In `IR-002`, the companion status is dispatched immediately but `shouldFlushPendingContentBefore('AGENT_STATUS')` returns false, so the queued deltas continue to coalesce. `SEGMENT_END`, `TURN_COMPLETED`, and every other non-content boundary still return true and flush before dispatch.
 - Reachability: `Reachable`
-- Review consequence / proportionate response: `CODE-FIND-001` is blocking but bounded. Preserve immediate status application and terminal/semantic ordering without treating each companion status as a content flush boundary; add standalone and team tests for companion-interleaved deltas.
+- Review consequence / proportionate response: The same supported path is preserved and `CODE-FIND-001` is resolved. No new machinery or contract change is required; downstream realistic execution should measure companion volume and confirm the unit-proven presentation behavior.
 
 ## Reviewer Validation Evidence
 
-- `pnpm exec vitest run tests/unit/agent-execution/agent-run.test.ts tests/unit/agent-execution/events/lifecycle-status-event-transformer.test.ts tests/unit/agent-execution/agent-run-command-coordinator.test.ts tests/unit/agent-execution/agent-api-status-projectors.test.ts --reporter=dot` in `autobyteus-server-ts`: `4` files / `33` tests passed.
-- `pnpm exec vitest run services/agentStreaming/__tests__/AgentStreamingService.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts services/runSubmission/__tests__/agentPrimaryAction.spec.ts components/agentInput/__tests__/AgentUserInputTextArea.spec.ts stores/__tests__/activeContextStore.spec.ts --reporter=dot` in `autobyteus-web`: `5` files / `91` tests passed.
-- `git diff --check 4b29481d5b6eaea64aebb20abcb5e4d784ea1178..HEAD`: passed.
-- Passing tests do not contradict `CODE-FIND-001`; the streaming tests cover adjacent-delta batching and semantic-event flushing, but not the mandatory status-companion interleaving introduced by this change.
+- Prior unaffected server evidence retained from `CRR-001`: lifecycle reviewer scope `4` files / `33` tests passed; `IR-002` does not change server source or the one-companion-per-final-event contract.
+- Re-run on `IR-002`: `pnpm exec vitest run services/agentStreaming/__tests__/AgentStreamingService.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts services/runSubmission/__tests__/agentPrimaryAction.spec.ts components/agentInput/__tests__/AgentUserInputTextArea.spec.ts stores/__tests__/activeContextStore.spec.ts --reporter=dot` in `autobyteus-web`: `5` files / `91` tests passed.
+- The streaming cases now inject companion-interleaved deltas, assert status projection before timer presentation, verify coalescing at 100 ms, assert standalone segment-boundary flushing, and exercise the team terminal path. The shared source classifier independently makes every non-status message a pre-dispatch flush boundary.
+- `git diff --check 4b29481d5b6eaea64aebb20abcb5e4d784ea1178..HEAD` and `git diff --check 65b20a3c2..f453286d829ffde874a700d350f9c8ade80af4c9`: passed.
+- Current source sizes: `AgentStreamingService.ts` 328, `TeamStreamingService.ts` 489, shared flush policy 9 effective non-empty lines.
 
 ## Review Scorecard
 
-- Overall score (`/10`): `9.3`
-- Overall score (`/100`): `92.6`
-- Score calculation note: simple average of the ten category scores; the score does not override the two categories below the clean-pass threshold.
+- Overall score (`/10`): `9.5`
+- Overall score (`/100`): `95.4`
+- Score calculation note: simple average of the ten category scores; every category meets the clean-pass threshold.
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | ---: | --- | --- | --- |
-| 1 | Data-Flow Spine Inventory and Clarity | 9.6 | Runtime, local, processor-derived, snapshot, team, and composer spines remain directly traceable. | Real multi-runtime execution evidence remains downstream. | Preserve the same trace through the bounded rework. |
-| 2 | Ownership Clarity and Boundary Encapsulation | 9.6 | `AgentRun` is the sole per-run queue/state/listener/publication owner and callers no longer bypass it. | No material source weakness found. | Keep the fix in the frontend streaming/presentation boundary; do not reopen server ownership. |
-| 3 | API / Interface / Query / Command Clarity | 9.5 | Status-only wire DTO, internal lifecycle snapshot, awaited publication, and exact interrupt selectors are singular and explicit. | Backend source-listener callbacks intentionally remain internal async seams requiring downstream execution evidence. | No interface expansion is needed for the finding. |
-| 4 | Separation of Concerns and File Placement | 9.4 | State, finalization, provider projection, local publication, status mutation, action policy, and UI remain separated. | Existing streaming services have a broad "flush on every non-content message" policy that is now too coarse for status companions. | Refine flush classification within the owning streaming/presentation boundary. |
-| 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.6 | Redundant permission/busy representations are removed and shared structures remain tight. | No material source weakness found. | Preserve the status-only model. |
-| 6 | Naming Quality and Local Readability | 9.4 | New names accurately express lifecycle evidence, publication, pending submission, and action policy. | Several established source files remain large but the changed responsibilities are coherent and below the hard limit. | Keep the local fix small and named by semantic flush behavior. |
-| 7 | API/E2E Readiness | 8.4 | Core focused suites pass and suggested downstream scenarios are well identified. | A source-detectable live-stream regression is known, and no test covers status-companion-interleaved content batching. | Add standalone/team regression tests and re-review before API/E2E. |
-| 8 | Runtime Correctness And Behavioral Fidelity | 8.3 | Lifecycle, ordering, retired-turn safety, reconnect, and primary-action behavior are well implemented. | `CODE-FIND-001` defeats the established 100 ms delta batching/coalescing path for every normally streamed response. | Preserve status-before-content repair while preventing companion statuses from forcing per-delta presentation. |
-| 9 | No Backward-Compatibility / No Legacy Retention | 9.8 | The implementation is a clean contract replacement with no old permission/event/status path retained. | Documentation is intentionally stale until delivery sync. | No source compatibility work; delivery updates docs after verification. |
-| 10 | Cleanup Completeness | 9.5 | Intended obsolete fields, overrides, listeners, dispatch calls, and broad busy writes are removed. | Known repository baseline fixture/typecheck failures remain outside this delta. | Keep baseline limitations explicit; no unrelated cleanup is required. |
+| 1 | Data-Flow Spine Inventory and Clarity | 9.6 | Runtime, local, processor-derived, snapshot, team, composer, and presentation spines remain directly traceable. | Real multi-runtime execution evidence remains downstream. | Preserve the same trace in API/E2E evidence. |
+| 2 | Ownership Clarity and Boundary Encapsulation | 9.6 | `AgentRun` remains the sole per-run authority, while the bounded correction stays in the frontend presentation boundary. | No material source weakness found. | Confirm the boundary under realistic execution without adding alternate status logic. |
+| 3 | API / Interface / Query / Command Clarity | 9.5 | Status-only wire DTO, internal lifecycle snapshot, awaited publication, exact interrupt selectors, and flush classification are singular and explicit. | Backend source-listener callbacks remain internal async seams requiring downstream execution evidence. | No interface expansion is needed. |
+| 4 | Separation of Concerns and File Placement | 9.6 | Shared flush classification is placed under presentation and consumed by both streaming services; lifecycle, action, and rendering responsibilities remain separate. | The established team streaming service is close to the hard size limit, though the rework adds only a small cohesive call site. | Avoid unrelated responsibility growth in that service. |
+| 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.6 | Redundant permission/busy representations are removed and the two clients share one narrow flush policy. | No material source weakness found. | Preserve the status-only model and shared policy. |
+| 6 | Naming Quality and Local Readability | 9.5 | New and changed names accurately express lifecycle evidence, pending submission, action policy, and pre-dispatch presentation flushing. | Several established source files remain large but coherent and below the hard limit. | Keep future changes responsibility-focused. |
+| 7 | API/E2E Readiness | 9.2 | The prior blocking path now has deterministic standalone/team coverage and the five-file reviewer scope passes. | Real WebSocket, cross-provider, reconnect, and failure-injection evidence has not yet run. | Execute the documented downstream coverage investigation and realistic scenarios. |
+| 8 | Runtime Correctness And Behavioral Fidelity | 9.5 | Status companions apply immediately without collapsing the 100 ms content cadence; true boundaries still flush; lifecycle and primary-action behavior remain intact. | Cross-runtime ordering and live companion volume remain to be observed. | Confirm these invariants in downstream execution. |
+| 9 | No Backward-Compatibility / No Legacy Retention | 9.8 | The implementation remains a clean contract replacement with no old permission/event/status path retained. | Documentation is intentionally stale until delivery sync. | Update durable docs after integrated verification. |
+| 10 | Cleanup Completeness | 9.5 | Intended obsolete fields, overrides, listeners, dispatch calls, and broad busy writes remain removed; the rework adds no obsolete branch. | Known repository baseline fixture/typecheck failures remain outside this delta. | Keep baseline limitations explicit; no unrelated cleanup is required. |
 
 ## Findings
 
-### `CODE-FIND-001` — Status companions defeat standalone and team content-delta batching
-
-- Status: `Open / Blocking`
-- Classification: `Local Fix`
-- Recommended owner: `implementation_engineer`
-- Affected approved behavior / contract: BEH-002; REQ-003 and REQ-010; approved preservation of normal content rendering and existing high-frequency content presentation batching.
-- Material-premise validation: `CR-MP-001` (`Reachable`).
-- Evidence:
-  - `autobyteus-server-ts/src/agent-execution/events/processors/lifecycle-status/lifecycle-status-event-transformer.ts:51-52` emits a status before each nonterminal `SEGMENT_CONTENT`.
-  - `autobyteus-web/services/agentStreaming/AgentStreamingService.ts:193-201` queues content but flushes the scheduler for every non-content message.
-  - `autobyteus-web/services/agentStreaming/TeamStreamingService.ts:235-244` applies the same rule.
-  - `autobyteus-web/services/agentStreaming/presentation/StreamContentPresentationScheduler.ts:36-63` is designed to coalesce deltas for 100 ms; the next companion status now cancels that interval immediately.
-- Material consequence: A normal `[status, delta1, status, delta2, ...]` stream renders/coalesces at most one delta at a time instead of the established receipt-time cadence, increasing presentation commits/renders throughout standalone and team streaming. The server companion contract is correct; the frontend flush classification is not adapted to it.
-- Required action: Preserve immediate status application and required terminal/semantic ordering, but do not treat ordinary adjacent status companions as content flush boundaries. Add focused standalone and team streaming tests that inject at least two `[AGENT_STATUS(running), SEGMENT_CONTENT]` pairs within the timer window and prove batching/coalescing remains intact; also prove true segment/terminal semantic boundaries still flush before their handlers.
-- Re-review requirement: Return through implementation source review after the bounded source/test correction, then proceed to API/E2E only on a passing canonical review.
+None open. `CODE-FIND-001` is resolved; the verified disposition is recorded in `CRR-002`.
 
 ## Classification
 
-`Local Fix`
+`N/A` — current result passes.
 
 ## Recommended Recipient
 
-`implementation_engineer`
+`api_e2e_engineer`
 
 ## Residual Risks
 
-- Cross-runtime source ordering, identified/anonymous snapshot evidence, exact interrupt addressability, local publication failure injection, and real WebSocket companion volume remain downstream API/E2E responsibilities after `CODE-FIND-001` is resolved.
-- The full changed-frontend batch's 20 fixture failures and repository-wide 230 typecheck errors are accepted only as recorded baseline limitations because the implementation handoff reproduced them at `4b29481d5b6eaea64aebb20abcb5e4d784ea1178`; they are not evidence for or against the current finding.
-- Status-companion volume itself is approved. The required fix must preserve one companion per final non-status event rather than deduplicate or weaken the server contract.
+- Cross-runtime source ordering, identified/anonymous snapshot evidence, exact interrupt addressability, local publication failure injection, and real WebSocket companion volume remain downstream API/E2E responsibilities.
+- The full changed-frontend batch's 20 fixture failures and repository-wide 230 typecheck errors remain recorded baseline limitations reproduced at `4b29481d5b6eaea64aebb20abcb5e4d784ea1178`; they do not block this bounded passing review.
+- Status-companion volume is approved and unchanged. Downstream checks should measure it and confirm presentation behavior rather than deduplicate or weaken the server contract.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
+- Review Decision: `Pass`
 - Review Entry Point: `Implementation Review`
 - Material-Premise Gate: `Pass`
-- Score Summary: `9.3/10` (`92.6/100`); API/E2E Readiness `8.4`, Runtime Correctness And Behavioral Fidelity `8.3`.
-- Failure Origin (when applicable): `N/A` — initial implementation review, not API/E2E failure-origin review.
-- Recommended Recipient (when applicable): `implementation_engineer`
-- Notes: The core reviewed architecture is implemented cleanly, but `CODE-FIND-001` is a reachable, implementation-owned regression on the mandatory live companion path. Do not advance to API/E2E until it is fixed and re-reviewed.
+- Score Summary: `9.5/10` (`95.4/100`); every category is at least `9.0`.
+- Failure Origin (when applicable): `N/A` — implementation source re-review, not API/E2E failure-origin review.
+- Recommended Recipient (when applicable): `api_e2e_engineer`
+- Notes: `IR-002` resolves the only prior blocking finding without changing the approved lifecycle authority or server companion contract. The implementation is ready for coverage investigation and API/E2E execution.

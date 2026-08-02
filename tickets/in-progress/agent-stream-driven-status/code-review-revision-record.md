@@ -7,6 +7,7 @@ The latest `code-review-report.md` or `api-e2e-test-review-report.md` remains au
 | Revision ID | Canonical Review Report | Entry Point / Trigger | Prior Result | Current Result | Affected Finding IDs |
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/code-review-report.md` | Implementation Review round 1 / `IR-001` | N/A | Fail / Local Fix | `CODE-FIND-001` |
+| CRR-002 | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/code-review-report.md` | Implementation Review round 2 / `IR-002` | Fail / Local Fix | Pass | `CODE-FIND-001` |
 
 ## Revision Entries
 
@@ -32,3 +33,28 @@ None.
 - Material score or classification changes: Initial score `9.3/10` (`92.6/100`); API/E2E Readiness `8.4` and Runtime Correctness And Behavioral Fidelity `8.3` are below the clean-pass threshold. Classification is `Local Fix`.
 - Recommended recipient: `implementation_engineer`
 - Remaining risks or uncertainty: Multi-runtime realistic execution and companion-volume observation remain downstream after the bounded fix; recorded baseline frontend fixture/typecheck failures remain unrelated.
+
+### CRR-002 — Companion-transparent presentation rework passes source review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/code-review-report.md`
+- Review entry point and round: `Implementation Review` / round `2`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/implementation-handoff.md`; `CODE-FIND-001`
+- Relevant solution revision IDs: `SR-002`
+- Relevant architecture-review revision IDs: `ARCH-REV-002`
+- Relevant implementation revision IDs: `IR-002`
+- Relevant API/E2E revision IDs: `N/A`
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: `Fail` / `Local Fix` -> `implementation_engineer`
+- Current authoritative result: `Pass` -> `api_e2e_engineer`
+- What changed in the review result and why: `IR-002` introduces one shared presentation flush classification used by standalone and team streaming. `AGENT_STATUS` remains synchronously dispatched but no longer flushes queued content; every other non-content message still flushes before dispatch. The reachable `[status, delta, status, delta]` path now preserves 100 ms batching without changing server companion ordering or volume, and focused regression coverage passes.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CODE-FIND-001` | Open / Blocking | Resolved | `IR-002`; source/test commit `f453286d829ffde874a700d350f9c8ade80af4c9`; `CRR-001` | `AgentStreamingService.ts:194-204`, `TeamStreamingService.ts:232-248`, and `streamContentPresentationFlushPolicy.ts:1-10` preserve immediate status dispatch while skipping only its presentation flush. Companion-interleaved standalone/team fake-timer coverage passes in the `5`-file / `91`-test reviewer command; both relevant streaming suites are included. `git diff --check` passes. |
+
+- New or remaining finding IDs: `None`
+- Material score or classification changes: Overall score rises from `9.3/10` (`92.6/100`) to `9.5/10` (`95.4/100`); API/E2E Readiness rises from `8.4` to `9.2`; Runtime Correctness And Behavioral Fidelity rises from `8.3` to `9.5`; `Local Fix` is cleared.
+- Recommended recipient: `api_e2e_engineer`
+- Remaining risks or uncertainty: Cross-provider/WebSocket ordering and volume, reconnect lifecycle, exact interrupt routing, and local-publication failure injection remain for downstream coverage investigation and realistic execution. Recorded baseline fixture/typecheck failures remain unrelated.
