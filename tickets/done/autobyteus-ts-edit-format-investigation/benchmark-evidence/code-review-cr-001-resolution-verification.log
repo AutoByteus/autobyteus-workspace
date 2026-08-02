@@ -1,0 +1,12 @@
+$ git rev-parse HEAD
+bb6657c4016fed1550eb8b899e03457b5e1178db
+
+$ node --input-type=module  # invoke freshly built editFile/applyContextPatch against CR-001 resolution cases
+prefixedBareContext="before\n@@\ntarget: new\nafter\n"
+prefixedNumericContext="before\n@@ -1 +1 @@\ntarget: new\nafter\n"
+crlfContext="before\r\n@@\r\ntarget: new\r\n"
+paddedHeader=" @@\n-old\n+new\n" PatchApplicationError: Unsupported patch header. Use a bare @@ header without file headers, line numbers, labels, or Begin/End metadata.
+paddedHeader="@@ \n-old\n+new\n" PatchApplicationError: Unsupported patch header. Use a bare @@ header without file headers, line numbers, labels, or Begin/End metadata.
+paddedHeader="\t@@\n-old\n+new\n" PatchApplicationError: Unsupported patch header. Use a bare @@ header without file headers, line numbers, labels, or Begin/End metadata.
+noncontiguousContext=PatchApplicationError: Could not find the context hunk in the eligible target region. Read the file again and retry with a canonical bare @@ patch and more unique unchanged/removal context.
+noncontiguousContextFileUnchanged=true

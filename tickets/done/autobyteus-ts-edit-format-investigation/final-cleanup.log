@@ -1,0 +1,51 @@
+Final cleanup for autobyteus-ts-edit-format-investigation
+timestamp_utc=2026-08-02T10:29:05Z
+ticket_worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation
+release_worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-release
+ticket_branch=codex/autobyteus-ts-edit-format-investigation
+
+Pre-cleanup ticket status:
+## codex/autobyteus-ts-edit-format-investigation...origin/codex/autobyteus-ts-edit-format-investigation
+Pre-cleanup release status:
+## personal...origin/personal
+
+Removing dedicated ticket worktree...
+ticket worktree removed: PASS
+
+Deleting local ticket branch...
+Deleted branch codex/autobyteus-ts-edit-format-investigation (was 492cad8f8).
+local ticket branch deleted: PASS
+
+Deleting remote ticket branch...
+remote:
+remote: GitHub found 682 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (18 critical, 288 high, 320 moderate, 56 low). To find out more, visit:
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot
+remote:
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+ - [deleted]             codex/autobyteus-ts-edit-format-investigation
+remote ticket branch deleted: PASS
+
+Pruning worktree metadata...
+initial worktree prune: PASS
+
+Removing temporary clean release worktree...
+release worktree removed: PASS
+final worktree prune: PASS
+
+Restoring primary checkout to personal...
+Previous HEAD position was 96e8a3bfe Merge branch 'codex/autobyteus-ts-edit-format-investigation' into personal
+Switched to branch 'personal'
+Your branch is up to date with 'origin/personal'.
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+Already up to date.
+root_head=c9061a019b187f94ea70d28af83e66fcc8027555
+origin_personal=c9061a019b187f94ea70d28af83e66fcc8027555
+root_branch=personal
+Primary checkout status (user-owned untracked paths preserved):
+## personal...origin/personal
+?? .article-work/
+?? codex/
+
+Remaining worktree entries containing ticket or release path:
+cleanup result: PASS

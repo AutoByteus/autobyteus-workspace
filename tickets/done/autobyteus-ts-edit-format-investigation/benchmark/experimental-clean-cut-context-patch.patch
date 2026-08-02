@@ -1,0 +1,1200 @@
+diff --git a/autobyteus-ts/src/tools/file/edit-file.ts b/autobyteus-ts/src/tools/file/edit-file.ts
+index edaf23c64..357feb844 100644
+--- a/autobyteus-ts/src/tools/file/edit-file.ts
++++ b/autobyteus-ts/src/tools/file/edit-file.ts
+@@ -4,12 +4,12 @@ import type { BaseTool } from '../base-tool.js';
+ import { ToolCategory } from '../tool-category.js';
+ import { defaultToolRegistry } from '../registry/tool-registry.js';
+ import { ParameterSchema, ParameterDefinition, ParameterType } from '../../utils/parameter-schema.js';
+-import { applyUnifiedDiff, PatchApplicationError } from '../../utils/diff-utils.js';
++import { applyContextPatch, PatchApplicationError } from '../../utils/context-patch-utils.js';
+ import { addFileToolPathParameters } from './file-tool-schema.js';
+ import { resolveFileToolPath } from './workspace-path-utils.js';
+ 
+ const DESCRIPTION =
+-  'Applies a diff-style patch to one file without overwriting unrelated content. File paths use trusted-local semantics: absolute paths are used directly; relative paths require an explicit absolute base_dir and are never resolved from workspace, process, or shell cd state. Provide a git diff or unified diff patch for the target file. Use this for surgical patch edits. If exact text replacement is easier, use replace_in_file. If you only need to insert new text near an exact anchor, use insert_in_file.';
++  'Applies a context-located patch to one file without overwriting unrelated content. File paths use trusted-local semantics: absolute paths are used directly; relative paths require an explicit absolute base_dir and are never resolved from workspace, process, or shell cd state. Use this for surgical edits. If exact text replacement is easier, use replace_in_file. If you only need to insert new text near an exact anchor, use insert_in_file.';
+ 
+ const argumentSchema = new ParameterSchema();
+ addFileToolPathParameters(argumentSchema);
+@@ -17,7 +17,7 @@ argumentSchema.addParameter(new ParameterDefinition({
+   name: 'patch',
+   type: ParameterType.STRING,
+   description:
+-    'A git diff or unified diff patch for this file. Use numeric hunk headers such as @@ -10,7 +10,8 @@ and match the file style exactly.',
++    'A context-located patch. Start every hunk with a bare @@ line. Prefix unchanged context with one space, removals with -, and additions with +. Do not include line numbers, file headers, or Begin/End Patch metadata. Include enough unchanged/removal lines to identify exactly one location.',
+   required: true
+ }));
+ 
+@@ -51,16 +51,11 @@ export async function editFile(
+ 
+     let patchedLines: string[] | null = null;
+     let patchError: PatchApplicationError | null = null;
+-    const retryStrategies: Array<[number, boolean]> = [
+-      [0, false],
+-      [1, false],
+-      [1, true],
+-      [2, true]
+-    ];
+-
+-    for (const [fuzzFactor, ignoreWhitespace] of retryStrategies) {
++    const retryStrategies = [false, true];
++
++    for (const ignoreWhitespace of retryStrategies) {
+       try {
+-        patchedLines = applyUnifiedDiff(originalLines, patch, { fuzzFactor, ignoreWhitespace });
++        patchedLines = applyContextPatch(originalLines, patch, { ignoreWhitespace });
+         break;
+       } catch (error) {
+         if (error instanceof PatchApplicationError) {
+@@ -74,7 +69,7 @@ export async function editFile(
+     if (!patchedLines) {
+       const patchFailure = patchError ?? new PatchApplicationError('Patch could not be applied.');
+       throw new PatchApplicationError(
+-        `${patchFailure.message} Read the file again and retry with a more precise patch, or use replace_in_file / insert_in_file for exact text edits.`
++        `${patchFailure.message} Read the file again and retry with more unique context, or use replace_in_file / insert_in_file for exact text edits.`
+       );
+     }
+ 
+diff --git a/autobyteus-ts/src/tools/usage/formatters/edit-file-xml-example-formatter.ts b/autobyteus-ts/src/tools/usage/formatters/edit-file-xml-example-formatter.ts
+index 88ecccdc8..14ab283aa 100644
+--- a/autobyteus-ts/src/tools/usage/formatters/edit-file-xml-example-formatter.ts
++++ b/autobyteus-ts/src/tools/usage/formatters/edit-file-xml-example-formatter.ts
+@@ -10,9 +10,7 @@ export class EditFileXmlExampleFormatter implements BaseExampleFormatter {
+         <arg name="path">/path/to/utils.py</arg>
+         <arg name="patch">
+ __START_PATCH__
+---- a/utils.py
+-+++ b/utils.py
+-@@ -10,7 +10,7 @@
++@@
+  def calculate_total(items):
+      """Calculate the total price of items."""
+      total = 0
+@@ -32,9 +30,7 @@ __END_PATCH__
+         <arg name="path">/path/to/config/settings.yaml</arg>
+         <arg name="patch">
+ __START_PATCH__
+---- a/settings.yaml
+-+++ b/settings.yaml
+-@@ -5,3 +5,6 @@
++@@
+  logging:
+    level: INFO
+    format: "%(asctime)s - %(message)s"
+diff --git a/autobyteus-ts/src/tools/usage/formatters/edit-file-xml-schema-formatter.ts b/autobyteus-ts/src/tools/usage/formatters/edit-file-xml-schema-formatter.ts
+index 3e8dc3f2b..e9b0058a1 100644
+--- a/autobyteus-ts/src/tools/usage/formatters/edit-file-xml-schema-formatter.ts
++++ b/autobyteus-ts/src/tools/usage/formatters/edit-file-xml-schema-formatter.ts
+@@ -7,7 +7,7 @@ export class EditFileXmlSchemaFormatter extends BaseXmlSchemaFormatter {
+     <arguments>
+         <arg name="path" type="string" description="Absolute filesystem path, or a relative file path paired with base_dir. If path is relative, you must provide an absolute base_dir. If base_dir is omitted, path must be absolute. Absolute paths are used directly and take precedence if base_dir is also supplied. Relative paths are never resolved from the configured workspace, process cwd, or prior shell cd state." required="true" />
+         <arg name="base_dir" type="string" description="Optional absolute directory used only when path is relative; it is required for a relative path. If path is absolute, omit base_dir (an absolute path takes precedence if both are supplied). This applies to this tool call only and does not change shell or agent working-directory state. Do not provide a relative base_dir." required="false" />
+-        <arg name="patch" type="string" description="A git diff style unified diff patch for this file. Use ---/+++ file headers and numeric hunk headers such as @@ -10,7 +10,8 @@. Match the file's existing style exactly." required="true">
++        <arg name="patch" type="string" description="A context-located patch. Start every hunk with a bare @@ line. Prefix unchanged context with one space, removals with -, and additions with +. Do not include line numbers or file headers. Include enough unchanged/removal lines to identify exactly one location." required="true">
+             IMPORTANT: To ensure reliable streaming, you MUST enclose the patch content with the sentinel tags __START_PATCH__ and __END_PATCH__.
+             The parser will strip these tags, but they are critical for preventing XML parsing errors if the patch contains special characters.
+         </arg>
+diff --git a/autobyteus-ts/src/utils/diff-utils.ts b/autobyteus-ts/src/utils/diff-utils.ts
+deleted file mode 100644
+index f3f2b51a7..000000000
+--- a/autobyteus-ts/src/utils/diff-utils.ts
++++ /dev/null
+@@ -1,221 +0,0 @@
+-export class PatchApplicationError extends Error {
+-  constructor(message: string) {
+-    super(message);
+-    this.name = 'PatchApplicationError';
+-  }
+-}
+-
+-const HUNK_HEADER_RE = /^@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@/;
+-const GIT_HEADER_PREFIXES = [
+-  'diff --git ',
+-  'index ',
+-  'new file mode ',
+-  'deleted file mode ',
+-  'old mode ',
+-  'new mode ',
+-  'similarity index ',
+-  'dissimilarity index ',
+-  'rename from ',
+-  'rename to ',
+-  'copy from ',
+-  'copy to ',
+-  'binary files '
+-];
+-
+-function splitLinesKeepEnds(text: string): string[] {
+-  const matches = text.match(/.*(?:\n|$)/g) ?? [];
+-  if (matches.length > 0 && matches[matches.length - 1] === '') {
+-    matches.pop();
+-  }
+-  return matches;
+-}
+-
+-function linesMatch(
+-  line1: string,
+-  line2: string,
+-  ignoreWhitespace: boolean,
+-  allowEofNewlineMismatch: boolean
+-): boolean {
+-  if (ignoreWhitespace) {
+-    return line1.trim() === line2.trim();
+-  }
+-  if (line1 === line2) {
+-    return true;
+-  }
+-  if (allowEofNewlineMismatch) {
+-    return line1.replace(/\n$/, '') === line2.replace(/\n$/, '');
+-  }
+-  return false;
+-}
+-
+-export function applyUnifiedDiff(
+-  originalLines: string[],
+-  patch: string,
+-  options: { fuzzFactor?: number; ignoreWhitespace?: boolean } = {}
+-): string[] {
+-  if (!patch || patch.trim().length === 0) {
+-    throw new PatchApplicationError('Patch content is empty; nothing to apply.');
+-  }
+-
+-  const fuzzFactor = options.fuzzFactor ?? 0;
+-  const ignoreWhitespace = options.ignoreWhitespace ?? false;
+-  const patchedLines: string[] = [];
+-  const patchLines = splitLinesKeepEnds(patch);
+-  let origIdx = 0;
+-  let lineIdx = 0;
+-
+-  while (lineIdx < patchLines.length) {
+-    const line = patchLines[lineIdx];
+-
+-    if (line.startsWith('---') || line.startsWith('+++')) {
+-      lineIdx += 1;
+-      continue;
+-    }
+-
+-    const strippedLine = line.trimStart().toLowerCase();
+-    if (GIT_HEADER_PREFIXES.some((prefix) => strippedLine.startsWith(prefix))) {
+-      lineIdx += 1;
+-      continue;
+-    }
+-
+-    if (!line.startsWith('@@')) {
+-      const stripped = line.trim();
+-      if (stripped === '') {
+-        lineIdx += 1;
+-        continue;
+-      }
+-      throw new PatchApplicationError(`Unexpected content outside of hunk header: '${stripped}'.`);
+-    }
+-
+-    const match = HUNK_HEADER_RE.exec(line);
+-    if (!match) {
+-      throw new PatchApplicationError(`Malformed hunk header: '${line.trim()}'.`);
+-    }
+-
+-    const oldStart = parseInt(match[1], 10);
+-    const oldCount = parseInt(match[2] ?? '1', 10);
+-    const expectedOldCount = Number.isNaN(oldCount) ? 1 : oldCount;
+-
+-    lineIdx += 1;
+-
+-    const hunkBody: string[] = [];
+-    while (lineIdx < patchLines.length) {
+-      const hunkLine = patchLines[lineIdx];
+-      if (hunkLine.startsWith('@@')) {
+-        break;
+-      }
+-      hunkBody.push(hunkLine);
+-      lineIdx += 1;
+-    }
+-
+-    const refinedExpectedOrig: string[] = [];
+-    for (let h = 0; h < hunkBody.length; h += 1) {
+-      const hLine = hunkBody[h];
+-      if (hLine.startsWith(' ') || hLine.startsWith('-')) {
+-        let content = hLine.slice(1);
+-        if (h + 1 < hunkBody.length && hunkBody[h + 1].startsWith('\\ No newline')) {
+-          content = content.replace(/\n$/, '');
+-        }
+-        refinedExpectedOrig.push(content);
+-      } else if (hLine.startsWith('+')) {
+-        continue;
+-      } else if (hLine.startsWith('\\')) {
+-        continue;
+-      } else if (hLine.trim() === '') {
+-        continue;
+-      } else {
+-        throw new PatchApplicationError(`Unsupported patch line: '${hLine.trim()}'.`);
+-      }
+-    }
+-
+-    const expectedCount = refinedExpectedOrig.length;
+-    const targetIdxBase = oldStart > 0 ? oldStart - 1 : 0;
+-
+-    let foundIdx = -1;
+-    const offsets: number[] = [0];
+-    for (let f = 1; f <= fuzzFactor; f += 1) {
+-      offsets.push(-f, f);
+-    }
+-
+-    for (const offset of offsets) {
+-      const candidateIdx = targetIdxBase + offset;
+-      if (candidateIdx < origIdx) {
+-        continue;
+-      }
+-      if (candidateIdx + expectedCount > originalLines.length) {
+-        continue;
+-      }
+-
+-      let matchSuccess = true;
+-      for (let k = 0; k < expectedCount; k += 1) {
+-        const isEofLine = candidateIdx + expectedCount === originalLines.length && k === expectedCount - 1;
+-        if (!linesMatch(
+-          originalLines[candidateIdx + k],
+-          refinedExpectedOrig[k],
+-          ignoreWhitespace,
+-          isEofLine
+-        )) {
+-          matchSuccess = false;
+-          break;
+-        }
+-      }
+-
+-      if (matchSuccess) {
+-        foundIdx = candidateIdx;
+-        break;
+-      }
+-    }
+-
+-    if (foundIdx === -1) {
+-      throw new PatchApplicationError(
+-        `Could not find context for hunk starting at ${oldStart} (fuzz=${fuzzFactor}).`
+-      );
+-    }
+-
+-    patchedLines.push(...originalLines.slice(origIdx, foundIdx));
+-
+-    let matchedOrigOffset = 0;
+-    for (let h = 0; h < hunkBody.length; h += 1) {
+-      const hLine = hunkBody[h];
+-
+-      if (hLine.startsWith(' ')) {
+-        if (foundIdx + matchedOrigOffset < originalLines.length) {
+-          patchedLines.push(originalLines[foundIdx + matchedOrigOffset]);
+-        }
+-        matchedOrigOffset += 1;
+-        continue;
+-      }
+-
+-      if (hLine.startsWith('-')) {
+-        matchedOrigOffset += 1;
+-        continue;
+-      }
+-
+-      if (hLine.startsWith('+')) {
+-        let content = hLine.slice(1);
+-        if (h + 1 < hunkBody.length && hunkBody[h + 1].startsWith('\\ No newline')) {
+-          content = content.replace(/\n$/, '');
+-        }
+-        patchedLines.push(content);
+-        continue;
+-      }
+-
+-      if (hLine.trim() === '') {
+-        patchedLines.push(hLine);
+-        continue;
+-      }
+-
+-      if (hLine.startsWith('\\')) {
+-        continue;
+-      }
+-    }
+-
+-    origIdx = foundIdx + expectedCount;
+-    if (expectedOldCount === 0) {
+-      origIdx = foundIdx;
+-    }
+-  }
+-
+-  patchedLines.push(...originalLines.slice(origIdx));
+-  return patchedLines;
+-}
+diff --git a/autobyteus-ts/tests/integration/agent/tool-approval-flow.test.ts b/autobyteus-ts/tests/integration/agent/tool-approval-flow.test.ts
+index 9bc1e87e6..f1324e7b7 100644
+--- a/autobyteus-ts/tests/integration/agent/tool-approval-flow.test.ts
++++ b/autobyteus-ts/tests/integration/agent/tool-approval-flow.test.ts
+@@ -334,7 +334,7 @@ describe('Tool approval integration flow', () => {
+     const invocationId = `patch-${Date.now()}`;
+     const invocation = new ToolInvocation(
+       'edit_file',
+-      { path: targetPath, patch: '@@ -1,3 +1,3 @@\n line1\n-line2\n+line2 updated\n line3\n' },
++      { path: targetPath, patch: '@@\n line1\n-line2\n+line2 updated\n line3\n' },
+       invocationId,
+       turnId
+     );
+diff --git a/autobyteus-ts/tests/integration/tools/file/edit-file.test.ts b/autobyteus-ts/tests/integration/tools/file/edit-file.test.ts
+index 0f0952c93..5f4f193b9 100644
+--- a/autobyteus-ts/tests/integration/tools/file/edit-file.test.ts
++++ b/autobyteus-ts/tests/integration/tools/file/edit-file.test.ts
+@@ -21,7 +21,7 @@ describe('edit_file tool (integration)', () => {
+     const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-edit-file-'));
+     const filePath = path.join(tmpDir, 'sample.txt');
+     await fs.writeFile(filePath, 'line1\nline2\nline3\n', 'utf-8');
+-    const patch = '@@ -1,3 +1,3 @@\n line1\n-line2\n+line2 updated\n line3\n';
++    const patch = '@@\n line1\n-line2\n+line2 updated\n line3\n';
+ 
+     const tool = getPatchTool();
+     const context: MockContext = { agentId: 'agent', workspaceRootPath: null };
+@@ -43,7 +43,7 @@ describe('edit_file tool (integration)', () => {
+ 
+     const result = await tool.execute(context, {
+       path: outsidePath,
+-      patch: '@@ -1,2 +1,2 @@\n line1\n-line2\n+line2 updated\n'
++      patch: '@@\n line1\n-line2\n+line2 updated\n'
+     });
+     expect(result).toBe(`File edited successfully at ${outsidePath}`);
+     expect(await fs.readFile(outsidePath, 'utf-8')).toBe('line1\nline2 updated\n');
+@@ -59,7 +59,7 @@ describe('edit_file tool (integration)', () => {
+     const result = await tool.execute(context, {
+       path: 'sample.txt',
+       base_dir: tmpDir,
+-      patch: '@@ -1,2 +1,2 @@\n line1\n-line2\n+line2 updated\n'
++      patch: '@@\n line1\n-line2\n+line2 updated\n'
+     });
+     expect(result).toBe(`File edited successfully at ${filePath}`);
+     expect(await fs.readFile(filePath, 'utf-8')).toBe('line1\nline2 updated\n');
+@@ -70,7 +70,7 @@ describe('edit_file tool (integration)', () => {
+     const context: MockContext = { agentId: 'agent', workspaceRootPath: '/tmp' };
+ 
+     await expect(
+-      tool.execute(context, { path: 'sample.txt', patch: '@@ -1,1 +1,1 @@\n-line1\n+line1 updated\n' })
++      tool.execute(context, { path: 'sample.txt', patch: '@@\n-line1\n+line1 updated\n' })
+     ).rejects.toThrow('Provide an absolute path or an absolute base_dir');
+   });
+ });
+diff --git a/autobyteus-ts/tests/integration/tools/file/protected-file-tool-paths.test.ts b/autobyteus-ts/tests/integration/tools/file/protected-file-tool-paths.test.ts
+index b1238e8d8..0ca052ea9 100644
+--- a/autobyteus-ts/tests/integration/tools/file/protected-file-tool-paths.test.ts
++++ b/autobyteus-ts/tests/integration/tools/file/protected-file-tool-paths.test.ts
+@@ -58,7 +58,7 @@ describe('registered file tools protected-path boundary', () => {
+     ['write_file', (target: string) => ({ path: target, content: 'replacement' })],
+     ['edit_file', (target: string) => ({
+       path: target,
+-      patch: '@@ -1,2 +1,2 @@\n DO_NOT_LEAK_THIS_SECRET\n-original\n+changed\n',
++      patch: '@@\n DO_NOT_LEAK_THIS_SECRET\n-original\n+changed\n',
+     })],
+     ['replace_in_file', (target: string) => ({
+       path: target,
+@@ -80,7 +80,7 @@ describe('registered file tools protected-path boundary', () => {
+     ['write_file', (target: string) => ({ path: target, content: 'replacement' })],
+     ['edit_file', (target: string) => ({
+       path: target,
+-      patch: '@@ -1,2 +1,2 @@\n DO_NOT_LEAK_THIS_SECRET\n-original\n+changed\n',
++      patch: '@@\n DO_NOT_LEAK_THIS_SECRET\n-original\n+changed\n',
+     })],
+     ['replace_in_file', (target: string) => ({
+       path: target,
+diff --git a/autobyteus-ts/tests/integration/utils/diff-utils.test.ts b/autobyteus-ts/tests/integration/utils/diff-utils.test.ts
+deleted file mode 100644
+index c63b35433..000000000
+--- a/autobyteus-ts/tests/integration/utils/diff-utils.test.ts
++++ /dev/null
+@@ -1,25 +0,0 @@
+-import { describe, it, expect } from 'vitest';
+-import fs from 'fs/promises';
+-import path from 'path';
+-import { applyUnifiedDiff } from '../../../src/utils/diff-utils.js';
+-
+-describe('applyUnifiedDiff (integration)', () => {
+-  it('applies patch to file content on disk', async () => {
+-    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-diff-utils-'));
+-    const filePath = path.join(tmpDir, 'sample.txt');
+-    await fs.writeFile(filePath, 'line1\nline2\n', 'utf-8');
+-
+-    const originalLines = (await fs.readFile(filePath, 'utf-8')).split(/(?<=\n)/);
+-    const patch = `@@ -1,2 +1,2 @@
+--line1
+-+LINE1
+- line2
+-`;
+-
+-    const patchedLines = applyUnifiedDiff(originalLines, patch);
+-    await fs.writeFile(filePath, patchedLines.join(''), 'utf-8');
+-
+-    const updated = await fs.readFile(filePath, 'utf-8');
+-    expect(updated).toBe('LINE1\nline2\n');
+-  });
+-});
+diff --git a/autobyteus-ts/tests/unit/agent/streaming/api-tool-call/file-content-streamer.test.ts b/autobyteus-ts/tests/unit/agent/streaming/api-tool-call/file-content-streamer.test.ts
+index 9943ccad9..dd649ac2c 100644
+--- a/autobyteus-ts/tests/unit/agent/streaming/api-tool-call/file-content-streamer.test.ts
++++ b/autobyteus-ts/tests/unit/agent/streaming/api-tool-call/file-content-streamer.test.ts
+@@ -23,8 +23,8 @@ describe('FileContentStreamers', () => {
+   it('edit_file streamer emits patch content', () => {
+     const streamer = new EditFileContentStreamer();
+ 
+-    const update1 = streamer.feed('{"path":"a.txt","patch":"@@ -1 +1 @@');
+-    expect(update1.contentDelta).toBe('@@ -1 +1 @@');
++    const update1 = streamer.feed('{"path":"a.txt","patch":"@@');
++    expect(update1.contentDelta).toBe('@@');
+     expect(update1.path).toBe('a.txt');
+ 
+     const update2 = streamer.feed('\\');
+@@ -32,7 +32,7 @@ describe('FileContentStreamers', () => {
+ 
+     const update3 = streamer.feed('\\n-line\\n+line updated"}');
+     expect(update3.contentDelta).toBe('\\n-line\n+line updated');
+-    expect(update3.contentComplete).toBe('@@ -1 +1 @@\\n-line\n+line updated');
++    expect(update3.contentComplete).toBe('@@\\n-line\n+line updated');
+   });
+ 
+   it('handles content before path', () => {
+diff --git a/autobyteus-ts/tests/unit/agent/streaming/handlers/api-tool-call-streaming-response-handler.test.ts b/autobyteus-ts/tests/unit/agent/streaming/handlers/api-tool-call-streaming-response-handler.test.ts
+index 609ec0a80..0b6c32fe5 100644
+--- a/autobyteus-ts/tests/unit/agent/streaming/handlers/api-tool-call-streaming-response-handler.test.ts
++++ b/autobyteus-ts/tests/unit/agent/streaming/handlers/api-tool-call-streaming-response-handler.test.ts
+@@ -245,7 +245,7 @@ describe('ApiToolCallStreamingResponseHandler file streaming', () => {
+             index: 0,
+             call_id: 'call_patch',
+             name: 'edit_file',
+-            arguments_delta: '{"path":"a.txt","patch":"@@ -1 +1 @@'
++            arguments_delta: '{"path":"a.txt","patch":"@@'
+           }
+         ]
+       })
+@@ -262,7 +262,7 @@ describe('ApiToolCallStreamingResponseHandler file streaming', () => {
+     expect(startEvent!.segment_type).toBe(SegmentType.EDIT_FILE);
+     expect(startEvent!.payload.metadata.path).toBe('a.txt');
+     const firstContent = events1.find((event) => event.event_type === SegmentEventType.CONTENT);
+-    expect(firstContent!.payload.delta).toBe('@@ -1 +1 @@');
++    expect(firstContent!.payload.delta).toBe('@@');
+     expect(events2[0].payload.delta).toBe('\n-old\n+new');
+   });
+ 
+diff --git a/autobyteus-ts/tests/unit/agent/streaming/parser/states/xml-edit-file-tool-parsing-state.test.ts b/autobyteus-ts/tests/unit/agent/streaming/parser/states/xml-edit-file-tool-parsing-state.test.ts
+index 600a0783e..f27afe4ab 100644
+--- a/autobyteus-ts/tests/unit/agent/streaming/parser/states/xml-edit-file-tool-parsing-state.test.ts
++++ b/autobyteus-ts/tests/unit/agent/streaming/parser/states/xml-edit-file-tool-parsing-state.test.ts
+@@ -14,7 +14,7 @@ describe('XmlEditFileToolParsingState', () => {
+     const content =
+       "<arguments>" +
+       "<arg name='path'>/tmp/test.py</arg>" +
+-      "<arg name='patch'>@@ -1,3 +1,4 @@\n+new line</arg>" +
++      "<arg name='patch'>@@\n-old line\n+new line</arg>" +
+       '</arguments></tool>';
+ 
+     ctx.append(signature + content);
+@@ -31,7 +31,7 @@ describe('XmlEditFileToolParsingState', () => {
+ 
+     const contentEvents = events.filter((e) => e.event_type === SegmentEventType.CONTENT);
+     const fullContent = contentEvents.map((e) => e.payload.delta).join('');
+-    expect(fullContent).toContain('@@ -1,3 +1,4 @@');
++    expect(fullContent).toContain('@@');
+     expect(fullContent).toContain('+new line');
+     expect(fullContent).not.toContain('<arg');
+ 
+@@ -55,7 +55,7 @@ describe('XmlEditFileToolParsingState', () => {
+       "='path'>/tmp/frag.py</arg>",
+       "<arg name='pat",
+       "ch'>",
+-      '@@ -1 +1 @@\n-old',
++      '@@\n-old',
+       '\n+new</arg',
+       '></arguments></tool>'
+     ];
+@@ -73,7 +73,7 @@ describe('XmlEditFileToolParsingState', () => {
+     const contentEvents = events.filter((e) => e.event_type === SegmentEventType.CONTENT);
+     const fullContent = contentEvents.map((e) => e.payload.delta).join('');
+ 
+-    expect(fullContent).toContain('@@ -1 +1 @@');
++    expect(fullContent).toContain('@@');
+     expect(fullContent).toContain('-old');
+     expect(fullContent).toContain('+new');
+     expect(fullContent).not.toContain('<arg');
+@@ -146,9 +146,7 @@ describe('XmlEditFileToolParsingState', () => {
+       "<arg name='path'>/tmp/marker.py</arg>" +
+       "<arg name='patch'>" +
+       '__START_PATCH__\n' +
+-      '--- a/file.py\n' +
+-      '+++ b/file.py\n' +
+-      '@@ -1,2 +1,3 @@\n' +
++      '@@\n' +
+       ' existing\n' +
+       '+new line\n' +
+       '__END_PATCH__' +
+@@ -167,8 +165,7 @@ describe('XmlEditFileToolParsingState', () => {
+ 
+     expect(fullContent).not.toContain('__START_PATCH__');
+     expect(fullContent).not.toContain('__END_PATCH__');
+-    expect(fullContent).toContain('--- a/file.py');
+-    expect(fullContent).toContain('+++ b/file.py');
++    expect(fullContent).toContain('@@');
+     expect(fullContent).toContain('+new line');
+ 
+     const endEvents = events.filter((e) => e.event_type === SegmentEventType.END);
+@@ -180,7 +177,7 @@ describe('XmlEditFileToolParsingState', () => {
+     const signature = '<tool name="edit_file">';
+     const chunks = [
+       "<arguments><arg name='path'>/tmp/chunk.py</arg><arg name='patch'>__STAR",
+-      'T_PATCH__--- file.py\n+new\n__END',
++      'T_PATCH__@@\n-old\n+new\n__END',
+       '_PATCH__</arg></arguments></tool>'
+     ];
+ 
+@@ -199,14 +196,14 @@ describe('XmlEditFileToolParsingState', () => {
+ 
+     expect(fullContent).not.toContain('__START_PATCH__');
+     expect(fullContent).not.toContain('__END_PATCH__');
+-    expect(fullContent).toContain('--- file.py');
++    expect(fullContent).toContain('@@');
+     expect(fullContent).toContain('+new');
+ 
+     const endEvents = events.filter((e) => e.event_type === SegmentEventType.END);
+     expect(endEvents).toHaveLength(1);
+   });
+ 
+-  it('preserves special characters in unified diff', () => {
++  it('preserves special characters in a context patch', () => {
+     const ctx = createContext();
+     const signature = '<tool name="edit_file">';
+     const content =
+@@ -214,9 +211,7 @@ describe('XmlEditFileToolParsingState', () => {
+       "<arg name='path'>/tmp/special.py</arg>" +
+       "<arg name='patch'>" +
+       '__START_PATCH__\n' +
+-      '--- a/code.py\n' +
+-      '+++ b/code.py\n' +
+-      '@@ -1,2 +1,2 @@\n' +
++      '@@\n' +
+       '-if x < 10 and y > 5:\n' +
+       '+if x <= 10 and y >= 5:\n' +
+       '__END_PATCH__' +
+@@ -248,9 +243,7 @@ describe('XmlEditFileToolParsingState', () => {
+       "<arg name='path'>/tmp/nested.py</arg>" +
+       "<arg name='patch'>" +
+       '__START_PATCH__\n' +
+-      '--- a/file.py\n' +
+-      '+++ b/file.py\n' +
+-      '@@ -10,3 +10,3 @@\n' +
++      '@@\n' +
+       '-# Old comment\n' +
+       '+# Note: Do not remove __END_PATCH__ marker\n' +
+       ' code()\n' +
+diff --git a/autobyteus-ts/tests/unit/tools/file/edit-file.test.ts b/autobyteus-ts/tests/unit/tools/file/edit-file.test.ts
+index cc57907bd..dd920be1f 100644
+--- a/autobyteus-ts/tests/unit/tools/file/edit-file.test.ts
++++ b/autobyteus-ts/tests/unit/tools/file/edit-file.test.ts
+@@ -26,7 +26,7 @@ describe('edit_file tool', () => {
+     const definition = defaultToolRegistry.getToolDefinition(TOOL_NAME_EDIT_FILE);
+     expect(definition).toBeInstanceOf(ToolDefinition);
+     expect(definition?.name).toBe(TOOL_NAME_EDIT_FILE);
+-    expect(definition?.description).toContain('Applies a diff-style patch');
++    expect(definition?.description).toContain('Applies a context-located patch');
+ 
+     const schema = definition?.argumentSchema;
+     expect(schema).toBeInstanceOf(ParameterSchema);
+@@ -43,14 +43,15 @@ describe('edit_file tool', () => {
+     expect(patchParam).toBeInstanceOf(ParameterDefinition);
+     expect(patchParam?.type).toBe(ParameterType.STRING);
+     expect(patchParam?.required).toBe(true);
+-    expect(patchParam?.description).toContain('git diff or unified diff patch');
++    expect(patchParam?.description).toContain('bare @@ line');
++    expect(patchParam?.description).toContain('Do not include line numbers');
+   });
+ 
+-  it('applies a unified diff patch in an existing file', async () => {
++  it('applies a context-located patch in an existing file', async () => {
+     const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-edit-file-'));
+     const filePath = path.join(tmpDir, 'sample.txt');
+     await fs.writeFile(filePath, 'line1\nline2\nline3\n', 'utf-8');
+-    const patch = `@@ -1,3 +1,3 @@
++    const patch = `@@
+  line1
+ -line2
+ +line2 updated
+@@ -66,7 +67,7 @@ describe('edit_file tool', () => {
+     expect(content).toBe('line1\nline2 updated\nline3\n');
+   });
+ 
+-  it('applies a git diff style patch with file headers', async () => {
++  it('rejects git file headers because path is supplied separately', async () => {
+     const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-edit-file-'));
+     const filePath = path.join(tmpDir, 'sample_git_diff.txt');
+     await fs.writeFile(filePath, 'line1\nline2\nline3\n', 'utf-8');
+@@ -84,11 +85,9 @@ index 1111111..2222222 100644
+ 
+     const tool = getPatchTool();
+     const context: MockContext = { agentId: 'agent', workspaceRootPath: tmpDir };
+-    const result = await tool.execute(context, { path: filePath, patch });
+-
+-    expect(result).toBe(`File edited successfully at ${filePath}`);
+-    const content = await fs.readFile(filePath, 'utf-8');
+-    expect(content).toBe('line1\nline2 updated\nline3\n');
++    await expect(tool.execute(context, { path: filePath, patch }))
++      .rejects.toThrow(/unsupported patch header/i);
++    expect(await fs.readFile(filePath, 'utf-8')).toBe('line1\nline2\nline3\n');
+   });
+ 
+   it('raises PatchApplicationError when patch fails', async () => {
+@@ -96,7 +95,7 @@ index 1111111..2222222 100644
+     const filePath = path.join(tmpDir, 'sample_failure.txt');
+     await fs.writeFile(filePath, 'alpha\nbeta\ngamma\n', 'utf-8');
+ 
+-    const patch = `@@ -1,3 +1,3 @@
++    const patch = `@@
+  alpha
+ -delta
+ +theta
+@@ -110,12 +109,46 @@ index 1111111..2222222 100644
+     await expect(tool.execute(context, { path: filePath, patch })).rejects.toThrow('replace_in_file / insert_in_file');
+   });
+ 
++  it('rejects ambiguous context without writing the file', async () => {
++    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-edit-file-'));
++    const filePath = path.join(tmpDir, 'ambiguous.txt');
++    const original = 'status: draft\nseparator\nstatus: draft\n';
++    await fs.writeFile(filePath, original, 'utf-8');
++
++    const tool = getPatchTool();
++    const context: MockContext = { agentId: 'agent', workspaceRootPath: tmpDir };
++    await expect(tool.execute(context, {
++      path: filePath,
++      patch: '@@\n-status: draft\n+status: ready\n'
++    })).rejects.toThrow(/ambiguous/i);
++    expect(await fs.readFile(filePath, 'utf-8')).toBe(original);
++  });
++
++  it('does not write a partially applied multi-hunk patch', async () => {
++    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-edit-file-'));
++    const filePath = path.join(tmpDir, 'atomic.txt');
++    const original = 'alpha: old\nmiddle\nomega: old\n';
++    await fs.writeFile(filePath, original, 'utf-8');
++
++    const tool = getPatchTool();
++    const context: MockContext = { agentId: 'agent', workspaceRootPath: tmpDir };
++    const patch = `@@
++-alpha: old
+++alpha: new
++@@
++-missing: old
+++missing: new
++`;
++    await expect(tool.execute(context, { path: filePath, patch })).rejects.toThrow(/could not find/i);
++    expect(await fs.readFile(filePath, 'utf-8')).toBe(original);
++  });
++
+   it('retries with whitespace tolerance', async () => {
+     const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-edit-file-'));
+     const filePath = path.join(tmpDir, 'whitespace_patch.txt');
+     await fs.writeFile(filePath, 'alpha\n  beta\ngamma\n', 'utf-8');
+ 
+-    const patch = `@@ -1,3 +1,3 @@
++    const patch = `@@
+  alpha
+ - beta
+ + BETA
+@@ -137,7 +170,7 @@ index 1111111..2222222 100644
+ 
+     const tool = getPatchTool();
+     const context: MockContext = { agentId: 'agent', workspaceRootPath: tmpDir };
+-    await expect(tool.execute(context, { path: filePath, patch: '@@ -1,1 +1,1 @@\n-line1\n+line1 updated\n' })).rejects.toThrow('does not exist');
++    await expect(tool.execute(context, { path: filePath, patch: '@@\n-line1\n+line1 updated\n' })).rejects.toThrow('does not exist');
+   });
+ 
+   it('resolves relative paths from an explicit absolute base directory', async () => {
+@@ -154,7 +187,7 @@ index 1111111..2222222 100644
+     const result = await tool.execute(context, {
+       path: 'rel_patch.txt',
+       base_dir: tmpDir,
+-      patch: '@@ -1,2 +1,2 @@\n line1\n-line2\n+line2 updated\n'
++      patch: '@@\n line1\n-line2\n+line2 updated\n'
+     });
+     expect(result).toBe(`File edited successfully at ${filePath}`);
+     expect(await fs.readFile(filePath, 'utf-8')).toBe('line1\nline2 updated\n');
+@@ -167,7 +200,7 @@ index 1111111..2222222 100644
+       { agentId: 'agent', workspaceRootPath: '/tmp' } satisfies MockContext,
+       {
+         path: 'rel_patch.txt',
+-        patch: '@@ -1,1 +1,1 @@\n-line1\n+line1 updated\n'
++        patch: '@@\n-line1\n+line1 updated\n'
+       }
+     )).rejects.toThrow('Provide an absolute path or an absolute base_dir');
+   });
+@@ -186,7 +219,7 @@ index 1111111..2222222 100644
+ 
+     const result = await patchTool.execute(context, {
+       path: filePath,
+-      patch: '@@ -1,2 +1,2 @@\n line1\n-line2\n+line2 modified\n'
++      patch: '@@\n line1\n-line2\n+line2 modified\n'
+     });
+     expect(result).toBe(`File edited successfully at ${filePath}`);
+     const updated = await fs.readFile(filePath, 'utf-8');
+diff --git a/autobyteus-ts/tests/unit/tools/usage/formatters/edit-file-xml-formatter.test.ts b/autobyteus-ts/tests/unit/tools/usage/formatters/edit-file-xml-formatter.test.ts
+index e00a75971..134cd3e94 100644
+--- a/autobyteus-ts/tests/unit/tools/usage/formatters/edit-file-xml-formatter.test.ts
++++ b/autobyteus-ts/tests/unit/tools/usage/formatters/edit-file-xml-formatter.test.ts
+@@ -33,8 +33,9 @@ describe('EditFileXmlFormatter', () => {
+     expect(schema).toContain('If path is relative, you must provide an absolute base_dir');
+     expect(schema).toContain('name="base_dir"');
+     expect(schema).toContain('prior shell cd state');
+-    expect(schema).toContain('git diff style unified diff patch');
+-    expect(schema).toContain('@@ -10,7 +10,8 @@');
++    expect(schema).toContain('context-located patch');
++    expect(schema).toContain('bare @@ line');
++    expect(schema).not.toContain('@@ -10,7 +10,8 @@');
+   });
+ 
+   it('example uses standard XML structure', () => {
+diff --git a/autobyteus-ts/tests/unit/utils/diff-utils-fuzzy.test.ts b/autobyteus-ts/tests/unit/utils/diff-utils-fuzzy.test.ts
+deleted file mode 100644
+index dccbaf8dc..000000000
+--- a/autobyteus-ts/tests/unit/utils/diff-utils-fuzzy.test.ts
++++ /dev/null
+@@ -1,80 +0,0 @@
+-import { describe, it, expect } from 'vitest';
+-import { applyUnifiedDiff, PatchApplicationError } from '../../../src/utils/diff-utils.js';
+-
+-describe('applyUnifiedDiff (fuzzy)', () => {
+-  it('test_ignore_whitespace', () => {
+-    const original = ['def foo():\n', '    return True\n'];
+-    const patch = `@@ -1,2 +1,2 @@
+- def foo():
+--  return True
+-+  return False
+-`;
+-
+-    expect(() => applyUnifiedDiff(original, patch)).toThrow(PatchApplicationError);
+-
+-    const patched = applyUnifiedDiff(original, patch, { ignoreWhitespace: true });
+-    expect(patched).toEqual(['def foo():\n', '  return False\n']);
+-  });
+-
+-  it('test_fuzz_factor', () => {
+-    const original = ['a\n', 'b\n', 'c\n', 'd\n', 'e\n'];
+-    const patch = `@@ -1,1 +1,1 @@
+--b
+-+z
+-`;
+-
+-    expect(() => applyUnifiedDiff(original, patch)).toThrow(PatchApplicationError);
+-
+-    const patched = applyUnifiedDiff(original, patch, { fuzzFactor: 1 });
+-    expect(patched).toEqual(['a\n', 'z\n', 'c\n', 'd\n', 'e\n']);
+-  });
+-
+-  it('test_fuzz_factor_negative', () => {
+-    const original = ['a\n', 'b\n', 'c\n', 'd\n', 'e\n'];
+-    const patch = `@@ -3,1 +3,1 @@
+--b
+-+z
+-`;
+-
+-    const patched = applyUnifiedDiff(original, patch, { fuzzFactor: 1 });
+-    expect(patched).toEqual(['a\n', 'z\n', 'c\n', 'd\n', 'e\n']);
+-  });
+-
+-  it('test_combined_fuzzy', () => {
+-    const original = ['    start\n', '    mid\n', '    end\n'];
+-    const patch = `@@ -1,1 +1,1 @@
+--mid
+-+changed
+-`;
+-
+-    const patched = applyUnifiedDiff(original, patch, { fuzzFactor: 2, ignoreWhitespace: true });
+-    expect(patched).toEqual(['    start\n', 'changed\n', '    end\n']);
+-  });
+-
+-  it('test_git_header_lines_are_skipped', () => {
+-    const original = ['line1\n', 'line2\n'];
+-    const patch = `diff --git a/sample.txt b/sample.txt
+-index 1234567..89abcde 100644
+---- a/sample.txt
+-+++ b/sample.txt
+-@@ -1,2 +1,2 @@
+--line1
+-+LINE1
+- line2
+-`;
+-
+-    const patched = applyUnifiedDiff(original, patch);
+-    expect(patched).toEqual(['LINE1\n', 'line2\n']);
+-  });
+-
+-  it('test_allows_missing_newline_at_eof', () => {
+-    const original = ['line1\n', 'line2'];
+-    const patch = `@@ -1,2 +1,2 @@
+- line1
+--line2
+-+LINE2`;
+-
+-    const patched = applyUnifiedDiff(original, patch);
+-    expect(patched).toEqual(['line1\n', 'LINE2']);
+-  });
+-});
+diff --git a/autobyteus-ts/src/utils/context-patch-utils.ts b/autobyteus-ts/src/utils/context-patch-utils.ts
+new file mode 100644
+index 000000000..412e76023
+--- /dev/null
++++ b/autobyteus-ts/src/utils/context-patch-utils.ts
+@@ -0,0 +1,178 @@
++export class PatchApplicationError extends Error {
++  constructor(message: string) {
++    super(message);
++    this.name = 'PatchApplicationError';
++  }
++}
++
++// Numeric decoration is tolerated as model-output noise, but its coordinates
++// never participate in matching; every accepted hunk uses the same context rule.
++const NUMERIC_HUNK_HEADER_RE = /^@@ -\d+(?:,\d+)? \+\d+(?:,\d+)? @@(?:\s.*)?$/;
++
++function splitLinesKeepEnds(text: string): string[] {
++  const matches = text.match(/.*(?:\n|$)/g) ?? [];
++  if (matches.length > 0 && matches[matches.length - 1] === '') {
++    matches.pop();
++  }
++  return matches;
++}
++
++function linesMatch(
++  actual: string,
++  expected: string,
++  ignoreWhitespace: boolean,
++  allowEofNewlineMismatch: boolean
++): boolean {
++  if (ignoreWhitespace) {
++    return actual.trim() === expected.trim();
++  }
++  if (actual === expected) {
++    return true;
++  }
++  if (allowEofNewlineMismatch) {
++    return actual.replace(/\n$/, '') === expected.replace(/\n$/, '');
++  }
++  return false;
++}
++
++function appendLineRange(target: string[], source: string[], start: number, end = source.length): void {
++  for (let index = start; index < end; index += 1) {
++    target.push(source[index]);
++  }
++}
++
++export function applyContextPatch(
++  originalLines: string[],
++  patch: string,
++  options: { ignoreWhitespace?: boolean } = {}
++): string[] {
++  if (!patch || patch.trim().length === 0) {
++    throw new PatchApplicationError('Patch content is empty; nothing to apply.');
++  }
++
++  const ignoreWhitespace = options.ignoreWhitespace ?? false;
++  const patchedLines: string[] = [];
++  const patchLines = splitLinesKeepEnds(patch);
++  let origIdx = 0;
++  let lineIdx = 0;
++
++  while (lineIdx < patchLines.length) {
++    const headerLine = patchLines[lineIdx];
++    if (headerLine.trim() === '') {
++      lineIdx += 1;
++      continue;
++    }
++    const normalizedHeader = headerLine.trim();
++    const isContextHeader = normalizedHeader === '@@' || NUMERIC_HUNK_HEADER_RE.test(normalizedHeader);
++    if (!isContextHeader) {
++      if (headerLine.startsWith('@@') || headerLine.startsWith('diff --git ') ||
++          headerLine.startsWith('---') || headerLine.startsWith('+++')) {
++        throw new PatchApplicationError(
++          'Unsupported patch header. Use a bare @@ header and identify the target with unchanged/removal context.'
++        );
++      }
++      throw new PatchApplicationError(
++        `Unexpected content outside of bare @@ hunk header: '${headerLine.trim()}'.`
++      );
++    }
++
++    lineIdx += 1;
++    const hunkBody: string[] = [];
++    while (lineIdx < patchLines.length && !patchLines[lineIdx].startsWith('@@')) {
++      hunkBody.push(patchLines[lineIdx]);
++      lineIdx += 1;
++    }
++
++    const expectedOriginal: string[] = [];
++    let hasChange = false;
++    for (let hunkIdx = 0; hunkIdx < hunkBody.length; hunkIdx += 1) {
++      const hunkLine = hunkBody[hunkIdx];
++      if (hunkLine.startsWith(' ') || hunkLine.startsWith('-')) {
++        let content = hunkLine.slice(1);
++        if (hunkIdx + 1 < hunkBody.length && hunkBody[hunkIdx + 1].startsWith('\\ No newline')) {
++          content = content.replace(/\n$/, '');
++        }
++        expectedOriginal.push(content);
++        if (hunkLine.startsWith('-')) hasChange = true;
++        continue;
++      }
++      if (hunkLine.startsWith('+')) {
++        hasChange = true;
++        continue;
++      }
++      if (hunkLine.startsWith('\\')) {
++        continue;
++      }
++      throw new PatchApplicationError(`Unsupported context-patch line: '${hunkLine.trim()}'.`);
++    }
++
++    if (!hasChange) {
++      throw new PatchApplicationError('Context hunk contains no addition or removal.');
++    }
++    if (expectedOriginal.length === 0) {
++      throw new PatchApplicationError(
++        'Context hunk requires at least one unchanged or removal line as a safe location anchor.'
++      );
++    }
++
++    let foundIdx = -1;
++    for (
++      let candidateIdx = origIdx;
++      candidateIdx + expectedOriginal.length <= originalLines.length;
++      candidateIdx += 1
++    ) {
++      let matches = true;
++      for (let expectedIdx = 0; expectedIdx < expectedOriginal.length; expectedIdx += 1) {
++        const isEofLine = candidateIdx + expectedOriginal.length === originalLines.length &&
++          expectedIdx === expectedOriginal.length - 1;
++        if (!linesMatch(
++          originalLines[candidateIdx + expectedIdx],
++          expectedOriginal[expectedIdx],
++          ignoreWhitespace,
++          isEofLine
++        )) {
++          matches = false;
++          break;
++        }
++      }
++      if (!matches) continue;
++      if (foundIdx !== -1) {
++        throw new PatchApplicationError(
++          'Context hunk is ambiguous: matched multiple locations. Include more unchanged context.'
++        );
++      }
++      foundIdx = candidateIdx;
++    }
++
++    if (foundIdx === -1) {
++      throw new PatchApplicationError('Could not find the context hunk in the target file.');
++    }
++    appendLineRange(patchedLines, originalLines, origIdx, foundIdx);
++
++    let matchedOrigOffset = 0;
++    for (let hunkIdx = 0; hunkIdx < hunkBody.length; hunkIdx += 1) {
++      const hunkLine = hunkBody[hunkIdx];
++      if (hunkLine.startsWith(' ')) {
++        patchedLines.push(originalLines[foundIdx + matchedOrigOffset]);
++        matchedOrigOffset += 1;
++        continue;
++      }
++      if (hunkLine.startsWith('-')) {
++        matchedOrigOffset += 1;
++        continue;
++      }
++      if (hunkLine.startsWith('+')) {
++        let content = hunkLine.slice(1);
++        if (hunkIdx + 1 < hunkBody.length && hunkBody[hunkIdx + 1].startsWith('\\ No newline')) {
++          content = content.replace(/\n$/, '');
++        }
++        patchedLines.push(content);
++      }
++    }
++
++    origIdx = foundIdx + expectedOriginal.length;
++  }
++
++  appendLineRange(patchedLines, originalLines, origIdx);
++  return patchedLines;
++}
+diff --git a/autobyteus-ts/tests/unit/utils/context-patch-utils.test.ts b/autobyteus-ts/tests/unit/utils/context-patch-utils.test.ts
+new file mode 100644
+index 000000000..d9927dba7
+--- /dev/null
++++ b/autobyteus-ts/tests/unit/utils/context-patch-utils.test.ts
+@@ -0,0 +1,143 @@
++import { describe, it, expect } from 'vitest';
++import { applyContextPatch, PatchApplicationError } from '../../../src/utils/context-patch-utils.js';
++
++describe('applyContextPatch', () => {
++  it('applies a uniquely located replacement with a bare @@ header', () => {
++    const original = ['alpha\n', 'target: old\n', 'omega\n'];
++    const patch = `@@
++ alpha
++-target: old
+++target: new
++ omega
++`;
++
++    expect(applyContextPatch(original, patch)).toEqual(['alpha\n', 'target: new\n', 'omega\n']);
++  });
++
++  it('can retry matching with whitespace tolerance', () => {
++    const original = ['def foo():\n', '    return True\n'];
++    const patch = `@@
++ def foo():
++-  return True
+++  return False
++`;
++
++    expect(() => applyContextPatch(original, patch)).toThrow(PatchApplicationError);
++    expect(applyContextPatch(original, patch, { ignoreWhitespace: true }))
++      .toEqual(['def foo():\n', '  return False\n']);
++  });
++
++  it('rejects an ambiguous hunk instead of selecting an occurrence', () => {
++    const original = ['status: draft\n', 'separator\n', 'status: draft\n'];
++    const patch = `@@
++-status: draft
+++status: ready
++`;
++
++    expect(() => applyContextPatch(original, patch)).toThrow(/ambiguous: matched multiple locations/i);
++  });
++
++  it('uses surrounding context to resolve repeated changed text', () => {
++    const original = [
++      'name: alpha\n',
++      'status: draft\n',
++      'name: beta\n',
++      'status: draft\n'
++    ];
++    const patch = `@@
++ name: beta
++-status: draft
+++status: ready
++`;
++
++    expect(applyContextPatch(original, patch)).toEqual([
++      'name: alpha\n',
++      'status: draft\n',
++      'name: beta\n',
++      'status: ready\n'
++    ]);
++  });
++
++  it('applies an insertion when unchanged context anchors it', () => {
++    const original = ['alpha\n', 'omega\n'];
++    const patch = `@@
++ alpha
+++inserted
++ omega
++`;
++
++    expect(applyContextPatch(original, patch)).toEqual(['alpha\n', 'inserted\n', 'omega\n']);
++  });
++
++  it('rejects a pure insertion with no safe anchor', () => {
++    expect(() => applyContextPatch(['alpha\n'], '@@\n+inserted\n'))
++      .toThrow(/requires at least one unchanged or removal line/i);
++  });
++
++  it('ignores numeric coordinates and locates the hunk by unique context', () => {
++    expect(applyContextPatch(
++      ['prefix\n', 'old\n', 'suffix\n'],
++      '@@ -999,50 +700,80 @@\n-old\n+new\n'
++    )).toEqual(['prefix\n', 'new\n', 'suffix\n']);
++  });
++
++  it('does not use numeric coordinates to resolve ambiguous context', () => {
++    expect(() => applyContextPatch(
++      ['old\n', 'separator\n', 'old\n'],
++      '@@ -1,1 +1,1 @@\n-old\n+new\n'
++    )).toThrow(/ambiguous/i);
++  });
++
++  it('rejects git file headers', () => {
++    expect(() => applyContextPatch(
++      ['old\n'],
++      'diff --git a/file b/file\n--- a/file\n+++ b/file\n@@\n-old\n+new\n'
++    )).toThrow(/unsupported patch header/i);
++  });
++
++  it('applies multiple ordered context hunks', () => {
++    const original = ['alpha: old\n', 'middle\n', 'omega: old\n'];
++    const patch = `@@
++-alpha: old
+++alpha: new
++@@
++-omega: old
+++omega: new
++`;
++
++    expect(applyContextPatch(original, patch)).toEqual([
++      'alpha: new\n',
++      'middle\n',
++      'omega: new\n'
++    ]);
++  });
++
++  it('preserves a missing newline at EOF', () => {
++    const original = ['line1\n', 'line2'];
++    const patch = `@@
++ line1
++-line2
+++LINE2`;
++
++    expect(applyContextPatch(original, patch)).toEqual(['line1\n', 'LINE2']);
++  });
++
++  it('rejects a hunk that has no change', () => {
++    expect(() => applyContextPatch(['alpha\n'], '@@\n alpha\n'))
++      .toThrow(/contains no addition or removal/i);
++  });
++
++  it('applies near the end of a large file without spreading the file onto the call stack', () => {
++    const original = Array.from({ length: 250_000 }, (_, index) => `line-${index}\n`);
++    original[original.length - 2] = 'unique-target: old\n';
++
++    const patched = applyContextPatch(
++      original,
++      '@@\n-unique-target: old\n+unique-target: new\n'
++    );
++
++    expect(patched).toHaveLength(original.length);
++    expect(patched[patched.length - 2]).toBe('unique-target: new\n');
++    expect(patched[patched.length - 1]).toBe(original[original.length - 1]);
++  });
++});
+diff --git a/autobyteus-ts/tests/integration/utils/context-patch-utils.test.ts b/autobyteus-ts/tests/integration/utils/context-patch-utils.test.ts
+new file mode 100644
+index 000000000..efd180a97
+--- /dev/null
++++ b/autobyteus-ts/tests/integration/utils/context-patch-utils.test.ts
+@@ -0,0 +1,25 @@
++import { describe, it, expect } from 'vitest';
++import fs from 'fs/promises';
++import path from 'path';
++import { applyContextPatch } from '../../../src/utils/context-patch-utils.js';
++
++describe('applyContextPatch (integration)', () => {
++  it('applies patch to file content on disk', async () => {
++    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-context-patch-utils-'));
++    const filePath = path.join(tmpDir, 'sample.txt');
++    await fs.writeFile(filePath, 'line1\nline2\n', 'utf-8');
++
++    const originalLines = (await fs.readFile(filePath, 'utf-8')).split(/(?<=\n)/);
++    const patch = `@@
++-line1
+++LINE1
++ line2
++`;
++
++    const patchedLines = applyContextPatch(originalLines, patch);
++    await fs.writeFile(filePath, patchedLines.join(''), 'utf-8');
++
++    const updated = await fs.readFile(filePath, 'utf-8');
++    expect(updated).toBe('LINE1\nline2\n');
++  });
++});

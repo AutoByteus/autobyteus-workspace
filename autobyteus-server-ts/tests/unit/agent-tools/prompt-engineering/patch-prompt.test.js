@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { registerPatchPromptTool } from "../../../../src/agent-tools/prompt-engineering/patch-prompt.js";
-import { PatchApplicationError } from "autobyteus-ts/utils/diff-utils.js";
+import { PatchApplicationError } from "autobyteus-ts/tools/file/edit-file.js";
 const mockGetPromptById = vi.fn();
 const mockAddNewPromptRevision = vi.fn();
 vi.mock("../../../../src/prompt-engineering/services/prompt-service.js", () => ({
@@ -21,7 +21,7 @@ describe("patchPromptTool", () => {
         });
         mockAddNewPromptRevision.mockResolvedValue({ id: "new-456" });
         const patchContent = [
-            "@@ -1,3 +1,3 @@",
+            "@@",
             " line1",
             "-line2",
             "+line2 updated",
@@ -43,7 +43,7 @@ describe("patchPromptTool", () => {
         });
         mockAddNewPromptRevision.mockResolvedValue({ id: "new-456" });
         const patchContent = [
-            "@@ -1,3 +1,3 @@",
+            "@@",
             " 1: line1",
             "-2: line2",
             "+2: line2 updated",
@@ -60,7 +60,7 @@ describe("patchPromptTool", () => {
     it("throws when prompt is not found", async () => {
         mockGetPromptById.mockResolvedValue(null);
         const tool = registerPatchPromptTool();
-        await expect(tool.execute({ agentId: "test-agent" }, { prompt_id: "nonexistent", patch: "@@ -1 +1 @@\n-old\n+new\n" })).rejects.toThrow("not found");
+        await expect(tool.execute({ agentId: "test-agent" }, { prompt_id: "nonexistent", patch: "@@\n-old\n+new\n" })).rejects.toThrow("not found");
     });
     it("propagates patch application errors", async () => {
         mockGetPromptById.mockResolvedValue({
@@ -68,7 +68,7 @@ describe("patchPromptTool", () => {
             promptContent: "alpha\nbeta\ngamma\n",
         });
         const badPatch = [
-            "@@ -1,3 +1,3 @@",
+            "@@",
             " alpha",
             "-delta",
             "+theta",

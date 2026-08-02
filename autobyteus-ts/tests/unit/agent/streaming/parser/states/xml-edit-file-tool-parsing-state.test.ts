@@ -14,7 +14,7 @@ describe('XmlEditFileToolParsingState', () => {
     const content =
       "<arguments>" +
       "<arg name='path'>/tmp/test.py</arg>" +
-      "<arg name='patch'>@@ -1,3 +1,4 @@\n+new line</arg>" +
+      "<arg name='patch'>@@\n-old line\n+new line</arg>" +
       '</arguments></tool>';
 
     ctx.append(signature + content);
@@ -31,7 +31,7 @@ describe('XmlEditFileToolParsingState', () => {
 
     const contentEvents = events.filter((e) => e.event_type === SegmentEventType.CONTENT);
     const fullContent = contentEvents.map((e) => e.payload.delta).join('');
-    expect(fullContent).toContain('@@ -1,3 +1,4 @@');
+    expect(fullContent).toContain('@@');
     expect(fullContent).toContain('+new line');
     expect(fullContent).not.toContain('<arg');
 
@@ -55,7 +55,7 @@ describe('XmlEditFileToolParsingState', () => {
       "='path'>/tmp/frag.py</arg>",
       "<arg name='pat",
       "ch'>",
-      '@@ -1 +1 @@\n-old',
+      '@@\n-old',
       '\n+new</arg',
       '></arguments></tool>'
     ];
@@ -73,7 +73,7 @@ describe('XmlEditFileToolParsingState', () => {
     const contentEvents = events.filter((e) => e.event_type === SegmentEventType.CONTENT);
     const fullContent = contentEvents.map((e) => e.payload.delta).join('');
 
-    expect(fullContent).toContain('@@ -1 +1 @@');
+    expect(fullContent).toContain('@@');
     expect(fullContent).toContain('-old');
     expect(fullContent).toContain('+new');
     expect(fullContent).not.toContain('<arg');
@@ -146,9 +146,7 @@ describe('XmlEditFileToolParsingState', () => {
       "<arg name='path'>/tmp/marker.py</arg>" +
       "<arg name='patch'>" +
       '__START_PATCH__\n' +
-      '--- a/file.py\n' +
-      '+++ b/file.py\n' +
-      '@@ -1,2 +1,3 @@\n' +
+      '@@\n' +
       ' existing\n' +
       '+new line\n' +
       '__END_PATCH__' +
@@ -167,8 +165,7 @@ describe('XmlEditFileToolParsingState', () => {
 
     expect(fullContent).not.toContain('__START_PATCH__');
     expect(fullContent).not.toContain('__END_PATCH__');
-    expect(fullContent).toContain('--- a/file.py');
-    expect(fullContent).toContain('+++ b/file.py');
+    expect(fullContent).toContain('@@');
     expect(fullContent).toContain('+new line');
 
     const endEvents = events.filter((e) => e.event_type === SegmentEventType.END);
@@ -180,7 +177,7 @@ describe('XmlEditFileToolParsingState', () => {
     const signature = '<tool name="edit_file">';
     const chunks = [
       "<arguments><arg name='path'>/tmp/chunk.py</arg><arg name='patch'>__STAR",
-      'T_PATCH__--- file.py\n+new\n__END',
+      'T_PATCH__@@\n-old\n+new\n__END',
       '_PATCH__</arg></arguments></tool>'
     ];
 
@@ -199,14 +196,14 @@ describe('XmlEditFileToolParsingState', () => {
 
     expect(fullContent).not.toContain('__START_PATCH__');
     expect(fullContent).not.toContain('__END_PATCH__');
-    expect(fullContent).toContain('--- file.py');
+    expect(fullContent).toContain('@@');
     expect(fullContent).toContain('+new');
 
     const endEvents = events.filter((e) => e.event_type === SegmentEventType.END);
     expect(endEvents).toHaveLength(1);
   });
 
-  it('preserves special characters in unified diff', () => {
+  it('preserves special characters in a context patch', () => {
     const ctx = createContext();
     const signature = '<tool name="edit_file">';
     const content =
@@ -214,9 +211,7 @@ describe('XmlEditFileToolParsingState', () => {
       "<arg name='path'>/tmp/special.py</arg>" +
       "<arg name='patch'>" +
       '__START_PATCH__\n' +
-      '--- a/code.py\n' +
-      '+++ b/code.py\n' +
-      '@@ -1,2 +1,2 @@\n' +
+      '@@\n' +
       '-if x < 10 and y > 5:\n' +
       '+if x <= 10 and y >= 5:\n' +
       '__END_PATCH__' +
@@ -248,9 +243,7 @@ describe('XmlEditFileToolParsingState', () => {
       "<arg name='path'>/tmp/nested.py</arg>" +
       "<arg name='patch'>" +
       '__START_PATCH__\n' +
-      '--- a/file.py\n' +
-      '+++ b/file.py\n' +
-      '@@ -10,3 +10,3 @@\n' +
+      '@@\n' +
       '-# Old comment\n' +
       '+# Note: Do not remove __END_PATCH__ marker\n' +
       ' code()\n' +

@@ -1,0 +1,31 @@
+[
+  {
+    "type": "function",
+    "function": {
+      "name": "edit_file",
+      "description": "Applies a diff-style patch to one file without overwriting unrelated content. File paths use trusted-local semantics: absolute paths are used directly; relative paths require an explicit absolute base_dir and are never resolved from workspace, process, or shell cd state. Provide a git diff or unified diff patch for the target file. Use this for surgical patch edits. If exact text replacement is easier, use replace_in_file. If you only need to insert new text near an exact anchor, use insert_in_file.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "description": "Absolute filesystem path, or a relative file path paired with base_dir. If path is relative, you must provide an absolute base_dir. If base_dir is omitted, path must be absolute. Absolute paths are used directly and take precedence if base_dir is also supplied. Relative paths are never resolved from the configured workspace, process cwd, or prior shell cd state.",
+            "type": "string"
+          },
+          "base_dir": {
+            "description": "Optional absolute directory used only when path is relative; it is required for a relative path. If path is absolute, omit base_dir (an absolute path takes precedence if both are supplied). This applies to this tool call only and does not change shell or agent working-directory state. Do not provide a relative base_dir.",
+            "type": "string"
+          },
+          "patch": {
+            "description": "A git diff or unified diff patch for this file. Use numeric hunk headers such as @@ -10,7 +10,8 @@ and match the file style exactly.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "path",
+          "patch"
+        ],
+        "additionalProperties": false
+      }
+    }
+  }
+]

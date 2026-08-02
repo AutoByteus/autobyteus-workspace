@@ -334,7 +334,7 @@ describe('Tool approval integration flow', () => {
     const invocationId = `patch-${Date.now()}`;
     const invocation = new ToolInvocation(
       'edit_file',
-      { path: targetPath, patch: '@@ -1,3 +1,3 @@\n line1\n-line2\n+line2 updated\n line3\n' },
+      { path: targetPath, patch: '@@\n line1\n-line2\n+line2 updated\n line3\n' },
       invocationId,
       turnId
     );

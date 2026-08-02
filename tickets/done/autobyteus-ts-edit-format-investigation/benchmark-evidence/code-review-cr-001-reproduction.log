@@ -1,0 +1,9 @@
+$ git rev-parse HEAD
+4716b532f0cd579490770014067506d8f694bebb
+
+$ node --input-type=module  # invoke built editFile for two canonical patches whose unchanged context line is literal "@@"
+uniqueLiteralHeader=PatchApplicationError: Context hunk contains no addition or removal. Read the file again and retry with a canonical bare @@ patch and more unique unchanged/removal context.
+uniqueLiteralHeaderFileUnchanged=true
+noncontiguousContextResult=File edited successfully at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cr-001-YiNQ8x/noncontiguous-context.txt
+noncontiguousContextObserved="new1\n@@\nunrelated\nnew2\n"
+noncontiguousContextShouldHaveRejected=true
