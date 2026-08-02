@@ -241,6 +241,16 @@ describe('AgentUserInputTextArea', () => {
     expect(activeContextStoreMock.send).not.toHaveBeenCalled()
   })
 
+  it('leaves Shift+Enter to the textarea without invoking the primary action', async () => {
+    selectContext(createContext('ctx-shift-enter', 'first line'))
+
+    const wrapper = mount(AgentUserInputTextArea)
+    await wrapper.find('textarea').trigger('keydown', { key: 'Enter', shiftKey: true })
+
+    expect(activeContextStoreMock.send).not.toHaveBeenCalled()
+    expect(activeContextStoreMock.interruptGeneration).not.toHaveBeenCalled()
+  })
+
   it('clears the visible composer when the active send is locally acknowledged while send remains pending', async () => {
     const context = createContext('ctx-local-ack')
     selectContext(context)
