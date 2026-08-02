@@ -144,6 +144,20 @@ index 1111111..2222222 100644
     expect(await fs.readFile(filePath, 'utf-8')).toBe(original);
   });
 
+  it('does not split prefixed delimiter context into noncontiguous hunks or write', async () => {
+    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-edit-file-'));
+    const filePath = path.join(tmpDir, 'noncontiguous-context.txt');
+    const original = 'old1\n@@\nunrelated\nold2\n';
+    await fs.writeFile(filePath, original, 'utf-8');
+
+    const tool = getPatchTool();
+    const context: MockContext = { agentId: 'agent', workspaceRootPath: tmpDir };
+    const patch = '@@\n-old1\n+new1\n @@\n-old2\n+new2\n';
+
+    await expect(tool.execute(context, { path: filePath, patch })).rejects.toThrow(/could not find/i);
+    expect(await fs.readFile(filePath, 'utf-8')).toBe(original);
+  });
+
   it('retries with whitespace tolerance', async () => {
     const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-edit-file-'));
     const filePath = path.join(tmpDir, 'whitespace_patch.txt');

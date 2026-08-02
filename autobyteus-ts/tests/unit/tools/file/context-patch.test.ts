@@ -51,6 +51,29 @@ describe('applyContextPatch', () => {
     )).toThrow(/ambiguous/i);
   });
 
+  it('treats a prefixed bare delimiter token as unchanged context', () => {
+    const original = 'before\n@@\ntarget: old\nafter\n';
+    const patch = '@@\n before\n @@\n-target: old\n+target: new\n after\n';
+
+    expect(applyContextPatch(original, patch)).toBe('before\n@@\ntarget: new\nafter\n');
+  });
+
+  it('distinguishes an unprefixed CRLF header from prefixed delimiter context', () => {
+    const original = 'before\r\n@@\r\ntarget: old\r\n';
+    const patch = '@@\r\n before\r\n @@\r\n-target: old\r\n+target: new\r\n';
+
+    expect(applyContextPatch(original, patch)).toBe('before\r\n@@\r\ntarget: new\r\n');
+  });
+
+  it('treats a prefixed numeric-looking delimiter token as unchanged context', () => {
+    const original = 'before\n@@ -1 +1 @@\ntarget: old\nafter\n';
+    const patch = '@@\n before\n @@ -1 +1 @@\n-target: old\n+target: new\n after\n';
+
+    expect(applyContextPatch(original, patch)).toBe(
+      'before\n@@ -1 +1 @@\ntarget: new\nafter\n'
+    );
+  });
+
   it('applies multiple ordered hunks only in the still-eligible region', () => {
     const original = 'item: old\nbetween\nitem: old\nend\n';
     const patch = [
@@ -87,6 +110,9 @@ describe('applyContextPatch', () => {
   });
 
   it.each([
+    [' @@\n-old\n+new\n', /unsupported patch header/i],
+    ['@@ \n-old\n+new\n', /unsupported patch header/i],
+    ['\t@@\n-old\n+new\n', /unsupported patch header/i],
     ['@@ label\n-old\n+new\n', /unsupported patch header/i],
     ['@@ -1,1 +1,1 @@ label\n-old\n+new\n', /unsupported patch header/i],
     ['@@ -1 +1\n-old\n+new\n', /unsupported patch header/i],

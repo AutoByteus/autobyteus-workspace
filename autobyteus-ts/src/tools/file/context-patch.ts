@@ -16,7 +16,7 @@ const NUMERIC_HUNK_HEADER_RE = /^@@ -\d+(?:,\d+)? \+\d+(?:,\d+)? @@$/;
 const NO_NEWLINE_MARKER = '\\ No newline at end of file';
 
 function splitLinesKeepEnds(text: string): string[] {
-  const matches = text.match(/.*(?:\n|$)/g) ?? [];
+  const matches = text.match(/.*(?:\r\n|\n|$)/g) ?? [];
   if (matches.at(-1) === '') {
     matches.pop();
   }
@@ -31,9 +31,9 @@ function removeLineEnding(line: string): string {
   return line.replace(/\r?\n$/, '');
 }
 
-function isHunkHeader(line: string): boolean {
-  const normalized = line.trim();
-  return normalized === '@@' || NUMERIC_HUNK_HEADER_RE.test(normalized);
+function isUnprefixedHunkHeader(line: string): boolean {
+  const token = stripLineEnding(line);
+  return token === '@@' || NUMERIC_HUNK_HEADER_RE.test(token);
 }
 
 function parseHunkBody(bodyLines: string[]): ParsedHunk {
@@ -102,7 +102,7 @@ function parsePatch(patch: string): ParsedHunk[] {
 
   while (lineIndex < patchLines.length) {
     const headerLine = patchLines[lineIndex];
-    if (!isHunkHeader(headerLine)) {
+    if (!isUnprefixedHunkHeader(headerLine)) {
       const unsupportedHeader = headerLine.trimStart().startsWith('@@') ||
         ['diff --git ', '---', '+++', '*** '].some((prefix) => headerLine.startsWith(prefix));
       if (unsupportedHeader) {
@@ -117,7 +117,7 @@ function parsePatch(patch: string): ParsedHunk[] {
 
     lineIndex += 1;
     const bodyLines: string[] = [];
-    while (lineIndex < patchLines.length && !isHunkHeader(patchLines[lineIndex])) {
+    while (lineIndex < patchLines.length && !isUnprefixedHunkHeader(patchLines[lineIndex])) {
       bodyLines.push(patchLines[lineIndex]);
       lineIndex += 1;
     }
