@@ -1020,7 +1020,7 @@ if (wsFileExplorerState.filesToIgnoreNextModify.has(node.path)) {
 function determineFileType(
   filePath: string
 ): "Text" | "Image" | "Audio" | "Video" | "Excel" {
-  const imageExtensions = [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"];
+  const imageExtensions = [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".svg"];
   const audioExtensions = [".mp3", ".wav", ".m4a", ".flac", ".ogg", ".aac"];
   const videoExtensions = [".mp4", ".mov", ".avi", ".mkv", ".webm"];
   const excelExtensions = [".xlsx", ".xls", ".xlsm", ".csv"];

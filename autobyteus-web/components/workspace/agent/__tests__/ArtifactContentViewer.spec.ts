@@ -28,7 +28,7 @@ vi.mock('~/components/fileExplorer/FileViewer.vue', () => ({
     name: 'FileViewer',
     props: ['file', 'mode', 'readOnly', 'error'],
     template:
-      '<div data-testid="file-viewer">{{ (file.content || file.url || "") + "||" + (error || "") }}</div>',
+      '<div data-testid="file-viewer" :data-file-type="file.type" :data-url="file.url || null" :data-read-only="String(readOnly)">{{ (file.content || file.url || "") + "||" + (error || "") }}</div>',
   },
 }));
 
@@ -431,6 +431,71 @@ describe('ArtifactContentViewer', () => {
     await flushPromises();
 
     expect(wrapper.find('[data-testid="file-viewer"]').text()).toContain('Failed to fetch content (500)');
+  });
+
+  it('renders an available SVG artifact through the metadata-first Image path and revokes its blob URL', async () => {
+    const fetchMock = vi.mocked(global.fetch);
+    fetchMock.mockResolvedValue({
+      ok: true,
+      status: 200,
+      blob: async () => new Blob(['<svg xmlns="http://www.w3.org/2000/svg"/>'], { type: 'image/svg+xml' }),
+    } as Response);
+
+    const wrapper = mountComponent({
+      ...defaultArtifact,
+      path: 'assets/diagram.SVG',
+      type: 'image',
+      status: 'available',
+      sourceTool: 'generated_output',
+      content: undefined,
+    });
+
+    await flushPromises();
+
+    expect(determineFileTypeMock).not.toHaveBeenCalled();
+    expect(fetchMock).toHaveBeenCalledWith(
+      'http://localhost:3000/rest/runs/agent-1/file-change-content?path=assets%2Fdiagram.SVG',
+      { cache: 'no-store', headers: expect.any(Headers) },
+    );
+    expect(wrapper.find('[data-testid="file-viewer"]').attributes('data-file-type')).toBe('Image');
+    expect(wrapper.find('[data-testid="file-viewer"]').attributes('data-url')).toBe('blob:artifact-preview');
+    expect(wrapper.find('[data-testid="file-viewer"]').attributes('data-read-only')).toBe('true');
+
+    wrapper.unmount();
+    expect(revokeObjectURLMock).toHaveBeenCalledWith('blob:artifact-preview');
+  });
+
+  it('renders an available SVG artifact through the shared-policy fallback path', async () => {
+    const fetchMock = vi.mocked(global.fetch);
+    determineFileTypeMock.mockResolvedValue('Image');
+    fetchMock.mockResolvedValue({
+      ok: true,
+      status: 200,
+      blob: async () => new Blob(['<svg'], { type: 'image/svg+xml' }),
+    } as Response);
+
+    const wrapper = mountComponent({
+      ...defaultArtifact,
+      path: 'assets/fallback.svg',
+      type: 'file',
+      status: 'available',
+      sourceTool: 'edit_file',
+      content: undefined,
+    });
+
+    await flushPromises();
+
+    expect(determineFileTypeMock).toHaveBeenCalledWith('assets/fallback.svg');
+    expect(fetchMock).toHaveBeenCalledWith(
+      'http://localhost:3000/rest/runs/agent-1/file-change-content?path=assets%2Ffallback.svg',
+      { cache: 'no-store', headers: expect.any(Headers) },
+    );
+    expect(wrapper.find('[data-testid="file-viewer"]').attributes('data-file-type')).toBe('Image');
+    expect(wrapper.find('[data-testid="file-viewer"]').attributes('data-url')).toBe('blob:artifact-preview');
+    expect(wrapper.find('[data-testid="file-viewer"]').attributes('data-read-only')).toBe('true');
+
+    wrapper.unmount();
+    expect(revokeObjectURLMock).toHaveBeenCalledWith('blob:artifact-preview');
   });
 
   it('retries server fetch when the refresh signal changes', async () => {

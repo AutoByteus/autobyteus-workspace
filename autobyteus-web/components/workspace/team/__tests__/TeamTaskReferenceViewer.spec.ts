@@ -3,6 +3,10 @@ import { flushPromises, mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import TeamTaskReferenceViewer from '../TeamTaskReferenceViewer.vue';
 
+const { determineFileTypeMock } = vi.hoisted(() => ({
+  determineFileTypeMock: vi.fn(),
+}));
+
 const windowNodeContextStoreMock = {
   getBoundEndpoints: vi.fn(() => ({ rest: 'http://127.0.0.1:4100/rest/' })),
 };
@@ -12,7 +16,7 @@ vi.mock('~/stores/windowNodeContextStore', () => ({
 }));
 
 vi.mock('~/utils/fileExplorer/fileUtils', () => ({
-  determineFileType: vi.fn(async () => 'Text'),
+  determineFileType: determineFileTypeMock,
 }));
 
 const labels: Record<string, string> = {
@@ -43,8 +47,8 @@ const mountSubject = () => mount(TeamTaskReferenceViewer, {
     stubs: {
       Icon: true,
       FileViewer: {
-        props: ['file', 'error', 'mode'],
-        template: '<div data-test="file-viewer"><span data-test="content">{{ file.content }}</span><span data-test="mode">{{ mode }}</span><span data-test="error">{{ error }}</span></div>',
+        props: ['file', 'error', 'mode', 'readOnly'],
+        template: '<div data-test="file-viewer" :data-file-type="file.type" :data-url="file.url || null" :data-read-only="String(readOnly)"><span data-test="content">{{ file.content }}</span><span data-test="mode">{{ mode }}</span><span data-test="error">{{ error }}</span></div>',
       },
     },
     mocks: { $t: (key: string) => labels[key] ?? key },
@@ -55,6 +59,7 @@ describe('TeamTaskReferenceViewer.vue', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
+    determineFileTypeMock.mockResolvedValue('Text');
   });
 
   afterEach(() => {
@@ -78,5 +83,56 @@ describe('TeamTaskReferenceViewer.vue', () => {
     );
     expect(wrapper.get('[data-test="content"]').text()).toBe('# Design');
     expect(wrapper.find('[data-test="team-reference-viewer-back"]').exists()).toBe(false);
+  });
+
+  it('uses the shared-policy fallback for an SVG task reference and keeps it read-only', async () => {
+    determineFileTypeMock.mockResolvedValue('Image');
+    const blob = new Blob(['<svg'], { type: 'image/svg+xml' });
+    const createObjectURL = vi.fn(() => 'blob:svg-task-reference');
+    const revokeObjectURL = vi.fn();
+    vi.stubGlobal('fetch', vi.fn(async () => ({
+      status: 200,
+      ok: true,
+      blob: async () => blob,
+    })));
+    Object.defineProperty(URL, 'createObjectURL', {
+      configurable: true,
+      value: createObjectURL,
+    });
+    Object.defineProperty(URL, 'revokeObjectURL', {
+      configurable: true,
+      value: revokeObjectURL,
+    });
+
+    const wrapper = mount(TeamTaskReferenceViewer, {
+      props: {
+        teamRunId: 'team run/1',
+        taskId: 'task/1',
+        reference: {
+          ...reference,
+          referenceId: 'task-reference:svg',
+          path: '/tmp/diagram.SVG',
+        },
+      },
+      global: {
+        stubs: {
+          Icon: true,
+          FileViewer: {
+            props: ['file', 'error', 'mode', 'readOnly'],
+            template: '<div data-test="file-viewer" :data-file-type="file.type" :data-url="file.url || null" :data-read-only="String(readOnly)" />',
+          },
+        },
+        mocks: { $t: (key: string) => labels[key] ?? key },
+      },
+    });
+    await flushPromises();
+
+    expect(determineFileTypeMock).toHaveBeenCalledWith('/tmp/diagram.SVG');
+    expect(wrapper.get('[data-test="file-viewer"]').attributes('data-file-type')).toBe('Image');
+    expect(wrapper.get('[data-test="file-viewer"]').attributes('data-url')).toBe('blob:svg-task-reference');
+    expect(wrapper.get('[data-test="file-viewer"]').attributes('data-read-only')).toBe('true');
+
+    wrapper.unmount();
+    expect(revokeObjectURL).toHaveBeenCalledWith('blob:svg-task-reference');
   });
 });

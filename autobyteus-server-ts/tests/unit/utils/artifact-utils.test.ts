@@ -4,6 +4,8 @@ import { inferArtifactType } from "../../../src/utils/artifact-utils.js";
 describe("artifact-utils", () => {
   it("infers artifact types from extensions", () => {
     expect(inferArtifactType("/tmp/image.png")).toBe("image");
+    expect(inferArtifactType("/tmp/diagram.svg")).toBe("image");
+    expect(inferArtifactType("/tmp/DIAGRAM.SVG")).toBe("image");
     expect(inferArtifactType("/tmp/sound.mp3")).toBe("audio");
     expect(inferArtifactType("/tmp/movie.mp4")).toBe("video");
     expect(inferArtifactType("/tmp/file.pdf")).toBe("pdf");

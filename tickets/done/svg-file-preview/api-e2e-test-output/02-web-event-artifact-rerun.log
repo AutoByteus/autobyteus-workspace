@@ -1,0 +1,93 @@
+
+> autobyteus@1.4.37 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts components/workspace/agent/__tests__/ArtifactsTab.spec.ts components/workspace/agent/__tests__/ArtifactList.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-web
+
+stderr | components/workspace/agent/__tests__/ArtifactList.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/agent/__tests__/ArtifactsTab.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/agent/__tests__/ArtifactsTab.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/agent/__tests__/ArtifactList.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/agent/__tests__/ArtifactList.spec.ts (4 tests) 37ms
+ ✓ components/workspace/agent/__tests__/ArtifactsTab.spec.ts (3 tests) 26ms
+ ✓ components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts (19 tests) 110ms
+ ❯ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts (19 tests | 1 failed) 118ms
+   ✓ MarkdownRenderer > should render markdown content correctly 18ms
+   ✓ MarkdownRenderer > keeps the generic renderer inert and enables scoped file actions only when opted in 14ms
+   ✓ MarkdownRenderer > emits the raw-token action on explicit click without classifying anchor.href 4ms
+   ✓ MarkdownRenderer > decodes encoded POSIX and Windows link destinations while retaining source text 7ms
+   ✓ MarkdownRenderer > renders valid file URIs as authored-label actions with raw provenance 6ms
+   ✓ MarkdownRenderer > neutralizes invalid and unsupported file links without exposing the raw URI 5ms
+   ✓ MarkdownRenderer > renders unsupported bare absolute Markdown destinations as inert labels 7ms
+   ✓ MarkdownRenderer > leaves file links unchanged when Event Monitor actions are disabled 8ms
+   ✓ MarkdownRenderer > keeps fenced code text unchanged while exposing complete space-containing paths 4ms
+   ✓ MarkdownRenderer > renders supported paths as compact inline links while preserving labels and source text 9ms
+   ✓ MarkdownRenderer > keeps inline file links keyboard accessible for Enter and Space 3ms
+   × MarkdownRenderer > activates SVG Event Monitor actions by click, Enter, and Space while retaining focusable action semantics 6ms
+     → expected -1 to be +0 // Object.is equality
+   ✓ MarkdownRenderer > keeps unsupported archive, installer, and binary paths source-faithful without actions 2ms
+   ✓ MarkdownRenderer > renders supported Lua code paths as Event Monitor actions 2ms
+   ✓ MarkdownRenderer > keeps incomplete absolute paths unchanged across links, prose, inline code, and fences 3ms
+   ✓ MarkdownRenderer > should render MermaidDiagram component for mermaid blocks 2ms
+   ✓ MarkdownRenderer > routes a teleported Mermaid external-link event through the existing link authority 12ms
+   ✓ MarkdownRenderer > routes ordinary HTML href and inline Mermaid xlink anchors through one authority 3ms
+   ✓ MarkdownRenderer > binds a managed image only after authorized resolution completes 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts > MarkdownRenderer > activates SVG Event Monitor actions by click, Enter, and Space while retaining focusable action semantics
+AssertionError: expected -1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ -1
+
+ ❯ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts:288:65
+    286|     expect(controls[0].attributes('title')).toBe('/tmp/DIAGRAM.SVG');
+    287|
+    288|     expect((controls[0].element as HTMLAnchorElement).tabIndex).toBe(0…
+       |                                                                 ^
+    289|
+    290|     await controls[0].trigger('click');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 3 passed (4)
+      Tests  1 failed | 44 passed (45)
+   Start at  08:17:59
+   Duration  5.47s (transform 2.82s, setup 18.56s, collect 455ms, tests 292ms, environment 911ms, prepare 574ms)
+
+ ELIFECYCLE  Command failed with exit code 1.
