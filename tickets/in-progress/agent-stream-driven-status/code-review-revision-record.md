@@ -9,6 +9,7 @@ The latest `code-review-report.md` or `api-e2e-test-review-report.md` remains au
 | CRR-001 | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/code-review-report.md` | Implementation Review round 1 / `IR-001` | N/A | Fail / Local Fix | `CODE-FIND-001` |
 | CRR-002 | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/code-review-report.md` | Implementation Review round 2 / `IR-002` | Fail / Local Fix | Pass | `CODE-FIND-001` |
 | CRR-003 | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/code-review-report.md` | Implementation Review round 3 / expanded `IR-003` | Pass | Fail / Design Impact | `CODE-FIND-001`, `CODE-FIND-002`, `CODE-FIND-003` |
+| CRR-004 | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/code-review-report.md` | Implementation Review round 4 / `IR-004` | Fail / Design Impact | Pass | `CODE-FIND-001`, `CODE-FIND-002`, `CODE-FIND-003` |
 
 ## Revision Entries
 
@@ -84,3 +85,30 @@ None.
 - Material score or classification changes: overall score moves from `9.5/10` (`95.4/100`) to `8.8/10` (`88.0/100`) for the expanded scope. Data flow, API/interface, shared structure, API/E2E readiness, and runtime fidelity fall below `9.0`. Controlling classification becomes `Design Impact`.
 - Recommended recipient: `solution_designer`
 - Remaining risks or uncertainty: no authenticated rendered live-team fixture was available; the held API/E2E coverage/evidence is stale for the expansion; durable documentation still describes removed team and agent status contracts. These remain downstream only after design, implementation, and source review pass.
+
+### CRR-004 — Single-coordinate-frame task-team rework passes source review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/code-review-report.md`
+- Review entry point and round: `Implementation Review` / round `4`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/implementation-handoff.md`; `CODE-FIND-002`, `CODE-FIND-003`
+- Relevant solution revision IDs: `SR-005` (preserving `SR-002`–`SR-004`)
+- Relevant architecture-review revision IDs: `ARCH-REV-005` (preserving prior resolved findings)
+- Relevant implementation revision IDs: `IR-004` (preserving `IR-001`–`IR-003`)
+- Relevant API/E2E revision IDs: `N/A`; prior coverage remains held/stale for `SR-005`
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: `Fail` / `Design Impact` -> `solution_designer`
+- Current authoritative result: `Pass` -> `api_e2e_engineer`
+- What changed in the review result and why: `IR-004` replaces the broad outward operational carrier with a tight `TaskTeamStreamScope`, derives it once in the target parent frame, rebases retained source/member/logical-team paths together across each ordinary boundary, and leaves the stream mapper to strict validation/subtraction. The supported multi-boundary live and reconnect paths now both resolve to `task-team-run-7/review_group/critic`. The stale `TeamRunService` double now implements the manager lifecycle contract and its suite is green.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CODE-FIND-002` | Open / Blocking / Design Impact | Resolved | `SR-005`, `ARCH-REV-005`, `IR-004`; source/test commit `4eca42bf56831eb6561a0f8ceee949c62674c4da` | `TaskTeamStreamScope` excludes operational selectors; `MixedTaskTeamMemberHandle` supplies one parent-validated override; `prefixMixedTeamStreamScope` rebases retained logical/source paths and route keys at each distinct ordinary boundary; live and reconnect tests produce the same nonempty `review_group/critic` relative route; frontend proof resolves `task-team-run-7/review_group/critic`. The 15-file server command passes `128/128`; the 33-file frontend command passes `241/241`. |
+| `CODE-FIND-003` | Open / Blocking / Local Fix | Resolved | `IR-004`; source/test commit `4eca42bf56831eb6561a0f8ceee949c62674c4da` | `team-run-service.test.ts` adds only `subscribeToLifecycle` and `getLifecycleSnapshot` to its manager double; the production interface is unchanged and the exact suite passes `13/13`. |
+| `CODE-FIND-001` | Resolved | Remains Resolved | `IR-002`, `CRR-002`, preserved by `IR-003`/`IR-004` | The expanded 33-file frontend run includes the companion-interleaved `TeamStreamingService` batching regression and passes `241/241`. |
+
+- New or remaining finding IDs: `None`
+- Material score or classification changes: overall score rises from `8.8/10` (`88.0/100`) to `9.5/10` (`95.3/100`). Data flow, API/interface, shared structure, API/E2E readiness, and runtime fidelity return above `9.0`; the controlling `Design Impact` and secondary `Local Fix` are cleared.
+- Recommended recipient: `api_e2e_engineer`
+- Remaining risks or uncertainty: the old coverage investigation/evidence and three held server API/integration edits are stale for `SR-005`; API/E2E must reinvestigate before editing/executing durable coverage. Real multi-boundary WebSocket/reconnect and authenticated browser validation remain downstream. Durable docs remain delivery-owned.
