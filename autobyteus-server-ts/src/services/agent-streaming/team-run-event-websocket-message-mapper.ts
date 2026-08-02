@@ -16,7 +16,10 @@ import {
 import { serializePayload } from "./payload-serialization.js";
 import { buildTeamCommunicationMessagePayload } from "./team-communication-message-payload.js";
 import { buildTeamMemberInputMessagePayload } from "./team-member-input-message-payload.js";
-import { buildTaskTeamScopedIdentityPayload } from "./team-stream-agent-identity-payload.js";
+import {
+  assertTaskTeamLeafStreamScope,
+  buildTaskTeamScopedIdentityPayload,
+} from "./team-stream-agent-identity-payload.js";
 
 const asRecord = (value: unknown): Record<string, unknown> => (
   value && typeof value === "object" && !Array.isArray(value)
@@ -84,18 +87,25 @@ export const convertTeamRunEventToServerMessage = (
 ): ServerMessage => {
   const sourceRouteKey = getTeamRunEventSourceRouteKey(event);
   const sourcePath = Array.isArray(event.sourcePath) ? event.sourcePath : [];
+  const taskTeamScope = event.taskTeamScope ?? null;
+  const taskTeamIdentity = buildTaskTeamScopedIdentityPayload({
+    sourcePath,
+    taskTeamScope,
+  });
   const sourcePayload = {
     source_path: sourcePath,
     ...(sourceRouteKey ? { source_route_key: sourceRouteKey } : {}),
     ...(event.subTeamNodeName ? { sub_team_node_name: event.subTeamNodeName } : {}),
-    ...(buildTaskTeamScopedIdentityPayload({
-      sourcePath,
-      taskTeamInstance: event.taskTeamInstance ?? null,
-    }) ?? {}),
+    ...(taskTeamIdentity ?? {}),
   };
 
   if (event.eventSourceType === TeamRunEventSourceType.AGENT) {
     const payload = event.data as TeamRunAgentEventPayload;
+    assertTaskTeamLeafStreamScope({
+      sourcePath,
+      taskTeamScope,
+      agentRunId: payload.memberRunId,
+    });
     const message = agentRunEventMessageMapper.map(payload.agentEvent);
     const basePayload = message.payload && typeof message.payload === "object"
       ? message.payload

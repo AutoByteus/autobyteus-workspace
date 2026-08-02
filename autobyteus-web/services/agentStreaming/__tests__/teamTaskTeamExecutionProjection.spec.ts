@@ -6,6 +6,7 @@ import {
   extractTaskTeamIdentity,
   updateTaskTeamExecutionProjectionFromEvent,
 } from '../teamTaskTeamExecutionProjection';
+import { resolveTaskTeamScopedMessage } from '../teamTaskTeamChildProjection';
 
 const createAgentContext = (name: string, runId: string) => new AgentContext({
   agentDefinitionId: `${name}-def`,
@@ -81,6 +82,40 @@ const buildTeamContext = () => {
 };
 
 describe('teamTaskTeamExecutionProjection', () => {
+  it('resolves the multi-boundary wire identity to task-team-run-7/review_group/critic', () => {
+    const resolution = resolveTaskTeamScopedMessage(buildTeamContext(), {
+      type: 'AGENT_STATUS',
+      payload: {
+        status: 'running',
+        agent_id: 'critic-runtime-93',
+        member_path: ['research_group', 'review_team', 'review_group', 'critic'],
+        member_route_key: 'research_group/review_team/review_group/critic',
+        source_path: ['research_group', 'review_team', 'review_group', 'critic'],
+        source_route_key: 'research_group/review_team/review_group/critic',
+        task_team_run_id: 'task-team-run-7',
+        task_team_instance_id: 'task-team-instance-7',
+        task_id: 'task-42',
+        team_path: ['research_group', 'review_team'],
+        team_route_key: 'research_group/review_team',
+        task_team_relative_member_path: ['review_group', 'critic'],
+        task_team_relative_member_route_key: 'review_group/critic',
+      },
+    } as any);
+
+    expect(resolution).toMatchObject({
+      outcome: 'child',
+      identity: {
+        parentTaskTeamRunId: 'task-team-run-7',
+        relativeMemberPath: ['review_group', 'critic'],
+        relativeMemberRouteKey: 'review_group/critic',
+        structuralSourcePath: ['research_group', 'review_team', 'review_group', 'critic'],
+        scopedMemberPath: ['task-team-run-7', 'review_group', 'critic'],
+        scopedMemberRouteKey: 'task-team-run-7/review_group/critic',
+        runtimeMemberRunId: 'critic-runtime-93',
+      },
+    });
+  });
+
   it('extracts task-team identity only from task-team delegation payloads', () => {
     expect(extractTaskTeamIdentity({
       type: 'TASK_DELEGATION_EVENT',

@@ -6,6 +6,10 @@ import type { TeamRunContext } from "../../../domain/team-run-context.js";
 import { buildTeamMemberAddress, type InterAgentMessageDeliveryHandler, type ResolvedInterAgentMessageDeliveryRequest } from "../../../domain/inter-agent-message-delivery.js";
 import type { AgentMemberTeamDescriptor } from "../../../domain/member-team-context.js";
 import type { StartTaskTeamInstanceRequest } from "../../../domain/task-team-instance.js";
+import {
+  buildTaskTeamStreamScope,
+  type TaskTeamStreamScope,
+} from "../../../domain/task-team-stream-scope.js";
 import type { ConversationTargetAddress } from "../../../domain/conversation-target-address.js";
 import { selectorFromMemberRouteKey, type TeamMemberSelector } from "../../../domain/team-run-member-identity.js";
 import type { MixedSubTeamRunFactory } from "../mixed-sub-team-run-factory.js";
@@ -31,6 +35,7 @@ export class MixedTaskTeamMemberHandle implements MixedTeamMemberHandle {
   private childRun: TeamRun | null = null;
   private unsubscribe: (() => void) | null = null;
   private readonly tokenUsageAddressBuilder = getTokenUsageExecutionAddressBuilder();
+  private readonly taskTeamStreamScope: TaskTeamStreamScope;
 
   constructor(private readonly options: {
     parentContext: TeamRunContext<MixedTeamRunContext>;
@@ -41,6 +46,10 @@ export class MixedTaskTeamMemberHandle implements MixedTeamMemberHandle {
     deliverInterAgentMessage: InterAgentMessageDeliveryHandler;
   }) {
     const identity = options.request.identity;
+    this.taskTeamStreamScope = buildTaskTeamStreamScope({
+      taskTeamInstance: identity,
+      parentTeamRunId: options.parentContext.runId,
+    });
     this.context = new MixedSubTeamMemberContext({
       memberName: identity.logicalTeam.memberName,
       memberPath: identity.logicalTeam.memberPath,
@@ -59,7 +68,7 @@ export class MixedTaskTeamMemberHandle implements MixedTeamMemberHandle {
         parentTeamRunId: this.options.parentContext.runId,
         sourcePrefix: this.context.memberPath,
         snapshot,
-        taskTeamInstanceOverride: this.options.request.identity,
+        taskTeamScopeOverride: this.taskTeamStreamScope,
       })) ?? [];
   }
 
@@ -218,7 +227,7 @@ export class MixedTaskTeamMemberHandle implements MixedTeamMemberHandle {
         parentTeamRunId: this.options.parentContext.runId,
         sourcePrefix: this.context.memberPath,
         event,
-        taskTeamInstance: this.options.request.identity,
+        taskTeamScopeOverride: this.taskTeamStreamScope,
       });
       this.options.publish(prefixedEvent);
     });

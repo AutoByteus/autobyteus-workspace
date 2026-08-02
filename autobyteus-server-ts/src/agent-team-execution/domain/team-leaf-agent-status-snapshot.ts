@@ -1,8 +1,8 @@
 import type { AgentStatusPayload } from "../../agent-execution/domain/agent-status-payload.js";
 import {
-  cloneTaskTeamInstanceIdentity,
-  type TaskTeamInstanceIdentity,
-} from "./task-team-instance.js";
+  cloneTaskTeamStreamScope,
+  type TaskTeamStreamScope,
+} from "./task-team-stream-scope.js";
 
 export type TeamLeafAgentStatusPayload = AgentStatusPayload & {
   agent_id: string;
@@ -23,7 +23,7 @@ export type TaskTeamLeafAgentStatusSnapshot = {
   scopeKind: "task_team_member";
   teamRunId: string;
   payload: TeamLeafAgentStatusPayload;
-  taskTeamInstance: TaskTeamInstanceIdentity;
+  taskTeamScope: TaskTeamStreamScope;
 };
 
 export type TeamLeafAgentStatusSnapshot =
@@ -70,10 +70,10 @@ export const buildOrdinaryTeamLeafAgentStatusSnapshot = (input: {
 export const buildTaskTeamLeafAgentStatusSnapshot = (input: {
   teamRunId: string;
   payload: TeamLeafAgentStatusPayload;
-  taskTeamInstance: TaskTeamInstanceIdentity;
+  taskTeamScope: TaskTeamStreamScope;
 }): TaskTeamLeafAgentStatusSnapshot => ({
   scopeKind: "task_team_member",
   teamRunId: requiredIdentity(input.teamRunId, "teamRunId"),
   payload: clonePayload(input.payload),
-  taskTeamInstance: cloneTaskTeamInstanceIdentity(input.taskTeamInstance),
+  taskTeamScope: cloneTaskTeamStreamScope(input.taskTeamScope),
 });

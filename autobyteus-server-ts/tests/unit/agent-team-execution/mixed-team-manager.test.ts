@@ -452,7 +452,13 @@ describe("MixedTeamManager termination lifecycle", () => {
         expect.objectContaining({
           scopeKind: "task_team_member",
           teamRunId: "parent-1",
-          taskTeamInstance,
+          taskTeamScope: {
+            taskTeamRunId: "task-team-run-1",
+            taskTeamInstanceId: "task-team-instance-1",
+            taskId: "task-1",
+            logicalTeamPath: ["BuildSquad"],
+            logicalTeamRouteKey: "BuildSquad",
+          },
           payload: expect.objectContaining({
             agent_id: "review-lead-run",
             agent_name: "review_lead",

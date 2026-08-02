@@ -1,5 +1,9 @@
 import type { TeamLeafAgentStatusSnapshot } from "../../agent-team-execution/domain/team-leaf-agent-status-snapshot.js";
-import type { TaskTeamInstanceIdentity } from "../../agent-team-execution/domain/task-team-instance.js";
+import {
+  assertTaskTeamLeafSourcePath,
+  cloneTaskTeamStreamScope,
+  type TaskTeamStreamScope,
+} from "../../agent-team-execution/domain/task-team-stream-scope.js";
 import { buildMemberRouteKeyFromPath } from "../../agent-team-execution/domain/team-run-member-identity.js";
 import { ServerMessage, ServerMessageType } from "./models.js";
 
@@ -13,6 +17,15 @@ export type TeamStreamTaskTeamIdentityPayload = {
   task_team_relative_member_route_key?: string;
 };
 
+const normalizeSourcePath = (sourcePath: readonly string[]): string[] =>
+  sourcePath.map((segment, index) => {
+    const normalized = segment.trim();
+    if (!normalized) {
+      throw new Error(`sourcePath[${index}] cannot be empty.`);
+    }
+    return normalized;
+  });
+
 const pathStartsWith = (
   path: readonly string[],
   prefix: readonly string[],
@@ -22,26 +35,29 @@ const pathStartsWith = (
 
 export const buildTaskTeamScopedIdentityPayload = (input: {
   sourcePath: string[];
-  taskTeamInstance: TaskTeamInstanceIdentity | null;
+  taskTeamScope: TaskTeamStreamScope | null;
 }): TeamStreamTaskTeamIdentityPayload | null => {
-  if (!input.taskTeamInstance) {
+  if (!input.taskTeamScope) {
     return null;
   }
-
-  const teamPath = [...input.taskTeamInstance.logicalTeam.memberPath];
-  const relativeMemberPath = pathStartsWith(input.sourcePath, teamPath)
-    ? input.sourcePath.slice(teamPath.length)
-    : [];
+  const sourcePath = normalizeSourcePath(input.sourcePath);
+  const scope = cloneTaskTeamStreamScope(input.taskTeamScope);
+  if (!pathStartsWith(sourcePath, scope.logicalTeamPath)) {
+    throw new Error(
+      `Task-team source path '${sourcePath.join("/")}' is outside scope '${scope.logicalTeamRouteKey}'.`,
+    );
+  }
+  const relativeMemberPath = sourcePath.slice(scope.logicalTeamPath.length);
   const relativeMemberRouteKey = relativeMemberPath.length > 0
     ? buildMemberRouteKeyFromPath(relativeMemberPath)
     : null;
 
   return {
-    task_team_run_id: input.taskTeamInstance.taskTeamRunId,
-    task_team_instance_id: input.taskTeamInstance.taskTeamInstanceId,
-    task_id: input.taskTeamInstance.taskId,
-    team_route_key: input.taskTeamInstance.logicalTeam.memberRouteKey,
-    team_path: teamPath,
+    task_team_run_id: scope.taskTeamRunId,
+    task_team_instance_id: scope.taskTeamInstanceId,
+    task_id: scope.taskId,
+    team_route_key: scope.logicalTeamRouteKey,
+    team_path: [...scope.logicalTeamPath],
     task_team_relative_member_path: relativeMemberPath,
     ...(relativeMemberRouteKey
       ? { task_team_relative_member_route_key: relativeMemberRouteKey }
@@ -49,23 +65,31 @@ export const buildTaskTeamScopedIdentityPayload = (input: {
   };
 };
 
+export const assertTaskTeamLeafStreamScope = (input: {
+  sourcePath: string[];
+  taskTeamScope: TaskTeamStreamScope | null;
+  agentRunId: string;
+}): void => assertTaskTeamLeafSourcePath({
+  sourcePath: input.sourcePath,
+  taskTeamScope: input.taskTeamScope,
+  leafId: input.agentRunId,
+});
+
 export const mapTeamLeafAgentStatusSnapshot = (
   snapshot: TeamLeafAgentStatusSnapshot,
 ): ServerMessage => {
+  const taskTeamScope = snapshot.scopeKind === "task_team_member"
+    ? snapshot.taskTeamScope
+    : null;
+  assertTaskTeamLeafStreamScope({
+    sourcePath: snapshot.payload.source_path,
+    taskTeamScope,
+    agentRunId: snapshot.payload.agent_id,
+  });
   const taskTeamIdentity = buildTaskTeamScopedIdentityPayload({
     sourcePath: snapshot.payload.source_path,
-    taskTeamInstance: snapshot.scopeKind === "task_team_member"
-      ? snapshot.taskTeamInstance
-      : null,
+    taskTeamScope,
   });
-  if (
-    snapshot.scopeKind === "task_team_member" &&
-    !taskTeamIdentity?.task_team_relative_member_route_key
-  ) {
-    throw new Error(
-      `Task-team leaf status '${snapshot.payload.agent_id}' is not rooted below '${snapshot.taskTeamInstance.logicalTeam.memberRouteKey}'.`,
-    );
-  }
   return new ServerMessage(ServerMessageType.AGENT_STATUS, {
     ...snapshot.payload,
     ...(taskTeamIdentity ?? {}),

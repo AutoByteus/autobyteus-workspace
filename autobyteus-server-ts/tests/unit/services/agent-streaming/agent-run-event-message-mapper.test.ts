@@ -3,7 +3,10 @@ import { AgentRunEventMessageMapper } from "../../../../src/services/agent-strea
 import { AgentRunEventType } from "../../../../src/agent-execution/domain/agent-run-event.js";
 import { ServerMessageType } from "../../../../src/services/agent-streaming/models.js";
 import { convertTeamRunEventToServerMessage } from "../../../../src/services/agent-streaming/team-run-event-websocket-message-mapper.js";
-import { TeamRunEventSourceType } from "../../../../src/agent-team-execution/domain/team-run-event.js";
+import {
+  TeamRunEventSourceType,
+  type TeamRunEvent,
+} from "../../../../src/agent-team-execution/domain/team-run-event.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 
 describe("AgentRunEventMessageMapper", () => {
@@ -254,43 +257,29 @@ describe("AgentRunEventMessageMapper", () => {
     }
   });
 
-  it("flattens task-team scoped event identity on child agent messages", () => {
+  it("strictly flattens a multi-boundary task-team leaf without prefix fallback", () => {
     const mapper = new AgentRunEventMessageMapper();
 
     const message = convertTeamRunEventToServerMessage({
       eventSourceType: TeamRunEventSourceType.AGENT,
-      teamRunId: "parent-team-run",
-      sourcePath: ["SoftwareEngineeringTeam", "solution_designer"],
-      taskTeamInstance: {
-        taskTeamInstanceId: "task-team-instance-1",
-        taskTeamRunId: "task-team-run-1",
-        parentTeamRunId: "parent-team-run",
-        taskId: "task_0001",
-        logicalTeam: {
-          memberName: "SoftwareEngineeringTeam",
-          memberPath: ["SoftwareEngineeringTeam"],
-          memberRouteKey: "SoftwareEngineeringTeam",
-          templateMemberRunId: "software-team-template",
-          teamDefinitionId: "software-team-def",
-          coordinatorMemberRouteKey: "solution_designer",
-        },
-        ingress: {
-          memberName: "solution_designer",
-          memberPath: ["solution_designer"],
-          memberRouteKey: "solution_designer",
-          memberRunId: "solution-child-run",
-        },
-        createdAt: "2026-06-26T00:00:00.000Z",
+      teamRunId: "root-team-1",
+      sourcePath: ["research_group", "review_team", "review_group", "critic"],
+      taskTeamScope: {
+        taskTeamInstanceId: "task-team-instance-7",
+        taskTeamRunId: "task-team-run-7",
+        taskId: "task-42",
+        logicalTeamPath: ["research_group", "review_team"],
+        logicalTeamRouteKey: "research_group/review_team",
       },
       data: {
         runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-        memberName: "solution_designer",
-        memberRunId: "solution-child-run",
-        memberPath: ["SoftwareEngineeringTeam", "solution_designer"],
-        memberRouteKey: "SoftwareEngineeringTeam/solution_designer",
+        memberName: "critic",
+        memberRunId: "critic-runtime-93",
+        memberPath: ["research_group", "review_team", "review_group", "critic"],
+        memberRouteKey: "research_group/review_team/review_group/critic",
         agentEvent: {
           eventType: AgentRunEventType.AGENT_STATUS,
-          runId: "solution-child-run",
+          runId: "critic-runtime-93",
           payload: {
             status: "running",
           },
@@ -301,16 +290,116 @@ describe("AgentRunEventMessageMapper", () => {
 
     expect(message.type).toBe(ServerMessageType.AGENT_STATUS);
     expect(message.payload).toEqual(expect.objectContaining({
-      task_team_run_id: "task-team-run-1",
-      task_team_instance_id: "task-team-instance-1",
-      task_id: "task_0001",
-      team_route_key: "SoftwareEngineeringTeam",
-      team_path: ["SoftwareEngineeringTeam"],
-      task_team_relative_member_path: ["solution_designer"],
-      task_team_relative_member_route_key: "solution_designer",
-      source_route_key: "SoftwareEngineeringTeam/solution_designer",
-      source_path: ["SoftwareEngineeringTeam", "solution_designer"],
+      task_team_run_id: "task-team-run-7",
+      task_team_instance_id: "task-team-instance-7",
+      task_id: "task-42",
+      team_route_key: "research_group/review_team",
+      team_path: ["research_group", "review_team"],
+      task_team_relative_member_path: ["review_group", "critic"],
+      task_team_relative_member_route_key: "review_group/critic",
+      source_route_key: "research_group/review_team/review_group/critic",
+      source_path: ["research_group", "review_team", "review_group", "critic"],
     }));
+  });
+
+  it("rejects a live task-team agent mapped at the task-team root", () => {
+    const mapper = new AgentRunEventMessageMapper();
+    expect(() => convertTeamRunEventToServerMessage({
+      eventSourceType: TeamRunEventSourceType.AGENT,
+      teamRunId: "root-team-1",
+      sourcePath: ["research_group", "review_team"],
+      taskTeamScope: {
+        taskTeamInstanceId: "task-team-instance-7",
+        taskTeamRunId: "task-team-run-7",
+        taskId: "task-42",
+        logicalTeamPath: ["research_group", "review_team"],
+        logicalTeamRouteKey: "research_group/review_team",
+      },
+      data: {
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+        memberName: "review_team",
+        memberRunId: "task-team-run-7",
+        memberPath: ["research_group", "review_team"],
+        memberRouteKey: "research_group/review_team",
+        agentEvent: {
+          eventType: AgentRunEventType.AGENT_STATUS,
+          runId: "task-team-run-7",
+          payload: { status: "running" },
+          statusHint: "ACTIVE",
+        },
+      },
+    }, mapper)).toThrow("with a nonempty relative member path");
+  });
+
+  it("strictly flattens the same task-team scope for every non-agent event variant", () => {
+    const mapper = new AgentRunEventMessageMapper();
+    const scope = {
+      taskTeamInstanceId: "task-team-instance-7",
+      taskTeamRunId: "task-team-run-7",
+      taskId: "task-42",
+      logicalTeamPath: ["research_group", "review_team"],
+      logicalTeamRouteKey: "research_group/review_team",
+    };
+    const events: TeamRunEvent[] = [
+      {
+        eventSourceType: TeamRunEventSourceType.TASK_DELEGATION,
+        teamRunId: "root-team-1",
+        sourcePath: ["research_group", "review_team"],
+        taskTeamScope: scope,
+        data: {
+          eventType: "TASK_DELEGATION_STATUS_UPDATED",
+          payload: { taskId: "task-42" },
+        },
+      },
+      {
+        eventSourceType: TeamRunEventSourceType.COMMUNICATION,
+        teamRunId: "root-team-1",
+        sourcePath: ["research_group", "review_team"],
+        taskTeamScope: scope,
+        data: {
+          messageId: "message-1",
+          teamRunId: "root-team-1",
+          senderAddress: { segments: [{ kind: "member", memberRouteKey: "critic" }] },
+          receiverAddress: { segments: [{ kind: "member", memberRouteKey: "reviewer" }] },
+          content: "Review this.",
+          messageType: "handoff",
+          referenceFiles: [],
+          createdAt: "2026-08-02T12:00:00.000Z",
+        },
+      },
+      {
+        eventSourceType: TeamRunEventSourceType.MEMBER_INPUT,
+        teamRunId: "root-team-1",
+        sourcePath: ["research_group", "review_team"],
+        taskTeamScope: scope,
+        data: {
+          messageId: "input-1",
+          dedupeKey: "input-1",
+          teamRunId: "root-team-1",
+          recipientMemberRunId: "critic-runtime-93",
+          recipientMemberName: "critic",
+          recipientMemberPath: ["review_group", "critic"],
+          recipientMemberRouteKey: "review_group/critic",
+          content: "Continue.",
+          inputOrigin: "user_message",
+          receivedAt: "2026-08-02T12:00:00.000Z",
+          contextFilePaths: [],
+        },
+      },
+    ];
+
+    for (const event of events) {
+      expect(convertTeamRunEventToServerMessage(event, mapper).payload).toEqual(
+        expect.objectContaining({
+          task_team_run_id: "task-team-run-7",
+          task_team_instance_id: "task-team-instance-7",
+          task_id: "task-42",
+          team_path: ["research_group", "review_team"],
+          team_route_key: "research_group/review_team",
+          task_team_relative_member_path: [],
+        }),
+      );
+    }
   });
 
   it("maps derived team communication messages without routing them through file changes", () => {
