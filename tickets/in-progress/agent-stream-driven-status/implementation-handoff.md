@@ -19,24 +19,27 @@
 
 ## Current Implementation Summary
 
-`IR-003` implements the complete `SR-004` / `ARCH-REV-004` team-lifecycle expansion while preserving the already implemented and source-reviewed `SR-002` agent lifecycle foundation.
+`IR-004` implements the `SR-005` / `ARCH-REV-005` coordinate-frame correction returned by `CRR-003`, while preserving the sound `IR-003` team-lifecycle expansion and source-reviewed `SR-002` agent lifecycle foundation.
 
 The public team lifecycle is now one manager-owned binary root fact. `AgentTeamRunManager` publishes idempotent lifecycle transitions for an exact root run, the team stream binds lifecycle and event subscriptions before a fresh read, and the frontend consumes `TEAM_RUN_LIFECYCLE { team_run_id, is_active }`. Socket subscription state remains separate. Accepted termination publishes inactive; rejected termination leaves the run active; replacement and stale-backend paths avoid false lifecycle flicker.
 
-The five-state aggregate team model is removed end to end. Backend/public team status DTOs, aggregate computation, root/nested `TEAM_STATUS`, GraphQL/history root status, frontend `AgentTeamStatus`, aggregate hydration/normalization, team status dots, and aggregate visual helpers are deleted. Only exact leaf agents expose `AgentStatus`. Recursive initial snapshots retain a tight `TeamLeafAgentStatusSnapshot` carrier; live and initial paths share scope-prefix and task-team identity flattening functions, including nested task-team execution identity.
+The five-state aggregate team model remains removed end to end. Backend/public team status DTOs, aggregate computation, root/nested `TEAM_STATUS`, GraphQL/history root status, frontend `AgentTeamStatus`, aggregate hydration/normalization, team status dots, and aggregate visual helpers stay deleted. Only exact leaf agents expose `AgentStatus`.
+
+`IR-004` separates operational task-team identity from outward stream identity. `TaskTeamInstanceIdentity` remains local to activation, persistence, ingress, and coordinator routing. A tight `TaskTeamStreamScope` carries only outward IDs plus logical-team path/key in the enclosing `teamRunId` frame. The task-team handle derives one target-parent-frame override; every ordinary parent sends AGENT, TASK_DELEGATION, COMMUNICATION, MEMBER_INPUT, and recursive initial snapshots through `prefixMixedTeamStreamScope`, which rebases source/member/logical-team paths together and rebuilds route keys. The stream mapper now validates and subtracts only—there is no prefix, root, or frontend fallback.
 
 Former aggregate consumers now use their own facts: settlement asks private `hasOpenExecutionWork()`, task cleanup follows terminal task/reconciliation events, and failure observation retains member-agent and explicit operation failures without inventing a root aggregate error. The frontend owns one per-run `stopPending` guard, derives Stop from `isActive && !stopPending`, keeps failed Stop active, and uses `Active`/`Inactive` only where team-run liveness text remains useful.
 
-- Implementation cycle: `Expanded Rework`
+- Implementation cycle: `Design-Impact Rework + Local Fix`
 - Preserved agent foundation commits: `b1e96b73f0b40427bebe07f9b4f9609007a766fe`, `f453286d829ffde874a700d350f9c8ade80af4c9`
 - `IR-003` source/test commit: `9c4c6f09546b426ab27598a11753657b438c3fde`
+- `IR-004` source/test commit: `4eca42bf56831eb6561a0f8ceee949c62674c4da`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/implementation-revision-record.md`
-- Current implementation revision ID: `IR-003`
-- Related solution revisions: `SR-002`, `SR-004`
-- Related architecture revisions: `ARCH-REV-002`, `ARCH-REV-004`
-- Related code-review revisions: `CRR-002` for the preserved foundation; new source review pending
+- Current implementation revision ID: `IR-004`
+- Related solution revisions: `SR-002`, `SR-004`, `SR-005`
+- Related architecture revisions: `ARCH-REV-002`, `ARCH-REV-004`, `ARCH-REV-005`
+- Related code-review revisions: `CRR-002` for the preserved foundation; `CRR-003` triggered this rework; new source re-review pending
 - Related API/E2E revisions: `N/A` for this expanded source state
-- Triggering finding: `ARCH-FIND-003` was resolved in `SR-004`; no implementation-owned design deviation was found
+- Triggering findings: `CODE-FIND-002` (`Resolved In Design` by `SR-005`) and `CODE-FIND-003` (`Local Fix`)
 
 ## Reviewed Behavior Implementation Trace
 
@@ -50,13 +53,13 @@ Former aggregate consumers now use their own facts: settlement asks private `has
 | BEH-006 | Team definitions have no runtime status | History/tree read models and workspace presentation remove definition status fields, dots, and labels | Implemented; launch/name/avatar/count/disclosure remain. |
 | BEH-007 | Root team liveness is manager-owned binary `isActive` | `AgentTeamRunManager` lifecycle snapshot/subscription -> `TEAM_RUN_LIFECYCLE` -> team context/history/open/recovery state | Implemented with listener isolation, replacement/stale-run guards, fresh read, and independent `isSubscribed`. |
 | BEH-008 | Stop uses root activity plus local pending; no five-state team visuals | `AgentTeamRunStore` stop-pending set -> workspace mutation/composer callers -> `TeamMembersPanel`; team display helpers removed | Implemented; duplicate Stop is rejected locally, failure clears pending but preserves `isActive`. |
-| BEH-009 | Exact leaf status survives live/initial recursion; aggregate consumers move to real owners | `TeamLeafAgentStatusSnapshot`, `prefixMixedTeamAgentScope`, `buildTaskTeamScopedIdentityPayload`, `TeamRuntimeSnapshotService`, task terminal projection, `hasOpenExecutionWork` | Implemented; carrier is not narrowed early, task-team paths are validated, aggregate status/event compatibility paths are deleted. |
+| BEH-009 | Exact leaf status survives live/initial recursion; aggregate consumers use real owners | Operational identity -> task handle `TaskTeamStreamScope` override -> every-boundary `prefixMixedTeamStreamScope` -> strict shared flattener -> exact frontend task-team leaf; task terminal projection and `hasOpenExecutionWork` remain separate | Implemented. Root -> ordinary subteam -> task team -> leaf maps live and reconnect to `task-team-run-7/review_group/critic`; repeated ordinary nesting is idempotent and invalid/root-only leaf frames fail. |
 
 ## Key Files And Areas
 
 - Root lifecycle authority: `autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts`, `domain/team-run-lifecycle.ts`
-- Leaf snapshot contract: `domain/team-leaf-agent-status-snapshot.ts`, `backends/team-run-backend.ts`, mixed member handles and manager
-- Shared recursive identity: `backends/mixed/events/mixed-team-event-bridge.ts`, `services/agent-streaming/team-stream-agent-identity-payload.ts`
+- Leaf/scope contracts: `domain/task-team-stream-scope.ts`, `domain/team-leaf-agent-status-snapshot.ts`, `domain/team-run-event.ts`, backend/handle recursive signatures
+- Shared recursive identity: `backends/mixed/events/mixed-team-event-bridge.ts`, `mixed-task-team-member-handle.ts`, `services/agent-streaming/team-stream-agent-identity-payload.ts`
 - Team stream: `agent-team-stream-handler.ts`, `team-runtime-snapshot-service.ts`, `team-run-event-websocket-message-mapper.ts`
 - Former aggregate consumers: `team-run.ts`, `task-team-settlement-coordinator.ts`, `team-run-service.ts`, task-delegation projections
 - History/API contraction: server run-history types/services and GraphQL types; frontend GraphQL query/generated contract and run-history stores
@@ -66,14 +69,15 @@ Former aggregate consumers now use their own facts: settlement asks private `has
 ## Important Assumptions
 
 - `AgentTeamRunManager` is the only public root team-liveness owner; leaf status, open-work state, and transport subscription are deliberately not fallback liveness sources.
-- A task-team snapshot must retain its complete execution identity until the shared wire mapper flattens it. A source path outside its logical task-team route is rejected instead of silently repaired.
+- Operational `TaskTeamInstanceIdentity` never becomes root-relative. The task-team handle derives a tight outward scope in its immediate parent frame, and every outer ordinary boundary rebases that retained scope with source/member paths.
+- The stream mapper receives one coordinate-consistent scope and only validates/subtracts it. A source path outside logical-team scope or a task-team leaf without a nonempty relative selector is rejected instead of repaired.
 - Stored history remains directly usable because readers no longer request root status; member statuses and existing `isActive` remain sufficient. No dual protocol or compatibility parser is retained.
 - Status companions, `submissionPending`, and exact member interrupt semantics remain as approved in `SR-002`.
 
 ## Known Risks And Limitations
 
 - Real WebSocket startup/reconnect, stale-backend, nested task-team, termination-failure, and multi-runtime traces remain for downstream API/E2E validation.
-- The held pre-expansion API/E2E investigation and three held server API/integration tests were intentionally not edited or committed. Downstream must reconcile them against `SR-004` before execution.
+- The held pre-expansion API/E2E investigation and three held server API/integration tests were intentionally not edited or committed. Downstream must reconcile them against `SR-005` before execution.
 - GraphQL code generation could not be run because no live codegen endpoint was configured. The checked-in generated TypeScript contract was narrowed manually in parallel with the query/server schema contraction.
 - No authenticated running-team browser or desktop fixture was available for direct visual inspection. Focused production-component render/interaction tests passed, but realistic rendered validation remains downstream-owned.
 - Durable project documentation may still describe aggregate team status; integrated documentation sync remains `delivery_engineer` work.
@@ -85,7 +89,7 @@ Former aggregate consumers now use their own facts: settlement asks private `has
 - Refactor decision: `Refactor Needed Now`
 - Implementation matched the reviewed assessment: `Yes`
 - Design-impact reroute: `N/A`
-- Notes: the implementation deletes the aggregate contract and moves each decision to one explicit owner rather than translating old team status into the new binary model. The task-team carrier and shared prefix/flatten functions implement the exact `SR-004` boundary that resolved `ARCH-FIND-003`.
+- Notes: `IR-004` fixes the missed multi-boundary invariant rather than adding a mapper workaround. The bridge is the sole coordinate-frame transition owner; the transport only validates/flattens; operational task routing remains unchanged. `CODE-FIND-003` was corrected only in the stale test double, without weakening the production manager interface.
 
 ## Legacy / Compatibility Removal Check
 
@@ -94,7 +98,7 @@ Former aggregate consumers now use their own facts: settlement asks private `has
 - Obsolete files/helpers/tests/flags/adapters removed: `Yes`
 - Shared structures remain tight: `Yes`
 - Changed hand-written source stayed below the 500-effective-line guardrail: `Yes` (largest: `WorkspaceHistoryWorkspaceSection.vue`, 497; generated GraphQL output excluded)
-- Production scans found no `TEAM_STATUS`, aggregate team status DTO/aggregation/overlay, old team status projection/snapshot service, `AgentTeamStatus`, or aggregate team visual helper.
+- Production scans found no `TEAM_STATUS`, aggregate team status DTO/aggregation/overlay, old team status projection/snapshot service, `AgentTeamStatus`, aggregate team visual helper, old `prefixMixedTeamAgentScope`, or outward event/snapshot `taskTeamInstance` carrier.
 
 ## Persisted Data Transition Check
 
@@ -109,20 +113,20 @@ Former aggregate consumers now use their own facts: settlement asks private `has
 
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status`
 - Branch: `codex/agent-stream-driven-status`
-- `SR-004` implementation starting HEAD: `24256a6afc7f90c086ac1ba8e7d3ca1f528daae7`
+- `SR-005` reviewed HEAD: `facc6a8184f0c481244accf59fd8aa30080a02c0`; implementation source starting state: `9c4c6f09546b426ab27598a11753657b438c3fde`
 - No dependency or lockfile changes.
 - Product iteration / Product Manager acceptance callback: `Not Required`.
 
 ## Local Implementation Checks
 
 - **Pass:** server TypeScript build, `pnpm exec tsc -p tsconfig.build.json --noEmit --pretty false`.
-- **Pass:** focused changed server unit set, `14` files / `104` tests. This covers manager lifecycle listener teardown, replacement/stale-backend/idempotent unregister, leaf-snapshot carrier/prefixing, task settlement, task cleanup, failure observation, and stream bind/fresh-read behavior.
-- **Pass:** focused changed frontend set, `33` files / `240` tests. This covers lifecycle protocol/application, subscribed-vs-active separation, open/recovery/history flows, Stop failure/pending behavior, no aggregate visuals, task cleanup, identity projection, and preserved composer/routing behavior.
-- **Pass:** additional high-risk frontend store/service/component set, `10` files / `152` tests.
+- **Pass:** expanded server regression set, `15` files / `128` tests. It covers all prior manager/team behavior plus target-frame scope derivation, every live event variant, live/reconnect parity, repeated ordinary nesting/no double prefix, route-key rebuild, strict invalid/root-only leaf rejection, and mapper flattening.
+- **Pass:** `TeamRunService` reviewer reproduction, `1` file / `13` tests; the manager double now supplies `subscribeToLifecycle` and `getLifecycleSnapshot`.
+- **Pass:** expanded frontend changed set, `33` files / `241` tests. It preserves lifecycle/Stop/batching coverage and proves the exact scoped child route `task-team-run-7/review_group/critic`.
+- **Pass:** focused task-team frontend set, `3` files / `43` tests.
 - **Pass:** `pnpm guard:web-boundary`, `pnpm guard:localization-boundary`, and `pnpm audit:localization-literals` (zero unresolved literals).
-- **Pass with repository limitation:** `pnpm exec nuxi typecheck` reached the repository baseline error set. Among `IR-003` changed files, only `generated/graphql.ts` lines 2–3 are reported, for the unchanged baseline imports `@vue/apollo-composable` and `@vue/composition-api` not being installed/resolved in this environment. No task-semantic type error is reported in a changed file.
+- **Pass with repository limitation:** `pnpm exec nuxi typecheck` remains repository-baseline non-green; its `IR-004` changed-file intersection is empty.
 - **Pass:** production obsolete-path scans, source-size guard, protected-file SHA-1 check, and `git diff --check`.
-- **Non-authoritative invocation note:** an initial shell command used macOS Bash without `mapfile`, accidentally invoking the broad frontend suite with no selected files. Its unrelated harness/context failures are not treated as implementation evidence; the explicit 33-file command subsequently passed all 240 selected tests.
 
 These are implementation-scoped checks, not API/E2E sign-off.
 
@@ -137,11 +141,11 @@ These are implementation-scoped checks, not API/E2E sign-off.
 
 - Reconcile the held stale pre-expansion API/E2E coverage before editing or execution; prove the new `TEAM_RUN_LIFECYCLE` wire shape and absence of `TEAM_STATUS`.
 - Exercise bind-listeners-before-fresh-read, reconnect, accepted/rejected termination, listener teardown, replacement without false/true flicker, stale-backend cleanup, and idempotent unregister.
-- Exercise nested ordinary subteam plus task-team live/initial status mapping and assert identical scoped route, task-team run/definition IDs, and no double prefix.
+- Exercise root -> ordinary subteam -> task team -> leaf live/initial mapping and assert identical `task-team-run-7/review_group/critic` resolution, repeated ordinary rebasing, exact route-key rebuild, and strict invalid-frame rejection.
 - Verify task terminal cleanup/reconciliation, member failure observation, and settlement blocking via private open-work semantics.
 - Validate root `isActive`, separate `isSubscribed`, one `stopPending` owner, Stop failure/pending, and click/Enter/store exact member action parity in a realistic UI.
 - Preserve the `IR-002` companion-interleaved content batching and genuine boundary-flush proofs while updating team-stream coverage.
 
 ## API / E2E / Executable Coverage Still Required
 
-`Yes.` Source re-review is required first. Do not advance the stale coverage state directly to delivery or treat the prior API/E2E evidence as sign-off for `SR-004`.
+`Yes.` Source re-review is required first. Do not advance the stale coverage state directly to API/E2E/delivery or treat the prior evidence as sign-off for `SR-005`.

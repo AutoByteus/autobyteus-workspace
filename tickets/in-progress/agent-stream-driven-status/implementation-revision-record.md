@@ -9,6 +9,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-001 | `architecture_reviewer`; `design-review-report.md`; `ARCH-REV-002` | `N/A` (approved design resolved `ARCH-FIND-001`, `ARCH-FIND-002`) | `Initial Baseline` | `SR-002`, `ARCH-REV-002`; `CRR N/A`, `API-REV N/A`, `DR N/A` | Implemented; local implementation checks pass subject to recorded repository baseline limitations; ready for code review |
 | IR-002 | `code_reviewer`; `code-review-report.md`; Implementation Review round 1 | `CODE-FIND-001` | `Local Fix` | `SR-002`, `ARCH-REV-002`, `CRR-001`; `API-REV N/A`, `DR N/A` | Companion statuses are presentation-transparent in both streaming services; focused regression checks pass; ready for source re-review |
 | IR-003 | `architecture_reviewer`; `design-review-report.md`; `ARCH-REV-004` | `ARCH-FIND-003` resolved by `SR-004` | `Expanded Rework` | `SR-002`, `SR-004`, `ARCH-REV-002`, `ARCH-REV-004`, preserved `CRR-002`; `API-REV N/A`, `DR N/A` | Manager-owned binary team lifecycle, scoped leaf snapshots, aggregate removal, and frontend activity/pending contraction implemented; focused checks pass; ready for source re-review |
+| IR-004 | `architecture_reviewer`; `design-review-report.md`; `ARCH-REV-005` after `CRR-003` | `CODE-FIND-002`, `CODE-FIND-003` | `Design-Impact Rework + Local Fix` | `SR-005`, `ARCH-REV-005`, `CRR-003`; preserved `IR-001`–`IR-003`; `API-REV N/A`, `DR N/A` | Single-coordinate-frame task-team stream scope and stale manager-double fix implemented; focused checks pass; ready for source re-review |
 
 ## Revision Entries
 
@@ -111,3 +112,38 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
   - Obsolete-path scans, source-size guard, and `git diff --check`: pass.
 - Next recipient or routing: `code_reviewer` for expanded source re-review. Do not advance directly to `api_e2e_engineer`.
 - Remaining limitations or risks: held pre-expansion coverage must be reinvestigated; realistic WebSocket/reconnect/nested task-team/Stop-failure evidence and direct browser validation remain downstream-owned. GraphQL codegen could not run without a configured endpoint. Product iteration callback is `Not Required`.
+
+### IR-004 — Enforce one task-team stream coordinate frame at every recursion boundary
+
+- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/design-review-report.md`; `ARCH-REV-005` following `CRR-003`
+- Triggering finding IDs: `CODE-FIND-002` (`Resolved In Design` by `SR-005`) and `CODE-FIND-003` (`Local Fix`)
+- Classification: `Design-Impact Rework + Local Fix`
+- Prior authoritative result: `CRR-003` failed `IR-003` because task-team-under-ordinary-subteam recursion mixed root-relative leaf paths with child-local logical-team identity; the separately run `TeamRunService` test exposed a stale manager double.
+- Current authoritative result: Implemented in source/test commit `4eca42bf56831eb6561a0f8ceee949c62674c4da`; focused implementation checks pass; ready for source re-review.
+- Related solution revision IDs: `SR-005` (preserving `SR-002` and the sound `SR-004` scope)
+- Related architecture-review revision IDs: `ARCH-REV-005`
+- Related code-review revision IDs: `CRR-003`
+- Related API/E2E revision IDs: `N/A`; prior investigation/evidence remains held and stale
+- Related delivery revision IDs: `N/A`
+- Why this revision is recorded: It replaces the mixed-frame outward carrier with the reviewed single-coordinate-frame contract and resolves the required stale test fixture without weakening production interfaces.
+- Approved behavior or requirement IDs affected: `BEH-009`, `REQ-017`, `AC-021`; preserved `BEH-001`–`BEH-008` and all prior acceptance behavior.
+- Implementation delta:
+  - Added tight `TaskTeamStreamScope` builder/clone and retained full operational `TaskTeamInstanceIdentity` only in task execution owners.
+  - Changed `TeamRunEvent` and `TeamLeafAgentStatusSnapshot` outward carriers to `taskTeamScope`.
+  - Replaced leaf-only prefixing with `prefixMixedTeamStreamScope`; AGENT, TASK_DELEGATION, COMMUNICATION, MEMBER_INPUT, and recursive initial snapshots now share it.
+  - Task-team handles build one target-parent-frame override; ordinary parents rebase retained source/member/logical-team paths and rebuild all route keys.
+  - Stream mapping strictly validates/subtracts the already-rooted scope and rejects invalid frames or empty task-team leaf selectors; no transport/frontend prefix fallback was added.
+  - Updated the `TeamRunService` manager test double with the required lifecycle subscription/snapshot methods only.
+  - Added live/reconnect, repeated nesting/idempotence, target-frame, route-key, all-event, strict-failure, and exact frontend route coverage.
+- Changed files or areas: server task-team stream domain, mixed event bridge/task-team handle, stream mapper/flattener and focused units; one frontend projection regression test; `TeamRunService` test fixture.
+- Local validation and result:
+  - Server TypeScript build: pass.
+  - Server regression set: 15 files / 128 tests pass.
+  - Exact `TeamRunService` reproduction: 1 file / 13 tests pass.
+  - Frontend changed set: 33 files / 241 tests pass; focused task-team set: 3 files / 43 tests pass.
+  - Web/localization guards and literal audit: pass.
+  - `nuxi typecheck`: repository baseline remains non-green; no `IR-004` changed file appears in the error set.
+  - Protected held files: SHA-1 unchanged and not committed.
+  - Obsolete outward-carrier/aggregate scans, source-size guard, and `git diff --check`: pass.
+- Next recipient or routing: `code_reviewer` for `IR-004` source re-review. API/E2E remains blocked until it passes.
+- Remaining limitations or risks: realistic multi-boundary WebSocket/reconnect traces and direct browser validation remain downstream-owned; prior API/E2E coverage must be reinvestigated against `SR-005`. Product iteration callback is `Not Required`.
