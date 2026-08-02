@@ -60,10 +60,10 @@ The Pinia stores act as the primary interface for the UI components to interact 
 - **Key Actions**:
   - `createAndLaunchTeam()`: Orchestrates the creation of a new team run configuration and starts the session.
   - `launchExistingTeam()`: Resumes or starts a session from an existing team instance.
-  - `connectToTeamStream(teamRunId)`: Listens for team-level events (e.g., server task-delegation lifecycle events, status changes, member events) via WebSocket.
-  - `sendMessageToFocusedMember()`: Routes user input through `resolveTeamConversationTargetAddressResult(...)`, which returns a typed `ConversationTargetAddress` for backend routing and a separate local target key for composer, draft-attachment, and optimistic-message ownership. The address can target structural leaf members, structural subteams, task-agent executions, task-team roots, or members inside task-team executions by composing `member`, `task_team`, and `task_agent` segments from the focused projection. A new/all-offline team can still send its first message to a focused non-coordinator structural member, and a valid runtime projection can now receive ordinary chat without falling back to the structural template. Missing/stale focused targets or incomplete runtime identity fail validation instead of silently retargeting; the active-execution safety fallback remains reserved for task-agent-only logical-member conversations that should not receive ordinary user chat. After validation, the store immediately begins a local submission for the selected local target by appending the user message when a local leaf context exists, clearing that target's composer/staged context files, and setting `isSending`. Backend create/restore, attachment finalization, stream connection, and WebSocket send then continue; finalized attachment locators are reconciled onto the already-visible member message rather than appended as a duplicate. Frontend team chat emits `SEND_MESSAGE.conversation_target_address`; backend WebSocket `SEND_MESSAGE` provides the authoritative final recovery and target-validation boundary when the local resume cache is stale or absent, and streamed member/team status events remain the authority for visible `initializing`/`running` state.
+  - `connectToTeamStream(teamRunId)`: Listens for team-level events (for example server task-delegation lifecycle events, root `TEAM_RUN_LIFECYCLE`, and exact member events) via WebSocket. `AgentTeamContext.isSubscribed` records transport attachment separately from root `isActive`.
+  - `sendMessageToFocusedMember()`: Routes user input through `resolveTeamConversationTargetAddressResult(...)`, which returns a typed `ConversationTargetAddress` for backend routing and a separate local target key for composer, draft-attachment, and optimistic-message ownership. The address can target structural leaf members, structural subteams, task-agent executions, task-team roots, or members inside task-team executions by composing `member`, `task_team`, and `task_agent` segments from the focused projection. A new/all-offline team can still send its first message to a focused non-coordinator structural member, and a valid runtime projection can now receive ordinary chat without falling back to the structural template. Missing/stale focused targets or incomplete runtime identity fail validation instead of silently retargeting; the active-execution safety fallback remains reserved for task-agent-only logical-member conversations that should not receive ordinary user chat. After validation, the store immediately begins a local submission for the selected local target by appending the user message when a local leaf context exists, clearing that target's composer/staged context files, and setting `isSending`. Backend create/restore, attachment finalization, stream connection, and WebSocket send then continue; finalized attachment locators are reconciled onto the already-visible member message rather than appended as a duplicate. Frontend team chat emits `SEND_MESSAGE.conversation_target_address`; backend WebSocket `SEND_MESSAGE` provides the authoritative final recovery and target-validation boundary when the local resume cache is stale or absent, exact member `AGENT_STATUS` events own visible `initializing`/`running`, and root `TEAM_RUN_LIFECYCLE` owns only team liveness.
   - `interruptGeneration()`: Sends the team `INTERRUPT_GENERATION` control command for the active team run/member selected by the same active-execution command focus as the shared composer, without locally clearing that member's `isSending` flag. The member becomes send-ready from backend lifecycle/status/error events, not from local interrupt-command dispatch.
-  - `terminateTeamRun()`: Calls backend termination before local teardown for persisted teams. On success it disconnects the team stream, marks members shut down, marks run-history resume config inactive, and refreshes the history tree; on failure it leaves the active local team state intact.
+  - `terminateTeamRun()`: Calls backend termination before local teardown for persisted teams. A per-run `stopPending` guard suppresses duplicate Stop while the request is in flight. On success it disconnects the team stream, marks members shut down, marks root `isActive=false`, updates run-history resume state, and refreshes the tree; on failure it clears pending but preserves the active local team state.
 
 ### Stopped-Run Follow-Up Recovery
 
@@ -109,14 +109,17 @@ query/process resources.
 
 ### Runtime Status And Interrupt Authority
 
-The frontend runtime status model is intentionally coarse:
+The frontend lifecycle model deliberately separates leaf status, root liveness,
+and transport state:
 
-- single-agent and team status enums expose `offline`, `initializing`, `idle`, `running`, and `error`;
+- single-agent and exact leaf-agent status uses `offline`, `initializing`, `idle`, `running`, and `error`;
 - single-agent `AGENT_STATUS` payloads are
   `{ status: "offline" | "initializing" | "idle" | "running" | "error", can_interrupt: boolean, agent_id?, agent_name? }`;
-- aggregate `TEAM_STATUS` payloads are `{ status: "offline" | "initializing" | "idle" | "running" | "error" }`;
+- root team liveness uses `TEAM_RUN_LIFECYCLE { team_run_id, is_active }` and is
+  stored as `AgentTeamContext.isActive`;
+- WebSocket connection state is stored separately as `AgentTeamContext.isSubscribed`;
 - team member interrupt authority comes from the selected member's most recent
-  `AGENT_STATUS.can_interrupt` value, not from aggregate `TEAM_STATUS`; and
+  `AGENT_STATUS.can_interrupt` value, never from root liveness; and
 - legacy transition-field names and detailed runtime
   phases such as `bootstrapping`, `awaiting_llm_response`, or `executing_tool`
   are not part of the frontend WebSocket status contract.
@@ -166,12 +169,11 @@ but terminal `offline` or `error` history projections must clear stale
 `AGENT_STATUS { status: "idle", can_interrupt: false }` likewise revokes the
 browser-visible stop affordance.
 
-Active team recovery and refresh must keep aggregate and member status separate.
-If a team row is `running` or `initializing` but only one member has a
-member-scoped active history/snapshot/event, the other members must stay at
-their own member-scoped status, or default to `offline/canInterrupt=false`
-until a member `AGENT_STATUS` arrives. Frontend reconciliation must never fan
-out aggregate team `running` or `initializing` state to every member row.
+Active team recovery and refresh must keep root liveness, transport state, and
+member status separate. `isActive=true` does not imply that any particular
+member is `running` or `initializing`; members keep their own scoped status or
+default to `offline/canInterrupt=false` until an exact `AGENT_STATUS` arrives.
+Frontend reconciliation must never fan root activity out to member rows.
 Delegated task executions are task-scoped transient child entities rather than
 structural team topology. When team stream payloads carry explicit task-agent
 identity (`execution_kind: "task_agent"`, `task_agent_instance_id`,
@@ -422,9 +424,11 @@ non-empty user message, not the latest follow-up. When the history tree is
 merged with live single-agent contexts, `mergeRunTreeWithLiveContexts(...)`
 overlays active status and the live context's activity timestamp while using the
 live conversation's first non-empty user message as the row summary when
-available. Persisted standalone and team history rows arrive from GraphQL with
-`createdAt` plus derived live status fields, not durable `lastActivityAt`,
-`lastKnownStatus`, or delete-lifecycle fields. The frontend read model maps
+available. Persisted standalone rows arrive from GraphQL with `createdAt` plus
+derived live status fields. Team rows arrive with `createdAt`, binary
+`isActive`, and exact leaf-member statuses. Neither catalog persists
+`lastActivityAt`, `lastKnownStatus`, or delete-lifecycle fields. The frontend
+read model maps
 `createdAt` into the shared tree sort field for stored rows and derives local
 team-tree `lastActivityAt` / `lastKnownStatus` / delete readiness from V2
 catalog facts plus live status. This prevents an active persisted row with a
@@ -781,7 +785,7 @@ Incoming events are routed based on their `type`:
 | `TURN_COMPLETED`          | `agentStatusHandler.handleTurnCompleted`           | Marks the current AI message complete for that turn without waiting only for idle inference. |
 | `AGENT_STATUS`            | `agentStatusHandler.handleAgentStatus`             | Updates run/member status (`offline`, `initializing`, `idle`, `running`, or `error`) and backend-owned `can_interrupt`; no legacy transition-field names. Team payloads with explicit task-agent or task-team identity update the transient task execution projection and remove it after terminal cleanup; projection routing must not depend on generated run-id patterns or structural team names alone. |
 | `AGENT_COMMAND_ACK`       | inline command acknowledgement handling            | Confirms standalone `SEND_MESSAGE` command acceptance/duplicate/rejection/failure and applies the included backend status payload; rejected/failed commands flow to the normal error handler. |
-| `TEAM_STATUS`             | team streaming aggregate handling                  | Updates aggregate team status (`offline`, `initializing`, `idle`, `running`, or `error`) only; member interrupt authority still comes from member `AGENT_STATUS`. |
+| `TEAM_RUN_LIFECYCLE`      | `teamHandler.handleTeamRunLifecycle`                | Validates `team_run_id` and updates only root `AgentTeamContext.isActive`; subscription and exact member status remain independent. |
 | `COMPACTION_STATUS`       | `agentStatusHandler.handleCompactionStatus`        | Normalizes compaction lifecycle payloads into latest run state plus `kind: 'compaction'` activity rows (`requested`, `started`, `completed`, `failed`). |
 | `ASSISTANT_COMPLETE`      | `agentStatusHandler.handleAssistantComplete`       | Legacy completion signal that still marks the current AI message complete. |
 | `ERROR`                   | `agentStatusHandler.handleError`                   | Surfaces unrecoverable agent/runtime errors into the conversation and terminalizes still-open tool-like rows as errors. |
@@ -970,9 +974,10 @@ The backend can emit:
 - Explicit turn-scoped lifecycle events (`TURN_STARTED`, `TURN_COMPLETED`,
   `TURN_INTERRUPTED`) for one accepted user turn.
 
-`AGENT_STATUS` is still run-scoped or team-member state. `TEAM_STATUS` is only
-aggregate team state. `TURN_COMPLETED` is now the preferred signal when a client
-needs to know that one exact turn has finished. Correlate terminal boundaries
+`AGENT_STATUS` is run-scoped or exact team-member state.
+`TEAM_RUN_LIFECYCLE` is only the root team active/inactive fact.
+`TURN_COMPLETED` is the preferred signal when a client needs to know that one
+exact turn has finished. Correlate terminal boundaries
 and turn-scoped errors by `turn_id`; delayed events for turn A must not settle a
 newer turn B. Ordinary segment/tool/inter-agent/todo/system-task activity is
 content/progress only and must not infer `running` or recover/reopen a terminal

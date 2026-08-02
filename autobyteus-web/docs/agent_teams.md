@@ -75,6 +75,11 @@ The list/detail/card surfaces show ownership badges, owner-team labels, and
 application/package provenance so embedded teams remain distinguishable from
 standalone shared teams.
 
+Team definitions are reusable configuration, not runtime subjects. Definition
+catalog, detail, and group surfaces therefore expose no runtime status field,
+status dot, or lifecycle label. Runtime liveness belongs only to a concrete team
+run, and five-state status belongs only to exact leaf agents.
+
 ## Default Launch Preferences
 
 `AgentTeamDefinitionForm.vue` now round-trips `defaultLaunchConfig` through the shared `DefinitionLaunchPreferencesSection.vue` surface for both shared and application-owned teams.
@@ -266,8 +271,9 @@ For focused-member sends to an offline or idle member, the backend status stream
 is the visible-status authority: once the command is accepted and the member
 target is known, the team backend publishes member-scoped
 `AGENT_STATUS initializing` before lazy member startup or send work finishes.
-If no concrete member target exists for a true team-level/native command, the
-backend may publish root `TEAM_STATUS initializing` without a member event.
+Team containers do not publish a synthetic five-state status. Root team
+liveness remains the manager-owned binary `TEAM_RUN_LIFECYCLE` fact, separate
+from the selected member's status and interrupt authority.
 
 ## Stopped Team Follow-Up And Termination State
 
@@ -278,12 +284,12 @@ backend may publish root `TEAM_STATUS initializing` without a member event.
 - the backend team WebSocket connect and `SEND_MESSAGE` paths also resolve through `TeamRunService.resolveTeamRun(...)`, so the server can restore and rebind the stream session even when the frontend's resume cache is stale or absent; and
 - after a successful follow-up send, the run history cache is marked active and refreshed.
 
-`agentTeamRunStore.terminateTeamRun()` treats backend termination as the authority for persisted teams. It tears down local stream/member state and marks the team resume config inactive only after `TerminateAgentTeamRun` succeeds. If backend termination fails, the store returns `false` and leaves the current local stream/member state and run-history activity cache unchanged. Local temporary teams are the exception: they have no persisted backend runtime and are torn down locally.
+`agentTeamRunStore.terminateTeamRun()` treats backend termination as the authority for persisted teams. Stop is available only while root `isActive` is true and that run has no `stopPending` request. It tears down local stream/member state and marks the team resume config inactive only after `TerminateAgentTeamRun` succeeds. If backend termination fails, the store clears pending, returns `false`, and leaves root activity, local member state, and run-history activity unchanged. Local temporary teams are the exception: they have no persisted backend runtime and are torn down locally. `isSubscribed` remains a separate transport fact and must not be used as liveness.
 
 Workspace team history is backed by the server V2 team catalog, not by durable
 live-status fields. `listWorkspaceRunHistory` returns team rows with
-`createdAt`, `archivedAt`, `terminatedAt`, derived aggregate status, leaf member
-statuses, and recursive `memberTree`. Frontend team tree rows may still expose
+`createdAt`, `archivedAt`, `terminatedAt`, manager-owned `isActive`, exact leaf
+member statuses, and recursive `memberTree`; no root status is derived. Frontend team tree rows may still expose
 local view-model `lastActivityAt`, `lastKnownStatus`, and delete-readiness
 fields for shared UI components, but those values are derived from the V2
 catalog row plus live status and are not persisted backend team-history fields.
@@ -350,9 +356,9 @@ represented-subteam metadata, so parent-to-representative and upward-report
 rows display the responsible subteam badge/breadcrumb while still targeting the
 actual leaf participant path. Display labels use the membership label at the
 current boundary (`BuildSquad`, `review_lead`, `qa_specialist`) rather than
-stale flattened route copies. A subteam/group tile that has no leaf runtime
-context uses the canonical offline status fallback rather than reintroducing
-removed initialization-only statuses. Internal child team runs are opened
+stale flattened route copies. Subteam/group tiles do not expose an agent
+status; only exact leaf agents render the five-state status vocabulary. Internal
+child team runs are opened
 through their parent subteam node and should not appear as separate top-level
 history rows.
 

@@ -167,13 +167,12 @@ become idle/offline, rechecks that no non-terminal work is assigned to that run
 and no non-terminal child delegation is owned by it, protects the coordinator by
 default, and calls the team-run settlement boundary with the concrete run id as
 a stale-route guard. Task-team settlement waits until the known child team has
-no open delegation ledger work, no active task-agent instances, and idle/offline
-aggregate status. Duplicate review/child-event wakeups are lifecycle signals
+no open delegation ledger work, no active task-agent instances, and no private
+execution work reported by the child `TeamRun`. Duplicate review/child-event wakeups are lifecycle signals
 against the same `taskTeamRunId`, not independent close operations. Accepted
 settlement then terminates the child team through its lifecycle owner, treats
 already-stopping/offline child state as converged inactive state, preserves real
-active termination failures as rejected settlement, publishes or bridges a scoped
-root `TEAM_STATUS offline` for the task-team execution, detaches the server-side
+active termination failures as rejected settlement, detaches the server-side
 task-delegation service for that child run, and removes the active run binding so
 reload/snapshot paths do not rehydrate the completed transient row. Future
 delegation to the same logical team remains topology-based.

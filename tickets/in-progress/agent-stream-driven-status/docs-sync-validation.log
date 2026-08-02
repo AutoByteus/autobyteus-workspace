@@ -1,0 +1,38 @@
+Documentation sync validation
+Timestamp: 2026-08-02T10:41:01Z
+Integrated HEAD before delivery-owned edits: 8590a84869ba2d428b62d73374ceae0962cece9f
+Tracked base: cc11ca9b22880c06f689c14df7a68cc455d61158
+Ahead/behind (HEAD...origin/personal): 16	1
+
+Command: git diff --check
+Result: Pass (exit 0)
+
+Command: obsolete lifecycle documentation scan
+rg -n 'TEAM_STATUS|AgentTeamStatus|TeamRunStatusProjectionService|TeamCommandStatusOverlayStore|derived aggregate status|keep aggregate and member status|fan out aggregate team|canonical offline status fallback' docs autobyteus-server-ts/docs autobyteus-ts/docs autobyteus-web/docs
+Result: Pass (no matches)
+
+Updated docs:
+autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md
+autobyteus-server-ts/docs/modules/agent_streaming.md
+autobyteus-server-ts/docs/modules/agent_team_execution.md
+autobyteus-server-ts/docs/modules/run_history.md
+autobyteus-ts/docs/agent_team_runtime_and_task_coordination.md
+autobyteus-ts/docs/agent_team_streaming_protocol.md
+autobyteus-web/docs/agent_execution_architecture.md
+autobyteus-web/docs/agent_integration_minimal_bridge.md
+autobyteus-web/docs/agent_teams.md
+autobyteus-web/docs/settings.md
+
+Working tree state:
+ M autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md
+ M autobyteus-server-ts/docs/modules/agent_streaming.md
+ M autobyteus-server-ts/docs/modules/agent_team_execution.md
+ M autobyteus-server-ts/docs/modules/run_history.md
+ M autobyteus-ts/docs/agent_team_runtime_and_task_coordination.md
+ M autobyteus-ts/docs/agent_team_streaming_protocol.md
+ M autobyteus-web/docs/agent_execution_architecture.md
+ M autobyteus-web/docs/agent_integration_minimal_bridge.md
+ M autobyteus-web/docs/agent_teams.md
+ M autobyteus-web/docs/settings.md
+?? tickets/in-progress/agent-stream-driven-status/delivery-integrated-state-refresh.log
+?? tickets/in-progress/agent-stream-driven-status/docs-sync-validation.log
