@@ -13,7 +13,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 ### IR-001 — SR-002 context-patch and tool-catalog clean cut
 
-- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/design-review-report.md`; `ARCH-REV-002`
+- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/design-review-report.md`; `ARCH-REV-002`
 - Triggering finding IDs: `N/A`; the authoritative architecture decision was Pass with no unresolved findings. Upstream `DR-ECF-001` and `DR-ECF-002` were already resolved by `ARCH-REV-002`.
 - Classification: `Initial Baseline`
 - Prior authoritative result: `N/A`
@@ -33,7 +33,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 
 ### IR-002 — CR-001 unprefixed header-token correction
 
-- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/code-review-report.md`; `CRR-001`
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/code-review-report.md`; `CRR-001`
 - Triggering finding IDs: `CR-001`
 - Classification: `Local Fix`
 - Prior authoritative result: IR-001 source review failed because the hunk-header predicate trimmed each line before classification, allowing a prefixed unchanged line containing literal delimiter text to terminate the hunk.

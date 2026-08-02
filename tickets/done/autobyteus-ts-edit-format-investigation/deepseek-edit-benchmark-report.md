@@ -1,8 +1,8 @@
 # DeepSeek V4 File-Edit Investigation And Benchmark Report
 
-Date: 2026-08-02  
-Repository: `autobyteus-workspace-superrepo` / `autobyteus-ts`  
-Branch: `codex/autobyteus-ts-edit-format-investigation`  
+Date: 2026-08-02
+Repository: `autobyteus-workspace-superrepo` / `autobyteus-ts`
+Branch: `codex/autobyteus-ts-edit-format-investigation`
 Baseline: `origin/personal` at `4b29481d5b6eaea64aebb20abcb5e4d784ea1178`
 
 > **Cross-provider update:** This report remains authoritative for the DeepSeek-only reproduction and 165-run mechanism study. Its earlier additive-compatibility recommendation was subsequently refined by live Gemini Flash and GPT experiments. The current cross-provider decision evidence is in `cross-provider-context-patch-benchmark-report.md`: make bare `@@` context hunks canonical, remove numeric coordinates from matching semantics, and normalize numeric-decorated headers as ignorable model-output noise so Gemini does not lose first-call reliability.

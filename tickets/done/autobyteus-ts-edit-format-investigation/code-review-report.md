@@ -3,19 +3,19 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/requirements-doc.md`
-- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/investigation-notes.md`
-- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/design-spec.md`
+- Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/requirements-doc.md`
+- Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/investigation-notes.md`
+- Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/design-spec.md`
 - Supplemental Task Artifacts Reviewed As Context: `edit-file-format-investigation-report.md`; `deepseek-edit-benchmark-report.md`; `cross-provider-context-patch-benchmark-report.md`; experimental patch artifacts; benchmark scripts/aggregates; baseline-verification, affected-test, and retained raw benchmark evidence as inventoried upstream. No live-provider rerun was needed for the bounded source re-review.
-- Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/solution-revision-record.md`
+- Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/solution-revision-record.md`
 - Relevant Solution Revision IDs: `SR-002` (with `SR-001` read as history)
-- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/design-review-report.md`
-- Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/architecture-review-revision-record.md`
+- Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/design-review-report.md`
+- Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/architecture-review-revision-record.md`
 - Relevant Architecture Review Revision IDs: `ARCH-REV-002` (with `ARCH-REV-001` read as history)
-- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/implementation-handoff.md`
-- Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/implementation-revision-record.md`
+- Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/implementation-handoff.md`
+- Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/implementation-revision-record.md`
 - Relevant Implementation Revision IDs: `IR-001`, `IR-002`
-- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/code-review-revision-record.md`
+- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/code-review-revision-record.md`
 - Current Code Review Revision ID: `CRR-002`
 - Current Review Round: `2`
 - Trigger: Bounded source re-review after `IR-002` fixed `CR-001`; fix commit `25319ebdc7a611b9e633e1c10e20f04476b29174`, handoff/revision commit `bb6657c4016fed1550eb8b899e03457b5e1178db`.
@@ -29,7 +29,7 @@
 - Relevant Delivery Revision IDs: `N/A`
 - Failing Scenario IDs: `N/A`; prior source finding `CR-001` rechecked and resolved.
 - Exact Failing Commands / Execution Mode: `N/A`. Independent re-review ran 50 focused Vitest checks, a clean `pnpm build`, and freshly built `editFile`/`applyContextPatch` resolution probes.
-- Failure Evidence Paths: Prior reproduction `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/benchmark-evidence/code-review-cr-001-reproduction.log`; current resolution verification `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/benchmark-evidence/code-review-cr-001-resolution-verification.log`.
+- Failure Evidence Paths: Prior reproduction `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/benchmark-evidence/code-review-cr-001-reproduction.log`; current resolution verification `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/benchmark-evidence/code-review-cr-001-resolution-verification.log`.
 
 ## Review Scope
 

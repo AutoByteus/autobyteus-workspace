@@ -2,8 +2,8 @@
 
 > **Later authoritative refinement (SR-002):** This report preserves early research and hypotheses. Subsequent live DeepSeek/Gemini/GPT evidence and the user's final scope decision supersede its retention recommendation: canonical `edit_file` uses unique context hunks with numeric decoration discarded, and `replace_in_file` / `insert_in_file` are removed from the active product surface. See `cross-provider-context-patch-benchmark-report.md`, `requirements-doc.md`, and `design-spec.md`.
 
-Date: 2026-07-03  
-Workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation`  
+Date: 2026-07-03
+Workspace: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 Scope: investigation only; no implementation changes requested.
 
 ## Executive Conclusion

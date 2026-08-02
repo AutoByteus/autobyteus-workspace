@@ -1,0 +1,50 @@
+Release execution for autobyteus-ts-edit-format-investigation
+
+Timestamp: 2026-08-02
+Command: pnpm release 1.4.39 -- --release-notes tickets/done/autobyteus-ts-edit-format-investigation/release-notes.md
+Previous package versions: autobyteus-web 1.4.38; autobyteus-message-gateway 1.4.38
+New package versions: autobyteus-web 1.4.39; autobyteus-message-gateway 1.4.39
+Ticket branch commit: 492cad8f869a1ffe775e283b49c72997192c0464
+Target merge commit: 96e8a3bfec42122266d5b90d1010264887028224
+Release commit: c9061a019b187f94ea70d28af83e66fcc8027555
+Release tag: v1.4.39
+Release tag target: c9061a019b187f94ea70d28af83e66fcc8027555
+Target push: origin/personal succeeded
+Tag push: origin/v1.4.39 succeeded
+Release helper synchronized .github/release-notes/release-notes.md, both package versions, and the managed messaging release manifest.
+
+--- Release helper output ---
+> autobyteus-workspace@ release /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-release
+> bash scripts/desktop-release.sh release 1.4.39 -- --release-notes tickets/done/autobyteus-ts-edit-format-investigation/release-notes.md
+
+Updating autobyteus-web/package.json: 1.4.38 -> 1.4.39
+Updating autobyteus-message-gateway/package.json: 1.4.38 -> 1.4.39
+Synced curated release notes to .github/release-notes/release-notes.md
+Syncing managed messaging release manifest to v1.4.39
+Synced default release manifest: /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-release/autobyteus-server-ts/src/managed-capabilities/messaging-gateway/release-manifest.json
+Release tag: v1.4.39
+Server version: 0.1.1
+[personal c9061a019] chore(release): bump workspace release version to 1.4.39
+ Committer: normy <normy@macbookpro.speedport.ip>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 4 files changed, 12 insertions(+), 10 deletions(-)
+remote:
+remote: GitHub found 682 vulnerabilities on AutoByteus/autobyteus-workspace's default branch (18 critical, 288 high, 320 moderate, 56 low). To find out more, visit:
+remote:      https://github.com/AutoByteus/autobyteus-workspace/security/dependabot
+remote:
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+   96e8a3bfe..c9061a019  personal -> personal
+To github.com-ryan:AutoByteus/autobyteus-workspace.git
+ * [new tag]             v1.4.39 -> v1.4.39
+Release complete and pushed: branch 'personal', tag 'v1.4.39'.

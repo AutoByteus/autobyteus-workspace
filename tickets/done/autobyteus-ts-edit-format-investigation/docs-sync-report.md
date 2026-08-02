@@ -6,7 +6,7 @@
 - Trigger: `CRR-003` completed the proportional post-API/E2E review as `Not Applicable` after `API-REV-001` passed at 98.3% confidence.
 - Bootstrap base reference: `origin/personal` at `4b29481d5b6eaea64aebb20abcb5e4d784ea1178`
 - Integrated base reference used for docs sync: `origin/personal` at `1df9bde23065eb4b4260698acfce1907153dc2bc`, merged into ticket state `25c75631b4d7b25b68102221686782fc9884f251`
-- Post-integration verification reference: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/delivery-integrated-state-refresh.log`
+- Post-integration verification reference: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/delivery-integrated-state-refresh.log`
 
 ## Why Docs Were Updated
 
@@ -17,18 +17,18 @@
 
 | Doc Path | Why It Was Reviewed | Result (`Updated`/`No change`/`Needs follow-up`) | Notes |
 | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/autobyteus-ts/docs/tool_schema_and_configuration.md` | Canonical runtime schema and generic file-tool contract | Updated | Added the context-patch contract plus registry/stored-name transition behavior; retained the implementation's earlier five-to-three native file-schema correction. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/autobyteus-ts/docs/streaming_parser_design.md` | Defines `edit_file` segment content and parser ownership | Updated | Replaced stale “unified diff” wording with “context patch” and clarified transport-versus-semantic ownership. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/autobyteus-ts/docs/api_tool_call_file_streaming_design.md` | Describes API tool-call extraction of the `patch` field | No change | It already treats `patch` as an opaque decoded string and makes no numeric/unified-diff semantic claim. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/autobyteus-ts/docs/tool_call_formatting_and_parsing.md` | Provider-formatting/parser architecture | No change | It contains no edit grammar or removed-tool statement that became stale. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/autobyteus-web/docs/agent_artifacts.md` | Downstream artifact source-tool vocabulary | No change | It already uses only `write_file`, `edit_file`, and generated output; removal did not invalidate the contract. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/docs/tool_schema_and_configuration.md` | Canonical runtime schema and generic file-tool contract | Updated | Added the context-patch contract plus registry/stored-name transition behavior; retained the implementation's earlier five-to-three native file-schema correction. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/docs/streaming_parser_design.md` | Defines `edit_file` segment content and parser ownership | Updated | Replaced stale “unified diff” wording with “context patch” and clarified transport-versus-semantic ownership. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/docs/api_tool_call_file_streaming_design.md` | Describes API tool-call extraction of the `patch` field | No change | It already treats `patch` as an opaque decoded string and makes no numeric/unified-diff semantic claim. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/docs/tool_call_formatting_and_parsing.md` | Provider-formatting/parser architecture | No change | It contains no edit grammar or removed-tool statement that became stale. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/agent_artifacts.md` | Downstream artifact source-tool vocabulary | No change | It already uses only `write_file`, `edit_file`, and generated output; removal did not invalidate the contract. |
 
 ## Docs Updated
 
 | Doc Path | Type Of Update | What Changed | Why |
 | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/autobyteus-ts/docs/tool_schema_and_configuration.md` | Runtime/schema/tool-surface contract | Documented bare context hunks, line prefixes, unique eligible matches, exact then whitespace retry, all-or-nothing application, ignored numeric decoration, rejected wrappers/headers, retired exact tools, and inert stale names | Make the final production semantics and persistence decision discoverable outside the ticket. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/autobyteus-ts/docs/streaming_parser_design.md` | Parser vocabulary and responsibility boundary | Renamed streamed content from unified diff to context patch and assigned validation/application to `context-patch.ts` rather than the transport parser | Prevent future parser work from conflating XML/sentinel framing with edit semantics. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/docs/tool_schema_and_configuration.md` | Runtime/schema/tool-surface contract | Documented bare context hunks, line prefixes, unique eligible matches, exact then whitespace retry, all-or-nothing application, ignored numeric decoration, rejected wrappers/headers, retired exact tools, and inert stale names | Make the final production semantics and persistence decision discoverable outside the ticket. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts/docs/streaming_parser_design.md` | Parser vocabulary and responsibility boundary | Renamed streamed content from unified diff to context patch and assigned validation/application to `context-patch.ts` rather than the transport parser | Prevent future parser work from conflating XML/sentinel framing with edit semantics. |
 
 ## Durable Design / Runtime Knowledge Promoted
 
@@ -54,8 +54,8 @@
 ## Delivery Continuation
 
 - Result: `Pass`
-- Next delivery action: Present the integrated handoff to the user and hold archival, commits of delivery-owned edits, pushes, target merge, release, deployment, and cleanup until explicit user verification/authorization.
-- Notes: Documentation was synchronized only after the latest tracked base was merged and the integrated candidate passed focused/build checks with exact known unrelated broad-suite baselines.
+- Next delivery action: Complete — user authorization was received, the ticket was archived/finalized, and `v1.4.39` was released.
+- Notes: Documentation was synchronized only after the latest tracked base was merged and the integrated candidate passed focused/build checks with exact known unrelated broad-suite baselines. No later target advance or runtime change required a second docs revision.
 
 ## Blocked Or Escalated Follow-Up (Use Only If Docs Sync Cannot Complete)
 

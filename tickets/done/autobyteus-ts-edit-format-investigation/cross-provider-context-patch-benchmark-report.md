@@ -1,8 +1,8 @@
 # Cross-Provider Context-Patch Benchmark Report
 
-Date: 2026-08-02  
-Repository/package: `autobyteus-workspace-superrepo` / `autobyteus-ts`  
-Task branch: `codex/autobyteus-ts-edit-format-investigation`  
+Date: 2026-08-02
+Repository/package: `autobyteus-workspace-superrepo` / `autobyteus-ts`
+Task branch: `codex/autobyteus-ts-edit-format-investigation`
 Baseline: `origin/personal` at `4b29481d5b6eaea64aebb20abcb5e4d784ea1178`
 
 > **Later approved tool-surface refinement:** The benchmark facts below remain authoritative, including the strong exact-replacement result. After reviewing the available tools, the user deliberately contracted the active file-oriented surface to `read_file`, `edit_file`, `write_file`, and `run_bash`. `replace_in_file` and `insert_in_file` are therefore removed in the approved requirements; their successful benchmark results are retained as historical mechanism evidence, not a retention requirement.

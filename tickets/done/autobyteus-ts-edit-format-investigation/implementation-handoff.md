@@ -2,34 +2,34 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/requirements-doc.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/design-spec.md`
-- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/solution-revision-record.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/design-review-report.md`
-- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/architecture-review-revision-record.md`
-- Triggering code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/code-review-report.md`
-- Code review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/code-review-revision-record.md`
-- Triggering reproduction evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/benchmark-evidence/code-review-cr-001-reproduction.log`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/requirements-doc.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/design-spec.md`
+- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/solution-revision-record.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/design-review-report.md`
+- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/architecture-review-revision-record.md`
+- Triggering code review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/code-review-report.md`
+- Code review revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/code-review-revision-record.md`
+- Triggering reproduction evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/benchmark-evidence/code-review-cr-001-reproduction.log`
 - Supplemental task artifacts:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/edit-file-format-investigation-report.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/deepseek-edit-benchmark-report.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/cross-provider-context-patch-benchmark-report.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/benchmark/deepseek-edit-benchmark.mjs`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/benchmark/summarize-benchmark.mjs`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/benchmark/summarize-cross-provider-context-benchmark.mjs`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/benchmark/experimental-bare-hunk-compatibility.patch`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/benchmark/experimental-clean-cut-context-patch.patch`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/benchmark-evidence/experimental-clean-cut-artifact-baseline-verification.log`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/benchmark-evidence/selected-run-summary.json`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/benchmark-evidence/cross-provider-context-summary.json`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/benchmark-evidence/context-parser-local-microbenchmark.jsonl`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/benchmark-evidence/cross-provider-context-only-main.jsonl`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/benchmark-evidence/cross-provider-context-only-neutral.jsonl`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/benchmark-evidence/gemini-context-normalized-neutral.jsonl`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/benchmark-evidence/cross-provider-generic-schema-pilot.jsonl`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/benchmark-evidence/gemini35-replace-pilot.jsonl`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/benchmark-evidence/final-affected-tests.log`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/edit-file-format-investigation-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/deepseek-edit-benchmark-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/cross-provider-context-patch-benchmark-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/benchmark/deepseek-edit-benchmark.mjs`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/benchmark/summarize-benchmark.mjs`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/benchmark/summarize-cross-provider-context-benchmark.mjs`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/benchmark/experimental-bare-hunk-compatibility.patch`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/benchmark/experimental-clean-cut-context-patch.patch`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/benchmark-evidence/experimental-clean-cut-artifact-baseline-verification.log`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/benchmark-evidence/selected-run-summary.json`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/benchmark-evidence/cross-provider-context-summary.json`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/benchmark-evidence/context-parser-local-microbenchmark.jsonl`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/benchmark-evidence/cross-provider-context-only-main.jsonl`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/benchmark-evidence/cross-provider-context-only-neutral.jsonl`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/benchmark-evidence/gemini-context-normalized-neutral.jsonl`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/benchmark-evidence/cross-provider-generic-schema-pilot.jsonl`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/benchmark-evidence/gemini35-replace-pilot.jsonl`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/benchmark-evidence/final-affected-tests.log`
   - `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_74e885cdecbb477e8cead377473fd5c6/solution_designer_da4102bd739040d88e9548cc4906fbf5/context_files/ctx_97fe5d8eddbc__image.png`
   - `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_74e885cdecbb477e8cead377473fd5c6/solution_designer_da4102bd739040d88e9548cc4906fbf5/context_files/ctx_29f96c7a594f__image.png`
 - Triggering rework report, revision record, or evidence: `CRR-001` / `CR-001` in the code review report, its revision record, and the built-path reproduction listed above. The finding was classified `Local Fix`.
@@ -39,7 +39,7 @@
 The reviewed SR-002 target is implemented as a clean cut. In IR-002, the `CR-001` tokenizer defect was corrected so only unprefixed header tokens terminate a hunk; unchanged lines containing literal bare or numeric-looking delimiters retain their required body prefix and remain context. The final implementation also preserves CRLF tokenization, rejects padded/noncanonical headers, and refuses the reproduced noncontiguous edit without writing. `edit_file` delegates complete content to a file-tool-local context-patch owner, teaches bare `@@` hunks, tolerates only conventional numeric decoration while discarding all values, retries exact then whitespace-tolerant matching, and writes only the fully constructed result. Redundant exact edit tools and the numeric diff owner remain removed from source, registration, tests, documentation, current diagnostics, clean build output, and package contents. Existing agent configuration readers/resolvers were not modified; focused coverage proves a stale removed name is skipped while a retained configured tool still resolves.
 
 - Implementation cycle: `Rework`
-- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/implementation-revision-record.md`
+- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/implementation-revision-record.md`
 - Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-002`
 - Related architecture-review revision IDs: `ARCH-REV-002`
@@ -124,7 +124,7 @@ The reviewed SR-002 target is implemented as a clean cut. In IR-002, the `CR-001
 
 ## Environment Or Dependency Notes
 
-- Authoritative worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation`
+- Authoritative worktree: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Branch: `codex/autobyteus-ts-edit-format-investigation`
 - Reviewed baseline: `4b29481d5b6eaea64aebb20abcb5e4d784ea1178`
 - Delivery-stage base/finalization target: `origin/personal`; delivery owns the required refresh.
