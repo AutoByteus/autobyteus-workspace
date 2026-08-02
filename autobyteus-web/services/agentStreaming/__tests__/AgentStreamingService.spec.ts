@@ -358,7 +358,7 @@ describe('AgentStreamingService', () => {
         expect(mockAgentContext.state.eventMonitorPresentationRevision).toBe(2);
     });
 
-    it('batches standalone content at receipt-time cadence and flushes before segment end', () => {
+    it('batches companion-interleaved standalone content and flushes before segment end', () => {
         vi.useFakeTimers();
         const callbacks = new Map<string, (payload?: any) => void>();
         const wsClient = {
@@ -375,10 +375,20 @@ describe('AgentStreamingService', () => {
         }));
         vi.setSystemTime(new Date('2026-08-01T10:00:00.001Z'));
         onMessage(JSON.stringify({
+            type: 'AGENT_STATUS',
+            payload: { status: 'running', agent_id: 'test-agent-id' },
+        }));
+        expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Running);
+        onMessage(JSON.stringify({
             type: 'SEGMENT_CONTENT',
             payload: { id: 'segment-1', turn_id: 'turn-1', segment_type: 'text', delta: 'hello' },
         }));
         vi.setSystemTime(new Date('2026-08-01T10:00:00.050Z'));
+        onMessage(JSON.stringify({
+            type: 'AGENT_STATUS',
+            payload: { status: 'running', agent_id: 'test-agent-id' },
+        }));
+        expect(mockConversation.messages[0].segments[0].content).toBe('');
         onMessage(JSON.stringify({
             type: 'SEGMENT_CONTENT',
             payload: { id: 'segment-1', turn_id: 'turn-1', segment_type: 'text', delta: ' world' },
@@ -395,6 +405,11 @@ describe('AgentStreamingService', () => {
             type: 'SEGMENT_CONTENT',
             payload: { id: 'segment-1', turn_id: 'turn-1', segment_type: 'text', delta: '!' },
         }));
+        onMessage(JSON.stringify({
+            type: 'AGENT_STATUS',
+            payload: { status: 'running', agent_id: 'test-agent-id' },
+        }));
+        expect(mockConversation.messages[0].segments[0].content).toBe('hello world');
         onMessage(JSON.stringify({
             type: 'SEGMENT_END',
             payload: { id: 'segment-1', turn_id: 'turn-1', segment_type: 'text' },

@@ -41,6 +41,7 @@ import type {
 } from '~/types/agent/ConversationTargetAddress';
 import { StreamContentPresentationScheduler } from './presentation/StreamContentPresentationScheduler';
 import { projectStreamContentBatch } from './presentation/streamContentBatchProjector';
+import { shouldFlushPendingContentBefore } from './presentation/streamContentPresentationFlushPolicy';
 
 const shouldLogStreaming = (): boolean => {
   if (typeof window === 'undefined') return false;
@@ -236,7 +237,10 @@ export class TeamStreamingService {
       const receivedAt = message.type === 'SEGMENT_CONTENT'
         ? new Date().toISOString()
         : null;
-      if (message.type !== 'SEGMENT_CONTENT') {
+      if (
+        message.type !== 'SEGMENT_CONTENT'
+        && shouldFlushPendingContentBefore(message.type)
+      ) {
         this.contentPresentationScheduler.flush();
       }
       this.trackApprovalRequest(message);

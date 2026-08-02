@@ -40,6 +40,7 @@ import {
 } from '~/services/eventMonitor/recentEventMonitorMutationCommit';
 import { StreamContentPresentationScheduler } from './presentation/StreamContentPresentationScheduler';
 import { projectStreamContentBatch } from './presentation/streamContentBatchProjector';
+import { shouldFlushPendingContentBefore } from './presentation/streamContentPresentationFlushPolicy';
 
 const shouldLogStreaming = (): boolean => {
   if (typeof window === 'undefined') return false;
@@ -197,7 +198,9 @@ export class AgentStreamingService {
         });
         return;
       }
-      this.contentPresentationScheduler.flush();
+      if (shouldFlushPendingContentBefore(message.type)) {
+        this.contentPresentationScheduler.flush();
+      }
       this.dispatchMessage(message, this.context);
     } catch (e) {
       console.error('Failed to parse WebSocket message:', e);
