@@ -12,8 +12,9 @@ should show the rendered image in the existing right-side Files surface. The
 change must not add a second viewer, source editor, overlay, or new navigation
 model.
 The same behavior applies to an available SVG selected in the existing
-Artifact viewer. It should use the artifact's existing authorized content and
-shared ImageViewer rather than a separate artifact renderer.
+right-side Artifacts tab. Its ArtifactContentViewer should use the artifact's
+existing authorized content and shared ImageViewer rather than a separate
+artifact renderer.
 
 The supplied screenshot is the visual reference for the current failure state:
 `ambrosia.svg` is selected while the right pane displays “Preview not available
@@ -34,7 +35,8 @@ for this file type.”
   SVG path or supported `file:` link.
 - Event Monitor previews are read-only and preserve the central feed while the
   normal right-side Files panel is opened.
-- User reviewing an available agent artifact in the existing Artifact viewer.
+- User reviewing an available agent artifact in the existing right-side
+  Artifacts tab and its ArtifactContentViewer.
 
 ## User-Journey Inventory
 
@@ -42,7 +44,7 @@ for this file type.”
 | --- | --- | --- | --- | --- | --- |
 | UXJ-001 | Workspace Files user | File tree is visible; an SVG exists in the active workspace | Select the SVG and inspect the rendered artwork | Existing Files content surface shows the SVG through the shared ImageViewer; file remains read-only as a media preview | REQ-001, REQ-002, REQ-004; AC-001, AC-002, AC-004, AC-005 |
 | UXJ-002 | Desktop/web Event Monitor user | Central feed contains an eligible absolute SVG path or empty-authority absolute `file:` URI | Activate the path and inspect the file without leaving the feed | Right-side panel is visible with Files active, the SVG tab is active/focused, and the shared ImageViewer renders the SVG read-only | REQ-001, REQ-003, REQ-004, REQ-005; AC-001, AC-003, AC-004, AC-006, AC-007 |
-| UXJ-003 | Artifact viewer user | An available artifact has an SVG path or image metadata and its run content is accessible | Select the artifact and inspect the rendered artwork | ArtifactContentViewer fetches existing content, passes a blob URL to shared FileViewer, and ImageViewer renders SVG read-only while preserving artifact lifecycle states | REQ-001, REQ-004, REQ-007; AC-001, AC-004, AC-005, AC-006, AC-009, AC-010 |
+| UXJ-003 | Right-side Artifacts-tab user | The Artifacts tab shows an available artifact with an SVG path or image metadata and its run content is accessible | Select the artifact and inspect the rendered artwork | ArtifactContentViewer fetches existing content, passes a blob URL to shared FileViewer, and ImageViewer renders SVG read-only while preserving artifact lifecycle states | REQ-001, REQ-004, REQ-007; AC-001, AC-004, AC-005, AC-006, AC-009, AC-010 |
 
 ## Journey Details
 
@@ -83,7 +85,8 @@ for this file type.”
 
 ### UXJ-003 — Artifact SVG
 
-1. The user selects an available SVG artifact in the existing Artifact viewer.
+1. The user opens the right-side Artifacts tab and selects an available SVG
+   artifact in its existing ArtifactContentViewer.
 2. ArtifactContentViewer preserves its existing metadata mapping and fallback
    determineFileType call. The shared policy returns Image for an SVG path
    when fallback classification is needed.
@@ -105,7 +108,7 @@ for this file type.”
 | `ImageViewer.vue` | Rendered image presentation | `FileViewer` has `type: 'Image'` and a URL | Loading via authorized URL helper, rendered image, missing/error placeholder, zoom/pan | Existing image interactions; no inline SVG DOM or source editing |
 | Event Monitor `MarkdownRenderer.vue` action | Scoped path-action surface | Event Monitor opt-in is enabled and policy recognizes the path | Inert ordinary text, eligible action, invalid/unsupported inert path, focus/activation | Emits the existing typed action on click/Enter/Space |
 | `useEventMonitorFilePreview.ts` | Event Monitor launch coordinator | Typed action is explicitly activated | Opened, unavailable, failed | Opens Files/right panel or reports existing localized status |
-| ArtifactContentViewer.vue | Artifact selection/content adapter | Available artifact selected | Loading, pending, failed, deleted, blob fetch error, Image content | Existing artifact viewer controls; shared ImageViewer renders the resource |
+| ArtifactContentViewer.vue / right-side Artifacts tab | Artifact selection/content adapter | Available artifact selected in the Artifacts tab | Loading, pending, failed, deleted, blob fetch error, Image content | Existing artifact-tab controls; shared ImageViewer renders the resource |
 
 ## Interaction And State-Transition Specification
 
@@ -118,8 +121,8 @@ for this file type.”
 | Missing/unreadable SVG | Resource boundary fails | Existing File Explorer error or Event Monitor unavailable/failed message | No crash; feed and shell remain usable | No unsafe fallback read or URL; no persisted state | Close/retry through existing controls or continue reading |
 | Unsupported/non-SVG path | Passive render or activation attempt | Existing inert/source-faithful behavior | No Event Monitor file action; ordinary unsupported file keeps fallback | No file read/media URL/panel switch solely from the unsupported path | Continue reading/copying source |
 | Read-only Event Monitor file | Attempt to edit | No edit control is offered | Media remains preview-only | `readOnly` intent remains attached to transient state | Inspect or close only |
-| Artifact SVG selection | Select an available artifact | Existing artifact loading/content status | Artifact viewer shows shared ImageViewer output and remains read-only | Authorized blob URL only; no persisted write | Inspect, maximize, or select another artifact |
-| Artifact pending/failed/deleted | Artifact lifecycle or content boundary reports non-success | Existing artifact-specific message | Pending/failed/deleted state remains visible; no unsupported fallback caused by lifecycle | No unsafe fallback fetch | Continue or select another artifact |
+| Artifact SVG selection | Open the right-side Artifacts tab and select an available artifact | Existing artifact loading/content status | Artifacts tab shows shared ImageViewer output and remains read-only | Authorized blob URL only; no persisted write | Inspect, maximize, or select another artifact |
+| Artifact pending/failed/deleted | Artifact lifecycle or content boundary reports non-success | Existing artifact-specific message | Artifacts tab keeps pending/failed/deleted state visible; no unsupported fallback caused by lifecycle | No unsafe fallback fetch | Continue or select another artifact |
 
 ## Markdown Wireframes / Visual Structure
 
@@ -137,7 +140,10 @@ The target layout intentionally reuses the existing surface:
 
 For direct File Explorer selection, the central Event Monitor column is
 unchanged. For Event Monitor activation, the panel becomes visible and Files is
-selected; there is no modal or separate preview overlay.
+selected; there is no modal or separate preview overlay. For an artifact
+selection, the existing right-side Artifacts tab is selected and its
+ArtifactContentViewer remains the content adapter; no separate overlay is
+introduced.
 
 ## Non-Happy-Path States
 
@@ -159,9 +165,10 @@ A missing, deleted, unreadable, malformed, or failed-to-fetch SVG uses the
 existing content error/placeholder behavior. Event Monitor path mapping failures
 use the existing localized host-only/unavailable or preview-failed status. The
 central Event Monitor message is not rewritten and remains usable.
-Artifact failures continue to use ArtifactContentViewer's existing pending,
-deleted, error, and unavailable states. The SVG policy change must not bypass
-those states or fetch content through a new route.
+Artifact failures in the right-side Artifacts tab continue to use
+ArtifactContentViewer's existing pending, deleted, error, and unavailable
+states. The SVG policy change must not bypass those states or fetch content
+through a new route.
 
 ### Disabled / Unavailable
 
@@ -191,8 +198,8 @@ not add an unauthenticated static URL, browser-resolved `file:` URL, inline
   primary acceptance journey.
 - The existing contained image sizing prevents an SVG from expanding the panel
   beyond its current bounds.
-- Artifact viewer layouts, including its existing zen/full-view presentation,
-  retain their current responsive behavior; SVG uses the same contained image
+- The right-side Artifacts tab and its existing zen/full-view presentation
+  retain current responsive behavior; SVG uses the same contained image
   presentation as other artifact images.
 
 ## Accessibility And Keyboard Behavior
@@ -222,8 +229,9 @@ no longer appear for a successfully classified SVG.
   regular-file/access validation; no API shape or persisted record changes are
   required.
 - `ImageViewer` consumes the existing URL/object-URL contract.
-- ArtifactContentViewer uses authorizedFetch on the existing run-file-change
-  content route, creates a blob URL for media, and passes it to FileViewer.
+- The right-side Artifacts tab's ArtifactContentViewer uses authorizedFetch
+  on the existing run-file-change content route, creates a blob URL for media,
+  and passes it to FileViewer.
 
 ## Out Of Scope
 
@@ -244,13 +252,15 @@ no longer appear for a successfully classified SVG.
 - Existing tests may need a focused SVG matrix expansion at policy, Event Monitor
   action, viewer dispatch, and/or content-route coverage. The downstream coverage
   investigation owns the final durable-test edit decision.
-- Artifact metadata already recognizes SVG in the normal image metadata path;
-  the shared policy change primarily protects path-based fallback classification.
-  Artifact component and run-file-change coverage should verify both paths.
+- The right-side Artifacts tab's artifact metadata already recognizes SVG in
+  the normal image metadata path; the shared policy change primarily protects
+  path-based fallback classification. Artifact component and run-file-change
+  coverage should verify both paths.
 
 ## Approval Status
 
 The explicit user request, follow-up artifact clarification, and supplied
 screenshot establish the intended behavior basis. This supplement is
 requirements-ready for architecture review and introduces no product decision
-beyond rendering SVG in File Explorer, Event Monitor, and Artifact viewer.
+beyond rendering SVG in File Explorer, Event Monitor, and the right-side
+Artifacts tab.
