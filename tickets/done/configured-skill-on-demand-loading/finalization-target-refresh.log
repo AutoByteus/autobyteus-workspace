@@ -1,0 +1,16 @@
+Configured skill on-demand loading — finalization target refresh
+Date: 2026-08-02
+User authorization: "i tested. now finalize release a new version"
+Verified handoff delivery revision: DR-002
+Ticket branch: codex/configured-skill-on-demand-loading
+Finalization target: origin/personal / local personal
+
+Command: git fetch origin personal --prune
+Result: PASS
+Previously integrated base: cc11ca9b22880c06f689c14df7a68cc455d61158
+Latest tracked origin/personal: cc11ca9b22880c06f689c14df7a68cc455d61158
+Target commits beyond verified integrated base: 0
+Target advanced after verification: No
+Delivery-owned edits protection: Not needed; no re-integration was required.
+Renewed verification required: No
+Finalization decision: Proceed with the user-verified state, archive the ticket, commit/push the ticket branch, merge/push personal, then prepare release v1.4.40 with the documented helper.
