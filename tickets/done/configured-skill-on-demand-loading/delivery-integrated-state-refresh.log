@@ -1,0 +1,40 @@
+Configured skill on-demand loading — initial delivery integrated-state refresh
+Date: 2026-08-02
+Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/configured-skill-on-demand-loading
+Ticket branch: codex/configured-skill-on-demand-loading
+Recorded base branch: origin/personal
+Bootstrap base: 1df9bde23065eb4b4260698acfce1907153dc2bc
+
+1. Remote refresh
+Command: git fetch origin personal --prune
+Result: PASS
+Latest tracked origin/personal: cc11ca9b22880c06f689c14df7a68cc455d61158
+Base commits since bootstrap: 12
+Pre-integration ticket implementation commit: 32eed63373d5a85d902b1e8716f9972cc9bec28c
+
+2. Delivery-safety checkpoint
+Precondition: reviewed API/E2E durable test edits and cumulative review artifacts were uncommitted.
+Commands: git diff --check; git add <reviewed package>; git commit -m "chore(delivery): checkpoint validated skill loading package"
+Result: PASS
+Checkpoint: a238a6e2e9aabb31851c45b6c785fa52abceae27
+Purpose: preserve the reviewed and validated candidate before base integration; this is not repository finalization.
+
+3. Base integration
+Command: git merge --no-edit origin/personal
+Method: merge
+Result: PASS — no conflicts
+Integrated ticket HEAD: 4b526f0e17c5ff302e8d144bd2387f2ff030afea
+First parent: a238a6e2e9aabb31851c45b6c785fa52abceae27
+Second parent / integrated base: cc11ca9b22880c06f689c14df7a68cc455d61158
+Delivery-owned docs/artifact edits began only after this merge completed.
+
+4. Post-integration executable verification
+Detailed output: /Users/normy/autobyteus_org/autobyteus-worktrees/configured-skill-on-demand-loading/tickets/in-progress/configured-skill-on-demand-loading/delivery-post-integration-check.log
+
+Command: pnpm -C autobyteus-ts exec vitest run tests/unit/agent/system-prompt-processor/available-skills-processor.test.ts tests/integration/agent/agent-skills.test.ts --no-watch
+Result: PASS — 2 files, 7 tests
+
+Command: pnpm -C autobyteus-server-ts exec vitest run tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts --no-watch
+Result: PASS — 2 files, 2 tests
+
+Integrated-state decision: PASS. The latest tracked base was merged, the changed native prompt and active server/runtime boundaries still pass, and delivery documentation may be synchronized against this state.

@@ -80,6 +80,9 @@ describe("Tool catalog cleanup GraphQL e2e", () => {
       ["list", "llm", "response", "processors"].join("_"),
       ["list", "tool", "result", "processors"].join("_"),
       ["create", "skill", "version"].join("_"),
+      "get_available_skills",
+      "get_skill_content",
+      ["load", "skill"].join("_"),
     ];
     for (const toolName of removedToolNames) {
       expect(allToolNames).not.toContain(toolName);
@@ -88,18 +91,9 @@ describe("Tool catalog cleanup GraphQL e2e", () => {
     expect(
       data.toolsGroupedByCategory.some((group) => group.categoryName === ["Tool", "Management"].join(" ")),
     ).toBe(false);
-    expect(allToolNames).toContain("get_available_skills");
-    expect(allToolNames).toContain("get_skill_content");
-    expect(allToolNames).toContain(["load", "skill"].join("_"));
-
-    const skillsGroup = data.toolsGroupedByCategory.find(
-      (group) => group.categoryName === "Skills",
-    );
-    expect(skillsGroup?.tools.map((tool) => tool.name).sort()).toEqual([
-      "get_available_skills",
-      "get_skill_content",
-      ["load", "skill"].join("_"),
-    ].sort());
+    expect(
+      data.toolsGroupedByCategory.some((group) => group.categoryName === "Skills"),
+    ).toBe(false);
 
     const generalGroup = data.toolsGroupedByCategory.find(
       (group) => group.categoryName === "General",
@@ -107,13 +101,13 @@ describe("Tool catalog cleanup GraphQL e2e", () => {
     expect(generalGroup?.tools.map((tool) => tool.name) ?? []).not.toContain(
       ["load", "skill"].join("_"),
     );
-    expect(defaultToolRegistry.listToolNames()).toEqual(expect.arrayContaining([
-      "get_available_skills",
-      "get_skill_content",
-      ["load", "skill"].join("_"),
-    ]));
+    expect(allToolNames).toEqual(expect.arrayContaining(["read_file", "generate_image"]));
+    expect(defaultToolRegistry.listToolNames()).toEqual(
+      expect.arrayContaining(["read_file", "generate_image"]),
+    );
     for (const toolName of removedToolNames) {
       expect(defaultToolRegistry.listToolNames()).not.toContain(toolName);
+      expect(defaultToolRegistry.getToolDefinition(toolName)).toBeUndefined();
     }
   });
 });

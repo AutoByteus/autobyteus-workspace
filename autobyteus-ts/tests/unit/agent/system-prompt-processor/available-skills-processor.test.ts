@@ -1,160 +1,140 @@
-import fs from 'fs';
-import os from 'os';
 import path from 'path';
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { AvailableSkillsProcessor } from '../../../../src/agent/system-prompt-processor/available-skills-processor.js';
 import { SkillRegistry } from '../../../../src/skills/registry.js';
 import { Skill } from '../../../../src/skills/model.js';
 import { SkillAccessMode } from '../../../../src/agent/context/skill-access-mode.js';
-import type { BaseTool } from '../../../../src/tools/base-tool.js';
 
 const makeContext = () => ({
   agentId: 'agent-1',
   config: { skills: [] as string[], skillAccessMode: undefined as SkillAccessMode | undefined }
 });
 
-const removedSkillToolName = ['load', 'skill'].join('_');
-const loadSkillGuidance = 'To load a skill not shown in detail below, use the `load_skill` tool.';
+const expectedSkillsBlock = (catalogEntries: string): string => `\n\n## Agent Skills
 
-const tempDirs: string[] = [];
+### Skill Catalog
 
-const createSkillRoot = () => {
-  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'available-skills-'));
-  tempDirs.push(tempDir);
-  const skillRoot = path.join(tempDir, 'preloaded');
-  fs.mkdirSync(path.join(skillRoot, 'references'), { recursive: true });
-  fs.writeFileSync(path.join(skillRoot, 'design-principles.md'), 'design', 'utf8');
-  fs.writeFileSync(
-    path.join(skillRoot, 'references', 'common-design-patterns.md'),
-    'patterns',
-    'utf8'
-  );
-  return skillRoot;
-};
+${catalogEntries}
+
+### Rules for Using Skills
+
+- Use a configured skill whenever it applies to the task.
+- When no configured skill applies, use the best available general approach.
+- When an applicable configured skill covers only part of the task, follow it for the covered part and use another available technique for the uncovered part.
+- Before beginning work governed by a skill, read its \`SKILL.md\` from the exact path listed above.
+- Resolve every relative path mentioned by a skill from the directory containing that skill's \`SKILL.md\`.
+`;
 
 describe('AvailableSkillsProcessor', () => {
   beforeEach(() => {
+    new SkillRegistry().clear();
+  });
+
+  it('returns the original prompt unchanged when no skills are configured', () => {
+    const result = new AvailableSkillsProcessor().process(
+      'Original Prompt',
+      {},
+      'test_agent',
+      makeContext()
+    );
+
+    expect(result).toBe('Original Prompt');
+  });
+
+  it('does not advertise registry-only skills when no skills are configured', () => {
     const registry = new SkillRegistry();
-    registry.clear();
-  });
+    (registry as any).skills.set(
+      'registry_only',
+      new Skill('registry_only', 'Registry only', 'REGISTRY_ONLY_BODY', '/registry/only')
+    );
 
-  afterEach(() => {
-    for (const dir of tempDirs.splice(0)) {
-      fs.rmSync(dir, { recursive: true, force: true });
-    }
-  });
-
-  it('returns prompt unchanged when no skills exist', () => {
-    const processor = new AvailableSkillsProcessor();
-    const prompt = 'Original Prompt';
-
-    const result = processor.process(prompt, {}, 'test_agent', makeContext());
-
-    expect(result).toBe(prompt);
-  });
-
-  it('does not inject registry skills when no skills are configured', () => {
-    const registry = new SkillRegistry();
-    const skill = new Skill('test_skill', 'desc', 'body', '/path');
-    (registry as any).skills.set('test_skill', skill);
-
-    const processor = new AvailableSkillsProcessor();
-    const result = processor.process('Original', {}, 'test_agent', makeContext());
+    const result = new AvailableSkillsProcessor().process(
+      'Original',
+      {},
+      'test_agent',
+      makeContext()
+    );
 
     expect(result).toBe('Original');
   });
 
-  it('does not mention load_skill for configured skills even when the tool is available', () => {
+  it('returns the original prompt unchanged when skill access mode is NONE', () => {
     const registry = new SkillRegistry();
-    const skill = new Skill('test_skill', 'desc', 'body', '/path');
-    (registry as any).skills.set('test_skill', skill);
-
+    (registry as any).skills.set(
+      'configured',
+      new Skill('configured', 'Configured skill', 'CONFIGURED_BODY', '/configured')
+    );
     const context = makeContext();
-    context.config.skills = ['test_skill'];
-
-    const processor = new AvailableSkillsProcessor();
-    const toolInstances = {
-      [removedSkillToolName]: {
-        getName: () => removedSkillToolName
-      } as BaseTool
-    };
-    const result = processor.process('Original', toolInstances, 'test_agent', context);
-
-    expect(result).not.toContain(loadSkillGuidance);
-  });
-
-  it('uses preloaded-only catalog mode when configured', () => {
-    const registry = new SkillRegistry();
-    const skillA = new Skill('preloaded', 'preloaded desc', 'PRELOADED_BODY', '/path/a');
-    const skillB = new Skill('other', 'other desc', 'OTHER_BODY', '/path/b');
-    (registry as any).skills.set('preloaded', skillA);
-    (registry as any).skills.set('other', skillB);
-
-    const context = makeContext();
-    context.config.skills = ['preloaded'];
-    context.config.skillAccessMode = SkillAccessMode.PRELOADED_ONLY;
-
-    const processor = new AvailableSkillsProcessor();
-    const result = processor.process('Original', {}, 'test_agent', context);
-
-    expect(result).toContain('- **preloaded**: preloaded desc');
-    expect(result).not.toContain('- **other**: other desc');
-    expect(result).toContain('PRELOADED_BODY');
-    expect(result).not.toContain('OTHER_BODY');
-    expect(result).not.toContain(loadSkillGuidance);
-  });
-
-  it('skips skills section when mode is NONE', () => {
-    const registry = new SkillRegistry();
-    const skill = new Skill('test_skill', 'desc', 'body', '/path');
-    (registry as any).skills.set('test_skill', skill);
-
-    const context = makeContext();
+    context.config.skills = ['configured'];
     context.config.skillAccessMode = SkillAccessMode.NONE;
 
-    const processor = new AvailableSkillsProcessor();
-    const result = processor.process('Original', {}, 'test_agent', context);
+    const result = new AvailableSkillsProcessor().process(
+      'Original',
+      {},
+      'test_agent',
+      context
+    );
 
     expect(result).toBe('Original');
   });
 
-  it('injects detailed section for preloaded skills', () => {
-    const registry = new SkillRegistry();
-    const skillRoot = createSkillRoot();
-    const skill = new Skill(
-      'preloaded',
-      'desc',
-      [
-        'Read [design-principles.md](design-principles.md).',
-        'Read [patterns](references/common-design-patterns.md).'
-      ].join('\n'),
-      skillRoot
-    );
-    (registry as any).skills.set('preloaded', skill);
-
+  it('returns the original prompt unchanged when configured names do not resolve', () => {
     const context = makeContext();
-    context.config.skills = ['preloaded'];
+    context.config.skills = ['missing'];
 
-    const processor = new AvailableSkillsProcessor();
-    const result = processor.process('Original', {}, 'test_agent', context);
+    const result = new AvailableSkillsProcessor().process(
+      'Original',
+      {},
+      'test_agent',
+      context
+    );
 
-    expect(result).toContain(`**Skill Base Path:** \`${skillRoot}\``);
-    expect(result).toContain('### Critical Rules for Using Skills');
-    expect(result).toContain(
-      'Resolvable Markdown links are already rewritten to absolute filesystem paths before injection.'
+    expect(result).toBe('Original');
+  });
+
+  it('renders the exact configured catalog contract in configured order without skill bodies', () => {
+    const registry = new SkillRegistry();
+    const relativeRoot = path.join('relative', 'skill-a');
+    const absoluteRoot = path.resolve('/absolute/skill-b');
+    (registry as any).skills.set(
+      'skill-a',
+      new Skill(
+        'skill-a',
+        'First configured skill.',
+        'UNIQUE_SKILL_A_BODY [reference](references/a.md)',
+        relativeRoot
+      )
     );
-    expect(result).toContain(
-      'plain-text relative references or unresolved targets may still appear in skill instructions.'
+    (registry as any).skills.set(
+      'skill-b',
+      new Skill('skill-b', 'Second configured skill.', 'UNIQUE_SKILL_B_BODY', absoluteRoot)
     );
-    expect(result).toContain('`Skill Base Path` + `Relative Path` = `Absolute Path`');
-    expect(result).not.toContain(loadSkillGuidance);
-    expect(result).toContain('Relative: `./scripts/run.sh`');
-    expect(result).toContain('Relative: `scripts/run.sh`');
-    expect(result).toContain(
-      `[design-principles.md](${path.join(skillRoot, 'design-principles.md')})`
+    (registry as any).skills.set(
+      'unconfigured',
+      new Skill('unconfigured', 'Not configured.', 'UNCONFIGURED_BODY', '/unconfigured')
     );
-    expect(result).toContain(
-      `[patterns](${path.join(skillRoot, 'references', 'common-design-patterns.md')})`
+    const context = makeContext();
+    context.config.skills = ['skill-b', 'skill-a'];
+    context.config.skillAccessMode = SkillAccessMode.PRELOADED_ONLY;
+    const catalogEntries = [
+      '- **skill-b**: Second configured skill.',
+      `  - **SKILL.md:** \`${path.resolve(absoluteRoot, 'SKILL.md')}\``,
+      '- **skill-a**: First configured skill.',
+      `  - **SKILL.md:** \`${path.resolve(relativeRoot, 'SKILL.md')}\``
+    ].join('\n');
+
+    const result = new AvailableSkillsProcessor().process(
+      'Original',
+      {},
+      'test_agent',
+      context
     );
+
+    expect(result).toBe(`Original${expectedSkillsBlock(catalogEntries)}`);
+    expect(result).not.toContain('UNIQUE_SKILL_A_BODY');
+    expect(result).not.toContain('UNIQUE_SKILL_B_BODY');
+    expect(result).not.toContain('UNCONFIGURED_BODY');
+    expect(result).not.toContain('[reference](references/a.md)');
+    expect(result).not.toContain('Skill Details');
   });
 });
