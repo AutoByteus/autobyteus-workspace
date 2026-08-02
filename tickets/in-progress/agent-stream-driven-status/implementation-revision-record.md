@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | `architecture_reviewer`; `design-review-report.md`; `ARCH-REV-002` | `N/A` (approved design resolved `ARCH-FIND-001`, `ARCH-FIND-002`) | `Initial Baseline` | `SR-002`, `ARCH-REV-002`; `CRR N/A`, `API-REV N/A`, `DR N/A` | Implemented; local implementation checks pass subject to recorded repository baseline limitations; ready for code review |
 | IR-002 | `code_reviewer`; `code-review-report.md`; Implementation Review round 1 | `CODE-FIND-001` | `Local Fix` | `SR-002`, `ARCH-REV-002`, `CRR-001`; `API-REV N/A`, `DR N/A` | Companion statuses are presentation-transparent in both streaming services; focused regression checks pass; ready for source re-review |
+| IR-003 | `architecture_reviewer`; `design-review-report.md`; `ARCH-REV-004` | `ARCH-FIND-003` resolved by `SR-004` | `Expanded Rework` | `SR-002`, `SR-004`, `ARCH-REV-002`, `ARCH-REV-004`, preserved `CRR-002`; `API-REV N/A`, `DR N/A` | Manager-owned binary team lifecycle, scoped leaf snapshots, aggregate removal, and frontend activity/pending contraction implemented; focused checks pass; ready for source re-review |
 
 ## Revision Entries
 
@@ -77,3 +78,36 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
   - `git diff --check`: pass.
 - Next recipient or routing: `code_reviewer` for source re-review; do not advance directly to `api_e2e_engineer`.
 - Remaining limitations or risks: Real cross-runtime ordering/reconnect evidence, live companion-volume observation, environment-level publication failure injection, and realistic UI/API/E2E coverage remain downstream-owned after code review passes. The 230-error repository typecheck baseline remains unchanged.
+
+### IR-003 — Replace aggregate team status with manager lifecycle and scoped leaf snapshots
+
+- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/design-review-report.md`; `ARCH-REV-004`
+- Triggering finding ID: `ARCH-FIND-003` was resolved by the approved `SR-004` design; implementation executes that reviewed expansion.
+- Classification: `Expanded Rework`
+- Prior authoritative result: `IR-002` / `CRR-002` passed for the `SR-002` agent lifecycle and presentation foundation. The user-approved team simplification expanded scope and returned through design review before source changes.
+- Current authoritative result: Implemented on `codex/agent-stream-driven-status` in source/test commit `9c4c6f09546b426ab27598a11753657b438c3fde`; focused implementation checks pass; ready for source re-review.
+- Related solution revision IDs: `SR-002`, `SR-004`
+- Related architecture-review revision IDs: `ARCH-REV-002`, `ARCH-REV-004`
+- Related code-review revision IDs: `CRR-002` for the preserved foundation; expanded source review pending
+- Related API/E2E revision IDs: `N/A` for the expanded source state
+- Related delivery revision IDs: `N/A`
+- Why this revision is recorded: It cleanly removes the public five-state team aggregate and installs the approved root/leaf/internal ownership split without disturbing the serialized per-agent lifecycle boundary.
+- Approved behavior or requirement IDs affected: `BEH-006`–`BEH-009`; `REQ-013`–`REQ-019`; `AC-016`–`AC-025`; preserved `BEH-001`–`BEH-005`.
+- Implementation delta:
+  - Added manager-owned `TeamRunLifecycle` snapshots/subscriptions with exact-run, stale-backend, replacement, listener-failure, and idempotent unregister semantics.
+  - Replaced root `TEAM_STATUS` with `TEAM_RUN_LIFECYCLE`, while initial and live leaf-agent statuses share `TeamLeafAgentStatusSnapshot`, recursive scope prefixing, and task-team identity flattening.
+  - Removed aggregate team status DTO/aggregation/overlay, root/nested event source, root history/GraphQL status, frontend team status model/hydration/visuals, and compatibility parsing.
+  - Reassigned settlement to private `hasOpenExecutionWork`, cleanup to terminal task facts/reconciliation, and failure handling to member/operation owners.
+  - Added frontend `isActive` plus separate `isSubscribed`, store-owned `stopPending`, failed-Stop preservation, and status-free definition/root/subteam presentation.
+  - Updated focused server and frontend unit/component coverage, including nested task-team carrier validation and lifecycle teardown/race cases.
+- Changed files or areas: server `agent-team-execution`, team streaming, run history/GraphQL and focused units; frontend team protocol/hydration/open/recovery/stores/history/workspace/mobile presentation and focused tests.
+- Local validation and result:
+  - Server TypeScript build: pass.
+  - Focused server units: 14 files / 104 tests pass.
+  - Focused changed frontend suite: 33 files / 240 tests pass; additional high-risk set: 10 files / 152 tests pass.
+  - Web/localization guards and literal audit: pass.
+  - `nuxi typecheck`: repository baseline remains non-green; changed-file intersection contains only two unchanged generated GraphQL dependency-import errors, with no task-semantic changed-file error.
+  - Protected stale API/E2E server tests: SHA-1 unchanged and not committed.
+  - Obsolete-path scans, source-size guard, and `git diff --check`: pass.
+- Next recipient or routing: `code_reviewer` for expanded source re-review. Do not advance directly to `api_e2e_engineer`.
+- Remaining limitations or risks: held pre-expansion coverage must be reinvestigated; realistic WebSocket/reconnect/nested task-team/Stop-failure evidence and direct browser validation remain downstream-owned. GraphQL codegen could not run without a configured endpoint. Product iteration callback is `Not Required`.
