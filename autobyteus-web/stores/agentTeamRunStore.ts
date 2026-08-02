@@ -461,7 +461,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
           return;
         }
         if (focusedMember) {
-          focusedMember.isSending = false;
+          focusedMember.submissionPending = false;
         }
         throw new Error(`Failed to send message: ${error.message}`);
       } finally {

@@ -73,7 +73,6 @@ const applyTeamHistoryStatusToExistingContext = (
       memberContext,
       matchedStatus ? normalizeAgentRuntimeStatus(matchedStatus) : preserveCanonicalAgentStatus(memberContext.state.currentStatus),
       {
-        preserveLiveInterrupt: existingTeamContext.isSubscribed,
         preserveCurrentStatus: preserveCurrentMemberStatuses,
       },
     );

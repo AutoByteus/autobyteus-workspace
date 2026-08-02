@@ -34,7 +34,7 @@ describe("AutoByteusStreamEventConverter", () => {
       eventType: agentRunEventType,
       runId: "run-1",
       payload: isStatusEvent
-        ? { status: "offline", can_interrupt: false }
+        ? { status: "idle" }
         : { invocation_id: "inv-1", detail: "ok" },
       statusHint:
         streamEventType === StreamEventType.TURN_STARTED
@@ -47,12 +47,8 @@ describe("AutoByteusStreamEventConverter", () => {
     });
   });
 
-  it("preserves effect-aware errors and does not clear active state for diagnostics or old terminal ids", () => {
-    let snapshotStatus: "idle" | "error" = "idle";
-    const converter = new AutoByteusStreamEventConverter("run-1", () => ({
-      status: snapshotStatus,
-      can_interrupt: false,
-    }));
+  it("preserves effect-aware errors without owning lifecycle state", () => {
+    const converter = new AutoByteusStreamEventConverter("run-1");
     converter.convert({
       event_type: StreamEventType.TURN_STARTED,
       data: { turn_id: "turn-b" },
@@ -83,18 +79,14 @@ describe("AutoByteusStreamEventConverter", () => {
       },
     } as any)).toMatchObject({ statusHint: "ERROR" });
 
-    snapshotStatus = "idle";
     expect(converter.convert({
       event_type: StreamEventType.AGENT_STATUS,
       data: {},
-    } as any)).toMatchObject({ payload: { status: "running" } });
+    } as any)).toMatchObject({ payload: { status: "idle" } });
   });
 
   it("does not grant status or lifecycle authority to malformed terminal error payloads", () => {
-    const converter = new AutoByteusStreamEventConverter("run-1", () => ({
-      status: "idle",
-      can_interrupt: false,
-    }));
+    const converter = new AutoByteusStreamEventConverter("run-1");
     converter.convert({
       event_type: StreamEventType.TURN_STARTED,
       data: {},
@@ -111,53 +103,42 @@ describe("AutoByteusStreamEventConverter", () => {
     expect(converter.convert({
       event_type: StreamEventType.AGENT_STATUS,
       data: {},
-    } as any)).toMatchObject({ payload: { status: "running" } });
+    } as any)).toMatchObject({ payload: { status: "idle" } });
   });
 
   it("uses explicit current status payloads before stale snapshots", () => {
     expect(
-      new AutoByteusStreamEventConverter("run-1", () => ({
-        status: "offline",
-        can_interrupt: false,
-        agent_id: "run-1",
-      })).convert({
+      new AutoByteusStreamEventConverter("run-1").convert({
         event_type: StreamEventType.AGENT_STATUS,
         data: { status: "idle" },
       } as any),
     )?.toMatchObject({
       eventType: AgentRunEventType.AGENT_STATUS,
-      payload: { status: "idle", can_interrupt: false, agent_id: "run-1" },
+      payload: { status: "idle" },
       statusHint: "IDLE",
     });
 
     expect(
-      new AutoByteusStreamEventConverter("run-1", () => ({
-        status: "offline",
-        can_interrupt: false,
-      })).convert({
+      new AutoByteusStreamEventConverter("run-1").convert({
         event_type: StreamEventType.AGENT_STATUS,
         data: { status: "error" },
       } as any),
     )?.toMatchObject({
       eventType: AgentRunEventType.AGENT_STATUS,
-      payload: { status: "error", can_interrupt: false },
+      payload: { status: "error" },
       statusHint: "ERROR",
     });
   });
 
   it("normalizes explicit fine-grained native statuses through the AutoByteus status projector", () => {
     expect(
-      new AutoByteusStreamEventConverter("run-1", () => ({
-        status: "offline",
-        can_interrupt: false,
-        agent_id: "run-1",
-      })).convert({
+      new AutoByteusStreamEventConverter("run-1").convert({
         event_type: StreamEventType.AGENT_STATUS,
         data: { status: "awaiting_tool_approval" },
       } as any),
     )?.toMatchObject({
       eventType: AgentRunEventType.AGENT_STATUS,
-      payload: { status: "running", can_interrupt: false, agent_id: "run-1" },
+      payload: { status: "initializing" },
       statusHint: "ACTIVE",
     });
   });
@@ -187,13 +168,8 @@ describe("AutoByteusStreamEventConverter", () => {
     });
   });
 
-  it("preserves public running status for stale non-active snapshots while a turn is active", () => {
-    let snapshotStatus: "idle" | "initializing" = "idle";
-    const converter = new AutoByteusStreamEventConverter("run-1", () => ({
-      status: snapshotStatus,
-      can_interrupt: false,
-      agent_id: "run-1",
-    }));
+  it("keeps raw conversion stateless so run-owned reconciliation decides active status", () => {
+    const converter = new AutoByteusStreamEventConverter("run-1");
 
     expect(converter.convert({
       event_type: StreamEventType.TURN_STARTED,
@@ -209,28 +185,22 @@ describe("AutoByteusStreamEventConverter", () => {
     } as any))?.toMatchObject({
       eventType: AgentRunEventType.AGENT_STATUS,
       payload: {
-        status: "running",
-        can_interrupt: false,
-        agent_id: "run-1",
+        status: "idle",
       },
-      statusHint: "ACTIVE",
+      statusHint: "IDLE",
     });
 
-    snapshotStatus = "initializing";
     expect(converter.convert({
       event_type: StreamEventType.AGENT_STATUS,
-      data: {},
+      data: { status: "initializing" },
     } as any))?.toMatchObject({
       eventType: AgentRunEventType.AGENT_STATUS,
       payload: {
-        status: "running",
-        can_interrupt: false,
-        agent_id: "run-1",
+        status: "initializing",
       },
       statusHint: "ACTIVE",
     });
 
-    snapshotStatus = "idle";
     expect(converter.convert({
       event_type: StreamEventType.TURN_COMPLETED,
       data: { turn_id: "turn-1" },
@@ -246,8 +216,6 @@ describe("AutoByteusStreamEventConverter", () => {
       eventType: AgentRunEventType.AGENT_STATUS,
       payload: {
         status: "idle",
-        can_interrupt: false,
-        agent_id: "run-1",
       },
       statusHint: "IDLE",
     });

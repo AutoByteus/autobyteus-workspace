@@ -154,7 +154,7 @@ describe('agentRunStore', () => {
             },
             requirement: 'do something',
             contextFilePaths: [],
-            isSending: false,
+            submissionPending: false,
             isSubscribed: false,
         };
 
@@ -272,9 +272,8 @@ describe('agentRunStore', () => {
         });
         expect(mockAgentContext.requirement).toBe('');
         expect(mockAgentContext.contextFilePaths).toEqual([]);
-        expect(mockAgentContext.isSending).toBe(true);
+        expect(mockAgentContext.submissionPending).toBe(true);
         expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Idle);
-        expect(mockAgentContext.state.canInterrupt).toBeUndefined();
 
         resolveCreate({
           data: {
@@ -450,16 +449,16 @@ describe('agentRunStore', () => {
         expect(mockContextsStore.removeRun).not.toHaveBeenCalled();
     });
 
-    it('interruptGeneration should signal active stream without clearing sending state optimistically', () => {
+    it('interruptGeneration should signal the active stream without clearing submission pending optimistically', () => {
         const store = useAgentRunStore();
         mockAgentContext.state.runId = 'agent-1';
-        mockAgentContext.isSending = true;
+        mockAgentContext.submissionPending = true;
 
         store.connectToAgentStream('agent-1');
         const result = store.interruptGeneration('agent-1');
 
         expect(result).toBe(true);
         expect(mockInterruptGeneration).toHaveBeenCalledTimes(1);
-        expect(mockAgentContext.isSending).toBe(true);
+        expect(mockAgentContext.submissionPending).toBe(true);
     });
 });

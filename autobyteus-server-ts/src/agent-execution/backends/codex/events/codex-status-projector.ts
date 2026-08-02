@@ -1,11 +1,8 @@
-import {
-  buildAgentStatusPayload,
-  normalizeAgentApiStatus,
-  type AgentStatusPayload,
-} from "../../../domain/agent-status-payload.js";
+import type { AgentRuntimeLifecycleSnapshot } from "../../../domain/agent-runtime-lifecycle-snapshot.js";
 import type { AgentRunEvent } from "../../../domain/agent-run-event.js";
 import { AgentRunEventType } from "../../../domain/agent-run-event.js";
 import { resolveAgentRunErrorEvidence } from "../../../domain/agent-run-error-evidence.js";
+import { normalizeAgentApiStatus } from "../../../domain/agent-status-payload.js";
 import { CodexThreadEventName } from "./codex-thread-event-name.js";
 
 export type CodexStatusSource = {
@@ -26,20 +23,39 @@ const CODEX_STARTUP_STATUS_TOKENS = new Set([
   "uninitialized",
 ]);
 
-const normalizeCodexAgentStatus = (value: unknown): AgentStatusPayload["status"] =>
-  CODEX_STARTUP_STATUS_TOKENS.has(normalizeToken(value) ?? "")
-    ? "initializing"
-    : normalizeAgentApiStatus(value, "idle");
+const normalizeCodexAgentPhase = (
+  value: unknown,
+): AgentRuntimeLifecycleSnapshot["phase"] => {
+  if (CODEX_STARTUP_STATUS_TOKENS.has(normalizeToken(value) ?? "")) {
+    return "initializing";
+  }
+  const status = normalizeAgentApiStatus(value, "idle");
+  return status === "offline" ? "idle" : status;
+};
 
-export const projectCodexAgentStatus = (source: CodexStatusSource): AgentStatusPayload => {
-  const status =
-    source.isActive === false
-      ? "offline"
-      : normalizeCodexAgentStatus(source.currentStatus);
-  return buildAgentStatusPayload({
-    status,
-    canInterrupt: status === "running" && Boolean(source.activeTurnId),
-  });
+export const projectCodexAgentLifecycleSnapshot = (
+  source: CodexStatusSource,
+): AgentRuntimeLifecycleSnapshot => {
+  if (source.isActive === false) {
+    return {
+      availability: "offline",
+      phase: "idle",
+      currentTurn: { kind: "NONE" },
+    };
+  }
+  const turnId = typeof source.activeTurnId === "string"
+    ? source.activeTurnId.trim()
+    : "";
+  const projectedPhase = normalizeCodexAgentPhase(source.currentStatus);
+  return {
+    availability: "active",
+    phase: turnId ? "running" : projectedPhase === "running"
+      ? "initializing"
+      : projectedPhase,
+    currentTurn: turnId
+      ? { kind: "IDENTIFIED", turnId }
+      : { kind: "NONE" },
+  };
 };
 
 export const deriveCodexAgentRunStatusHint = (

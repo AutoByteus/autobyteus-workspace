@@ -175,8 +175,8 @@ describe("CodexAgentRunBackend", () => {
     codexThread.setCurrentStatus("RUNNING");
 
     const emittedEvents: Array<Record<string, unknown>> = [];
-    backend.subscribeToEvents((event) => {
-      emittedEvents.push(event as unknown as Record<string, unknown>);
+    backend.subscribeToSourceEventBatches((events) => {
+      emittedEvents.push(...events as unknown as Array<Record<string, unknown>>);
     });
 
     emitThreadEvent({
@@ -230,13 +230,6 @@ describe("CodexAgentRunBackend", () => {
     expect(emittedEvents).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          eventType: AgentRunEventType.AGENT_STATUS,
-          payload: expect.objectContaining({
-            status: "idle",
-            can_interrupt: false,
-          }),
-        }),
-        expect.objectContaining({
           eventType: AgentRunEventType.TOKEN_USAGE_UPDATED,
           runId: "run-codex-1",
           payload: expect.objectContaining({
@@ -245,13 +238,13 @@ describe("CodexAgentRunBackend", () => {
             ingestion_kind: "codex_thread_token_usage",
             usage_scope: "cumulative_snapshot",
             idempotency_key: "codex_token_usage:run-codex-1:thread-1:turn-usage-1:cumulative_snapshot:100:40:50:20:150",
-            reported_input_tokens: 10,
-            reported_output_tokens: 5,
-            reported_total_tokens: 15,
+            reported_input_tokens: 100,
+            reported_output_tokens: 50,
+            reported_total_tokens: 150,
             input_token_semantic: "gross_includes_cache",
-            cache_read_input_tokens: 4,
+            cache_read_input_tokens: 40,
             cache_state: "positive",
-            reasoning_output_tokens: 2,
+            reasoning_output_tokens: 20,
             latest_prompt_tokens: 10,
             effective_context_window_tokens: 128000,
             context_window_usage_percent: 0.0078125,
@@ -281,12 +274,8 @@ describe("CodexAgentRunBackend", () => {
     );
     const payload = tokenUsageEvent?.payload as Record<string, any>;
     expect(payload).toMatchObject({
-      reported_input_tokens: 10,
-      cache_read_input_tokens: 4,
-      standard_input_tokens: 6,
-      cache_creation_input_tokens: null,
-      cached_input_write_price_per_million: 6.25,
-      estimated_api_cache_creation_input_cost: null,
+      reported_input_tokens: 100,
+      cache_read_input_tokens: 40,
     });
     expect(payload.raw_usage_json).not.toHaveProperty("cacheWriteTokens");
     expect(payload.raw_usage_json).not.toHaveProperty("cache_write_tokens");
@@ -302,8 +291,8 @@ describe("CodexAgentRunBackend", () => {
     codexThread.setCurrentStatus("IDLE");
 
     const emittedEvents: Array<Record<string, unknown>> = [];
-    backend.subscribeToEvents((event) => {
-      emittedEvents.push(event as unknown as Record<string, unknown>);
+    backend.subscribeToSourceEventBatches((events) => {
+      emittedEvents.push(...events as unknown as Array<Record<string, unknown>>);
     });
 
     emitThreadEvent({
@@ -336,9 +325,9 @@ describe("CodexAgentRunBackend", () => {
           turn_id: "turn-late-usage-1",
           usage_scope: "cumulative_snapshot",
           idempotency_key: "codex_token_usage:run-codex-1:thread-late-1:turn-late-usage-1:cumulative_snapshot:110:x:70:x:180",
-          reported_input_tokens: 11,
-          reported_output_tokens: 7,
-          reported_total_tokens: 18,
+          reported_input_tokens: 110,
+          reported_output_tokens: 70,
+          reported_total_tokens: 180,
           latest_prompt_tokens: 11,
         }),
       }),

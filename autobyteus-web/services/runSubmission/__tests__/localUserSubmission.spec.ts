@@ -19,7 +19,7 @@ const buildContext = () => ({
   },
   requirement: 'draft text',
   contextFilePaths: [{ kind: 'workspace_path', id: 'draft', locator: '/tmp/draft.txt', displayName: 'draft.txt', type: 'Text' }],
-  isSending: false,
+  submissionPending: false,
   get conversation() {
     return this.state.conversation;
   },
@@ -44,7 +44,7 @@ describe('localUserSubmission', () => {
     expect(handle.message).toBe(context.state.conversation.messages[0]);
     expect(context.requirement).toBe('');
     expect(context.contextFilePaths).toEqual([]);
-    expect(context.isSending).toBe(true);
+    expect(context.submissionPending).toBe(true);
     expect(context.state.eventMonitorPresentationRevision).toBe(1);
   });
 
@@ -85,7 +85,7 @@ describe('localUserSubmission', () => {
 
     failLocalSubmission(handle, new Error('backend unavailable'));
 
-    expect(context.isSending).toBe(false);
+    expect(context.submissionPending).toBe(false);
     expect(context.state.conversation.messages).toHaveLength(2);
     expect(context.state.conversation.messages[0]).toBe(handle.message);
     expect(context.state.conversation.messages[1]).toMatchObject({

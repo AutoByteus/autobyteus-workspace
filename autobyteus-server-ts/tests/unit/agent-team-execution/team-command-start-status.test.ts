@@ -88,10 +88,10 @@ describe("TeamCommandStatusOverlayStore", () => {
     });
     expect(store.getMemberStatusSnapshot({
       memberContext,
-      fallback: () => ({ status: "offline", can_interrupt: false }),
+      fallback: () => ({ status: "offline" }),
     })).toMatchObject({ status: "initializing", agent_id: "member-run-1" });
     expect(store.applyMemberStatusOverlays([
-      { status: "offline", can_interrupt: false, agent_id: "member-run-1", member_route_key: "Worker" },
+      { status: "offline", agent_id: "member-run-1", member_route_key: "Worker" },
     ])).toEqual([
       expect.objectContaining({ status: "initializing", agent_id: "member-run-1" }),
     ]);
@@ -115,7 +115,7 @@ describe("TeamCommandStatusOverlayStore", () => {
     });
     expect(store.getMemberStatusSnapshot({
       memberContext,
-      fallback: () => ({ status: "offline", can_interrupt: false }),
+      fallback: () => ({ status: "offline" }),
     })).toMatchObject({ status: "error", agent_id: "member-run-1" });
 
     store.recordReplacementEvents([{
@@ -131,14 +131,14 @@ describe("TeamCommandStatusOverlayStore", () => {
         agentEvent: {
           eventType: AgentRunEventType.AGENT_STATUS,
           runId: "other-run",
-          payload: { status: "running", can_interrupt: false },
+          payload: { status: "running" },
           statusHint: "ACTIVE",
         },
       },
     }]);
     expect(store.getMemberStatusSnapshot({
       memberContext,
-      fallback: () => ({ status: "offline", can_interrupt: false }),
+      fallback: () => ({ status: "offline" }),
     })).toMatchObject({ status: "error" });
 
     store.recordReplacementEvents([{
@@ -154,15 +154,15 @@ describe("TeamCommandStatusOverlayStore", () => {
         agentEvent: {
           eventType: AgentRunEventType.AGENT_STATUS,
           runId: "member-run-1",
-          payload: { status: "running", can_interrupt: false },
+          payload: { status: "running" },
           statusHint: "ACTIVE",
         },
       },
     }]);
     expect(store.getMemberStatusSnapshot({
       memberContext,
-      fallback: () => ({ status: "offline", can_interrupt: false }),
-    })).toEqual({ status: "offline", can_interrupt: false });
+      fallback: () => ({ status: "offline" }),
+    })).toEqual({ status: "offline" });
   });
 
   it("keeps task-agent command overlays keyed by concrete task-agent identity", () => {
@@ -222,12 +222,12 @@ describe("TeamCommandStatusOverlayStore", () => {
 
     expect(store.getMemberStatusSnapshot({
       memberContext,
-      fallback: () => ({ status: "offline", can_interrupt: false, agent_id: "member-run-1" }),
+      fallback: () => ({ status: "offline", agent_id: "member-run-1" }),
     })).toMatchObject({ status: "offline", agent_id: "member-run-1" });
     expect(store.getMemberStatusSnapshot({
       memberContext: taskMemberContext,
       taskAgentInstance,
-      fallback: () => ({ status: "offline", can_interrupt: false }),
+      fallback: () => ({ status: "offline" }),
     })).toMatchObject({
       status: "initializing",
       agent_id: "task-agent-run-1",
@@ -235,10 +235,9 @@ describe("TeamCommandStatusOverlayStore", () => {
     });
 
     expect(store.applyMemberStatusOverlays([
-      { status: "offline", can_interrupt: false, agent_id: "member-run-1", member_route_key: "Worker" },
+      { status: "offline", agent_id: "member-run-1", member_route_key: "Worker" },
       {
         status: "offline",
-        can_interrupt: false,
         agent_id: "task-agent-run-1",
         member_route_key: "Worker",
         task_agent_run_id: "task-agent-run-1",
@@ -264,7 +263,6 @@ describe("TeamCommandStatusOverlayStore", () => {
           runId: "task-agent-run-1",
           payload: {
             status: "running",
-            can_interrupt: false,
             task_agent_run_id: "task-agent-run-1",
           },
           statusHint: "ACTIVE",
@@ -274,7 +272,7 @@ describe("TeamCommandStatusOverlayStore", () => {
     expect(store.getMemberStatusSnapshot({
       memberContext: taskMemberContext,
       taskAgentInstance,
-      fallback: () => ({ status: "running", can_interrupt: false, agent_id: "task-agent-run-1" }),
+      fallback: () => ({ status: "running", agent_id: "task-agent-run-1" }),
     })).toMatchObject({ status: "running", agent_id: "task-agent-run-1" });
   });
 
@@ -310,7 +308,7 @@ describe("TeamCommandStatusOverlayStore", () => {
         memberRouteKey: "ReviewTeam",
         memberRunId: "review-team-run",
       },
-      fallback: () => ({ status: "offline", can_interrupt: false }),
+      fallback: () => ({ status: "offline" }),
     })).toMatchObject({ status: "initializing", agent_id: "review-team-run" });
 
     store.clear();
@@ -346,7 +344,7 @@ const createFakeAgentRun = (runtimeKind: RuntimeKind, sendDeferred = createDefer
     runId: "member-run-1",
     isActive: () => true,
     getPlatformAgentRunId: () => runtimeKind === RuntimeKind.CLAUDE_AGENT_SDK ? "session-1" : "thread-1",
-    getStatusSnapshot: () => ({ status: memberStatus, can_interrupt: false }),
+    getStatusSnapshot: () => ({ status: memberStatus }),
     postUserMessage: vi.fn(() => sendDeferred.promise),
     approveToolInvocation: vi.fn(),
     interrupt: vi.fn(),
@@ -364,7 +362,7 @@ const createFakeAgentRun = (runtimeKind: RuntimeKind, sendDeferred = createDefer
       memberListener?.({
         eventType: AgentRunEventType.AGENT_STATUS,
         runId: "member-run-1",
-        payload: { status, can_interrupt: false },
+        payload: { status },
         statusHint: status === "running" ? "ACTIVE" : null,
       } as AgentRunEvent);
     },

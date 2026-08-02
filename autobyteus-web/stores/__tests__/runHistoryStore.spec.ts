@@ -924,7 +924,6 @@ describe('runHistoryStore', () => {
             runId: 'member-run-solution',
             conversation: { id: 'member-run-solution', messages: [] },
             currentStatus: 'offline',
-            canInterrupt: true,
           },
         }],
         ['implementation_engineer', {
@@ -933,7 +932,6 @@ describe('runHistoryStore', () => {
             runId: 'member-run-implementation',
             conversation: { id: 'member-run-implementation', messages: [] },
             currentStatus: 'idle',
-            canInterrupt: false,
           },
         }],
         ['code_reviewer', {
@@ -942,7 +940,6 @@ describe('runHistoryStore', () => {
             runId: 'member-run-review',
             conversation: { id: 'member-run-review', messages: [] },
             currentStatus: 'running',
-            canInterrupt: false,
           },
         }],
       ]),
@@ -961,9 +958,6 @@ describe('runHistoryStore', () => {
     expect(context.members.get('solution_designer')?.state.currentStatus).toBe('running');
     expect(context.members.get('implementation_engineer')?.state.currentStatus).toBe('offline');
     expect(context.members.get('code_reviewer')?.state.currentStatus).toBe('offline');
-    expect(context.members.get('solution_designer')?.state.canInterrupt).toBe(true);
-    expect(context.members.get('implementation_engineer')?.state.canInterrupt).toBe(false);
-    expect(context.members.get('code_reviewer')?.state.canInterrupt).toBe(false);
     expect(agentTeamRunStoreMock.connectToTeamStream).not.toHaveBeenCalledWith('team-live-1');
 
     const teamNode = store.getTeamNodes().find((node) => node.teamRunId === 'team-live-1');
@@ -977,7 +971,7 @@ describe('runHistoryStore', () => {
     });
   });
 
-  it('preserves backend-granted single-agent interrupt permission during active history refresh', async () => {
+  it('preserves subscribed single-agent live status during active history refresh', async () => {
     queryMock.mockResolvedValue({
       data: {
         listWorkspaceRunHistory: [
@@ -1012,7 +1006,6 @@ describe('runHistoryStore', () => {
         runId: 'run-live-1',
         conversation: { id: 'run-live-1', messages: [] },
         currentStatus: 'running',
-        canInterrupt: true,
       },
       isSubscribed: true,
     });
@@ -1023,7 +1016,6 @@ describe('runHistoryStore', () => {
     const context = agentContextsStoreMock.runs.get('run-live-1');
     expect(context.config.isLocked).toBe(true);
     expect(context.state.currentStatus).toBe('running');
-    expect(context.state.canInterrupt).toBe(true);
     expect(agentRunStoreMock.connectToAgentStream).not.toHaveBeenCalledWith('run-live-1');
   });
 

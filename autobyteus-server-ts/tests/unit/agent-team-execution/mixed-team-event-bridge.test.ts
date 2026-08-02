@@ -153,7 +153,6 @@ describe("prefixMixedSubTeamEvent", () => {
             runId: "review-run",
             payload: {
               status: "running",
-              can_interrupt: false,
               agent_id: "review-run",
               agent_name: "review_lead",
             },

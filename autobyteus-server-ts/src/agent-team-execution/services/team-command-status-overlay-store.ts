@@ -142,7 +142,7 @@ export class TeamCommandStatusOverlayStore {
         return snapshot;
       }
       appliedExecutionKeys.add(executionKey);
-      return { ...snapshot, status: overlay.status, can_interrupt: overlay.can_interrupt };
+      return { ...snapshot, status: overlay.status };
     });
 
     for (const [executionKey, overlay] of this.memberStatusesByExecutionKey.entries()) {
@@ -172,7 +172,6 @@ export class TeamCommandStatusOverlayStore {
     }
     return buildAgentStatusPayload({
       status: overlay,
-      canInterrupt: false,
       agentId: input.representedMember.memberRunId,
       agentName: input.representedMember.memberName,
       memberRouteKey: input.representedMember.memberRouteKey,

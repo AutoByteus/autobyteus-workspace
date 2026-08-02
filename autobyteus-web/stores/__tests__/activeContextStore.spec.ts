@@ -37,7 +37,6 @@ const createAgentContext = (runId: string): AgentContext => {
   } as any;
   const context = new AgentContext(config, new AgentRunState(runId, conversation));
   context.state.currentStatus = AgentStatus.Running;
-  context.state.canInterrupt = true;
   return context;
 };
 

@@ -21,7 +21,6 @@ describe("AgentTeamStreamHandler", () => {
     getStatusSnapshot: vi.fn().mockReturnValue({ status: "running" }),
     getMemberStatusSnapshots: vi.fn().mockReturnValue([{
       status: "running",
-      can_interrupt: true,
       target_member_run_id: "member-42",
       agent_name: "worker-a",
     }]),
@@ -290,7 +289,6 @@ describe("AgentTeamStreamHandler", () => {
       type: ServerMessageType.AGENT_STATUS,
       payload: {
         status: "running",
-        can_interrupt: true,
         target_member_run_id: "member-42",
         agent_name: "worker-a",
       },

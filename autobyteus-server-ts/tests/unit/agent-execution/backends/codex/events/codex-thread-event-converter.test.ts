@@ -547,10 +547,11 @@ describe("CodexThreadEventConverter", () => {
     })).toHaveLength(1);
   });
 
-  it("maps thread status changes into normalized AGENT_STATUS payloads", () => {
+  it("emits thread status changes as neutral lifecycle facts", () => {
     const converter = new CodexThreadEventConverter("run-1", null, () => ({
-      status: "running",
-      can_interrupt: true,
+      availability: "active",
+      phase: "running",
+      currentTurn: { kind: "IDENTIFIED", turnId: "turn-1" },
     }));
 
     const converted = converter.convert({
@@ -562,22 +563,16 @@ describe("CodexThreadEventConverter", () => {
       },
     });
 
-    expect(converted).toHaveLength(1);
-    expect(converted[0]).toMatchObject({
-      eventType: AgentRunEventType.AGENT_STATUS,
-      runId: "run-1",
-      payload: {
-        status: "running",
-        can_interrupt: true,
-      },
-    });
+    expect(converted).toEqual([
+      expect.objectContaining({
+        eventType: AgentRunEventType.AGENT_STATUS,
+        payload: { status: "running" },
+      }),
+    ]);
   });
 
-  it("emits explicit turn lifecycle plus normalized agent-status events", () => {
-    const converter = new CodexThreadEventConverter("run-1", null, () => ({
-      status: "idle",
-      can_interrupt: false,
-    }));
+  it("emits only neutral explicit turn lifecycle events", () => {
+    const converter = new CodexThreadEventConverter("run-1");
 
     const converted = converter.convert({
       method: CodexThreadEventName.TURN_COMPLETED,
@@ -588,7 +583,7 @@ describe("CodexThreadEventConverter", () => {
       },
     });
 
-    expect(converted).toHaveLength(2);
+    expect(converted).toHaveLength(1);
     expect(converted[0]).toMatchObject({
       eventType: AgentRunEventType.TURN_COMPLETED,
       runId: "run-1",
@@ -597,21 +592,10 @@ describe("CodexThreadEventConverter", () => {
       },
       statusHint: "IDLE",
     });
-    expect(converted[1]).toMatchObject({
-      eventType: AgentRunEventType.AGENT_STATUS,
-      runId: "run-1",
-      payload: {
-        status: "idle",
-        can_interrupt: false,
-      },
-    });
   });
 
-  it("emits effect-aware Codex errors before their status companion", () => {
-    const converter = new CodexThreadEventConverter("run-1", null, () => ({
-      status: "error",
-      can_interrupt: false,
-    }));
+  it("emits effect-aware Codex errors without a backend status companion", () => {
+    const converter = new CodexThreadEventConverter("run-1");
     const converted = converter.convert({
       method: CodexThreadEventName.ERROR,
       params: {
@@ -625,7 +609,6 @@ describe("CodexThreadEventConverter", () => {
 
     expect(converted.map((event) => event.eventType)).toEqual([
       AgentRunEventType.ERROR,
-      AgentRunEventType.AGENT_STATUS,
     ]);
     expect(converted[0].payload).toMatchObject({
       error_scope: "turn",
@@ -636,10 +619,7 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("keeps unclassified Codex errors as content without a guessed status", () => {
-    const converter = new CodexThreadEventConverter("run-1", null, () => ({
-      status: "error",
-      can_interrupt: false,
-    }));
+    const converter = new CodexThreadEventConverter("run-1");
     const converted = converter.convert({
       method: CodexThreadEventName.ERROR,
       params: { code: "UNKNOWN", message: "unclassified" },
@@ -651,10 +631,7 @@ describe("CodexThreadEventConverter", () => {
   });
 
   it("does not emit a status companion for a terminal error rejected by native turn guards", () => {
-    const converter = new CodexThreadEventConverter("run-1", null, () => ({
-      status: "running",
-      can_interrupt: true,
-    }));
+    const converter = new CodexThreadEventConverter("run-1");
     const converted = converter.convert({
       method: CodexThreadEventName.ERROR,
       params: {

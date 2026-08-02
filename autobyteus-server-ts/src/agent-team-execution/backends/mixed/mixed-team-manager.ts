@@ -148,7 +148,7 @@ export class MixedTeamManager implements TeamManager {
       (memberContext) =>
         this.persistentMembers.listHandles().find(
           (candidate) => candidate.context.memberRouteKey === memberContext.memberRouteKey,
-        )?.getStatusSnapshot() ?? { status: "offline" as const, can_interrupt: false },
+        )?.getStatusSnapshot() ?? { status: "offline" as const },
     );
     return [
       ...memberSnapshots,

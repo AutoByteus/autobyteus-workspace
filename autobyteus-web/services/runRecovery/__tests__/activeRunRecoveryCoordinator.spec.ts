@@ -112,15 +112,15 @@ describe('recoverActiveRunsFromHistory', () => {
       leafAgentContextsByRouteKey: new Map([
         ['solution_designer', {
           config: { isLocked: false },
-          state: { runId: 'member-run-solution', currentStatus: 'offline', canInterrupt: true },
+          state: { runId: 'member-run-solution', currentStatus: 'offline' },
         }],
         ['implementation_engineer', {
           config: { isLocked: false },
-          state: { runId: 'member-run-implementation', currentStatus: 'offline', canInterrupt: false },
+          state: { runId: 'member-run-implementation', currentStatus: 'offline' },
         }],
         ['code_reviewer', {
           config: { isLocked: false },
-          state: { runId: 'member-run-review', currentStatus: 'offline', canInterrupt: false },
+          state: { runId: 'member-run-review', currentStatus: 'offline' },
         }],
       ]),
       coordinatorMemberRouteKey: 'solution_designer',
@@ -144,9 +144,6 @@ describe('recoverActiveRunsFromHistory', () => {
     expect(context.leafAgentContextsByRouteKey.get('solution_designer')?.state.currentStatus).toBe('running');
     expect(context.leafAgentContextsByRouteKey.get('implementation_engineer')?.state.currentStatus).toBe('offline');
     expect(context.leafAgentContextsByRouteKey.get('code_reviewer')?.state.currentStatus).toBe('offline');
-    expect(context.leafAgentContextsByRouteKey.get('solution_designer')?.state.canInterrupt).toBe(true);
-    expect(context.leafAgentContextsByRouteKey.get('implementation_engineer')?.state.canInterrupt).toBe(false);
-    expect(context.leafAgentContextsByRouteKey.get('code_reviewer')?.state.canInterrupt).toBe(false);
     expect(agentTeamRunStoreMock.connectToTeamStream).not.toHaveBeenCalledWith('team-live-1');
     expect(openTeamRunMock).not.toHaveBeenCalled();
   });
@@ -157,7 +154,6 @@ describe('recoverActiveRunsFromHistory', () => {
       state: {
         runId: 'run-live-1',
         currentStatus: 'running',
-        canInterrupt: true,
       },
       isSubscribed: true,
     });
@@ -190,7 +186,6 @@ describe('recoverActiveRunsFromHistory', () => {
     const context = agentContextsStoreMock.runs.get('run-live-1');
     expect(context.config.isLocked).toBe(true);
     expect(context.state.currentStatus).toBe('running');
-    expect(context.state.canInterrupt).toBe(true);
     expect(agentRunStoreMock.connectToAgentStream).not.toHaveBeenCalledWith('run-live-1');
     expect(openAgentRunMock).not.toHaveBeenCalled();
   });

@@ -6,8 +6,6 @@ import { resolveAgentRunEventTurnId } from "../domain/agent-run-event-turn-id.js
 import { AgentRunEventType, isAgentRunEvent, type AgentRunEvent } from "../domain/agent-run-event.js";
 import type { AgentRun } from "../domain/agent-run.js";
 import {
-  buildAgentStatusPayload,
-  normalizeAgentApiStatus,
   type AgentApiStatus,
   type AgentStatusPayload,
 } from "../domain/agent-status-payload.js";
@@ -90,6 +88,7 @@ export class AgentRunCommandCoordinator {
     let observation: CommandObservation | null = null;
     try {
       const activeRun = activeRunAtStart ?? await this.resolveRuntimeForCommand(record.runId);
+      this.clearOverlayForCommand(record);
       let messageHandoffStarted = false;
       observation = this.observeRuntimeCommand(activeRun, record, () => messageHandoffStarted);
       input.onActiveRunReady?.(activeRun);
@@ -103,7 +102,7 @@ export class AgentRunCommandCoordinator {
           this.latestRecord(record),
           "RUNTIME_REJECTED",
           result.message ?? "Runtime rejected the command.",
-          { publishErrorStatus: startedFromInactiveIdentity },
+          { publishErrorStatus: false },
         );
       }
 
@@ -123,7 +122,7 @@ export class AgentRunCommandCoordinator {
       observation?.unsubscribe();
       const code = this.isMissingRunError(error) ? "RUN_NOT_FOUND" : "ACTIVATION_FAILED";
       return this.failCommand(this.latestRecord(record), code, toMessage(error), {
-        publishErrorStatus: startedFromInactiveIdentity,
+        publishErrorStatus: startedFromInactiveIdentity && !this.agentRunService.getAgentRun(record.runId),
       });
     }
   }
@@ -138,7 +137,7 @@ export class AgentRunCommandCoordinator {
     let unsubscribe: () => void = () => {};
     const scheduleUnsubscribe = () => queueMicrotask(() => unsubscribe());
 
-    const settleCompleted = (turnId: string | null, publishReplacement: boolean) => {
+    const settleCompleted = (turnId: string | null) => {
       const current = this.currentRecord(originalRecord);
       if (!current) return;
       this.registry.markCompleted({
@@ -146,7 +145,7 @@ export class AgentRunCommandCoordinator {
         messageId: current.messageId,
         turnId,
       });
-      this.reconcileCommandStatus(current, activeRun, "idle", publishReplacement);
+      this.clearOverlayForCommand(current);
       bufferedEvidence = [];
       scheduleUnsubscribe();
     };
@@ -160,7 +159,7 @@ export class AgentRunCommandCoordinator {
         code: "RUNTIME_REJECTED",
         message: "Runtime reported an error while handling the command.",
       });
-      this.reconcileCommandStatus(current, activeRun, "error", true);
+      this.clearOverlayForCommand(current);
       bufferedEvidence = [];
       scheduleUnsubscribe();
     };
@@ -186,7 +185,7 @@ export class AgentRunCommandCoordinator {
           evidence.kind === "TERMINAL_IDENTIFIED" &&
           evidence.turnId === association.turnId
         ) {
-          settleCompleted(association.turnId, true);
+          settleCompleted(association.turnId);
         } else if (
           evidence.kind === "TURN_TERMINAL" &&
           evidence.turnId === association.turnId
@@ -202,7 +201,6 @@ export class AgentRunCommandCoordinator {
             messageId: current.messageId,
             turnId: evidence.turnId,
           });
-          this.reconcileCommandStatus(current, activeRun, "running", true);
         } else if (
           evidence.kind === "START_ANONYMOUS" ||
           (evidence.kind === "STATUS" && evidence.status === "running")
@@ -212,7 +210,6 @@ export class AgentRunCommandCoordinator {
             messageId: current.messageId,
             armedAtSequence: evidence.sequence,
           });
-          this.reconcileCommandStatus(current, activeRun, "running", evidence.kind !== "STATUS");
         }
         return;
       }
@@ -227,9 +224,9 @@ export class AgentRunCommandCoordinator {
       }
       if (evidence.sequence <= association.armedAtSequence) return;
       if (evidence.kind === "TERMINAL_ANONYMOUS") {
-        settleCompleted(null, true);
+        settleCompleted(null);
       } else if (evidence.kind === "STATUS" && evidence.status === "idle") {
-        settleCompleted(null, false);
+        settleCompleted(null);
       }
     };
 
@@ -288,7 +285,7 @@ export class AgentRunCommandCoordinator {
         applyEvidence(evidence, true);
       }
       const remaining = this.currentRecord(originalRecord);
-      return shouldPublishRunning && remaining ? this.reconcileCommandStatus(remaining, activeRun, "running", true) : null;
+      return shouldPublishRunning && remaining ? activeRun.getStatusSnapshot() : null;
     };
 
     return { unsubscribe: () => unsubscribe(), reconcileAcceptedResult };
@@ -342,23 +339,10 @@ export class AgentRunCommandCoordinator {
     return this.registry.getRecord(record.runId, record.messageId) ?? record;
   }
 
-  private reconcileCommandStatus(
-    record: AgentRunCommandRecord,
-    activeRun: AgentRun,
-    status: AgentApiStatus,
-    publishReplacement: boolean,
-  ): AgentStatusPayload | null {
+  private clearOverlayForCommand(record: AgentRunCommandRecord): void {
     const overlay = this.overlayStore.getOverlay(record.runId);
-    if (overlay && overlay.messageId !== record.messageId) return null;
+    if (overlay && overlay.messageId !== record.messageId) return;
     if (overlay) this.overlayStore.clear(record.runId);
-    if (!publishReplacement) return null;
-    const snapshotStatus = normalizeAgentApiStatus(activeRun.getStatusSnapshot().status);
-    if (!overlay && !(status === "running" && snapshotStatus === "initializing")) {
-      return null;
-    }
-    const replacement = this.buildReplacementStatusPayload(activeRun, record.runId, status);
-    this.publishStatus(record.runId, replacement);
-    return replacement;
   }
 
   private async resolveRuntimeForCommand(runId: string): Promise<AgentRun> {
@@ -472,20 +456,6 @@ export class AgentRunCommandCoordinator {
     } catch (error) {
       logger.warn(`Failed to publish command status for run '${runId}'.`, error);
     }
-  }
-
-  private buildReplacementStatusPayload(
-    activeRun: AgentRun,
-    runId: string,
-    status: AgentApiStatus,
-  ): AgentStatusPayload {
-    const snapshot = activeRun.getStatusSnapshot();
-    if (normalizeAgentApiStatus(snapshot.status) === status) return snapshot;
-    return buildAgentStatusPayload({
-      status,
-      canInterrupt: status === "running" && snapshot.can_interrupt === true,
-      agentId: runId,
-    });
   }
 
   private validateIdentity(input: AgentRunCommandCoordinatorInput):

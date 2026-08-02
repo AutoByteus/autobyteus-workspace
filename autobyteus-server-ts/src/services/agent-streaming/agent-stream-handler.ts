@@ -139,7 +139,7 @@ export class AgentStreamHandler {
     connection.send(
       new ServerMessage(
         ServerMessageType.AGENT_STATUS,
-        projection.statusPayload,
+        activeRun?.getStatusSnapshot() ?? projection.statusPayload,
       ).toJson(),
     );
 

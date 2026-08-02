@@ -49,14 +49,13 @@ describe('AgentStreamingService', () => {
                 conversation: mockConversation,
                 compactionStatus: null,
                 currentStatus: AgentStatus.Idle,
-                canInterrupt: false,
                 eventMonitorPresentationRevision: 0,
                 markEventMonitorPresentationChanged() {
                     this.eventMonitorPresentationRevision += 1;
                 },
             },
             conversation: mockConversation,
-            isSending: false,
+            submissionPending: false,
             config: {}
         };
     });
@@ -117,7 +116,7 @@ describe('AgentStreamingService', () => {
         });
         expect(mockConversation.messages[0].timestamp.toISOString()).toBe('2026-03-09T11:22:33.000Z');
         expect(mockConversation.updatedAt).toBeTruthy();
-        expect(mockAgentContext.isSending).toBe(true);
+        expect(mockAgentContext.submissionPending).toBe(false);
     });
 
     it('routes successful tool execution through the browser-owned post-success handler', () => {
@@ -177,32 +176,28 @@ describe('AgentStreamingService', () => {
         ['SYSTEM_TASK_NOTIFICATION', { sender_id: 'system', content: 'late task' }],
     ])('keeps canonical error for ordinary %s activity', (type, payload) => {
         mockAgentContext.state.currentStatus = AgentStatus.Error;
-        mockAgentContext.state.canInterrupt = false;
-        mockAgentContext.isSending = false;
+        mockAgentContext.submissionPending = false;
 
         (service as any).dispatchMessage({ type, payload }, mockAgentContext);
 
         expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Error);
-        expect(mockAgentContext.state.canInterrupt).toBe(false);
-        expect(mockAgentContext.isSending).toBe(false);
+        expect(mockAgentContext.submissionPending).toBe(false);
     });
 
     it('recovers error only when canonical AGENT_STATUS running arrives', () => {
         mockAgentContext.state.currentStatus = AgentStatus.Error;
 
         (service as any).dispatchMessage(
-            { type: 'AGENT_STATUS', payload: { status: 'running', can_interrupt: true } },
+            { type: 'AGENT_STATUS', payload: { status: 'running' } },
             mockAgentContext,
         );
 
         expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Running);
-        expect(mockAgentContext.state.canInterrupt).toBe(true);
     });
 
     it('keeps lifecycle status event-driven for non-error live activity', () => {
         mockAgentContext.state.currentStatus = AgentStatus.Idle;
-        mockAgentContext.state.canInterrupt = false;
-        mockAgentContext.isSending = false;
+        mockAgentContext.submissionPending = false;
 
         (service as any).dispatchMessage(
             {
@@ -217,19 +212,17 @@ describe('AgentStreamingService', () => {
         );
 
         expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Idle);
-        expect(mockAgentContext.isSending).toBe(false);
+        expect(mockAgentContext.submissionPending).toBe(false);
     });
 
     it('does not convert transport errors into lifecycle errors', () => {
         mockAgentContext.state.currentStatus = AgentStatus.Running;
-        mockAgentContext.state.canInterrupt = true;
         (service as any).attachContext(mockAgentContext);
 
         (service as any).handleError(new Error('socket failed'));
         (service as any).handleDisconnect('network reset');
 
         expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Running);
-        expect(mockAgentContext.state.canInterrupt).toBe(true);
         expect(mockAgentContext.isSubscribed).toBe(false);
     });
 
@@ -279,7 +272,6 @@ describe('AgentStreamingService', () => {
                     message: 'Another command is already running.',
                     status: {
                         status: 'initializing',
-                        can_interrupt: false,
                     },
                 },
             },
@@ -287,7 +279,6 @@ describe('AgentStreamingService', () => {
         );
 
         expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Initializing);
-        expect(mockAgentContext.state.canInterrupt).toBe(false);
         expect(mockConversation.messages).toHaveLength(1);
         expect(mockConversation.messages[0].segments).toContainEqual(
             expect.objectContaining({

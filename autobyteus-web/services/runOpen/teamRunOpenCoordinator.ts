@@ -69,7 +69,7 @@ const mergeHydratedMembers = (
         options.preserveMemberStatus
           ? preserveCanonicalAgentStatus(existingMemberContext.state.currentStatus)
           : memberContext.state.currentStatus,
-        { preserveLiveInterrupt: false },
+        { preserveCurrentStatus: false },
       );
     }
 

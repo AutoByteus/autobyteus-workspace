@@ -2,10 +2,13 @@ import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-in
 import type { AgentOperationResult } from "../domain/agent-operation-result.js";
 import type { AgentRunContext, RuntimeAgentRunContext } from "../domain/agent-run-context.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
-import type { AgentStatusPayload } from "../domain/agent-status-payload.js";
+import type { AgentRunEvent } from "../domain/agent-run-event.js";
+import type { AgentRuntimeLifecycleSnapshot } from "../domain/agent-runtime-lifecycle-snapshot.js";
 
-export type AgentRunEventListener = (event: unknown) => void;
-export type AgentRunEventUnsubscribe = () => void;
+export type AgentRunSourceEventBatchListener = (
+  events: readonly AgentRunEvent[],
+) => void | Promise<void>;
+export type AgentRunSourceEventBatchUnsubscribe = () => void;
 
 export interface AgentRunBackend {
   readonly runId: string;
@@ -14,8 +17,10 @@ export interface AgentRunBackend {
   getContext(): AgentRunContext<RuntimeAgentRunContext>;
   isActive(): boolean;
   getPlatformAgentRunId(): string | null;
-  getStatusSnapshot(): AgentStatusPayload;
-  subscribeToEvents(listener: AgentRunEventListener): AgentRunEventUnsubscribe;
+  getLifecycleSnapshot(): AgentRuntimeLifecycleSnapshot;
+  subscribeToSourceEventBatches(
+    listener: AgentRunSourceEventBatchListener,
+  ): AgentRunSourceEventBatchUnsubscribe;
   postUserMessage(message: AgentInputUserMessage): Promise<AgentOperationResult>;
   approveToolInvocation(
     invocationId: string,

@@ -1,11 +1,10 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../../domain/agent-operation-result.js";
-import type { AgentRunBackend, AgentRunEventListener } from "../../agent-run-backend.js";
+import type { AgentRunBackend, AgentRunSourceEventBatchListener } from "../../agent-run-backend.js";
 import type { ClaudeSession } from "../session/claude-session.js";
 import { ClaudeSessionEventConverter } from "../events/claude-session-event-converter.js";
 import type { ClaudeRunContext } from "./claude-agent-run-context.js";
-import { dispatchProcessedAgentRunEvents } from "../../../events/dispatch-processed-agent-run-events.js";
-import { projectClaudeAgentStatus } from "../events/claude-status-projector.js";
+import { projectClaudeAgentLifecycleSnapshot } from "../events/claude-status-projector.js";
 
 const logger = {
   error: (...args: unknown[]) => console.error(...args),
@@ -14,7 +13,7 @@ const logger = {
 export class ClaudeAgentRunBackend implements AgentRunBackend {
   private readonly context: ClaudeRunContext;
   private readonly session: ClaudeSession;
-  private readonly listeners = new Set<AgentRunEventListener>();
+  private readonly sourceListeners = new Set<AgentRunSourceEventBatchListener>();
   private readonly eventConverter: ClaudeSessionEventConverter;
   private unsubscribeFromSession: (() => void) | null = null;
 
@@ -23,7 +22,7 @@ export class ClaudeAgentRunBackend implements AgentRunBackend {
     this.session = session;
     this.eventConverter = new ClaudeSessionEventConverter(
       this.runId,
-      () => this.getStatusSnapshot(),
+      () => this.getLifecycleSnapshot(),
     );
   }
 
@@ -44,15 +43,15 @@ export class ClaudeAgentRunBackend implements AgentRunBackend {
   }
 
   hasListeners(): boolean {
-    return this.listeners.size > 0;
+    return this.sourceListeners.size > 0;
   }
 
-  subscribeToEvents(listener: AgentRunEventListener): () => void {
-    this.listeners.add(listener);
+  subscribeToSourceEventBatches(listener: AgentRunSourceEventBatchListener): () => void {
+    this.sourceListeners.add(listener);
     this.ensureSubscribed();
     return () => {
-      this.listeners.delete(listener);
-      if (this.listeners.size === 0) {
+      this.sourceListeners.delete(listener);
+      if (this.sourceListeners.size === 0) {
         this.unsubscribeFromSession?.();
         this.unsubscribeFromSession = null;
       }
@@ -63,8 +62,8 @@ export class ClaudeAgentRunBackend implements AgentRunBackend {
     return this.session.sessionId ?? null;
   }
 
-  getStatusSnapshot() {
-    return projectClaudeAgentStatus({
+  getLifecycleSnapshot() {
+    return projectClaudeAgentLifecycleSnapshot({
       ...this.session.getStatusSnapshotSource(),
       isActive: this.isActive(),
     });
@@ -143,15 +142,17 @@ export class ClaudeAgentRunBackend implements AgentRunBackend {
       if (convertedEvents.length === 0) {
         return;
       }
-      void dispatchProcessedAgentRunEvents({
-        runContext: this.context,
-        listeners: this.listeners,
-        events: convertedEvents,
-      }).catch((error: unknown) => {
+      void this.publishSourceEvents(convertedEvents).catch((error: unknown) => {
         logger.error(
           `Failed to process Claude runtime event for run '${this.runId}': ${String(error)}`,
         );
       });
     });
+  }
+
+  private async publishSourceEvents(events: readonly import("../../../domain/agent-run-event.js").AgentRunEvent[]): Promise<void> {
+    for (const listener of this.sourceListeners) {
+      await listener(events);
+    }
   }
 }

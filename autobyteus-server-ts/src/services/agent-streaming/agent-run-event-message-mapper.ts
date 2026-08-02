@@ -9,7 +9,6 @@ import { serializePayload } from "./payload-serialization.js";
 const normalizeStatusPayload = (payload: Record<string, unknown>): Record<string, unknown> => {
   return buildAgentStatusPayload({
     status: payload.status,
-    canInterrupt: payload.can_interrupt === true,
     agentId: typeof payload.agent_id === "string" ? payload.agent_id : null,
     agentName: typeof payload.agent_name === "string" ? payload.agent_name : null,
   });

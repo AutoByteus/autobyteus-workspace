@@ -52,7 +52,6 @@ export const buildAgentMemberCommandStatusPayload = (
 ): AgentStatusPayload =>
   buildAgentStatusPayload({
     status: input.status,
-    canInterrupt: false,
     agentId: input.memberRunId,
     agentName: input.memberName,
     memberRouteKey: input.memberRouteKey,

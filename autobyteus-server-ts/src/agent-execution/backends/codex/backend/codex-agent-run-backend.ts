@@ -5,10 +5,9 @@ import {
   CodexThreadEventConverter,
 } from "../events/codex-thread-event-converter.js";
 import type { AgentOperationResult } from "../../../domain/agent-operation-result.js";
-import type { AgentRunBackend, AgentRunEventListener } from "../../agent-run-backend.js";
+import type { AgentRunBackend, AgentRunSourceEventBatchListener } from "../../agent-run-backend.js";
 import type { CodexRunContext } from "./codex-agent-run-context.js";
-import { dispatchProcessedAgentRunEvents } from "../../../events/dispatch-processed-agent-run-events.js";
-import { projectCodexAgentStatus } from "../events/codex-status-projector.js";
+import { projectCodexAgentLifecycleSnapshot } from "../events/codex-status-projector.js";
 import type { CodexAppServerMessage } from "../thread/codex-app-server-message.js";
 import { AgentRunEventType, type AgentRunEvent } from "../../../domain/agent-run-event.js";
 
@@ -26,7 +25,7 @@ export class CodexAgentRunBackend implements AgentRunBackend {
   private readonly runContext: CodexRunContext;
   private readonly codexThread: CodexThread;
   private readonly threadManager: CodexThreadManager;
-  private readonly listeners = new Set<AgentRunEventListener>();
+  private readonly sourceListeners = new Set<AgentRunSourceEventBatchListener>();
   private readonly eventConverter: CodexThreadEventConverter;
   private unsubscribeFromThread: (() => void) | null = null;
 
@@ -41,7 +40,7 @@ export class CodexAgentRunBackend implements AgentRunBackend {
     this.eventConverter = new CodexThreadEventConverter(
       this.runId,
       this.codexThread.workingDirectory,
-      () => this.getStatusSnapshot(),
+      () => this.getLifecycleSnapshot(),
     );
     this.unsubscribeFromThread = this.codexThread.subscribeAppServerMessages((event) => {
       try {
@@ -75,13 +74,13 @@ export class CodexAgentRunBackend implements AgentRunBackend {
   }
 
   hasListeners(): boolean {
-    return this.listeners.size > 0;
+    return this.sourceListeners.size > 0;
   }
 
-  subscribeToEvents(listener: AgentRunEventListener): () => void {
-    this.listeners.add(listener);
+  subscribeToSourceEventBatches(listener: AgentRunSourceEventBatchListener): () => void {
+    this.sourceListeners.add(listener);
     return () => {
-      this.listeners.delete(listener);
+      this.sourceListeners.delete(listener);
     };
   }
 
@@ -89,8 +88,8 @@ export class CodexAgentRunBackend implements AgentRunBackend {
     return this.codexThread.getPlatformAgentRunId() ?? null;
   }
 
-  getStatusSnapshot() {
-    return projectCodexAgentStatus({
+  getLifecycleSnapshot() {
+    return projectCodexAgentLifecycleSnapshot({
       ...this.codexThread.getStatusSnapshotSource(),
       isActive: this.isActive(),
     });
@@ -175,11 +174,9 @@ export class CodexAgentRunBackend implements AgentRunBackend {
     if (events.length === 0) {
       return;
     }
-    await dispatchProcessedAgentRunEvents({
-      runContext: this.runContext,
-      listeners: this.listeners,
-      events,
-    });
+    for (const listener of this.sourceListeners) {
+      await listener(events);
+    }
   }
 
   private consumeReadyTokenUsageEvents(): AgentRunEvent[] {

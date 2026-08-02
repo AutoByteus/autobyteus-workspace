@@ -77,7 +77,6 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
       taskAgentInstance: this.options.taskAgentInstance ?? null,
       fallback: () => this.agentRun?.getStatusSnapshot() ?? {
         status: "offline" as const,
-        can_interrupt: false,
         agent_id: this.context.memberRunId,
         agent_name: this.context.memberName,
       },
@@ -108,7 +107,13 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
       this.context.platformAgentRunId = run.getPlatformAgentRunId() ?? this.context.platformAgentRunId;
       if (result.accepted) {
         if (isTaskDelegationSystemTaskNotificationMessage(message)) {
-          run.emitLocalEvent(buildTaskDelegationSystemTaskNotificationEvent(run.runId, message));
+          try {
+            await run.publishEvent(buildTaskDelegationSystemTaskNotificationEvent(run.runId, message));
+          } catch (error) {
+            console.warn(
+              `[MixedAgentMemberHandle] task-delegation notification publication failed for '${run.runId}': ${String(error)}`,
+            );
+          }
         } else {
           this.publishMemberInput(message);
         }
@@ -410,6 +415,9 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
   }
 
   private publishCommandStatus(status: "initializing" | "error", errorMessage: string | null = null): void {
+    if (this.agentRun) {
+      return;
+    }
     this.commandStatusOverlayStore.publishMemberCommandStatus({
       runtimeKind: this.context.runtimeKind,
       memberContext: this.context,

@@ -37,6 +37,7 @@ import { AgentStatus } from '~/types/agent/AgentStatus';
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
 import {
+  applyActiveRuntimePlaceholder,
   applyMemberOrHistoryStatusSnapshot,
   applyOfflineOrTerminalCleanup,
 } from '~/services/runStatus/agentRuntimeStatusState';
@@ -189,9 +190,7 @@ export const reconcileDiscoveredActiveRuns = async (
     const existingContext = agentContextsStore.getRun(runId);
     if (existingContext) {
       existingContext.config.isLocked = true;
-      applyMemberOrHistoryStatusSnapshot(existingContext, activeRun?.status ?? AgentStatus.Running, {
-        preserveLiveInterrupt: existingContext.isSubscribed,
-      });
+      applyActiveRuntimePlaceholder(existingContext, { preserveExistingLive: true });
       if (!existingContext.isSubscribed) {
         agentRunStore.connectToAgentStream(runId);
       }
@@ -242,7 +241,6 @@ export const reconcileDiscoveredActiveRuns = async (
         currentStatus: activeTeamRun.status,
         memberStatuses,
       }, {
-        preserveLiveInterrupt: existingTeamContext.isSubscribed,
         preserveCurrentStatus:
           existingTeamContext.isSubscribed &&
           existingTeamContext.currentStatus !== AgentTeamStatus.Offline,

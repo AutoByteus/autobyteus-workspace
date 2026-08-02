@@ -97,7 +97,6 @@ export class MixedSubTeamMemberHandle implements MixedTeamMemberHandle {
       representedMember: this.context,
       fallback: () => buildAgentStatusPayload({
         status: this.childRun?.getStatusSnapshot().status ?? "offline",
-        canInterrupt: false,
         agentId: this.context.memberRunId,
         agentName: this.context.memberName,
         memberRouteKey: this.context.memberRouteKey,
@@ -357,6 +356,9 @@ export class MixedSubTeamMemberHandle implements MixedTeamMemberHandle {
   }
 
   private publishCommandStatus(status: "initializing" | "error", errorMessage: string | null = null): void {
+    if (this.childRun) {
+      return;
+    }
     this.commandStatusOverlayStore.publishTeamCommandStatus({
       sourcePath: this.context.memberPath,
       status,

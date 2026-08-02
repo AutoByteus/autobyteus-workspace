@@ -15,7 +15,7 @@ const buildMemberContext = (runId: string, status: AgentStatus, messages: any[] 
       messages,
     },
   },
-  isSending: false,
+  submissionPending: false,
 });
 
 const buildMemberNode = (memberRouteKey: string, displayName = memberRouteKey) => ({

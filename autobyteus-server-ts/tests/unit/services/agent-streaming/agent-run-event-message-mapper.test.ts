@@ -293,7 +293,6 @@ describe("AgentRunEventMessageMapper", () => {
           runId: "solution-child-run",
           payload: {
             status: "running",
-            can_interrupt: true,
           },
           statusHint: "ACTIVE",
         },

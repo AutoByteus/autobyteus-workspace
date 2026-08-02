@@ -88,7 +88,6 @@ describe('teamStreamMemberContextResolver', () => {
       type: 'AGENT_STATUS',
       payload: {
         status: 'initializing',
-        can_interrupt: false,
         agent_id: 'opaque-runtime-run',
         agent_name: 'worker',
         member_route_key: 'worker',
@@ -119,7 +118,6 @@ describe('teamStreamMemberContextResolver', () => {
       type: 'AGENT_STATUS',
       payload: {
         status: 'initializing',
-        can_interrupt: false,
         agent_id: 'opaque-mismatched-run',
         agent_name: 'worker',
         member_route_key: 'worker',

@@ -198,7 +198,7 @@ export const applyProjectionToTeamMemberContext = (params: {
     params.isActive
       ? preserveCanonicalAgentStatus(params.memberContext.state.currentStatus)
       : AgentStatus.Offline,
-    { preserveLiveInterrupt: params.isActive },
+    { preserveCurrentStatus: params.isActive && params.memberContext.isSubscribed },
   );
 
   if (params.projection) {

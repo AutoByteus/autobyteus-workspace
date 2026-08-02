@@ -19,7 +19,7 @@ export interface TeamLiveStatusSnapshot {
 const applyMemberStatuses = (
   members: Map<string, any>,
   snapshots: TeamMemberLiveSnapshot[],
-  options: { preserveLiveInterrupt?: boolean; preserveCurrentStatus?: boolean } = {},
+  options: { preserveCurrentStatus?: boolean } = {},
 ): void => {
   const statusByKey = new Map<string, TeamMemberLiveSnapshot>();
   const statusByRunId = new Map<string, TeamMemberLiveSnapshot>();
@@ -42,7 +42,6 @@ const applyMemberStatuses = (
       statusByRunId.get(memberContext.state.runId);
     if (matched) {
       applyMemberOrHistoryStatusSnapshot(memberContext, matched.currentStatus, {
-        preserveLiveInterrupt: options.preserveLiveInterrupt === true,
         preserveCurrentStatus: options.preserveCurrentStatus === true,
       });
     }
@@ -69,7 +68,7 @@ export const hydrateTeamMemberActivitiesFromProjection = (params: {
 export const applyLiveTeamStatusSnapshot = (
   context: AgentTeamContext,
   snapshot: TeamLiveStatusSnapshot,
-  options: { preserveLiveInterrupt?: boolean; preserveCurrentStatus?: boolean } = {},
+  options: { preserveCurrentStatus?: boolean } = {},
 ): void => {
   if (options.preserveCurrentStatus !== true) {
     context.currentStatus = normalizeTeamRuntimeStatus(snapshot.currentStatus);

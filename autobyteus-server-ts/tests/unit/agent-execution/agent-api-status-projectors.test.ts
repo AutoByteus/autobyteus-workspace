@@ -3,12 +3,12 @@ import {
   buildAgentStatusPayload,
   normalizeAgentApiStatus,
 } from "../../../src/agent-execution/domain/agent-status-payload.js";
-import { projectAutoByteusAgentStatus } from "../../../src/agent-execution/backends/autobyteus/events/autobyteus-status-projector.js";
-import { projectCodexAgentStatus } from "../../../src/agent-execution/backends/codex/events/codex-status-projector.js";
-import { projectClaudeAgentStatus } from "../../../src/agent-execution/backends/claude/events/claude-status-projector.js";
+import { projectAutoByteusAgentLifecycleSnapshot } from "../../../src/agent-execution/backends/autobyteus/events/autobyteus-status-projector.js";
+import { projectCodexAgentLifecycleSnapshot } from "../../../src/agent-execution/backends/codex/events/codex-status-projector.js";
+import { projectClaudeAgentLifecycleSnapshot } from "../../../src/agent-execution/backends/claude/events/claude-status-projector.js";
 
-describe("agent API status projectors", () => {
-  it("normalizes only canonical and current persisted API status tokens", () => {
+describe("agent API status and runtime lifecycle projectors", () => {
+  it("normalizes only canonical and supported persisted API status tokens", () => {
     expect(normalizeAgentApiStatus(undefined)).toBe("offline");
     expect(normalizeAgentApiStatus("offline")).toBe("offline");
     expect(normalizeAgentApiStatus("initializing")).toBe("initializing");
@@ -17,166 +17,135 @@ describe("agent API status projectors", () => {
     expect(normalizeAgentApiStatus("error")).toBe("error");
     expect(normalizeAgentApiStatus("ACTIVE")).toBe("running");
     expect(normalizeAgentApiStatus("TERMINATED")).toBe("offline");
-  });
 
-  it("does not preserve removed lifecycle status tokens", () => {
     for (const removedStatus of [
       "uninitialized",
       "bootstrapping",
-      "starting",
-      "startup",
       "processing_user_input",
       "awaiting_llm_response",
-      "awaiting_tool_approval",
-      "executing_tool",
-      "tool_denied",
       "interrupting",
-      "shutting_down",
       "shutdown_complete",
       "failed",
-      "failure",
     ]) {
       expect(normalizeAgentApiStatus(removedStatus, "idle")).toBe("idle");
     }
   });
 
-  it("never allows can_interrupt outside running status", () => {
-    expect(buildAgentStatusPayload({
-      status: "offline",
-      canInterrupt: true,
-    })).toMatchObject({
-      status: "offline",
-      can_interrupt: false,
+  it("serializes status without the removed interrupt capability", () => {
+    const payload = buildAgentStatusPayload({
+      status: "running",
+      agentId: "run-1",
     });
+
+    expect(payload).toEqual({ status: "running", agent_id: "run-1" });
+    expect(payload).not.toHaveProperty("can_interrupt");
   });
 
-  it("keeps initializing non-interruptible even when a runtime reports an active turn", () => {
-    expect(buildAgentStatusPayload({
-      status: "initializing",
-      canInterrupt: true,
-    })).toMatchObject({
-      status: "initializing",
-      can_interrupt: false,
+  it("projects identified and anonymous Autobyteus turns as current running work", () => {
+    expect(projectAutoByteusAgentLifecycleSnapshot({
+      currentStatus: "initializing",
+      context: { state: { activeTurn: { turnId: "turn-1" } } },
+      isActive: true,
+    })).toEqual({
+      availability: "active",
+      phase: "running",
+      currentTurn: { kind: "IDENTIFIED", turnId: "turn-1" },
     });
 
-    expect(projectAutoByteusAgentStatus({
-      currentStatus: "initializing",
+    expect(projectAutoByteusAgentLifecycleSnapshot({
+      currentStatus: "awaiting_llm_response",
       context: { state: { activeTurn: {} } },
       isActive: true,
-    })).toMatchObject({
-      status: "initializing",
-      can_interrupt: false,
+    })).toEqual({
+      availability: "active",
+      phase: "running",
+      currentTurn: { kind: "ANONYMOUS" },
     });
   });
 
-  it("maps provider startup lifecycle tokens to canonical initializing inside provider projectors", () => {
+  it("projects provider running phase without turn identity as initializing", () => {
+    expect(projectAutoByteusAgentLifecycleSnapshot({
+      currentStatus: "processing_user_input",
+      context: null,
+      isActive: true,
+    })).toMatchObject({ phase: "initializing", currentTurn: { kind: "NONE" } });
+
+    expect(projectCodexAgentLifecycleSnapshot({
+      currentStatus: "running",
+      activeTurnId: null,
+      isActive: true,
+    })).toMatchObject({ phase: "initializing", currentTurn: { kind: "NONE" } });
+
+    expect(projectClaudeAgentLifecycleSnapshot({
+      currentStatus: "running",
+      activeTurnId: null,
+      isActive: true,
+    })).toMatchObject({ phase: "initializing", currentTurn: { kind: "NONE" } });
+  });
+
+  it("maps provider startup tokens while letting current turn identity win", () => {
     for (const currentStatus of ["uninitialized", "bootstrapping", "starting", "startup"]) {
-      expect(projectAutoByteusAgentStatus({
+      expect(projectAutoByteusAgentLifecycleSnapshot({
         currentStatus,
-        context: { state: { activeTurn: {} } },
+        context: null,
         isActive: true,
-      })).toMatchObject({
-        status: "initializing",
-        can_interrupt: false,
-      });
+      }).phase).toBe("initializing");
     }
 
-    expect(projectCodexAgentStatus({
+    expect(projectCodexAgentLifecycleSnapshot({
       currentStatus: "starting",
       activeTurnId: "turn-1",
       isActive: true,
-    })).toMatchObject({
-      status: "initializing",
-      can_interrupt: false,
+    })).toEqual({
+      availability: "active",
+      phase: "running",
+      currentTurn: { kind: "IDENTIFIED", turnId: "turn-1" },
     });
 
-    expect(projectClaudeAgentStatus({
+    expect(projectClaudeAgentLifecycleSnapshot({
       currentStatus: "startup",
       activeTurnId: "turn-1",
       isActive: true,
-    })).toMatchObject({
-      status: "initializing",
-      can_interrupt: false,
+    })).toEqual({
+      availability: "active",
+      phase: "running",
+      currentTurn: { kind: "IDENTIFIED", turnId: "turn-1" },
     });
   });
 
-  it("does not map removed non-startup lifecycle tokens through provider status projectors", () => {
-    for (const currentStatus of ["interrupting", "shutting_down"]) {
-      expect(projectAutoByteusAgentStatus({
-        currentStatus,
+  it("maps inactive runtime snapshots to offline and active empty snapshots to idle", () => {
+    for (const snapshot of [
+      projectAutoByteusAgentLifecycleSnapshot({
+        currentStatus: "running",
         context: { state: { activeTurn: {} } },
-        isActive: true,
-      })).toMatchObject({
-        status: "idle",
-        can_interrupt: false,
+        isActive: false,
+      }),
+      projectCodexAgentLifecycleSnapshot({
+        currentStatus: "running",
+        activeTurnId: "turn-1",
+        isActive: false,
+      }),
+      projectClaudeAgentLifecycleSnapshot({
+        currentStatus: "running",
+        activeTurnId: "turn-1",
+        isActive: false,
+      }),
+    ]) {
+      expect(snapshot).toEqual({
+        availability: "offline",
+        phase: "idle",
+        currentTurn: { kind: "NONE" },
       });
     }
 
-    expect(projectCodexAgentStatus({
-      currentStatus: "awaiting_llm_response",
-      activeTurnId: "turn-1",
-      isActive: true,
-    })).toMatchObject({
-      status: "idle",
-      can_interrupt: false,
-    });
-
-    expect(projectClaudeAgentStatus({
-      currentStatus: "failed",
-      activeTurnId: "turn-1",
-      isActive: true,
-    })).toMatchObject({
-      status: "idle",
-      can_interrupt: false,
-    });
-  });
-
-  it("maps inactive runtime snapshots to offline", () => {
-    expect(projectAutoByteusAgentStatus({
-      currentStatus: "running",
-      context: { state: { activeTurn: {} } },
-      isActive: false,
-    })).toMatchObject({
-      status: "offline",
-      can_interrupt: false,
-    });
-
-    expect(projectCodexAgentStatus({
-      currentStatus: "RUNNING",
-      activeTurnId: "turn-1",
-      isActive: false,
-    })).toMatchObject({
-      status: "offline",
-      can_interrupt: false,
-    });
-
-    expect(projectClaudeAgentStatus({
-      currentStatus: "RUNNING",
-      activeTurnId: "turn-1",
-      isActive: false,
-    })).toMatchObject({
-      status: "offline",
-      can_interrupt: false,
-    });
-  });
-
-  it("keeps active-runtime idle distinct from inactive offline", () => {
-    expect(projectCodexAgentStatus({
-      currentStatus: "IDLE",
+    expect(projectCodexAgentLifecycleSnapshot({
+      currentStatus: "idle",
       activeTurnId: null,
       isActive: true,
-    })).toMatchObject({
-      status: "idle",
-      can_interrupt: false,
-    });
-
-    expect(projectClaudeAgentStatus({
-      currentStatus: "IDLE",
-      activeTurnId: null,
-      isActive: true,
-    })).toMatchObject({
-      status: "idle",
-      can_interrupt: false,
+    })).toEqual({
+      availability: "active",
+      phase: "idle",
+      currentTurn: { kind: "NONE" },
     });
   });
 });

@@ -1,5 +1,4 @@
 import type { AgentRunEvent } from "../../../domain/agent-run-event.js";
-import type { AgentStatusPayload } from "../../../domain/agent-status-payload.js";
 import { AgentRunEventType } from "../../../domain/agent-run-event.js";
 import { serializePayload } from "../../../../services/agent-streaming/payload-serialization.js";
 import type { JsonObject } from "../codex-app-server-json.js";
@@ -12,7 +11,6 @@ export type CodexTurnEventConverterContext = {
     eventType: AgentRunEventType,
     payload: Record<string, unknown>,
   ) => AgentRunEvent;
-  createStatusEvent: (codexEventName: string, payload?: Partial<AgentStatusPayload>) => AgentRunEvent;
   closeReasoningBlocksForBoundary: (
     codexEventName: string,
     payload: JsonObject,
@@ -40,7 +38,6 @@ export const convertCodexTurnEvent = (
         context.createEvent(codexEventName, AgentRunEventType.TURN_STARTED, {
           ...(turnId ? { turnId } : {}),
         }),
-        context.createStatusEvent(codexEventName),
       ];
     case CodexThreadEventName.TURN_COMPLETED:
       const completionReasoningEnds = context.closeReasoningBlocksForBoundary(
@@ -53,7 +50,6 @@ export const convertCodexTurnEvent = (
         context.createEvent(codexEventName, AgentRunEventType.TURN_COMPLETED, {
           ...(turnId ? { turnId } : {}),
         }),
-        context.createStatusEvent(codexEventName),
       ];
     case CodexThreadEventName.TURN_DIFF_UPDATED:
       return [];

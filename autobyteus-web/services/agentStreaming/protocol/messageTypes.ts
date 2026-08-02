@@ -99,7 +99,6 @@ export interface SegmentEndPayload extends TeamStreamIdentityPayload {
 
 export interface AgentStatusPayload extends TeamStreamIdentityPayload {
   status: 'offline' | 'initializing' | 'idle' | 'running' | 'error';
-  can_interrupt: boolean;
   trigger?: string | null;
   tool_name?: string | null;
   error_message?: string | null;

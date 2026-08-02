@@ -423,7 +423,6 @@ describe('openTeamRun', () => {
             runId: 'run-a',
             conversation: { id: 'existing-conversation', messages: [] },
             currentStatus: 'idle',
-            canInterrupt: true,
             eventMonitorPresentationRevision: 7,
             resetEventMonitorPresentationRevision() {
               this.eventMonitorPresentationRevision = 0;
@@ -456,7 +455,6 @@ describe('openTeamRun', () => {
 
     expect(existingContext.leafAgentContextsByRouteKey.get('member-a')?.state.conversation.id).toBe('projected-conversation');
     expect(existingContext.leafAgentContextsByRouteKey.get('member-a')?.state.currentStatus).toBe('idle');
-    expect(existingContext.leafAgentContextsByRouteKey.get('member-a')?.state.canInterrupt).toBe(false);
     expect(existingContext.leafAgentContextsByRouteKey.get('member-a')?.state.eventMonitorPresentationRevision).toBe(0);
     expect(connectToTeamStreamMock).toHaveBeenCalledWith('team-1');
   });

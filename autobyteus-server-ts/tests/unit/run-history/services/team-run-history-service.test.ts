@@ -92,7 +92,6 @@ describe("TeamRunHistoryService", () => {
           agent_id: "member-run-1",
           agent_name: "Coordinator",
           status: "running",
-          can_interrupt: true,
         },
       ],
     };
@@ -120,7 +119,6 @@ describe("TeamRunHistoryService", () => {
           agent_id: "unrelated-run-id",
           agent_name: "Coordinator",
           status: "running",
-          can_interrupt: true,
         },
       ],
     };

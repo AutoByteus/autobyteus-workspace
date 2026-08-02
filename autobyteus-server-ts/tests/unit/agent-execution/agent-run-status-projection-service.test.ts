@@ -26,7 +26,7 @@ const buildMetadata = (overrides: Partial<AgentRunMetadata> = {}): AgentRunMetad
 
 const buildService = (options: {
   metadata?: AgentRunMetadata | null;
-  activeRun?: { getStatusSnapshot: () => { status: "offline" | "initializing" | "idle" | "running" | "error"; can_interrupt: boolean } } | null;
+  activeRun?: { getStatusSnapshot: () => { status: "offline" | "initializing" | "idle" | "running" | "error" } } | null;
   overlayStore?: AgentRunCommandStatusOverlayStore;
   registry?: AgentRunCommandRegistry;
 }) => new AgentRunStatusProjectionService({
@@ -55,7 +55,6 @@ describe("AgentRunStatusProjectionService", () => {
 
     expect(projection).toMatchObject({
       status: "initializing",
-      canInterrupt: false,
       isActive: true,
       shouldConnectStream: true,
       lastKnownStatus: "ACTIVE",
@@ -85,7 +84,7 @@ describe("AgentRunStatusProjectionService", () => {
   it("uses active runtime status when no overlay is present", async () => {
     const projection = await buildService({
       metadata: buildMetadata(),
-      activeRun: { getStatusSnapshot: () => ({ status: "idle", can_interrupt: false }) },
+      activeRun: { getStatusSnapshot: () => ({ status: "idle" }) },
     }).getRunStatusProjection("run-1");
 
     expect(projection).toMatchObject({
@@ -97,7 +96,7 @@ describe("AgentRunStatusProjectionService", () => {
     });
   });
 
-  it("projects command error overlay ahead of active runtime status", async () => {
+  it("lets the active AgentRun status win over a stale command error overlay", async () => {
     const overlayStore = new AgentRunCommandStatusOverlayStore();
     const registry = new AgentRunCommandRegistry();
     registry.begin({ runId: "run-1", messageId: "msg-1", dedupeKey: "dedupe-1" });
@@ -115,19 +114,18 @@ describe("AgentRunStatusProjectionService", () => {
 
     const projection = await buildService({
       metadata: buildMetadata(),
-      activeRun: { getStatusSnapshot: () => ({ status: "running", can_interrupt: true }) },
+      activeRun: { getStatusSnapshot: () => ({ status: "running" }) },
       overlayStore,
       registry,
     }).getRunStatusProjection("run-1");
 
     expect(projection).toMatchObject({
-      status: "error",
-      canInterrupt: false,
-      isActive: false,
-      shouldConnectStream: false,
-      lastKnownStatus: "ERROR",
-      statusSource: "COMMAND_OVERLAY",
-      command: { messageId: "msg-1", state: "FAILED" },
+      status: "running",
+      isActive: true,
+      shouldConnectStream: true,
+      lastKnownStatus: "ACTIVE",
+      statusSource: "ACTIVE_RUNTIME",
+      command: null,
     });
   });
 });

@@ -483,7 +483,6 @@ describe('TeamStreamingService', () => {
       type: 'AGENT_STATUS',
       payload: {
         status: 'running',
-        can_interrupt: true,
         agent_id: 'worker-run-1',
         member_route_key: 'worker',
         member_path: ['worker'],
@@ -603,7 +602,7 @@ describe('TeamStreamingService', () => {
           {
             state: { runId: 'prof-run-1', compactionStatus: null },
             conversation: professorConversation,
-            isSending: false,
+            submissionPending: false,
           },
         ],
         [
@@ -611,7 +610,7 @@ describe('TeamStreamingService', () => {
           {
             state: { runId: 'student-run-1', compactionStatus: null },
             conversation: studentConversation,
-            isSending: false,
+            submissionPending: false,
           },
         ],
       ]),
@@ -641,7 +640,7 @@ describe('TeamStreamingService', () => {
     });
     expect(professorConversation.messages[0].timestamp.toISOString()).toBe('2026-03-10T20:15:00.000Z');
     expect((teamContext.leafAgentContextsByRouteKey.get('Professor') as any).state.runId).toBe('prof-run-1');
-    expect((teamContext.leafAgentContextsByRouteKey.get('Professor') as any).isSending).toBe(true);
+    expect((teamContext.leafAgentContextsByRouteKey.get('Professor') as any).submissionPending).toBe(false);
     expect(studentConversation.messages).toHaveLength(0);
   });
 
@@ -784,21 +783,19 @@ describe('TeamStreamingService', () => {
       state: {
         runId: 'prof-run-1',
         currentStatus: AgentStatus.Error,
-        canInterrupt: true,
         compactionStatus: null,
       },
       conversation: { messages: [], updatedAt: '' },
-      isSending: false,
+      submissionPending: false,
     };
     const studentContext = {
       state: {
         runId: 'student-run-1',
         currentStatus: AgentStatus.Error,
-        canInterrupt: true,
         compactionStatus: null,
       },
       conversation: { messages: [], updatedAt: '' },
-      isSending: false,
+      submissionPending: false,
     };
     const teamContext = {
       currentStatus: AgentTeamStatus.Error,
@@ -829,10 +826,8 @@ describe('TeamStreamingService', () => {
 
     expect(teamContext.currentStatus).toBe(AgentTeamStatus.Error);
     expect(professorContext.state.currentStatus).toBe(AgentStatus.Error);
-    expect(professorContext.state.canInterrupt).toBe(true);
-    expect(professorContext.isSending).toBe(false);
+    expect(professorContext.submissionPending).toBe(false);
     expect(studentContext.state.currentStatus).toBe(AgentStatus.Error);
-    expect(studentContext.state.canInterrupt).toBe(true);
   });
 
   it('does not repair stale member error from focused-member fallback without explicit identity', () => {
@@ -853,11 +848,10 @@ describe('TeamStreamingService', () => {
       state: {
         runId: 'focused-run-1',
         currentStatus: AgentStatus.Error,
-        canInterrupt: true,
         compactionStatus: null,
       },
       conversation: { messages: [], updatedAt: '' },
-      isSending: false,
+      submissionPending: false,
     };
     const teamContext = {
       currentStatus: AgentTeamStatus.Error,
@@ -880,8 +874,7 @@ describe('TeamStreamingService', () => {
     );
 
     expect(focusedContext.state.currentStatus).toBe(AgentStatus.Error);
-    expect(focusedContext.state.canInterrupt).toBe(true);
-    expect(focusedContext.isSending).toBe(false);
+    expect(focusedContext.submissionPending).toBe(false);
     expect(teamContext.currentStatus).toBe(AgentTeamStatus.Error);
     expect(focusedContext.conversation.messages).toHaveLength(0);
   });
@@ -904,11 +897,10 @@ describe('TeamStreamingService', () => {
       state: {
         runId: 'member-run-1',
         currentStatus: AgentStatus.Idle,
-        canInterrupt: false,
         compactionStatus: null,
       },
       conversation: { messages: [], updatedAt: '' },
-      isSending: false,
+      submissionPending: false,
     };
     const teamContext = {
       currentStatus: AgentTeamStatus.Idle,
@@ -938,7 +930,7 @@ describe('TeamStreamingService', () => {
 
     expect(teamContext.currentStatus).toBe(AgentTeamStatus.Idle);
     expect(memberContext.state.currentStatus).toBe(AgentStatus.Idle);
-    expect(memberContext.isSending).toBe(false);
+    expect(memberContext.submissionPending).toBe(false);
   });
 
   it('applies backend-owned agent status to a structural subteam node by route key', () => {
@@ -979,7 +971,6 @@ describe('TeamStreamingService', () => {
         type: 'AGENT_STATUS',
         payload: {
           status: 'initializing',
-          can_interrupt: false,
           member_route_key: 'BuildSquad',
           member_path: ['BuildSquad'],
           source_route_key: 'BuildSquad',
@@ -1064,7 +1055,6 @@ describe('TeamStreamingService', () => {
             state: {
               runId: 'member-run-1',
               currentStatus: AgentStatus.Running,
-              canInterrupt: true,
               compactionStatus: null,
             },
             conversation: { messages: [], updatedAt: '' },
@@ -1349,7 +1339,7 @@ describe('TeamStreamingService', () => {
           {
             state: { runId: 'program-manager-run', compactionStatus: null },
             conversation: programManagerConversation,
-            isSending: false,
+            submissionPending: false,
           },
         ],
         [
@@ -1357,7 +1347,7 @@ describe('TeamStreamingService', () => {
           {
             state: { runId: 'review-lead-run', compactionStatus: null },
             conversation: reviewLeadConversation,
-            isSending: false,
+            submissionPending: false,
           },
         ],
       ]),
@@ -1406,7 +1396,6 @@ describe('TeamStreamingService', () => {
         type: 'AGENT_STATUS',
         payload: {
           status: 'running',
-          can_interrupt: true,
           agent_id: 'task-agent-run-1',
           agent_name: 'worker',
           member_route_key: 'worker',
@@ -1489,7 +1478,6 @@ describe('TeamStreamingService', () => {
         type: 'AGENT_STATUS',
         payload: {
           status: 'offline',
-          can_interrupt: false,
           agent_id: 'task-agent-run-1',
           agent_name: 'worker',
           member_route_key: 'worker',
@@ -1522,7 +1510,6 @@ describe('TeamStreamingService', () => {
           type: 'AGENT_STATUS',
           payload: {
             status: 'initializing',
-            can_interrupt: false,
             agent_id: 'opaque-mismatched-run',
             agent_name: 'worker',
             member_route_key: 'worker',
@@ -1544,7 +1531,6 @@ describe('TeamStreamingService', () => {
           type: 'AGENT_STATUS',
           payload: {
             status: 'running',
-            can_interrupt: true,
             agent_id: 'opaque-mismatched-run',
             agent_name: 'worker',
             member_route_key: 'worker',
@@ -1789,7 +1775,6 @@ describe('TeamStreamingService', () => {
       type: 'AGENT_STATUS',
       payload: {
         status: 'running',
-        can_interrupt: true,
         agent_id: 'scoped-solution-run',
         agent_name: 'solution_designer',
         member_route_key: 'SoftwareEngineeringTeam/solution_designer',
@@ -1826,7 +1811,6 @@ describe('TeamStreamingService', () => {
         type: 'AGENT_STATUS',
         payload: {
           status: 'running',
-          can_interrupt: true,
           agent_id: 'bad-scoped-run',
           member_route_key: 'SoftwareEngineeringTeam/solution_designer',
           member_path: ['SoftwareEngineeringTeam', 'solution_designer'],
@@ -1872,7 +1856,6 @@ describe('TeamStreamingService', () => {
         type: 'AGENT_STATUS',
         payload: {
           status: 'running',
-          can_interrupt: true,
           agent_id: 'scoped-solution-run-2',
           agent_name: 'solution_designer',
           member_route_key: 'SoftwareEngineeringTeam/solution_designer',
@@ -1904,7 +1887,6 @@ describe('TeamStreamingService', () => {
         type: 'AGENT_STATUS',
         payload: {
           status: 'running',
-          can_interrupt: true,
           agent_id: 'unstamped-scoped-solution-run',
           agent_name: 'solution_designer',
           member_route_key: 'SoftwareEngineeringTeam/solution_designer',
@@ -2040,7 +2022,6 @@ describe('TeamStreamingService', () => {
       type: 'AGENT_STATUS',
       payload: {
         status: 'running',
-        can_interrupt: true,
         agent_id: 'scoped-solution-run',
         agent_name: 'solution_designer',
         member_route_key: 'SoftwareEngineeringTeam/solution_designer',
@@ -2202,7 +2183,6 @@ describe('TeamStreamingService', () => {
         type: 'AGENT_STATUS',
         payload: {
           status: 'running',
-          can_interrupt: true,
           agent_id: 'task-agent-run-repair',
           agent_name: 'worker',
           member_route_key: 'worker',
@@ -2419,7 +2399,6 @@ describe('TeamStreamingService', () => {
           type: 'AGENT_STATUS',
           payload: {
             status: 'running',
-            can_interrupt: true,
             agent_id: `task-agent-run-${taskNumber}`,
             agent_name: 'worker',
             member_route_key: 'worker',
@@ -2469,7 +2448,6 @@ describe('TeamStreamingService', () => {
         type: 'AGENT_STATUS',
         payload: {
           status: 'offline',
-          can_interrupt: false,
           agent_id: 'task-agent-run-1',
           agent_name: 'worker',
           member_route_key: 'worker',
@@ -2506,12 +2484,12 @@ describe('TeamStreamingService', () => {
     const professorContext = {
       state: { runId: 'prof-run-1', compactionStatus: null },
       conversation: { messages: [], updatedAt: '' },
-      isSending: false,
+      submissionPending: false,
     };
     const studentContext = {
       state: { runId: 'student-run-1', compactionStatus: null },
       conversation: { messages: [], updatedAt: '' },
-      isSending: false,
+      submissionPending: false,
     };
     const teamContext = {
       focusedMemberRouteKey: 'Student',

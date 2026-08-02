@@ -145,6 +145,7 @@ export class PublishedArtifactPublicationService {
       throw new Error(`Published artifact path '${canonicalPath}' could not be snapshotted: ${message}`);
     });
 
+    let clonedSummary: PublishedArtifactSummary;
     try {
       const nextProjection = this.buildNextProjection({
         projection,
@@ -164,33 +165,34 @@ export class PublishedArtifactPublicationService {
         throw new Error(`Published artifact '${artifactId}' was not persisted.`);
       }
 
-      const clonedSummary = structuredClone(summary);
-      if (run) {
-        run.emitLocalEvent({
-          eventType: AgentRunEventType.ARTIFACT_PERSISTED,
-          runId: run.runId,
-          statusHint: null,
-          payload: structuredClone(clonedSummary) as Record<string, unknown>,
-        });
-      } else if (emitArtifactPersisted) {
-        await emitArtifactPersisted(structuredClone(clonedSummary));
-      } else {
-        throw new Error(`Run '${input.runId}' is not active.`);
-      }
-
-      if (!run && applicationExecutionContext) {
-        await this.publishedArtifactRelayService.relayArtifactForExecutionContext({
-          runId: input.runId,
-          applicationExecutionContext,
-          artifact: structuredClone(clonedSummary),
-        });
-      }
-
-      return clonedSummary;
+      clonedSummary = structuredClone(summary);
     } catch (error) {
       await this.snapshotStore.deleteRevisionSnapshot(memoryDir, snapshot.snapshotRelativePath).catch(() => undefined);
       throw error;
     }
+
+    if (run) {
+      await run.publishEvent({
+        eventType: AgentRunEventType.ARTIFACT_PERSISTED,
+        runId: run.runId,
+        statusHint: null,
+        payload: structuredClone(clonedSummary) as Record<string, unknown>,
+      });
+    } else if (emitArtifactPersisted) {
+      await emitArtifactPersisted(structuredClone(clonedSummary));
+    } else {
+      throw new Error(`Run '${input.runId}' is not active.`);
+    }
+
+    if (!run && applicationExecutionContext) {
+      await this.publishedArtifactRelayService.relayArtifactForExecutionContext({
+        runId: input.runId,
+        applicationExecutionContext,
+        artifact: structuredClone(clonedSummary),
+      });
+    }
+
+    return clonedSummary;
   }
 
 

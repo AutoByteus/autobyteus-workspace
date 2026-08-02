@@ -1,17 +1,11 @@
-import {
-  buildAgentStatusPayload,
-  normalizeAgentApiStatus,
-  type AgentStatusPayload,
-} from "../../../domain/agent-status-payload.js";
+import type { AgentRuntimeLifecycleSnapshot } from "../../../domain/agent-runtime-lifecycle-snapshot.js";
+import { normalizeAgentApiStatus } from "../../../domain/agent-status-payload.js";
 
 type AutoByteusAgentContextLike = {
   state?: {
-    activeTurn?: unknown | null;
+    activeTurn?: { turnId?: unknown } | null;
   } | null;
 } | null;
-
-const hasActiveTurn = (context: AutoByteusAgentContextLike): boolean =>
-  Boolean(context?.state?.activeTurn);
 
 const normalizeToken = (value: unknown): string | null =>
   typeof value === "string"
@@ -42,7 +36,9 @@ const AUTOBYTEUS_OFFLINE_STATUS_TOKENS = new Set([
   "shutting_down",
 ]);
 
-const normalizeAutoByteusAgentStatus = (value: unknown): AgentStatusPayload["status"] => {
+const normalizeAutoByteusAgentPhase = (
+  value: unknown,
+): AgentRuntimeLifecycleSnapshot["phase"] => {
   const token = normalizeToken(value) ?? "";
   if (AUTOBYTEUS_STARTUP_STATUS_TOKENS.has(token)) {
     return "initializing";
@@ -51,30 +47,43 @@ const normalizeAutoByteusAgentStatus = (value: unknown): AgentStatusPayload["sta
     return "running";
   }
   if (AUTOBYTEUS_OFFLINE_STATUS_TOKENS.has(token)) {
-    return "offline";
+    return "idle";
   }
-  return normalizeAgentApiStatus(value, "idle");
+  const status = normalizeAgentApiStatus(value, "idle");
+  return status === "offline" ? "idle" : status;
 };
 
-export const projectAutoByteusAgentStatus = (input: {
+export const projectAutoByteusAgentLifecycleSnapshot = (input: {
   currentStatus?: unknown;
   context?: AutoByteusAgentContextLike;
   isActive?: boolean;
-  agentId?: string | null;
-  agentName?: string | null;
-}): AgentStatusPayload => {
-  const status =
-    input.isActive === false
-      ? "offline"
-      : normalizeAutoByteusAgentStatus(input.currentStatus);
-  const canInterrupt =
-    status === "running" &&
-    hasActiveTurn(input.context ?? null);
+}): AgentRuntimeLifecycleSnapshot => {
+  if (input.isActive === false) {
+    return {
+      availability: "offline",
+      phase: "idle",
+      currentTurn: { kind: "NONE" },
+    };
+  }
 
-  return buildAgentStatusPayload({
-    status,
-    canInterrupt,
-    agentId: input.agentId,
-    agentName: input.agentName,
-  });
+  const activeTurn = input.context?.state?.activeTurn ?? null;
+  const turnId = typeof activeTurn?.turnId === "string"
+    ? activeTurn.turnId.trim()
+    : "";
+  const currentTurn = activeTurn
+    ? turnId
+      ? { kind: "IDENTIFIED" as const, turnId }
+      : { kind: "ANONYMOUS" as const }
+    : { kind: "NONE" as const };
+  const projectedPhase = normalizeAutoByteusAgentPhase(input.currentStatus);
+
+  return {
+    availability: "active",
+    phase: currentTurn.kind === "NONE" && projectedPhase === "running"
+      ? "initializing"
+      : currentTurn.kind !== "NONE"
+        ? "running"
+        : projectedPhase,
+    currentTurn,
+  };
 };

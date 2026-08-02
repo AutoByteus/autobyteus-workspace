@@ -63,7 +63,6 @@ export class AgentRunCommandStatusOverlayStore {
   }): AgentRunCommandStatusOverlay {
     const payload = buildAgentStatusPayload({
       status: input.status,
-      canInterrupt: false,
       agentId: input.runId,
     });
     const overlay: AgentRunCommandStatusOverlay = {

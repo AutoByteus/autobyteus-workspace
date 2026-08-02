@@ -22,12 +22,11 @@ const flush = async () => {
 
 const buildProjection = (overrides: Record<string, unknown> = {}) => ({
   status: "running",
-  canInterrupt: true,
   isActive: true,
   shouldConnectStream: true,
   lastKnownStatus: "ACTIVE",
   statusSource: "ACTIVE_RUNTIME",
-  statusPayload: { status: "running", can_interrupt: true, agent_id: "agent-123" },
+  statusPayload: { status: "running", agent_id: "agent-123" },
   ...overrides,
 });
 
@@ -40,7 +39,7 @@ describe("AgentStreamHandler", () => {
     runId: "agent-123",
     runtimeKind: "autobyteus",
     isActive: vi.fn().mockReturnValue(true),
-    getStatusSnapshot: vi.fn().mockReturnValue({ status: "running", can_interrupt: true }),
+    getStatusSnapshot: vi.fn().mockReturnValue({ status: "running" }),
     subscribeToEvents: vi.fn((_listener: (event: unknown) => void) => () => {}),
     postUserMessage: vi.fn().mockResolvedValue({ accepted: true, runtimeKind: "autobyteus" }),
     approveToolInvocation: vi
@@ -81,7 +80,7 @@ describe("AgentStreamHandler", () => {
           state: "accepted",
           accepted: true,
           duplicate: false,
-          status: { status: "running", can_interrupt: true, agent_id: input.runId },
+          status: { status: "running", agent_id: input.runId },
         },
         turnId: "turn-1",
       };
@@ -112,12 +111,11 @@ describe("AgentStreamHandler", () => {
     const agentRunService = createAgentRunService(null);
     const statusProjectionService = createStatusProjectionService(buildProjection({
       status: "offline",
-      canInterrupt: false,
       isActive: false,
       shouldConnectStream: false,
       lastKnownStatus: "IDLE",
       statusSource: "HISTORICAL_METADATA",
-      statusPayload: { status: "offline", can_interrupt: false, agent_id: "agent-123" },
+      statusPayload: { status: "offline", agent_id: "agent-123" },
     }));
     const handler = new AgentStreamHandler(
       sessionManager,
@@ -149,7 +147,7 @@ describe("AgentStreamHandler", () => {
       }),
       {
         type: ServerMessageType.AGENT_STATUS,
-        payload: { status: "offline", can_interrupt: false, agent_id: "agent-123" },
+        payload: { status: "offline", agent_id: "agent-123" },
       },
     ]);
   });
@@ -158,7 +156,7 @@ describe("AgentStreamHandler", () => {
     const agentRunService = createAgentRunService(null);
     const statusProjectionService = createStatusProjectionService(buildProjection({
       statusSource: "MISSING",
-      statusPayload: { status: "offline", can_interrupt: false, agent_id: "missing-agent" },
+      statusPayload: { status: "offline", agent_id: "missing-agent" },
     }));
     const handler = new AgentStreamHandler(
       new AgentSessionManager(),
@@ -371,11 +369,12 @@ describe("AgentStreamHandler", () => {
       getContext: () => context,
       isActive: () => isActive,
       getPlatformAgentRunId: () => null,
-      getStatusSnapshot: () => ({
-        status: isActive ? "idle" : "offline",
-        can_interrupt: false,
+      getLifecycleSnapshot: () => ({
+        availability: isActive ? "active" as const : "offline" as const,
+        phase: "idle" as const,
+        currentTurn: { kind: "NONE" as const },
       }),
-      subscribeToEvents: vi.fn().mockReturnValue(() => undefined),
+      subscribeToSourceEventBatches: vi.fn().mockReturnValue(() => undefined),
       postUserMessage: vi.fn().mockResolvedValue({ accepted: true }),
       approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
       interrupt: vi.fn().mockResolvedValue({ accepted: true }),
@@ -397,8 +396,7 @@ describe("AgentStreamHandler", () => {
       createCommandCoordinator({ activeRun }) as any,
       createStatusProjectionService(buildProjection({
         status: "idle",
-        canInterrupt: false,
-        statusPayload: { status: "idle", can_interrupt: false, agent_id: runId },
+        statusPayload: { status: "idle", agent_id: runId },
       })) as any,
     );
     const connection = {
@@ -417,7 +415,6 @@ describe("AgentStreamHandler", () => {
       type: ServerMessageType.AGENT_STATUS,
       payload: {
         status: "offline",
-        can_interrupt: false,
         agent_id: runId,
       },
     }));
@@ -499,12 +496,11 @@ describe("AgentStreamHandler", () => {
       commandCoordinator as any,
       createStatusProjectionService(buildProjection({
         status: "offline",
-        canInterrupt: false,
         isActive: false,
         shouldConnectStream: false,
         lastKnownStatus: "IDLE",
         statusSource: "PREPARED_IDENTITY",
-        statusPayload: { status: "offline", can_interrupt: false, agent_id: "agent-123" },
+        statusPayload: { status: "offline", agent_id: "agent-123" },
       })) as any,
     );
     const connection = {
