@@ -47,6 +47,13 @@ describe('fileUtils', () => {
       expect(fileType).toBe('Image')
     })
 
+    it.each(['diagram.svg', 'DIAGRAM.SVG', 'nested/assets/diagram.svg'])(
+      'should determine SVG file type as Image for %s',
+      async (filePath) => {
+        expect(await determineFileType(filePath)).toBe('Image')
+      },
+    )
+
     it('should determine file type as Text for text files', async () => {
       const fileType = await determineFileType('document.txt')
       expect(fileType).toBe('Text')

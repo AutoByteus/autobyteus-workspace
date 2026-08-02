@@ -65,16 +65,16 @@ describe('FileViewer.vue', () => {
     expect(editor.props('modelValue')).toBe('console.log("hi")');
   });
 
-  it('renders ImageViewer for image files', () => {
+  it('renders ImageViewer for SVG image files', () => {
     const wrapper = mount(FileViewer, {
       props: {
-        file: { path: 'test.png', type: 'Image', content: null, url: 'http://example.com/img.png' },
+        file: { path: 'diagram.SVG', type: 'Image', content: null, url: 'http://example.com/diagram.svg' },
         mode: 'preview'
       }
     });
     const image = wrapper.findComponent({ name: 'ImageViewer' });
     expect(image.exists()).toBe(true);
-    expect(image.props('url')).toBe('http://example.com/img.png');
+    expect(image.props('url')).toBe('http://example.com/diagram.svg');
   });
 
   it('forwards explicit relative-resource identity to Markdown preview', () => {

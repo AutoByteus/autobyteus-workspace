@@ -124,7 +124,9 @@ describe('MobileArtifacts content viewer integration', () => {
     pinia = createPinia();
     setActivePinia(pinia);
     determineFileTypeMock.mockReset();
-    determineFileTypeMock.mockResolvedValue('Text');
+    determineFileTypeMock.mockImplementation(async (path: string) => (
+      path.toLowerCase().endsWith('.svg') ? 'Image' : 'Text'
+    ));
     createObjectURLMock.mockReset();
     createObjectURLMock.mockReturnValue('blob:mobile-artifact-preview');
     revokeObjectURLMock.mockReset();
@@ -148,7 +150,7 @@ describe('MobileArtifacts content viewer integration', () => {
     document.body.innerHTML = '';
   });
 
-  it('fetches selected text and PDF artifact content through the active mobile credential', async () => {
+  it('fetches selected text, PDF, and SVG artifact content through the active mobile credential', async () => {
     useWindowNodeContextStore().bindNodeContext('mobile-paired-node', 'http://desktop-private.local:29695');
     useMobileNodeSessionStore().session = storedSession();
     useMobileNodeSessionStore().initialized = true;
@@ -156,6 +158,7 @@ describe('MobileArtifacts content viewer integration', () => {
     useAgentSelectionStore().selectRunWithoutShellNavigation(agentRunId, 'agent');
     useRunFileChangesStore().replaceRunProjection(agentRunId, [
       makeArtifact('reports/output.pdf', '2026-05-22T14:01:00.000Z', { type: 'pdf' }),
+      makeArtifact('assets/diagram.SVG', '2026-05-22T14:00:30.000Z'),
       makeArtifact('docs/readme.md', '2026-05-22T14:02:00.000Z'),
     ]);
 
@@ -173,6 +176,13 @@ describe('MobileArtifacts content viewer integration', () => {
           ok: true,
           status: 200,
           blob: async () => new Blob(['%PDF-mobile'], { type: 'application/pdf' }),
+        } as Response;
+      }
+      if (url.includes('assets%2Fdiagram.SVG')) {
+        return {
+          ok: true,
+          status: 200,
+          blob: async () => new Blob(['<svg'], { type: 'image/svg+xml' }),
         } as Response;
       }
       throw new Error(`Unexpected fetch URL: ${url}`);
@@ -213,5 +223,21 @@ describe('MobileArtifacts content viewer integration', () => {
     expect(createObjectURLMock).toHaveBeenCalledTimes(1);
     expect(mountedWrapper.get('[data-testid="file-viewer"]').attributes('data-file-type')).toBe('PDF');
     expect(mountedWrapper.get('[data-testid="file-viewer"]').attributes('data-url')).toBe('blob:mobile-artifact-preview');
+
+    const svgRow = mountedWrapper.findAll('[data-testid="mobile-artifact-row"]')
+      .find((row) => row.text().includes('diagram.SVG'));
+    expect(svgRow).toBeTruthy();
+    await svgRow!.trigger('click');
+    await flushPromises();
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      'http://desktop-private.local:29695/rest/runs/run-mobile-credential/file-change-content?path=assets%2Fdiagram.SVG',
+      expect.objectContaining({ cache: 'no-store' }),
+    );
+    expect(requestHeaders(fetchMock.mock.calls[2][1]).get('Authorization')).toBe('Bearer mra_secret');
+    expect(createObjectURLMock).toHaveBeenCalledTimes(2);
+    expect(mountedWrapper.get('[data-testid="file-viewer"]').attributes('data-file-type')).toBe('Image');
+    expect(mountedWrapper.get('[data-testid="file-viewer"]').attributes('data-url')).toBe('blob:mobile-artifact-preview');
+    expect(revokeObjectURLMock).toHaveBeenCalledWith('blob:mobile-artifact-preview');
   });
 });

@@ -12,6 +12,7 @@ const PNG_BYTES = Buffer.from(
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
   "base64",
 );
+const SVG_BYTES = Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"><rect width="1" height="1"/></svg>');
 
 describe("workspace content REST boundary e2e", () => {
   let app: FastifyInstance;
@@ -64,6 +65,24 @@ describe("workspace content REST boundary e2e", () => {
     expect(response.statusCode).toBe(200);
     expect(response.headers["content-type"]).toContain("image/png");
     expect(response.rawPayload).toEqual(PNG_BYTES);
+  });
+
+  it("serves SVG bytes with the image/svg+xml content boundary through a real FileSystemWorkspace", async () => {
+    const imagePath = path.join(workspaceRoot, "docs", "assets", "diagram.SVG");
+    fs.mkdirSync(path.dirname(imagePath), { recursive: true });
+    fs.writeFileSync(imagePath, SVG_BYTES);
+    const workspace = await workspaceManager.createWorkspace({ rootPath: workspaceRoot });
+
+    const response = await app.inject({
+      method: "GET",
+      url: `/rest/workspaces/${encodeURIComponent(workspace.workspaceId)}/content?${new URLSearchParams({
+        path: "docs/assets/diagram.SVG",
+      })}`,
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.headers["content-type"]).toContain("image/svg+xml");
+    expect(response.rawPayload).toEqual(SVG_BYTES);
   });
 
   it("rejects a same-prefix sibling traversal through FileSystemWorkspace", async () => {

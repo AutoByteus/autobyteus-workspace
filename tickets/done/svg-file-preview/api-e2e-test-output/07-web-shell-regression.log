@@ -1,0 +1,33 @@
+
+> autobyteus@1.4.37 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run components/fileExplorer/__tests__/FileExplorerTabs.spec.ts components/fileExplorer/__tests__/FileItem.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-web
+
+stderr | components/fileExplorer/__tests__/FileExplorerTabs.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/fileExplorer/__tests__/FileItem.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/fileExplorer/__tests__/FileItem.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/fileExplorer/__tests__/FileExplorerTabs.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/fileExplorer/__tests__/FileItem.spec.ts (7 tests) 54ms
+ ✓ components/fileExplorer/__tests__/FileExplorerTabs.spec.ts (2 tests) 19ms
+
+ Test Files  2 passed (2)
+      Tests  9 passed (9)
+   Start at  08:23:48
+   Duration  5.37s (transform 2.82s, setup 9.21s, collect 266ms, tests 73ms, environment 388ms, prepare 286ms)
