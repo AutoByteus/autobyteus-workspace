@@ -2,13 +2,13 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/requirements-doc.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/requirements-doc.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/design-spec.md`
 - Supplemental Task Artifacts Reviewed: `edit-file-format-investigation-report.md`; `deepseek-edit-benchmark-report.md`; `cross-provider-context-patch-benchmark-report.md`; benchmark harness/summary scripts; both experimental patch artifacts; `experimental-clean-cut-artifact-baseline-verification.log`; selected/cross-provider aggregates; retained JSONL/log evidence under `benchmark-evidence/`; current uncommitted investigation state
-- Solution Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/solution-revision-record.md`
+- Solution Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/solution-revision-record.md`
 - Relevant Solution Revision IDs: `SR-001`, `SR-002`
-- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/architecture-review-revision-record.md`
+- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/architecture-review-revision-record.md`
 - Current Architecture Review Revision ID: `ARCH-REV-002`
 - Current Review Round: `2`
 - Trigger: Re-review after `SR-002` corrected `DR-ECF-001`/`DR-ECF-002` and incorporated the user-approved contraction to the four-tool file-oriented surface.

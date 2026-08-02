@@ -28,7 +28,7 @@ The latest requirements, investigation notes, design spec, and supplements remai
 
 ### SR-002 — Self-contained evidence and four-tool surface
 
-- Triggering role, report path, and round: Architecture Reviewer round 1 at `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/design-review-report.md` (`ARCH-REV-001`), followed by the user's 2026-08-02 direction to retain only `read_file`, `edit_file`, `write_file`, and `run_bash` in the file-oriented surface.
+- Triggering role, report path, and round: Architecture Reviewer round 1 at `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/design-review-report.md` (`ARCH-REV-001`), followed by the user's 2026-08-02 direction to retain only `read_file`, `edit_file`, `write_file`, and `run_bash` in the file-oriented surface.
 - Triggering finding IDs: `DR-ECF-001`, `DR-ECF-002`; user-approved scope refinement has no reviewer finding ID.
 - Prior authoritative result: SR-001 target architecture passed technical checks, but architecture review failed the package for incomplete experiment evidence and stale inventory/status. SR-001 also preserved exact-edit tools before the user simplified the catalog.
 - Current authoritative result: The experiment patch is self-contained and baseline-verified; supplement metadata is current; requirements/design now cleanly remove `replace_in_file`, `insert_in_file`, their registration/source/tests/docs/diagnostic references, and orphaned `text-edit-utils.ts`. Persisted agent-config impact is evidence-backed as Directly Usable — No Migration.

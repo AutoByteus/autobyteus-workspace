@@ -40,10 +40,10 @@ The later cross-provider comparison produced the decisive evidence:
 
 | Artifact Path | Type / Purpose | Related Requirement IDs | Related Acceptance-Criteria IDs | Status / Approval | Relationship To Requirements |
 | --- | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/deepseek-edit-benchmark-report.md` | DeepSeek reproduction and mechanism benchmark | REQ-001, REQ-002, REQ-010, REQ-012 | AC-001, AC-002, AC-011, AC-012 | Complete evidence; approval N/A | Establishes the original failure and causal ablation; alternative-tool results remain evidence but do not override the later approved catalog contraction. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/cross-provider-context-patch-benchmark-report.md` | Cross-provider contract benchmark and decision analysis | REQ-002 through REQ-011 | AC-002 through AC-015 | Complete evidence; approval N/A | Quantitatively supports canonical context hunks and numeric-decoration normalization. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/benchmark/experimental-clean-cut-context-patch.patch` | Self-contained pre-SR-002 feasibility implementation and coverage diff | REQ-003 through REQ-011 | AC-003 through AC-010, AC-013 through AC-015 | Baseline-verified experiment evidence only; not approved/final product code | Demonstrates the context contract can be implemented safely and efficiently; it predates and does not implement REQ-012 exact-tool removal, so the reviewed design remains authoritative. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/done/autobyteus-ts-edit-format-investigation/benchmark-evidence/cross-provider-context-summary.json` | Machine-readable aggregate | REQ-002, REQ-005, REQ-011 | AC-002, AC-004, AC-010, AC-011 | Complete evidence; approval N/A | Provides auditable counts and model-output classifications. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/deepseek-edit-benchmark-report.md` | DeepSeek reproduction and mechanism benchmark | REQ-001, REQ-002, REQ-010, REQ-012 | AC-001, AC-002, AC-011, AC-012 | Complete evidence; approval N/A | Establishes the original failure and causal ablation; alternative-tool results remain evidence but do not override the later approved catalog contraction. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/cross-provider-context-patch-benchmark-report.md` | Cross-provider contract benchmark and decision analysis | REQ-002 through REQ-011 | AC-002 through AC-015 | Complete evidence; approval N/A | Quantitatively supports canonical context hunks and numeric-decoration normalization. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/benchmark/experimental-clean-cut-context-patch.patch` | Self-contained pre-SR-002 feasibility implementation and coverage diff | REQ-003 through REQ-011 | AC-003 through AC-010, AC-013 through AC-015 | Baseline-verified experiment evidence only; not approved/final product code | Demonstrates the context contract can be implemented safely and efficiently; it predates and does not implement REQ-012 exact-tool removal, so the reviewed design remains authoritative. |
+| `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/autobyteus-ts-edit-format-investigation/benchmark-evidence/cross-provider-context-summary.json` | Machine-readable aggregate | REQ-002, REQ-005, REQ-011 | AC-002, AC-004, AC-010, AC-011 | Complete evidence; approval N/A | Provides auditable counts and model-output classifications. |
 
 ## Design Health Assessment (Mandatory)
 
@@ -122,7 +122,7 @@ Medium
 
 ## Constraints / Dependencies
 
-- Authoritative worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation`.
+- Authoritative worktree: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`.
 - Task branch: `codex/autobyteus-ts-edit-format-investigation`, based on refreshed `origin/personal` commit `4b29481d5b6eaea64aebb20abcb5e4d784ea1178`.
 - The supplied environment may be imported only into isolated test setup. Secret values and databases are not task artifacts.
 - Provider model availability, rate limits, and behavior drift limit external reproducibility; deterministic product behavior must not depend on live tests.
