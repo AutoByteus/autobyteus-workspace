@@ -10,6 +10,7 @@ The latest `code-review-report.md` or `api-e2e-test-review-report.md` remains au
 | CRR-002 | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/code-review-report.md` | Implementation Review round 2 / `IR-002` | Fail / Local Fix | Pass | `CODE-FIND-001` |
 | CRR-003 | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/code-review-report.md` | Implementation Review round 3 / expanded `IR-003` | Pass | Fail / Design Impact | `CODE-FIND-001`, `CODE-FIND-002`, `CODE-FIND-003` |
 | CRR-004 | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/code-review-report.md` | Implementation Review round 4 / `IR-004` | Fail / Design Impact | Pass | `CODE-FIND-001`, `CODE-FIND-002`, `CODE-FIND-003` |
+| CRR-005 | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-test-review-report.md` | API/E2E Test-Code Review round 1 / `API-REV-001` | Pass (implementation source) | Fail / Local Fix (durable tests) | `TEST-FIND-001`, `TEST-FIND-002` |
 
 ## Revision Entries
 
@@ -112,3 +113,26 @@ None.
 - Material score or classification changes: overall score rises from `8.8/10` (`88.0/100`) to `9.5/10` (`95.3/100`). Data flow, API/interface, shared structure, API/E2E readiness, and runtime fidelity return above `9.0`; the controlling `Design Impact` and secondary `Local Fix` are cleared.
 - Recommended recipient: `api_e2e_engineer`
 - Remaining risks or uncertainty: the old coverage investigation/evidence and three held server API/integration edits are stale for `SR-005`; API/E2E must reinvestigate before editing/executing durable coverage. Real multi-boundary WebSocket/reconnect and authenticated browser validation remain downstream. Durable docs remain delivery-owned.
+
+### CRR-005 — Successful execution exposes two bounded durable-test proof gaps
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-test-review-report.md`
+- Review entry point and round: `API/E2E Test-Code Review` / round `1`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-execution-coverage-report.md`; `API-E2E-001`, `API-E2E-012`, `TEST-FIND-001`, `TEST-FIND-002`
+- Relevant solution revision IDs: `SR-005` (preserving `SR-002`–`SR-004`)
+- Relevant architecture-review revision IDs: `ARCH-REV-005`
+- Relevant implementation revision IDs: `IR-004`
+- Relevant API/E2E revision IDs: `API-REV-001`
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: `Pass` for implementation source (`CRR-004`); API/E2E execution `Pass` at reported `96.7%`
+- Current authoritative result: `Fail` / `Local Fix` -> `api_e2e_engineer` for proportional durable-test review; implementation source remains `Pass`
+- What changed in the review result and why: All ten changed durable paths and successful execution evidence were reviewed proportionately. Most coverage is current and coherent, but the task-team settlement fixture hides a non-contract `TASK_DELEGATION_COMPLETED` event behind `as never`, and the new disconnect-independence scenario asserts after a fixed delay rather than a completed disconnect barrier. Those mechanisms can overstate AC-025 and disconnect-independence proof without indicating an implementation defect.
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: `TEST-FIND-001`, `TEST-FIND-002`
+- Material score or classification changes: No implementation scorecard or confidence rescore applies to proportional test review. Test review is `Fail`; both findings are `Local Fix` owned by `api_e2e_engineer`.
+- Recommended recipient: `api_e2e_engineer`
+- Remaining risks or uncertainty: Corrected durable paths require focused execution and a refreshed combined changed-test result before re-review. Provider availability and unrelated frontend baseline debt remain truthfully bounded as recorded by API/E2E.
