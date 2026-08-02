@@ -1,11 +1,13 @@
 ## What's New
 
-- SVG files now render in the existing read-only file preview across workspace File Explorer, Event Monitor file actions, and the right-side Artifacts tab.
+- `edit_file` now accepts model-friendly context patches with a simple bare `@@` hunk header, so supported agents can make surgical changes without calculating line numbers.
 
 ## Improvements
 
-- SVG previews reuse the existing authorized content paths and ImageViewer behavior, including existing loading, error, and unsupported-file handling.
+- Edits use unique surrounding context, preserve unrelated file content, and retry safely when whitespace differs.
+- The file-editing tool set is simpler: use `read_file`, `edit_file`, `write_file`, or `run_bash` without redundant replacement and insertion tools.
 
 ## Fixes
 
-- Fixed `.svg` files being classified as unsupported by the shared file-preview policy.
+- Fixed valid context edits from models such as DeepSeek being rejected for omitting numeric unified-diff ranges.
+- Ambiguous, malformed, or partially applicable patches continue to fail without partially modifying the target file.
