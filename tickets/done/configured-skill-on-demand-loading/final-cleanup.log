@@ -1,0 +1,19 @@
+Configured skill on-demand loading — post-finalization cleanup
+Date: 2026-08-02
+
+Repository finalization/release prerequisites:
+- Ticket archive commit pushed: 2e88126878454fd250e9e7441ca46ff97d596fa7
+- Target merge pushed to personal: f83bf4f4c00678e7662eafd0b8b5f0c8855dff94
+- Release commit/tag pushed: 924852494468357ecb601a41d8b8076cc41fb32c / v1.4.40
+
+Cleanup actions and results:
+- Dedicated ticket worktree removed from Git metadata: PASS
+- Residual worktree .DS_Store removed and now-empty ticket directory removed: PASS
+- Temporary clean release worktree removed: PASS
+- Local codex/configured-skill-on-demand-loading branch deleted: PASS
+- Remote codex/configured-skill-on-demand-loading branch deleted: PASS
+- Worktree metadata pruned: PASS
+- Primary checkout restored to personal at release commit: PASS
+- User-owned untracked .article-work/ and codex/ paths preserved: PASS
+
+Final cleanup result: PASS
