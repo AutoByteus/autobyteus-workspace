@@ -156,6 +156,8 @@ Initial observation after pushing `v1.4.38` on 2026-08-02 found all five expecte
 
 Evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/release-workflow-status-v1.4.38.json`. The release command completed successfully; workflow completion is asynchronous.
 
+Latest observed status at 2026-08-02 09:40 CEST: Release Messaging Gateway completed successfully; Desktop, iOS App Store Connect, Server Docker, and Android APK remained `in_progress`.
+
 ## Environment Or Persisted-Data Transition Notes
 
 - Approved persisted-data decision: Not affected; the feature changes only frontend filename classification and its existing test/docs coverage.
