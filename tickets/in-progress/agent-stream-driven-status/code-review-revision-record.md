@@ -11,6 +11,7 @@ The latest `code-review-report.md` or `api-e2e-test-review-report.md` remains au
 | CRR-003 | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/code-review-report.md` | Implementation Review round 3 / expanded `IR-003` | Pass | Fail / Design Impact | `CODE-FIND-001`, `CODE-FIND-002`, `CODE-FIND-003` |
 | CRR-004 | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/code-review-report.md` | Implementation Review round 4 / `IR-004` | Fail / Design Impact | Pass | `CODE-FIND-001`, `CODE-FIND-002`, `CODE-FIND-003` |
 | CRR-005 | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-test-review-report.md` | API/E2E Test-Code Review round 1 / `API-REV-001` | Pass (implementation source) | Fail / Local Fix (durable tests) | `TEST-FIND-001`, `TEST-FIND-002` |
+| CRR-006 | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-test-review-report.md` | API/E2E Test-Code Review round 2 / `API-REV-002` | Fail / Local Fix (durable tests) | Pass | `TEST-FIND-001`, `TEST-FIND-002` |
 
 ## Revision Entries
 
@@ -136,3 +137,29 @@ None.
 - Material score or classification changes: No implementation scorecard or confidence rescore applies to proportional test review. Test review is `Fail`; both findings are `Local Fix` owned by `api_e2e_engineer`.
 - Recommended recipient: `api_e2e_engineer`
 - Remaining risks or uncertainty: Corrected durable paths require focused execution and a refreshed combined changed-test result before re-review. Provider availability and unrelated frontend baseline debt remain truthfully bounded as recorded by API/E2E.
+
+### CRR-006 — Typed reconciliation and completed disconnect barriers pass test re-review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-test-review-report.md`
+- Review entry point and round: `API/E2E Test-Code Review` / round `2`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-execution-coverage-report.md`; `API-REV-002`, `TEST-FIND-001`, `TEST-FIND-002`
+- Relevant solution revision IDs: `SR-005` (preserving `SR-002`–`SR-004`)
+- Relevant architecture-review revision IDs: `ARCH-REV-005`
+- Relevant implementation revision IDs: `IR-004`
+- Relevant API/E2E revision IDs: `API-REV-002`
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: `Fail` / `Local Fix` -> `api_e2e_engineer` for proportional durable-test review; implementation source `Pass`
+- Current authoritative result: `Pass` -> `delivery_engineer`; implementation source remains `Pass`
+- What changed in the review result and why: The task settlement path now uses a typed supported result-review reconciliation with the actual task identity/source path and retains a separate immediate-readiness case. The real-socket path now waits for both client close and completed real handler disconnect before asserting manager liveness/reconnecting. Both affected tests and the final cumulative durable set pass.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `TEST-FIND-001` | Open / Blocking / Local Fix | Resolved | `API-REV-002`, `CRR-005` | Supported typed `TASK_DELEGATION_RESULT_REVIEWED` publication uses the actual accepted child identity/path; no invented `TASK_DELEGATION_COMPLETED` or finding-specific type suppression remains. Affected execution passes `7/7`; combined current-state execution passes `49/49` executed tests. |
+| `TEST-FIND-002` | Open / Blocking / Local Fix | Resolved | `API-REV-002`, `CRR-005` | The test awaits a bounded client close and completion of wrapped real `AgentTeamStreamHandler.disconnect()` before the liveness assertion/reconnect; fixed `wait(20)` is removed. Affected execution passes `7/7`; combined current-state execution passes `49/49` executed tests. |
+
+- New or remaining finding IDs: `None`
+- Material score or classification changes: No implementation scorecard or confidence rescore applies. Proportional test review changes from `Fail / Local Fix` to `Pass`; API/E2E confidence remains the reported `96.7%`.
+- Recommended recipient: `delivery_engineer`
+- Remaining risks or uncertainty: unchanged and non-blocking — unavailable configured external-provider execution, unrelated frontend baseline debt, and no material browser/shell boundary requiring direct execution.
