@@ -1,13 +1,14 @@
 ## What's New
 
-- `edit_file` now accepts model-friendly context patches with a simple bare `@@` hunk header, so supported agents can make surgical changes without calculating line numbers.
+- Native AutoByteus agents now receive a concise catalog of their configured skills and read the current `SKILL.md` instructions from the advertised path when needed.
 
 ## Improvements
 
-- Edits use unique surrounding context, preserve unrelated file content, and retry safely when whitespace differs.
-- The file-editing tool set is simpler: use `read_file`, `edit_file`, `write_file`, or `run_bash` without redundant replacement and insertion tools.
+- Skill instruction updates can be observed on the next direct read in an active native run without restarting it.
+- Launch-time prompts stay smaller by carrying skill names, descriptions, and paths instead of complete instruction bodies.
+- File and shell access remains explicitly controlled by each agent definition rather than being granted automatically with a skill.
 
 ## Fixes
 
-- Fixed valid context edits from models such as DeepSeek being rejected for omitting numeric unified-diff ranges.
-- Ambiguous, malformed, or partially applicable patches continue to fail without partially modifying the target file.
+- Removed stale launch-time skill-body copies and the redundant dedicated skill-loading tool group.
+- Prevented unconfigured or unresolved skills from being advertised to native agents.
