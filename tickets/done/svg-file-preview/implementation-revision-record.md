@@ -4,14 +4,14 @@
 
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
-| IR-001 | `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/architecture-review-revision-record.md`; Round 1 initial implementation handoff | N/A | `Initial Baseline` | `SR-001`, `ARCH-REV-001`; `CRR-*`, `API-REV-*`, `DR-*`: N/A | Implementation complete; ready for code review |
-| IR-002 | `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/architecture-review-revision-record.md`; Round 2 after `ARCH-REV-002` Pass and `CRR-002` synchronization gate | `CR-F-002` (`CR-F-001` resolved upstream) | `Local Fix` | `SR-001`, `SR-002`, `ARCH-REV-001`, `ARCH-REV-002`, `CRR-002`; `API-REV-*`, `DR-*`: N/A | Handoff and revision trace refreshed for all three approved SVG journeys; source scope unchanged; ready for code-review rerun |
+| IR-001 | `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/architecture-review-revision-record.md`; Round 1 initial implementation handoff | N/A | `Initial Baseline` | `SR-001`, `ARCH-REV-001`; `CRR-*`, `API-REV-*`, `DR-*`: N/A | Implementation complete; ready for code review |
+| IR-002 | `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/architecture-review-revision-record.md`; Round 2 after `ARCH-REV-002` Pass and `CRR-002` synchronization gate | `CR-F-002` (`CR-F-001` resolved upstream) | `Local Fix` | `SR-001`, `SR-002`, `ARCH-REV-001`, `ARCH-REV-002`, `CRR-002`; `API-REV-*`, `DR-*`: N/A | Handoff and revision trace refreshed for all three approved SVG journeys; source scope unchanged; ready for code-review rerun |
 
 ## Revision Entries
 
 ### IR-001 — Initial SVG shared-policy implementation baseline
 
-- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/architecture-review-revision-record.md`; Round 1 after `ARCH-REV-001` Pass.
+- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/architecture-review-revision-record.md`; Round 1 after `ARCH-REV-001` Pass.
 - Triggering finding IDs: N/A; architecture review recorded no findings.
 - Classification: `Initial Baseline`.
 - Prior authoritative result: `N/A`.
@@ -29,9 +29,9 @@
   - Added SVG bare-path and uppercase `file:` URI eligibility cases to the existing Event Monitor action-policy test.
   - No production store, launcher, viewer, URL, protocol, backend, authorization, persisted-data, or compatibility-path changes.
 - Changed files or areas:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-web/utils/fileExplorer/fileTypePolicy.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-web/utils/fileExplorer/__tests__/fileUtils.test.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-web/utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/utils/fileExplorer/fileTypePolicy.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/utils/fileExplorer/__tests__/fileUtils.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts`
 - Local validation and result:
   - `pnpm test:nuxt --run utils/fileExplorer/__tests__/fileUtils.test.ts utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts` — passed, 2 files / 70 tests.
   - `pnpm test:nuxt --run components/fileExplorer/__tests__/FileViewer.spec.ts stores/__tests__/fileExplorerNodeRouting.spec.ts` — passed, 2 files / 12 tests.
@@ -44,7 +44,7 @@
 
 ### IR-002 — Synchronize the implementation trace for explicit Artifacts-tab scope
 
-- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/architecture-review-revision-record.md`; Round 2 after `ARCH-REV-002` Pass. The synchronization request originated from `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/code-review-report.md` and `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/code-review-revision-record.md` (`CRR-002`).
+- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/architecture-review-revision-record.md`; Round 2 after `ARCH-REV-002` Pass. The synchronization request originated from `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/code-review-report.md` and `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/code-review-revision-record.md` (`CRR-002`).
 - Triggering finding IDs: `CR-F-002`; `CR-F-001` is resolved by `SR-002` / `ARCH-REV-002`.
 - Classification: `Local Fix` — implementation artifact synchronization only; no source defect or design impact was found.
 - Prior authoritative result: `IR-001` implementation baseline for `SR-001` / `ARCH-REV-001`; source implementation complete but handoff scope was stale relative to the revised design.
@@ -62,8 +62,8 @@
   - Recorded preservation of ArtifactContentViewer metadata/fallback, pending/streaming/failed/deleted status behavior, authorization, read-only state, and blob cleanup.
   - No runtime source, test source, API, protocol, persisted-data, migration, or documentation code was changed.
 - Changed files or areas:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/implementation-handoff.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/implementation-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/implementation-handoff.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/implementation-revision-record.md`
 - Local validation and result:
   - Prior `IR-001` focused policy/action tests (70 tests), FileViewer/store routing tests (12 tests), production build, isolated changed-source type check, and `git diff --check` remain authoritative because runtime source is unchanged.
   - `git diff --check` after this synchronization — passed.

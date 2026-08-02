@@ -71,7 +71,7 @@ route for bytes, and render through the same FileViewer/ImageViewer boundary.
 
 | Artifact Path | Type / Purpose | Related Requirement IDs | Related Acceptance-Criteria IDs | Status / Approval | Relationship To Requirements |
 | --- | --- | --- | --- | --- | --- |
-| /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/svg-preview-ui-ux-spec.md | UI/UX journey and state specification for direct File Explorer, Event Monitor, and SVG selection in the right-side Artifacts tab | REQ-002, REQ-003, REQ-004, REQ-005, REQ-007 | AC-002, AC-003, AC-004, AC-006, AC-007, AC-009, AC-010 | Requirements-ready; approval basis is the explicit request, clarification, and supplied screenshot | Defines observable states, read-only/right-panel/Artifacts-tab behavior, loading/error/unavailable handling, accessibility, and out-of-scope UI changes; it does not supersede the core requirements |
+| /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/svg-preview-ui-ux-spec.md | UI/UX journey and state specification for direct File Explorer, Event Monitor, and SVG selection in the right-side Artifacts tab | REQ-002, REQ-003, REQ-004, REQ-005, REQ-007 | AC-002, AC-003, AC-004, AC-006, AC-007, AC-009, AC-010 | Requirements-ready; approval basis is the explicit request, clarification, and supplied screenshot | Defines observable states, read-only/right-panel/Artifacts-tab behavior, loading/error/unavailable handling, accessibility, and out-of-scope UI changes; it does not supersede the core requirements |
 
 ## Design Health Assessment (Mandatory)
 

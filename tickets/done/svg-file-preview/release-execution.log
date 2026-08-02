@@ -1,0 +1,15 @@
+Release execution for svg-file-preview
+
+Timestamp: 2026-08-02
+Command: pnpm release 1.4.38 -- --release-notes tickets/done/svg-file-preview/release-notes.md
+Previous package versions: autobyteus-web 1.4.37; autobyteus-message-gateway 1.4.37
+New package versions: autobyteus-web 1.4.38; autobyteus-message-gateway 1.4.38
+Ticket branch commit: b2e56cb4e89a4e5499763a00163b9e1479277141
+Target merge commit: fbc709154a0d9be83816647e3052d456bd4a2f71
+Release commit: c17c676b4564872eec8485f56c53a01663eebe8c
+Release tag: v1.4.38
+Release tag target: c17c676b4564872eec8485f56c53a01663eebe8c
+Target push: origin/personal succeeded
+Tag push: origin/v1.4.38 succeeded
+Release helper also synchronized .github/release-notes/release-notes.md and the managed messaging release manifest.
+Tag-triggered workflows were observed in progress; see release-workflow-status-v1.4.38.json.

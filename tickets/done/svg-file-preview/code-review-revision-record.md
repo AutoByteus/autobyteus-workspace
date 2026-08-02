@@ -4,19 +4,19 @@
 
 | Revision ID | Canonical Review Report | Entry Point / Trigger | Prior Result | Current Result | Affected Finding IDs |
 | --- | --- | --- | --- | --- | --- |
-| CRR-001 | /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/code-review-report.md | Implementation Review — initial handoff after IR-001/ARCH-REV-001 | N/A | Fail | CR-F-001 |
-| CRR-002 | /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/code-review-report.md | Implementation Review — SR-002 revised scope became available during Round 1 review | Fail | Blocked | CR-F-001 resolved; CR-F-002 |
-| CRR-003 | /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/code-review-report.md | Implementation Review — IR-002 after ARCH-REV-002 Pass and synchronization fix | Blocked | Pass | CR-F-002 resolved; none remaining |
-| CRR-004 | /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/api-e2e-test-review-report.md | Proportional API/E2E durable test-code review after API-REV-001 | N/A | Fail | CR-TF-001 |
-| CRR-005 | /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/api-e2e-test-review-report.md | Proportional API/E2E durable test-code review rerun after API-REV-002 correction | Fail | Pass | CR-TF-001 resolved; none remaining |
+| CRR-001 | /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/code-review-report.md | Implementation Review — initial handoff after IR-001/ARCH-REV-001 | N/A | Fail | CR-F-001 |
+| CRR-002 | /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/code-review-report.md | Implementation Review — SR-002 revised scope became available during Round 1 review | Fail | Blocked | CR-F-001 resolved; CR-F-002 |
+| CRR-003 | /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/code-review-report.md | Implementation Review — IR-002 after ARCH-REV-002 Pass and synchronization fix | Blocked | Pass | CR-F-002 resolved; none remaining |
+| CRR-004 | /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/api-e2e-test-review-report.md | Proportional API/E2E durable test-code review after API-REV-001 | N/A | Fail | CR-TF-001 |
+| CRR-005 | /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/api-e2e-test-review-report.md | Proportional API/E2E durable test-code review rerun after API-REV-002 correction | Fail | Pass | CR-TF-001 resolved; none remaining |
 
 ## Revision Entries
 
 ### CRR-001 — Initial implementation source review: Artifact behavior-map gap
 
-- Canonical review report updated: /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/code-review-report.md
+- Canonical review report updated: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/code-review-report.md
 - Review entry point and round: Implementation Review, Round 1; initial source/architecture review of commit b1590e1e9.
-- Triggering role, report path, and finding or scenario IDs: implementation_engineer; /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/implementation-handoff.md; finding CR-F-001.
+- Triggering role, report path, and finding or scenario IDs: implementation_engineer; /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/implementation-handoff.md; finding CR-F-001.
 - Relevant solution revision IDs: SR-001
 - Relevant architecture-review revision IDs: ARCH-REV-001
 - Relevant implementation revision IDs: IR-001
@@ -37,9 +37,9 @@ None.
 
 ### CRR-002 — Revised Artifact scope mapped but awaiting architecture and handoff synchronization
 
-- Canonical review report updated: /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/code-review-report.md
+- Canonical review report updated: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/code-review-report.md
 - Review entry point and round: Implementation Review, Round 2; current SR-002 upstream rework became available while Round 1 was in progress.
-- Triggering role, report path, and finding or scenario IDs: solution_designer; /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/solution-revision-record.md (SR-002); finding CR-F-002.
+- Triggering role, report path, and finding or scenario IDs: solution_designer; /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/solution-revision-record.md (SR-002); finding CR-F-002.
 - Relevant solution revision IDs: SR-001, SR-002
 - Relevant architecture-review revision IDs: ARCH-REV-001 as prior context; revised architecture ID pending at that time.
 - Relevant implementation revision IDs: IR-001 as prior context; revised implementation ID pending at that time.
@@ -63,9 +63,9 @@ None.
 
 ### CRR-003 — Source-review pass after architecture and implementation synchronization
 
-- Canonical review report updated: /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/code-review-report.md
+- Canonical review report updated: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/code-review-report.md
 - Review entry point and round: Implementation Review, Round 3; source review rerun after IR-002.
-- Triggering role, report path, and finding or scenario IDs: implementation_engineer; /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/implementation-handoff.md and /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/implementation-revision-record.md (IR-002); prior gate CR-F-002.
+- Triggering role, report path, and finding or scenario IDs: implementation_engineer; /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/implementation-handoff.md and /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/implementation-revision-record.md (IR-002); prior gate CR-F-002.
 - Relevant solution revision IDs: SR-001, SR-002
 - Relevant architecture-review revision IDs: ARCH-REV-001, ARCH-REV-002
 - Relevant implementation revision IDs: IR-001, IR-002
@@ -89,9 +89,9 @@ None.
 
 ### CRR-004 — Proportional API/E2E durable test-code review identifies one stale scenario title
 
-- Canonical test review report updated: /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/api-e2e-test-review-report.md
+- Canonical test review report updated: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/api-e2e-test-review-report.md
 - Review entry point and round: Proportional API/E2E test-code review, Round 1, after API-REV-001.
-- Triggering role, report path, and finding or scenario IDs: api_e2e_engineer; /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/api-e2e-revision-record.md; finding CR-TF-001.
+- Triggering role, report path, and finding or scenario IDs: api_e2e_engineer; /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/api-e2e-revision-record.md; finding CR-TF-001.
 - Relevant solution revision IDs: SR-001, SR-002
 - Relevant architecture-review revision IDs: ARCH-REV-001, ARCH-REV-002
 - Relevant implementation revision IDs: IR-001, IR-002
@@ -114,9 +114,9 @@ None.
 
 ### CRR-005 — Proportional API/E2E durable test-code review pass after title correction
 
-- Canonical test review report updated: /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/api-e2e-test-review-report.md
+- Canonical test review report updated: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/api-e2e-test-review-report.md
 - Review entry point and round: Proportional API/E2E test-code review, Round 2, after API-REV-002.
-- Triggering role, report path, and finding or scenario IDs: api_e2e_engineer; /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/api-e2e-revision-record.md; CR-TF-001 correction.
+- Triggering role, report path, and finding or scenario IDs: api_e2e_engineer; /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/api-e2e-revision-record.md; CR-TF-001 correction.
 - Relevant solution revision IDs: SR-001, SR-002
 - Relevant architecture-review revision IDs: ARCH-REV-001, ARCH-REV-002
 - Relevant implementation revision IDs: IR-001, IR-002
@@ -125,13 +125,13 @@ None.
 - Relevant delivery revision IDs: N/A
 - Prior authoritative test-review result: Fail from CRR-004.
 - Current authoritative test-review result: Pass. The title-only correction now discloses the text, PDF, and SVG scenarios, and the focused inherited-consumer rerun passed with 4 files / 23 tests.
-- What changed in the review result and why: api_e2e_engineer renamed the existing mobile artifact integration test title; no assertions, fixtures, or runtime behavior changed. The rerun evidence at /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/api-e2e-test-output/03-web-inherited-consumers-rerun.log confirms the same affected coverage result.
+- What changed in the review result and why: api_e2e_engineer renamed the existing mobile artifact integration test title; no assertions, fixtures, or runtime behavior changed. The rerun evidence at /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/api-e2e-test-output/03-web-inherited-consumers-rerun.log confirms the same affected coverage result.
 
 #### Prior Finding Resolution
 
 | Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
 | --- | --- | --- | --- | --- |
-| CR-TF-001 | Open / blocking in CRR-004 | Resolved | API-REV-002, CRR-005 | /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-web/components/mobile/__tests__/MobileArtifactsContentViewerIntegration.spec.ts now names text, PDF, and SVG in the scenario title; the focused inherited-consumer rerun passed 4 files / 23 tests with no assertion or fixture changes. |
+| CR-TF-001 | Open / blocking in CRR-004 | Resolved | API-REV-002, CRR-005 | /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/mobile/__tests__/MobileArtifactsContentViewerIntegration.spec.ts now names text, PDF, and SVG in the scenario title; the focused inherited-consumer rerun passed 4 files / 23 tests with no assertion or fixture changes. |
 
 - New or remaining finding IDs: None.
 - Material score or classification changes: The proportional test-review result moves from Fail to Pass; the implementation source-review result remains Pass at CRR-003 and API-REV-001 remains Pass at 95% confidence.

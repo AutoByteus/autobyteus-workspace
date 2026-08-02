@@ -11,9 +11,9 @@
 
 ### ARCH-REV-001 — Initial shared-policy SVG preview design baseline
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/design-review-report.md`
 - Review round and trigger: Round 1; initial handoff from `solution_designer` for the `SR-001` design-ready package.
-- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/solution-revision-record.md` (`SR-001`); finding IDs `N/A`.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/solution-revision-record.md` (`SR-001`); finding IDs `N/A`.
 - Relevant solution revision IDs: `SR-001`
 - Prior authoritative decision: `N/A`
 - Current authoritative decision: `Pass`
@@ -30,9 +30,9 @@ None.
 
 ### ARCH-REV-002 — Explicit right-side Artifacts-tab SVG journey re-review
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/design-review-report.md`
 - Review round and trigger: Round 2; `solution_designer` submitted `SR-002` after the user's clarification that “artifact” means an SVG selected in the existing right-side Artifacts tab. The review rechecked the prior design-scope finding `CR-F-001` and the current blocked handoff-synchronization finding `CR-F-002` from `CRR-002`.
-- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/solution-revision-record.md` (`SR-002`); `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/code-review-report.md` and `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/code-review-revision-record.md` (`CRR-001`/`CRR-002`, `CR-F-001`/`CR-F-002`).
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/solution-revision-record.md` (`SR-002`); `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/code-review-report.md` and `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/code-review-revision-record.md` (`CRR-001`/`CRR-002`, `CR-F-001`/`CR-F-002`).
 - Relevant solution revision IDs: `SR-001`, `SR-002`
 - Prior authoritative decision: `Pass` for the narrower `SR-001` behavior basis (`ARCH-REV-001`).
 - Current authoritative decision: `Pass` for the revised `SR-002` behavior basis and complete architecture scope.

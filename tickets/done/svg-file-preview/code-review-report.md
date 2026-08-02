@@ -3,19 +3,19 @@
 ## Review Round Meta
 
 - Review Entry Point: Implementation Review
-- Requirements Doc Reviewed As Context: /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/requirements-doc.md
-- Investigation Notes Reviewed As Context: /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/investigation-notes.md
-- Design Spec Reviewed As Context: /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/design-spec.md
-- Supplemental Task Artifacts Reviewed As Context: /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/svg-preview-ui-ux-spec.md
-- Solution Revision Record Reviewed As Context: /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/solution-revision-record.md
+- Requirements Doc Reviewed As Context: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/requirements-doc.md
+- Investigation Notes Reviewed As Context: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/investigation-notes.md
+- Design Spec Reviewed As Context: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/design-spec.md
+- Supplemental Task Artifacts Reviewed As Context: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/svg-preview-ui-ux-spec.md
+- Solution Revision Record Reviewed As Context: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/solution-revision-record.md
 - Relevant Solution Revision IDs: SR-001, SR-002
-- Design Review Report Reviewed As Context: /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/design-review-report.md
-- Architecture Review Revision Record: /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/architecture-review-revision-record.md
+- Design Review Report Reviewed As Context: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/design-review-report.md
+- Architecture Review Revision Record: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/architecture-review-revision-record.md
 - Relevant Architecture Review Revision IDs: ARCH-REV-001, ARCH-REV-002
-- Implementation Handoff Reviewed As Context: /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/implementation-handoff.md
-- Implementation Revision Record Reviewed As Context: /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/implementation-revision-record.md
+- Implementation Handoff Reviewed As Context: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/implementation-handoff.md
+- Implementation Revision Record Reviewed As Context: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/implementation-revision-record.md
 - Relevant Implementation Revision IDs: IR-001, IR-002
-- Code Review Revision Record: /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/code-review-revision-record.md
+- Code Review Revision Record: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/code-review-revision-record.md
 - Current Code Review Revision ID: CRR-003
 - Current Review Round: 3
 - Trigger: implementation_engineer returned the cumulative package after ARCH-REV-002 Pass. Commit 541d2361cccfb7c9f7be89c53d106a11dd9f2f76 synchronizes the implementation handoff and revision artifacts to the approved SR-002 scope; runtime implementation remains the b1590e1e9f052f59181f24fb3e5223b1623ea3f3 source change.
@@ -35,9 +35,9 @@
 
 - Changed implementation and behavior reviewed: the cumulative range from origin/personal to HEAD, with runtime source and focused tests from b1590e1e9 and the artifact synchronization commit 541d2361c. The runtime change adds .svg to the established Image extension policy; the latest commit changes only task/review/implementation artifacts.
 - Files / areas reviewed:
-  - /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-web/utils/fileExplorer/fileTypePolicy.ts
-  - /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-web/utils/fileExplorer/__tests__/fileUtils.test.ts
-  - /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-web/utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts
+  - /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/utils/fileExplorer/fileTypePolicy.ts
+  - /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/utils/fileExplorer/__tests__/fileUtils.test.ts
+  - /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts
   - Existing File Explorer store/content actions, Event Monitor action/launcher, FileViewer, ImageViewer, and right-side Artifacts-tab ArtifactContentViewer paths.
   - Current requirements, investigation, design, architecture-review, implementation-handoff, implementation-revision, and prior code-review records.
 - Explicit exclusions: API/E2E coverage investigation and execution, browser/Electron/backend environment setup, durable documentation edits, and delivery integration. These are downstream responsibilities after this source-review pass.
@@ -139,7 +139,7 @@ items were identified. No removal action is required.
 
 - Docs impact: Yes
 - Why: REQ-006 and AC-008 require the durable supported-file documentation to include SVG. The runtime policy is now aligned, but the supported-image lists remain delivery-owned documentation work.
-- Files or areas likely affected: /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-web/docs/content_rendering.md and /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-web/docs/file_explorer.md
+- Files or areas likely affected: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/content_rendering.md and /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/file_explorer.md
 - Review disposition: No documentation edit is required in this source-review stage; delivery_engineer must reconcile the integrated branch state and record the documentation sync or explicit no-impact result.
 
 ## Material Premise Validation (Only When Needed)
@@ -201,7 +201,7 @@ api_e2e_engineer
 - Downstream execution should validate MIME/content boundaries, malformed SVG decode behavior, Event Monitor click/Enter/Space and focus, workspace/Electron transport, and the right-side Artifact metadata-first/shared-policy-fallback path with authorized content and blob cleanup.
 - Existing Artifact pending, streaming, failed, deleted, unavailable, read-only, and non-SVG lifecycle behavior remains unchanged by source but requires executable regression evidence.
 - The implementation handoff records that the browser shell was rendered but no backend-supported workspace journey was available; this is not a source-review failure.
-- Durable supported-image documentation remains delivery-owned in /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-web/docs/content_rendering.md and /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-web/docs/file_explorer.md.
+- Durable supported-image documentation remains delivery-owned in /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/content_rendering.md and /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/file_explorer.md.
 - No persisted-data, backend route, protocol, authorization, migration, or compatibility path was introduced.
 
 ## Latest Authoritative Result

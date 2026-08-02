@@ -20,20 +20,20 @@ baseline/environment failures; no changed SVG scenario failed in those runs.
 
 ## Upstream Package
 
-- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/requirements-doc.md`
-- Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/investigation-notes.md`
-- Design: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/design-spec.md`
-- UI/UX supplement: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/svg-preview-ui-ux-spec.md`
-- Solution revision: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/solution-revision-record.md`
-- Design review: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/design-review-report.md`
-- Architecture revision: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/architecture-review-revision-record.md`
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/implementation-handoff.md`
-- Implementation revision: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/implementation-revision-record.md`
-- Code review: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/code-review-report.md`
-- Code-review revision: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/code-review-revision-record.md`
-- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/api-e2e-coverage-investigation.md`
-- This report: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/api-e2e-execution-coverage-report.md`
-- Revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/api-e2e-revision-record.md`
+- Requirements: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/requirements-doc.md`
+- Investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/investigation-notes.md`
+- Design: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/design-spec.md`
+- UI/UX supplement: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/svg-preview-ui-ux-spec.md`
+- Solution revision: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/solution-revision-record.md`
+- Design review: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/design-review-report.md`
+- Architecture revision: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/architecture-review-revision-record.md`
+- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/implementation-handoff.md`
+- Implementation revision: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/implementation-revision-record.md`
+- Code review: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/code-review-report.md`
+- Code-review revision: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/code-review-revision-record.md`
+- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/api-e2e-coverage-investigation.md`
+- This report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/api-e2e-execution-coverage-report.md`
+- Revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/api-e2e-revision-record.md`
 
 ## Scope And Critical Scenarios
 
@@ -54,29 +54,29 @@ delivery-owned documentation criterion and is not claimed by this report.
 
 Added or updated before final execution; no coverage was removed:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-web/components/fileExplorer/__tests__/FileViewer.spec.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-web/stores/__tests__/fileExplorerNodeRouting.spec.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-web/components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-web/components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-web/composables/__tests__/useEventMonitorFilePreview.spec.ts` (new)
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-server-ts/tests/unit/utils/artifact-utils.test.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-server-ts/tests/unit/api/rest/run-file-changes.test.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-server-ts/tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-web/electron/local-file-protocol/__tests__/local-file-response.spec.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-web/components/mobile/__tests__/MobileArtifactsContentViewerIntegration.spec.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-web/components/mobile/__tests__/MobileFileViewer.spec.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-web/components/workspace/team/__tests__/TeamCommunicationReferenceViewer.spec.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-web/components/workspace/team/__tests__/TeamTaskReferenceViewer.spec.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/fileExplorer/__tests__/FileViewer.spec.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/stores/__tests__/fileExplorerNodeRouting.spec.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/composables/__tests__/useEventMonitorFilePreview.spec.ts` (new)
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/unit/utils/artifact-utils.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/unit/api/rest/run-file-changes.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron/local-file-protocol/__tests__/local-file-response.spec.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/mobile/__tests__/MobileArtifactsContentViewerIntegration.spec.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/mobile/__tests__/MobileFileViewer.spec.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/team/__tests__/TeamCommunicationReferenceViewer.spec.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/team/__tests__/TeamTaskReferenceViewer.spec.ts`
 
 The implementation/source-review coverage was also rerun and remains relevant:
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-web/utils/fileExplorer/__tests__/fileUtils.test.ts`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-web/utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/utils/fileExplorer/__tests__/fileUtils.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts`
 
 ## Executed Checks And Evidence
 
 All paths below are retained under
-`/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/api-e2e-test-output/`.
+`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/api-e2e-test-output/`.
 
 | Check | Command / execution mode | Result |
 | --- | --- | --- |
@@ -100,7 +100,7 @@ Google Chrome, and production `FileViewer`, `ImageViewer`, and
 `MarkdownRenderer` components. The fixture was not a claim of a full
 authenticated application journey.
 
-Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/api-e2e-test-output/11-browser-svg-probe.json` and `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/api-e2e-test-output/11-browser-svg-probe.log`.
+Evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/api-e2e-test-output/11-browser-svg-probe.json` and `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/api-e2e-test-output/11-browser-svg-probe.log`.
 
 - `SVG-BR-001`: valid SVG loaded through the production viewer path; Chrome reported `complete: true`, `naturalWidth: 150`, `naturalHeight: 150`.
 - `SVG-BR-002`: malformed SVG retained its image boundary and failed decode; Chrome reported `complete: true`, `naturalWidth: 0`, `naturalHeight: 0`.

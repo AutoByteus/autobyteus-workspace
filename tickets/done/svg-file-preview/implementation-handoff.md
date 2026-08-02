@@ -2,19 +2,19 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/requirements-doc.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/design-spec.md`
-- Supplemental task artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/svg-preview-ui-ux-spec.md`
-- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/solution-revision-record.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/design-review-report.md`
-- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/code-review-report.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/code-review-revision-record.md` (`CRR-002` / `CR-F-002`), followed by revised architecture approval `ARCH-REV-002`.
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/requirements-doc.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/design-spec.md`
+- Supplemental task artifacts: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/svg-preview-ui-ux-spec.md`
+- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/solution-revision-record.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/design-review-report.md`
+- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/architecture-review-revision-record.md`
+- Triggering rework report, revision record, or evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/code-review-report.md`, `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/code-review-revision-record.md` (`CRR-002` / `CR-F-002`), followed by revised architecture approval `ARCH-REV-002`.
 
 ## Current Implementation Summary
 
 - Implementation cycle: `Rework`
-- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/implementation-revision-record.md`
+- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/implementation-revision-record.md`
 - Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-001`, `SR-002`
 - Related architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`
@@ -45,22 +45,22 @@ unchanged from `IR-001`.
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
-| BEH-001 | Workspace lower- or upper-case SVG is an `Image` and uses the existing read-only media preview; loading/error/tab/zoom behavior is unchanged. | `FileItem` -> existing workspace File Explorer store -> `determineFileType` / `determineFilePreviewType` -> existing local/workspace media URL branch -> `FileExplorerTabs` -> `FileViewer` -> `ImageViewer`. Runtime policy change: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-web/utils/fileExplorer/fileTypePolicy.ts:12`. | Implemented by policy membership only; existing store/viewer tests pass. No text-reader or SVG-specific path added. |
-| BEH-002 | Eligible absolute SVG paths and supported absolute `file:` links become the existing typed Event Monitor action and retain the existing launcher, Files activation, read-only intent, and focus behavior. | Existing Event Monitor action policy -> shared `determineFilePreviewType` -> existing `createAbsoluteFilePathAction` / `resolveEventMonitorMarkdownFileDestination` -> existing `useEventMonitorFilePreview.openPath` -> File Explorer store and Files panel. Regression evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-web/utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts`. | Implemented indirectly through the shared allowlist; bare SVG and uppercase `file:` URI cases pass. Launcher and panel code unchanged. |
-| BEH-003 | Image-family URLs still dispatch to `ImageViewer`; trusted/authorized media URL and object-URL behavior is unchanged. | Existing File Explorer store/content actions -> existing URL/object-URL helper -> `FileViewer` Image branch -> `ImageViewer` `<img>`. | Preserved; `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-web/components/fileExplorer/__tests__/FileViewer.spec.ts` and store routing checks pass. |
+| BEH-001 | Workspace lower- or upper-case SVG is an `Image` and uses the existing read-only media preview; loading/error/tab/zoom behavior is unchanged. | `FileItem` -> existing workspace File Explorer store -> `determineFileType` / `determineFilePreviewType` -> existing local/workspace media URL branch -> `FileExplorerTabs` -> `FileViewer` -> `ImageViewer`. Runtime policy change: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/utils/fileExplorer/fileTypePolicy.ts:12`. | Implemented by policy membership only; existing store/viewer tests pass. No text-reader or SVG-specific path added. |
+| BEH-002 | Eligible absolute SVG paths and supported absolute `file:` links become the existing typed Event Monitor action and retain the existing launcher, Files activation, read-only intent, and focus behavior. | Existing Event Monitor action policy -> shared `determineFilePreviewType` -> existing `createAbsoluteFilePathAction` / `resolveEventMonitorMarkdownFileDestination` -> existing `useEventMonitorFilePreview.openPath` -> File Explorer store and Files panel. Regression evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts`. | Implemented indirectly through the shared allowlist; bare SVG and uppercase `file:` URI cases pass. Launcher and panel code unchanged. |
+| BEH-003 | Image-family URLs still dispatch to `ImageViewer`; trusted/authorized media URL and object-URL behavior is unchanged. | Existing File Explorer store/content actions -> existing URL/object-URL helper -> `FileViewer` Image branch -> `ImageViewer` `<img>`. | Preserved; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/fileExplorer/__tests__/FileViewer.spec.ts` and store routing checks pass. |
 | BEH-004 | The filename policy remains pure, case-normalized, and conservative: SVG is supported; archives, installers, bundles, binaries, unknown extensions, and invalid candidates remain unsupported/inert. | `determineFilePreviewType(filePath)` continues trim/separator normalization, lowercase basename, extension lookup, and `Unsupported` fallback in `fileTypePolicy.ts`; action policy continues to reject `Unsupported`. | Implemented with one allowlist entry. Existing negative policy/action cases remain green; no filesystem probe or authorization was introduced. |
 | BEH-005 | Existing trusted Electron/workspace content boundaries remain the owners of access, containment, regular-file validation, MIME, bytes, and failure behavior. | Existing local-file protocol and workspace REST content routes are reached only after the unchanged Image branch; no backend, protocol, or authorization files changed. | Preserved by non-change. MIME, malformed SVG decode, Electron, and realistic browser/API execution remain downstream coverage work. |
 | BEH-006 | An available SVG selected in the right-side Artifacts tab resolves to Image and renders through the existing ArtifactContentViewer -> FileViewer -> ImageViewer path using authorized artifact content. | `RightSideTabs` -> `ArtifactsTab` -> `ArtifactItem` -> `ArtifactContentViewer` metadata mapping or shared `determineFileType` fallback -> authorized `/runs/:runId/file-change-content` fetch -> blob URL -> read-only `FileViewer` -> `ImageViewer`. | Implemented by the same shared policy entry; `ArtifactItem`, `ArtifactContentViewer`, `artifact-utils.ts`, and `run-file-changes.ts` are unchanged. Metadata/fallback, artifact lifecycle, route authorization, blob cleanup, and non-SVG behavior require downstream coverage. |
 
 ## Key Files Or Areas
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-web/utils/fileExplorer/fileTypePolicy.ts` — authoritative runtime filename policy; `.svg` added to `IMAGE_EXTENSIONS`.
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-web/utils/fileExplorer/__tests__/fileUtils.test.ts` — existing owner-boundary classification matrix extended for lower-case, upper-case, and nested SVG paths.
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-web/utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts` — existing action-policy matrix extended for SVG bare paths and uppercase `file:` URI.
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-web/components/workspace/agent/ArtifactContentViewer.vue` — existing Artifacts-tab adapter verified by the revised design; no source change.
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-web/components/workspace/agent/ArtifactItem.vue` — existing artifact selection/metadata owner; no source change.
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-server-ts/src/utils/artifact-utils.ts` — existing SVG metadata inference owner; no source change.
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/autobyteus-server-ts/src/api/rest/run-file-changes.ts` — existing authorized artifact content boundary; no source change.
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/utils/fileExplorer/fileTypePolicy.ts` — authoritative runtime filename policy; `.svg` added to `IMAGE_EXTENSIONS`.
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/utils/fileExplorer/__tests__/fileUtils.test.ts` — existing owner-boundary classification matrix extended for lower-case, upper-case, and nested SVG paths.
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts` — existing action-policy matrix extended for SVG bare paths and uppercase `file:` URI.
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/agent/ArtifactContentViewer.vue` — existing Artifacts-tab adapter verified by the revised design; no source change.
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/components/workspace/agent/ArtifactItem.vue` — existing artifact selection/metadata owner; no source change.
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/utils/artifact-utils.ts` — existing SVG metadata inference owner; no source change.
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src/api/rest/run-file-changes.ts` — existing authorized artifact content boundary; no source change.
 - Existing `FileViewer`, File Explorer store/content actions, Event Monitor launcher, local-file protocol, workspace REST route, and durable docs were intentionally not modified in this stage.
 
 ## Important Assumptions
@@ -101,7 +101,7 @@ unchanged from `IR-001`.
 ## Persisted Data Transition Check (When Applicable)
 
 - Approved decision: `Not Affected`.
-- Design-spec decision reference: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/design-spec.md`, `Persisted Data / State Transition Decision`.
+- Design-spec decision reference: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/design-spec.md`, `Persisted Data / State Transition Decision`.
 - Implementation follows the approved decision without an unapproved migration or version-specific runtime fallback: `Yes`.
 - Direct-use evidence or discard/rebuild result: No persisted subject changes. Open-file state remains transient and existing workspace/local SVG bytes are untouched.
 - Migration implementation and focused checks, only when `Migration Required`: Not applicable.
@@ -109,7 +109,7 @@ unchanged from `IR-001`.
 
 ## Environment Or Dependency Notes
 
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview`, branch `codex/svg-file-preview`.
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`, branch `codex/svg-file-preview`.
 - Installed dependencies with `pnpm install --frozen-lockfile`; lockfile and package manifests were not changed.
 - Generated Nuxt types with `pnpm exec nuxt prepare`; generated `.nuxt` output is ignored and is not part of the handoff.
 - No new dependency, API route, local protocol, persisted model, migration, or environment contract was introduced.
@@ -129,7 +129,7 @@ These are implementation-scoped checks only; they are not API/E2E sign-off.
 ## Frontend Rendered-Result Check (When Applicable)
 
 - Affected surfaces / journeys: workspace File Explorer SVG selection into the right-side Files `ImageViewer`, Event Monitor SVG path/file-URI activation into the same read-only Files surface, and available SVG selection in the right-side Artifacts tab through `ArtifactContentViewer`.
-- Approved UI/UX, interaction, requirement, or design references: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/svg-preview-ui-ux-spec.md`, `requirements-doc.md`, and `design-spec.md`, including `UXJ-003` / `REQ-007` / `AC-009` / `AC-010` / `DS-005`.
+- Approved UI/UX, interaction, requirement, or design references: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/svg-preview-ui-ux-spec.md`, `requirements-doc.md`, and `design-spec.md`, including `UXJ-003` / `REQ-007` / `AC-009` / `AC-010` / `DS-005`.
 - Existing design system, shared components, and adjacent product surfaces reviewed: `FileItem.vue`, File Explorer store/content actions, `FileExplorerTabs.vue`, `RightSideTabs.vue`, `ArtifactsTab.vue`, `ArtifactItem.vue`, `ArtifactContentViewer.vue`, `FileViewer.vue`, `ImageViewer.vue`, Event Monitor absolute-path action policy, and `useEventMonitorFilePreview.ts`. Existing `FileViewer.spec.ts` and store routing specs were run.
 - Project development / preview instructions and rendered surface used: `autobyteus-web/README.md` development instructions; `pnpm dev --host 127.0.0.1` on `http://127.0.0.1:29695/`; headless Chrome at 1440x900. The app shell rendered and was visually inspected; supporting screenshot was `/tmp/svg-preview-home-2.png`.
 - States, layouts, viewports, and interactions inspected: Initial browser app shell at 1440x900; navigation shell and loading state were visually inspected. The actual workspace File Explorer, Event Monitor, and Artifacts-tab journeys could not be activated because no backend was running; repeated `/rest/health` and related requests were refused/returned 500.

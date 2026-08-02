@@ -61,7 +61,7 @@ local protocol, schema, migration, or compatibility wrapper.
 
 | Artifact Path | Purpose | Related IDs | Relationship To This Design | Status / Approval |
 | --- | --- | --- | --- | --- |
-| /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/svg-preview-ui-ux-spec.md | Direct File Explorer, Event Monitor, and right-side Artifacts-tab journeys, visible states, read-only/right-panel, focus, artifact lifecycle, and non-happy paths | REQ-002–REQ-005, REQ-007; AC-002–AC-007, AC-009–AC-010 | Confirms reuse of existing surfaces and states; ArtifactContentViewer remains an adapter and adds no renderer | Requirements-ready; explicit request, clarification, and screenshot are approval basis |
+| /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/svg-preview-ui-ux-spec.md | Direct File Explorer, Event Monitor, and right-side Artifacts-tab journeys, visible states, read-only/right-panel, focus, artifact lifecycle, and non-happy paths | REQ-002–REQ-005, REQ-007; AC-002–AC-007, AC-009–AC-010 | Confirms reuse of existing surfaces and states; ArtifactContentViewer remains an adapter and adds no renderer | Requirements-ready; explicit request, clarification, and screenshot are approval basis |
 
 ## Task Design Health Assessment
 

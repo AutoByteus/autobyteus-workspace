@@ -64,12 +64,12 @@ authorized content/blob lifecycle.
 - Shared checkout initially inspected:
   /Users/normy/autobyteus_org/autobyteus-workspace-superrepo.
 - Task Workspace Root:
-  /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview.
+  /Users/normy/autobyteus_org/autobyteus-workspace-superrepo.
 - Task Artifact Folder:
-  /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview.
+  /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview.
 - Current Branch: codex/svg-file-preview.
 - Current Worktree / Working Directory:
-  /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview.
+  /Users/normy/autobyteus_org/autobyteus-workspace-superrepo.
 - Bootstrap Base Branch: origin/personal.
 - Remote Refresh Result: git fetch origin --prune succeeded on 2026-08-02;
   origin/personal resolved to
@@ -93,7 +93,7 @@ authorized content/blob lifecycle.
 
 | Artifact Path | Purpose And Scope | Evidence, Context, Or Decision Captured | Core Artifact(s) Supported | Related Requirement / Acceptance-Criteria IDs (When Applicable) | Status | Approval Applicability / State | Follow-Up Needed |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/svg-preview-ui-ux-spec.md | UI journey/state contract for direct File Explorer, Event Monitor, and SVG selection in the right-side Artifacts tab | Existing right-panel, read-only, loading/error, keyboard/focus, responsive/runtime, artifact lifecycle, and security-boundary behavior; explicitly rejects a new renderer | requirements doc, design spec | REQ-002–REQ-005, REQ-007; AC-002–AC-007, AC-009–AC-010 | Requirements-ready | Intended behavior is derived from the explicit request, clarification, and screenshot; no additional product choice introduced | Keep synchronized if architecture review changes observable behavior |
+| /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/svg-preview-ui-ux-spec.md | UI journey/state contract for direct File Explorer, Event Monitor, and SVG selection in the right-side Artifacts tab | Existing right-panel, read-only, loading/error, keyboard/focus, responsive/runtime, artifact lifecycle, and security-boundary behavior; explicitly rejects a new renderer | requirements doc, design spec | REQ-002–REQ-005, REQ-007; AC-002–AC-007, AC-009–AC-010 | Requirements-ready | Intended behavior is derived from the explicit request, clarification, and screenshot; no additional product choice introduced | Keep synchronized if architecture review changes observable behavior |
 
 The requirements doc, investigation notes, design spec, supplement, and solution
 revision record are authoritative as a cumulative package. No disposable probe
@@ -104,7 +104,7 @@ file was promoted to a supplement.
 | Date | Source Type | Exact Source / Query / Command | Why Consulted | Relevant Findings | Follow-Up Needed |
 | --- | --- | --- | --- | --- | --- |
 | 2026-08-02 | Setup | git fetch origin --prune in the shared checkout | Refresh tracked refs before branching | Succeeded; latest tracked base is origin/personal at 4b29481d5b6eaea64aebb20abcb5e4d784ea1178 | No |
-| 2026-08-02 | Setup | git worktree add -b codex/svg-file-preview /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview origin/personal | Isolate the task before deeper investigation | Succeeded; dedicated worktree and branch created | No |
+| 2026-08-02 | Setup | git worktree add -b codex/svg-file-preview /Users/normy/autobyteus_org/autobyteus-workspace-superrepo origin/personal | Isolate the task before deeper investigation | Succeeded; dedicated worktree and branch created | No |
 | 2026-08-02 | Repo | git status --short --branch; git log --oneline -6 -- autobyteus-web/utils/fileExplorer/fileTypePolicy.ts | Establish task state and policy history | Only task artifacts are untracked; history shows 66185f725 gate Event Monitor actions by supported preview type and 7140696c8 restore Lua preview support | No |
 | 2026-08-02 | Other | User report, screenshot reference path above and follow-up clarification | Establish observed failure and requested surfaces | SVG selected; right pane reports unsupported; user requests File Explorer, Event Monitor/right-side rendering, and SVG rendering when selected in the right-side Artifacts tab | No |
 | 2026-08-02 | Code | autobyteus-web/utils/fileExplorer/fileTypePolicy.ts:1-128 | Find the authoritative file-type classifier | FileDataType includes Image; IMAGE_EXTENSIONS has .jpg, .jpeg, .png, .gif, .bmp, .webp but not .svg; lowercased filename/extension drives pure classification; unknown types return Unsupported | Add .svg in implementation; add policy tests |

@@ -28,14 +28,14 @@
 - Approved behavior or requirement IDs affected: BEH-001 through BEH-005;
   REQ-001 through REQ-006; AC-001 through AC-008.
 - Canonical artifacts and sections updated:
-  - /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/requirements-doc.md
-  - /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/investigation-notes.md
-  - /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/design-spec.md
+  - /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/requirements-doc.md
+  - /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/investigation-notes.md
+  - /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/design-spec.md
   - Design health, production-path, persisted-data, ownership, spine,
     dependency, interface, and change-sequence sections in design-spec.md.
 - Supplemental artifacts updated, added, or removed:
   - Added and linked
-    /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/svg-preview-ui-ux-spec.md
+    /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/svg-preview-ui-ux-spec.md
     as the requirements-ready UI journey/state supplement.
   - No supplement removed.
 - Downstream and architecture-review impact: architecture_reviewer should
@@ -80,10 +80,10 @@
   REQ-007; AC-001, AC-004, AC-005, AC-006, AC-009, AC-010; UXJ-003; DS-003,
   DS-004, DS-005.
 - Canonical artifacts and sections updated:
-  - /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/requirements-doc.md
-  - /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/investigation-notes.md
-  - /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/design-spec.md
-  - /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/svg-preview-ui-ux-spec.md
+  - /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/requirements-doc.md
+  - /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/investigation-notes.md
+  - /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/design-spec.md
+  - /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/svg-file-preview/svg-preview-ui-ux-spec.md
   - This solution revision record.
 - Downstream and architecture-review impact: The cumulative package supersedes
   the prior artifact wording and must be re-reviewed by
