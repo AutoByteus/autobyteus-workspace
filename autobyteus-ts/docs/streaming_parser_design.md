@@ -192,7 +192,7 @@ The parser emits `SegmentEvent` objects with three lifecycle types:
 | `text`       | `{}`                              | Plain text                      | `{}`                  |
 | `tool_call`  | `{"tool_name": "..."}` (if known) | Raw XML/JSON tool content       | `{}`                  |
 | `write_file` | `{"path": "..."}` (deferred)      | File content only (no XML tags) | `{}`                  |
-| `edit_file` | `{"path": "..."}` (deferred)      | Unified diff only (no XML tags) | `{}`                  |
+| `edit_file`  | `{"path": "..."}` (deferred)      | Context patch only (no XML tags) | `{}`                  |
 | `run_bash`   | `{}`                              | Command text only               | `{}`                  |
 | `reasoning`  | `{}`                              | Reasoning text                  | `{}`                  |
 
@@ -204,11 +204,16 @@ The parser emits `SegmentEvent` objects with three lifecycle types:
 | `XmlToolParsingState`               | `tool_call`      | `tool_name` (from tag)        | Raw `<arguments>...</arguments>`     |
 | `JsonToolParsingState`              | `tool_call`      | `{}`                          | Raw JSON tool blob                   |
 | `XmlWriteFileToolParsingState`      | `write_file`     | `path` (deferred until found) | Content only (no XML tags)           |
-| `XmlEditFileToolParsingState`      | `edit_file`     | `path` (deferred until found) | Unified diff only (no XML tags)      |
+| `XmlEditFileToolParsingState`       | `edit_file`     | `path` (deferred until found) | Context patch only (no XML tags)     |
 | `XmlRunBashToolParsingState`        | `run_bash`       | `{}`                          | Command only (no XML tags)           |
 | `CustomXmlTagWriteFileParsingState` | `write_file`     | `path` (from tag)             | Content only                         |
 | `CustomXmlTagRunBashParsingState`   | `run_bash`       | `{}`                          | Command only                         |
 | `SentinelContentState`              | as header `type` | header JSON (minus `type`)    | Raw content between sentinel markers |
+
+For `edit_file`, the streaming parser owns transport framing only: it removes
+the XML/sentinel wrapper and forwards the `patch` string. The file tool's
+`context-patch.ts` owner validates the bare-`@@` context grammar, unique-match
+requirements, and atomic application semantics.
 
 ### Segment Types
 

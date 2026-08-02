@@ -50,7 +50,7 @@ flowchart TD
 | Type      | Extensions                      | Viewer Component  |
 | --------- | ------------------------------- | ----------------- |
 | Text/Code | `.js`, `.py`, `.ts`, etc.       | MonacoEditor      |
-| Image     | `.jpg`, `.png`, `.gif`, `.webp` | ImageViewer       |
+| Image     | `.jpg`, `.jpeg`, `.png`, `.gif`, `.bmp`, `.webp`, `.svg` | ImageViewer       |
 | Video     | `.mp4`, `.mov`, `.webm`         | VideoPlayer       |
 | Audio     | `.mp3`, `.wav`, `.m4a`          | AudioPlayer       |
 | PDF       | `.pdf`                          | PdfViewer         |
@@ -156,7 +156,11 @@ attribute, artifact/reference record, or API request.
 Action eligibility and File Explorer type routing share the pure
 `utils/fileExplorer/fileTypePolicy.ts` policy. Supported text/code/Markdown/HTML
 families (including `.lua`) and the established image, audio, video, PDF, CSV,
-and Excel families may produce an Event Monitor action. ZIP/DMG/PKG/application
+and Excel families may produce an Event Monitor action. The image family
+includes `.svg` (case-insensitively); after classification, workspace, trusted
+local, and Artifacts-tab content continues through its existing authorized
+content boundary into `FileViewer` and the URL-based `ImageViewer` rather than
+an SVG source or inline-DOM renderer. ZIP/DMG/PKG/application
 bundles, archives, generic binaries, and unknown extensions remain literal
 source-faithful content with no Files affordance, filesystem read, media URL,
 workspace fetch, or panel switch. A supported-looking path that is missing,

@@ -1,0 +1,553 @@
+{
+  "run_id": "api-e2e-current-context-live-2026-08-02",
+  "timestamp_range": [
+    "2026-08-02T09:45:00.989Z",
+    "2026-08-02T09:50:48.457Z"
+  ],
+  "configuration": {
+    "models": [
+      "deepseek-v4-flash",
+      "gemini-3.5-flash",
+      "gpt-5.6-sol"
+    ],
+    "variant": "context_edit_neutral",
+    "scenarios": [
+      "small_exact",
+      "multiline_config",
+      "repeated_target",
+      "late_insertion"
+    ],
+    "trials_per_model_scenario": 5,
+    "thinking_type": "enabled",
+    "reasoning_effort": "high",
+    "tool_call_format": "api_tool_call",
+    "temperature": 0,
+    "runtime": "built AutoByteus native agent/tool runtime; isolated ignored test database"
+  },
+  "completeness": {
+    "expected_runs": 60,
+    "actual_runs": 60,
+    "missing_keys": [],
+    "unexpected_keys": [],
+    "duplicate_key_count": 0
+  },
+  "overall": {
+    "runs": 60,
+    "schema_valid_tool_calls": 60,
+    "first_edit_succeeded": 57,
+    "task_success": 60,
+    "target_exact_match": 60,
+    "sentinel_unchanged": 60,
+    "total_tool_failures": 3,
+    "recovered_after_failure": 3,
+    "terminal_states": {
+      "completed": 60
+    },
+    "first_edit_tools": {
+      "edit_file": 60
+    },
+    "first_patch_formats": {
+      "bare_context": 58,
+      "other": 2
+    },
+    "duration_ms": {
+      "mean": 5885.85,
+      "median": 5779.0,
+      "min": 4227,
+      "max": 8266
+    }
+  },
+  "by_model": {
+    "deepseek-v4-flash": {
+      "runs": 20,
+      "schema_valid_tool_calls": 20,
+      "first_edit_succeeded": 19,
+      "task_success": 20,
+      "target_exact_match": 20,
+      "sentinel_unchanged": 20,
+      "total_tool_failures": 1,
+      "recovered_after_failure": 1,
+      "terminal_states": {
+        "completed": 20
+      },
+      "first_edit_tools": {
+        "edit_file": 20
+      },
+      "first_patch_formats": {
+        "bare_context": 20
+      },
+      "duration_ms": {
+        "mean": 5641.9,
+        "median": 5485.5,
+        "min": 4227,
+        "max": 8266
+      }
+    },
+    "gemini-3.5-flash": {
+      "runs": 20,
+      "schema_valid_tool_calls": 20,
+      "first_edit_succeeded": 18,
+      "task_success": 20,
+      "target_exact_match": 20,
+      "sentinel_unchanged": 20,
+      "total_tool_failures": 2,
+      "recovered_after_failure": 2,
+      "terminal_states": {
+        "completed": 20
+      },
+      "first_edit_tools": {
+        "edit_file": 20
+      },
+      "first_patch_formats": {
+        "bare_context": 18,
+        "other": 2
+      },
+      "duration_ms": {
+        "mean": 5979.9,
+        "median": 5869.5,
+        "min": 5221,
+        "max": 7089
+      }
+    },
+    "gpt-5.6-sol": {
+      "runs": 20,
+      "schema_valid_tool_calls": 20,
+      "first_edit_succeeded": 20,
+      "task_success": 20,
+      "target_exact_match": 20,
+      "sentinel_unchanged": 20,
+      "total_tool_failures": 0,
+      "recovered_after_failure": 0,
+      "terminal_states": {
+        "completed": 20
+      },
+      "first_edit_tools": {
+        "edit_file": 20
+      },
+      "first_patch_formats": {
+        "bare_context": 20
+      },
+      "duration_ms": {
+        "mean": 6035.75,
+        "median": 5949.5,
+        "min": 4641,
+        "max": 7639
+      }
+    }
+  },
+  "by_scenario": {
+    "small_exact": {
+      "runs": 15,
+      "schema_valid_tool_calls": 15,
+      "first_edit_succeeded": 15,
+      "task_success": 15,
+      "target_exact_match": 15,
+      "sentinel_unchanged": 15,
+      "total_tool_failures": 0,
+      "recovered_after_failure": 0,
+      "terminal_states": {
+        "completed": 15
+      },
+      "first_edit_tools": {
+        "edit_file": 15
+      },
+      "first_patch_formats": {
+        "bare_context": 15
+      },
+      "duration_ms": {
+        "mean": 5746.867,
+        "median": 5757,
+        "min": 4409,
+        "max": 7167
+      }
+    },
+    "multiline_config": {
+      "runs": 15,
+      "schema_valid_tool_calls": 15,
+      "first_edit_succeeded": 14,
+      "task_success": 15,
+      "target_exact_match": 15,
+      "sentinel_unchanged": 15,
+      "total_tool_failures": 1,
+      "recovered_after_failure": 1,
+      "terminal_states": {
+        "completed": 15
+      },
+      "first_edit_tools": {
+        "edit_file": 15
+      },
+      "first_patch_formats": {
+        "bare_context": 15
+      },
+      "duration_ms": {
+        "mean": 6191.467,
+        "median": 5964,
+        "min": 4924,
+        "max": 8266
+      }
+    },
+    "repeated_target": {
+      "runs": 15,
+      "schema_valid_tool_calls": 15,
+      "first_edit_succeeded": 15,
+      "task_success": 15,
+      "target_exact_match": 15,
+      "sentinel_unchanged": 15,
+      "total_tool_failures": 0,
+      "recovered_after_failure": 0,
+      "terminal_states": {
+        "completed": 15
+      },
+      "first_edit_tools": {
+        "edit_file": 15
+      },
+      "first_patch_formats": {
+        "bare_context": 15
+      },
+      "duration_ms": {
+        "mean": 5578.733,
+        "median": 5457,
+        "min": 4616,
+        "max": 7335
+      }
+    },
+    "late_insertion": {
+      "runs": 15,
+      "schema_valid_tool_calls": 15,
+      "first_edit_succeeded": 13,
+      "task_success": 15,
+      "target_exact_match": 15,
+      "sentinel_unchanged": 15,
+      "total_tool_failures": 2,
+      "recovered_after_failure": 2,
+      "terminal_states": {
+        "completed": 15
+      },
+      "first_edit_tools": {
+        "edit_file": 15
+      },
+      "first_patch_formats": {
+        "bare_context": 13,
+        "other": 2
+      },
+      "duration_ms": {
+        "mean": 6026.333,
+        "median": 5780,
+        "min": 4227,
+        "max": 7639
+      }
+    }
+  },
+  "by_model_scenario": {
+    "deepseek-v4-flash::late_insertion": {
+      "runs": 5,
+      "schema_valid_tool_calls": 5,
+      "first_edit_succeeded": 5,
+      "task_success": 5,
+      "target_exact_match": 5,
+      "sentinel_unchanged": 5,
+      "total_tool_failures": 0,
+      "recovered_after_failure": 0,
+      "terminal_states": {
+        "completed": 5
+      },
+      "first_edit_tools": {
+        "edit_file": 5
+      },
+      "first_patch_formats": {
+        "bare_context": 5
+      },
+      "duration_ms": {
+        "mean": 5176.6,
+        "median": 4953,
+        "min": 4227,
+        "max": 6274
+      }
+    },
+    "deepseek-v4-flash::multiline_config": {
+      "runs": 5,
+      "schema_valid_tool_calls": 5,
+      "first_edit_succeeded": 4,
+      "task_success": 5,
+      "target_exact_match": 5,
+      "sentinel_unchanged": 5,
+      "total_tool_failures": 1,
+      "recovered_after_failure": 1,
+      "terminal_states": {
+        "completed": 5
+      },
+      "first_edit_tools": {
+        "edit_file": 5
+      },
+      "first_patch_formats": {
+        "bare_context": 5
+      },
+      "duration_ms": {
+        "mean": 6486.6,
+        "median": 6442,
+        "min": 4924,
+        "max": 8266
+      }
+    },
+    "deepseek-v4-flash::repeated_target": {
+      "runs": 5,
+      "schema_valid_tool_calls": 5,
+      "first_edit_succeeded": 5,
+      "task_success": 5,
+      "target_exact_match": 5,
+      "sentinel_unchanged": 5,
+      "total_tool_failures": 0,
+      "recovered_after_failure": 0,
+      "terminal_states": {
+        "completed": 5
+      },
+      "first_edit_tools": {
+        "edit_file": 5
+      },
+      "first_patch_formats": {
+        "bare_context": 5
+      },
+      "duration_ms": {
+        "mean": 5907,
+        "median": 5931,
+        "min": 4616,
+        "max": 7335
+      }
+    },
+    "deepseek-v4-flash::small_exact": {
+      "runs": 5,
+      "schema_valid_tool_calls": 5,
+      "first_edit_succeeded": 5,
+      "task_success": 5,
+      "target_exact_match": 5,
+      "sentinel_unchanged": 5,
+      "total_tool_failures": 0,
+      "recovered_after_failure": 0,
+      "terminal_states": {
+        "completed": 5
+      },
+      "first_edit_tools": {
+        "edit_file": 5
+      },
+      "first_patch_formats": {
+        "bare_context": 5
+      },
+      "duration_ms": {
+        "mean": 4997.4,
+        "median": 4923,
+        "min": 4409,
+        "max": 6031
+      }
+    },
+    "gemini-3.5-flash::late_insertion": {
+      "runs": 5,
+      "schema_valid_tool_calls": 5,
+      "first_edit_succeeded": 3,
+      "task_success": 5,
+      "target_exact_match": 5,
+      "sentinel_unchanged": 5,
+      "total_tool_failures": 2,
+      "recovered_after_failure": 2,
+      "terminal_states": {
+        "completed": 5
+      },
+      "first_edit_tools": {
+        "edit_file": 5
+      },
+      "first_patch_formats": {
+        "bare_context": 3,
+        "other": 2
+      },
+      "duration_ms": {
+        "mean": 6172,
+        "median": 5778,
+        "min": 5454,
+        "max": 7089
+      }
+    },
+    "gemini-3.5-flash::multiline_config": {
+      "runs": 5,
+      "schema_valid_tool_calls": 5,
+      "first_edit_succeeded": 5,
+      "task_success": 5,
+      "target_exact_match": 5,
+      "sentinel_unchanged": 5,
+      "total_tool_failures": 0,
+      "recovered_after_failure": 0,
+      "terminal_states": {
+        "completed": 5
+      },
+      "first_edit_tools": {
+        "edit_file": 5
+      },
+      "first_patch_formats": {
+        "bare_context": 5
+      },
+      "duration_ms": {
+        "mean": 6311.6,
+        "median": 6238,
+        "min": 5961,
+        "max": 6948
+      }
+    },
+    "gemini-3.5-flash::repeated_target": {
+      "runs": 5,
+      "schema_valid_tool_calls": 5,
+      "first_edit_succeeded": 5,
+      "task_success": 5,
+      "target_exact_match": 5,
+      "sentinel_unchanged": 5,
+      "total_tool_failures": 0,
+      "recovered_after_failure": 0,
+      "terminal_states": {
+        "completed": 5
+      },
+      "first_edit_tools": {
+        "edit_file": 5
+      },
+      "first_patch_formats": {
+        "bare_context": 5
+      },
+      "duration_ms": {
+        "mean": 5680.8,
+        "median": 5662,
+        "min": 5338,
+        "max": 6193
+      }
+    },
+    "gemini-3.5-flash::small_exact": {
+      "runs": 5,
+      "schema_valid_tool_calls": 5,
+      "first_edit_succeeded": 5,
+      "task_success": 5,
+      "target_exact_match": 5,
+      "sentinel_unchanged": 5,
+      "total_tool_failures": 0,
+      "recovered_after_failure": 0,
+      "terminal_states": {
+        "completed": 5
+      },
+      "first_edit_tools": {
+        "edit_file": 5
+      },
+      "first_patch_formats": {
+        "bare_context": 5
+      },
+      "duration_ms": {
+        "mean": 5755.2,
+        "median": 5731,
+        "min": 5221,
+        "max": 6231
+      }
+    },
+    "gpt-5.6-sol::late_insertion": {
+      "runs": 5,
+      "schema_valid_tool_calls": 5,
+      "first_edit_succeeded": 5,
+      "task_success": 5,
+      "target_exact_match": 5,
+      "sentinel_unchanged": 5,
+      "total_tool_failures": 0,
+      "recovered_after_failure": 0,
+      "terminal_states": {
+        "completed": 5
+      },
+      "first_edit_tools": {
+        "edit_file": 5
+      },
+      "first_patch_formats": {
+        "bare_context": 5
+      },
+      "duration_ms": {
+        "mean": 6730.4,
+        "median": 6527,
+        "min": 5603,
+        "max": 7639
+      }
+    },
+    "gpt-5.6-sol::multiline_config": {
+      "runs": 5,
+      "schema_valid_tool_calls": 5,
+      "first_edit_succeeded": 5,
+      "task_success": 5,
+      "target_exact_match": 5,
+      "sentinel_unchanged": 5,
+      "total_tool_failures": 0,
+      "recovered_after_failure": 0,
+      "terminal_states": {
+        "completed": 5
+      },
+      "first_edit_tools": {
+        "edit_file": 5
+      },
+      "first_patch_formats": {
+        "bare_context": 5
+      },
+      "duration_ms": {
+        "mean": 5776.2,
+        "median": 5752,
+        "min": 5037,
+        "max": 6657
+      }
+    },
+    "gpt-5.6-sol::repeated_target": {
+      "runs": 5,
+      "schema_valid_tool_calls": 5,
+      "first_edit_succeeded": 5,
+      "task_success": 5,
+      "target_exact_match": 5,
+      "sentinel_unchanged": 5,
+      "total_tool_failures": 0,
+      "recovered_after_failure": 0,
+      "terminal_states": {
+        "completed": 5
+      },
+      "first_edit_tools": {
+        "edit_file": 5
+      },
+      "first_patch_formats": {
+        "bare_context": 5
+      },
+      "duration_ms": {
+        "mean": 5148.4,
+        "median": 5153,
+        "min": 4641,
+        "max": 5952
+      }
+    },
+    "gpt-5.6-sol::small_exact": {
+      "runs": 5,
+      "schema_valid_tool_calls": 5,
+      "first_edit_succeeded": 5,
+      "task_success": 5,
+      "target_exact_match": 5,
+      "sentinel_unchanged": 5,
+      "total_tool_failures": 0,
+      "recovered_after_failure": 0,
+      "terminal_states": {
+        "completed": 5
+      },
+      "first_edit_tools": {
+        "edit_file": 5
+      },
+      "first_patch_formats": {
+        "bare_context": 5
+      },
+      "duration_ms": {
+        "mean": 6488,
+        "median": 6355,
+        "min": 5757,
+        "max": 7167
+      }
+    }
+  },
+  "threshold": {
+    "required_first_and_exact_per_provider": "at least 19/20",
+    "providers_meeting_threshold": {
+      "deepseek-v4-flash": true,
+      "gemini-3.5-flash": false,
+      "gpt-5.6-sol": true
+    },
+    "no_sentinel_mutation": true
+  }
+}

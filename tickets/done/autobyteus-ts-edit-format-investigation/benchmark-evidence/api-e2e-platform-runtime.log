@@ -1,0 +1,16 @@
+$ date -u
+2026-08-02T10:02:55Z
+$ sw_vers
+ProductName:		macOS
+ProductVersion:		26.5.2
+BuildVersion:		25F84
+$ uname -m
+arm64
+$ node --version
+v22.23.1
+$ pnpm --version
+10.28.2
+$ npm --version
+10.9.8
+$ git rev-parse HEAD
+bb6657c4016fed1550eb8b899e03457b5e1178db

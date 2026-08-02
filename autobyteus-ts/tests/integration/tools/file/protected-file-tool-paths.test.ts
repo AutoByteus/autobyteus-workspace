@@ -5,9 +5,7 @@ import path from 'node:path';
 import { BaseTool } from '../../../../src/tools/base-tool.js';
 import { defaultToolRegistry } from '../../../../src/tools/registry/tool-registry.js';
 import { registerEditFileTool } from '../../../../src/tools/file/edit-file.js';
-import { registerInsertInFileTool } from '../../../../src/tools/file/insert-in-file.js';
 import { registerReadFileTool } from '../../../../src/tools/file/read-file.js';
-import { registerReplaceInFileTool } from '../../../../src/tools/file/replace-in-file.js';
 import { registerWriteFileTool } from '../../../../src/tools/file/write-file.js';
 import { configureFileToolDeniedPaths } from '../../../../src/tools/file/workspace-path-utils.js';
 
@@ -24,8 +22,6 @@ describe('registered file tools protected-path boundary', () => {
     registerReadFileTool();
     registerWriteFileTool();
     registerEditFileTool();
-    registerReplaceInFileTool();
-    registerInsertInFileTool();
 
     protectedRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'autobyteus-protected-file-tools-'));
     secretFile = protectedPath(protectedRoot);
@@ -58,17 +54,7 @@ describe('registered file tools protected-path boundary', () => {
     ['write_file', (target: string) => ({ path: target, content: 'replacement' })],
     ['edit_file', (target: string) => ({
       path: target,
-      patch: '@@ -1,2 +1,2 @@\n DO_NOT_LEAK_THIS_SECRET\n-original\n+changed\n',
-    })],
-    ['replace_in_file', (target: string) => ({
-      path: target,
-      old_text: 'original\n',
-      new_text: 'changed\n',
-    })],
-    ['insert_in_file', (target: string) => ({
-      path: target,
-      after_text: 'original\n',
-      new_text: 'inserted\n',
+      patch: '@@\n DO_NOT_LEAK_THIS_SECRET\n-original\n+changed\n',
     })],
   ])('denies %s for a protected path', async (name, makeArgs) => {
     await expectProtectedDenial(name, makeArgs(secretFile));
@@ -80,17 +66,7 @@ describe('registered file tools protected-path boundary', () => {
     ['write_file', (target: string) => ({ path: target, content: 'replacement' })],
     ['edit_file', (target: string) => ({
       path: target,
-      patch: '@@ -1,2 +1,2 @@\n DO_NOT_LEAK_THIS_SECRET\n-original\n+changed\n',
-    })],
-    ['replace_in_file', (target: string) => ({
-      path: target,
-      old_text: 'original\n',
-      new_text: 'changed\n',
-    })],
-    ['insert_in_file', (target: string) => ({
-      path: target,
-      after_text: 'original\n',
-      new_text: 'inserted\n',
+      patch: '@@\n DO_NOT_LEAK_THIS_SECRET\n-original\n+changed\n',
     })],
   ])('denies %s through a symlink to a protected path', async (name, makeArgs) => {
     await expectProtectedDenial(name, makeArgs(path.join(symlinkPath, 'secret.db')));

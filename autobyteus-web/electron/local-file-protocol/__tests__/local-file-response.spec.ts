@@ -45,6 +45,18 @@ describe('local-file response policy', () => {
     expect(await readBytes(response)).toEqual(Array.from(fileBytes));
   });
 
+  it('serves SVG bytes with the image/svg+xml MIME boundary', async () => {
+    const fileBytes = new TextEncoder().encode('<svg xmlns="http://www.w3.org/2000/svg"><rect width="1" height="1"/></svg>');
+    const filePath = await createTemporaryFile('diagram.SVG', fileBytes);
+
+    const response = await createLocalFileResponse(new Request(buildLocalFileUrl(filePath)));
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get('content-type')).toBe('image/svg+xml');
+    expect(response.headers.get('cache-control')).toBe('no-store');
+    expect(await readBytes(response)).toEqual(Array.from(fileBytes));
+  });
+
   it('supports closed, open-ended, suffix, and end-clamped single ranges', async () => {
     const filePath = await createTemporaryFile('sample.bin', Uint8Array.from({ length: 10 }, (_, i) => i));
     const scenarios = [

@@ -8,6 +8,10 @@ import type { FileDataType } from '~/stores/fileExplorer';
 import { mobileCredentialStorage } from '~/utils/remoteAccess/mobileCredentialStorage';
 import type { MobileNodeSession } from '~/types/remoteAccess';
 
+const { determineFileTypeMock } = vi.hoisted(() => ({
+  determineFileTypeMock: vi.fn(),
+}));
+
 const windowNodeContextStoreMock = {
   getBoundEndpoints: vi.fn(() => ({ rest: 'http://127.0.0.1:4100/rest/' })),
   bindNodeContext: vi.fn(),
@@ -18,7 +22,7 @@ vi.mock('~/stores/windowNodeContextStore', () => ({
 }));
 
 vi.mock('~/utils/fileExplorer/fileUtils', () => ({
-  determineFileType: vi.fn(async () => 'Text'),
+  determineFileType: determineFileTypeMock,
 }));
 
 const labels: Record<string, string> = {
@@ -81,6 +85,7 @@ describe('TeamCommunicationReferenceViewer.vue', () => {
     setActivePinia(createPinia());
     window.localStorage.clear();
     vi.clearAllMocks();
+    determineFileTypeMock.mockResolvedValue('Text');
   });
 
   afterEach(() => {
@@ -177,6 +182,46 @@ describe('TeamCommunicationReferenceViewer.vue', () => {
 
     expect(wrapper.text()).toContain('Reference file unavailable');
     expect(wrapper.text()).toContain('deleted, moved, or become unreadable');
+  });
+
+  it('uses the shared-policy fallback for an SVG team reference and revokes its blob URL', async () => {
+    determineFileTypeMock.mockResolvedValue('Image');
+    mobileCredentialStorage.save(storedSession());
+    useMobileNodeSessionStore().initializeFromStorage();
+    const blob = new Blob(['<svg'], { type: 'image/svg+xml' });
+    const createObjectURL = vi.fn(() => 'blob:svg-team-reference');
+    const revokeObjectURL = vi.fn();
+    vi.stubGlobal('fetch', vi.fn(async () => ({
+      status: 200,
+      ok: true,
+      blob: async () => blob,
+    })));
+    Object.defineProperty(URL, 'createObjectURL', {
+      configurable: true,
+      value: createObjectURL,
+    });
+    Object.defineProperty(URL, 'revokeObjectURL', {
+      configurable: true,
+      value: revokeObjectURL,
+    });
+
+    const wrapper = mountSubject({
+      reference: {
+        ...baseReference,
+        referenceId: 'svg-ref',
+        path: '/tmp/DIAGRAM.SVG',
+        type: 'file',
+      },
+    });
+    await flushPromises();
+
+    expect(determineFileTypeMock).toHaveBeenCalledWith('/tmp/DIAGRAM.SVG');
+    expect(wrapper.get('[data-test="type"]').text()).toBe('Image');
+    expect(wrapper.get('[data-test="url"]').text()).toBe('blob:svg-team-reference');
+    expect(createObjectURL).toHaveBeenCalledWith(blob);
+
+    wrapper.unmount();
+    expect(revokeObjectURL).toHaveBeenCalledWith('blob:svg-team-reference');
   });
 
   it('passes non-404 content failures to FileViewer as a read-only error', async () => {

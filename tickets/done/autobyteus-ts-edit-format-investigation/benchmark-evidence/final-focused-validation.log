@@ -1,0 +1,757 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/autobyteus-ts
+
+ ✓ tests/integration/utils/context-patch-utils.test.ts (1 test) 5ms
+ ✓ tests/unit/agent/streaming/api-tool-call/file-content-streamer.test.ts (3 tests) 3ms
+ ✓ tests/unit/utils/context-patch-utils.test.ts (13 tests) 53ms
+stdout | tests/unit/agent/streaming/handlers/api-tool-call-streaming-response-handler.test.ts > ApiToolCallStreamingResponseHandler basics > finalize creates invocations from accumulated args
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/unit/agent/streaming/handlers/api-tool-call-streaming-response-handler.test.ts > ApiToolCallStreamingResponseHandler basics > carries provider-native context from deltas to tool invocations
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/unit/agent/streaming/handlers/api-tool-call-streaming-response-handler.test.ts > ApiToolCallStreamingResponseHandler parallel tool calls > tracks multiple tool calls by index
+ApiToolCallStreamingResponseHandler finalized 2 tool invocations.
+
+stdout | tests/unit/agent/streaming/handlers/api-tool-call-streaming-response-handler.test.ts > ApiToolCallStreamingResponseHandler parallel tool calls > keeps multiple Gemini functionCall parts as distinct invocations
+ApiToolCallStreamingResponseHandler finalized 2 tool invocations.
+
+stdout | tests/unit/agent/streaming/handlers/api-tool-call-streaming-response-handler.test.ts > ApiToolCallStreamingResponseHandler file streaming > decodes escaped content
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/unit/agent/streaming/handlers/api-tool-call-streaming-response-handler.test.ts > ApiToolCallStreamingResponseHandler callbacks > invokes onToolInvocation callback
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+
+ ✓ tests/unit/agent/streaming/handlers/api-tool-call-streaming-response-handler.test.ts (16 tests) 12ms
+stdout | tests/integration/tools/file/edit-file.test.ts > edit_file tool (integration) > edits file content on disk
+Successfully registered tool definition: 'edit_file'
+
+stdout | tests/integration/tools/file/edit-file.test.ts > edit_file tool (integration) > allows absolute paths outside the workspace root
+Successfully registered tool definition: 'edit_file'
+
+stdout | tests/integration/tools/file/edit-file.test.ts > edit_file tool (integration) > resolves relative edit paths from an explicit absolute base directory
+Successfully registered tool definition: 'edit_file'
+
+stdout | tests/integration/tools/file/edit-file.test.ts > edit_file tool (integration) > rejects relative edit paths without an explicit base directory
+Successfully registered tool definition: 'edit_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > registers definition with expected schema
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+ ✓ tests/unit/tools/usage/formatters/edit-file-xml-formatter.test.ts (4 tests) 3ms
+ ✓ tests/integration/tools/file/edit-file.test.ts (4 tests) 12ms
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > applies a context-located patch in an existing file
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > rejects git file headers because path is supplied separately
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > raises PatchApplicationError when patch fails
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > rejects ambiguous context without writing the file
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > does not write a partially applied multi-hunk patch
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > retries with whitespace tolerance
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > raises error when file is missing
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > resolves relative paths from an explicit absolute base directory
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > rejects relative paths without an explicit base directory
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > read then patch flow
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies read_file for a protected path
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+
+ ✓ tests/unit/tools/file/edit-file.test.ts (11 tests) 27ms
+stdout | tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies write_file for a protected path
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies edit_file for a protected path
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+
+ ✓ tests/unit/agent/streaming/parser/states/xml-edit-file-tool-parsing-state.test.ts (10 tests) 6ms
+stdout | tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies replace_in_file for a protected path
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies insert_in_file for a protected path
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies read_file through a symlink to a protected path
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies write_file through a symlink to a protected path
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies edit_file through a symlink to a protected path
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies replace_in_file through a symlink to a protected path
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies insert_in_file through a symlink to a protected path
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+
+stdout | tests/integration/tools/file/protected-file-tool-paths.test.ts > registered file tools protected-path boundary > denies a write to a non-existent descendant of a protected root
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+
+ ✓ tests/integration/tools/file/protected-file-tool-paths.test.ts (11 tests) 38ms
+stdout | tests/integration/agent/tool-approval-flow.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes write_file after approval
+Successfully registered tool definition: 'write_file'
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes write_file after approval
+AgentRuntimeState initialized for agent_id 'approvalagent_tester_3839'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'approvalagent_tester_3839': LLM instance 'DummyLLM' and 1 tools prepared and stored in state.
+AgentContext composed for agent_id 'approvalagent_tester_3839'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'approvalagent_tester_3839' with config: 'ApprovalAgent'.
+AgentWorker initialized for agent_id 'approvalagent_tester_3839'.
+Registered AgentContext for agent_id 'approvalagent_tester_3839'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'approvalagent_tester_3839'. Context registered.
+Agent facade initialized for agent_id 'approvalagent_tester_3839'.
+Agent 'approvalagent_tester_3839' created and stored successfully.
+Agent 'approvalagent_tester_3839' requesting runtime to start.
+AgentRuntime for 'approvalagent_tester_3839': Starting worker.
+AgentWorker 'approvalagent_tester_3839': Starting...
+AgentWorker 'approvalagent_tester_3839' asyncRun(): Starting.
+Agent 'approvalagent_tester_3839': Runtime init completed (event store initialized).
+Agent 'approvalagent_tester_3839': Runtime init completed (status deriver initialized).
+Agent 'approvalagent_tester_3839': Runtime init completed (AgentEventInbox initialized).
+Agent 'approvalagent_tester_3839': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'approvalagent_tester_3839' to become idle (timeout: 10s)...
+AgentEventStream (ID: a238c49b-4d81-4c44-abf7-e996114c62c3) initialized for agent_id 'approvalagent_tester_3839'. Subscribed to notifier.
+Agent 'approvalagent_tester_3839': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes write_file after approval
+AgentExternalEventNotifier (NotifierID: 14c6103f-579b-4471-9630-d063e3d59e86, AgentID: approvalagent_tester_3839) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes write_file after approval
+Agent 'approvalagent_tester_3839': Bootstrapper starting direct lifecycle execution.
+Agent 'approvalagent_tester_3839': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'approvalagent_tester_3839': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes write_file after approval
+Agent 'approvalagent_tester_3839': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'approvalagent_tester_3839': Executing SystemPromptProcessingStep.
+Agent 'approvalagent_tester_3839': No configured skills. Skipping injection.
+Agent 'approvalagent_tester_3839': Final processed system prompt configured on LLM instance. Final length: 28.
+Agent 'approvalagent_tester_3839': Final processed system prompt:
+---
+You are a helpful assistant.
+---
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes write_file after approval
+Agent 'approvalagent_tester_3839': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes write_file after approval
+AgentExternalEventNotifier (NotifierID: 14c6103f-579b-4471-9630-d063e3d59e86, AgentID: approvalagent_tester_3839) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes write_file after approval
+AgentWorker 'approvalagent_tester_3839' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes write_file after approval
+Agent 'approvalagent_tester_3839' has become idle.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes write_file after approval
+AgentEventStream (ID: a238c49b-4d81-4c44-abf7-e996114c62c3) for 'approvalagent_tester_3839': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes write_file after approval
+Agent 'approvalagent_tester_3839': Stored pending tool invocation 'write-1785656662141' (write_file).
+AgentExternalEventNotifier (NotifierID: 14c6103f-579b-4471-9630-d063e3d59e86, AgentID: approvalagent_tester_3839) emitted agent_tool_approval_requested. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes write_file after approval
+Agent 'approvalagent_tester_3839': Retrieved pending tool invocation 'write-1785656662141' (write_file).
+AgentExternalEventNotifier (NotifierID: 14c6103f-579b-4471-9630-d063e3d59e86, AgentID: approvalagent_tester_3839) emitted agent_tool_approved. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 14c6103f-579b-4471-9630-d063e3d59e86, AgentID: approvalagent_tester_3839) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes write_file after approval
+AgentExternalEventNotifier (NotifierID: 14c6103f-579b-4471-9630-d063e3d59e86, AgentID: approvalagent_tester_3839) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 14c6103f-579b-4471-9630-d063e3d59e86, AgentID: approvalagent_tester_3839) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes write_file after approval
+AgentExternalEventNotifier (NotifierID: 14c6103f-579b-4471-9630-d063e3d59e86, AgentID: approvalagent_tester_3839) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes write_file after approval
+AgentExternalEventNotifier (NotifierID: 14c6103f-579b-4471-9630-d063e3d59e86, AgentID: approvalagent_tester_3839) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes write_file after approval
+Agent 'approvalagent_tester_3839' requesting runtime to stop (timeout: 2s).
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes write_file after approval
+AgentExternalEventNotifier (NotifierID: 14c6103f-579b-4471-9630-d063e3d59e86, AgentID: approvalagent_tester_3839) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes write_file after approval
+AgentWorker 'approvalagent_tester_3839': Stop requested.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes write_file after approval
+AgentExternalEventNotifier (NotifierID: 14c6103f-579b-4471-9630-d063e3d59e86, AgentID: approvalagent_tester_3839) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes write_file after approval
+AgentWorker 'approvalagent_tester_3839' asyncRun() loop has finished.
+AgentWorker 'approvalagent_tester_3839': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes write_file after approval
+AgentWorker 'approvalagent_tester_3839': Shutdown resource cleanup completed successfully.
+AgentWorker 'approvalagent_tester_3839': Shutdown sequence completed.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes write_file after approval
+Unregistered AgentContext for agent_id 'approvalagent_tester_3839'.
+AgentRuntime for 'approvalagent_tester_3839': Context unregistered.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes write_file after approval
+AgentRuntime for 'approvalagent_tester_3839' stop() method completed.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes read_file after approval and records tool output
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes read_file after approval and records tool output
+AgentRuntimeState initialized for agent_id 'approvalagent_tester_1859'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'approvalagent_tester_1859': LLM instance 'DummyLLM' and 1 tools prepared and stored in state.
+AgentContext composed for agent_id 'approvalagent_tester_1859'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'approvalagent_tester_1859' with config: 'ApprovalAgent'.
+AgentWorker initialized for agent_id 'approvalagent_tester_1859'.
+Registered AgentContext for agent_id 'approvalagent_tester_1859'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'approvalagent_tester_1859'. Context registered.
+Agent facade initialized for agent_id 'approvalagent_tester_1859'.
+Agent 'approvalagent_tester_1859' created and stored successfully.
+Agent 'approvalagent_tester_1859' requesting runtime to start.
+AgentRuntime for 'approvalagent_tester_1859': Starting worker.
+AgentWorker 'approvalagent_tester_1859': Starting...
+AgentWorker 'approvalagent_tester_1859' asyncRun(): Starting.
+Agent 'approvalagent_tester_1859': Runtime init completed (event store initialized).
+Agent 'approvalagent_tester_1859': Runtime init completed (status deriver initialized).
+Agent 'approvalagent_tester_1859': Runtime init completed (AgentEventInbox initialized).
+Agent 'approvalagent_tester_1859': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'approvalagent_tester_1859' to become idle (timeout: 10s)...
+AgentEventStream (ID: b3f96260-f2a2-4d59-9e21-a3613e4f6e32) initialized for agent_id 'approvalagent_tester_1859'. Subscribed to notifier.
+Agent 'approvalagent_tester_1859': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes read_file after approval and records tool output
+AgentExternalEventNotifier (NotifierID: 6948fa3f-1f5a-4864-8801-313ca660609c, AgentID: approvalagent_tester_1859) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes read_file after approval and records tool output
+Agent 'approvalagent_tester_1859': Bootstrapper starting direct lifecycle execution.
+Agent 'approvalagent_tester_1859': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'approvalagent_tester_1859': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes read_file after approval and records tool output
+Agent 'approvalagent_tester_1859': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'approvalagent_tester_1859': Executing SystemPromptProcessingStep.
+Agent 'approvalagent_tester_1859': No configured skills. Skipping injection.
+Agent 'approvalagent_tester_1859': Final processed system prompt configured on LLM instance. Final length: 28.
+Agent 'approvalagent_tester_1859': Final processed system prompt:
+---
+You are a helpful assistant.
+---
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes read_file after approval and records tool output
+Agent 'approvalagent_tester_1859': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes read_file after approval and records tool output
+AgentExternalEventNotifier (NotifierID: 6948fa3f-1f5a-4864-8801-313ca660609c, AgentID: approvalagent_tester_1859) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes read_file after approval and records tool output
+AgentWorker 'approvalagent_tester_1859' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes read_file after approval and records tool output
+Agent 'approvalagent_tester_1859' has become idle.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes read_file after approval and records tool output
+AgentEventStream (ID: b3f96260-f2a2-4d59-9e21-a3613e4f6e32) for 'approvalagent_tester_1859': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes read_file after approval and records tool output
+Agent 'approvalagent_tester_1859': Stored pending tool invocation 'read-1785656662226' (read_file).
+AgentExternalEventNotifier (NotifierID: 6948fa3f-1f5a-4864-8801-313ca660609c, AgentID: approvalagent_tester_1859) emitted agent_tool_approval_requested. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes read_file after approval and records tool output
+Agent 'approvalagent_tester_1859': Retrieved pending tool invocation 'read-1785656662226' (read_file).
+AgentExternalEventNotifier (NotifierID: 6948fa3f-1f5a-4864-8801-313ca660609c, AgentID: approvalagent_tester_1859) emitted agent_tool_approved. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 6948fa3f-1f5a-4864-8801-313ca660609c, AgentID: approvalagent_tester_1859) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes read_file after approval and records tool output
+AgentExternalEventNotifier (NotifierID: 6948fa3f-1f5a-4864-8801-313ca660609c, AgentID: approvalagent_tester_1859) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 6948fa3f-1f5a-4864-8801-313ca660609c, AgentID: approvalagent_tester_1859) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes read_file after approval and records tool output
+AgentExternalEventNotifier (NotifierID: 6948fa3f-1f5a-4864-8801-313ca660609c, AgentID: approvalagent_tester_1859) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes read_file after approval and records tool output
+AgentExternalEventNotifier (NotifierID: 6948fa3f-1f5a-4864-8801-313ca660609c, AgentID: approvalagent_tester_1859) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes read_file after approval and records tool output
+Agent 'approvalagent_tester_1859' requesting runtime to stop (timeout: 2s).
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes read_file after approval and records tool output
+AgentExternalEventNotifier (NotifierID: 6948fa3f-1f5a-4864-8801-313ca660609c, AgentID: approvalagent_tester_1859) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes read_file after approval and records tool output
+AgentWorker 'approvalagent_tester_1859': Stop requested.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes read_file after approval and records tool output
+AgentExternalEventNotifier (NotifierID: 6948fa3f-1f5a-4864-8801-313ca660609c, AgentID: approvalagent_tester_1859) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes read_file after approval and records tool output
+AgentWorker 'approvalagent_tester_1859' asyncRun() loop has finished.
+AgentWorker 'approvalagent_tester_1859': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes read_file after approval and records tool output
+AgentWorker 'approvalagent_tester_1859': Shutdown resource cleanup completed successfully.
+AgentWorker 'approvalagent_tester_1859': Shutdown sequence completed.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes read_file after approval and records tool output
+Unregistered AgentContext for agent_id 'approvalagent_tester_1859'.
+AgentRuntime for 'approvalagent_tester_1859': Context unregistered.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes read_file after approval and records tool output
+AgentRuntime for 'approvalagent_tester_1859' stop() method completed.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes edit_file after approval
+Successfully registered tool definition: 'edit_file'
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes edit_file after approval
+AgentRuntimeState initialized for agent_id 'approvalagent_tester_1382'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'approvalagent_tester_1382': LLM instance 'DummyLLM' and 1 tools prepared and stored in state.
+AgentContext composed for agent_id 'approvalagent_tester_1382'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'approvalagent_tester_1382' with config: 'ApprovalAgent'.
+AgentWorker initialized for agent_id 'approvalagent_tester_1382'.
+Registered AgentContext for agent_id 'approvalagent_tester_1382'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'approvalagent_tester_1382'. Context registered.
+Agent facade initialized for agent_id 'approvalagent_tester_1382'.
+Agent 'approvalagent_tester_1382' created and stored successfully.
+Agent 'approvalagent_tester_1382' requesting runtime to start.
+AgentRuntime for 'approvalagent_tester_1382': Starting worker.
+AgentWorker 'approvalagent_tester_1382': Starting...
+AgentWorker 'approvalagent_tester_1382' asyncRun(): Starting.
+Agent 'approvalagent_tester_1382': Runtime init completed (event store initialized).
+Agent 'approvalagent_tester_1382': Runtime init completed (status deriver initialized).
+Agent 'approvalagent_tester_1382': Runtime init completed (AgentEventInbox initialized).
+Agent 'approvalagent_tester_1382': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'approvalagent_tester_1382' to become idle (timeout: 10s)...
+AgentEventStream (ID: 38c8d57f-b0c6-49f3-981d-744bf24f37b9) initialized for agent_id 'approvalagent_tester_1382'. Subscribed to notifier.
+Agent 'approvalagent_tester_1382': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes edit_file after approval
+AgentExternalEventNotifier (NotifierID: 4d810bca-844b-4c36-82b5-df8d9510750d, AgentID: approvalagent_tester_1382) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes edit_file after approval
+Agent 'approvalagent_tester_1382': Bootstrapper starting direct lifecycle execution.
+Agent 'approvalagent_tester_1382': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'approvalagent_tester_1382': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes edit_file after approval
+Agent 'approvalagent_tester_1382': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'approvalagent_tester_1382': Executing SystemPromptProcessingStep.
+Agent 'approvalagent_tester_1382': No configured skills. Skipping injection.
+Agent 'approvalagent_tester_1382': Final processed system prompt configured on LLM instance. Final length: 28.
+Agent 'approvalagent_tester_1382': Final processed system prompt:
+---
+You are a helpful assistant.
+---
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes edit_file after approval
+Agent 'approvalagent_tester_1382': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes edit_file after approval
+AgentExternalEventNotifier (NotifierID: 4d810bca-844b-4c36-82b5-df8d9510750d, AgentID: approvalagent_tester_1382) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes edit_file after approval
+AgentWorker 'approvalagent_tester_1382' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes edit_file after approval
+Agent 'approvalagent_tester_1382' has become idle.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes edit_file after approval
+AgentEventStream (ID: 38c8d57f-b0c6-49f3-981d-744bf24f37b9) for 'approvalagent_tester_1382': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes edit_file after approval
+Agent 'approvalagent_tester_1382': Stored pending tool invocation 'patch-1785656662298' (edit_file).
+AgentExternalEventNotifier (NotifierID: 4d810bca-844b-4c36-82b5-df8d9510750d, AgentID: approvalagent_tester_1382) emitted agent_tool_approval_requested. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes edit_file after approval
+Agent 'approvalagent_tester_1382': Retrieved pending tool invocation 'patch-1785656662298' (edit_file).
+AgentExternalEventNotifier (NotifierID: 4d810bca-844b-4c36-82b5-df8d9510750d, AgentID: approvalagent_tester_1382) emitted agent_tool_approved. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 4d810bca-844b-4c36-82b5-df8d9510750d, AgentID: approvalagent_tester_1382) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes edit_file after approval
+AgentExternalEventNotifier (NotifierID: 4d810bca-844b-4c36-82b5-df8d9510750d, AgentID: approvalagent_tester_1382) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 4d810bca-844b-4c36-82b5-df8d9510750d, AgentID: approvalagent_tester_1382) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes edit_file after approval
+AgentExternalEventNotifier (NotifierID: 4d810bca-844b-4c36-82b5-df8d9510750d, AgentID: approvalagent_tester_1382) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes edit_file after approval
+AgentExternalEventNotifier (NotifierID: 4d810bca-844b-4c36-82b5-df8d9510750d, AgentID: approvalagent_tester_1382) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes edit_file after approval
+Agent 'approvalagent_tester_1382' requesting runtime to stop (timeout: 2s).
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes edit_file after approval
+AgentExternalEventNotifier (NotifierID: 4d810bca-844b-4c36-82b5-df8d9510750d, AgentID: approvalagent_tester_1382) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes edit_file after approval
+AgentWorker 'approvalagent_tester_1382': Stop requested.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes edit_file after approval
+AgentExternalEventNotifier (NotifierID: 4d810bca-844b-4c36-82b5-df8d9510750d, AgentID: approvalagent_tester_1382) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes edit_file after approval
+AgentWorker 'approvalagent_tester_1382' asyncRun() loop has finished.
+AgentWorker 'approvalagent_tester_1382': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes edit_file after approval
+AgentWorker 'approvalagent_tester_1382': Shutdown resource cleanup completed successfully.
+AgentWorker 'approvalagent_tester_1382': Shutdown sequence completed.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes edit_file after approval
+Unregistered AgentContext for agent_id 'approvalagent_tester_1382'.
+AgentRuntime for 'approvalagent_tester_1382': Context unregistered.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes edit_file after approval
+AgentRuntime for 'approvalagent_tester_1382' stop() method completed.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash after approval
+Successfully registered tool definition: 'run_bash'
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash after approval
+AgentRuntimeState initialized for agent_id 'approvalagent_tester_1895'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'approvalagent_tester_1895': LLM instance 'DummyLLM' and 1 tools prepared and stored in state.
+AgentContext composed for agent_id 'approvalagent_tester_1895'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'approvalagent_tester_1895' with config: 'ApprovalAgent'.
+AgentWorker initialized for agent_id 'approvalagent_tester_1895'.
+Registered AgentContext for agent_id 'approvalagent_tester_1895'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'approvalagent_tester_1895'. Context registered.
+Agent facade initialized for agent_id 'approvalagent_tester_1895'.
+Agent 'approvalagent_tester_1895' created and stored successfully.
+Agent 'approvalagent_tester_1895' requesting runtime to start.
+AgentRuntime for 'approvalagent_tester_1895': Starting worker.
+AgentWorker 'approvalagent_tester_1895': Starting...
+AgentWorker 'approvalagent_tester_1895' asyncRun(): Starting.
+Agent 'approvalagent_tester_1895': Runtime init completed (event store initialized).
+Agent 'approvalagent_tester_1895': Runtime init completed (status deriver initialized).
+Agent 'approvalagent_tester_1895': Runtime init completed (AgentEventInbox initialized).
+Agent 'approvalagent_tester_1895': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'approvalagent_tester_1895' to become idle (timeout: 10s)...
+AgentEventStream (ID: 3c83329b-a610-4390-bd8e-e6e51f286da9) initialized for agent_id 'approvalagent_tester_1895'. Subscribed to notifier.
+Agent 'approvalagent_tester_1895': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash after approval
+AgentExternalEventNotifier (NotifierID: 50223701-0d8d-4ab9-a548-99a19e5b0b06, AgentID: approvalagent_tester_1895) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash after approval
+Agent 'approvalagent_tester_1895': Bootstrapper starting direct lifecycle execution.
+Agent 'approvalagent_tester_1895': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'approvalagent_tester_1895': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash after approval
+Agent 'approvalagent_tester_1895': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'approvalagent_tester_1895': Executing SystemPromptProcessingStep.
+Agent 'approvalagent_tester_1895': No configured skills. Skipping injection.
+Agent 'approvalagent_tester_1895': Final processed system prompt configured on LLM instance. Final length: 28.
+Agent 'approvalagent_tester_1895': Final processed system prompt:
+---
+You are a helpful assistant.
+---
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash after approval
+Agent 'approvalagent_tester_1895': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash after approval
+AgentExternalEventNotifier (NotifierID: 50223701-0d8d-4ab9-a548-99a19e5b0b06, AgentID: approvalagent_tester_1895) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash after approval
+AgentWorker 'approvalagent_tester_1895' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash after approval
+Agent 'approvalagent_tester_1895' has become idle.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash after approval
+AgentEventStream (ID: 3c83329b-a610-4390-bd8e-e6e51f286da9) for 'approvalagent_tester_1895': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash after approval
+Agent 'approvalagent_tester_1895': Stored pending tool invocation 'bash-1785656662370' (run_bash).
+AgentExternalEventNotifier (NotifierID: 50223701-0d8d-4ab9-a548-99a19e5b0b06, AgentID: approvalagent_tester_1895) emitted agent_tool_approval_requested. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash after approval
+Agent 'approvalagent_tester_1895': Retrieved pending tool invocation 'bash-1785656662370' (run_bash).
+AgentExternalEventNotifier (NotifierID: 50223701-0d8d-4ab9-a548-99a19e5b0b06, AgentID: approvalagent_tester_1895) emitted agent_tool_approved. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 50223701-0d8d-4ab9-a548-99a19e5b0b06, AgentID: approvalagent_tester_1895) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash after approval
+AgentExternalEventNotifier (NotifierID: 50223701-0d8d-4ab9-a548-99a19e5b0b06, AgentID: approvalagent_tester_1895) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 50223701-0d8d-4ab9-a548-99a19e5b0b06, AgentID: approvalagent_tester_1895) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash after approval
+AgentExternalEventNotifier (NotifierID: 50223701-0d8d-4ab9-a548-99a19e5b0b06, AgentID: approvalagent_tester_1895) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash after approval
+AgentExternalEventNotifier (NotifierID: 50223701-0d8d-4ab9-a548-99a19e5b0b06, AgentID: approvalagent_tester_1895) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash after approval
+Agent 'approvalagent_tester_1895' requesting runtime to stop (timeout: 2s).
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash after approval
+AgentExternalEventNotifier (NotifierID: 50223701-0d8d-4ab9-a548-99a19e5b0b06, AgentID: approvalagent_tester_1895) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash after approval
+AgentWorker 'approvalagent_tester_1895': Stop requested.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash after approval
+AgentExternalEventNotifier (NotifierID: 50223701-0d8d-4ab9-a548-99a19e5b0b06, AgentID: approvalagent_tester_1895) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash after approval
+AgentWorker 'approvalagent_tester_1895' asyncRun() loop has finished.
+AgentWorker 'approvalagent_tester_1895': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash after approval
+AgentWorker 'approvalagent_tester_1895': Shutdown resource cleanup completed successfully.
+AgentWorker 'approvalagent_tester_1895': Shutdown sequence completed.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash after approval
+Unregistered AgentContext for agent_id 'approvalagent_tester_1895'.
+AgentRuntime for 'approvalagent_tester_1895': Context unregistered.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash after approval
+AgentRuntime for 'approvalagent_tester_1895' stop() method completed.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+Successfully registered tool definition: 'run_bash'
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+AgentRuntimeState initialized for agent_id 'approvalagent_tester_6662'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'approvalagent_tester_6662': LLM instance 'DummyLLM' and 1 tools prepared and stored in state.
+AgentContext composed for agent_id 'approvalagent_tester_6662'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'approvalagent_tester_6662' with config: 'ApprovalAgent'.
+AgentWorker initialized for agent_id 'approvalagent_tester_6662'.
+Registered AgentContext for agent_id 'approvalagent_tester_6662'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'approvalagent_tester_6662'. Context registered.
+Agent facade initialized for agent_id 'approvalagent_tester_6662'.
+Agent 'approvalagent_tester_6662' created and stored successfully.
+Agent 'approvalagent_tester_6662' requesting runtime to start.
+AgentRuntime for 'approvalagent_tester_6662': Starting worker.
+AgentWorker 'approvalagent_tester_6662': Starting...
+AgentWorker 'approvalagent_tester_6662' asyncRun(): Starting.
+Agent 'approvalagent_tester_6662': Runtime init completed (event store initialized).
+Agent 'approvalagent_tester_6662': Runtime init completed (status deriver initialized).
+Agent 'approvalagent_tester_6662': Runtime init completed (AgentEventInbox initialized).
+Agent 'approvalagent_tester_6662': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'approvalagent_tester_6662' to become idle (timeout: 10s)...
+AgentEventStream (ID: dd080282-83c3-4eec-8f95-3a3655573af5) initialized for agent_id 'approvalagent_tester_6662'. Subscribed to notifier.
+Agent 'approvalagent_tester_6662': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+AgentExternalEventNotifier (NotifierID: b584200f-648b-4fcd-bf14-08b7bd413108, AgentID: approvalagent_tester_6662) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+Agent 'approvalagent_tester_6662': Bootstrapper starting direct lifecycle execution.
+Agent 'approvalagent_tester_6662': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'approvalagent_tester_6662': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+Agent 'approvalagent_tester_6662': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'approvalagent_tester_6662': Executing SystemPromptProcessingStep.
+Agent 'approvalagent_tester_6662': No configured skills. Skipping injection.
+Agent 'approvalagent_tester_6662': Final processed system prompt configured on LLM instance. Final length: 28.
+Agent 'approvalagent_tester_6662': Final processed system prompt:
+---
+You are a helpful assistant.
+---
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+Agent 'approvalagent_tester_6662': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+AgentExternalEventNotifier (NotifierID: b584200f-648b-4fcd-bf14-08b7bd413108, AgentID: approvalagent_tester_6662) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+AgentWorker 'approvalagent_tester_6662' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+Agent 'approvalagent_tester_6662' has become idle.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+AgentEventStream (ID: dd080282-83c3-4eec-8f95-3a3655573af5) for 'approvalagent_tester_6662': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+Agent 'approvalagent_tester_6662': Stored pending tool invocation 'bash-bg-1785656662589' (run_bash).
+AgentExternalEventNotifier (NotifierID: b584200f-648b-4fcd-bf14-08b7bd413108, AgentID: approvalagent_tester_6662) emitted agent_tool_approval_requested. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+Agent 'approvalagent_tester_6662': Retrieved pending tool invocation 'bash-bg-1785656662589' (run_bash).
+AgentExternalEventNotifier (NotifierID: b584200f-648b-4fcd-bf14-08b7bd413108, AgentID: approvalagent_tester_6662) emitted agent_tool_approved. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b584200f-648b-4fcd-bf14-08b7bd413108, AgentID: approvalagent_tester_6662) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+AgentExternalEventNotifier (NotifierID: b584200f-648b-4fcd-bf14-08b7bd413108, AgentID: approvalagent_tester_6662) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: b584200f-648b-4fcd-bf14-08b7bd413108, AgentID: approvalagent_tester_6662) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+AgentExternalEventNotifier (NotifierID: b584200f-648b-4fcd-bf14-08b7bd413108, AgentID: approvalagent_tester_6662) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+AgentExternalEventNotifier (NotifierID: b584200f-648b-4fcd-bf14-08b7bd413108, AgentID: approvalagent_tester_6662) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+Agent 'approvalagent_tester_6662' requesting runtime to stop (timeout: 2s).
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+AgentExternalEventNotifier (NotifierID: b584200f-648b-4fcd-bf14-08b7bd413108, AgentID: approvalagent_tester_6662) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+AgentWorker 'approvalagent_tester_6662': Stop requested.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+AgentExternalEventNotifier (NotifierID: b584200f-648b-4fcd-bf14-08b7bd413108, AgentID: approvalagent_tester_6662) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+AgentWorker 'approvalagent_tester_6662' asyncRun() loop has finished.
+AgentWorker 'approvalagent_tester_6662': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+AgentWorker 'approvalagent_tester_6662': Shutdown resource cleanup completed successfully.
+AgentWorker 'approvalagent_tester_6662': Shutdown sequence completed.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+Unregistered AgentContext for agent_id 'approvalagent_tester_6662'.
+AgentRuntime for 'approvalagent_tester_6662': Context unregistered.
+
+stdout | tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes run_bash bash-native background command after approval
+AgentRuntime for 'approvalagent_tester_6662' stop() method completed.
+
+ ❯ tests/integration/agent/tool-approval-flow.test.ts (5 tests | 2 failed) 981ms
+     × executes write_file after approval 87ms
+     × executes read_file after approval and records tool output 73ms
+     ✓ executes edit_file after approval 73ms
+     ✓ executes run_bash after approval 217ms
+     ✓ executes run_bash bash-native background command after approval  530ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes write_file after approval
+AssertionError: expected { …(11) } to not have property "tool_name"
+
+- Expected: 
+undefined
+
++ Received: 
+"write_file"
+
+ ❯ tests/integration/agent/tool-approval-flow.test.ts:261:24
+    259|     expect(result).toHaveProperty('tool_result');
+    260|     expect(result).toHaveProperty('tool_error', null);
+    261|     expect(result).not.toHaveProperty('tool_name');
+       |                        ^
+    262|     expect(result).not.toHaveProperty('tool_args');
+    263| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/integration/agent/tool-approval-flow.test.ts > Tool approval integration flow > executes read_file after approval and records tool output
+AssertionError: expected { …(11) } to not have property "tool_name"
+
+- Expected: 
+undefined
+
++ Received: 
+"read_file"
+
+ ❯ tests/integration/agent/tool-approval-flow.test.ts:315:31
+    313|     );
+    314|     expect(lastToolTrace).toBeDefined();
+    315|     expect(lastToolTrace).not.toHaveProperty('tool_name');
+       |                               ^
+    316|     expect(lastToolTrace).not.toHaveProperty('tool_args');
+    317|     expect(traces.find(
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed | 9 passed (10)
+      Tests  2 failed | 76 passed (78)
+   Start at  09:44:20
+   Duration  2.92s (transform 2.37s, setup 125ms, import 3.23s, tests 1.14s, environment 1ms)
+
