@@ -1,0 +1,1 @@
+pnpm test:nuxt <46 paths from frontend-changed-files.txt> --run --reporter=dot

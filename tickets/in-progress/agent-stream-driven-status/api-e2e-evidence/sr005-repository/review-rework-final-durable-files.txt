@@ -1,0 +1,10 @@
+tests/e2e/agent/agent-command-correlated-status.e2e.test.ts
+tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts
+tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts
+tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts
+tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts
+tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+tests/integration/agent/agent-status-websocket.integration.test.ts
+tests/integration/agent/agent-team-websocket.integration.test.ts
+tests/integration/agent/agent-websocket.integration.test.ts
+tests/integration/agent/team-lifecycle-websocket.integration.test.ts

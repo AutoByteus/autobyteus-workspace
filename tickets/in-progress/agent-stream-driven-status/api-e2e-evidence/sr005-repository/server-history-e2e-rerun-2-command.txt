@@ -1,0 +1,1 @@
+pnpm -C autobyteus-server-ts exec vitest run tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts --no-watch

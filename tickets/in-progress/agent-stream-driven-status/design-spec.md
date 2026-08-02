@@ -1,625 +1,932 @@
 # Design Spec
 
+## Status (`SR-005` — `CODE-FIND-002` Resolved In Design, Ready For Architecture Re-review)
+
+This is the implementation-authoritative target design for the complete approved requirements basis dated 2026-08-02. It preserves the agent lifecycle design that passed `ARCH-REV-002`, the manager-owned team simplification implemented by `IR-003`, and the representable leaf carrier introduced by `SR-004`. `SR-005` corrects the multi-boundary coordinate-frame defect proven by `CODE-FIND-002`; intended behavior is unchanged.
+
+No source rework may begin until this `SR-005` package passes architecture re-review. API/E2E remains blocked. `CODE-FIND-003` is a required implementation-local test-double repair after the design passes.
+
 ## Current-State Read
 
-The production path already has the facts and transport needed for a stable solution, but lifecycle truth is represented twice. Runtime adapters and the shared lifecycle transformer emit `AGENT_STATUS`; `AgentRun` retains the latest status; standalone and team WebSockets deliver status and activity; the frontend stores `currentStatus`. In parallel, the wire payload and frontend state carry `can_interrupt` / `canInterrupt`, and the composer uses that second value rather than `currentStatus` to choose Stop versus Send.
+The ticket branch is not the original baseline. Commits `b1e96b73f` and `f453286d8` implement the passed `SR-002` agent foundation. Commit `9c4c6f095` implements the `SR-004` team expansion; `facc6a818` records `CRR-003`. Manager-owned binary team liveness, aggregate-team removal, Stop failure/pending semantics, and the preserved agent lifecycle/batching foundation remain sound. This design does not reopen `ARCH-FIND-001`, `ARCH-FIND-002`, or resolved `CODE-FIND-001`.
 
-That split directly permits the reported state: the selected member header reads `currentStatus=running` while the composer reads `canInterrupt=false`. The split is fed by several current producers: runtime-specific status projectors normally set `running/can_interrupt=true` after active-turn identity is visible, the runtime-neutral lifecycle fallback hard-codes every derived status to `canInterrupt:false`, command reconciliation can reconstruct `running` from a non-interruptible startup snapshot, and hydration/recovery code can independently clear the frontend permission.
+The remaining team model is structurally different and unnecessarily broad:
 
-The existing event pipeline is the correct runtime-neutral mechanism for current-turn lifecycle control, but it is not currently behind one owner. `AgentTurnLifecycleState` already tracks identified/anonymous active turns and retired turn IDs, and prior production evidence proves that this protection is required because late events from a completed turn can arrive minutes later. Runtime backends call the pipeline directly, while `AgentRun.emitLocalEvent` bypasses it and fans out to local listeners. Accepted direct inter-agent delivery, artifact publication, skill-improvement notification, task-delegation notification, and `AgentRun`'s own command/termination status facts therefore do not share one serialized finalizer path. The current transformer also runs before event processors and cannot attach authoritative status to processor-derived `FILE_CHANGE` and `TEAM_COMMUNICATION_MESSAGE` events.
+- `AgentTeamRunManager.activeRuns` plus `TeamRun.isActive()` already determine whether a root team execution is live.
+- History and resume expose `isActive`, but `TeamRunStatusProjectionService` additionally folds member snapshots through `deriveTeamApiStatus` and exposes a root `status`.
+- `TeamRun`, `MixedTeamManager`, subteam/task-team handles, command overlays, the team event mapper, and the team WebSocket snapshot all manufacture root or nested `TEAM_STATUS` events.
+- The frontend stores both `AgentTeamContext.currentStatus` and `TeamRunHistoryItem.isActive`, converts activity to a synthetic team status during hydration, and later converts status back to action eligibility.
+- `workspaceHistoryTeamDefinitionGroups.ts` copies the most recent child run's status onto a reusable team definition, which has no runtime lifecycle of its own.
+- Root and definition rows render five-color team dots even though the user action at the root is simply Stop while the run exists.
+- The same aggregate event is also used as a shortcut for task-team projection cleanup, team failure observation, and task-team open-work settlement.
 
-The current snapshot boundary has a second ownership defect. `AgentRun.getStatusSnapshot()` returns `statusOverride ?? backend.getStatusSnapshot()`. Command start stores `initializing`; Claude and Codex can establish `RUNNING` plus active-turn identity before their asynchronous event pipelines have updated that override; the command coordinator may broadcast a replacement status without updating `AgentRun`. A listener can therefore bind and still receive stale `initializing` for an already-current, interruptible turn.
+The aggregate therefore mixes five distinct subjects: definition metadata, root-run liveness, nested execution liveness, member-agent lifecycle, and task stage. Member `AGENT_STATUS` is still valid and must remain exact at every nesting depth. The root team action needs only manager-owned binary liveness. Task cleanup, failure, and settlement need their own facts.
 
-The stream handlers and team member bridge are healthy transport/routing boundaries and must be preserved. Standalone interrupt routes by run ID; team interrupt routes by exact member route key plus the optional exact member run ID stale-target guard. Team member event wrapping adds the member/run/path identity required by the frontend. The aggregate team status helper is also already centralized and must remain a read-only projection from member statuses.
+`SR-004` fixed the original representability gap by carrying task-team identity through recursive snapshots. `CRR-003` then proved that the carried identity can still use the wrong frame. `MixedSubTeamRunFactory` strips an ordinary parent's path from the child config; a task team created there therefore records child-local `logicalTeam` coordinates. Its task-team handle correctly roots leaf and logical team to that child. When the outer ordinary handle bubbles the result to the root, the implemented shared core prefixes only leaf member/source paths and clones the full `TaskTeamInstanceIdentity`. The mapper compares root-relative source path with child-local logical-team path, loses the live relative selector, and throws for the initial snapshot.
 
-On the frontend, `AgentUserInputTextArea.vue` contains a second local defect: its HTML button is disabled through `isActionDisabled`, but Enter calls `handlePrimaryAction()` without enforcing that guard. The matched production trace contains a second user turn thirteen seconds after the first while the first continued, making this a reachable production defect rather than a synthetic edge case.
+The failing path is product-supported: `root composer -> ordinary subteam leaf -> delegate_task to a visible child team target -> task-team activation -> leaf status/live or reconnect`. The correction is not a transport fallback. `SR-005` narrows the outward carrier to `TaskTeamStreamScope` (only task-team run/instance/task IDs plus logical-team path/key), defines those logical coordinates in the enclosing `teamRunId` frame, and rebases them at the same mixed-team boundary as source/member paths for every live event type and initial snapshot. Operational `TaskTeamInstanceIdentity` remains unchanged for activation, directories, persistence, ingress, and coordinator-local routing.
 
-The target must respect these constraints:
-
-- stream silence cannot mean idle; LLM waits and long tools may be silent;
-- only current-turn activity may establish/reinforce running;
-- terminal matching boundaries, not timers, settle idle;
-- late content must continue to render;
-- status snapshots and live events must converge for standalone and team execution;
-- all supported AutoByteus, Codex, and Claude runtimes must expose the same public contract;
-- existing exact interrupt identity/routing must not be weakened.
-
-Detailed evidence and exact current paths are authoritative in [`investigation-notes.md`](./investigation-notes.md), with matched production evidence in [`production-trace-evidence.md`](./production-trace-evidence.md).
+Relevant verified paths and evidence are in [`investigation-notes.md`](./investigation-notes.md), [`production-trace-evidence.md`](./production-trace-evidence.md), and [`team-status-simplification-evidence.md`](./team-status-simplification-evidence.md).
 
 ## Intended Change
 
-Replace the public two-field lifecycle/action contract with one derived status projection:
+Keep one five-state lifecycle only for an agent execution:
 
 ```text
-no live runtime                         -> offline
-terminal turn/runtime failure           -> error
-command accepted, no current turn yet   -> initializing
-current open turn                       -> running
-live runtime, no current open turn      -> idle
+no live agent runtime                    -> offline
+terminal turn/runtime failure            -> error
+accepted command, no current turn        -> initializing
+current open turn                        -> running
+live agent runtime, no current turn      -> idle
 ```
 
-`running` is the sole public busy/interruptible state. Remove `can_interrupt` from the backend/WebSocket DTO and command acknowledgements, remove `canInterrupt` from frontend state, and derive the red Stop action from `currentStatus === running`.
+`running` remains the sole public busy/interruptible agent state. The implemented `AgentRun` gateway continues to pair canonical `AGENT_STATUS` with every final non-status agent event, apply current/retired-turn safety, and serve the same canonical snapshot on reconnect. The frontend continues to resolve Send/Stop/disabled from agent status plus local submission constraints; it never restores `can_interrupt` or `canInterrupt`.
 
-Make `AgentRun` the single serialized outward-event and status owner. Runtime backends expose neutral source-event batches and an internal lifecycle snapshot; they no longer process or dispatch to public subscribers. `AgentRun` subscribes once to each backend source, and both runtime batches and awaited local `publishEvent` calls enter the same per-run queue, processors, and lifecycle finalizer before listener delivery. The finalizer consumes the run-owned current/retired turn state and a fresh runtime lifecycle snapshot evaluated inside the queue. It emits the canonical status with every final non-status `AgentRunEvent`. Current-turn activity is preceded by `running`; a matching terminal boundary is followed by `idle`; terminal failure is followed by `error`; local idle notifications are paired with idle without opening a turn; and late retired-turn activity is accompanied by the actual current status without reopening its old turn.
+For a team, remove the five-state lifecycle altogether:
 
-Remove `statusOverride`. The same `AgentTurnLifecycleState` instance used by finalization reconciles command facts and fresh backend lifecycle snapshots. `AgentRun.getStatusSnapshot()` refreshes that state from the backend and returns the canonical public payload. Fresh current-turn evidence promotes stale startup to `running`; racy `idle`/`initializing` cannot close an identified turn; only its matching terminal/error or explicit runtime offline evidence can. Direct status broadcasting remains only for a pre-runtime command overlay when no `AgentRun` exists. After run creation, every status application and publication flows through `AgentRun`.
+```text
+team definition                          -> no runtime state
+root team run registered and backend live -> isActive = true
+root team run absent/unregistered          -> isActive = false
+leaf agent member                          -> its own five-state AgentStatus
+task execution                             -> its task-domain stage
+socket                                     -> connected/disconnected only
+Stop request                               -> local stopPending only
+```
 
-Narrow frontend `isSending` into a local submission-in-flight concern named `submissionPending`; it is not agent lifecycle. Add one primary-action policy/guard shared by button, Enter, and store-level action admission. Keep team aggregation and exact interrupt routing unchanged.
+Make `AgentTeamRunManager` the only public team-liveness owner. It exposes a fresh binary snapshot and an idempotent lifecycle subscription for an exact root `teamRunId`. The team WebSocket binds both the run-event subscription and manager-lifecycle subscription, then performs a fresh manager read. It sends `TEAM_RUN_LIFECYCLE { team_run_id, is_active }`; it no longer sends root or nested aggregate `TEAM_STATUS`. Successful unregistration emits `false`; failed termination emits no false transition; disconnect emits nothing about liveness.
+
+Remove agent-like status snapshots from subteam and task-team handles. Team runtime snapshots recursively return `TeamLeafAgentStatusSnapshot`: a canonical agent status with required team-leaf identity plus a discriminated ordinary-member or task-team `TaskTeamStreamScope`. The task-team handle derives that tight scope from its operational `TaskTeamInstanceIdentity` in the immediate parent frame. Every outer ordinary boundary prefixes the scope's logical-team path together with source/member paths and rebuilds every route key. Every live event type and every initial snapshot calls the same `prefixMixedTeamStreamScope`; live agent and snapshot adapters additionally enforce a nonempty relative leaf selector. Both stream mappings call the same task-team identity flattener and never guess a missing prefix. Replace the settlement aggregate read with a private `TeamRun.hasOpenExecutionWork()` predicate. Replace task-team offline-event cleanup with task-delegation terminal/reconciliation facts. Remove the root aggregate-error branch from team lifecycle observation while retaining canonical member-agent failure observation and explicit operation failures.
+
+On the frontend, store root `isActive` directly; remove `AgentTeamStatus`, root/team `currentStatus`, definition/run team dots, and aggregate normalization/hydration. Use `isActive && !stopPending` for Stop. Show `AgentStatusDisplay` and status dots only for exact leaf-agent subjects. A root or subteam header has no agent status fallback. Mobile team-run liveness, where text is useful, is `Active` or `Inactive` from `isActive` only.
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
 | Behavior ID | Kind (`User`/`System`/`Operational`/`Contract`) | Approved Requirement / Intent And Acceptance-Criteria IDs | Approved Trigger Or Governing Contract | Relevant Existing Behavior And Evidence Reference | Approved Change Or Preserved Outcome | Target Production Path / Lifecycle And Spine ID(s) |
 | --- | --- | --- | --- | --- | --- | --- |
-| BEH-001 | User | REQ-001, REQ-002, REQ-008, REQ-009; AC-001, AC-002, AC-009 | Selected standalone run or exact focused team member is working and the user invokes the primary action | Investigation BEH-001; screenshot; live snapshot probe | `running` alone produces the red Stop action; exact existing interrupt routing is preserved; no `running + send` representation remains | DS-001, DS-002, DS-005 |
-| BEH-002 | System / Contract | REQ-003, REQ-004, REQ-005, REQ-010; AC-003, AC-004, AC-010, AC-011 | A supported runtime, local run service, or event processor produces an outward `AgentRunEvent` | Investigation BEH-002 and ORIGIN-001–ORIGIN-007; pipeline, local producers, mapper, stream handlers | Every runtime, local, and processor-derived final non-status event crosses the same `AgentRun` gateway and is paired with canonical status; current-turn activity self-heals running and terminal activity settles immediately | DS-003, DS-004, DS-006, DS-009 |
-| BEH-003 | System | REQ-005, REQ-006, REQ-007, REQ-011; AC-004–AC-007, AC-012 | Current turn completes/interruption settles, terminal error occurs, runtime terminates, or client reconnects | Investigation BEH-003; runtime projectors; command overlay; snapshot paths | Matching turn terminal -> idle, terminal failure -> error, runtime termination -> offline; reconnect uses the same latest projection | DS-003, DS-004, DS-007 |
-| BEH-004 | System | REQ-004, REQ-012; AC-008, AC-011 | Late activity/terminal event for retired turn A arrives after A or during B | Investigation BEH-004; prior `agent-idle-status-lifecycle` production evidence | Late content renders, but retired/current turn identity makes lifecycle monotonic and idempotent; A cannot reopen or disturb B | DS-006 |
-| BEH-005 | User | REQ-008, REQ-009; AC-013, AC-014 | User clicks primary action or presses Enter/Shift+Enter while idle, initializing, or running | Investigation BEH-005; composer source; matched overlapping input | Click and Enter execute the same resolved action and guard; initializing blocks; running interrupts; idle/offline/error may send only when locally admissible; Shift+Enter remains newline | DS-005 |
+| BEH-001 | User | REQ-001, REQ-002, REQ-008, REQ-009; AC-001, AC-002, AC-009 | Selected standalone or exact team member is working | Original screenshot and agent investigation | Preserve implemented `running -> Stop`; exact run/member interrupt identity remains | DS-001, DS-002, DS-005 |
+| BEH-002 | System / Contract | REQ-003, REQ-004, REQ-005, REQ-010; AC-003, AC-004, AC-010, AC-011 | Any supported outward agent event origin | ORIGIN-001–ORIGIN-007; `ARCH-REV-002` | Preserve the single `AgentRun` gateway and one canonical companion per final non-status event | DS-003, DS-004, DS-006, DS-009 |
+| BEH-003 | System | REQ-005, REQ-006, REQ-007, REQ-011; AC-004, AC-005, AC-006, AC-007, AC-012 | Agent terminal/error/termination or reconnect | Snapshot race evidence and implemented foundation | Preserve matching terminal -> idle, terminal failure -> error, termination -> offline, fresh snapshot convergence | DS-003, DS-004, DS-007 |
+| BEH-004 | System | REQ-004, REQ-012; AC-008, AC-011, AC-012 | Late/duplicate retired-turn evidence | Production trace and turn-state evidence | Preserve late content while preventing retired turn A from reopening or disturbing B | DS-006 |
+| BEH-005 | User | REQ-008, REQ-009; AC-013, AC-014 | Click, Enter, or programmatic composer action | Composer source and implementation review | Preserve one action guard; initializing blocks, running interrupts, Shift+Enter inserts newline | DS-005 |
+| BEH-006 | User / Contract | REQ-013; AC-016 | Render a team-definition group | Team screenshot and definition-group source | Remove borrowed status field/dot/label; preserve name/avatar/count/disclosure/launch | DS-010 |
+| BEH-007 | System / Contract | REQ-014, REQ-015, REQ-018; AC-017, AC-018, AC-019, AC-020, AC-024 | Create, restore, refresh, subscribe, terminate, or lose a root team run | Manager/history/resume and circular frontend projection evidence | Root team lifecycle is only manager-owned `isActive`; member state and socket state never determine it | DS-008 |
+| BEH-008 | User | REQ-016, REQ-018; AC-017, AC-018, AC-022, AC-023 | Stop, archive, delete, or render a team run | Workspace action/dot source | Stop uses `isActive` plus local pending; inactive history actions retain their existing lifecycle guards; no five-state team visuals | DS-008, DS-010 |
+| BEH-009 | System / Contract | REQ-015, REQ-017, REQ-019; AC-020, AC-021, AC-025 | Member live stream/initial reconnect at any depth, including ordinary subteam -> task team; task terminal/failure; settlement check | `CR-MP-002`, `CODE-FIND-002`, team bridge/flattener, task-team scoped resolver, task/failure/settlement owners | Preserve exact leaf-agent status through one representable and coordinate-consistent live/snapshot scope; move task cleanup, failure, and open-work decisions to their real owners; delete aggregate status | DS-004, DS-011, DS-012 |
 
 ## Relevant Supplemental Task Artifacts
 
-| Artifact Path | Purpose | Related Requirement / Acceptance-Criteria IDs (When Applicable) | Relationship To This Design | Status / Approval Applicability |
+| Artifact Path | Purpose | Related Requirement / Acceptance-Criteria IDs | Relationship To This Design | Status / Approval Applicability |
 | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/production-trace-evidence.md` | Matched production trace and read-only live WebSocket evidence | REQ-001–REQ-012; AC-001–AC-015 | Grounds the divergent UI state, active-turn evidence, overlapping input risk, and late-event qualification | Complete; evidence-only, approval N/A |
-| `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_6557dd2b51c3__image.png` | User-supplied screenshot | REQ-001, REQ-008; AC-001, AC-009 | Visual proof of `Running` with a Send control | Accepted evidence; approval N/A |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/production-trace-evidence.md` | Matched agent production trace and live snapshot probe | REQ-001–REQ-012 / AC-001–AC-015 | Grounds the preserved agent lifecycle/gateway design | Complete; evidence-only; approval N/A |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/team-status-simplification-evidence.md` | Team definition/run authority and aggregate-consumer trace | REQ-013–REQ-019 / AC-016–AC-025 | Grounds the clean team contraction and reassignment | Complete; evidence-only; approval N/A |
+| `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_6557dd2b51c3__image.png` | Agent UI screenshot | REQ-001, REQ-008 / AC-001, AC-009 | Shows Running with the wrong primary action | User-supplied evidence; approval N/A |
+| `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_9d9c83cf3d30__image.png` | Team hierarchy screenshot | REQ-013–REQ-017 / AC-016, AC-017, AC-021, AC-023 | Distinguishes redundant root status from useful member status | User-supplied evidence; approval N/A |
+| `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_ead75793b5e3__image.png` | Team-definition screenshot | REQ-013 / AC-016 | Shows the invalid definition-level status dot | User-supplied evidence; approval N/A |
 
 ## Task Design Health Assessment (Mandatory)
 
-- Change posture: `Bug Fix`, `Behavior Change`, and bounded `Refactor`
+- Change posture: `Bug Fix`, `Behavior Change`, `Refactor`, and `Cleanup`
 - Current design issue found: `Yes`
-- Root cause classification: `Missing Invariant`; `Boundary Or Ownership Issue`; `Duplicated Policy Or Coordination`; local `Local Implementation Defect` for keyboard guarding; `Shared Structure Looseness` for the redundant status/permission DTO
+- Root cause classification: `Missing Invariant`; `Boundary Or Ownership Issue`; `Duplicated Policy Or Coordination`; `Shared Structure Looseness`; local `Local Implementation Defect`
 - Refactor needed now: `Yes`
 - Evidence:
-  - Header and primary action read different stored authorities.
-  - A runtime-neutral derived `running` status currently hard-codes `canInterrupt=false`.
-  - Runtime projectors, command reconciliation, snapshots, history/hydration, and frontend cleanup each participate in status/action policy.
-  - Runtime backends and supported local producers reach subscribers through different dispatch paths; local and processor-derived events are not uniformly finalized.
-  - `statusOverride` can shadow fresh current-turn evidence, and the command coordinator can publish an active-run replacement without applying it to `AgentRun`.
-  - The event pipeline has the needed lifecycle state but does not operate behind the authoritative public run boundary as the final outward projection stage.
-  - Enter bypasses the button's disabled condition in a production-reachable path.
-- Design response: Make `AgentRun` own one source/local publication gateway, one per-run lifecycle state, and one refresh/read path; move all final processing/finalization behind it; reduce the public status DTO to one lifecycle field plus identity; and make frontend action mode a pure projection from that status plus local request constraints.
-- Refactor rationale: Repairing only the button or forcing `can_interrupt=true` would preserve two authorities and another contradictory combination would remain reachable. The clean contraction is necessary for the approved `running => Stop` invariant.
-- Intentional deferrals and residual risk: Provider-internal detailed phase models remain internal. The change does not redesign provider loops or team/task orchestration. Status repetition increases WebSocket message volume by approximately one compact status message per final agent event; the user explicitly accepts this correctness-first tradeoff, and existing semantic event batching remains available.
+  - The original agent action was governed by two independently mutable fields; that part is already corrected on this branch.
+  - Team liveness has two public representations (`status` and `isActive`) and frontend code converts repeatedly between them.
+  - A definition borrows a child execution status despite having no runtime subject.
+  - A common member handle returns `AgentStatusPayload` for both agents and teams, forcing teams to masquerade as agents.
+  - `TEAM_STATUS` is used as display state, liveness, failure, task cleanup, and open-work inference.
+- `ARCH-FIND-003` confirmed that a plain recursive `AgentStatusPayload[]` loses task-team execution scope. `CODE-FIND-002` further proved that carrying a complete operational identity unchanged can mix coordinate frames after an additional ordinary parent boundary.
+- Design response: Preserve one agent lifecycle owner; establish `AgentTeamRunManager` as the sole public root-team liveness owner; specialize agent versus team member shapes; compose canonical agent status with a tight parent-frame `TaskTeamStreamScope`; rebase that scope at the same owner as source/member paths; give task/failure/settlement their own facts; delete aggregate server/frontend contracts and visuals.
+- Refactor rationale: Hiding the dots while retaining aggregate DTOs and status-to-active conversions would leave the same contradictory authority in code. Clean removal is smaller and more stable than maintaining a deprecated five-state team model.
+- Intentional deferrals and residual risk: Provider internals, task-stage semantics, team topology, and general workspace styling remain unchanged. Repeated agent companions remain an accepted bandwidth tradeoff. The binary root lifecycle message is a small extra transport contract needed for live multi-client convergence; it is not another derived status.
 
 ## Terminology
 
-- **Lifecycle fact:** Runtime existence/startup, active current-turn identity, terminal failure, or termination evidence used to derive status.
-- **Current turn:** The single open turn known by an identified `turn_id` or, temporarily, by an anonymous runtime/command start fact.
-- **Retired turn:** A turn whose terminal boundary or terminal error has been observed; later events for it remain renderable but cannot change lifecycle.
-- **Status companion:** An idempotent canonical `AGENT_STATUS` emitted adjacent to one final non-status `AgentRunEvent`.
-- **Submission pending:** A frontend-local request lock between staging a local message and receiving authoritative command/status progress; not agent lifecycle.
+- **Agent lifecycle:** The five-state lifecycle of one exact `AgentRun`.
+- **Team definition:** Reusable configuration/topology; never a runtime subject.
+- **Root team run liveness:** `isActive` for one exact root `teamRunId`, owned by `AgentTeamRunManager` registration plus backend liveness.
+- **Team lifecycle message:** `TEAM_RUN_LIFECYCLE { team_run_id, is_active }`, a binary manager fact; not a member aggregate.
+- **Leaf-agent snapshot:** `AgentStatusPayload` for an actual agent execution, including exact route/path/run/task identity.
+- **Task-team stream scope:** Tight outward identity `{ taskTeamRunId, taskTeamInstanceId, taskId, logicalTeamPath, logicalTeamRouteKey }`. Its logical-team path/key are always rooted in the enclosing event/snapshot `teamRunId`; it deliberately excludes operational ingress/coordinator-local selectors.
+- **Team leaf-agent snapshot:** Internal discriminated carrier `{ scopeKind, teamRunId, payload, taskTeamScope? }`, where `payload` is canonical `AgentStatusPayload` with required leaf identity; `ordinary_member` has no task-team field and `task_team_member` requires one coordinate-consistent `TaskTeamStreamScope`.
+- **Mixed team stream scope:** Shared `teamRunId`/source-path/task-team envelope projected from every live `TeamRunEvent` type or a team leaf-agent snapshot and prefixed once at each parent boundary. Agent events/snapshots additionally carry a member path in the same frame.
+- **Open execution work:** Private boolean used only for safe task-team settlement; it is not a public status or display value.
+- **stopPending:** Frontend-local duplicate-request guard; it never changes `isActive`.
 
 ## Design Reading Order
 
-Follow the template order. The central design decision is expressed first in the runtime/local return spines and the run-owned bounded state-machine spine; file edits are a projection of the single-`AgentRun` gateway and snapshot-precedence decisions.
+Read the agent spines as preserved branch foundations, then the manager-owned team liveness spine, the recursive stream-coordinate contract, the definition/presentation contraction, and finally the task/failure/open-work replacements. The removal and file maps are the concrete projection of those ownership decisions.
 
 ## Legacy Removal Policy (Mandatory)
 
 - Policy: `No backward compatibility; remove legacy code paths.`
-- Remove the `can_interrupt` field and `canInterrupt` builder input from `AgentStatusPayload` and every server/client contract, producer, normalizer, fixture, and assertion.
-- Remove `AgentRunState.canInterrupt`, `activeContextStore.canInterrupt`, and direct/hydration writes that grant or clear it.
-- Remove runtime lifecycle-boundary status duplication from Codex/Claude converters where the final lifecycle stage now emits the canonical companion.
-- Remove `AgentRun.emitLocalEvent`, `localEventListeners`, `statusOverride`, per-subscriber backend subscriptions, and all runtime-backend calls to `dispatchProcessedAgentRunEvents`; do not retain a compatibility event path.
-- Remove command-coordinator and active mixed-member direct status replacement through broadcasters once an `AgentRun` exists. Retain only the explicitly pre-runtime overlay path.
-- Replace the misleading broad `AgentContext.isSending` lifecycle usage with narrowly owned `submissionPending`; remove remote/member-input writes that used it as busy state.
-- Do not accept both old and new status shapes, add optional compatibility aliases, or derive fallback interrupt permission from legacy fields.
+- Preserve the already implemented removal of agent `can_interrupt` / `canInterrupt`; do not reintroduce a derived alias.
+- Delete backend `TeamStatusPayload`, `deriveTeamApiStatus`, root/nested `TeamRunEventSourceType.TEAM`, aggregate status overrides/deduplication, team command status construction, and aggregate snapshot/mapping code.
+- Delete public/frontend `AgentTeamStatus`, root history `status`, team context/tree `currentStatus`, team-status normalization/hydration, and `TEAM_STATUS` protocol handling.
+- Delete team-specific visual helpers/components and the team branch of the shared status dot; keep agent visuals.
+- Do not accept old and new team payloads, retain an optional `status`, translate `status` into `isActive`, or publish both `TEAM_STATUS` and `TEAM_RUN_LIFECYCLE`.
 
 ## Persisted Data / State Transition Decision (Mandatory When Persisted Data May Be Affected)
 
-- Stored subject, location, representative shape, and approximate volume: Existing run/team metadata JSON, transcript/activity projections, raw JSONL traces, and history rows under the configured server memory directory. Volume is user-history dependent. The removed frontend permission is in-memory only; current history rows persist canonical status but not frontend `canInterrupt`.
-- Relevant code-model, serialization, semantic, or physical-store change: Live `AGENT_STATUS` and command-ack nested status contract removes `can_interrupt`; frontend in-memory `AgentRunState` removes `canInterrupt`; `isSending` is renamed/narrowed as local UI state. No stored transcript, metadata, trace, or identity schema is required to change.
-- Normal reader/writer behavior and representative evidence: History services read active status from `AgentRunStatusProjectionService` and inactive status from metadata; live status is rebuilt from active runtime state. Representative metadata/traces contain run/member identity and content, not a persisted frontend interrupt permission. JSON trace/history readers tolerate unrelated payload history without teaching current runtime code an old schema.
-- Required semantics and invariants under direct use: All existing identities, transcripts, traces, late activity, termination metadata, and history status meaning remain usable. Active status is recalculated after process restart.
-- Physical-store, privacy/security, disposal/rebuild, and operational constraints: Preserve all user content and exact member/run identity. No bulk rewrite, deletion, or downtime is justified.
+- Stored subject, location, representative shape, and approximate volume: Run/team metadata JSON, raw trace JSONL, transcript/activity/task projections, and history-index rows under server memory. Volume depends on user history. Live agent lifecycle, root team aggregate status, and frontend projections are computed/in-memory.
+- Relevant code-model, serialization, semantic, or physical-store change: Live agent DTO has already removed `can_interrupt`; GraphQL/frontend team history removes computed root `status` while retaining `isActive` and `members[].status`; WebSocket replaces root aggregate `TEAM_STATUS` with binary `TEAM_RUN_LIFECYCLE`.
+- Normal reader/writer behavior and representative evidence: Team history already calculates `isActive` from `AgentTeamRunManager`; member statuses are live projections with offline fallback. Metadata/traces persist identities, topology, content, task records, and termination data, not a required aggregate-team lifecycle.
+- Required semantics and invariants under direct use: Preserve all identity, topology, transcript, late activity, task records, and termination history. Active lifecycle is rebuilt from live runtime/manager state.
+- Physical-store, privacy/security, disposal/rebuild, and operational constraints: No user data rewrite or deletion; server and frontend contracts ship together.
 - Decision: `Directly Usable — No Migration`
-- Decision rationale, including concrete benefit versus I/O, downtime, corruption, recovery, and rollout cost: There is no correctness benefit from rewriting stored content because the changed fields are live DTO/in-memory fields. A rewrite would add I/O and corruption exposure without changing runtime semantics.
-- Acceptance criteria or design constraints supported by this decision: REQ-011, REQ-012; AC-008, AC-011, AC-012.
+- Decision rationale: Existing stored data remains meaningful and current readers can ignore obsolete historical superset fields. A bulk rewrite adds I/O/corruption/recovery cost without changing runtime authority.
+- Acceptance criteria or design constraints supported: REQ-011, REQ-012, REQ-014–REQ-019; AC-008, AC-011, AC-012, AC-018–AC-025.
 
 ### Migration Plan
 
-N/A — decision is `Directly Usable — No Migration`.
+N/A — the decision is `Directly Usable — No Migration`.
 
 ## Data-Flow Spine Inventory
 
-| Spine ID | Scope (`Primary End-to-End`/`Return-Event`/`Bounded Local`) | Related Behavior ID(s) | Start | End | Governing Owner | Why It Matters |
+| Spine ID | Scope | Related Behavior ID(s) | Start | End | Governing Owner | Why It Matters |
 | --- | --- | --- | --- | --- | --- | --- |
-| DS-001 | Primary End-to-End | BEH-001, BEH-003 | Standalone composer Send | Runtime command accepted/started | `AgentRunCommandCoordinator` with `AgentRun` public boundary | Establishes initializing and exact run command association before runtime output |
-| DS-002 | Primary End-to-End | BEH-001, BEH-003 | Team composer Send | Exact member runtime command accepted/started | `TeamRun` / mixed member handle with nested `AgentRun` boundary | Preserves exact member identity and team command overlay before the member runtime exists |
-| DS-003 | Return-Event | BEH-002, BEH-003 | Runtime source event batch | Standalone frontend status and rendered activity | `AgentRun` event/status gateway | Carries provider-neutral facts through the same run-owned finalizer and public snapshot used by subscribers |
-| DS-004 | Return-Event | BEH-001–BEH-004 | Member runtime or local run event/fact | Team frontend member status/activity and team aggregate | Member `AgentRun`, team member bridge, aggregate helper | Preserves member identity after canonical finalization and prevents team aggregate from becoming member authority |
-| DS-005 | Primary End-to-End | BEH-001, BEH-005 | Composer click/Enter | Send, exact interrupt, or guarded no-op | Frontend primary-action policy plus active-context command facade | Makes visual mode and executed action identical |
-| DS-006 | Bounded Local | BEH-002–BEH-004 | Runtime/local event batch enters the run gateway | Ordered canonical status/original event sequence plus updated snapshot | `AgentRun` with owned `AgentTurnLifecycleState` and `LifecycleStatusEventTransformer` | Owns source serialization, snapshot reconciliation, current/retired turn monotonicity, companion ordering, and status application before listener delivery |
-| DS-007 | Return-Event | BEH-003 | Connect/reconnect or active status read | Immediate canonical standalone/member/team snapshots | `AgentRun` refresh/read boundary plus stream handler | Promotes stale startup from fresh current-turn evidence and prevents sparse/racy initialization from surviving until later traffic |
-| DS-008 | Bounded Local | BEH-003 | Member status snapshots/events | Aggregate `TEAM_STATUS` | `deriveTeamApiStatus` | Keeps deterministic team display read-only and separate from member actions |
-| DS-009 | Return-Event | BEH-002 | Accepted direct message, artifact publication, skill notification, or task-delegation notification | Standalone/team subscriber receives paired canonical status and local event | `AgentRun.publishEvent` gateway | Eliminates supported local listener bypasses without caller-specific status decoration |
+| DS-001 | Primary End-to-End | BEH-001, BEH-003, BEH-005 | Standalone user command | Provider turn / exact interrupt | `AgentRun` | Preserved status-only standalone action path |
+| DS-002 | Primary End-to-End | BEH-001, BEH-005, BEH-009 | Team member command | Exact nested `AgentRun` turn / interrupt | `TeamRun` route boundary + member `AgentRun` | Preserves exact compound identity |
+| DS-003 | Return-Event | BEH-002–BEH-004 | Runtime source batch | Standalone subscribers | `AgentRun` | Preserved single processing/finalization path |
+| DS-004 | Return-Event | BEH-001–BEH-004, BEH-009 | Nested agent final event or initial leaf snapshot at arbitrary ordinary/task-team depth | Matching frontend leaf/task-team-scoped context | member `AgentRun` + mixed-team stream-scope bridge | Gives live and reconnect status one representable identity whose paths remain in the current parent frame |
+| DS-005 | Primary End-to-End | BEH-001, BEH-005 | Button/Enter/programmatic action | Send or exact interrupt | frontend primary-action policy | Prevents input-path disagreement |
+| DS-006 | Bounded Local | BEH-002–BEH-004 | Queued agent facts/events/snapshot | Canonical status + final event batch | run-owned lifecycle state/finalizer | Enforces current/retired-turn precedence |
+| DS-007 | Return-Event | BEH-003 | Stream bind/recovery | Canonical agent snapshot | `AgentRun.getStatusSnapshot()` | Prevents stale startup on reconnect |
+| DS-008 | Return-Event | BEH-007, BEH-008 | Manager register/read/unregister | GraphQL/history and live team frontend `isActive` | `AgentTeamRunManager` | Gives root Stop one binary authority |
+| DS-009 | Return-Event | BEH-002 | Local/processor agent event | Agent subscribers | `AgentRun.publishEvent` / gateway | Preserves all outward origin coverage |
+| DS-010 | Bounded Local | BEH-006, BEH-008 | Definition/history read model | Team definition/run presentation | workspace history projection | Removes status from non-agent subjects |
+| DS-011 | Return-Event | BEH-009 | Task terminal/result/failure facts | Task projection cleanup and lifecycle observer | task delegation / operation / member failure owners | Replaces aggregate shortcuts |
+| DS-012 | Bounded Local | BEH-009 | Settlement request | settle now or wait | `TeamRun.hasOpenExecutionWork()` + task delegation service | Replaces aggregate status as work predicate |
 
 ## Primary Execution Spine(s)
 
-- **DS-001 standalone send:** `Composer -> activeContextStore -> agentRunStore -> Agent WebSocket SEND_MESSAGE -> AgentStreamHandler -> AgentRunCommandCoordinator -> AgentRun -> runtime backend/session`
-- **DS-002 team-member send:** `Composer -> activeContextStore -> agentTeamRunStore -> Team WebSocket SEND_MESSAGE + ConversationTargetAddress -> AgentTeamStreamHandler -> TeamRun -> MixedTeamManager/member handle -> AgentRun -> runtime backend/session`
-- **DS-005 primary action/interrupt:** `Click or Enter -> primary-action resolver/guard -> activeContextStore -> standalone run interrupt or exact team-member interrupt -> WebSocket command -> AgentRun/TeamRun interrupt boundary -> runtime`
+- **DS-001:** `Composer -> primary-action policy -> activeContextStore -> AgentRun command -> backend -> provider`
+- **DS-002:** `Composer -> exact teamRunId/memberRouteKey/memberRunId -> TeamRun -> mixed member handle -> nested AgentRun -> provider`
+- **DS-005:** `Click | Enter | programmatic admission -> resolveAgentPrimaryAction -> rechecked store command -> Send | exact Interrupt | Disabled`
 
 ## Spine Narratives (Mandatory)
 
 | Spine ID | Short Narrative | Main Domain Subject Nodes | Governing Owner | Key Off-Spine Concerns |
 | --- | --- | --- | --- | --- |
-| DS-001 | The client stages one local submission and sends a correlated command. A pre-runtime overlay may expose initializing before activation; once the run exists, `AgentRun` applies command start and any accepted returned turn ID while the coordinator records association/dedupe only. Accepted current-turn evidence replaces initializing with running through the run. | local submission, command record, agent run, runtime turn | Command coordinator for identity; `AgentRun` for active lifecycle | dedupe registry, pre-runtime overlay, attachment handling |
-| DS-002 | A team message retains its explicit conversation/member address through the team boundary. A member command overlay publishes initializing before lazy member activation; the nested `AgentRun` then owns member runtime status. | team run, member execution, agent run, runtime turn | `TeamRun`/member handle then nested `AgentRun` | route validation, lazy activation, member identity envelope |
-| DS-003 | A runtime adapter converts provider facts to a neutral source batch and invokes its sole `AgentRun` source listener. The run gateway serializes it with local publications, refreshes internal runtime lifecycle evidence inside the queue, runs processors and the lifecycle finalizer, applies canonical status, then fans out. | runtime event, agent run gateway, lifecycle projection, frontend agent context | `AgentRun` | provider adaptation, event processing, listener dispatch |
-| DS-004 | The nested `AgentRun` first finalizes runtime and local events through the same gateway. Its resulting sequence is then wrapped with exact member identity, published to the team stream, and aggregated independently. | member agent run, team event, member context, team aggregate | nested `AgentRun` and team bridge | task/subteam identity flattening, aggregate notification |
-| DS-005 | One pure decision resolves disabled/send/interrupt from selected status and local constraints. Button rendering and both click/keyboard execution use that same result. Store boundaries recheck lifecycle before issuing send/interrupt. | selected agent context, primary action, command | frontend primary-action policy | draft/upload state, local submission pending, Shift+Enter |
-| DS-006 | One run-owned state instance reconciles command facts, fresh runtime snapshots, explicit runtime status facts, lifecycle boundaries, errors, and current/retired turn IDs. The queue cannot promote arbitrary old activity. The finalizer emits status before nonterminal activity and after terminal boundaries/errors, and the run applies that same canonical state before listeners. | active turn, startup fact, retired turns, runtime snapshot, canonical status | `AgentRun` + `AgentTurnLifecycleState` | error evidence classification, event eligibility, shared processors |
-| DS-007 | A live listener is bound before `AgentRun.getStatusSnapshot()` refreshes the same lifecycle state from the backend's current internal snapshot. An identified current turn wins over stale initializing/idle, and the resulting status is sent immediately; repeated companions provide a second repair mechanism. | connection, run lifecycle state, runtime snapshot, public snapshot | `AgentRun` then stream handler | missing-run validation, connection/session registry |
-| DS-008 | Member statuses are folded with one existing precedence: running, initializing, error, idle, offline. The result is display-only and never grants or removes a member action. | member statuses, team status | `deriveTeamApiStatus` | status-change suppression |
-| DS-009 | Each supported local producer awaits `run.publishEvent`. The event joins the same queue as provider batches, receives processor-derived events and a fresh canonical companion, and reaches listeners only after the run state is applied. Idle notifications remain idle; accepted-message notifications use the accepted command's current-turn fact. | local producer, agent run gateway, canonical event sequence | `AgentRun` | grant/audit records, artifact persistence, skill notification result |
+| DS-001 | The existing command boundary applies startup/current-turn facts to one `AgentRun`; its status-only projection drives the standalone action. | agent run, turn, action | `AgentRun` | provider adapter, submission pending |
+| DS-002 | `TeamRun` validates the exact route/run identity and delegates to one member handle; only the nested `AgentRun` owns agent lifecycle. | team run, member identity, agent run | `TeamRun` and member `AgentRun` | routing, task instance identity |
+| DS-003 | Runtime source batches enter the run queue, processors derive final events, then the lifecycle finalizer adds ordered status companions before listeners. | source event, final event, status | `AgentRun` | mapper, content batching |
+| DS-004 | A task-team handle derives `TaskTeamStreamScope` in its immediate parent frame. Each outer ordinary boundary passes every live event type and initial snapshot through `prefixMixedTeamStreamScope`, rebasing source and logical-team paths together; agent adapters rebase member paths with the same private rule. The shared flattener then computes one nonempty relative leaf selector for live and reconnect. | leaf agent, parent-frame stream scope, scoped snapshot/event | mixed-team bridge | path/key rebasing, strict leaf validation |
+| DS-005 | One discriminated policy resolves Send/Stop/Disabled for every trigger and the store rechecks immediately before executing. | draft, agent status, action | primary-action policy | upload/pending state |
+| DS-006 | One current/anonymous/retired-turn state reconciles command facts, fresh runtime evidence, and ordered events; late content renders without lifecycle rollback. | current turn, retired turns | run-owned lifecycle state | terminal classification |
+| DS-007 | A listener binds first, then `AgentRun` reconciles a fresh backend lifecycle snapshot inside its queue and sends the canonical result. | agent snapshot | `AgentRun` | history/live precedence |
+| DS-008 | Manager registration is created/restored once, queried for history/resume, and removed once after accepted termination or detected backend death. The same owner notifies live subscribers with one binary fact. | root team run | `AgentTeamRunManager` | GraphQL mapper, socket session |
+| DS-009 | Awaited local events join runtime events before processors/finalization; no caller performs listener fanout or status pairing. | local agent event | `AgentRun` | producer-specific persistence |
+| DS-010 | Definition groups retain a representative only for definition metadata/avatar needs. Run rows read `isActive` for actions but render no team status. | definition, root team run | workspace history projection | accessibility text |
+| DS-011 | Task terminal events and task-record refresh remove task projections; explicit operation results and leaf-agent terminal failures report failures. No team enum mediates them. | task, operation, failure | task/failure owners | scheduling and toast state |
+| DS-012 | Settlement asks task delegation whether records remain open and asks the child team run whether execution work remains; it settles only when both are false. | child team execution | `TeamRun` backend + settlement coordinator | task directories |
 
 ## Spine Actors / Main-Line Nodes
 
-- Frontend composer and primary-action policy
-- Active-context command facade
-- Standalone/team streaming command boundary
-- `AgentRunCommandCoordinator` or exact team member handle
-- `AgentRun` public runtime boundary
-- Runtime backend/session adapter
-- Runtime-neutral event pipeline and lifecycle finalizer
-- Supported local run-event producers
-- Standalone/team WebSocket stream
-- Frontend member/run status projection
+- Agent: composer, primary-action policy, frontend stores, stream service, `AgentRun`, lifecycle state/finalizer, runtime backend/provider.
+- Team member: exact team command boundary, mixed leaf member handle, nested `AgentRun`, team event identity bridge, leaf context resolver.
+- Root team liveness: GraphQL mutation/history/resume, `AgentTeamRunManager`, team WebSocket lifecycle binding, `AgentTeamContext.isActive`, Stop policy.
+- Former aggregate consumers: task-delegation event/record projection, `AgentRunCanonicalFailureObserver`, `TeamRun.hasOpenExecutionWork()`, settlement coordinator.
 
 ## Ownership Map
 
-- **Composer:** renders and invokes the already-resolved primary action; owns textarea/interaction presentation, not lifecycle.
-- **Primary-action policy:** owns the deterministic `disabled | send | interrupt` decision from current status plus local submission/upload/draft facts.
-- **`activeContextStore`:** remains a thin selection-aware command facade; validates status/action subject and delegates to exact standalone/team stores.
-- **Command coordinators/overlays:** own command identity, dedupe, and initializing/error projection only while no `AgentRun` exists. Once a run exists, command start/accept/reject/error facts and every status publication flow through that run; the coordinator does not directly broadcast active-run replacements.
-- **`AgentRun`:** is the authoritative public per-run boundary for commands, termination, subscription, current canonical status, and every outward `AgentRunEvent`. It owns the single backend source subscription, listener set, per-run dispatch queue, and lifecycle state; it applies canonical status before listener delivery.
-- **Runtime backends/projectors:** adapt provider events to neutral source batches and provider state to an internal runtime lifecycle snapshot. They do not process/finalize public events, retain public subscribers, or own frontend action semantics.
-- **Lifecycle finalizer:** is the run-owned internal mechanism for event-driven active/retired turn transitions and status-companion sequencing; it uses the same state instance as command facts and snapshot reads.
-- **Stream handlers/mappers:** own subscription timing and transport serialization only.
-- **Team member bridge:** owns exact member identity wrapping and aggregate-change notification, not member lifecycle policy.
-- **Frontend status state:** stores only latest canonical status and applies hydration/live precedence; it does not infer lifecycle from content.
+- **`AgentRun`:** Sole agent command, event, lifecycle, snapshot, and subscriber owner; preserved from `SR-002`.
+- **`AgentTurnLifecycleState`:** Internal current/retired-turn state and precedence; never a transport/public owner.
+- **Runtime backend:** Provider control plus neutral source batches and internal lifecycle snapshot; never final public dispatch.
+- **`AgentTeamRunManager`:** Root team registration, fresh liveness check, idempotent unregistration, and root lifecycle subscribers.
+- **`TeamRun`:** Thin exact-team command/event facade and private open-execution-work facade; no aggregate status cache.
+- **`MixedTeamManager`:** Member orchestration, recursive leaf status snapshot collection, and private execution-work predicate; no public root lifecycle.
+- **Leaf mixed member handle:** One `TeamLeafAgentStatusSnapshot` with required agent/member/source identity and exact agent operations; task-agent fields remain in the canonical payload.
+- **Subteam handle:** Child-run orchestration; recursively prefixes child live events and snapshots while rebasing any retained `TaskTeamStreamScope` into the parent frame; never returns an agent-like status for the team node.
+- **Task-team handle:** Child-run orchestration; derives one tight `TaskTeamStreamScope` from its operational `TaskTeamInstanceIdentity` in the immediate parent frame and supplies that same override to live/snapshot adapters; owns no five-state team status.
+- **Task delegation subsystem:** Task stage, terminal state, records, and task projection reconciliation.
+- **Frontend `AgentTeamContext`:** Root `isActive`, connection `isSubscribed`, focus, topology, and leaf contexts as separate fields.
+- **Workspace projection:** Definition grouping and action presentation; no lifecycle authority.
 
 ## Thin Entry Facades / Public Wrappers (If Applicable)
 
 | Facade / Entry Wrapper | Governing Owner Behind It | Why It Exists | Must Not Secretly Own |
 | --- | --- | --- | --- |
-| `activeContextStore` | selected standalone/team run stores and primary-action policy | Selection-aware UI command boundary | lifecycle derivation or generic fallback targeting |
-| `AgentStreamHandler` | `AgentRun` + command coordinator | WebSocket session boundary | provider status interpretation |
-| `AgentTeamStreamHandler` | `TeamRun` + exact nested member `AgentRun` | Team WebSocket boundary | member lifecycle or aggregate-to-member fanout |
-| `AgentRunBackend` implementations | Provider session/thread/agent plus runtime lifecycle projector | Uniform command adapter and neutral source-event/lifecycle-snapshot boundary | public subscribers, event finalization, or public interrupt-action policy |
-| `AgentRunStatusProjectionService` | active `AgentRun`, command overlay, or metadata fallback | Read-model selection for history/connect/ack | a second active-turn state machine |
+| GraphQL team create/restore/terminate/history/resume | `AgentTeamRunManager` / history service | Public request/query transport | Status aggregation or optimistic liveness truth |
+| Team WebSocket handler | `AgentTeamRunManager` + exact `TeamRun` | Live root lifecycle and member-event transport | Member lifecycle, socket-derived liveness, task stage |
+| `TeamRun` | manager/backend owners | Stable command/event boundary | Root registration or aggregate status cache |
+| frontend team run store | GraphQL/manager fact | UI orchestration and cleanup | Deriving `isActive` from context/socket/member state |
 
 ## Removal / Decommission Plan (Mandatory)
 
-| Item To Remove / Decommission | Why It Becomes Unnecessary | Replaced By Which Owner / File / Structure | Scope (`In This Change`/`Follow-up`) | Notes |
+| Item To Remove / Decommission | Why It Becomes Unnecessary | Replaced By | Scope | Notes |
 | --- | --- | --- | --- | --- |
-| `AgentStatusPayload.can_interrupt` and `buildAgentStatusPayload.canInterrupt` | Redundant with approved `running` invariant and can contradict it | `AgentStatusPayload.status` | In This Change | Remove from server, web protocol, command ack nested status, tests, docs |
-| Frontend `AgentRunState.canInterrupt` and `activeContextStore.canInterrupt` | Duplicate UI authority | `currentStatus === AgentStatus.Running` via primary-action policy | In This Change | No computed compatibility alias |
-| Direct can-interrupt hydration/recovery/cleanup writes | They preserve a second lifecycle graph | Simplified `agentRuntimeStatusState.ts` status-only APIs | In This Change | Preserve subscribed-live status precedence |
-| Codex/Claude status event appended solely to turn start/completion/interruption | Lifecycle finalizer now emits the adjacent canonical status | `LifecycleStatusEventTransformer` finalizer | In This Change | Retain explicit provider status-change facts needed for startup/error/offline |
-| Terminal error converter-appended status duplicates | Finalizer classifies terminal error and emits error companion | error evidence + lifecycle finalizer | In This Change | Recoverable error remains running/activity |
-| Broad `AgentContext.isSending` semantics | Misnamed and used as remote lifecycle proxy | `submissionPending` local request lock + canonical status | In This Change | Remove external/member input writes that mark lifecycle locally |
-| Active placeholder `running/canInterrupt=false` | Invalid under `running => current open turn` | neutral `initializing` placeholder until snapshot | In This Change | History must not overwrite subscribed live status |
-| Status-only normalization branches that read `can_interrupt` | Field removed | status-only normalization | In This Change | Clean contract cut |
-| `AgentRun.emitLocalEvent`, `localEventListeners`, and backend-wrapping subscription per public listener | They create a second outward path that bypasses processors/finalization | `AgentRun.publishEvent`, one backend source subscription, and one run listener set | In This Change | All four production local non-status call sites become awaited; no sync compatibility wrapper |
-| Runtime-backend `dispatchProcessedAgentRunEvents` imports/calls and public backend event subscribers | Final processing/subscriber delivery belongs behind `AgentRun` | neutral `subscribeToSourceEventBatches` backend contract; run-owned dispatch queue | In This Change | Update direct backend/pipeline tests to enter via `AgentRun` |
-| Module-level/default dispatch queue fallback | It permits processing outside the owning run and obscures queue lifetime | one `AgentRunEventDispatchQueue` instance constructed/held by each `AgentRun` | In This Change | Dispatcher requires the run-owned queue; tests construct a run or inject explicitly through a run fixture |
-| `AgentRun.statusOverride` and `statusOverride ?? backend.getStatusSnapshot()` | Retained startup can shadow fresh current-turn evidence | run-owned `AgentTurnLifecycleState` reconciled by command/event/runtime facts | In This Change | Public snapshot is rebuilt from reconciled state |
-| Active-run command-coordinator/member direct status replacement | Broadcast can disagree with `AgentRun` read state | `AgentRun` lifecycle fact/publication methods | In This Change | Pre-runtime overlay remains only when no run exists |
+| `team-status-payload.ts`, `team-status-aggregation.ts` | Public team aggregate removed | Manager binary liveness; private work predicate | In This Change | Delete tests that only validate aggregation |
+| `TeamRun.statusOverride/getStatusSnapshot/observeBackendEvent` | Duplicate/cached aggregate owner | manager snapshot; leaf snapshot API | In This Change | No alias |
+| `TeamManager`/backend `getStatusSnapshot` | Forces aggregate on all team backends | `getLeafAgentStatusSnapshots(): TeamLeafAgentStatusSnapshot[]`, `hasOpenExecutionWork` | In This Change | Specialize responsibility |
+| `TeamRunEventSourceType.TEAM` and `TeamRunStatusUpdateData` | Conflates root/nested concerns | manager `TEAM_RUN_LIFECYCLE`; task/failure facts | In This Change | No nested five-state replacement |
+| `publishTeamStatusIfChanged`, `lastTeamStatus`, `rootOfflinePublished` | Aggregate/dedup machinery | manager registration lifecycle | In This Change | Member events continue normally |
+| Team portions of `TeamCommandStatusOverlayStore` and team command-status builders | Teams no longer present agent status | operation result; member-only overlay | In This Change | Rename store/file if only member concern remains |
+| Pseudo subteam/task-team `getStatusSnapshot()` | Makes a team look like an agent and cannot carry task-team leaf scope | recursive scoped leaf snapshots + private work predicate | In This Change | Tighten handle interfaces; no plain payload array |
+| `TeamRunStatusProjectionService.status` | Duplicates `isActive` | activity/member projection | In This Change | Rename to `TeamRunLiveProjectionService` |
+| GraphQL root team history `status` | No public meaning | `isActive`; `members[].status` | In This Change | Regenerate client types |
+| WebSocket `TEAM_STATUS` protocol/handler | Aggregate contract removed | `TEAM_RUN_LIFECYCLE`; leaf `AGENT_STATUS` | In This Change | No compatibility parsing |
+| frontend `AgentTeamStatus` and team `currentStatus` fields | Parallel authority | root `isActive`; leaf `AgentStatus` | In This Change | Remove imports/tests/fixtures |
+| team-status hydration/normalization and status-to-active helpers | Circular conversion | direct `isActive` application | In This Change | Keep agent normalization |
+| definition/run team dots, `TeamStatusDisplay`, `useTeamStatusVisuals`, team dot utilities | Wrong subject/presentation | no badge; optional Active/Inactive text | In This Change | Remove obsolete localization keys |
+| task-team cleanup on offline `TEAM_STATUS` | Task stage disguised as lifecycle | terminal task event + record reconciliation | In This Change | No timer/status fallback |
+| root aggregate-error branch in team lifecycle observer | Duplicate failure inference | canonical leaf-agent failure + explicit operation result | In This Change | Preserve ATTACHED/TERMINATED |
+| one-second inactive polling in team lifecycle observer | Polls a fact the manager owns | manager lifecycle subscription | In This Change | Exact unregister notification emits TERMINATED |
+| settlement fallback `childRun.getStatusSnapshot()` | Public enum used internally | `childRun.hasOpenExecutionWork()` | In This Change | Preserve error-as-work-blocking semantics |
 
 ## Return Or Event Spine(s) (If Applicable)
 
-- **DS-003:** `Provider/native event -> runtime converter -> backend neutral source batch -> AgentRun single source callback -> run-owned serialized queue -> fresh internal runtime snapshot -> processors -> lifecycle finalizer -> apply canonical run state -> run listeners -> AgentRunEventMessageMapper -> Agent WebSocket -> frontend status handler/renderers`
-- **DS-004:** `Nested AgentRun runtime/local source -> nested run gateway/finalizer -> MixedAgentMemberHandle identity envelope -> TeamRun event -> team WebSocket mapper -> frontend member resolver -> member status/activity handler -> focused composer + team aggregate display`
-- **DS-007:** `Connect -> resolve live AgentRun/member -> bind run listener -> AgentRun refreshes lifecycle state from current backend evidence -> return/send canonical snapshot(s) -> continue finalized live companions`
-- **DS-009:** `Supported local producer -> await AgentRun.publishEvent -> same serialized queue/processors/finalizer/status application -> standalone or nested-team listener -> frontend`
+- **Agent standalone:** `provider/local source -> AgentRun queue -> processors -> lifecycle finalizer -> AGENT_STATUS companion + final event -> mapper -> socket -> agent state/rendering`.
+- **Agent in team, live:** `nested AgentRun final sequence -> TeamRunAgentEventPayload + TaskTeamStreamScope -> prefixMixedTeamStreamScope at each ordinary/task boundary -> root-frame TeamRun event -> shared task-team flattener -> socket -> exact leaf resolver -> agent state/rendering`.
+- **Agent in team, initial/reconnect:** `nested AgentRun canonical snapshot -> TeamLeafAgentStatusSnapshot + TaskTeamStreamScope -> same prefixMixedTeamStreamScope at each boundary -> root-frame snapshot mapper + same flattener -> AGENT_STATUS -> same exact leaf resolver`.
+- **Root team lifecycle:** `manager register/unregister/stale-backend cleanup -> manager lifecycle listener -> TEAM_RUN_LIFECYCLE -> team context isActive -> Stop/inactive actions`.
+- **Team initial convergence:** `bind TeamRun event listener + manager lifecycle listener -> fresh manager snapshot -> recursively scoped leaf snapshots mapped to AGENT_STATUS + root lifecycle snapshot -> frontend`.
+- **Task cleanup:** `TASK_DELEGATION_TERMINAL_STATUS / record refresh -> task projection reconciler -> remove transient task-team projection`.
+- **Observed lifecycle:** `manager lifecycle false -> observed TEAM_RUN TERMINATED`; `leaf AgentRun terminal failure -> team envelope -> AgentRunCanonicalFailureObserver -> observed TEAM_RUN FAILED`; command/mutation failure remains its returned operation result. The current one-second inactive poll and aggregate-error branch are removed.
 
 ## Bounded Local / Internal Spines (If Applicable)
 
-- **DS-006, parent owner `AgentRun` event lifecycle:** `enqueue runtime/local batch -> evaluate backend lifecycle snapshot inside queue -> reconcile command/runtime/event facts in run-owned state -> run processors -> finalize each outward non-status event -> apply canonical status -> emit status-before-activity or terminal-before-status`.
-- **DS-008, parent owner `TeamRun`:** `member snapshot/status change -> deriveTeamApiStatus -> suppress unchanged aggregate -> publish TEAM_STATUS`.
-- **Frontend local action loop, parent owner composer/active-context facade:** `resolve action -> guard -> execute exact send/interrupt or no-op -> await authoritative status progress`.
+- **DS-006, parent `AgentRun`:** `enqueue -> fresh runtime evidence -> reconcile current/retired turn -> processors -> lifecycle finalizer -> ordered listener delivery`.
+- **DS-008, parent `AgentTeamRunManager`:** `register/get/terminate/stale-check -> one transition helper -> update activeRuns -> notify exact-run lifecycle listeners`. Notifications occur only when the registered boolean changes.
+- **DS-012, parent `MixedTeamManager`:** `enumerate live member handles -> leaf agent status work-blocking check OR recursive child work -> boolean`. Work-blocking agent status is `initializing | running | error`; `idle | offline` is closed. Active task-agent/task-team directories and task-delegation records remain separate explicit checks.
 
 ## Off-Spine Concerns Around The Spine
 
 | Off-Spine Concern | Related Spine ID(s) | Serves Which Owner | Responsibility | Why It Exists | Risk If Misplaced On Main Line |
 | --- | --- | --- | --- | --- | --- |
-| Runtime-specific lifecycle projectors | DS-003, DS-004, DS-007 | `AgentRunBackend` adapter | Translate provider availability/phase and identified-or-anonymous current-turn evidence into one internal snapshot | Providers expose different internal shapes | Provider policy leaks into shared lifecycle/UI |
-| Error evidence resolver | DS-006 | lifecycle finalizer | Distinguish diagnostic/recoverable, turn-terminal, and runtime-global error | `ERROR` alone is not terminal proof | Every error would incorrectly remove Stop |
-| Turn ID resolver | DS-006 | lifecycle state | Normalize `turn_id` / `turnId` | Cross-runtime payload spelling differs | Late-event protection becomes inconsistent |
-| Command registry/pre-runtime overlay | DS-001, DS-002 | command coordinator/member handle | Dedupe and represent startup only before `AgentRun` exists | Lazy create/restore is asynchronous | Command bookkeeping becomes a competing active-run lifecycle owner |
-| Local event producers | DS-009 | `AgentRun` | Persist/audit their own work, then await publication of one neutral run event | These supported system actions originate outside provider runtimes | Each caller decorates or directly broadcasts status differently |
-| Message mapper | DS-003, DS-004 | stream boundary | Serialize canonical events | Wire naming/JSON boundary | Transport silently invents status |
-| Member identity wrapping | DS-004 | team bridge | Add run/name/route/path/task identity | Same event DTO is reused within team | Interrupt/status reaches wrong member |
-| History/hydration merge | DS-007 | frontend status projection | Apply backend snapshot without overwriting newer subscribed live state | First load and refresh are separate read paths | Stale history revokes current status |
-| Submission pending | DS-005 | local submission service | Prevent duplicate local request before authoritative progress | There is a small client/server acknowledgement interval | It becomes a second busy lifecycle |
+| Provider lifecycle projector | DS-001, DS-003, DS-006, DS-007 | `AgentRun` | Normalize provider phase/current turn | Runtime differences are real | Provider semantics leak into UI |
+| Team identity rebasing | DS-002, DS-004 | mixed-team bridge | Keep event/snapshot teamRunId, source/member paths, and task-team logical path in one parent frame for live and initial paths | Exact targeting/nesting | Wrong/root task-team node updated; reconnect throws |
+| Manager lifecycle broadcaster | DS-008 | `AgentTeamRunManager` | Notify exact-run active transition | Live clients need convergence | Socket close becomes false liveness |
+| Scoped leaf snapshot carrier/prefixer | DS-004 | mixed team runtime | Compose canonical leaf status with ordinary/task-team stream scope, then rebase it exactly like every live event | Reconnect at nested/task-team depth | Scope is lost or uses a different coordinate frame |
+| Content presentation scheduler | DS-003, DS-004 | streaming UI | Preserve batching while status applies immediately | Performance | Status pairing destroys batching |
+| stopPending map | DS-008 | UI action caller | Prevent duplicate mutation | Local idempotency UX | Becomes a second lifecycle owner |
+| Task record refresh/projection | DS-011 | task delegation | Reconcile transient task nodes | Task business truth | Task stage becomes team status |
+| Failure observer | DS-011 | observed run lifecycle | Promote canonical leaf terminal failure | Operational visibility | Member error folded into team status |
+| Open-work predicate | DS-012 | settlement | Decide whether execution can settle | Internal safety | Public enum recreated |
 
 ## Ownership Boundaries
 
-`AgentRun` remains the authoritative server boundary for one run and gains the event/status authority that its public role already implies. Callers above it use `postUserMessage`, `interrupt`, `terminate`, `subscribeToEvents`, `getStatusSnapshot`, and awaited `publishEvent` for supported local outward events. They must not inspect Codex thread, Claude session, or native agent turn fields, attach to backend event listeners, call the processing dispatcher, or broadcast active-run status directly.
+`AgentRun` remains the authoritative agent boundary; local producers and runtime backends cannot emit directly to public listeners. `AgentTeamRunManager` becomes the authoritative root-team liveness boundary; GraphQL, history, resume, WebSocket, and frontend actions must not inspect both manager registration and member/backend internals to decide public activity.
 
-Inside that boundary, provider backends own control adaptation, neutral source-event conversion, and internal lifecycle snapshot projection. `AgentRun` subscribes to the backend source exactly once and owns the serialized queue. The runtime-neutral pipeline/finalizer and its `AgentTurnLifecycleState` instance are internal run mechanisms; stream handlers and history services consume the `AgentRun` event/snapshot APIs rather than querying the state machine or provider internals.
+`TeamRun` may expose `isActive()` internally to its manager and child handles, but only the root manager determines the public root fact. `MixedTeamManager.hasOpenExecutionWork()` is an internal settlement capability, not a lifecycle projection. Task-delegation stage and explicit operation failures remain in their existing domains.
 
-The command overlay is authoritative only before an `AgentRun` exists to represent startup. After run creation, `AgentRun.postUserMessage` applies command-start, accepted-turn, rollback/error, and termination facts through the same lifecycle state and publication gateway. The overlay is cleared when the run takes ownership and must never override an established running turn with initializing.
-
-On the frontend, `agentRuntimeStatusState.ts` is the controlled mutation boundary for `currentStatus`. `activeContextStore` is the action/selection facade. Content handlers may render activity but must not mutate status. Team aggregate status never writes member status.
+The frontend may own connection state and request-pending state, but neither may mutate `isActive`. Only server create/restore/history/resume/lifecycle/termination success applies that field. Leaf `AGENT_STATUS` can mutate only the matched leaf agent context.
 
 ## Boundary Encapsulation Map
 
 | Authoritative Boundary | Internal Owned Mechanism(s) It Encapsulates | Upstream Callers That Must Use The Boundary | Forbidden Bypass Shape | If Boundary API Is Too Thin, Fix By |
 | --- | --- | --- | --- | --- |
-| `AgentRun` | backend source subscription, listener set, dispatch queue, lifecycle state/finalizer, canonical snapshot | stream handlers, team member handles, history projection, command coordinator, supported local event producers | caller reads provider state, subscribes to backend, calls dispatcher, uses `emitLocalEvent`, or broadcasts active-run status | Extend `AgentRun` status fact, snapshot, or awaited publication API |
-| runtime event pipeline | transformers/processors/finalizer invoked only by the run gateway | `AgentRun` | runtime backend or local caller dispatches/finalizes independently | Add neutral event/fact handling to the run-owned pipeline composition |
-| `AgentRunStatusProjectionService` | overlay/active/history source selection | connect, ack, history/resume | callers combine metadata and active runtime independently | Add an explicit projection field/method |
-| `TeamRun` / exact member selector | team backend and member registry | team stream commands | fallback to aggregate/team-wide interrupt | Strengthen explicit compound target boundary |
-| frontend status mutation API | `AgentRunState.currentStatus`, live/history precedence, pending-clear rules | status handler, hydration/recovery/open/cleanup | direct status/can-interrupt writes across stores | Add a status-only named operation |
-| frontend primary-action policy | action mode and enabled reason | composer and active-context facade | button and Enter implement separate branching | Extend one policy input/result |
+| `AgentRun` | queue, lifecycle state, processors/finalizer, backend evidence | commands, streams, local producers | backend listener/direct dispatch/status override | Extend `AgentRun` named methods |
+| `AgentTeamRunManager.getLifecycleSnapshot/subscribeToLifecycle` | active map, backend live validation, transition notification | history/resume/socket/liveness reads | member aggregate, socket presence, raw map access | Extend manager lifecycle API |
+| `TeamRun.getLeafAgentStatusSnapshots` | backend recursive `TeamLeafAgentStatusSnapshot` collection | stream/history live projection | subteam `AgentStatusPayload` or plain `AgentStatusPayload[]` that drops task-team scope | Extend the scoped leaf snapshot carrier, not `AgentStatusPayload` |
+| `prefixMixedTeamStreamScope` | one mixed-team parent-frame transition | all live event adapters and initial leaf snapshot adapter | leaf-only prefix logic, cloned child-local scope, or mapper/frontend guessing | Extend this core and its invariants |
+| `TeamRun.hasOpenExecutionWork` | backend member/child predicate | settlement coordinator | `getStatusSnapshot().status` | Extend private execution-work capability |
+| task delegation projection | terminal event + record reconciliation | frontend task router | TEAM_STATUS offline cleanup | Extend task event/record mapper |
 
 ## Dependency Rules
 
-Allowed:
+- Runtime backends -> source batches/internal lifecycle evidence -> `AgentRun`; never public listeners.
+- `AgentRun` -> canonical agent events/status; team code wraps but never recalculates them.
+- Team history/resume/WebSocket -> `AgentTeamRunManager` lifecycle API; never `deriveTeamApiStatus` or frontend context membership.
+- `AgentTeamRunManager` may call `TeamRun.isActive()` to validate a registration; callers receive only manager-owned binary lifecycle.
+- `MixedTeamManager` may query scoped leaf-agent snapshots and child private work predicates; it must not construct a team `AgentStatusPayload`. The task-team handle derives a parent-frame `TaskTeamStreamScope`; every outer recursive boundary rebases that scope instead of cloning child-local coordinates.
+- Team lifecycle transport contains only exact `team_run_id` and `is_active`; no member state, phase, error, interrupt permission, or socket state.
+- Leaf status transport retains exact route/path/run/task identity. Every live event type and every initial snapshot must call `prefixMixedTeamStreamScope`; live agent/snapshot mapping must call the same strict leaf validator and `buildTaskTeamScopedIdentityPayload`. No other layer may prefix or infer task-team scope.
+- Task projection depends on task events/records; failure observation depends on canonical agent failure/operation results; settlement depends on private work facts.
+- Frontend team action code depends on `isActive` and stopPending only. Archive/delete additionally use existing inactive history lifecycle flags.
 
-- provider lifecycle projectors depend on the internal runtime-lifecycle snapshot type and their own provider state; only `AgentRun` builds the public status payload;
-- runtime converters emit neutral lifecycle/activity/error/status-fact batches to the backend source boundary;
-- each backend exposes one neutral source-batch subscription and one fresh internal lifecycle-snapshot read to its owning `AgentRun`;
-- runtime and local sources enter `AgentRun`'s single queued publication method; only that method invokes processors/finalization and listener fanout;
-- the lifecycle finalizer depends on the run-owned lifecycle state plus turn-ID and error-evidence domain functions;
-- `AgentRun` reconciles command/runtime/event facts, applies canonical status, and exposes public events/snapshots;
-- supported local producers await `AgentRun.publishEvent` and own no companion/status logic;
-- team bridges wrap finalized events with exact member identity;
-- frontend status handler delegates to the status mutation boundary;
-- the composer and store facade depend on the primary-action policy and canonical status.
-
-Forbidden:
-
-- no server or frontend `can_interrupt`/`canInterrupt` field, alias, fallback, or derived compatibility getter;
-- no UI content/delta handler directly sets status; only explicit streamed status applies it;
-- no arbitrary event with an unknown/retired turn may open running from idle;
-- no timer or stream-silence heuristic may set idle;
-- no provider converter may append a second lifecycle-boundary status when the finalizer owns it;
-- no backend may invoke `dispatchProcessedAgentRunEvents`, expose public final events, or retain public run subscribers;
-- no caller may use `emitLocalEvent`, fan out to run listeners, or invoke processors/finalizers outside `AgentRun`;
-- no status may be broadcast after `AgentRun` exists unless the status fact is first reconciled and emitted by that run; direct broadcaster use is pre-runtime-overlay-only;
-- no retained startup state may override fresh current-turn evidence, and no idle/initializing snapshot may close an identified active turn;
-- no history/active placeholder may use `running` without authoritative current-turn evidence;
-- no team aggregate may be fanned out to members or used to authorize interrupt;
-- no keyboard path may bypass the same action result/guard used by click;
-- no active-context interrupt may omit exact team member route/run validation.
+Forbidden shortcuts: status-to-active conversion, activity-to-status conversion, representative-child status on definitions, `context exists -> active`, `socket connected -> active`, root false writing member statuses, a compatibility `AgentTeamStatus`, a replacement public “team phase” enum, mapper/frontend scope guessing, or carrying a full operational `TaskTeamInstanceIdentity` as the outward stream coordinate.
 
 ## Interface Boundary Mapping
 
 | Interface / API / Query / Command / Method | Subject Owned | Responsibility | Accepted Identity Shape(s) | Notes |
 | --- | --- | --- | --- | --- |
-| `AgentStatusPayload` | one agent/member execution lifecycle | Carry canonical status plus optional routing identity | agent run ID; team envelope supplies route/path/task identity | Remove `can_interrupt`; no turn ID needed by frontend action |
-| `AgentRuntimeLifecycleSnapshot` | one backend's internal runtime evidence | Carry availability, normalized phase, and `NONE / IDENTIFIED(turnId) / ANONYMOUS` current-turn evidence | backend-bound run ID; turn ID remains server-internal | New tight internal type; not serialized to frontend |
-| `AgentRunBackend.getLifecycleSnapshot()` | one runtime adapter snapshot | Translate provider state to fresh internal lifecycle evidence | backend-bound run ID | Replaces public-payload projection at backend layer |
-| `AgentRunBackend.subscribeToSourceEventBatches()` | one runtime adapter source | Deliver neutral converted batches to the owning run | backend-bound run ID | One `AgentRun` subscriber; no processors/finalizer/public listeners |
-| `AgentRun.publishEvent(event)` | one supported local run event | Await the same serialized processing/finalization/delivery path as runtime batches | event `runId` must equal owning run ID | Replaces `emitLocalEvent`; rejects mismatched identity |
-| `dispatchProcessedAgentRunEvents(...)` | one run-owned source batch | Serialize processing, refresh runtime evidence in-queue, finalize, apply status, and fan out | `runContext.runId` | Invoked only from `AgentRun`; lifecycle state is injected per run |
-| `LifecycleStatusEventTransformer.transform(...)` as finalizer | one run event sequence | Reconcile the run-owned state and emit ordered status companions for every final non-status event | run context + event turn identity + fresh runtime snapshot | Final pipeline stage; no internal WeakMap state |
-| `AgentRun.getStatusSnapshot()` | one public agent run | Refresh the run-owned lifecycle state from backend evidence and return its canonical status payload | run ID owned by instance | No override selection; same state as live finalization |
-| `TeamRun.getMemberStatusSnapshots()` | team member executions | Return exact member-scoped status snapshots | route/path/run/task identity in payload | No aggregate permission |
-| `INTERRUPT_GENERATION` standalone | one active agent run | Interrupt current run turn | agent run from session | Existing route preserved |
-| `INTERRUPT_GENERATION` team | one exact member execution | Interrupt focused current member turn | team run ID + member route key + optional exact member run ID | Existing stale-target guard preserved |
-| `resolveAgentPrimaryAction(...)` | selected frontend agent context | Resolve disabled/send/interrupt | selected context status + local constraints | Pure, testable decision |
-| `activeContextStore.send/interruptGeneration` | selected command subject | Recheck lifecycle and delegate exact command | selected standalone run or exact team member | No fallback action guessing |
+| `AgentStatusPayload { status, ...identity }` | exact agent run | Canonical five-state snapshot/companion | agent/member/task-agent fields only | Already implemented; no `can_interrupt`; no task-team fields added |
+| `TaskTeamStreamScope` | one task-team execution as seen from the enclosing `teamRunId` | Carry only IDs and logical-team route/path needed for outward scoping | task-team run/instance/task IDs + logical-team path/key in parent frame | Derived from operational identity; excludes ingress/coordinator-local selectors |
+| `TeamLeafAgentStatusSnapshot` | one leaf execution in a team snapshot | Compose canonical payload with exact recursive team scope | discriminated `ordinary_member` or `task_team_member` | Internal team contract; concrete shape below |
+| `AgentTeamRunManager.getLifecycleSnapshot(teamRunId)` | root team run | Fresh `{ teamRunId, isActive }` | exact root `teamRunId` | Validates backend before true |
+| `AgentTeamRunManager.subscribeToLifecycle(teamRunId, listener)` | root team run | Idempotent active transition stream | exact root `teamRunId` | Independent of TeamRun event listeners |
+| `TEAM_RUN_LIFECYCLE` | root team run | Wire `{ team_run_id, is_active }` | socket run identity + payload ID | Root only; no source path/status |
+| `buildTaskTeamStreamScope(taskTeamInstance, parentTeamRunId)` | task-team activation boundary | Derive the tight scope in its immediate parent frame | full operational identity + exact parent ID | Validates immutable parent ID and path/key consistency once |
+| `prefixMixedTeamStreamScope(input)` | one live/snapshot parent transition | Prefix source path and retained task-team logical path once; accept a target-frame override | parent run ID, source prefix, child stream scope, optional target-frame scope | Shared by every live event type and initial snapshot adapter |
+| `buildTaskTeamScopedIdentityPayload(scope)` | task-team wire identity | Flatten task-team IDs/logical-team/relative identity without rebasing | already-consistent source path + `TaskTeamStreamScope` | Shared by live event and initial snapshot mapping; no fallback |
+| `TeamRun.getLeafAgentStatusSnapshots(): TeamLeafAgentStatusSnapshot[]` | leaf agents in a team | Recursive exact snapshots | team boundary + required leaf identity + discriminated scope | No subteam pseudo snapshot or plain payload array |
+| `TeamRunBackend.getLeafAgentStatusSnapshots(): TeamLeafAgentStatusSnapshot[]` | backend leaf projection | Expose backend-owned recursive carrier | same | `TeamManager` has the same signature |
+| `MixedTeamMemberHandle.getLeafAgentStatusSnapshots(): TeamLeafAgentStatusSnapshot[]` | one agent/subteam member subtree | Agent returns one; subteam recursively rebases | same | Task-team handle stamps the tight target-frame stream scope |
+| `mapTeamLeafAgentStatusSnapshot(snapshot)` | initial team stream | Produce `AGENT_STATUS` with the live mapper's identity fields/order | one scoped snapshot | Calls shared flattener; outer task-team `task_id` wins as in live mapping |
+| `TeamRun.hasOpenExecutionWork()` | private team execution | Settlement-safe boolean | exact in-memory child `TeamRun` | Not GraphQL/WebSocket/frontend |
+| `TeamRunHistoryItem` GraphQL | root team history | History metadata + isActive + member statuses | exact root/team/member IDs | Root `status` removed |
+| frontend `AgentTeamContext` | opened team context | `isActive`, connection, focus, topology | exact `teamRunId` | No `currentStatus` |
+| `terminateTeamRun(teamRunId): Promise<boolean>` | root team operation | Return accepted success/failure | exact root `teamRunId` | Caller must handle false and clear pending |
 
 ## Interface Boundary Check
 
-| Interface | Responsibility Is Singular? (`Yes`/`No`) | Identity Shape Is Explicit? (`Yes`/`No`) | Ambiguous Selector Risk (`Low`/`Medium`/`High`) | Corrective Action |
+| Interface | Responsibility Is Singular? | Identity Shape Is Explicit? | Ambiguous Selector Risk | Corrective Action |
 | --- | --- | --- | --- | --- |
-| Status payload | Yes | Yes | Low | Contract to status + identity only |
-| Runtime lifecycle snapshot | Yes | Yes | Low | Keep internal behind backend/`AgentRun`; include current-turn evidence |
-| Lifecycle finalizer input | Yes | Yes | Low | Inject the run-owned state and fresh internal snapshot, not generic context inspection |
-| Standalone interrupt | Yes | Yes | Low | Preserve session run binding |
-| Team interrupt | Yes | Yes | Low | Preserve compound member route/run validation |
-| Primary action resolver | Yes | Yes | Low | Return discriminated result; no booleans that can contradict |
-| Backend source-batch subscription | Yes | Yes | Low | Runtime facts only; `AgentRun` is the sole subscriber/public dispatcher |
-| Local run-event publication | Yes | Yes | Low | Awaited, run-ID checked, and routed through the same gateway |
-| Canonical run snapshot | Yes | Yes | Low | Reconcile fresh runtime evidence into run-owned state; never `override ?? backend` |
+| `AgentStatusPayload` | Yes | Yes for its agent subject | Low | Preserve; do not add task-team fields |
+| `TaskTeamStreamScope` | Yes | Yes | Low | Every path is explicitly relative to enclosing `teamRunId`; exclude operational local selectors |
+| `TeamLeafAgentStatusSnapshot` | Yes | Yes | Low | Use required leaf payload plus discriminated scope |
+| manager lifecycle API | Yes | Yes | Low | New exact-run listener/snapshot |
+| `TEAM_RUN_LIFECYCLE` | Yes | Yes | Low | No nested/source-path overload |
+| leaf snapshot API | Yes | Yes | Low | Return the scoped carrier and use the shared prefix/flatten functions |
+| open-work API | Yes | Yes | Low | Keep private and boolean |
+| frontend team context | Yes | Yes | Low | Remove aggregate and connection inference |
 
 ## Main Domain Subject Naming Check
 
-| Node / Subject | Current / Proposed Name | Name Is Natural And Self-Descriptive? (`Yes`/`No`) | Naming Drift Risk | Corrective Action |
+| Node / Subject | Current / Proposed Name | Natural And Self-Descriptive? | Naming Drift Risk | Corrective Action |
 | --- | --- | --- | --- | --- |
-| Per-run public owner | `AgentRun` | Yes | Low | Preserve |
-| Event lifecycle facts | `AgentTurnLifecycleState` | Yes | Low | Preserve and strengthen |
-| Event projection stage | `LifecycleStatusEventTransformer` | Yes | Low | Document/use it as finalizer; no generic helper rename needed |
-| Runtime evidence type | `AgentRuntimeLifecycleSnapshot` | Yes | Low | Distinguish internal provider evidence from the public status DTO |
-| Local outward publication | `AgentRun.publishEvent` | Yes | Low | Explicit awaited owner API; remove the ambiguous direct-fanout `emitLocalEvent` name |
-| Local request lock | `submissionPending` | Yes | Low | Replace misleading `isSending` |
-| Composer decision | `AgentPrimaryAction` / `resolveAgentPrimaryAction` | Yes | Low | Use discriminated `disabled/send/interrupt` result |
-| Team aggregate | `deriveTeamApiStatus` | Yes | Low | Preserve |
+| Agent runtime lifecycle | `AgentStatus` | Yes | Low | Preserve |
+| Root registered team execution | `TeamRunLifecycleSnapshot` / `isActive` | Yes | Low | Avoid `TeamStatus` |
+| Leaf runtime collection | `getLeafAgentStatusSnapshots` | Yes | Low | Replace generic member/team snapshot name |
+| Scoped leaf carrier | `TeamLeafAgentStatusSnapshot` | Yes | Low | Keep team scope composed outside canonical agent payload |
+| Scoped task-team projection | `TaskTeamStreamScope` | Yes | Low | Name distinguishes outward parent-frame scope from operational instance identity |
+| Shared rebasing | `prefixMixedTeamStreamScope` | Yes | Low | Use for all live event types and initial snapshots |
+| Settlement predicate | `hasOpenExecutionWork` | Yes | Low | Do not call it status |
+| UI duplicate guard | `stopPending` / `terminatingTeamIds` | Yes | Low | Do not call active/terminating lifecycle |
+| Definition group | `WorkspaceHistoryTeamDefinitionDisplayGroup` | Yes | Low | Remove `status` field |
 
 ## Existing Capability / Subsystem Reuse Check
 
-| Need / Concern | Existing Capability Area / Subsystem | Decision (`Reuse`/`Extend`/`Create New`) | Why | If New, Why Existing Areas Are Not Right |
+| Need / Concern | Existing Capability Area / Subsystem | Decision | Why | If New, Why Existing Areas Are Not Right |
 | --- | --- | --- | --- | --- |
-| Current/retired turn lifecycle | agent-execution lifecycle-status processor | Extend | Already owns verified monotonic lifecycle state | N/A |
-| Final outward event stage | `AgentRun` plus `AgentRunEventPipeline` | Extend | The public run must own entry/serialization/listeners; the existing pipeline remains its internal processing mechanism | N/A |
-| Runtime lifecycle snapshots | runtime-specific projectors | Extend | Required for reconnect/startup and must retain server-internal current-turn evidence | N/A |
-| Supported local outward events | `AgentRun` public run boundary | Extend | All existing producers already possess the exact active run; an awaited method removes their direct-listener bypass | N/A |
-| Stream delivery | agent streaming handlers/mappers | Reuse/Extend | Existing exact standalone/team routing is healthy | N/A |
-| Team aggregate | team status aggregation | Reuse | Existing precedence and shared owner are healthy | N/A |
-| Frontend status mutation | `services/runStatus` | Extend | Already controls live/history status writes | N/A |
-| Primary composer admission | run submission capability area | Create one small policy file | Existing submission service owns staging/rollback but not action-mode resolution; a pure policy avoids duplicating component/store conditions | It remains specific to agent submission/action, not generic UI infrastructure |
+| Agent lifecycle/gateway | agent execution lifecycle/pipeline | Reuse | Already implemented and reviewed | N/A |
+| Root liveness | `AgentTeamRunManager` active registry | Extend | It already owns the fact | N/A |
+| Live binary delivery | existing team WebSocket handler | Extend | Same exact root session | N/A |
+| Leaf nested status | mixed member bridge/snapshot service | Extend | Existing identity owner | N/A |
+| Task cleanup | task delegation projection/records | Extend | Owns task stage and terminality | N/A |
+| Team failure | canonical agent failure observer + operation results | Reuse | Existing explicit facts | N/A |
+| Settlement | existing coordinator/team backend | Extend | Existing decision owner | N/A |
+| Team visuals | workspace/mobile presentation | Simplify | Remove rather than replace | N/A |
 
 ## Subsystem / Capability-Area Allocation
 
-| Subsystem / Capability Area | Owns Which Concerns | Related Spine ID(s) | Governing Owner(s) Served | Decision (`Reuse`/`Extend`/`Create New`) | Notes |
+| Subsystem / Capability Area | Owns Which Concerns | Related Spine ID(s) | Governing Owner(s) Served | Decision | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Server agent execution domain | status DTO, internal runtime snapshot contract, `AgentRun` gateway/snapshot, turn lifecycle | DS-001, DS-003, DS-006, DS-007, DS-009 | `AgentRun` | Extend | Contract contraction, source unification, lifecycle reconciliation/finalization |
-| Server runtime adapters | provider command adaptation, fact conversion, neutral source batches, internal lifecycle snapshot | DS-003, DS-004, DS-007 | `AgentRunBackend` serving `AgentRun` | Extend | Remove public payload/action boolean, public subscriber dispatch, and duplicate boundary status |
-| Server event pipeline | ordered processors and finalizer invoked by `AgentRun` only | DS-003, DS-004, DS-006, DS-009 | `AgentRun` runtime-neutral event lifecycle | Extend | Add explicit finalizer stage and injected per-run state |
-| Server team execution | identity wrapping, overlays, aggregate | DS-002, DS-004, DS-008 | `TeamRun` | Extend/Re-use | Status-only overlays; preserve exact routing |
-| Server streaming | connect snapshot and wire mapping | DS-003, DS-004, DS-007 | stream handlers | Extend | Fresh post-bind status-only snapshots |
-| Frontend run status | canonical status storage/merge | DS-003, DS-004, DS-007 | agent/member context | Extend | Remove interrupt field |
-| Frontend run submission/action | submission pending and primary action | DS-005 | composer/active-context facade | Extend + one new policy file | Separate request lock from lifecycle |
+| Agent execution | status-only lifecycle and companions | DS-001–DS-007, DS-009 | `AgentRun` | Reuse | Preserve current branch implementation |
+| Team execution domain | exact member routing, leaf snapshots, private work | DS-002, DS-004, DS-012 | `TeamRun`/Mixed manager | Refactor | Remove aggregate |
+| Team run management | root registration/lifecycle | DS-008 | `AgentTeamRunManager` | Extend | Binary only |
+| Team streaming | member events + root lifecycle transport | DS-004, DS-008 | stream handler | Refactor | Delete TEAM_STATUS |
+| Run history GraphQL | root activity/member snapshot projection | DS-008 | history service | Refactor | Remove root status |
+| Task delegation | task stage/terminal cleanup | DS-011, DS-012 | task service/coordinator | Extend | No team enum |
+| Frontend runtime state | team isActive + leaf agent statuses | DS-004, DS-008 | stores/context | Refactor | Remove circular conversions |
+| Workspace/mobile UI | no definition/root status; binary action/text | DS-010 | presentation components | Simplify | Agent visuals remain |
 
 ## Draft File Responsibility Mapping
 
-| Candidate File | Owning Subsystem / Capability Area | Owner / Boundary | Concrete Concern | Why This Is One File | Reuses Shared Structure? |
+| Candidate File | Owning Subsystem | Owner / Boundary | Concrete Concern | Why This Is One File | Reuses Shared Structure? |
 | --- | --- | --- | --- | --- | --- |
-| `agent-status-payload.ts` | agent execution domain | public status contract | status-only DTO/builder/normalization | Existing shared contract owner | Yes |
-| new `agent-runtime-lifecycle-snapshot.ts` | agent execution domain | backend-to-run evidence contract | availability/phase/current-turn internal snapshot | Keeps runtime evidence tighter than the public DTO | Yes |
-| `agent-turn-lifecycle-state.ts` | lifecycle status | bounded state machine | active/retired turn and status facts | Existing coherent state owner | Yes |
-| `lifecycle-status-event-transformer.ts` | event pipeline | finalizer | ordered status companions | Existing projection owner | Yes |
-| `agent-run-event-pipeline.ts` / default builder | event pipeline | pipeline sequencing | add finalizers after processors | Pipeline concern is centralized | Yes |
-| `agent-run-backend.ts` and runtime projector/converter/backend files | runtime adapters | provider adapter | internal lifecycle snapshots and neutral source-event batches | Provider-specific facts stay isolated | Yes |
-| `agent-run.ts` | agent execution domain/control | authoritative public run | own source subscription, queue, listeners, state, snapshot refresh, local publication, and command facts | These concerns are one run lifecycle boundary; processing details remain delegated | Yes |
-| projection/coordinator/overlay | agent execution services | read selection and pre-runtime command start | remove boolean/direct active status; preserve overlay only before run existence | Existing owners remain coherent after bypass removal | Yes |
-| global message router, artifact publication, skill notification, mixed member handle | owning producer subsystems | local event producers | await `AgentRun.publishEvent` after their own domain work | Each producer keeps its domain concern and delegates run emission | Yes |
-| team overlay/member/snapshot/aggregate files | team execution | team/member boundary | status-only member snapshots and overlay replacement | Existing team identity owners | Yes |
-| frontend `agentRuntimeStatusState.ts` | run status | mutation boundary | status-only live/history/cleanup/placeholder | Existing controlled boundary | Yes |
-| frontend `agentPrimaryAction.ts` | run submission | action policy | discriminated action/guard | New single concrete policy | Yes |
-| composer and active context store | input/action | UI and facade | render/execute same policy, lifecycle recheck | Existing user surfaces | Yes |
+| `agent-team-run-manager.ts` | team management | manager | active transition and listeners | Co-located with map mutation | lifecycle snapshot type |
+| `team-run-lifecycle.ts` | team domain | manager contract | binary internal/wire-neutral type | Shared across manager/stream tests | Yes |
+| `task-team-stream-scope.ts` | team domain | outward task-team scope contract | execution IDs plus parent-frame logical-team path/key | Separates stream coordinates from operational identity | `TaskTeamInstanceIdentity` input only |
+| `team-leaf-agent-status-snapshot.ts` | team domain | scoped snapshot contract | required leaf payload plus ordinary/task-team stream scope | One tight recursive leaf identity type | canonical agent payload + stream scope |
+| `team-run.ts` / backend interfaces | team execution | facade/backend | scoped leaf snapshots and private work | Natural team capabilities | scoped snapshot carrier |
+| mixed member handles | mixed execution | specialized handles | leaf factory vs ordinary/task-team child recursion | Different runtime subjects | scoped carrier + prefix helper |
+| `team-runtime-status-snapshot-service.ts` renamed | streaming | snapshot boundary | scoped leaf agent + root lifecycle initial messages | One initial convergence batch | lifecycle DTO + snapshot mapper |
+| `team-stream-agent-identity-payload.ts` | streaming | live/initial identity flattener | consistent task-team stream scope to wire fields | One wire identity rule | `TaskTeamStreamScope` |
+| team history projection service renamed | history | projection | isActive + leaf snapshots | One list projection | lifecycle snapshot |
+| frontend protocol/context/history types | frontend state | contract | remove aggregate; add lifecycle message | Contract/state owners | isActive boolean |
+| workspace/mobile presentation files | UI | display | no team status/dots; direct actions | Existing surfaces | agent status visuals only |
 
 ## Reusable Owned Structures Check
 
-| Repeated Structure / Logic | Candidate Shared File | Owning Subsystem | Why Shared | Redundant Attributes Removed? (`Yes`/`No`) | Overlapping Representations Removed? (`Yes`/`No`) | Must Not Become |
+| Repeated Structure / Logic | Candidate Shared File | Owning Subsystem | Why Shared | Redundant Attributes Removed? | Overlapping Representations Removed? | Must Not Become |
 | --- | --- | --- | --- | --- | --- | --- |
-| Public status payload construction/normalization | `agent-status-payload.ts` | server agent execution | Built by `AgentRun` and used by commands, team snapshots, mapper | Yes (`can_interrupt`) | Yes | provider-phase kitchen sink |
-| Backend lifecycle evidence | new `agent-runtime-lifecycle-snapshot.ts` | server agent execution | All three backends must report availability/phase/current-turn evidence to the same run reconciler | Yes (no public identity/action fields) | Yes | a provider-specific union or second public status DTO |
-| Current/retired turn correlation | `agent-turn-lifecycle-state.ts` | server event lifecycle | Shared across all runtime events | Yes | Yes | provider-specific parser |
-| Runtime/local event publication | `AgentRun` gateway + dispatch queue | server agent execution | All source origins require identical ordering/finalization/listener semantics | Yes (`emitLocalEvent`/backend dispatch paths) | Yes | a generic global event bus |
-| Frontend status writes | `agentRuntimeStatusState.ts` | frontend run status | Live, history, placeholder, cleanup need one precedence boundary | Yes (`canInterrupt`) | Yes | action coordinator |
-| Primary action decision | new `agentPrimaryAction.ts` | frontend run submission | Button, keyboard, and store admission require same rule | Yes (parallel booleans) | Yes | general-purpose UI state framework |
+| root team binary lifecycle | `team-run-lifecycle.ts` | team management/domain | manager, stream, tests share exact shape | Yes | Yes | task/member phase DTO |
+| task-team outward scope | `task-team-stream-scope.ts` | team domain | live events and snapshots need the same minimal execution/logical-team coordinates | Yes | Yes | full operational identity or wire DTO |
+| recursive all-event/live/snapshot rebasing | `mixed-team-event-bridge.ts` | mixed team bridge | all path-bearing stream scope must change frames together | Yes | Yes | leaf-only or snapshot-only path mapper |
+| live/initial task-team wire fields | `team-stream-agent-identity-payload.ts` | team streaming | both mapper paths must flatten the same envelope | Yes | Yes | generic team status mapper |
+| agent status visuals | existing `workspaceStatusDotPresentation.ts` | frontend presentation | agent rows share it | Yes | Yes | team aggregate visuals |
+| task terminal cleanup policy | existing task execution router/projection | task delegation | all task terminal messages reconcile once | Yes | Yes | root lifecycle handler |
 
 ## Shared Structure / Data Model Tightness Check
 
-| Shared Structure / Type / Schema | One Clear Meaning Per Field? (`Yes`/`No`) | Redundant Attributes Removed? (`Yes`/`No`) | Parallel / Overlapping Representation Risk (`Low`/`Medium`/`High`) | Corrective Action |
+| Shared Structure / Type / Schema | One Clear Meaning Per Field? | Redundant Attributes Removed? | Parallel Representation Risk | Corrective Action |
 | --- | --- | --- | --- | --- |
-| `AgentStatusPayload` | Yes | Yes | Low | `status` plus identity/error metadata only; no action boolean |
-| `AgentRuntimeLifecycleSnapshot` | Yes | Yes | Low | `availability`, normalized runtime phase, and one current-turn union; server-internal only |
-| `AgentRun` lifecycle state | Yes | Yes | Low | One state instance is reconciled by command facts, runtime snapshots, and final events; no parallel override |
-| `AgentRunState` lifecycle fields | Yes | Yes | Low | Only `currentStatus`; local request state remains on context |
-| `AgentPrimaryAction` result | Yes | Yes | Low | Discriminated union, not independent `disabled`/`interrupt` booleans |
-| `TeamStatusPayload` | Yes | Yes | Low | Aggregate `status` only; never member action authority |
+| `AgentStatusPayload` | Yes | Yes | Low | Preserve current implementation |
+| `TeamLeafAgentStatusPayload` | Yes | Yes | Low | Require actual leaf run/name/member/source identity; do not make fields optional |
+| `TaskTeamStreamScope` | Yes | Yes | Low | Only stream-required IDs and one parent-frame logical-team path/key |
+| `TeamLeafAgentStatusSnapshot` | Yes | Yes | Low | Discriminate ordinary member from required coordinate-consistent stream scope |
+| `TeamRunLifecycleSnapshot { teamRunId, isActive }` | Yes | Yes | Low | No status/error/socket fields |
+| `AgentTeamContext` | Yes | Yes | Low | `isActive` and `isSubscribed` remain explicitly separate |
+| team history item | Yes | Yes | Low | Root has isActive; leaf member has status |
+| team member node/row unions | Yes | Yes | Low | Put agent status only on agent specialization; team nodes carry no five-state field |
+| open-work result | Yes | Yes | Low | Private boolean only; no public serialization |
 
 ## Final File Responsibility Mapping
 
-| File | Owning Subsystem / Capability Area | Owner / Boundary | Concrete Concern | Why This Is One File | Reuses Shared Structure? |
+| File | Owning Subsystem | Owner / Boundary | Concrete Concern | Why This Is One File | Reuses Shared Structure? |
 | --- | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/src/agent-execution/domain/agent-status-payload.ts` | agent execution domain | wire/domain DTO | Remove `can_interrupt`; build/normalize five statuses and identity | Canonical contract | N/A |
-| new `.../domain/agent-runtime-lifecycle-snapshot.ts` | agent execution domain | backend-to-run evidence DTO | Define availability, normalized phase, and one current-turn union | Tight internal contract shared by all runtimes | N/A |
-| `.../backends/agent-run-backend.ts` | runtime adapter contract | backend-to-run boundary | Replace public `getStatusSnapshot`/`subscribeToEvents` with internal lifecycle snapshot and neutral source-batch subscription | One uniform runtime contract | runtime snapshot/event types |
-| `.../events/agent-run-event-transformer.ts` | event pipeline | stage contract | Carry injected run-owned lifecycle state and fresh runtime snapshot to the finalizer | Explicit lifecycle evidence input | internal snapshot/state |
-| `.../events/agent-run-event-pipeline.ts` | event pipeline | pipeline owner | Run pre-process transformers, processors, then finalizer | One sequencing owner | transformer contract |
-| `.../events/default-agent-run-event-pipeline.ts` | event pipeline composition | default composition | Register the stateless lifecycle transformer as finalizer; state is supplied per run | Composition only | pipeline |
-| `.../events/agent-run-event-dispatch-queue.ts` | event dispatch | per-run serialization mechanism owned by `AgentRun` | Preserve enqueue semantics; instantiate once per run rather than using module-global fallback | Existing queue remains the right mechanism | run ID |
-| `.../events/dispatch-processed-agent-run-events.ts` | event dispatch | run-internal serialized event function | Called only by `AgentRun`; evaluate fresh lifecycle snapshot in its queue, process/finalize, then fan out | Prevent stale pre-queue evidence and bypass | internal snapshot/state |
-| `.../events/processors/lifecycle-status/agent-turn-lifecycle-state.ts` | lifecycle | state owner | Reconcile command facts, runtime snapshot, explicit facts, current/anonymous/retired turns; expose canonical status | Core invariant owner | error/turn resolver |
-| `.../lifecycle-status-event-transformer.ts` | lifecycle | stateless finalizer over run-owned state | Pair every non-status final event and canonicalize explicit status; enforce ordering; remove context `WeakMap` | One event projection concern | lifecycle state/status DTO |
-| three runtime lifecycle projectors | runtime adapters | lifecycle snapshot adapters | Derive internal phase/current-turn evidence; stop building public payload/boolean | Provider-local facts | internal snapshot DTO |
-| Codex/Claude/native converters | runtime adapters | event adapters | Remove lifecycle status duplication; retain explicit startup/error/offline status facts | Provider event translation | neutral events |
-| three runtime backend classes | runtime adapters | source/snapshot adapters | Emit neutral batches to the owning run and provide fresh lifecycle snapshots; remove pipeline dispatch/public listener sets | Provider mechanics stay isolated | backend contract |
-| `agent-run.ts` | agent execution domain/control | authoritative public run | Own one backend source subscription, queue, public listener set, per-run lifecycle state, awaited local publication, command/termination facts, and refresh/read status | Public boundary is the only place all origins meet | pipeline/state/status DTO |
-| global message router, artifact publication, skill-improvement notification, mixed member handle | producer subsystems | local event producers | Await `AgentRun.publishEvent`; remove direct listener fanout | Domain work remains local; event lifecycle stays with run | run publication API |
-| command coordinator/overlay/projection service | command/read model | command/start/read owners | Remove boolean/reconstruction/direct active broadcast; overlay remains only until a run exists; active projection calls canonical run snapshot | Existing concerns remain distinct | status DTO/run API |
-| team command overlay/start/member handle files | team execution | member startup/identity | Remove boolean; pre-run overlay only; clear when nested run owns status | Existing lazy member startup | status DTO/run API |
-| `team-status-aggregation.ts` | team domain | aggregate owner | Preserve status precedence, consume status-only member snapshots | Healthy existing owner | status DTO |
-| stream message mapper and handlers/snapshot service | streaming | transport | Serialize status-only DTO; bind then synchronously call the run-owned refresh/read snapshot | Transport only | status DTO |
-| `autobyteus-web/services/agentStreaming/protocol/messageTypes.ts` and command types | frontend protocol | wire types | Remove `can_interrupt` | Mirrors server contract | status type |
-| `autobyteus-web/types/agent/AgentRunState.ts` | frontend run state | lifecycle storage | Remove `canInterrupt` | One lifecycle value | AgentStatus |
-| `autobyteus-web/types/agent/AgentContext.ts` | frontend context | local session state | Rename `isSending` to `submissionPending` | Precise local request meaning | N/A |
-| `autobyteus-web/services/runStatus/agentRuntimeStatusState.ts` | frontend run status | mutation boundary | Apply only status; initializing placeholder; live/history precedence | One projection owner | AgentStatus |
-| `autobyteus-web/services/runSubmission/localUserSubmission.ts` | frontend submission | request staging | Own `submissionPending` start/fail/authoritative-progress clear | Request concern only | context |
-| new `autobyteus-web/services/runSubmission/agentPrimaryAction.ts` | frontend submission | action policy | Resolve `disabled/send/interrupt` | Shared click/key/store rule | AgentStatus |
-| `AgentUserInputTextArea.vue` | frontend input | UI | Render and execute same action result; Enter guard | One user surface | action policy |
-| `activeContextStore.ts` and run stores | frontend commands | selection facade/exact routes | Expose currentStatus/pending; recheck send/interrupt; preserve exact routing | Existing command boundaries | action policy/status |
-| external/member input handlers | frontend streaming | content projection | Remove local busy writes | Status companion is lifecycle owner | N/A |
-| hydration/recovery/open/history files | frontend run status consumers | read-model merge | Remove permission writes; use initializing unknown placeholder; preserve subscribed live status | Existing read paths | status mutation API |
+| `autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts` | team management | manager | register/validate/unregister and lifecycle subscribers | Only writer of root activity | lifecycle type |
+| `.../domain/team-run-lifecycle.ts` | team domain | lifecycle contract | binary snapshot/listener type | Tight reusable contract | N/A |
+| `.../domain/task-team-stream-scope.ts` | team domain | outward scope contract | build/clone tight task-team IDs + parent-frame logical-team coordinates | Prevents operational/local fields leaking into stream scope | `TaskTeamInstanceIdentity` as builder input |
+| `.../domain/team-leaf-agent-status-snapshot.ts` | team domain | recursive snapshot contract | discriminated ordinary/task-team carrier around required leaf payload | Keeps scope out of canonical agent DTO | `AgentStatusPayload`, `TaskTeamStreamScope` |
+| `.../domain/team-run.ts`, `.../backends/team-run-backend.ts`, `team-manager.ts` | team execution | facade/backend | scoped leaf snapshots/private work; delete aggregate | Contract trio | snapshot carrier |
+| `.../backends/mixed/mixed-team-manager.ts` | mixed runtime | manager | collect leaf snapshots and compute work | Owns live handles | specialized handles |
+| `.../backends/mixed/members/*` | mixed runtime | handle | leaf agent vs child team specialization | Runtime-subject boundary | prefix helper |
+| `.../backends/mixed/events/mixed-team-event-bridge.ts` | team bridge | identity rebaser | one `prefixMixedTeamStreamScope` core for every live event type and nested leaf snapshot | One coordinate transition rule | stream scope + snapshot carrier |
+| `.../services/team-command-status-overlay-store.ts` | member command projection | member overlay | member-only pre-run status | Remove team maps/methods | agent payload |
+| `.../task-delegation/task-team-settlement-coordinator.ts` | task delegation | settlement | call explicit work facts | Existing owner | TeamRun method |
+| `.../services/team-run-service.ts` | lifecycle observation | service | leaf canonical failure + explicit termination | Existing observer | failure observer |
+| `autobyteus-server-ts/src/services/agent-streaming/team-stream-agent-identity-payload.ts` | transport | strict identity flattener | one no-rebase task-team wire projection and leaf validator for live/initial paths | Prevents mapping drift/fallback guesses | `TaskTeamStreamScope` |
+| `autobyteus-server-ts/src/services/agent-streaming/*team*` | transport | stream | root lifecycle and scoped leaf member events/snapshots | Existing team socket | lifecycle/agent DTOs |
+| `.../run-history/services/team-run-live-projection-service.ts` | history | projection | isActive + leaf snapshots | Renamed coherent scope | manager/team APIs |
+| `.../api/graphql/types/run-history.ts` | GraphQL | schema | remove root status | Public query contract | isActive/member status |
+| `autobyteus-web/types/agent/AgentTeamContext.ts` | frontend state | context contract | isActive, subscription, topology, specialized nodes | Exact UI model | AgentContext |
+| `autobyteus-web/stores/runHistoryTypes.ts` | frontend history | read model | no root status; specialized member rows | Exact query model | agent status/isActive |
+| `autobyteus-web/services/agentStreaming/TeamStreamingService.ts` + protocol | frontend transport | stream | lifecycle handler and exact leaf status | Existing socket client | DTOs |
+| `autobyteus-web/stores/agentTeamRunStore.ts` + history/open/recovery | frontend orchestration | store | direct activity application, cleanup | Existing lifecycle callers | isActive |
+| workspace/running/team/mobile components and composables | presentation | UI | remove team status and use direct actions/text | Existing surfaces | agent visuals |
 
 ## Applied Patterns (If Any)
 
-- **State machine:** `AgentTurnLifecycleState` owns current/retired turn progression.
-- **Adapter:** runtime projectors/converters translate provider facts without owning UI policy.
-- **Authoritative gateway:** `AgentRun` serializes every runtime/local origin and owns the only public listener/snapshot boundary.
-- **Finalizer stage:** an explicit last pipeline stage ensures processor-derived outward events also receive status companions.
-- **Discriminated action policy:** one pure resolver returns exactly one primary action and prevents contradictory booleans.
+- **Single authoritative boundary:** `AgentRun` for agent lifecycle; `AgentTeamRunManager` for root team liveness.
+- **Schema contraction:** Remove overlapping team status rather than deprecating it.
+- **Discriminated specialization:** Agent member shapes own `AgentStatus`; team member shapes do not.
+- **Event plus fresh snapshot:** Bind lifecycle listener then read manager state for race-free live convergence.
+- **Explicit domain predicates:** Private `hasOpenExecutionWork` replaces a public enum used as a proxy.
 
 ## Target Subsystem / Folder / File Mapping
 
-| Path | Kind (`Folder`/`Module`/`File`) | Owner / Boundary | Responsibility | Why It Belongs Here | Must Not Contain |
+| Path | Kind | Owner / Boundary | Responsibility | Why It Belongs Here | Must Not Contain |
 | --- | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/src/agent-execution/domain/agent-status-payload.ts` | File | shared public agent status contract | five-state DTO and identity | Domain contract built by `AgentRun` and used by command/team/transport boundaries | interrupt permission, current-turn evidence, or provider details |
-| new `autobyteus-server-ts/src/agent-execution/domain/agent-runtime-lifecycle-snapshot.ts` | File | backend-to-run lifecycle evidence | internal availability/phase/current-turn union | Domain evidence shared by three adapters and one run owner | public wire identity/action fields |
-| `autobyteus-server-ts/src/agent-execution/domain/agent-run.ts` | File | authoritative per-run gateway | commands, one source subscription, queue/listeners, lifecycle state, publication and snapshot | Existing public run boundary gains the authority needed by its API | provider parsing or transport serialization |
-| `autobyteus-server-ts/src/agent-execution/events/` | Folder | run-internal event pipeline | ordered transformation/processing/finalization used only by `AgentRun` | Existing event capability area | alternate public dispatch or frontend policy |
-| `.../processors/lifecycle-status/` | Folder | lifecycle finalizer | current/retired turn state and status pairing | Existing coherent concern | provider-specific parsing or WebSocket writes |
-| `.../backends/{autobyteus,claude,codex}/` | Folder | runtime adapters | internal lifecycle snapshots and neutral source-event conversion | Provider-specific boundaries | public subscribers, finalization, or action semantics |
-| `autobyteus-server-ts/src/agent-team-execution/` | Folder | team execution | exact member wrapping/startup/aggregation | Existing team owner | aggregate-to-member action policy |
-| `autobyteus-server-ts/src/services/agent-streaming/` | Folder | WebSocket transport | mapping, subscription, snapshot delivery | Existing transport boundary | lifecycle derivation |
-| `autobyteus-web/services/runStatus/` | Folder | frontend status projection | status mutation/precedence | Existing capability area | composer rendering or provider facts |
-| `autobyteus-web/services/runSubmission/` | Folder | local submission/action admission | request pending, action resolver | Existing submission concern | backend lifecycle state machine |
-| `autobyteus-web/components/agentInput/` | Folder | composer presentation | textarea/button/key interaction | Existing user surface | independently derived status |
+| `autobyteus-server-ts/src/agent-execution/**` | Folder | `AgentRun` | Preserve implemented five-state gateway/finalizer | Agent domain | Team aggregate |
+| `autobyteus-server-ts/src/agent-team-execution/domain/team-run-lifecycle.ts` | File/New | manager contract | `{teamRunId,isActive}` and listener | Team domain | member/task/status enum |
+| `autobyteus-server-ts/src/agent-team-execution/domain/task-team-stream-scope.ts` | File/New | team outward identity | tight scope builder/clone and parent-frame invariants | Stream scope is team-domain identity, not mapper inference | operational ingress/coordinator selectors or wire snake_case |
+| `autobyteus-server-ts/src/agent-team-execution/domain/team-leaf-agent-status-snapshot.ts` | File/Change | team snapshot contract | required leaf payload plus discriminated ordinary/task-team stream scope | Team recursion owns the envelope | full task-team operational identity or optional task-team fields on `AgentStatusPayload` |
+| `.../services/agent-team-run-manager.ts` | File/Change | root liveness owner | lifecycle snapshot/subscription and idempotent transition | Active registry lives here | aggregate derivation |
+| `.../domain/team-run.ts` | File/Change | team facade | leaf snapshots/private work; no status override | Existing exact run boundary | root registration cache |
+| `.../domain/team-run-event.ts` | File/Change | team event contract | AGENT/TASK/COMMUNICATION/MEMBER_INPUT + optional tight `taskTeamScope` | Team-run outward event domain | TEAM status source or full operational task-team identity |
+| `.../domain/team-status-payload.ts` | File/Delete | N/A | Remove | Obsolete | N/A |
+| `.../domain/team-status-aggregation.ts` | File/Delete | N/A | Remove | Obsolete | N/A |
+| `.../backends/{team-run-backend.ts,team-manager.ts}` | Files/Change | backend contract | scoped leaf snapshots and work predicate | Backend capabilities | aggregate or plain payload snapshot |
+| `.../backends/mixed/**` | Folder/Change | mixed runtime | specialize handles, derive/rebase stream scope, recursive leaf status/work | Owns member topology/boundary | pseudo team status, cloned child-local scope, or split prefix logic |
+| `.../services/team-command-status-overlay-store.ts` and `team-member-command-start-status-events.ts` | Files/Change/Rename if useful | member startup | member-only overlay/events | Still needed before leaf run exists | team status maps/builders |
+| `.../task-delegation/task-team-settlement-coordinator.ts` | File/Change | settlement | explicit work checks | Existing owner | team status normalization |
+| `autobyteus-server-ts/src/services/agent-streaming/team-stream-agent-identity-payload.ts` | File/Change | transport identity | shared task-team flattening, strict live/snapshot leaf validation | Wire mapping belongs at transport boundary | prefix/rebase fallback or independent relative-path rules |
+| `autobyteus-server-ts/src/services/agent-streaming/{models.ts,agent-team-stream-handler.ts,team-run-event-websocket-message-mapper.ts,team-runtime-status-snapshot-service.ts}` | Files/Change/Rename snapshot service | transport | `TEAM_RUN_LIFECYCLE`, mapped scoped leaf snapshots, no TEAM_STATUS | Existing team stream | aggregate logic or early carrier unwrapping |
+| `autobyteus-server-ts/src/run-history/services/team-run-status-projection-service.ts` | File/Rename | history live projection | isActive + member snapshots | Name must match scope | root status |
+| `autobyteus-server-ts/src/run-history/services/team-run-history-service.ts` and GraphQL history type | Files/Change | history contract | drop root status | Existing projection/schema | status-to-active |
+| `autobyteus-web/types/agent/AgentTeamStatus.ts` | File/Delete | N/A | Remove | Obsolete | N/A |
+| `autobyteus-web/types/agent/AgentTeamContext.ts`, `stores/runHistoryTypes.ts` | Files/Change | state models | root isActive; specialized agent/team nodes | Canonical frontend models | team currentStatus |
+| `autobyteus-web/services/agentStreaming/{protocol/messageTypes.ts,TeamStreamingService.ts,handlers/teamHandler.ts}` | Files/Change | client stream | lifecycle boolean and leaf status | Existing transport | TEAM_STATUS compatibility |
+| `autobyteus-web/services/runHydration/**`, `runOpen/**`, `runRecovery/**`, history stores/helpers | Folder/Change | state convergence | direct isActive and member hydration | Existing convergence owners | synthetic team status |
+| `autobyteus-web/components/workspace/**`, `composables/mobile/useMobileWorkCatalog.ts` | Folder/Change | presentation/actions | no definition/root status, direct Stop, binary text | Existing UI surfaces | team five-state visuals |
+| `autobyteus-web/components/workspace/team/TeamStatusDisplay.vue`, `composables/useTeamStatusVisuals.ts` | Files/Delete | N/A | Remove | Unused/obsolete | N/A |
+| `autobyteus-web/components/workspace/common/StatusDot.vue`, `utils/workspaceStatusDotPresentation.ts` | Files/Change | agent visuals | agent-only dots | Status belongs to agent | team kind/branches |
 
 ## Folder Boundary Check
 
-| Path / Folder | Intended Structural Depth (`Transport`/`Main-Line Domain-Control`/`Persistence-Provider`/`Off-Spine Concern`/`Mixed Justified`) | Ownership Boundary Is Clear? (`Yes`/`No`) | Mixed-Layer Or Over-Split Risk (`Low`/`Medium`/`High`) | Justification / Corrective Action |
+| Path / Folder | Intended Structural Depth | Ownership Boundary Is Clear? | Mixed-Layer Or Over-Split Risk | Justification / Corrective Action |
 | --- | --- | --- | --- | --- |
-| server `agent-execution/domain` | Main-Line Domain-Control | Yes | Low | Public/internal lifecycle contracts and authoritative `AgentRun` gateway remain coherent; provider and transport work stay outside |
-| server `agent-execution/events` | Main-Line Domain-Control | Yes | Low | Pipeline/finalizer are internal `AgentRun` lifecycle mechanics and expose no parallel public entry |
-| server runtime backend folders | Persistence-Provider | Yes | Low | Provider adapters stay isolated |
-| server `services/agent-streaming` | Transport | Yes | Low | No lifecycle policy added |
-| web `services/runStatus` | Main-Line Domain-Control | Yes | Low | One frontend projection boundary |
-| web `services/runSubmission` | Off-Spine Concern | Yes | Low | Local request/action policy is cohesive and bounded |
-| web input component | Transport/presentation | Yes | Low | Consumes policy rather than owning it |
+| `agent-execution` | Main-Line Domain-Control | Yes | Low | Preserve reviewed owner |
+| `agent-team-execution/domain` | Main-Line Domain-Control | Yes | Low | Binary lifecycle, exact team facade, recursive leaf carrier, and tight outward task-team scope; operational task identity remains separate |
+| `agent-team-execution/backends/mixed` | Persistence-Provider/runtime | Yes | Medium | Specialize handle interfaces and centralize one all-event/live/snapshot coordinate-frame transition in the existing bridge |
+| `services/agent-streaming` | Transport | Yes | Low | Mapping only, no lifecycle derivation |
+| `run-history/services` | Off-Spine projection | Yes | Low | Manager read + member snapshot projection |
+| frontend stores/services | Mixed Justified | Yes | Medium | Keep contract, convergence, and presentation responsibilities in their existing areas; remove conversions |
+
+## Recursively Scoped Leaf-Agent Contract And Coordinate Frame (`ARCH-FIND-003`, `CODE-FIND-002`)
+
+### Tight task-team stream scope
+
+Keep operational `TaskTeamInstanceIdentity` unchanged for task activation, active-run directories, persistence, token/memory scope, ingress selection, coordinator selection, and delivery. Do not carry that broad object through outward live/snapshot stream recursion. Add this tight derived type in `autobyteus-server-ts/src/agent-team-execution/domain/task-team-stream-scope.ts`:
+
+```ts
+export type TaskTeamStreamScope = {
+  taskTeamRunId: string;
+  taskTeamInstanceId: string;
+  taskId: string;
+  logicalTeamPath: string[];
+  logicalTeamRouteKey: string;
+};
+
+export function buildTaskTeamStreamScope(input: {
+  taskTeamInstance: TaskTeamInstanceIdentity;
+  parentTeamRunId: string;
+}): TaskTeamStreamScope;
+
+export function cloneTaskTeamStreamScope(
+  scope: TaskTeamStreamScope,
+): TaskTeamStreamScope;
+```
+
+`buildTaskTeamStreamScope` validates that `taskTeamInstance.parentTeamRunId === parentTeamRunId`, normalizes nonblank IDs/path segments, copies `logicalTeam.memberPath`, and rebuilds `logicalTeamRouteKey` from that path. The result is therefore in the immediate parent `TeamRun` frame at the moment a `MixedTaskTeamMemberHandle` is created. It deliberately excludes:
+
+- `parentTeamRunId`, which is immutable operational launch ownership rather than the mutable outward coordinate frame;
+- `ingress.memberPath/memberRouteKey`, which are task-team-local operational selectors;
+- `coordinatorMemberRouteKey`, which is likewise local to the task-team definition;
+- template/definition/descriptive fields not used to resolve an outward message.
+
+This is not a second lifecycle or public team status. It is the minimum internal execution/scope identity needed to flatten the existing task-team wire fields.
+
+### Tight recursive leaf carrier
+
+Keep `AgentStatusPayload` unchanged. Update the team-owned composition in `team-leaf-agent-status-snapshot.ts`:
+
+```ts
+export type TeamLeafAgentStatusPayload = AgentStatusPayload & {
+  agent_id: string;
+  agent_name: string;
+  member_route_key: string;
+  member_path: string[];
+  source_route_key: string;
+  source_path: string[];
+};
+
+type OrdinaryTeamLeafAgentStatusSnapshot = {
+  scopeKind: "ordinary_member";
+  teamRunId: string;
+  payload: TeamLeafAgentStatusPayload;
+};
+
+type TaskTeamLeafAgentStatusSnapshot = {
+  scopeKind: "task_team_member";
+  teamRunId: string;
+  payload: TeamLeafAgentStatusPayload;
+  taskTeamScope: TaskTeamStreamScope;
+};
+
+export type TeamLeafAgentStatusSnapshot =
+  | OrdinaryTeamLeafAgentStatusSnapshot
+  | TaskTeamLeafAgentStatusSnapshot;
+```
+
+Update `TeamRunEvent` in `team-run-event.ts` in the same clean cut: replace the broad optional `taskTeamInstance` outward marker with `taskTeamScope?: TaskTeamStreamScope | null`. The wire contract does not change; this is an internal carrier correction.
+
+Coordinate invariant for every live event or initial leaf snapshot:
+
+```text
+carrier.teamRunId
+  == coordinate frame for sourcePath/source_path
+  == coordinate frame for agent memberPath/member_path
+  == coordinate frame for taskTeamScope.logicalTeamPath (when present)
+```
+
+Additional invariants:
+
+- Every route key is rebuilt from the path returned in that same frame; no caller keeps a pre-prefix key.
+- A `task_team_member` snapshot requires `taskTeamScope`; an ordinary snapshot forbids it.
+- A task-team leaf requires `source_path` to start with `logicalTeamPath` and contain at least one additional relative member segment.
+- Task-agent identity remains in the existing optional `task_agent_instance_id`, `task_agent_run_id`, and payload `task_id` fields. Outer task-team `taskId` still wins the single public `task_id` during stream flattening.
+- Invalid scope fails at the mixed-team/stream invariant boundary. It is never downgraded to ordinary scope, task-team-root scope, or pseudo team status.
+
+### One shared all-event/live/snapshot rebasing core
+
+Replace leaf-only `prefixMixedTeamAgentScope` with this generic core in `mixed-team-event-bridge.ts`:
+
+```ts
+export type MixedTeamStreamScope = {
+  teamRunId: string;
+  sourcePath: string[];
+  taskTeamScope: TaskTeamStreamScope | null;
+};
+
+export type PrefixedMixedTeamStreamScope = MixedTeamStreamScope & {
+  sourceRouteKey: string;
+};
+
+export function prefixMixedTeamStreamScope(input: {
+  parentTeamRunId: string;
+  sourcePrefix: string[];
+  scope: MixedTeamStreamScope;
+  taskTeamScopeOverride?: TaskTeamStreamScope;
+}): PrefixedMixedTeamStreamScope;
+```
+
+Exact algorithm:
+
+1. Normalize `parentTeamRunId`, `sourcePrefix`, current `teamRunId`, source path, and optional scope.
+2. Set `alreadyInParentFrame = scope.teamRunId === parentTeamRunId`.
+3. Rebase `sourcePath` with the one private `prefixPath(path, sourcePrefix, alreadyInParentFrame)` rule. That rule preserves an already parent-rooted path only when the frame IDs match and the path starts with the prefix; otherwise it prefixes once.
+4. Select task-team scope:
+   - If `taskTeamScopeOverride` is supplied, clone it unchanged because the task-team handle built it in the **target** `parentTeamRunId` frame.
+   - Else if a retained `scope.taskTeamScope` exists and `alreadyInParentFrame`, clone it unchanged.
+   - Else prefix the retained `logicalTeamPath` with the same `sourcePrefix` and rebuild `logicalTeamRouteKey`.
+5. When a scope exists, require the returned `sourcePath` to start with returned `logicalTeamPath`. This is a boundary invariant, not a recovery/fallback.
+6. Return `teamRunId=parentTeamRunId`, the rebased path/key, and the cloned/rebased task-team scope.
+
+Exactly two public adapters call this core:
+
+```ts
+prefixMixedSubTeamEvent(input: {
+  parentTeamRunId: string;
+  sourcePrefix: string[];
+  event: TeamRunEvent;
+  taskTeamScopeOverride?: TaskTeamStreamScope;
+}): TeamRunEvent;
+
+prefixMixedTeamLeafAgentStatusSnapshot(input: {
+  parentTeamRunId: string;
+  sourcePrefix: string[];
+  snapshot: TeamLeafAgentStatusSnapshot;
+  taskTeamScopeOverride?: TaskTeamStreamScope;
+}): TeamLeafAgentStatusSnapshot;
+```
+
+Adapter rules:
+
+- `prefixMixedSubTeamEvent` calls `prefixMixedTeamStreamScope` for **AGENT, TASK_DELEGATION, COMMUNICATION, and MEMBER_INPUT**, not only for agent events. It writes the returned `teamRunId`, `sourcePath`, and `taskTeamScope` to the copied event.
+- For an `AGENT` event, the adapter also applies the same private `prefixPath` rule to `TeamRunAgentEventPayload.memberPath` and rebuilds its member route key. It then asserts a nonempty relative task-team leaf selector when task-team scope exists.
+- Conversation-address task-team-segment detection consumes only `taskTeamScope.taskTeamRunId`; no full operational identity is required in the outward event.
+- `prefixMixedTeamLeafAgentStatusSnapshot` calls the same core, rebases `payload.member_path` with the same private path rule, rebuilds both payload route keys, and returns the correct discriminated variant. It asserts the same task-team leaf invariant.
+- `MixedTaskTeamMemberHandle` calls `buildTaskTeamStreamScope({ taskTeamInstance: request.identity, parentTeamRunId: parentContext.runId })` once and passes that same target-frame override to both adapters.
+- `MixedSubTeamMemberHandle` passes no override. Any retained scope is therefore rebased each time it crosses a distinct ordinary parent frame.
+
+### Exact recursive snapshot method signatures
+
+```ts
+TeamRun.getLeafAgentStatusSnapshots(): TeamLeafAgentStatusSnapshot[];
+TeamRunBackend.getLeafAgentStatusSnapshots(): TeamLeafAgentStatusSnapshot[];
+TeamManager.getLeafAgentStatusSnapshots(): TeamLeafAgentStatusSnapshot[];
+MixedTeamMemberHandle.getLeafAgentStatusSnapshots(): TeamLeafAgentStatusSnapshot[];
+MixedAgentMemberHandle.getLeafAgentStatusSnapshots(): TeamLeafAgentStatusSnapshot[];
+MixedSubTeamMemberHandle.getLeafAgentStatusSnapshots(): TeamLeafAgentStatusSnapshot[];
+MixedTaskTeamMemberHandle.getLeafAgentStatusSnapshots(): TeamLeafAgentStatusSnapshot[];
+```
+
+- `MixedAgentMemberHandle` returns one ordinary snapshot using its canonical `AgentRun`/pre-run overlay and required exact member/source identity. A task-agent handle continues to stamp task-agent fields in the payload.
+- `MixedSubTeamMemberHandle` returns `[]` when no child run exists; otherwise it maps child snapshots through `prefixMixedTeamLeafAgentStatusSnapshot` without an override.
+- `MixedTaskTeamMemberHandle` returns `[]` when no child run exists; otherwise it maps child snapshots through the same adapter with its derived target-frame `TaskTeamStreamScope` override.
+- `MixedTeamManager` concatenates persistent leaf agents, active persistent subteam recursion, task-agent handles, and active task-team recursion. Uninstantiated direct leaf agents keep the existing offline ordinary snapshot. Absent child-team leaves remain frontend/history metadata defaults; no pseudo team snapshot is emitted.
+- History consumes `snapshot.payload` only. It does not serialize the internal task-team stream carrier into GraphQL history.
+
+### One strict live/initial wire flattener
+
+Update `team-stream-agent-identity-payload.ts`:
+
+```ts
+export type TeamStreamTaskTeamIdentityPayload = {
+  task_team_run_id: string;
+  task_team_instance_id: string;
+  task_id: string;
+  team_route_key: string;
+  team_path: string[];
+  task_team_relative_member_path: string[];
+  task_team_relative_member_route_key?: string;
+};
+
+export function buildTaskTeamScopedIdentityPayload(input: {
+  sourcePath: string[];
+  taskTeamScope: TaskTeamStreamScope | null;
+}): TeamStreamTaskTeamIdentityPayload | null;
+
+export function assertTaskTeamLeafStreamScope(input: {
+  sourcePath: string[];
+  taskTeamScope: TaskTeamStreamScope | null;
+  agentRunId: string;
+}): void;
+
+export function mapTeamLeafAgentStatusSnapshot(
+  snapshot: TeamLeafAgentStatusSnapshot,
+): ServerMessage;
+```
+
+The flattener performs no prefixing or recovery. For task-team scope it subtracts `taskTeamScope.logicalTeamPath` from the already-consistent source path and emits the existing wire fields. `assertTaskTeamLeafStreamScope` requires a nonempty relative path/route for both a live `AGENT` event and an initial task-team leaf snapshot. Non-agent task-team-root events may validly have an empty relative selector. Both the live event mapper's `AGENT` branch and `mapTeamLeafAgentStatusSnapshot` call the assertion before spreading the same flattener result.
+
+Initial mapping spreads canonical `snapshot.payload` first and flattened outer task-team fields last. When a task-agent runs inside a task team, its task-agent run/instance fields remain present while outer task-team `task_id` wins exactly as today. `TeamRuntimeSnapshotService.getInitialMessages(teamRun)` retains each carrier through `mapTeamLeafAgentStatusSnapshot`; it never unwraps to plain `AgentStatusPayload` first.
+
+### Concrete multi-boundary example: root -> ordinary subteam -> task team -> leaf
+
+Assume:
+
+- root stream/run: `root-team-1`;
+- ordinary persistent subteam in root: `research_group`, path `['research_group']`, child run `research-run-2`;
+- visible team target inside that child: `review_team`, child-local path `['review_team']`;
+- task-team run/instance/task: `task-team-run-7` / `task-team-instance-7` / `task-42`;
+- leaf inside the materialized task team: `['review_group', 'critic']`, agent run `critic-runtime-93`.
+
+The operational identity is created inside `research-run-2` and stays unchanged:
+
+```ts
+{
+  taskTeamRunId: "task-team-run-7",
+  taskTeamInstanceId: "task-team-instance-7",
+  parentTeamRunId: "research-run-2",
+  taskId: "task-42",
+  logicalTeam: {
+    memberPath: ["review_team"],
+    memberRouteKey: "review_team",
+    // definition/template fields omitted here
+  },
+  ingress: {
+    memberPath: ["review_group", "critic"],
+    memberRouteKey: "review_group/critic",
+    memberRunId: "critic-runtime-93"
+  }
+}
+```
+
+The task-team handle derives a child-parent-frame stream scope:
+
+```ts
+{
+  taskTeamRunId: "task-team-run-7",
+  taskTeamInstanceId: "task-team-instance-7",
+  taskId: "task-42",
+  logicalTeamPath: ["review_team"],
+  logicalTeamRouteKey: "review_team"
+}
+```
+
+A task-team child leaf starts locally as `['review_group', 'critic']`. Applying the task-team handle override produces a carrier in the ordinary child frame:
+
+```ts
+{
+  scopeKind: "task_team_member",
+  teamRunId: "research-run-2",
+  payload: {
+    status: "running",
+    agent_id: "critic-runtime-93",
+    agent_name: "critic",
+    member_path: ["review_team", "review_group", "critic"],
+    member_route_key: "review_team/review_group/critic",
+    source_path: ["review_team", "review_group", "critic"],
+    source_route_key: "review_team/review_group/critic"
+  },
+  taskTeamScope: {
+    taskTeamRunId: "task-team-run-7",
+    taskTeamInstanceId: "task-team-instance-7",
+    taskId: "task-42",
+    logicalTeamPath: ["review_team"],
+    logicalTeamRouteKey: "review_team"
+  }
+}
+```
+
+The outer ordinary handle then calls the same core with `sourcePrefix=['research_group']` and **no override**. It prefixes the retained logical-team path together with leaf paths:
+
+```ts
+{
+  scopeKind: "task_team_member",
+  teamRunId: "root-team-1",
+  payload: {
+    status: "running",
+    agent_id: "critic-runtime-93",
+    agent_name: "critic",
+    member_path: ["research_group", "review_team", "review_group", "critic"],
+    member_route_key: "research_group/review_team/review_group/critic",
+    source_path: ["research_group", "review_team", "review_group", "critic"],
+    source_route_key: "research_group/review_team/review_group/critic"
+  },
+  taskTeamScope: {
+    taskTeamRunId: "task-team-run-7",
+    taskTeamInstanceId: "task-team-instance-7",
+    taskId: "task-42",
+    logicalTeamPath: ["research_group", "review_team"],
+    logicalTeamRouteKey: "research_group/review_team"
+  }
+}
+```
+
+Both the live root event and reconnect snapshot map to:
+
+```json
+{
+  "status": "running",
+  "agent_id": "critic-runtime-93",
+  "agent_name": "critic",
+  "member_path": ["research_group", "review_team", "review_group", "critic"],
+  "member_route_key": "research_group/review_team/review_group/critic",
+  "source_path": ["research_group", "review_team", "review_group", "critic"],
+  "source_route_key": "research_group/review_team/review_group/critic",
+  "task_team_run_id": "task-team-run-7",
+  "task_team_instance_id": "task-team-instance-7",
+  "task_id": "task-42",
+  "team_path": ["research_group", "review_team"],
+  "team_route_key": "research_group/review_team",
+  "task_team_relative_member_path": ["review_group", "critic"],
+  "task_team_relative_member_route_key": "review_group/critic"
+}
+```
+
+The existing frontend resolver therefore targets `task-team-run-7/review_group/critic`, promotes its run ID to `critic-runtime-93`, and exposes the running/interrupt surface on that exact transient leaf. It never falls through to task-team root or the structural `research_group/review_team/review_group/critic` context. A second or third ordinary outer boundary repeats the same retained-scope rebase and preserves the invariant.
 
 ## Outward `AgentRunEvent` Origin Coverage
 
-Every production origin identified in the investigation has one target entry. `AgentRun` rejects a local event whose `runId` differs from its own before enqueue.
+The `SR-002` origin inventory remains authoritative and unchanged:
 
-| Origin ID | Production Origin | Target Entry Into `AgentRun` | Processing / Companion Rule | Delivery Boundary |
-| --- | --- | --- | --- | --- |
-| ORIGIN-001 | AutoByteus, Codex, and Claude converted provider events, including backend-collected token usage | sole backend `subscribeToSourceEventBatches` callback | same queue; processors; finalizer; fresh internal lifecycle snapshot | run listener set |
-| ORIGIN-002 | command start/accept/reject/error and accepted termination facts owned by `AgentRun` | private queued lifecycle-fact application | same lifecycle state; emit canonical status fact through the run, not direct fanout | run listener set |
-| ORIGIN-003 | accepted grant-authorized direct inter-agent message | awaited `targetRun.publishEvent(INTER_AGENT_MESSAGE)` | status-before-event; accepted command turn already applied by `postUserMessage` | run listener set |
-| ORIGIN-004 | active-run artifact publication | awaited `run.publishEvent(ARTIFACT_PERSISTED)` | pair current status without opening a turn | run listener set; non-run application relay unchanged |
-| ORIGIN-005 | active idle skill-improvement notification | awaited `run.publishEvent(SYSTEM_TASK_NOTIFICATION)` | pair idle; do not infer running from notification | run listener set |
-| ORIGIN-006 | accepted mixed-member task-delegation notification | awaited nested `run.publishEvent(SYSTEM_TASK_NOTIFICATION)` | use nested run's accepted/current command fact | nested run listener then team identity wrapper |
-| ORIGIN-007 | processor-derived `FILE_CHANGE` and `TEAM_COMMUNICATION_MESSAGE` | appended inside the run-owned pipeline | finalizer runs after processors; each derived event gets its own companion | run listener set |
+| Origin | Production source | Required preserved path |
+| --- | --- | --- |
+| ORIGIN-001 | AutoByteus/Codex/Claude runtime batch | runtime adapter -> `AgentRun` gateway -> processors -> finalizer -> subscribers |
+| ORIGIN-002 | run command/termination fact | `AgentRun` lifecycle fact -> same queue/canonicalizer |
+| ORIGIN-003 | accepted direct agent message | awaited `AgentRun.publishEvent` |
+| ORIGIN-004 | artifact publication | awaited `AgentRun.publishEvent` |
+| ORIGIN-005 | skill notification | awaited `AgentRun.publishEvent` |
+| ORIGIN-006 | task-delegation notification to an agent | awaited nested `AgentRun.publishEvent` |
+| ORIGIN-007 | processor-derived file/team communication event | processors then finalizer inside same gateway |
 
-`AGENT_STATUS` is the only final event exempt from receiving another status companion. Runtime status inputs and local lifecycle facts are canonicalized by the same state before one public `AGENT_STATUS` is emitted. No caller-specific pairing logic is permitted.
+Removing aggregate team status must not introduce a new direct `AgentRunEvent` path. Leaf member status snapshots and events reuse the same final `AgentRun` output.
 
 ## Canonical Active-Run Status Application And Snapshot Precedence
 
-The backend-to-run evidence shape is intentionally richer than the status-only wire DTO:
+The agent precedence that resolved `ARCH-FIND-002` remains unchanged:
 
-```ts
-type AgentRuntimeLifecycleSnapshot = {
-  availability: "active" | "offline";
-  phase: "initializing" | "idle" | "running" | "error";
-  currentTurn:
-    | { kind: "NONE" }
-    | { kind: "IDENTIFIED"; turnId: string }
-    | { kind: "ANONYMOUS" };
-};
-```
-
-Projector invariant: a backend must not return `phase: "running"` with `currentTurn: NONE`. Codex and Claude use `activeTurnId`; AutoByteus uses its active-turn object/stream lifecycle and may report `ANONYMOUS` when no stable ID exists. If a provider exposes a busy-looking phase before current-turn evidence exists, the internal projection is `initializing`, not public `running`.
-
-One `AgentTurnLifecycleState` instance belongs to each `AgentRun`. It additionally records whether a command startup is pending. It is reconciled by: queued command facts, the fresh backend lifecycle snapshot read inside each publication task, explicit runtime status facts, and final event boundaries/activity. The lifecycle transformer receives that instance; it no longer creates hidden per-context state in a `WeakMap`.
-
-Status application/read rules, in precedence order:
-
-| Priority | Evidence | State Transition / Public Result |
+| Canonical Agent Fact | Fresh Runtime Evidence | Result |
 | --- | --- | --- |
-| 1 | accepted termination or fresh backend `availability=offline` | retire/clear current turn and startup; `offline`. A WebSocket disconnect is not this evidence. |
-| 2 | runtime-global terminal error or terminal error matching identified current turn | retire/clear affected current turn and startup; `error` |
-| 3 | identified current turn A already open | remain `running` across backend `idle`/`initializing`, duplicate startup, and unrelated/retired events; only matching terminal/error or priority 1 closes A |
-| 4 | accepted command result with turn ID A, or fresh backend `currentTurn=IDENTIFIED(A)` not retired | open A and return `running`; this immediately promotes stale `initializing` even if `TURN_STARTED` finalization is still pending |
-| 5 | fresh backend `currentTurn=ANONYMOUS`, anonymous turn-start, or current activity qualified by a pending accepted anonymous command | open/reinforce anonymous current turn and return `running`; fresh authoritative runtime idle or anonymous terminal may close it because no ID can be matched |
-| 6 | command start pending with no current-turn evidence | `initializing`; a racy backend idle/initializing read cannot cancel startup. Rejection rolls back the exact startup token to the prior canonical status; activation failure applies error through the run. |
-| 7 | no startup/current turn | use fresh live `idle`/`initializing` or terminal `error`; retired/unknown activity only repeats this actual current status and never opens a turn |
+| startup/initializing | current identified/anonymous turn | running |
+| identified current A | idle/initializing without matching terminal | remain running |
+| identified current A | matching terminal/error A | idle/error and retire A |
+| current B | late evidence for retired A | preserve B/running |
+| any | explicit accepted runtime termination | offline |
 
-`AgentRun.getStatusSnapshot()` is a refresh-and-project boundary, not `localOverride ?? backend`. It reads `backend.getLifecycleSnapshot()`, synchronously reconciles the facts above into the run-owned state, and builds `AgentStatusPayload` without an `await` between reconciliation and return. That transition is atomic on the Node event loop; any queued finalization that resumes later reuses the same state and precedence, so an older idle/initializing fact cannot demote the newly identified turn. The stream handler still binds first, then calls this method and sends the result. Team member snapshots call the nested run method and add route/path/task identity at the team boundary.
+Team liveness uses a separate, simpler precedence:
 
-Every status published after an `AgentRun` exists follows one of two owned paths: a queued lifecycle fact inside `AgentRun`, or the run's event finalizer. Both update the same state before listener delivery. `AgentRunCommandCoordinator` and mixed-member code may directly broadcast only a pre-runtime overlay while no run exists; when activation produces a run, they clear the overlay and stop publishing replacements. `AgentRunStatusProjectionService` therefore selects `activeRun.getStatusSnapshot()` before considering an overlay; overlay is eligible only when active-run lookup is absent. `AgentRun.postUserMessage` itself applies command-start and accepted-turn/rollback/error facts, so an accepted returned `turnId` becomes running even before the provider event callback completes.
+| Manager Fact / Event | Other Observation | Public `isActive` |
+| --- | --- | --- |
+| exact run registered and `TeamRun.isActive()` true | any member status, no deltas, socket connected/disconnected | true |
+| termination result rejected/throws | local stopPending clears | remain true |
+| accepted termination then manager unregistration | stale frontend true | false |
+| `getActiveRun` detects dead backend and performs the same unregister transition | stale frontend true | false |
+| history context/draft exists without registration | any local context/socket state | false |
+
+The team WebSocket must bind the manager lifecycle listener before its fresh manager read. A transition between bind and read is therefore observed or included in the read; repeated identical lifecycle messages are idempotent.
 
 ## Concrete Examples / Shape Guidance (Mandatory When Needed)
 
 | Topic | Good Example | Bad / Avoided Shape | Why The Example Matters |
 | --- | --- | --- | --- |
-| Current-turn stream | `snapshot/turn evidence -> running status -> SEGMENT_CONTENT(A)` | `SEGMENT_CONTENT -> frontend guesses busy` | Backend remains authoritative while status appears no later than content |
-| Terminal order | `TURN_COMPLETED(A) -> idle status` | `idle timer after last delta` | Silence is not lifecycle evidence |
-| Late old turn | `idle snapshot + late SEGMENT_CONTENT(A) -> idle status + content` | `any delta -> running` | Preserves content without reopening retired work |
-| Newer turn | `TURN_STARTED(B) -> running; late terminal(A) -> TURN_COMPLETED(A) + running` | old terminal clears B | Turn identity keeps lifecycle monotonic |
-| Composer action | `resolve({status:'running'}) -> {kind:'interrupt', enabled:true}` | `isRunning=true`, `canInterrupt=false`, `isDisabled=true` | One discriminated result cannot contradict itself |
-| Pipeline shape | `AgentRun queue -> pre-transformers -> processors -> lifecycle finalizer -> listeners` for backend and local sources | backend-only pipeline plus direct local fanout | Processor-derived and local outward events also receive companions |
-| Local delivery | `post accepted(A) -> run applies A/running -> await run.publishEvent(INTER_AGENT_MESSAGE) -> running -> event` | `emitLocalEvent` directly to listeners | Direct-message activity cannot bypass status/finalization |
-| Idle local notification | `idle -> await run.publishEvent(SYSTEM_TASK_NOTIFICATION) -> idle -> notification` | any non-status event opens running | Non-turn system activity carries status without inventing a turn |
-| Startup reconnect | `initializing override removed; backend snapshot has active A -> AgentRun reconcile -> running snapshot` | `initializing ?? backend running -> initializing` | Fresh current-turn evidence makes Stop available before async event finalization |
-| Identified-turn precedence | `state running(A) + backend idle/initializing -> running(A)` until terminal A | phase snapshot closes A without matching identity | Racy runtime phase cannot revoke an addressable interrupt target |
+| Root lifecycle | `{ team_run_id: "T", is_active: true }` from manager | `{ status: "idle" }` derived from members | Idle members do not make a team inactive |
+| Definition row | `Software Engineering Team (27)` | blue/green dot copied from latest child | Definition has no runtime |
+| Root action | `team.isActive && !stopPending -> Stop` | `team.currentStatus !== Offline -> Stop` | Uses the actual authority |
+| Leaf member | `AGENT_STATUS running, member_route_key=a/b, agent_id=R` | subteam node `status=running` | Only the agent owns five-state lifecycle |
+| Multi-boundary task-team leaf | child `review_team/.../critic` becomes root `research_group/review_team/.../critic`, and logical team becomes `research_group/review_team`; both map to `task-team-run-7/review_group/critic` | prefix leaf paths but clone child-local logical-team path | Live and reconnect must select the same transient execution leaf at arbitrary depth |
+| Failure | `AgentRunCanonicalFailureObserver` or failed mutation result | root aggregate `status=error` | Keeps failure explicit |
+| Settlement | `!taskService.hasOpenWork() && !childRun.hasOpenExecutionWork()` | `teamStatus in {idle,offline}` | Internal question gets an internal predicate |
+| Connection | `isSubscribed=false, isActive=true` is valid | disconnect sets inactive | Transport is not liveness |
 
 ## Backward-Compatibility Rejection Log (Mandatory)
 
-| Candidate Compatibility Mechanism | Why It Was Considered | Rejection Decision (`Rejected`/`N/A`) | Clean-Cut Replacement / Removal Plan |
+| Candidate Compatibility Mechanism | Why It Was Considered | Rejection Decision | Clean-Cut Replacement / Removal Plan |
 | --- | --- | --- | --- |
-| Keep optional `can_interrupt` but ignore it in UI | Reduce DTO edits | Rejected | Remove it from all producers/consumers/tests/docs |
-| Keep frontend `canInterrupt` getter derived from running | Ease component migration | Rejected | Use `currentStatus`/primary-action policy directly; no redundant representation |
-| Accept both old/new WebSocket status payloads | Mixed-version clients | Rejected | Repository/app/server release is a coordinated contract cut; no dual parser |
-| Keep provider lifecycle status companions plus finalizer companions | Minimize converter edits | Rejected | Remove boundary/error duplicates; retain only genuine explicit provider status facts |
-| Keep `running,false` active placeholder | Preserve prior hydration behavior | Rejected | Use `initializing` until authoritative current-turn status arrives |
-| Retain `isSending` as generic busy state | Reduce frontend edits | Rejected | Rename/narrow to `submissionPending`; streamed status owns busy |
-| Keep `emitLocalEvent` as a synchronous wrapper over `publishEvent` | Reduce local caller edits | Rejected | Remove it; callers await the authoritative gateway so ordering/failure is observable |
-| Let runtime backends continue finalizing while local events use `AgentRun` | Minimize backend refactor | Rejected | Backends emit neutral source batches; only `AgentRun` owns processing, finalization, and public listeners |
-| Keep direct active-run broadcaster replacement as a repair | Avoid changing coordinator logic | Rejected | Apply command/runtime status through `AgentRun`; broadcaster remains pre-runtime-overlay-only |
+| Keep optional root `status` beside `isActive` | Minimize query changes | Rejected | Remove schema/type/query/fixtures in one change |
+| Map old `TEAM_STATUS` to lifecycle boolean | Ease stream migration | Rejected | New `TEAM_RUN_LIFECYCLE`; delete old mapper/handler |
+| Keep `AgentTeamStatus` as computed alias | Ease component migration | Rejected | Components consume `isActive` or leaf `AgentStatus` directly |
+| Infer active from any non-offline member | Preserve helper | Rejected | Manager registry is authority |
+| Keep subteam pseudo or plain recursive `AgentStatusPayload` | Preserve common handle interface | Rejected | Specialize leaf snapshots and child work methods; carry `TaskTeamStreamScope` in the discriminated snapshot |
+| Keep full `TaskTeamInstanceIdentity` as stream scope | Reuse one broad object | Rejected | Derive tight `TaskTeamStreamScope`; operational ingress/coordinator paths remain local and never participate in outward subtraction |
+| Repair missing relative selector in mapper/frontend | Avoid bridge rework | Rejected | Rebase source/member/logical-team paths together at the mixed-team boundary; mapper validates and flattens only |
+| Use socket close as inactive fallback | Avoid lifecycle event | Rejected | Bind manager lifecycle + fresh snapshot |
+| Keep task cleanup on offline team event | Preserve router path | Rejected | Task terminal event/record reconciliation |
 
 ## Derived Layering (If Useful)
 
 ```text
-Frontend presentation/action policy
-        -> frontend status/command boundaries
-        -> WebSocket transport
-        -> AgentRun / TeamRun public boundaries
-             -> run-owned runtime-neutral processors/finalizer/state
-             -> provider adapters/runtime sessions
-             <- supported local run-event producers (through AgentRun only)
+Frontend presentation/actions
+  -> frontend team/agent read models
+  -> GraphQL and WebSocket transport
+  -> AgentTeamRunManager (root team liveness) | TeamRun (exact member/event facade)
+  -> MixedTeamManager/member handles (orchestration, leaf snapshots, private work)
+  -> AgentRun (leaf lifecycle/event authority)
+  -> runtime backend/provider
 ```
 
-This is explanatory only. Authority follows the boundaries above; stream handlers do not bypass `AgentRun` to provider state.
+Task delegation and failure observation remain side capabilities consuming explicit events/results; they do not sit between team liveness and the UI.
 
 ## Change / Refactor Sequence
 
-1. **Contract cut:** Add the internal `AgentRuntimeLifecycleSnapshot` and source-batch listener types. Remove `can_interrupt`/`canInterrupt` from the public server DTO/builder, command ack/status projection, team snapshots, mapper, frontend protocol/state, and compile-time fixtures. Backend projectors stop returning the public payload.
-2. **Authoritative run gateway seam:** Give `AgentRun` its own lifecycle state, listener set, backend source subscription, and `AgentRunEventDispatchQueue` instance. Change all three backends from public processed-event subscriptions to neutral source-event batches. Move the only `dispatchProcessedAgentRunEvents` invocation to `AgentRun`; require its queue argument; remove the module-global queue fallback, backend dispatch imports/calls, and per-public-listener backend subscription. At this step runtime events already cross the new gateway before any local caller migration.
-3. **Lifecycle reconciliation/finalizer:** Add injected run-owned state and fresh internal runtime snapshot evidence to pipeline input. Run processors before a stateless `LifecycleStatusEventTransformer`; remove its `WeakMap`. Implement the precedence table, command-start token/accept/rollback/error/offline facts, current/anonymous/retired rules, terminal classification, and one companion for every final non-status event. Remove `statusOverride` and make `AgentRun.getStatusSnapshot()` refresh/project the same state.
-4. **Local origin cutover:** Replace every production `emitLocalEvent` caller in ORIGIN-002–ORIGIN-006 with queued run lifecycle facts or awaited `AgentRun.publishEvent`; validate run identity. Remove `emitLocalEvent`/`localEventListeners` completely. Verify processor-derived ORIGIN-007 events are finalized after processors.
-5. **Runtime adapter cleanup:** Make AutoByteus/Codex/Claude projectors return the internal lifecycle snapshot with current-turn evidence. Remove Codex/Claude turn/error status duplication and public status callbacks from converters; retain only genuine neutral provider status facts. Ensure accepted returned turn IDs are applied by `AgentRun` before async source finalization.
-6. **Command/team convergence:** Restrict coordinator and mixed-member direct broadcaster status to the no-`AgentRun` startup overlay. Remove active-run `reconcileCommandStatus`/replacement payload publication, clear overlay on run ownership, and route active command facts through `AgentRun`. Simplify task/subteam/member status shapes and team aggregation to status-only while preserving exact identity.
-7. **Snapshot race closure:** Keep listener binding first, then call canonical `AgentRun.getStatusSnapshot()` for standalone and nested member reads. Add the exact `initializing -> backend identified current A -> reconnect -> running` check and the inverse `running(A) + racy idle/initializing -> running(A)` check. Verify no direct publication can disagree with that read.
-8. **Frontend projection cleanup:** Remove `canInterrupt`; make unknown-active placeholder `initializing`; preserve subscribed live status against history refresh; remove aggregate-to-member or remote-content lifecycle writes.
-9. **Local request/action cleanup:** Rename/narrow `isSending` to `submissionPending`, add the discriminated primary-action policy, route click and Enter through the same guarded executor, and add store-level lifecycle rechecks. Preserve exact interrupt routing and Shift+Enter.
-10. **Remove obsolete tests/assumptions and replace coverage:** Update server unit/integration and frontend unit/component coverage for the status-only contract, ORIGIN-001–ORIGIN-007 gateway coverage, local awaited publication failure/order, startup snapshot precedence, late-turn safety, team identity, and click/Enter parity. Direct backend/dispatcher tests must be rewritten through `AgentRun`; do not retain old subscription or payload fixtures. Durable API/E2E coverage remains downstream-owned.
-11. **Documentation handoff:** Delivery updates streaming/execution/frontend architecture docs to the status-only wire contract, single `AgentRun` gateway, and explicit companion/snapshot semantics after integrated verification.
-
-No temporary compatibility shape may remain after any step. Intermediate compile failures are acceptable within the implementation branch; the completed change must be clean-cut.
+1. Start from reviewed implementation source `9c4c6f095` and preserve manager-owned lifecycle, aggregate removal, Stop pending/failure behavior, the `SR-002` agent gateway, and `IR-002` presentation batching.
+2. Add `TaskTeamStreamScope` builder/clone; change `TeamRunEvent` and `TeamLeafAgentStatusSnapshot` from full operational `taskTeamInstance` to the tight `taskTeamScope`. Do not alter operational task-team identity/directory/persistence APIs.
+3. Replace `prefixMixedTeamAgentScope` with `prefixMixedTeamStreamScope`. Make every live event type and initial snapshot adapter call it; rebase retained logical-team scope at ordinary boundaries and accept only a target-frame override from task-team handles. Prefix agent member paths with the same private `prefixPath` rule.
+4. Update task-team handles to derive one scope per request/parent and pass it identically to live/snapshot adapters. Update conversation task-team detection to consume only the scoped run ID.
+5. Update the shared stream flattener to consume `TaskTeamStreamScope`, add symmetric live-agent/initial-leaf validation, and preserve existing wire fields/precedence. No mapper/frontend fallback is allowed.
+6. Add focused multi-boundary tests for `root -> ordinary subteam -> task team -> leaf`: retained-scope rebase, route-key rebuild, live mapper relative selector, initial mapper parity, repeated ordinary nesting/no double prefix, and invalid-frame rejection.
+7. Resolve `CODE-FIND-003` locally by extending the `team-run-service.test.ts` manager double with `subscribeToLifecycle` and `getLifecycleSnapshot`; rerun all 13 tests. Do not weaken the production manager interface.
+8. Rerun the prior changed server/frontend suites, TypeScript build, aggregate-obsolete scans, source-size/diff checks, and preserved batching/Stop tests; record `IR-004` and route source re-review.
+9. Do not overwrite or include the API/E2E engineer's held uncommitted files. Only after source review passes may API/E2E replace its stale investigation and reconcile durable coverage against the current contract.
 
 ## Key Tradeoffs
 
-- **Repeated status versus sparse transitions:** Repetition increases compact WebSocket messages but makes every activity self-healing and removes dependence on one transition delivery. Correctness wins; the user explicitly accepted it.
-- **Backend explicit status versus frontend delta inference:** The backend uses stream activity as lifecycle evidence but sends explicit status. This preserves turn correlation, error classification, reconnect snapshots, and team identity while keeping the frontend simple.
-- **Turn identity versus literal any-delta rule:** Current-turn qualification is the minimum required safety mechanism. Without it, previously observed late tool output would reopen completed work.
-- **Run-owned gateway versus patching local callers:** Moving backend source delivery and local publications behind `AgentRun` is a broader interface cut than wrapping four callers, but it establishes one queue/state/listener invariant and prevents the next local origin from bypassing lifecycle again.
-- **Internal lifecycle snapshot versus backend public status DTO:** Retaining current-turn evidence internally adds one tight type, but it lets the public owner resolve startup races without exposing turn identity or another action bit to the client.
-- **Finalizer stage versus mapper decoration:** Finalizing in the runtime-neutral pipeline owned by `AgentRun` allows its snapshots, team aggregation, history, local events, and every transport consumer to see the same status. Decorating only WebSocket messages would leave internal snapshots/teams divergent.
-- **Local submission lock versus no local state:** A narrow request lock is still needed before the first authoritative server progress event, but it is deliberately not busy/interrupt state.
+- A dedicated binary lifecycle message adds one small contract, but it prevents socket state and member aggregation from becoming implicit liveness and supports other live clients.
+- A dedicated `TaskTeamStreamScope` adds one small internal type, but it removes irrelevant operational paths from the outward carrier and makes its one coordinate frame enforceable without bloating `AgentStatusPayload`.
+- Rebasing scope at every mixed-team boundary is stricter than repairing it at the mapper, but it guarantees every downstream live/snapshot consumer sees coherent identity and prevents transport heuristics.
+- Specializing handle/node types touches more compile sites than leaving optional status fields, but it makes invalid team-as-agent states unrepresentable.
+- `error` remains work-blocking for private settlement to preserve current safety; this does not create a public team error state.
+- Clean-cut GraphQL/WebSocket contraction requires coordinated server/frontend changes, accepted because they ship together and stored data needs no migration.
 
 ## Risks
 
-- Some provider/derived events lack `turn_id`. They may repeat the current status but cannot open a new turn from idle; adapters must preserve `TURN_STARTED`, explicit running, or snapshot active-turn evidence.
-- Moving lifecycle projection after processors changes event ordering. Tests must assert content order remains intact and only adjacent status messages are inserted.
-- High-frequency `SEGMENT_CONTENT` produces high-frequency compact status companions. Observe message throughput during API/E2E; do not weaken correctness by silently returning to sparse transitions. Existing event batching may be optimized later without changing semantics.
-- Runtime lifecycle snapshot calls for event publication must be evaluated inside the serialized dispatch task, not captured before queued events run, or fallback evidence can be stale. Public `getStatusSnapshot()` must use the same precedence/state and must never restore a lower-priority stale phase.
-- The backend subscription contract change touches runtime adapter tests and any test that directly attaches to a backend/dispatcher. Keeping a compatibility listener would recreate the ownership defect; coverage must move to constructed `AgentRun` instances.
-- Local publication becomes awaited. A listener/processor failure must follow the existing dispatch error policy without causing persisted domain work to be falsely rolled back; each producer must report publication failure truthfully according to its existing API contract.
-- Pre-runtime overlays and the lifecycle finalizer may both emit initializing/running around activation. Repetition is allowed, but overlay ownership must end when `AgentRun` exists so stale initializing cannot win afterward.
-- Renaming `isSending` touches many tests and remote input handlers. Review must confirm no UI feature depended on it for anything other than request/busy gating.
-- `running` assumes every supported runtime's existing interrupt route can address its current open turn. Cross-runtime API/E2E evidence is required before delivery.
+- A manager unregister path that bypasses lifecycle notification could leave another live client stale; all map deletion/validation paths must use one transition method.
+- Member offline events must complete before root unregistration/transport teardown so successful team termination does not strand leaf UI state.
+- Every ordinary boundary must rebase retained logical-team scope with source/member paths. A cloned child-local scope, missing task-team override, or second prefix algorithm can target the task-team root/wrong leaf or reject reconnect.
+- Switching `TeamRunEvent` from full operational identity to tight stream scope must cover AGENT, TASK_DELEGATION, COMMUNICATION, and MEMBER_INPUT; a partial event-type cut would preserve hidden frame drift.
+- Removing pseudo team statuses may expose callers that used `currentStatus` for display or work inference; repository scans and discriminated types should force explicit replacement.
+- Task-team cleanup must remain correct for terminal success, failure, cancellation, reconnect, and record refresh without an offline fallback.
+- Existing held API/E2E edits were authored against the pre-expansion agent-only contract and must be reconciled rather than blindly committed.
 
 ## Guidance For Implementation
 
-- Treat the five-state table and `running => current open interruptible turn` as invariants, not presentation conventions.
-- Prefer a discriminated action result such as:
-
-```ts
-type AgentPrimaryAction =
-  | { kind: "interrupt"; enabled: true }
-  | { kind: "send"; enabled: true }
-  | { kind: "disabled"; enabled: false; reason: string };
-```
-
-- The lifecycle finalizer should use a single canonical status builder. Never copy identity/status fields ad hoc when an existing builder/envelope supplies them.
-- Construct exactly one `AgentTurnLifecycleState` per `AgentRun` and pass it explicitly to processing/finalization. Do not hide another state map in the default pipeline or projector.
-- Keep runtime lifecycle evidence internal: backend source callbacks return neutral batches, and backend snapshot projection returns phase plus current-turn union. Neither backend API emits/finalizes for public listeners.
-- Snapshot fallback is evidence, not permission to override an identified active turn with a racy idle snapshot. Reuse the state machine's rule that idle/initializing cannot close an identified turn; only its matching terminal/error or explicit runtime offline evidence can. Conversely, fresh non-retired current-turn evidence must promote startup immediately.
-- `AgentRun.publishEvent` must validate run identity, enqueue with runtime batches, run processors/finalizer, and resolve only after ordered listener delivery completes under the dispatcher policy. Do not implement it by calling listeners directly.
-- Activity may promote `initializing`/anonymous-running to an identified current turn when the snapshot or command state proves current execution. Activity received while truly idle must not open a turn merely because its ID is unfamiliar.
-- For nonterminal activity, emit status first, then the original event. For `TURN_COMPLETED`, `TURN_INTERRUPTED`, and terminal `ERROR`, emit the boundary/error first, then the derived idle/error status. An older terminal that does not match the current turn is followed by the unchanged current status.
-- Keep `ASSISTANT_COMPLETE` as presentation completion only; it does not replace the authoritative turn terminal boundary.
-- Keep recoverable tool failures/logs as activity. Only `resolveAgentRunErrorEvidence` terminal classifications may settle `error`.
-- Do not mark offline from WebSocket disconnect. Offline comes from runtime absence/termination or history projection.
-- Preserve team member identity at every companion event. The team mapper should continue to stamp member route/path/run/task identity from the team envelope rather than trusting a generic payload fallback.
-- Remove active-run calls from the coordinator/member handle to `AgentStreamBroadcaster.publishToRun`; if no `AgentRun` exists, the named pre-runtime overlay API is the only allowed direct status path.
-- Add implementation-scoped unit checks for backend/local origin convergence, lifecycle/snapshot precedence, DTO contraction, primary-action resolver, store guards, and component click/Enter behavior. Broader cross-runtime/API/E2E execution remains the downstream `api_e2e_engineer` responsibility.
+- Treat `9c4c6f095` as the source starting state and `facc6a818` as the authoritative review record. Preserve the sound manager/aggregate-removal/frontend source and all earlier agent behavior.
+- Make manager transition notification idempotent: reject/non-register a backend that is not live; emit only when an exact run changes registered liveness; replacing one still-active instance under the same ID is boolean `true -> true`, not a false/true flicker; a failed terminate does not mutate the map or notify false.
+- Keep the lifecycle payload minimal. Do not add `status`, `phase`, member summaries, error text, interrupt permission, or connection state.
+- In the initial team stream, bind run events and manager lifecycle before reading; keep each coordinate-consistent `TeamLeafAgentStatusSnapshot` intact through `mapTeamLeafAgentStatusSnapshot`, then send the fresh root lifecycle and recursively mapped leaf messages.
+- Let only leaf-agent specializations expose `AgentStatus`. A subteam/task-team handle may expose child `isActive()` internally and `hasOpenExecutionWork()`, but never an agent status DTO.
+- Preserve exact member route/path/run/task identity in both live and initial `AGENT_STATUS`; use `prefixMixedTeamStreamScope` at every boundary and `buildTaskTeamScopedIdentityPayload` only after scope is root-consistent. Do not copy either algorithm or infer a missing prefix.
+- Keep the operational `TaskTeamInstanceIdentity` unchanged and local to task execution. Derive `TaskTeamStreamScope` at the task-team handle; never mutate operational ingress/coordinator selectors to look root-relative.
+- Update the stale `TeamRunService` manager double as a test fixture. Do not add optional chaining/default lifecycle behavior to production to accommodate it.
+- Keep task terminality and operational failures observable after aggregate deletion; do not silently drop the former consumers.
+- Frontend lifecycle handlers update one subject only: root lifecycle -> `teamContext.isActive`; member status -> exact agent context; task event -> task projection; socket events -> `isSubscribed`.
+- Make `onTerminateTeam` check the store's boolean result. While pending, disable duplicate Stop; on failure, clear pending and leave `isActive=true`/Stop available.
+- Delete rather than deprecate old fields/events/helpers. Regenerate generated GraphQL types after schema/query edits.
+- Update documentation only in the later delivery stage after integrated-state refresh.

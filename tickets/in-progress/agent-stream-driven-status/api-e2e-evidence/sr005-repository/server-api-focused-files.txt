@@ -1,0 +1,4 @@
+tests/integration/agent/agent-status-websocket.integration.test.ts
+tests/integration/agent/team-lifecycle-websocket.integration.test.ts
+tests/e2e/agent/agent-command-correlated-status.e2e.test.ts
+tests/integration/agent/agent-websocket.integration.test.ts

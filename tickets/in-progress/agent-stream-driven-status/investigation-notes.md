@@ -3,11 +3,11 @@
 ## Investigation Status
 
 - Bootstrap Status: Complete
-- Current Status: Requirements remain approved; architecture review `ARCH-REV-001` returned `Design Impact`; `ARCH-FIND-001` and `ARCH-FIND-002` are resolved in completed solution revision `SR-002`, pending architecture re-review
-- Investigation Goal: Trace the authoritative agent-turn lifecycle, streaming/status event transport, frontend projection, and interrupt gating; identify the production contradiction; define a simpler safe status contract.
-- Scope Classification: `Medium`
-- Scope Classification Rationale: The defect crosses server runtime-neutral lifecycle processing, provider event conversion, single/team WebSocket status projection, frontend status/hydration, and composer action state. The change does not require a provider-loop or visual redesign.
-- Scope Summary: Stream-companion busy/idle/error/offline lifecycle, removal of separately divergent public interrupt state, and unified send/interrupt interaction guarding for supported standalone and team-agent execution.
+- Current Status: Expanded requirements remain user-approved. `ARCH-REV-004` passed `SR-004`, but `CRR-003` returned `Fail / Design Impact`: `CODE-FIND-002` proves the reviewed scope contract mixes root-relative leaf paths with child-local logical-team paths when a task team runs below an ordinary subteam. `SR-005` design rework is required before implementation or API/E2E resumes; `CODE-FIND-003` is a separately bounded implementation fixture repair after design approval.
+- Investigation Goal: Trace authoritative agent-turn lifecycle and team-run liveness separately; eliminate presentation/transport/action state that conflates agent lifecycle, team definition, team run, task stage, and connection state.
+- Scope Classification: `Large`
+- Scope Classification Rationale: The expanded change crosses server agent lifecycle processing, team aggregate/domain events, active-run/history projection, nested/task-team consumers, frontend history/context/recovery, desktop/mobile presentation, and action guards. It remains bounded to lifecycle/status ownership and does not redesign provider loops, team topology, or task business stages.
+- Scope Summary: Five-state agent stream companions and interrupt coherence; no team-definition status; binary manager-owned team-run activity; removal of the public five-state team aggregate; preserved member status and separately owned task/failure/open-work facts.
 - Primary Questions Resolved:
   - The backend already knows current active-turn identity and can produce `running/can_interrupt=true` snapshots.
   - `currentStatus` and `canInterrupt` independently govern the header and composer and can diverge.
@@ -17,13 +17,21 @@
   - Enter currently bypasses the disabled primary button guard.
   - Supported local `AgentRun.emitLocalEvent` origins bypass the shared processor/finalizer queue and reach run listeners directly.
   - `AgentRun.getStatusSnapshot()` currently prefers a retained local `initializing` override over fresh backend current-turn evidence; the command coordinator can also broadcast a replacement without applying it to `AgentRun`.
+  - Team definition display status is copied from the most recent child run, so the definition has no real status owner.
+  - `AgentTeamRunManager` already owns the authoritative active-run registry and exposes `isActive` through history/resume; five-state team aggregation is a parallel representation derived from member statuses.
+  - Team action eligibility currently converts aggregate status back into activity, while standalone run actions already consume `isActive` directly.
+  - Root/nested `TEAM_STATUS` also serves task-team cleanup, failure observation, and open-work settlement; these consumers need explicit task/failure/work facts, not retained public aggregate status.
+  - Live nested task-team agent events preserve `TaskTeamInstanceIdentity` outside `AgentStatusPayload`, while the `SR-003` plain initial snapshot array could not carry that execution scope to reconnect mapping.
+  - A discriminated internal `TeamLeafAgentStatusSnapshot` can retain ordinary/task-team scope through recursion, while shared prefix and wire-flatten helpers guarantee live/initial identity parity without broadening standalone `AgentStatusPayload`.
+  - `SR-004` retained a complete operational `TaskTeamInstanceIdentity`, but an ordinary parent prefixed only the leaf paths. Its `logicalTeam` path therefore remained in the child coordinate frame and could not be subtracted from the root-relative leaf path.
+  - The stream carrier should contain only the task-team execution IDs and logical-team route/path required for outward scoping. That logical-team route/path must be prefixed with member/source paths at every ordinary boundary; operational ingress/coordinator-local selectors must not enter the stream-scoping carrier.
 - Approval Resolution:
-  - The user approved removing the separate public/frontend `can_interrupt`/`canInterrupt` authority so `running` itself governs the stop action.
-  - The user reaffirmed that current-turn streaming/delta activity should establish busy/running and accepted the current-turn qualification needed to reject late retired-turn activity.
+  - Approved 2026-08-01: remove separate public/frontend `can_interrupt`/`canInterrupt`; agent `running` governs the member stop action; current-turn delta activity can establish running subject to retired-turn safety.
+  - Approved 2026-08-02: team definitions have no status; team runs use only manager-owned `isActive`; public/frontend aggregate `AgentTeamStatus`/root `TEAM_STATUS` is removed; member agent status remains unchanged.
 
 ## Request Context
 
-The user reports that the interrupt button is not active while an agent is visibly working and proposes simplifying status management: because all runtimes stream output, current streaming should establish busy and status should be emitted on the same frontend stream; the open question is how idle should be detected. The recommended refined answer is immediate current-turn terminal detection, not a quiet-period timer.
+The user first reported that the interrupt button is not active while an agent is visibly working and proposed current-turn streaming plus companion status as the simple busy signal; immediate current-turn terminal events, not a quiet-period timer, settle idle. During architecture rework, the user then challenged the separate team-status model: a team definition should not show runtime status, and a team run only needs to be known as live/stoppable or inactive. The second investigation confirms that the backend already exposes that binary fact and the five-state team aggregate creates circular, cross-cutting state.
 
 ## Environment Discovery / Bootstrap Context
 
@@ -35,10 +43,11 @@ The user reports that the interrupt button is not active while an agent is visib
 - Bootstrap Base Branch: `origin/personal`
 - Remote Refresh Result: `git fetch origin personal` succeeded on 2026-08-01; task branch/worktree created at `4b29481d5b6eaea64aebb20abcb5e4d784ea1178`, matching refreshed `origin/personal`.
 - Task Branch: `codex/agent-stream-driven-status`
+- Current Reviewed Source HEAD: `facc6a818` (`IR-003` source at `9c4c6f095`, implementation record at `5f730c99b`, and authoritative `CRR-003` review artifact commit at `facc6a818`; preserves the `SR-002` agent foundation while exposing the `CODE-FIND-002` nested coordinate defect)
 - Expected Base Branch: `personal` / `origin/personal`
 - Expected Finalization Target: `personal`
 - Bootstrap Blockers: None
-- Notes For Downstream Agents: Use only this dedicated ticket worktree. The shared checkout had unrelated untracked `codex/` content and was not used as the authoritative task workspace. The installed desktop/server live probe used version `1.4.37`, matching the repository package version/tag line.
+- Notes For Downstream Agents: Use only this dedicated ticket worktree. The shared checkout had unrelated untracked `codex/` content and was not used as the authoritative task workspace. The installed desktop/server live probe used version `1.4.37`, matching the repository package version/tag line. Three API/E2E-owned test files and the coverage investigation/evidence are currently uncommitted and intentionally held after the requirements expansion; architecture/implementation must not overwrite, revert, or include those changes in source commits.
 
 ## Supplemental Task Artifact Inventory
 
@@ -46,6 +55,9 @@ The user reports that the interrupt button is not active while an agent is visib
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/production-trace-evidence.md` | Evidence-only production trace and live WebSocket snapshot | Matched screenshot team/turn, overlapping second input, correct later backend snapshot, source-level divergent-state/race evidence, and late-event safety constraint | Requirements, investigation, design | REQ-001–REQ-012 / AC-001–AC-015 | Complete | N/A | Extend only if implementation-time runtime evidence adds a material fact. |
 | `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_6557dd2b51c3__image.png` | User-supplied UI evidence | Selected header is `Running` while composer shows send rather than interrupt | Requirements, investigation | REQ-001, REQ-008 / AC-001, AC-009 | Accepted evidence | N/A | None. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/team-status-simplification-evidence.md` | Evidence-only team-definition/team-run authority and consumer trace | Fabricated definition status, manager-owned activity, aggregate duplication, frontend action coupling, nested/task consumer separation, reachability, and no-migration evidence | Requirements, investigation; design after approval | REQ-013–REQ-019 / AC-016–AC-025 | Complete | N/A | Use as design evidence after expanded requirements approval. |
+| `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_9d9c83cf3d30__image.png` | User-supplied team hierarchy evidence | Root team run carries a status dot and Stop while member agents independently carry useful status dots | Requirements, investigation | REQ-013–REQ-017 / AC-016, AC-017, AC-021, AC-023 | Accepted evidence | N/A | None. |
+| `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_ead75793b5e3__image.png` | User-supplied team-definition UI evidence | Runtime-status dot is shown beside reusable `Software Engineering Team` definition/container | Requirements, investigation | REQ-013 / AC-016 | Accepted evidence | N/A | None. |
 
 ## Source Log
 
@@ -76,6 +88,26 @@ The user reports that the interrupt button is not active while an agent is visib
 | 2026-08-01 | Review | `design-review-report.md` (`ARCH-REV-001`) and `architecture-review-revision-record.md` | Investigate architecture-review failure before implementation | Review confirmed the status-only DTO, event ordering, turn retirement, team identity, and frontend action policy, but found two production boundary gaps: local `AgentRunEvent` origins bypass the finalizer and active-run snapshot precedence can retain stale startup. | Resolve `ARCH-FIND-001` and `ARCH-FIND-002` in `SR-002`; re-review required. |
 | 2026-08-01 | Code/Command | `rg -l 'emitLocalEvent\\(' autobyteus-server-ts/src`; inspected `agent-run.ts`, global message router, artifact publication, skill-improvement notification, and mixed member handle | Inventory every production local `AgentRunEvent` origin | Four non-status production call sites plus `AgentRun`'s own command/termination status facts use direct listener fanout. Processor-derived `FILE_CHANGE` and `TEAM_COMMUNICATION_MESSAGE` are additional final outward origins. | Replace `emitLocalEvent` with one awaited `AgentRun.publishEvent` gateway shared with runtime source batches. |
 | 2026-08-01 | Code | `AgentRun`, `AgentRunCommandCoordinator`, `ClaudeSession.sendTurn`, Codex/native status sources, three backend dispatch calls | Trace the exact startup/reconnect race and ownership bypass | `AgentRun` stores `initializing`; Claude establishes `RUNNING` and `activeTurnId` before its fire-and-forget pipeline completes; `getStatusSnapshot()` returns the override first; coordinator replacement publication bypasses `AgentRun`. | Make `AgentRun` own lifecycle reconciliation, serialized event publication, and every active-run status publication/read. |
+| 2026-08-02 | Other | User follow-up plus `ctx_9d9c83cf3d30__image.png` and `ctx_ead75793b5e3__image.png` | Establish requested team-status simplification | User distinguishes team definition, live team run, and member agent; definition status is redundant, team activity is binary, and member agent status remains the useful detail. | Refine requirements and obtain approval before redesign. |
+| 2026-08-02 | Other | User approval in conversation | Lock the expanded requirements basis | User explicitly approved REQ-013–REQ-019 and AC-016–AC-025 after the second investigation. | Revise full design as SR-003 and route architecture review. |
+| 2026-08-02 | Code | `workspaceHistoryTeamDefinitionGroups.ts`, `WorkspaceHistoryWorkspaceSection.vue`, `useWorkspaceHistoryTreeState.ts`, `useWorkspaceHistoryMutations.ts` | Trace definition/run dots and team action policy | Definition status is copied from the latest representative child; Stop/archive/delete eligibility is `teamStatus !== offline` despite `TeamTreeNode.isActive`. | Remove definition status; use `isActive` for team actions. |
+| 2026-08-02 | Code | `AgentTeamContext.ts`, `agentTeamContextsStore.ts`, `runHistoryTypes.ts`, `runHistoryTeamHelpers.ts`, `runHistoryStore.ts`, team open/recovery/hydration services | Trace frontend authority and duplication | Frontend stores `currentStatus`, `isActive`, and `isSubscribed`; active becomes synthetic status and context aggregate becomes active again, while contexts include drafts/history. | Keep activity explicit; connection/context existence cannot own liveness. |
+| 2026-08-02 | Code | `agent-team-run-manager.ts`, `team-run-history-service.ts`, `team-run-status-projection-service.ts`, GraphQL history/resume types | Verify backend team activity authority | Active registry plus backend liveness already determines `isActive`; history and resume expose it directly. Aggregate status is an additional member-derived field. | Make manager activity the only public team lifecycle fact. |
+| 2026-08-02 | Code | `team-status-aggregation.ts`, `mixed-team-manager.ts`, `team-run.ts`, team snapshot/mapper, subteam/task-team handles, `TaskTeamSettlementCoordinator` | Inventory aggregate production consumers | Aggregate drives root/nested `TEAM_STATUS`, subteam status overlays, task-team cleanup, failure observation, and open-work settlement. Member snapshots are independently available. | Separate each consumer by its actual subject; do not preserve aggregate as compatibility. |
+| 2026-08-02 | Command | `rg` inventory for `AgentTeamStatus`, `TEAM_STATUS`, `deriveTeamApiStatus`, team status normalizers/visuals | Measure change surface | 46 production/doc files reference public team-status structures; the representation is cross-cutting rather than a local dot. | Scope is Large; design needs a clean removal sequence. |
+| 2026-08-02 | Doc | `design-principles.md` | Re-apply ownership, semantic-tightness, and clean-cut replacement rules | Separate definition, live team run, agent lifecycle, task stage, and request/transport state; remove redundant shared shapes instead of adding reconciliation. | Apply after expanded requirements approval. |
+| 2026-08-02 | Code | `server-managed-team-member-projections.ts`, mixed member-handle interface, persistent/subteam/task-team handle snapshots, `mixed-team-event-bridge.ts` | Verify nested snapshot semantics before target design | The common handle contract forces subteam/task-team handles to return one agent-shaped aggregate snapshot. Live nested agent events already have an exact path-prefixing boundary, but initial snapshots are not a recursive leaf-only model. | Specialize handles; recursively flatten/prefix actual leaf-agent snapshots and delete pseudo team agent snapshots. |
+| 2026-08-02 | Code | `mixed-team-manager.runTermination`, `agent-team-run-manager`, `agent-team-stream-handler`, `team-run-service.observeTeamRunLifecycle` | Verify successful termination and live-client ordering | Backend root offline is emitted before backend listeners are cleared, manager unregisters afterward, and the observer separately polls `run.isActive()` every second. A manager-owned lifecycle subscription can notify after authoritative unregistration and replace both aggregate offline and polling. | Design bind-then-fresh-read manager lifecycle delivery; rejected termination must not publish inactive. |
+| 2026-08-02 | Code | `teamTaskExecutionEventRouter.ts`, `teamTaskTeamExecutionProjection.ts`, task-delegation event contract/tests | Verify whether task cleanup needs aggregate offline | `TASK_DELEGATION_TERMINAL_STATUS` already maps to terminal task status and schedules task-team projection cleanup. `TEAM_STATUS offline` is an additional fallback, and task-team nodes also copy task stage into `currentStatus`. | Retain terminal task event/record reconciliation; remove offline fallback and agent-like task-team status projection. |
+| 2026-08-02 | Git/Review | `git log 4b29481d..24256a6af`, `implementation-handoff.md`, `code-review-report.md`, `ARCH-REV-002` | Establish the actual branch starting state | The agent-only `SR-002` foundation is already implemented and code-reviewed. API/E2E later began coverage edits before the user expanded team requirements; those uncommitted test edits are held. | Preserve reviewed agent source; architecture-review and implement the team expansion before API/E2E reconciliation. |
+| 2026-08-02 | Review | `design-review-report.md` (`ARCH-REV-003`) and `architecture-review-revision-record.md` | Investigate the expanded-design failure before implementation | Manager liveness, aggregate removal, frontend boundary, consumer reassignment, and preserved agent foundation passed structurally. `ARCH-FIND-003` found that plain recursive `AgentStatusPayload[]` cannot carry the live task-team execution envelope during initial reconnect mapping. | Define one tight scoped snapshot carrier plus exact shared live/initial prefix and flatten contracts in `SR-004`; re-review required. |
+| 2026-08-02 | Code | `domain/task-team-instance.ts`, `domain/team-run-event.ts`, `backends/mixed/events/mixed-team-event-bridge.ts` | Inventory live nested/task-team identity ownership | `TeamRunEvent.taskTeamInstance` carries complete run/instance/task/logical-team/ingress identity outside the agent payload. The bridge prefixes agent member/source paths and stamps/replaces that outer identity at task-team boundaries. | Preserve the same envelope and override semantics in recursive initial snapshots. |
+| 2026-08-02 | Code | `team-run-event-websocket-message-mapper.ts`, `team-runtime-status-snapshot-service.ts`, `domain/agent-status-payload.ts` | Compare live and initial stream representability | Live mapping privately flattens task-team run/instance/task/logical-team plus a source-path-relative member identity. Initial mapping accepts plain agent payloads, so it has no equivalent task-team execution carrier. | Keep `AgentStatusPayload` tight; carry a discriminated envelope until a shared stream mapper flattens it. |
+| 2026-08-02 | Code | `autobyteus-web/services/agentStreaming/teamTaskTeamChildProjection.ts`, protocol identity types | Verify the frontend selection consequence | `resolveTaskTeamScopedMessage` needs task-team run identity plus relative member route/path to construct `taskTeamRunId/relativeMemberRouteKey`; without them a reconnect status can update the structural or wrong leaf. | Initial `AGENT_STATUS` must expose the same scoped fields as live status for the same leaf. |
+| 2026-08-02 | Review/Test | `code-review-report.md`, `code-review-revision-record.md`, `CRR-003`, reviewer reproduction `CR-MP-002` | Investigate post-implementation design-impact failure | A supported `root -> ordinary subteam -> task team -> leaf` flow is reachable through the child agent's exposed `delegate_task` tool. The reproduction passed 2/2 assertions: root-relative leaf path plus child-local logical-team path makes live mapping lose the relative selector and initial mapping throw. | Resolve `CODE-FIND-002` as `SR-005`; keep API/E2E blocked. |
+| 2026-08-02 | Code | `mixed-sub-team-run-factory.ts`, `task-team-run-identity-factory.ts`, `mixed-task-team-member-handle.ts`, `mixed-sub-team-member-handle.ts` | Trace the exact coordinate transition | Ordinary child configuration intentionally strips its outer member prefix. `TaskTeamRunIdentityFactory` therefore creates parent-local logical-team coordinates. The task-team handle correctly roots the leaf to that child; the outer ordinary handle then prefixes the leaf to root but clones the task identity. | The next outer boundary must rebase task-team logical coordinates with the leaf, not guess later in transport. |
+| 2026-08-02 | Code | implemented `team-leaf-agent-status-snapshot.ts`, `team-run-event.ts`, `mixed-team-event-bridge.ts`, `team-stream-agent-identity-payload.ts` | Assess the tightest corrective contract | The full operational identity includes task-team-local ingress/coordinator selectors that are irrelevant to stream routing. The wire mapper only needs task-team run/instance/task plus logical-team path/key. | Replace the stream carrier's full operational identity with a tight `TaskTeamStreamScope`; share one all-event/live/snapshot rebasing core. |
+| 2026-08-02 | Test | `tests/unit/agent-team-execution/team-run-service.test.ts` via `pnpm exec vitest run ... --reporter=dot` (reviewer evidence) | Classify secondary failure | 1 test fails / 12 pass because its `AgentTeamRunManager` double lacks `subscribeToLifecycle` and `getLifecycleSnapshot`. This test is not one of the three held API/integration files. | `CODE-FIND-003` is an implementation-local fixture update after `SR-005` passes; do not add production fallback methods. |
 
 ## Relevant Existing Behavior And Production Paths
 
@@ -86,12 +118,16 @@ The user reports that the interrupt button is not active while an agent is visib
 | BEH-003 | System | Runtime emits current-turn completion/interruption/error/termination. | Runtime boundary -> converter -> runtime-neutral lifecycle transformer/status event -> stream -> frontend status handler and message completion handlers. | Turn completion should mean idle, runtime termination offline, terminal failure error; current logic is distributed and status can be overwritten by later/racing status sources. | Current lifecycle code; prior `agent-idle-status-lifecycle` evidence. |
 | BEH-004 | System | Delayed provider/tool output arrives after original turn terminal boundary or while a newer turn is active. | Same event pipeline and transcript/activity projection, with `AgentTurnLifecycleState.retiredTurnIds` protecting lifecycle. | Late content must remain visible but must not establish current busy state. | Prior production-trace evidence and current state machine. |
 | BEH-005 | User | User presses Enter in composer while the action button is disabled/running. | `keydown` -> unconditional `handlePrimaryAction` -> send/interrupt branch based only on `canInterrupt`, bypassing `isActionDisabled`. | Enter may send when button click cannot; matched trace contains a second user input while original turn continued. | Component source and matched trace. |
+| BEH-006 | User / Presentation | User opens workspace history containing a team definition with child runs. | History query -> definition group builder -> latest `representativeRun.currentStatus` -> team-kind status dot on definition row. | The definition is falsely assigned one child run's lifecycle and changes when the representative changes. | User screenshot; grouping/component source. |
+| BEH-007 | System / Contract | Team is created/restored, listed, or terminated. | `AgentTeamRunManager.registerActiveRun/getActiveRun/unregisterActiveRun` -> history/resume `isActive`; parallel member snapshots -> `deriveTeamApiStatus` -> team status. | Binary live registration already exists; aggregate status is neither necessary nor equivalent. | Manager, history, aggregation source. |
+| BEH-008 | User | User views/stops/archives/deletes a team run. | `TeamTreeNode.currentStatus` -> `canTerminateTeam(status !== offline)` -> Stop/archive/delete; `isActive` is present but not used consistently. | Actions can depend on a lossy aggregate rather than the live-run fact; root dot duplicates Stop. | Workspace history state/component/mutation source. |
+| BEH-009 | System / Contract | A leaf in an ordinary child team delegates to a visible team target; its task-team leaf later emits live status or is snapshotted for root reconnect. | The child factory strips the ordinary prefix; task identity is child-local; the task-team handle roots leaf and logical team to the child; the outer ordinary handle prefixes only leaf member/source paths; the stream flattener compares two frames. | Live mapping omits the relative leaf selector and the frontend treats it as a task-team root; initial mapping throws. Aggregate removal itself remains sound. | `CR-MP-002`, `CODE-FIND-002`, current bridge/flattener source. |
 
 ## Design Health Assessment Evidence
 
-- Change posture: `Bug Fix` plus bounded `Refactor`
-- Candidate root cause classification: `Missing Invariant`; `Boundary Or Ownership Issue`; `Duplicated Policy Or Coordination`; local keyboard guard defect.
-- Refactor posture evidence summary: The system already has the right runtime facts and stream transport, but public lifecycle/action truth is split among status, interrupt bit, command overlays, lifecycle fallback, provider projectors, hydration, and UI-local sending. Correctness requires collapsing, not adding another fallback.
+- Change posture: `Bug Fix`, lifecycle/status `Refactor`, and team-status contract `Cleanup`
+- Candidate root cause classification: `Missing Invariant`; `Boundary Or Ownership Issue`; `Duplicated Policy Or Coordination`; `Shared Structure Looseness`; local keyboard guard defect.
+- Refactor posture evidence summary: The system has the necessary agent current-turn facts and manager-owned team activity fact, but public truth is split among interrupt bits, agent status sources, team aggregate status, active flags, connection state, task stage, and UI request state. Correctness requires separating subjects and removing redundant representations, not adding reconciliation.
 
 | Evidence Source | Observation | Design Health Implication | Follow-Up Needed |
 | --- | --- | --- | --- |
@@ -103,6 +139,12 @@ The user reports that the interrupt button is not active while an agent is visib
 | Composer keydown/matched trace | Enter bypasses disabled action; overlapping input recorded. | Status fix alone leaves a reachable send guard bug. | Central action guard. |
 | `emitLocalEvent` production call sites | Direct message, artifact, and two system-task notification paths fan out without the pipeline/queue. | A backend-only finalizer cannot satisfy the approved all-outward-event contract. | Put backend source batches and local events behind one `AgentRun` gateway. |
 | `statusOverride ?? backend.getStatusSnapshot()` plus direct coordinator broadcaster | A fresh backend active turn can coexist with a stale public startup override; a streamed replacement need not update the public owner. | Bind-before-read is insufficient until active-run status application and snapshot reconciliation have one owner. | Replace override precedence with `AgentRun` lifecycle reconciliation and forbid direct active-run status broadcast. |
+| Team-definition grouping and screenshots | Definition status is borrowed from one representative child run. | The definition has no lifecycle owner; the field is semantically invalid. | Remove the field/dot instead of choosing a different aggregate. |
+| Active-run manager plus history/resume API | `isActive` already comes from authoritative live registration. | The system does not need a second public team lifecycle. | Keep the manager boundary authoritative. |
+| Team history/context helpers | Code repeatedly converts `isActive -> Running/Offline -> isActive`. | Shared structures are loose and circular; status and liveness have overlapping meaning. | Remove `AgentTeamStatus`/team `currentStatus` and retain direct activity. |
+| Task-team/observer consumers | Aggregate status is used for task cleanup, failure, and open-work decisions. | A cleanup-only UI edit would leave hidden cross-domain coupling. | Give each consumer a narrow task/failure/work fact during clean-cut removal. |
+| `CR-MP-002` reproduction and implemented bridge | Leaf member/source paths are root-relative while `taskTeamInstance.logicalTeam` remains child-local after an ordinary outer boundary. | A tight carrier can still be semantically inconsistent if path-bearing fields use different frames. | Carry only stream-required task-team scope and rebase its logical-team path/key at the same boundary as source/member paths. |
+| `team-run-service.test.ts` reviewer command | Manager lifecycle source is sound, but one test double predates its exact interface. | This is a bounded test-fixture defect, not a production compatibility need. | Update the double during implementation rework; do not weaken the production interface. |
 
 ## Relevant Files / Components
 
@@ -124,6 +166,78 @@ The user reports that the interrupt button is not active while an agent is visib
 | `published-artifact-publication-service.ts` | Persists artifact projection and notifies active run/application execution | Active-run notification bypasses the finalizer. | Await `run.publishEvent(ARTIFACT_PERSISTED)`; preserve non-AgentRun fallback unchanged. |
 | `skill-improvement-target-notification-service.ts` | Notifies an active idle target about future-run skill changes | Direct `SYSTEM_TASK_NOTIFICATION` fanout bypasses the finalizer. | Await `activeRun.publishEvent`; its companion remains idle and does not open a turn. |
 | `mixed-agent-member-handle.ts` | Lazy member execution and task-delegation notification | Task-delegation system notification bypasses the finalizer; command status overlay can be emitted even after a nested `AgentRun` exists. | Await the nested run gateway; restrict direct team startup overlay to the pre-`AgentRun` interval. |
+| `autobyteus-web/components/workspace/history/workspaceHistoryTeamDefinitionGroups.ts` | Builds team-definition display groups | Stores a borrowed aggregate status from the most recent representative run. | Definition groups must carry no status. |
+| `WorkspaceHistoryWorkspaceSection.vue` / `useWorkspaceHistoryTreeState.ts` / `useWorkspaceHistoryMutations.ts` | Render team rows and govern Stop/archive/delete | Definition and run dots are five-state; actions use `status !== offline` despite direct `isActive`. | Remove team dots and use `isActive` plus local pending/history lifecycle. |
+| `AgentTeamContext.ts` / team history/open/recovery/hydration stores | Hold live/draft/history team UI state | Carry `currentStatus`, `isActive`, and `isSubscribed` through circular conversions. | Team context/read model needs explicit activity without aggregate lifecycle. |
+| `agent-team-run-manager.ts` | Owns live root TeamRun registration | Already registers, validates, lists, and unregisters active runs. | Governing owner for public team liveness. |
+| `team-status-aggregation.ts` / `team-status-payload.ts` / root `TEAM_STATUS` snapshot and mapper | Build and transport member-derived team status | Creates the redundant public five-state team contract. | Remove cleanly after downstream consumers receive narrow facts. |
+| `mixed-sub-team-member-handle.ts` / `mixed-task-team-member-handle.ts` | Represent child team runs and prefix child events | Project child aggregate as agent-like subteam status and use offline for cleanup. | Use binary child liveness/task stage only where needed; preserve nested leaf AGENT_STATUS. |
+| `task-team-settlement-coordinator.ts` | Settles child task team after open work ends | Queries aggregate team status to infer open work. | Replace with explicit member/task open-work predicate owned by TeamRun/team manager. |
+| `TeamWorkspaceView.vue`, `RunningTeamRow.vue`, mobile catalog, team status visuals/dot types | Present team or focused-member state | Team aggregate leaks into header/status colors/mobile labels even alongside Stop/member status. | Root/definition team status disappears; selected leaf agent remains five-state; liveness labels are binary. |
+| `task-team-instance.ts` / proposed `task-team-stream-scope.ts` | Operational task-team identity versus outward routing identity | Full instance identity mixes immutable execution facts with task-team-local ingress data; stream routing needs only run/instance/task plus logical team route/path in the current team frame. | Keep operational identity unchanged; derive a tight stream scope at the task-team handle and rebase only that scope through parent boundaries. |
+| `mixed-team-event-bridge.ts` | Prefixes child live events and snapshots | Current core prefixes leaf member/source paths but clones the task-team carrier; non-agent task-team events also bypass a common scope rebase. | One generic `prefixMixedTeamStreamScope` must govern all live event types and initial snapshots; agent adapters additionally prefix member paths with the same private path rule. |
+| `team-stream-agent-identity-payload.ts` | Flattens task-team scope to wire fields | Current code receives inconsistent frames and cannot safely infer the missing prefix. | Consume already-consistent `TaskTeamStreamScope`; retain strict leaf validation and no mapper fallback. |
+
+
+## Team Definition And Team Run Status Investigation
+
+### Current aggregate path
+
+```text
+leaf agent/subteam status snapshots
+  -> deriveTeamApiStatus
+  -> MixedTeamManager.getStatusSnapshot
+  -> root/nested TeamRunEventSourceType.TEAM
+  -> TEAM_STATUS WebSocket/history status
+  -> AgentTeamContext.currentStatus / TeamTreeNode.currentStatus
+  -> team dots, mobile label, and canTerminateTeam
+  -> representativeRun.currentStatus copied to definition group
+```
+
+### Existing authoritative activity path
+
+```text
+create/restore TeamRun
+  -> AgentTeamRunManager.registerActiveRun
+  -> getActiveRun validates backend.isActive
+  -> history/resume isActive
+  -> create/restore/terminate result and refresh
+  -> frontend team-run isActive
+```
+
+### Subject/authority separation
+
+| Subject | Current overlap | Evidence-backed authority needed |
+| --- | --- | --- |
+| Team definition | Borrows latest child team-run status | No runtime status; definition/configuration data only |
+| Root team run | Both aggregate `status` and manager-derived `isActive` | Binary active registration only |
+| Nested/subteam run | Agent-like five-state aggregate plus child live handle | Binary child live instance only if needed by a surface |
+| Leaf agent member | Canonical agent status sometimes folded upward | Five-state AgentRun lifecycle, unchanged through team identity envelope |
+| Task execution | Task stage plus aggregate/runtime status | Task ledger/projection stage only |
+| Team failure | Aggregate error plus explicit member/operation failure | Explicit failure event/result |
+| Team Stop request | `terminatingTeamIds` plus aggregate status mutation | Local pending for request guard; `isActive` stays server-authoritative |
+| Stream subscription | `isSubscribed` coexists with status/activity | Connection only; never liveness |
+
+### Reachable constraints
+
+- Live team + all members idle: team remains registered and must keep Stop.
+- Live team + member error: team remains registered and must keep Stop until successful termination.
+- Disconnected frontend + live server team: `isSubscribed=false` but `isActive=true`.
+- Historical hydrated context + no server run: context exists but `isActive=false`.
+- Temporary frontend draft: context exists but no active server TeamRun.
+- Mixed live/historical child runs under one definition: no single child status can truthfully describe the definition.
+
+### Clean simplification boundary
+
+The public team aggregate can be removed without losing required behavior only if its non-presentation uses are reassigned:
+
+- member snapshots remain `AGENT_STATUS`;
+- root/team-run liveness comes from the active-run manager;
+- task-team cleanup comes from task terminal/lifecycle facts;
+- failure reporting comes from explicit failure facts;
+- settlement checks an internal `hasOpenWork`-style predicate over member/task facts, not a public status enum.
+
+Detailed evidence is retained in `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/team-status-simplification-evidence.md`.
 
 ## Outward `AgentRunEvent` Origin Inventory
 
@@ -201,14 +315,29 @@ The target must use these evidence-precedence constraints:
 9. One public owner requires one publication route. Runtime adapters must expose neutral source batches to `AgentRun`; local producers must call an awaited run publication method; subscribers must never attach to backend listeners directly.
 10. A retained status override cannot remain the snapshot authority. `AgentRun` must reconcile fresh internal runtime lifecycle evidence into the same per-run turn state used by event finalization, then build the public status-only snapshot from that state.
 11. Direct `AgentStreamBroadcaster` status publication is valid only for a pre-runtime command overlay when no `AgentRun` exists. Every status after run creation must be applied and published through that run.
+12. Team definition status is mechanically borrowed from one child run and has no authoritative subject owner; it must be removed, not recalculated.
+13. `AgentTeamRunManager` already owns the binary fact users need for root team Stop: a live registered `TeamRun`.
+14. The five-state team aggregate is not equivalent to activity: idle/error members can coexist with a live, stoppable team.
+15. Frontend `AgentTeamContext`, history, open, recovery, and action code maintain circular `isActive`/aggregate conversions; this is the main team-status complexity.
+16. Definition and root team-run five-color dots are redundant; member-agent dots remain meaningful because they govern exact member interaction.
+17. Socket connection, frontend context existence, and draft existence are not team activity authorities.
+18. Root/nested `TEAM_STATUS` cannot simply be deleted because task cleanup, failure observation, and settlement currently consume it; each must move to its actual domain fact.
+19. Existing member `AGENT_STATUS` and exact identity can remain unchanged; removing team aggregation does not require changing member status data.
+20. A clean-cut public contract should remove team `status`, `AgentTeamStatus`, team-status normalization/visuals, and root aggregate WebSocket messages rather than retain deprecated aliases.
+21. `ARCH-FIND-003` is a representability defect, not a reason to retain aggregate team status: live task-team events carry a complete `TaskTeamInstanceIdentity` envelope, while a plain initial `AgentStatusPayload` has no place for task-team run/instance/logical-team and relative-leaf scope.
+22. The tight correction is composition rather than payload expansion: recursively carry a discriminated `TeamLeafAgentStatusSnapshot`, prefix live and initial member/source paths through one mixed-team scope function, and flatten task-team wire identity through one stream-owned function immediately before delivery.
+23. `CODE-FIND-002` proves that representability alone is insufficient: every path used to calculate the relative leaf must also share the carrier's current `teamRunId` coordinate frame after each ordinary parent boundary.
+24. A full operational `TaskTeamInstanceIdentity` is broader than the outward stream scope and embeds task-team-local ingress/coordinator selectors. A specialized `TaskTeamStreamScope { taskTeamRunId, taskTeamInstanceId, taskId, logicalTeamPath, logicalTeamRouteKey }` is tighter and makes its only path explicitly parent-frame-relative.
+25. Scope rebasing belongs in the mixed-team bridge, not in the wire mapper or frontend. The task-team handle creates a scope in its immediate parent frame; every ordinary parent prefixes `logicalTeamPath` alongside `sourcePath`/agent `memberPath`; the mapper only subtracts already-consistent paths and rejects invalid leaf scope.
+26. `CODE-FIND-003` does not change the design: the manager lifecycle interface remains exact. The stale unit double must implement the existing snapshot/subscription methods rather than production code tolerating an incomplete manager.
 
 ## Persisted Data Transition Evidence (When Applicable)
 
 - Current stored subject, location, representative shape, and approximate volume: Team/run metadata, raw trace JSONL, transcript/activity projections; live status/interrupt state is in-memory and snapshot-derived.
-- Relevant code-model, serialization, semantic, or physical-store change: Public WebSocket status payload may contract by removing `can_interrupt`; frontend `AgentRunState.canInterrupt` is in-memory only.
-- Normal readers and writers, including unknown/extra-field behavior: Current status payload parser/type is repository-local; existing stored traces/transcripts do not depend on frontend `canInterrupt`.
-- Representative direct-read or compatibility evidence: Live team metadata/traces contain identity/content, not a persisted frontend interrupt bit. Current history APIs expose status but not `can_interrupt`.
-- Required semantics and invariants preserved by direct use: `Yes` — all stored run/team/history data remains valid; active status is recomputed.
+- Relevant code-model, serialization, semantic, or physical-store change: Agent WebSocket status payload contracts by removing `can_interrupt`; frontend `AgentRunState.canInterrupt` is in-memory only. Team GraphQL/WebSocket/frontend shapes contract by removing computed aggregate team `status` while retaining manager-derived `isActive` and member statuses.
+- Normal readers and writers, including unknown/extra-field behavior: Status payload parsers/types are repository-local and server/frontend ship together. Stored traces/transcripts do not depend on frontend `canInterrupt`; team aggregate status is computed live rather than stored required meaning.
+- Representative direct-read or compatibility evidence: Live team metadata/traces contain identity/content/topology, not a persisted frontend interrupt bit or required aggregate team lifecycle. History already exposes `isActive` separately; resume config already needs only `isActive`.
+- Required semantics and invariants preserved by direct use: `Yes` — all stored run/team/history/task data remains valid; agent status and team activity are recomputed from their authoritative live owners.
 - Physical storage, privacy/security, disposal, rebuild, or operational constraints: Preserve all traces/transcripts and exact member identity.
 - Concrete benefit, cost, and risk of migration if it remains a candidate: No migration benefit; rewriting stored data would be unnecessary and risky.
 - Existing migration framework or lifecycle constraints, only if migration may be required: N/A.
@@ -224,17 +353,29 @@ The target must use these evidence-precedence constraints:
 - `AgentRunBackend` may expose provider-specific control internally, but its public event side must be neutral source batches plus a runtime lifecycle snapshot; it must not own final outward processing or subscriber dispatch.
 - `AgentRun.publishEvent` must be awaited by local producers so persistence/delivery success is not reported before ordered event publication has completed or failed.
 - The run gateway's per-run queue must evaluate the backend lifecycle snapshot inside the queued task, not before enqueue, and must apply canonical status before listener delivery.
+- Team definition, root team run, leaf agent, task execution, Stop pending, and WebSocket connection are separate subjects; no shared team lifecycle DTO may mix them.
+- Public team activity must come through the `AgentTeamRunManager` boundary; frontend helpers must not re-derive it from member status or context/subscription presence.
+- Root/nested aggregate team status removal is clean-cut. Existing persisted JSON remains directly usable; no compatibility status alias or dual GraphQL/WebSocket path is justified.
+- Internal open-work/failure/task lifecycle mechanisms may reuse existing member/task facts but must not recreate a public five-state team aggregate.
+- Standalone `AgentStatusPayload` must remain task-team-agnostic. Recursive team snapshots and live events carry only a tight `TaskTeamStreamScope`, not the complete operational identity, until the shared stream mapper produces wire fields.
+- At every boundary, `TeamRunEvent.teamRunId` / snapshot `teamRunId`, `sourcePath`, agent `memberPath`, and `TaskTeamStreamScope.logicalTeamPath` must use that same team-run coordinate frame. The route keys must be rebuilt from their returned paths.
+- Both live events and initial snapshots must use the same all-event stream-scope prefix rule and the same task-team relative-member calculation; an unscoped plain-payload initial snapshot or transport/frontend prefix guess is forbidden.
+- Operational `TaskTeamInstanceIdentity.ingress` and coordinator selectors remain task-team-local and never enter relative root-stream calculation. The immutable task-team instance remains the activation/directory/persistence owner; the stream scope is a derived outward projection only.
 
 ## Open Unknowns / Risks
 
-- User approval is resolved; status-only public interrupt semantics are locked design input.
+- Complete approval is resolved: agent lifecycle and the team-status expansion are locked design input.
+- `ARCH-REV-004` passed `SR-004`, then `CRR-003` returned `Fail / Design Impact`. `SR-005` is the current proposed solution authority for `CODE-FIND-002`; the user-approved behavior remains unchanged and the manager/aggregate-removal/frontend boundaries otherwise remain sound.
 - Pairing decision is resolved: every final non-status `AgentRunEvent` receives one canonical status companion; existing semantic event batching may remain, but sparse transition-only status is not allowed.
 - Operational events without turn identity need a conservative rule: repeat current status but do not create a new turn.
 - No new interrupt-capability or interrupt-lifecycle field is designed. The red Stop action remains derived from `running`; command rejection/idempotency remains backend-owned.
-- Moving lifecycle projection after processors is intentionally in scope so processor-derived outward events receive companions; event-order regressions require focused implementation checks.
-- Architecture-review round 1 findings are resolved in the revised design, but remain open until architecture re-review records a pass: `ARCH-FIND-001` (all runtime/local/derived origins through one run gateway) and `ARCH-FIND-002` (one lifecycle reconciliation/read/publication owner with explicit precedence).
-- Changing the backend subscription contract is intentionally broader than decorating `emitLocalEvent`, but it is the smallest clean-cut way to ensure there is no second subscriber/finalizer path. Implementation must update direct backend/pipeline tests rather than retain a compatibility subscription.
+- `ARCH-FIND-001` and `ARCH-FIND-002` were resolved by `SR-002` and passed `ARCH-REV-002`; current branch source implements them. Fresh review must confirm that team contraction does not bypass or regress that owner.
+- Manager lifecycle delivery must cover every root registration removal, including stale-backend cleanup, and remain observable after the terminated backend clears its own event listeners.
+- `ARCH-FIND-003` remains resolved at the representability level, but `CODE-FIND-002` requires the carrier to use one coordinate frame across multiple distinct team boundaries. Architecture re-review must confirm the specialized scope, all-event rebasing rule, leaf invariant, and multi-boundary live/reconnect example.
+- `CODE-FIND-003` remains a mandatory implementation-local repair after architecture pass: update the `TeamRunService` manager double and rerun its 13-test file; no compatibility seam is authorized.
+- Task-terminal cleanup already has a canonical event path, but removal of the aggregate offline fallback must be validated for failure, cancellation, reconnect, and sequential delegation.
+- API/E2E coverage edits currently held in the worktree were authored before the expanded team contract and will require downstream reconciliation after the new source passes code review.
 
 ## Notes For Architecture Reviewer
 
-Requirements remain user-approved. `SR-002` specifically resolves `ARCH-FIND-001` and `ARCH-FIND-002`: review the complete ORIGIN-001–ORIGIN-007 inventory, the clean-cut backend source-batch contract, `AgentRun.publishEvent` as the sole serialized outward gateway, the per-run lifecycle state shared by finalization and snapshot reads, the precedence table above, removal of direct active-run broadcaster publication, and the startup/reconnect examples. The previously accepted status-only contract, finalizer ordering, turn retirement, exact team identity, and unified composer action guard remain unchanged.
+Review `SR-005` for `CODE-FIND-002` after `CRR-003`. Requirements REQ-013–REQ-019 and AC-016–AC-025 remain user-approved; this is an “any team depth” contract correction, not new behavior. The revised design must be judged on: a tight `TaskTeamStreamScope` rather than full operational identity; one `prefixMixedTeamStreamScope` used by every live event type and initial snapshot; a target-frame override rule plus retained-scope rebasing at every ordinary boundary; strict root-frame leaf validation with no mapper fallback; and a concrete `root -> ordinary subteam -> task team -> leaf` live/reconnect example. `ARCH-FIND-001`/`ARCH-FIND-002`, manager-owned liveness, aggregate removal, Stop pending/failure, and `CODE-FIND-001` remain sound. `CODE-FIND-003` is a required post-approval local test-fixture repair. Do not route implementation unless the complete `SR-005` design passes.

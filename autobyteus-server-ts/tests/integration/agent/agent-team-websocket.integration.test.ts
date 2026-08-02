@@ -159,12 +159,12 @@ class FakeTeamRun {
     this.runId = team.teamRunId;
   }
 
-  getStatusSnapshot() {
-    return { status: "running" as const };
+  getLeafAgentStatusSnapshots() {
+    return [];
   }
 
-  getMemberStatusSnapshots() {
-    return [];
+  hasOpenExecutionWork(): boolean {
+    return true;
   }
 
   subscribeToEvents(listener: (event: TeamRunEvent) => void): () => void {

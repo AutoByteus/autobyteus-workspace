@@ -1,0 +1,1 @@
+pnpm -C autobyteus-server-ts exec vitest run <four listed files> --no-watch --reporter=dot

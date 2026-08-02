@@ -1,0 +1,1 @@
+pnpm -C autobyteus-server-ts exec vitest run <10 paths from final-durable-tests-files.txt> --no-watch --reporter=dot

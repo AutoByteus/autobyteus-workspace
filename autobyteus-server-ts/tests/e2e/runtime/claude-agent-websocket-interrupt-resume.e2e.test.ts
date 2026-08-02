@@ -558,16 +558,20 @@ const createClaudeTeamWebSocketHarness = async (input: {
   });
   const fakeTeamManager: TeamManager = {
     hasActiveMembers: () => true,
-    getStatusSnapshot: () => ({
-      status: agentRun.getStatusSnapshot().status,
-    }),
-    getMemberStatusSnapshots: () => [
-      {
+    getLeafAgentStatusSnapshots: () => [{
+      scopeKind: "ordinary_member",
+      teamRunId: input.teamRunId,
+      payload: {
         ...agentRun.getStatusSnapshot(),
         agent_id: input.memberRunId,
         agent_name: input.memberName,
+        member_route_key: input.memberName,
+        member_path: [input.memberName],
+        source_route_key: input.memberName,
+        source_path: [input.memberName],
       },
-    ],
+    }],
+    hasOpenExecutionWork: () => true,
     postMessage: async (message, targetMemberSelector) => {
       expect(selectorToRouteKey(targetMemberSelector)).toBe(input.memberName);
       const result = await agentRun.postUserMessage(message);
