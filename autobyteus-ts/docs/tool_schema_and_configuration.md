@@ -29,8 +29,8 @@ This document details the unified design for defining, generating, and using sch
 
 ## 2.1 Generic File-Tool Path Contract
 
-The generic local file tools (`read_file`, `write_file`, `edit_file`,
-`replace_in_file`, and `insert_in_file`) use a trusted-local path contract.
+The generic local file tools (`read_file`, `write_file`, and `edit_file`) use a
+trusted-local path contract.
 This is intentionally distinct from the workspace-rooted file-explorer and
 terminal `cwd` boundaries:
 
@@ -47,7 +47,7 @@ terminal `cwd` boundaries:
 - configured AutoByteus internal deny paths remain protected after physical
   path resolution, including descendants and symlink traversal.
 
-The path and `base_dir` descriptions are shared across the five native
+The path and `base_dir` descriptions are shared across the three native
 schemas. Provider-specific formatters must preserve the same precedence and
 fallback wording. This contract supports configured skill references and
 external project worktrees without introducing a second per-path approval

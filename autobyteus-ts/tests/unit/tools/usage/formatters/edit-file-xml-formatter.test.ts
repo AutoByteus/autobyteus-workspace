@@ -33,8 +33,9 @@ describe('EditFileXmlFormatter', () => {
     expect(schema).toContain('If path is relative, you must provide an absolute base_dir');
     expect(schema).toContain('name="base_dir"');
     expect(schema).toContain('prior shell cd state');
-    expect(schema).toContain('git diff style unified diff patch');
-    expect(schema).toContain('@@ -10,7 +10,8 @@');
+    expect(schema).toContain('context-located patch');
+    expect(schema).toContain('bare @@ line');
+    expect(schema).not.toContain('@@ -10,7 +10,8 @@');
   });
 
   it('example uses standard XML structure', () => {

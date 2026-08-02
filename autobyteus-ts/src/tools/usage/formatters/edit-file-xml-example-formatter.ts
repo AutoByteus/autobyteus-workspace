@@ -10,9 +10,7 @@ export class EditFileXmlExampleFormatter implements BaseExampleFormatter {
         <arg name="path">/path/to/utils.py</arg>
         <arg name="patch">
 __START_PATCH__
---- a/utils.py
-+++ b/utils.py
-@@ -10,7 +10,7 @@
+@@
  def calculate_total(items):
      """Calculate the total price of items."""
      total = 0
@@ -32,9 +30,7 @@ __END_PATCH__
         <arg name="path">/path/to/config/settings.yaml</arg>
         <arg name="patch">
 __START_PATCH__
---- a/settings.yaml
-+++ b/settings.yaml
-@@ -5,3 +5,6 @@
+@@
  logging:
    level: INFO
    format: "%(asctime)s - %(message)s"

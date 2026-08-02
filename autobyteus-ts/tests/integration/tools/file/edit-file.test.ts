@@ -21,7 +21,7 @@ describe('edit_file tool (integration)', () => {
     const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-edit-file-'));
     const filePath = path.join(tmpDir, 'sample.txt');
     await fs.writeFile(filePath, 'line1\nline2\nline3\n', 'utf-8');
-    const patch = '@@ -1,3 +1,3 @@\n line1\n-line2\n+line2 updated\n line3\n';
+    const patch = '@@\n line1\n-line2\n+line2 updated\n line3\n';
 
     const tool = getPatchTool();
     const context: MockContext = { agentId: 'agent', workspaceRootPath: null };
@@ -43,7 +43,7 @@ describe('edit_file tool (integration)', () => {
 
     const result = await tool.execute(context, {
       path: outsidePath,
-      patch: '@@ -1,2 +1,2 @@\n line1\n-line2\n+line2 updated\n'
+      patch: '@@\n line1\n-line2\n+line2 updated\n'
     });
     expect(result).toBe(`File edited successfully at ${outsidePath}`);
     expect(await fs.readFile(outsidePath, 'utf-8')).toBe('line1\nline2 updated\n');
@@ -59,7 +59,7 @@ describe('edit_file tool (integration)', () => {
     const result = await tool.execute(context, {
       path: 'sample.txt',
       base_dir: tmpDir,
-      patch: '@@ -1,2 +1,2 @@\n line1\n-line2\n+line2 updated\n'
+      patch: '@@\n line1\n-line2\n+line2 updated\n'
     });
     expect(result).toBe(`File edited successfully at ${filePath}`);
     expect(await fs.readFile(filePath, 'utf-8')).toBe('line1\nline2 updated\n');
@@ -70,7 +70,7 @@ describe('edit_file tool (integration)', () => {
     const context: MockContext = { agentId: 'agent', workspaceRootPath: '/tmp' };
 
     await expect(
-      tool.execute(context, { path: 'sample.txt', patch: '@@ -1,1 +1,1 @@\n-line1\n+line1 updated\n' })
+      tool.execute(context, { path: 'sample.txt', patch: '@@\n-line1\n+line1 updated\n' })
     ).rejects.toThrow('Provide an absolute path or an absolute base_dir');
   });
 });
