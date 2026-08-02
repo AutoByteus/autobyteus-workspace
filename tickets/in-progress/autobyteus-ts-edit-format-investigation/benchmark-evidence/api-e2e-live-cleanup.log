@@ -1,0 +1,25 @@
+API/E2E live benchmark cleanup record — 2026-08-02
+
+Temporary current-only harness:
+- path: /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/in-progress/autobyteus-ts-edit-format-investigation/benchmark/.api-e2e-current-context-benchmark.mjs
+- SHA-256 before cleanup: 7f6a45d3e26e56394fd2e690fdfb98009564986d41ac444f74d3e564935d73df
+- removal method: pathlib.Path.unlink()
+- file absent after removal: true
+
+Process cleanup:
+- An initial broad process-text grep matched the cleanup shell command itself because that command contained the harness path; it was an audit-method false positive, not a remaining benchmark process.
+- Corrected check required executable basename `node` plus the exact harness argument.
+- owned benchmark node process count after both matrices: 0
+
+Fixture cleanup:
+- OS temp root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T
+- remaining autobyteus-edit-benchmark-* workspace count: 0
+- each harness run also stopped its agent, cleaned up its LLM, and the completed process closed the secret vault and Prisma runtime
+
+Retained evidence:
+- schema-only JSONL lines: 60
+- explicit common-context JSONL lines: 60
+- total scored live runs: 120
+- isolated ignored provider test database and adjacent key were not attached, copied, or deleted
+
+Cleanup result: Pass

@@ -1,0 +1,280 @@
+{
+  "date": "2026-08-02",
+  "implementation_head": "bb6657c4016fed1550eb8b899e03457b5e1178db",
+  "temporary_harness_sha256": "7f6a45d3e26e56394fd2e690fdfb98009564986d41ac444f74d3e564935d73df",
+  "method_note": "Both stages used the built native AutoByteus runtime, API tool calls, the same four scenarios, five trials per model/scenario, thinking/high, temperature 0, disposable workspaces, and an isolated ignored test database. The temporary harness differed from the historical harness only by removing unconditional imports of product tools deleted by the approved catalog contraction.",
+  "schema_only_stage": {
+    "summary_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/in-progress/autobyteus-ts-edit-format-investigation/benchmark-evidence/api-e2e-current-context-live-summary.json",
+    "overall": {
+      "runs": 60,
+      "schema_valid_tool_calls": 60,
+      "first_edit_succeeded": 57,
+      "task_success": 60,
+      "target_exact_match": 60,
+      "sentinel_unchanged": 60,
+      "total_tool_failures": 3,
+      "recovered_after_failure": 3,
+      "terminal_states": {
+        "completed": 60
+      },
+      "first_edit_tools": {
+        "edit_file": 60
+      },
+      "first_patch_formats": {
+        "bare_context": 58,
+        "other": 2
+      },
+      "duration_ms": {
+        "mean": 5885.85,
+        "median": 5779.0,
+        "min": 4227,
+        "max": 8266
+      }
+    },
+    "by_model": {
+      "deepseek-v4-flash": {
+        "runs": 20,
+        "schema_valid_tool_calls": 20,
+        "first_edit_succeeded": 19,
+        "task_success": 20,
+        "target_exact_match": 20,
+        "sentinel_unchanged": 20,
+        "total_tool_failures": 1,
+        "recovered_after_failure": 1,
+        "terminal_states": {
+          "completed": 20
+        },
+        "first_edit_tools": {
+          "edit_file": 20
+        },
+        "first_patch_formats": {
+          "bare_context": 20
+        },
+        "duration_ms": {
+          "mean": 5641.9,
+          "median": 5485.5,
+          "min": 4227,
+          "max": 8266
+        }
+      },
+      "gemini-3.5-flash": {
+        "runs": 20,
+        "schema_valid_tool_calls": 20,
+        "first_edit_succeeded": 18,
+        "task_success": 20,
+        "target_exact_match": 20,
+        "sentinel_unchanged": 20,
+        "total_tool_failures": 2,
+        "recovered_after_failure": 2,
+        "terminal_states": {
+          "completed": 20
+        },
+        "first_edit_tools": {
+          "edit_file": 20
+        },
+        "first_patch_formats": {
+          "bare_context": 18,
+          "other": 2
+        },
+        "duration_ms": {
+          "mean": 5979.9,
+          "median": 5869.5,
+          "min": 5221,
+          "max": 7089
+        }
+      },
+      "gpt-5.6-sol": {
+        "runs": 20,
+        "schema_valid_tool_calls": 20,
+        "first_edit_succeeded": 20,
+        "task_success": 20,
+        "target_exact_match": 20,
+        "sentinel_unchanged": 20,
+        "total_tool_failures": 0,
+        "recovered_after_failure": 0,
+        "terminal_states": {
+          "completed": 20
+        },
+        "first_edit_tools": {
+          "edit_file": 20
+        },
+        "first_patch_formats": {
+          "bare_context": 20
+        },
+        "duration_ms": {
+          "mean": 6035.75,
+          "median": 5949.5,
+          "min": 4641,
+          "max": 7639
+        }
+      }
+    },
+    "threshold": {
+      "required_first_and_exact_per_provider": "at least 19/20",
+      "providers_meeting_threshold": {
+        "deepseek-v4-flash": true,
+        "gemini-3.5-flash": false,
+        "gpt-5.6-sol": true
+      },
+      "no_sentinel_mutation": true
+    },
+    "failure_details": [
+      {
+        "model": "deepseek-v4-flash",
+        "scenario": "multiline_config",
+        "trial": 5,
+        "first_patch_format": "bare_context",
+        "first_patch": "@@\n   port: 8080\n@@\n logging:\n-  level: info\n+  level: debug\n",
+        "first_error": "Error executing tool 'edit_file' (ID: call_00_SIJ7MxGxubjAXt9A0Bwu1940): PatchApplicationError: Context hunk contains no addition or removal. Read the file again and retry with a canonical bare @@ patch and more unique unchanged/removal context.",
+        "recovered_after_failure": true,
+        "task_success": true,
+        "target_exact_match": true,
+        "sentinel_unchanged": true
+      },
+      {
+        "model": "gemini-3.5-flash",
+        "scenario": "late_insertion",
+        "trial": 2,
+        "first_patch_format": "other",
+        "first_patch": "@@ line 38 @@\n export const catalog = {\n   enabled: true,\n-  pageSize: 20\n+  pageSize: 20,\n+  auditLabel: 'deepseek-benchmark'\n };",
+        "first_error": "Error executing tool 'edit_file' (ID: hxqoyglm): PatchApplicationError: Unsupported patch header. Use a bare @@ header without file headers, line numbers, labels, or Begin/End metadata. Read the file again and retry with a canonical bare @@ patch and more unique unchanged/removal context.",
+        "recovered_after_failure": true,
+        "task_success": true,
+        "target_exact_match": true,
+        "sentinel_unchanged": true
+      },
+      {
+        "model": "gemini-3.5-flash",
+        "scenario": "late_insertion",
+        "trial": 3,
+        "first_patch_format": "other",
+        "first_patch": "@@ line 38\n export const catalog = {\n   enabled: true,\n-  pageSize: 20\n+  pageSize: 20,\n+  auditLabel: 'deepseek-benchmark'\n };",
+        "first_error": "Error executing tool 'edit_file' (ID: tqsbxj9o): PatchApplicationError: Unsupported patch header. Use a bare @@ header without file headers, line numbers, labels, or Begin/End metadata. Read the file again and retry with a canonical bare @@ patch and more unique unchanged/removal context.",
+        "recovered_after_failure": true,
+        "task_success": true,
+        "target_exact_match": true,
+        "sentinel_unchanged": true
+      }
+    ]
+  },
+  "explicit_common_context_stage": {
+    "summary_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/in-progress/autobyteus-ts-edit-format-investigation/benchmark-evidence/api-e2e-explicit-context-live-summary.json",
+    "overall": {
+      "runs": 60,
+      "schema_valid_tool_calls": 60,
+      "first_edit_succeeded": 60,
+      "task_success": 60,
+      "target_exact_match": 60,
+      "sentinel_unchanged": 60,
+      "total_tool_failures": 0,
+      "recovered_after_failure": 0,
+      "terminal_states": {
+        "completed": 60
+      },
+      "first_edit_tools": {
+        "edit_file": 60
+      },
+      "first_patch_formats": {
+        "bare_context": 60
+      },
+      "duration_ms": {
+        "mean": 5979.633,
+        "median": 5863.5,
+        "min": 4098,
+        "max": 12263
+      }
+    },
+    "by_model": {
+      "deepseek-v4-flash": {
+        "runs": 20,
+        "schema_valid_tool_calls": 20,
+        "first_edit_succeeded": 20,
+        "task_success": 20,
+        "target_exact_match": 20,
+        "sentinel_unchanged": 20,
+        "total_tool_failures": 0,
+        "recovered_after_failure": 0,
+        "terminal_states": {
+          "completed": 20
+        },
+        "first_edit_tools": {
+          "edit_file": 20
+        },
+        "first_patch_formats": {
+          "bare_context": 20
+        },
+        "duration_ms": {
+          "mean": 5441.1,
+          "median": 5469.0,
+          "min": 4098,
+          "max": 7117
+        }
+      },
+      "gemini-3.5-flash": {
+        "runs": 20,
+        "schema_valid_tool_calls": 20,
+        "first_edit_succeeded": 20,
+        "task_success": 20,
+        "target_exact_match": 20,
+        "sentinel_unchanged": 20,
+        "total_tool_failures": 0,
+        "recovered_after_failure": 0,
+        "terminal_states": {
+          "completed": 20
+        },
+        "first_edit_tools": {
+          "edit_file": 20
+        },
+        "first_patch_formats": {
+          "bare_context": 20
+        },
+        "duration_ms": {
+          "mean": 5867.1,
+          "median": 5913.0,
+          "min": 5105,
+          "max": 6433
+        }
+      },
+      "gpt-5.6-sol": {
+        "runs": 20,
+        "schema_valid_tool_calls": 20,
+        "first_edit_succeeded": 20,
+        "task_success": 20,
+        "target_exact_match": 20,
+        "sentinel_unchanged": 20,
+        "total_tool_failures": 0,
+        "recovered_after_failure": 0,
+        "terminal_states": {
+          "completed": 20
+        },
+        "first_edit_tools": {
+          "edit_file": 20
+        },
+        "first_patch_formats": {
+          "bare_context": 20
+        },
+        "duration_ms": {
+          "mean": 6630.7,
+          "median": 6299.5,
+          "min": 4889,
+          "max": 12263
+        }
+      }
+    },
+    "threshold": {
+      "required_first_and_exact_per_provider": "at least 19/20",
+      "providers_meeting_threshold": {
+        "deepseek-v4-flash": true,
+        "gemini-3.5-flash": true,
+        "gpt-5.6-sol": true
+      },
+      "no_sentinel_mutation": true
+    }
+  },
+  "interpretation": [
+    "The exact explicit common-context cohort recheck passed 60/60 first application, exact final, and sentinel preservation; every first patch was canonical bare context.",
+    "The schema-only stage passed 60/60 exact final and sentinel preservation, but 3 first attempts failed and recovered: one DeepSeek no-change hunk and two Gemini textual hunk labels.",
+    "The two Gemini textual labels remain intentionally unsupported under AC-014. Their deterministic rejection and successful canonical retry demonstrate safe recovery, while also recording current provider drift.",
+    "Live provider evidence is dated and does not replace deterministic repository coverage."
+  ]
+}
