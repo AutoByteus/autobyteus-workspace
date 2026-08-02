@@ -3,16 +3,15 @@ import type { AgentOperationResult } from "../../agent-execution/domain/agent-op
 import type { InterAgentMessageDeliveryIntent } from "../domain/inter-agent-message-delivery.js";
 import type { TeamMemberSelector } from "../domain/team-run-member-identity.js";
 import type { TeamRunEventListener, TeamRunEventUnsubscribe } from "../domain/team-run-event.js";
-import type { AgentStatusPayload } from "../../agent-execution/domain/agent-status-payload.js";
-import type { TeamStatusPayload } from "../domain/team-status-payload.js";
+import type { TeamLeafAgentStatusSnapshot } from "../domain/team-leaf-agent-status-snapshot.js";
 import type { StartTaskAgentInstanceRequest } from "../domain/task-agent-instance.js";
 import type { StartTaskTeamInstanceRequest } from "../domain/task-team-instance.js";
 import type { ConversationTargetAddress } from "../domain/conversation-target-address.js";
 
 export interface TeamManager {
   hasActiveMembers(): boolean;
-  getStatusSnapshot(): TeamStatusPayload;
-  getMemberStatusSnapshots(): AgentStatusPayload[];
+  getLeafAgentStatusSnapshots(): TeamLeafAgentStatusSnapshot[];
+  hasOpenExecutionWork(): boolean;
   postMessage(
     message: AgentInputUserMessage,
     target: TeamMemberSelector,

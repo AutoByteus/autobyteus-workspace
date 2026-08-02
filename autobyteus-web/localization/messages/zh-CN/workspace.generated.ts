@@ -137,7 +137,6 @@ const messages = {
   'workspace.components.workspace.team.TeamMembersPanel.terminate': '终止',
   'workspace.components.workspace.team.TeamMembersPanel.terminate_team': '终止团队',
   'workspace.components.workspace.team.TeamMembersPanel.terminate_team_run': '终止团队运行',
-  'workspace.components.workspace.team.TeamStatusDisplay.team_status': '`团队状态：${visuals.text}`',
   'workspace.components.workspace.team.TeamWorkspaceView.headertitle': '页眉标题',
   'workspace.components.workspace.team.TeamWorkspaceView.no_active_team_runs': '没有活跃的团队运行',
   'workspace.components.workspace.team.TeamWorkspaceView.replying_to': '回复:',

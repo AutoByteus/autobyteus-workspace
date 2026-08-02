@@ -8,19 +8,9 @@ import type {
 } from '~/stores/runHistoryTypes';
 import { normalizeAgentRuntimeStatus } from '~/services/runHydration/runtimeStatusNormalization';
 
-const toTeamMemberRunStatus = (
-  status: AgentStatus,
-): Pick<TeamMemberTreeRow, 'isActive' | 'lastKnownStatus'> => {
-  if (status === AgentStatus.Error) {
-    return { isActive: false, lastKnownStatus: 'ERROR' };
-  }
-
-  if (status === AgentStatus.Offline) {
-    return { isActive: false, lastKnownStatus: 'IDLE' };
-  }
-
-  return { isActive: true, lastKnownStatus: 'ACTIVE' };
-};
+const isTeamMemberRunActive = (status: AgentStatus): boolean => (
+  status !== AgentStatus.Error && status !== AgentStatus.Offline
+);
 
 const buildLeafRowFromHistory = (
   team: TeamRunHistoryItem,
@@ -28,7 +18,7 @@ const buildLeafRowFromHistory = (
 ): TeamMemberTreeRow => {
   const currentStatus = normalizeAgentRuntimeStatus(member.status);
   return {
-    ...toTeamMemberRunStatus(currentStatus),
+    isActive: isTeamMemberRunActive(currentStatus),
     teamRunId: team.teamRunId,
     memberKind: 'agent',
     memberRouteKey: member.memberRouteKey,
@@ -52,9 +42,8 @@ const buildRowsFromMetadataTree = (
 ): TeamMemberTreeRow[] =>
   memberTree.map((member): TeamMemberTreeRow => {
     if (member.memberKind === 'agent_team') {
-      const currentStatus = normalizeAgentRuntimeStatus(team.status);
       return {
-        ...toTeamMemberRunStatus(currentStatus),
+        isActive: false,
         teamRunId: team.teamRunId,
         memberKind: 'agent_team',
         memberRouteKey: member.memberRouteKey,
@@ -68,7 +57,7 @@ const buildRowsFromMetadataTree = (
         workspaceRootPath: null,
         summary: team.summary,
         lastActivityAt: team.createdAt,
-        currentStatus,
+        currentStatus: null,
         deleteLifecycle: 'READY' as const,
         children: buildRowsFromMetadataTree(team, member.memberTree, memberByRouteKey),
       };
@@ -77,7 +66,7 @@ const buildRowsFromMetadataTree = (
     const historyMember = memberByRouteKey.get(member.memberRouteKey);
     const currentStatus = normalizeAgentRuntimeStatus(historyMember?.status ?? AgentStatus.Offline);
     return {
-      ...toTeamMemberRunStatus(currentStatus),
+      isActive: isTeamMemberRunActive(currentStatus),
       teamRunId: team.teamRunId,
       memberKind: 'agent',
       memberRouteKey: member.memberRouteKey,
@@ -142,9 +131,8 @@ export const buildTeamRowsFromContext = (
   const visit = (nodes: AgentTeamContext['memberTree']): TeamMemberTreeRow[] =>
     nodes.filter((node) => !isTransientTaskProjectionNode(node)).map((node) => {
       if (node.memberKind === 'agent_team') {
-        const currentStatus = normalizeAgentRuntimeStatus(teamContext.currentStatus);
         return {
-          ...toTeamMemberRunStatus(currentStatus),
+          isActive: false,
           teamRunId: teamContext.teamRunId,
           memberKind: 'agent_team',
           memberRouteKey: node.memberRouteKey,
@@ -158,7 +146,7 @@ export const buildTeamRowsFromContext = (
           workspaceRootPath: null,
           summary,
           lastActivityAt: fallbackLastActivityAt,
-          currentStatus,
+          currentStatus: null,
           deleteLifecycle: 'READY' as const,
           children: visit(node.children),
         };
@@ -167,7 +155,7 @@ export const buildTeamRowsFromContext = (
       const memberContext = leafAgentContextsByRouteKey.get(node.memberRouteKey);
       const currentStatus = normalizeAgentRuntimeStatus(memberContext?.state.currentStatus ?? AgentStatus.Offline);
       return {
-        ...toTeamMemberRunStatus(currentStatus),
+        isActive: isTeamMemberRunActive(currentStatus),
         teamRunId: teamContext.teamRunId,
         memberKind: 'agent',
         memberRouteKey: node.memberRouteKey,

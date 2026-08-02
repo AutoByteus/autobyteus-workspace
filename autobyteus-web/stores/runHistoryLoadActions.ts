@@ -28,13 +28,12 @@ import {
 } from '~/services/runOpen/agentRunOpenCoordinator';
 import { hydrateLiveRunContext } from '~/services/runHydration/runContextHydrationService';
 import {
-  applyLiveTeamStatusSnapshot,
+  applyLiveTeamMemberStatusSnapshot,
   hydrateLiveTeamRunContext,
   hydrateTeamMemberActivitiesFromProjection,
   type TeamMemberLiveSnapshot,
 } from '~/services/runHydration/teamRunContextHydrationService';
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
 import {
   applyActiveRuntimePlaceholder,
@@ -220,9 +219,7 @@ export const reconcileDiscoveredActiveRuns = async (
     if (teamContext.isSubscribed) {
       agentTeamRunStore.disconnectTeamStream(teamContext.teamRunId);
     }
-    if (teamContext.currentStatus !== AgentTeamStatus.Error) {
-      teamContext.currentStatus = AgentTeamStatus.Offline;
-    }
+    teamContext.isActive = false;
     getLeafAgentContextsByRouteKey(teamContext).forEach((memberContext) => {
       if (memberContext.state.currentStatus !== AgentStatus.Error) {
         applyOfflineOrTerminalCleanup(memberContext);
@@ -237,13 +234,11 @@ export const reconcileDiscoveredActiveRuns = async (
     const existingTeamContext = teamContextsStore.getTeamContextById(teamRunId);
     if (existingTeamContext) {
       existingTeamContext.config.isLocked = true;
-      applyLiveTeamStatusSnapshot(existingTeamContext, {
-        currentStatus: activeTeamRun.status,
+      existingTeamContext.isActive = true;
+      applyLiveTeamMemberStatusSnapshot(existingTeamContext, {
         memberStatuses,
       }, {
-        preserveCurrentStatus:
-          existingTeamContext.isSubscribed &&
-          existingTeamContext.currentStatus !== AgentTeamStatus.Offline,
+        preserveCurrentStatus: existingTeamContext.isSubscribed,
       });
       getLeafAgentContextsByRouteKey(existingTeamContext).forEach((memberContext) => {
         memberContext.config.isLocked = true;
@@ -261,7 +256,6 @@ export const reconcileDiscoveredActiveRuns = async (
         resolveWorkspaceMetadataByRootPath: (rootPath: string) =>
           store.resolveWorkspaceMetadataByRootPath(rootPath),
         ensureWorkspaceByRootPath: (rootPath: string) => store.ensureWorkspaceByRootPath(rootPath),
-        currentStatus: activeTeamRun.status,
         memberStatuses,
       });
       teamContextsStore.addTeamContext(result.hydratedContext);

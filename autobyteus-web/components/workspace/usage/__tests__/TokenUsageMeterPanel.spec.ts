@@ -10,7 +10,6 @@ import { useTokenUsageMeterStore } from '~/stores/tokenUsageMeterStore';
 import { AgentContext } from '~/types/agent/AgentContext';
 import { AgentRunState } from '~/types/agent/AgentRunState';
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { TokenUsageRunSummary } from '~/types/tokenUsageMeter';
 
 const messages: Record<string, string> = {
@@ -415,7 +414,7 @@ describe('TokenUsageMeterPanel', () => {
       coordinatorMemberRouteKey: 'lead',
       historicalHydration: null,
       focusedMemberRouteKey: 'lead',
-      currentStatus: AgentTeamStatus.Running,
+      isActive: true,
       isSubscribed: false,
     } as any);
     meterStore.upsertSummary(buildSummary({
@@ -540,7 +539,7 @@ describe('TokenUsageMeterPanel', () => {
       coordinatorMemberRouteKey: 'lead',
       historicalHydration: null,
       focusedMemberRouteKey: 'lead',
-      currentStatus: AgentTeamStatus.Running,
+      isActive: true,
       isSubscribed: false,
     } as any);
     meterStore.applyTokenUsageUpdated({
@@ -658,7 +657,7 @@ describe('TokenUsageMeterPanel', () => {
       coordinatorMemberRouteKey: 'lead',
       historicalHydration: null,
       focusedMemberRouteKey: 'planning',
-      currentStatus: AgentTeamStatus.Running,
+      isActive: true,
       isSubscribed: false,
     } as any);
     meterStore.upsertLedgerBackedTeamSummary('team-1', buildSummary({ runId: 'team-1', rootTeamRunId: 'team-1', totalTokens: 9900 }));

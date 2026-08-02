@@ -1,5 +1,4 @@
 import type { AgentTeamContext, SubTeamMemberNode, TeamMemberNode } from '~/types/agent/AgentTeamContext';
-import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { ConversationTargetSegment } from '~/types/agent/ConversationTargetAddress';
 import type { ServerMessage } from './protocol';
 import {
@@ -100,27 +99,6 @@ const buildDisplayName = (
   return `${base} · ${identity.taskId || identity.taskTeamRunId}`;
 };
 
-const statusToAgentStatus = (status: TaskExecutionProjectionStatus): AgentStatus => {
-  if (status === 'failed') return AgentStatus.Error;
-  if (status === 'settled') return AgentStatus.Offline;
-  if (status === 'starting') return AgentStatus.Initializing;
-  return AgentStatus.Running;
-};
-
-const runtimeStatusToAgentStatus = (rawStatus: unknown): AgentStatus | null => {
-  const status = normalizeProjectionString(rawStatus)?.toLowerCase().replace(/[-\s]+/g, '_') ?? null;
-  if (status === 'offline') return AgentStatus.Offline;
-  if (status === 'idle') return AgentStatus.Idle;
-  if (status === 'running') return AgentStatus.Running;
-  if (status === 'initializing' || status === 'starting') return AgentStatus.Initializing;
-  if (status === 'error' || status === 'failed') return AgentStatus.Error;
-  return null;
-};
-
-const isOfflineRuntimeStatus = (rawStatus: unknown): boolean => (
-  normalizeProjectionString(rawStatus)?.toLowerCase().replace(/[-\s]+/g, '_') === 'offline'
-);
-
 const cloneConversationTargetSegments = (
   segments: readonly ConversationTargetSegment[] | null | undefined,
 ): ConversationTargetSegment[] => (segments ?? []).map((segment) => ({
@@ -185,7 +163,6 @@ export const ensureTaskTeamExecutionProjection = (
     teamRunId: identity.taskTeamRunId,
     coordinatorMemberRouteKey: structuralTeam?.coordinatorMemberRouteKey ?? null,
     children,
-    currentStatus: statusToAgentStatus(existing?.taskExecutionStatus ?? initialStatus),
     isTaskTeamInstance: true,
     taskTeamInstanceId: identity.taskTeamInstanceId,
     taskTeamRunId: identity.taskTeamRunId,
@@ -224,7 +201,6 @@ export const updateTaskTeamExecutionProjectionFromEvent = (
   const node = ensureTaskTeamExecutionProjection(teamContext, identity, status);
   applyTaskDelegationProjectionDetails(node, extractTaskDelegationProjectionDetails(message));
   node.taskExecutionStatus = status;
-  node.currentStatus = statusToAgentStatus(status);
   node.taskTimeline = [
     ...(node.taskTimeline ?? []),
     buildTaskExecutionTimelineEntry({
@@ -239,22 +215,6 @@ export const updateTaskTeamExecutionProjectionFromEvent = (
     node,
     shouldCleanup: isTerminalTaskExecutionProjectionStatus(status),
   };
-};
-
-export const updateTaskTeamRootStatus = (
-  teamContext: AgentTeamContext,
-  taskTeamRunId: string,
-  rawStatus: unknown,
-): boolean => {
-  const node = teamContext.memberNodesByRouteKey.get(taskTeamRunId) ?? null;
-  if (!node?.isTaskTeamInstance) return false;
-  node.currentStatus = runtimeStatusToAgentStatus(rawStatus) ?? node.currentStatus ?? AgentStatus.Running;
-  if (isOfflineRuntimeStatus(rawStatus)) {
-    node.taskExecutionStatus = 'settled';
-    node.currentStatus = AgentStatus.Offline;
-    return true;
-  }
-  return false;
 };
 
 export const removeTaskTeamExecutionProjection = (

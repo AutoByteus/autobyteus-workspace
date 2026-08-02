@@ -2,7 +2,6 @@ import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import type { TeamMemberRunProjectionPayload } from '~/stores/runHistoryTypes';
 import { hydrateActivitiesFromProjection } from './runProjectionActivityHydration';
 import { applyMemberOrHistoryStatusSnapshot } from '~/services/runStatus/agentRuntimeStatusState';
-import { normalizeTeamRuntimeStatus } from './runtimeStatusNormalization';
 
 export interface TeamMemberLiveSnapshot {
   memberRouteKey: string | null;
@@ -11,8 +10,7 @@ export interface TeamMemberLiveSnapshot {
   currentStatus: string;
 }
 
-export interface TeamLiveStatusSnapshot {
-  currentStatus?: string | null;
+export interface TeamMemberStatusSnapshotSet {
   memberStatuses?: TeamMemberLiveSnapshot[];
 }
 
@@ -65,14 +63,11 @@ export const hydrateTeamMemberActivitiesFromProjection = (params: {
   });
 };
 
-export const applyLiveTeamStatusSnapshot = (
+export const applyLiveTeamMemberStatusSnapshot = (
   context: AgentTeamContext,
-  snapshot: TeamLiveStatusSnapshot,
+  snapshot: TeamMemberStatusSnapshotSet,
   options: { preserveCurrentStatus?: boolean } = {},
 ): void => {
-  if (options.preserveCurrentStatus !== true) {
-    context.currentStatus = normalizeTeamRuntimeStatus(snapshot.currentStatus);
-  }
   const leafAgentContextsByRouteKey =
     context.leafAgentContextsByRouteKey instanceof Map
       ? context.leafAgentContextsByRouteKey

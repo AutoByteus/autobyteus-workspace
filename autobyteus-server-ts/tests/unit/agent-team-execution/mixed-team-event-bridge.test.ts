@@ -4,7 +4,11 @@ import {
   type TeamRunCommunicationEventPayload,
   type TeamRunEvent,
 } from "../../../src/agent-team-execution/domain/team-run-event.js";
-import { prefixMixedSubTeamEvent } from "../../../src/agent-team-execution/backends/mixed/events/mixed-team-event-bridge.js";
+import {
+  prefixMixedSubTeamEvent,
+  prefixMixedTeamLeafAgentStatusSnapshot,
+} from "../../../src/agent-team-execution/backends/mixed/events/mixed-team-event-bridge.js";
+import { buildOrdinaryTeamLeafAgentStatusSnapshot } from "../../../src/agent-team-execution/domain/team-leaf-agent-status-snapshot.js";
 import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import type { TaskTeamInstanceIdentity } from "../../../src/agent-team-execution/domain/task-team-instance.js";
@@ -169,6 +173,46 @@ describe("prefixMixedSubTeamEvent", () => {
       memberRunId: "review-run",
       memberPath: ["BuildSquad", "review_lead"],
       memberRouteKey: "BuildSquad/review_lead",
+    }));
+  });
+
+  it("preserves task-team carrier identity while prefixing a leaf snapshot exactly once", () => {
+    const childSnapshot = buildOrdinaryTeamLeafAgentStatusSnapshot({
+      teamRunId: "task-team-run-1",
+      payload: {
+        status: "running",
+        agent_id: "review-run",
+        agent_name: "review_lead",
+        member_route_key: "review_lead",
+        member_path: ["review_lead"],
+        source_route_key: "review_lead",
+        source_path: ["review_lead"],
+      },
+    });
+
+    const parentSnapshot = prefixMixedTeamLeafAgentStatusSnapshot({
+      parentTeamRunId: "parent-run",
+      sourcePrefix: ["BuildSquad"],
+      snapshot: childSnapshot,
+      taskTeamInstanceOverride: taskTeamInstance,
+    });
+    const republishedSnapshot = prefixMixedTeamLeafAgentStatusSnapshot({
+      parentTeamRunId: "parent-run",
+      sourcePrefix: ["BuildSquad"],
+      snapshot: parentSnapshot,
+    });
+
+    expect(republishedSnapshot).toEqual(expect.objectContaining({
+      scopeKind: "task_team_member",
+      teamRunId: "parent-run",
+      taskTeamInstance,
+      payload: expect.objectContaining({
+        agent_id: "review-run",
+        member_path: ["BuildSquad", "review_lead"],
+        member_route_key: "BuildSquad/review_lead",
+        source_path: ["BuildSquad", "review_lead"],
+        source_route_key: "BuildSquad/review_lead",
+      }),
     }));
   });
 });

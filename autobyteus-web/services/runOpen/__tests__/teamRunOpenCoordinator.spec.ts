@@ -199,7 +199,7 @@ describe('openTeamRun', () => {
       coordinatorMemberRouteKey: 'member-a',
       historicalHydration: null,
       focusedMemberRouteKey: 'member-a',
-      currentStatus: 'Processing',
+      isActive: true,
       isSubscribed: true,
     };
     const projectedMembers = new Map([
@@ -271,7 +271,7 @@ describe('openTeamRun', () => {
       coordinatorMemberRouteKey: 'member-a',
       historicalHydration: null,
       focusedMemberRouteKey: 'member-a',
-      currentStatus: 'Processing',
+      isActive: true,
       isSubscribed: true,
     };
     const projectedMembers = new Map([
@@ -327,7 +327,7 @@ describe('openTeamRun', () => {
       coordinatorMemberRouteKey: 'member-a',
       historicalHydration: null,
       focusedMemberRouteKey: 'member-a',
-      currentStatus: 'running',
+      isActive: true,
       isSubscribed: true,
     };
     const projectedMembers = new Map([
@@ -368,7 +368,7 @@ describe('openTeamRun', () => {
       coordinatorMemberRouteKey: 'member-a',
       historicalHydration: null,
       focusedMemberRouteKey: 'task-agent-run-1',
-      currentStatus: 'running',
+      isActive: true,
       isSubscribed: true,
     } as any;
     const existingTaskAgentContext = ensureTaskAgentContext(existingContext, {
@@ -433,7 +433,7 @@ describe('openTeamRun', () => {
       coordinatorMemberRouteKey: 'member-a',
       historicalHydration: null,
       focusedMemberRouteKey: 'member-a',
-      currentStatus: 'offline',
+      isActive: false,
       isSubscribed: false,
     };
     const projectedMembers = new Map([

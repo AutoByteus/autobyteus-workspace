@@ -3,7 +3,6 @@ import { describe, expect, it, vi } from 'vitest';
 import { reactive } from 'vue';
 import WorkspaceHistoryWorkspaceSection from '../WorkspaceHistoryWorkspaceSection.vue';
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 
 const stableMember = (memberRouteKey: string, overrides: Record<string, any> = {}) => ({
   teamRunId: 'team-run-1',
@@ -38,7 +37,6 @@ const mountSubject = (options: {
     lastActivityAt: '2026-06-30T00:00:00.000Z',
     lastKnownStatus: 'ACTIVE',
     isActive: true,
-    currentStatus: AgentTeamStatus.Running,
     deleteLifecycle: 'READY',
     focusedMemberRouteKey: 'worker',
     members: [worker],
@@ -128,6 +126,7 @@ const mountSubject = (options: {
         workspaceId: 'workspace:/ws/a',
         workspaceRootPath: '/ws/a',
         workspaceName: 'Workspace A',
+        workspaceKind: 'filesystem',
         canRemoveFromWorkspaces: false,
         agents: [],
       },
@@ -265,7 +264,6 @@ describe('WorkspaceHistoryWorkspaceSection', () => {
       taskDescription: 'Review design body should stay on the right.',
       taskReferenceFiles: [{ referenceId: 'ref-design', path: '/tmp/design-spec.md', type: 'file' }],
       taskArguments: { raw_task_argument: 'must not render in Workspaces' },
-      currentStatus: AgentStatus.Running,
     };
 
     const { wrapper, actions } = mountSubject({
@@ -290,7 +288,7 @@ describe('WorkspaceHistoryWorkspaceSection', () => {
           },
           taskTeamNode,
         ],
-        memberNodesByRouteKey: new Map([
+        memberNodesByRouteKey: new Map<string, any>([
           ['task-team-run-1', taskTeamNode],
           ['task-team-run-1/review_lead', taskTeamChildNode],
         ]),
@@ -314,12 +312,11 @@ describe('WorkspaceHistoryWorkspaceSection', () => {
     await wrapper.vm.$nextTick();
     transientRows = wrapper.findAll('[data-test="workspace-team-transient-execution-row"]');
     expect(transientRows).toHaveLength(2);
-    for (const transientRow of transientRows) {
-      const statusDots = transientRow.findAll('[data-test="workspace-transient-status-dot"]');
-      expect(statusDots).toHaveLength(1);
-      expect(statusDots[0].element.tagName.toLowerCase()).toBe('svg');
-      expect(statusDots[0].findAll('circle')).toHaveLength(8);
-    }
+    expect(transientRows[0].findAll('[data-test="workspace-transient-status-dot"]')).toHaveLength(0);
+    const childStatusDots = transientRows[1].findAll('[data-test="workspace-transient-status-dot"]');
+    expect(childStatusDots).toHaveLength(1);
+    expect(childStatusDots[0].element.tagName.toLowerCase()).toBe('svg');
+    expect(childStatusDots[0].findAll('circle')).toHaveLength(8);
     expect(transientRows[1].attributes('data-transient-kind')).toBe('task_team_child');
     expect(transientRows[1].attributes('data-member-route-key')).toBe('task-team-run-1/review_lead');
     expect(transientRows[1].attributes('style')).toContain('margin-left: 12px');
@@ -382,7 +379,7 @@ describe('WorkspaceHistoryWorkspaceSection', () => {
             { memberKind: 'agent', memberName: 'worker', displayName: 'worker', memberPath: ['worker'], memberRouteKey: 'worker', memberRunId: 'worker-run', agentDefinitionId: 'worker-agent' },
           ],
           leafAgentContextsByRouteKey: new Map(),
-        }),
+        } as any),
       },
     });
     await wrapper.vm.$nextTick();

@@ -1,5 +1,4 @@
 import { computed, ref, watch } from 'vue';
-import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import { buildWorkspaceTeamDefinitionDisplayGroups } from '~/components/workspace/history/workspaceHistoryTeamDefinitionGroups';
 import { normalizeRootPath } from '~/stores/runHistoryReadModel';
 import type {
@@ -433,8 +432,7 @@ export const useWorkspaceHistoryTreeState = (params: {
     { immediate: true },
   );
 
-  const canTerminateTeam = (status: AgentTeamStatus): boolean =>
-    status !== AgentTeamStatus.Offline;
+  const canTerminateTeam = (isActive: boolean): boolean => isActive;
 
   const expandedWorkspaceIds = (): string[] =>
     Object.entries(expandedWorkspaces.value)

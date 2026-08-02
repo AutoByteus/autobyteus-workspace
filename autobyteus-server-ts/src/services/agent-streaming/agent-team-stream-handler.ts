@@ -5,6 +5,7 @@ import {
   ContextFileType,
 } from "autobyteus-ts";
 import type { TeamRun } from "../../agent-team-execution/domain/team-run.js";
+import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import {
   TeamRunService,
   getTeamRunService,
@@ -34,9 +35,9 @@ import {
 } from "./team-command-selector-parser.js";
 import { resolveSendMessageConversationTargetAddress } from "./team-conversation-target-address-parser.js";
 import {
-  TeamRuntimeStatusSnapshotService,
-  getTeamRuntimeStatusSnapshotService,
-} from "./team-runtime-status-snapshot-service.js";
+  TeamRuntimeSnapshotService,
+  getTeamRuntimeSnapshotService,
+} from "./team-runtime-snapshot-service.js";
 import { convertTeamRunEventToServerMessage } from "./team-run-event-websocket-message-mapper.js";
 import { handleTeamToolApprovalCommand } from "./team-tool-approval-command-handler.js";
 
@@ -76,6 +77,7 @@ export class AgentTeamStreamHandler {
   private readonly teamRunService: TeamRunService;
   private readonly activeTasks = new Map<string, Promise<void>>();
   private readonly eventUnsubscribers = new Map<string, () => void>();
+  private readonly lifecycleUnsubscribers = new Map<string, () => void>();
   private readonly sessionConnections = new Map<string, WebSocketConnection>();
   private readonly subscribedRunsBySessionId = new Map<string, TeamRun>();
   private readonly pendingMetadataRefreshTimers = new Map<string, NodeJS.Timeout>();
@@ -85,8 +87,12 @@ export class AgentTeamStreamHandler {
     teamRunService: TeamRunService = getTeamRunService(),
     broadcaster: TeamStreamBroadcaster = getTeamStreamBroadcaster(),
     agentRunEventMessageMapper: AgentRunEventMessageMapper = getAgentRunEventMessageMapper(),
-    private readonly statusSnapshotService: TeamRuntimeStatusSnapshotService =
-      getTeamRuntimeStatusSnapshotService(),
+    private readonly statusSnapshotService: TeamRuntimeSnapshotService =
+      getTeamRuntimeSnapshotService(),
+    private readonly teamRunManager: Pick<
+      AgentTeamRunManager,
+      "getLifecycleSnapshot" | "subscribeToLifecycle"
+    > = AgentTeamRunManager.getInstance(),
   ) {
     this.sessionManager = sessionManager;
     this.teamRunService = teamRunService;
@@ -190,11 +196,7 @@ export class AgentTeamStreamHandler {
     this.sessionConnections.delete(sessionId);
     this.subscribedRunsBySessionId.delete(sessionId);
 
-    const unsubscribe = this.eventUnsubscribers.get(sessionId);
-    this.eventUnsubscribers.delete(sessionId);
-    if (unsubscribe) {
-      unsubscribe();
-    }
+    this.unsubscribeSession(sessionId);
 
     this.sessionManager.closeSession(sessionId);
 
@@ -213,7 +215,11 @@ export class AgentTeamStreamHandler {
     connection: WebSocketConnection,
     teamRun: TeamRun,
   ): void {
-    for (const message of this.statusSnapshotService.getInitialMessages(teamRun)) {
+    const lifecycleSnapshot = this.teamRunManager.getLifecycleSnapshot(teamRun.runId);
+    for (const message of this.statusSnapshotService.getInitialMessages(
+      teamRun,
+      lifecycleSnapshot,
+    )) {
       connection.send(message.toJson());
     }
   }
@@ -266,11 +272,9 @@ export class AgentTeamStreamHandler {
       return true;
     }
 
-    const existingUnsubscribe = this.eventUnsubscribers.get(sessionId);
-    existingUnsubscribe?.();
-    this.eventUnsubscribers.delete(sessionId);
+    this.unsubscribeSession(sessionId);
 
-    const unsubscribe = teamRun.subscribeToEvents((event) => {
+    const unsubscribeEvents = teamRun.subscribeToEvents((event) => {
       try {
         connection.send(this.convertTeamEvent(event).toJson());
       } catch (error) {
@@ -278,13 +282,45 @@ export class AgentTeamStreamHandler {
       }
       this.scheduleMetadataRefresh(teamRun.runId, teamRun);
     });
-    if (!unsubscribe) {
+    if (!unsubscribeEvents) {
       return false;
     }
 
-    this.eventUnsubscribers.set(sessionId, unsubscribe);
+    let unsubscribeLifecycle: () => void;
+    try {
+      unsubscribeLifecycle = this.teamRunManager.subscribeToLifecycle(
+        teamRun.runId,
+        (snapshot) => {
+          try {
+            connection.send(new ServerMessage(ServerMessageType.TEAM_RUN_LIFECYCLE, {
+              team_run_id: snapshot.teamRunId,
+              is_active: snapshot.isActive,
+            }).toJson());
+          } catch (error) {
+            logger.error(`Error sending team lifecycle to WebSocket: ${String(error)}`);
+          }
+        },
+      );
+    } catch (error) {
+      unsubscribeEvents();
+      logger.error(`Failed to subscribe to team lifecycle: ${String(error)}`);
+      return false;
+    }
+
+    this.eventUnsubscribers.set(sessionId, unsubscribeEvents);
+    this.lifecycleUnsubscribers.set(sessionId, unsubscribeLifecycle);
     this.subscribedRunsBySessionId.set(sessionId, teamRun);
     return true;
+  }
+
+  private unsubscribeSession(sessionId: string): void {
+    const unsubscribeEvents = this.eventUnsubscribers.get(sessionId);
+    this.eventUnsubscribers.delete(sessionId);
+    unsubscribeEvents?.();
+
+    const unsubscribeLifecycle = this.lifecycleUnsubscribers.get(sessionId);
+    this.lifecycleUnsubscribers.delete(sessionId);
+    unsubscribeLifecycle?.();
   }
 
   private async handleSendMessage(

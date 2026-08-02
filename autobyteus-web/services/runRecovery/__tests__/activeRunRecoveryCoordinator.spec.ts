@@ -105,7 +105,7 @@ describe('recoverActiveRunsFromHistory', () => {
     teamContextsStoreMock.teams.clear();
   });
 
-  it('preserves member-scoped statuses instead of fanning a running team aggregate to every member', async () => {
+  it('preserves subscribed live member statuses while recovering root team activity', async () => {
     teamContextsStoreMock.teams.set('team-live-1', {
       teamRunId: 'team-live-1',
       config: { isLocked: false },
@@ -126,7 +126,7 @@ describe('recoverActiveRunsFromHistory', () => {
       coordinatorMemberRouteKey: 'solution_designer',
       historicalHydration: null,
       focusedMemberRouteKey: 'solution_designer',
-      currentStatus: 'offline',
+      isActive: true,
       isSubscribed: true,
     });
 
@@ -140,8 +140,8 @@ describe('recoverActiveRunsFromHistory', () => {
     });
 
     const context = teamContextsStoreMock.teams.get('team-live-1');
-    expect(context.currentStatus).toBe('running');
-    expect(context.leafAgentContextsByRouteKey.get('solution_designer')?.state.currentStatus).toBe('running');
+    expect(context.isActive).toBe(true);
+    expect(context.leafAgentContextsByRouteKey.get('solution_designer')?.state.currentStatus).toBe('offline');
     expect(context.leafAgentContextsByRouteKey.get('implementation_engineer')?.state.currentStatus).toBe('offline');
     expect(context.leafAgentContextsByRouteKey.get('code_reviewer')?.state.currentStatus).toBe('offline');
     expect(agentTeamRunStoreMock.connectToTeamStream).not.toHaveBeenCalledWith('team-live-1');

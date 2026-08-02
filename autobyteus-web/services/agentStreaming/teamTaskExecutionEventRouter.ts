@@ -11,7 +11,6 @@ import {
   ensureTaskTeamExecutionProjection,
   extractTaskTeamIdentity,
   updateTaskTeamExecutionProjectionFromEvent,
-  updateTaskTeamRootStatus,
 } from './teamTaskTeamExecutionProjection';
 import {
   ensureTaskTeamChildProjection,
@@ -94,13 +93,6 @@ const handleTaskTeamScopedProjectionMessage = (
     return { outcome: 'continue' };
   }
   if (scoped.outcome === 'root') {
-    if (message.type === 'TEAM_STATUS') {
-      const shouldCleanup = updateTaskTeamRootStatus(teamContext, scoped.taskTeamRunId, message.payload.status);
-      return {
-        outcome: 'handled',
-        cleanupTaskTeamRunId: shouldCleanup ? scoped.taskTeamRunId : null,
-      };
-    }
     return { outcome: 'handled' };
   }
 

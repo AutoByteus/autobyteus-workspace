@@ -11,6 +11,11 @@ import {
 } from "../../../domain/task-team-instance.js";
 import { buildMemberRouteKeyFromPath } from "../../../domain/team-run-member-identity.js";
 import {
+  buildOrdinaryTeamLeafAgentStatusSnapshot,
+  buildTaskTeamLeafAgentStatusSnapshot,
+  type TeamLeafAgentStatusSnapshot,
+} from "../../../domain/team-leaf-agent-status-snapshot.js";
+import {
   cloneConversationTargetSegment,
   normalizeConversationTargetAddress,
   type ConversationTargetAddress,
@@ -23,6 +28,51 @@ const pathStartsWith = (path: readonly string[], prefix: readonly string[]): boo
 
 const prefixPath = (path: readonly string[], prefix: readonly string[], isAlreadyParentRooted: boolean): string[] =>
   isAlreadyParentRooted && pathStartsWith(path, prefix) ? [...path] : [...prefix, ...path];
+
+export type MixedTeamAgentScope = {
+  teamRunId: string;
+  memberPath: string[];
+  sourcePath: string[];
+  taskTeamInstance: TaskTeamInstanceIdentity | null;
+};
+
+export type PrefixedMixedTeamAgentScope = MixedTeamAgentScope & {
+  memberRouteKey: string;
+  sourceRouteKey: string;
+};
+
+export const prefixMixedTeamAgentScope = (input: {
+  parentTeamRunId: string;
+  sourcePrefix: string[];
+  scope: MixedTeamAgentScope;
+  taskTeamInstanceOverride?: TaskTeamInstanceIdentity;
+}): PrefixedMixedTeamAgentScope => {
+  const isAlreadyParentRooted = input.scope.teamRunId === input.parentTeamRunId;
+  const memberPath = prefixPath(
+    input.scope.memberPath,
+    input.sourcePrefix,
+    isAlreadyParentRooted,
+  );
+  const sourcePath = prefixPath(
+    input.scope.sourcePath,
+    input.sourcePrefix,
+    isAlreadyParentRooted,
+  );
+  const taskTeamInstance = input.taskTeamInstanceOverride
+    ? cloneTaskTeamInstanceIdentity(input.taskTeamInstanceOverride)
+    : input.scope.taskTeamInstance
+      ? cloneTaskTeamInstanceIdentity(input.scope.taskTeamInstance)
+      : null;
+
+  return {
+    teamRunId: input.parentTeamRunId,
+    memberPath,
+    memberRouteKey: buildMemberRouteKeyFromPath(memberPath),
+    sourcePath,
+    sourceRouteKey: buildMemberRouteKeyFromPath(sourcePath),
+    taskTeamInstance,
+  };
+};
 
 const memberSegmentRouteKey = (segment: ConversationTargetMemberSegment): string => {
   if (typeof segment.memberRouteKey === "string" && segment.memberRouteKey.trim()) {
@@ -113,16 +163,11 @@ const prefixCommunicationPayload = (input: {
 });
 
 const prefixAgentPayload = (input: {
-  sourcePrefix: string[];
   payload: TeamRunAgentEventPayload;
-  isAlreadyParentRooted: boolean;
+  scope: PrefixedMixedTeamAgentScope;
+  sourcePrefix: string[];
   taskTeamInstance?: TaskTeamInstanceIdentity | null;
 }): TeamRunAgentEventPayload => {
-  const memberPath = prefixPath(
-    input.payload.memberPath,
-    input.sourcePrefix,
-    input.isAlreadyParentRooted,
-  );
   const agentEventPayload = input.payload.agentEvent.eventType === AgentRunEventType.TEAM_COMMUNICATION_MESSAGE
     && input.payload.agentEvent.payload
     && typeof input.payload.agentEvent.payload === "object"
@@ -143,8 +188,8 @@ const prefixAgentPayload = (input: {
     : input.payload.agentEvent.payload;
   return {
     ...input.payload,
-    memberPath,
-    memberRouteKey: buildMemberRouteKeyFromPath(memberPath),
+    memberPath: input.scope.memberPath,
+    memberRouteKey: input.scope.memberRouteKey,
     agentEvent: {
       ...input.payload.agentEvent,
       payload: agentEventPayload,
@@ -159,7 +204,25 @@ export const prefixMixedSubTeamEvent = (input: {
   taskTeamInstance?: TaskTeamInstanceIdentity | null;
 }): TeamRunEvent => {
   const isAlreadyParentRooted = input.event.teamRunId === input.parentTeamRunId;
-  const sourcePath = prefixPath(
+  const agentPayload = input.event.eventSourceType === TeamRunEventSourceType.AGENT
+    ? input.event.data as TeamRunAgentEventPayload
+    : null;
+  const agentScope = agentPayload
+    ? prefixMixedTeamAgentScope({
+        parentTeamRunId: input.parentTeamRunId,
+        sourcePrefix: input.sourcePrefix,
+        scope: {
+          teamRunId: input.event.teamRunId,
+          memberPath: agentPayload.memberPath,
+          sourcePath: input.event.sourcePath,
+          taskTeamInstance: input.event.taskTeamInstance ?? null,
+        },
+        ...(input.taskTeamInstance
+          ? { taskTeamInstanceOverride: input.taskTeamInstance }
+          : {}),
+      })
+    : null;
+  const sourcePath = agentScope?.sourcePath ?? prefixPath(
     input.event.sourcePath,
     input.sourcePrefix,
     isAlreadyParentRooted,
@@ -174,10 +237,10 @@ export const prefixMixedSubTeamEvent = (input: {
           })
       : input.event.eventSourceType === TeamRunEventSourceType.AGENT
           ? prefixAgentPayload({
+              scope: agentScope!,
               sourcePrefix: input.sourcePrefix,
-              payload: input.event.data as TeamRunAgentEventPayload,
-              isAlreadyParentRooted,
-              taskTeamInstance: input.taskTeamInstance ?? input.event.taskTeamInstance ?? null,
+              payload: agentPayload!,
+              taskTeamInstance: agentScope!.taskTeamInstance,
             })
         : input.event.data;
 
@@ -186,9 +249,52 @@ export const prefixMixedSubTeamEvent = (input: {
     teamRunId: input.parentTeamRunId,
     sourcePath,
     data,
-    taskTeamInstance: input.taskTeamInstance
+    taskTeamInstance: agentScope?.taskTeamInstance ?? (input.taskTeamInstance
       ? cloneTaskTeamInstanceIdentity(input.taskTeamInstance)
-      : input.event.taskTeamInstance ?? null,
+      : input.event.taskTeamInstance
+        ? cloneTaskTeamInstanceIdentity(input.event.taskTeamInstance)
+        : null),
     subTeamNodeName: input.sourcePrefix[input.sourcePrefix.length - 1] ?? input.event.subTeamNodeName ?? null,
   };
+};
+
+export const prefixMixedTeamLeafAgentStatusSnapshot = (input: {
+  parentTeamRunId: string;
+  sourcePrefix: string[];
+  snapshot: TeamLeafAgentStatusSnapshot;
+  taskTeamInstanceOverride?: TaskTeamInstanceIdentity;
+}): TeamLeafAgentStatusSnapshot => {
+  const scope = prefixMixedTeamAgentScope({
+    parentTeamRunId: input.parentTeamRunId,
+    sourcePrefix: input.sourcePrefix,
+    scope: {
+      teamRunId: input.snapshot.teamRunId,
+      memberPath: input.snapshot.payload.member_path,
+      sourcePath: input.snapshot.payload.source_path,
+      taskTeamInstance: input.snapshot.scopeKind === "task_team_member"
+        ? input.snapshot.taskTeamInstance
+        : null,
+    },
+    ...(input.taskTeamInstanceOverride
+      ? { taskTeamInstanceOverride: input.taskTeamInstanceOverride }
+      : {}),
+  });
+  const payload = {
+    ...input.snapshot.payload,
+    member_path: scope.memberPath,
+    member_route_key: scope.memberRouteKey,
+    source_path: scope.sourcePath,
+    source_route_key: scope.sourceRouteKey,
+  };
+
+  return scope.taskTeamInstance
+    ? buildTaskTeamLeafAgentStatusSnapshot({
+        teamRunId: scope.teamRunId,
+        payload,
+        taskTeamInstance: scope.taskTeamInstance,
+      })
+    : buildOrdinaryTeamLeafAgentStatusSnapshot({
+        teamRunId: scope.teamRunId,
+        payload,
+      });
 };

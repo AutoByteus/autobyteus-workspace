@@ -9,10 +9,9 @@ import type {
   InterAgentMessageDeliveryIntent,
   TeamRepresentedSubTeam,
 } from "../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
-import {
-  TeamRunEventSourceType,
-  type TeamRunEvent,
-  type TeamRunEventListener,
+import type {
+  TeamRunEvent,
+  TeamRunEventListener,
 } from "../../../src/agent-team-execution/domain/team-run-event.js";
 import {
   MixedAgentMemberContext,
@@ -151,8 +150,20 @@ const createParentManagerWithTaskTeamTarget = () => {
   const childRun = {
     runId: taskTeamInstance.taskTeamRunId,
     isActive: vi.fn(() => childActive),
-    getStatusSnapshot: vi.fn(() => ({ status: childActive ? "idle" : "offline" })),
-    getMemberStatusSnapshots: vi.fn(() => []),
+    getLeafAgentStatusSnapshots: vi.fn(() => childActive ? [{
+      scopeKind: "ordinary_member" as const,
+      teamRunId: taskTeamInstance.taskTeamRunId,
+      payload: {
+        status: "idle" as const,
+        agent_id: "review-lead-run",
+        agent_name: "review_lead",
+        member_route_key: "review_lead",
+        member_path: ["review_lead"],
+        source_route_key: "review_lead",
+        source_path: ["review_lead"],
+      },
+    }] : []),
+    hasOpenExecutionWork: vi.fn(() => false),
     getRuntimeContext: vi.fn(() => new MixedTeamRunContext({
       coordinatorMemberRouteKey: "review_lead",
       memberContexts: [
@@ -174,14 +185,6 @@ const createParentManagerWithTaskTeamTarget = () => {
     postMessage: vi.fn(async () => ({ accepted: true })),
     terminate: vi.fn(async () => {
       childActive = false;
-      for (const listener of childListeners) {
-        listener({
-          eventSourceType: TeamRunEventSourceType.TEAM,
-          teamRunId: taskTeamInstance.taskTeamRunId,
-          sourcePath: [],
-          data: { status: "offline" },
-        });
-      }
       return { accepted: true };
     }),
   };
@@ -445,13 +448,18 @@ describe("MixedTeamManager termination lifecycle", () => {
       expect(childRun.postMessage).toHaveBeenCalledTimes(1);
       expect(directory.resolveActiveRun(taskTeamInstance.taskTeamRunId)?.runId)
         .toBe(taskTeamInstance.taskTeamRunId);
-      expect(manager.getMemberStatusSnapshots()).toEqual(expect.arrayContaining([
+      expect(manager.getLeafAgentStatusSnapshots()).toEqual(expect.arrayContaining([
         expect.objectContaining({
-          agent_id: taskTeamInstance.taskTeamRunId,
-          agent_name: "BuildSquad",
-          member_route_key: "BuildSquad",
-          source_path: ["BuildSquad"],
-          status: "initializing",
+          scopeKind: "task_team_member",
+          teamRunId: "parent-1",
+          taskTeamInstance,
+          payload: expect.objectContaining({
+            agent_id: "review-lead-run",
+            agent_name: "review_lead",
+            member_route_key: "BuildSquad/review_lead",
+            source_path: ["BuildSquad", "review_lead"],
+            status: "idle",
+          }),
         }),
       ]));
 
@@ -463,25 +471,15 @@ describe("MixedTeamManager termination lifecycle", () => {
       });
 
       expect(childRun.terminate).toHaveBeenCalledTimes(1);
-      expect(manager.getMemberStatusSnapshots()).not.toEqual(expect.arrayContaining([
-        expect.objectContaining({ agent_id: taskTeamInstance.taskTeamRunId }),
-      ]));
+      expect(manager.getLeafAgentStatusSnapshots()).toEqual([]);
       expect(directory.resolveKnownEntryByTaskTeamRunId(taskTeamInstance.taskTeamRunId)).toBeNull();
-      expect(events).toEqual(expect.arrayContaining([
-        expect.objectContaining({
-          eventSourceType: "TEAM",
-          teamRunId: "parent-1",
-          sourcePath: ["BuildSquad"],
-          taskTeamInstance,
-          data: { status: "offline" },
-        }),
-      ]));
+      expect(events).toEqual([]);
     } finally {
       clearTaskTeamActiveRunDirectory();
     }
   });
 
-  it("joins repeated termination, rejects new work while terminating, and publishes root offline once", async () => {
+  it("joins repeated termination and rejects new work while terminating without aggregate status events", async () => {
     const { manager } = createChildManager();
     const events: unknown[] = [];
     manager.subscribeToEvents((event) => events.push(event));
@@ -507,14 +505,7 @@ describe("MixedTeamManager termination lifecycle", () => {
     await expect(secondTerminate).resolves.toEqual({ accepted: true });
     await expect(manager.terminate()).resolves.toEqual({ accepted: true });
 
-    expect(events).toEqual([
-      expect.objectContaining({
-        eventSourceType: "TEAM",
-        teamRunId: "child-1",
-        sourcePath: [],
-        data: { status: "offline" },
-      }),
-    ]);
+    expect(events).toEqual([]);
     expect(manager.hasActiveMembers()).toBe(false);
   });
 

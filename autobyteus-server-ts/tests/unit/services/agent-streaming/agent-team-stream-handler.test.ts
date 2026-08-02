@@ -18,12 +18,20 @@ describe("AgentTeamStreamHandler", () => {
   const createTeamRun = (overrides: Record<string, unknown> = {}) => ({
     runId: "team-1",
     runtimeKind: "autobyteus",
-    getStatusSnapshot: vi.fn().mockReturnValue({ status: "running" }),
-    getMemberStatusSnapshots: vi.fn().mockReturnValue([{
-      status: "running",
-      target_member_run_id: "member-42",
-      agent_name: "worker-a",
+    getLeafAgentStatusSnapshots: vi.fn().mockReturnValue([{
+      scopeKind: "ordinary_member",
+      teamRunId: "team-1",
+      payload: {
+        status: "running",
+        agent_id: "member-42",
+        agent_name: "worker-a",
+        member_route_key: "worker-a",
+        member_path: ["worker-a"],
+        source_route_key: "worker-a",
+        source_path: ["worker-a"],
+      },
     }]),
+    hasOpenExecutionWork: vi.fn().mockReturnValue(true),
     subscribeToEvents: vi.fn().mockReturnValue(() => {}),
     postMessage: vi.fn().mockResolvedValue({ accepted: true }),
     postMessageToConversationTarget: vi.fn().mockResolvedValue({ accepted: true }),
@@ -257,7 +265,7 @@ describe("AgentTeamStreamHandler", () => {
     });
   });
 
-  it("connects through TeamRunService.resolveTeamRun and sends CONNECTED plus initial status", async () => {
+  it("connects through TeamRunService.resolveTeamRun and sends CONNECTED, leaf status, and lifecycle", async () => {
     const teamRun = createTeamRun();
     const teamRunService = createTeamRunService(null, {
       activeTeamRun: null,
@@ -266,6 +274,13 @@ describe("AgentTeamStreamHandler", () => {
     const handler = new AgentTeamStreamHandler(
       new AgentSessionManager(),
       teamRunService as any,
+      undefined,
+      undefined,
+      undefined,
+      {
+        getLifecycleSnapshot: vi.fn(() => ({ teamRunId: "team-1", isActive: true })),
+        subscribeToLifecycle: vi.fn(() => () => {}),
+      } as any,
     );
     const connection = {
       send: vi.fn(),
@@ -289,16 +304,54 @@ describe("AgentTeamStreamHandler", () => {
       type: ServerMessageType.AGENT_STATUS,
       payload: {
         status: "running",
-        target_member_run_id: "member-42",
+        agent_id: "member-42",
         agent_name: "worker-a",
+        member_route_key: "worker-a",
+        source_path: ["worker-a"],
       },
     });
     expect(JSON.parse(connection.send.mock.calls[2][0])).toMatchObject({
-      type: ServerMessageType.TEAM_STATUS,
+      type: ServerMessageType.TEAM_RUN_LIFECYCLE,
       payload: {
-        status: "running",
+        team_run_id: "team-1",
+        is_active: true,
       },
     });
+  });
+
+  it("continues lifecycle publication after the backend event listener is torn down", async () => {
+    let lifecycleListener: ((snapshot: { teamRunId: string; isActive: boolean }) => void) | null = null;
+    const unsubscribeEvents = vi.fn();
+    const unsubscribeLifecycle = vi.fn();
+    const teamRun = createTeamRun({
+      subscribeToEvents: vi.fn(() => unsubscribeEvents),
+    });
+    const handler = new AgentTeamStreamHandler(
+      new AgentSessionManager(),
+      createTeamRunService(teamRun) as any,
+      undefined,
+      undefined,
+      undefined,
+      {
+        getLifecycleSnapshot: vi.fn(() => ({ teamRunId: "team-1", isActive: true })),
+        subscribeToLifecycle: vi.fn((_teamRunId, listener) => {
+          lifecycleListener = listener;
+          return unsubscribeLifecycle;
+        }),
+      } as any,
+    );
+    const connection = { send: vi.fn(), close: vi.fn() };
+    const sessionId = await handler.connect(connection, "team-1");
+
+    unsubscribeEvents();
+    lifecycleListener?.({ teamRunId: "team-1", isActive: false });
+
+    expect(getSentMessages(connection).at(-1)).toEqual({
+      type: ServerMessageType.TEAM_RUN_LIFECYCLE,
+      payload: { team_run_id: "team-1", is_active: false },
+    });
+    await handler.disconnect(sessionId as string);
+    expect(unsubscribeLifecycle).toHaveBeenCalledTimes(1);
   });
 
   it("closes with 4004 when the team run is missing", async () => {
@@ -1089,10 +1142,18 @@ describe("AgentTeamStreamHandler", () => {
       expect(typeof eventListener).toBe("function");
 
       const teamEvent = {
-        eventSourceType: TeamRunEventSourceType.TEAM,
+        eventSourceType: TeamRunEventSourceType.AGENT,
         teamRunId: "team-1",
         data: {
-          status: "running",
+          runtimeKind: RuntimeKind.AUTOBYTEUS,
+          memberName: "worker-a",
+          memberRunId: "member-42",
+          agentEvent: {
+            runId: "member-42",
+            eventType: AgentRunEventType.AGENT_STATUS_UPDATED,
+            payload: { status: "running" },
+            statusHint: "running",
+          },
         },
       };
 

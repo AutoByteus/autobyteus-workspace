@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import { buildTeamRowsFromContext } from '../runHistoryTeamRows';
 
 describe('runHistoryTeamRows', () => {
@@ -52,7 +51,7 @@ describe('runHistoryTeamRows', () => {
     };
     const teamContext = {
       teamRunId: 'team-software-engineering-1',
-      currentStatus: AgentTeamStatus.Running,
+      isActive: true,
       coordinatorMemberRouteKey: 'solution_designer',
       focusedMemberRouteKey: 'solution_designer',
       memberTree: [
@@ -104,7 +103,7 @@ describe('runHistoryTeamRows', () => {
   it('uses membership labels instead of agent definition names for active team rows', () => {
     const teamContext = {
       teamRunId: 'team-1',
-      currentStatus: AgentTeamStatus.Idle,
+      isActive: true,
       focusedMemberRouteKey: 'program_manager',
       memberTree: [
         {

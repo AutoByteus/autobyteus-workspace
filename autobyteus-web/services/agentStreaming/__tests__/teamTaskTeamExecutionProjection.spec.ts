@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest';
 import { AgentContext } from '~/types/agent/AgentContext';
 import { AgentRunState } from '~/types/agent/AgentRunState';
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import {
   extractTaskTeamIdentity,
   updateTaskTeamExecutionProjectionFromEvent,
@@ -61,7 +60,6 @@ const buildTeamContext = () => {
     teamRunId: null,
     coordinatorMemberRouteKey: 'solution_designer',
     children: [solutionNode, implementationNode],
-    currentStatus: AgentStatus.Offline,
   };
   return {
     teamRunId: 'parent-team-run',
@@ -77,7 +75,7 @@ const buildTeamContext = () => {
       ['SoftwareEngineeringTeam/implementation_engineer', createAgentContext('implementation_engineer', 'implementation-structural-run')],
     ]),
     focusedMemberRouteKey: 'SoftwareEngineeringTeam',
-    currentStatus: AgentTeamStatus.Idle,
+    isActive: true,
     isSubscribed: true,
   } as any;
 };

@@ -26,8 +26,6 @@ import {
   resolveTeamLastActivityAt,
   resolveTeamWorkspaceRootPathFromContext,
   summarizeTeamDraft,
-  toHistoryTeamStatus,
-  toTeamRunStatus,
 } from '~/stores/runHistoryTeamHelpers';
 import { flattenWorkspaceTeamRuns } from '~/stores/runHistoryStoreSupport';
 
@@ -327,8 +325,6 @@ export const buildRunHistoryTeamNodes = (params: {
     summarizeTeamDraft: (teamContext: AgentTeamContext) =>
       summarizeTeamDraft(teamContext, DEFAULT_DRAFT_SUMMARY_PREFIX),
     resolveTeamLastActivityAt,
-    toHistoryTeamStatus,
-    toTeamRunStatus,
     unassignedWorkspaceKey: UNASSIGNED_TEAM_WORKSPACE_KEY,
   });
 };

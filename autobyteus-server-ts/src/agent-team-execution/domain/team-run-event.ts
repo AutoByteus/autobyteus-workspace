@@ -1,5 +1,4 @@
 import type { AgentRunEvent } from "../../agent-execution/domain/agent-run-event.js";
-import type { AgentApiStatus } from "../../agent-execution/domain/agent-status-payload.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { TaskAgentInstanceIdentity } from "./task-agent-instance.js";
 import type { TaskTeamInstanceIdentity } from "./task-team-instance.js";
@@ -8,16 +7,10 @@ import { buildMemberRouteKeyFromPath } from "./team-run-member-identity.js";
 
 export enum TeamRunEventSourceType {
   AGENT = "AGENT",
-  TEAM = "TEAM",
   TASK_DELEGATION = "TASK_DELEGATION",
   COMMUNICATION = "COMMUNICATION",
   MEMBER_INPUT = "MEMBER_INPUT",
 }
-
-export type TeamRunStatusUpdateData = {
-  status: AgentApiStatus;
-  error_message?: string | null;
-};
 
 export type TeamRunAgentEventPayload = {
   runtimeKind: RuntimeKind;
@@ -89,7 +82,6 @@ export type TeamRunMemberInputEventPayload = {
 };
 
 export type TeamRunEventData =
-  | TeamRunStatusUpdateData
   | TeamRunAgentEventPayload
   | TeamRunTaskDelegationEventPayload
   | TeamRunCommunicationEventPayload

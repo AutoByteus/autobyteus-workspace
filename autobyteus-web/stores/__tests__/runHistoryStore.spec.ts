@@ -40,7 +40,6 @@ const buildWorkspaceHistoryGroup = (workspace: Record<string, any>): any => {
     runs: (definition.runs ?? []).map((teamRun: any) => ({
       ...teamRun,
       createdAt: teamRun.createdAt ?? teamRun.lastActivityAt ?? '2026-01-01T00:00:00.000Z',
-      status: teamRun.status ?? (teamRun.isActive ? 'running' : teamRun.lastKnownStatus === 'ERROR' ? 'error' : 'offline'),
       members: (teamRun.members ?? []).map((member: any) => ({
         ...member,
         status: member.status ?? 'offline',
@@ -466,7 +465,7 @@ describe('runHistoryStore', () => {
         ]),
         historicalHydration: null,
         focusedMemberRouteKey: 'super_agent',
-        currentStatus: 'offline',
+        isActive: true,
         isSubscribed: false,
       },
       projectionByMemberRouteKey: new Map(),
@@ -606,7 +605,6 @@ describe('runHistoryStore', () => {
       memberRouteKey: null,
       resolveWorkspaceMetadataByRootPath: expect.any(Function),
       ensureWorkspaceByRootPath: expect.any(Function),
-      currentStatus: 'running',
       memberStatuses: [{
         memberRouteKey: 'super_agent',
         memberName: 'Super Agent',
@@ -651,7 +649,7 @@ describe('runHistoryStore', () => {
     };
     const activeTeamContext = {
       teamRunId: 'team-b-active',
-      currentStatus: 'running',
+      isActive: true,
       isSubscribed: true,
       config: { workspaceId: 'ws-b', isLocked: true },
       leafAgentContextsByRouteKey: new Map([
@@ -669,7 +667,7 @@ describe('runHistoryStore', () => {
     expect(agentRunStoreMock.disconnectAgentStream).not.toHaveBeenCalled();
     expect(agentTeamRunStoreMock.disconnectTeamStream).not.toHaveBeenCalled();
     expect(activeAgentContext.state.currentStatus).toBe('running');
-    expect(activeTeamContext.currentStatus).toBe('running');
+    expect(activeTeamContext.isActive).toBe(true);
     expect(activeTeamMemberContext.state.currentStatus).toBe('running');
   });
 
@@ -858,7 +856,7 @@ describe('runHistoryStore', () => {
     expect(store.getTreeNodes()).toEqual([]);
   });
 
-  it('preserves backend member-scoped statuses when refreshing an active running team', async () => {
+  it('preserves subscribed live member statuses while refreshing root team activity', async () => {
     queryMock.mockResolvedValue({
       data: {
         listWorkspaceRunHistory: [
@@ -946,7 +944,7 @@ describe('runHistoryStore', () => {
       coordinatorMemberRouteKey: 'solution_designer',
       historicalHydration: null,
       focusedMemberName: 'solution_designer',
-      currentStatus: 'offline',
+      isActive: true,
       isSubscribed: true,
     });
 
@@ -954,20 +952,20 @@ describe('runHistoryStore', () => {
     await store.fetchTree();
 
     const context = teamContextsStoreMock.teams.get('team-live-1');
-    expect(context.currentStatus).toBe('running');
-    expect(context.members.get('solution_designer')?.state.currentStatus).toBe('running');
-    expect(context.members.get('implementation_engineer')?.state.currentStatus).toBe('offline');
-    expect(context.members.get('code_reviewer')?.state.currentStatus).toBe('offline');
+    expect(context.isActive).toBe(true);
+    expect(context.members.get('solution_designer')?.state.currentStatus).toBe('offline');
+    expect(context.members.get('implementation_engineer')?.state.currentStatus).toBe('idle');
+    expect(context.members.get('code_reviewer')?.state.currentStatus).toBe('running');
     expect(agentTeamRunStoreMock.connectToTeamStream).not.toHaveBeenCalledWith('team-live-1');
 
     const teamNode = store.getTeamNodes().find((node) => node.teamRunId === 'team-live-1');
-    expect(teamNode?.currentStatus).toBe('running');
+    expect(teamNode?.isActive).toBe(true);
     expect(Object.fromEntries(
       (teamNode?.members || []).map((member) => [member.memberRouteKey, member.currentStatus]),
     )).toEqual({
-      solution_designer: 'running',
-      implementation_engineer: 'offline',
-      code_reviewer: 'offline',
+      solution_designer: 'offline',
+      implementation_engineer: 'idle',
+      code_reviewer: 'running',
     });
   });
 
@@ -2046,7 +2044,7 @@ describe('runHistoryStore', () => {
     );
   });
 
-  it('updates active team aggregate metadata without fanning running status out to members', () => {
+  it('updates root team activity without changing member statuses', () => {
     const store = useRunHistoryStore();
     store.workspaceGroups = [buildWorkspaceHistoryGroup({
       workspaceRootPath: '/ws/a',
@@ -2062,7 +2060,6 @@ describe('runHistoryStore', () => {
           summary: 'Persisted team task',
           lastActivityAt: '2026-01-01T00:00:00.000Z',
           lastKnownStatus: 'IDLE',
-          status: 'offline',
           deleteLifecycle: 'READY',
           isActive: false,
           members: [
@@ -2087,8 +2084,8 @@ describe('runHistoryStore', () => {
 
     store.markTeamAsActive('team-1');
     let team = flattenWorkspaceGroupTeamRuns(store.workspaceGroups[0])[0];
-    expect(team.status).toBe('running');
     expect(team.isActive).toBe(true);
+    expect(team).not.toHaveProperty('status');
     expect(team.members.map((member: any) => [member.memberRouteKey, member.status])).toEqual([
       ['solution_designer', 'running'],
       ['implementation_engineer', 'offline'],
@@ -2096,7 +2093,8 @@ describe('runHistoryStore', () => {
 
     store.reconcileActiveTeamRunIds(['team-1']);
     team = flattenWorkspaceGroupTeamRuns(store.workspaceGroups[0])[0];
-    expect(team.status).toBe('running');
+    expect(team.isActive).toBe(true);
+    expect(team).not.toHaveProperty('status');
     expect(team.members.map((member: any) => [member.memberRouteKey, member.status])).toEqual([
       ['solution_designer', 'running'],
       ['implementation_engineer', 'offline'],
@@ -2169,7 +2167,7 @@ describe('runHistoryStore', () => {
         }],
       ]),
       focusedMemberName: 'super_agent',
-      currentStatus: 'idle',
+      isActive: true,
       isSubscribed: false,
     });
 
@@ -2234,7 +2232,7 @@ describe('runHistoryStore', () => {
         }],
       ]),
       focusedMemberName: 'worker',
-      currentStatus: 'processing',
+      isActive: true,
       isSubscribed: true,
     });
 
@@ -2333,7 +2331,7 @@ describe('runHistoryStore', () => {
         }],
       ]),
       focusedMemberName: 'professor',
-      currentStatus: 'processing',
+      isActive: true,
       isSubscribed: true,
     });
 
@@ -2347,14 +2345,12 @@ describe('runHistoryStore', () => {
       expect.objectContaining({
         isActive: true,
         currentStatus: 'running',
-        lastKnownStatus: 'ACTIVE',
       }),
     );
     expect(studentRow).toEqual(
       expect.objectContaining({
         isActive: true,
         currentStatus: 'idle',
-        lastKnownStatus: 'ACTIVE',
       }),
     );
   });
@@ -2434,7 +2430,7 @@ describe('runHistoryStore', () => {
         }],
       ]),
       focusedMemberRouteKey: 'worker',
-      currentStatus: 'running',
+      isActive: true,
       isSubscribed: true,
       historicalHydration: null,
     });
@@ -2489,7 +2485,7 @@ describe('runHistoryStore', () => {
         }],
       ]),
       focusedMemberName: 'super_agent',
-      currentStatus: 'idle',
+      isActive: true,
       isSubscribed: true,
     });
 
@@ -2568,7 +2564,7 @@ describe('runHistoryStore', () => {
         }],
       ]),
       focusedMemberRouteKey: 'worker',
-      currentStatus: 'running',
+      isActive: true,
       isSubscribed: true,
     });
 
@@ -2636,7 +2632,7 @@ describe('runHistoryStore', () => {
         }],
       ]),
       focusedMemberRouteKey: 'worker',
-      currentStatus: 'running',
+      isActive: true,
       isSubscribed: true,
     });
 
@@ -2719,7 +2715,7 @@ describe('runHistoryStore', () => {
         },
       ])),
       focusedMemberRouteKey: 'solution_designer',
-      currentStatus: 'offline',
+      isActive: false,
       isSubscribed: false,
       historicalHydration: {
         createdAt: '2026-06-01T00:00:00.000Z',
@@ -2797,7 +2793,7 @@ describe('runHistoryStore', () => {
         }],
       ]),
       focusedMemberName: 'super_agent',
-      currentStatus: 'idle',
+      isActive: false,
       isSubscribed: false,
     });
 
@@ -2851,7 +2847,7 @@ describe('runHistoryStore', () => {
         }],
       ]),
       focusedMemberName: 'api_e2e_engineer',
-      currentStatus: 'idle',
+      isActive: false,
       isSubscribed: false,
     });
 
@@ -2919,7 +2915,7 @@ describe('runHistoryStore', () => {
         },
       },
       focusedMemberName: 'api_e2e_engineer',
-      currentStatus: 'idle',
+      isActive: false,
       isSubscribed: false,
     });
 
@@ -2970,7 +2966,7 @@ describe('runHistoryStore', () => {
         }],
       ]),
       focusedMemberName: 'super_agent',
-      currentStatus: 'idle',
+      isActive: false,
       isSubscribed: false,
     });
 
@@ -3156,7 +3152,7 @@ describe('runHistoryStore', () => {
 
     const hydratedTeam = teamContextsStoreMock.teams.get('team-1');
     expect(hydratedTeam).toBeTruthy();
-    expect(hydratedTeam.currentStatus).toBe('running');
+    expect(hydratedTeam.isActive).toBe(true);
     expect(hydratedTeam.members.get('super_agent')?.state.currentStatus).toBe('offline');
     expect(agentTeamRunStoreMock.connectToTeamStream).toHaveBeenCalledWith('team-1');
   });
@@ -3259,11 +3255,12 @@ describe('runHistoryStore', () => {
             runId: 'worker-run',
             currentStatus: 'offline',
             conversation: { id: 'worker-run', messages: [] },
+            resetEventMonitorPresentationRevision: vi.fn(),
           },
         }],
       ]),
       focusedMemberRouteKey: 'worker',
-      currentStatus: 'offline',
+      isActive: true,
       isSubscribed: false,
       historicalHydration: null,
     };
@@ -3397,7 +3394,7 @@ describe('runHistoryStore', () => {
     const hydratedTeam = teamContextsStoreMock.teams.get('team-stale-1');
     expect(hydratedTeam).toBeTruthy();
     expect(agentTeamRunStoreMock.connectToTeamStream).toHaveBeenCalledWith('team-stale-1');
-    expect(hydratedTeam.currentStatus).toBe('running');
+    expect(hydratedTeam.isActive).toBe(true);
     expect(hydratedTeam.config.isLocked).toBe(true);
   });
 
@@ -3512,6 +3509,7 @@ describe('runHistoryStore', () => {
               updatedAt: '2026-01-01T00:00:00.000Z',
             },
             currentStatus: 'idle',
+            resetEventMonitorPresentationRevision: vi.fn(),
           },
           requirement: 'please review the screenshot',
           contextFilePaths: [{ kind: 'workspace_path', id: '/tmp/screenshot.png', locator: '/tmp/screenshot.png', displayName: 'screenshot.png', type: 'Image' }],
@@ -3527,13 +3525,14 @@ describe('runHistoryStore', () => {
               updatedAt: '2026-01-01T00:00:00.000Z',
             },
             currentStatus: 'idle',
+            resetEventMonitorPresentationRevision: vi.fn(),
           },
           requirement: '',
           contextFilePaths: [],
         }],
       ]),
       focusedMemberName: 'solution_designer',
-      currentStatus: 'idle',
+      isActive: true,
       isSubscribed: true,
       unsubscribe: existingTeamContextUnsubscribeSpy,
     };
@@ -3556,6 +3555,7 @@ describe('runHistoryStore', () => {
     expect(existingTeamContext.focusedMemberName).toBe('implementation_engineer');
     expect(existingTeamContextUnsubscribeSpy).toHaveBeenCalledTimes(1);
     expect(existingTeamContext.unsubscribe).toBeUndefined();
+    expect(existingTeamContext.isActive).toBe(false);
     expect(existingTeamContext.isSubscribed).toBe(false);
     expect((existingTeamContext as any).historicalHydration).not.toBeNull();
   });

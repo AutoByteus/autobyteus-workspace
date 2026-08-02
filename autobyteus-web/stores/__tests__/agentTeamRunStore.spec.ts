@@ -3,7 +3,6 @@ import { createPinia, setActivePinia } from 'pinia';
 import { useAgentTeamRunStore } from '../agentTeamRunStore';
 import { TeamStreamingService } from '~/services/agentStreaming';
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import { RestoreAgentTeamRun } from '~/graphql/mutations/agentTeamRunMutations';
 import { resolveTeamStreamMemberContext } from '~/services/agentStreaming/teamStreamMemberContextResolver';
 import type { ServerMessage } from '~/services/agentStreaming/protocol';
@@ -84,7 +83,7 @@ const buildTeamContext = (params: {
   memberContexts: Record<string, any>
   config?: Record<string, any>
   isSubscribed?: boolean
-  currentStatus?: AgentTeamStatus
+  isActive?: boolean
   unsubscribe?: (() => void) | undefined
 }) => {
   const memberTree = Object.keys(params.memberContexts).map((memberRouteKey) =>
@@ -101,7 +100,7 @@ const buildTeamContext = (params: {
     leafAgentContextsByRouteKey: new Map(Object.entries(params.memberContexts)),
     coordinatorMemberRouteKey: Object.keys(params.memberContexts)[0] || null,
     historicalHydration: null,
-    currentStatus: params.currentStatus ?? AgentTeamStatus.Idle,
+    isActive: params.isActive ?? true,
     unsubscribe: params.unsubscribe,
   };
 };
@@ -235,7 +234,16 @@ vi.mock('~/utils/apolloClient', () => ({
 vi.mock('~/stores/agentActivityStore', () => ({
   useAgentActivityStore: () => ({
     clearActivities: mockClearActivities,
+    getCompactionActivities: vi.fn(() => []),
   }),
+}));
+
+vi.mock('~/services/eventMonitor/recentEventMonitorMutationCommit', () => ({
+  beginRecentEventMonitorMutation: vi.fn(() => ({})),
+  commitRecentEventMonitorMutation: vi.fn(() => ({
+    retentionChanged: false,
+    presentationChanged: false,
+  })),
 }));
 
 vi.mock('~/stores/runHistoryStore', () => ({
@@ -325,7 +333,7 @@ describe('agentTeamRunStore', () => {
     const teamContext = {
       teamRunId: 'team-1',
       isSubscribed: true,
-      currentStatus: AgentTeamStatus.Running,
+      isActive: true,
       unsubscribe: undefined as undefined | (() => void),
       leafAgentContextsByRouteKey: new Map([
         ['member-a', { submissionPending: true, state: { runId: 'agent-a', currentStatus: AgentStatus.Running } }],
@@ -351,7 +359,7 @@ describe('agentTeamRunStore', () => {
     expect(mockDisconnect).toHaveBeenCalledTimes(1);
     expect(teamContext.unsubscribe).toBeUndefined();
     expect(teamContext.isSubscribed).toBe(false);
-    expect(teamContext.currentStatus).toBe(AgentTeamStatus.Offline);
+    expect(teamContext.isActive).toBe(false);
     expect(teamContext.leafAgentContextsByRouteKey.get('member-a')?.state.currentStatus).toBe(AgentStatus.Offline);
     expect(teamContext.leafAgentContextsByRouteKey.get('member-a')?.submissionPending).toBe(false);
     expect(teamContext.leafAgentContextsByRouteKey.get('member-b')?.state.currentStatus).toBe(AgentStatus.Offline);
@@ -367,7 +375,7 @@ describe('agentTeamRunStore', () => {
     const teamContext = {
       teamRunId: 'team-terminate-fails-1',
       isSubscribed: true,
-      currentStatus: AgentTeamStatus.Running,
+      isActive: true,
       unsubscribe: undefined as undefined | (() => void),
       leafAgentContextsByRouteKey: new Map([
         ['member-a', { state: { runId: 'agent-a', currentStatus: AgentStatus.Running } }],
@@ -391,8 +399,39 @@ describe('agentTeamRunStore', () => {
     expect(result).toBe(false);
     expect(mockDisconnect).not.toHaveBeenCalled();
     expect(teamContext.isSubscribed).toBe(true);
+    expect(teamContext.isActive).toBe(true);
+    expect(store.stopPendingTeamIds['team-terminate-fails-1']).toBeUndefined();
     expect(runHistoryStoreMock.markTeamAsInactive).not.toHaveBeenCalled();
     expect(runHistoryStoreMock.refreshTreeQuietly).not.toHaveBeenCalled();
+  });
+
+  it('deduplicates concurrent team Stop requests through the shared store-owned pending state', async () => {
+    const teamContext = {
+      teamRunId: 'team-stop-pending-1',
+      isSubscribed: true,
+      isActive: true,
+      leafAgentContextsByRouteKey: new Map(),
+    };
+    teamContextsStoreMock.getTeamContextById.mockReturnValue(teamContext);
+    let resolveMutation!: (value: any) => void;
+    mockMutate.mockReturnValue(new Promise((resolve) => {
+      resolveMutation = resolve;
+    }));
+
+    const store = useAgentTeamRunStore();
+    const firstStop = store.terminateTeamRun(teamContext.teamRunId);
+    expect(store.stopPendingTeamIds[teamContext.teamRunId]).toBe(true);
+
+    await expect(store.terminateTeamRun(teamContext.teamRunId)).resolves.toBe(false);
+    expect(mockMutate).toHaveBeenCalledTimes(1);
+
+    resolveMutation({
+      data: { terminateAgentTeamRun: { success: true, message: 'terminated' } },
+      errors: [],
+    });
+    await expect(firstStop).resolves.toBe(true);
+    expect(teamContext.isActive).toBe(false);
+    expect(store.stopPendingTeamIds[teamContext.teamRunId]).toBeUndefined();
   });
 
   it('discardDraftTeamRun removes a temporary team locally without backend termination', () => {
@@ -502,7 +541,7 @@ describe('agentTeamRunStore', () => {
     const teamContext = buildTeamContext({
       teamRunId: 'temp-team-focused',
       focusedMemberRouteKey: 'code_reviewer',
-      currentStatus: AgentTeamStatus.Offline,
+      isActive: false,
       config: {
         teamDefinitionId: 'software-engineering-team',
         runtimeKind: 'codex_app_server',
@@ -853,7 +892,7 @@ describe('agentTeamRunStore', () => {
     const teamContext = buildTeamContext({
       teamRunId: 'team-restore-pending-1',
       focusedMemberRouteKey: 'professor',
-      currentStatus: AgentTeamStatus.Offline,
+      isActive: false,
       config: {
         teamDefinitionId: 'team-def-1',
         workspaceId: 'ws-1',
@@ -891,7 +930,7 @@ describe('agentTeamRunStore', () => {
     expect(focusedMember.contextFilePaths).toEqual([]);
     expect(focusedMember.submissionPending).toBe(true);
     expect(focusedMember.state.currentStatus).toBe(AgentStatus.Offline);
-    expect(teamContext.currentStatus).toBe(AgentTeamStatus.Offline);
+    expect(teamContext.isActive).toBe(false);
 
     resolveRestore({
       data: {

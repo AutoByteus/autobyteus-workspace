@@ -7,7 +7,6 @@ import { AgentContext } from '~/types/agent/AgentContext';
 import { AgentRunState } from '~/types/agent/AgentRunState';
 import type { AgentRunConfig } from '~/types/agent/AgentRunConfig';
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import { useActiveContextStore } from '~/stores/activeContextStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
@@ -150,7 +149,7 @@ const buildTeamContext = (
     coordinatorMemberRouteKey: 'solution_designer',
     historicalHydration: null,
     focusedMemberRouteKey,
-    currentStatus: AgentTeamStatus.Running,
+    isActive: true,
     isSubscribed: true,
   };
 };

@@ -164,7 +164,6 @@ const cloneNode = (
     conversationTargetSegments,
     role: structuralNode.role ?? null,
     description: structuralNode.description ?? null,
-    currentStatus: null,
   };
 
   if (structuralNode.memberKind === 'agent_team') {
@@ -185,6 +184,7 @@ const cloneNode = (
     ...base,
     memberKind: 'agent',
     agentDefinitionId: structuralNode.agentDefinitionId,
+    currentStatus: null,
   };
   teamContext.memberNodesByRouteKey.set(scopedMemberRouteKey, clonedAgent);
   if (!teamContext.leafAgentContextsByRouteKey.has(scopedMemberRouteKey)) {
@@ -248,7 +248,7 @@ export const resolveTaskTeamScopedMessage = (
   const existingScoped = teamContext.memberNodesByRouteKey.get(
     buildTaskTeamScopedChildRouteKey(taskTeamRunId, relativeMemberRouteKey),
   ) ?? null;
-  const memberKind = existingScoped?.memberKind ?? structuralNode?.memberKind ?? (message.type === 'TEAM_STATUS' ? 'agent_team' : 'agent');
+  const memberKind = existingScoped?.memberKind ?? structuralNode?.memberKind ?? 'agent';
   const scopedMemberRouteKey = buildTaskTeamScopedChildRouteKey(taskTeamRunId, relativeMemberRouteKey);
 
   return {
@@ -324,7 +324,7 @@ export const updateTaskTeamChildStatus = (
   node: TeamMemberNode,
   message: ServerMessage,
 ): void => {
-  if (message.type !== 'AGENT_STATUS' && message.type !== 'TEAM_STATUS') return;
+  if (message.type !== 'AGENT_STATUS' || node.memberKind !== 'agent') return;
   const payload = payloadFor(message);
   if (!payload) return;
   node.currentStatus = normalizeAgentRuntimeStatus(

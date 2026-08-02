@@ -37,15 +37,19 @@ import {
   buildTaskDelegationSystemTaskNotificationEvent,
   isTaskDelegationSystemTaskNotificationMessage,
 } from "../../../task-delegation/task-delegation-system-message-visibility.js";
-import { TeamCommandStatusOverlayStore } from "../../../services/team-command-status-overlay-store.js";
+import { MemberCommandStatusOverlayStore } from "../../../services/member-command-status-overlay-store.js";
+import {
+  buildOrdinaryTeamLeafAgentStatusSnapshot,
+  type TeamLeafAgentStatusPayload,
+} from "../../../domain/team-leaf-agent-status-snapshot.js";
 import type { MixedTeamRunContext, MixedAgentMemberContext } from "../mixed-team-run-context.js";
-import type { MixedTeamEventPublish, MixedTeamMemberHandle, MixedTeamStatusChange } from "./mixed-team-member-handle.js";
+import type { MixedTeamEventPublish, MixedTeamMemberHandle } from "./mixed-team-member-handle.js";
 
 export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
   readonly context: MixedAgentMemberContext;
   private agentRun: AgentRun | null = null;
   private unsubscribe: (() => void) | null = null;
-  private readonly commandStatusOverlayStore: TeamCommandStatusOverlayStore;
+  private readonly commandStatusOverlayStore: MemberCommandStatusOverlayStore;
 
   constructor(private readonly options: {
     teamContext: TeamRunContext<MixedTeamRunContext>;
@@ -55,15 +59,13 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
     memberTeamContextBuilder?: MemberTeamContextBuilder;
     interAgentMessageRouter?: InterAgentMessageRouter;
     publish: MixedTeamEventPublish;
-    notifyStatusChange: MixedTeamStatusChange;
     deliverInterAgentMessage: (request: InterAgentMessageDeliveryIntent) => Promise<AgentOperationResult>;
     taskAgentInstance?: TaskAgentInstanceIdentity | null;
   }) {
     this.context = options.context;
-    this.commandStatusOverlayStore = new TeamCommandStatusOverlayStore({
+    this.commandStatusOverlayStore = new MemberCommandStatusOverlayStore({
       getTeamRunId: () => this.options.teamContext.runId,
       publishEvent: this.options.publish,
-      publishTeamStatusIfChanged: this.options.notifyStatusChange,
     });
   }
 
@@ -71,7 +73,7 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
     return this.agentRun?.isActive() ?? false;
   }
 
-  getStatusSnapshot() {
+  private getAgentStatusPayload(): TeamLeafAgentStatusPayload {
     const snapshot = this.commandStatusOverlayStore.getMemberStatusSnapshot({
       memberContext: this.context,
       taskAgentInstance: this.options.taskAgentInstance ?? null,
@@ -96,7 +98,19 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
             task_id: this.options.taskAgentInstance.taskId,
           }
         : {}),
-    } satisfies AgentStatusPayload;
+    } satisfies TeamLeafAgentStatusPayload;
+  }
+
+  getLeafAgentStatusSnapshots() {
+    return [buildOrdinaryTeamLeafAgentStatusSnapshot({
+      teamRunId: this.options.teamContext.runId,
+      payload: this.getAgentStatusPayload(),
+    })];
+  }
+
+  hasOpenExecutionWork(): boolean {
+    const status = this.getAgentStatusPayload().status;
+    return status === "initializing" || status === "running" || status === "error";
   }
 
   async postMessage(message: AgentInputUserMessage): Promise<AgentOperationResult> {
@@ -120,7 +134,6 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
       } else {
         this.publishCommandStatus("error", result.message ?? null);
       }
-      this.options.notifyStatusChange();
       return { ...result, memberRunId: this.context.memberRunId, memberName: this.context.memberName };
     } catch (error) {
       this.publishCommandStatus("error", String(error));
@@ -157,7 +170,6 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
       } else {
         this.publishCommandStatus("error", result.message ?? null);
       }
-      this.options.notifyStatusChange();
       return { ...result, memberRunId: this.context.memberRunId, memberName: this.context.memberName };
     } catch (error) {
       this.publishCommandStatus("error", String(error));
@@ -227,7 +239,6 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
     this.agentRun = run;
     this.context.platformAgentRunId = run.getPlatformAgentRunId() ?? this.context.platformAgentRunId;
     this.bindEvents(run);
-    this.options.notifyStatusChange();
   }
 
   releaseExistingRunForAdoption(): AgentRun | null {
@@ -257,7 +268,6 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
       : await manager.createAgentRun(memberRunConfig, this.context.memberRunId);
     this.context.platformAgentRunId = this.agentRun.getPlatformAgentRunId() ?? this.context.platformAgentRunId;
     this.bindEvents(this.agentRun);
-    this.options.notifyStatusChange();
     return this.agentRun;
   }
 
@@ -410,7 +420,6 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
       };
       this.commandStatusOverlayStore.recordReplacementEvents([teamEvent]);
       this.options.publish(teamEvent);
-      this.options.notifyStatusChange();
     });
   }
 
@@ -424,7 +433,7 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
       taskAgentInstance: this.options.taskAgentInstance ?? null,
       status,
       errorMessage,
-      currentStatus: () => this.getStatusSnapshot().status,
+      currentStatus: () => this.getAgentStatusPayload().status,
     });
   }
 }

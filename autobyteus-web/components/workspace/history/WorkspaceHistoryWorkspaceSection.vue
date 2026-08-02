@@ -111,7 +111,7 @@
             @click="actions.onSelectRun(run)"
           >
             <div class="min-w-0 flex items-center">
-              <StatusDot class="mr-2" kind="agent" :status="run.currentStatus" />
+              <StatusDot class="mr-2" :status="run.currentStatus" />
               <span class="truncate">
                 {{ formatRunLabel(run.summary) }}
               </span>
@@ -189,7 +189,6 @@
               class="mr-1 h-3.5 w-3.5 text-gray-400 transition-transform"
               :class="state.isTeamDefinitionExpanded(workspaceNode.workspaceId, group.key) ? 'rotate-0' : '-rotate-90'"
             />
-            <StatusDot class="mr-1.5" kind="team" :status="group.status" />
             <span
               class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600"
             >
@@ -226,7 +225,6 @@
                     :class="state.isTeamExpanded(team.teamRunId) ? 'rotate-0' : '-rotate-90'"
                     data-test="workspace-team-run-disclosure"
                   />
-                  <StatusDot class="mr-1.5" kind="team" :status="team.currentStatus" />
                   <span class="truncate font-medium">{{ formatTeamRunLabel(team) }}</span>
                 </button>
 
@@ -242,7 +240,7 @@
                     <Icon icon="heroicons:trash-20-solid" class="h-3.5 w-3.5" />
                   </button>
                   <button
-                    v-else-if="state.canTerminateTeam(team.currentStatus)"
+                    v-else-if="state.canTerminateTeam(team.isActive)"
                     type="button"
                     class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
                     :title="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.terminate_team')"
@@ -262,7 +260,7 @@
                     <Icon icon="heroicons:archive-box-20-solid" class="h-3.5 w-3.5" />
                   </button>
                   <button
-                    v-if="!team.teamRunId.startsWith('temp-') && !state.canTerminateTeam(team.currentStatus) && team.deleteLifecycle === 'READY'"
+                    v-if="!team.teamRunId.startsWith('temp-') && !state.canTerminateTeam(team.isActive) && team.deleteLifecycle === 'READY'"
                     type="button"
                     class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
                     :title="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.delete_team_history_permanently')"
@@ -322,7 +320,7 @@
 
                     <div class="flex min-w-0 flex-1 items-center justify-between py-1 pr-2">
                       <div class="flex min-w-0 items-center">
-                        <StatusDot class="mr-1.5" kind="agent" :status="displayRow.row.row.currentStatus" />
+                        <StatusDot v-if="displayRow.row.row.memberKind === 'agent'" class="mr-1.5" :status="displayRow.row.row.currentStatus" />
                         <span
                           class="mr-1.5 inline-flex h-4 w-4 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.5625rem] font-semibold text-gray-600"
                         >

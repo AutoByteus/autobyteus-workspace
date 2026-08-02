@@ -30,7 +30,6 @@ import {
   DEFAULT_AGENT_RUNTIME_KIND,
   type AgentRunConfig,
 } from "~/types/agent/AgentRunConfig";
-import { AgentTeamStatus } from "~/types/agent/AgentTeamStatus";
 import type {
   AgentTeamContext,
   AgentTeamMemberNode,
@@ -152,7 +151,7 @@ function seedActiveTeamRun(teamRunId = "team-run-1"): AgentTeamContext {
     coordinatorMemberRouteKey: "lead",
     historicalHydration: null,
     focusedMemberRouteKey: "lead",
-    currentStatus: AgentTeamStatus.Offline,
+    isActive: false,
     isSubscribed: false,
   };
   useAgentTeamContextsStore().teams.set(context.teamRunId, context);
@@ -743,7 +742,7 @@ describe("mobile context selection stale-run regression", () => {
                 teamDefinitionName: "Software Team",
                 summary: "Existing team run",
                 createdAt: "2026-05-18T16:00:00.000Z",
-                status: AgentTeamStatus.Running,
+                status: true,
                 isActive: true,
                 coordinatorMemberRouteKey: "lead",
                 members: [

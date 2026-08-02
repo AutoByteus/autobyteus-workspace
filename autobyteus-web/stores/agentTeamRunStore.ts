@@ -16,7 +16,6 @@ import { ConnectionState, TeamStreamingService } from '~/services/agentStreaming
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import type { ContextAttachment } from '~/types/conversation';
 import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig';
-import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { ToolApprovalTarget } from '~/types/segments';
 import { planContextAttachmentSubmission } from '~/utils/contextFiles/contextAttachmentSend';
@@ -96,6 +95,7 @@ export interface FocusedTeamMemberInterruptTarget {
 export const useAgentTeamRunStore = defineStore('agentTeamRun', {
   state: () => ({
     isLaunching: false,
+    stopPendingTeamIds: {} as Record<string, boolean>,
   }),
 
   actions: {
@@ -120,10 +120,8 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         };
         if (existingService.connectionState === ConnectionState.DISCONNECTED) {
           existingService.connect(teamRunId, teamContext);
-          teamContext.isSubscribed = true;
-        } else {
-          teamContext.isSubscribed = true;
         }
+        teamContext.isSubscribed = existingService.connectionState === ConnectionState.CONNECTED;
         return existingService;
       }
 
@@ -133,13 +131,13 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       const service = new TeamStreamingService(wsEndpoint);
       teamStreamingServices.set(teamRunId, service);
 
-      teamContext.isSubscribed = true;
       teamContext.unsubscribe = () => {
         service.disconnect();
         teamStreamingServices.delete(teamRunId);
       };
 
       service.connect(teamRunId, teamContext);
+      teamContext.isSubscribed = service.connectionState === ConnectionState.CONNECTED;
       return service;
     },
 
@@ -186,6 +184,17 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       const teamContextsStore = useAgentTeamContextsStore();
       const runHistoryStore = useRunHistoryStore();
       const teamContext = teamContextsStore.getTeamContextById(teamRunId);
+      if (
+        teamRunId.startsWith('temp-') ||
+        this.stopPendingTeamIds[teamRunId] ||
+        (teamContext && !teamContext.isActive)
+      ) {
+        return false;
+      }
+      this.stopPendingTeamIds = {
+        ...this.stopPendingTeamIds,
+        [teamRunId]: true,
+      };
 
       const teardownLocalRuntime = () => {
         if (teamContext?.isSubscribed || teamStreamingServices.has(teamRunId)) {
@@ -194,18 +203,13 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
 
         if (teamContext) {
           teamContext.isSubscribed = false;
-          teamContext.currentStatus = AgentTeamStatus.Offline;
+          teamContext.isActive = false;
           teamContext.leafAgentContextsByRouteKey.forEach((member) => {
             applyOfflineOrTerminalCleanup(member);
             useAgentActivityStore().clearActivities(member.state.runId);
           });
         }
       };
-
-      if (teamRunId.startsWith('temp-')) {
-        teardownLocalRuntime();
-        return true;
-      }
 
       try {
         const client = getApolloClient()
@@ -230,6 +234,10 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       } catch (error) {
         console.error(`Error terminating team ${teamRunId} on backend:`, error);
         return false;
+      } finally {
+        const next = { ...this.stopPendingTeamIds };
+        delete next[teamRunId];
+        this.stopPendingTeamIds = next;
       }
     },
 
@@ -257,7 +265,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       }
 
       teamContext.isSubscribed = false;
-      teamContext.currentStatus = AgentTeamStatus.Offline;
+      teamContext.isActive = false;
       teamContext.leafAgentContextsByRouteKey.forEach((member) => {
         applyOfflineOrTerminalCleanup(member);
         useAgentActivityStore().clearActivities(member.state.runId);
@@ -413,6 +421,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         if (!finalTeamContext) {
           throw new Error(`Team context '${finalTeamRunId}' not found after creation.`);
         }
+        finalTeamContext.isActive = true;
         const finalizedAttachments = await contextFileUploadStore.finalizeDraftAttachments({
           draftOwner,
           finalOwner: buildTeamMemberFinalContextFileOwner(finalTeamRunId, targetUploadKey),

@@ -19,7 +19,7 @@ import {
 } from './protocol';
 import {
   handleTeamCommunicationMessage,
-  handleTeamStatus,
+  handleTeamRunLifecycle,
 } from './handlers';
 import {
   extractTaskAgentIdentity,
@@ -32,7 +32,6 @@ import { removeTaskTeamExecutionProjection } from './teamTaskTeamExecutionProjec
 import { dispatchGenericTeamMemberMessage } from './teamStreamGenericMessageDispatcher';
 import { getActiveRemoteAccessCredential } from '~/utils/remoteAccess/authorizedTransport';
 import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAuth';
-import { normalizeAgentRuntimeStatus } from '~/services/runHydration/runtimeStatusNormalization';
 import { getApolloClient } from '~/utils/apolloClient';
 import { scheduleTaskDelegationRecordsRefresh } from '~/services/runHydration/taskDelegationHydrationService';
 import type {
@@ -461,17 +460,8 @@ export class TeamStreamingService {
     receivedAt: string | null = null,
   ): void {
     this.refreshTaskDelegationRecords(message, teamContext);
-    if (message.type === 'TEAM_STATUS') {
-      const projectionResult = handleTaskExecutionProjectionMessage(teamContext, message);
-      if (projectionResult.outcome === 'drop') {
-        console.warn(projectionResult.reason);
-        return;
-      }
-      if (projectionResult.outcome === 'handled') {
-        this.scheduleTaskTeamCleanup(teamContext, projectionResult.cleanupTaskTeamRunId);
-        return;
-      }
-      handleTeamStatus(message.payload, teamContext);
+    if (message.type === 'TEAM_RUN_LIFECYCLE') {
+      handleTeamRunLifecycle(message.payload, teamContext);
       return;
     }
 
@@ -502,15 +492,6 @@ export class TeamStreamingService {
       : resolveTeamStreamMemberContext(teamContext, message);
 
     if (!memberResolution) {
-      if (message.type === 'AGENT_STATUS') {
-        const payload = message.payload;
-        const routeKey = payload.member_route_key || payload.source_route_key || payload.member_path?.join('/') || payload.source_path?.join('/') || '';
-        const memberNode = routeKey ? teamContext.memberNodesByRouteKey.get(routeKey) : null;
-        if (memberNode?.memberKind === 'agent_team') {
-          memberNode.currentStatus = normalizeAgentRuntimeStatus(payload.status);
-          return;
-        }
-      }
       console.warn('No member context found for message, skipping');
       return;
     }

@@ -43,9 +43,9 @@
 
     <div class="flex min-w-0 flex-1 items-center py-1 pr-2">
       <StatusDot
+        v-if="row.memberKind === 'agent'"
         class="mr-1.5"
         data-test="workspace-transient-status-dot"
-        :kind="row.memberKind === 'agent_team' ? 'team' : 'agent'"
         :status="row.currentStatus"
         variant="transient"
       />

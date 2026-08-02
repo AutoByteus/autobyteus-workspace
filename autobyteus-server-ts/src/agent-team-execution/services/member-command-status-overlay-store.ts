@@ -1,7 +1,5 @@
 import {
-  buildAgentStatusPayload,
   normalizeAgentApiStatus,
-  type AgentApiStatus,
   type AgentStatusPayload,
 } from "../../agent-execution/domain/agent-status-payload.js";
 import { AgentRunEventType } from "../../agent-execution/domain/agent-run-event.js";
@@ -12,43 +10,34 @@ import {
   type TeamRunEvent,
 } from "../domain/team-run-event.js";
 import type { TaskAgentInstanceIdentity } from "../domain/task-agent-instance.js";
-import {
-  cloneTaskTeamInstanceIdentity,
-  type TaskTeamInstanceIdentity,
-} from "../domain/task-team-instance.js";
 import { buildMemberRouteKeyFromPath } from "../domain/team-run-member-identity.js";
 import {
   buildAgentMemberCommandStartStatusEvent,
   buildAgentMemberCommandStatusPayload,
-  buildTeamCommandStartStatusEvent,
 } from "./team-member-command-start-status-events.js";
 
-export type TeamCommandStatusMemberIdentity = {
+export type MemberCommandStatusIdentity = {
   memberName: string;
   memberRunId: string;
   memberPath: readonly string[];
   memberRouteKey: string;
 };
 
-export class TeamCommandStatusOverlayStore {
-  private readonly memberStatusesByExecutionKey = new Map<string, AgentStatusPayload>();
-  private readonly teamStatusesBySourcePathKey = new Map<string, AgentApiStatus>();
+export class MemberCommandStatusOverlayStore {
+  private readonly statusesByExecutionKey = new Map<string, AgentStatusPayload>();
 
   constructor(private readonly options: {
     getTeamRunId: () => string | null;
     publishEvent: (event: TeamRunEvent) => void;
-    publishTeamStatusIfChanged: () => void;
-    taskTeamInstance?: TaskTeamInstanceIdentity | null;
   }) {}
 
   publishMemberCommandStatus(input: {
     runtimeKind: RuntimeKind;
-    memberContext: TeamCommandStatusMemberIdentity;
+    memberContext: MemberCommandStatusIdentity;
     taskAgentInstance?: TaskAgentInstanceIdentity | null;
     currentStatus: () => unknown;
     status: "initializing" | "error";
     errorMessage?: string | null;
-    notifyStatusChange?: boolean;
   }): boolean {
     if (!this.canPublish(input.status, input.currentStatus)) {
       return false;
@@ -69,65 +58,30 @@ export class TeamCommandStatusOverlayStore {
       status: input.status,
       errorMessage: input.errorMessage ?? null,
     };
-    this.memberStatusesByExecutionKey.set(
-      this.memberStatusExecutionKey({
+    this.statusesByExecutionKey.set(
+      this.statusExecutionKey({
         memberRouteKey: input.memberContext.memberRouteKey,
         taskAgentRunId: input.taskAgentInstance?.taskAgentRunId ?? null,
       }),
       buildAgentMemberCommandStatusPayload(eventInput),
     );
-    this.options.publishEvent(this.withTaskTeamInstance(
-      buildAgentMemberCommandStartStatusEvent(eventInput),
-    ));
-    if (input.notifyStatusChange !== false) {
-      this.options.publishTeamStatusIfChanged();
-    }
-    return true;
-  }
-
-  publishTeamCommandStatus(input: {
-    sourcePath: readonly string[];
-    currentStatus: () => unknown;
-    status: "initializing" | "error";
-    errorMessage?: string | null;
-    notifyStatusChange?: boolean;
-  }): boolean {
-    if (!this.canPublish(input.status, input.currentStatus)) {
-      return false;
-    }
-    const teamRunId = this.options.getTeamRunId();
-    if (!teamRunId) {
-      return false;
-    }
-
-    const sourcePath = [...input.sourcePath];
-    this.teamStatusesBySourcePathKey.set(this.sourcePathKey(sourcePath), input.status);
-    this.options.publishEvent(this.withTaskTeamInstance(buildTeamCommandStartStatusEvent({
-      teamRunId,
-      sourcePath,
-      status: input.status,
-      errorMessage: input.errorMessage ?? null,
-    })));
-    if (input.notifyStatusChange !== false) {
-      this.options.publishTeamStatusIfChanged();
-    }
+    this.options.publishEvent(buildAgentMemberCommandStartStatusEvent(eventInput));
     return true;
   }
 
   getMemberStatusSnapshot(input: {
-    memberContext: TeamCommandStatusMemberIdentity;
+    memberContext: MemberCommandStatusIdentity;
     taskAgentInstance?: TaskAgentInstanceIdentity | null;
     fallback: () => AgentStatusPayload;
   }): AgentStatusPayload {
-    return this.memberStatusesByExecutionKey.get(this.memberStatusExecutionKey({
+    return this.statusesByExecutionKey.get(this.statusExecutionKey({
       memberRouteKey: input.memberContext.memberRouteKey,
       taskAgentRunId: input.taskAgentInstance?.taskAgentRunId ?? null,
-    }))
-      ?? input.fallback();
+    })) ?? input.fallback();
   }
 
   applyMemberStatusOverlays(snapshots: AgentStatusPayload[]): AgentStatusPayload[] {
-    if (this.memberStatusesByExecutionKey.size === 0) {
+    if (this.statusesByExecutionKey.size === 0) {
       return snapshots;
     }
 
@@ -137,7 +91,7 @@ export class TeamCommandStatusOverlayStore {
       if (!executionKey) {
         return snapshot;
       }
-      const overlay = this.memberStatusesByExecutionKey.get(executionKey);
+      const overlay = this.statusesByExecutionKey.get(executionKey);
       if (!overlay) {
         return snapshot;
       }
@@ -145,7 +99,7 @@ export class TeamCommandStatusOverlayStore {
       return { ...snapshot, status: overlay.status };
     });
 
-    for (const [executionKey, overlay] of this.memberStatusesByExecutionKey.entries()) {
+    for (const [executionKey, overlay] of this.statusesByExecutionKey.entries()) {
       if (!appliedExecutionKeys.has(executionKey)) {
         resolved.push(overlay);
       }
@@ -153,49 +107,18 @@ export class TeamCommandStatusOverlayStore {
     return resolved;
   }
 
-  getTeamStatus(input: {
-    sourcePath: readonly string[];
-    fallbackStatus: () => unknown;
-  }): AgentApiStatus {
-    const overlay = this.teamStatusesBySourcePathKey.get(this.sourcePathKey(input.sourcePath));
-    return overlay ?? normalizeAgentApiStatus(input.fallbackStatus());
-  }
-
-  getRepresentedTeamStatusSnapshot(input: {
-    sourcePath: readonly string[];
-    representedMember: TeamCommandStatusMemberIdentity;
-    fallback: () => AgentStatusPayload;
-  }): AgentStatusPayload {
-    const overlay = this.teamStatusesBySourcePathKey.get(this.sourcePathKey(input.sourcePath));
-    if (!overlay) {
-      return input.fallback();
-    }
-    return buildAgentStatusPayload({
-      status: overlay,
-      agentId: input.representedMember.memberRunId,
-      agentName: input.representedMember.memberName,
-      memberRouteKey: input.representedMember.memberRouteKey,
-      memberPath: [...input.representedMember.memberPath],
-      sourceRouteKey: input.representedMember.memberRouteKey,
-      sourcePath: [...input.representedMember.memberPath],
-    });
-  }
-
   recordReplacementEvents(events: readonly TeamRunEvent[]): boolean {
     let changed = false;
     for (const event of events) {
       if (event.eventSourceType === TeamRunEventSourceType.AGENT) {
         changed = this.clearMemberReplacement(event) || changed;
-      } else if (event.eventSourceType === TeamRunEventSourceType.TEAM) {
-        changed = this.clearTeamReplacement(event.sourcePath) || changed;
       }
     }
     return changed;
   }
 
   clear(): void {
-    this.memberStatusesByExecutionKey.clear();
-    this.teamStatusesBySourcePathKey.clear();
+    this.statusesByExecutionKey.clear();
   }
 
   private canPublish(
@@ -220,7 +143,7 @@ export class TeamCommandStatusOverlayStore {
 
     let changed = false;
     if (taskAgentRunId) {
-      changed = this.memberStatusesByExecutionKey.delete(
+      changed = this.statusesByExecutionKey.delete(
         this.taskAgentExecutionKey(taskAgentRunId),
       ) || changed;
     } else {
@@ -239,7 +162,7 @@ export class TeamCommandStatusOverlayStore {
       }
 
       for (const routeKey of routeKeys) {
-        changed = this.memberStatusesByExecutionKey.delete(this.logicalMemberExecutionKey(routeKey)) || changed;
+        changed = this.statusesByExecutionKey.delete(this.logicalMemberExecutionKey(routeKey)) || changed;
       }
     }
     if (changed) {
@@ -250,23 +173,13 @@ export class TeamCommandStatusOverlayStore {
     this.addIdentity(identities, payload.memberRunId);
     this.addIdentity(identities, payload.agentEvent.runId);
     this.addIdentity(identities, payload.agentEvent.payload.agent_id);
-    for (const [executionKey, status] of this.memberStatusesByExecutionKey.entries()) {
+    for (const [executionKey, status] of this.statusesByExecutionKey.entries()) {
       if (status.agent_id && identities.has(status.agent_id)) {
-        this.memberStatusesByExecutionKey.delete(executionKey);
+        this.statusesByExecutionKey.delete(executionKey);
         changed = true;
       }
     }
     return changed;
-  }
-
-  private clearTeamReplacement(sourcePath: readonly string[]): boolean {
-    return this.teamStatusesBySourcePathKey.delete(this.sourcePathKey(sourcePath));
-  }
-
-  private withTaskTeamInstance(event: TeamRunEvent): TeamRunEvent {
-    return this.options.taskTeamInstance
-      ? { ...event, taskTeamInstance: cloneTaskTeamInstanceIdentity(this.options.taskTeamInstance) }
-      : event;
   }
 
   private resolveSnapshotExecutionKey(snapshot: AgentStatusPayload): string | null {
@@ -285,7 +198,7 @@ export class TeamCommandStatusOverlayStore {
     if (Array.isArray(snapshot.source_path) && snapshot.source_path.length > 0) {
       return this.logicalMemberExecutionKey(buildMemberRouteKeyFromPath(snapshot.source_path));
     }
-    for (const [executionKey, status] of this.memberStatusesByExecutionKey.entries()) {
+    for (const [executionKey, status] of this.statusesByExecutionKey.entries()) {
       if (snapshot.agent_id && status.agent_id === snapshot.agent_id) {
         return executionKey;
       }
@@ -293,7 +206,7 @@ export class TeamCommandStatusOverlayStore {
     return null;
   }
 
-  private memberStatusExecutionKey(input: {
+  private statusExecutionKey(input: {
     memberRouteKey: string;
     taskAgentRunId?: string | null;
   }): string {
@@ -309,10 +222,6 @@ export class TeamCommandStatusOverlayStore {
 
   private logicalMemberExecutionKey(memberRouteKey: string): string {
     return `member:${memberRouteKey.trim()}`;
-  }
-
-  private sourcePathKey(sourcePath: readonly string[]): string {
-    return JSON.stringify([...sourcePath]);
   }
 
   private addRouteKey(routeKeys: Set<string>, value: unknown): void {

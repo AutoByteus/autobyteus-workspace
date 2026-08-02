@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { shallowMount } from '@vue/test-utils';
 import RunningTeamGroup from '../RunningTeamGroup.vue';
-import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 
 describe('RunningTeamGroup', () => {
   const RunningTeamRowStub = {
@@ -11,8 +10,8 @@ describe('RunningTeamGroup', () => {
   };
 
   const runs = [
-    { teamRunId: 'team-1', config: { teamDefinitionName: 'Team A' }, currentStatus: AgentTeamStatus.Idle },
-    { teamRunId: 'team-2', config: { teamDefinitionName: 'Team A' }, currentStatus: AgentTeamStatus.Running }
+    { teamRunId: 'team-1', config: { teamDefinitionName: 'Team A' }, isActive: true },
+    { teamRunId: 'team-2', config: { teamDefinitionName: 'Team A' }, isActive: true }
   ] as any;
 
   it('renders header and runs', async () => {

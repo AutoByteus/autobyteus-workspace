@@ -9,7 +9,6 @@ import type { TeamRunConfig } from '~/types/agent/TeamRunConfig';
 import { AgentContext } from '~/types/agent/AgentContext';
 import { DEFAULT_AGENT_RUNTIME_KIND, type AgentRunConfig } from '~/types/agent/AgentRunConfig';
 import { AgentRunState } from '~/types/agent/AgentRunState';
-import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { Conversation } from '~/types/conversation';
 import {
   buildTeamMemberTreeFromDefinition,
@@ -183,7 +182,7 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
         coordinatorMemberRouteKey,
         historicalHydration: null,
         focusedMemberRouteKey,
-        currentStatus: AgentTeamStatus.Offline,
+        isActive: false,
         isSubscribed: false,
       };
 

@@ -17,7 +17,7 @@ export type {
   AgentCommandAckPayload,
   CompactionStatusPayload,
   TokenUsageUpdatedPayload,
-  TeamStatusPayload,
+  TeamRunLifecyclePayload,
   ToolApprovalRequestedPayload,
   ToolApprovedPayload,
   ToolDeniedPayload,

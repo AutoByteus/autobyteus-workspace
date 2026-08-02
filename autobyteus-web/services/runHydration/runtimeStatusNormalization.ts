@@ -1,5 +1,4 @@
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 
 const normalizeToken = (status?: string | null): string =>
   String(status || '')
@@ -18,19 +17,5 @@ export const normalizeAgentRuntimeStatus = (
   if (normalized === AgentStatus.Running || normalized === 'active') return AgentStatus.Running;
   if (normalized === AgentStatus.Idle) return AgentStatus.Idle;
   if (normalized === AgentStatus.Offline || normalized === 'terminated') return AgentStatus.Offline;
-  return fallback;
-};
-
-export const normalizeTeamRuntimeStatus = (
-  status?: string | null,
-  fallback: AgentTeamStatus = AgentTeamStatus.Offline,
-): AgentTeamStatus => {
-  const normalized = normalizeToken(status);
-  if (!normalized) return fallback;
-  if (normalized === AgentTeamStatus.Error) return AgentTeamStatus.Error;
-  if (normalized === AgentTeamStatus.Initializing) return AgentTeamStatus.Initializing;
-  if (normalized === AgentTeamStatus.Running || normalized === 'active' || normalized === 'processing') return AgentTeamStatus.Running;
-  if (normalized === AgentTeamStatus.Idle) return AgentTeamStatus.Idle;
-  if (normalized === AgentTeamStatus.Offline || normalized === 'terminated') return AgentTeamStatus.Offline;
   return fallback;
 };

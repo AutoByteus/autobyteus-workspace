@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest';
 import { mount } from '@vue/test-utils';
 import RunningTeamRow from '../RunningTeamRow.vue';
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 
 const buildMemberContext = (runId: string, status: AgentStatus, messages: any[] = []) => ({
   state: {
@@ -34,7 +33,7 @@ const buildTeamContext = () => {
     teamRunId: 'team-running-row-1',
     focusedMemberRouteKey: 'worker',
     coordinatorMemberRouteKey: 'coordinator',
-    currentStatus: AgentTeamStatus.Running,
+    isActive: true,
     memberTree: [coordinatorNode, workerNode],
     memberNodesByRouteKey: new Map([
       ['coordinator', coordinatorNode],

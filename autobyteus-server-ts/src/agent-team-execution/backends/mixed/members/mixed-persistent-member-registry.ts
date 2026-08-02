@@ -13,7 +13,7 @@ import type { InterAgentMessageDeliveryIntent } from "../../../domain/inter-agen
 import type { MixedTeamRunContext, MixedTeamMemberContext } from "../mixed-team-run-context.js";
 import { MixedAgentMemberHandle } from "./mixed-agent-member-handle.js";
 import { MixedSubTeamMemberHandle } from "./mixed-sub-team-member-handle.js";
-import type { MixedTeamEventPublish, MixedTeamMemberHandle, MixedTeamStatusChange } from "./mixed-team-member-handle.js";
+import type { MixedTeamEventPublish, MixedTeamMemberHandle } from "./mixed-team-member-handle.js";
 import { MixedTeamMemberConfigResolver } from "./mixed-team-member-config-resolver.js";
 
 export type PersistentMemberRegistryAccess = {
@@ -30,7 +30,6 @@ export class MixedPersistentMemberRegistry implements PersistentMemberRegistryAc
     subTeamRunFactory: import("../mixed-sub-team-run-factory.js").MixedSubTeamRunFactory;
     agentRunManager?: AgentRunManager;
     publish: MixedTeamEventPublish;
-    notifyStatusChange: MixedTeamStatusChange;
     deliverInterAgentMessage: (request: InterAgentMessageDeliveryIntent) => Promise<AgentOperationResult>;
   }) {}
 
@@ -81,7 +80,6 @@ export class MixedPersistentMemberRegistry implements PersistentMemberRegistryAc
           config: config as Extract<TeamRunMemberConfig, { memberKind: "agent" }>,
           agentRunManager: this.options.agentRunManager,
           publish: this.options.publish,
-          notifyStatusChange: this.options.notifyStatusChange,
           deliverInterAgentMessage: this.options.deliverInterAgentMessage,
         })
       : new MixedSubTeamMemberHandle({
@@ -90,7 +88,6 @@ export class MixedPersistentMemberRegistry implements PersistentMemberRegistryAc
           config: config as Extract<TeamRunMemberConfig, { memberKind: "agent_team" }>,
           subTeamRunFactory: this.options.subTeamRunFactory,
           publish: this.options.publish,
-          notifyStatusChange: this.options.notifyStatusChange,
           deliverInterAgentMessage: this.options.deliverInterAgentMessage,
         });
     this.handles.set(context.memberRouteKey, handle);

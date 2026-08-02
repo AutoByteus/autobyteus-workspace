@@ -156,7 +156,7 @@ export function useMobileWorkCatalog() {
             focusedMemberRouteKey,
             isActive: run.isActive,
             lastActivityAt: run.createdAt,
-            statusLabel: toStatusLabel(run.status, run.isActive),
+            statusLabel: run.isActive ? 'Active' : 'Inactive',
           };
           items.push({
             key: `team-run:${run.teamRunId}:${focusedMemberRouteKey}`,

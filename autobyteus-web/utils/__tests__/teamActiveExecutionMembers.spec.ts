@@ -145,7 +145,6 @@ describe('teamActiveExecutionMembers', () => {
       isTaskTeamInstance: true,
       taskTeamRunId: 'task-team-run-1',
       taskExecutionStatus: 'active',
-      currentStatus: AgentStatus.Running,
     };
     const teamContext = buildTeamContext(
       buildContext('worker-run', AgentStatus.Offline),

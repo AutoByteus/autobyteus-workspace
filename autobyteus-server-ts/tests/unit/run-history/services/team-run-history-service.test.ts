@@ -64,7 +64,10 @@ describe("TeamRunHistoryService", () => {
     const service = new TeamRunHistoryService("/tmp/memory", {
       catalogService: catalogService as any,
       metadataStore: metadataStore as any,
-      teamRunManager: { getActiveRun: vi.fn().mockReturnValue(null) } as any,
+      teamRunManager: {
+        getActiveRun: vi.fn().mockReturnValue(null),
+        getLifecycleSnapshot: vi.fn((teamRunId: string) => ({ teamRunId, isActive: false })),
+      } as any,
     });
 
     const result = await service.listTeamRunHistory();
@@ -76,7 +79,6 @@ describe("TeamRunHistoryService", () => {
         teamRunId: "team-1",
         summary: "team summary",
         createdAt: "2026-04-11T20:05:00.000Z",
-        status: "offline",
         isActive: false,
         members: [expect.objectContaining({ memberRunId: "member-run-1", status: "offline" })],
       }),
@@ -86,26 +88,33 @@ describe("TeamRunHistoryService", () => {
 
   it("uses active team and member status snapshots for history rows", async () => {
     const activeRun = {
-      getStatusSnapshot: () => ({ status: "idle" }),
-      getMemberStatusSnapshots: () => [
-        {
+      getLeafAgentStatusSnapshots: () => [{
+        scopeKind: "ordinary_member",
+        teamRunId: "team-active",
+        payload: {
           agent_id: "member-run-1",
           agent_name: "Coordinator",
+          member_route_key: "coordinator",
+          member_path: ["Coordinator"],
+          source_route_key: "coordinator",
+          source_path: ["Coordinator"],
           status: "running",
         },
-      ],
+      }],
     };
     const service = new TeamRunHistoryService("/tmp/memory", {
       catalogService: { listCatalogRows: vi.fn().mockResolvedValue([buildCatalogRow("team-active")]) } as any,
       metadataStore: { readMetadata: vi.fn().mockResolvedValue(buildTeamMetadata("team-active")) } as any,
-      teamRunManager: { getActiveRun: vi.fn().mockReturnValue(activeRun) } as any,
+      teamRunManager: {
+        getActiveRun: vi.fn().mockReturnValue(activeRun),
+        getLifecycleSnapshot: vi.fn((teamRunId: string) => ({ teamRunId, isActive: true })),
+      } as any,
     });
 
     const result = await service.listTeamRunHistory();
 
     expect(result[0]).toMatchObject({
       teamRunId: "team-active",
-      status: "idle",
       isActive: true,
       members: [{ memberRunId: "member-run-1", status: "running" }],
     });
@@ -113,19 +122,27 @@ describe("TeamRunHistoryService", () => {
 
   it("does not use bare agent_name as a team member status identity fallback", async () => {
     const activeRun = {
-      getStatusSnapshot: () => ({ status: "running" }),
-      getMemberStatusSnapshots: () => [
-        {
+      getLeafAgentStatusSnapshots: () => [{
+        scopeKind: "ordinary_member",
+        teamRunId: "team-name-only-status",
+        payload: {
           agent_id: "unrelated-run-id",
           agent_name: "Coordinator",
+          member_route_key: "unrelated",
+          member_path: ["unrelated"],
+          source_route_key: "unrelated",
+          source_path: ["unrelated"],
           status: "running",
         },
-      ],
+      }],
     };
     const service = new TeamRunHistoryService("/tmp/memory", {
       catalogService: { listCatalogRows: vi.fn().mockResolvedValue([buildCatalogRow("team-name-only-status")]) } as any,
       metadataStore: { readMetadata: vi.fn().mockResolvedValue(buildTeamMetadata("team-name-only-status")) } as any,
-      teamRunManager: { getActiveRun: vi.fn().mockReturnValue(activeRun) } as any,
+      teamRunManager: {
+        getActiveRun: vi.fn().mockReturnValue(activeRun),
+        getLifecycleSnapshot: vi.fn((teamRunId: string) => ({ teamRunId, isActive: true })),
+      } as any,
     });
 
     const result = await service.listTeamRunHistory();
@@ -161,7 +178,10 @@ describe("TeamRunHistoryService", () => {
     const service = new TeamRunHistoryService("/tmp/memory", {
       catalogService: catalogService as any,
       metadataStore: metadataStore as any,
-      teamRunManager: { getActiveRun: vi.fn().mockReturnValue(null) } as any,
+      teamRunManager: {
+        getActiveRun: vi.fn().mockReturnValue(null),
+        getLifecycleSnapshot: vi.fn((teamRunId: string) => ({ teamRunId, isActive: false })),
+      } as any,
     });
 
     const result = await service.listTeamRunHistory();
@@ -178,7 +198,10 @@ describe("TeamRunHistoryService", () => {
         }),
       } as any,
       catalogService: { listCatalogRows: vi.fn() } as any,
-      teamRunManager: { getActiveRun: vi.fn().mockReturnValue(null) } as any,
+      teamRunManager: {
+        getActiveRun: vi.fn().mockReturnValue(null),
+        getLifecycleSnapshot: vi.fn((teamRunId: string) => ({ teamRunId, isActive: false })),
+      } as any,
     });
 
     await expect(service.getTeamRunResumeConfig("team-legacy")).rejects.toMatchObject({
@@ -197,7 +220,10 @@ describe("TeamRunHistoryService", () => {
     const service = new TeamRunHistoryService("/tmp/memory", {
       catalogService: catalogService as any,
       metadataStore: { readMetadata: vi.fn() } as any,
-      teamRunManager: { getActiveRun: vi.fn().mockReturnValue(null) } as any,
+      teamRunManager: {
+        getActiveRun: vi.fn().mockReturnValue(null),
+        getLifecycleSnapshot: vi.fn((teamRunId: string) => ({ teamRunId, isActive: false })),
+      } as any,
     });
 
     await expect(service.archiveStoredTeamRun("team-archive")).resolves.toEqual({

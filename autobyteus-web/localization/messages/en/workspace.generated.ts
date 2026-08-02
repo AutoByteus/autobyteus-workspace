@@ -137,7 +137,6 @@ const messages = {
   'workspace.components.workspace.team.TeamMembersPanel.terminate': 'Terminate',
   'workspace.components.workspace.team.TeamMembersPanel.terminate_team': 'Terminate Team',
   'workspace.components.workspace.team.TeamMembersPanel.terminate_team_run': 'Terminate Team Run',
-  'workspace.components.workspace.team.TeamStatusDisplay.team_status': '`Team Status: ${visuals.text}`',
   'workspace.components.workspace.team.TeamWorkspaceView.headertitle': 'headerTitle',
   'workspace.components.workspace.team.TeamWorkspaceView.no_active_team_runs': 'No Active Team Runs',
   'workspace.components.workspace.team.TeamWorkspaceView.replying_to': 'Replying to:',

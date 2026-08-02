@@ -40,7 +40,9 @@ const ACTIVE_MEMBER_STATUSES = new Set<AgentStatus>([
 const getMemberStatus = (
   node: TeamMemberNode,
   context: AgentContext | null,
-): AgentStatus | null => context?.state?.currentStatus ?? node.currentStatus ?? null;
+): AgentStatus | null => context?.state?.currentStatus
+  ?? (node.memberKind === 'agent' ? node.currentStatus : null)
+  ?? null;
 
 const isCoordinatorNode = (
   teamContext: AgentTeamContext,
