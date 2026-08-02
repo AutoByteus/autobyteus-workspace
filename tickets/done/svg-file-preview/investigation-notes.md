@@ -66,7 +66,7 @@ authorized content/blob lifecycle.
 - Task Workspace Root:
   /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview.
 - Task Artifact Folder:
-  /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/in-progress/svg-file-preview.
+  /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview.
 - Current Branch: codex/svg-file-preview.
 - Current Worktree / Working Directory:
   /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview.
@@ -93,7 +93,7 @@ authorized content/blob lifecycle.
 
 | Artifact Path | Purpose And Scope | Evidence, Context, Or Decision Captured | Core Artifact(s) Supported | Related Requirement / Acceptance-Criteria IDs (When Applicable) | Status | Approval Applicability / State | Follow-Up Needed |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/in-progress/svg-file-preview/svg-preview-ui-ux-spec.md | UI journey/state contract for direct File Explorer, Event Monitor, and SVG selection in the right-side Artifacts tab | Existing right-panel, read-only, loading/error, keyboard/focus, responsive/runtime, artifact lifecycle, and security-boundary behavior; explicitly rejects a new renderer | requirements doc, design spec | REQ-002–REQ-005, REQ-007; AC-002–AC-007, AC-009–AC-010 | Requirements-ready | Intended behavior is derived from the explicit request, clarification, and screenshot; no additional product choice introduced | Keep synchronized if architecture review changes observable behavior |
+| /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/svg-preview-ui-ux-spec.md | UI journey/state contract for direct File Explorer, Event Monitor, and SVG selection in the right-side Artifacts tab | Existing right-panel, read-only, loading/error, keyboard/focus, responsive/runtime, artifact lifecycle, and security-boundary behavior; explicitly rejects a new renderer | requirements doc, design spec | REQ-002–REQ-005, REQ-007; AC-002–AC-007, AC-009–AC-010 | Requirements-ready | Intended behavior is derived from the explicit request, clarification, and screenshot; no additional product choice introduced | Keep synchronized if architecture review changes observable behavior |
 
 The requirements doc, investigation notes, design spec, supplement, and solution
 revision record are authoritative as a cumulative package. No disposable probe

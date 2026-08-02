@@ -5,6 +5,11 @@ import fastify from "fastify";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { registerRunFileChangeRoutes } from "../../../../src/api/rest/run-file-changes.js";
 
+vi.mock("../../../../src/run-history/services/run-file-change-projection-service.js", () => ({
+  RunFileChangeProjectionService: class {},
+  getRunFileChangeProjectionService: vi.fn(),
+}));
+
 describe("REST run-file-change routes", () => {
   const tempDirs: string[] = [];
 
@@ -80,6 +85,39 @@ describe("REST run-file-change routes", () => {
     expect(response.statusCode).toBe(200);
     expect(response.rawPayload.equals(pngBytes)).toBe(true);
     expect(String(response.headers["content-type"])).toContain("image/png");
+    expect(response.headers["cache-control"]).toBe("no-store");
+  });
+
+  it("streams SVG media content with image/svg+xml when the resolved file exists", async () => {
+    const tempDir = await createTempDir();
+    const filePath = path.join(tempDir, "assets", "diagram.SVG");
+    const svgBytes = Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"><rect width="1" height="1"/></svg>');
+    await fs.mkdir(path.dirname(filePath), { recursive: true });
+    await fs.writeFile(filePath, svgBytes);
+
+    const app = fastify();
+    await registerRunFileChangeRoutes(app, {
+      projectionService: {
+        resolveEntry: vi.fn().mockResolvedValue({
+          entry: {
+            path: "assets/diagram.SVG",
+            type: "file",
+            status: "available",
+          },
+          absolutePath: filePath,
+          isActiveRun: true,
+        }),
+      } as any,
+    });
+
+    const response = await app.inject({
+      method: "GET",
+      url: "/runs/run-1/file-change-content?path=assets%2Fdiagram.SVG",
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.rawPayload.equals(svgBytes)).toBe(true);
+    expect(String(response.headers["content-type"])).toContain("image/svg+xml");
     expect(response.headers["cache-control"]).toBe("no-store");
   });
 

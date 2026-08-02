@@ -61,7 +61,7 @@ local protocol, schema, migration, or compatibility wrapper.
 
 | Artifact Path | Purpose | Related IDs | Relationship To This Design | Status / Approval |
 | --- | --- | --- | --- | --- |
-| /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/in-progress/svg-file-preview/svg-preview-ui-ux-spec.md | Direct File Explorer, Event Monitor, and right-side Artifacts-tab journeys, visible states, read-only/right-panel, focus, artifact lifecycle, and non-happy paths | REQ-002–REQ-005, REQ-007; AC-002–AC-007, AC-009–AC-010 | Confirms reuse of existing surfaces and states; ArtifactContentViewer remains an adapter and adds no renderer | Requirements-ready; explicit request, clarification, and screenshot are approval basis |
+| /Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/svg-preview-ui-ux-spec.md | Direct File Explorer, Event Monitor, and right-side Artifacts-tab journeys, visible states, read-only/right-panel, focus, artifact lifecycle, and non-happy paths | REQ-002–REQ-005, REQ-007; AC-002–AC-007, AC-009–AC-010 | Confirms reuse of existing surfaces and states; ArtifactContentViewer remains an adapter and adds no renderer | Requirements-ready; explicit request, clarification, and screenshot are approval basis |
 
 ## Task Design Health Assessment
 
@@ -460,7 +460,7 @@ does not pre-authorize edits in every optional test file.
 | autobyteus-server-ts/src/api/rest/run-file-changes.ts | File | Artifact transport | Reuse authorized MIME-aware bytes | Existing route | New endpoint |
 | autobyteus-web/docs/content_rendering.md | File | Rendering docs | Update Image family and Event Monitor shared-policy statement | Existing docs contract | Test transcript |
 | autobyteus-web/docs/file_explorer.md | File | File Explorer docs | Update supported image examples | Existing docs contract | New architecture |
-| tickets/in-progress/svg-file-preview | Folder | Solution artifact boundary | Core artifacts and UI supplement | Dedicated handoff package | Source implementation or implementation-handoff |
+| tickets/done/svg-file-preview | Folder | Solution artifact boundary | Core artifacts and UI supplement | Dedicated handoff package | Source implementation or implementation-handoff |
 
 ## Folder Boundary Check
 
@@ -474,7 +474,7 @@ does not pre-authorize edits in every optional test file.
 | autobyteus-web/electron/local-file-protocol | Transport/provider | Yes | Low | Existing trusted local boundary |
 | autobyteus-web/components/workspace/agent | Right-side Artifacts-tab adapter/presentation | Yes | Low | Existing Artifact viewer boundary |
 | autobyteus-web/docs | Off-spine docs | Yes | Low | Durable documentation separate from runtime |
-| tickets/in-progress/svg-file-preview | Off-spine artifacts | Yes | Low | Design evidence separate from source |
+| tickets/done/svg-file-preview | Off-spine artifacts | Yes | Low | Design evidence separate from source |
 
 ## Concrete Examples / Shape Guidance
 

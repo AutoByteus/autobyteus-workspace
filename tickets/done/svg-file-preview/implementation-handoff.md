@@ -2,19 +2,19 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/in-progress/svg-file-preview/requirements-doc.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/in-progress/svg-file-preview/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/in-progress/svg-file-preview/design-spec.md`
-- Supplemental task artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/in-progress/svg-file-preview/svg-preview-ui-ux-spec.md`
-- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/in-progress/svg-file-preview/solution-revision-record.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/in-progress/svg-file-preview/design-review-report.md`
-- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/in-progress/svg-file-preview/architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/in-progress/svg-file-preview/code-review-report.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/in-progress/svg-file-preview/code-review-revision-record.md` (`CRR-002` / `CR-F-002`), followed by revised architecture approval `ARCH-REV-002`.
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/requirements-doc.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/design-spec.md`
+- Supplemental task artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/svg-preview-ui-ux-spec.md`
+- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/solution-revision-record.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/design-review-report.md`
+- Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/architecture-review-revision-record.md`
+- Triggering rework report, revision record, or evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/code-review-report.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/code-review-revision-record.md` (`CRR-002` / `CR-F-002`), followed by revised architecture approval `ARCH-REV-002`.
 
 ## Current Implementation Summary
 
 - Implementation cycle: `Rework`
-- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/in-progress/svg-file-preview/implementation-revision-record.md`
+- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/implementation-revision-record.md`
 - Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-001`, `SR-002`
 - Related architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`
@@ -101,7 +101,7 @@ unchanged from `IR-001`.
 ## Persisted Data Transition Check (When Applicable)
 
 - Approved decision: `Not Affected`.
-- Design-spec decision reference: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/in-progress/svg-file-preview/design-spec.md`, `Persisted Data / State Transition Decision`.
+- Design-spec decision reference: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/design-spec.md`, `Persisted Data / State Transition Decision`.
 - Implementation follows the approved decision without an unapproved migration or version-specific runtime fallback: `Yes`.
 - Direct-use evidence or discard/rebuild result: No persisted subject changes. Open-file state remains transient and existing workspace/local SVG bytes are untouched.
 - Migration implementation and focused checks, only when `Migration Required`: Not applicable.
@@ -129,7 +129,7 @@ These are implementation-scoped checks only; they are not API/E2E sign-off.
 ## Frontend Rendered-Result Check (When Applicable)
 
 - Affected surfaces / journeys: workspace File Explorer SVG selection into the right-side Files `ImageViewer`, Event Monitor SVG path/file-URI activation into the same read-only Files surface, and available SVG selection in the right-side Artifacts tab through `ArtifactContentViewer`.
-- Approved UI/UX, interaction, requirement, or design references: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/in-progress/svg-file-preview/svg-preview-ui-ux-spec.md`, `requirements-doc.md`, and `design-spec.md`, including `UXJ-003` / `REQ-007` / `AC-009` / `AC-010` / `DS-005`.
+- Approved UI/UX, interaction, requirement, or design references: `/Users/normy/autobyteus_org/autobyteus-worktrees/svg-file-preview/tickets/done/svg-file-preview/svg-preview-ui-ux-spec.md`, `requirements-doc.md`, and `design-spec.md`, including `UXJ-003` / `REQ-007` / `AC-009` / `AC-010` / `DS-005`.
 - Existing design system, shared components, and adjacent product surfaces reviewed: `FileItem.vue`, File Explorer store/content actions, `FileExplorerTabs.vue`, `RightSideTabs.vue`, `ArtifactsTab.vue`, `ArtifactItem.vue`, `ArtifactContentViewer.vue`, `FileViewer.vue`, `ImageViewer.vue`, Event Monitor absolute-path action policy, and `useEventMonitorFilePreview.ts`. Existing `FileViewer.spec.ts` and store routing specs were run.
 - Project development / preview instructions and rendered surface used: `autobyteus-web/README.md` development instructions; `pnpm dev --host 127.0.0.1` on `http://127.0.0.1:29695/`; headless Chrome at 1440x900. The app shell rendered and was visually inspected; supporting screenshot was `/tmp/svg-preview-home-2.png`.
 - States, layouts, viewports, and interactions inspected: Initial browser app shell at 1440x900; navigation shell and loading state were visually inspected. The actual workspace File Explorer, Event Monitor, and Artifacts-tab journeys could not be activated because no backend was running; repeated `/rest/health` and related requests were refused/returned 500.

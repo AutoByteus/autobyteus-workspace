@@ -268,6 +268,40 @@ describe('MarkdownRenderer', () => {
     expect(wrapper.findAll('.event-monitor-file-action')).toHaveLength(0);
   });
 
+  it('activates SVG Event Monitor actions by click, Enter, and Space while retaining focusable action semantics', async () => {
+    const wrapper = mount(MarkdownRenderer, {
+      props: {
+        content: '[diagram](file:///tmp/DIAGRAM.SVG) /tmp/second.svg',
+        enableEventMonitorFileActions: true,
+      },
+      global: { plugins: [pinia] },
+    });
+    await flushPromises();
+
+    const controls = wrapper.findAll('[data-event-monitor-file-action-id]');
+    expect(controls).toHaveLength(2);
+    expect(controls.every((control) => control.element.tagName === 'A')).toBe(true);
+    expect(controls.every((control) => control.attributes('role') === 'button')).toBe(true);
+    expect(controls[0].attributes('aria-label')).toContain('Open');
+    expect(controls[0].attributes('title')).toBe('/tmp/DIAGRAM.SVG');
+
+    expect(controls[0].attributes('href')).toBe('#');
+
+    await controls[0].trigger('click');
+    await controls[1].trigger('keydown', { key: 'Enter' });
+    await controls[1].trigger('keydown', { key: ' ' });
+
+    const actions = wrapper.emitted('file-path-action')?.map((entry) => entry[0] as {
+      normalizedCandidate: string;
+      previewType: string;
+    });
+    expect(actions).toEqual([
+      expect.objectContaining({ normalizedCandidate: '/tmp/DIAGRAM.SVG', previewType: 'Image' }),
+      expect.objectContaining({ normalizedCandidate: '/tmp/second.svg', previewType: 'Image' }),
+      expect.objectContaining({ normalizedCandidate: '/tmp/second.svg', previewType: 'Image' }),
+    ]);
+  });
+
   it('keeps unsupported archive, installer, and binary paths source-faithful without actions', async () => {
     const source = '/tmp/archive.zip /tmp/installer.dmg /tmp/setup.pkg /tmp/payload.bin /tmp/unknown.custom';
     const fencedSource = '```text\n/tmp/archive.tar.gz\n/tmp/application.app\n```';
