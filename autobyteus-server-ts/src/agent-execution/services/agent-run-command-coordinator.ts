@@ -28,7 +28,7 @@ import {
 } from "../../services/agent-streaming/agent-stream-broadcaster.js";
 import { ServerMessage, ServerMessageType } from "../../services/agent-streaming/models.js";
 import type {
-  AgentCommandAckPayload,
+  SendMessageCommandAckPayload,
   AgentRunCommandCoordinatorInput,
   AgentRunCommandCoordinatorResult,
   AgentRunCommandErrorCode,
@@ -391,7 +391,7 @@ export class AgentRunCommandCoordinator {
 
   private async recordResult(
     record: AgentRunCommandRecord,
-    state: AgentCommandAckPayload["state"],
+    state: SendMessageCommandAckPayload["state"],
     accepted: boolean,
     duplicate: boolean,
     statusPayloadOverride?: AgentStatusPayload,

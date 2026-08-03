@@ -1,4 +1,5 @@
 import { asObject, asString, type JsonObject } from "../codex-app-server-json.js";
+import { CodexInputSubmissionError } from "./codex-input-submission-error.js";
 
 export const resolveThreadId = (payload: unknown): string | null => {
   const response = asObject(payload);
@@ -6,10 +7,29 @@ export const resolveThreadId = (payload: unknown): string | null => {
   return asString(thread?.id);
 };
 
-export const resolveTurnId = (payload: unknown): string | null => {
+export const resolveStartedTurnId = (payload: unknown): string => {
   const response = asObject(payload);
   const turn = asObject(response?.turn);
-  return asString(turn?.id);
+  const turnId = asString(turn?.id);
+  if (!turnId) {
+    throw new CodexInputSubmissionError(
+      "CODEX_TURN_START_RESPONSE_INVALID",
+      "Codex turn/start response did not include a nonempty turn.id.",
+    );
+  }
+  return turnId;
+};
+
+export const resolveSteeredTurnId = (payload: unknown): string => {
+  const response = asObject(payload);
+  const turnId = asString(response?.turnId);
+  if (!turnId) {
+    throw new CodexInputSubmissionError(
+      "CODEX_TURN_STEER_RESPONSE_INVALID",
+      "Codex turn/steer response did not include a nonempty turnId.",
+    );
+  }
+  return turnId;
 };
 
 export const resolveThreadIdFromNotification = (params: JsonObject): string | null =>

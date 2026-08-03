@@ -6,7 +6,14 @@
  */
 
 import type { AgentCommandAckPayload } from './agentCommandTypes';
-export type { AgentCommandAckPayload } from './agentCommandTypes';
+export type {
+  AgentCommandAckPayload,
+  InterruptCommandTarget,
+  InterruptGenerationCommandAckPayload,
+  InterruptCommandTransportFailure,
+  PendingInterruptCommand,
+  SendMessageCommandAckPayload,
+} from './agentCommandTypes';
 import type { CompactionStatusPayload } from './compactionTypes';
 export type { CompactionStatusPayload } from './compactionTypes';
 import type { ExternalUserMessagePayload } from './externalUserMessageTypes';
@@ -427,6 +434,7 @@ export interface ToolActionPayload {
 }
 
 export interface InterruptGenerationPayload {
+  command_id: string;
   target_member_route_key?: string;
   target_member_path?: string[];
   targetMemberRouteKey?: string;
@@ -442,6 +450,7 @@ export type SendMessageClientMessage = {
 
 export type AgentInterruptGenerationClientMessage = {
   type: 'INTERRUPT_GENERATION';
+  payload: InterruptGenerationPayload;
 };
 
 export type TeamInterruptGenerationClientMessage = {

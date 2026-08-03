@@ -25,6 +25,8 @@ const {
   teamDefinitionStoreMock,
   contextFileUploadStoreMock,
   runtimeProviderLookup,
+  mockServiceOptions,
+  addToastMock,
 } = vi.hoisted(() => ({
   mockConnect: vi.fn(),
   mockDisconnect: vi.fn(),
@@ -66,6 +68,8 @@ const {
     codex_app_server: [{ provider: { id: 'OPENAI', name: 'OpenAI' }, models: [{ modelIdentifier: 'gpt-5.3-codex' }, { modelIdentifier: 'gpt-5.4' }] }],
     claude_agent_sdk: [{ provider: { id: 'ANTHROPIC', name: 'Anthropic' }, models: [{ modelIdentifier: 'claude-sonnet' }, { modelIdentifier: 'claude-opus' }] }],
   },
+  mockServiceOptions: { value: null as any },
+  addToastMock: vi.fn(),
 }));
 
 const buildAgentNode = (memberRouteKey: string, agentDefinitionId = `${memberRouteKey}-def`) => ({
@@ -198,7 +202,9 @@ vi.mock('~/services/agentStreaming', () => ({
     CONNECTED: 'connected',
     RECONNECTING: 'reconnecting',
   },
-  TeamStreamingService: vi.fn().mockImplementation(() => ({
+  TeamStreamingService: vi.fn().mockImplementation((_endpoint, options) => {
+    mockServiceOptions.value = options;
+    return {
     get connectionState() {
       return mockConnectionState.value;
     },
@@ -209,7 +215,12 @@ vi.mock('~/services/agentStreaming', () => ({
     approveTool: mockApproveTool,
     denyTool: mockDenyTool,
     interruptGeneration: mockInterruptGeneration,
-  })),
+    };
+  }),
+}));
+
+vi.mock('~/composables/useToasts', () => ({
+  useToasts: () => ({ addToast: addToastMock }),
 }));
 
 vi.mock('~/stores/windowNodeContextStore', () => ({
@@ -276,6 +287,9 @@ describe('agentTeamRunStore', () => {
     mockApproveTool.mockReset();
     mockDenyTool.mockReset();
     mockInterruptGeneration.mockReset();
+    mockInterruptGeneration.mockReturnValue(true);
+    mockServiceOptions.value = null;
+    addToastMock.mockReset();
     mockMutate.mockReset();
     mockQuery.mockReset();
     teamContextsStoreMock.activeTeamContext = null;
@@ -320,7 +334,13 @@ describe('agentTeamRunStore', () => {
     const store = useAgentTeamRunStore();
     store.connectToTeamStream('team-1');
 
-    expect(TeamStreamingService).toHaveBeenCalledWith('ws://node-a.example/ws/agent-team');
+    expect(TeamStreamingService).toHaveBeenCalledWith(
+      'ws://node-a.example/ws/agent-team',
+      expect.objectContaining({
+        onInterruptCommandResult: expect.any(Function),
+        onInterruptCommandTransportFailure: expect.any(Function),
+      }),
+    );
     expect(mockConnect).toHaveBeenCalledWith('team-1', teamContext);
     expect(teamContext.isSubscribed).toBe(true);
     expect(typeof teamContext.unsubscribe).toBe('function');
@@ -501,7 +521,13 @@ describe('agentTeamRunStore', () => {
     expect(mockMutate).not.toHaveBeenCalled();
     expect(runHistoryStoreMock.markTeamAsActive).toHaveBeenCalledWith('team-1');
     expect(runHistoryStoreMock.refreshTreeQuietly).toHaveBeenCalledTimes(1);
-    expect(TeamStreamingService).toHaveBeenCalledWith('ws://node-a.example/ws/agent-team');
+    expect(TeamStreamingService).toHaveBeenCalledWith(
+      'ws://node-a.example/ws/agent-team',
+      expect.objectContaining({
+        onInterruptCommandResult: expect.any(Function),
+        onInterruptCommandTransportFailure: expect.any(Function),
+      }),
+    );
     expect(mockConnect).toHaveBeenCalledWith('team-1', teamContext);
     expect(mockSendMessage).toHaveBeenCalledWith('hello from history', {
       segments: [{ kind: 'member', memberRouteKey: 'professor' }],
@@ -1063,11 +1089,43 @@ describe('agentTeamRunStore', () => {
     });
 
     expect(result).toBe(true);
-    expect(mockInterruptGeneration).toHaveBeenCalledWith({
-      targetMemberRouteKey: 'professor',
-      targetMemberRunId: 'member-1',
-    });
+    expect(mockInterruptGeneration).toHaveBeenCalledWith(
+      expect.stringMatching(/^client_interrupt_/),
+      {
+        targetMemberRouteKey: 'professor',
+        targetMemberRunId: 'member-1',
+      },
+    );
     expect(focusedMember.submissionPending).toBe(true);
+  });
+
+  it('shows one member-aware interrupt failure toast without changing team activity', () => {
+    const teamContext = buildTeamContext({
+      teamRunId: 'team-toast-1',
+      focusedMemberRouteKey: 'reviewer',
+      memberContexts: { reviewer: { state: { runId: 'reviewer-run', conversation: { messages: [] } } } },
+      isActive: true,
+    });
+    setActiveTeamContext(teamContext);
+    const store = useAgentTeamRunStore();
+    store.connectToTeamStream('team-toast-1');
+
+    mockServiceOptions.value.onInterruptCommandTransportFailure({
+      commandId: 'client_interrupt_transport',
+      target: {
+        target_kind: 'team_member', team_run_id: 'team-toast-1',
+        member_route_key: 'reviewer', member_run_id: 'reviewer-run',
+      },
+      reason: {
+        code: 'INTERRUPT_TRANSPORT_DISCONNECTED',
+        connectionState: 'disconnected',
+        message: 'Connection closed.',
+      },
+    });
+
+    expect(addToastMock).toHaveBeenCalledTimes(1);
+    expect(addToastMock).toHaveBeenCalledWith(expect.stringContaining('reviewer'), 'error');
+    expect(teamContext.isActive).toBe(true);
   });
 
   it('interruptFocusedMemberGeneration rejects missing member target without using active-team fallback', () => {

@@ -590,6 +590,7 @@ describe("AgentTeamStreamHandler", () => {
       JSON.stringify({
         type: ClientMessageType.INTERRUPT_GENERATION,
         payload: {
+          command_id: "client_interrupt_missing_team",
           target_member_route_key: "worker-a",
           target_member_run_id: "member-42",
         },
@@ -598,6 +599,18 @@ describe("AgentTeamStreamHandler", () => {
 
     expect(teamRunService.resolveTeamRun).not.toHaveBeenCalled();
     expect(teamRun.interruptMember).not.toHaveBeenCalled();
+    expect(getSentMessages(connection).at(-1)).toMatchObject({
+      type: ServerMessageType.AGENT_COMMAND_ACK,
+      payload: {
+        command_id: "client_interrupt_missing_team",
+        state: "rejected",
+        code: "RUN_NOT_FOUND",
+        target: {
+          target_kind: "team_member", team_run_id: "team-1",
+          member_route_key: "worker-a", member_run_id: "member-42",
+        },
+      },
+    });
   });
 
   it("routes interrupt-generation to the explicit member route key with run-id as guard", async () => {
@@ -619,6 +632,7 @@ describe("AgentTeamStreamHandler", () => {
       JSON.stringify({
         type: ClientMessageType.INTERRUPT_GENERATION,
         payload: {
+          command_id: "client_interrupt_worker",
           target_member_route_key: "worker-a",
           target_member_run_id: "member-42",
         },
@@ -626,6 +640,18 @@ describe("AgentTeamStreamHandler", () => {
     );
 
     expect(teamRun.interruptMember).toHaveBeenCalledWith("worker-a", "member-42");
+    expect(getSentMessages(connection).at(-1)).toEqual({
+      type: ServerMessageType.AGENT_COMMAND_ACK,
+      payload: {
+        command_type: "INTERRUPT_GENERATION",
+        command_id: "client_interrupt_worker",
+        state: "accepted",
+        target: {
+          target_kind: "team_member", team_run_id: "team-1",
+          member_route_key: "worker-a", member_run_id: "member-42",
+        },
+      },
+    });
   });
 
   it("routes interrupt-generation with structured camelCase member path selectors", async () => {
@@ -647,6 +673,7 @@ describe("AgentTeamStreamHandler", () => {
       JSON.stringify({
         type: ClientMessageType.INTERRUPT_GENERATION,
         payload: {
+          command_id: "client_interrupt_nested",
           targetMemberPath: ["BuildSquad", "review_lead"],
           targetMemberRunId: "child-member-1",
         },
@@ -674,7 +701,7 @@ describe("AgentTeamStreamHandler", () => {
       sessionId as string,
       JSON.stringify({
         type: ClientMessageType.INTERRUPT_GENERATION,
-        payload: {},
+        payload: { command_id: "client_interrupt_no_target" },
       }),
     );
 
@@ -682,6 +709,13 @@ describe("AgentTeamStreamHandler", () => {
     expect(getSentErrors(connection).at(-1)).toMatchObject({
       payload: {
         code: "INVALID_TARGET",
+      },
+    });
+    expect(getSentMessages(connection).filter(
+      (message) => message.type === ServerMessageType.AGENT_COMMAND_ACK,
+    ).at(-1)).toMatchObject({
+      payload: {
+        command_id: "client_interrupt_no_target", state: "rejected", code: "INVALID_TARGET",
       },
     });
   });
@@ -705,6 +739,7 @@ describe("AgentTeamStreamHandler", () => {
       JSON.stringify({
         type: ClientMessageType.INTERRUPT_GENERATION,
         payload: {
+          command_id: "client_interrupt_scalar",
           target_member_name: "worker-a",
         },
       }),
@@ -714,6 +749,42 @@ describe("AgentTeamStreamHandler", () => {
     expect(getSentErrors(connection).at(-1)).toMatchObject({
       payload: {
         code: "INVALID_TARGET",
+      },
+    });
+    expect(getSentMessages(connection).filter(
+      (message) => message.type === ServerMessageType.AGENT_COMMAND_ACK,
+    ).at(-1)).toMatchObject({
+      payload: {
+        command_id: "client_interrupt_scalar", state: "rejected", code: "INVALID_TARGET",
+      },
+    });
+  });
+
+  it("returns one failed acknowledgement when exact member interruption throws", async () => {
+    const teamRun = createTeamRun({
+      interruptMember: vi.fn().mockRejectedValue(new Error("provider channel failed")),
+    });
+    const handler = new AgentTeamStreamHandler(
+      new AgentSessionManager(), createTeamRunService(teamRun) as any,
+    );
+    const connection = { send: vi.fn(), close: vi.fn() };
+    const sessionId = await handler.connect(connection, "team-1");
+    connection.send.mockClear();
+
+    await handler.handleMessage(sessionId!, JSON.stringify({
+      type: ClientMessageType.INTERRUPT_GENERATION,
+      payload: {
+        command_id: "client_interrupt_throw", target_member_route_key: "worker-a",
+        target_member_run_id: "member-42",
+      },
+    }));
+
+    expect(connection.send).toHaveBeenCalledTimes(1);
+    expect(JSON.parse(connection.send.mock.calls[0][0])).toMatchObject({
+      type: ServerMessageType.AGENT_COMMAND_ACK,
+      payload: {
+        command_id: "client_interrupt_throw", state: "failed",
+        code: "INTERRUPT_EXECUTION_FAILED", message: "provider channel failed",
       },
     });
   });

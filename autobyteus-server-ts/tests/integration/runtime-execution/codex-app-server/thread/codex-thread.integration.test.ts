@@ -232,7 +232,7 @@ describeCodexThreadIntegration("CodexThread integration (live transport)", () =>
       90_000,
     );
 
-    const result = await thread.sendTurn(
+    const result = await thread.submitInput(
       new AgentInputUserMessage("Reply with the single word READY."),
     );
 
@@ -292,7 +292,7 @@ describeCodexThreadIntegration("CodexThread integration (live transport)", () =>
       90_000,
     );
 
-    await thread.sendTurn(
+    await thread.submitInput(
       new AgentInputUserMessage(
         `Use the terminal tool to execute this command exactly once:\ncat '${escapeForSingleQuotedShell(sourcePath)}' > '${escapeForSingleQuotedShell(destinationPath)}'\nThis command should require approval first. Do not simulate execution.`,
       ),
@@ -362,7 +362,7 @@ describeCodexThreadIntegration("CodexThread integration (live transport)", () =>
       90_000,
     );
 
-    await thread.sendTurn(
+    await thread.submitInput(
       new AgentInputUserMessage(
         `Use the terminal tool to execute this command exactly once:\ncat '${escapeForSingleQuotedShell(sourcePath)}' > '${escapeForSingleQuotedShell(destinationPath)}'\nThis command should require approval first. Do not simulate execution.`,
       ),
@@ -428,7 +428,7 @@ describeCodexThreadIntegration("CodexThread integration (live transport)", () =>
       90_000,
     );
 
-    const turn = await thread.sendTurn(
+    const turn = await thread.submitInput(
       new AgentInputUserMessage(
         "Use the terminal tool to execute this command exactly once:\nsleep 30\nDo not simulate execution. After the command completes, respond with DONE.",
       ),

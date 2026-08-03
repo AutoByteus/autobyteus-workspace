@@ -168,6 +168,24 @@ describe("CodexAgentRunBackend", () => {
     expect(result.message).toContain("Failed to send user input");
   });
 
+  it("preserves structured Codex input submission failure codes", async () => {
+    const { backend } = createBackend({
+      client: {
+        request: vi.fn().mockResolvedValue({ turn: {} }),
+        respondSuccess: vi.fn(),
+        respondError: vi.fn(),
+      },
+    });
+
+    const result = await backend.postUserMessage(new AgentInputUserMessage("invalid start"));
+
+    expect(result).toMatchObject({
+      accepted: false,
+      code: "CODEX_TURN_START_RESPONSE_INVALID",
+      message: expect.stringContaining("turn.id"),
+    });
+  });
+
   it("dispatches idle lifecycle events even when token usage updates were observed earlier", async () => {
     const { backend, codexThread, emitThreadEvent } = createBackend();
     codexThread.runContext.runtimeContext.activeTurnId = "turn-usage-1";

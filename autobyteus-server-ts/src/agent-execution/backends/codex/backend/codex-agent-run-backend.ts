@@ -10,12 +10,18 @@ import type { CodexRunContext } from "./codex-agent-run-context.js";
 import { projectCodexAgentLifecycleSnapshot } from "../events/codex-status-projector.js";
 import type { CodexAppServerMessage } from "../thread/codex-app-server-message.js";
 import { AgentRunEventType, type AgentRunEvent } from "../../../domain/agent-run-event.js";
+import { CodexInputSubmissionError } from "../thread/codex-input-submission-error.js";
 
-const buildCommandFailure = (operation: string, error: unknown): AgentOperationResult => ({
-  accepted: false,
-  code: "RUNTIME_COMMAND_FAILED",
-  message: `Failed to ${operation} for runtime 'codex_app_server': ${String(error)}`,
-});
+const buildCommandFailure = (operation: string, error: unknown): AgentOperationResult => {
+  if (error instanceof CodexInputSubmissionError) {
+    return { accepted: false, code: error.code, message: error.message };
+  }
+  return {
+    accepted: false,
+    code: "RUNTIME_COMMAND_FAILED",
+    message: `Failed to ${operation} for runtime 'codex_app_server': ${String(error)}`,
+  };
+};
 
 const logger = {
   error: (...args: unknown[]) => console.error(...args),
@@ -112,7 +118,7 @@ export class CodexAgentRunBackend implements AgentRunBackend {
     turnId: string | null;
     platformAgentRunId: string | null;
   }> {
-    const result = await this.codexThread.sendTurn(message);
+    const result = await this.codexThread.submitInput(message);
     return {
       turnId: result.turnId,
       platformAgentRunId: this.getPlatformAgentRunId(),

@@ -554,11 +554,107 @@ describe("AgentStreamHandler", () => {
       sessionId as string,
       JSON.stringify({
         type: ClientMessageType.INTERRUPT_GENERATION,
+        payload: { command_id: "client_interrupt_missing" },
       }),
     );
 
     expect(commandCoordinator.postUserMessage).not.toHaveBeenCalled();
     expect(activeRun.interrupt).not.toHaveBeenCalled();
+    expect(connection.send.mock.calls.map(([raw]) => JSON.parse(raw as string)).at(-1)).toEqual({
+      type: ServerMessageType.AGENT_COMMAND_ACK,
+      payload: {
+        command_type: "INTERRUPT_GENERATION",
+        command_id: "client_interrupt_missing",
+        state: "rejected",
+        code: "RUN_NOT_FOUND",
+        message: "Agent run 'agent-123' is not active.",
+        target: { target_kind: "standalone_run", run_id: "agent-123" },
+      },
+    });
+  });
+
+  it("returns exactly one same-socket acknowledgement for an accepted interrupt", async () => {
+    const activeRun = createActiveRun({
+      interrupt: vi.fn().mockResolvedValue({ accepted: true }),
+    });
+    const handler = new AgentStreamHandler(
+      new AgentSessionManager(),
+      createAgentRunService(activeRun) as any,
+      undefined,
+      undefined,
+      createCommandCoordinator() as any,
+      createStatusProjectionService() as any,
+    );
+    const connection = { send: vi.fn(), close: vi.fn() };
+    const sessionId = await handler.connect(connection, "agent-123");
+    connection.send.mockClear();
+
+    await handler.handleMessage(sessionId!, JSON.stringify({
+      type: ClientMessageType.INTERRUPT_GENERATION,
+      payload: { command_id: " client_interrupt_accept " },
+    }));
+
+    expect(activeRun.interrupt).toHaveBeenCalledWith(null);
+    expect(connection.send).toHaveBeenCalledTimes(1);
+    expect(JSON.parse(connection.send.mock.calls[0][0])).toEqual({
+      type: ServerMessageType.AGENT_COMMAND_ACK,
+      payload: {
+        command_type: "INTERRUPT_GENERATION",
+        command_id: "client_interrupt_accept",
+        state: "accepted",
+        target: { target_kind: "standalone_run", run_id: "agent-123" },
+      },
+    });
+  });
+
+  it("rejects an empty interrupt command id before runtime execution", async () => {
+    const activeRun = createActiveRun({ interrupt: vi.fn().mockResolvedValue({ accepted: true }) });
+    const handler = new AgentStreamHandler(
+      new AgentSessionManager(), createAgentRunService(activeRun) as any,
+      undefined, undefined, createCommandCoordinator() as any,
+      createStatusProjectionService() as any,
+    );
+    const connection = { send: vi.fn(), close: vi.fn() };
+    const sessionId = await handler.connect(connection, "agent-123");
+    connection.send.mockClear();
+
+    await handler.handleMessage(sessionId!, JSON.stringify({
+      type: ClientMessageType.INTERRUPT_GENERATION,
+      payload: { command_id: "   " },
+    }));
+
+    expect(activeRun.interrupt).not.toHaveBeenCalled();
+    expect(JSON.parse(connection.send.mock.calls[0][0])).toMatchObject({
+      type: ServerMessageType.AGENT_COMMAND_ACK,
+      payload: { command_id: "", state: "rejected", code: "INVALID_COMMAND_ID" },
+    });
+  });
+
+  it("maps interrupt provider failures without emitting lifecycle status", async () => {
+    const activeRun = createActiveRun({
+      interrupt: vi.fn().mockResolvedValue({
+        accepted: false, code: "PROVIDER_REJECTED", message: "Cannot interrupt now.",
+      }),
+    });
+    const handler = new AgentStreamHandler(
+      new AgentSessionManager(), createAgentRunService(activeRun) as any,
+      undefined, undefined, createCommandCoordinator() as any,
+      createStatusProjectionService() as any,
+    );
+    const connection = { send: vi.fn(), close: vi.fn() };
+    const sessionId = await handler.connect(connection, "agent-123");
+    connection.send.mockClear();
+
+    await handler.handleMessage(sessionId!, JSON.stringify({
+      type: ClientMessageType.INTERRUPT_GENERATION,
+      payload: { command_id: "client_interrupt_failed" },
+    }));
+
+    expect(connection.send).toHaveBeenCalledTimes(1);
+    expect(JSON.parse(connection.send.mock.calls[0][0])).toMatchObject({
+      type: ServerMessageType.AGENT_COMMAND_ACK,
+      payload: { state: "failed", code: "PROVIDER_REJECTED" },
+    });
   });
 
   it("handles tool approvals for active sessions", async () => {

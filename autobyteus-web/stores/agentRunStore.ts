@@ -2,7 +2,11 @@ import { defineStore } from 'pinia';
 import { getApolloClient } from '~/utils/apolloClient'
 import { CancelPreparedAgentRun, PrepareAgentRun, TerminateAgentRun } from '~/graphql/mutations/agentMutations';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
-import { AgentStreamingService } from '~/services/agentStreaming';
+import {
+  AgentStreamingService,
+  type InterruptGenerationCommandAckPayload,
+  type InterruptCommandTransportFailure,
+} from '~/services/agentStreaming';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { useWorkspaceStore } from '~/stores/workspace';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
@@ -25,6 +29,8 @@ import {
   failLocalSubmission,
   finalizeLocalSubmissionAttachments,
 } from '~/services/runSubmission/localUserSubmission';
+import { useToasts } from '~/composables/useToasts';
+import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
 
 interface PrepareAgentRunMutationResultPayload {
   prepareAgentRun: {
@@ -42,6 +48,26 @@ const createClientMessageId = (): string => {
       ? crypto.randomUUID()
       : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
   return `client_${randomId}`;
+};
+
+const createClientInterruptCommandId = (): string =>
+  createClientMessageId().replace(/^client_/, 'client_interrupt_');
+
+const showInterruptCommandResult = (ack: InterruptGenerationCommandAckPayload): void => {
+  if (ack.state === 'accepted') return;
+  useToasts().addToast(localizationRuntime.translate('agents.store.interrupt.failed', {
+    target: ack.target.target_kind === 'standalone_run' ? ack.target.run_id : ack.target.member_route_key,
+    detail: ack.message,
+  }), 'error');
+};
+
+const showInterruptTransportFailure = (failure: InterruptCommandTransportFailure): void => {
+  useToasts().addToast(localizationRuntime.translate('agents.store.interrupt.transportFailed', {
+    target: failure.target.target_kind === 'standalone_run'
+      ? failure.target.run_id
+      : failure.target.member_route_key,
+    detail: failure.reason.message,
+  }), 'error');
 };
 
 // Maintain a map of streaming services per agent
@@ -245,7 +271,10 @@ export const useAgentRunStore = defineStore('agentRun', {
       const wsEndpoint = windowNodeContextStore.getBoundEndpoints().agentWs;
 
       // Create streaming service for this agent
-      const service = new AgentStreamingService(wsEndpoint);
+      const service = new AgentStreamingService(wsEndpoint, {
+        onInterruptCommandResult: showInterruptCommandResult,
+        onInterruptCommandTransportFailure: showInterruptTransportFailure,
+      });
       streamingServices.set(runId, service);
 
       agent.isSubscribed = true;
@@ -335,8 +364,7 @@ export const useAgentRunStore = defineStore('agentRun', {
         return false;
       }
 
-      service.interruptGeneration();
-      return true;
+      return service.interruptGeneration(createClientInterruptCommandId());
     },
 
     /**

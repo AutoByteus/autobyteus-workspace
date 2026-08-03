@@ -317,7 +317,7 @@ describe('TeamStreamingService', () => {
 
   it('serializes focused member interrupt with route-key target and optional run guard', () => {
     const wsClient = {
-      state: 'disconnected',
+      state: 'connected',
       connect: vi.fn(),
       disconnect: vi.fn(),
       send: vi.fn(),
@@ -325,17 +325,20 @@ describe('TeamStreamingService', () => {
       off: vi.fn(),
     } as any;
 
+    const teamContext = withEventMonitorPresentationState(createTeamContextWithWorker());
     const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
-    service.interruptGeneration({
+    service.connect('team-1', teamContext);
+    expect(service.interruptGeneration('client_interrupt_2', {
       targetMemberRouteKey: 'code_reviewer',
       targetMemberRunId: 'team-1::code_reviewer',
-    });
+    })).toBe(true);
 
     expect(wsClient.send).toHaveBeenCalledTimes(1);
     const outbound = JSON.parse(wsClient.send.mock.calls[0][0]);
     expect(outbound).toEqual({
       type: 'INTERRUPT_GENERATION',
       payload: {
+        command_id: 'client_interrupt_2',
         target_member_route_key: 'code_reviewer',
         target_member_run_id: 'team-1::code_reviewer',
       },
@@ -402,11 +405,101 @@ describe('TeamStreamingService', () => {
     const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
 
     expect(() =>
-      service.interruptGeneration({
+      service.interruptGeneration('client_interrupt_empty', {
         targetMemberRouteKey: '   ',
       }),
     ).toThrow('target member route key is required');
     expect(wsClient.send).not.toHaveBeenCalled();
+  });
+
+  it.each(['disconnected', 'connecting', 'reconnecting'])('rejects team interrupt while %s without sending', (state) => {
+    const wsClient = {
+      state, connect: vi.fn(), disconnect: vi.fn(), send: vi.fn(), on: vi.fn(), off: vi.fn(),
+    } as any;
+    const onFailure = vi.fn();
+    const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', {
+      wsClient,
+      onInterruptCommandTransportFailure: onFailure,
+    });
+    service.connect('team-1', withEventMonitorPresentationState(createTeamContextWithWorker()));
+
+    expect(service.interruptGeneration(`client_interrupt_${state}`, {
+      targetMemberRouteKey: 'worker',
+      targetMemberRunId: 'worker-run-1',
+    })).toBe(false);
+    expect(wsClient.send).not.toHaveBeenCalled();
+    expect(onFailure).toHaveBeenCalledWith(expect.objectContaining({
+      target: {
+        target_kind: 'team_member', team_run_id: 'team-1',
+        member_route_key: 'worker', member_run_id: 'worker-run-1',
+      },
+      reason: expect.objectContaining({ code: 'INTERRUPT_TRANSPORT_NOT_CONNECTED', connectionState: state }),
+    }));
+    expect((service as any).pendingInterruptCommands.size).toBe(0);
+  });
+
+  it('intercepts exact team interrupt acks before member projection and drains only pending commands', () => {
+    const callbacks = new Map<string, (payload?: any) => void>();
+    const wsClient = {
+      state: 'connected', connect: vi.fn(), disconnect: vi.fn(), send: vi.fn(), off: vi.fn(),
+      on: vi.fn((event: string, callback: (payload?: any) => void) => callbacks.set(event, callback)),
+    } as any;
+    const onResult = vi.fn();
+    const onFailure = vi.fn();
+    const teamContext = withEventMonitorPresentationState(createTeamContextWithWorker());
+    const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', {
+      wsClient, onInterruptCommandResult: onResult,
+      onInterruptCommandTransportFailure: onFailure,
+    });
+    service.connect('team-1', teamContext);
+    expect(service.interruptGeneration('client_interrupt_exact', {
+      targetMemberRouteKey: 'worker', targetMemberRunId: 'worker-run-1',
+    })).toBe(true);
+
+    const ack = {
+      type: 'AGENT_COMMAND_ACK',
+      payload: {
+        command_type: 'INTERRUPT_GENERATION', command_id: 'client_interrupt_exact', state: 'accepted',
+        target: {
+          target_kind: 'team_member', team_run_id: 'team-1',
+          member_route_key: 'worker', member_run_id: 'worker-run-1',
+        },
+      },
+    };
+    callbacks.get('onMessage')?.(JSON.stringify({
+      ...ack,
+      payload: { ...ack.payload, target: { ...ack.payload.target, member_run_id: 'wrong-run' } },
+    }));
+    expect(onResult).not.toHaveBeenCalled();
+    callbacks.get('onMessage')?.(JSON.stringify(ack));
+    expect(onResult).toHaveBeenCalledTimes(1);
+    callbacks.get('onDisconnect')?.('after ack');
+    expect(onFailure).not.toHaveBeenCalled();
+    expect(teamContext.isActive).toBe(true);
+  });
+
+  it('completes a team reentrant disconnect-plus-send-throw only once', () => {
+    const callbacks = new Map<string, (payload?: any) => void>();
+    const wsClient = {
+      state: 'connected', connect: vi.fn(), disconnect: vi.fn(), off: vi.fn(),
+      on: vi.fn((event: string, callback: (payload?: any) => void) => callbacks.set(event, callback)),
+      send: vi.fn(() => {
+        callbacks.get('onDisconnect')?.('socket closed');
+        throw new Error('team send failed');
+      }),
+    } as any;
+    const onFailure = vi.fn();
+    const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', {
+      wsClient, onInterruptCommandTransportFailure: onFailure,
+    });
+    service.connect('team-1', withEventMonitorPresentationState(createTeamContextWithWorker()));
+
+    expect(service.interruptGeneration('client_interrupt_throw', {
+      targetMemberRouteKey: 'worker', targetMemberRunId: 'worker-run-1',
+    })).toBe(false);
+    callbacks.get('onDisconnect')?.('again');
+    expect(onFailure).toHaveBeenCalledTimes(1);
+    expect((service as any).pendingInterruptCommands.size).toBe(0);
   });
 
   it('keeps subscription transport state separate from backend-owned team lifecycle', () => {

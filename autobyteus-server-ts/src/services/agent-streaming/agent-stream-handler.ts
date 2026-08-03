@@ -34,6 +34,10 @@ import {
   ServerMessageType,
   createErrorMessage,
 } from "./models.js";
+import {
+  buildInterruptGenerationCommandAck,
+  normalizeInterruptCommandId,
+} from "./interrupt-generation-command-ack.js";
 
 export type WebSocketConnection = {
   send: (data: string) => void;
@@ -165,6 +169,12 @@ export class AgentStreamHandler {
         return;
       }
 
+      const connection = this.sessionConnections.get(sessionId) ?? null;
+      if (msgType === ClientMessageType.INTERRUPT_GENERATION) {
+        await this.handleInterruptGeneration(agentRunId, payload, connection);
+        return;
+      }
+
       if (!this.ensureActiveSessionSubscription(sessionId, agentRunId)) {
         logger.warn(
           `Agent websocket session '${sessionId}' lost its active run subscription for run '${agentRunId}'.`,
@@ -172,9 +182,7 @@ export class AgentStreamHandler {
         return;
       }
 
-      if (msgType === ClientMessageType.INTERRUPT_GENERATION) {
-        await this.handleInterruptGeneration(agentRunId);
-      } else if (msgType === ClientMessageType.APPROVE_TOOL) {
+      if (msgType === ClientMessageType.APPROVE_TOOL) {
         await this.handleToolApproval(agentRunId, payload, true);
       } else if (msgType === ClientMessageType.DENY_TOOL) {
         await this.handleToolApproval(agentRunId, payload, false);
@@ -342,17 +350,56 @@ export class AgentStreamHandler {
     }
   }
 
-  private async handleInterruptGeneration(agentRunId: string): Promise<void> {
+  private async handleInterruptGeneration(
+    agentRunId: string,
+    payload: Record<string, unknown>,
+    connection: WebSocketConnection | null,
+  ): Promise<void> {
     const activeRun = this.getActiveRun(agentRunId);
-    if (!activeRun) {
-      logger.warn(`INTERRUPT_GENERATION rejected for missing agent run ${agentRunId}.`);
+    const target = { target_kind: "standalone_run" as const, run_id: agentRunId };
+    const commandId = normalizeInterruptCommandId(payload.command_id);
+    if (!commandId) {
+      connection?.send(new ServerMessage(
+        ServerMessageType.AGENT_COMMAND_ACK,
+        buildInterruptGenerationCommandAck({ commandId, target }),
+      ).toJson());
       return;
     }
-    const result = await activeRun.interrupt(null);
-    if (!result.accepted) {
-      logger.warn(
-        `INTERRUPT_GENERATION rejected for agent run ${agentRunId}: [${result.code ?? "UNKNOWN"}] ${result.message ?? "no message"}`,
-      );
+    if (!activeRun) {
+      logger.warn(`INTERRUPT_GENERATION rejected for missing agent run ${agentRunId}.`);
+      connection?.send(new ServerMessage(
+        ServerMessageType.AGENT_COMMAND_ACK,
+        buildInterruptGenerationCommandAck({
+          commandId,
+          target,
+          validationFailure: {
+            code: "RUN_NOT_FOUND",
+            message: `Agent run '${agentRunId}' is not active.`,
+          },
+        }),
+      ).toJson());
+      return;
+    }
+    try {
+      const result = await activeRun.interrupt(null);
+      connection?.send(new ServerMessage(
+        ServerMessageType.AGENT_COMMAND_ACK,
+        buildInterruptGenerationCommandAck({ commandId, target, result }),
+      ).toJson());
+      if (!result.accepted) {
+        logger.warn(
+          `INTERRUPT_GENERATION rejected for agent run ${agentRunId}: [${result.code ?? "UNKNOWN"}] ${result.message ?? "no message"}`,
+        );
+      }
+    } catch (error) {
+      connection?.send(new ServerMessage(
+        ServerMessageType.AGENT_COMMAND_ACK,
+        buildInterruptGenerationCommandAck({
+          commandId,
+          target,
+          executionError: error,
+        }),
+      ).toJson());
     }
   }
 

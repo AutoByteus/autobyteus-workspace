@@ -12,7 +12,12 @@ import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useContextFileUploadStore } from '~/stores/contextFileUploadStore';
-import { ConnectionState, TeamStreamingService } from '~/services/agentStreaming';
+import {
+  ConnectionState,
+  TeamStreamingService,
+  type InterruptGenerationCommandAckPayload,
+  type InterruptCommandTransportFailure,
+} from '~/services/agentStreaming';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import type { ContextAttachment } from '~/types/conversation';
 import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig';
@@ -45,6 +50,8 @@ import {
   beginRecentEventMonitorMutation,
   commitRecentEventMonitorMutation,
 } from '~/services/eventMonitor/recentEventMonitorMutationCommit';
+import { useToasts } from '~/composables/useToasts';
+import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
 
 // Maintain a map of streaming services per team run
 const teamStreamingServices = new Map<string, TeamStreamingService>();
@@ -55,6 +62,26 @@ const buildClientMessageId = (): string => {
     return `client_${randomId}`;
   }
   return `client_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+};
+
+const buildClientInterruptCommandId = (): string =>
+  buildClientMessageId().replace(/^client_/, 'client_interrupt_');
+
+const showInterruptCommandResult = (ack: InterruptGenerationCommandAckPayload): void => {
+  if (ack.state === 'accepted') return;
+  useToasts().addToast(localizationRuntime.translate('agents.store.interrupt.failed', {
+    target: ack.target.target_kind === 'team_member' ? ack.target.member_route_key : ack.target.run_id,
+    detail: ack.message,
+  }), 'error');
+};
+
+const showInterruptTransportFailure = (failure: InterruptCommandTransportFailure): void => {
+  useToasts().addToast(localizationRuntime.translate('agents.store.interrupt.transportFailed', {
+    target: failure.target.target_kind === 'team_member'
+      ? failure.target.member_route_key
+      : failure.target.run_id,
+    detail: failure.reason.message,
+  }), 'error');
 };
 
 const buildConversationTargetInputDedupeKey = (
@@ -128,7 +155,10 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       const windowNodeContextStore = useWindowNodeContextStore();
       const wsEndpoint = windowNodeContextStore.getBoundEndpoints().teamWs;
 
-      const service = new TeamStreamingService(wsEndpoint);
+      const service = new TeamStreamingService(wsEndpoint, {
+        onInterruptCommandResult: showInterruptCommandResult,
+        onInterruptCommandTransportFailure: showInterruptTransportFailure,
+      });
       teamStreamingServices.set(teamRunId, service);
 
       teamContext.unsubscribe = () => {
@@ -528,11 +558,10 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         return false;
       }
 
-      service.interruptGeneration({
+      return service.interruptGeneration(buildClientInterruptCommandId(), {
         targetMemberRouteKey,
         targetMemberRunId: target.targetMemberRunId,
       });
-      return true;
     },
   },
 });
