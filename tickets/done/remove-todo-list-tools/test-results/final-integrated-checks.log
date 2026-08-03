@@ -1,0 +1,10 @@
+Final integrated-state checks — target merge e2a8126a9
+$ git diff --check
+git_diff_check_exit=0
+$ pnpm --filter autobyteus-ts build
+
+> autobyteus-ts@1.0.0 build /private/tmp/remove-todo-list-tools-finalize-20260803/autobyteus-ts
+> node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+
+[verify:runtime-deps] OK
+native_build_exit=0
