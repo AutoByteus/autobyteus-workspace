@@ -9,7 +9,7 @@ This is the initial delivery handoff for `remove-todo-list-tools`. The implement
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/tickets/done/remove-todo-list-tools/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/tickets/done/remove-todo-list-tools/delivery-revision-record.md`
-- Current delivery revision ID: `DR-001`
+- Current delivery revision ID: `DR-004`
 - Notes: This report preserves the distinction between ticket-scoped readiness and global repository health. `pnpm -C autobyteus-server-ts typecheck` and `pnpm -C autobyteus-ts exec vitest run` remain red; their independent baseline/environment origins are confirmed and do not become pass claims.
 
 ## Initial Delivery Integration Refresh
@@ -63,11 +63,11 @@ Release selection: `v1.4.41`, the next patch after current `v1.4.40`. Release co
 - Target advanced after verification / acceptance: `No`; final refresh remained at `ba6ebc2a2fbf56f17ee6bbb965f3f153307db3d2`.
 - Delivery-owned edits protected before re-integration: `Completed` — archived delivery commit `24edd28976b34eeb32e8ba8bbebae7a50362fa84`.
 - Re-integration before final merge result: `Completed` — clean merge in temporary delivery worktree.
-- Target branch update result: `Completed` — target moved from `ba6ebc2a2fbf56f17ee6bbb965f3f153307db3d2` to `e2a8126a9b9046018e8113a6c68c0c311078fe0f`.
-- Merge into target result: `Completed` — merge commit `e2a8126a9b9046018e8113a6c68c0c311078fe0f`.
+- Target branch update result: `Completed` — target moved from `ba6ebc2a2fbf56f17ee6bbb965f3f153307db3d2` to merge commit `e2a8126a9b9046018e8113a6c68c0c311078fe0f`, then to final delivery snapshot `5de883190259c58bd62f6dd3b46716b893b3e7bf` through release/report commits.
+- Merge into target result: `Completed` — merge commit `e2a8126a9b9046018e8113a6c68c0c311078fe0f`; subsequent release/report commits are recorded in the final target snapshot.
 - Push target branch result: `Completed` — `origin/personal` now points to `e2a8126a9b9046018e8113a6c68c0c311078fe0f`.
 - Repository finalization status: `Completed`.
-- Blocker (if applicable): None; v1.4.41 release remains in progress.
+- Blocker (if applicable): None; terminal delivery is complete.
 
 ## Release / Publication / Deployment
 

@@ -8,7 +8,7 @@
 - Ticket branch: `codex/remove-todo-list-tools`
 - Release selection: `v1.4.41` (next patch after current `v1.4.40`)
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools`
-- Delivery revision: `DR-001`
+- Delivery revision: `DR-004`
 
 ## Latest-Base Delivery State
 
