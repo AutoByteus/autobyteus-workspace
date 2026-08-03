@@ -150,29 +150,6 @@ export class InterAgentMessageData extends BaseStreamPayload {
   }
 }
 
-export class ToDoItemData extends BaseStreamPayload {
-  description: string;
-  todo_id: string;
-  status: string;
-
-  constructor(data: Record<string, any>) {
-    assertRequiredKeys(data, ['description', 'todo_id', 'status'], 'ToDoItemData');
-    super(data);
-    this.description = String(data.description ?? '');
-    this.todo_id = String(data.todo_id ?? '');
-    this.status = String(data.status ?? '');
-  }
-}
-
-export class ToDoListUpdateData extends BaseStreamPayload {
-  todos: ToDoItemData[];
-
-  constructor(data: { todos: ToDoItemData[] }) {
-    super(data as Record<string, any>);
-    this.todos = data.todos;
-  }
-}
-
 export class ArtifactPersistedData extends BaseStreamPayload {
   artifact_id: string;
   path: string;
@@ -265,29 +242,6 @@ export const createSystemTaskNotificationData = (
     throw new Error('Cannot create SystemTaskNotificationData from non-object');
   }
   return new SystemTaskNotificationData(notificationData);
-};
-
-export const createTodoListUpdateData = (todoData: unknown): ToDoListUpdateData => {
-  if (!isRecord(todoData)) {
-    throw new Error('Cannot create ToDoListUpdateData from non-object');
-  }
-  const todosPayload = todoData.todos;
-  if (!Array.isArray(todosPayload)) {
-    throw new Error("Expected 'todos' to be a list when creating ToDoListUpdateData.");
-  }
-  const todoItems: ToDoItemData[] = [];
-  for (const todoEntry of todosPayload) {
-    if (!isRecord(todoEntry)) {
-      console.warn(`Skipping non-object todo entry when creating ToDoListUpdateData: ${String(todoEntry)}`);
-      continue;
-    }
-    try {
-      todoItems.push(new ToDoItemData(todoEntry));
-    } catch (error) {
-      console.warn(`Failed to parse todo entry into ToDoItemData: ${JSON.stringify(todoEntry)}; error: ${error}`);
-    }
-  }
-  return new ToDoListUpdateData({ todos: todoItems });
 };
 
 export const createArtifactPersistedData = (data: unknown): ArtifactPersistedData => {

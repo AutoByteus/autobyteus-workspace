@@ -1,0 +1,201 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:23771) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/e2e/runtime/mixed-task-delegation.e2e.test.ts (2 tests | 2 skipped)
+stdout | tests/e2e/skills/skills-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:23780) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/skills/skills-graphql.e2e.test.ts > Skills GraphQL e2e > creates and queries a skill
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-lXKkiX
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-lXKkiX/.env
+
+stdout | tests/e2e/skills/skills-graphql.e2e.test.ts > Skills GraphQL e2e > does not expose removed skill history fields, operations, or types
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-9vNQt7
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-9vNQt7/.env
+
+stdout | tests/e2e/skills/skills-graphql.e2e.test.ts > Skills GraphQL e2e > uploads a file and reads content/tree
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-vEJDld
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-vEJDld/.env
+
+stdout | tests/e2e/skills/skills-graphql.e2e.test.ts > Skills GraphQL e2e > uploads a file and reads content/tree
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-vEJDld/skills/file_skill' with max_depth=null
+
+stdout | tests/e2e/skills/skills-graphql.e2e.test.ts > Skills GraphQL e2e > uploads a file and reads content/tree
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-vEJDld/skills/file_skill' completed in 0.0030 seconds.
+
+stdout | tests/e2e/skills/skills-graphql.e2e.test.ts > Skills GraphQL e2e > reloads the skill catalog after external file edits and returns refreshed sources
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-DfABLs
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-DfABLs/.env
+
+stdout | tests/e2e/skills/skills-graphql.e2e.test.ts > Skills GraphQL e2e > deletes a skill
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-GYCkz5
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-GYCkz5/.env
+
+ ✓ tests/e2e/skills/skills-graphql.e2e.test.ts (5 tests) 275ms
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:23781) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > handles file lifecycle via GraphQL
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-ops-lJ0gmJ/file_ops_ws
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/autobyteus-server-ts
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-ops-lJ0gmJ/file_ops_ws.
+
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > handles file lifecycle via GraphQL
+Created and registered workspace ID: agent_ws_62734acc42aa990d56a039dd3b0c6c44aefa488be8b9a7af737428f6cfe71470
+
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > handles file lifecycle via GraphQL
+Created WorkspaceFileExplorer for agent_ws_62734acc42aa990d56a039dd3b0c6c44aefa488be8b9a7af737428f6cfe71470 (graphql-write-file).
+
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > handles file lifecycle via GraphQL
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-ops-lJ0gmJ/file_ops_ws' with max_depth=null
+
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > handles file lifecycle via GraphQL
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-ops-lJ0gmJ/file_ops_ws' completed in 0.0010 seconds.
+
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > handles file lifecycle via GraphQL
+Closing FileSystemWorkspace agent_ws_62734acc42aa990d56a039dd3b0c6c44aefa488be8b9a7af737428f6cfe71470
+
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > creates and renames a file
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-ops-PCt4Vk/rename_ws
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-ops-PCt4Vk/rename_ws.
+
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > creates and renames a file
+Created and registered workspace ID: agent_ws_a281b2603dd8f735e4af3d5d31d0c63c0a12aea41fbcdb0504270d519b218e9e
+
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > creates and renames a file
+Created WorkspaceFileExplorer for agent_ws_a281b2603dd8f735e4af3d5d31d0c63c0a12aea41fbcdb0504270d519b218e9e (graphql-create-file).
+
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > creates and renames a file
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-ops-PCt4Vk/rename_ws' with max_depth=null
+
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > creates and renames a file
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-file-ops-PCt4Vk/rename_ws' completed in 0.0000 seconds.
+
+stdout | tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts > File operations GraphQL e2e > creates and renames a file
+Closing FileSystemWorkspace agent_ws_a281b2603dd8f735e4af3d5d31d0c63c0a12aea41fbcdb0504270d519b218e9e
+
+ ✓ tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts (2 tests) 98ms
+
+ Test Files  2 passed | 1 skipped (3)
+      Tests  7 passed | 2 skipped (9)
+   Start at  11:44:47
+   Duration  11.55s (transform 5.48s, setup 24ms, import 10.26s, tests 374ms, environment 0ms)

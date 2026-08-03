@@ -4,8 +4,6 @@ import {
   createArtifactPersistedData,
   ArtifactUpdatedData,
   createArtifactUpdatedData,
-  ToDoListUpdateData,
-  createTodoListUpdateData,
   AgentStatusData,
   createAgentStatusData,
   TurnLifecycleData,
@@ -93,22 +91,6 @@ describe('ArtifactUpdatedData', () => {
 });
 
 describe('Stream payload factories', () => {
-  it('creates ToDoListUpdateData with nested list', () => {
-    const payload = createTodoListUpdateData({
-      todos: [
-        { description: 'Task 1', todo_id: '1', status: 'pending' },
-        { description: 'Task 2', todo_id: '2', status: 'done' }
-      ]
-    });
-    expect(payload).toBeInstanceOf(ToDoListUpdateData);
-    expect(payload.todos).toHaveLength(2);
-    expect(payload.todos[0].description).toBe('Task 1');
-  });
-
-  it('throws when todos is not a list', () => {
-    expect(() => createTodoListUpdateData({ todos: 'not a list' })).toThrow(/Expected 'todos' to be a list/);
-  });
-
   it('creates AgentStatusData', () => {
     const payload = createAgentStatusData({ status: AgentStatus.IDLE });
     expect(payload).toBeInstanceOf(AgentStatusData);

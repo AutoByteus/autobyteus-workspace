@@ -14,7 +14,6 @@ export enum EventType {
   AGENT_DATA_TOOL_LOG_STREAM_END = 'agent_data_tool_log_stream_end',
   AGENT_DATA_SYSTEM_TASK_NOTIFICATION_RECEIVED = 'agent_data_system_task_notification_received',
   AGENT_DATA_INTER_AGENT_MESSAGE_RECEIVED = 'agent_data_inter_agent_message_received',
-  AGENT_DATA_TODO_LIST_UPDATED = 'agent_data_todo_list_updated',
   AGENT_ARTIFACT_PERSISTED = 'agent_artifact_persisted',
   AGENT_ARTIFACT_UPDATED = 'agent_artifact_updated',
   AGENT_TOOL_APPROVAL_REQUESTED = 'agent_tool_approval_requested',

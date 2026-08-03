@@ -12,10 +12,6 @@ import { Search } from './search-tool.js';
 import { ReadMediaFile } from './multimedia/media-reader-tool.js';
 import { DownloadMediaTool } from './multimedia/download-media-tool.js';
 import { ReadUrl } from './web/read-url-tool.js';
-import { AddToDo } from '../task-management/tools/todo-tools/add-todo.js';
-import { CreateToDoList } from '../task-management/tools/todo-tools/create-todo-list.js';
-import { GetToDoList } from '../task-management/tools/todo-tools/get-todo-list.js';
-import { UpdateToDoStatus } from '../task-management/tools/todo-tools/update-todo-status.js';
 
 let toolsRegistered = false;
 
@@ -35,10 +31,6 @@ export function registerTools(): void {
   registerToolClass(ReadMediaFile);
   registerToolClass(DownloadMediaTool);
   registerToolClass(ReadUrl);
-  registerToolClass(AddToDo);
-  registerToolClass(CreateToDoList);
-  registerToolClass(GetToDoList);
-  registerToolClass(UpdateToDoStatus);
 
   toolsRegistered = true;
 }

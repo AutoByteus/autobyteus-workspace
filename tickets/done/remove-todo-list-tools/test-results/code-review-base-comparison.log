@@ -1,0 +1,49 @@
+Code-reviewer failure-origin base comparison evidence
+Implementation worktree commit: fa0fd927a0c59a40eb6c2cd464b13a682c168d88
+Recorded base commit: ba6ebc2a2fbf56f17ee6bbb965f3f153307db3d2
+
+Commands run against the clean base worktree /Users/normy/autobyteus_org/autobyteus-workspace-superrepo:
+pnpm -C autobyteus-ts exec vitest run tests/unit/agent/streaming/handlers/parsing-streaming-response-handler.test.ts --no-watch
+exit: 1
+    135|     expect(invocations).toHaveLength(2);
+       |                         ^
+    136|   });
+    137|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/unit/agent/streaming/handlers/parsing-streaming-response-handler.test.ts > ParsingStreamingResponseHandler tool integration > segment_id matches invocation id
+Error: Expected tool start event
+ ❯ tests/unit/agent/streaming/handlers/parsing-streaming-response-handler.test.ts:148:13
+    146|     const toolStart = events.find((e) => e.segment_type === SegmentTyp…
+    147|     if (!toolStart) {
+    148|       throw new Error('Expected tool start event');
+       |             ^
+    149|     }
+    150|     expect(invocations[0].id).toBe(toolStart.segment_id);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 11 passed (15)
+   Start at  12:00:55
+   Duration  406ms (transform 223ms, setup 23ms, import 246ms, tests 16ms, environment 0ms)
+
+
+pnpm -C autobyteus-server-ts typecheck
+exit: 2
+error TS6059: File '/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/agent-work-traces/agent-work-trace-projection-service.test.ts' is not under 'rootDir' '/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src'. 'rootDir' is expected to contain all source files.
+    Matched by include pattern 'tests' in 'tsconfig.json'
+error TS6059: File '/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts' is not under 'rootDir' '/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src'. 'rootDir' is expected to contain all source files.
+    Matched by include pattern 'tests' in 'tsconfig.json'
+error TS6059: File '/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts' is not under 'rootDir' '/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src'. 'rootDir' is expected to contain all source files.
+    Matched by include pattern 'tests' in 'tsconfig.json'
+error TS6059: File '/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts' is not under 'rootDir' '/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src'. 'rootDir' is expected to contain all source files.
+    Matched by include pattern 'tests' in 'tsconfig.json'
+error TS6059: File '/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts' is not under 'rootDir' '/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src'. 'rootDir' is expected to contain all source files.
+    Matched by include pattern 'tests' in 'tsconfig.json'
+error TS6059: File '/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts' is not under 'rootDir' '/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-server-ts/src'. 'rootDir' is expected to contain all source files.
+    Matched by include pattern 'tests' in 'tsconfig.json'
+
+Current implementation changed paths intersecting full-suite failure files (failure paths normalized under autobyteus-ts/):

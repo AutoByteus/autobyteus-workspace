@@ -199,10 +199,6 @@ export class AgentExternalEventNotifier extends EventEmitter {
     this.emitEvent(EventType.AGENT_DATA_INTER_AGENT_MESSAGE_RECEIVED, messageData);
   }
 
-  notifyAgentDataTodoListUpdated(todoList: Array<Record<string, any>>): void {
-    this.emitEvent(EventType.AGENT_DATA_TODO_LIST_UPDATED, { todos: todoList });
-  }
-
   notifyAgentErrorOutputGeneration(notification: AgentErrorNotification): void {
     const classification = notification.classification;
     const payload = {
