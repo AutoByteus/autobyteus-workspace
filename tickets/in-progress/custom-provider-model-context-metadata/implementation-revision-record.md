@@ -5,6 +5,7 @@
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | `implementation_engineer` initial implementation after architecture review round `ARCH-REV-002` | N/A | `Initial Baseline` | `SR-005`, `SR-006`, `ARCH-REV-002` | Reviewed design implemented; implementation handoff ready for source review. |
+| IR-002 | `architecture_reviewer` architecture re-review round `ARCH-REV-003` after approved `SR-008` | N/A | `Local Fix` | `SR-005`–`SR-008`, `ARCH-REV-002`, `ARCH-REV-003` | Added the exact Alibaba DeepSeek wire-alias profile and focused regression coverage; handoff is refreshed for source review. |
 
 ## Revision Entries
 
@@ -32,3 +33,25 @@
 - Local validation and result: TypeScript build checks passed for `autobyteus-ts` and `autobyteus-server-ts` build configurations; 23 focused `autobyteus-ts` unit tests passed; 9 server metadata-provisioning unit tests passed; 9 token-meter component tests passed; localization/web-boundary guards and localization-literal audit passed; `git diff --check` passed. A repository-wide web `tsc -p tsconfig.json --noEmit` remains blocked by pre-existing generated Nuxt/type errors outside this change.
 - Next recipient or routing: `code_reviewer` for source and architecture review before API/E2E coverage investigation.
 - Remaining limitations or risks: Vendor profile facts are source-dated and may become stale; exact built-in fallback is explicitly inferred and can differ from a plan-specific serving limit; broader API/E2E/runtime compaction evidence and browser-level UI inspection remain downstream work. No secrets or raw provider payloads were added.
+
+### IR-002 — Implement approved endpoint-scoped DeepSeek wire alias
+
+- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/architecture-review-revision-record.md`; round `ARCH-REV-003` after solution revisions `SR-007` and `SR-008`.
+- Triggering finding IDs: `N/A`; the architecture decision remained `Pass` and extended the already-approved contract without opening a new finding.
+- Classification: `Local Fix`.
+- Prior authoritative result: `IR-001` implemented exact profiles and fallback resolution but had no profile entry for the newly approved Alibaba returned wire ID `deepseek-v4-flash-0731`; that differing value therefore could not reach canonical DeepSeek metadata.
+- Current authoritative result: The exact Alibaba Token Plan canonical endpoint tuple plus returned `deepseek-v4-flash-0731` now matches a source-dated `endpoint_profile` carrying `{ provider: DEEPSEEK, value: deepseek-v4-flash }`. Referenced context/output values carry endpoint-profile provenance and the canonical reference. The same wire ID on an unrecognized endpoint remains unknown; the implementation has no global suffix stripping, fuzzy/family matching, or cross-endpoint aliasing.
+- Related solution revision IDs: `SR-005`, `SR-006`, `SR-007`, `SR-008`.
+- Related architecture-review revision IDs: `ARCH-REV-002`, `ARCH-REV-003`.
+- Related code-review revision IDs: `N/A`.
+- Related API/E2E revision IDs: `N/A`.
+- Related delivery revision IDs: `N/A`.
+- Why this revision is recorded: Complete the approved `SR-008` behavior before source review and preserve the prior implementation baseline as historical context without treating it as current authority.
+- Approved behavior or requirement IDs affected: `BEH-002`, `BEH-004`; `REQ-003`, `REQ-012`; `AC-004`, `AC-014`.
+- Implementation delta:
+  - Added `alibaba-token-plan-deepseek-wire-alias-2026-08-03` to the exact endpoint profile table with returned wire ID, DeepSeek `{provider, value}` reference, and source URL/date provenance.
+  - Added focused resolver coverage for exact alias resolution, referenced provenance, cross-endpoint unknown behavior, and the canonical built-in ID remaining a separate exact fallback case.
+- Changed files or areas: `autobyteus-ts/src/llm/metadata/openai-compatible-endpoint-model-metadata.ts`; `autobyteus-ts/tests/unit/llm/metadata/openai-compatible-endpoint-model-metadata.test.ts`; refreshed current handoff artifacts.
+- Local validation and result: `autobyteus-ts` build typecheck passed; the focused Vitest selection passed with 24 tests; `git diff --check` passed. Temporary dependency symlinks were removed after execution.
+- Next recipient or routing: `code_reviewer` for source review; API/E2E coverage investigation remains blocked on that review as required by the team workflow.
+- Remaining limitations or risks: The alias profile is source-dated and can become stale if Alibaba changes the returned wire ID or serving semantics. The profile has no independent Alibaba context override; it references the canonical DeepSeek static metadata, and absent the exact profile the differing wire ID remains unknown. Downstream API/E2E validation remains pending.

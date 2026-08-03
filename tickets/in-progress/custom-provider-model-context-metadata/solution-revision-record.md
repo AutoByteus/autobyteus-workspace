@@ -11,6 +11,7 @@
 | SR-005 | User-approved exact built-in fallback and truthful unknown state | BEH-002–BEH-004; REQ-002–REQ-006 | `Requirement Clarification / Approval` | Approved endpoint/provider data, then endpoint profile, then exact built-in identity as inferred fallback, otherwise unknown; endpoint/profile values override fallback. |
 | SR-006 | Architecture review `ARCH-REV-001` Design Impact rework | ARCH-DESIGN-001–ARCH-DESIGN-003; REQ-001, REQ-002, REQ-006, REQ-009–REQ-011 | `Design Impact / Contract Clarification` | Added actionable source union/projection, exact `value` fallback index/profile identity, alias/fall-through rules, and canonical endpoint tuple matching; approved fallback precedence unchanged. |
 | SR-007 | User DeepSeek wire-ID alias clarification | REQ-003, REQ-012; AC-014 | `Requirement Clarification / Design Impact` | Added explicit endpoint-profile alias/reference handling for Alibaba `deepseek-v4-flash-0731` -> canonical DeepSeek `deepseek-v4-flash`; no automatic suffix stripping; exact fallback/unknown behavior remains unchanged. |
+| SR-008 | User approval of endpoint-scoped wire aliases | REQ-003, REQ-012; AC-014 | `Requirement Approval` | Approved explicit endpoint-scoped alias/reference profiles as the correct design for provider wire IDs that differ from canonical built-in values; global fuzzy/suffix aliasing remains rejected. |
 
 ## Revision Entries
 
@@ -120,3 +121,19 @@
 - Downstream and architecture-review impact: Re-review must confirm that explicit endpoint-profile references can bridge different provider wire IDs to canonical built-in values while retaining endpoint/profile provenance and avoiding generic alias normalization.
 - Next recipient or routing: `architecture_reviewer` for the current architecture re-review package.
 - Remaining gaps or risks: Alibaba-specific context enforcement for the dated DeepSeek wire ID still requires a source-dated profile fact; official DeepSeek canonical documentation alone does not prove every Alibaba plan gateway has identical limits.
+
+
+### SR-008 — User approval of endpoint-scoped wire aliases
+
+- Triggering role, report path, and round: User confirmation after the DeepSeek Alibaba wire-ID case; `solution_designer` requirements approval round.
+- Triggering finding IDs: `REQ-003`, `REQ-012`, `AC-014`.
+- Prior authoritative result: `SR-007` proposed an explicit profile mapping for Alibaba `deepseek-v4-flash-0731` to canonical built-in `deepseek-v4-flash`, while rejecting generic suffix stripping.
+- Current authoritative result: The user approved the alias direction. A provider wire ID may reference canonical built-in metadata only through an exact endpoint-scoped profile. The profile records the returned wire ID, canonical `{provider, value}` reference, source/provenance, and any endpoint-specific overrides. No global fuzzy, family, or suffix aliasing is allowed.
+- Why this revision is recorded: The user confirmed that explicit aliases are the correct design for semantically equivalent provider IDs with different wire names.
+- Resolution: Marked the alias requirement approved in `requirements.md`; the design and investigation artifacts already contain the actionable profile shape, precedence, provenance, and test intent.
+- Approved behavior or requirement IDs affected: `REQ-003`, `REQ-012`, `AC-014`; the SR-005 precedence remains unchanged.
+- Canonical artifacts and sections updated: Requirements approval status; solution revision index and this entry. The alias details remain authoritative in `requirements.md`, `investigation-notes.md`, and `design-spec.md` from SR-007.
+- Supplemental artifacts updated, added, or removed: None.
+- Downstream and architecture-review impact: Architecture review must verify explicit wire alias profile handling and ensure implementation does not introduce global suffix stripping or fuzzy matching.
+- Next recipient or routing: `architecture_reviewer` for the cumulative re-review package.
+- Remaining gaps or risks: The specific Alibaba alias profile still needs source-dated endpoint equivalence/context facts during implementation; absent that profile, the wire ID remains unknown.

@@ -7,19 +7,19 @@
 - Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/design-spec.md`
 - Supplemental Task Artifacts Reviewed: None
 - Solution Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/solution-revision-record.md`
-- Relevant Solution Revision IDs: `SR-001`–`SR-006`, with `SR-005` as the approved behavior baseline and `SR-006` as the rework trigger
+- Relevant Solution Revision IDs: `SR-001`–`SR-008`, with `SR-005` as the approved precedence baseline, `SR-006` as the prior rework trigger, and `SR-007`/`SR-008` as the explicit wire-alias clarification and approval
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-002`
-- Current Review Round: `2`
-- Trigger: Re-review of `ARCH-REV-001` after solution rework
-- Prior Review Round Reviewed: `ARCH-REV-001`
-- Latest Authoritative Round: `ARCH-REV-002`
+- Current Architecture Review Revision ID: `ARCH-REV-003`
+- Current Review Round: `3`
+- Trigger: Re-review of the newly approved endpoint-scoped wire-alias profile contract
+- Prior Review Round Reviewed: `ARCH-REV-002`
+- Latest Authoritative Round: `ARCH-REV-003`
 - Current-State Evidence Basis: Refreshed base `origin/personal` at `d5618bffd`; current source reads and sanitized Alibaba probes retained in `investigation-notes.md`; no implementation or durable coverage has started.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
 - Overall Basis Status (`Confirmed`/`Contradicted`/`Blocked`): `Confirmed`
-- Approved requirements / intended behavior understood: `Confirmed`. `SR-005` remains unchanged: endpoint-advertised metadata, exact endpoint-profile metadata, exact built-in fallback marked inferred, then unknown; endpoint/profile values override inferred fallback and unsupported matching/probing remain forbidden.
+- Approved requirements / intended behavior understood: `Confirmed`. `SR-005` remains unchanged: endpoint-advertised metadata, exact endpoint-profile metadata, exact built-in fallback marked inferred, then unknown; endpoint/profile values override inferred fallback and unsupported matching/probing remain forbidden. `SR-008` additionally approves only explicit endpoint-scoped wire aliases, such as Alibaba `deepseek-v4-flash-0731` referencing canonical `{ provider: DEEPSEEK, value: deepseek-v4-flash }`.
 - Relevant existing behavior and evidence confirmed: `Confirmed`. The supported path remains saved provider -> secret resolution -> one `/models` request -> normalized rows -> custom `LLMModel` -> registry/runtime -> token summary -> token meter. Current discovery discards optional fields, the refreshed server preserves received model values, and the Alibaba endpoint exposes no limit metadata.
 - Approved change, preserved behavior, and outside scope understood: `Confirmed`. The revised package adds only the bounded metadata resolution/projection and explicit unknown UI state; it preserves credential, URL, stale/error, persistence, runtime-compaction, explicit-override, and no-extra-network-request behavior.
 - Remaining material ambiguity, if any: `None`. The former contract omissions are now explicit in the revised requirements and design spec.
@@ -27,9 +27,9 @@
 | Behavior ID | Kind | Design Alignment With Approved Intent (`Pass`/`Fail`) | Approved Trigger / Contract And Current-State Evidence (`Pass`/`Fail`/`Unclear`) | Target Outcome / Path / Spine Coherence (`Pass`/`Fail`/`Unclear`) | Status (`Confirmed`/`Needs Correction`/`Unclear`) | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
 | `BEH-001` | User/System | Pass | Pass | Pass | Confirmed | Preserve the existing discovery lifecycle while carrying the fixed optional-field semantics. |
-| `BEH-002` | System/Contract | Pass | Pass | Pass | Confirmed | Use the source union, exact value index, profile references, and per-field server merge defined in the revised contracts. |
+| `BEH-002` | System/Contract | Pass | Pass | Pass | Confirmed | Use the source union, exact value index, explicit endpoint-scoped wire-alias profile references, and per-field server merge defined in the revised contracts. |
 | `BEH-003` | System | Pass | Pass | Pass | Confirmed | Reuse `resolveTokenBudget` and compaction unchanged; prove known and unknown cases downstream. |
-| `BEH-004` | Contract | Pass | Pass | Pass | Confirmed | Apply the exact canonical endpoint tuple, fixed aliases, and independent fall-through rules. |
+| `BEH-004` | Contract | Pass | Pass | Pass | Confirmed | Apply the exact canonical endpoint tuple, fixed aliases, explicit wire-alias profiles, and independent fall-through rules. |
 | `BEH-005` | User | Pass | Pass | Pass | Confirmed | Render the unavailable state only when usage is known and capacity is absent; omit percentage and denominator. |
 
 ## Supplemental Artifact Coherence Verdict
@@ -86,14 +86,14 @@ The revised spines remain complete through their business consequences and now e
 | `OpenAICompatibleEndpointModelInput` | Pass | Pass | Pass | Low | Pass |
 | `ModelInfo.resolved_model_metadata` | Pass | Pass | Pass | Low | Pass |
 
-The revised interfaces now name the exact provider-wire value, canonical endpoint tuple, source-bearing union, profile references, and non-secret projection contract.
+The revised interfaces now name the exact returned provider-wire value, canonical endpoint tuple, explicit canonical `{provider, value}` reference for wire aliases, source-bearing union, and non-secret projection contract.
 
 ## Existing Capability / Subsystem Reuse Verdict
 
 | Need / Concern | Existing Capability Area Was Checked? (`Pass`/`Fail`) | Reuse / Extension Decision Is Sound? (`Pass`/`Fail`) | New Support Piece Is Justified? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
 | Numeric metadata and source shape | Pass | Pass | N/A | Pass | Extend `ResolvedModelMetadata` with the defined discriminated source union. |
-| Built-in static facts | Pass | Pass | N/A | Pass | Reuse `SupportedModelDefinition.staticMetadata` through the separate exact-value index. |
+| Built-in static facts | Pass | Pass | N/A | Pass | Reuse `SupportedModelDefinition.staticMetadata` through the separate exact-value index; a differing wire ID can reach it only through an exact endpoint profile. |
 | Endpoint transport/normalization | Pass | Pass | N/A | Pass | Extend the existing discovery boundary with the fixed alias allowlist and duplicate merge. |
 | Runtime compaction | Pass | Pass | N/A | Pass | Existing `resolveTokenBudget` remains authoritative. |
 | Unknown token-meter presentation | Pass | Pass | N/A | Pass | Existing UI owner remains authoritative. |
@@ -123,7 +123,7 @@ The revised interfaces now name the exact provider-wire value, canonical endpoin
 | --- | --- | --- | --- | --- | --- | --- |
 | `OpenAICompatibleEndpointDiscoveredModel` | Pass | Pass | Pass | N/A | Pass | Carries normalized numeric semantics only. |
 | `ResolvedModelMetadata` | Pass | Pass | Pass | N/A | Pass | Five source kinds have distinct meanings; active context remains dynamic. |
-| Built-in index/profile entry | Pass | Pass | Pass | Pass | Pass | Exact wire value, provider reference, canonical endpoint tuple, and selected provenance are explicit. |
+| Built-in index/profile entry | Pass | Pass | Pass | Pass | Pass | Exact fallback wire value, explicit endpoint wire value, provider reference, canonical endpoint tuple, and selected provenance are distinct and explicit. |
 | `ModelInfo` | Pass | Pass | Pass | N/A | Pass | Carries the same non-secret per-field resolution internally. |
 
 ## File Responsibility Mapping Verdict
@@ -131,7 +131,7 @@ The revised interfaces now name the exact provider-wire value, canonical endpoin
 | File | Responsibility Is Singular And Clear? (`Pass`/`Fail`) | Responsibility Matches The Intended Owner/Boundary? (`Pass`/`Fail`) | Responsibilities Were Re-Tightened After Shared-Structure Extraction? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `autobyteus-ts/src/llm/openai-compatible-endpoint-discovery.ts` | Pass | Pass | Pass | Pass | Alias parsing, duplicate merging, and row normalization remain at the external boundary. |
-| `autobyteus-ts/src/llm/metadata/openai-compatible-endpoint-model-metadata.ts` | Pass | Pass | Pass | Pass | Owns canonical identity, profiles, exact index, source union, and precedence. |
+| `autobyteus-ts/src/llm/metadata/openai-compatible-endpoint-model-metadata.ts` | Pass | Pass | Pass | Pass | Owns canonical identity, explicit wire-alias profiles, exact index, source union, and precedence. |
 | `autobyteus-ts/src/llm/openai-compatible-endpoint-provider.ts` | Pass | Pass | Pass | Pass | Owns construction/lifecycle sequencing. |
 | `autobyteus-ts/src/llm/openai-compatible-endpoint-model.ts` | Pass | Pass | Pass | Pass | Maps resolved metadata into the canonical model. |
 | `autobyteus-ts/src/llm/models.ts` | Pass | Pass | Pass | Pass | Mandatory source-bearing `ModelInfo` projection is explicit. |
@@ -189,6 +189,7 @@ The implementation sequence is now actionable without inventing source, identity
 | --- | --- | --- | --- | --- | --- |
 | Compound endpoint identity | Yes | Pass | Pass | Pass | Exact protocol/host/port/path/model tuple and near-match rejection are present. |
 | Built-in fallback and conflict handling | Yes | Pass | Pass | Pass | Exact `value` index, lowest-valid per-field selection, and selected provenance are explicit. |
+| Explicit wire alias profile | Yes | Pass | Pass | Pass | The Alibaba wire ID is mapped to a canonical built-in reference only by an exact endpoint profile; suffix stripping and fuzzy matching remain rejected. |
 | Per-field source propagation | Yes | Pass | Pass | Pass | Source union and server/GraphQL projection rules are concrete. |
 | Unknown UI state | Yes | Pass | Pass | Pass | Prompt usage remains visible without a false denominator. |
 
@@ -202,11 +203,11 @@ None.
 
 ## Review Decision
 
-`Pass`: the approved behavior basis is confirmed, the former architecture findings are resolved in the canonical package, and the design is ready for implementation. No in-scope machinery depends on an unsupported material premise.
+`Pass`: the approved behavior basis, including the newly approved endpoint-scoped wire-alias case, is confirmed; the former architecture findings are resolved in the canonical package; and the design is ready for implementation. No in-scope machinery depends on an unsupported material premise.
 
 ## Findings
 
-None. `ARCH-DESIGN-001`, `ARCH-DESIGN-002`, and `ARCH-DESIGN-003` are resolved by `SR-006` and verified in the revised requirements and design contracts.
+None. `ARCH-DESIGN-001`, `ARCH-DESIGN-002`, and `ARCH-DESIGN-003` remain resolved by `SR-006`; the explicit wire-alias contract introduced by `SR-007` and approved by `SR-008` is verified in the revised requirements and design contracts.
 
 ## Classification
 
@@ -227,4 +228,4 @@ None. `ARCH-DESIGN-001`, `ARCH-DESIGN-002`, and `ARCH-DESIGN-003` are resolved b
 
 - Review Decision: `Pass`
 - Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass`
-- Notes: `ARCH-REV-001` findings are closed. The revised package is implementation-ready without adding new policy; proceed to implementation with the cumulative artifact package.
+- Notes: `ARCH-REV-001` findings remain closed, and the newly approved `SR-008` alias profile behavior is implementation-ready without global alias machinery or additional policy. Proceed to implementation with the cumulative artifact package.

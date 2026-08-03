@@ -143,4 +143,44 @@ describe('OpenAI-compatible endpoint metadata resolver', () => {
       },
     });
   });
+
+  it('maps the Alibaba DeepSeek wire alias only through its exact endpoint profile', () => {
+    const resolver = new OpenAICompatibleEndpointModelMetadataResolver();
+
+    const exactAlias = resolver.resolve({
+      endpointBaseUrl: 'https://token-plan.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1',
+      discoveredModel: discovered('deepseek-v4-flash-0731'),
+    });
+    expect(exactAlias.maxContextTokens).toMatchObject({
+      value: 1_000_000,
+      source: {
+        kind: 'endpoint_profile',
+        profileId: 'alibaba-token-plan-deepseek-wire-alias-2026-08-03',
+        reference: { provider: LLMProvider.DEEPSEEK, value: 'deepseek-v4-flash' },
+      },
+    });
+    expect(exactAlias.maxOutputTokens).toMatchObject({
+      value: 384_000,
+      source: {
+        kind: 'endpoint_profile',
+        reference: { provider: LLMProvider.DEEPSEEK, value: 'deepseek-v4-flash' },
+      },
+    });
+
+    const differentEndpoint = resolver.resolve({
+      endpointBaseUrl: 'https://dashscope-intl.aliyuncs.com/compatible-mode/v1',
+      discoveredModel: discovered('deepseek-v4-flash-0731'),
+    });
+    expect(differentEndpoint.maxContextTokens).toEqual({ value: null, source: { kind: 'unknown' } });
+    expect(differentEndpoint.maxOutputTokens).toEqual({ value: null, source: { kind: 'unknown' } });
+
+    const canonicalValue = resolver.resolve({
+      endpointBaseUrl: 'https://token-plan.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1',
+      discoveredModel: discovered('deepseek-v4-flash'),
+    });
+    expect(canonicalValue.maxContextTokens).toMatchObject({
+      value: 1_000_000,
+      source: { kind: 'inferred_builtin', provider: LLMProvider.DEEPSEEK, value: 'deepseek-v4-flash' },
+    });
+  });
 });

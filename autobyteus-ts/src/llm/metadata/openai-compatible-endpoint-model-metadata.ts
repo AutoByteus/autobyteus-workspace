@@ -51,6 +51,8 @@ const POSITIVE_INTEGER = (value: unknown): number | null =>
 
 const PROFILE_SOURCE_URL = 'https://docs.qwencloud.com/developer-guides/getting-started/text-generation-models';
 const PROFILE_VERIFIED_AT = '2026-07-30';
+const DEEPSEEK_ALIAS_PROFILE_SOURCE_URL = 'https://api-docs.deepseek.com/quick_start/pricing';
+const DEEPSEEK_ALIAS_PROFILE_VERIFIED_AT = '2026-08-03';
 
 /** The profile is intentionally exact: this gateway is a separate Alibaba plan endpoint. */
 export const OPENAI_COMPATIBLE_ENDPOINT_MODEL_PROFILES: readonly EndpointModelProfile[] = [
@@ -79,6 +81,19 @@ export const OPENAI_COMPATIBLE_ENDPOINT_MODEL_PROFILES: readonly EndpointModelPr
       verifiedAt: PROFILE_VERIFIED_AT,
     },
     explicit: { maxContextTokens: 1_000_000 },
+  },
+  {
+    protocol: 'https',
+    hostname: 'token-plan.ap-southeast-1.maas.aliyuncs.com',
+    port: null,
+    basePath: '/compatible-mode/v1',
+    profileId: 'alibaba-token-plan-deepseek-wire-alias-2026-08-03',
+    modelValue: 'deepseek-v4-flash-0731',
+    provenance: {
+      sourceUrl: DEEPSEEK_ALIAS_PROFILE_SOURCE_URL,
+      verifiedAt: DEEPSEEK_ALIAS_PROFILE_VERIFIED_AT,
+    },
+    reference: { provider: LLMProvider.DEEPSEEK, value: 'deepseek-v4-flash' },
   },
 ];
 

@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- |
 | ARCH-REV-001 | Initial architecture review of the approved solution package | `SR-001`–`SR-005` | `N/A` | `Fail` | `ARCH-DESIGN-001`, `ARCH-DESIGN-002`, `ARCH-DESIGN-003` |
 | ARCH-REV-002 | Re-review after solution contract rework | `SR-006` | `Fail` | `Pass` | `ARCH-DESIGN-001`, `ARCH-DESIGN-002`, `ARCH-DESIGN-003` resolved |
+| ARCH-REV-003 | Re-review of approved endpoint-scoped wire-alias profiles | `SR-007`, `SR-008` | `Pass` | `Pass` | None |
 
 ## Revision Entries
 
@@ -50,3 +51,26 @@ None.
 - Material classification changes: `Fail` -> `Pass`; no change to the user-approved `SR-005` precedence.
 - Recommended recipient: `implementation_engineer`.
 - Remaining risks or uncertainty: Profile facts remain time-sensitive; exact built-in fallback remains best effort; no implementation or durable coverage evidence exists yet.
+
+### ARCH-REV-003 — Re-review of the approved endpoint-scoped wire-alias contract
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/design-review-report.md`
+- Review round and trigger: Round `3`; solution designer added the user-approved `SR-008` endpoint-scoped wire-alias behavior after `ARCH-REV-002`.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/solution-revision-record.md`; no new finding IDs.
+- Relevant solution revision IDs: `SR-007`, `SR-008`, with `SR-005` retained as the approved precedence baseline and `SR-006` retaining the prior contract rework.
+- Prior authoritative decision: `Pass` at `ARCH-REV-002`.
+- Current authoritative decision: `Pass`.
+- What changed in the review result or what baseline was established: The newly approved behavior permits a provider wire ID that differs from a built-in value to reference canonical built-in metadata only through an exact endpoint-scoped profile. The revised requirements and design specify the exact returned `modelValue`, canonical `{provider, value}` reference, profile provenance/overrides, endpoint tuple matching, and unknown behavior when the profile is absent. No global suffix stripping, fuzzy matching, family matching, or cross-endpoint aliasing is introduced.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `ARCH-DESIGN-001` | Resolved at `ARCH-REV-002` | Remains resolved | `SR-006`; `SR-007`/`SR-008`; `REQ-006`, `REQ-009`; `AC-011`, `AC-014` | Alias results use the existing `endpoint_profile` source kind and carry profile provenance/reference without changing source propagation or coarse GraphQL mapping. |
+| `ARCH-DESIGN-002` | Resolved at `ARCH-REV-002` | Remains resolved | `SR-006`; `SR-007`/`SR-008`; `REQ-010`, `REQ-012`; `AC-012`, `AC-014` | The global fallback index remains exact `SupportedModelDefinition.value`; a differing wire ID reaches a canonical value only through an exact profile `{provider, value}` reference. |
+| `ARCH-DESIGN-003` | Resolved at `ARCH-REV-002` | Remains resolved | `SR-006`; `SR-007`/`SR-008`; `REQ-003`, `REQ-011`, `REQ-012`; `AC-013`, `AC-014` | Profile matching remains exact on canonical endpoint tuple plus returned wire ID; unrecognized endpoints and absent profiles fall through to exact fallback/unknown. |
+
+- New or remaining finding IDs: None.
+- Material classification changes: None. The approved scope is extended only by the explicit endpoint-scoped alias case; the `SR-005` source precedence is unchanged.
+- Recommended recipient: `implementation_engineer`.
+- Remaining risks or uncertainty: The specific Alibaba alias profile needs source-dated endpoint equivalence/context facts during implementation; absent that exact profile, `deepseek-v4-flash-0731` remains unknown. No implementation or durable coverage evidence exists yet.

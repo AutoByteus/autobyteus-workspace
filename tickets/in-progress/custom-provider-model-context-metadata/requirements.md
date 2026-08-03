@@ -171,6 +171,7 @@ None. Sanitized probe evidence is retained in `investigation-notes.md`; no raw s
 1. use provider/endpoint metadata when available;
 2. otherwise use an exact matching built-in model definition as a best-effort inferred fallback, without treating it as provider-confirmed;
 3. if no exact built-in match exists, provide no context limit and keep the state unknown; and
-4. preserve an explicit “context limit unavailable” token-meter state for genuinely unknown models.
+4. preserve an explicit “context limit unavailable” token-meter state for genuinely unknown models; and
+5. support explicit endpoint-scoped wire aliases, such as mapping Alibaba `deepseek-v4-flash-0731` to canonical DeepSeek `deepseek-v4-flash`, only when the profile records that equivalence.
 
 The architecture-review package still includes endpoint-scoped profiles so documented plan-specific values can override the inferred built-in fallback (for example, Alibaba Token Plan facts).
