@@ -3,6 +3,7 @@ import { SecretValue } from 'autobyteus-ts';
 import type { ModelInfo } from 'autobyteus-ts/llm/models.js';
 import { ModelMetadataProvenance } from 'autobyteus-ts/llm/metadata/model-metadata-resolver.js';
 import { LLMProvider } from 'autobyteus-ts/llm/providers.js';
+import type { ResolvedModelMetadata } from 'autobyteus-ts/llm/metadata/model-metadata-resolver.js';
 
 const geminiHarness = vi.hoisted(() => ({
   selection: { kind: 'unconfigured' } as
@@ -20,7 +21,11 @@ vi.mock('../../../src/llm-management/services/gemini-configuration-service.js', 
 
 import { ModelMetadataProvisioningService } from '../../../src/llm-management/services/model-metadata-provisioning-service.js';
 
-const model = (provider: LLMProvider, name: string): ModelInfo => ({
+const model = (
+  provider: LLMProvider,
+  name: string,
+  resolvedModelMetadata: ResolvedModelMetadata | null = null,
+): ModelInfo => ({
   model_identifier: name,
   display_name: name,
   value: name,
@@ -36,6 +41,7 @@ const model = (provider: LLMProvider, name: string): ModelInfo => ({
   active_context_tokens: null,
   max_input_tokens: 1_048_576,
   max_output_tokens: 65_536,
+  resolved_model_metadata: resolvedModelMetadata,
 });
 
 describe('ModelMetadataProvisioningService', () => {
@@ -136,5 +142,38 @@ describe('ModelMetadataProvisioningService', () => {
     service.invalidate();
     await service.enrichBestEffort(models);
     expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it('preserves non-secret custom endpoint source and per-field values through enrichment', async () => {
+    const resolvedModelMetadata: ResolvedModelMetadata = {
+      maxContextTokens: {
+        value: 1_000_000,
+        source: {
+          kind: 'endpoint_profile',
+          profileId: 'alibaba-token-plan-qwencloud-2026-07-30',
+          provenance: {
+            sourceUrl: 'https://docs.qwencloud.com/developer-guides/getting-started/text-generation-models',
+            verifiedAt: '2026-07-30',
+          },
+        },
+      },
+      maxInputTokens: { value: null, source: { kind: 'unknown' } },
+      maxOutputTokens: { value: null, source: { kind: 'unknown' } },
+    };
+
+    const customModel = model(LLMProvider.OPENAI_COMPATIBLE, 'qwen3.8-max-preview', resolvedModelMetadata);
+    customModel.max_context_tokens = 1_000_000;
+    customModel.max_input_tokens = null;
+    customModel.max_output_tokens = null;
+    const [result] = await new ModelMetadataProvisioningService({ resolve: vi.fn() } as never)
+      .enrichBestEffort([customModel]);
+
+    expect(result).toMatchObject({
+      max_context_tokens: 1_000_000,
+      max_input_tokens: null,
+      max_output_tokens: null,
+      resolved_model_metadata: resolvedModelMetadata,
+      metadata_provenance: ModelMetadataProvenance.CURATED_FALLBACK,
+    });
   });
 });

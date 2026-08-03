@@ -70,6 +70,7 @@ const shellMessages = {
   'shell.tokenUsage.usageReportsTooltip': 'Token usage reports emitted by a runtime/provider, usually one model call or model turn; not user messages.',
   'shell.tokenUsage.missingPriceDimensions': 'Missing price dimensions',
   'shell.tokenUsage.contextTokens': 'context tokens',
+  'shell.tokenUsage.contextLimitUnavailable': 'context limit unavailable',
   'shell.tokenUsage.loading': 'Loading token usage for the focused run…',
   'shell.tokenUsage.unavailable': 'Token usage is temporarily unavailable for the focused run.',
   'shell.tokenUsage.focusUnavailable': 'Select a leaf team member to view focused token usage.',

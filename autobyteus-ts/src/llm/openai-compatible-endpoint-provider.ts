@@ -1,6 +1,7 @@
 import type { CustomLlmProviderRecord } from './custom-llm-provider-config.js';
 import type { OpenAICompatibleEndpointDiscoveredModel } from './openai-compatible-endpoint-discovery.js';
 import { OpenAICompatibleEndpointModel } from './openai-compatible-endpoint-model.js';
+import { resolveOpenAICompatibleEndpointModelMetadata } from './metadata/openai-compatible-endpoint-model-metadata.js';
 
 export type OpenAICompatibleEndpointReloadStatusKind =
   | 'READY'
@@ -119,6 +120,10 @@ export class OpenAICompatibleEndpointModelProvider {
           new OpenAICompatibleEndpointModel({
             endpoint,
             discoveredModel,
+            resolvedModelMetadata: resolveOpenAICompatibleEndpointModelMetadata({
+              endpointBaseUrl: endpoint.baseUrl,
+              discoveredModel,
+            }),
           }),
       )
       .sort((left, right) => left.name.localeCompare(right.name));

@@ -54,6 +54,7 @@ const shellMessages = {
   'shell.tokenUsage.usageReportsTooltip': '运行时/提供方发出的 token 用量报告，通常对应一次模型调用或模型轮次；不是用户消息数。',
   'shell.tokenUsage.missingPriceDimensions': '缺少价格维度',
   'shell.tokenUsage.contextTokens': '上下文 token',
+  'shell.tokenUsage.contextLimitUnavailable': '上下文限制不可用',
   'shell.tokenUsage.loading': '正在加载当前运行的 token 用量…',
   'shell.tokenUsage.unavailable': '当前运行的 token 用量暂时不可用。',
   'shell.tokenUsage.focusUnavailable': '请选择一个叶子团队成员以查看聚焦的 token 用量。',

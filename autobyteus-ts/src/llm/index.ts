@@ -11,5 +11,6 @@ export * from './custom-llm-provider-config.js';
 export * from './openai-compatible-endpoint-discovery.js';
 export * from './openai-compatible-endpoint-model.js';
 export * from './openai-compatible-endpoint-provider.js';
+export * from './metadata/openai-compatible-endpoint-model-metadata.js';
 export * from './utils/token-usage.js';
 export * from './utils/llm-token-usage-observation.js';

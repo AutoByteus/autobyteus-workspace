@@ -3,6 +3,9 @@ import { UNKNOWN_MULTIMODAL_CAPABILITIES } from 'autobyteus-ts/llm/multimodal-ca
 import { LLMProvider } from 'autobyteus-ts/llm/providers.js';
 import {
   ModelMetadataResolver,
+  type ResolvedMetadataField,
+  type ResolvedMetadataSource,
+  type ResolvedModelMetadata,
   type StaticModelMetadata,
   type ProviderModelMetadataProvider,
   type ProviderModelMetadataStrategies,
@@ -17,15 +20,80 @@ import { createLlmMetadataProviderApiKeyResolver } from '../../secret-management
 import { getGeminiConfigurationService } from './gemini-configuration-service.js';
 
 export type ModelMetadataProvenanceValue = 'LIVE' | 'CURATED_FALLBACK' | 'CURATED_ONLY';
-export type EnrichedModelInfo = ModelInfo & { metadata_provenance?: ModelMetadataProvenanceValue | null };
+export type EnrichedModelInfo = ModelInfo & {
+  resolved_model_metadata: ResolvedModelMetadata | null;
+  metadata_provenance?: ModelMetadataProvenanceValue | null;
+};
+
+const sourceProvenance = (source: ResolvedMetadataSource): StaticModelMetadata['provenance'] => {
+  switch (source.kind) {
+    case 'endpoint_profile':
+    case 'inferred_builtin':
+    case 'static_definition':
+      return source.provenance;
+    default:
+      return { sourceUrl: '', verifiedAt: '' };
+  }
+};
+
+const firstStaticProvenance = (model: ModelInfo): StaticModelMetadata['provenance'] => {
+  for (const field of [
+    model.resolved_model_metadata?.maxContextTokens,
+    model.resolved_model_metadata?.maxInputTokens,
+    model.resolved_model_metadata?.maxOutputTokens,
+  ]) {
+    if (field?.source.kind === 'static_definition') {
+      return sourceProvenance(field.source);
+    }
+  }
+  return { sourceUrl: '', verifiedAt: '' };
+};
 
 const staticMetadataForModelInfo = (model: ModelInfo): StaticModelMetadata => ({
   maxContextTokens: model.max_context_tokens,
   maxInputTokens: model.max_input_tokens,
   maxOutputTokens: model.max_output_tokens,
   multimodalCapabilities: UNKNOWN_MULTIMODAL_CAPABILITIES,
-  provenance: { sourceUrl: '', verifiedAt: '' },
+  provenance: firstStaticProvenance(model),
 });
+
+const validValue = (value: number | null | undefined): value is number =>
+  typeof value === 'number' && Number.isFinite(value) && Number.isInteger(value) && value > 0;
+
+const preserveCustomResolvedField = (
+  field: ResolvedMetadataField<number> | undefined,
+): field is ResolvedMetadataField<number> => {
+  if (!field || !validValue(field.value)) return false;
+  return field.source.kind === 'live'
+    || field.source.kind === 'endpoint_profile'
+    || field.source.kind === 'inferred_builtin';
+};
+
+const mergeResolvedField = (
+  existing: ResolvedMetadataField<number> | undefined,
+  providerResolved: ResolvedMetadataField<number>,
+): ResolvedMetadataField<number> => preserveCustomResolvedField(existing) ? existing : providerResolved;
+
+const mergeResolvedMetadata = (
+  existing: ResolvedModelMetadata | null | undefined,
+  providerResolved: ResolvedModelMetadata,
+): ResolvedModelMetadata => ({
+  maxContextTokens: mergeResolvedField(existing?.maxContextTokens, providerResolved.maxContextTokens),
+  maxInputTokens: mergeResolvedField(existing?.maxInputTokens, providerResolved.maxInputTokens),
+  maxOutputTokens: mergeResolvedField(existing?.maxOutputTokens, providerResolved.maxOutputTokens),
+});
+
+const coarseProvenanceFor = (
+  metadata: ResolvedModelMetadata,
+  fallback: ModelMetadataProvenanceValue,
+): ModelMetadataProvenanceValue => {
+  const fields = [metadata.maxContextTokens, metadata.maxInputTokens, metadata.maxOutputTokens];
+  if (fields.some((field) => field.source.kind === 'live')) return 'LIVE';
+  if (fields.some((field) => field.source.kind === 'endpoint_profile' || field.source.kind === 'inferred_builtin')) {
+    return 'CURATED_FALLBACK';
+  }
+  return fallback;
+};
 
 /** Resolves metadata credentials only at the server-owned enrichment boundary. */
 export class ModelMetadataProvisioningService {
@@ -47,20 +115,21 @@ export class ModelMetadataProvisioningService {
           value: model.value,
           canonicalName: model.canonical_name,
         }, staticMetadataForModelInfo(model));
-        const hasLiveMetadata = [
-          metadata.maxContextTokens,
-          metadata.maxInputTokens,
-          metadata.maxOutputTokens,
-        ].some((field) => field.source === 'live');
+        const resolvedModelMetadata = mergeResolvedMetadata(
+          model.resolved_model_metadata,
+          metadata,
+        );
         return {
           ...model,
-          max_context_tokens: metadata.maxContextTokens.value,
+          max_context_tokens: resolvedModelMetadata.maxContextTokens.value,
           active_context_tokens: model.active_context_tokens,
-          max_input_tokens: metadata.maxInputTokens.value,
-          max_output_tokens: metadata.maxOutputTokens.value,
-          metadata_provenance: hasLiveMetadata
-            ? 'LIVE'
-            : this.fallbackProvenanceByProvider.get(model.provider_type) ?? 'CURATED_ONLY',
+          max_input_tokens: resolvedModelMetadata.maxInputTokens.value,
+          max_output_tokens: resolvedModelMetadata.maxOutputTokens.value,
+          resolved_model_metadata: resolvedModelMetadata,
+          metadata_provenance: coarseProvenanceFor(
+            resolvedModelMetadata,
+            this.fallbackProvenanceByProvider.get(model.provider_type) ?? 'CURATED_ONLY',
+          ),
         };
       }));
     } catch {

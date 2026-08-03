@@ -22,6 +22,12 @@ const endpointB = {
 
 const discovered = (id: string) => ({ id, name: id, value: id, canonicalName: id });
 
+const unknownResolvedMetadata = {
+  maxContextTokens: { value: null, source: { kind: 'unknown' as const } },
+  maxInputTokens: { value: null, source: { kind: 'unknown' as const } },
+  maxOutputTokens: { value: null, source: { kind: 'unknown' as const } },
+};
+
 describe('OpenAICompatibleEndpointModelProvider', () => {
   beforeEach(() => LLMFactory.resetForTests());
 
@@ -45,10 +51,34 @@ describe('OpenAICompatibleEndpointModelProvider', () => {
     ]);
   });
 
+  it('constructs custom models with resolved endpoint metadata before registry use', async () => {
+    const provider = new OpenAICompatibleEndpointModelProvider();
+    const report = await provider.reloadSavedEndpoints([{
+      endpoint: {
+        ...endpointA,
+        baseUrl: 'https://token-plan.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1',
+      },
+      discoveredModels: [discovered('qwen3.8-max-preview')],
+    }]);
+
+    expect(report.models[0]).toMatchObject({
+      maxContextTokens: 1_000_000,
+      maxInputTokens: null,
+      maxOutputTokens: null,
+      resolvedModelMetadata: {
+        maxContextTokens: {
+          value: 1_000_000,
+          source: { kind: 'endpoint_profile' },
+        },
+      },
+    });
+  });
+
   it('preserves last-known-good models for a failed discovery while keeping healthy results', async () => {
     const previousModel = new OpenAICompatibleEndpointModel({
       endpoint: endpointA,
       discoveredModel: discovered('model-stale'),
+      resolvedModelMetadata: unknownResolvedMetadata,
     });
     const provider = new OpenAICompatibleEndpointModelProvider();
 

@@ -3,12 +3,32 @@ import type { StaticModelMetadata } from '../supported-model-definition.js';
 
 export type { StaticModelMetadata, StaticModelMetadataProvenance } from '../supported-model-definition.js';
 
-export type ModelMetadataSourceKind = 'live' | 'static_definition' | 'unknown';
+export enum ModelMetadataProvenance {
+  LIVE = 'LIVE',
+  CURATED_FALLBACK = 'CURATED_FALLBACK',
+  CURATED_ONLY = 'CURATED_ONLY',
+}
+
+export type ResolvedMetadataSource =
+  | { kind: 'live' }
+  | {
+      kind: 'endpoint_profile';
+      profileId: string;
+      provenance: StaticModelMetadata['provenance'];
+      reference?: { provider: LLMProvider; value: string };
+    }
+  | {
+      kind: 'inferred_builtin';
+      provider: LLMProvider;
+      value: string;
+      provenance: StaticModelMetadata['provenance'];
+    }
+  | { kind: 'static_definition'; provenance: StaticModelMetadata['provenance'] }
+  | { kind: 'unknown' };
 
 export type ResolvedMetadataField<T> = {
   value: T | null;
-  source: ModelMetadataSourceKind;
-  staticProvenance?: StaticModelMetadata['provenance'];
+  source: ResolvedMetadataSource;
 };
 
 export type ResolvedModelMetadata = {
@@ -82,18 +102,17 @@ const resolveField = (
   provenance: StaticModelMetadata['provenance'],
 ): ResolvedMetadataField<number> => {
   const live = normalizePositiveInteger(liveValue);
-  if (live !== null) return { value: live, source: 'live' };
+  if (live !== null) return { value: live, source: { kind: 'live' } };
 
   const staticResolved = normalizePositiveInteger(staticValue);
   if (staticResolved !== null) {
     return {
       value: staticResolved,
-      source: 'static_definition',
-      staticProvenance: provenance,
+      source: { kind: 'static_definition', provenance },
     };
   }
 
-  return { value: null, source: 'unknown' };
+  return { value: null, source: { kind: 'unknown' } };
 };
 
 export class ModelMetadataResolver {
