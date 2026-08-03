@@ -12,7 +12,8 @@ import {
   type AgentToolMcpAdapterProvider,
   type AgentToolMcpToolAdapter,
 } from "../agent-tool-mcp-adapter.js";
-import { toAgentCommunicationMcpToolResult, toAgentCommunicationToolResult } from "../../../agent-communication/services/agent-communication-tool-result.js";
+import { toAgentCommunicationToolResult } from "../../../agent-communication/services/agent-communication-tool-result.js";
+import { toAgentCommunicationMcpToolResult } from "../agent-communication-mcp-result-mapper.js";
 
 export class SendMessageToMcpAdapterProvider implements AgentToolMcpAdapterProvider {
   constructor(

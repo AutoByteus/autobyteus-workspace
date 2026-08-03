@@ -6,13 +6,13 @@ import {
   GET_HANDOFF_RULES_TOOL_DESCRIPTION,
   GET_HANDOFF_RULES_TOOL_NAME,
 } from "../../../agent-communication/services/get-handoff-rules-tool-contract.js";
-import { toAgentCommunicationMcpToolResult } from "../../../agent-communication/services/agent-communication-tool-result.js";
 import { buildGetHandoffRulesParameterSchema } from "../../agent-communication/get-handoff-rules-parameter-schema.js";
 import {
   toAgentToolMcpToolResult,
   type AgentToolMcpAdapterProvider,
   type AgentToolMcpToolAdapter,
 } from "../agent-tool-mcp-adapter.js";
+import { toAgentCommunicationMcpToolResult } from "../agent-communication-mcp-result-mapper.js";
 
 export class GetHandoffRulesMcpAdapterProvider implements AgentToolMcpAdapterProvider {
   constructor(private readonly service: GetHandoffRulesService = getGetHandoffRulesService()) {}

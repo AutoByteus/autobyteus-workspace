@@ -7,6 +7,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | `architecture_reviewer` / `design-review-report.md` / `ARCH-REV-004` | `N/A` (DR-001–DR-003 already resolved in approved design) | `Initial Baseline` | `SR-001`–`SR-005`; `ARCH-REV-001`–`ARCH-REV-004`; `CRR/API-REV/DR: N/A` | `Ready for code review` |
+| IR-002 | `code_reviewer` / `code-review-report.md` / `CRR-001` | `CR-F-001`, `CR-F-002` | `Local Fix` | `SR-001`–`SR-005`; `ARCH-REV-004`; `CRR-001`; `API-REV/DR: N/A` | `Ready for code re-review` |
 
 ## Revision Entries
 
@@ -29,3 +30,23 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: production build-config typecheck passed; full build/bootstrap smoke passed; focused 36-test existing unit selection passed; built-JavaScript three-level placement/localization/task-ingress/event-address smoke passed; diff/legacy/size guards passed. Pre-existing durable coverage tied to removed contracts was intentionally not edited and is recorded for downstream investigation.
 - Next recipient or routing: `code_reviewer` with the cumulative package.
 - Remaining limitations or risks: independent provider/API/E2E execution, durable coverage maintenance, snapshot restore scenarios, task lifecycle breadth, event identity, and active child-directory lifecycle coverage remain downstream work. External Agent package definitions/prose remain intentionally unchanged and receive no compatibility fallback.
+
+### IR-002 — Atomic definition updates and correct MCP projection ownership
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`; `CRR-001`, implementation-review round 1.
+- Triggering finding IDs: `CR-F-001`, `CR-F-002`.
+- Classification: `Local Fix`.
+- Prior authoritative result: `Fail — Local Fix` (`CRR-001`, 8.9/10).
+- Current authoritative result: both bounded implementation findings are corrected and the cumulative implementation is ready for source code re-review; API/E2E remains gated on a passing review.
+- Related solution revision IDs: `SR-001` through `SR-005`.
+- Related architecture-review revision IDs: `ARCH-REV-001` through `ARCH-REV-004` (approved baseline `ARCH-REV-004`).
+- Related code-review revision IDs: `CRR-001`.
+- Related API/E2E revision IDs: `N/A`.
+- Related delivery revision IDs: `N/A`.
+- Why this implementation revision is recorded: CRR-001 found a reachable rejected-update cache mutation and a dependency-direction violation where semantic Agent Communication owned MCP transport projection.
+- Approved behavior or requirement IDs affected: `BEH-001`, `BEH-009`; `R-004`, `R-006`, `R-019`, `R-026`; `AC-003`; `DS-001`; design ownership/dependency rules 12–13.
+- Implementation delta: `AgentTeamDefinitionService.updateDefinition` now copies every current/update field into a detached `AgentTeamDefinition` candidate, including cloned nodes, handoffs, and launch config, validates that candidate, and persists only after success. MCP projection moved unchanged to the approved Tools MCP mapper; the shared communication service no longer imports Tools MCP, and both providers retain explicit `mcp_tool_result` wrapping.
+- Changed files or areas: `src/agent-team-definition/services/agent-team-definition-service.ts`; `src/agent-communication/services/agent-communication-tool-result.ts`; new `src/agent-tools/mcp/agent-communication-mcp-result-mapper.ts`; both communication MCP providers; focused AgentTeam definition service unit test.
+- Local validation and result: production typecheck passed; `build:full` and built-in bootstrap smoke passed; focused six-file suite passed 38/38; invalid handoff proof verifies typed rejection, zero provider updates, identical current object/deep state; valid proof verifies provider persistence, returned changed handoffs, and original-object detachment; built MCP parity probe passed; dependency-direction, explicit-result, diff, and 215-effective-line service guards passed.
+- Next recipient or routing: `code_reviewer` with the cumulative package including CRR-001 artifacts.
+- Remaining limitations or risks: no design/requirement uncertainty remains. Independent coverage investigation, stale durable coverage maintenance, API/E2E/provider execution, restore/task/event scenarios, and delivery documentation remain downstream-owned after source review passes.
