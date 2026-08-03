@@ -12,34 +12,42 @@
   - `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_6557dd2b51c3__image.png`
   - `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_9d9c83cf3d30__image.png`
   - `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_ead75793b5e3__image.png`
+  - `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_0fa01fdeb308__image.png`
 - Design review: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/design-review-report.md`
 - Architecture review chronology: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/architecture-review-revision-record.md`
 - Prior source review: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/code-review-report.md`
 - Prior source-review chronology: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/code-review-revision-record.md`
+- Accepted prior API/E2E coverage: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-coverage-investigation.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-execution-coverage-report.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-revision-record.md`
+- Prior API/E2E test review: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-test-review-report.md`
+- Superseded delivery hold context: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/handoff-summary.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/delivery-revision-record.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/docs-sync-report.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/release-deployment-report.md`
 
 ## Current Implementation Summary
 
-`IR-004` implements the `SR-005` / `ARCH-REV-005` coordinate-frame correction returned by `CRR-003`, while preserving the sound `IR-003` team-lifecycle expansion and source-reviewed `SR-002` agent lifecycle foundation.
+`IR-005` implements the user-approved `SR-006` / `ARCH-REV-006` post-delivery presentation correction on the accepted integrated `SR-005` source. It restores useful binary activity cues for exact team runs and their rendered definition groups without restoring the removed five-state team aggregate.
 
 The public team lifecycle is now one manager-owned binary root fact. `AgentTeamRunManager` publishes idempotent lifecycle transitions for an exact root run, the team stream binds lifecycle and event subscriptions before a fresh read, and the frontend consumes `TEAM_RUN_LIFECYCLE { team_run_id, is_active }`. Socket subscription state remains separate. Accepted termination publishes inactive; rejected termination leaves the run active; replacement and stale-backend paths avoid false lifecycle flicker.
 
-The five-state aggregate team model remains removed end to end. Backend/public team status DTOs, aggregate computation, root/nested `TEAM_STATUS`, GraphQL/history root status, frontend `AgentTeamStatus`, aggregate hydration/normalization, team status dots, and aggregate visual helpers stay deleted. Only exact leaf agents expose `AgentStatus`.
+The five-state aggregate team model remains removed end to end. Backend/public team status DTOs, aggregate computation, root/nested `TEAM_STATUS`, GraphQL/history root status, frontend `AgentTeamStatus`, aggregate hydration/normalization, and aggregate visual helpers stay deleted. Only exact leaf agents expose `AgentStatus`.
+
+`IR-005` adds a separate boolean-only `TeamActivityDot`. An exact history/running team-run row passes only its own authoritative `isActive`; a displayed definition group passes only `runs.some(run => run.isActive)` over the exact runs it renders. Active is solid blue, inactive solid gray, neither pulses, and caller-supplied localized labels provide `role="img"`, `aria-label`, and `title`. The dot owns no member, socket, task, Stop, or pending policy.
 
 `IR-004` separates operational task-team identity from outward stream identity. `TaskTeamInstanceIdentity` remains local to activation, persistence, ingress, and coordinator routing. A tight `TaskTeamStreamScope` carries only outward IDs plus logical-team path/key in the enclosing `teamRunId` frame. The task-team handle derives one target-parent-frame override; every ordinary parent sends AGENT, TASK_DELEGATION, COMMUNICATION, MEMBER_INPUT, and recursive initial snapshots through `prefixMixedTeamStreamScope`, which rebases source/member/logical-team paths together and rebuilds route keys. The stream mapper now validates and subtracts only—there is no prefix, root, or frontend fallback.
 
 Former aggregate consumers now use their own facts: settlement asks private `hasOpenExecutionWork()`, task cleanup follows terminal task/reconciliation events, and failure observation retains member-agent and explicit operation failures without inventing a root aggregate error. The frontend owns one per-run `stopPending` guard, derives Stop from `isActive && !stopPending`, keeps failed Stop active, and uses `Active`/`Inactive` only where team-run liveness text remains useful.
 
-- Implementation cycle: `Design-Impact Rework + Local Fix`
+- Implementation cycle: `User-Approved Presentation Change`
 - Preserved agent foundation commits: `b1e96b73f0b40427bebe07f9b4f9609007a766fe`, `f453286d829ffde874a700d350f9c8ade80af4c9`
 - `IR-003` source/test commit: `9c4c6f09546b426ab27598a11753657b438c3fde`
 - `IR-004` source/test commit: `4eca42bf56831eb6561a0f8ceee949c62674c4da`
+- `IR-005` source/test commit: `bfd5ea4037109d49072fdcd9dc861cfe86966737`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/implementation-revision-record.md`
-- Current implementation revision ID: `IR-004`
-- Related solution revisions: `SR-002`, `SR-004`, `SR-005`
-- Related architecture revisions: `ARCH-REV-002`, `ARCH-REV-004`, `ARCH-REV-005`
-- Related code-review revisions: `CRR-002` for the preserved foundation; `CRR-003` triggered this rework; new source re-review pending
-- Related API/E2E revisions: `N/A` for this expanded source state
-- Triggering findings: `CODE-FIND-002` (`Resolved In Design` by `SR-005`) and `CODE-FIND-003` (`Local Fix`)
+- Current implementation revision ID: `IR-005`
+- Related solution revisions: `SR-002`, `SR-004`, `SR-005`, `SR-006`
+- Related architecture revisions: `ARCH-REV-002`, `ARCH-REV-004`, `ARCH-REV-005`, `ARCH-REV-006`
+- Related code-review revisions: accepted source `CRR-004` and durable-test review `CRR-006`; new `SR-006` source review pending
+- Related API/E2E revisions: accepted prior state `API-REV-002`; fresh `SR-006` investigation/execution pending after source review
+- Related delivery revisions: `DR-004` supplied the integrated start but its candidate is superseded for completion by `SR-006`
+- Triggering findings: `N/A` — user-approved presentation correction during the explicit delivery verification hold
 
 ## Reviewed Behavior Implementation Trace
 
@@ -50,9 +58,9 @@ Former aggregate consumers now use their own facts: settlement asks private `has
 | BEH-003 | Current terminal/error/termination and fresh reconnect evidence converge canonically | Preserved run-owned `AgentTurnLifecycleState`, runtime projectors, fresh stream read | Preserved; team root liveness is separate and cannot overwrite member lifecycle. |
 | BEH-004 | Retired-turn evidence remains observable without reopening the current turn | Preserved current/anonymous/identified/retired-turn precedence | Preserved and still isolated behind each leaf `AgentRun`. |
 | BEH-005 | Click, Enter, and programmatic admission share the same action decision | Preserved composer/action/store path and `submissionPending` | Preserved; team Stop pending is a separate team-run mutation guard. |
-| BEH-006 | Team definitions have no runtime status | History/tree read models and workspace presentation remove definition status fields, dots, and labels | Implemented; launch/name/avatar/count/disclosure remain. |
+| BEH-006 | Team definitions have no owned runtime status; rendered groups summarize displayed child activity only | `WorkspaceHistoryTeamDefinitionDisplayGroup.hasActiveRuns` and `RunningTeamGroup` derive `runs.some(run.isActive)` -> boolean-only `TeamActivityDot` | Implemented. Mixed active/inactive children render a blue group cue; after the last active child settles it turns gray without representative/member/socket/action influence. |
 | BEH-007 | Root team liveness is manager-owned binary `isActive` | `AgentTeamRunManager` lifecycle snapshot/subscription -> `TEAM_RUN_LIFECYCLE` -> team context/history/open/recovery state | Implemented with listener isolation, replacement/stale-run guards, fresh read, and independent `isSubscribed`. |
-| BEH-008 | Stop uses root activity plus local pending; no five-state team visuals | `AgentTeamRunStore` stop-pending set -> workspace mutation/composer callers -> `TeamMembersPanel`; team display helpers removed | Implemented; duplicate Stop is rejected locally, failure clears pending but preserves `isActive`. |
+| BEH-008 | Stop uses root activity plus local pending; each exact team-run row also visualizes that same run boolean independently | Existing Stop path remains unchanged; history/running rows pass their own `isActive` directly to `TeamActivityDot` | Implemented; exact active/inactive siblings render blue/gray while duplicate Stop, failure, archive, and delete policy remain separately owned. |
 | BEH-009 | Exact leaf status survives live/initial recursion; aggregate consumers use real owners | Operational identity -> task handle `TaskTeamStreamScope` override -> every-boundary `prefixMixedTeamStreamScope` -> strict shared flattener -> exact frontend task-team leaf; task terminal projection and `hasOpenExecutionWork` remain separate | Implemented. Root -> ordinary subteam -> task team -> leaf maps live and reconnect to `task-team-run-7/review_group/critic`; repeated ordinary nesting is idempotent and invalid/root-only leaf frames fail. |
 
 ## Key Files And Areas
@@ -64,11 +72,13 @@ Former aggregate consumers now use their own facts: settlement asks private `has
 - Former aggregate consumers: `team-run.ts`, `task-team-settlement-coordinator.ts`, `team-run-service.ts`, task-delegation projections
 - History/API contraction: server run-history types/services and GraphQL types; frontend GraphQL query/generated contract and run-history stores
 - Frontend lifecycle/action: `AgentTeamContext.ts`, `agentTeamRunStore.ts`, `useWorkspaceHistoryMutations.ts`, `TeamMembersPanel.vue`, `TeamStreamingService.ts`
-- Presentation cleanup: workspace history/running/mobile surfaces; deleted `TeamStatusDisplay.vue`, `useTeamStatusVisuals.ts`, and `AgentTeamStatus.ts`
+- Binary team presentation: `TeamActivityDot.vue`, `workspaceHistoryTeamDefinitionGroups.ts`, `WorkspaceHistoryWorkspaceSection.vue`, `RunningTeamGroup.vue`, `RunningTeamRow.vue`, localized workspace catalogs
+- Preserved cleanup: deleted `TeamStatusDisplay.vue`, `useTeamStatusVisuals.ts`, and `AgentTeamStatus.ts`; agent `StatusDot.vue` remains unchanged
 
 ## Important Assumptions
 
 - `AgentTeamRunManager` is the only public root team-liveness owner; leaf status, open-work state, and transport subscription are deliberately not fallback liveness sources.
+- `hasActiveRuns` is an internal display-group projection over the final rendered `runs` collection, not a persisted/transported definition property. Each exact row dot reads only its own run's `isActive`.
 - Operational `TaskTeamInstanceIdentity` never becomes root-relative. The task-team handle derives a tight outward scope in its immediate parent frame, and every outer ordinary boundary rebases that retained scope with source/member paths.
 - The stream mapper receives one coordinate-consistent scope and only validates/subtracts it. A source path outside logical-team scope or a task-team leaf without a nonempty relative selector is rejected instead of repaired.
 - Stored history remains directly usable because readers no longer request root status; member statuses and existing `isActive` remain sufficient. No dual protocol or compatibility parser is retained.
@@ -76,28 +86,28 @@ Former aggregate consumers now use their own facts: settlement asks private `has
 
 ## Known Risks And Limitations
 
-- Real WebSocket startup/reconnect, stale-backend, nested task-team, termination-failure, and multi-runtime traces remain for downstream API/E2E validation.
-- The held pre-expansion API/E2E investigation and three held server API/integration tests were intentionally not edited or committed. Downstream must reconcile them against `SR-005` before execution.
-- GraphQL code generation could not be run because no live codegen endpoint was configured. The checked-in generated TypeScript contract was narrowed manually in parallel with the query/server schema contraction.
+- Fresh `SR-006` coverage investigation and realistic browser-equivalent validation remain downstream API/E2E work; prior `API-REV-002` evidence supports the preserved baseline but is not sign-off for the new presentation.
+- The default-heap frontend typecheck exhausted its 4 GB Node heap. With an 8 GB heap it reached the repository's non-green set (`5457` TypeScript diagnostics) with no `IR-005` changed-file hit.
+- Two broader history panel tests fail because their accepted-baseline Pinia double omits `stopPendingTeamIds`; the same two failures were reproduced at integrated starting commit `55c5b3c9`. The focused history surface and real store Stop regressions pass.
 - No authenticated running-team browser or desktop fixture was available for direct visual inspection. Focused production-component render/interaction tests passed, but realistic rendered validation remains downstream-owned.
 - Durable project documentation may still describe aggregate team status; integrated documentation sync remains `delivery_engineer` work.
 
 ## Task Design Health Assessment
 
-- Reviewed posture: `Bug Fix`, `Behavior Change`, `Refactor`, and `Cleanup`
-- Root-cause classifications: `Missing Invariant`, `Boundary Or Ownership Issue`, `Duplicated Policy Or Coordination`, `Shared Structure Looseness`, and bounded `Local Implementation Defect`
-- Refactor decision: `Refactor Needed Now`
+- Reviewed posture: localized user-approved `Behavior Change` on the accepted prior bug-fix/refactor/cleanup result
+- Root-cause classification: `Local Presentation Omission` after deliberate schema contraction
+- Refactor decision: `No`, beyond the tight reusable boolean component and internal group projection field
 - Implementation matched the reviewed assessment: `Yes`
 - Design-impact reroute: `N/A`
-- Notes: `IR-004` fixes the missed multi-boundary invariant rather than adding a mapper workaround. The bridge is the sole coordinate-frame transition owner; the transport only validates/flattens; operational task routing remains unchanged. `CODE-FIND-003` was corrected only in the stale test double, without weakening the production manager interface.
+- Notes: `IR-005` reuses the already-authoritative run booleans and adds no domain, transport, store, or action owner. The separate component makes agent-status input and pulse behavior unrepresentable.
 
 ## Legacy / Compatibility Removal Check
 
 - Backward-compatibility mechanisms introduced: `None`
 - Legacy old behavior retained in scope: `No`
-- Obsolete files/helpers/tests/flags/adapters removed: `Yes`
+- Obsolete files/helpers/tests/flags/adapters removed: `N/A` for `IR-005`; accepted removals remain intact
 - Shared structures remain tight: `Yes`
-- Changed hand-written source stayed below the 500-effective-line guardrail: `Yes` (largest: `WorkspaceHistoryWorkspaceSection.vue`, 497; generated GraphQL output excluded)
+- Changed hand-written source stayed at or below the 500-effective-line guardrail: `Yes` (largest: `WorkspaceHistoryWorkspaceSection.vue`, exactly 500; its label helpers were extracted to keep the boundary)
 - Production scans found no `TEAM_STATUS`, aggregate team status DTO/aggregation/overlay, old team status projection/snapshot service, `AgentTeamStatus`, aggregate team visual helper, old `prefixMixedTeamAgentScope`, or outward event/snapshot `taskTeamInstance` carrier.
 
 ## Persisted Data Transition Check
@@ -105,7 +115,7 @@ Former aggregate consumers now use their own facts: settlement asks private `has
 - Approved decision: `Directly Usable — No Migration`
 - Design reference: `design-spec.md` -> `Persisted Data / State Transition Decision`
 - Implementation follows the decision: `Yes`
-- Evidence: no schema or stored transcript/identity/metadata format changed. GraphQL/history stops calculating root status and continues using existing manager-owned `isActive` and leaf-member status.
+- Evidence: `IR-005` changes only frontend display projection, components, tests, and localization. No persistence, schema, GraphQL, WebSocket, store, or server source changed.
 - Migration or version-specific fallback: `N/A`
 - Deviation: `None`
 
@@ -113,39 +123,35 @@ Former aggregate consumers now use their own facts: settlement asks private `has
 
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status`
 - Branch: `codex/agent-stream-driven-status`
-- `SR-005` reviewed HEAD: `facc6a8184f0c481244accf59fd8aa30080a02c0`; implementation source starting state: `9c4c6f09546b426ab27598a11753657b438c3fde`
+- `SR-006` integrated starting HEAD: `55c5b3c914d64059361d47ec87a29da0e4eb9bbb`; refreshed base recorded upstream: `origin/personal=2a7271c9d78b71b919f7dbfa3b8f97f61c3a2e2b`
 - No dependency or lockfile changes.
-- Product iteration / Product Manager acceptance callback: `Not Required`.
+- Product iteration / Product Manager acceptance callback: `Not Required`; `SR-006` is the approved user-feedback correction.
 
 ## Local Implementation Checks
 
-- **Pass:** server TypeScript build, `pnpm exec tsc -p tsconfig.build.json --noEmit --pretty false`.
-- **Pass:** expanded server regression set, `15` files / `128` tests. It covers all prior manager/team behavior plus target-frame scope derivation, every live event variant, live/reconnect parity, repeated ordinary nesting/no double prefix, route-key rebuild, strict invalid/root-only leaf rejection, and mapper flattening.
-- **Pass:** `TeamRunService` reviewer reproduction, `1` file / `13` tests; the manager double now supplies `subscribeToLifecycle` and `getLifecycleSnapshot`.
-- **Pass:** expanded frontend changed set, `33` files / `241` tests. It preserves lifecycle/Stop/batching coverage and proves the exact scoped child route `task-team-run-7/review_group/critic`.
-- **Pass:** focused task-team frontend set, `3` files / `43` tests.
+- **Pass:** focused `SR-006` component/projection/surface set, `5` files / `16` tests.
+- **Pass:** expanded relevant frontend regression set excluding the two reproduced baseline failures, `13` files / `92` tests. It includes exact/group activity, history/running surfaces, leaf-agent dot presentation, lifecycle/stream separation, companion batching, and real store Stop failure/pending behavior.
+- **Baseline limitation reproduced:** the full attempted `15`-file history/running/store/stream set reached `146` tests; `144` passed and the same two `stopPendingTeamIds` test-double failures reproduce at untouched integrated commit `55c5b3c9` (`52/54` baseline tests pass in those two files).
 - **Pass:** `pnpm guard:web-boundary`, `pnpm guard:localization-boundary`, and `pnpm audit:localization-literals` (zero unresolved literals).
-- **Pass with repository limitation:** `pnpm exec nuxi typecheck` remains repository-baseline non-green; its `IR-004` changed-file intersection is empty.
-- **Pass:** production obsolete-path scans, source-size guard, protected-file SHA-1 check, and `git diff --check`.
+- **Repository limitation:** default `pnpm exec nuxi typecheck` exhausted the 4 GB heap; with `NODE_OPTIONS=--max-old-space-size=8192` it completed non-green with `5457` repository diagnostics and no `IR-005` changed-file hit.
+- **Pass:** forbidden aggregate/AgentStatus conversion scans, frontend-only boundary check, source-size guard, delivery-protected artifact SHA-1 check, and `git diff --check`.
 
 These are implementation-scoped checks, not API/E2E sign-off.
 
 ## Frontend Rendered-Result Check
 
-- Affected surfaces: team definition/history groups, running-team row, team workspace/member panel, mobile team catalog, Stop control, and exact leaf-agent status display.
-- Approved references: BEH-006–BEH-009; REQ-013–REQ-019; AC-016–AC-025; supplied team hierarchy/definition screenshots.
-- Result: mounted Vue component and store/service tests confirm definitions and team/subteam headers have no status dots, root run text is only Active/Inactive where retained, leaf-agent status remains visible, Stop is enabled only for active/non-pending runs, duplicate Stop is blocked, and failure preserves active state.
-- Limitation: no direct live browser/desktop inspection was possible without a configured authenticated running-team fixture. Realistic visual and interaction execution remains downstream-owned.
+- Affected surfaces: workspace-history team definition/run rows and running-team group/run rows.
+- Approved references: BEH-006/BEH-008; REQ-013/REQ-016/REQ-020; AC-016/AC-023/AC-026; `ctx_0fa01fdeb308__image.png` plus prior hierarchy screenshots.
+- Result: direct mounted Vue rendering proves solid `bg-blue-500`/`bg-gray-400`, no pulse, localized label/title, exact active/inactive siblings, any-child group projection, last-active-to-inactive reactivity, both history builder paths including leftover/current nodes, both desktop surfaces, and independence from representative/member/socket/action state. Existing leaf-agent dot, streaming, and Stop-store regression sets remain green.
+- Limitation: no authenticated live-running-team browser fixture was available for end-to-end visual interaction. The supplied screenshot was inspected and the mounted components were rendered/interacted with; realistic browser-equivalent confirmation remains downstream-owned.
 
 ## Downstream Coverage Hints
 
-- Reconcile the held stale pre-expansion API/E2E coverage before editing or execution; prove the new `TEAM_RUN_LIFECYCLE` wire shape and absence of `TEAM_STATUS`.
-- Exercise bind-listeners-before-fresh-read, reconnect, accepted/rejected termination, listener teardown, replacement without false/true flicker, stale-backend cleanup, and idempotent unregister.
-- Exercise root -> ordinary subteam -> task team -> leaf live/initial mapping and assert identical `task-team-run-7/review_group/critic` resolution, repeated ordinary rebasing, exact route-key rebuild, and strict invalid-frame rejection.
-- Verify task terminal cleanup/reconciliation, member failure observation, and settlement blocking via private open-work semantics.
-- Validate root `isActive`, separate `isSubscribed`, one `stopPending` owner, Stop failure/pending, and click/Enter/store exact member action parity in a realistic UI.
-- Preserve the `IR-002` companion-interleaved content batching and genuine boundary-flush proofs while updating team-stream coverage.
+- Perform a fresh `SR-006` coverage investigation rather than treating `API-REV-002` or the superseded Electron candidate as current sign-off.
+- In a browser-equivalent workspace, verify mixed active/inactive siblings, collapsed group activity, final active-to-inactive transition, accessible labels/titles, solid colors/no pulse, and exact parity across history and running surfaces.
+- Vary member `AgentStatus`, representative ordering, `isSubscribed`, and Stop pending/failure independently; none may change the team binary projection unless the exact `isActive` inputs change.
+- Preserve prior accepted lifecycle, Stop, leaf status, batching, and task-team coordinate coverage; no server/API contract changed.
 
 ## API / E2E / Executable Coverage Still Required
 
-`Yes.` Source re-review is required first. Do not advance the stale coverage state directly to API/E2E/delivery or treat the prior evidence as sign-off for `SR-005`.
+`Yes.` Source re-review is required first. API/E2E must then create a fresh `SR-006` coverage investigation before delivery repeats latest-base refresh, rebuild, and user verification preparation.

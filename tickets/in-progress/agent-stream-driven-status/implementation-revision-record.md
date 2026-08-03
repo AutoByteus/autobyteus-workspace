@@ -10,6 +10,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-002 | `code_reviewer`; `code-review-report.md`; Implementation Review round 1 | `CODE-FIND-001` | `Local Fix` | `SR-002`, `ARCH-REV-002`, `CRR-001`; `API-REV N/A`, `DR N/A` | Companion statuses are presentation-transparent in both streaming services; focused regression checks pass; ready for source re-review |
 | IR-003 | `architecture_reviewer`; `design-review-report.md`; `ARCH-REV-004` | `ARCH-FIND-003` resolved by `SR-004` | `Expanded Rework` | `SR-002`, `SR-004`, `ARCH-REV-002`, `ARCH-REV-004`, preserved `CRR-002`; `API-REV N/A`, `DR N/A` | Manager-owned binary team lifecycle, scoped leaf snapshots, aggregate removal, and frontend activity/pending contraction implemented; focused checks pass; ready for source re-review |
 | IR-004 | `architecture_reviewer`; `design-review-report.md`; `ARCH-REV-005` after `CRR-003` | `CODE-FIND-002`, `CODE-FIND-003` | `Design-Impact Rework + Local Fix` | `SR-005`, `ARCH-REV-005`, `CRR-003`; preserved `IR-001`–`IR-003`; `API-REV N/A`, `DR N/A` | Single-coordinate-frame task-team stream scope and stale manager-double fix implemented; focused checks pass; ready for source re-review |
+| IR-005 | `architecture_reviewer`; `design-review-report.md`; `ARCH-REV-006` after user feedback during `DR-004` | `N/A` | `User-Approved Presentation Change` | `SR-006`, `ARCH-REV-006`; preserves `CRR-004`, `API-REV-002`, `CRR-006`, `DR-004` baseline | Binary exact-run and any-displayed-child group activity dots implemented; focused checks pass; ready for source review |
 
 ## Revision Entries
 
@@ -147,3 +148,34 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
   - Obsolete outward-carrier/aggregate scans, source-size guard, and `git diff --check`: pass.
 - Next recipient or routing: `code_reviewer` for `IR-004` source re-review. API/E2E remains blocked until it passes.
 - Remaining limitations or risks: realistic multi-boundary WebSocket/reconnect traces and direct browser validation remain downstream-owned; prior API/E2E coverage must be reinvestigated against `SR-005`. Product iteration callback is `Not Required`.
+
+### IR-005 — Restore binary activity cues without restoring aggregate team status
+
+- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/design-review-report.md`; `ARCH-REV-006` after user-approved feedback during the `DR-004` verification hold
+- Triggering finding IDs: `N/A` — approved post-delivery presentation correction
+- Classification: `User-Approved Presentation Change`
+- Prior authoritative result: `SR-005` passed `CRR-004`, `API-REV-002`, proportional durable-test review `CRR-006`, and reached `DR-004`; its source remains accepted, while the user superseded the no-dot delivery candidate for completion.
+- Current authoritative result: Implemented in frontend source/test commit `bfd5ea4037109d49072fdcd9dc861cfe86966737`; focused implementation checks pass; ready for `SR-006` source review.
+- Related solution revision IDs: `SR-006`, preserving accepted `SR-005`
+- Related architecture-review revision IDs: `ARCH-REV-006`
+- Related code-review revision IDs: accepted baseline `CRR-004` / `CRR-006`; current source review pending
+- Related API/E2E revision IDs: accepted prior state `API-REV-002`; fresh `SR-006` investigation/execution pending
+- Related delivery revision IDs: `DR-004` integrated start; its candidate is superseded for completion
+- Why this revision is recorded: Restores the two scan cues the user requested while keeping domain ownership contracted to manager-owned run `isActive` and leaf-owned `AgentStatus`.
+- Approved behavior or requirement IDs affected: `BEH-006`, `BEH-008`, `REQ-013`, `REQ-016`, `REQ-020`, `AC-016`, `AC-023`, `AC-026`; all other accepted behaviors are preserved.
+- Implementation delta:
+  - Added `TeamActivityDot.vue`, accepting only `{ isActive, label }`, with solid blue/gray, no pulse, and accessible label/title.
+  - Added internal `hasActiveRuns` to `WorkspaceHistoryTeamDefinitionDisplayGroup`, initialized/updated from displayed current nodes and calculated from the final history runs collection; leftover/current-node groups reuse the same builder.
+  - Rendered any-child group and exact-run activity dots in `WorkspaceHistoryWorkspaceSection`, `RunningTeamGroup`, and `RunningTeamRow` with localized English/Simplified Chinese labels.
+  - Extracted workspace run-label formatting to keep the changed history component at the 500-effective-line guardrail.
+  - Added focused component, builder, history surface, and running surface coverage varying representative/member/socket/action facts independently.
+- Changed files or areas: frontend common/history/running presentation, internal display-group projection, focused tests, and workspace localization catalogs only; no backend, GraphQL, WebSocket, store, or action-policy source changed.
+- Local validation and result:
+  - Focused `SR-006` set: 5 files / 16 tests pass.
+  - Relevant regression set: 13 files / 92 tests pass, including real store Stop failure/pending, team stream lifecycle/batching, and agent-only status-dot coverage.
+  - Broader attempted set: 144/146 tests pass; the two failures are accepted-baseline test-double omissions of `stopPendingTeamIds`, reproduced unchanged at integrated start `55c5b3c9` (52/54 in those two baseline files).
+  - Web/localization boundary guards and localization literal audit: pass.
+  - Typecheck: default 4 GB heap OOM; 8 GB run reaches 5457 repository diagnostics with no changed-file hit.
+  - Delivery-owned protected artifact hashes, frontend-only boundary, forbidden aggregate/conversion scan, source-size guard, and `git diff --check`: pass.
+- Next recipient or routing: `code_reviewer` for `IR-005` source review. API/E2E remains blocked until it passes, then must investigate `SR-006` afresh.
+- Remaining limitations or risks: no authenticated live-running-team browser fixture was available; mounted rendering/interaction is complete, but realistic browser-equivalent validation and a rebuilt delivery candidate remain downstream work. Product iteration callback is `Not Required` because this revision implements the approved user correction.
