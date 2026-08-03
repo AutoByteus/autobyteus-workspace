@@ -1,0 +1,95 @@
+=== native source absence ===
+No removed native symbols in autobyteus-ts/src.
+=== native test references are limited to negative absence assertions ===
+autobyteus-ts/tests/unit/tools/native-todo-tools-removed.test.ts:8:  'create_todo_list',
+autobyteus-ts/tests/unit/tools/native-todo-tools-removed.test.ts:9:  'add_todo',
+autobyteus-ts/tests/unit/tools/native-todo-tools-removed.test.ts:10:  'get_todo_list',
+autobyteus-ts/tests/unit/tools/native-todo-tools-removed.test.ts:11:  'update_todo_status',
+=== preserved server/web TODO references ===
+autobyteus-web/services/agentStreaming/handlers/agentStatusHandler.ts:5: * TODO_LIST_UPDATE, and ERROR events.
+autobyteus-web/services/agentStreaming/handlers/todoHandler.ts:25: * Handle TODO_LIST_UPDATE event.
+autobyteus-web/services/agentStreaming/protocol/messageTypes.ts:50:  | 'TODO_LIST_UPDATE'
+autobyteus-web/services/agentStreaming/protocol/messageTypes.ts:359:  | { type: 'TODO_LIST_UPDATE'; payload: TodoListUpdatePayload }
+autobyteus-web/services/agentStreaming/AgentStreamingService.ts:349:      case 'TODO_LIST_UPDATE':
+autobyteus-web/services/agentStreaming/__tests__/AgentStreamingService.spec.ts:175:        ['TODO_LIST_UPDATE', { todos: [] }],
+autobyteus-web/services/agentStreaming/teamStreamGenericMessageDispatcher.ts:98:    case 'TODO_LIST_UPDATE':
+autobyteus-server-ts/src/services/agent-streaming/models.ts:28:  TODO_LIST_UPDATE = "TODO_LIST_UPDATE",
+autobyteus-server-ts/src/services/agent-streaming/agent-run-event-message-mapper.ts:114:      case AgentRunEventType.TODO_LIST_UPDATE:
+autobyteus-server-ts/src/services/agent-streaming/agent-run-event-message-mapper.ts:115:        return new ServerMessage(ServerMessageType.TODO_LIST_UPDATE, payload);
+autobyteus-server-ts/src/agent-execution/domain/agent-run-event.ts:22:  TODO_LIST_UPDATE = "TODO_LIST_UPDATE",
+autobyteus-server-ts/src/agent-execution/events/processors/lifecycle-status/agent-turn-lifecycle-state.ts:27:  AgentRunEventType.TODO_LIST_UPDATE,
+autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-thread-event-name.ts:5:  TURN_TASK_PROGRESS_UPDATED = "turn/taskProgressUpdated",
+autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-thread-event-name.ts:13:  ITEM_PLAN_DELTA = "item/plan/delta",
+autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-item-event-converter.ts:424:    case CodexThreadEventName.ITEM_PLAN_DELTA:
+autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-item-event-converter.ts:428:          AgentRunEventType.TODO_LIST_UPDATE,
+autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-turn-event-converter.ts:60:    case CodexThreadEventName.TURN_TASK_PROGRESS_UPDATED:
+autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-turn-event-converter.ts:64:          AgentRunEventType.TODO_LIST_UPDATE,
+autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts:271:    ["plan delta", CodexThreadEventName.ITEM_PLAN_DELTA, { turnId: "turn-1" }],
+autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts:273:    ["turn progress", CodexThreadEventName.TURN_TASK_PROGRESS_UPDATED, { turnId: "turn-1" }],
+=== preserved category and tools ===
+autobyteus-ts/src/tools/tool-category.ts:9:  TASK_MANAGEMENT = 'Task Management',
+autobyteus-ts/src/skills/registry.ts:10:  private skills: Map<string, Skill> = new Map();
+autobyteus-ts/src/skills/registry.ts:20:  registerSkillFromPath(skillPath: string): Skill {
+autobyteus-ts/src/skills/registry.ts:21:    const skill = SkillLoader.loadSkill(skillPath);
+autobyteus-ts/src/skills/registry.ts:22:    this.skills.set(skill.name, skill);
+autobyteus-ts/src/skills/registry.ts:23:    return skill;
+autobyteus-ts/src/skills/registry.ts:36:      const skillDir = path.join(directoryPath, entry.name);
+autobyteus-ts/src/skills/registry.ts:37:      const skillFile = path.join(skillDir, 'SKILL.md');
+autobyteus-ts/src/skills/registry.ts:38:      if (!fs.existsSync(skillFile)) {
+autobyteus-ts/src/skills/registry.ts:42:        this.registerSkillFromPath(skillDir);
+autobyteus-ts/src/skills/registry.ts:50:    return this.skills.get(name);
+autobyteus-ts/src/skills/registry.ts:54:    return Array.from(this.skills.values());
+autobyteus-ts/src/skills/registry.ts:58:    this.skills.clear();
+autobyteus-server-ts/src/agent-tools/task-delegation/delegate-task.ts:19:  static CATEGORY = ToolCategory.TASK_MANAGEMENT;
+autobyteus-ts/src/skills/loader.ts:6:  static loadSkill(skillPath: string): Skill {
+autobyteus-ts/src/skills/loader.ts:7:    if (!fs.existsSync(skillPath) || !fs.statSync(skillPath).isDirectory()) {
+autobyteus-ts/src/skills/loader.ts:8:      throw new Error(`Skill directory not found: ${skillPath}`);
+autobyteus-ts/src/skills/loader.ts:11:    const skillFile = path.join(skillPath, 'SKILL.md');
+autobyteus-ts/src/skills/loader.ts:12:    if (!fs.existsSync(skillFile)) {
+autobyteus-ts/src/skills/loader.ts:13:      throw new Error(`SKILL.md not found in ${skillPath}`);
+autobyteus-ts/src/skills/loader.ts:18:      rawContent = fs.readFileSync(skillFile, 'utf-8');
+autobyteus-ts/src/skills/loader.ts:21:      throw new Error(`Failed to read SKILL.md at ${skillFile}: ${message}`);
+autobyteus-ts/src/skills/loader.ts:24:    return SkillLoader.parseSkill(rawContent, skillPath);
+autobyteus-server-ts/src/agent-tools/task-delegation/review-task-result.ts:19:  static CATEGORY = ToolCategory.TASK_MANAGEMENT;
+autobyteus-server-ts/src/agent-tools/task-delegation/register-task-delegation-tools.ts:3:import { registerDelegateTaskTool } from "./delegate-task.js";
+autobyteus-server-ts/src/agent-tools/task-delegation/register-task-delegation-tools.ts:4:import { registerReviewTaskResultTool } from "./review-task-result.js";
+autobyteus-server-ts/src/agent-tools/task-delegation/register-task-delegation-tools.ts:5:import { registerSubmitTaskResultTool } from "./submit-task-result.js";
+autobyteus-server-ts/src/agent-tools/task-delegation/submit-task-result.ts:19:  static CATEGORY = ToolCategory.TASK_MANAGEMENT;
+autobyteus-ts/src/tools/usage/formatters/write-file-xml-example-formatter.ts:8:<tool name="write_file">
+autobyteus-ts/src/tools/usage/formatters/write-file-xml-example-formatter.ts:25:<tool name="write_file">
+autobyteus-ts/src/tools/usage/registries/tool-formatting-registry.ts:57:      'write_file',
+autobyteus-ts/src/tools/usage/formatters/write-file-xml-schema-formatter.ts:6:    return `<tool name="write_file">
+autobyteus-ts/src/tools/file/write-file.ts:25:  description: "Parameter 'content' for tool 'write_file'.",
+autobyteus-ts/src/tools/file/write-file.ts:52:const TOOL_NAME = 'write_file';
+autobyteus-ts/src/tools/file/read-file.ts:24:  description: "Parameter 'start_line' for tool 'read_file'.",
+autobyteus-ts/src/tools/file/read-file.ts:30:  description: "Parameter 'end_line' for tool 'read_file'.",
+autobyteus-ts/src/tools/file/read-file.ts:109:const TOOL_NAME = 'read_file';
+autobyteus-ts/src/tools/file/edit-file.ts:12:  'Applies a context-located patch to one file without overwriting unrelated content. File paths use trusted-local semantics: absolute paths are used directly; relative paths require an explicit absolute base_dir and are never resolved from workspace, process, or shell cd state. Use this for surgical edits; use write_file only for a deliberate whole-file rewrite.';
+=== diff check ===
+git diff --check passed.
+=== compatibility/migration scan ===
+9:-  [StreamEventType.AGENT_TODO_LIST_UPDATE, AgentRunEventType.TODO_LIST_UPDATE],
+21:-    [StreamEventType.AGENT_TODO_LIST_UPDATE, AgentRunEventType.TODO_LIST_UPDATE],
+49:-emitting normal `TODO_LIST_UPDATE` agent stream events.
+57: Do not reintroduce legacy model-facing task tools such as `assign_task_to`,
+72:-`TODO_LIST_UPDATE` stream items where the single-agent runtime emits them.
+75:+Backend-owned progress events such as server `TODO_LIST_UPDATE` remain a
+76:+server/Codex contract; `autobyteus-ts` no longer emits a native TODO stream
+90:+## Backend-Owned TODO Progress
+93:-`TODO_LIST_UPDATE` in the agent WebSocket/streaming protocol.
+95:+progress events such as Codex `TODO_LIST_UPDATE` remain a server-level event
+97:+TODO panel continues to consume that server-owned path.
+127:-    this.emitEvent(EventType.AGENT_DATA_TODO_LIST_UPDATED, { todos: todoList });
+250:-  AGENT_TODO_LIST_UPDATE = 'agent_todo_list_updated',
+258:-  [StreamEventType.AGENT_TODO_LIST_UPDATE]: ToDoListUpdateData,
+286:-        case EventType.AGENT_DATA_TODO_LIST_UPDATED:
+288:-          streamEventType = StreamEventType.AGENT_TODO_LIST_UPDATE;
+299:-      if (event.event_type === StreamEventType.AGENT_TODO_LIST_UPDATE && event.data instanceof ToDoListUpdateData) {
+316:-  AGENT_DATA_TODO_LIST_UPDATED = 'agent_data_todo_list_updated',
+876:-    expect(EventType.AGENT_DATA_TODO_LIST_UPDATED).toBe('agent_data_todo_list_updated');
+1310:diff --git a/autobyteus-ts/tests/unit/task-management/tools/task-tools/legacy-task-tools-removed.test.ts b/autobyteus-ts/tests/unit/tools/legacy-task-tools-removed.test.ts
+1312:rename from autobyteus-ts/tests/unit/task-management/tools/task-tools/legacy-task-tools-removed.test.ts
+1313:rename to autobyteus-ts/tests/unit/tools/legacy-task-tools-removed.test.ts
+1315:--- a/autobyteus-ts/tests/unit/task-management/tools/task-tools/legacy-task-tools-removed.test.ts
+1316:+++ b/autobyteus-ts/tests/unit/tools/legacy-task-tools-removed.test.ts
+1328:@@ -31,6 +31,5 @@ describe('legacy model-facing task-plan tools removal', () => {

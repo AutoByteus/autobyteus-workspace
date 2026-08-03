@@ -15,8 +15,9 @@ lifecycle or native team task ledger.
 Server-managed bounded task delegation (`delegate_task`, `submit_task_result`, and
 `review_task_result`) is implemented in `autobyteus-server-ts` and is the
 authoritative workflow for team tasks.
-Personal ToDo tools remain local agent tools in `src/task-management` and keep
-emitting normal `TODO_LIST_UPDATE` agent stream events.
+The native personal ToDo tools and their in-memory runtime/event path have been
+removed from `autobyteus-ts`. Agents that need personal task tracking should use
+existing file tools and skills to maintain a workspace task file.
 
 ## Removed Legacy Team Task Workflow
 
@@ -31,8 +32,8 @@ The old native team task-plan subsystem has been removed from active source:
 Do not reintroduce legacy model-facing task tools such as `assign_task_to`,
 `create_task`, `create_tasks`, `get_my_tasks`, `get_task_plan_status`, or the
 old local team-task `update_task_status`. Server-managed bounded team work uses
-the dedicated task-delegation tools above. Personal ToDo still uses
-`create_todo_list`, `add_todo`, `get_todo_list`, and `update_todo_status`.
+the dedicated task-delegation tools above. Do not reintroduce the removed native
+personal ToDo tools; file tools and skills are the supported local replacement.
 
 ## Removed Native Team Runtime Scope
 
@@ -56,9 +57,10 @@ Native `AgentEventStream` records remain single-agent stream records. Server
 team streams enrich child agent events, Team Communication messages, task-agent
 and task-team status metadata, scoped child identity, and reference-file entries
 under `autobyteus-server-ts`.
-Agent-level events can still include generic `SYSTEM_TASK_NOTIFICATION` and
-`TODO_LIST_UPDATE` stream items where the single-agent runtime emits them.
-These are not native team task-plan events.
+Agent-level events can still include generic `SYSTEM_TASK_NOTIFICATION` items.
+Backend-owned progress events such as server `TODO_LIST_UPDATE` remain a
+server/Codex contract; `autobyteus-ts` no longer emits a native TODO stream
+item. These are not native team task-plan events.
 
 ## Server-Owned Task Delegation
 

@@ -1,0 +1,509 @@
+
+> autobyteus-workspace@ test:e2e /Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools
+> pnpm --filter autobyteus-server-ts test --run tests/e2e -- --run tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts tests/e2e/skills/skills-graphql.e2e.test.ts tests/e2e/runtime/mixed-task-delegation.e2e.test.ts
+
+
+> autobyteus-server-ts@0.1.1 pretest /Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/autobyteus-server-ts
+> pnpm prepare:shared
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 11 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+
+> autobyteus-server-ts@0.1.1 test /Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/autobyteus-server-ts
+> vitest --run tests/e2e -- --run tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts tests/e2e/skills/skills-graphql.e2e.test.ts tests/e2e/runtime/mixed-task-delegation.e2e.test.ts
+
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:23320) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts (20 tests | 20 skipped)
+stdout | tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:23367) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts (5 tests | 5 skipped)
+stdout | tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:23394) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts (5 tests | 5 skipped)
+stdout | tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:23410) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts > token usage ledger GraphQL projections
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts > token usage ledger GraphQL projections > returns expanded run/team/member summaries and settings statistics from ledger accounting fields
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/autobyteus-server-ts
+
+stdout | tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts > token usage ledger GraphQL projections > returns expanded run/team/member summaries and settings statistics from ledger accounting fields
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+ ✓ tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts (4 tests) 833ms
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:23420) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a linked local package while preserving runtime discovery behavior
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/autobyteus-server-ts
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a linked local package while preserving runtime discovery behavior
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a linked local package while preserving runtime discovery behavior
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a linked local package while preserving runtime discovery behavior
+Agent definition cache populated with 50 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a linked local package while preserving runtime discovery behavior
+[2026-08-03T09:44:30.677Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-03T09:44:30.677Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a linked local package while preserving runtime discovery behavior
+[2026-08-03T09:44:30.711Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 33 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a linked local package while preserving runtime discovery behavior
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a linked local package while preserving runtime discovery behavior
+Agent definition cache populated with 49 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a linked local package while preserving runtime discovery behavior
+[2026-08-03T09:44:30.842Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a linked local package while preserving runtime discovery behavior
+[2026-08-03T09:44:30.852Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 32 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a linked local package while preserving runtime discovery behavior
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a linked local package while preserving runtime discovery behavior
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a linked local package while preserving runtime discovery behavior
+[2026-08-03T09:44:30.918Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a linked local package while preserving runtime discovery behavior
+[2026-08-03T09:44:30.919Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > reloads a linked local package through GraphQL and refreshes package-derived reads
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > reloads a linked local package through GraphQL and refreshes package-derived reads
+Agent definition cache populated with 1 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > reloads a linked local package through GraphQL and refreshes package-derived reads
+[2026-08-03T09:44:30.934Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > reloads a linked local package through GraphQL and refreshes package-derived reads
+[2026-08-03T09:44:30.935Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > reloads a linked local package through GraphQL and refreshes package-derived reads
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > reloads a linked local package through GraphQL and refreshes package-derived reads
+Agent definition cache populated with 2 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > reloads a linked local package through GraphQL and refreshes package-derived reads
+[2026-08-03T09:44:30.940Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > reloads a linked local package through GraphQL and refreshes package-derived reads
+[2026-08-03T09:44:30.940Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > reloads a linked local package through GraphQL and refreshes package-derived reads
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > reloads a linked local package through GraphQL and refreshes package-derived reads
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > reloads a linked local package through GraphQL and refreshes package-derived reads
+[2026-08-03T09:44:30.945Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > reloads a linked local package through GraphQL and refreshes package-derived reads
+[2026-08-03T09:44:30.946Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a managed GitHub package through the package-oriented GraphQL contract
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a managed GitHub package through the package-oriented GraphQL contract
+Agent definition cache populated with 1 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a managed GitHub package through the package-oriented GraphQL contract
+[2026-08-03T09:44:30.964Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a managed GitHub package through the package-oriented GraphQL contract
+[2026-08-03T09:44:30.964Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a managed GitHub package through the package-oriented GraphQL contract
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a managed GitHub package through the package-oriented GraphQL contract
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a managed GitHub package through the package-oriented GraphQL contract
+[2026-08-03T09:44:30.981Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a managed GitHub package through the package-oriented GraphQL contract
+[2026-08-03T09:44:30.982Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a managed GitHub package through the package-oriented GraphQL contract
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a managed GitHub package through the package-oriented GraphQL contract
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a managed GitHub package through the package-oriented GraphQL contract
+[2026-08-03T09:44:30.986Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a managed GitHub package through the package-oriented GraphQL contract
+[2026-08-03T09:44:30.987Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > checks and updates a managed GitHub package through GraphQL with staged directory replacement
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > checks and updates a managed GitHub package through GraphQL with staged directory replacement
+Agent definition cache populated with 1 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > checks and updates a managed GitHub package through GraphQL with staged directory replacement
+[2026-08-03T09:44:31.014Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > checks and updates a managed GitHub package through GraphQL with staged directory replacement
+[2026-08-03T09:44:31.014Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > checks and updates a managed GitHub package through GraphQL with staged directory replacement
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > checks and updates a managed GitHub package through GraphQL with staged directory replacement
+Agent definition cache populated with 2 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > checks and updates a managed GitHub package through GraphQL with staged directory replacement
+[2026-08-03T09:44:31.041Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > checks and updates a managed GitHub package through GraphQL with staged directory replacement
+[2026-08-03T09:44:31.042Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > checks and updates a managed GitHub package through GraphQL with staged directory replacement
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > checks and updates a managed GitHub package through GraphQL with staged directory replacement
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > checks and updates a managed GitHub package through GraphQL with staged directory replacement
+[2026-08-03T09:44:31.051Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > checks and updates a managed GitHub package through GraphQL with staged directory replacement
+[2026-08-03T09:44:31.051Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > allows legacy managed GitHub records with unknown revision to update to latest through GraphQL
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > allows legacy managed GitHub records with unknown revision to update to latest through GraphQL
+Agent definition cache populated with 1 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > allows legacy managed GitHub records with unknown revision to update to latest through GraphQL
+[2026-08-03T09:44:31.071Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > allows legacy managed GitHub records with unknown revision to update to latest through GraphQL
+[2026-08-03T09:44:31.072Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > allows legacy managed GitHub records with unknown revision to update to latest through GraphQL
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > allows legacy managed GitHub records with unknown revision to update to latest through GraphQL
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > allows legacy managed GitHub records with unknown revision to update to latest through GraphQL
+[2026-08-03T09:44:31.077Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > allows legacy managed GitHub records with unknown revision to update to latest through GraphQL
+[2026-08-03T09:44:31.077Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > rolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > rolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+Agent definition cache populated with 1 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > rolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+[2026-08-03T09:44:31.097Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > rolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+[2026-08-03T09:44:31.098Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > rolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > rolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > rolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+[2026-08-03T09:44:31.141Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > rolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+[2026-08-03T09:44:31.141Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > returns local-clone guidance when direct private GitHub import metadata is unavailable
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > returns local-clone guidance when direct private GitHub import metadata is unavailable
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > returns local-clone guidance when direct private GitHub import metadata is unavailable
+[2026-08-03T09:44:31.144Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > returns local-clone guidance when direct private GitHub import metadata is unavailable
+[2026-08-03T09:44:31.145Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > rejects invalid import input and invalid managed package shape
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > rejects invalid import input and invalid managed package shape
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > rejects invalid import input and invalid managed package shape
+[2026-08-03T09:44:31.149Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > rejects invalid import input and invalid managed package shape
+[2026-08-03T09:44:31.151Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > rejects invalid import input and invalid managed package shape
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > rejects invalid import input and invalid managed package shape
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > rejects invalid import input and invalid managed package shape
+[2026-08-03T09:44:31.153Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > rejects invalid import input and invalid managed package shape
+[2026-08-03T09:44:31.154Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+
+ ✓ tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts (8 tests) 601ms
+     ✓ imports and removes a linked local package while preserving runtime discovery behavior  312ms
+stdout | tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:23434) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts (5 tests | 5 skipped)
+stdout | tests/e2e/runtime/mixed-task-delegation.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:23439) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/e2e/runtime/mixed-task-delegation.e2e.test.ts (2 tests | 2 skipped)
+stdout | tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:23448) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts > Run projection tool-call GraphQL e2e
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-projection-toolcalls-gql-jXyqbZ
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-projection-toolcalls-gql-jXyqbZ/.env
+
+stdout | tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts > Run projection tool-call GraphQL e2e > serves local replay dynamic and MCP Codex tool rows through getRunProjection
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stderr | tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts > Run projection tool-call GraphQL e2e > preserves the exact packaged tool-update reasoning sequence through GraphQL reload
+[RuntimeToolTraceSequencer] deferred terminal tool event 'web-search-insufficient' in turn 'turn-unseen-insufficient-terminal' because authoritative call arguments were unavailable.
+
+stderr | tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts > Run projection tool-call GraphQL e2e > returns empty standalone Codex projection instead of native recovery when local replay is absent
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-projection-toolcalls-gql-jXyqbZ/memory/agents/run-codex-local-replay-absent/raw_traces_active.jsonl
+
+stderr | tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts > Run projection tool-call GraphQL e2e > returns empty team-member Codex projection instead of native recovery when local replay is absent
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-projection-toolcalls-gql-jXyqbZ/memory/agent_teams/team-codex-local-replay-absent/member-codex-local-replay-absent/raw_traces_active.jsonl
+
+ ✓ tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts (7 tests) 199ms
