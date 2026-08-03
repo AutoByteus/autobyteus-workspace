@@ -16,7 +16,14 @@
         >
           <span class="i-heroicons-chevron-right-20-solid w-3 h-3"></span>
         </span>
-        
+
+        <TeamActivityDot
+          :is-active="teamRun.isActive"
+          :label="$t(teamRun.isActive
+            ? 'workspace.components.workspace.running.RunningTeamRow.active_team_run'
+            : 'workspace.components.workspace.running.RunningTeamRow.inactive_team_run')"
+        />
+
         <!-- ID -->
         <span class="text-sm text-gray-700 truncate">
           {{ formatId(teamRun.teamRunId) }}
@@ -55,6 +62,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
+import TeamActivityDot from '~/components/workspace/common/TeamActivityDot.vue';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import TeamMemberRow from './TeamMemberRow.vue';
 import {

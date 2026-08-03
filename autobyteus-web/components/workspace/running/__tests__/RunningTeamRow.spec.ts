@@ -54,7 +54,10 @@ const mountRow = (teamRun = buildTeamContext()) => mount(RunningTeamRow, {
   },
   global: {
     mocks: {
-      $t: (key: string) => key,
+      $t: (key: string) => ({
+        'workspace.components.workspace.running.RunningTeamRow.active_team_run': 'Active team run',
+        'workspace.components.workspace.running.RunningTeamRow.inactive_team_run': 'Inactive team run',
+      }[key] ?? key),
     },
     stubs: {
       TeamMemberRow: {
@@ -67,6 +70,37 @@ const mountRow = (teamRun = buildTeamContext()) => mount(RunningTeamRow, {
 });
 
 describe('RunningTeamRow', () => {
+  it('renders exact-run activity independently from subscription, members, and row action', async () => {
+    const teamRun = buildTeamContext() as any;
+    teamRun.isSubscribed = false;
+    const wrapper = mountRow(teamRun);
+
+    const dot = wrapper.get('[data-test="team-activity-dot"]');
+    expect(dot.attributes()).toMatchObject({
+      'data-active': 'true',
+      'aria-label': 'Active team run',
+      title: 'Active team run',
+    });
+    expect(dot.classes()).toContain('bg-blue-500');
+    expect(wrapper.find('.delete-btn').exists()).toBe(true);
+
+    await wrapper.setProps({
+      teamRun: {
+        ...teamRun,
+        isActive: false,
+        isSubscribed: true,
+      },
+    });
+
+    expect(dot.attributes()).toMatchObject({
+      'data-active': 'false',
+      'aria-label': 'Inactive team run',
+      title: 'Inactive team run',
+    });
+    expect(dot.classes()).toContain('bg-gray-400');
+    expect(wrapper.find('.delete-btn').exists()).toBe(true);
+  });
+
   it('filters initializing task-only logical members from active running rows', () => {
     const wrapper = mountRow();
 

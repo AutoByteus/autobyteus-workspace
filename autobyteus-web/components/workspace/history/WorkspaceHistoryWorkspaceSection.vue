@@ -189,6 +189,13 @@
               class="mr-1 h-3.5 w-3.5 text-gray-400 transition-transform"
               :class="state.isTeamDefinitionExpanded(workspaceNode.workspaceId, group.key) ? 'rotate-0' : '-rotate-90'"
             />
+            <TeamActivityDot
+              class="mr-1.5"
+              :is-active="group.hasActiveRuns"
+              :label="$t(group.hasActiveRuns
+                ? 'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.active_team_runs'
+                : 'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.no_active_team_runs')"
+            />
             <span
               class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600"
             >
@@ -224,6 +231,13 @@
                     class="mr-1 h-3.5 w-3.5 flex-shrink-0 text-gray-400 transition-transform"
                     :class="state.isTeamExpanded(team.teamRunId) ? 'rotate-0' : '-rotate-90'"
                     data-test="workspace-team-run-disclosure"
+                  />
+                  <TeamActivityDot
+                    class="mr-1.5"
+                    :is-active="team.isActive"
+                    :label="$t(team.isActive
+                      ? 'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.active_team_run'
+                      : 'workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.inactive_team_run')"
                   />
                   <span class="truncate font-medium">{{ formatTeamRunLabel(team) }}</span>
                 </button>
@@ -369,6 +383,7 @@
 import { computed } from 'vue';
 import { Icon } from '@iconify/vue';
 import StatusDot from '~/components/workspace/common/StatusDot.vue';
+import TeamActivityDot from '~/components/workspace/common/TeamActivityDot.vue';
 import WorkspaceTransientExecutionRow from '~/components/workspace/history/WorkspaceTransientExecutionRow.vue';
 import type {
   WorkspaceHistoryAvatarBindings,
@@ -379,6 +394,10 @@ import {
   buildWorkspaceTeamDefinitionDisplayGroups,
   type WorkspaceHistoryTeamDefinitionDisplayGroup,
 } from '~/components/workspace/history/workspaceHistoryTeamDefinitionGroups';
+import {
+  formatRunLabel,
+  formatTeamRunLabel,
+} from '~/components/workspace/history/workspaceHistoryRunLabels';
 import type {
   TeamMemberTreeRow,
   TeamRunHistoryDefinitionGroup,
@@ -510,23 +529,4 @@ const activateTeamDisplayRow = (
   return selectTeamDisplayRow(team, row);
 };
 
-const USER_REQUIREMENT_PREFIX = /^\s*(?:\*\*)?\s*(?:\[\s*user requirement\s*\]|user requirement)\s*(?:\*\*)?\s*[:\-]?\s*/i;
-
-const stripSummaryPrefix = (summary: string | null | undefined): string => {
-  const trimmed = summary?.trim() || '';
-  if (!trimmed) {
-    return '';
-  }
-  return trimmed.replace(USER_REQUIREMENT_PREFIX, '').trim();
-};
-
-const formatRunLabel = (summary: string | null | undefined): string => {
-  const cleaned = stripSummaryPrefix(summary);
-  return cleaned.length > 0 ? cleaned : 'Untitled task';
-};
-
-const formatTeamRunLabel = (team: TeamTreeNode): string => {
-  const cleaned = stripSummaryPrefix(team.summary);
-  return cleaned.length > 0 ? cleaned : 'Untitled team run';
-};
 </script>
