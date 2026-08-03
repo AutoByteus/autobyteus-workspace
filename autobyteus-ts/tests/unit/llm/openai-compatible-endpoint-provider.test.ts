@@ -5,6 +5,9 @@ import { LLMFactory } from '../../../src/llm/llm-factory.js';
 import { LLMProvider } from '../../../src/llm/providers.js';
 import { OpenAICompatibleEndpointLLM } from '../../../src/llm/api/openai-compatible-endpoint-llm.js';
 import { SecretValue } from '../../../src/secrets/secret-value.js';
+import { resolveTokenBudget } from '../../../src/agent/token-budget.js';
+import { CompactionPolicy } from '../../../src/memory/policies/compaction-policy.js';
+import { LLMConfig } from '../../../src/llm/utils/llm-config.js';
 
 const endpointA = {
   id: 'endpoint-a',
@@ -71,6 +74,51 @@ describe('OpenAICompatibleEndpointModelProvider', () => {
           source: { kind: 'endpoint_profile' },
         },
       },
+    });
+
+    const info = report.models[0]?.toModelInfo();
+    expect(info).toMatchObject({
+      max_context_tokens: 1_000_000,
+      resolved_model_metadata: {
+        maxContextTokens: {
+          value: 1_000_000,
+          source: { kind: 'endpoint_profile' },
+        },
+      },
+    });
+
+    const budget = resolveTokenBudget(
+      report.models[0]!,
+      new LLMConfig({ maxTokens: 4096 }),
+      new CompactionPolicy(),
+    );
+    expect(budget).toMatchObject({
+      effectiveContextCapacity: 1_000_000,
+      inputBudget: expect.any(Number),
+      triggerThresholdTokens: expect.any(Number),
+      overrideActive: false,
+    });
+  });
+
+  it('keeps unknown custom models without a fabricated budget while preserving the explicit override', async () => {
+    const provider = new OpenAICompatibleEndpointModelProvider();
+    const report = await provider.reloadSavedEndpoints([{
+      endpoint: endpointA,
+      discoveredModels: [discovered('unmatched-custom-wire-model')],
+    }]);
+    const model = report.models[0]!;
+
+    expect(model.maxContextTokens).toBeNull();
+    expect(resolveTokenBudget(model, new LLMConfig({ maxTokens: 4096 }), new CompactionPolicy())).toBeNull();
+
+    expect(resolveTokenBudget(
+      model,
+      new LLMConfig({ maxTokens: 4096 }),
+      new CompactionPolicy(),
+      { activeContextTokensOverride: 12000, triggerRatioOverride: null },
+    )).toMatchObject({
+      effectiveContextCapacity: 12000,
+      overrideActive: true,
     });
   });
 

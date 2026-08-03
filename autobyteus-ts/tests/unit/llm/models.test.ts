@@ -88,6 +88,7 @@ describe('LLMModel', () => {
       provider_type: 'OPENAI_COMPATIBLE',
       runtime: 'openai_compatible',
       host_url: 'https://gateway.example.com/v1',
+      resolved_model_metadata: unknownResolvedMetadata,
     });
   });
 });

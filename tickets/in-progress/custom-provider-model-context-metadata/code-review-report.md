@@ -14,12 +14,12 @@
 - Relevant Architecture Review Revision IDs: `ARCH-REV-002`, `ARCH-REV-003`
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/implementation-revision-record.md`
-- Relevant Implementation Revision IDs: `IR-001`, `IR-002`
+- Relevant Implementation Revision IDs: `IR-001`–`IR-003`
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: `1`
-- Trigger: Initial source review of IR-002 after ARCH-REV-003 and approved SR-008
-- Prior Review Round Reviewed: `N/A`
+- Current Code Review Revision ID: `CRR-002`
+- Current Review Round: `2`
+- Trigger: IR-003 rework at commit `e66b13c19` after CRR-001 finding `CR-001`
+- Prior Review Round Reviewed: `CRR-001` — `Fail`, `CR-001`
 - Latest Authoritative Round: `ARCH-REV-003`
 - Coverage Investigation Reviewed: `N/A` — API/E2E has not started
 - Execution Coverage Report Reviewed: `N/A` — API/E2E has not started
@@ -30,67 +30,76 @@
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: Commit range `d5618bffd..b8f1dce50`, including IR-001 and the IR-002 exact Alibaba `deepseek-v4-flash-0731` endpoint-profile reference.
-- Files / areas reviewed: Custom `/models` normalization; endpoint canonicalization/profile/fallback resolver; custom model construction and stale reload; `ModelInfo` and server enrichment/provenance; GraphQL projection boundary; token-budget/UI path; updated unit/component tests; all cumulative requirements/design/review/handoff artifacts.
-- Explicit exclusions: API/E2E coverage investigation and execution, browser-level validation, delivery documentation sync, and repository-wide web TypeScript failures already documented as pre-existing in IR-002.
+- Changed implementation and behavior reviewed: Full implementation range `d5618bffd..e66b13c19`, with focused re-review of `b8f1dce50..e66b13c19` and the CR-001 resolution.
+- Files / areas reviewed: Endpoint metadata parser/resolver and regressions; prior discovery normalization, exact profile/reference/fallback resolution, custom model construction and reload behavior, `ModelInfo`/server propagation, GraphQL projection, token-budget/UI path, localization, and the cumulative implementation artifacts.
+- Explicit exclusions: API/E2E coverage investigation and execution, browser-level validation, delivery documentation sync, and the repository-wide web TypeScript check already documented as pre-existing/non-clean in IR-003.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: `Confirmed` for the endpoint-advertised -> exact endpoint profile/reference -> exact built-in inferred fallback -> unknown precedence, five-kind source propagation, explicit Alibaba wire alias, stale/error preservation, runtime reuse, and truthful unknown UI.
-- Design-spec behavior map verified against the implementation: `Contradicted` for the query/fragment profile-addressability rule. The implementation correctly follows the main discovery/model/catalog/runtime/UI spines and the exact wire-ID alias rule, but its profile lookup removes query/fragment distinctions before matching.
-- Design review report and round confirmed: `ARCH-REV-003` is authoritative and passes the approved endpoint-scoped alias contract. Its residual risk explicitly says query/fragment-bearing URLs are not profile-addressable when the plan depends on those components.
-- Behavior-basis status: `Confirmed` for the approved behavior set, with one implementation contradiction in `BEH-004`/`REQ-011`/`AC-013`.
-- Changed or newly discovered behavior, if any: `None`; this is a source-level contradiction of an existing reviewed contract, not a new product behavior.
-- Remaining material ambiguity, if any: `None` for the required outcome: query/fragment-bearing endpoint URLs must not receive a profile match when query/fragment can distinguish the plan. The code currently has no addressability guard.
+- Approved requirements basis understood: `Confirmed` for advertised -> exact endpoint profile/reference -> exact built-in inferred fallback -> unknown precedence, five-kind source propagation, the endpoint-scoped Alibaba wire alias, stale/error preservation, runtime reuse, and truthful unknown-capacity UI.
+- Design-spec behavior map verified against the implementation: `Confirmed`. The IR-003 parser retains canonical protocol/hostname/port/base-path identity plus an internal profile-addressability bit; resolver profile lookup is gated on no non-empty URL search/hash, while live and exact fallback behavior remains unchanged.
+- Design review report and round confirmed: `Confirmed` through `ARCH-REV-003`; prior architecture findings remain resolved and the implementation handoff explicitly records the IR-003 guard and tests.
+- Behavior-basis status: `Confirmed`
+- Changed or newly discovered behavior, if any: No new behavior. CR-001's previously identified query/fragment profile-match defect is resolved by the approved non-profile-addressable rule.
+- Remaining material ambiguity, if any: None for source review. API/E2E and realistic runtime evidence remain downstream validation, not an implementation-source ambiguity.
 
 | Behavior ID | Current Status (`Confirmed`/`Contradicted`/`Unclear`/`Newly Discovered`) | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence (Only When Applicable) |
 | --- | --- | --- | --- |
-| `BEH-001` | Confirmed | Saved custom provider -> secret resolution -> one `GET {baseUrl}/models` -> normalized rows -> `OpenAICompatibleEndpointModelProvider` -> shared `LLMModel`/registry -> catalog/runtime/UI. Optional aliases and duplicate merging stay at discovery; stale reload still reuses prior constructed models. | None. |
-| `BEH-002` | Confirmed | `openai-compatible-endpoint-model-metadata.ts` resolves endpoint-advertised values, exact profiles/references, and exact-value fallback independently per field; `ModelInfo` and server enrichment preserve non-secret sources. | None. |
-| `BEH-003` | Confirmed | `OpenAICompatibleEndpointModel` supplies resolved numeric fields before registry/runtime use; no provider-specific compaction branch was added; token meter consumes the existing summary. | None. |
-| `BEH-004` | Contradicted | `canonicalizeOpenAICompatibleEndpointIdentity` returns only protocol/host/port/path at lines 134–158, dropping `search` and `hash`; `resolve` then compares only that identity at lines 271–279. A query/fragment variant therefore matches the exact profile and can inherit its plan metadata. | `requirements.md:105` (`AC-013`) requires query-only differences not to match; `requirements.md:105`/`REQ-011` and `design-spec.md:141` require query-dependent plans to remain on advertised/fallback resolution. |
-| `BEH-005` | Confirmed | `TokenUsageMeterPanel.vue` now renders prompt usage plus localized unavailable-limit text when capacity is absent, while retaining the known-capacity progress state. | None. |
+| `BEH-001` | `Confirmed` | Discovery normalization retains recognized optional numeric fields, fixed alias precedence, duplicate-row merging, and existing discovery error behavior in `autobyteus-ts/src/llm/openai-compatible-endpoint-discovery.ts`; downstream consumers receive normalized rows. | None. |
+| `BEH-002` | `Confirmed` | `OpenAICompatibleEndpointModelProvider` passes each saved endpoint URL and discovered row to the pure resolver; `openai-compatible-endpoint-model-metadata.ts:283-297` applies advertised, exact profile/reference, per-field fallback, and unknown precedence. | None. |
+| `BEH-003` | `Confirmed` | Resolved numeric fields are supplied during fresh custom model construction, mapped into `LLMModel`, and consumed by the existing token-budget/compaction path without provider-specific runtime branches. | None. |
+| `BEH-004` | `Confirmed` | `openai-compatible-endpoint-model-metadata.ts:139-170` parses the URL while retaining `profileAddressable`; `:283-289` refuses profiles for non-empty search/hash, and `:290-297` preserves advertised/fallback/unknown resolution. | None. |
+| `BEH-005` | `Confirmed` | `TokenUsageMeterPanel.vue` keeps the known-capacity meter and renders an explicit unavailable-limit state when capacity is unknown; localized guards/component tests are recorded in IR-003. | None. |
+| `REQ-012` / `AC-014` | `Confirmed` | The exact Alibaba profile maps `deepseek-v4-flash-0731` only at the exact Token Plan tuple to `{provider: DEEPSEEK, value: deepseek-v4-flash}`; a different endpoint remains unknown. | None. |
 
 ## Structural / Design Checks
 
 | Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | Requirements/design and ARCH-REV-003 record the targeted boundary extension, no-refactor posture, and source/provenance contracts; implementation remains within those owners. | None. |
-| Implementation matches approved behavior-defining supplemental artifacts | Fail | The exact alias/reference, source union, precedence, and unknown behavior match; query/fragment-bearing profile addressability does not. | Fix profile lookup to refuse query/fragment-bearing endpoint identities and add focused regression coverage. |
-| Data-flow spine inventory clarity and preservation under shared principles | Pass | Discovery -> resolver -> custom model -> registry/runtime -> catalog/UI remains explicit and intact across the changed files. | None. |
-| Ownership boundary preservation and clarity | Pass | Discovery owns wire normalization; the pure endpoint resolver owns identity/profile/fallback policy; model/provider owns construction; server owns enrichment; UI owns presentation. | None. |
-| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Source provenance is carried as a shared model projection without moving server/UI policy into discovery or runtime. | None. |
-| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | The implementation extends existing discovery, metadata, model, provisioning, runtime, and token-meter owners; no parallel catalog or network probe was introduced. | None. |
-| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | `ResolvedMetadataSource`, `ResolvedMetadataField`, `ResolvedModelMetadata`, endpoint profiles, and exact fallback candidates are centralized under their owning metadata boundary. | None. |
-| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | Per-field source union is explicit and non-secret; endpoint profile references are distinct from exact fallback candidates; active context remains separate. | None. |
-| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | Alias normalization and endpoint/profile/fallback precedence are centralized; callers consume the resolver result. | None. |
-| Empty indirection check (no pass-through-only boundary) | Pass | The new endpoint metadata resolver performs canonicalization, exact matching, reference resolution, conflict selection, and per-field precedence. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | The new 294-line policy file remains one coherent pure metadata concern; server merge and UI changes stay localized. | None. |
-| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | Discovery/resolver do not depend on server/UI; server consumes `ModelInfo`; runtime/UI do not infer provider limits. | None. |
-| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | Custom model callers invoke the endpoint metadata resolver rather than parsing profiles or definitions themselves; server consumes the model projection rather than querying endpoints. | None. |
+| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | IR-003 handoff preserves the reviewed boundary/ownership assessment and limits the rework to the endpoint metadata boundary. | None. |
+| Implementation matches approved behavior-defining supplemental artifacts | Pass | Requirements `REQ-011`/`AC-013` and design-spec canonicalization require query/hash variants to be non-profile-addressable; parser and resolver lines `139-170`, `283-289` implement that rule. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | Discovery -> resolver -> custom model -> `ModelInfo` -> server -> runtime/UI remains intact; the fix changes only profile eligibility. | None. |
+| Ownership boundary preservation and clarity | Pass | URL/profile policy remains owned by the pure endpoint metadata resolver; callers do not duplicate matching or fallback policy. | None. |
+| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Provenance, server coarse mapping, stale reload, and UI unknown state remain in their existing owners. | None. |
+| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | The internal parser is a minimal extension of the existing endpoint identity policy; no new URL or runtime subsystem was introduced. | None. |
+| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | `ParsedEndpointIdentity`, profile records, fallback candidates, and source-bearing fields remain centralized in the metadata owner. | None. |
+| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | The internal parsed result composes the existing canonical tuple with one addressability flag; it does not add a parallel public identity shape. | None. |
+| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | Only the resolver decides profile eligibility, exact profile/reference resolution, fallback selection, and source precedence. | None. |
+| Empty indirection check (no pass-through-only boundary) | Pass | The resolver performs the complete canonicalization, exact matching, source resolution, and per-field precedence policy. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | The 268-effective-line resolver remains one cohesive pure endpoint metadata policy; server and UI changes remain localized. | None. |
+| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | Discovery/resolver remain independent of server/UI; server consumes `ModelInfo`; runtime/UI do not infer provider limits. | None. |
+| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | Custom model construction invokes the resolver and does not inspect profiles/definitions; server consumes the model projection rather than querying endpoints. | None. |
 | File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | `autobyteus-ts/src/llm/metadata/openai-compatible-endpoint-model-metadata.ts` is the established pure endpoint metadata owner. | None. |
-| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | Endpoint files remain flat under `llm/`; shared metadata policy is isolated in the existing `metadata/` folder without artificial submodules. | None. |
-| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Pass | `resolve({ endpointBaseUrl, discoveredModel })` and `EndpointModelProfile` expose exact endpoint/model identity and source-bearing output. | Add an explicit profile-addressability rule for search/hash-bearing inputs in the resolver contract implementation. |
-| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | Names identify endpoint discovery, canonical identity, profiles, fallback candidates, and resolved fields accurately. | None. |
-| No unjustified duplication of code / repeated structures in changed scope | Pass | Positive-integer validation is intentionally repeated only across separate existing metadata owners where dependency direction requires it; no duplicate catalog exists. | None. |
-| Patch-on-patch complexity control | Pass | IR-002 is a bounded 15-line source extension over IR-001, with focused tests and refreshed handoff/revision artifacts. | None. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | No superseded custom metadata path, compatibility wrapper, or dormant alias machinery remains. | None. |
-| Relevant test scenarios and assertions are clear and requirement-aligned | Fail | Alias exact-match, cross-endpoint unknown, canonical built-in separation, alias allowlist, fallback conflicts, and UI states are covered; the focused endpoint resolver suite does not assert that query/fragment variants miss the profile. | Add query-only and fragment-bearing profile-miss cases that verify advertised/fallback/unknown behavior. |
-| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Resolver tests reuse `discovered`, `definition`, and `staticMetadata` builders; component tests reuse summary/context mounting helpers. | None. |
-| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | Changed tests cover the approved behavior; no disabled or compatibility-only alias path was added. | None. |
-| API/E2E readiness for the next workflow stage | Pass | IR-002 provides the cumulative downstream hints and explicitly blocks API/E2E until source review; no durable API/E2E coverage has been added prematurely. | After the local fix, rerun source review and then begin the required coverage investigation. |
+| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | The addressability guard is local to the existing metadata file; no artificial split or patch-only helper file was added. | None. |
+| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Pass | Public canonicalization remains a tuple projection for existing callers, while the private parser supplies the resolver's explicit addressability decision. | None. |
+| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | `parseOpenAICompatibleEndpointIdentity`, `ParsedEndpointIdentity`, and `profileAddressable` accurately name the internal distinction without changing the public tuple API. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | The fix reuses one parser for both public canonicalization and resolver matching; no duplicate identity logic was added. | None. |
+| Patch-on-patch complexity control | Pass | IR-003 is a bounded 24-addition/7-deletion source correction with focused regressions and no unrelated refactor. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | The old resolver path was replaced by the guarded path; no dormant alias or compatibility branch remains. | None. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Resolver tests cover exact profile matching, query-only live precedence, query/fragment profile misses, exact fallback after a miss, unknown differing wire ID, and canonical fallback separation. | None. |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | The metadata suite reuses `discovered`, `definition`, and `staticMetadata` builders; new cases stay in the resolver behavior suite. | None. |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | The former query-bearing exact-profile fixture was corrected to a true addressable URL; variants now have dedicated assertions rather than preserving a misleading test. | None. |
+| API/E2E readiness for the next workflow stage | Pass | Source review is clean and IR-003 records focused implementation checks; the handoff explicitly defers required coverage investigation and execution to `api_e2e_engineer`. | Begin the required coverage investigation before executable coverage execution or durable coverage edits. |
 
 ## Source File Size And Structure Audit (If Applicable)
 
 | Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
 | --- | ---: | --- | --- | --- | --- | --- | --- |
-| `autobyteus-ts/src/llm/metadata/openai-compatible-endpoint-model-metadata.ts` | 258 | Pass | Pass — 294 added lines form one pure endpoint metadata policy; no split is required for this scope | Pass | Pass | Pass with watch | Keep the resolver cohesive; add the addressability guard locally. |
-| `autobyteus-ts/src/llm/openai-compatible-endpoint-discovery.ts` | 208 | Pass | Pass — 97 additions/13 deletions remain external normalization | Pass | Pass | Pass | None. |
-| `autobyteus-ts/src/llm/metadata/model-metadata-resolver.ts` | 183 | Pass | Pass — 26 additions/7 deletions extend the shared source union | Pass | Pass | Pass | None. |
-| `autobyteus-server-ts/src/llm-management/services/model-metadata-provisioning-service.ts` | 206 | Pass | Pass — 82 additions/13 deletions remain server merge/projection policy | Pass | Pass | Pass | None. |
-| `autobyteus-ts/src/llm/models.ts` | 158 | Pass | Pass — 2 additions carry the non-secret projection | Pass | Pass | Pass | None. |
-| `autobyteus-web/components/workspace/usage/TokenUsageMeterPanel.vue` | 387 | Pass | Pass — 15 additions/6 deletions are localized to the context card state | Pass | Pass | Pass | None. |
-| Other changed implementation files (`index.ts`, endpoint model/provider, Codex/Claude normalizers) | 16–175 | Pass | Pass — each change is a small projection/construction update | Pass | Pass | Pass | None. |
+| `autobyteus-ts/src/llm/metadata/openai-compatible-endpoint-model-metadata.ts` | 268 | Pass | Pass — IR-003 is 24 additions/7 deletions; the 268-line file remains one cohesive pure policy boundary | Pass | Pass | Pass | None. |
+| `autobyteus-ts/src/llm/openai-compatible-endpoint-discovery.ts` | 208 | Pass | Pass — existing normalization remains cohesive | Pass | Pass | Pass | None. |
+| `autobyteus-ts/src/llm/metadata/model-metadata-resolver.ts` | 183 | Pass | Pass — shared source union remains focused | Pass | Pass | Pass | None. |
+| `autobyteus-server-ts/src/llm-management/services/model-metadata-provisioning-service.ts` | 206 | Pass | Pass — server merge/projection remains localized | Pass | Pass | Pass | None. |
+| `autobyteus-ts/src/llm/models.ts` | 158 | Pass | Pass — non-secret projection remains localized | Pass | Pass | Pass | None. |
+| `autobyteus-web/components/workspace/usage/TokenUsageMeterPanel.vue` | 387 | Pass | Pass — UI state change remains localized to the existing panel | Pass | Pass | Pass | None. |
+| `autobyteus-server-ts/src/agent-execution/backends/codex/codex-app-server-model-normalizer.ts` | 135 | Pass | Pass — projection update remains small and owner-local | Pass | Pass | Pass | None. |
+| `autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-model-normalizer.ts` | 175 | Pass | Pass — projection update remains small and owner-local | Pass | Pass | Pass | None. |
+| `autobyteus-ts/src/llm/openai-compatible-endpoint-model.ts` | 46 | Pass | Pass — constructor mapping remains focused | Pass | Pass | Pass | None. |
+| `autobyteus-ts/src/llm/openai-compatible-endpoint-provider.ts` | 119 | Pass | Pass — lifecycle integration remains focused | Pass | Pass | Pass | None. |
+| `autobyteus-ts/src/llm/index.ts` | 16 | Pass | Pass — export-only change | Pass | Pass | Pass | None. |
+| `autobyteus-web/localization/messages/en/shell.ts` | 156 | Pass | Pass — one localized message addition | Pass | Pass | Pass | None. |
+| `autobyteus-web/localization/messages/zh-CN/shell.ts` | 140 | Pass | Pass — one localized message addition | Pass | Pass | Pass | None. |
+
+Unit/component test files are intentionally excluded from the implementation-source size thresholds; their structure was reviewed proportionately above.
 
 ## Legacy / Backward-Compatibility Verdict
 
@@ -98,10 +107,10 @@
 | --- | --- | --- |
 | No backward-compatibility mechanisms in changed scope | Pass | No dual DTO, version branch, generic alias fallback, or compatibility wrapper was added. |
 | No legacy old-behavior retention in changed scope | Pass | Identifier-only discovery was replaced in place and obsolete global aliasing was not introduced. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | No redundant metadata catalog or old endpoint-path machinery was introduced. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | No redundant metadata catalog or old endpoint-path machinery remains in the changed scope. |
 | Approved persisted-data transition decision is followed without unnecessary migration work | Pass | Derived metadata is not persisted; existing version-2 custom-provider records remain directly usable. |
 | No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | The normal reader remains version-agnostic and no migration/fallback branch was added. |
-| Approved transition mechanics match the reviewed design, including migration safety only when required | Pass | `Not Affected` is followed. |
+| Approved transition mechanics match the reviewed design, including migration safety only when required | Pass | The approved persisted-data decision is `Not Affected` and implementation follows it. |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal (Mandatory If Any Exist)
 
@@ -110,76 +119,74 @@ None.
 ## Docs-Impact Verdict
 
 - Docs impact: `No`
-- Why: This is a source-local metadata/profile contract and UI state change; the ticket's durable requirements/design/review records already capture the profile and provenance behavior. No user-facing documentation or operational runbook is changed by this source review.
+- Why: The endpoint addressability guard completes the already-recorded source-local metadata contract; no user-facing documentation or operational runbook is changed by this source re-review.
 - Files or areas likely affected: None beyond the existing ticket artifacts.
 
 ## Material Premise Validation (Only When Needed)
 
-### MP-001 — Query/fragment-bearing custom endpoint can reach profile resolution
+### Upstream Design-Review Material-Premise Decisions
 
-- Origin: `New`
+| Premise ID | Current Status (`Confirmed`/`Reclassified`/`No Longer Relevant`) | Changed Evidence / Reason (Required For `Reclassified` Or `No Longer Relevant`) |
+| --- | --- | --- |
+| `MP-001` | `Confirmed` | The supported custom-provider URL input and query/fragment non-profile-addressable contract remain applicable. IR-003 removes the prior profile-application consequence; no premise reclassification is needed. |
+
+### MP-001 — Query/fragment-bearing custom endpoint can reach the resolver's profile-eligibility boundary
+
+- Origin: `New` at `CRR-001`; retained unchanged for this re-review.
 - Related approved requirement or established contract: `REQ-011`, `AC-013`; design-spec canonical endpoint identity section; preserved custom-provider base URL contract.
 - Relevant behavior ID(s): `BEH-004`, `BEH-001`
 - Initiating basis kind: `User` plus `Contract`
-- Independent product-supported initiating trigger or applicable governing contract: The Settings custom-provider form accepts a user-entered base URL; the server's `normalizeDraftInput` accepts any absolute `http`/`https` URL and the persisted custom-provider schema only requires a non-empty string. The reviewed contract explicitly governs query-dependent plan URLs as non-profile-addressable.
-- Support evidence: Exposed custom-provider settings input -> `probeCustomProvider`/`createCustomProvider` -> `normalizeDraftInput` at `autobyteus-server-ts/src/llm-management/llm-providers/services/llm-provider-service.ts:193-210,399-409`; URL normalization accepts search/hash at `autobyteus-ts/src/llm/openai-compatible-endpoint-discovery.ts:34-49`; the saved record is later used by runtime sync and passed as `endpointBaseUrl`.
-- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: User saves/probes `https://token-plan.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1?plan=other#variant` -> existing `/models` discovery returns a model row -> `OpenAICompatibleEndpointModelProvider.createModelsForEndpoint` passes the saved `endpoint.baseUrl` -> `OpenAICompatibleEndpointModelMetadataResolver.resolve` canonicalizes it and compares only protocol/host/port/basePath against the Token Plan profile.
-- Lifecycle preconditions and material consequence at the claimed point: The returned wire model equals a profiled model value and the URL carries a query/fragment that can distinguish the serving plan. Because the resolver drops those components, it can assign the profile's context/output capacity and allow model-derived compaction for a plan the profile does not address.
+- Independent product-supported initiating trigger or applicable governing contract: The Settings custom-provider form accepts a user-entered base URL; server normalization accepts an absolute `http`/`https` URL, and the persisted custom-provider schema requires only a non-empty string. The reviewed contract explicitly governs query-dependent plan URLs as non-profile-addressable.
+- Support evidence: Exposed custom-provider settings input -> `probeCustomProvider`/`createCustomProvider` -> `normalizeDraftInput` at `autobyteus-server-ts/src/llm-management/llm-providers/services/llm-provider-service.ts:193-210,399-409`; URL normalization accepts search/hash at `autobyteus-ts/src/llm/openai-compatible-endpoint-discovery.ts:34-49`; the saved endpoint URL is passed to the resolver during custom model construction.
+- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: A user saves/probes a query- or fragment-bearing endpoint -> discovery/model synchronization supplies a discovered row -> `OpenAICompatibleEndpointModelProvider.createModelsForEndpoint` passes the saved `endpoint.baseUrl` to `OpenAICompatibleEndpointModelMetadataResolver.resolve`. The current resolver parses the URL and deliberately stops before profile matching when search/hash is non-empty.
+- Lifecycle preconditions and material consequence at the claimed point: A returned model row is available and the URL may distinguish a plan. Before IR-003, the tuple-only comparison could apply the query-free profile; now that consequence is prevented and resolution proceeds to live/exact fallback/unknown.
 - Reachability: `Reachable`
-- Review consequence / proportionate response: `Local Fix` — make profile matching reject search/hash-bearing endpoint URLs (or otherwise preserve an explicit non-addressable marker), add query-only and fragment regression cases, then return through source review before API/E2E.
+- Review consequence / proportionate response: The premise justified CR-001 in CRR-001. The current implementation satisfies it; no finding or score deduction remains.
 
 ## Review Scorecard (Mandatory)
 
-- Overall score (`/10`): `8.8`
-- Overall score (`/100`): `88`
-- Score calculation note: Simple average of the ten category scores below; the review decision remains `Fail` because one approved identity contract is violated and two required checks are below 9.0.
+- Overall score (`/10`): `9.45`
+- Overall score (`/100`): `94.5`
+- Score calculation note: Simple average of the ten category scores below; every category meets the clean-pass threshold. The review decision is independently based on the confirmed behavior basis, resolved prior finding, structural checks, and no remaining source findings.
 
 | Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | ---: | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | 9.5 | The implementation preserves the complete discovery -> resolver -> runtime/catalog/UI paths and makes the alias case explicit. | Query addressability is not represented at the resolver input boundary. | Add a non-addressable search/hash guard without moving policy out of the resolver. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.5 | Each changed owner remains clear and callers use the endpoint resolver. | The resolver's endpoint identity shape omits whether the supplied URL is profile-addressable. | Preserve that distinction inside the resolver contract. |
-| `3` | `API / Interface / Query / Command Clarity` | 8.5 | Exact endpoint/model profile keys and source-bearing output are clear. | `canonicalizeOpenAICompatibleEndpointIdentity` silently turns a query-bearing URL into the same profile key as a query-free URL. | Reject or mark search/hash-bearing inputs before profile lookup and test the contract. |
-| `4` | `Separation of Concerns and File Placement` | 9.5 | New policy is placed in one pure metadata file and existing owners remain focused. | No structural concern beyond the missing addressability guard. | Keep the guard in endpoint metadata resolution. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.5 | The five-kind source union and exact profile/reference/fallback structures are tight and non-overlapping. | Addressability is implicit rather than represented. | Add the smallest explicit guard/representation needed. |
-| `6` | `Naming Quality and Local Readability` | 9.5 | Names accurately describe endpoint identity, profile, source, and fallback behavior. | The name `canonicalize...Identity` suggests all URL inputs are eligible for profile identity, which is too broad under REQ-011. | Clarify addressability in implementation/API naming or helper semantics. |
-| `7` | `API/E2E Readiness` | 9.0 | Handoff lists realistic endpoint, stale, runtime, catalog, provenance, and UI scenarios and correctly defers coverage investigation. | The required query/fragment near-miss is not yet in durable focused coverage. | Add it before downstream execution and reroute after the source fix. |
-| `8` | `Runtime Correctness And Behavioral Fidelity` | 7.5 | Core source precedence, exact alias behavior, stale preservation, and unknown UI behavior are implemented coherently. | A reachable query/fragment variant can receive an unsupported profile limit, affecting compaction safety. | Prevent profile application for non-addressable URLs and prove fallback/unknown outcomes. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.5 | No compatibility machinery or duplicate metadata path was introduced. | None material. | None. |
-| `10` | `Cleanup Completeness` | 9.5 | No obsolete alias/fallback path, duplicate catalog, or dormant adapter remains. | None material. | None. |
+| `1` | `Data-Flow Spine Inventory and Clarity` | 9.5 | The implementation preserves discovery -> resolver -> model -> server -> runtime/UI and makes profile addressability explicit at the resolver boundary. | Broader runtime and API/E2E evidence is still downstream, not a source defect. | Confirm the complete spine with the required downstream coverage investigation and execution. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.5 | URL/profile/fallback policy remains centralized and callers consume resolved metadata. | No material source weakness; downstream ownership evidence is pending. | Preserve the resolver as the sole profile/fallback owner during downstream coverage work. |
+| `3` | `API / Interface / Query / Command Clarity` | 9.5 | The private parsed result explicitly separates canonical identity from profile addressability, while the public canonicalizer remains compatible. | The public tuple helper alone does not communicate addressability, but no caller uses it for profile matching; the resolver owns the safe contract. | Keep profile matching behind the resolver rather than exposing a second matching API. |
+| `4` | `Separation of Concerns and File Placement` | 9.5 | The fix is local to the pure endpoint metadata file and does not move policy into discovery, server, or UI. | None material. | None beyond normal future maintenance. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.5 | One internal parser composes the existing identity tuple with one boolean; no parallel public DTO or duplicated policy was added. | None material. | None. |
+| `6` | `Naming Quality and Local Readability` | 9.5 | `parseOpenAICompatibleEndpointIdentity`, `ParsedEndpointIdentity`, and `profileAddressable` make the corrected distinction readable. | None material. | None. |
+| `7` | `API/E2E Readiness` | 9.0 | The source package and focused regressions are ready for the next stage, with explicit downstream scenarios and no premature API/E2E claims. | API/E2E coverage investigation, realistic endpoint, runtime, catalog, stale, and browser evidence do not yet exist. | `api_e2e_engineer` must investigate existing coverage before adding or executing durable coverage. |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.5 | Exact profile, live, fallback, unknown, alias, stale, and UI behaviors are preserved; the reachable query/fragment misapplication is now blocked. | Runtime compaction and real catalog execution remain unverified downstream. | Validate runtime thresholds and source propagation through API/E2E coverage. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.5 | No compatibility machinery, duplicate catalog, or version-specific data path was introduced. | None material. | None. |
+| `10` | `Cleanup Completeness` | 9.5 | The old unguarded profile lookup was replaced, tests were corrected/extended, and no dormant alias machinery remains. | None material. | None. |
 
 ## Findings
 
-### CR-001 — Query/fragment variants incorrectly receive endpoint profiles
-
-- Classification: `Local Fix`
-- Severity: `Blocking`
-- Affected behavior/contract: `BEH-004`; `REQ-011`; `AC-013`; design-spec canonical endpoint identity section.
-- Evidence: `autobyteus-ts/src/llm/metadata/openai-compatible-endpoint-model-metadata.ts:134-158` constructs the canonical identity from `parsed.protocol`, `parsed.hostname`, `parsed.port`, and `parsed.pathname`, so `parsed.search` and `parsed.hash` are discarded. `:271-279` then applies a profile solely by that identity and exact `modelValue`. The product accepts such URLs through `llm-provider-service.ts:399-409`, and discovery preserves them through `normalizeOpenAICompatibleEndpointBaseUrl` before appending `/models` at `openai-compatible-endpoint-discovery.ts:34-49,203-229`.
-- Reachability basis: `MP-001` above. The initiating user surface and forward production path are independent of the resolver mechanism.
-- Observed consequence: A query/fragment-bearing custom endpoint can match the same exact host/path/model profile as the query-free Token Plan URL, despite `AC-013` requiring query-only differences not to match and the design requiring query-dependent plans to use advertised/fallback resolution. That can supply profile context/output limits and a model-derived compaction threshold for an unaddressed plan.
-- Required action: Keep canonical host/path normalization, but make profile lookup refuse any input URL with a non-empty search or hash (or carry an explicit `profileAddressable`/equivalent marker that prevents matching). Add focused tests for query-only and fragment variants proving they do not use the Alibaba profile and instead follow advertised -> exact wire-value fallback -> unknown. Re-run the implementation source checks and return for source review.
+None. Prior finding `CR-001` is resolved by IR-003 and verified in the current source and focused regression suite.
 
 ## Classification
 
-`Local Fix` — bounded implementation and focused-test correction; no upstream requirement or design change is required.
+`N/A` — the implementation review passes; no current failure classification applies.
 
 ## Recommended Recipient
 
-`implementation_engineer`
+`api_e2e_engineer` for the required coverage investigation and subsequent executable validation.
 
 ## Residual Risks
 
-- Profile facts are source-dated and can become stale; the DeepSeek alias profile's provenance URL is the canonical DeepSeek source while endpoint equivalence remains an explicitly approved endpoint profile fact and should be revalidated when Alibaba changes its wire catalog.
-- Exact built-in fallback is explicitly inferred and can differ from a plan-specific serving limit; endpoint/profile values must continue to override it and unmatched wire IDs must remain unknown.
-- Reviewer reruns of `tsc`/Vitest were unavailable because IR-002 removed the temporary dependency symlink and this worktree currently has no `node_modules/.bin/tsc` or `vitest`; the report relies on IR-002's recorded successful checks plus the reviewer-executed `git diff --check`.
-- API/E2E coverage investigation, execution, runtime compaction evidence, realistic synthetic endpoint evidence, GraphQL catalog evidence, stale reload evidence, and browser-level validation remain downstream.
+- Profile facts are source-dated and can become stale; the DeepSeek alias and Alibaba plan facts require deliberate source/date revalidation when vendor behavior changes.
+- Exact built-in fallback is explicitly inferred and can differ from a plan-specific limit; endpoint-advertised and exact endpoint-profile values must continue to take precedence, and unmatched wire IDs must remain unknown.
+- Reviewer reruns of `tsc` and focused Vitest were unavailable because IR-003 removed temporary dependency symlinks and this worktree has no local `node_modules/.bin/tsc` or `vitest`; IR-003 records the implementation checks as passed and reviewer `git diff --check` over `d5618bffd..e66b13c19` passed.
+- API/E2E coverage investigation, execution, realistic synthetic endpoint evidence, runtime compaction evidence, GraphQL catalog evidence, stale reload evidence, secret-hygiene evidence, and browser-level validation remain downstream.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
+- Review Decision: `Pass`
 - Review Entry Point: `Implementation Review`
-- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass` — MP-001 is a supported user/contract path and is fully forward-traced.
-- Score Summary: `8.8/10` (`88/100`); API/interface clarity and runtime correctness are below the clean-pass threshold because of CR-001.
-- Failure Origin: Implementation-owned query/fragment addressability guard and missing focused regression coverage.
-- Recommended Recipient: `implementation_engineer`
-- Notes: The exact Alibaba wire alias itself is correctly endpoint-scoped and source-bearing. Do not reroute to API/E2E until CR-001 is fixed, focused checks pass, and this source review is repeated.
+- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass` — MP-001 remains a supported user/contract path and is now safely handled by the explicit addressability guard.
+- Score Summary: `9.45/10` (`94.5/100`); all ten categories meet the clean-pass threshold.
+- Failure Origin (when applicable): `N/A`; CR-001 was an implementation-owned prior finding and is resolved.
+- Recommended Recipient (when applicable): `api_e2e_engineer`
+- Notes: Source review is complete at commit `e66b13c19`. API/E2E has not started; the next specialist must first produce the required coverage investigation artifact. Any durable repository coverage added, updated, or removed later must return through code review before delivery.

@@ -176,4 +176,71 @@ describe('ModelMetadataProvisioningService', () => {
       metadata_provenance: ModelMetadataProvenance.CURATED_FALLBACK,
     });
   });
+
+  it('keeps live, inferred, and unknown custom fields distinct while mapping coarse provenance truthfully', async () => {
+    const live = model(LLMProvider.OPENAI_COMPATIBLE, 'live-custom', {
+      maxContextTokens: {
+        value: 654321,
+        source: { kind: 'live' },
+      },
+      maxInputTokens: { value: null, source: { kind: 'unknown' } },
+      maxOutputTokens: { value: null, source: { kind: 'unknown' } },
+    });
+    live.max_context_tokens = 654321;
+    live.max_input_tokens = null;
+    live.max_output_tokens = null;
+
+    const inferred = model(LLMProvider.OPENAI_COMPATIBLE, 'inferred-custom', {
+      maxContextTokens: {
+        value: 1_000_000,
+        source: {
+          kind: 'inferred_builtin',
+          provider: LLMProvider.QWEN,
+          value: 'qwen3-max',
+          provenance: {
+            sourceUrl: 'https://catalog.example.test/qwen3-max',
+            verifiedAt: '2026-08-03',
+          },
+        },
+      },
+      maxInputTokens: { value: null, source: { kind: 'unknown' } },
+      maxOutputTokens: { value: null, source: { kind: 'unknown' } },
+    });
+    inferred.max_context_tokens = 1_000_000;
+    inferred.max_input_tokens = null;
+    inferred.max_output_tokens = null;
+
+    const unknown = model(LLMProvider.OPENAI_COMPATIBLE, 'unknown-custom');
+    unknown.max_context_tokens = null;
+    unknown.max_input_tokens = null;
+    unknown.max_output_tokens = null;
+    unknown.resolved_model_metadata = {
+      maxContextTokens: { value: null, source: { kind: 'unknown' } },
+      maxInputTokens: { value: null, source: { kind: 'unknown' } },
+      maxOutputTokens: { value: null, source: { kind: 'unknown' } },
+    };
+
+    const [liveResult, inferredResult, unknownResult] = await new ModelMetadataProvisioningService({ resolve: vi.fn() } as never)
+      .enrichBestEffort([live, inferred, unknown]);
+
+    expect(liveResult).toMatchObject({
+      max_context_tokens: 654321,
+      resolved_model_metadata: live.resolved_model_metadata,
+      metadata_provenance: ModelMetadataProvenance.LIVE,
+    });
+    expect(inferredResult).toMatchObject({
+      max_context_tokens: 1_000_000,
+      resolved_model_metadata: inferred.resolved_model_metadata,
+      metadata_provenance: ModelMetadataProvenance.CURATED_FALLBACK,
+    });
+    expect(unknownResult).toMatchObject({
+      max_context_tokens: null,
+      max_input_tokens: null,
+      max_output_tokens: null,
+      resolved_model_metadata: {
+        maxContextTokens: { value: null, source: { kind: 'unknown' } },
+      },
+      metadata_provenance: ModelMetadataProvenance.CURATED_ONLY,
+    });
+  });
 });
