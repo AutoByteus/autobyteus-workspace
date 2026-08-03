@@ -6,13 +6,13 @@ Implementation is complete for the approved `SR-001` / `ARCH-REV-001` design and
 
 ## Upstream Basis
 
-- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/requirements-doc.md`
-- Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/investigation-notes.md`
-- Design: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/design-spec.md`
-- Solution revision: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/solution-revision-record.md`
-- Design review: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/design-review-report.md`
-- Architecture review: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/architecture-review-revision-record.md`
-- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/implementation-revision-record.md`
+- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/tickets/done/remove-todo-list-tools/requirements-doc.md`
+- Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/tickets/done/remove-todo-list-tools/investigation-notes.md`
+- Design: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/tickets/done/remove-todo-list-tools/design-spec.md`
+- Solution revision: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/tickets/done/remove-todo-list-tools/solution-revision-record.md`
+- Design review: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/tickets/done/remove-todo-list-tools/design-review-report.md`
+- Architecture review: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/tickets/done/remove-todo-list-tools/architecture-review-revision-record.md`
+- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/tickets/done/remove-todo-list-tools/implementation-revision-record.md`
 
 ## Implemented Behavior Traceability
 

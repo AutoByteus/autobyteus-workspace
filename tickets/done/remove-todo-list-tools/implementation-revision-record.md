@@ -10,7 +10,7 @@
 
 ### IR-001 — Initial native ToDo decommission implementation baseline
 
-- Canonical implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/implementation-handoff.md`
+- Canonical implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/tickets/done/remove-todo-list-tools/implementation-handoff.md`
 - Round and trigger: Round 1; `architecture_reviewer` approved the reviewed design in `ARCH-REV-001`.
 - Related solution/review records: `SR-001`; `ARCH-REV-001`; no `CRR-*`, `API-REV-*`, or `DR-*` applies.
 - Prior authoritative result: N/A.

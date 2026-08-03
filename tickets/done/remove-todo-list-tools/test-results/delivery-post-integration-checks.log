@@ -1,0 +1,33 @@
+Delivery post-integration checks — 2026-08-03
+$ git diff --check
+exit=0
+$ git diff --check origin/personal...HEAD
+exit=0
+$ git status --short
+ M autobyteus-web/docs/agent_execution_architecture.md
+ M autobyteus-web/docs/settings.md
+?? api-e2e-coverage-investigation.md
+?? api-e2e-execution-coverage-report.md
+?? api-e2e-revision-record.md
+?? code-review-report.md
+?? code-review-revision-record.md
+?? test-results/absence-preservation-search.log
+?? test-results/api-e2e-cleanup.log
+?? test-results/api-e2e-install.log
+?? test-results/autobyteus-ts-build.log
+?? test-results/autobyteus-ts-focused-vitest.log
+?? test-results/autobyteus-ts-full-vitest.log
+?? test-results/backend-todo-boundary-probe.log
+?? test-results/code-review-base-comparison.log
+?? test-results/delivery-integration-refresh.log
+?? test-results/delivery-post-integration-checks.log
+?? test-results/server-build-typecheck.log
+?? test-results/server-build.log
+?? test-results/server-focused-vitest.log
+?? test-results/server-preserved-e2e-root-script-interrupted.log
+?? test-results/server-preserved-e2e.log
+?? test-results/server-task-delegation-integration.log
+?? test-results/server-typecheck.log
+?? test-results/web-nuxt-prepare.log
+?? test-results/web-todo-vitest-initial-attempt-interrupted.log
+?? test-results/web-todo-vitest.log

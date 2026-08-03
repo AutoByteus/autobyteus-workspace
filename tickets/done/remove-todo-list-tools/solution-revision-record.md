@@ -10,7 +10,7 @@
 
 ### SR-001 — Native ToDo capability removal baseline
 
-- Triggering role, report path, and round: Solution designer initial investigation; `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/investigation-notes.md`; round 1.
+- Triggering role, report path, and round: Solution designer initial investigation; `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/tickets/done/remove-todo-list-tools/investigation-notes.md`; round 1.
 - Triggering finding IDs: N/A.
 - Prior authoritative result: `N/A`.
 - Current authoritative result: Design-ready requirements and design spec.

@@ -10,9 +10,9 @@
 
 ### ARCH-REV-001 — Initial native ToDo decommission architecture baseline
 
-- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/design-review-report.md`
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/tickets/done/remove-todo-list-tools/design-review-report.md`
 - Review round and trigger: Round 1; initial complete solution package received from `solution_designer`.
-- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/solution-revision-record.md` (`SR-001`); no triggering findings.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/tickets/done/remove-todo-list-tools/solution-revision-record.md` (`SR-001`); no triggering findings.
 - Relevant solution revision IDs: `SR-001`
 - Prior authoritative decision: `N/A`
 - Current authoritative decision: `Pass`
