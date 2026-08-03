@@ -15,11 +15,37 @@
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/code-review-revision-record.md`
 - Delivery Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/delivery-revision-record.md` (superseded `DR-005` context only)
 - API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-004`
-- Current Investigation Round: `4` / first `SR-008` round
-- Trigger: `CRR-009` source-review Pass for `IR-006` / `SR-008`, reviewer artifact commit `a634155ba`
-- Prior Investigation Reviewed: `Yes` — `API-REV-003` / `SR-006` is accepted preservation and browser-presentation context only, not `SR-008` sign-off.
-- Latest Authoritative Investigation: this `SR-008` investigation, written before any `SR-008` durable coverage edit or final execution.
+- Current API/E2E Revision ID: `API-REV-005`
+- Current Investigation Round: `5` / `TEST-FIND-003` bounded re-entry
+- Trigger: `CRR-010` proportional durable-test review Fail / Local Fix for `TEST-FIND-003`, reviewer artifact commit `482f24e06`
+- Prior Investigation Reviewed: `Yes` — `API-REV-004` product/API/browser evidence is clean at 97.1%, but its new durable browser runner can false-pass browser-console or post-assertion cleanup failures and therefore is not yet accepted durable coverage.
+- Latest Authoritative Investigation: this `TEST-FIND-003` re-entry update, written before the bounded runner edit or rerun.
+
+## Current Re-entry Coverage Decision — TEST-FIND-003
+
+`CRR-010` confirms that the implementation source, eleven other durable paths, all four browser scenario bodies, and the actual `API-REV-004` evidence remain clean. The only failing boundary is the durable command's own result authority: it checks `pageerror` before cleanup, never fails on `console:error`, discards browser-close errors, can record WebSocket/Nuxt/fixture/log cleanup failures after its last assertion, and bases final exit only on the earlier `finalError`.
+
+Coverage validity for this re-entry:
+
+| Path / Evidence | Validity Decision | Required Action |
+| --- | --- | --- |
+| Eleven other `SR-008` durable paths | Still Valid | No edit or rerun; `CRR-010` passed their proportional review. |
+| `interrupt-result-presentation.page.vue` and `SR008-BR-001..004` scenario assertions | Still Valid | Preserve unchanged. |
+| `interrupt-result-presentation-probe.mjs` final health/cleanup gate | Needs Update | Capture both page and console errors; record browser/context, WS, Nuxt/process/log, and fixture cleanup; derive final failure only after cleanup and evidence write. |
+| Existing final `evidence.json` and separate cleanup verification | Still Valid as actual-run evidence | Retain as prior clean evidence, but replace with a fresh run from the corrected durable command. |
+
+No durable coverage will be removed or replaced. One durable runner will be updated. The narrow execution plan is: (1) syntax check; (2) rerun the corrected browser command preserving all four scenarios; (3) inspect final JSON for zero page/console errors plus successful cleanup; (4) independently verify recorded PID and ports are inactive; (5) rerun structural/current-protocol and `git diff --check`. Live Codex, server, and frontend product suites will not be repeated because no product, fixture, protocol, or scenario body changes.
+
+Re-entry execution is complete:
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| Corrected durable Chrome/Nuxt/WS command | Pass — `SR008-BR-001..004` all Pass; failures empty; zero `pageerror`/`console:error` | `api-e2e-evidence/sr008-browser/review-rework/evidence.json` |
+| Owned cleanup recorded by the runner | Pass — four contexts closed; browser and WS server closed; Nuxt terminated; log closed; installed page removed; evidence written | same `cleanup` object |
+| Negative control after ordinary cleanup | Expected nonzero — injected `console:error` plus post-cleanup failure are both written and command exits `1` | `api-e2e-evidence/sr008-browser/review-rework-negative-control/` |
+| Independent structural/cleanup verification | Pass — syntax/diff/fixture checks; recorded PID absent; WS/Nuxt ports have no listeners; temporary copies absent | `api-e2e-evidence/sr008-repository/review-rework-structural.log` |
+
+The reported product confidence remains `97.1%`. The rework restores the durable command quality claimed by that score without changing product behavior, scenario assertions, or environment evidence. Broader validation was `Required and completed` as a focused rerun of the same Chrome/Nuxt/WS durable surface. No solution/design/source reroute is required; the package returns to `code_reviewer` for proportional re-review.
 
 ## Current Requirement And Design Basis
 
@@ -231,9 +257,9 @@ None. All selected critical scenarios passed; no requirement, design, implementa
 ## Investigation Decision
 
 - Proceed To API/E2E Execution: `Completed`.
-- Repository-Resident Durable Coverage Added / Updated / Removed: `Yes — two files added, ten files updated, none removed.`
-- Post-repository confidence: `92.4%`.
-- Broader validation decision: `Required and completed — live Codex, live thread restore/memory, real Fastify WebSockets, and Chrome.`
+- Repository-Resident Durable Coverage Added / Updated / Removed: `Yes — this re-entry updates one existing browser runner; no scenario fixture or product test changed; none removed.`
+- Current validation confidence: `97.1%`, unchanged because this Local Fix restores durable command authority for already-clean product evidence.
+- Broader validation decision: `Required and completed — corrected Chrome/Nuxt/real-WS command plus negative-control and independent cleanup/structural verification.`
 - Reroute Required Before Validation Execution: `No`.
-- Recommended next recipient: `code_reviewer` for proportional durable-test review after the execution report and `API-REV-004` are finalized.
-- Notes: This is the authoritative `SR-008` investigation. `API-REV-003` remains accepted `SR-006` historical context only.
+- Recommended next recipient: `code_reviewer` for proportional re-review of the one corrected durable runner.
+- Notes: `TEST-FIND-003` is resolved in API/E2E evidence and remains pending reviewer confirmation. Eleven previously reviewed paths and the four scenario bodies were unchanged.

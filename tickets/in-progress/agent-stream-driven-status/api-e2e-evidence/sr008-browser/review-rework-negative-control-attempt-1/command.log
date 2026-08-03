@@ -1,0 +1,11 @@
+$ temporary negative-control copy: inject console:error + post-cleanup failure; expect nonzero
+file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.negative-control.mjs:497
+  throw new Error(`Interrupt result presentation probe failed after cleanup: ${summary}`, {
+        ^
+
+Error: Interrupt result presentation probe failed after cleanup: cleanup-negative-control: intentional post-cleanup negative control
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.negative-control.mjs:497:9 {
+  [cause]: undefined
+}
+
+Node.js v22.23.1

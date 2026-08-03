@@ -53,6 +53,11 @@ const waitFor = async (label, predicate, timeout = timeoutMs) => {
   throw new Error(`Timed out waiting for ${label}${lastError ? `: ${lastError.message}` : ''}`);
 };
 
+const errorDetails = (error) => ({
+  message: error instanceof Error ? error.message : String(error),
+  ...(error instanceof Error && error.stack ? { stack: error.stack } : {}),
+});
+
 const childExited = (child) => child.exitCode !== null || child.signalCode !== null;
 const waitForChildExit = (child, timeout) => new Promise((resolve) => {
   if (childExited(child)) return resolve(true);
@@ -170,14 +175,29 @@ const closeWsServer = async (server) => {
   for (const set of Object.values(connections)) {
     for (const socket of set) socket.terminate();
   }
-  await new Promise((resolve) => server.close(resolve));
+  await new Promise((resolve, reject) => {
+    const timer = setTimeout(
+      () => reject(new Error('Timed out closing the owned WebSocket server')),
+      5_000,
+    );
+    server.close((error) => {
+      clearTimeout(timer);
+      if (error) reject(error);
+      else resolve();
+    });
+  });
+  await waitFor(
+    'owned WebSocket connections to close',
+    () => Object.values(connections).every((set) => set.size === 0),
+    5_000,
+  );
 };
 
 const runScenario = async (id, fn) => {
   try {
     evidence.scenarios[id] = { result: 'Pass', details: await fn() };
   } catch (error) {
-    const failure = { id, message: error instanceof Error ? error.message : String(error), stack: error?.stack };
+    const failure = { id, ...errorDetails(error) };
     evidence.scenarios[id] = { result: 'Fail', failure };
     evidence.failures.push(failure);
     throw error;
@@ -192,12 +212,36 @@ let nuxtLog;
 let browser;
 let wsServer;
 let fixtureInstalled = false;
-let finalError;
+let fixtureInstallAttempted = false;
+let executionError;
+let nuxtLogError;
+let nextContextId = 1;
+const activeContexts = new Map();
+evidence.cleanup.contexts = [];
+
+const recordFailure = (id, error) => {
+  const failure = { id, ...errorDetails(error) };
+  evidence.failures.push(failure);
+  return failure;
+};
+
+const closeTrackedContext = async (context, phase = 'scenario') => {
+  const contextId = activeContexts.get(context) ?? `context-${nextContextId++}`;
+  try {
+    await context.close();
+    evidence.cleanup.contexts.push({ id: contextId, phase, status: 'closed' });
+    activeContexts.delete(context);
+  } catch (error) {
+    evidence.cleanup.contexts.push({ id: contextId, phase, status: 'failed', ...errorDetails(error) });
+    recordFailure(`cleanup-${contextId}`, error);
+  }
+};
 
 try {
   assert(existsSync(fixturePath), `Missing fixture ${fixturePath}`);
   assert(!existsSync(installedPagePath), `Refusing to overwrite ${installedPagePath}`);
   assert(existsSync(executablePath), `Missing browser ${executablePath}`);
+  fixtureInstallAttempted = true;
   await fs.copyFile(fixturePath, installedPagePath);
   fixtureInstalled = true;
 
@@ -208,6 +252,9 @@ try {
   const baseUrl = `http://127.0.0.1:${nuxtPort}`;
   evidence.nuxtPort = nuxtPort;
   nuxtLog = createWriteStream(nuxtLogPath, { flags: 'w' });
+  nuxtLog.on('error', (error) => {
+    nuxtLogError = error;
+  });
   nuxt = spawn('pnpm', ['exec', 'nuxi', 'dev', '--host', '127.0.0.1', '--port', String(nuxtPort)], {
     cwd: webDir,
     detached: process.platform !== 'win32',
@@ -226,6 +273,8 @@ try {
 
   const openFixture = async (selected = 'standalone') => {
     const context = await browser.newContext({ viewport: { width: 1000, height: 760 }, locale: 'en-US' });
+    const contextId = `context-${nextContextId++}`;
+    activeContexts.set(context, contextId);
     await context.route('**/rest/health', (route) => route.fulfill({ status: 200, body: '{"status":"ok"}' }));
     await context.route('**/graphql', (route) => route.fulfill({
       status: 200,
@@ -277,7 +326,7 @@ try {
       assert.equal(after.standaloneTranscriptCount, before.standaloneTranscriptCount);
       return { before, after, toasts };
     } finally {
-      await context.close();
+      await closeTrackedContext(context);
     }
   });
 
@@ -303,7 +352,7 @@ try {
       assert.equal(afterTerminal.standaloneTranscriptCount, before.standaloneTranscriptCount);
       return { before, beforeTerminal, afterTerminal };
     } finally {
-      await context.close();
+      await closeTrackedContext(context);
     }
   });
 
@@ -325,7 +374,7 @@ try {
       assert.equal(after.standaloneTranscriptCount, before.standaloneTranscriptCount);
       return { before, after, toasts };
     } finally {
-      await context.close();
+      await closeTrackedContext(context);
     }
   });
 
@@ -351,27 +400,102 @@ try {
       assert.equal(sent.message.payload.target_member_run_id, 'browser-task-team-critic-run');
       return { before, after, toasts, sent: sent.message };
     } finally {
-      await context.close();
+      await closeTrackedContext(context);
     }
   });
-
-  assert.equal(evidence.failures.length, 0);
-  assert.equal(evidence.browserEvents.filter((event) => event.type === 'pageerror').length, 0);
 } catch (error) {
-  finalError = error;
-  evidence.failures.push({ id: 'probe', message: error instanceof Error ? error.message : String(error), stack: error?.stack });
+  executionError = error;
+  recordFailure('probe', error);
 } finally {
-  if (browser) await browser.close().catch(() => undefined);
-  if (wsServer) await closeWsServer(wsServer).catch((error) => {
-    evidence.failures.push({ id: 'cleanup-ws', message: String(error) });
-  });
-  evidence.cleanup.nuxt = await stopOwnedProcess(nuxt).catch((error) => ({ status: 'failed', message: String(error) }));
-  if (fixtureInstalled) await fs.rm(installedPagePath, { force: true });
+  for (const context of [...activeContexts.keys()]) {
+    await closeTrackedContext(context, 'finalizer');
+  }
+
+  if (browser) {
+    try {
+      await browser.close();
+      evidence.cleanup.browser = { status: 'closed' };
+    } catch (error) {
+      evidence.cleanup.browser = { status: 'failed', ...errorDetails(error) };
+      recordFailure('cleanup-browser', error);
+    }
+  } else {
+    evidence.cleanup.browser = { status: 'not-started' };
+  }
+
+  if (wsServer) {
+    try {
+      await closeWsServer(wsServer);
+      evidence.cleanup.webSocketServer = { status: 'closed' };
+    } catch (error) {
+      evidence.cleanup.webSocketServer = { status: 'failed', ...errorDetails(error) };
+      recordFailure('cleanup-ws', error);
+    }
+  } else {
+    evidence.cleanup.webSocketServer = { status: 'not-started' };
+  }
+
+  try {
+    evidence.cleanup.nuxt = await stopOwnedProcess(nuxt);
+  } catch (error) {
+    evidence.cleanup.nuxt = { status: 'failed', ...errorDetails(error) };
+    recordFailure('cleanup-nuxt', error);
+  }
+
+  if (nuxtLog) {
+    try {
+      await new Promise((resolve, reject) => {
+        nuxtLog.once('error', reject);
+        nuxtLog.end(resolve);
+      });
+      if (nuxtLogError) throw nuxtLogError;
+      evidence.cleanup.nuxtLog = { status: 'closed' };
+    } catch (error) {
+      evidence.cleanup.nuxtLog = { status: 'failed', ...errorDetails(error) };
+      recordFailure('cleanup-nuxt-log', error);
+    }
+  } else {
+    evidence.cleanup.nuxtLog = { status: 'not-started' };
+  }
+
+  if (fixtureInstallAttempted) {
+    try {
+      await fs.rm(installedPagePath, { force: true });
+    } catch (error) {
+      recordFailure('cleanup-fixture', error);
+    }
+  }
   evidence.cleanup.fixtureRemoved = !existsSync(installedPagePath);
-  if (nuxtLog) await new Promise((resolve) => nuxtLog.end(resolve));
+  evidence.cleanup.fixture = {
+    status: evidence.cleanup.fixtureRemoved ? (fixtureInstalled ? 'removed' : 'absent') : 'failed',
+    path: installedPagePath,
+  };
+  if (!evidence.cleanup.fixtureRemoved) {
+    recordFailure('cleanup-fixture', new Error(`Owned fixture still exists at ${installedPagePath}`));
+  }
+
+  for (const eventType of ['pageerror', 'console:error']) {
+    const events = evidence.browserEvents.filter((event) => event.type === eventType);
+    if (events.length > 0) {
+      recordFailure(`browser-${eventType}`, new Error(
+        `${events.length} ${eventType} event(s): ${events.map((event) => event.text).join(' | ')}`,
+      ));
+    }
+  }
+
   evidence.completedAt = new Date().toISOString();
-  await fs.writeFile(evidencePath, `${JSON.stringify(evidence, null, 2)}\n`, 'utf8');
+  evidence.cleanup.evidenceFile = { status: 'written', path: evidencePath };
+  try {
+    await fs.writeFile(evidencePath, `${JSON.stringify(evidence, null, 2)}\n`, 'utf8');
+  } catch (error) {
+    throw new Error(`Could not write authoritative probe evidence: ${errorDetails(error).message}`, { cause: error });
+  }
 }
 
-if (finalError) throw finalError;
+if (evidence.failures.length > 0) {
+  const summary = evidence.failures.map((failure) => `${failure.id}: ${failure.message}`).join('; ');
+  throw new Error(`Interrupt result presentation probe failed after cleanup: ${summary}`, {
+    cause: executionError,
+  });
+}
 console.log(`Interrupt result presentation probe passed. Evidence: ${evidencePath}`);

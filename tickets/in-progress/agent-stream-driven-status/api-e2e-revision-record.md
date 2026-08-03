@@ -7,7 +7,8 @@
 | API-REV-001 | `code_reviewer` / `CRR-004` / API-E2E round 1 | `SR-005`, `ARCH-REV-005`, `IR-004`, `CRR-004` | N/A | Pass / 96.7% |
 | API-REV-002 | `code_reviewer` / `CRR-005` test review / API-E2E round 2 | `API-REV-001`, `CRR-005`, `TEST-FIND-001`, `TEST-FIND-002` | Pass / 96.7%; test review Fail | Pass / 96.7%; test re-review passed at `CRR-006` |
 | API-REV-003 | `code_reviewer` / `CRR-007` / API/E2E round 3 | `SR-006`, `ARCH-REV-006`, `IR-005`, `CRR-007` | Pass / 96.7% (`SR-005` baseline) | Pass / 97.1%; test review passed at `CRR-008` |
-| API-REV-004 | `code_reviewer` / `CRR-009` / API/E2E round 4 | `SR-007/008`, `ARCH-REV-007/008`, `IR-006`, `CRR-009` | Pass / 97.1% (`SR-006` baseline) | Pass / 97.1%; proportional review pending |
+| API-REV-004 | `code_reviewer` / `CRR-009` / API/E2E round 4 | `SR-007/008`, `ARCH-REV-007/008`, `IR-006`, `CRR-009` | Pass / 97.1% (`SR-006` baseline) | Pass / 97.1%; test review failed at `CRR-010` (`TEST-FIND-003`) |
+| API-REV-005 | `code_reviewer` / `CRR-010` test review / API/E2E round 5 | `API-REV-004`, `CRR-010`, `TEST-FIND-003` | Pass / 97.1%; test review Fail | Pass / 97.1%; test re-review pending |
 
 ## Revision Entries
 
@@ -142,4 +143,42 @@ None. There was no prior completed authoritative API/E2E result. Fresh round-loc
 - New or remaining failure IDs: `None`; proportional review of two added and ten updated durable files is pending.
 - Recommended recipient: `code_reviewer` for proportional durable-test review; do not route to delivery directly.
 - Remaining risks: exact live provider rejection/race injection is unavailable but directly covered deterministically at the production owner; browser peer is controlled while server and browser real-socket layers pass separately; unrelated external-provider secrets/local endpoints and repository-wide frontend typecheck debt remain outside the changed boundary; packaged Electron not run because no shell source changed.
+- Product iteration callback: `Not Required`.
+
+### API-REV-005 — Make browser health and owned cleanup authoritative
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-test-review-report.md`; API/E2E execution round 5 / `CRR-010`
+- Triggering finding or scenario IDs: `TEST-FIND-003`; preserves `API-E2E-024/025` and `SR008-BR-001..004`
+- Related solution, architecture-review, implementation, code-review, or delivery revision IDs: `SR-007`, `SR-008`, `ARCH-REV-007/008`, `IR-006`, authoritative source `CRR-009 Pass`, proportional test review `CRR-010 Fail`; superseded delivery `DR-005`
+- Why recorded: `CRR-010` found that the actual `API-REV-004` browser evidence was clean but the durable runner could still exit zero when console errors or browser/WS/Nuxt/log/fixture cleanup failed after its last assertion. This was one bounded API/E2E-owned false-pass gap.
+- Coverage decisions or durable test paths changed:
+  - updated only `autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs`;
+  - preserved its four scenario bodies and the unchanged fixture;
+  - left the eleven other already-reviewed durable paths untouched;
+  - removed no coverage.
+- Scenarios added, changed, removed, or rechecked: rechecked `SR008-BR-001..004`; added no product scenario. Added a temporary expected-nonzero control for a console error plus post-cleanup failure.
+- Commands, environment, fixture, or broader-validation delta:
+  - corrected Chrome/Nuxt/real-WS command: Pass / 4 scenarios / zero page or console errors / failures empty;
+  - runner-recorded cleanup: four contexts, browser, WS server, Nuxt, Nuxt log, installed fixture, and evidence write all clean;
+  - temporary negative control: expected exit `1`, both injected failures written after ordinary cleanup, temporary source removed;
+  - independent structural/cleanup: Pass; recorded Nuxt PID absent, both recorded ports without listeners, fixture/temp files absent, syntax and diff clean.
+
+#### Prior Failure Resolution
+
+| Prior Scenario / Failure Reference | Previous Classification | Current Resolution | Evidence |
+| --- | --- | --- | --- |
+| `TEST-FIND-003` / browser runner final result | Local Fix / API/E2E durable-command correctness | Runner now converts both `pageerror` and `console:error` into failures, records all context/browser/WS/Nuxt/log/fixture/evidence cleanup, and determines exit only after cleanup and evidence write. Positive rerun passes; injected console/post-cleanup negative control exits 1. | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-evidence/sr008-browser/review-rework/evidence.json`; `review-rework-negative-control/evidence.json`; `api-e2e-evidence/sr008-repository/review-rework-structural.log` |
+
+- Canonical artifacts updated:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-execution-coverage-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-evidence/sr008-browser/review-rework/`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-evidence/sr008-browser/review-rework-negative-control/`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-evidence/sr008-repository/review-rework-structural.log`
+- Prior result and confidence: `API-REV-004 Pass / 97.1%`; proportional test review `Fail` on `TEST-FIND-003` while affirming the actual execution clean.
+- Current result and confidence: `Pass / 97.1%`; confidence unchanged because the correction restores the repeatable durable proof claimed by the clean execution rather than changing product behavior or environment evidence.
+- New or remaining failure IDs: `None` in API/E2E execution; `TEST-FIND-003` awaits proportional reviewer confirmation.
+- Recommended recipient: `code_reviewer` for proportional re-review of the one corrected runner; do not route to delivery directly.
+- Remaining risks: unchanged bounded `API-REV-004` residuals — exact live provider rejection/race injection unavailable, controlled browser peer with separately passing real server sockets, unrelated external-provider availability and repository-wide frontend typecheck debt, no shell-specific change requiring packaged Electron.
 - Product iteration callback: `Not Required`.

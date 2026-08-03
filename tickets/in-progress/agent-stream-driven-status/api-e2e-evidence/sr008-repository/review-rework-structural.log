@@ -1,0 +1,135 @@
+$ node --check durable browser runner
+$ assert successful rerun scenarios/browser health/cleanup
+{
+  "scenarios": {
+    "SR008-BR-001": "Pass",
+    "SR008-BR-002": "Pass",
+    "SR008-BR-003": "Pass",
+    "SR008-BR-004": "Pass"
+  },
+  "browserErrors": [],
+  "failures": [],
+  "cleanup": {
+    "contexts": [
+      {
+        "id": "context-1",
+        "phase": "scenario",
+        "status": "closed"
+      },
+      {
+        "id": "context-2",
+        "phase": "scenario",
+        "status": "closed"
+      },
+      {
+        "id": "context-3",
+        "phase": "scenario",
+        "status": "closed"
+      },
+      {
+        "id": "context-4",
+        "phase": "scenario",
+        "status": "closed"
+      }
+    ],
+    "browser": {
+      "status": "closed"
+    },
+    "webSocketServer": {
+      "status": "closed"
+    },
+    "nuxt": {
+      "status": "terminated",
+      "pid": 69293,
+      "exitCode": null,
+      "signalCode": "SIGTERM"
+    },
+    "nuxtLog": {
+      "status": "closed"
+    },
+    "fixtureRemoved": true,
+    "fixture": {
+      "status": "removed",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/pages/__interrupt-result-presentation-probe.vue"
+    },
+    "evidenceFile": {
+      "status": "written",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-evidence/sr008-browser/review-rework/evidence.json"
+    }
+  }
+}
+$ assert negative control cannot false-pass after cleanup
+{
+  "failures": [
+    {
+      "id": "browser-console:error",
+      "message": "1 console:error event(s): intentional TEST-FIND-003 negative control",
+      "stack": "Error: 1 console:error event(s): intentional TEST-FIND-003 negative control\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.negative-control.mjs:482:45"
+    },
+    {
+      "id": "cleanup-negative-control",
+      "message": "intentional post-cleanup negative control",
+      "stack": "Error: intentional post-cleanup negative control\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.negative-control.mjs:488:45"
+    }
+  ],
+  "cleanup": {
+    "contexts": [
+      {
+        "id": "context-1",
+        "phase": "scenario",
+        "status": "closed"
+      },
+      {
+        "id": "context-2",
+        "phase": "scenario",
+        "status": "closed"
+      },
+      {
+        "id": "context-3",
+        "phase": "scenario",
+        "status": "closed"
+      },
+      {
+        "id": "context-4",
+        "phase": "scenario",
+        "status": "closed"
+      }
+    ],
+    "browser": {
+      "status": "closed"
+    },
+    "webSocketServer": {
+      "status": "closed"
+    },
+    "nuxt": {
+      "status": "terminated",
+      "pid": 79994,
+      "exitCode": null,
+      "signalCode": "SIGTERM"
+    },
+    "nuxtLog": {
+      "status": "closed"
+    },
+    "fixtureRemoved": true,
+    "fixture": {
+      "status": "removed",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/pages/__interrupt-result-presentation-probe.vue"
+    },
+    "evidenceFile": {
+      "status": "written",
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-evidence/sr008-browser/review-rework-negative-control/evidence.json"
+    }
+  }
+}
+$ assert owned process, ports, and installed fixture are gone
+owned_nuxt_pid=69293 not_running
+ws_port=49498 listener=none
+nuxt_port=49499 listener=none
+temporary_files=absent
+$ assert bounded durable change and clean diff
+scenario_fixture=unchanged
+ .../e2e/interrupt-result-presentation-probe.mjs    | 166 ++++++++++++++++++---
+ .../api-e2e-coverage-investigation.md              |  46 ++++--
+ .../api-e2e-execution-coverage-report.md           |  55 ++++---
+ .../api-e2e-revision-record.md                     |  41 ++++-
+ 4 files changed, 254 insertions(+), 54 deletions(-)
