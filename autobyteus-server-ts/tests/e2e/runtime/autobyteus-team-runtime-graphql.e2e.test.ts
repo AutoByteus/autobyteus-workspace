@@ -504,7 +504,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
 
     try {
       const toolArgs = {
-        recipient_name: "reviewer",
+        recipient_name: "./reviewer",
         content: deliveryContent,
         message_type: "all_autobyteus_reference_file_validation",
         reference_files: [referenceFilePath],

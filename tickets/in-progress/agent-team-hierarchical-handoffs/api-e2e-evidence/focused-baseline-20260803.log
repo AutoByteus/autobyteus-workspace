@@ -1,0 +1,963 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+
+stdout | tests/unit/agent-team-execution/task-delegation-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:35268) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts (17 tests | 17 failed) 17ms
+     × delegates repeated singular active work with explicit member targets and submit_task_result work-packet protocol 5ms
+     × resolves task-owned reference files by task identity without message IDs 1ms
+     × rejects relative delegate_task reference files before task creation 4ms
+     × rejects invalid absolute-looking delegate_task reference files before task creation 1ms
+     × rejects relative submit_task_result reference files before submission persistence 0ms
+     × rejects relative review_task_result reference files before review persistence 0ms
+     × delegates to an explicit team target and binds a task-team execution instance 0ms
+     × keeps activation visible content task-centered instead of sender-framed 0ms
+     × submits, revises, submits again, accepts latest pending submission, and settles after idle 1ms
+     × commits result submission and returns a concise message when notification delivery fails 0ms
+     × returns only a concise message when revision notification delivery fails 0ms
+     × keeps rejected activations not_started and does not publish active exact-run targets 0ms
+     × rolls back task-agent directory and ledger state when activation throws 0ms
+     × supports task-agent delegators and blocks parent settlement while child delegation is open 0ms
+     × rejects settled task-agent delegate_task before creating child work 0ms
+     × rejects settled task-agent review identity before recording a child review 0ms
+     × exposes only delegate_task, submit_task_result, and review_task_result parsers/tools 1ms
+stdout | tests/unit/agent-team-execution/mixed-team-manager.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:35301) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-team-execution/mixed-team-manager.test.ts > MixedTeamManager parent-boundary delivery > bridges child coordinator messages to the parent with absolute sender identity
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts
+
+ ❯ tests/unit/agent-team-execution/mixed-team-manager.test.ts (9 tests | 5 failed) 15ms
+     × bridges child coordinator messages to the parent with absolute sender identity 6ms
+     × parent-roots static task-agent sender addresses before appending the task-agent segment 0ms
+     × preserves task-team scoped sender addresses across parent-boundary delivery 0ms
+     ✓ rejects delivery to an unreachable parent boundary 0ms
+     × does not double-prefix already parent-rooted child sender paths 0ms
+     × uses full-prefix and root-aware normalization instead of first-segment sender matching 0ms
+     ✓ keeps active task-team handles in snapshots until accepted settlement removes them 5ms
+     ✓ joins repeated termination, rejects new work while terminating, and publishes root offline once 1ms
+     ✓ keeps the team active and does not publish offline when active child termination is rejected 0ms
+stdout | tests/unit/agent-team-definition/agent-team-definition-service.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:35310) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-team-definition/agent-team-definition-service.test.ts > AgentTeamDefinitionService > creates agent team definitions
+Agent Team Definition created successfully with ID: def-123
+
+stdout | tests/unit/agent-team-definition/agent-team-definition-service.test.ts > AgentTeamDefinitionService > updates definitions with provided fields
+Agent Team Definition with ID def-123 updated successfully.
+
+stdout | tests/unit/agent-team-definition/agent-team-definition-service.test.ts > AgentTeamDefinitionService > persists and returns a detached valid handoff update
+Agent Team Definition with ID def-123 updated successfully.
+
+stdout | tests/unit/agent-team-definition/agent-team-definition-service.test.ts > AgentTeamDefinitionService > clears defaultLaunchConfig when the update explicitly sets null
+Agent Team Definition with ID def-123 updated successfully.
+
+stdout | tests/unit/agent-team-definition/agent-team-definition-service.test.ts > AgentTeamDefinitionService > preserves defaultLaunchConfig when the update omits the field
+Agent Team Definition with ID def-123 updated successfully.
+
+stdout | tests/unit/agent-team-definition/agent-team-definition-service.test.ts > AgentTeamDefinitionService > allows same-application application-owned team refs from application-owned definitions
+Agent Team Definition with ID bundle-team__6275696c742d696e3a6170706c69636174696f6e73__73616d706c652d617070__6d61696e2d7465616d updated successfully.
+
+stdout | tests/unit/agent-team-definition/agent-team-definition-service.test.ts > AgentTeamDefinitionService > deletes definitions
+Agent Team Definition with ID def-123 deleted successfully.
+
+ ✓ tests/unit/agent-team-definition/agent-team-definition-service.test.ts (17 tests) 12ms
+ ❯ tests/unit/agent-team-execution/member-run-instruction-composer.test.ts (6 tests | 6 failed) 5ms
+     × composes definition instructions separately from runtime constraints 3ms
+     × renders AC-032 nested recipient instructions as a team membership roster manifest 0ms
+     × shows exact-run send_message_to guidance when static roster recipients are empty 0ms
+     × degrades cleanly when only one instruction source exists 0ms
+     × warns about send_message_to only when recipients exist but the tool is not exposed 0ms
+     × adds task delegation protocol instructions only when task delegation tooling is enabled 0ms
+stdout | tests/unit/agent-team-execution/team-run-metadata-mapper.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:35316) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/agent-team-execution/team-run-metadata-mapper.test.ts (2 tests) 6ms
+stdout | tests/unit/agent-team-execution/member-team-context-builder.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:35325) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/agent-team-execution/member-team-context-builder.test.ts (5 tests | 5 failed) 9ms
+     × derives teammate manifest, allowed recipients, and send-message capability once 3ms
+     × enables send_message_to when delivery exists even without static roster recipients 0ms
+     × exposes subteam representatives by visible leaf name while preserving represented-subteam identity 0ms
+     × adds parent boundary recipients only for the represented child coordinator 0ms
+     × rejects duplicate visible communication recipient names 4ms
+ ❯ tests/unit/agent-team-definition/application-owned-team-source.test.ts (3 tests | 1 failed) 16ms
+     ✓ reads application-owned team defaultLaunchConfig through the shared normalizer 5ms
+     × writes application-owned team defaultLaunchConfig back to source config 5ms
+     ✓ rejects legacy application-owned nested team refs without explicit refScope 5ms
+stdout | tests/unit/agent-tools/team-communication/send-message-to.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:35331) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/agent-tools/team-communication/send-message-to.test.ts > AutoByteus server-owned send_message_to > routes target_agent_run_id through the global direct router without team context
+Successfully registered tool definition: 'send_message_to'
+
+ ❯ tests/unit/agent-tools/team-communication/send-message-to.test.ts (3 tests | 2 failed) 8ms
+     × routes recipient_name through the team delivery context 3ms
+     × routes target_agent_run_id through the global direct router without team context 3ms
+     ✓ rejects recipient_name when the sender is not a team member 0ms
+ ❯ tests/unit/agent-tools/task-delegation/task-delegation-autobyteus-context.test.ts (4 tests | 4 failed) 4ms
+     × preserves BuildSquad as an agent_team so native delegate_task can resolve the team target 2ms
+     × rejects a team row whose memberKind was dropped instead of downgrading it to an agent 1ms
+     × rejects an agent_team row missing its team definition id 1ms
+     × rejects an agent_team row missing ingress identity 0ms
+stdout | tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:35341) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts (0 test)
+stdout | tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:35346) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts (2 tests) 6ms
+ ✓ tests/unit/agent-team-execution/team-definition-topology-planner.test.ts (3 tests) 5ms
+ ❯ tests/unit/agent-team-execution/inter-agent-message-delivery.test.ts (4 tests | 2 failed) 5ms
+     ✓ accepts participant and represented-subteam addresses that exactly match their paths 1ms
+     ✓ rejects participant address paths that diverge from participant paths 0ms
+     × rejects represented-subteam address paths that diverge from represented-subteam paths 2ms
+     × rejects represented-subteam paths that are not a participant path prefix 0ms
+ ❯ tests/unit/agent-team-execution/inter-agent-message-delivery-intent-builder.test.ts (1 test | 1 failed) 3ms
+     × builds an unresolved intent without pre-resolving recipients 2ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts [ tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts ]
+TypeError: Cannot read properties of undefined (reading 'addressing')
+ ❯ new MemberCollaborationContext src/agent-team-execution/domain/member-collaboration-context.ts:26:62
+     24|     deliverInterAgentMessage?: MemberLogicalMessageDeliveryHandler | n…
+     25|   }) {
+     26|     this.addressing = cloneMemberLogicalAddressContext(input.addressin…
+       |                                                              ^
+     27|     this.outgoingHandoffs = Object.freeze(
+     28|       cloneCollaborationHandoffs(input.outgoingHandoffs ?? []),
+ ❯ new MemberTeamContext src/agent-team-execution/domain/member-team-context.ts:52:26
+ ❯ tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts:23:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/44]⎯
+
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 43 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent-team-execution/inter-agent-message-delivery-intent-builder.test.ts > inter-agent-message-delivery-intent-builder > builds an unresolved intent without pre-resolving recipients
+TypeError: Cannot read properties of undefined (reading 'addressing')
+ ❯ new MemberCollaborationContext src/agent-team-execution/domain/member-collaboration-context.ts:26:62
+     24|     deliverInterAgentMessage?: MemberLogicalMessageDeliveryHandler | n…
+     25|   }) {
+     26|     this.addressing = cloneMemberLogicalAddressContext(input.addressin…
+       |                                                              ^
+     27|     this.outgoingHandoffs = Object.freeze(
+     28|       cloneCollaborationHandoffs(input.outgoingHandoffs ?? []),
+ ❯ new MemberTeamContext src/agent-team-execution/domain/member-team-context.ts:52:26
+ ❯ buildContext tests/unit/agent-team-execution/inter-agent-message-delivery-intent-builder.test.ts:6:28
+ ❯ tests/unit/agent-team-execution/inter-agent-message-delivery-intent-builder.test.ts:38:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/44]⎯
+
+ FAIL  tests/unit/agent-team-execution/inter-agent-message-delivery.test.ts > inter-agent-message-delivery participant invariants > rejects represented-subteam address paths that diverge from represented-subteam paths
+AssertionError: expected [Function] to throw an error
+
+- Expected: 
+null
+
++ Received: 
+undefined
+
+ ❯ tests/unit/agent-team-execution/inter-agent-message-delivery.test.ts:66:10
+     64|         },
+     65|       },
+     66|     }))).toThrow("representedSubTeam.address.memberPath 'OtherSquad' d…
+       |          ^
+     67|   });
+     68| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/44]⎯
+
+ FAIL  tests/unit/agent-team-execution/inter-agent-message-delivery.test.ts > inter-agent-message-delivery participant invariants > rejects represented-subteam paths that are not a participant path prefix
+AssertionError: expected [Function] to throw an error
+
+- Expected: 
+null
+
++ Received: 
+undefined
+
+ ❯ tests/unit/agent-team-execution/inter-agent-message-delivery.test.ts:84:10
+     82|         },
+     83|       },
+     84|     }))).toThrow("participant.representedSubTeam.memberPath 'OtherSqua…
+       |          ^
+     85|   });
+     86| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/44]⎯
+
+ FAIL  tests/unit/agent-team-execution/member-run-instruction-composer.test.ts > member-run-instruction-composer > composes definition instructions separately from runtime constraints
+TypeError: Cannot read properties of undefined (reading 'addressing')
+ ❯ new MemberCollaborationContext src/agent-team-execution/domain/member-collaboration-context.ts:26:62
+     24|     deliverInterAgentMessage?: MemberLogicalMessageDeliveryHandler | n…
+     25|   }) {
+     26|     this.addressing = cloneMemberLogicalAddressContext(input.addressin…
+       |                                                              ^
+     27|     this.outgoingHandoffs = Object.freeze(
+     28|       cloneCollaborationHandoffs(input.outgoingHandoffs ?? []),
+ ❯ new MemberTeamContext src/agent-team-execution/domain/member-team-context.ts:52:26
+ ❯ buildReviewLeadContext tests/unit/agent-team-execution/member-run-instruction-composer.test.ts:107:10
+ ❯ tests/unit/agent-team-execution/member-run-instruction-composer.test.ts:184:31
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/44]⎯
+
+ FAIL  tests/unit/agent-team-execution/member-run-instruction-composer.test.ts > member-run-instruction-composer > renders AC-032 nested recipient instructions as a team membership roster manifest
+TypeError: Cannot read properties of undefined (reading 'addressing')
+ ❯ new MemberCollaborationContext src/agent-team-execution/domain/member-collaboration-context.ts:26:62
+     24|     deliverInterAgentMessage?: MemberLogicalMessageDeliveryHandler | n…
+     25|   }) {
+     26|     this.addressing = cloneMemberLogicalAddressContext(input.addressin…
+       |                                                              ^
+     27|     this.outgoingHandoffs = Object.freeze(
+     28|       cloneCollaborationHandoffs(input.outgoingHandoffs ?? []),
+ ❯ new MemberTeamContext src/agent-team-execution/domain/member-team-context.ts:52:26
+ ❯ buildReviewLeadContext tests/unit/agent-team-execution/member-run-instruction-composer.test.ts:107:10
+ ❯ tests/unit/agent-team-execution/member-run-instruction-composer.test.ts:213:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/44]⎯
+
+ FAIL  tests/unit/agent-team-execution/member-run-instruction-composer.test.ts > member-run-instruction-composer > shows exact-run send_message_to guidance when static roster recipients are empty
+TypeError: Cannot read properties of undefined (reading 'addressing')
+ ❯ new MemberCollaborationContext src/agent-team-execution/domain/member-collaboration-context.ts:26:62
+     24|     deliverInterAgentMessage?: MemberLogicalMessageDeliveryHandler | n…
+     25|   }) {
+     26|     this.addressing = cloneMemberLogicalAddressContext(input.addressin…
+       |                                                              ^
+     27|     this.outgoingHandoffs = Object.freeze(
+     28|       cloneCollaborationHandoffs(input.outgoingHandoffs ?? []),
+ ❯ new MemberTeamContext src/agent-team-execution/domain/member-team-context.ts:52:26
+ ❯ buildExactRunOnlyContext tests/unit/agent-team-execution/member-run-instruction-composer.test.ts:159:3
+ ❯ tests/unit/agent-team-execution/member-run-instruction-composer.test.ts:244:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/44]⎯
+
+ FAIL  tests/unit/agent-team-execution/member-run-instruction-composer.test.ts > member-run-instruction-composer > degrades cleanly when only one instruction source exists
+TypeError: Cannot read properties of undefined (reading 'addressing')
+ ❯ new MemberCollaborationContext src/agent-team-execution/domain/member-collaboration-context.ts:26:62
+     24|     deliverInterAgentMessage?: MemberLogicalMessageDeliveryHandler | n…
+     25|   }) {
+     26|     this.addressing = cloneMemberLogicalAddressContext(input.addressin…
+       |                                                              ^
+     27|     this.outgoingHandoffs = Object.freeze(
+     28|       cloneCollaborationHandoffs(input.outgoingHandoffs ?? []),
+ ❯ new MemberTeamContext src/agent-team-execution/domain/member-team-context.ts:52:26
+ ❯ tests/unit/agent-team-execution/member-run-instruction-composer.test.ts:261:31
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/44]⎯
+
+ FAIL  tests/unit/agent-team-execution/member-run-instruction-composer.test.ts > member-run-instruction-composer > warns about send_message_to only when recipients exist but the tool is not exposed
+TypeError: Cannot read properties of undefined (reading 'addressing')
+ ❯ new MemberCollaborationContext src/agent-team-execution/domain/member-collaboration-context.ts:26:62
+     24|     deliverInterAgentMessage?: MemberLogicalMessageDeliveryHandler | n…
+     25|   }) {
+     26|     this.addressing = cloneMemberLogicalAddressContext(input.addressin…
+       |                                                              ^
+     27|     this.outgoingHandoffs = Object.freeze(
+     28|       cloneCollaborationHandoffs(input.outgoingHandoffs ?? []),
+ ❯ new MemberTeamContext src/agent-team-execution/domain/member-team-context.ts:52:26
+ ❯ buildReviewLeadContext tests/unit/agent-team-execution/member-run-instruction-composer.test.ts:107:10
+ ❯ tests/unit/agent-team-execution/member-run-instruction-composer.test.ts:286:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/44]⎯
+
+ FAIL  tests/unit/agent-team-execution/member-run-instruction-composer.test.ts > member-run-instruction-composer > adds task delegation protocol instructions only when task delegation tooling is enabled
+TypeError: Cannot read properties of undefined (reading 'addressing')
+ ❯ new MemberCollaborationContext src/agent-team-execution/domain/member-collaboration-context.ts:26:62
+     24|     deliverInterAgentMessage?: MemberLogicalMessageDeliveryHandler | n…
+     25|   }) {
+     26|     this.addressing = cloneMemberLogicalAddressContext(input.addressin…
+       |                                                              ^
+     27|     this.outgoingHandoffs = Object.freeze(
+     28|       cloneCollaborationHandoffs(input.outgoingHandoffs ?? []),
+ ❯ new MemberTeamContext src/agent-team-execution/domain/member-team-context.ts:52:26
+ ❯ buildReviewLeadContext tests/unit/agent-team-execution/member-run-instruction-composer.test.ts:107:10
+ ❯ tests/unit/agent-team-execution/member-run-instruction-composer.test.ts:299:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/44]⎯
+
+ FAIL  tests/unit/agent-team-execution/member-team-context-builder.test.ts > MemberTeamContextBuilder > derives teammate manifest, allowed recipients, and send-message capability once
+TypeError: Cannot read properties of undefined (reading 'trim')
+ ❯ required src/agent-team-execution/domain/member-logical-address-context.ts:12:28
+     10| 
+     11| const required = (value: string, fieldName: string): string => {
+     12|   const normalized = value.trim();
+       |                            ^
+     13|   if (!normalized) {
+     14|     throw new Error(`${fieldName} is required.`);
+ ❯ createMemberLogicalAddressContext src/agent-team-execution/domain/member-logical-address-context.ts:30:20
+ ❯ MemberTeamContextBuilder.build src/agent-team-execution/services/member-team-context-builder.ts:48:24
+ ❯ tests/unit/agent-team-execution/member-team-context-builder.test.ts:15:34
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/44]⎯
+
+ FAIL  tests/unit/agent-team-execution/member-team-context-builder.test.ts > MemberTeamContextBuilder > enables send_message_to when delivery exists even without static roster recipients
+TypeError: Cannot read properties of undefined (reading 'trim')
+ ❯ required src/agent-team-execution/domain/member-logical-address-context.ts:12:28
+     10| 
+     11| const required = (value: string, fieldName: string): string => {
+     12|   const normalized = value.trim();
+       |                            ^
+     13|   if (!normalized) {
+     14|     throw new Error(`${fieldName} is required.`);
+ ❯ createMemberLogicalAddressContext src/agent-team-execution/domain/member-logical-address-context.ts:30:20
+ ❯ MemberTeamContextBuilder.build src/agent-team-execution/services/member-team-context-builder.ts:48:24
+ ❯ tests/unit/agent-team-execution/member-team-context-builder.test.ts:70:34
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/44]⎯
+
+ FAIL  tests/unit/agent-team-execution/member-team-context-builder.test.ts > MemberTeamContextBuilder > exposes subteam representatives by visible leaf name while preserving represented-subteam identity
+TypeError: Cannot read properties of undefined (reading 'trim')
+ ❯ required src/agent-team-execution/domain/member-logical-address-context.ts:12:28
+     10| 
+     11| const required = (value: string, fieldName: string): string => {
+     12|   const normalized = value.trim();
+       |                            ^
+     13|   if (!normalized) {
+     14|     throw new Error(`${fieldName} is required.`);
+ ❯ createMemberLogicalAddressContext src/agent-team-execution/domain/member-logical-address-context.ts:30:20
+ ❯ MemberTeamContextBuilder.build src/agent-team-execution/services/member-team-context-builder.ts:48:24
+ ❯ tests/unit/agent-team-execution/member-team-context-builder.test.ts:100:34
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/44]⎯
+
+ FAIL  tests/unit/agent-team-execution/member-team-context-builder.test.ts > MemberTeamContextBuilder > adds parent boundary recipients only for the represented child coordinator
+TypeError: Cannot read properties of undefined (reading 'trim')
+ ❯ required src/agent-team-execution/domain/member-logical-address-context.ts:12:28
+     10| 
+     11| const required = (value: string, fieldName: string): string => {
+     12|   const normalized = value.trim();
+       |                            ^
+     13|   if (!normalized) {
+     14|     throw new Error(`${fieldName} is required.`);
+ ❯ createMemberLogicalAddressContext src/agent-team-execution/domain/member-logical-address-context.ts:30:20
+ ❯ MemberTeamContextBuilder.build src/agent-team-execution/services/member-team-context-builder.ts:48:24
+ ❯ tests/unit/agent-team-execution/member-team-context-builder.test.ts:219:39
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/44]⎯
+
+ FAIL  tests/unit/agent-team-execution/member-team-context-builder.test.ts > MemberTeamContextBuilder > rejects duplicate visible communication recipient names
+AssertionError: expected [Function] to throw error including 'Ambiguous communication recipient \'r…' but got 'Cannot read properties of undefined (…'
+
+Expected: "Ambiguous communication recipient 'review_lead'"
+Received: "Cannot read properties of undefined (reading 'trim')"
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/44]⎯
+
+ FAIL  tests/unit/agent-team-execution/mixed-team-manager.test.ts > MixedTeamManager parent-boundary delivery > bridges child coordinator messages to the parent with absolute sender identity
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/agent-team-execution/mixed-team-manager.test.ts:296:29
+    294|     const result = await manager.deliverInterAgentMessage(buildChildTo…
+    295| 
+    296|     expect(result.accepted).toBe(true);
+       |                             ^
+    297|     expect(parentDeliverInterAgentMessage).toHaveBeenCalledTimes(1);
+    298|     const bridgedRequest = parentDeliverInterAgentMessage.mock.calls[0…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/44]⎯
+
+ FAIL  tests/unit/agent-team-execution/mixed-team-manager.test.ts > MixedTeamManager parent-boundary delivery > parent-roots static task-agent sender addresses before appending the task-agent segment
+TypeError: Cannot read properties of undefined (reading 'sender')
+ ❯ tests/unit/agent-team-execution/mixed-team-manager.test.ts:341:27
+    339| 
+    340|     const bridgedRequest = parentDeliverInterAgentMessage.mock.calls[0…
+    341|     expect(bridgedRequest.sender.participant.memberPath).toEqual(["Bui…
+       |                           ^
+    342|     expect(bridgedRequest.sender.participant.logicalMemberRouteKey).to…
+    343|     expect(bridgedRequest.senderAddress).toEqual({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/44]⎯
+
+ FAIL  tests/unit/agent-team-execution/mixed-team-manager.test.ts > MixedTeamManager parent-boundary delivery > preserves task-team scoped sender addresses across parent-boundary delivery
+TypeError: Cannot read properties of undefined (reading 'sender')
+ ❯ tests/unit/agent-team-execution/mixed-team-manager.test.ts:359:27
+    357| 
+    358|     const bridgedRequest = parentDeliverInterAgentMessage.mock.calls[0…
+    359|     expect(bridgedRequest.sender.participant.memberPath).toEqual(["Bui…
+       |                           ^
+    360|     expect(bridgedRequest.senderAddress).toEqual(taskTeamChildAddress);
+    361|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/44]⎯
+
+ FAIL  tests/unit/agent-team-execution/mixed-team-manager.test.ts > MixedTeamManager parent-boundary delivery > does not double-prefix already parent-rooted child sender paths
+TypeError: Cannot read properties of undefined (reading 'sender')
+ ❯ tests/unit/agent-team-execution/mixed-team-manager.test.ts:385:27
+    383| 
+    384|     const bridgedRequest = parentDeliverInterAgentMessage.mock.calls[0…
+    385|     expect(bridgedRequest.sender.participant.memberPath).toEqual(["Bui…
+       |                           ^
+    386|     expect(bridgedRequest.sender.participant.memberRouteKey).toBe("Bui…
+    387|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/44]⎯
+
+ FAIL  tests/unit/agent-team-execution/mixed-team-manager.test.ts > MixedTeamManager parent-boundary delivery > uses full-prefix and root-aware normalization instead of first-segment sender matching
+TypeError: Cannot read properties of undefined (reading 'sender')
+ ❯ tests/unit/agent-team-execution/mixed-team-manager.test.ts:411:27
+    409| 
+    410|     const bridgedRequest = parentDeliverInterAgentMessage.mock.calls[0…
+    411|     expect(bridgedRequest.sender.participant.memberPath).toEqual([
+       |                           ^
+    412|       "BuildSquad",
+    413|       "Nested",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/44]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > delegates repeated singular active work with explicit member targets and submit_task_result work-packet protocol
+TypeError: Cannot read properties of undefined (reading 'rootTeamRunId')
+ ❯ TaskDelegationInputResolver.assertContext src/agent-team-execution/task-delegation/task-delegation-input-resolver.ts:57:62
+     55|     normalizeRequiredTaskDelegationString(context.caller.memberRouteKe…
+     56|     normalizeRequiredTaskDelegationString(context.caller.memberRunId, …
+     57|     normalizeRequiredTaskDelegationString(context.addressing.rootTeamR…
+       |                                                              ^
+     58|     if (context.addressing.memberAddress !== `/${context.addressing.me…
+     59|       throw new TaskDelegationError("TEAM_RUN_CONTEXT_REQUIRED", "Task…
+ ❯ TaskDelegationService.delegateTask src/agent-team-execution/task-delegation/task-delegation-service.ts:143:24
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:344:33
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/44]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > resolves task-owned reference files by task identity without message IDs
+TypeError: Cannot read properties of undefined (reading 'rootTeamRunId')
+ ❯ TaskDelegationInputResolver.assertContext src/agent-team-execution/task-delegation/task-delegation-input-resolver.ts:57:62
+     55|     normalizeRequiredTaskDelegationString(context.caller.memberRouteKe…
+     56|     normalizeRequiredTaskDelegationString(context.caller.memberRunId, …
+     57|     normalizeRequiredTaskDelegationString(context.addressing.rootTeamR…
+       |                                                              ^
+     58|     if (context.addressing.memberAddress !== `/${context.addressing.me…
+     59|       throw new TaskDelegationError("TEAM_RUN_CONTEXT_REQUIRED", "Task…
+ ❯ TaskDelegationService.delegateTask src/agent-team-execution/task-delegation/task-delegation-service.ts:143:24
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:420:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/44]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > rejects relative delegate_task reference files before task creation
+AssertionError: expected TypeError: Cannot read properties of unde… to match object { code: 'VALIDATION_ERROR', …(1) }
+
+- Expected
++ Received
+
+- {
+-   "code": "VALIDATION_ERROR",
+-   "message": "reference_files must be an array of absolute local file path strings. Invalid index=0 reason=path must be absolute.",
++ TypeError {
++   "message": "Cannot read properties of undefined (reading 'rootTeamRunId')",
+  }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/44]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > rejects invalid absolute-looking delegate_task reference files before task creation
+AssertionError: expected TypeError: Cannot read properties of unde… to match object { code: 'VALIDATION_ERROR', …(1) }
+
+- Expected
++ Received
+
+- {
+-   "code": "VALIDATION_ERROR",
+-   "message": "reference_files must be an array of absolute local file path strings. Invalid index=0 reason=path contains route-template or relative segments.",
++ TypeError {
++   "message": "Cannot read properties of undefined (reading 'rootTeamRunId')",
+  }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/44]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > rejects relative submit_task_result reference files before submission persistence
+TypeError: Cannot read properties of undefined (reading 'rootTeamRunId')
+ ❯ TaskDelegationInputResolver.assertContext src/agent-team-execution/task-delegation/task-delegation-input-resolver.ts:57:62
+     55|     normalizeRequiredTaskDelegationString(context.caller.memberRouteKe…
+     56|     normalizeRequiredTaskDelegationString(context.caller.memberRunId, …
+     57|     normalizeRequiredTaskDelegationString(context.addressing.rootTeamR…
+       |                                                              ^
+     58|     if (context.addressing.memberAddress !== `/${context.addressing.me…
+     59|       throw new TaskDelegationError("TEAM_RUN_CONTEXT_REQUIRED", "Task…
+ ❯ TaskDelegationService.delegateTask src/agent-team-execution/task-delegation/task-delegation-service.ts:143:24
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:476:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/44]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > rejects relative review_task_result reference files before review persistence
+TypeError: Cannot read properties of undefined (reading 'rootTeamRunId')
+ ❯ TaskDelegationInputResolver.assertContext src/agent-team-execution/task-delegation/task-delegation-input-resolver.ts:57:62
+     55|     normalizeRequiredTaskDelegationString(context.caller.memberRouteKe…
+     56|     normalizeRequiredTaskDelegationString(context.caller.memberRunId, …
+     57|     normalizeRequiredTaskDelegationString(context.addressing.rootTeamR…
+       |                                                              ^
+     58|     if (context.addressing.memberAddress !== `/${context.addressing.me…
+     59|       throw new TaskDelegationError("TEAM_RUN_CONTEXT_REQUIRED", "Task…
+ ❯ TaskDelegationService.delegateTask src/agent-team-execution/task-delegation/task-delegation-service.ts:143:24
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:501:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/44]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > delegates to an explicit team target and binds a task-team execution instance
+TypeError: Cannot read properties of undefined (reading 'rootTeamRunId')
+ ❯ TaskDelegationInputResolver.assertContext src/agent-team-execution/task-delegation/task-delegation-input-resolver.ts:57:62
+     55|     normalizeRequiredTaskDelegationString(context.caller.memberRouteKe…
+     56|     normalizeRequiredTaskDelegationString(context.caller.memberRunId, …
+     57|     normalizeRequiredTaskDelegationString(context.addressing.rootTeamR…
+       |                                                              ^
+     58|     if (context.addressing.memberAddress !== `/${context.addressing.me…
+     59|       throw new TaskDelegationError("TEAM_RUN_CONTEXT_REQUIRED", "Task…
+ ❯ TaskDelegationService.delegateTask src/agent-team-execution/task-delegation/task-delegation-service.ts:143:24
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:535:35
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/44]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > keeps activation visible content task-centered instead of sender-framed
+TypeError: Cannot read properties of undefined (reading 'rootTeamRunId')
+ ❯ TaskDelegationInputResolver.assertContext src/agent-team-execution/task-delegation/task-delegation-input-resolver.ts:57:62
+     55|     normalizeRequiredTaskDelegationString(context.caller.memberRouteKe…
+     56|     normalizeRequiredTaskDelegationString(context.caller.memberRunId, …
+     57|     normalizeRequiredTaskDelegationString(context.addressing.rootTeamR…
+       |                                                              ^
+     58|     if (context.addressing.memberAddress !== `/${context.addressing.me…
+     59|       throw new TaskDelegationError("TEAM_RUN_CONTEXT_REQUIRED", "Task…
+ ❯ TaskDelegationService.delegateTask src/agent-team-execution/task-delegation/task-delegation-service.ts:143:24
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:648:35
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[28/44]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > submits, revises, submits again, accepts latest pending submission, and settles after idle
+TypeError: Cannot read properties of undefined (reading 'rootTeamRunId')
+ ❯ TaskDelegationInputResolver.assertContext src/agent-team-execution/task-delegation/task-delegation-input-resolver.ts:57:62
+     55|     normalizeRequiredTaskDelegationString(context.caller.memberRouteKe…
+     56|     normalizeRequiredTaskDelegationString(context.caller.memberRunId, …
+     57|     normalizeRequiredTaskDelegationString(context.addressing.rootTeamR…
+       |                                                              ^
+     58|     if (context.addressing.memberAddress !== `/${context.addressing.me…
+     59|       throw new TaskDelegationError("TEAM_RUN_CONTEXT_REQUIRED", "Task…
+ ❯ TaskDelegationService.delegateTask src/agent-team-execution/task-delegation/task-delegation-service.ts:143:24
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:679:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[29/44]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > commits result submission and returns a concise message when notification delivery fails
+TypeError: Cannot read properties of undefined (reading 'rootTeamRunId')
+ ❯ TaskDelegationInputResolver.assertContext src/agent-team-execution/task-delegation/task-delegation-input-resolver.ts:57:62
+     55|     normalizeRequiredTaskDelegationString(context.caller.memberRouteKe…
+     56|     normalizeRequiredTaskDelegationString(context.caller.memberRunId, …
+     57|     normalizeRequiredTaskDelegationString(context.addressing.rootTeamR…
+       |                                                              ^
+     58|     if (context.addressing.memberAddress !== `/${context.addressing.me…
+     59|       throw new TaskDelegationError("TEAM_RUN_CONTEXT_REQUIRED", "Task…
+ ❯ TaskDelegationService.delegateTask src/agent-team-execution/task-delegation/task-delegation-service.ts:143:24
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:862:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[30/44]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > returns only a concise message when revision notification delivery fails
+TypeError: Cannot read properties of undefined (reading 'rootTeamRunId')
+ ❯ TaskDelegationInputResolver.assertContext src/agent-team-execution/task-delegation/task-delegation-input-resolver.ts:57:62
+     55|     normalizeRequiredTaskDelegationString(context.caller.memberRouteKe…
+     56|     normalizeRequiredTaskDelegationString(context.caller.memberRunId, …
+     57|     normalizeRequiredTaskDelegationString(context.addressing.rootTeamR…
+       |                                                              ^
+     58|     if (context.addressing.memberAddress !== `/${context.addressing.me…
+     59|       throw new TaskDelegationError("TEAM_RUN_CONTEXT_REQUIRED", "Task…
+ ❯ TaskDelegationService.delegateTask src/agent-team-execution/task-delegation/task-delegation-service.ts:143:24
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:888:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[31/44]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > keeps rejected activations not_started and does not publish active exact-run targets
+TypeError: Cannot read properties of undefined (reading 'rootTeamRunId')
+ ❯ TaskDelegationInputResolver.assertContext src/agent-team-execution/task-delegation/task-delegation-input-resolver.ts:57:62
+     55|     normalizeRequiredTaskDelegationString(context.caller.memberRouteKe…
+     56|     normalizeRequiredTaskDelegationString(context.caller.memberRunId, …
+     57|     normalizeRequiredTaskDelegationString(context.addressing.rootTeamR…
+       |                                                              ^
+     58|     if (context.addressing.memberAddress !== `/${context.addressing.me…
+     59|       throw new TaskDelegationError("TEAM_RUN_CONTEXT_REQUIRED", "Task…
+ ❯ TaskDelegationService.delegateTask src/agent-team-execution/task-delegation/task-delegation-service.ts:143:24
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:922:35
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[32/44]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > rolls back task-agent directory and ledger state when activation throws
+TypeError: Cannot read properties of undefined (reading 'rootTeamRunId')
+ ❯ TaskDelegationInputResolver.assertContext src/agent-team-execution/task-delegation/task-delegation-input-resolver.ts:57:62
+     55|     normalizeRequiredTaskDelegationString(context.caller.memberRouteKe…
+     56|     normalizeRequiredTaskDelegationString(context.caller.memberRunId, …
+     57|     normalizeRequiredTaskDelegationString(context.addressing.rootTeamR…
+       |                                                              ^
+     58|     if (context.addressing.memberAddress !== `/${context.addressing.me…
+     59|       throw new TaskDelegationError("TEAM_RUN_CONTEXT_REQUIRED", "Task…
+ ❯ TaskDelegationService.delegateTask src/agent-team-execution/task-delegation/task-delegation-service.ts:143:24
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:939:35
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[33/44]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > supports task-agent delegators and blocks parent settlement while child delegation is open
+TypeError: Cannot read properties of undefined (reading 'rootTeamRunId')
+ ❯ TaskDelegationInputResolver.assertContext src/agent-team-execution/task-delegation/task-delegation-input-resolver.ts:57:62
+     55|     normalizeRequiredTaskDelegationString(context.caller.memberRouteKe…
+     56|     normalizeRequiredTaskDelegationString(context.caller.memberRunId, …
+     57|     normalizeRequiredTaskDelegationString(context.addressing.rootTeamR…
+       |                                                              ^
+     58|     if (context.addressing.memberAddress !== `/${context.addressing.me…
+     59|       throw new TaskDelegationError("TEAM_RUN_CONTEXT_REQUIRED", "Task…
+ ❯ TaskDelegationService.delegateTask src/agent-team-execution/task-delegation/task-delegation-service.ts:143:24
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:954:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[34/44]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > rejects settled task-agent delegate_task before creating child work
+TypeError: Cannot read properties of undefined (reading 'rootTeamRunId')
+ ❯ TaskDelegationInputResolver.assertContext src/agent-team-execution/task-delegation/task-delegation-input-resolver.ts:57:62
+     55|     normalizeRequiredTaskDelegationString(context.caller.memberRouteKe…
+     56|     normalizeRequiredTaskDelegationString(context.caller.memberRunId, …
+     57|     normalizeRequiredTaskDelegationString(context.addressing.rootTeamR…
+       |                                                              ^
+     58|     if (context.addressing.memberAddress !== `/${context.addressing.me…
+     59|       throw new TaskDelegationError("TEAM_RUN_CONTEXT_REQUIRED", "Task…
+ ❯ TaskDelegationService.delegateTask src/agent-team-execution/task-delegation/task-delegation-service.ts:143:24
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:988:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[35/44]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > rejects settled task-agent review identity before recording a child review
+TypeError: Cannot read properties of undefined (reading 'rootTeamRunId')
+ ❯ TaskDelegationInputResolver.assertContext src/agent-team-execution/task-delegation/task-delegation-input-resolver.ts:57:62
+     55|     normalizeRequiredTaskDelegationString(context.caller.memberRouteKe…
+     56|     normalizeRequiredTaskDelegationString(context.caller.memberRunId, …
+     57|     normalizeRequiredTaskDelegationString(context.addressing.rootTeamR…
+       |                                                              ^
+     58|     if (context.addressing.memberAddress !== `/${context.addressing.me…
+     59|       throw new TaskDelegationError("TEAM_RUN_CONTEXT_REQUIRED", "Task…
+ ❯ TaskDelegationService.delegateTask src/agent-team-execution/task-delegation/task-delegation-service.ts:143:24
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:1010:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[36/44]⎯
+
+ FAIL  tests/unit/agent-team-execution/task-delegation-service.test.ts > TaskDelegationService > exposes only delegate_task, submit_task_result, and review_task_result parsers/tools
+CollaborationContractError: delegate_task recipient_name must be a logical address string.
+ ❯ parseDelegateTaskInput src/agent-tools/task-delegation/task-delegation-tool-input-parsers.ts:47:13
+     45|   if (!result.success) {
+     46|     if (typeof rawArguments.recipient_name !== "string") {
+     47|       throw new CollaborationContractError(
+       |             ^
+     48|         "COLLABORATION_ADDRESS_INVALID",
+     49|         "delegate_task recipient_name must be a logical address string…
+ ❯ tests/unit/agent-team-execution/task-delegation-service.test.ts:1029:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[37/44]⎯
+
+ FAIL  tests/unit/agent-team-definition/application-owned-team-source.test.ts > application-owned-team-source > writes application-owned team defaultLaunchConfig back to source config
+AssertionError: expected { coordinatorMemberName: 'lead', …(4) } to deeply equal { coordinatorMemberName: 'lead', …(3) }
+
+- Expected
++ Received
+
+@@ -6,10 +6,11 @@
+        "reasoning_effort": "medium",
+      },
+      "llmModelIdentifier": "gpt-5.4-mini",
+      "runtimeKind": "autobyteus",
+    },
++   "handoffs": [],
+    "members": [
+      {
+        "memberName": "lead",
+        "ref": "researcher",
+        "refScope": "team_local",
+
+ ❯ tests/unit/agent-team-definition/application-owned-team-source.test.ts:157:33
+    155|     expect(result.mdContent).toContain("name: Launch Team");
+    156|     expect(result.mdContent).toContain("Coordinate the launch.");
+    157|     expect(result.configRecord).toEqual({
+       |                                 ^
+    158|       coordinatorMemberName: "lead",
+    159|       avatarUrl: null,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[38/44]⎯
+
+ FAIL  tests/unit/agent-tools/task-delegation/task-delegation-autobyteus-context.test.ts > buildTaskDelegationToolContextFromNativeContext > preserves BuildSquad as an agent_team so native delegate_task can resolve the team target
+TypeError: Cannot read properties of undefined (reading 'addressing')
+ ❯ new MemberCollaborationContext src/agent-team-execution/domain/member-collaboration-context.ts:26:62
+     24|     deliverInterAgentMessage?: MemberLogicalMessageDeliveryHandler | n…
+     25|   }) {
+     26|     this.addressing = cloneMemberLogicalAddressContext(input.addressin…
+       |                                                              ^
+     27|     this.outgoingHandoffs = Object.freeze(
+     28|       cloneCollaborationHandoffs(input.outgoingHandoffs ?? []),
+ ❯ new MemberTeamContext src/agent-team-execution/domain/member-team-context.ts:52:26
+ ❯ createContextWithBuildSquad tests/unit/agent-tools/task-delegation/task-delegation-autobyteus-context.test.ts:19:3
+ ❯ tests/unit/agent-tools/task-delegation/task-delegation-autobyteus-context.test.ts:69:66
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39/44]⎯
+
+ FAIL  tests/unit/agent-tools/task-delegation/task-delegation-autobyteus-context.test.ts > buildTaskDelegationToolContextFromNativeContext > rejects a team row whose memberKind was dropped instead of downgrading it to an agent
+TypeError: Cannot read properties of undefined (reading 'addressing')
+ ❯ new MemberCollaborationContext src/agent-team-execution/domain/member-collaboration-context.ts:26:62
+     24|     deliverInterAgentMessage?: MemberLogicalMessageDeliveryHandler | n…
+     25|   }) {
+     26|     this.addressing = cloneMemberLogicalAddressContext(input.addressin…
+       |                                                              ^
+     27|     this.outgoingHandoffs = Object.freeze(
+     28|       cloneCollaborationHandoffs(input.outgoingHandoffs ?? []),
+ ❯ new MemberTeamContext src/agent-team-execution/domain/member-team-context.ts:52:26
+ ❯ createContextWithBuildSquad tests/unit/agent-tools/task-delegation/task-delegation-autobyteus-context.test.ts:19:3
+ ❯ tests/unit/agent-tools/task-delegation/task-delegation-autobyteus-context.test.ts:120:66
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[40/44]⎯
+
+ FAIL  tests/unit/agent-tools/task-delegation/task-delegation-autobyteus-context.test.ts > buildTaskDelegationToolContextFromNativeContext > rejects an agent_team row missing its team definition id
+TypeError: Cannot read properties of undefined (reading 'addressing')
+ ❯ new MemberCollaborationContext src/agent-team-execution/domain/member-collaboration-context.ts:26:62
+     24|     deliverInterAgentMessage?: MemberLogicalMessageDeliveryHandler | n…
+     25|   }) {
+     26|     this.addressing = cloneMemberLogicalAddressContext(input.addressin…
+       |                                                              ^
+     27|     this.outgoingHandoffs = Object.freeze(
+     28|       cloneCollaborationHandoffs(input.outgoingHandoffs ?? []),
+ ❯ new MemberTeamContext src/agent-team-execution/domain/member-team-context.ts:52:26
+ ❯ createContextWithBuildSquad tests/unit/agent-tools/task-delegation/task-delegation-autobyteus-context.test.ts:19:3
+ ❯ tests/unit/agent-tools/task-delegation/task-delegation-autobyteus-context.test.ts:139:66
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[41/44]⎯
+
+ FAIL  tests/unit/agent-tools/task-delegation/task-delegation-autobyteus-context.test.ts > buildTaskDelegationToolContextFromNativeContext > rejects an agent_team row missing ingress identity
+TypeError: Cannot read properties of undefined (reading 'addressing')
+ ❯ new MemberCollaborationContext src/agent-team-execution/domain/member-collaboration-context.ts:26:62
+     24|     deliverInterAgentMessage?: MemberLogicalMessageDeliveryHandler | n…
+     25|   }) {
+     26|     this.addressing = cloneMemberLogicalAddressContext(input.addressin…
+       |                                                              ^
+     27|     this.outgoingHandoffs = Object.freeze(
+     28|       cloneCollaborationHandoffs(input.outgoingHandoffs ?? []),
+ ❯ new MemberTeamContext src/agent-team-execution/domain/member-team-context.ts:52:26
+ ❯ createContextWithBuildSquad tests/unit/agent-tools/task-delegation/task-delegation-autobyteus-context.test.ts:19:3
+ ❯ tests/unit/agent-tools/task-delegation/task-delegation-autobyteus-context.test.ts:158:66
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[42/44]⎯
+
+ FAIL  tests/unit/agent-tools/team-communication/send-message-to.test.ts > AutoByteus server-owned send_message_to > routes recipient_name through the team delivery context
+TypeError: Cannot read properties of undefined (reading 'addressing')
+ ❯ new MemberCollaborationContext src/agent-team-execution/domain/member-collaboration-context.ts:26:62
+     24|     deliverInterAgentMessage?: MemberLogicalMessageDeliveryHandler | n…
+     25|   }) {
+     26|     this.addressing = cloneMemberLogicalAddressContext(input.addressin…
+       |                                                              ^
+     27|     this.outgoingHandoffs = Object.freeze(
+     28|       cloneCollaborationHandoffs(input.outgoingHandoffs ?? []),
+ ❯ new MemberTeamContext src/agent-team-execution/domain/member-team-context.ts:52:26
+ ❯ createMemberTeamContext tests/unit/agent-tools/team-communication/send-message-to.test.ts:13:6
+ ❯ tests/unit/agent-tools/team-communication/send-message-to.test.ts:62:31
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[43/44]⎯
+
+ FAIL  tests/unit/agent-tools/team-communication/send-message-to.test.ts > AutoByteus server-owned send_message_to > routes target_agent_run_id through the global direct router without team context
+AssertionError: expected '{"accepted":true,"code":"DELIVERED","…' to be 'Delivered globally.' // Object.is equality
+
+Expected: "Delivered globally."
+Received: "{"accepted":true,"code":"DELIVERED","message":"Delivered globally.","result":null}"
+
+ ❯ tests/unit/agent-tools/team-communication/send-message-to.test.ts:107:20
+    105|     });
+    106| 
+    107|     expect(result).toBe("Delivered globally.");
+       |                    ^
+    108|     expect(globalRouter.deliver).toHaveBeenCalledWith(expect.objectCon…
+    109|       sender: expect.objectContaining({ senderRunId: "standalone-sende…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[44/44]⎯
+
+
+ Test Files  10 failed | 4 passed (14)
+      Tests  43 failed | 33 passed (76)
+   Start at  21:48:59
+   Duration  11.04s (transform 2.98s, setup 48ms, import 8.56s, tests 109ms, environment 1ms)
+

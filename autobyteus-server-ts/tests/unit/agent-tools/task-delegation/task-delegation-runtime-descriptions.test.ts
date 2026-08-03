@@ -28,6 +28,15 @@ const memberTeamContext = new MemberTeamContext({
   memberPath: ["coordinator"],
   memberRouteKey: "coordinator",
   memberRunId: "run-coordinator",
+  collaboration: {
+    addressing: {
+      rootTeamRunId: "team-run-1",
+      memberAddress: "/coordinator",
+      memberPath: ["coordinator"],
+      immediateTeamAddress: "/",
+      immediateTeamPath: [],
+    },
+  },
   members: [
     {
       memberKind: "agent",
@@ -60,25 +69,30 @@ describe("task delegation runtime descriptions", () => {
   it("describes the pure task result/review protocol without lifecycle chat fallback", () => {
     const delegateEntry = getTaskDelegationToolManifestEntry(DELEGATE_TASK_TOOL_NAME);
     expect(delegateEntry.description).toMatch(/Delegate one ready-to-run task/i);
-    expect(delegateEntry.description).toContain("target");
-    expect(delegateEntry.description).toContain("member");
-    expect(delegateEntry.description).toContain("team");
+    expect(delegateEntry.description).toContain("recipient_name");
+    expect(delegateEntry.description).toContain("/...");
+    expect(delegateEntry.description).toContain("./...");
+    expect(delegateEntry.description).toContain("Agent");
+    expect(delegateEntry.description).toContain("Team");
     expect(delegateEntry.description).toContain("description");
     expect(delegateEntry.description).toContain("reference_files");
-    expect(delegateEntry.description).toContain("absolute local file paths");
-    expect(delegateEntry.description).toContain("submit_task_result");
+    expect(delegateEntry.description).toContain("optional absolute local reference_files");
+    expect(delegateEntry.description).toContain("task-scoped TeamRun");
     expect(delegateEntry.description).not.toContain(["mark", "task", "completed"].join("_"));
     expect(delegateEntry.description).not.toContain(["accept", "task"].join("_"));
     expect(delegateEntry.description).not.toContain("Do not pass");
 
     const delegateSchema = buildDelegateTaskParameterSchema();
     expect(delegateSchema.parameters.map((parameter) => parameter.name)).toEqual([
-      "target",
+      "recipient_name",
       "description",
       "reference_files",
     ]);
     expect(findParameter(delegateSchema, "tasks")).toBeUndefined();
-    expect(findParameter(delegateSchema, "target")?.required).toBe(true);
+    expect(findParameter(delegateSchema, "target")).toBeUndefined();
+    expect(findParameter(delegateSchema, "recipient_name")?.required).toBe(true);
+    expect(findParameter(delegateSchema, "recipient_name")?.description).toContain("/...");
+    expect(findParameter(delegateSchema, "recipient_name")?.description).toContain("./...");
     const delegateDescription = findParameter(delegateSchema, "description")?.description ?? "";
     expect(delegateDescription).toContain("Complete task details");
     expect(delegateDescription).toContain("objective");

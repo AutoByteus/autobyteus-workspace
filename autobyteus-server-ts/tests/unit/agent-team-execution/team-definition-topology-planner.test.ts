@@ -37,6 +37,11 @@ describe("TeamDefinitionTopologyPlanner", () => {
             { memberName: "Lead", refType: "agent", refScope: "shared", ref: "agent-lead" },
             { memberName: "ReviewTeam", refType: "agent_team", refScope: "shared", ref: "review-team" },
           ],
+          handoffs: [{
+            from: "/Lead",
+            to: "/ReviewTeam",
+            rules: ["When review should begin."],
+          }],
         },
       ],
       [
@@ -46,7 +51,13 @@ describe("TeamDefinitionTopologyPlanner", () => {
           coordinatorMemberName: "Reviewer",
           nodes: [
             { memberName: "Reviewer", refType: "agent", refScope: "shared", ref: "agent-reviewer" },
+            { memberName: "Approver", refType: "agent", refScope: "shared", ref: "agent-approver" },
           ],
+          handoffs: [{
+            from: "/Reviewer",
+            to: "/Approver",
+            rules: ["When a review is ready for approval."],
+          }],
         },
       ],
     ]));
@@ -56,6 +67,7 @@ describe("TeamDefinitionTopologyPlanner", () => {
       memberConfigs: [
         buildLeafConfig("Lead", "Lead"),
         buildLeafConfig("Reviewer", "ReviewTeam/Reviewer"),
+        buildLeafConfig("Approver", "ReviewTeam/Approver"),
       ],
     });
 
@@ -80,6 +92,12 @@ describe("TeamDefinitionTopologyPlanner", () => {
             memberPath: ["ReviewTeam", "Reviewer"],
             memberRouteKey: "ReviewTeam/Reviewer",
           }),
+          expect.objectContaining({
+            memberKind: "agent",
+            memberName: "Approver",
+            memberPath: ["ReviewTeam", "Approver"],
+            memberRouteKey: "ReviewTeam/Approver",
+          }),
         ],
       }),
     ]);
@@ -87,7 +105,60 @@ describe("TeamDefinitionTopologyPlanner", () => {
     expect(plan.config.memberConfigs.map((member) => member.memberRouteKey)).toEqual([
       "Lead",
       "ReviewTeam/Reviewer",
+      "ReviewTeam/Approver",
     ]);
+    expect(plan.config.effectiveHandoffs).toEqual([
+      {
+        from: "/Lead",
+        to: "/ReviewTeam",
+        rules: ["When review should begin."],
+      },
+      {
+        from: "/ReviewTeam/Reviewer",
+        to: "/ReviewTeam/Approver",
+        rules: ["When a review is ready for approval."],
+      },
+    ]);
+  });
+
+  it("rejects a root-authored handoff that collides with a rebased child handoff", async () => {
+    const planner = buildPlanner(new Map([
+      ["root-team", {
+        name: "Root Team",
+        coordinatorMemberName: "Lead",
+        nodes: [
+          { memberName: "Lead", refType: "agent", refScope: "shared", ref: "agent-lead" },
+          { memberName: "ReviewTeam", refType: "agent_team", refScope: "shared", ref: "review-team" },
+        ],
+        handoffs: [{
+          from: "/ReviewTeam/Reviewer",
+          to: "/ReviewTeam/Approver",
+          rules: ["Root duplicate."],
+        }],
+      }],
+      ["review-team", {
+        name: "Review Team",
+        coordinatorMemberName: "Reviewer",
+        nodes: [
+          { memberName: "Reviewer", refType: "agent", refScope: "shared", ref: "agent-reviewer" },
+          { memberName: "Approver", refType: "agent", refScope: "shared", ref: "agent-approver" },
+        ],
+        handoffs: [{
+          from: "/Reviewer",
+          to: "/Approver",
+          rules: ["Child duplicate after rebasing."],
+        }],
+      }],
+    ]));
+
+    await expect(planner.buildPlan({
+      teamDefinitionId: "root-team",
+      memberConfigs: [
+        buildLeafConfig("Lead", "Lead"),
+        buildLeafConfig("Reviewer", "ReviewTeam/Reviewer"),
+        buildLeafConfig("Approver", "ReviewTeam/Approver"),
+      ],
+    })).rejects.toMatchObject({ code: "COLLABORATION_HANDOFF_DUPLICATE" });
   });
 
   it("rejects ambiguous bare leaf configs when nested members repeat a name", async () => {

@@ -31,6 +31,8 @@ import {
 } from "../../../src/agent-tools/task-delegation/task-delegation-tool-input-parsers.js";
 import { TASK_DELEGATION_TOOL_NAME_LIST } from "../../../src/agent-tools/task-delegation/task-delegation-tool-contract.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { createMemberLogicalAddressContext } from "../../../src/agent-team-execution/domain/member-logical-address-context.js";
+import { TeamLogicalPlacementResolver } from "../../../src/agent-team-execution/services/team-logical-placement-resolver.js";
 import { clearTaskTeamActiveRunDirectory } from "../../../src/agent-team-execution/task-delegation/task-team-active-run-directory.js";
 import {
   getTaskDelegationSystemTaskNotificationDisplayContent,
@@ -100,17 +102,11 @@ class FakeTeamRunBackend implements TeamRunBackend {
   }
 }
 
-const createService = (
-  backend: FakeTeamRunBackend,
-  persistedRecords: unknown[] = [],
-): TaskDelegationService => {
-  let allocationCounter = 0;
-  let taskIdCounter = 0;
-  const teamRun = new TeamRun({
-    backend,
-    config: new TeamRunConfig({
+const buildTeamRunConfig = (): TeamRunConfig =>
+  new TeamRunConfig({
       teamDefinitionId: "team-def-1",
       teamBackendKind: TeamBackendKind.MIXED,
+      coordinatorMemberRouteKey: "coordinator",
       memberConfigs: [
         {
           memberName: "coordinator",
@@ -166,7 +162,17 @@ const createService = (
           ],
         },
       ],
-    }),
+    });
+
+const createService = (
+  backend: FakeTeamRunBackend,
+  persistedRecords: unknown[] = [],
+): TaskDelegationService => {
+  let allocationCounter = 0;
+  let taskIdCounter = 0;
+  const teamRun = new TeamRun({
+    backend,
+    config: buildTeamRunConfig(),
   });
 
   return new TaskDelegationService(teamRun, {
@@ -241,13 +247,17 @@ const designTeam = {
   description: null,
 };
 
-const buildContext = (caller = coordinator, members = [coordinator, worker, reviewer]) => ({
+const buildContext = (caller = coordinator, _members = [coordinator, worker, reviewer]) => ({
   teamRunId: "team-run-1",
   teamDefinitionId: "team-def-1",
   teamName: "Task Team",
   caller,
   coordinatorMemberRouteKey: coordinator.memberRouteKey,
-  members,
+  addressing: createMemberLogicalAddressContext({
+    rootTeamRunId: "team-run-1",
+    memberPath: caller.memberPath,
+    immediateTeamPath: caller.memberPath.slice(0, -1),
+  }),
 });
 
 const delegateMemberTask = (
@@ -255,10 +265,28 @@ const delegateMemberTask = (
   description: string,
   reference_files?: string[],
 ) => ({
-  target: { kind: "member" as const, name },
+  recipient_name: `./${name}`,
   description,
   ...(reference_files ? { reference_files } : {}),
 });
+
+const delegateTask = (
+  service: TaskDelegationService,
+  context: ReturnType<typeof buildContext>,
+  input: ReturnType<typeof delegateMemberTask> | {
+    recipient_name: string;
+    description: string;
+    reference_files?: string[];
+  },
+) => service.delegateTask(
+  context,
+  input,
+  new TeamLogicalPlacementResolver().resolve(
+    buildTeamRunConfig(),
+    input.recipient_name,
+    context.addressing,
+  ),
+);
 
 const buildTaskAgentCaller = (identity: StartTaskAgentInstanceRequest["identity"]) => ({
   memberName: identity.logicalMember.memberName,
@@ -341,8 +369,8 @@ describe("TaskDelegationService", () => {
     const backend = new FakeTeamRunBackend();
     const service = createService(backend);
 
-    const first = await service.delegateTask(buildContext(), delegateMemberTask("worker", "Draft the implementation note.", ["/tmp/source.md"]));
-    const second = await service.delegateTask(buildContext(), delegateMemberTask("worker", "Review the tests."));
+    const first = await delegateTask(service,buildContext(), delegateMemberTask("worker", "Draft the implementation note.", ["/tmp/source.md"]));
+    const second = await delegateTask(service,buildContext(), delegateMemberTask("worker", "Review the tests."));
 
     expect(first).toEqual({
       task_id: "task_0001",
@@ -417,7 +445,7 @@ describe("TaskDelegationService", () => {
     const backend = new FakeTeamRunBackend();
     const service = createService(backend);
 
-    await service.delegateTask(buildContext(), delegateMemberTask("worker", "Use the attached source.", ["/tmp/source.md"]));
+    await delegateTask(service,buildContext(), delegateMemberTask("worker", "Use the attached source.", ["/tmp/source.md"]));
     const activated = taskDelegationPayloads(backend, "TASK_DELEGATION_ACTIVATED") as Array<{ tasks: Array<{ referenceFiles: Array<{ referenceId: string; path: string }> }> }>;
     const reference = activated[0]!.tasks[0]!.referenceFiles[0]!;
 
@@ -436,7 +464,7 @@ describe("TaskDelegationService", () => {
     const service = createService(backend, persistedRecords);
 
     await expect(
-      service.delegateTask(
+      delegateTask(service,
         buildContext(),
         delegateMemberTask("worker", "Use the attached source.", ["math_problem_train_bird.txt"]),
       ),
@@ -456,7 +484,7 @@ describe("TaskDelegationService", () => {
     const service = createService(backend, persistedRecords);
 
     await expect(
-      service.delegateTask(
+      delegateTask(service,
         buildContext(),
         delegateMemberTask("worker", "Use the attached source.", ["/tmp/../source.md"]),
       ),
@@ -473,7 +501,7 @@ describe("TaskDelegationService", () => {
     const backend = new FakeTeamRunBackend();
     const persistedRecords: any[] = [];
     const service = createService(backend, persistedRecords);
-    await service.delegateTask(buildContext(), delegateMemberTask("worker", "Do work."));
+    await delegateTask(service,buildContext(), delegateMemberTask("worker", "Do work."));
     const taskAgentCaller = buildTaskAgentCaller(backend.taskAgentStarts[0]!.identity);
 
     await expect(
@@ -498,7 +526,7 @@ describe("TaskDelegationService", () => {
     const backend = new FakeTeamRunBackend();
     const persistedRecords: any[] = [];
     const service = createService(backend, persistedRecords);
-    await service.delegateTask(buildContext(), delegateMemberTask("worker", "Do work."));
+    await delegateTask(service,buildContext(), delegateMemberTask("worker", "Do work."));
     const taskAgentCaller = buildTaskAgentCaller(backend.taskAgentStarts[0]!.identity);
     await service.submitTaskResult(buildContext(taskAgentCaller), {
       message: "Implemented the requested work.",
@@ -532,10 +560,10 @@ describe("TaskDelegationService", () => {
     const persistedRecords: any[] = [];
     const service = createService(backend, persistedRecords);
 
-    const created = await service.delegateTask(
+    const created = await delegateTask(service,
       buildContext(coordinator, [coordinator, worker, reviewer, designTeam]),
       {
-        target: { kind: "team", name: "design_team" },
+        recipient_name: "./design_team",
         description: "Coordinate the design review.",
       },
     );
@@ -558,7 +586,8 @@ describe("TaskDelegationService", () => {
       }),
       ingress: expect.objectContaining({
         memberName: "team_lead",
-        memberRouteKey: "team_lead",
+        memberPath: ["design_team", "team_lead"],
+        memberRouteKey: "design_team/team_lead",
       }),
     });
     expect(start.teamConfig.memberRunId).toBe(start.identity.taskTeamRunId);
@@ -636,25 +665,17 @@ describe("TaskDelegationService", () => {
   it("keeps activation visible content task-centered instead of sender-framed", async () => {
     const backend = new FakeTeamRunBackend();
     const service = createService(backend);
-    const leadCoordinator = {
-      ...coordinator,
-      memberName: "Lead Coordinator",
-    };
-    const namedWorker = {
-      ...worker,
-      memberName: "Worker Agent",
-    };
 
-    const created = await service.delegateTask(
-      buildContext(leadCoordinator, [leadCoordinator, namedWorker]),
-      delegateMemberTask("Worker Agent", "Use visible names."),
+    const created = await delegateTask(service,
+      buildContext(),
+      delegateMemberTask("worker", "Use visible names."),
     );
 
     expect(created).toEqual({
       task_id: "task_0001",
       status: "active",
     });
-    expect(backend.taskAgentStarts[0]!.message.content).toContain("Task review owner: Lead Coordinator");
+    expect(backend.taskAgentStarts[0]!.message.content).toContain("Task review owner: coordinator");
     const displayContent = getTaskDelegationSystemTaskNotificationDisplayContent(backend.taskAgentStarts[0]!.message);
     expect(displayContent).toBe([
       "You have a new task.",
@@ -667,16 +688,15 @@ describe("TaskDelegationService", () => {
       "Reference files:",
       "- None specified",
     ].join("\n"));
-    expect(displayContent).not.toContain("Lead Coordinator");
     expect(displayContent).not.toContain("coordinator");
-    expect(displayContent).not.toContain("Worker Agent");
+    expect(displayContent).not.toContain("worker");
   });
 
   it("submits, revises, submits again, accepts latest pending submission, and settles after idle", async () => {
     const backend = new FakeTeamRunBackend();
     const persistedRecords: any[] = [];
     const service = createService(backend, persistedRecords);
-    await service.delegateTask(buildContext(), delegateMemberTask("worker", "Do work."));
+    await delegateTask(service,buildContext(), delegateMemberTask("worker", "Do work."));
     const taskAgentCaller = buildTaskAgentCaller(backend.taskAgentStarts[0]!.identity);
 
     await expect(
@@ -859,7 +879,7 @@ describe("TaskDelegationService", () => {
     const backend = new FakeTeamRunBackend();
     backend.postMessageResults = [{ accepted: false, code: "TARGET_UNAVAILABLE", message: "No recipient" }];
     const service = createService(backend);
-    await service.delegateTask(buildContext(), delegateMemberTask("worker", "Do work."));
+    await delegateTask(service,buildContext(), delegateMemberTask("worker", "Do work."));
     const taskAgentCaller = buildTaskAgentCaller(backend.taskAgentStarts[0]!.identity);
 
     const submitted = await service.submitTaskResult(buildContext(taskAgentCaller), {
@@ -885,7 +905,7 @@ describe("TaskDelegationService", () => {
   it("returns only a concise message when revision notification delivery fails", async () => {
     const backend = new FakeTeamRunBackend();
     const service = createService(backend);
-    await service.delegateTask(buildContext(), delegateMemberTask("worker", "Do work."));
+    await delegateTask(service,buildContext(), delegateMemberTask("worker", "Do work."));
     const taskAgentCaller = buildTaskAgentCaller(backend.taskAgentStarts[0]!.identity);
     await service.submitTaskResult(buildContext(taskAgentCaller), {
       message: "Ready for review.",
@@ -919,7 +939,7 @@ describe("TaskDelegationService", () => {
     const persistedRecords: unknown[] = [];
     const service = createService(backend, persistedRecords);
 
-    const created = await service.delegateTask(buildContext(), delegateMemberTask("worker", "Cannot start."));
+    const created = await delegateTask(service,buildContext(), delegateMemberTask("worker", "Cannot start."));
 
     expect(created).toEqual({
       task_id: "task_0001",
@@ -936,7 +956,7 @@ describe("TaskDelegationService", () => {
     backend.taskAgentStartError = new Error("task-agent post failed");
     const service = createService(backend);
 
-    const created = await service.delegateTask(buildContext(), delegateMemberTask("worker", "Start throws."));
+    const created = await delegateTask(service,buildContext(), delegateMemberTask("worker", "Start throws."));
 
     expect(backend.taskAgentStarts).toHaveLength(1);
     expect(created).toEqual({
@@ -951,11 +971,11 @@ describe("TaskDelegationService", () => {
   it("supports task-agent delegators and blocks parent settlement while child delegation is open", async () => {
     const backend = new FakeTeamRunBackend();
     const service = createService(backend);
-    await service.delegateTask(buildContext(), delegateMemberTask("worker", "Parent task."));
+    await delegateTask(service,buildContext(), delegateMemberTask("worker", "Parent task."));
     const parentIdentity = backend.taskAgentStarts[0]!.identity;
     const parentCaller = buildTaskAgentCaller(parentIdentity);
 
-    const child = await service.delegateTask(buildContext(parentCaller), delegateMemberTask("reviewer", "Nested child task."));
+    const child = await delegateTask(service,buildContext(parentCaller), delegateMemberTask("reviewer", "Nested child task."));
     expect(child).toMatchObject({ task_id: "task_0002", status: "active" });
     expect(backend.taskAgentStarts[1]!.message.content).toContain("Task ID: task_0002");
     expect(backend.taskAgentStarts[1]!.message.content).toContain("Nested child task.");
@@ -985,7 +1005,7 @@ describe("TaskDelegationService", () => {
   it("rejects settled task-agent delegate_task before creating child work", async () => {
     const backend = new FakeTeamRunBackend();
     const service = createService(backend);
-    await service.delegateTask(buildContext(), delegateMemberTask("worker", "Parent task."));
+    await delegateTask(service,buildContext(), delegateMemberTask("worker", "Parent task."));
     const parentCaller = buildTaskAgentCaller(backend.taskAgentStarts[0]!.identity);
 
     await service.submitTaskResult(buildContext(parentCaller), { message: "Parent complete." });
@@ -997,7 +1017,7 @@ describe("TaskDelegationService", () => {
     const startsBefore = backend.taskAgentStarts.length;
     const activatedBefore = taskDelegationPayloads(backend, "TASK_DELEGATION_ACTIVATED").length;
     await expect(
-      service.delegateTask(buildContext(parentCaller), delegateMemberTask("worker", "Stale child task.")),
+      delegateTask(service,buildContext(parentCaller), delegateMemberTask("worker", "Stale child task.")),
     ).rejects.toMatchObject({ code: "TASK_AGENT_SETTLED" });
 
     expect(backend.taskAgentStarts).toHaveLength(startsBefore);
@@ -1007,9 +1027,9 @@ describe("TaskDelegationService", () => {
   it("rejects settled task-agent review identity before recording a child review", async () => {
     const backend = new FakeTeamRunBackend();
     const service = createService(backend);
-    await service.delegateTask(buildContext(), delegateMemberTask("worker", "Parent task."));
+    await delegateTask(service,buildContext(), delegateMemberTask("worker", "Parent task."));
     const parentCaller = buildTaskAgentCaller(backend.taskAgentStarts[0]!.identity);
-    await service.delegateTask(buildContext(parentCaller), delegateMemberTask("reviewer", "Nested child task."));
+    await delegateTask(service,buildContext(parentCaller), delegateMemberTask("reviewer", "Nested child task."));
 
     const childCaller = buildTaskAgentCaller(backend.taskAgentStarts[1]!.identity);
     await service.submitTaskResult(buildContext(childCaller), { message: "Child complete." });
@@ -1026,8 +1046,8 @@ describe("TaskDelegationService", () => {
 
   it("exposes only delegate_task, submit_task_result, and review_task_result parsers/tools", () => {
     expect(TASK_DELEGATION_TOOL_NAME_LIST).toEqual(["delegate_task", "submit_task_result", "review_task_result"]);
-    expect(parseDelegateTaskInput({ target: { kind: "member", name: "worker" }, description: "Do it" })).toEqual({
-      target: { kind: "member", name: "worker" },
+    expect(parseDelegateTaskInput({ recipient_name: "./worker", description: "Do it" })).toEqual({
+      recipient_name: "./worker",
       description: "Do it",
       reference_files: [],
     });
@@ -1046,9 +1066,10 @@ describe("TaskDelegationService", () => {
       comment: "revise",
       reference_files: [],
     });
-    expect(() => parseDelegateTaskInput({ target: { kind: "member", name: "worker" }, description: "Do it", status: "done" })).toThrow(/Unrecognized key/);
-    expect(() => parseDelegateTaskInput({ member_name: "worker", description: "Do it" })).toThrow(/Unrecognized key/);
-    expect(() => parseDelegateTaskInput({ tasks: [{ target: { kind: "member", name: "worker" }, description: "Do it" }] })).toThrow(/Unrecognized key/);
+    expect(() => parseDelegateTaskInput({ recipient_name: "./worker", description: "Do it", status: "done" })).toThrow(/Unrecognized key/);
+    expect(() => parseDelegateTaskInput({ target: { kind: "member", name: "worker" }, description: "Do it" })).toThrow(/recipient_name/);
+    expect(() => parseDelegateTaskInput({ member_name: "worker", description: "Do it" })).toThrow(/recipient_name/);
+    expect(() => parseDelegateTaskInput({ tasks: [{ recipient_name: "./worker", description: "Do it" }] })).toThrow(/recipient_name/);
     expect(() => parseSubmitTaskResultInput({ task_id: "task_0001", message: "done" })).toThrow(/Unrecognized key/);
     expect(() => parseSubmitTaskResultInput({ message: "done", status: "done" })).toThrow(/Unrecognized key/);
     expect(() => parseReviewTaskResultInput({ task_id: "task_0001", decision: "request_revision" })).toThrow(/comment is required/);

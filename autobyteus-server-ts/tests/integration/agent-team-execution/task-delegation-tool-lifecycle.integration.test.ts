@@ -14,9 +14,8 @@ import type { TeamRunBackendFactory } from "../../../src/agent-team-execution/ba
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import {
   MemberTeamContext,
-  type AgentMemberTeamDescriptor,
-  type MemberTeamDescriptor,
 } from "../../../src/agent-team-execution/domain/member-team-context.js";
+import { createMemberLogicalAddressContext } from "../../../src/agent-team-execution/domain/member-logical-address-context.js";
 import type {
   StartTaskAgentInstanceRequest,
   TaskAgentInstanceIdentity,
@@ -27,12 +26,12 @@ import type {
 } from "../../../src/agent-team-execution/domain/task-team-instance.js";
 import { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
 import {
-  stripMemberPathPrefix,
+  localizeSubTeamRunTopology,
   TeamRunConfig,
   type TeamMemberRunConfig,
   type TeamRunMemberConfig,
-  type TeamSubTeamMemberRunConfig,
 } from "../../../src/agent-team-execution/domain/team-run-config.js";
+import { TeamLogicalPlacementResolver } from "../../../src/agent-team-execution/services/team-logical-placement-resolver.js";
 import {
   TeamRunEventSourceType,
   type TeamRunEvent,
@@ -82,12 +81,6 @@ const delegateEntry = getTaskDelegationToolManifestEntry(DELEGATE_TASK_TOOL_NAME
 const submitEntry = getTaskDelegationToolManifestEntry(SUBMIT_TASK_RESULT_TOOL_NAME);
 const reviewEntry = getTaskDelegationToolManifestEntry(REVIEW_TASK_RESULT_TOOL_NAME);
 
-const stripRoutePrefix = (routeKey: string, prefix: string): string => {
-  if (routeKey === prefix) return routeKey;
-  const prefixWithSlash = `${prefix}/`;
-  return routeKey.startsWith(prefixWithSlash) ? routeKey.slice(prefixWithSlash.length) : routeKey;
-};
-
 type ManagedBackendRuntimeOptions = {
   parentBoundary?: {
     memoryScope: {
@@ -96,6 +89,7 @@ type ManagedBackendRuntimeOptions = {
     };
   } | null;
   taskTeamInstance?: TaskTeamInstanceIdentity | null;
+  teamMountPath?: string[];
 };
 
 const tempDirs: string[] = [];
@@ -126,7 +120,7 @@ class ManagedCodexTeamBackend implements TeamRunBackend {
   private status = "running";
 
   constructor(
-    memberConfigs: readonly TeamRunMemberConfig[],
+    private readonly config: TeamRunConfig,
     readonly runId = teamRunId,
     private readonly runtimeOptions: ManagedBackendRuntimeOptions = {},
   ) {
@@ -140,7 +134,7 @@ class ManagedCodexTeamBackend implements TeamRunBackend {
         }
       }
     };
-    visit(memberConfigs);
+    visit(config.memberTree);
   }
 
   getTaskTeamChild(taskTeamRunId: string): { run: TeamRun; backend: ManagedCodexTeamBackend; identity: TaskTeamInstanceIdentity } | null {
@@ -163,17 +157,12 @@ class ManagedCodexTeamBackend implements TeamRunBackend {
 
   async startTaskTeamInstance(request: StartTaskTeamInstanceRequest) {
     this.taskTeamStarts.push(request);
-    const childTree = stripMemberPathPrefix(
-      request.teamConfig.memberConfigs,
-      request.teamConfig.memberPath,
-    );
+    const localized = localizeSubTeamRunTopology(request.teamConfig);
     const childConfig = new TeamRunConfig({
       teamDefinitionId: request.teamConfig.teamDefinitionId,
       teamBackendKind: TeamBackendKind.MIXED,
-      coordinatorMemberRouteKey: request.teamConfig.coordinatorMemberRouteKey
-        ? stripRoutePrefix(request.teamConfig.coordinatorMemberRouteKey, request.teamConfig.memberRouteKey)
-        : null,
-      memberTree: childTree.map((member) => ({
+      coordinatorMemberRouteKey: localized.coordinatorMemberRouteKey,
+      memberTree: localized.memberTree.map((member) => ({
         ...member,
         memberRunId: member.memberRunId ?? `${request.identity.taskTeamRunId}:${member.memberRouteKey}`,
       })),
@@ -183,7 +172,7 @@ class ManagedCodexTeamBackend implements TeamRunBackend {
       teamRunPath: [],
     };
     const childBackend = new ManagedCodexTeamBackend(
-      childConfig.memberTree,
+      childConfig,
       request.identity.taskTeamRunId,
       {
         parentBoundary: {
@@ -193,6 +182,10 @@ class ManagedCodexTeamBackend implements TeamRunBackend {
           },
         },
         taskTeamInstance: request.identity,
+        teamMountPath: [
+          ...(this.runtimeOptions.teamMountPath ?? []),
+          ...request.teamConfig.memberPath,
+        ],
       },
     );
     const childRun = new TeamRun({ backend: childBackend, config: childConfig });
@@ -247,6 +240,7 @@ class ManagedCodexTeamBackend implements TeamRunBackend {
     return {
       parentBoundary: this.runtimeOptions.parentBoundary ?? null,
       taskTeamInstance: this.runtimeOptions.taskTeamInstance ?? null,
+      teamMountPath: this.runtimeOptions.teamMountPath ?? [],
       memberContexts: Array.from(this.memberRunIds.entries()).map(([memberRouteKey, memberRunId]) => ({
         memberKind: "agent" as const,
         memberName: this.memberNames.get(memberRouteKey) ?? memberRouteKey,
@@ -283,6 +277,9 @@ class ManagedCodexTeamBackend implements TeamRunBackend {
   }
 
   async deliverInterAgentMessage() { return { accepted: true }; }
+  resolveLogicalPlacement(recipientName: string, callerAddressing: ReturnType<typeof createMemberLogicalAddressContext>) {
+    return new TeamLogicalPlacementResolver().resolve(this.config, recipientName, callerAddressing);
+  }
   async approveToolInvocation() { return { accepted: true }; }
   async interruptMember() { return { accepted: true }; }
   async terminate() {
@@ -365,7 +362,7 @@ const createHarness = async () => {
   tempDirs.push(memoryDir);
   const recordsService = new TaskDelegationRecordsService({ memoryDir });
   const mixedFactory: TeamRunBackendFactory = {
-    createBackend: async (config) => (backend = new ManagedCodexTeamBackend(config.memberTree)),
+    createBackend: async (config) => (backend = new ManagedCodexTeamBackend(config)),
     restoreBackend: async () => { throw new Error("Unexpected restore in task delegation integration test."); },
   };
   const manager = new AgentTeamRunManager({
@@ -456,68 +453,6 @@ const createHarness = async () => {
 
 type Harness = Awaited<ReturnType<typeof createHarness>>;
 
-const agentDescriptorFor = (
-  runId: string,
-  member: TeamMemberRunConfig,
-): AgentMemberTeamDescriptor => ({
-  memberKind: "agent",
-  memberName: member.memberName,
-  memberPath: [...member.memberPath],
-  memberRouteKey: member.memberRouteKey,
-  memberRunId: member.memberRunId ?? `${runId}:${member.memberRouteKey}`,
-  runtimeKind: member.runtimeKind,
-  role: member.role ?? null,
-  description: member.description ?? null,
-  address: { teamRunId: runId, memberPath: [...member.memberPath], memberRouteKey: member.memberRouteKey },
-});
-
-const findTeamRepresentative = (
-  member: TeamSubTeamMemberRunConfig,
-): TeamMemberRunConfig | null => {
-  const agents: TeamMemberRunConfig[] = [];
-  const visit = (members: readonly TeamRunMemberConfig[]): void => {
-    for (const child of members) {
-      if (child.memberKind === "agent") agents.push(child);
-      else visit(child.memberConfigs);
-    }
-  };
-  visit(member.memberConfigs);
-  return agents.find((candidate) => candidate.memberRouteKey === member.coordinatorMemberRouteKey) ?? agents[0] ?? null;
-};
-
-const memberDescriptorFor = (
-  runId: string,
-  member: TeamRunMemberConfig,
-): MemberTeamDescriptor => {
-  if (member.memberKind === "agent") return agentDescriptorFor(runId, member);
-  const representative = findTeamRepresentative(member);
-  return {
-    memberKind: "agent_team",
-    memberName: member.memberName,
-    memberPath: [...member.memberPath],
-    memberRouteKey: member.memberRouteKey,
-    memberRunId: member.memberRunId ?? `${runId}:${member.memberRouteKey}`,
-    teamDefinitionId: member.teamDefinitionId,
-    childTeamRunId: member.childTeamRunId ?? member.memberRunId ?? null,
-    coordinatorMemberRouteKey: member.coordinatorMemberRouteKey ?? null,
-    representative: representative
-      ? {
-          memberKind: "agent",
-          memberName: representative.memberName,
-          memberPath: [...representative.memberPath],
-          memberRouteKey: representative.memberRouteKey,
-          memberRunId: representative.memberRunId ?? `${runId}:${representative.memberRouteKey}`,
-          runtimeKind: representative.runtimeKind,
-          role: representative.role ?? null,
-          description: representative.description ?? null,
-        }
-      : null,
-    role: member.role ?? null,
-    description: member.description ?? null,
-    address: { teamRunId: runId, memberPath: [...member.memberPath], memberRouteKey: member.memberRouteKey },
-  };
-};
-
 const buildToolContext = (
   run: { runId: string; teamBackendKind: TeamBackendKind; config: TeamRunConfig | null },
   memberRouteKey: string,
@@ -525,12 +460,14 @@ const buildToolContext = (
   taskTeamInstance: TaskTeamInstanceIdentity | null = null,
 ): TaskDelegationContext => {
   if (!run.config) throw new Error("Expected team run config.");
-  const members = run.config.memberTree.map((member) => memberDescriptorFor(run.runId, member));
-  const caller = members.find(
-    (member): member is AgentMemberTeamDescriptor =>
+  const caller = run.config.memberTree.find(
+    (member): member is TeamMemberRunConfig =>
       member.memberKind === "agent" && member.memberRouteKey === memberRouteKey,
   );
   if (!caller) throw new Error(`Missing caller '${memberRouteKey}'.`);
+  const addressingMemberPath = taskTeamInstance
+    ? [...taskTeamInstance.logicalTeam.memberPath, ...caller.memberPath]
+    : caller.memberPath;
   return buildTaskDelegationToolContextFromMemberTeamContext(new MemberTeamContext({
     teamRunId: run.runId,
     teamDefinitionId: run.config.teamDefinitionId,
@@ -539,9 +476,17 @@ const buildToolContext = (
     memberName: caller.memberName,
     memberPath: caller.memberPath,
     memberRouteKey: caller.memberRouteKey,
-    memberRunId: taskAgentInstance?.taskAgentRunId ?? caller.memberRunId,
+    memberRunId: taskAgentInstance?.taskAgentRunId
+      ?? taskTeamInstance?.ingress.memberRunId
+      ?? caller.memberRunId,
     coordinatorMemberRouteKey: run.config.coordinatorMemberRouteKey,
-    members,
+    collaboration: {
+      addressing: createMemberLogicalAddressContext({
+        rootTeamRunId: taskTeamInstance?.parentTeamRunId ?? run.runId,
+        memberPath: addressingMemberPath,
+        immediateTeamPath: addressingMemberPath.slice(0, -1),
+      }),
+    },
     taskAgentInstance,
     taskTeamInstance,
   }));
@@ -753,7 +698,7 @@ const websocketMessageFor = (event: TeamRunEvent) =>
   convertTeamRunEventToServerMessage(event, { map: vi.fn() } as unknown as AgentRunEventMessageMapper);
 
 const memberDelegationInput = (name: string, description: string) => ({
-  target: { kind: "member", name },
+  recipient_name: `./${name}`,
   description,
 });
 
@@ -900,7 +845,7 @@ describe("task delegation tool lifecycle integration", () => {
     const app = await createTaskReferenceRouteApp(harness);
     try {
       await expect(executeDelegateTask(harness, {
-        target: { kind: "member", name: "worker" },
+        recipient_name: "./worker",
         description: "Use the attached classroom problem.",
         reference_files: ["math_problem_train_bird.txt"],
       })).rejects.toMatchObject({
@@ -916,7 +861,7 @@ describe("task delegation tool lifecycle integration", () => {
       const absoluteReferencePath = path.join(referenceDir, "math_problem_train_bird.txt");
       await fs.writeFile(absoluteReferencePath, "Train-bird math problem content", "utf-8");
       const createdAbsoluteReferenceTask = await executeDelegateTask(harness, {
-        target: { kind: "member", name: "worker" },
+        recipient_name: "./worker",
         description: "Use the attached absolute classroom problem.",
         reference_files: [absoluteReferencePath],
       });
@@ -1083,7 +1028,7 @@ describe("task delegation tool lifecycle integration", () => {
     const activeDirectory = getTaskTeamActiveRunDirectory();
 
     const created = await executeDelegateTask(harness, {
-      target: { kind: "team", name: "design_team" },
+      recipient_name: "./design_team",
       description: "Coordinate a feature design as the accountable team.",
     });
     expect(created).toEqual({
@@ -1096,13 +1041,13 @@ describe("task delegation tool lifecycle integration", () => {
     expect(firstTaskTeam).not.toBeNull();
     expect(activeDirectory.resolveActiveRun(firstTaskTeamRunId!)?.runId).toBe(firstTaskTeamRunId);
     expect(firstTaskTeam!.backend.messages[0]).toMatchObject({
-      targetRouteKey: "team_lead",
+      targetRouteKey: "design_team/team_lead",
       metadata: expect.objectContaining({ message_type: "task_team_delegation_work_packet" }),
     });
 
     const firstIngressContext = buildToolContext(
       firstTaskTeam!.run,
-      firstTaskTeam!.identity.ingress.memberRouteKey,
+      firstTaskTeam!.run.config!.coordinatorMemberRouteKey!,
       null,
       firstTaskTeam!.identity,
     );
@@ -1196,7 +1141,7 @@ describe("task delegation tool lifecycle integration", () => {
       }),
     ]);
     expect(firstTaskTeam!.backend.messages.at(-1)).toMatchObject({
-      targetRouteKey: "team_lead",
+      targetRouteKey: "design_team/team_lead",
       metadata: expect.objectContaining({
         message_type: "task_revision_requested",
         target_task_team_run_id: firstTaskTeamRunId,
@@ -1256,7 +1201,7 @@ describe("task delegation tool lifecycle integration", () => {
     )).rejects.toMatchObject({ code: "TEAM_RUN_NOT_FOUND" });
 
     const secondCreated = await executeDelegateTask(harness, {
-      target: { kind: "team", name: "design_team" },
+      recipient_name: "./design_team",
       description: "Coordinate a follow-up feature design.",
     });
     expect(secondCreated).toEqual({
@@ -1271,7 +1216,7 @@ describe("task delegation tool lifecycle integration", () => {
     expect(activeDirectory.resolveActiveRun(secondTaskTeamRunId!)?.runId).toBe(secondTaskTeamRunId);
     const secondIngressContext = buildToolContext(
       secondTaskTeam!.run,
-      secondTaskTeam!.identity.ingress.memberRouteKey,
+      secondTaskTeam!.run.config!.coordinatorMemberRouteKey!,
       null,
       secondTaskTeam!.identity,
     );

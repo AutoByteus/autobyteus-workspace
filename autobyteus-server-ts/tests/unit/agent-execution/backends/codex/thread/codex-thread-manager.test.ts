@@ -44,6 +44,15 @@ const createRunContext = (
             memberName: runId,
             memberRouteKey: runId,
             memberRunId: runId,
+            collaboration: {
+              addressing: {
+                rootTeamRunId: input.teamRunId,
+                memberAddress: `/${runId}`,
+                memberPath: [runId],
+                immediateTeamAddress: "/",
+                immediateTeamPath: [],
+              },
+            },
           })
         : null,
     }),

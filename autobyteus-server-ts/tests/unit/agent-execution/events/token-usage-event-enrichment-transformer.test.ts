@@ -33,6 +33,15 @@ const runContext = new AgentRunContext({
       memberPath: ['planner', 'worker'],
       memberRouteKey: 'planner.worker',
       memberRunId: 'member-run-1',
+      collaboration: {
+        addressing: {
+          rootTeamRunId: 'team-run-1',
+          memberAddress: '/planner/worker',
+          memberPath: ['planner', 'worker'],
+          immediateTeamAddress: '/planner',
+          immediateTeamPath: ['planner'],
+        },
+      },
       tokenUsageExecutionScope: {
         rootTeamRunId: 'team-run-1',
         teamScopeAddress: { segments: [] },

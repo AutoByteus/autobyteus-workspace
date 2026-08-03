@@ -613,7 +613,7 @@ Rules:
               ? (metadata.arguments as Record<string, unknown>)
               : null;
           return (
-            args?.recipient_name === input.recipientMemberName &&
+            args?.recipient_name === `./${input.recipientMemberName}` &&
             args.content === input.content
           );
         }
@@ -838,7 +838,7 @@ Rules:
       messageType: string,
     ): string => {
       const argsJson = JSON.stringify({
-        recipient_name: "specialist",
+        recipient_name: "./specialist",
         content: `Reply with exactly ${replyToken} and nothing else.`,
         message_type: messageType,
       });
@@ -850,7 +850,7 @@ Rules:
       messageType: string,
     ): string => {
       const argsJson = JSON.stringify({
-        recipient_name: "coordinator",
+        recipient_name: "./coordinator",
         content: `Reply with exactly ${replyToken} and nothing else.`,
         message_type: messageType,
       });

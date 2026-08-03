@@ -860,7 +860,7 @@ describe("runtime-selection top-level integration", () => {
               message_id: "msg-team-autobyteus-1",
               dedupe_key: "dedupe-team-autobyteus-1",
               content: "hello mixed-only team",
-              target_member_route_key: "Reviewer",
+              target_member_route_key: "Coordinator",
             },
           }),
         );
@@ -868,6 +868,7 @@ describe("runtime-selection top-level integration", () => {
         await waitForCondition(() => harness.mixedMemberRunManager.messages.length === 1);
         expect(harness.mixedMemberRunManager.createCalls[0]).toMatchObject({
           runtimeKind: RuntimeKind.AUTOBYTEUS,
+          memberTeamContext: expect.objectContaining({ memberName: "Coordinator" }),
         });
         expect(harness.mixedMemberRunManager.createCalls[0]?.memberTeamContext?.teamBackendKind).toBe(TeamBackendKind.MIXED);
         expect(harness.mixedMemberRunManager.messages[0]).toMatchObject({
@@ -958,7 +959,11 @@ describe("runtime-selection top-level integration", () => {
         const coordinatorCreateConfig = harness.mixedMemberRunManager.createCalls[0]!;
         expect(coordinatorCreateConfig.runtimeKind).toBe(RuntimeKind.AUTOBYTEUS);
         expect(coordinatorCreateConfig.memberTeamContext?.teamBackendKind).toBe(TeamBackendKind.MIXED);
-        expect(coordinatorCreateConfig.memberTeamContext?.allowedRecipientNames).toEqual(["Specialist"]);
+        expect(coordinatorCreateConfig.memberTeamContext?.collaboration.addressing).toMatchObject({
+          memberAddress: "/Coordinator",
+          immediateTeamAddress: "/",
+        });
+        expect(coordinatorCreateConfig.memberTeamContext).not.toHaveProperty("allowedRecipientNames");
         expect(harness.mixedMemberRunManager.messages[0]).toMatchObject({
           runtimeKind: RuntimeKind.AUTOBYTEUS,
           content: "coordinate the mixed fix",
@@ -966,10 +971,10 @@ describe("runtime-selection top-level integration", () => {
         });
 
         expect(coordinatorCreateConfig.memberTeamContext).toBeTruthy();
-        await coordinatorCreateConfig.memberTeamContext?.deliverInterAgentMessage?.(
+        await coordinatorCreateConfig.memberTeamContext?.collaboration.deliverInterAgentMessage?.(
           buildTestDeliveryRequest(
             coordinatorCreateConfig.memberTeamContext,
-            "Specialist",
+            "./Specialist",
             "Please validate the patch.",
           ),
         );
@@ -1058,10 +1063,10 @@ describe("runtime-selection top-level integration", () => {
           });
 
           expect(coordinatorRestoreContext.config.memberTeamContext).toBeTruthy();
-          await coordinatorRestoreContext.config.memberTeamContext?.deliverInterAgentMessage?.(
+          await coordinatorRestoreContext.config.memberTeamContext?.collaboration.deliverInterAgentMessage?.(
             buildTestDeliveryRequest(
               coordinatorRestoreContext.config.memberTeamContext,
-              "Specialist",
+              "./Specialist",
               "Please resume the review.",
             ),
           );

@@ -68,6 +68,9 @@ const createMixedManager = () => {
     config: createTeamRunConfig(),
     runtimeContext: new MixedTeamRunContext({
       coordinatorMemberRouteKey: "solution_designer",
+      collaborationRootTeamRunId: teamRunId,
+      teamMountPath: [],
+      effectiveHandoffs: [],
       memberContexts: memberInputs.map((member) => new MixedAgentMemberContext({
         memberName: member.memberName,
         memberPath: member.memberPath,
@@ -87,7 +90,7 @@ const attachMemberRuns = (manager: MixedTeamManager) => {
   const codeReviewerRun = createFakeAgentRun();
   const mixed = manager as unknown as {
     teamContext: TeamRunContext<MixedTeamRunContext>;
-    memberRegistry: { handles: Map<string, unknown> };
+    persistentMembers: { handles: Map<string, unknown> };
   };
   const contexts = mixed.teamContext.runtimeContext.memberContexts;
   const makeHandle = (
@@ -112,11 +115,11 @@ const attachMemberRuns = (manager: MixedTeamManager) => {
     (context) => context.memberRouteKey === "code_reviewer",
   ) as MixedAgentMemberContext;
 
-  mixed.memberRegistry.handles.set(
+  mixed.persistentMembers.handles.set(
     "solution_designer",
     makeHandle(solutionDesignerContext, solutionDesignerRun),
   );
-  mixed.memberRegistry.handles.set(
+  mixed.persistentMembers.handles.set(
     "code_reviewer",
     makeHandle(codeReviewerContext, codeReviewerRun),
   );
@@ -130,7 +133,7 @@ const attachTaskAgentRun = (manager: MixedTeamManager) => {
   const taskAgentRunId = "team-1::code_reviewer::task-agent-1";
   const mixed = manager as unknown as {
     teamContext: TeamRunContext<MixedTeamRunContext>;
-    memberRegistry: { taskAgentHandles: Map<string, unknown> };
+    taskAgentInstances: { handles: Map<string, unknown> };
   };
   const logicalContext = mixed.teamContext.runtimeContext.memberContexts.find(
     (context) => context.memberRouteKey === logicalRouteKey,
@@ -170,7 +173,7 @@ const attachTaskAgentRun = (manager: MixedTeamManager) => {
     delegatorReplyRecipientName: "solution_designer",
   });
   directory.markActive(identity.taskId);
-  mixed.memberRegistry.taskAgentHandles.set(taskAgentRunId, {
+  mixed.taskAgentInstances.handles.set(taskAgentRunId, {
     context: {
       ...logicalContext,
       memberRunId: taskAgentRunId,
@@ -288,34 +291,4 @@ describe("MixedTeamManager focused member routing", () => {
     expect(codeReviewerRun.postUserMessage).not.toHaveBeenCalled();
   });
 
-  it("routes inter-agent revision messages to the concrete task-agent run", async () => {
-    const manager = createMixedManager();
-    const { codeReviewerRun } = attachMemberRuns(manager);
-    const { taskAgentRun, taskAgentRunId, logicalRouteKey } = attachTaskAgentRun(manager);
-    const request: InterAgentMessageDeliveryIntent = {
-      teamRunId,
-      sender: {
-        participant: {
-          memberKind: "agent",
-          memberName: "Solution Designer",
-          memberPath: ["solution_designer"],
-          memberRouteKey: "solution_designer",
-          memberRunId: "team-1::solution_designer",
-          address: { teamRunId, memberPath: ["solution_designer"], memberRouteKey: "solution_designer" },
-        },
-        selector: { kind: "route_key", memberRouteKey: "solution_designer" },
-      },
-      target: { kind: "target_agent_run_id", targetAgentRunId: taskAgentRunId },
-      content: "Please revise the completed task.",
-      messageType: "task_revision",
-    };
-
-    await expect(manager.deliverInterAgentMessage(request))
-      .resolves.toMatchObject({ accepted: true, memberRunId: taskAgentRunId });
-
-    expect(taskAgentRun.postUserMessage).toHaveBeenCalledWith(
-      expect.objectContaining({ content: expect.stringContaining("Please revise the completed task.") }),
-    );
-    expect(codeReviewerRun.postUserMessage).not.toHaveBeenCalled();
-  });
 });

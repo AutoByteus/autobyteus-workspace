@@ -5,10 +5,7 @@ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.j
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
-import type {
-  InterAgentMessageDeliveryIntent,
-  TeamRepresentedSubTeam,
-} from "../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
+import type { InterAgentMessageDeliveryIntent } from "../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
 import {
   TeamRunEventSourceType,
   type TeamRunEvent,
@@ -25,20 +22,6 @@ import {
   clearTaskTeamActiveRunDirectory,
   getTaskTeamActiveRunDirectory,
 } from "../../../src/agent-team-execution/task-delegation/task-team-active-run-directory.js";
-
-const representedSubTeam: TeamRepresentedSubTeam = {
-  memberKind: "agent_team",
-  memberName: "BuildSquad",
-  memberPath: ["BuildSquad"],
-  memberRouteKey: "BuildSquad",
-  memberRunId: "build-squad-run",
-  teamDefinitionId: "build-squad-team",
-  address: {
-    teamRunId: "parent-1",
-    memberPath: ["BuildSquad"],
-    memberRouteKey: "BuildSquad",
-  },
-};
 
 const taskTeamInstance: TaskTeamInstanceIdentity = {
   taskTeamInstanceId: "task-team-instance-1",
@@ -62,55 +45,24 @@ const taskTeamInstance: TaskTeamInstanceIdentity = {
   createdAt: "2026-05-13T12:00:00.000Z",
 };
 
-const taskTeamChildAddress = {
-  segments: [
-    { kind: "member" as const, memberRouteKey: "BuildSquad" },
-    { kind: "task_team" as const, taskTeamRunId: "task-team-run-1" },
-    { kind: "member" as const, memberRouteKey: "review_lead" },
-  ],
-};
-
-const parentMember = {
-  memberKind: "agent" as const,
-  memberName: "program_manager",
-  memberPath: ["program_manager"],
-  memberRouteKey: "program_manager",
-  memberRunId: "program-manager-run",
-  runtimeKind: RuntimeKind.AUTOBYTEUS,
-  role: "manager",
-  description: "Owns parent coordination.",
-  address: {
-    teamRunId: "parent-1",
-    memberPath: ["program_manager"],
-    memberRouteKey: "program_manager",
-  },
-};
-
-const createChildManager = (input: {
-  parentDeliverInterAgentMessage?: ReturnType<typeof vi.fn>;
-  representedSubTeamOverride?: TeamRepresentedSubTeam;
-  taskTeamInstance?: TaskTeamInstanceIdentity | null;
-} = {}) => {
-  const parentDeliverInterAgentMessage =
-    input.parentDeliverInterAgentMessage ?? vi.fn(async () => ({ accepted: true }));
+const createChildManager = () => {
+  const parentDeliverInterAgentMessage = vi.fn(async () => ({ accepted: true }));
   const config = new TeamRunConfig({
     teamDefinitionId: "build-squad-team",
     teamBackendKind: TeamBackendKind.MIXED,
     coordinatorMemberRouteKey: "review_lead",
-    memberTree: [
-      {
-        memberKind: "agent",
-        memberName: "review_lead",
-        memberPath: ["review_lead"],
-        memberRouteKey: "review_lead",
-        memberRunId: "review-lead-run",
-        agentDefinitionId: "agent-review-lead",
-        llmModelIdentifier: "gpt-test",
-        autoExecuteTools: false,
-        skillAccessMode: SkillAccessMode.NONE,
-        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-      },
-    ],
+    memberTree: [{
+      memberKind: "agent",
+      memberName: "review_lead",
+      memberPath: ["review_lead"],
+      memberRouteKey: "review_lead",
+      memberRunId: "review-lead-run",
+      agentDefinitionId: "agent-review-lead",
+      llmModelIdentifier: "gpt-test",
+      autoExecuteTools: false,
+      skillAccessMode: SkillAccessMode.NONE,
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+    }],
   });
   const context = new TeamRunContext({
     runId: "child-1",
@@ -119,30 +71,89 @@ const createChildManager = (input: {
     config,
     runtimeContext: new MixedTeamRunContext({
       coordinatorMemberRouteKey: "review_lead",
-      memberContexts: [
-        new MixedAgentMemberContext({
-          memberName: "review_lead",
-          memberPath: ["review_lead"],
-          memberRouteKey: "review_lead",
-          memberRunId: "review-lead-run",
-          runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-          platformAgentRunId: "platform-review-lead-run",
-        }),
-      ],
+      memberContexts: [new MixedAgentMemberContext({
+        memberName: "review_lead",
+        memberPath: ["review_lead"],
+        memberRouteKey: "review_lead",
+        memberRunId: "review-lead-run",
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+        platformAgentRunId: "platform-review-lead-run",
+      })],
+      collaborationRootTeamRunId: "parent-1",
+      teamMountPath: ["BuildSquad"],
+      effectiveHandoffs: [],
       parentBoundary: {
         parentTeamRunId: "parent-1",
-        representedSubTeam: input.representedSubTeamOverride ?? representedSubTeam,
-        parentMembers: [parentMember],
+        collaborationRootTeamRunId: "parent-1",
+        teamMountPath: ["BuildSquad"],
+        effectiveHandoffs: [],
         deliverInterAgentMessage: parentDeliverInterAgentMessage,
       },
-      taskTeamInstance: input.taskTeamInstance ?? null,
     }),
   });
-  return {
-    parentDeliverInterAgentMessage,
-    manager: new MixedTeamManager(context),
-  };
+  return { parentDeliverInterAgentMessage, manager: new MixedTeamManager(context) };
 };
+
+const buildRootCanonicalIntent = (): InterAgentMessageDeliveryIntent => ({
+  teamRunId: "parent-1",
+  callerAddressing: {
+    rootTeamRunId: "parent-1",
+    memberAddress: "/BuildSquad/review_lead",
+    memberPath: ["BuildSquad", "review_lead"],
+    immediateTeamAddress: "/BuildSquad",
+    immediateTeamPath: ["BuildSquad"],
+  },
+  recipientName: "/program_manager",
+  sender: {
+    participant: {
+      memberKind: "agent",
+      memberName: "review_lead",
+      memberPath: ["BuildSquad", "review_lead"],
+      memberRouteKey: "BuildSquad/review_lead",
+      memberRunId: "review-lead-run",
+      address: {
+        teamRunId: "parent-1",
+        memberPath: ["BuildSquad", "review_lead"],
+        memberRouteKey: "BuildSquad/review_lead",
+      },
+    },
+    selector: { kind: "path", memberPath: ["BuildSquad", "review_lead"] },
+  },
+  senderAddress: { segments: [{ kind: "member", memberRouteKey: "BuildSquad/review_lead" }] },
+  content: "Build is complete.",
+  messageType: "status_update",
+});
+
+describe("MixedTeamManager parent-boundary delivery", () => {
+  it("forwards one root-canonical intent unchanged with the actual nested Agent identity", async () => {
+    const { manager, parentDeliverInterAgentMessage } = createChildManager();
+    const intent = buildRootCanonicalIntent();
+
+    await expect(manager.deliverInterAgentMessage(intent)).resolves.toEqual({ accepted: true });
+    expect(parentDeliverInterAgentMessage).toHaveBeenCalledTimes(1);
+    expect(parentDeliverInterAgentMessage).toHaveBeenCalledWith(intent);
+    const forwarded = parentDeliverInterAgentMessage.mock.calls[0]![0] as InterAgentMessageDeliveryIntent;
+    expect(forwarded.sender.participant).toMatchObject({
+      memberKind: "agent",
+      memberName: "review_lead",
+      memberPath: ["BuildSquad", "review_lead"],
+      memberRouteKey: "BuildSquad/review_lead",
+    });
+    expect(forwarded.sender.participant).not.toHaveProperty("representedSubTeam");
+  });
+
+  it("rejects a non-root team id without invoking the parent boundary", async () => {
+    const { manager, parentDeliverInterAgentMessage } = createChildManager();
+    const intent = { ...buildRootCanonicalIntent(), teamRunId: "unreachable-run" };
+
+    await expect(manager.deliverInterAgentMessage(intent)).resolves.toEqual({
+      accepted: false,
+      code: "TARGET_MEMBER_NOT_FOUND",
+      message: "Team run 'unreachable-run' is not reachable from this team boundary.",
+    });
+    expect(parentDeliverInterAgentMessage).not.toHaveBeenCalled();
+  });
+});
 
 const createParentManagerWithTaskTeamTarget = () => {
   clearTaskTeamActiveRunDirectory();
@@ -155,6 +166,9 @@ const createParentManagerWithTaskTeamTarget = () => {
     getMemberStatusSnapshots: vi.fn(() => []),
     getRuntimeContext: vi.fn(() => new MixedTeamRunContext({
       coordinatorMemberRouteKey: "review_lead",
+      collaborationRootTeamRunId: "parent-1",
+      teamMountPath: [],
+      effectiveHandoffs: [],
       memberContexts: [
         new MixedAgentMemberContext({
           memberName: "review_lead",
@@ -226,6 +240,9 @@ const createParentManagerWithTaskTeamTarget = () => {
     config,
     runtimeContext: new MixedTeamRunContext({
       coordinatorMemberRouteKey: "program_manager",
+      collaborationRootTeamRunId: "parent-1",
+      teamMountPath: [],
+      effectiveHandoffs: [],
       memberContexts: [
         new MixedSubTeamMemberContext({
           memberName: "BuildSquad",
@@ -248,177 +265,6 @@ const createParentManagerWithTaskTeamTarget = () => {
   };
 };
 
-const buildChildToParentRequest = ({
-  teamRunId = "child-1",
-  senderPath = ["review_lead"],
-  senderAddressTeamRunId = "child-1",
-  senderAddress = null,
-  taskAgentRunId = null,
-  logicalMemberRouteKey = null,
-}: {
-  teamRunId?: string;
-  senderPath?: string[];
-  senderAddressTeamRunId?: string;
-  senderAddress?: InterAgentMessageDeliveryIntent["senderAddress"] | null;
-  taskAgentRunId?: string | null;
-  logicalMemberRouteKey?: string | null;
-} = {}): InterAgentMessageDeliveryIntent => ({
-  teamRunId,
-  target: { kind: "recipient_name", recipientName: "program_manager" },
-  sender: {
-    participant: {
-      memberKind: "agent",
-      memberName: "review_lead",
-      memberPath: senderPath,
-      memberRouteKey: senderPath.join("/"),
-      memberRunId: "review-lead-run",
-      address: {
-        teamRunId: senderAddressTeamRunId,
-        memberPath: senderPath,
-        memberRouteKey: senderPath.join("/"),
-      },
-      ...(taskAgentRunId ? { taskAgentRunId } : {}),
-      ...(logicalMemberRouteKey ? { logicalMemberRouteKey } : {}),
-    },
-    selector: { kind: "path", memberPath: ["review_lead"] },
-  },
-  ...(senderAddress ? { senderAddress } : {}),
-  content: "Build is complete.",
-  messageType: "status_update",
-});
-
-describe("MixedTeamManager parent-boundary delivery", () => {
-  it("bridges child coordinator messages to the parent with absolute sender identity", async () => {
-    const { manager, parentDeliverInterAgentMessage } = createChildManager();
-
-    const result = await manager.deliverInterAgentMessage(buildChildToParentRequest());
-
-    expect(result.accepted).toBe(true);
-    expect(parentDeliverInterAgentMessage).toHaveBeenCalledTimes(1);
-    const bridgedRequest = parentDeliverInterAgentMessage.mock.calls[0]?.[0] as InterAgentMessageDeliveryIntent;
-    expect(bridgedRequest).toEqual(expect.objectContaining({
-      teamRunId: "parent-1",
-      content: "Build is complete.",
-      messageType: "status_update",
-    }));
-    expect(bridgedRequest.sender).toEqual(expect.objectContaining({
-      selector: { kind: "path", memberPath: ["BuildSquad", "review_lead"] },
-      participant: expect.objectContaining({
-        memberName: "review_lead",
-        memberPath: ["BuildSquad", "review_lead"],
-        memberRouteKey: "BuildSquad/review_lead",
-        address: {
-          teamRunId: "parent-1",
-          memberPath: ["BuildSquad", "review_lead"],
-          memberRouteKey: "BuildSquad/review_lead",
-        },
-        representedSubTeam: expect.objectContaining({
-          memberName: "BuildSquad",
-          memberRouteKey: "BuildSquad",
-        }),
-      }),
-    }));
-    expect(bridgedRequest.senderAddress).toEqual({
-      segments: [{ kind: "member", memberRouteKey: "BuildSquad/review_lead" }],
-    });
-    expect(bridgedRequest.target).toEqual({ kind: "recipient_name", recipientName: "program_manager" });
-    expect(bridgedRequest).not.toHaveProperty("recipient");
-    expect(bridgedRequest).not.toHaveProperty("replyAddress");
-    expect(bridgedRequest).not.toHaveProperty("reply_to_sender");
-  });
-
-
-
-  it("parent-roots static task-agent sender addresses before appending the task-agent segment", async () => {
-    const { manager, parentDeliverInterAgentMessage } = createChildManager();
-
-    await manager.deliverInterAgentMessage(buildChildToParentRequest({
-      taskAgentRunId: "task-agent-run-1",
-      logicalMemberRouteKey: "review_lead",
-    }));
-
-    const bridgedRequest = parentDeliverInterAgentMessage.mock.calls[0]?.[0] as InterAgentMessageDeliveryIntent;
-    expect(bridgedRequest.sender.participant.memberPath).toEqual(["BuildSquad", "review_lead"]);
-    expect(bridgedRequest.sender.participant.logicalMemberRouteKey).toBe("review_lead");
-    expect(bridgedRequest.senderAddress).toEqual({
-      segments: [
-        { kind: "member", memberRouteKey: "BuildSquad/review_lead" },
-        { kind: "task_agent", taskAgentRunId: "task-agent-run-1" },
-      ],
-    });
-  });
-
-  it("preserves task-team scoped sender addresses across parent-boundary delivery", async () => {
-    const { manager, parentDeliverInterAgentMessage } = createChildManager({ taskTeamInstance });
-
-    await manager.deliverInterAgentMessage(buildChildToParentRequest({
-      senderAddress: taskTeamChildAddress,
-    }));
-
-    const bridgedRequest = parentDeliverInterAgentMessage.mock.calls[0]?.[0] as InterAgentMessageDeliveryIntent;
-    expect(bridgedRequest.sender.participant.memberPath).toEqual(["BuildSquad", "review_lead"]);
-    expect(bridgedRequest.senderAddress).toEqual(taskTeamChildAddress);
-  });
-
-  it("rejects delivery to an unreachable parent boundary", async () => {
-    const { manager, parentDeliverInterAgentMessage } = createChildManager();
-
-    const result = await manager.deliverInterAgentMessage(buildChildToParentRequest({ teamRunId: "other-parent" }));
-
-    expect(result).toEqual({
-      accepted: false,
-      code: "TARGET_MEMBER_NOT_FOUND",
-      message: "Team run 'other-parent' is not reachable from this team boundary.",
-    });
-    expect(parentDeliverInterAgentMessage).not.toHaveBeenCalled();
-  });
-
-  it("does not double-prefix already parent-rooted child sender paths", async () => {
-    const { manager, parentDeliverInterAgentMessage } = createChildManager();
-
-    await manager.deliverInterAgentMessage(buildChildToParentRequest({
-      senderPath: ["BuildSquad", "review_lead"],
-      senderAddressTeamRunId: "parent-1",
-    }));
-
-    const bridgedRequest = parentDeliverInterAgentMessage.mock.calls[0]?.[0] as InterAgentMessageDeliveryIntent;
-    expect(bridgedRequest.sender.participant.memberPath).toEqual(["BuildSquad", "review_lead"]);
-    expect(bridgedRequest.sender.participant.memberRouteKey).toBe("BuildSquad/review_lead");
-  });
-
-  it("uses full-prefix and root-aware normalization instead of first-segment sender matching", async () => {
-    const nestedRepresentedSubTeam: TeamRepresentedSubTeam = {
-      ...representedSubTeam,
-      memberName: "NestedBuildSquad",
-      memberPath: ["BuildSquad", "Nested"],
-      memberRouteKey: "BuildSquad/Nested",
-      address: {
-        teamRunId: "parent-1",
-        memberPath: ["BuildSquad", "Nested"],
-        memberRouteKey: "BuildSquad/Nested",
-      },
-    };
-    const { manager, parentDeliverInterAgentMessage } = createChildManager({
-      representedSubTeamOverride: nestedRepresentedSubTeam,
-    });
-
-    await manager.deliverInterAgentMessage(buildChildToParentRequest({
-      senderPath: ["BuildSquad", "review_lead"],
-      senderAddressTeamRunId: "child-1",
-    }));
-
-    const bridgedRequest = parentDeliverInterAgentMessage.mock.calls[0]?.[0] as InterAgentMessageDeliveryIntent;
-    expect(bridgedRequest.sender.participant.memberPath).toEqual([
-      "BuildSquad",
-      "Nested",
-      "BuildSquad",
-      "review_lead",
-    ]);
-    expect(bridgedRequest.sender.participant.memberRouteKey).toBe(
-      "BuildSquad/Nested/BuildSquad/review_lead",
-    );
-  });
-});
 
 describe("MixedTeamManager termination lifecycle", () => {
   it("keeps active task-team handles in snapshots until accepted settlement removes them", async () => {

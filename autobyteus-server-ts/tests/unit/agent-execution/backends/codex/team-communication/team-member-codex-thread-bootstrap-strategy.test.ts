@@ -8,44 +8,26 @@ import { MemberTeamContext } from "../../../../../../src/agent-team-execution/do
 import { TeamBackendKind } from "../../../../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { TeamMemberCodexThreadBootstrapStrategy } from "../../../../../../src/agent-execution/backends/codex/team-communication/team-member-codex-thread-bootstrap-strategy.js";
 
-const createMemberTeamContext = (input: {
-  allowedRecipientNames?: string[];
-  communicationRecipients?: [];
-} = {}) =>
+const createMemberTeamContext = () =>
   new MemberTeamContext({
     teamRunId: "team-1",
     teamDefinitionId: "team-def-1",
     teamBackendKind: TeamBackendKind.MIXED,
     memberName: "Professor",
+    memberPath: ["professor"],
     memberRouteKey: "professor",
     memberRunId: "run-professor",
     teamInstruction: "Coordinate carefully.",
-    members: [
-      {
-        memberKind: "agent",
-        memberName: "Professor",
-        memberPath: ["Professor"],
-        memberRouteKey: "professor",
-        memberRunId: "run-professor",
-        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-        role: "lead",
-        description: "Leads the work.",
+    collaboration: {
+      addressing: {
+        rootTeamRunId: "team-1",
+        memberAddress: "/professor",
+        memberPath: ["professor"],
+        immediateTeamAddress: "/",
+        immediateTeamPath: [],
       },
-      {
-        memberKind: "agent",
-        memberName: "Writer",
-        memberPath: ["Writer"],
-        memberRouteKey: "writer",
-        memberRunId: "run-writer",
-        runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
-        role: "writer",
-        description: "Drafts the answer.",
-      },
-    ],
-    communicationRecipients: input.communicationRecipients,
-    allowedRecipientNames: input.allowedRecipientNames ?? ["Writer"],
-    sendMessageToEnabled: true,
-    deliverInterAgentMessage: vi.fn().mockResolvedValue({ accepted: true }),
+      deliverInterAgentMessage: vi.fn().mockResolvedValue({ accepted: true }),
+    },
   });
 
 describe("TeamMemberCodexThreadBootstrapStrategy", () => {
@@ -76,16 +58,13 @@ describe("TeamMemberCodexThreadBootstrapStrategy", () => {
     expect(preparation.baseInstructions).toContain("Team Instruction");
     expect(preparation.baseInstructions).toContain("Agent Instruction");
     expect(preparation.developerInstructions).toContain("If you use `send_message_to`");
-    expect(preparation.developerInstructions).toContain("Set `target_agent_run_id`");
+    expect(preparation.developerInstructions).toContain("`target_agent_run_id` for an exact live AgentRun");
     expect(preparation.dynamicToolRegistrations).toBeNull();
   });
 
-  it("keeps exact-run-only send_message_to as instructions without adding dynamic tool registrations", () => {
+  it("keeps hierarchical Team and exact-run send_message_to instructions without dynamic registrations", () => {
     const strategy = new TeamMemberCodexThreadBootstrapStrategy();
-    const memberTeamContext = createMemberTeamContext({
-      allowedRecipientNames: [],
-      communicationRecipients: [],
-    });
+    const memberTeamContext = createMemberTeamContext();
     const runContext = new AgentRunContext({
       runId: "run-professor",
       config: new AgentRunConfig({
@@ -106,11 +85,9 @@ describe("TeamMemberCodexThreadBootstrapStrategy", () => {
     });
 
     expect(preparation.dynamicToolRegistrations).toBeNull();
-    expect(preparation.developerInstructions).toContain(
-      "No logical `recipient_name` roster recipients are currently listed for this run.",
-    );
-    expect(preparation.developerInstructions).toContain("Set `target_agent_run_id`");
-    expect(preparation.developerInstructions).not.toContain("Use recipient_name for one logical roster recipient:");
+    expect(preparation.developerInstructions).toContain("Bare names are invalid.");
+    expect(preparation.developerInstructions).toContain("`target_agent_run_id` for an exact live AgentRun");
+    expect(preparation.developerInstructions).not.toContain("roster recipient");
   });
 
   it("keeps task delegation as Agent Tools MCP instructions without dynamic registrations", () => {
@@ -145,7 +122,8 @@ describe("TeamMemberCodexThreadBootstrapStrategy", () => {
 
     expect(preparation.developerInstructions).toContain("Task delegation protocol");
     expect(preparation.developerInstructions).toContain("Use `delegate_task`");
-    expect(preparation.developerInstructions).toContain("call `delegate_task` separately for each task");
+    expect(preparation.developerInstructions).toContain("one `delegate_task` call for each bounded task");
+    expect(preparation.developerInstructions).toContain("same `/...` and `./...` logical address grammar");
     expect(preparation.developerInstructions).not.toContain("do not pass delegator");
     expect(preparation.developerInstructions).toContain("`submit_task_result`");
     expect(preparation.developerInstructions).toContain("`review_task_result`");

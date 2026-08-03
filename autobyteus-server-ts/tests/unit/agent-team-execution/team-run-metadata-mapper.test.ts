@@ -24,6 +24,11 @@ describe("TeamRunMetadataMapper", () => {
       teamBackendKind: TeamBackendKind.MIXED,
       coordinatorMemberName: "Lead",
       coordinatorMemberRouteKey: "Lead",
+      effectiveHandoffs: [{
+        from: "/Lead",
+        to: "/ReviewTeam",
+        rules: ["When review is required."],
+      }],
       memberTree: [
         {
           memberKind: "agent_team",
@@ -72,6 +77,9 @@ describe("TeamRunMetadataMapper", () => {
           platformAgentRunId: "thread-reviewer-1",
         }),
       ],
+      collaborationRootTeamRunId: "team-1",
+      teamMountPath: ["ReviewTeam"],
+      effectiveHandoffs: config.effectiveHandoffs,
     });
     const run = new TeamRun({
       context: new TeamRunContext({
@@ -83,6 +91,9 @@ describe("TeamRunMetadataMapper", () => {
         runtimeContext: new MixedTeamRunContext({
           coordinatorMemberRouteKey: "Lead",
           memberContexts: [subTeamContext],
+          collaborationRootTeamRunId: "team-1",
+          teamMountPath: [],
+          effectiveHandoffs: config.effectiveHandoffs,
         }),
       }),
       backend: {
@@ -117,6 +128,11 @@ describe("TeamRunMetadataMapper", () => {
       memberKind: "agent_team",
       teamRunId: "child-review-team-1",
     });
+    expect(metadata.handoffs).toEqual([{
+      from: "/Lead",
+      to: "/ReviewTeam",
+      rules: ["When review is required."],
+    }]);
     if (subteam?.memberKind !== "agent_team") {
       throw new Error("Expected subteam metadata");
     }
@@ -201,6 +217,8 @@ describe("TeamRunMetadataMapper", () => {
 
     const restoreContext = await mapper.buildRestoreContext(metadata);
     const rootRuntime = restoreContext.runtimeContext as MixedTeamRunContext;
+    expect(restoreContext.config?.effectiveHandoffs).toEqual([]);
+    expect(rootRuntime.effectiveHandoffs).toEqual([]);
     const subTeamContext = rootRuntime.memberContexts[0];
     const restoredSubTeamConfig = restoreContext.config?.memberTree[0];
     if (restoredSubTeamConfig?.memberKind !== "agent_team") {
@@ -299,5 +317,79 @@ describe("TeamRunMetadataMapper", () => {
         }),
       ]),
     );
+  });
+
+  it("restores the persisted handoff snapshot unchanged without consulting the mutated definition", async () => {
+    const definitionLookup = vi.fn(async () => ({
+      name: "Mutated Team",
+      handoffs: [{ from: "/reviewer", to: "/lead", rules: ["New live rule."] }],
+    }));
+    const metadata = {
+      teamRunId: "snapshot-run-1",
+      teamDefinitionId: "root-team",
+      teamDefinitionName: "Original Team",
+      coordinatorMemberRouteKey: "lead",
+      createdAt: "2026-08-03T00:00:00.000Z",
+      memberTree: [
+        {
+          memberKind: "agent" as const,
+          memberName: "lead",
+          memberPath: ["lead"],
+          memberRouteKey: "lead",
+          memberRunId: "lead-run",
+          role: null,
+          description: null,
+          runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+          platformAgentRunId: "thread-lead",
+          agentDefinitionId: "agent-lead",
+          llmModelIdentifier: "gpt-test",
+          autoExecuteTools: false,
+          skillAccessMode: SkillAccessMode.NONE,
+          llmConfig: null,
+          workspaceRootPath: null,
+          applicationExecutionContext: null,
+        },
+        {
+          memberKind: "agent" as const,
+          memberName: "reviewer",
+          memberPath: ["reviewer"],
+          memberRouteKey: "reviewer",
+          memberRunId: "reviewer-run",
+          role: null,
+          description: null,
+          runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+          platformAgentRunId: "thread-reviewer",
+          agentDefinitionId: "agent-reviewer",
+          llmModelIdentifier: "gpt-test",
+          autoExecuteTools: false,
+          skillAccessMode: SkillAccessMode.NONE,
+          llmConfig: null,
+          workspaceRootPath: null,
+          applicationExecutionContext: null,
+        },
+      ],
+      handoffs: [{
+        from: "/lead",
+        to: "/reviewer",
+        rules: ["Original launch rule one.", "Original launch rule two."],
+      }],
+    } satisfies TeamRunMetadata;
+    const mapper = new TeamRunMetadataMapper({
+      teamDefinitionService: { getDefinitionById: definitionLookup } as never,
+      workspaceManager: {
+        ensureWorkspaceByRootPath: vi.fn(),
+        getWorkspaceById: vi.fn(),
+      } as never,
+      memoryLocationService: new AgentMemoryLocationService({ memoryDir: "/tmp/team-memory" }),
+    });
+
+    const restored = await mapper.buildRestoreContext(metadata);
+    const runtime = restored.runtimeContext as MixedTeamRunContext;
+
+    expect(definitionLookup).not.toHaveBeenCalled();
+    expect(restored.config?.effectiveHandoffs).toEqual(metadata.handoffs);
+    expect(runtime.effectiveHandoffs).toEqual(metadata.handoffs);
+    expect(restored.config?.effectiveHandoffs).not.toBe(metadata.handoffs);
+    expect(runtime.effectiveHandoffs).not.toBe(metadata.handoffs);
   });
 });

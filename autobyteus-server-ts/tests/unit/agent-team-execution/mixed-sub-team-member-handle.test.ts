@@ -14,6 +14,7 @@ import { TeamRunConfig, type TeamSubTeamMemberRunConfig } from "../../../src/age
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import type { ResolvedInterAgentMessageDeliveryRequest } from "../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
+import { getSubTeamActiveRunDirectory } from "../../../src/agent-team-execution/services/sub-team-active-run-directory.js";
 
 const buildChildAgent = (memberName: string, routeKey: string) => ({
   memberKind: "agent" as const,
@@ -35,8 +36,13 @@ describe("MixedSubTeamMemberHandle", () => {
       memoryLocationService: new AgentMemoryLocationService({ memoryDir: "/tmp/mixed-subteam-handle-test-memory" }),
     });
     const subTeamRunFactory = new MixedSubTeamRunFactory({
-      buildContext: (config, teamRunId, restoreRuntimeContext) =>
-        contextBuilder.buildTeamRunContext(config, teamRunId, restoreRuntimeContext ?? null),
+      buildContext: (config, teamRunId, restoreRuntimeContext, parentBoundary) =>
+        contextBuilder.buildTeamRunContext(
+          config,
+          teamRunId,
+          restoreRuntimeContext ?? null,
+          parentBoundary ?? null,
+        ),
       createTeamManager: () => ({
         hasActiveMembers: () => true,
         postMessage: childPostMessage,
@@ -60,6 +66,9 @@ describe("MixedSubTeamMemberHandle", () => {
       runtimeContext: new MixedTeamRunContext({
         coordinatorMemberRouteKey: "Lead",
         memberContexts: [],
+        collaborationRootTeamRunId: "parent-1",
+        teamMountPath: [],
+        effectiveHandoffs: [],
       }),
     });
     const context = new MixedSubTeamMemberContext({
@@ -102,9 +111,13 @@ describe("MixedSubTeamMemberHandle", () => {
       { kind: "route_key", memberRouteKey: "Reviewer" },
       null,
     );
+    expect(getSubTeamActiveRunDirectory().resolveActiveRun("child-review-1")?.runId)
+      .toBe("child-review-1");
+    await expect(handle.terminate()).resolves.toMatchObject({ accepted: true });
+    expect(getSubTeamActiveRunDirectory().resolveActiveRun("child-review-1")).toBeNull();
   });
 
-  it("strips the parent subteam prefix when delivering to an explicit represented child target", async () => {
+  it("strips the parent subteam prefix when delivering to an explicit actual child participant", async () => {
     const childPostMessage = vi.fn(async () => ({ accepted: true }));
     const contextBuilder = new MixedTeamRunBackendFactory({
       memoryLocationService: new AgentMemoryLocationService({ memoryDir: "/tmp/mixed-subteam-handle-delivery-test-memory" }),
@@ -135,6 +148,9 @@ describe("MixedSubTeamMemberHandle", () => {
       runtimeContext: new MixedTeamRunContext({
         coordinatorMemberRouteKey: "Lead",
         memberContexts: [],
+        collaborationRootTeamRunId: "parent-1",
+        teamMountPath: [],
+        effectiveHandoffs: [],
       }),
     });
     const context = new MixedSubTeamMemberContext({
@@ -170,7 +186,7 @@ describe("MixedSubTeamMemberHandle", () => {
     });
     const request: ResolvedInterAgentMessageDeliveryRequest = {
       teamRunId: "parent-1",
-      target: { kind: "recipient_name", recipientName: "Reviewer" },
+      target: { kind: "recipient_name", recipientName: "/ReviewTeam/Reviewer" },
       sender: {
         participant: {
           memberKind: "agent",
@@ -198,19 +214,6 @@ describe("MixedSubTeamMemberHandle", () => {
             memberPath: ["ReviewTeam", "Reviewer"],
             memberRouteKey: "ReviewTeam/Reviewer",
           },
-          representedSubTeam: {
-            memberKind: "agent_team",
-            memberName: "ReviewTeam",
-            memberPath: ["ReviewTeam"],
-            memberRouteKey: "ReviewTeam",
-            memberRunId: "child-review-1",
-            teamDefinitionId: "review-team",
-            address: {
-              teamRunId: "parent-1",
-              memberPath: ["ReviewTeam"],
-              memberRouteKey: "ReviewTeam",
-            },
-          },
         },
         selector: { kind: "path", memberPath: ["ReviewTeam", "Reviewer"] },
       },
@@ -228,5 +231,6 @@ describe("MixedSubTeamMemberHandle", () => {
       { kind: "path", memberPath: ["Reviewer"] },
       null,
     );
+    await expect(handle.terminate()).resolves.toMatchObject({ accepted: true });
   });
 });

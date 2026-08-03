@@ -234,7 +234,7 @@ const hasExpectedSendMessageArgs = (
 ): boolean => {
   const args = extractToolArgs(payload);
   return (
-    args?.recipient_name === input.recipientMemberName &&
+    args?.recipient_name === `./${input.recipientMemberName}` &&
     args.content === input.content
   );
 };
@@ -667,7 +667,7 @@ Rules:
           const toolResult = matchingToolResults[0]!;
           expect(toolCall.sourceEvent).toBe("TOOL_EXECUTION_STARTED");
           expect(toolCall.toolArgs).toMatchObject({
-            recipient_name: input.recipientMemberName,
+            recipient_name: `./${input.recipientMemberName}`,
             content: input.content,
           });
           expect(toolResult.sourceEvent).toBe("TOOL_EXECUTION_SUCCEEDED");
@@ -702,7 +702,7 @@ Rules:
     }): Promise<void> => {
       const content = `Reply with exactly ${input.row.replyToken} and nothing else.`;
       const argsJson = JSON.stringify({
-        recipient_name: input.row.recipientMemberName,
+        recipient_name: `./${input.row.recipientMemberName}`,
         content,
         message_type: `matrix_${input.row.id}`,
       });

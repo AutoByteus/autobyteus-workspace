@@ -17,6 +17,7 @@ const createConfig = (memberRuntimeKinds: RuntimeKind[]): TeamRunConfig => new T
   memberConfigs: memberRuntimeKinds.map((runtimeKind, index) => ({
     memberName: index === 0 ? "Coordinator" : `Member${index}`,
     memberRouteKey: index === 0 ? "coordinator" : `member-${index}`,
+    memberRunId: index === 0 ? "run-coordinator" : `run-member-${index}`,
     agentDefinitionId: `agent-${runtimeKind}-${index}`,
     llmModelIdentifier: `model-${runtimeKind}`,
     autoExecuteTools: true,
@@ -29,6 +30,9 @@ const createConfig = (memberRuntimeKinds: RuntimeKind[]): TeamRunConfig => new T
 const createRuntimeContext = () => new MixedTeamRunContext({
   coordinatorMemberRouteKey: "coordinator",
   memberContexts: [],
+  collaborationRootTeamRunId: "team-runtime-root",
+  teamMountPath: [],
+  effectiveHandoffs: [],
 });
 
 const createBackend = (input: {
@@ -81,10 +85,10 @@ afterEach(() => {
 
 describe("AgentTeamRunManager integration", () => {
   it.each([
-    [RuntimeKind.AUTOBYTEUS],
-    [RuntimeKind.CODEX_APP_SERVER],
-    [RuntimeKind.CLAUDE_AGENT_SDK],
-    [RuntimeKind.AUTOBYTEUS, RuntimeKind.CODEX_APP_SERVER, RuntimeKind.CLAUDE_AGENT_SDK],
+    [[RuntimeKind.AUTOBYTEUS]],
+    [[RuntimeKind.CODEX_APP_SERVER]],
+    [[RuntimeKind.CLAUDE_AGENT_SDK]],
+    [[RuntimeKind.AUTOBYTEUS, RuntimeKind.CODEX_APP_SERVER, RuntimeKind.CLAUDE_AGENT_SDK]],
   ] as const)("creates and registers a mixed team for runtime composition %j", async (memberRuntimeKinds) => {
     const created = createBackend({ runId: "team-mixed" });
     const mixed = createFactory(created.backend);
@@ -95,16 +99,17 @@ describe("AgentTeamRunManager integration", () => {
       runFileChangeService: sidecars.runFileChangeService as never,
     });
 
-    const run = await manager.createTeamRun(createConfig([...memberRuntimeKinds]));
+    const run = await manager.createTeamRun(createConfig([...memberRuntimeKinds]), "team-mixed");
 
     expect(run.teamBackendKind).toBe(TeamBackendKind.MIXED);
     expect(run.context?.coordinatorMemberName).toBe("Coordinator");
     expect(manager.getActiveRun(run.runId)?.runId).toBe(run.runId);
     expect(manager.listActiveRuns()).toContain(run.runId);
     expect(mixed.createBackend).toHaveBeenCalledTimes(1);
-    expect(mixed.createBackend).toHaveBeenCalledWith(expect.objectContaining({
-      teamBackendKind: TeamBackendKind.MIXED,
-    }));
+    expect(mixed.createBackend).toHaveBeenCalledWith(
+      expect.objectContaining({ teamBackendKind: TeamBackendKind.MIXED }),
+      "team-mixed",
+    );
     expect(sidecars.teamCommunicationService.attachToTeamRun).toHaveBeenCalledWith(run);
     expect(sidecars.runFileChangeService.attachToTeamRun).toHaveBeenCalledWith(run);
   });
@@ -139,6 +144,7 @@ describe("AgentTeamRunManager integration", () => {
     });
     const run = await manager.createTeamRun(
       createConfig([RuntimeKind.CODEX_APP_SERVER, RuntimeKind.CLAUDE_AGENT_SDK]),
+      "team-mixed-delivery",
     );
     const request = {
       senderRunId: "coord-run",
@@ -159,7 +165,7 @@ describe("AgentTeamRunManager integration", () => {
       mixedTeamRunBackendFactory: createFactory(created.backend),
     });
 
-    const run = await manager.createTeamRun(createConfig([RuntimeKind.CODEX_APP_SERVER]));
+    const run = await manager.createTeamRun(createConfig([RuntimeKind.CODEX_APP_SERVER]), "team-inactive");
     expect(manager.getActiveRun(run.runId)?.runId).toBe(run.runId);
 
     created.state.active = false;
@@ -173,7 +179,7 @@ describe("AgentTeamRunManager integration", () => {
     const manager = new AgentTeamRunManager({
       mixedTeamRunBackendFactory: createFactory(failing.backend),
     });
-    const run = await manager.createTeamRun(createConfig([RuntimeKind.AUTOBYTEUS]));
+    const run = await manager.createTeamRun(createConfig([RuntimeKind.AUTOBYTEUS]), "team-failing-terminate");
 
     await expect(manager.terminateTeamRun(run.runId)).rejects.toBeInstanceOf(AgentTeamTerminationError);
   });

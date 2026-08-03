@@ -68,10 +68,6 @@ const createMemberTeamContext = (
     .mockResolvedValue({ accepted: true }),
   taskAgentInstance: TaskAgentInstanceIdentity | null = null,
   sendMessageToEnabled = true,
-  overrides: {
-    communicationRecipients?: [];
-    allowedRecipientNames?: string[];
-  } = {},
 ) =>
   new MemberTeamContext({
     teamRunId: "team-1",
@@ -82,58 +78,16 @@ const createMemberTeamContext = (
     memberRouteKey: "professor",
     memberRunId: taskAgentInstance?.taskAgentRunId ?? "run-professor",
     teamInstruction: "Coordinate as a team.",
-    members: [
-      {
-        memberKind: "agent",
-        memberName: "Professor",
+    collaboration: {
+      addressing: {
+        rootTeamRunId: "team-1",
+        memberAddress: "/professor",
         memberPath: ["professor"],
-        memberRouteKey: "professor",
-        memberRunId: "run-professor",
-        runtimeKind: RuntimeKind.AUTOBYTEUS,
-        role: "lead",
-        description: "Leads the work.",
+        immediateTeamAddress: "/",
+        immediateTeamPath: [],
       },
-      {
-        memberKind: "agent",
-        memberName: "Writer",
-        memberPath: ["writer"],
-        memberRouteKey: "writer",
-        memberRunId: "run-writer",
-        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-        role: "writer",
-        description: "Drafts the answer.",
-      },
-    ],
-    communicationRecipients: overrides.communicationRecipients ?? [
-      {
-        recipientName: "Writer",
-        scope: "local_agent",
-        participant: {
-          memberKind: "agent",
-          memberName: "Writer",
-          memberPath: ["writer"],
-          memberRouteKey: "writer",
-          memberRunId: "run-writer",
-          address: {
-            teamRunId: "team-1",
-            memberPath: ["writer"],
-            memberRouteKey: "writer",
-          },
-          platformRunId: null,
-          teamDefinitionId: null,
-          representedSubTeam: null,
-        },
-        delivery: {
-          teamRunId: "team-1",
-          selector: { kind: "route_key", memberRouteKey: "writer" },
-        },
-        role: "writer",
-        description: "Drafts the answer.",
-      },
-    ],
-    allowedRecipientNames: overrides.allowedRecipientNames ?? ["Writer"],
-    sendMessageToEnabled,
-    deliverInterAgentMessage,
+      deliverInterAgentMessage: sendMessageToEnabled ? deliverInterAgentMessage : null,
+    },
     taskAgentInstance,
   });
 
@@ -293,16 +247,19 @@ describe("AutoByteusAgentRunBackendFactory", () => {
       expect.objectContaining({
         teamRunId: "team-1",
         currentMemberName: "Professor",
-        members: expect.arrayContaining([
-          expect.objectContaining({ memberName: "Writer", memberRunId: "run-writer" }),
-        ]),
+        addressing: expect.objectContaining({
+          rootTeamRunId: "team-1",
+          memberAddress: "/professor",
+          immediateTeamAddress: "/",
+        }),
       }),
     );
+    expect(built.agentConfig.initialCustomData?.teamContext).not.toHaveProperty("members");
     const removedNativeCommunicationField = ["communication", "Context"].join("");
     expect(built.agentConfig.initialCustomData?.teamContext).not.toHaveProperty(removedNativeCommunicationField);
   });
 
-  it("advertises mixed AutoByteus send_message_to when only exact-run targets are available", async () => {
+  it("advertises strict logical and exact-run selectors without a flat recipient roster", async () => {
     const factory = new AutoByteusAgentRunBackendFactory({
       agentDefinitionService: {
         getAgentDefinitionById: vi.fn(async () =>
@@ -350,7 +307,6 @@ describe("AutoByteusAgentRunBackendFactory", () => {
           vi.fn().mockResolvedValue({ accepted: true }),
           null,
           true,
-          { communicationRecipients: [], allowedRecipientNames: [] },
         ),
       }),
       "run-professor",
@@ -359,10 +315,11 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     expect(built.agentConfig.tools.map((tool: BaseTool) => tool.definition?.name)).toEqual([
       "send_message_to",
     ]);
-    expect(built.agentConfig.systemPrompt).toContain(
-      "No logical `recipient_name` roster recipients are currently listed for this run.",
-    );
-    expect(built.agentConfig.systemPrompt).toContain("Set `target_agent_run_id`");
+    expect(built.agentConfig.systemPrompt).toContain("rooted absolute address (`/...`)");
+    expect(built.agentConfig.systemPrompt).toContain("immediate-Team-relative address (`./...`)");
+    expect(built.agentConfig.systemPrompt).toContain("Bare names are invalid");
+    expect(built.agentConfig.systemPrompt).toContain("`target_agent_run_id` for an exact live AgentRun");
+    expect(built.agentConfig.systemPrompt).not.toContain("roster recipients");
   });
 
   it("keeps task-management tools for standalone AutoByteus runs without member team context", async () => {
@@ -478,12 +435,12 @@ describe("AutoByteusAgentRunBackendFactory", () => {
 
     await expect(
       sendMessageTool.execute({}, {
-        recipient_name: "Writer",
+        recipient_name: "./writer",
         content: "Please investigate.",
         message_type: "direct_message",
         reference_files: ["/tmp/server-reference.md"],
       }),
-    ).resolves.toBe("Error: Writer is unavailable.");
+    ).resolves.toBe('{"accepted":false,"code":"TARGET_MEMBER_NOT_FOUND","message":"Writer is unavailable.","result":null}');
     expect(deliverInterAgentMessage).toHaveBeenCalledWith(
       expect.objectContaining({
         sender: expect.objectContaining({
@@ -492,10 +449,8 @@ describe("AutoByteusAgentRunBackendFactory", () => {
             memberRunId: "run-professor",
           }),
         }),
-        target: expect.objectContaining({
-          kind: "recipient_name",
-          recipientName: "Writer",
-        }),
+        recipientName: "./writer",
+        callerAddressing: expect.objectContaining({ memberAddress: "/professor" }),
         content: "Please investigate.",
         messageType: "direct_message",
         referenceFiles: ["/tmp/server-reference.md"],
@@ -559,10 +514,8 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     expect(built.agentConfig.tools.map((tool: BaseTool) => tool.definition?.name)).toEqual([
       "send_message_to",
     ]);
-    expect(built.agentConfig.systemPrompt).toContain(
-      "Do not set `recipient_name` from this run; it requires an active team member context with Team Communication enabled.",
-    );
-    expect(built.agentConfig.systemPrompt).toContain("Set `target_agent_run_id`");
+    expect(built.agentConfig.systemPrompt).not.toContain("For logical Team recipients");
+    expect(built.agentConfig.systemPrompt).toContain("`target_agent_run_id` for an exact live AgentRun");
   });
 
   it("propagates mixed AutoByteus task-agent identity into managed custom data and task delegation context", async () => {

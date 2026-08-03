@@ -92,6 +92,15 @@ const createMemberTeamContext = () =>
     memberName: "ping",
     memberRouteKey: "ping",
     memberRunId: "ping-run-1",
+    collaboration: {
+      addressing: {
+        rootTeamRunId: "team-1",
+        memberAddress: "/ping",
+        memberPath: ["ping"],
+        immediateTeamAddress: "/",
+        immediateTeamPath: [],
+      },
+    },
   });
 
 const createSkill = (name: string) =>

@@ -17,6 +17,15 @@ const createMemberTeamContext = () =>
     memberName: "Professor",
     memberRouteKey: "professor",
     memberRunId: "run-claude-team",
+    collaboration: {
+      addressing: {
+        rootTeamRunId: "team-run-1",
+        memberAddress: "/Professor",
+        memberPath: ["Professor"],
+        immediateTeamAddress: "/",
+        immediateTeamPath: [],
+      },
+    },
   });
 
 const createRunContext = (input: {

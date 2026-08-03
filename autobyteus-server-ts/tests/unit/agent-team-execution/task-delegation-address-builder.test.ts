@@ -69,7 +69,7 @@ describe("TaskDelegationAddressBuilder", () => {
         coordinatorMemberRouteKey: "team_lead",
       },
     });
-    const builder = new TaskDelegationAddressBuilder(parentTaskTeam);
+    const builder = new TaskDelegationAddressBuilder(parentTaskTeam, ["implementation_team"]);
 
     expect(builder.buildTaskTeamIngressAddress(childTaskTeam)).toEqual({
       segments: [

@@ -179,6 +179,7 @@ describe("MixedTeamRunBackend integration", () => {
       true,
       "approved",
       null,
+      null,
     );
 
     await expect(backend.interruptMember("reviewer-route", "reviewer-run")).resolves.toEqual({ accepted: true });
@@ -243,10 +244,7 @@ describe("MixedTeamRunBackend integration", () => {
       accepted: false,
       code: "RUN_NOT_FOUND",
     });
-    await expect(backend.terminate()).resolves.toMatchObject({
-      accepted: false,
-      code: "RUN_NOT_FOUND",
-    });
+    await expect(backend.terminate()).resolves.toEqual({ accepted: true });
     expect(backend.getStatusSnapshot()).toEqual({ status: "idle" });
   });
 

@@ -503,7 +503,7 @@ Rules:
         content: string;
       }): Promise<void> => {
         const argsJson = JSON.stringify({
-          recipient_name: input.recipientName,
+          recipient_name: `./${input.recipientName}`,
           content: input.content,
           message_type: input.messageType,
         });
@@ -581,7 +581,7 @@ Rules:
           if (matchingToolCalls.length === 1 && matchingToolResults.length === 1) {
             expect(matchingToolCalls[0]?.sourceEvent).toBe("TOOL_EXECUTION_STARTED");
             expect(matchingToolCalls[0]?.toolArgs).toMatchObject({
-              recipient_name: input.recipientMemberName,
+              recipient_name: `./${input.recipientMemberName}`,
               content: input.content,
             });
             expect(matchingToolResults[0]?.sourceEvent).toBe("TOOL_EXECUTION_SUCCEEDED");
@@ -589,7 +589,7 @@ Rules:
             expect(matchingToolResults[0]?.toolResult).toMatchObject([
               {
                 type: "text",
-                text: expect.stringContaining(`Delivered message to ${input.recipientMemberName}`),
+                text: expect.stringContaining(`Delivered message to ./${input.recipientMemberName}`),
               },
             ]);
             return;
@@ -636,7 +636,7 @@ Rules:
               ? (metadata.arguments as Record<string, unknown>)
               : {};
           return (
-            args.recipient_name === input.recipientMemberName &&
+            args.recipient_name === `./${input.recipientMemberName}` &&
             args.content === input.content
           );
         };
@@ -748,17 +748,17 @@ Rules:
         expect(sendMessageFailedEvents).toHaveLength(0);
 
         expect(sendMessageStartedEvents[0]?.payload.arguments).toMatchObject({
-          recipient_name: input.recipientMemberName,
+          recipient_name: `./${input.recipientMemberName}`,
           content: input.content,
         });
         expect(sendMessageSucceededEvents[0]?.payload.arguments).toMatchObject({
-          recipient_name: input.recipientMemberName,
+          recipient_name: `./${input.recipientMemberName}`,
           content: input.content,
         });
         expect(sendMessageSucceededEvents[0]?.payload.result).toMatchObject([
           {
             type: "text",
-            text: expect.stringContaining(`Delivered message to ${input.recipientMemberName}`),
+            text: expect.stringContaining(`Delivered message to ./${input.recipientMemberName}`),
           },
         ]);
 
@@ -1248,7 +1248,7 @@ Rules:
 
       try {
         const argsJson = JSON.stringify({
-          recipient_name: "specialist",
+          recipient_name: "/research_subteam/specialist",
           content: `Nested relay ${relayToken}`,
           message_type: "nested_roundtrip",
         });

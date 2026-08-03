@@ -33,6 +33,9 @@ const buildTeamContext = (memberConfig: TeamMemberRunConfig) => {
       runtimeContext: new MixedTeamRunContext({
         coordinatorMemberRouteKey: memberConfig.memberRouteKey,
         memberContexts: [memberContext],
+        collaborationRootTeamRunId: "team-run-1",
+        teamMountPath: [],
+        effectiveHandoffs: [],
       }),
     }),
   };

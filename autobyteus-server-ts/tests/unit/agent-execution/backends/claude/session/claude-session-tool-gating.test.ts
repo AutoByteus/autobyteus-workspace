@@ -33,69 +33,25 @@ const createResultQuery = async function* () {
   };
 };
 
-const createMemberTeamContext = (input: {
-  communicationRecipients?: [];
-  allowedRecipientNames?: string[];
-} = {}) =>
+const createMemberTeamContext = () =>
   new MemberTeamContext({
     teamRunId: "team-1",
     teamDefinitionId: "team-def-1",
     teamBackendKind: TeamBackendKind.MIXED,
     memberName: "Professor",
+    memberPath: ["professor"],
     memberRouteKey: "professor",
     memberRunId: "run-1",
-    members: [
-      {
-        memberKind: "agent",
-        memberName: "Professor",
+    collaboration: {
+      addressing: {
+        rootTeamRunId: "team-1",
+        memberAddress: "/professor",
         memberPath: ["professor"],
-        memberRouteKey: "professor",
-        memberRunId: "run-1",
-        runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
-        role: null,
-        description: null,
+        immediateTeamAddress: "/",
+        immediateTeamPath: [],
       },
-      {
-        memberKind: "agent",
-        memberName: "Student",
-        memberPath: ["student"],
-        memberRouteKey: "student",
-        memberRunId: "run-2",
-        runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
-        role: null,
-        description: null,
-      },
-    ],
-    communicationRecipients: input.communicationRecipients ?? [
-      {
-        recipientName: "Student",
-        scope: "local_agent",
-        participant: {
-          memberKind: "agent",
-          memberName: "Student",
-          memberPath: ["student"],
-          memberRouteKey: "student",
-          memberRunId: "run-2",
-          address: buildTeamMemberAddress({
-            teamRunId: "team-1",
-            memberPath: ["student"],
-            memberRouteKey: "student",
-          }),
-          platformRunId: null,
-          teamDefinitionId: null,
-          representedSubTeam: null,
-        },
-        delivery: {
-          teamRunId: "team-1",
-          selector: { kind: "route_key", memberRouteKey: "student" },
-        },
-        role: null,
-        description: null,
-      },
-    ],
-    allowedRecipientNames: input.allowedRecipientNames ?? ["Student"],
-    sendMessageToEnabled: true,
-    deliverInterAgentMessage: vi.fn().mockResolvedValue({ accepted: true }),
+      deliverInterAgentMessage: vi.fn().mockResolvedValue({ accepted: true }),
+    },
   });
 
 const createSession = (configuredToolNames: string[] = [], input: {
@@ -212,9 +168,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
     );
     expect(startQueryTurn).toHaveBeenCalledWith(
       expect.objectContaining({
-        prompt: expect.stringContaining(
-          "Do not attempt `send_message_to`; it is not exposed for this run even though teammates exist.",
-        ),
+        prompt: expect.stringContaining("Your absolute collaboration address is `/professor`."),
         allowedTools: ["read_page", "mcp__autobyteus_agent_tools__read_page"],
       }),
     );
@@ -244,7 +198,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
     expect(startQueryTurn).toHaveBeenCalledWith(
       expect.objectContaining({
         prompt: expect.stringContaining(
-          "If you use `send_message_to`, choose exactly one target selector",
+          "If you use `send_message_to`, choose exactly one selector",
         ),
         allowedTools: expect.arrayContaining([
           "send_message_to",
@@ -258,11 +212,8 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
     );
   });
 
-  it("enables send_message_to for exact-run-only contexts with no static recipients", async () => {
-    const memberTeamContext = createMemberTeamContext({
-      communicationRecipients: [],
-      allowedRecipientNames: [],
-    });
+  it("enables hierarchical Team and exact-run send_message_to without a static roster", async () => {
+    const memberTeamContext = createMemberTeamContext();
     const { session, startQueryTurn } = createSession(["send_message_to"], {
       memberTeamContext,
     });
@@ -282,9 +233,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
     );
     expect(startQueryTurn).toHaveBeenCalledWith(
       expect.objectContaining({
-        prompt: expect.stringContaining(
-          "No logical `recipient_name` roster recipients are currently listed for this run.",
-        ),
+        prompt: expect.stringContaining("Bare names are invalid."),
         allowedTools: [
           "send_message_to",
           "mcp__autobyteus_agent_tools__send_message_to",

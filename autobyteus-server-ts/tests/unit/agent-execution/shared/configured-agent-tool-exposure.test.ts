@@ -15,6 +15,7 @@ describe("configured-agent-tool-exposure", () => {
       "submit_task_result",
       "review_task_result",
       "send_message_to",
+      "get_handoff_rules",
       " publish_artifacts ",
       "",
       "   ",
@@ -29,6 +30,7 @@ describe("configured-agent-tool-exposure", () => {
       "submit_task_result",
       "review_task_result",
       "send_message_to",
+      "get_handoff_rules",
       "publish_artifacts",
     ]);
     expect(exposure.enabledBrowserToolNames).toEqual(["open_tab", "read_page"]);
@@ -39,6 +41,7 @@ describe("configured-agent-tool-exposure", () => {
       "review_task_result",
     ]);
     expect(exposure.sendMessageToConfigured).toBe(true);
+    expect(exposure.getHandoffRulesConfigured).toBe(true);
     expect(exposure.publishArtifactsConfigured).toBe(true);
     expect(toConfiguredAgentToolNameSet(exposure)).toEqual(
       new Set([
@@ -49,6 +52,7 @@ describe("configured-agent-tool-exposure", () => {
         "submit_task_result",
         "review_task_result",
         "send_message_to",
+        "get_handoff_rules",
         "publish_artifacts",
       ]),
     );
@@ -98,6 +102,7 @@ describe("configured-agent-tool-exposure", () => {
       enabledMediaToolNames: [],
       enabledTaskDelegationToolNames: [],
       sendMessageToConfigured: false,
+      getHandoffRulesConfigured: false,
       publishArtifactsConfigured: false,
     });
   });

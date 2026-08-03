@@ -782,7 +782,7 @@ Rules:
       try {
         const parentDelegationStartIndex = firstConnection.messages.length;
         const parentDelegationArgs = JSON.stringify({
-          recipient_name: "review_lead",
+          recipient_name: "/BuildSquad/review_lead",
           content: `Reply with exactly ${parentToSubteamToken} and nothing else.`,
           message_type: "nested_parent_to_subteam",
         });
@@ -825,7 +825,7 @@ Rules:
 
         const childDelegationStartIndex = firstConnection.messages.length;
         const childDelegationArgs = JSON.stringify({
-          recipient_name: "qa_specialist",
+          recipient_name: "./qa_specialist",
           content: `Reply with exactly ${childToClaudeToken} and nothing else.`,
           message_type: "nested_child_codex_to_claude",
         });

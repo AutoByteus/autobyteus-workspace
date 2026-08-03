@@ -61,6 +61,9 @@ describe("MixedTaskAgentInstanceRegistry task-agent memory", () => {
       runtimeContext: new MixedTeamRunContext({
         coordinatorMemberRouteKey: "worker",
         memberContexts: [logicalMember],
+        collaborationRootTeamRunId: "owning-team-run",
+        teamMountPath: [],
+        effectiveHandoffs: [],
       }),
     });
     const registry = new MixedTaskAgentInstanceRegistry({

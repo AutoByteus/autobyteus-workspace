@@ -17,25 +17,15 @@ const buildParticipant = (
     memberPath: ["BuildSquad", "review_lead"],
     memberRouteKey: "BuildSquad/review_lead",
   },
-  representedSubTeam: {
-    memberKind: "agent_team",
-    memberName: "BuildSquad",
-    memberPath: ["BuildSquad"],
-    memberRouteKey: "BuildSquad",
-    memberRunId: "build-squad-run",
-    teamDefinitionId: "build-squad-team",
-    address: {
-      teamRunId: "team-parent",
-      memberPath: ["BuildSquad"],
-      memberRouteKey: "BuildSquad",
-    },
-  },
   ...overrides,
 });
 
 describe("inter-agent-message-delivery participant invariants", () => {
-  it("accepts participant and represented-subteam addresses that exactly match their paths", () => {
-    expect(() => buildDeliveryEndpointForParticipant(buildParticipant())).not.toThrow();
+  it("accepts the actual participant when its address exactly matches its path", () => {
+    expect(buildDeliveryEndpointForParticipant(buildParticipant())).toEqual({
+      participant: buildParticipant(),
+      selector: { kind: "path", memberPath: ["BuildSquad", "review_lead"] },
+    });
   });
 
   it("rejects participant address paths that diverge from participant paths", () => {
@@ -48,39 +38,19 @@ describe("inter-agent-message-delivery participant invariants", () => {
     }))).toThrow("participant.address.memberPath 'BuildSquad/qa_specialist' does not match participant.memberPath 'BuildSquad/review_lead'");
   });
 
-  it("rejects represented-subteam address paths that diverge from represented-subteam paths", () => {
+  it("rejects participant route keys that diverge from the actual participant path", () => {
     expect(() => buildDeliveryEndpointForParticipant(buildParticipant({
-      representedSubTeam: {
-        memberKind: "agent_team",
-        memberName: "BuildSquad",
-        memberPath: ["BuildSquad"],
-        memberRouteKey: "BuildSquad",
-        memberRunId: "build-squad-run",
-        teamDefinitionId: "build-squad-team",
-        address: {
-          teamRunId: "team-parent",
-          memberPath: ["OtherSquad"],
-          memberRouteKey: "OtherSquad",
-        },
-      },
-    }))).toThrow("representedSubTeam.address.memberPath 'OtherSquad' does not match representedSubTeam.memberPath 'BuildSquad'");
+      memberRouteKey: "BuildSquad/qa_specialist",
+    }))).toThrow("participant.memberRouteKey 'BuildSquad/qa_specialist' does not match participant.memberPath 'BuildSquad/review_lead'");
   });
 
-  it("rejects represented-subteam paths that are not a participant path prefix", () => {
+  it("rejects address route keys that diverge from the address path", () => {
     expect(() => buildDeliveryEndpointForParticipant(buildParticipant({
-      representedSubTeam: {
-        memberKind: "agent_team",
-        memberName: "OtherSquad",
-        memberPath: ["OtherSquad"],
-        memberRouteKey: "OtherSquad",
-        memberRunId: "other-squad-run",
-        teamDefinitionId: "other-squad-team",
-        address: {
-          teamRunId: "team-parent",
-          memberPath: ["OtherSquad"],
-          memberRouteKey: "OtherSquad",
-        },
+      address: {
+        teamRunId: "team-parent",
+        memberPath: ["BuildSquad", "review_lead"],
+        memberRouteKey: "BuildSquad/qa_specialist",
       },
-    }))).toThrow("participant.representedSubTeam.memberPath 'OtherSquad' is not a prefix of participant.memberPath 'BuildSquad/review_lead'");
+    }))).toThrow("memberRouteKey 'BuildSquad/qa_specialist' does not match memberPath 'BuildSquad/review_lead'");
   });
 });

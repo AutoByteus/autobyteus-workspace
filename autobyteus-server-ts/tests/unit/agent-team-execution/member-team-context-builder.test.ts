@@ -1,307 +1,148 @@
 import { describe, expect, it, vi } from "vitest";
-import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { MemberTeamContextBuilder } from "../../../src/agent-team-execution/services/member-team-context-builder.js";
 
-describe("MemberTeamContextBuilder", () => {
-  it("derives teammate manifest, allowed recipients, and send-message capability once", async () => {
-    const deliverInterAgentMessage = vi.fn().mockResolvedValue({ accepted: true });
-    const builder = new MemberTeamContextBuilder({
-      getDefinitionById: vi.fn().mockResolvedValue({
-        instructions: "Coordinate carefully.",
-      }),
-    } as any);
+const buildBuilder = (definition: { name?: string; instructions?: string } = {}) =>
+  new MemberTeamContextBuilder({
+    getDefinitionById: vi.fn().mockResolvedValue(definition),
+  } as never);
 
-    const result = await builder.build({
+describe("MemberTeamContextBuilder", () => {
+  it("builds one root-canonical collaboration binding and filters outgoing handoffs", async () => {
+    const deliverInterAgentMessage = vi.fn().mockResolvedValue({ accepted: true });
+    const effectiveHandoffs = [
+      {
+        from: "/product_manager",
+        to: "/research_team",
+        rules: ["When research is needed."],
+      },
+      {
+        from: "/research_team/research_lead",
+        to: "/product_manager",
+        rules: ["When research is ready."],
+      },
+    ];
+
+    const result = await buildBuilder({
+      name: "Product Team",
+      instructions: "Coordinate carefully.",
+    }).build({
       teamRunId: "team-1",
       teamDefinitionId: "team-def-1",
       teamBackendKind: TeamBackendKind.MIXED,
-      currentMemberName: "Professor",
-      currentMemberRouteKey: "professor",
-      currentMemberRunId: "run-professor",
-      members: [
-        {
-          memberName: "Professor",
-          memberPath: ["professor"],
-          memberRouteKey: "professor",
-          memberRunId: "run-professor",
-          runtimeKind: RuntimeKind.AUTOBYTEUS,
-          role: "lead",
-          description: "Leads the work.",
-        },
-        {
-          memberName: "Writer",
-          memberPath: ["writer"],
-          memberRouteKey: "writer",
-          memberRunId: "run-writer",
-          runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-          role: "writer",
-          description: "Drafts the answer.",
-        },
-      ],
+      currentMemberName: "product_manager",
+      currentMemberPath: ["product_manager"],
+      currentMemberRouteKey: "product_manager",
+      currentMemberRunId: "run-product-manager",
+      collaborationRootTeamRunId: "team-1",
+      teamMountPath: [],
+      effectiveHandoffs,
       deliverInterAgentMessage,
     });
 
+    expect(result.teamName).toBe("Product Team");
     expect(result.teamInstruction).toBe("Coordinate carefully.");
-    expect(result.teamBackendKind).toBe(TeamBackendKind.MIXED);
-    expect(result.memberName).toBe("Professor");
+    expect(result.collaboration.addressing).toEqual({
+      rootTeamRunId: "team-1",
+      memberAddress: "/product_manager",
+      memberPath: ["product_manager"],
+      immediateTeamAddress: "/",
+      immediateTeamPath: [],
+    });
+    expect(result.collaboration.outgoingHandoffs).toEqual([effectiveHandoffs[0]]);
+    expect(result.collaboration.deliverInterAgentMessage).toBe(deliverInterAgentMessage);
+    expect(result.sendMessageToEnabled).toBe(true);
     expect(result.tokenUsageExecutionScope).toEqual({
       rootTeamRunId: "team-1",
       teamScopeAddress: { segments: [] },
-      currentRunAddress: { segments: [{ kind: "member", memberRouteKey: "professor" }] },
+      currentRunAddress: { segments: [{ kind: "member", memberRouteKey: "product_manager" }] },
     });
-    expect(result.members).toEqual([
-      expect.objectContaining({ memberName: "Professor", runtimeKind: RuntimeKind.AUTOBYTEUS }),
-      expect.objectContaining({ memberName: "Writer", runtimeKind: RuntimeKind.CODEX_APP_SERVER }),
-    ]);
-    expect(result.allowedRecipientNames).toEqual(["Writer"]);
-    expect(result.sendMessageToEnabled).toBe(true);
-    expect(result.deliverInterAgentMessage).toBe(deliverInterAgentMessage);
+    expect(Object.isFrozen(result.collaboration.addressing)).toBe(true);
+    expect(Object.isFrozen(result.collaboration.outgoingHandoffs)).toBe(true);
   });
 
-  it("enables send_message_to when delivery exists even without static roster recipients", async () => {
-    const deliverInterAgentMessage = vi.fn().mockResolvedValue({ accepted: true });
-    const builder = new MemberTeamContextBuilder({
-      getDefinitionById: vi.fn().mockResolvedValue({
-        instructions: "Coordinate exact task-agent replies.",
-      }),
-    } as any);
+  it("rebases a child-local member path under its collaboration mount", async () => {
+    const result = await buildBuilder({ name: "Field Team" }).build({
+      teamRunId: "field-team-run",
+      teamDefinitionId: "field-team-def",
+      teamBackendKind: TeamBackendKind.MIXED,
+      currentMemberName: "interviewer",
+      currentMemberPath: ["interviewer"],
+      currentMemberRouteKey: "interviewer",
+      currentMemberRunId: "run-interviewer",
+      coordinatorMemberRouteKey: "field_lead",
+      collaborationRootTeamRunId: "root-run",
+      teamMountPath: ["research_team", "field_team"],
+      effectiveHandoffs: [{
+        from: "/research_team/field_team/interviewer",
+        to: "/research_team/research_lead",
+        rules: ["When the report is ready."],
+      }],
+    });
 
-    const result = await builder.build({
+    expect(result.memberPath).toEqual(["interviewer"]);
+    expect(result.collaboration.addressing).toEqual({
+      rootTeamRunId: "root-run",
+      memberAddress: "/research_team/field_team/interviewer",
+      memberPath: ["research_team", "field_team", "interviewer"],
+      immediateTeamAddress: "/research_team/field_team",
+      immediateTeamPath: ["research_team", "field_team"],
+    });
+    expect(result.collaboration.outgoingHandoffs).toHaveLength(1);
+    expect(result.sendMessageToEnabled).toBe(false);
+  });
+
+  it("keeps delivery enabled for an Agent with no configured outgoing handoffs", async () => {
+    const deliverInterAgentMessage = vi.fn();
+    const result = await buildBuilder().build({
       teamRunId: "team-solo",
       teamDefinitionId: "team-def-solo",
       teamBackendKind: TeamBackendKind.MIXED,
-      currentMemberName: "Solo",
+      currentMemberName: "solo",
       currentMemberRouteKey: "solo",
       currentMemberRunId: "run-solo",
-      members: [
-        {
-          memberName: "Solo",
-          memberPath: ["solo"],
-          memberRouteKey: "solo",
-          memberRunId: "run-solo",
-          runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-        },
-      ],
+      collaborationRootTeamRunId: "team-solo",
+      effectiveHandoffs: [],
       deliverInterAgentMessage,
     });
 
-    expect(result.communicationRecipients).toEqual([]);
-    expect(result.allowedRecipientNames).toEqual([]);
+    expect(result.collaboration.outgoingHandoffs).toEqual([]);
+    expect(result.collaboration.deliverInterAgentMessage).toBe(deliverInterAgentMessage);
     expect(result.sendMessageToEnabled).toBe(true);
-    expect(result.deliverInterAgentMessage).toBe(deliverInterAgentMessage);
   });
 
-  it("exposes subteam representatives by visible leaf name while preserving represented-subteam identity", async () => {
-    const builder = new MemberTeamContextBuilder({
-      getDefinitionById: vi.fn().mockResolvedValue({ instructions: "" }),
-    } as any);
-
-    const result = await builder.build({
-      teamRunId: "team-parent",
-      teamDefinitionId: "team-def",
+  it("clones address and handoff arrays so later source mutation cannot change the binding", async () => {
+    const currentMemberPath = ["research_lead"];
+    const teamMountPath = ["research_team"];
+    const rules = ["When field research is required."];
+    const handoffs = [{
+      from: "/research_team/research_lead",
+      to: "/research_team/field_team",
+      rules,
+    }];
+    const result = await buildBuilder().build({
+      teamRunId: "research-run",
+      teamDefinitionId: "research-def",
       teamBackendKind: TeamBackendKind.MIXED,
-      currentMemberName: "program_manager",
-      currentMemberPath: ["program_manager"],
-      currentMemberRouteKey: "program_manager",
-      currentMemberRunId: "run-program-manager",
-      members: [
-        {
-          memberName: "program_manager",
-          memberPath: ["program_manager"],
-          memberRouteKey: "program_manager",
-          memberRunId: "run-program-manager",
-          runtimeKind: RuntimeKind.AUTOBYTEUS,
-        },
-        {
-          memberKind: "agent_team",
-          memberName: "BuildSquad",
-          memberPath: ["BuildSquad"],
-          memberRouteKey: "BuildSquad",
-          memberRunId: "run-build-squad",
-          teamDefinitionId: "build-squad-team",
-          coordinatorMemberRouteKey: "BuildSquad/review_lead",
-          representative: {
-            memberKind: "agent",
-            memberName: "review_lead",
-            memberPath: ["BuildSquad", "review_lead"],
-            memberRouteKey: "BuildSquad/review_lead",
-            memberRunId: "run-review-lead",
-            runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-            role: "reviewer",
-            description: "Coordinates implementation review.",
-          },
-        },
-      ],
-      deliverInterAgentMessage: vi.fn(),
+      currentMemberName: "research_lead",
+      currentMemberPath,
+      currentMemberRouteKey: "research_lead",
+      currentMemberRunId: "run-research-lead",
+      collaborationRootTeamRunId: "root-run",
+      teamMountPath,
+      effectiveHandoffs: handoffs,
     });
 
-    expect(result.allowedRecipientNames).toEqual(["review_lead"]);
-    expect(result.communicationRecipients).toHaveLength(1);
-    expect(result.communicationRecipients[0]).toEqual(expect.objectContaining({
-      recipientName: "review_lead",
-      scope: "subteam_representative",
-      delivery: {
-        teamRunId: "team-parent",
-        selector: { kind: "route_key", memberRouteKey: "BuildSquad/review_lead" },
-      },
-    }));
-    expect(result.communicationRecipients[0]?.participant).toEqual(expect.objectContaining({
-      memberName: "review_lead",
-      memberRouteKey: "BuildSquad/review_lead",
-      representedSubTeam: expect.objectContaining({
-        memberName: "BuildSquad",
-        memberRouteKey: "BuildSquad",
-      }),
-    }));
-  });
+    currentMemberPath[0] = "mutated";
+    teamMountPath[0] = "mutated";
+    rules[0] = "mutated";
+    handoffs[0]!.to = "/mutated";
 
-  it("adds parent boundary recipients only for the represented child coordinator", async () => {
-    const builder = new MemberTeamContextBuilder({
-      getDefinitionById: vi.fn().mockResolvedValue({ instructions: "" }),
-    } as any);
-    const parentMember = {
-      memberKind: "agent" as const,
-      memberName: "program_manager",
-      memberPath: ["program_manager"],
-      memberRouteKey: "program_manager",
-      memberRunId: "run-program-manager",
-      runtimeKind: RuntimeKind.AUTOBYTEUS,
-      role: "manager",
-      description: "Owns the parent plan.",
-      address: {
-        teamRunId: "team-parent",
-        memberPath: ["program_manager"],
-        memberRouteKey: "program_manager",
-      },
-    };
-    const baseInput = {
-      teamRunId: "team-child",
-      teamDefinitionId: "child-team",
-      teamBackendKind: TeamBackendKind.MIXED,
-      coordinatorMemberRouteKey: "review_lead",
-      members: [
-        {
-          memberName: "review_lead",
-          memberPath: ["review_lead"],
-          memberRouteKey: "review_lead",
-          memberRunId: "run-review-lead",
-          runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-        },
-        {
-          memberName: "qa_specialist",
-          memberPath: ["qa_specialist"],
-          memberRouteKey: "qa_specialist",
-          memberRunId: "run-qa",
-          runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
-        },
-      ],
-      parentBoundary: {
-        parentTeamRunId: "team-parent",
-        representedSubTeam: {
-          memberKind: "agent_team" as const,
-          memberName: "BuildSquad",
-          memberPath: ["BuildSquad"],
-          memberRouteKey: "BuildSquad",
-          memberRunId: "run-build-squad",
-          teamDefinitionId: "child-team",
-          address: {
-            teamRunId: "team-parent",
-            memberPath: ["BuildSquad"],
-            memberRouteKey: "BuildSquad",
-          },
-        },
-        parentMembers: [parentMember],
-      },
-      deliverInterAgentMessage: vi.fn(),
-    };
-
-    const coordinator = await builder.build({
-      ...baseInput,
-      currentMemberName: "review_lead",
-      currentMemberPath: ["review_lead"],
-      currentMemberRouteKey: "review_lead",
-      currentMemberRunId: "run-review-lead",
-    });
-    expect(coordinator.allowedRecipientNames).toEqual(["qa_specialist", "program_manager"]);
-    expect(coordinator.communicationRecipients.map((recipient) => recipient.scope)).toEqual([
-      "local_agent",
-      "parent_boundary_agent",
-    ]);
-    expect(coordinator.communicationRecipients[1]?.delivery).toEqual({
-      teamRunId: "team-parent",
-      selector: { kind: "route_key", memberRouteKey: "program_manager" },
-    });
-
-    const sibling = await builder.build({
-      ...baseInput,
-      currentMemberName: "qa_specialist",
-      currentMemberPath: ["qa_specialist"],
-      currentMemberRouteKey: "qa_specialist",
-      currentMemberRunId: "run-qa",
-    });
-    expect(sibling.allowedRecipientNames).toEqual(["review_lead"]);
-  });
-
-  it("rejects duplicate visible communication recipient names", async () => {
-    const builder = new MemberTeamContextBuilder({
-      getDefinitionById: vi.fn().mockResolvedValue({ instructions: "" }),
-    } as any);
-
-    await expect(builder.build({
-      teamRunId: "team-parent",
-      teamDefinitionId: "team-def",
-      teamBackendKind: TeamBackendKind.MIXED,
-      currentMemberName: "program_manager",
-      currentMemberPath: ["program_manager"],
-      currentMemberRouteKey: "program_manager",
-      currentMemberRunId: "run-program-manager",
-      members: [
-        {
-          memberName: "program_manager",
-          memberPath: ["program_manager"],
-          memberRouteKey: "program_manager",
-          memberRunId: "run-program-manager",
-          runtimeKind: RuntimeKind.AUTOBYTEUS,
-        },
-        {
-          memberKind: "agent_team",
-          memberName: "BuildSquad",
-          memberPath: ["BuildSquad"],
-          memberRouteKey: "BuildSquad",
-          memberRunId: "run-build-squad",
-          teamDefinitionId: "build-squad-team",
-          representative: {
-            memberKind: "agent",
-            memberName: "review_lead",
-            memberPath: ["BuildSquad", "review_lead"],
-            memberRouteKey: "BuildSquad/review_lead",
-            memberRunId: "run-review-lead",
-            runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-            role: null,
-            description: null,
-          },
-        },
-        {
-          memberKind: "agent_team",
-          memberName: "AuditSquad",
-          memberPath: ["AuditSquad"],
-          memberRouteKey: "AuditSquad",
-          memberRunId: "run-audit-squad",
-          teamDefinitionId: "audit-squad-team",
-          representative: {
-            memberKind: "agent",
-            memberName: "review_lead",
-            memberPath: ["AuditSquad", "review_lead"],
-            memberRouteKey: "AuditSquad/review_lead",
-            memberRunId: "run-audit-review-lead",
-            runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-            role: null,
-            description: null,
-          },
-        },
-      ],
-      deliverInterAgentMessage: vi.fn(),
-    })).rejects.toThrow("Ambiguous communication recipient 'review_lead'");
+    expect(result.collaboration.addressing.memberAddress).toBe("/research_team/research_lead");
+    expect(result.collaboration.outgoingHandoffs).toEqual([{
+      from: "/research_team/research_lead",
+      to: "/research_team/field_team",
+      rules: ["When field research is required."],
+    }]);
   });
 });

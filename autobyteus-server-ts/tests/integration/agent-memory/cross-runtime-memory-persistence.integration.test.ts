@@ -1367,6 +1367,15 @@ describe("cross-runtime memory persistence integration", () => {
           memberName: input.currentMemberName,
           memberRouteKey: input.currentMemberRouteKey,
           memberRunId: input.currentMemberRunId,
+          collaboration: {
+            addressing: {
+              rootTeamRunId: input.teamRunId,
+              memberAddress: `/${input.currentMemberName}`,
+              memberPath: [input.currentMemberName],
+              immediateTeamAddress: "/",
+              immediateTeamPath: [],
+            },
+          },
         })),
       } as never,
       publish: vi.fn(),

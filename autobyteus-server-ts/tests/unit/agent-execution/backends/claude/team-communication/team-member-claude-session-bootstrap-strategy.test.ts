@@ -14,6 +14,15 @@ const memberTeamContext = new MemberTeamContext({
   memberName: "Professor",
   memberRouteKey: "professor",
   memberRunId: "run-professor",
+  collaboration: {
+    addressing: {
+      rootTeamRunId: "team-1",
+      memberAddress: "/Professor",
+      memberPath: ["Professor"],
+      immediateTeamAddress: "/",
+      immediateTeamPath: [],
+    },
+  },
 });
 
 describe("TeamMemberClaudeSessionBootstrapStrategy", () => {

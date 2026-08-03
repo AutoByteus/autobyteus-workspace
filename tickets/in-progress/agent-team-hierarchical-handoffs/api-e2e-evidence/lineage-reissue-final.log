@@ -1,0 +1,36 @@
+API-REV-002 bounded lineage reissue verification
+Scope: reporting-only TR-F-001 correction; no executable rerun requested or warranted.
+
+1. Approved upstream lineage evidence:
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/solution-revision-record.md: 13: | SR-005 | `architecture_reviewer` / `design-review-report.md` / round 3 | `DR-003` | `Design Impact` | `Ready for architecture re-review` |
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/architecture-review-revision-record.md: 12: | ARCH-REV-004 | Round 4 / SR-005 re-review | `SR-005` | `Fail` | `Pass` | `DR-003` |
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/implementation-revision-record.md: 10: | IR-002 | `code_reviewer` / `code-review-report.md` / `CRR-001` | `CR-F-001`, `CR-F-002` | `Local Fix` | `SR-001`–`SR-005`; `ARCH-REV-004`; `CRR-001`; `API-REV/DR: N/A` | `Ready for code re-review` |
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-revision-record.md: 8: | `CRR-002` | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md` | IR-002 re-review / commit `93cc7ed34` | `Fail — Local Fix` | `Pass` | `CR-F-001`, `CR-F-002` |
+/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-revision-record.md: 9: | `CRR-003` | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-test-review-report.md` | API-REV-001 proportional test review | `N/A — first test review; CRR-002 source Pass` | `Fail — Local Fix` | `TR-F-001` |
+
+2. Canonical API-REV-001 lineage fields:
+| API-REV-001 | `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`; Round 1 | SR-005; ARCH-REV-004; IR-002; CRR-002 | N/A | Pass / 97.0% |
+- Related revision IDs: SR-005; ARCH-REV-004; IR-002; CRR-002.
+LINEAGE_FIELD_MATCH=PASS SR-005; ARCH-REV-004; IR-002; CRR-002
+
+3. API-REV-002 canonical artifact state:
+INVESTIGATION_REVISION=API-REV-002_ROUND_2
+EXECUTION_REPORT_REVISION=API-REV-002_ROUND_2
+REVISION_INDEX_AND_ENTRY=PASS
+
+4. Referenced absolute path and artifact hygiene:
+REFERENCED_PATHS=PASS count=83
+ARTIFACT_HYGIENE=PASS
+GIT_DIFF_CHECK=PASS
+
+5. Reviewed durable test manifest:
+TEST_FILE_COUNT=48
+TEST_MANIFEST_SHA256=1fd87b43130c6e64b7504281ceb1106ad45fb7e1e8a58b247eb260f03d2975cd
+TEST_MANIFEST_UNCHANGED=PASS
+
+6. Bounded execution decision:
+EXECUTABLE_ARTIFACT_CHANGED=NO
+EXECUTABLE_TEST_RERUN=NOT_WARRANTED
+PRIOR_API_RESULT=PASS_97.0_PERCENT
+CURRENT_API_RESULT=PASS_97.0_PERCENT
+TR-F-001=RESOLVED

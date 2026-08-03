@@ -541,7 +541,7 @@ Rules:
         content: string;
       }): Promise<void> => {
         const argsJson = JSON.stringify({
-          recipient_name: input.recipientName,
+          recipient_name: `./${input.recipientName}`,
           content: input.content,
           message_type: input.messageType,
         });
@@ -633,7 +633,7 @@ Rules:
               "TOOL_EXECUTION_STARTED",
             );
             expect(matchingToolCalls[0]?.toolArgs).toMatchObject({
-              recipient_name: input.recipientMemberName,
+              recipient_name: `./${input.recipientMemberName}`,
               content: input.content,
             });
             expect(matchingToolResults[0]?.sourceEvent).toBe(
@@ -687,7 +687,7 @@ Rules:
               ? (metadata.arguments as Record<string, unknown>)
               : {};
           return (
-            args.recipient_name === input.recipientMemberName &&
+            args.recipient_name === `./${input.recipientMemberName}` &&
             args.content === input.content
           );
         };
@@ -1051,7 +1051,7 @@ Rules:
 
       try {
         const argsJson = JSON.stringify({
-          recipient_name: "specialist",
+          recipient_name: "/research_subteam/specialist",
           content: `Nested relay ${relayToken}`,
           message_type: "nested_roundtrip",
         });
@@ -1308,7 +1308,7 @@ Rules:
         "2. Rearrange the letters in LISTEN into another common English word. " +
         "Reply with exactly one short sentence containing both answers.";
       const argsJson = JSON.stringify({
-        recipient_name: "student",
+        recipient_name: "./student",
         content: reasoningPrompt,
         message_type: "reasoning_check",
       });

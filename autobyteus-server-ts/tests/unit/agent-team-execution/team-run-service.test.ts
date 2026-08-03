@@ -740,7 +740,7 @@ describe("TeamRunService", () => {
           llmConfig: null,
         },
       ],
-    })).rejects.toThrow("must be an agent member");
+    })).rejects.toThrow("must have exactly one direct Agent coordinator 'SubTeam'");
     expect(mocks.agentTeamRunManager.createTeamRun).not.toHaveBeenCalled();
   });
 });

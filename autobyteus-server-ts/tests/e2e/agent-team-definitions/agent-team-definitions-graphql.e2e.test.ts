@@ -55,6 +55,7 @@ async function writeRootTeamFixture(input: {
     refType: "agent" | "agent_team";
     refScope: "shared" | "team_local" | "application_owned";
   }>;
+  handoffs?: Array<{ from: string; to: string; rules: string[] }>;
 }) {
   const teamDir = path.join(input.dataDir, "agent-teams", input.teamId);
   await fs.mkdir(teamDir, { recursive: true });
@@ -76,6 +77,7 @@ async function writeRootTeamFixture(input: {
       {
         coordinatorMemberName: input.coordinatorMemberName ?? "",
         members: input.members ?? [],
+        handoffs: input.handoffs ?? [],
         avatarUrl: null,
       },
       null,
@@ -198,11 +200,25 @@ describe("Agent team definitions GraphQL e2e", () => {
         dataDir,
         teamId: initialNestedTeamId,
         name: `Nested Team A ${unique}`,
+        coordinatorMemberName: "coordinator",
+        members: [{
+          memberName: "coordinator",
+          ref: initialAgentId,
+          refType: "agent",
+          refScope: "shared",
+        }],
       }),
       await writeRootTeamFixture({
         dataDir,
         teamId: updatedNestedTeamId,
         name: `Nested Team B ${unique}`,
+        coordinatorMemberName: "coordinator",
+        members: [{
+          memberName: "coordinator",
+          ref: updatedAgentId,
+          refType: "agent",
+          refScope: "shared",
+        }],
       }),
     ]) {
       cleanupPaths.add(supportPath);
@@ -229,6 +245,7 @@ describe("Agent team definitions GraphQL e2e", () => {
             refType
             refScope
           }
+          handoffs { from to rules }
         }
       }
     `;
@@ -253,6 +270,7 @@ describe("Agent team definitions GraphQL e2e", () => {
           refType: "AGENT" | "AGENT_TEAM";
           refScope?: "SHARED" | "TEAM_LOCAL" | null;
         }>;
+        handoffs: Array<{ from: string; to: string; rules: string[] }>;
       };
     }>(createMutation, {
       input: {
@@ -283,6 +301,11 @@ describe("Agent team definitions GraphQL e2e", () => {
             refScope: "SHARED",
           },
         ],
+        handoffs: [{
+          from: "/leader",
+          to: "/helper",
+          rules: ["When implementation support is required.", "After the plan is approved."],
+        }],
       },
     });
 
@@ -299,6 +322,11 @@ describe("Agent team definitions GraphQL e2e", () => {
     });
     expect(created.createAgentTeamDefinition.nodes).toHaveLength(2);
     expect(created.createAgentTeamDefinition.nodes[0]?.ref).toBe(initialAgentId);
+    expect(created.createAgentTeamDefinition.handoffs).toEqual([{
+      from: "/leader",
+      to: "/helper",
+      rules: ["When implementation support is required.", "After the plan is approved."],
+    }]);
 
     const teamDir = path.join(dataDir, "agent-teams", created.createAgentTeamDefinition.id);
     const [teamMdRaw, teamConfigRaw] = await Promise.all([
@@ -322,6 +350,11 @@ describe("Agent team definitions GraphQL e2e", () => {
         { memberName: "leader", ref: initialAgentId, refType: "agent", refScope: "shared" },
         { memberName: "helper", ref: initialNestedTeamId, refType: "agent_team", refScope: "shared" },
       ],
+      handoffs: [{
+        from: "/leader",
+        to: "/helper",
+        rules: ["When implementation support is required.", "After the plan is approved."],
+      }],
     });
 
     const updateMutation = `
@@ -344,6 +377,7 @@ describe("Agent team definitions GraphQL e2e", () => {
             refType
             refScope
           }
+          handoffs { from to rules }
         }
       }
     `;
@@ -366,6 +400,7 @@ describe("Agent team definitions GraphQL e2e", () => {
           refType: "AGENT" | "AGENT_TEAM";
           refScope?: "SHARED" | "TEAM_LOCAL" | null;
         }>;
+        handoffs: Array<{ from: string; to: string; rules: string[] }>;
       };
     }>(updateMutation, {
       input: {
@@ -396,6 +431,11 @@ describe("Agent team definitions GraphQL e2e", () => {
             refScope: "SHARED",
           },
         ],
+        handoffs: [{
+          from: "/helper",
+          to: "/subteam",
+          rules: ["When the updated nested team must execute."],
+        }],
       },
     });
 
@@ -411,6 +451,11 @@ describe("Agent team definitions GraphQL e2e", () => {
       },
     });
     expect(updated.updateAgentTeamDefinition.nodes[1]?.refType).toBe("AGENT_TEAM");
+    expect(updated.updateAgentTeamDefinition.handoffs).toEqual([{
+      from: "/helper",
+      to: "/subteam",
+      rules: ["When the updated nested team must execute."],
+    }]);
 
     const updatedConfigAfterWrite = JSON.parse(
       await fs.readFile(path.join(teamDir, "team-config.json"), "utf-8"),
@@ -423,6 +468,7 @@ describe("Agent team definitions GraphQL e2e", () => {
         refType: "agent" | "agent_team";
         refScope?: "shared" | "team_local";
       }>;
+      handoffs: Array<{ from: string; to: string; rules: string[] }>;
     };
 
     expect(updatedConfigAfterWrite.defaultLaunchConfig).toEqual({
@@ -432,6 +478,11 @@ describe("Agent team definitions GraphQL e2e", () => {
         reasoning_effort: "high",
       },
     });
+    expect(updatedConfigAfterWrite.handoffs).toEqual([{
+      from: "/helper",
+      to: "/subteam",
+      rules: ["When the updated nested team must execute."],
+    }]);
 
     const preserved = await execGraphql<{
       updateAgentTeamDefinition: {
@@ -473,6 +524,26 @@ describe("Agent team definitions GraphQL e2e", () => {
       },
     });
 
+    const rejected = await runGraphql(updateMutation, {
+      input: {
+        id: created.createAgentTeamDefinition.id,
+        handoffs: [{
+          from: "/missing",
+          to: "/helper",
+          rules: ["This invalid update must not persist."],
+        }],
+      },
+    });
+    expect(rejected.errors?.[0]?.extensions?.code).toBe("COLLABORATION_TARGET_NOT_FOUND");
+    const configAfterRejectedUpdate = JSON.parse(
+      await fs.readFile(path.join(teamDir, "team-config.json"), "utf-8"),
+    ) as { handoffs: Array<{ from: string; to: string; rules: string[] }> };
+    expect(configAfterRejectedUpdate.handoffs).toEqual([{
+      from: "/helper",
+      to: "/subteam",
+      rules: ["When the updated nested team must execute."],
+    }]);
+
     const cleared = await execGraphql<{
       updateAgentTeamDefinition: {
         id: string;
@@ -486,6 +557,7 @@ describe("Agent team definitions GraphQL e2e", () => {
       input: {
         id: created.createAgentTeamDefinition.id,
         defaultLaunchConfig: null,
+        handoffs: [],
       },
     });
 
@@ -496,6 +568,7 @@ describe("Agent team definitions GraphQL e2e", () => {
       defaultLaunchConfig?: Record<string, unknown> | null;
     };
     expect(clearedConfigAfterWrite.defaultLaunchConfig).toBeNull();
+    expect((clearedConfigAfterWrite as { handoffs?: unknown }).handoffs).toEqual([]);
 
     const templateId = `_template_${unique}`;
     const templateDir = path.join(dataDir, "agent-teams", templateId);
@@ -659,6 +732,7 @@ describe("Agent team definitions GraphQL e2e", () => {
             refType
             refScope
           }
+          handoffs { from to rules }
         }
       }
     `;
@@ -673,6 +747,7 @@ describe("Agent team definitions GraphQL e2e", () => {
           refType: "AGENT" | "AGENT_TEAM";
           refScope?: "SHARED" | "TEAM_LOCAL" | null;
         }>;
+        handoffs: Array<{ from: string; to: string; rules: string[] }>;
       } | null;
     }>(getQuery, { id: teamId });
 
@@ -696,6 +771,7 @@ describe("Agent team definitions GraphQL e2e", () => {
             refType
             refScope
           }
+          handoffs { from to rules }
         }
       }
     `;
@@ -710,6 +786,7 @@ describe("Agent team definitions GraphQL e2e", () => {
           refType: "AGENT" | "AGENT_TEAM";
           refScope?: "SHARED" | "TEAM_LOCAL" | null;
         }>;
+        handoffs: Array<{ from: string; to: string; rules: string[] }>;
       };
     }>(updateMutation, {
       input: {
@@ -729,6 +806,11 @@ describe("Agent team definitions GraphQL e2e", () => {
             refScope: "TEAM_LOCAL",
           },
         ],
+        handoffs: [{
+          from: "/shared_lead",
+          to: "/local_reviewer",
+          rules: ["When local review is required."],
+        }],
       },
     });
 
@@ -747,6 +829,11 @@ describe("Agent team definitions GraphQL e2e", () => {
         refScope: "TEAM_LOCAL",
       },
     ]);
+    expect(updated.updateAgentTeamDefinition.handoffs).toEqual([{
+      from: "/shared_lead",
+      to: "/local_reviewer",
+      rules: ["When local review is required."],
+    }]);
 
     const updatedConfig = JSON.parse(
       await fs.readFile(path.join(teamDir, "team-config.json"), "utf-8"),
@@ -758,6 +845,7 @@ describe("Agent team definitions GraphQL e2e", () => {
         refType: "agent" | "agent_team";
         refScope?: "shared" | "team_local";
       }>;
+      handoffs?: Array<{ from: string; to: string; rules: string[] }>;
     };
 
     expect(updatedConfig).toMatchObject({
@@ -776,6 +864,11 @@ describe("Agent team definitions GraphQL e2e", () => {
           refScope: "team_local",
         },
       ],
+      handoffs: [{
+        from: "/shared_lead",
+        to: "/local_reviewer",
+        rules: ["When local review is required."],
+      }],
     });
   });
 
@@ -792,8 +885,14 @@ describe("Agent team definitions GraphQL e2e", () => {
       name: `Company ${unique}`,
       description: "Company root team",
       instructions: "Coordinate company work.",
-      coordinatorMemberName: "department",
+      coordinatorMemberName: "root_lead",
       members: [
+        {
+          memberName: "root_lead",
+          ref: "root-lead",
+          refType: "agent",
+          refScope: "team_local",
+        },
         {
           memberName: "department",
           ref: localTeamId,
@@ -803,6 +902,11 @@ describe("Agent team definitions GraphQL e2e", () => {
       ],
     });
     cleanupPaths.add(parentTeamDir);
+    await writeLocalAgentFixture({
+      ownerTeamDir: parentTeamDir,
+      agentId: "root-lead",
+      name: `Root Lead ${unique}`,
+    });
 
     const localTeamDir = path.join(parentTeamDir, "agent-teams", localTeamId);
     await fs.mkdir(localTeamDir, { recursive: true });
@@ -908,6 +1012,12 @@ describe("Agent team definitions GraphQL e2e", () => {
       ownershipScope: "SHARED",
       ownerTeamId: null,
       nodes: [
+        {
+          memberName: "root_lead",
+          ref: "root-lead",
+          refType: "AGENT",
+          refScope: "TEAM_LOCAL",
+        },
         {
           memberName: "department",
           ref: localTeamId,
