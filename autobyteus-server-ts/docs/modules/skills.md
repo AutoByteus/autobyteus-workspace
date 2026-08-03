@@ -2,14 +2,14 @@
 
 ## Scope
 
-Skill catalog, retrieval, CRUD/file workflows, and configured runtime skill
-resolution for agent definitions.
+The Skills module owns managed skill discovery, catalog and GraphQL CRUD/file
+workflows, and configured runtime skill resolution for agent definitions. It
+does not own an agent-facing skill-tool boundary.
 
 ## TS Source
 
 - `src/skills`
 - `src/api/graphql/types/skills.ts`
-- `src/agent-tools/skills`
 
 ## Main Service
 
@@ -18,7 +18,7 @@ resolution for agent definitions.
 
 ## Skills Catalog
 
-The Skills module has a normal catalog surface backed by configured skills
+The Skills module has a normal catalog surface backed by configured skill
 directories plus bundled skill layouts found in app-data and imported agent
 package definition roots. The catalog is what the GraphQL `skills` and
 `skill(name)` fields expose to the frontend Skills page and Skill Detail/File
@@ -50,35 +50,8 @@ Create/edit behavior still depends on the existing Skills and File Explorer
 operations plus the underlying filesystem permissions of each resolved skill
 root. Repository-backed history, tags, and rollbacks are external to AutoByteus.
 
-## Agent-Facing Skill Tools
-
-Server-owned skill tools are registered from `src/agent-tools/skills` under the
-`Skills` category:
-
-- `get_available_skills` lists the configured skill names and descriptions
-  available to the current agent runtime context.
-- `get_skill_content` retrieves a configured skill's `SKILL.md` content plus a
-  readable file tree for inspection.
-- `load_skill` loads one configured server-managed skill for runtime use and
-  returns the skill base path, path-resolution guidance, and formatted
-  `SKILL.md` content with resolvable relative Markdown links rewritten to
-  absolute filesystem paths.
-
-`load_skill` is intentionally part of the server Skills tool group rather than
-the core `General` tool group. It resolves skills through normal
-server-managed skill sources and CRUD/file-workspace flows. It does not
-register arbitrary model-supplied filesystem paths as skills, and runtime calls
-reject path-like skill inputs. Unmanaged skill directories must be added through
-normal skill-source or skill-creation workflows first and then explicitly
-configured on the agent before that agent can access them at runtime.
-
-The agent-runtime tool boundary is intentionally narrower than the catalog
-boundary. `SkillService.listSkills()` / `skill(name)` can still expose the
-catalog for administration, browsing, and authoring, but runtime tool calls use
-the agent's configured-skill allowlist. If skill access is disabled for the
-runtime (`NONE`) or the agent has zero configured skills, the skill tools expose
-no skills. AutoByteus does not have a user-facing or API-supported "all
-installed skills" / global discovery runtime mode.
+The administrative catalog is broader than any one agent's runtime configuration.
+Listing or browsing a catalog skill does not grant an agent permission to use it.
 
 ### Catalog Reload
 
@@ -91,9 +64,10 @@ returns refreshed `skills` plus refreshed `skillSources` metadata from
 
 Reload is global for all configured skill sources. It preserves existing
 discovery ordering, duplicate first-seen precedence, malformed-skill
-warning/skip behavior, and disabled-skill lookup by skill name. It is a catalog
-and UI refresh for browsing and future selections; it does not mutate skill
-material that has already been loaded into currently running agent sessions.
+warning/skip behavior, and disabled-skill lookup by skill name. It refreshes
+administrative browsing and future selections. It does not rewrite a running
+native agent's launch-time skill catalog; direct reads against an already
+advertised path can still observe current file contents.
 
 ## Configured Agent Skill Resolution
 
@@ -138,29 +112,62 @@ context before global fallback.
 Runtime bootstraps consume the resolved `Skill[]` records, not a package-wide
 private skill scan.
 
-- Codex materializes unresolved-by-native-Codex entries as
-  `.codex/skills/<skillName>` directory symlinks whose targets are the exact
-  resolved `Skill.rootPath` package roots.
-- Native AutoByteus passes the exact resolved `Skill.rootPath` values to
-  `AgentConfig.skills`, including package-private canonical skill roots under
-  `skills/<skillName>`.
-- GraphQL `skills` / `skill(name)` and the frontend Skills page expose bundled
-  package skills as normal catalog entries when their package roots are
-  available, so users can browse their `SKILL.md` content and files through the
-  existing Skill Detail/File Explorer flow.
+### Native AutoByteus
+
+The server passes the exact resolved `Skill.rootPath` values to
+`AgentConfig.skills`. Core registers those roots and the mandatory native prompt
+processor advertises only the configured skill name, description, and absolute
+`SKILL.md` path, plus shared rules to read the entry point before governed work
+and to resolve relative references from its directory.
+
+The server does not register a `Skills` agent-tool category. Configured skill
+bodies, file trees, and rewritten links are not returned through dedicated
+skill tools and are not inserted into newly bootstrapped native prompts.
+Agents that must inspect skill files need an explicitly configured
+general-purpose reader such as `read_file`; skill configuration alone does not
+grant one. The same applies to shell or execution tools needed by a skill.
+
+The direct-read boundary deliberately uses normal tool behavior:
+
+- an absolute catalog path can be passed directly to `read_file`;
+- a relative skill reference uses the directory containing `SKILL.md` as its
+  explicit absolute base directory;
+- updated file content can be observed by a later read in the same run;
+- missing or inaccessible files surface the reader's normal error.
+
+The retired `get_available_skills`, `get_skill_content`, and `load_skill` names
+are not registered runtime tools. Persisted agent definitions that still contain
+one of those names rely on the existing missing-tool warning/skip behavior; the
+name remains inert and does not recreate a compatibility tool.
+
+### Codex and Claude
+
+Codex materializes unresolved-by-native-Codex entries as
+`.codex/skills/<skillName>` directory symlinks whose targets are the exact
+resolved `Skill.rootPath` package roots. Claude and Codex continue to use their
+provider-specific bootstrap/materialization paths; the native catalog-only
+processor does not replace those paths.
+
+### Access modes and historical context
 
 Normal launches use configured-only behavior. `PRELOADED_ONLY` remains the
-internal/default runtime mode for "use the agent definition's configured
-skills"; `NONE` remains available for internal no-skill suppression. The removed
-legacy `GLOBAL_DISCOVERY` value is not accepted by public GraphQL inputs or SDK
-contracts. Existing persisted run/team/channel records that still contain that
-legacy value are rewritten to `PRELOADED_ONLY` by the required startup app-data
-migration `20260706_remove_global_skill_discovery_mode`.
+internal/default runtime value for "use the agent definition's configured
+skills"; despite the retained name, it does not mean that native prompt bodies
+are preloaded. `NONE` remains available for internal no-skill suppression. The
+removed legacy `GLOBAL_DISCOVERY` value is not accepted by public GraphQL inputs
+or SDK contracts. Existing persisted run/team/channel records that still
+contain that legacy value are rewritten to `PRELOADED_ONLY` by the required
+startup app-data migration `20260706_remove_global_skill_discovery_mode`.
+
+Historical native working-context snapshots remain exact. A pre-change snapshot
+may therefore retain historical embedded skill content; restore does not merge
+or rewrite it to the new catalog/path-only shape. The new prompt contract applies
+to newly bootstrapped native prompts.
 
 ## Supported Package Authoring Layouts
 
-Shared/package-owned agents use the same canonical foldered layout for one
-skill or many skills:
+Shared/package-owned agents use the same canonical foldered layout for one skill
+or many skills:
 
 ```text
 agents/my-agent/
@@ -192,3 +199,11 @@ Skill names should be unique across configured global, agent-private, and
 team-shared sources. The catalog applies first-seen precedence for duplicate
 names, while runtime resolution checks the owning agent/team context before it
 falls back to configured/global skill directories.
+
+## Operational Limits
+
+The catalog/path contract makes relevant instructions discoverable but does not
+guarantee model compliance. LLM choice to read and follow a skill remains
+stochastic. Deterministic coverage can verify resolution, prompt content,
+explicit tool authorization, and direct file freshness, not compliance on every
+model turn.

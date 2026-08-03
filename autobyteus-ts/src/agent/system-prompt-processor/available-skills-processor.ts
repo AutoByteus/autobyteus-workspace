@@ -1,6 +1,6 @@
+import path from 'path';
 import { BaseSystemPromptProcessor } from './base-processor.js';
 import { SkillRegistry } from '../../skills/registry.js';
-import { formatSkillContentForPrompt } from '../../skills/format-skill-content-for-prompt.js';
 import { SkillAccessMode, resolveSkillAccessMode } from '../context/skill-access-mode.js';
 import type { BaseTool } from '../../tools/base-tool.js';
 import type { AgentContextLike } from '../context/agent-context-like.js';
@@ -23,75 +23,56 @@ export class AvailableSkillsProcessor extends BaseSystemPromptProcessor {
     void toolInstances;
 
     const registry = new SkillRegistry();
-    const preloadedSkills = context?.config?.skills ?? [];
+    const configuredSkills = context?.config?.skills ?? [];
     const skillAccessMode = resolveSkillAccessMode(
       context?.config?.skillAccessMode,
-      preloadedSkills.length
+      configuredSkills.length
     );
 
     if (skillAccessMode === SkillAccessMode.NONE) {
-      console.info(`Agent '${agentId}': Skill access mode is NONE. Skipping injection.`);
+      console.info(`Agent '${agentId}': Skill access mode is NONE. Skipping skill catalog.`);
       return systemPrompt;
     }
 
-    if (preloadedSkills.length === 0) {
-      console.info(`Agent '${agentId}': No configured skills. Skipping injection.`);
+    if (configuredSkills.length === 0) {
+      console.info(`Agent '${agentId}': No configured skills. Skipping skill catalog.`);
       return systemPrompt;
     }
 
-    const catalogSkills = preloadedSkills
+    const catalogSkills = configuredSkills
       .map((skillName) => registry.getSkill(skillName))
       .filter((skill): skill is NonNullable<typeof skill> => Boolean(skill));
 
     if (!catalogSkills.length) {
       console.info(
-        `Agent '${agentId}': Configured skills produced no catalog entries. Skipping injection.`
+        `Agent '${agentId}': Configured skills produced no catalog entries. Skipping skill catalog.`
       );
       return systemPrompt;
     }
 
-    const catalogEntries: string[] = [];
-    const detailedSections: string[] = [];
+    const catalogEntries = catalogSkills.map(
+      (skill) =>
+        `- **${skill.name}**: ${skill.description}\n` +
+        `  - **SKILL.md:** \`${path.resolve(skill.rootPath, 'SKILL.md')}\``
+    );
 
-    for (const skill of catalogSkills) {
-      catalogEntries.push(`- **${skill.name}**: ${skill.description}`);
-      detailedSections.push(
-        `#### ${skill.name}\n**Skill Base Path:** \`${skill.rootPath}\`\n\n${formatSkillContentForPrompt(skill)}`
-      );
-    }
+    const skillsBlock = `\n\n## Agent Skills
 
-    let skillsBlock = '\n\n## Agent Skills\n';
-    skillsBlock += '### Skill Catalog\n';
-    skillsBlock += `${catalogEntries.join('\n')}\n`;
+### Skill Catalog
 
-    if (detailedSections.length) {
-      skillsBlock += `
-### Critical Rules for Using Skills
+${catalogEntries.join('\n')}
 
-> **Path Resolution Required for Remaining Relative Skill References**
-> 
-> Resolvable Markdown links are already rewritten to absolute filesystem paths before injection.
-> However, plain-text relative references or unresolved targets may still appear in skill instructions.
-> 
-> When a skill refers to a file by a remaining relative path, you MUST convert it to ABSOLUTE:
-> \`Skill Base Path\` + \`Relative Path\` = \`Absolute Path\`
-> 
-> **Examples:**
-> 1. Skill Base Path: \`/path/to/skill\`
->    Relative: \`./scripts/run.sh\`
->    Result: \`/path/to/skill/scripts/run.sh\`
-> 
-> 2. Skill Base Path: \`/path/to/skill\`
->    Relative: \`scripts/run.sh\`
->    Result: \`/path/to/skill/scripts/run.sh\`
+### Rules for Using Skills
 
+- Use a configured skill whenever it applies to the task.
+- When no configured skill applies, use the best available general approach.
+- When an applicable configured skill covers only part of the task, follow it for the covered part and use another available technique for the uncovered part.
+- Before beginning work governed by a skill, read its \`SKILL.md\` from the exact path listed above.
+- Resolve every relative path mentioned by a skill from the directory containing that skill's \`SKILL.md\`.
 `;
-      skillsBlock += '### Skill Details\n';
-      skillsBlock += `${detailedSections.join('\n')}\n`;
-    }
 
     console.info(
-      `Agent '${agentId}': Injected ${catalogEntries.length} skills in catalog, ${detailedSections.length} with details. mode='${skillAccessMode}'.`
+      `Agent '${agentId}': Added ${catalogEntries.length} configured skill catalog entries with paths. mode='${skillAccessMode}'.`
     );
     return systemPrompt + skillsBlock;
   }

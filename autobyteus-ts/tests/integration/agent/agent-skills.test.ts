@@ -11,7 +11,10 @@ import { LLMProvider } from '../../../src/llm/providers.js';
 import { LLMConfig } from '../../../src/llm/utils/llm-config.js';
 import { CompleteResponse } from '../../../src/llm/utils/response-types.js';
 import type { LLMUserMessage } from '../../../src/llm/user-message.js';
-import type { CompleteResponse as CompleteResponseType, ChunkResponse } from '../../../src/llm/utils/response-types.js';
+import type {
+  CompleteResponse as CompleteResponseType,
+  ChunkResponse
+} from '../../../src/llm/utils/response-types.js';
 
 class DummyLLM extends BaseLLM {
   protected async _sendMessagesToLLM(_messages: any[]): Promise<CompleteResponseType> {
@@ -25,33 +28,58 @@ class DummyLLM extends BaseLLM {
   }
 }
 
+const SKILL_BODY_SENTINEL = 'UNIQUE_JAVA_SKILL_BODY';
+const SKILL_BODY_LINK = 'Read [reference.md](reference.md).';
+
 const createTempSkillDir = () => {
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'autobyteus-skill-'));
   const skillPath = path.join(tempDir, 'java_expert');
-  fs.mkdirSync(path.join(skillPath, 'references'), { recursive: true });
-  const skillFile = path.join(skillPath, 'SKILL.md');
+  fs.mkdirSync(skillPath, { recursive: true });
   fs.writeFileSync(path.join(skillPath, 'reference.md'), 'Reference', 'utf8');
-  fs.writeFileSync(path.join(skillPath, 'references', 'deep.md'), 'Deep', 'utf8');
   fs.writeFileSync(
-    skillFile,
+    path.join(skillPath, 'SKILL.md'),
     [
       '---',
       'name: java_expert',
       'description: Java expert',
       '---',
-      'Read [reference.md](reference.md).',
-      'Read [deep](references/deep.md).'
+      SKILL_BODY_SENTINEL,
+      SKILL_BODY_LINK
     ].join('\n'),
     'utf8'
   );
   return { tempDir, skillPath };
 };
 
+const createDummyLLM = () => {
+  const model = new LLMModel({
+    name: 'dummy',
+    value: 'dummy',
+    canonicalName: 'dummy',
+    provider: LLMProvider.OPENAI
+  });
+  return new DummyLLM(model, new LLMConfig());
+};
+
 const resetFactory = () => {
   (AgentFactory as any).instance = undefined;
 };
 
-const removedSkillToolName = ['load', 'skill'].join('_');
+const expectedSkillsBlock = (skillPath: string): string => `\n\n## Agent Skills
+
+### Skill Catalog
+
+- **java_expert**: Java expert
+  - **SKILL.md:** \`${path.join(skillPath, 'SKILL.md')}\`
+
+### Rules for Using Skills
+
+- Use a configured skill whenever it applies to the task.
+- When no configured skill applies, use the best available general approach.
+- When an applicable configured skill covers only part of the task, follow it for the covered part and use another available technique for the uncovered part.
+- Before beginning work governed by a skill, read its \`SKILL.md\` from the exact path listed above.
+- Resolve every relative path mentioned by a skill from the directory containing that skill's \`SKILL.md\`.
+`;
 
 describe('AgentFactory skill integration', () => {
   beforeEach(() => {
@@ -64,21 +92,14 @@ describe('AgentFactory skill integration', () => {
     resetFactory();
   });
 
-  it('injects preloaded skill details when skill path is provided', () => {
+  it('advertises configured skill metadata and exact entry path without injecting its body', () => {
     const { tempDir, skillPath } = createTempSkillDir();
     try {
-      const model = new LLMModel({
-        name: 'dummy',
-        value: 'dummy',
-        canonicalName: 'dummy',
-        provider: LLMProvider.OPENAI
-      });
-      const llm = new DummyLLM(model, new LLMConfig());
       const config = new AgentConfig(
         'TestAgent',
         'Tester',
         'Testing skills',
-        llm,
+        createDummyLLM(),
         null,
         [],
         true,
@@ -93,51 +114,35 @@ describe('AgentFactory skill integration', () => {
         [skillPath]
       );
 
-      const factory = new AgentFactory();
-      const agent = factory.createAgent(config);
-
+      const agent = new AgentFactory().createAgent(config);
       let systemPrompt = 'Initial prompt';
       for (const processor of agent.context.config.systemPromptProcessors) {
         systemPrompt = processor.process(systemPrompt, {}, agent.agentId, agent.context);
       }
 
-      expect(systemPrompt).toContain('## Agent Skills');
-      expect(systemPrompt).toContain('### Skill Catalog');
-      expect(systemPrompt).toContain(`**Skill Base Path:** \`${skillPath}\``);
-      expect(systemPrompt).toContain(
-        'Path Resolution Required for Remaining Relative Skill References'
+      expect(systemPrompt).toBe(`Initial prompt${expectedSkillsBlock(skillPath)}`);
+      expect(agent.context.config.skills).toEqual(['java_expert']);
+      expect(agent.context.toolInstances).toEqual({});
+      expect(systemPrompt).not.toContain(SKILL_BODY_SENTINEL);
+      expect(systemPrompt).not.toContain(SKILL_BODY_LINK);
+      expect(systemPrompt).not.toContain(
+        `[reference.md](${path.join(skillPath, 'reference.md')})`
       );
-      expect(systemPrompt).toContain(
-        'Resolvable Markdown links are already rewritten to absolute filesystem paths before injection.'
-      );
-      expect(systemPrompt).not.toContain(removedSkillToolName);
-      expect(systemPrompt).toContain(`[reference.md](${path.join(skillPath, 'reference.md')})`);
-      expect(systemPrompt).toContain(
-        `[deep](${path.join(skillPath, 'references', 'deep.md')})`
-      );
-      expect(agent.context.config.skills).toContain('java_expert');
+      expect(systemPrompt).not.toContain('Skill Details');
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }
   });
 
-  it('injects catalog entries for discovered skills without preloading content', () => {
+  it('leaves the prompt unchanged for registry-only skills with an empty configured set', () => {
     const { tempDir, skillPath } = createTempSkillDir();
     try {
       SkillRegistry.getInstance().registerSkillFromPath(skillPath);
-
-      const model = new LLMModel({
-        name: 'dummy',
-        value: 'dummy',
-        canonicalName: 'dummy',
-        provider: LLMProvider.OPENAI
-      });
-      const llm = new DummyLLM(model, new LLMConfig());
       const config = new AgentConfig(
         'Generalist',
         'Assistant',
-        'No preloaded skills',
-        llm,
+        'No configured skills',
+        createDummyLLM(),
         null,
         [],
         true,
@@ -152,18 +157,16 @@ describe('AgentFactory skill integration', () => {
         []
       );
 
-      const factory = new AgentFactory();
-      const agent = factory.createAgent(config);
-
+      const agent = new AgentFactory().createAgent(config);
       let systemPrompt = 'Initial';
       for (const processor of agent.context.config.systemPromptProcessors) {
         systemPrompt = processor.process(systemPrompt, {}, agent.agentId, agent.context);
       }
 
-      expect(systemPrompt).toContain('### Skill Catalog');
-      expect(systemPrompt).toContain('**java_expert**: Java expert');
-      expect(systemPrompt).not.toContain(removedSkillToolName);
-      expect(systemPrompt).not.toContain('Java Map Body');
+      expect(systemPrompt).toBe('Initial');
+      expect(systemPrompt).not.toContain('## Agent Skills');
+      expect(systemPrompt).not.toContain('### Skill Catalog');
+      expect(agent.context.config.skills).toEqual([]);
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }
