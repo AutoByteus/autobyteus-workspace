@@ -14,6 +14,7 @@ The latest `code-review-report.md` or `api-e2e-test-review-report.md` remains au
 | CRR-006 | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-test-review-report.md` | API/E2E Test-Code Review round 2 / `API-REV-002` | Fail / Local Fix (durable tests) | Pass | `TEST-FIND-001`, `TEST-FIND-002` |
 | CRR-007 | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/code-review-report.md` | Implementation Review round 5 / `IR-005` after `DR-004` user feedback | Pass (accepted `SR-005` source) | Pass | None |
 | CRR-008 | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-test-review-report.md` | API/E2E Test-Code Review round 3 / `API-REV-003` | Pass (implementation source); API/E2E Pass pending test review | Pass | None |
+| CRR-009 | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/code-review-report.md` | Implementation Review round 6 / `IR-006` after `DR-005` live verification | Pass (accepted `SR-006` source/tests) | Pass | `ARCH-FIND-004` (verified resolved); prior findings remain resolved |
 
 ## Revision Entries
 
@@ -216,3 +217,32 @@ None. `TEST-FIND-001` and `TEST-FIND-002` remain resolved in unchanged accepted 
 - Material score or classification changes: no implementation scorecard or confidence rescore applies to proportional test review. The result is `Pass`; API/E2E confidence remains the reported `97.1%`.
 - Recommended recipient: `delivery_engineer`
 - Remaining risks or uncertainty: no authenticated backend journey or packaged Electron run was performed because `SR-006` changes only the shared frontend renderer; accepted `API-REV-002` remains the authority baseline. Repository-wide frontend typecheck debt remains unrelated. Delivery must refresh the latest remote base, integrated checks/docs, handoff, and verification build because the `DR-004` candidate predates `SR-006`.
+
+### CRR-009 — Codex exact-turn steering and observable interrupt results pass source review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/code-review-report.md`
+- Review entry point and round: `Implementation Review` / implementation-source round `6`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/implementation-handoff.md`; `IR-006`; upstream `ARCH-FIND-004`
+- Relevant solution revision IDs: `SR-007`, `SR-008`, preserving `SR-002`, `SR-004`, `SR-005`, `SR-006`
+- Relevant architecture-review revision IDs: `ARCH-REV-007`, `ARCH-REV-008`
+- Relevant implementation revision IDs: `IR-006`
+- Relevant API/E2E revision IDs: accepted prior baseline `API-REV-003`; fresh `SR-008` investigation pending
+- Relevant delivery revision IDs: `DR-005` live-defect evidence/implementation start; candidate superseded
+- Prior authoritative result: implementation source `Pass` at `CRR-007` and durable browser test-code `Pass` at `CRR-008`; live `DR-005` verification then triggered the approved `SR-007`/`SR-008` correction
+- Current authoritative result: `Pass` -> `api_e2e_engineer`
+- What changed in the review result and why: `IR-006` serializes Codex input selection inside `CodexThread`, uses strict idle start versus exact current-A steer, validates method-specific response identity, prevents late start response S from reopening terminal S, and never falls back to start after steer failure. Interrupt requests now carry fresh command/exact target identity, receive a discriminated same-socket control result, and use one shared client admission/delete/drain transition. Matched rejection/failure or local transport failure produces one localized toast while accepted acknowledgement leaves canonical lifecycle untouched. Server build plus `88` focused server and `117` focused frontend tests pass.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `ARCH-FIND-004` | Resolved In Design / Awaiting Source | Resolved In Source | `SR-008`, `ARCH-REV-008`, `IR-006` | `interruptCommandAdmission.ts` owns register-before-send, immediate connection-state check, send/catch rollback, delete-before-callback, boolean result, and pending-only drain. Both services delegate and exact-match acknowledgement before projection; both stores return admission unchanged and own one toast. Focused frontend result is `117/117`. |
+| `CODE-FIND-001` | Resolved | Remains Resolved | `IR-002`, `CRR-002`, preserved through `IR-006` | Companion-transparent content handling is unchanged; standalone/team service regression suites remain green. |
+| `CODE-FIND-002` | Resolved | Remains Resolved | `SR-005`, `IR-004`, `CRR-004`, preserved through `IR-006` | Recursive route machinery is unchanged; team interrupt result echoes the already-resolved canonical route/run target rather than guessing a coordinate. |
+| `CODE-FIND-003` | Resolved | Remains Resolved | `IR-004`, `CRR-004`, preserved through `IR-006` | No manager interface or stale manager test double changed. |
+| `TEST-FIND-001`, `TEST-FIND-002` | Resolved | Remain Resolved In Accepted Prior Coverage | `API-REV-002`, `CRR-006` | The corrected durable paths are unchanged. Their prior evidence is accepted baseline context only, not `SR-008` sign-off. |
+
+- New or remaining finding IDs: `None`
+- Material score or classification changes: the current implementation scores `9.6/10` (`95.5/100`), with every category at least `9.0`. `ARCH-FIND-004` is verified resolved in source; no failure classification applies.
+- Recommended recipient: `api_e2e_engineer`
+- Remaining risks or uncertainty: API/E2E must create a fresh `SR-008` coverage investigation and realistically validate bundled Codex start/steer/rejection/races, memory and reconnect convergence, real same-socket exact interrupt results, nonconnection/send/disconnect exactly-once cleanup, and browser-visible toast/Stop behavior. Repository-wide frontend typecheck remains baseline non-green, and prior delivery docs/build artifacts are superseded.
