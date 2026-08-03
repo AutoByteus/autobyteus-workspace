@@ -39,7 +39,9 @@ set. Server team runs publish dedicated task domain events through
 exposes as `TASK_DELEGATION_EVENT`. See
 `autobyteus-server-ts/docs/modules/agent_team_execution.md`.
 
-## Personal ToDo
+## Backend-Owned TODO Progress
 
-Personal ToDo updates remain agent-level events and continue to use
-`TODO_LIST_UPDATE` in the agent WebSocket/streaming protocol.
+`autobyteus-ts` does not emit native personal ToDo stream events. Backend-owned
+progress events such as Codex `TODO_LIST_UPDATE` remain a server-level event
+and WebSocket contract, outside this native stream package. The existing web
+TODO panel continues to consume that server-owned path.

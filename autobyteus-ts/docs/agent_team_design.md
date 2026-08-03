@@ -23,7 +23,9 @@ team-scoped communication rosters, or team stream rebroadcasting.
   delivery runs through the server `agent-communication` direct route. Neither
   path is implemented by native AutoByteus team classes.
 - Server-managed task delegation (`delegate_task`, `submit_task_result`, and `review_task_result`) remains owned by `autobyteus-server-ts`.
-  Personal ToDo tools remain local single-agent tools.
+  Native personal ToDo tools are not part of `autobyteus-ts`; agents that need
+  personal task tracking can use existing file tools and skills to maintain a
+  workspace task file.
 
 ## Removed Native Surface
 

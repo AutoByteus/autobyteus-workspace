@@ -1,16 +1,18 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { registerTools } from '../../../../src/tools/register-tools.js';
-import { defaultToolRegistry } from '../../../../src/tools/registry/tool-registry.js';
-import type { ToolDefinition } from '../../../../src/tools/registry/tool-definition.js';
-import { ToolSchemaProvider } from '../../../../src/tools/usage/providers/tool-schema-provider.js';
+import { registerTools } from '../../../src/tools/register-tools.js';
+import { defaultToolRegistry } from '../../../src/tools/registry/tool-registry.js';
+import type { ToolDefinition } from '../../../src/tools/registry/tool-definition.js';
+import { ToolSchemaProvider } from '../../../src/tools/usage/providers/tool-schema-provider.js';
 
-const removedToolNames = [
-  ['replace', 'in', 'file'].join('_'),
-  ['insert', 'in', 'file'].join('_'),
+const removedNativeTodoToolNames = [
+  'create_todo_list',
+  'add_todo',
+  'get_todo_list',
+  'update_todo_status',
 ];
-const retainedToolNames = ['read_file', 'edit_file', 'write_file', 'run_bash'];
+const retainedToolNames = ['read_file', 'write_file', 'edit_file', 'run_bash'];
 
-describe('redundant exact file tools removal', () => {
+describe('native ToDo tool removal', () => {
   let registrySnapshot: Map<string, ToolDefinition>;
 
   beforeEach(() => {
@@ -23,11 +25,11 @@ describe('redundant exact file tools removal', () => {
     defaultToolRegistry.restore(registrySnapshot);
   });
 
-  it('omits removed definitions and schemas while preserving retained and unrelated tools', () => {
+  it('does not register native ToDo tools while preserving file tools and schema composition', () => {
     vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     registerTools();
 
-    for (const toolName of removedToolNames) {
+    for (const toolName of removedNativeTodoToolNames) {
       expect(defaultToolRegistry.getToolDefinition(toolName)).toBeUndefined();
     }
     for (const toolName of retainedToolNames) {
@@ -36,7 +38,7 @@ describe('redundant exact file tools removal', () => {
 
     const schemas = new ToolSchemaProvider(defaultToolRegistry).buildSchema([
       ...retainedToolNames,
-      ...removedToolNames,
+      ...removedNativeTodoToolNames,
     ]);
     const schemaNames = schemas.map((schema) =>
       (schema.function as { name: string }).name

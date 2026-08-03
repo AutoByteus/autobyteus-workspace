@@ -37,8 +37,6 @@ export {
   SegmentEventData,
   SystemTaskNotificationData,
   InterAgentMessageData,
-  ToDoItemData,
-  ToDoListUpdateData,
   ArtifactPersistedData,
   ArtifactUpdatedData,
   EmptyData,
@@ -49,7 +47,6 @@ export {
   createSegmentEventData,
   createSystemTaskNotificationData,
   createInterAgentMessageData,
-  createTodoListUpdateData,
   createArtifactPersistedData,
   createArtifactUpdatedData
 } from './stream-event-payload-lifecycle.js';
@@ -76,7 +73,6 @@ import type {
   SegmentEventData,
   SystemTaskNotificationData,
   InterAgentMessageData,
-  ToDoListUpdateData,
   ArtifactPersistedData,
   ArtifactUpdatedData,
   EmptyData
@@ -100,7 +96,6 @@ export type StreamDataPayload =
   | SegmentEventData
   | SystemTaskNotificationData
   | InterAgentMessageData
-  | ToDoListUpdateData
   | ArtifactPersistedData
   | ArtifactUpdatedData
   | EmptyData;

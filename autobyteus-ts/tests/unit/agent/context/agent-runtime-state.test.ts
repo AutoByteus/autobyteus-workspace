@@ -36,7 +36,6 @@ describe('AgentRuntimeState', () => {
     expect(state.customData).toEqual({});
     expect(state.workspaceRootPath).toBeNull();
     expect(state.activeTurn).toBeNull();
-    expect(state.todoList).toBeNull();
     expect(state.memoryManager).toBeNull();
   });
 

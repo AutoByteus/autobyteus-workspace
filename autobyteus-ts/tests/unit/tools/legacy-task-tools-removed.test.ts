@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { registerTools } from '../../../../../src/tools/register-tools.js';
-import { defaultToolRegistry } from '../../../../../src/tools/registry/tool-registry.js';
-import type { ToolDefinition } from '../../../../../src/tools/registry/tool-definition.js';
+import { registerTools } from '../../../src/tools/register-tools.js';
+import { defaultToolRegistry } from '../../../src/tools/registry/tool-registry.js';
+import type { ToolDefinition } from '../../../src/tools/registry/tool-definition.js';
 
 const removedModelFacingTaskTools = [
   'assign_task_to',
@@ -31,6 +31,5 @@ describe('legacy model-facing task-plan tools removal', () => {
     for (const toolName of removedModelFacingTaskTools) {
       expect(defaultToolRegistry.getToolDefinition(toolName)).toBeUndefined();
     }
-    expect(defaultToolRegistry.getToolDefinition('add_todo')).toBeDefined();
   });
 });

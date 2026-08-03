@@ -4,7 +4,6 @@ import { AgentStatus } from '../status/status-enum.js';
 import { ToolInvocation } from '../tool-invocation.js';
 import { AgentTurn } from '../agent-turn.js';
 import type { AgentEventInbox } from '../event-inbox/agent-event-inbox.js';
-import { ToDoList } from '../../task-management/todo-list.js';
 import { BaseLLM } from '../../llm/base.js';
 import type { BaseTool } from '../../tools/base-tool.js';
 import type { MemoryManager } from '../../memory/memory-manager.js';
@@ -36,7 +35,6 @@ export class AgentRuntimeState {
   workspaceRootPath: string | null;
   customData: Record<string, any>;
   activeTurn: AgentTurn | null = null;
-  todoList: ToDoList | null = null;
   memoryManager: MemoryManager | null = null;
   restoreOptions: WorkingContextSnapshotBootstrapOptions | null = null;
   processedSystemPrompt: string | null = null;
