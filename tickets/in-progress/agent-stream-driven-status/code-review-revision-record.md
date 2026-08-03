@@ -15,6 +15,7 @@ The latest `code-review-report.md` or `api-e2e-test-review-report.md` remains au
 | CRR-007 | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/code-review-report.md` | Implementation Review round 5 / `IR-005` after `DR-004` user feedback | Pass (accepted `SR-005` source) | Pass | None |
 | CRR-008 | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-test-review-report.md` | API/E2E Test-Code Review round 3 / `API-REV-003` | Pass (implementation source); API/E2E Pass pending test review | Pass | None |
 | CRR-009 | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/code-review-report.md` | Implementation Review round 6 / `IR-006` after `DR-005` live verification | Pass (accepted `SR-006` source/tests) | Pass | `ARCH-FIND-004` (verified resolved); prior findings remain resolved |
+| CRR-010 | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-test-review-report.md` | API/E2E Test-Code Review round 4 / `API-REV-004` | Pass (implementation source); API/E2E Pass pending test review | Fail / Local Fix (durable browser harness) | `TEST-FIND-003` |
 
 ## Revision Entries
 
@@ -246,3 +247,29 @@ None. `TEST-FIND-001` and `TEST-FIND-002` remain resolved in unchanged accepted 
 - Material score or classification changes: the current implementation scores `9.6/10` (`95.5/100`), with every category at least `9.0`. `ARCH-FIND-004` is verified resolved in source; no failure classification applies.
 - Recommended recipient: `api_e2e_engineer`
 - Remaining risks or uncertainty: API/E2E must create a fresh `SR-008` coverage investigation and realistically validate bundled Codex start/steer/rejection/races, memory and reconnect convergence, real same-socket exact interrupt results, nonconnection/send/disconnect exactly-once cleanup, and browser-visible toast/Stop behavior. Repository-wide frontend typecheck remains baseline non-green, and prior delivery docs/build artifacts are superseded.
+
+### CRR-010 — SR-008 execution passes but durable browser cleanup gate can false-pass
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-test-review-report.md`
+- Review entry point and round: `API/E2E Test-Code Review` / round `4`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-execution-coverage-report.md`; `API-REV-004`, `API-E2E-020`–`027`, `SR008-BR-001`–`004`, `TEST-FIND-003`
+- Relevant solution revision IDs: `SR-007`, `SR-008`, preserving accepted foundations
+- Relevant architecture-review revision IDs: `ARCH-REV-007`, `ARCH-REV-008`
+- Relevant implementation revision IDs: `IR-006`
+- Relevant API/E2E revision IDs: `API-REV-004`; accepted preservation baseline `API-REV-003`
+- Relevant delivery revision IDs: `DR-005` is superseded verification context
+- Prior authoritative result: implementation source `Pass` at `CRR-009`; `API-REV-004` execution `Pass` at reported `97.1%`, pending proportional review of two added and ten updated durable paths
+- Current authoritative result: `Fail` / `Local Fix` -> `api_e2e_engineer`; implementation source remains `Pass`
+- What changed in the review result and why: All 12 durable paths were reviewed. Provider/memory/socket/current-protocol/component paths and the four browser scenario bodies are coherent and agree with the clean current evidence. The added browser runner, however, asserts page errors before cleanup but not console errors, discards browser-close failure, records WebSocket/Nuxt cleanup failures after its last failure assertion, and bases exit status only on the pre-cleanup `finalError`. It can therefore print `passed` and exit zero despite the zero-console/full-cleanup contract reported by API/E2E. Current final evidence is actually clean and the external structural check passed, so the finding is confined to durable harness false-pass prevention rather than product source or current execution.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `TEST-FIND-001`, `TEST-FIND-002` | Resolved | Remain Resolved | `API-REV-002`, `CRR-006` | Their corrected durable paths are unchanged and not implicated by `SR-008`. |
+| `ARCH-FIND-004`, `CODE-FIND-001`–`CODE-FIND-003` | Resolved | Remain Resolved | `CRR-009` and earlier source rounds | Proportional test review does not reopen implementation source; no production file changed in `API-REV-004`. |
+
+- New or remaining finding IDs: `TEST-FIND-003`
+- Material score or classification changes: no implementation scorecard or confidence rescore applies. Test review is `Fail / Local Fix`; the current execution evidence remains clean, but delivery is blocked until the durable command makes browser-health and owned cleanup pass/fail-authoritative.
+- Recommended recipient: `api_e2e_engineer`
+- Remaining risks or uncertainty: correct the browser runner only, rerun its focused Chrome/Nuxt/real-WS command and final structural/cleanup check, update `API-REV-004` evidence/chronology, then return for proportional re-review. Preserve all current provider/socket evidence and scenario assertions.
