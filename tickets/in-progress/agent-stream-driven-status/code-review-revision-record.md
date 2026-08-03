@@ -13,6 +13,7 @@ The latest `code-review-report.md` or `api-e2e-test-review-report.md` remains au
 | CRR-005 | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-test-review-report.md` | API/E2E Test-Code Review round 1 / `API-REV-001` | Pass (implementation source) | Fail / Local Fix (durable tests) | `TEST-FIND-001`, `TEST-FIND-002` |
 | CRR-006 | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-test-review-report.md` | API/E2E Test-Code Review round 2 / `API-REV-002` | Fail / Local Fix (durable tests) | Pass | `TEST-FIND-001`, `TEST-FIND-002` |
 | CRR-007 | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/code-review-report.md` | Implementation Review round 5 / `IR-005` after `DR-004` user feedback | Pass (accepted `SR-005` source) | Pass | None |
+| CRR-008 | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-test-review-report.md` | API/E2E Test-Code Review round 3 / `API-REV-003` | Pass (implementation source); API/E2E Pass pending test review | Pass | None |
 
 ## Revision Entries
 
@@ -192,3 +193,26 @@ None.
 - Material score or classification changes: the current bounded implementation scores `9.7/10` (`96.6/100`), with every category at least `9.0`. No failure classification applies.
 - Recommended recipient: `api_e2e_engineer`
 - Remaining risks or uncertainty: API/E2E must create a fresh `SR-006` coverage investigation and realistically validate mixed siblings, collapsed groups, final active-to-inactive transition, accessibility, no pulse, and independence from representative/member/subscription/Stop state. Repository-wide frontend typecheck remains baseline non-green. Delivery docs and Electron artifacts predate `SR-006` and require later refresh.
+
+### CRR-008 — Durable binary-activity browser coverage passes proportional review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-test-review-report.md`
+- Review entry point and round: `API/E2E Test-Code Review` / round `3`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-execution-coverage-report.md`; `API-REV-003`, `API-E2E-017`–`API-E2E-019`, `SR006-BR-001`–`SR006-BR-004`; no test finding
+- Relevant solution revision IDs: `SR-006`, preserving accepted `SR-005`
+- Relevant architecture-review revision IDs: `ARCH-REV-006`
+- Relevant implementation revision IDs: `IR-005`
+- Relevant API/E2E revision IDs: `API-REV-003`; accepted preservation baseline `API-REV-002`
+- Relevant delivery revision IDs: `DR-004` is superseded verification-candidate context
+- Prior authoritative result: implementation source `Pass` at `CRR-007`; `API-REV-003` execution `Pass` at reported `97.1%`, pending proportional review of two added durable browser files
+- Current authoritative result: `Pass` -> `delivery_engineer`; implementation source remains `Pass`
+- What changed in the review result and why: The new durable Nuxt/Chrome runner and fixture were reviewed proportionately. They use the two actual production surfaces, current typed run/member shapes, real localization and computed styles, exact/reactive booleans, bounded readiness, an ephemeral port, owned process/browser lifecycle, and complete cleanup. Four clearly separated scenarios directly prove mixed exact siblings, any-child group activity while expanded/collapsed, independence from representative/member/subscription/Stop facts, final active-to-inactive transition, English/zh-CN semantics, configured solid colors, and no animation. The final execution evidence agrees with the durable code and is clean.
+
+#### Prior Finding Resolution
+
+None. `TEST-FIND-001` and `TEST-FIND-002` remain resolved in unchanged accepted `API-REV-002` coverage and were not reopened.
+
+- New or remaining finding IDs: `None`
+- Material score or classification changes: no implementation scorecard or confidence rescore applies to proportional test review. The result is `Pass`; API/E2E confidence remains the reported `97.1%`.
+- Recommended recipient: `delivery_engineer`
+- Remaining risks or uncertainty: no authenticated backend journey or packaged Electron run was performed because `SR-006` changes only the shared frontend renderer; accepted `API-REV-002` remains the authority baseline. Repository-wide frontend typecheck debt remains unrelated. Delivery must refresh the latest remote base, integrated checks/docs, handoff, and verification build because the `DR-004` candidate predates `SR-006`.
