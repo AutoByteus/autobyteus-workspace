@@ -50,7 +50,7 @@ This is the initial delivery handoff for `remove-todo-list-tools`. The implement
 
 ## Version / Tag / Release Commit
 
-Release selection: `v1.4.41`, the next patch after current `v1.4.40`. The release commit/tag will be recorded after the documented release script completes.
+Release selection: `v1.4.41`, the next patch after current `v1.4.40`. Release commit: `d792ea38c8bd97fd24fa8a2687db0bdbfcd55d1e`; annotated tag `v1.4.41` object: `a1653e3f3e6c3be12ca3860d9a311568086e5b12`.
 
 ## Repository Finalization
 
@@ -74,18 +74,18 @@ Release selection: `v1.4.41`, the next patch after current `v1.4.40`. The releas
 - Applicable: `Yes` — user authorized a new patch release.
 - Method: `Documented Command`.
 - Method reference / command: `pnpm release 1.4.41 --release-notes tickets/done/remove-todo-list-tools/release-notes.md` from a clean `personal` worktree after finalization.
-- Release/publication/deployment result: `In progress — finalization completed; v1.4.41 release command queued`.
+- Release/publication/deployment result: `Completed` — v1.4.41 release commit/tag pushed; all five tag-triggered workflows succeeded; GitHub Release and Docker images verified.
 - Release notes handoff result: `Used` — archived release notes are prepared at `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/tickets/done/remove-todo-list-tools/release-notes.md`.
 - Blocker (if applicable): None; the release sequence is in progress.
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools`.
-- Worktree cleanup result: `Pending` — retain until release and report update complete.
+- Worktree cleanup result: `Pending` — complete after this final report commit.
 - Worktree prune result: `Pending`.
 - Local ticket branch cleanup result: `Pending`.
 - Remote branch cleanup result: `Pending`.
-- Blocker (if applicable): Cleanup follows release verification.
+- Blocker (if applicable): None; cleanup is the remaining local housekeeping step.
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
 
@@ -97,11 +97,11 @@ Release selection: `v1.4.41`, the next patch after current `v1.4.40`. The releas
 
 - Release notes artifact created before verification / acceptance: `Yes`.
 - Archived release notes artifact used for release/publication: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/tickets/done/remove-todo-list-tools/release-notes.md`.
-- Release notes status: `Updated` — prepared for v1.4.41.
+- Release notes status: `Used` — archived notes were consumed by the v1.4.41 release command.
 
 ## Deployment Steps
 
-Finalization and release execution are in progress. After the v1.4.41 tag is pushed, monitor the repository release workflow and record publication/deployment outcomes; preserve the API-008/API-009 caveats in the release handoff.
+v1.4.41 release execution, workflow monitoring, GitHub Release verification, and Docker manifest verification completed. No additional deployment command was required; tag-triggered workflows performed publication/deployment.
 
 ## Environment Or Persisted-Data Transition Notes
 
@@ -117,6 +117,7 @@ Finalization and release execution are in progress. After the v1.4.41 tag is pus
 - Delivery integrity: `git diff --check` — `Pass`; `git diff --check origin/personal...HEAD` — `Pass`.
 - Changed-boundary evidence: `Pass with residual repository-health caveats / 94.5%`, as reported by API/E2E Round 1.
 - Final integrated target checks: `Pass`; `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/tickets/done/remove-todo-list-tools/test-results/final-integrated-checks.log` records `git diff --check` and `pnpm --filter autobyteus-ts build` at merge commit `e2a8126a9`.
+- Release and publication audit: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/tickets/done/remove-todo-list-tools/test-results/release-v1.4.41.log`, `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/tickets/done/remove-todo-list-tools/test-results/release-workflow-monitor.log`, and `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/tickets/done/remove-todo-list-tools/test-results/publication-audit-v1.4.41.log`.
 - Focused native Vitest: `7 files / 32 tests passed`.
 - Native package build: `Pass`.
 - Focused server Vitest: `4 files / 96 tests passed`.
@@ -134,4 +135,4 @@ Before finalization, no repository state has been pushed or merged, so rollback 
 
 ## Final Status
 
-`Repository finalized; v1.4.41 release in progress.`
+`Repository finalized; v1.4.41 released and publication verified; cleanup pending.`
