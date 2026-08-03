@@ -1,14 +1,14 @@
 # Design Spec
 
-## Status (`SR-006` — User-Approved Binary Team Activity Presentation, Ready For Architecture Review)
+## Status (`SR-008` — Failure-Safe Interrupt Transport Admission, Ready For Architecture Re-review)
 
-This is the implementation-authoritative target design for the complete approved requirements basis through 2026-08-03. It preserves the complete `SR-005` implementation that passed `ARCH-REV-005`, `CRR-004`, API/E2E execution, and proportional durable-test review. `SR-006` is a user-approved post-delivery presentation correction: restore clear binary activity dots on both the parent agent-team/definition group and each exact team-run row without restoring the removed five-state aggregate.
+This is the implementation-authoritative target design for the complete approved requirements basis through 2026-08-03. It preserves the complete `SR-006` implementation that passed `ARCH-REV-006`, implementation/source/API-E2E/proportional test review, and reached delivery verification. `ARCH-REV-007` accepted the `SR-007` Codex provider design and admitted-request interrupt acknowledgement design, but identified one frontend transport-admission omission. `SR-008` resolves `ARCH-FIND-004` without reopening the accepted provider, server, lifecycle, team, nested identity, presentation, or native AutoByteus contracts.
 
-No `SR-006` source rework may begin until this package passes architecture review. The prior delivery candidate and its manual-verification artifacts are superseded for completion. `ARCH-FIND-001`–`ARCH-FIND-003`, `CODE-FIND-001`–`CODE-FIND-003`, and `TEST-FIND-001`–`TEST-FIND-002` remain resolved and must not be reopened by this presentation-only change.
+No source rework may begin until `SR-008` passes architecture re-review. The prior delivery candidate and its manual-verification artifacts are superseded for completion. `ARCH-FIND-001`–`ARCH-FIND-003`, `CODE-FIND-001`–`CODE-FIND-003`, and `TEST-FIND-001`–`TEST-FIND-002` remain resolved; `ARCH-FIND-004` is the only current re-review target.
 
 ## Current-State Read
 
-The ticket branch is now a latest-base-integrated delivery candidate at `55c5b3c914d64059361d47ec87a29da0e4eb9bbb`, 22 commits ahead / 0 behind refreshed `origin/personal=2a7271c9d78b71b919f7dbfa3b8f97f61c3a2e2b` on 2026-08-03. Feature source `4eca42bf56831eb6561a0f8ceee949c62674c4da` implements the accepted `SR-005` design. Manager-owned binary team liveness, aggregate-team removal, Stop failure/pending semantics, nested stream coordinates, and the agent lifecycle/batching foundation are accepted current source.
+The dedicated ticket worktree is at HEAD `df3fe87e78ccc734128ce0b96a4e4281e2f55405`, 27 commits ahead / 0 behind refreshed `origin/personal=2a7271c9d78b71b919f7dbfa3b8f97f61c3a2e2b` on 2026-08-03. Source commit `bfd5ea403` and subsequent reviews implement the accepted `SR-006` design. Manager-owned binary team liveness, two-level team activity indicators, aggregate-team removal, Stop failure/pending semantics, nested stream coordinates, and the agent lifecycle/batching foundation are accepted current source. Delivery-owned documentation/log edits remain protected continuation state and are outside solution-design edits.
 
 The historical aggregate model that this ticket removed was structurally broad:
 
@@ -24,9 +24,15 @@ That aggregate mixed five distinct subjects and is now removed in accepted sourc
 
 `SR-005` also resolved the prior recursive task-team coordinate defect by separating `TaskTeamStreamScope` from operational identity and rebasing all outward paths in one frame. That accepted design remains authoritative and unchanged.
 
-The current frontend now correctly stores no team status enum. `WorkspaceHistoryWorkspaceSection.vue` renders a parent definition/group row and child root team-run rows with no activity dot. `RunningTeamGroup.vue` and `RunningTeamRow.vue` do the same. Both exact run models already expose `isActive`, and both group builders already own the complete `runs[]` collection. The new behavior therefore requires no server, GraphQL, WebSocket, store, lifecycle, or persistence change.
+The current frontend now correctly stores no team status enum and renders the approved boolean group/run activity indicators. That accepted presentation is unrelated to the new member defect and remains unchanged.
 
-Relevant verified paths and evidence are in [`investigation-notes.md`](./investigation-notes.md), [`production-trace-evidence.md`](./production-trace-evidence.md), and [`team-status-simplification-evidence.md`](./team-status-simplification-evidence.md).
+The delivery-verification Codex trace exposes one provider-boundary identity defect. `CodexThread.sendTurn()` calls `turn/start` and `markTurnStarted(responseId)` even when identified turn A is already current. Codex treats the incoming reviewer message as same-turn input inside A, but AutoByteus installs response/request identity B. Provider terminal A then cannot clear phantom B from the canonical current/retired-turn lifecycle. A fresh team snapshot remains `running` even though `CodexThread.activeTurnId` is empty and interruption correctly rejects with no active provider turn.
+
+The bundled Codex app-server 0.146 contract provides the exact correction: idle input uses `turn/start`; input while identified A is current uses `turn/steer { threadId, expectedTurnId: A, input }`, whose response is `{ turnId: A }`. The current standalone and team stream handlers separately discard most interrupt results after logging them. `AGENT_COMMAND_ACK` currently represents only standalone `SEND_MESSAGE`, and team streaming has no control-result dispatch before member-event projection.
+
+`ARCH-REV-007` additionally confirmed a reachable local admission edge. Canonical agent `running` intentionally survives socket disconnect, and the stores retain the streaming service while its `IWebSocketClient.state` may be `DISCONNECTED`, `CONNECTING`, or `RECONNECTING`. `WebSocketClient.send()` throws synchronously unless state is `CONNECTED`, and the underlying `WebSocket.send()` may also throw after a connected-state check. A pending interrupt registered immediately before either failure must therefore be removed and completed as local transport feedback in the same call; an earlier disconnect event cannot complete a command that did not yet exist.
+
+Relevant verified paths and evidence are in [`investigation-notes.md`](./investigation-notes.md), [`production-trace-evidence.md`](./production-trace-evidence.md), [`team-status-simplification-evidence.md`](./team-status-simplification-evidence.md), and [`codex-steering-stale-running-evidence.md`](./codex-steering-stale-running-evidence.md).
 
 ## Intended Change
 
@@ -71,6 +77,20 @@ Remove agent-like status snapshots from subteam and task-team handles. Team runt
 
 On the frontend, continue to store root `isActive` directly and keep `AgentTeamStatus`, root/team `currentStatus`, and aggregate normalization/hydration removed. Use `isActive && !stopPending` for Stop. Keep `StatusDot` and `AgentStatusDisplay` agent-only. Add a separate `TeamActivityDot` that accepts only a boolean plus an accessible label; use it on the two desktop group/run surfaces. A root or subteam header has no agent status fallback. Mobile team-run liveness remains `Active` or `Inactive` text from `isActive` only.
 
+For Codex input, keep runtime-neutral callers unchanged. `CodexThread` becomes the single provider-local decision owner:
+
+```text
+after startup ready, activeTurnId = null -> turn/start -> require returned started ID -> markTurnStarted(started ID)
+after startup ready, activeTurnId = A    -> turn/steer(expectedTurnId=A) -> require returned ID A -> preserve A
+steer rejection or mismatched response   -> failed AgentOperationResult -> no start fallback and no identity mutation
+```
+
+A successful steer never invokes `markTurnStarted`; if terminal A is processed before the steer response, the accepted result can still report A for memory correlation but must not reopen A. `AgentRun`, its current/retired-turn state, accepted-input observers, team delivery, and frontend remain provider-neutral. Claude behavior is unchanged. Native AutoByteus continues to queue user/inter-agent inputs in FIFO `turn_start`; interrupt settles the current native turn and a queued message may then start a distinct turn.
+
+For interruption, widen `AGENT_COMMAND_ACK` into a tight discriminated union. Preserve the existing `SEND_MESSAGE` arm and dedupe semantics. Add one `INTERRUPT_GENERATION` arm containing a client command ID, `accepted | rejected | failed`, code/message when not accepted, and a discriminated exact standalone-run or team-member target. Both server handlers return this acknowledgement for every supported interrupt request. The frontend streaming service matches command ID and target before resolving the result; accepted results do not mutate lifecycle, while rejected/failed results are shown as localized error toasts and never appended as agent/runtime `ERROR` segments.
+
+Complete frontend admission as one failure-safe transition in both services: register the exact pending command, require `ConnectionState.CONNECTED`, attempt the serialized send, and return `true` only if that send returns without throwing. If state is disconnected/connecting/reconnecting or send throws, delete that exact pending entry, invoke the exact-target transport-failure callback once, and return `false`. A later disconnect drains only entries still present. Neither local failure path fabricates a server acknowledgement or mutates agent/team lifecycle.
+
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
 | Behavior ID | Kind (`User`/`System`/`Operational`/`Contract`) | Approved Requirement / Intent And Acceptance-Criteria IDs | Approved Trigger Or Governing Contract | Relevant Existing Behavior And Evidence Reference | Approved Change Or Preserved Outcome | Target Production Path / Lifecycle And Spine ID(s) |
@@ -84,6 +104,8 @@ On the frontend, continue to store root `isActive` directly and keep `AgentTeamS
 | BEH-007 | System / Contract | REQ-014, REQ-015, REQ-018; AC-017, AC-018, AC-019, AC-020, AC-024 | Create, restore, refresh, subscribe, terminate, or lose a root team run | Manager/history/resume and circular frontend projection evidence | Root team lifecycle is only manager-owned `isActive`; member state and socket state never determine it | DS-008 |
 | BEH-008 | User | REQ-016, REQ-018, REQ-020; AC-017, AC-018, AC-022, AC-023, AC-026 | Stop, archive, delete, or scan an exact team run | Delivery screenshot, user feedback, current history/running rows | Stop keeps `isActive` plus local pending; exact run row renders the same boolean as a separate binary dot; no five-state team visuals | DS-008, DS-010, DS-013 |
 | BEH-009 | System / Contract | REQ-015, REQ-017, REQ-019; AC-020, AC-021, AC-025 | Member live stream/initial reconnect at any depth, including ordinary subteam -> task team; task terminal/failure; settlement check | `CR-MP-002`, `CODE-FIND-002`, team bridge/flattener, task-team scoped resolver, task/failure/settlement owners | Preserve exact leaf-agent status through one representable and coordinate-consistent live/snapshot scope; move task cleanup, failure, and open-work decisions to their real owners; delete aggregate status | DS-004, DS-011, DS-012 |
+| BEH-010 | System / Contract | REQ-002, REQ-005, REQ-012, REQ-017, REQ-021; AC-004, AC-011, AC-015, AC-021, AC-027, AC-028 | Supported input reaches a Codex run while identified provider turn A is current | Live native rollout/AutoByteus trace; `CodexThread.sendTurn`; generated 0.146 `turn/steer` schema | Codex provider boundary selects idle start versus exact current-turn steer; successful steer preserves A and terminal A settles idle; rejection creates no B | DS-014, DS-003, DS-006, DS-007 |
+| BEH-011 | User / Control | REQ-008, REQ-019, REQ-022; AC-002, AC-029 | User interrupts a standalone or focused exact team member while connected, disconnected, connecting, reconnecting, or racing socket send | 17 live server failures; standalone/team handlers; SEND_MESSAGE-only ack; `ARCH-FIND-004`; `WebSocketClient.state/send`; retained frontend services | A successfully transmitted interrupt receives one matched control acknowledgement; immediate non-admission and in-flight disconnect produce exactly-once local transport feedback; no outcome changes lifecycle or becomes agent `ERROR` | DS-015, DS-001, DS-002, DS-005 |
 
 ## Relevant Supplemental Task Artifacts
 
@@ -91,24 +113,27 @@ On the frontend, continue to store root `isActive` directly and keep `AgentTeamS
 | --- | --- | --- | --- | --- |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/production-trace-evidence.md` | Matched agent production trace and live snapshot probe | REQ-001–REQ-012 / AC-001–AC-015 | Grounds the preserved agent lifecycle/gateway design | Complete; evidence-only; approval N/A |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/team-status-simplification-evidence.md` | Team authority, aggregate-consumer trace, and binary presentation correction | REQ-013–REQ-020 / AC-016–AC-026 | Grounds clean aggregate removal plus binary group/run visuals | Updated; evidence-only; approval N/A |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/codex-steering-stale-running-evidence.md` | Live Codex A/B identity, silent interrupt result, protocol, and source evidence | REQ-002, REQ-005, REQ-012, REQ-019, REQ-021–REQ-022 / AC-002, AC-004, AC-011, AC-027–AC-029 | Grounds the provider-local start/steer invariant and control-result return path | Complete; evidence-only; approval N/A |
 | `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_6557dd2b51c3__image.png` | Agent UI screenshot | REQ-001, REQ-008 / AC-001, AC-009 | Shows Running with the wrong primary action | User-supplied evidence; approval N/A |
 | `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_9d9c83cf3d30__image.png` | Team hierarchy screenshot | REQ-013–REQ-017 / AC-016, AC-017, AC-021, AC-023 | Distinguishes redundant root status from useful member status | User-supplied evidence; approval N/A |
 | `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_ead75793b5e3__image.png` | Team-definition screenshot | REQ-013 / AC-016 | Shows the invalid definition-level status dot | User-supplied evidence; approval N/A |
 | `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_0fa01fdeb308__image.png` | Delivery-candidate team UI screenshot | REQ-016, REQ-020 / AC-023, AC-026 | Shows both missing team activity positions that the user explicitly restored | User-supplied evidence; approved behavior 2026-08-03 |
+| `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_638f89bebf84__image.png` | Live Codex verification screenshot | REQ-002, REQ-005, REQ-021–REQ-022 / AC-004, AC-027–AC-029 | Shows completed output with server-derived Running and ineffective visible Stop | User-supplied evidence; approval N/A |
+| `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_3456bc49f3dc__image.png` | Focused exact-member verification screenshot | REQ-008, REQ-019, REQ-022 / AC-002, AC-029 | Confirms the stale running member and red Stop state | User-supplied evidence; approval N/A |
 
 ## Task Design Health Assessment (Mandatory)
 
-- Change posture: prior `Bug Fix`/`Refactor`/`Cleanup` is accepted; `SR-006` is a localized user-approved `Behavior Change`.
-- Current design issue found: `No` in the accepted lifecycle/state architecture; `Yes` only in presentation sufficiency.
-- Root cause classification for SR-006: `Local Presentation Omission` after a deliberate schema contraction.
-- Refactor needed now: `No` beyond one tight reusable team-binary presentation component and one group projection field.
+- Change posture: prior `Bug Fix`/`Refactor`/`Cleanup` and `SR-006` presentation behavior are accepted; `SR-007` established the provider-boundary fix and command-result contract; `SR-008` is a bounded frontend control-transport design correction for `ARCH-FIND-004`.
+- Current design issue found: `No` in the accepted runtime-neutral lifecycle/team architecture or the architecture-approved Codex/server result paths; `Yes` only in immediate frontend interrupt admission/send completion.
+- Root cause classification for SR-008: `Missing Invariant` at the streaming-service admission boundary. Pending registration, connected-state validation, synchronous send, rollback, callback, and boolean return were not specified as one atomic failure-safe transition.
+- Refactor needed now: `Yes`, locally. Both existing services must use the same tight admission helper/transition and boolean result; no new event, lifecycle, coordinator, or public transport message is required.
 - Evidence:
   - The original agent action was governed by two independently mutable fields; that part is already corrected on this branch.
-- Accepted source has one team liveness representation (`isActive`), no definition-owned status, specialized team/agent shapes, and no aggregate shortcut consumers.
-- The current group and run rows already receive the exact booleans needed; adding another domain/state contract would be unjustified.
-- Design response: preserve accepted ownership; derive `hasActiveRuns` only inside the display-group builder; render that boolean and exact run `isActive` through a separate `TeamActivityDot`.
-- Refactor rationale: Reusing the agent dot by synthesizing `running/offline` would undo semantic tightening. A boolean-only component is smaller and makes invalid five-state team input unrepresentable.
-- Intentional deferrals and residual risk: Provider internals, task-stage semantics, team topology, and general workspace styling remain unchanged. Repeated agent companions remain an accepted bandwidth tradeoff. The binary root lifecycle message is a small extra transport contract needed for live multi-client convergence; it is not another derived status.
+- Accepted source has one agent lifecycle owner, one team liveness representation (`isActive`), exact nested identity, and no aggregate shortcut consumers. Those boundaries correctly expose rather than cause the Codex phantom ID.
+- Native Codex proves same-turn steering is the supported busy-input behavior; native AutoByteus proves a separate predictable FIFO turn model. Runtime-neutral callers must not guess or unify those provider semantics.
+- Design response: preserve the architecture-approved provider and admitted-request result design; add a shared frontend admission helper that owns register/check/send/rollback/exactly-once local failure, then let both services return its boolean result.
+- Refactor rationale: weakening the current/retired-turn state machine or treating interrupt rejection as runtime `ERROR` would repair symptoms at the wrong authority. The smallest healthy correction strengthens the two owners already responsible for provider control and command transport.
+- Intentional deferrals and residual risk: provider reasoning/tool loops, native AutoByteus queueing, Claude input semantics, task-stage semantics, team topology, and general workspace styling remain unchanged. A future Codex protocol change remains an adapter maintenance risk; typed exact-response validation contains it.
 
 ## Terminology
 
@@ -124,10 +149,15 @@ On the frontend, continue to store root `isActive` directly and keep `AgentTeamS
 - **Open execution work:** Private boolean used only for safe task-team settlement; it is not a public status or display value.
 - **stopPending:** Frontend-local duplicate-request guard; it never changes `isActive`.
 - **Team activity dot:** Solid binary UI indicator that accepts only a boolean and accessible label; distinct from the agent-only five-state `StatusDot`.
+- **Codex started input:** Input submitted while no provider turn is current through `turn/start`; only its required returned provider turn ID may establish the new current turn.
+- **Codex steered input:** Input submitted while identified provider turn A is current through `turn/steer(expectedTurnId=A)`; the returned ID must equal A and does not create/start another lifecycle turn.
+- **Interrupt command acknowledgement:** Control-plane response correlated by client command ID and exact standalone/team-member target; never an agent event, lifecycle fact, or transcript segment.
+- **Interrupt transport admission:** One synchronous frontend transition that registers exact pending correlation and returns true only after a connected socket send returns without throwing.
+- **Interrupt transport failure:** Local exactly-once result for a non-admitted or previously admitted command whose connection is lost; it is not `AGENT_COMMAND_ACK`, `AGENT_STATUS`, or an `ErrorSegment`.
 
 ## Design Reading Order
 
-Read the agent spines as preserved branch foundations, then the manager-owned team liveness spine, the recursive stream-coordinate contract, the definition/presentation contraction, and finally the task/failure/open-work replacements. The removal and file maps are the concrete projection of those ownership decisions.
+Read the agent/team spines through DS-013 as preserved branch foundations, DS-014 as the architecture-approved Codex provider-local input design, and DS-015 as the admitted-or-locally-failed interrupt return spine completed by `SR-008`. The removal and file maps keep those additions inside existing owners and forbid changes to accepted lifecycle/team semantics.
 
 ## Legacy Removal Policy (Mandatory)
 
@@ -137,17 +167,19 @@ Read the agent spines as preserved branch foundations, then the manager-owned te
 - Delete public/frontend `AgentTeamStatus`, root history `status`, team context/tree `currentStatus`, team-status normalization/hydration, and `TEAM_STATUS` protocol handling.
 - Preserve deletion of five-state team visual helpers/components and the team branch of the agent `StatusDot`. Add a new boolean-only `TeamActivityDot`; do not retrofit the old helpers.
 - Do not accept old and new team payloads, retain an optional `status`, translate `status` into `isActive`, or publish both `TEAM_STATUS` and `TEAM_RUN_LIFECYCLE`.
+- Replace active-Codex `turn/start` with exact `turn/steer`; do not keep a fallback or dual path that retries start after steer rejection.
+- Widen `AGENT_COMMAND_ACK` cleanly into SEND_MESSAGE and INTERRUPT_GENERATION variants. Do not add an interrupt-specific server message type or translate interrupt failures into generic `ERROR` events.
 
 ## Persisted Data / State Transition Decision (Mandatory When Persisted Data May Be Affected)
 
 - Stored subject, location, representative shape, and approximate volume: Run/team metadata JSON, raw trace JSONL, transcript/activity/task projections, and history-index rows under server memory. Volume depends on user history. Live agent lifecycle, root team aggregate status, and frontend projections are computed/in-memory.
-- Relevant code-model, serialization, semantic, or physical-store change: Live agent DTO has already removed `can_interrupt`; GraphQL/frontend team history removes computed root `status` while retaining `isActive` and `members[].status`; WebSocket replaces root aggregate `TEAM_STATUS` with binary `TEAM_RUN_LIFECYCLE`.
+- Relevant code-model, serialization, semantic, or physical-store change: Live agent DTO has already removed `can_interrupt`; GraphQL/frontend team history removes computed root `status` while retaining `isActive` and `members[].status`; WebSocket replaces root aggregate `TEAM_STATUS` with binary `TEAM_RUN_LIFECYCLE`. `SR-007` adds only ephemeral Codex input-result and WebSocket interrupt-command correlation types; `SR-008` adds only an ephemeral local admission/failure helper/type. None is persisted.
 - Normal reader/writer behavior and representative evidence: Team history already calculates `isActive` from `AgentTeamRunManager`; member statuses are live projections with offline fallback. Metadata/traces persist identities, topology, content, task records, and termination data, not a required aggregate-team lifecycle.
-- Required semantics and invariants under direct use: Preserve all identity, topology, transcript, late activity, task records, and termination history. Active lifecycle is rebuilt from live runtime/manager state.
+- Required semantics and invariants under direct use: Preserve all identity, topology, transcript, late activity, task records, and termination history. Active lifecycle is rebuilt from live runtime/manager state. Historical traces that contain a prior phantom accepted-input turn ID remain readable evidence; no reader may restore that historical correlation ID as a live current turn.
 - Physical-store, privacy/security, disposal/rebuild, and operational constraints: No user data rewrite or deletion; server and frontend contracts ship together.
 - Decision: `Directly Usable — No Migration`
 - Decision rationale: Existing stored data remains meaningful and current readers can ignore obsolete historical superset fields. A bulk rewrite adds I/O/corruption/recovery cost without changing runtime authority.
-- Acceptance criteria or design constraints supported: REQ-011, REQ-012, REQ-014–REQ-020; AC-008, AC-011, AC-012, AC-018–AC-026.
+- Acceptance criteria or design constraints supported: REQ-011, REQ-012, REQ-014–REQ-022; AC-008, AC-011, AC-012, AC-018–AC-029.
 
 ### Migration Plan
 
@@ -170,12 +202,16 @@ N/A — the decision is `Directly Usable — No Migration`.
 | DS-011 | Return-Event | BEH-009 | Task terminal/result/failure facts | Task projection cleanup and lifecycle observer | task delegation / operation / member failure owners | Replaces aggregate shortcuts |
 | DS-012 | Bounded Local | BEH-009 | Settlement request | settle now or wait | `TeamRun.hasOpenExecutionWork()` + task delegation service | Replaces aggregate status as work predicate |
 | DS-013 | Bounded Local | BEH-006, BEH-008 | Existing child-run `isActive` booleans | Accessible group/run activity dots | workspace presentation | Restores scan clarity without a new lifecycle or transport field |
+| DS-014 | Primary End-to-End | BEH-010 | Supported direct/inter-agent/system input for a Codex run | Provider start or exact same-turn steer and correlated `AgentOperationResult` | `CodexThread` | Prevents provider request identity from replacing actual current-turn identity |
+| DS-015 | Primary + Return/Control | BEH-001, BEH-005, BEH-011 | Standalone/exact-member Stop click in any socket state | Not-admitted local transport result, matched server acknowledgement, or provider terminal lifecycle | frontend admission helper + streaming service + server stream handler | Makes every interrupt attempt complete observably without creating another lifecycle owner |
 
 ## Primary Execution Spine(s)
 
 - **DS-001:** `Composer -> primary-action policy -> activeContextStore -> AgentRun command -> backend -> provider`
 - **DS-002:** `Composer -> exact teamRunId/memberRouteKey/memberRunId -> TeamRun -> mixed member handle -> nested AgentRun -> provider`
 - **DS-005:** `Click | Enter | programmatic admission -> resolveAgentPrimaryAction -> rechecked store command -> Send | exact Interrupt | Disabled`
+- **DS-014:** `supported input origin -> AgentRun.postUserMessage -> CodexAgentRunBackend -> CodexThread -> activeTurnId branch -> turn/start | turn/steer(expected A) -> exact result identity -> accepted-input observer/canonical lifecycle`
+- **DS-015:** `Stop click -> store builds commandId + exact target -> service register/check/send -> not admitted: delete + exact local transport failure + false | admitted: true -> WebSocket handler -> AgentRun.interrupt | TeamRun.interruptMember -> AgentOperationResult -> AGENT_COMMAND_ACK -> client ID/target match -> accepted wait | rejected/failed toast`; later disconnect drains only still-pending admitted commands.
 
 ## Spine Narratives (Mandatory)
 
@@ -194,6 +230,8 @@ N/A — the decision is `Directly Usable — No Migration`.
 | DS-011 | Task terminal events and task-record refresh remove task projections; explicit operation results and leaf-agent terminal failures report failures. No team enum mediates them. | task, operation, failure | task/failure owners | scheduling and toast state |
 | DS-012 | Settlement asks task delegation whether records remain open and asks the child team run whether execution work remains; it settles only when both are false. | child team execution | `TeamRun` backend + settlement coordinator | task directories |
 | DS-013 | The group builder calculates `hasActiveRuns` from all displayed children. The group row renders that boolean; each exact run row renders its own `isActive`. Both use one boolean-only component with solid blue/gray and accessible labels. | team display group, root team run | workspace presentation | localization, focused component tests |
+| DS-014 | After Codex startup readiness, `CodexThread` reads its current provider identity once for this submission. No current turn means start and install the required returned ID. Identified A means steer with exact A, require returned A, and never call the start transition. Provider rejection or response mismatch returns failure with no identity mutation/fallback. | provider thread, current turn, input result | `CodexThread` | typed app-server request/response parsing, accepted-input memory observer |
+| DS-015 | Existing standalone/team action routing creates one client command ID and exact target. A shared frontend admission helper registers it, requires `CONNECTED`, attempts send, and rolls back with exactly-once local failure/false on nonconnected state or throw. Admitted commands remain pending until exact server acknowledgement or disconnect. The service accepts only a matching acknowledgement, while the store reports local/rejected/failed outcomes through toast; accepted acknowledgement leaves status untouched until terminal provider events arrive. | interrupt command, exact target, admission result, acknowledgement, lifecycle | frontend admission helper + streaming service + server stream handler | command ID generation, localized toast, connection reason normalization |
 
 ## Spine Actors / Main-Line Nodes
 
@@ -201,6 +239,8 @@ N/A — the decision is `Directly Usable — No Migration`.
 - Team member: exact team command boundary, mixed leaf member handle, nested `AgentRun`, team event identity bridge, leaf context resolver.
 - Root team liveness: GraphQL mutation/history/resume, `AgentTeamRunManager`, team WebSocket lifecycle binding, `AgentTeamContext.isActive`, Stop policy.
 - Former aggregate consumers: task-delegation event/record projection, `AgentRunCanonicalFailureObserver`, `TeamRun.hasOpenExecutionWork()`, settlement coordinator.
+- Codex busy input: runtime-neutral message caller, `AgentRun`, Codex backend, `CodexThread`, typed app-server request boundary, accepted-input observer.
+- Interrupt result: composer/action facade, standalone/team store, streaming service pending command matcher, server stream handler, exact `AgentRun`/`TeamRun` operation, toast feedback.
 
 ## Ownership Map
 
@@ -216,6 +256,10 @@ N/A — the decision is `Directly Usable — No Migration`.
 - **Task delegation subsystem:** Task stage, terminal state, records, and task projection reconciliation.
 - **Frontend `AgentTeamContext`:** Root `isActive`, connection `isSubscribed`, focus, topology, and leaf contexts as separate fields.
 - **Workspace projection:** Definition grouping, binary collection summary, and action presentation; no lifecycle authority. It may derive `hasActiveRuns` from already-projected child booleans but cannot persist or transport it.
+- **`CodexThread`:** Sole owner of whether a Codex input is a new provider turn or same-turn steering, exact request shape, response identity validation, and start-only current-turn installation.
+- **Standalone/team stream handlers:** Owners of mapping one interrupt request to one control acknowledgement on the same socket; they do not derive lifecycle.
+- **Frontend streaming services:** Owners of pending interrupt command ID/target correlation and delivery to a result callback; they reject unmatched/stale acknowledgements and do not mutate status.
+- **Frontend run/team stores:** Owners of client command ID creation and localized user feedback. They retain their existing boolean admission result and exact target validation; no interrupt lifecycle field is added.
 
 ## Thin Entry Facades / Public Wrappers (If Applicable)
 
@@ -225,6 +269,8 @@ N/A — the decision is `Directly Usable — No Migration`.
 | Team WebSocket handler | `AgentTeamRunManager` + exact `TeamRun` | Live root lifecycle and member-event transport | Member lifecycle, socket-derived liveness, task stage |
 | `TeamRun` | manager/backend owners | Stable command/event boundary | Root registration or aggregate status cache |
 | frontend team run store | GraphQL/manager fact | UI orchestration and cleanup | Deriving `isActive` from context/socket/member state |
+| `AgentRun.postUserMessage` / `CodexAgentRunBackend.postUserMessage` | `CodexThread` for provider method selection | Runtime-neutral accepted-input entry | Branching on Codex provider semantics or fabricating a second lifecycle turn |
+| standalone/team WebSocket handler | exact `AgentRun` / `TeamRun` operation plus ack mapper | Request transport and same-socket control result | Treating an acknowledgement as status, transcript error, or team lifecycle |
 
 ## Removal / Decommission Plan (Mandatory)
 
@@ -247,6 +293,9 @@ N/A — the decision is `Directly Usable — No Migration`.
 | root aggregate-error branch in team lifecycle observer | Duplicate failure inference | canonical leaf-agent failure + explicit operation result | In This Change | Preserve ATTACHED/TERMINATED |
 | one-second inactive polling in team lifecycle observer | Polls a fact the manager owns | manager lifecycle subscription | In This Change | Exact unregister notification emits TERMINATED |
 | settlement fallback `childRun.getStatusSnapshot()` | Public enum used internally | `childRun.hasOpenExecutionWork()` | In This Change | Preserve error-as-work-blocking semantics |
+| active-Codex `turn/start` plus unconditional `markTurnStarted(responseId)` | It creates phantom B for same-turn input into A | exact `turn/steer(expectedTurnId=A)` with returned-A validation | In This Change | Idle start remains; no active-start fallback |
+| log-only standalone/team interrupt rejection | User receives no observable result | `AGENT_COMMAND_ACK` interrupt variant on the originating socket | In This Change | Accepted also acknowledges but status waits for provider terminal events |
+| frontend SEND_MESSAGE-only ack interface and generic `handleError` use for command rejection | Cannot represent interrupt target/outcome and appends false runtime content | discriminated ack union + control-result callback/toast | In This Change | Preserve SEND_MESSAGE fields/dedupe exactly; no compatibility alias |
 
 ## Return Or Event Spine(s) (If Applicable)
 
@@ -257,12 +306,16 @@ N/A — the decision is `Directly Usable — No Migration`.
 - **Team initial convergence:** `bind TeamRun event listener + manager lifecycle listener -> fresh manager snapshot -> recursively scoped leaf snapshots mapped to AGENT_STATUS + root lifecycle snapshot -> frontend`.
 - **Task cleanup:** `TASK_DELEGATION_TERMINAL_STATUS / record refresh -> task projection reconciler -> remove transient task-team projection`.
 - **Observed lifecycle:** `manager lifecycle false -> observed TEAM_RUN TERMINATED`; `leaf AgentRun terminal failure -> team envelope -> AgentRunCanonicalFailureObserver -> observed TEAM_RUN FAILED`; command/mutation failure remains its returned operation result. The current one-second inactive poll and aggregate-error branch are removed.
+- **Codex accepted input:** `AgentRun.postUserMessage -> Codex backend -> CodexThread start/steer -> exact turnId in AgentOperationResult -> RuntimeMemoryEventAccumulator/other command observers`. Busy steer returns A; it never manufactures B.
+- **Interrupt control result:** `standalone/team handler -> operation result -> interrupt ack mapper -> same WebSocket -> pending command matcher -> store callback -> localized error toast when rejected/failed`. This path is separate from `AgentRunEvent`, `AGENT_STATUS`, and transcript dispatch.
 
 ## Bounded Local / Internal Spines (If Applicable)
 
 - **DS-006, parent `AgentRun`:** `enqueue -> fresh runtime evidence -> reconcile current/retired turn -> processors -> lifecycle finalizer -> ordered listener delivery`.
 - **DS-008, parent `AgentTeamRunManager`:** `register/get/terminate/stale-check -> one transition helper -> update activeRuns -> notify exact-run lifecycle listeners`. Notifications occur only when the registered boolean changes.
 - **DS-012, parent `MixedTeamManager`:** `enumerate live member handles -> leaf agent status work-blocking check OR recursive child work -> boolean`. Work-blocking agent status is `initializing | running | error`; `idle | offline` is closed. Active task-agent/task-team directories and task-delegation records remain separate explicit checks.
+- **DS-014, parent `CodexThread`:** `await startup -> snapshot activeTurnId -> null: start/parse/install | A: steer(expected A)/parse/validate A/no install -> return exact ID | throw without mutation`.
+- **DS-015, parent streaming service:** `create/store command ID + expected target -> send -> receive ack before event routing -> match ID + exact target -> delete pending -> result callback`. Disconnect clears pending registrations and reports a transport failure through the same callback; it does not change agent status.
 
 ## Off-Spine Concerns Around The Spine
 
@@ -277,6 +330,10 @@ N/A — the decision is `Directly Usable — No Migration`.
 | Task record refresh/projection | DS-011 | task delegation | Reconcile transient task nodes | Task business truth | Task stage becomes team status |
 | Failure observer | DS-011 | observed run lifecycle | Promote canonical leaf terminal failure | Operational visibility | Member error folded into team status |
 | Open-work predicate | DS-012 | settlement | Decide whether execution can settle | Internal safety | Public enum recreated |
+| Codex start/steer response parsers | DS-014 | `CodexThread` | Parse the distinct `turn/start` nested turn and `turn/steer` top-level turnId schemas | Provider contract shapes differ | A request/correlation ID becomes lifecycle identity |
+| Interrupt acknowledgement mapper | DS-015 | server stream handlers | Convert operation result to accepted/rejected/failed and attach exact target | Two handlers need one contract | Divergent/silent feedback or generic runtime error |
+| Pending interrupt matcher | DS-015 | frontend streaming service | Correlate same-socket result by command ID and exact target | Prevent stale/cross-target feedback | Ack routed as member activity or applied to wrong surface |
+| Localized control feedback | DS-015 | frontend run/team store | Show rejected/failed interrupt without transcript mutation | User must see the result | Command failure terminalizes agent message/lifecycle |
 
 ## Ownership Boundaries
 
@@ -285,6 +342,10 @@ N/A — the decision is `Directly Usable — No Migration`.
 `TeamRun` may expose `isActive()` internally to its manager and child handles, but only the root manager determines the public root fact. `MixedTeamManager.hasOpenExecutionWork()` is an internal settlement capability, not a lifecycle projection. Task-delegation stage and explicit operation failures remain in their existing domains.
 
 The frontend may own connection state and request-pending state, but neither may mutate `isActive`. Only server create/restore/history/resume/lifecycle/termination success applies that field. Leaf `AGENT_STATUS` can mutate only the matched leaf agent context.
+
+`CodexThread` is the authoritative provider-control boundary for Codex current-turn method selection. `AgentRun`, team delivery, notification senders, and the frontend must all call the runtime-neutral message boundary and may consume only `AgentOperationResult`; none may inspect Codex `activeTurnId` or choose `turn/start`/`turn/steer`. Conversely, `CodexThread` may mutate provider current-turn identity only on a validated new-turn start or provider terminal event, never from a steering response.
+
+Interrupt acknowledgement is owned by the WebSocket command boundary, not the agent event boundary. The server handler owns result construction and same-connection delivery. The frontend streaming service owns pending command correlation. The store owns user feedback. No layer may send the ack through `AgentRun.publishEvent`, member event scoping, generic `handleError`, or lifecycle reconciliation.
 
 ## Boundary Encapsulation Map
 
@@ -296,6 +357,9 @@ The frontend may own connection state and request-pending state, but neither may
 | `prefixMixedTeamStreamScope` | one mixed-team parent-frame transition | all live event adapters and initial leaf snapshot adapter | leaf-only prefix logic, cloned child-local scope, or mapper/frontend guessing | Extend this core and its invariants |
 | `TeamRun.hasOpenExecutionWork` | backend member/child predicate | settlement coordinator | `getStatusSnapshot().status` | Extend private execution-work capability |
 | task delegation projection | terminal event + record reconciliation | frontend task router | TEAM_STATUS offline cleanup | Extend task event/record mapper |
+| `CodexThread.submitInput` (renamed from misleading `sendTurn`) | provider current-turn identity, app-server method selection, exact response validation | Codex backend only | `AgentRun`/team caller choosing start versus steer, or active `turn/start` fallback | Extend the provider-local method with explicit start/steer branches |
+| interrupt acknowledgement mapper | operation result -> tight control response | standalone/team stream handlers | log-only rejection, generic `ERROR`, or runtime event publication | Extend the shared ack union/builder |
+| frontend streaming-service matcher | pending command ID + exact target | run/team stores | member event resolver or transcript error handler | Extend streaming-service options/result callback |
 
 ## Dependency Rules
 
@@ -308,8 +372,13 @@ The frontend may own connection state and request-pending state, but neither may
 - Leaf status transport retains exact route/path/run/task identity. Every live event type and every initial snapshot must call `prefixMixedTeamStreamScope`; live agent/snapshot mapping must call the same strict leaf validator and `buildTaskTeamScopedIdentityPayload`. No other layer may prefix or infer task-team scope.
 - Task projection depends on task events/records; failure observation depends on canonical agent failure/operation results; settlement depends on private work facts.
 - Frontend team action code depends on exact-run `isActive` and stopPending only. Archive/delete additionally use existing inactive history lifecycle flags. Definition-group `hasActiveRuns` is display-only and cannot authorize an action.
+- Runtime-neutral message callers depend on `AgentRun.postUserMessage`; Codex backend alone depends on `CodexThread.submitInput`; only `CodexThread` depends on app-server `turn/start`/`turn/steer` and response parsers.
+- A Codex start response must contain a nonempty nested `turn.id`; a steer response must contain a nonempty top-level `turnId` equal to captured expected A. Missing/mismatched responses fail without current-turn mutation.
+- A steer failure never retries `turn/start`. A terminal event that wins the race may clear A before the steer response; successful correlation still returns A but must not reinstall it.
+- Client interrupt commands include one nonempty `command_id`. Server acknowledgements echo that ID plus exact target. Frontend services accept an acknowledgement only when both match the pending entry.
+- Accepted interrupt acknowledgement clears pending control state only. `TURN_INTERRUPTED`/`TURN_COMPLETED` plus canonical `AGENT_STATUS` remain the only path to idle.
 
-Forbidden shortcuts: status-to-active conversion, activity-to-`AgentStatus` conversion, representative-child status on definitions, persisting/transporting `hasActiveRuns`, `context exists -> active`, `socket connected -> active`, root false writing member statuses, a compatibility `AgentTeamStatus`, a replacement public “team phase” enum, mapper/frontend scope guessing, or carrying a full operational `TaskTeamInstanceIdentity` as the outward stream coordinate. Aggregating the displayed child booleans with `some(isActive)` is the one approved presentation projection.
+Forbidden shortcuts: status-to-active conversion, activity-to-`AgentStatus` conversion, representative-child status on definitions, persisting/transporting `hasActiveRuns`, `context exists -> active`, `socket connected -> active`, root false writing member statuses, a compatibility `AgentTeamStatus`, a replacement public “team phase” enum, mapper/frontend scope guessing, carrying a full operational `TaskTeamInstanceIdentity` as the outward stream coordinate, active-Codex `turn/start`, steer-to-start fallback, accepting a mismatched steer response ID, applying a command ack as status, or routing an interrupt failure through agent `ERROR`. Aggregating displayed child booleans with `some(isActive)` is the one approved presentation projection.
 
 ## Interface Boundary Mapping
 
@@ -334,6 +403,16 @@ Forbidden shortcuts: status-to-active conversion, activity-to-`AgentStatus` conv
 | `TeamActivityDot { isActive, label }` | team activity presentation | Solid binary visual + accessible meaning | caller-supplied boolean and localized label | No `AgentStatus`, phase, member state, or action policy |
 | `WorkspaceHistoryTeamDefinitionDisplayGroup.hasActiveRuns` | one displayed definition group | `runs.some(run.isActive)` | the group's existing exact child collection | Presentation-only; not persisted or transported |
 | `terminateTeamRun(teamRunId): Promise<boolean>` | root team operation | Return accepted success/failure | exact root `teamRunId` | Caller must handle false and clear pending |
+| `CodexThread.submitInput(message): Promise<CodexInputSubmissionResult>` | one Codex input against current provider state | Select start or exact steer and return correlated provider turn | `{ kind: "started" | "steered", turnId: string }` | Start installs returned ID; steer validates/returns A without transition |
+| `resolveStartedTurnId(payload)` | `turn/start` response | Require nested `turn.id` | unknown provider response -> nonempty string or throw | Existing start schema only |
+| `resolveSteeredTurnId(payload)` | `turn/steer` response | Require top-level `turnId` | unknown provider response -> nonempty string or throw | Must not reuse nested start parser |
+| `InterruptGenerationCommandAckPayload` | one control request/result | Echo command/outcome/exact target without lifecycle | client command ID + discriminated standalone/team-member target | No status, duplicate, transcript, or task fields |
+| `AgentCommandAckPayload` | WebSocket command result union | Discriminate existing send and new interrupt results | `command_type` | SEND_MESSAGE arm remains unchanged |
+| `tryAdmitInterruptCommand(input): boolean` | frontend local transport admission | Register exact pending entry, validate connected state, send, or atomically remove/report local failure | pending map + command/target + socket state/send + failure callback | `true` only after send returns; failure callback is delete-guarded exactly once |
+| `completePendingInterruptTransportFailure(input): boolean` | frontend local transport completion | Delete one still-pending entry and invoke exact failure callback once | command ID + reason + pending map | Shared by admission catch/state failure and disconnect drain; no server ack |
+| `drainPendingInterruptTransportFailures(input): number` | frontend disconnect completion | Snapshot and complete only entries still pending | pending map + disconnect reason | Used by automatic and intentional disconnect before teardown |
+| `AgentStreamingService.interruptGeneration(commandId): boolean` | standalone interrupt request | Delegate exact standalone entry/send to failure-safe admission | command ID + connected run ID | Result callback only after exact match; false on non-admission |
+| `TeamStreamingService.interruptGeneration(commandId, target): boolean` | exact member interrupt request | Delegate exact compound entry/send to failure-safe admission | command ID + team run + member route/run | Ack is intercepted before member/task routing; false on non-admission |
 
 ## Interface Boundary Check
 
@@ -347,6 +426,10 @@ Forbidden shortcuts: status-to-active conversion, activity-to-`AgentStatus` conv
 | leaf snapshot API | Yes | Yes | Low | Return the scoped carrier and use the shared prefix/flatten functions |
 | open-work API | Yes | Yes | Low | Keep private and boolean |
 | frontend team context | Yes | Yes | Low | Remove aggregate and connection inference |
+| `CodexInputSubmissionResult` | Yes | Yes | Low | Discriminate start/steer internally; expose only exact turn ID through `AgentOperationResult` |
+| interrupt ack union | Yes | Yes | Low | Required target specialization; no mostly-optional generic command payload |
+| pending interrupt matcher | Yes | Yes | Low | Match command ID and exact target; unmatched/stale result is not applied |
+| interrupt transport admission helper | Yes | Yes | Low | One register/check/send/rollback/complete owner; boolean and local failure are derived from the same transition |
 
 ## Main Domain Subject Naming Check
 
@@ -362,6 +445,9 @@ Forbidden shortcuts: status-to-active conversion, activity-to-`AgentStatus` conv
 | UI duplicate guard | `stopPending` / `terminatingTeamIds` | Yes | Low | Do not call active/terminating lifecycle |
 | Definition group | `WorkspaceHistoryTeamDefinitionDisplayGroup` | Yes | Low | Keep status removed; add only derived `hasActiveRuns` |
 | Binary team visual | `TeamActivityDot` | Yes | Low | Boolean-only; do not reuse agent `StatusDot` |
+| Codex input owner | `CodexThread.submitInput` | Yes | Low | Rename `sendTurn` because supported input may steer the current turn rather than start one |
+| Codex provider result | `CodexInputSubmissionResult` | Yes | Low | Internal discriminant documents whether a turn was started or steered |
+| Interrupt result | `InterruptGenerationCommandAckPayload` | Yes | Low | Name remains control-command-specific, not lifecycle/error |
 
 ## Existing Capability / Subsystem Reuse Check
 
@@ -375,6 +461,9 @@ Forbidden shortcuts: status-to-active conversion, activity-to-`AgentStatus` conv
 | Team failure | canonical agent failure observer + operation results | Reuse | Existing explicit facts | N/A |
 | Settlement | existing coordinator/team backend | Extend | Existing decision owner | N/A |
 | Team activity visuals | workspace presentation + existing `isActive` | Extend | Reuse exact booleans; add one boolean-only component | No backend/state-model change |
+| Codex current-turn control | existing `CodexThread` + typed app-server client | Extend | The thread already owns activeTurnId and all provider commands | No new coordinator; private branch methods are sufficient |
+| Command result transport | existing `AGENT_COMMAND_ACK` + WebSocket handlers/services | Extend | Same connection and command-response concept | No new server event type or lifecycle channel |
+| Visible interrupt feedback | existing global `useToasts` through store callback | Reuse | Established localized non-transcript feedback | Do not call from domain/provider code |
 
 ## Subsystem / Capability-Area Allocation
 
@@ -388,6 +477,9 @@ Forbidden shortcuts: status-to-active conversion, activity-to-`AgentStatus` conv
 | Task delegation | task stage/terminal cleanup | DS-011, DS-012 | task service/coordinator | Extend | No team enum |
 | Frontend runtime state | team isActive + leaf agent statuses | DS-004, DS-008 | stores/context | Refactor | Remove circular conversions |
 | Workspace/mobile UI | binary group/run activity; binary action/text; no five-state team status | DS-010, DS-013 | presentation components | Extend | Agent visuals and mobile text remain |
+| Codex provider adapter | idle start/current steer and identity validation | DS-014 | `CodexThread` | Refactor | Replace active start; preserve other runtimes |
+| Agent/team WebSocket control | interrupt request/result | DS-015 | stream handlers | Extend | Widen ack union; no runtime event |
+| Frontend streaming control | pending ack correlation and result callback | DS-015 | streaming services + stores | Extend | Toast failure; preserve lifecycle handlers |
 
 ## Draft File Responsibility Mapping
 
@@ -404,6 +496,12 @@ Forbidden shortcuts: status-to-active conversion, activity-to-`AgentStatus` conv
 | team history projection service renamed | history | projection | isActive + leaf snapshots | One list projection | lifecycle snapshot |
 | frontend protocol/context/history types | frontend state | contract | remove aggregate; add lifecycle message | Contract/state owners | isActive boolean |
 | workspace team presentation files | UI | display | binary group/run activity plus direct actions | Existing surfaces | no team status enum or member-derived color |
+| `codex-thread.ts` + ID resolver | Codex provider adapter | thread | exact idle-start/current-steer branch and distinct response parsing | One owner already holds provider current turn | typed app-server client |
+| `interrupt-generation-command-ack.ts` | streaming transport | ack mapper | tight target union and operation-result outcome mapping | Shared by standalone/team handlers | existing operation result + send ack union |
+| standalone/team stream handlers | streaming transport | request handler | always emit interrupt ack on originating connection | Existing command entrypoints | shared ack mapper |
+| frontend command-ack protocol + services | frontend transport | matcher | discriminated parsing and pending ID/target match | Existing socket clients | exact ack types |
+| `interruptCommandAdmission.ts` | frontend transport | local admission | shared register/check/send/rollback/drain and exactly-once callback | Two services require the same transition | pending command + local failure type |
+| frontend run/team stores | frontend orchestration | feedback | build command ID and toast rejected/failed result | Existing action owners | `useToasts` |
 
 ## Reusable Owned Structures Check
 
@@ -416,6 +514,10 @@ Forbidden shortcuts: status-to-active conversion, activity-to-`AgentStatus` conv
 | agent status visuals | existing `workspaceStatusDotPresentation.ts` | frontend presentation | agent rows share it | Yes | Yes | team aggregate visuals |
 | binary team activity visual | new `TeamActivityDot.vue` | frontend presentation | history and running surfaces need the same strict boolean/color/accessibility semantics | Yes | Yes | generic status component or AgentStatus mapper |
 | task terminal cleanup policy | existing task execution router/projection | task delegation | all task terminal messages reconcile once | Yes | Yes | root lifecycle handler |
+| Codex input outcome | `codex-thread.ts` exported type or adjacent tight type file | Codex adapter | Backend/tests need one exact started/steered result | Yes | Yes | generic provider operation union |
+| command acknowledgement | server/frontend command-ack type files | streaming transport | SEND_MESSAGE and INTERRUPT share one wire discriminant | Yes | Yes | mostly-optional all-command DTO |
+| interrupt target matcher | frontend streaming protocol/service | streaming transport | standalone/team services need exact comparison | Yes | Yes | route inference or lifecycle selector |
+| interrupt transport admission/completion | `interruptCommandAdmission.ts` | frontend streaming transport | standalone/team services have the identical register/check/send/rollback/drain invariant | Yes | Yes | socket lifecycle owner, retry queue, or fabricated acknowledgement |
 
 ## Shared Structure / Data Model Tightness Check
 
@@ -430,6 +532,10 @@ Forbidden shortcuts: status-to-active conversion, activity-to-`AgentStatus` conv
 | team history item | Yes | Yes | Low | Root has isActive; leaf member has status |
 | team member node/row unions | Yes | Yes | Low | Put agent status only on agent specialization; team nodes carry no five-state field |
 | open-work result | Yes | Yes | Low | Private boolean only; no public serialization |
+| `CodexInputSubmissionResult` | Yes | Yes | Low | `{ kind, turnId }`; non-null turn ID required |
+| `InterruptGenerationCommandAckPayload` | Yes | Yes | Low | common outcome core composed with required standalone/team target union; no status/duplicate fields |
+| frontend pending interrupt entry | Yes | Yes | Low | command ID plus the same required target union only; ephemeral and cleared on result/disconnect |
+| `InterruptCommandTransportFailure` | Yes | Yes | Low | exact command/target plus discriminated local reason; never shares server-ack or lifecycle fields |
 
 ## Final File Responsibility Mapping
 
@@ -455,6 +561,16 @@ Forbidden shortcuts: status-to-active conversion, activity-to-`AgentStatus` conv
 | `autobyteus-web/services/agentStreaming/TeamStreamingService.ts` + protocol | frontend transport | stream | lifecycle handler and exact leaf status | Existing socket client | DTOs |
 | `autobyteus-web/stores/agentTeamRunStore.ts` + history/open/recovery | frontend orchestration | store | direct activity application, cleanup | Existing lifecycle callers | isActive |
 | workspace history/running components | presentation | UI | render binary group/run activity and use direct actions/text | Existing surfaces | AgentStatus mapping or aggregate helpers |
+| `autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread.ts` | Codex adapter | provider input owner | rename `sendTurn` to `submitInput`; branch start/steer; mutate current ID only on start; validate exact steer response | Existing current-turn authority | typed client + input mapper |
+| `autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-id-resolver.ts` | Codex adapter | response parser | separate required start and steer ID parsers matching their schemas | Prevents request/correlation response ambiguity | app-server JSON primitives |
+| `autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts` | agent backend | runtime-neutral adapter | call `submitInput`, return exact turn ID, convert throw to failed `AgentOperationResult` | Existing backend boundary | internal submission result |
+| `autobyteus-server-ts/src/services/agent-streaming/interrupt-generation-command-ack.ts` | transport | command result mapper | define exact target/ack types, validate command ID, map operation result state | Shared by both handlers | existing SEND_MESSAGE ack arm |
+| `autobyteus-server-ts/src/services/agent-streaming/{agent-stream-handler.ts,agent-team-stream-handler.ts}` | transport | command handlers | parse command ID/target, execute exact interrupt, always send ack on same connection | Existing request owners | shared interrupt ack builder |
+| `autobyteus-web/services/agentStreaming/protocol/agentCommandTypes.ts` | frontend transport | wire contract | replace SEND-only interface with discriminated send/interrupt union | Single parse authority | exact target types |
+| `autobyteus-web/services/agentStreaming/interruptCommandAdmission.ts` | frontend transport | local admission/completion owner | shared pending registration, connected-state gate, send-throw rollback, delete-guarded failure callback, and disconnect drain | One repeated failure-safe transition for both services | pending entry + exact local failure type |
+| `autobyteus-web/services/agentStreaming/{AgentStreamingService.ts,TeamStreamingService.ts}` | frontend transport | pending matcher | delegate admission, include command ID, intercept/match ack, invoke callbacks, drain pending on disconnect, return boolean | Existing socket owner | protocol union + shared admission helper |
+| `autobyteus-web/stores/{agentRunStore.ts,agentTeamRunStore.ts}` | frontend orchestration | command/feedback owner | generate command ID, pass server/local callbacks, toast rejected/failed/transport failure once, return service admission, preserve exact route validation | Existing action surfaces | `useToasts` + streaming services |
+| `autobyteus-web/localization/messages/{en,zh-CN}/agent.generated.ts` (or existing command-error catalog selected by implementation) | localization | user feedback text | localized interrupt failure prefix/fallback | Existing localization owner | provider message as detail |
 
 ## Applied Patterns (If Any)
 
@@ -463,12 +579,20 @@ Forbidden shortcuts: status-to-active conversion, activity-to-`AgentStatus` conv
 - **Discriminated specialization:** Agent member shapes own `AgentStatus`; team member shapes do not.
 - **Event plus fresh snapshot:** Bind lifecycle listener then read manager state for race-free live convergence.
 - **Explicit domain predicates:** Private `hasOpenExecutionWork` replaces a public enum used as a proxy.
+- **Provider adapter strategy inside one owner:** `CodexThread` selects start or steer from its owned current-turn fact; callers remain runtime-neutral.
+- **Discriminated command result:** One `AGENT_COMMAND_ACK` union has tight SEND_MESSAGE and INTERRUPT_GENERATION variants rather than a mostly-optional payload.
+- **Request/result correlation:** Frontend service matches ephemeral command ID and exact target before invoking feedback; lifecycle stays event-owned.
+- **Failure-safe admission:** Shared register/check/send/rollback logic returns a truthful boolean and completes local failures exactly once before server correlation exists.
 
 ## Target Subsystem / Folder / File Mapping
 
 | Path | Kind | Owner / Boundary | Responsibility | Why It Belongs Here | Must Not Contain |
 | --- | --- | --- | --- | --- | --- |
 | `autobyteus-server-ts/src/agent-execution/**` | Folder | `AgentRun` | Preserve implemented five-state gateway/finalizer | Agent domain | Team aggregate |
+| `autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread.ts` | File/Change | `CodexThread` | provider-local `submitInput`, idle start/current steer, exact response validation, and bounded `lastTerminalTurnId` request/notification reconciliation | Already owns current Codex turn and commands | runtime-neutral lifecycle changes, public second lifecycle, or steer fallback |
+| `autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-id-resolver.ts` | File/Change | Codex response parsing | separate required `turn/start` and `turn/steer` ID parsers | Provider schemas are different | generic request/correlation fallback |
+| `autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts` | File/Change | Codex backend adapter | adapt internal submission result to `AgentOperationResult` | Existing runtime-neutral boundary | start/steer policy duplication |
+| `autobyteus-server-ts/src/agent-execution/services/agent-run-command-types.ts` | File/Change | send-command domain | rename the existing SEND_MESSAGE-only ack to `SendMessageCommandAckPayload`; keep coordinator result semantics unchanged | Send deduplication remains agent-run-command behavior | interrupt target/result fields or a compatibility alias |
 | `autobyteus-server-ts/src/agent-team-execution/domain/team-run-lifecycle.ts` | File/New | manager contract | `{teamRunId,isActive}` and listener | Team domain | member/task/status enum |
 | `autobyteus-server-ts/src/agent-team-execution/domain/task-team-stream-scope.ts` | File/New | team outward identity | tight scope builder/clone and parent-frame invariants | Stream scope is team-domain identity, not mapper inference | operational ingress/coordinator selectors or wire snake_case |
 | `autobyteus-server-ts/src/agent-team-execution/domain/team-leaf-agent-status-snapshot.ts` | File/Change | team snapshot contract | required leaf payload plus discriminated ordinary/task-team stream scope | Team recursion owns the envelope | full task-team operational identity or optional task-team fields on `AgentStatusPayload` |
@@ -483,11 +607,19 @@ Forbidden shortcuts: status-to-active conversion, activity-to-`AgentStatus` conv
 | `.../task-delegation/task-team-settlement-coordinator.ts` | File/Change | settlement | explicit work checks | Existing owner | team status normalization |
 | `autobyteus-server-ts/src/services/agent-streaming/team-stream-agent-identity-payload.ts` | File/Change | transport identity | shared task-team flattening, strict live/snapshot leaf validation | Wire mapping belongs at transport boundary | prefix/rebase fallback or independent relative-path rules |
 | `autobyteus-server-ts/src/services/agent-streaming/{models.ts,agent-team-stream-handler.ts,team-run-event-websocket-message-mapper.ts,team-runtime-status-snapshot-service.ts}` | Files/Change/Rename snapshot service | transport | `TEAM_RUN_LIFECYCLE`, mapped scoped leaf snapshots, no TEAM_STATUS | Existing team stream | aggregate logic or early carrier unwrapping |
+| `autobyteus-server-ts/src/services/agent-streaming/interrupt-generation-command-ack.ts` | File/New | command-result transport | tight interrupt ack target/outcome and shared result mapping | Two handlers must emit exactly the same contract | status, transcript, task, or duplicate-send fields |
+| `autobyteus-server-ts/src/services/agent-streaming/agent-stream-handler.ts` | File/Change | standalone command transport | parse command ID, execute interrupt, always return same-socket ack | Existing standalone command owner | log-only rejection or generic ERROR |
+| `autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts` | File/Change | exact-member command transport | parse ID/target, execute exact interrupt, always return same-socket ack | Existing team command owner | aggregate interrupt or member event publication |
 | `autobyteus-server-ts/src/run-history/services/team-run-status-projection-service.ts` | File/Rename | history live projection | isActive + member snapshots | Name must match scope | root status |
 | `autobyteus-server-ts/src/run-history/services/team-run-history-service.ts` and GraphQL history type | Files/Change | history contract | drop root status | Existing projection/schema | status-to-active |
 | `autobyteus-web/types/agent/AgentTeamStatus.ts` | File/Delete | N/A | Remove | Obsolete | N/A |
 | `autobyteus-web/types/agent/AgentTeamContext.ts`, `stores/runHistoryTypes.ts` | Files/Change | state models | root isActive; specialized agent/team nodes | Canonical frontend models | team currentStatus |
 | `autobyteus-web/services/agentStreaming/{protocol/messageTypes.ts,TeamStreamingService.ts,handlers/teamHandler.ts}` | Files/Change | client stream | lifecycle boolean and leaf status | Existing transport | TEAM_STATUS compatibility |
+| `autobyteus-web/services/agentStreaming/protocol/agentCommandTypes.ts` | File/Change | command-result contract | discriminated SEND_MESSAGE/INTERRUPT_GENERATION ack union | Existing ack type owner | mostly-optional generic command DTO |
+| `autobyteus-web/services/agentStreaming/interruptCommandAdmission.ts` | File/New | local control admission | exact pending entry types, local failure reason, failure-safe send, delete-guarded completion, and disconnect drain | Same invariant is required by both existing socket services | retries, server ack construction, status, transcript, or toast |
+| `autobyteus-web/services/agentStreaming/AgentStreamingService.ts` | File/Change | standalone control transport | boolean admission through shared helper, standalone ack matching, callback/cleanup before generic dispatch | Existing socket owner | lifecycle mutation, swallowed send throw, or transcript error |
+| `autobyteus-web/services/agentStreaming/TeamStreamingService.ts` | File/Change | exact-member control transport | boolean admission through shared helper, ID/target matching, ack interception before task/member routing | Existing team socket owner | inferred target, swallowed send throw, or generic member dispatch |
+| `autobyteus-web/stores/{agentRunStore.ts,agentTeamRunStore.ts}` | Files/Change | command/feedback orchestration | build command ID, install server/local callbacks, return service boolean, and show one localized rejected/failed/transport failure | Existing action owners | duplicate toast, agent status mutation, or team liveness mutation |
 | `autobyteus-web/services/runHydration/**`, `runOpen/**`, `runRecovery/**`, history stores/helpers | Folder/Change | state convergence | direct isActive and member hydration | Existing convergence owners | synthetic team status |
 | `autobyteus-web/components/workspace/common/TeamActivityDot.vue` | File/New | team presentation | solid blue/gray boolean indicator with accessible caller label | Shared by two desktop team surfaces | AgentStatus, animation, aggregation, actions |
 | `autobyteus-web/components/workspace/history/workspaceHistoryTeamDefinitionGroups.ts` | File/Change | definition-group projection | add `hasActiveRuns = runs.some(run.isActive)` | Owns the displayed child collection | representative status or persisted state |
@@ -511,6 +643,8 @@ Forbidden shortcuts: status-to-active conversion, activity-to-`AgentStatus` conv
 | `services/agent-streaming` | Transport | Yes | Low | Mapping only, no lifecycle derivation |
 | `run-history/services` | Off-Spine projection | Yes | Low | Manager read + member snapshot projection |
 | frontend stores/services | Mixed Justified | Yes | Medium | Keep contract, convergence, and presentation responsibilities in their existing areas; remove conversions |
+| `agent-execution/backends/codex/thread` | Provider Adapter | Yes | Low | Keep current-turn method selection and schema parsing together under `CodexThread`; no cross-runtime coordinator |
+| server/frontend `agentStreaming` | Transport | Yes | Medium | Ack contract/matching belongs with the existing WebSocket command surface; stores own only ID creation and feedback |
 
 ## Binary Team Activity Presentation Contract (`SR-006`)
 
@@ -573,6 +707,296 @@ Focused durable frontend tests must prove:
 6. Existing Stop success/failure/pending tests remain passing; the indicator introduces no click target or action behavior.
 
 No server/API/E2E contract is added. After source review, the API/E2E engineer still owns the formal coverage-validity decision and any proportionate browser-equivalent execution.
+
+## Codex Current-Turn Input Contract (`SR-007`, BEH-010)
+
+### One serialized provider-input owner
+
+Rename `CodexThread.sendTurn` to `submitInput` because the operation may start a new provider turn or steer the current one. Keep the decision inside `CodexThread`; the Codex backend remains the only caller.
+
+```ts
+export type CodexInputSubmissionResult =
+  | { kind: "started"; turnId: string }
+  | { kind: "steered"; turnId: string };
+
+class CodexThread {
+  private inputSubmissionTail: Promise<void> = Promise.resolve();
+
+  submitInput(message: AgentInputUserMessage): Promise<CodexInputSubmissionResult>;
+  private performInputSubmission(
+    message: AgentInputUserMessage,
+  ): Promise<CodexInputSubmissionResult>;
+  private startInput(message: AgentInputUserMessage): Promise<CodexInputSubmissionResult>;
+  private steerInput(
+    message: AgentInputUserMessage,
+    expectedTurnId: string,
+  ): Promise<CodexInputSubmissionResult>;
+}
+```
+
+`submitInput` chains each call onto `inputSubmissionTail` and resets the tail through both success and failure. This prevents two supported callers from both observing idle and issuing concurrent starts. App-server notifications remain independently processable; the exact steer precondition handles a terminal race rather than blocking lifecycle events behind input submission.
+
+Within the serialized task:
+
+1. Await startup readiness.
+2. Read `activeTurnId` after readiness and after every earlier queued input submission has settled.
+3. If it is null, call `startInput`.
+4. If it is identified A, call `steerInput(message, A)`.
+
+No caller may supply its own mode or expected turn ID. This prevents team/direct/system origin logic from duplicating provider policy.
+
+### Idle start
+
+`startInput` preserves the current `turn/start` request fields: `threadId`, mapped input, working directory, model, reasoning effort, service tier, summary, personality, output schema, and collaboration mode. The response parser becomes required and start-specific:
+
+Rename the currently write-only `lastCompletedTurnId` field to `lastTerminalTurnId` and make it the provider-thread's bounded request/notification race guard. Exact `markTurnCompleted(S)`, exact `markTurnFailed(S)`, and an idle/runtime-terminal transition that clears identified active S set `lastTerminalTurnId=S`; a genuinely newer `markTurnStarted(N)` clears the old terminal guard. This is not another public lifecycle or a replacement for `AgentTurnLifecycleState`; it only prevents a late request response for the most recently settled provider turn from reopening that same ID.
+
+```ts
+export function resolveStartedTurnId(payload: unknown): string {
+  // Require response.turn.id; throw CODEX_TURN_START_RESPONSE_INVALID otherwise.
+}
+```
+
+Only after a nonempty started ID S is parsed does `startInput` reconcile it with independently processed provider notifications:
+
+- `activeTurnId === null` and `lastTerminalTurnId !== S`: no start notification/terminal S is known, so call `markTurnStarted(S)` once;
+- `activeTurnId === S`: the provider's `turn/started(S)` notification already installed S, so return it without a second transition;
+- `activeTurnId === null` and `lastTerminalTurnId === S`: terminal S already won the race, so return S for accepted-input correlation without reinstalling it;
+- identified `activeTurnId !== S`: throw `CODEX_TURN_START_IDENTITY_CONFLICT` and preserve the fresher provider identity.
+
+A missing/malformed ID is a failed operation and cannot create anonymous `running` state. This reconciliation is required because app-server notifications remain processable while the request is in flight; the `turn/start` response must not reopen a turn that already completed.
+
+### Identified current-turn steer
+
+`steerInput` sends only the fields owned by the generated Codex 0.146 steer contract:
+
+```ts
+const response = await client.request<unknown>("turn/steer", {
+  threadId,
+  expectedTurnId: A,
+  input: toCodexUserInput(message),
+});
+```
+
+Steer has a distinct response parser because its ID is top-level rather than nested:
+
+```ts
+export function resolveSteeredTurnId(payload: unknown): string {
+  // Require response.turnId; throw CODEX_TURN_STEER_RESPONSE_INVALID otherwise.
+}
+```
+
+The returned ID must equal A. Mismatch throws `CODEX_TURN_STEER_ID_MISMATCH` and leaves the thread unchanged. Success returns `{ kind: "steered", turnId: A }` and **does not** call `markTurnStarted`, set `currentStatus`, clear `lastTerminalTurnId`, or replace `runtimeContext.activeTurnId`.
+
+If A completes/interruption/fails while `turn/steer` is in flight, existing notification handling may clear A. A provider precondition/non-steerable rejection becomes `CODEX_TURN_STEER_REJECTED`. If the provider nevertheless returns successful A after the terminal notification was already processed, `submitInput` returns A for accepted-input/memory correlation but does not reinstall it; canonical status remains governed by the terminal event/fresh snapshot.
+
+### Structured failure and backend adaptation
+
+Add a tight Codex provider-input error carrying one of:
+
+```ts
+type CodexInputSubmissionErrorCode =
+  | "CODEX_TURN_START_RESPONSE_INVALID"
+  | "CODEX_TURN_START_IDENTITY_CONFLICT"
+  | "CODEX_TURN_STEER_RESPONSE_INVALID"
+  | "CODEX_TURN_STEER_ID_MISMATCH"
+  | "CODEX_TURN_STEER_REJECTED";
+```
+
+The Codex backend preserves this code/message in `{ accepted: false, code, message }`; unrelated failures retain the existing `RUNTIME_COMMAND_FAILED` mapping. It maps either successful internal variant to the existing runtime-neutral `{ accepted: true, turnId, platformAgentRunId }`. `AgentOperationResult` does not gain `kind`; provider method choice remains encapsulated.
+
+Never catch steer rejection and call `turn/start`. Never change `AgentTurnLifecycleState` precedence. A successful busy reviewer delivery is recorded by the existing command observer under A; `TURN_COMPLETED(A)` then clears A normally and reconnect returns idle.
+
+### Concrete A/B correction
+
+```text
+Current defective path:
+  current A -> turn/start -> response B -> markTurnStarted(B)
+  provider executes message inside A -> TURN_COMPLETED(A)
+  old-turn guard preserves B -> stale running; provider interrupt has no A/B
+
+Target path:
+  current A -> turn/steer(expected A) -> response A -> no lifecycle mutation
+  accepted-input observer records A -> TURN_COMPLETED(A)
+  canonical current A settles -> idle; reconnect idle; Stop removed
+```
+
+Native AutoByteus is explicitly outside this adapter change: its `turn_start` inbox remains FIFO, current turns do not receive later user/inter-agent messages, interrupt settles only the current turn, and queued messages start distinct later turns.
+
+## Interrupt Command Result And Admission Contract (`SR-007` + `SR-008`, BEH-011, `ARCH-FIND-004`)
+
+### Tight discriminated wire union
+
+Keep `ServerMessageType.AGENT_COMMAND_ACK`. Rename the current server SEND-only payload type to `SendMessageCommandAckPayload` and define the union without a compatibility alias:
+
+```ts
+export type InterruptCommandTarget =
+  | {
+      target_kind: "standalone_run";
+      run_id: string;
+    }
+  | {
+      target_kind: "team_member";
+      team_run_id: string;
+      member_route_key: string;
+      member_run_id: string | null;
+    };
+
+export type InterruptGenerationCommandAckPayload =
+  | {
+      command_type: "INTERRUPT_GENERATION";
+      command_id: string;
+      state: "accepted";
+      target: InterruptCommandTarget;
+    }
+  | {
+      command_type: "INTERRUPT_GENERATION";
+      command_id: string;
+      state: "rejected" | "failed";
+      code: string;
+      message: string;
+      target: InterruptCommandTarget;
+    };
+
+export type AgentCommandAckPayload =
+  | SendMessageCommandAckPayload
+  | InterruptGenerationCommandAckPayload;
+```
+
+The interrupt arm contains no redundant `accepted` boolean: its `state` is the outcome discriminator, and nonaccepted arms require code/message. It also contains no `status`, `duplicate`, `dedupe_key`, task stage, team activity, or transcript fields. The existing SEND_MESSAGE arm remains byte-for-byte equivalent in fields, state values, codes, status option, and deduplication behavior.
+
+Client requests add one `command_id`:
+
+```json
+{"type":"INTERRUPT_GENERATION","payload":{"command_id":"client_interrupt_1"}}
+```
+
+```json
+{"type":"INTERRUPT_GENERATION","payload":{"command_id":"client_interrupt_2","target_member_route_key":"article_writer","target_member_run_id":"article_writer_..."}}
+```
+
+### Server result construction and delivery
+
+Add `interrupt-generation-command-ack.ts` as the shared transport-owned builder. It:
+
+- imports the tight `SendMessageCommandAckPayload` from the agent-run-command domain and exports the transport-level `AgentCommandAckPayload` discriminated union;
+- validates/normalizes the client command ID and exact target supplied by the handler;
+- maps `{ accepted: true }` to `state="accepted"`;
+- maps request/target/run validation rejection to `state="rejected"` with a stable code/message;
+- maps a nonaccepted backend/provider operation or a thrown execution failure to `state="failed"`, preserving a stable code/message;
+- never reads or emits agent status.
+
+Restructure both handlers so the interrupt branch runs before the generic active-subscription early return. The handler retains the originating `connection`, resolves the active subject itself, builds a rejected result when the run is absent, invokes the existing exact interrupt operation when present inside a branch-local `try/catch`, maps both returned rejection and thrown execution failure, and sends exactly one `AGENT_COMMAND_ACK` on that connection in all supported product cases. The outer message-handler catch must not be the owner of interrupt outcome delivery. If the connection has already closed, the handler cannot write an acknowledgement; that transport teardown is reported by the frontend's separate disconnect callback rather than treated as a server result.
+
+For team commands, parse and normalize `target_member_route_key`/optional run ID before execution and put that exact normalized guard in the target arm. Existing compound target validation remains. No aggregate interrupt is added. Invalid/missing synthetic targets may retain the existing explicit invalid-target `ERROR`; every product `TeamStreamingService` request is exact and therefore receives the required ack.
+
+Accepted acknowledgement means only “the provider/runtime accepted the interrupt request.” It must not publish or synthesize `AGENT_STATUS idle`. Existing provider `TURN_INTERRUPTED`/terminal status returns through the normal `AgentRun` gateway and settles lifecycle.
+
+### Frontend request matching and feedback
+
+Mirror the discriminated union in `protocol/agentCommandTypes.ts`. Keep server acknowledgement and local transport failure as separate types:
+
+```ts
+type PendingInterruptCommand = {
+  commandId: string;
+  target: InterruptCommandTarget;
+};
+
+type InterruptCommandTransportFailure = {
+  commandId: string;
+  target: InterruptCommandTarget;
+  reason: {
+    code:
+      | "INTERRUPT_TRANSPORT_NOT_CONNECTED"
+      | "INTERRUPT_TRANSPORT_SEND_FAILED"
+      | "INTERRUPT_TRANSPORT_DISCONNECTED";
+    connectionState: ConnectionState;
+    message: string;
+  };
+};
+```
+
+Each service owns an ephemeral `pendingInterruptCommands` map but delegates its repeated admission/completion mechanics to `interruptCommandAdmission.ts`:
+
+```ts
+export function tryAdmitInterruptCommand(input: {
+  pending: Map<string, PendingInterruptCommand>;
+  entry: PendingInterruptCommand;
+  getConnectionState: () => ConnectionState;
+  send: () => void;
+  onTransportFailure: (failure: InterruptCommandTransportFailure) => void;
+}): boolean;
+
+export function completePendingInterruptTransportFailure(input: {
+  pending: Map<string, PendingInterruptCommand>;
+  commandId: string;
+  reason: InterruptCommandTransportFailure["reason"];
+  onTransportFailure: (failure: InterruptCommandTransportFailure) => void;
+}): boolean;
+
+export function drainPendingInterruptTransportFailures(input: {
+  pending: Map<string, PendingInterruptCommand>;
+  reason: InterruptCommandTransportFailure["reason"];
+  onTransportFailure: (failure: InterruptCommandTransportFailure) => void;
+}): number;
+```
+
+`tryAdmitInterruptCommand` performs one synchronous transition:
+
+1. Register the exact entry before any send attempt. Product callers generate a fresh `client_interrupt_<uuid>`; focused store coverage preserves that uniqueness so the helper never overwrites a live entry.
+2. Read the socket state immediately before send. If it is not `ConnectionState.CONNECTED`, call `completePendingInterruptTransportFailure` with `INTERRUPT_TRANSPORT_NOT_CONNECTED` and return `false` without calling `send`.
+3. Call the provided serialized `send` inside `try/catch`.
+4. If send returns normally, leave the entry pending and return `true`.
+5. If send throws, call the same completion helper with `INTERRUPT_TRANSPORT_SEND_FAILED` and return `false`.
+
+The completion helper first looks up the still-pending entry, deletes it, and only then invokes `onInterruptCommandTransportFailure({ commandId, target, reason })`. If the entry is already absent it returns `false` and does not invoke feedback. The drain helper snapshots current command IDs and delegates each to that same completion function. This delete guard makes reentrant disconnect-plus-throw, acknowledgement-plus-disconnect, and repeated disconnect cleanup exactly once. Neither helper constructs `AgentCommandAckPayload`.
+
+The service methods have truthful synchronous contracts:
+
+```ts
+AgentStreamingService.interruptGeneration(commandId: string): boolean;
+TeamStreamingService.interruptGeneration(
+  commandId: string,
+  target: TeamInterruptGenerationTarget,
+): boolean;
+```
+
+Both build their already-normalized exact `PendingInterruptCommand`, delegate registration/state/send/rollback to the helper, and return its boolean unchanged. They do not retry or queue an interrupt across reconnect: the user may try again while canonical status still says `running`.
+
+For admitted commands, on `AGENT_COMMAND_ACK`:
+
+1. Preserve the current standalone SEND_MESSAGE handler for the SEND arm.
+2. For the interrupt arm, find the pending entry by `command_id`.
+3. Require exact target equality, including team run, canonical member route, and normalized member run ID/null.
+4. If unmatched, log and ignore; do not route through member/task event projection.
+5. If matched, delete the entry and invoke `onInterruptCommandResult(ack)` supplied through service options.
+
+`TeamStreamingService` performs this interception before `refreshTaskDelegationRecords`, `handleTaskExecutionProjectionMessage`, and `resolveTeamStreamMemberContext`; an acknowledgement is not a member activity message. Both automatic `handleDisconnect` and intentional public `disconnect()` call `drainPendingInterruptTransportFailures(...INTERRUPT_TRANSPORT_DISCONNECTED...)`; intentional disconnect drains **before** unregistering socket handlers and clearing context. A command already rolled back during immediate non-admission or send throw is absent and cannot produce duplicate feedback. The callback is local connection feedback, not a fabricated `AGENT_COMMAND_ACK`, and it does not change status.
+
+`agentRunStore` and `agentTeamRunStore` generate `client_interrupt_<uuid>` using the existing client ID pattern, pass it with the already-validated run/compound member target, and install both callbacks when constructing each service. They return the service boolean unchanged: `true` means the interrupt was admitted to a connected socket send, not that interruption succeeded; `false` means it was not admitted. The synchronous transport-failure callback already owns the error toast, so the caller must not toast again merely because the method returned `false`.
+
+On matched `rejected` or `failed`, the store uses `localizationRuntime` plus `useToasts().addToast(..., "error")` to display the target-aware failure. Provider `message` is detail beneath a localized fallback/prefix. Accepted acknowledgement produces no success toast and no optimistic idle; it merely completes control correlation. The current generic `handleError` call remains only for the pre-existing SEND_MESSAGE arm and must not be used for interrupt results.
+
+### Focused coverage contract
+
+Implementation-scoped server/frontend tests must prove:
+
+1. idle Codex input uses only `turn/start`, requires started ID, installs it only when no start/terminal notification already reconciled S, and returns `kind=started`;
+2. active A uses only `turn/steer(expectedTurnId=A)`, requires response A, never calls the start transition, and returns/records A;
+3. serialized submissions cannot issue two concurrent idle starts; the later operation observes the state established by the earlier one;
+4. steer precondition/non-steerable rejection and response mismatch preserve current identity and never call start fallback;
+5. terminal A after successful steer settles backend/canonical snapshot idle and reconnect remains idle; start response S after already-processed terminal S also remains idle and does not reinstall S;
+6. standalone/team handlers emit exactly one interrupt ack for accepted, missing-run/validation rejection, and provider failure with exact command/target identity;
+7. frontend standalone/team services serialize command ID, match ID plus target, ignore unmatched ack, intercept team ack before member projection, and report in-flight disconnect through the separate local transport-failure callback without fabricating a server acknowledgement;
+8. rejected/failed result produces one error toast and no conversation `ErrorSegment`, agent-status change, team-lifecycle change, or false success;
+9. accepted result produces no optimistic idle; later canonical terminal/status removes Stop;
+10. for both standalone and team services, already-`DISCONNECTED`, `CONNECTING`, and `RECONNECTING` states register then remove the exact entry, skip socket send, invoke one exact-target `INTERRUPT_TRANSPORT_NOT_CONNECTED` callback, return `false`, and leave no pending command;
+11. for both services, a connected-state send throw—including a mock that reentrantly emits disconnect before throwing—returns `false`, leaves no pending entry, and invokes at most one exact-target transport callback; a later disconnect adds no duplicate feedback;
+12. an admitted command returns `true`; later automatic or intentional disconnect reports it once, while matched acknowledgement removes it so a later disconnect reports nothing;
+13. every local admission/disconnect failure produces no fabricated server ack, status/liveness mutation, `ErrorSegment`, retry queue, stale entry, or duplicate toast;
+14. existing SEND_MESSAGE ack/dedupe tests and all SR-006 agent/team/nested/presentation tests remain passing.
+
+API/E2E still owns fresh coverage investigation and realistic Codex/browser-equivalent execution after source review.
 
 ## Recursively Scoped Leaf-Agent Contract And Coordinate Frame (`ARCH-FIND-003`, `CODE-FIND-002`)
 
@@ -943,6 +1367,10 @@ The team WebSocket must bind the manager lifecycle listener before its fresh man
 | Failure | `AgentRunCanonicalFailureObserver` or failed mutation result | root aggregate `status=error` | Keeps failure explicit |
 | Settlement | `!taskService.hasOpenWork() && !childRun.hasOpenExecutionWork()` | `teamStatus in {idle,offline}` | Internal question gets an internal predicate |
 | Connection | `isSubscribed=false, isActive=true` is valid | disconnect sets inactive | Transport is not liveness |
+| Codex busy input | current A -> `turn/steer(expectedTurnId=A)` -> response A -> no start transition | active `turn/start` -> response B -> replace A | Provider method and lifecycle identity must describe the same turn |
+| Codex steer race | exact precondition rejection -> failed operation, identity unchanged | rejection -> fallback `turn/start` | Race must be explicit, not converted into a phantom/new turn |
+| Interrupt result | `{command_type:"INTERRUPT_GENERATION", command_id, state:"failed", target:{...}}` -> error toast | log only or generic agent `ERROR` segment | Control failure is observable without becoming agent output/status |
+| Accepted interrupt | ack accepted; keep Running until `TURN_INTERRUPTED(A)`/canonical status | ack accepted -> optimistic idle | Provider terminal event remains lifecycle authority |
 
 ## Backward-Compatibility Rejection Log (Mandatory)
 
@@ -959,31 +1387,40 @@ The team WebSocket must bind the manager lifecycle listener before its fresh man
 | Keep task cleanup on offline team event | Preserve router path | Rejected | Task terminal event/record reconciliation |
 | Reuse agent `StatusDot` with `isActive ? running : offline` | Avoid a new component | Rejected | Boolean-only `TeamActivityDot`; no AgentStatus conversion or pulse |
 | Persist/transport definition `hasActiveRuns` | Share the group summary broadly | Rejected | Derive from the group's already-present `runs[].isActive` at presentation boundary |
+| Keep active-Codex `turn/start` and ignore response B | Minimize source change | Rejected | Use the provider's explicit steer method and exact A response; request method and identity must agree |
+| Retry `turn/start` after steer rejection | Preserve delivery despite race | Rejected | Return structured failure and let caller/user decide; never fabricate a new turn |
+| Clear canonical running from empty Codex snapshot/timer | Repair the visible stale state | Rejected | Prevent phantom B at provider input boundary; preserve current/retired-turn safety |
+| Add `INTERRUPT_RESULT` or send generic `ERROR` | Avoid widening existing ack | Rejected | Widen `AGENT_COMMAND_ACK` with a tight interrupt arm; handle before event projection |
+| Put `status` in interrupt acknowledgement | Let result drive UI directly | Rejected | Ack reports control only; canonical events/snapshot drive status |
+| Accept unmatched interrupt acknowledgement | Simplify frontend | Rejected | Require command ID and exact target match before feedback |
+| Queue/retry interrupt through reconnect | Hide transient transport loss | Rejected | Fail the attempt locally and visibly; canonical Running keeps Stop available for an explicit retry |
+| Check socket state without send rollback | Avoid a helper | Rejected | State can race the send; register/check/send/catch/delete/callback/boolean is one failure-safe transition |
+| Convert local transport failure into `AGENT_COMMAND_ACK` | Reuse one callback type | Rejected | Keep local admission/disconnect feedback distinct from a server result that was never produced |
 
 ## Derived Layering (If Useful)
 
 ```text
 Frontend presentation/actions
   -> frontend team/agent read models
-  -> GraphQL and WebSocket transport
+  -> GraphQL and WebSocket transport + command-result correlation
   -> AgentTeamRunManager (root team liveness) | TeamRun (exact member/event facade)
   -> MixedTeamManager/member handles (orchestration, leaf snapshots, private work)
   -> AgentRun (leaf lifecycle/event authority)
-  -> runtime backend/provider
+  -> runtime backend -> CodexThread start/steer owner | other provider owner
 ```
 
 Task delegation and failure observation remain side capabilities consuming explicit events/results; they do not sit between team liveness and the UI.
 
 ## Change / Refactor Sequence
 
-1. Start from integrated accepted source `55c5b3c914d64059361d47ec87a29da0e4eb9bbb`. Preserve every SR-005 server/transport/store contract and all accepted lifecycle/task/member behavior. Do not include or overwrite delivery-owned dirty artifacts.
-2. Add boolean-only `TeamActivityDot.vue` with exact solid blue/gray, no-pulse, accessibility, and test attributes. Keep agent `StatusDot` untouched.
-3. Extend `WorkspaceHistoryTeamDefinitionDisplayGroup` with derived `hasActiveRuns`; initialize/update it in `buildDisplayGroupsFromTeamNodes` and calculate it from the complete `runs[]` in `buildDisplayGroupsFromHistory`, including leftover/current-node groups.
-4. Render the group and exact-run dots in `WorkspaceHistoryWorkspaceSection.vue` at the agreed positions and add localized accessible labels.
-5. Render the same semantics in `RunningTeamGroup.vue` and `RunningTeamRow.vue`; do not alter mobile's existing Active/Inactive text.
-6. Add focused component/group/row coverage for mixed child activity, all-inactive transition, exact sibling states, no representative/member/socket influence, no pulse, accessibility, and unchanged leaf-agent dots/actions.
-7. Run the focused frontend tests, localization boundary/audit, repository formatting/diff checks, and the existing team Stop/presentation regression set. Classify any repository-baseline typecheck failures exactly rather than hiding them.
-8. Produce the next implementation revision and return source to code review. API/E2E then performs a fresh coverage investigation for SR-006 before delivery repeats latest-base refresh, docs sync, and manual verification preparation.
+1. Start from accepted source HEAD `df3fe87e78ccc734128ce0b96a4e4281e2f55405`. Preserve all SR-006 lifecycle/team/nested/presentation source and tests. Do not include or overwrite delivery-owned dirty documentation/log artifacts.
+2. In Codex thread scope, add serialized input submission, distinct required start/steer response parsers, typed provider-input failures, and rename `sendTurn` to `submitInput`. Update Codex backend/tests/call sites; do not edit `AgentTurnLifecycleState` or other runtime adapters.
+3. Prove idle start, active A steer, exact A preservation, serialization, rejection/mismatch with no fallback/mutation, terminal A -> idle, accepted-input memory A, and reconnect idle in focused Codex/AgentRun tests.
+4. Add the server interrupt-ack union/builder. Restructure standalone/team interrupt handling to parse command ID, execute the existing exact operation, and send exactly one same-socket ack for supported accepted/rejected/failed outcomes.
+5. Mirror the discriminated union in frontend protocol. Add `interruptCommandAdmission.ts`; make both services register/check/send/rollback through it, return boolean admission, match pending ID/target, intercept team control results before member/task routing, and drain only still-pending entries on disconnect without changing lifecycle.
+6. Update standalone/team stores to create client interrupt IDs, install server-result and local-transport callbacks, return the service admission boolean unchanged, and show one localized rejected/failed/transport error toast. Preserve composer action policy, exact team target checks, and canonical-event-only idle.
+7. Add focused server/frontend coverage listed in the SR-007/SR-008 contracts, including disconnected, connecting, reconnecting, send-throw, reentrant disconnect-plus-throw, admitted-disconnect, and ack-before-disconnect cases. Rerun existing SEND_MESSAGE ack/dedupe, exact member routing, agent lifecycle/late-turn, nested task-team, binary team activity, composer keyboard, and localization suites.
+8. Run server/frontend builds/typechecks and repository diff/obsolete-path scans. Classify unrelated baseline failures exactly. Produce the next implementation revision and return source to code review; API/E2E then performs a fresh SR-008 coverage investigation before delivery refresh/rebuild/manual verification.
 
 ## Key Tradeoffs
 
@@ -995,6 +1432,10 @@ Task delegation and failure observation remain side capabilities consuming expli
 - Clean-cut GraphQL/WebSocket contraction requires coordinated server/frontend changes, accepted because they ship together and stored data needs no migration.
 - A derived definition-group activity boolean is technically an aggregation, but it is intentionally bounded to presentation over already-authoritative child booleans; this keeps the valuable collapsed-group signal without recreating domain status.
 - A separate small component adds one file, but it prevents boolean liveness from being disguised as agent `running/offline` and prevents an active team resource from pulsing like current generation.
+- A small serialized Codex input tail adds local sequencing, but it prevents multiple supported input origins from making independent start/steer decisions and owns no cross-runtime policy.
+- Requiring distinct start/steer response parsers is stricter than reusing `resolveTurnId`, but their actual schemas differ and a request/correlation ID must never masquerade as provider lifecycle identity.
+- A widened ack union and ephemeral pending map add control-plane types, but avoid both log-only failure and misuse of agent `ERROR`/status. The map is not a lifecycle owner and is cleared on result/disconnect.
+- A small shared admission helper is stricter than calling `wsClient.send` directly in two services, but it makes the identical rollback/exactly-once/boolean invariant reviewable and prevents connection-state races from leaving stale pending commands.
 
 ## Risks
 
@@ -1007,10 +1448,19 @@ Task delegation and failure observation remain side capabilities consuming expli
 - The delivery candidate and its Electron package no longer represent the complete approved UI; they must not be finalized or reused as SR-006 verification evidence without rebuild/revalidation.
 - If `buildDisplayGroupsFromTeamNodes` does not update `hasActiveRuns` when appending another run, or the history path reads anything other than its complete `runs[]`, a collapsed group can show stale gray. Cover both builder paths and the leftover/current-node route.
 - Accidentally using `isSubscribed`, representative ordering, member status, or Stop availability would recreate the ownership defect under a new presentation name; tests must vary those facts independently.
+- If `submitInput` reads `activeTurnId` outside its serialized task, two near-simultaneous inputs can still both choose start. The read must occur after startup and earlier queued submissions.
+- If a start response S or steer success reinstalls its ID after the corresponding terminal notification, stale running remains possible. Exact completion/failure/identified-idle paths must maintain `lastTerminalTurnId`; start must reconcile it with `activeTurnId` before transition, and steer must be correlation-only.
+- If the steer response uses the nested start parser, its top-level `turnId` will be missed or an unrelated ID may be accepted. Parsers and error codes must remain method-specific.
+- App-server precondition/non-steerable errors may vary by Codex version. The adapter must preserve a structured failure/message and never fall back; real-runtime API/E2E should verify the bundled version.
+- If the team frontend sends `AGENT_COMMAND_ACK` through task/member projection before checking `command_type`, the result can be dropped or applied to the wrong leaf. Intercept it first and require exact target match.
+- A matched accepted ack can arrive before provider terminal. Any optimistic idle/status cleanup would recreate dual authority; coverage must observe Running until canonical terminal/status.
+- Disconnect between request and ack must clear pending control entries and surface transport failure without setting idle/offline. Otherwise the button appears inert again or stale acknowledgements may match after reconnect.
+- Canonical Running may outlive socket attachment. A disconnected/reconnecting check must occur after pending registration and immediately before send, and a synchronous send throw must run the same delete-guarded completion. Otherwise the new command did not exist at the earlier disconnect event and can remain stale/inert.
+- Reentrant test transports can emit disconnect inside `send()` and then throw. Both paths must share delete-before-callback completion so only the first observes the pending entry and feedback remains exactly once.
 
 ## Guidance For Implementation
 
-- Treat integrated HEAD `55c5b3c914d64059361d47ec87a29da0e4eb9bbb` as the source starting state; `ARCH-REV-005`, `CRR-004`, API/E2E reports, and test-code re-review remain the accepted baseline. Preserve all existing server/transport/state source.
+- Treat HEAD `df3fe87e78ccc734128ce0b96a4e4281e2f55405` as the source starting state; `ARCH-REV-006`, IR-005, CRR-007, API-REV-003, CRR-008, and DR-005 remain the accepted SR-006 baseline. Preserve all unrelated server/frontend behavior and protected delivery edits.
 - Make manager transition notification idempotent: reject/non-register a backend that is not live; emit only when an exact run changes registered liveness; replacing one still-active instance under the same ID is boolean `true -> true`, not a false/true flicker; a failed terminate does not mutate the map or notify false.
 - Keep the lifecycle payload minimal. Do not add `status`, `phase`, member summaries, error text, interrupt permission, or connection state.
 - In the initial team stream, bind run events and manager lifecycle before reading; keep each coordinate-consistent `TeamLeafAgentStatusSnapshot` intact through `mapTeamLeafAgentStatusSnapshot`, then send the fresh root lifecycle and recursively mapped leaf messages.
@@ -1022,6 +1472,15 @@ Task delegation and failure observation remain side capabilities consuming expli
 - Frontend lifecycle handlers update one subject only: root lifecycle -> `teamContext.isActive`; member status -> exact agent context; task event -> task projection; socket events -> `isSubscribed`.
 - The definition/group dot reads only `runs.some(run.isActive)` and is display-only. The exact run dot reads only that row's `isActive`. Do not make either a new store field or mutation guard.
 - Keep `TeamActivityDot` semantically tight: boolean + localized label, solid blue/gray, no pulse. Do not add a `kind`, string status, member list, or AgentStatus fallback.
+- Keep `CodexThread` as the only start/steer owner. Serialize submissions locally; parse required method-specific IDs; start may install a new ID only after notification-aware reconciliation, while steer may only validate/return expected A.
+- Do not add an active-input branch to `AgentRun`, team delivery, notifications, or frontend. Do not change native AutoByteus FIFO `turn_start` behavior or Claude semantics.
+- Preserve the current/retired-turn state machine exactly. A provider steer failure returns through `AgentOperationResult`; it is not evidence to close A, and a successful response after terminal A does not reopen A.
+- Keep the interrupt ack specialized and control-only. SEND_MESSAGE ack/dedupe remains unchanged. Do not add `status`, `can_interrupt`, task/team activity, or generic optional target fields to the interrupt arm.
+- Both stream handlers must respond on the originating connection, including missing active-run and backend rejection. Team target route/run remains exact; no aggregate fallback.
+- Frontend matching requires both command ID and target. Team matching happens before task/member projection. Rejected/failed feedback uses localized toast, not `handleError` or an `ErrorSegment`.
+- Frontend interrupt admission returns `true` only after `CONNECTED` send returns normally. For nonconnected state or send throw, remove the exact entry, invoke local transport feedback once, and return `false`; do not queue/retry through reconnect or fabricate an acknowledgement.
+- Disconnect drains only entries still pending through the same delete-guarded completion helper. An immediate failure, matched ack, or earlier disconnect must make later cleanup a no-op for that command.
+- Accepted interrupt ack clears only the pending command correlation. Wait for canonical provider terminal/status to remove Stop and settle idle.
 - Make `onTerminateTeam` check the store's boolean result. While pending, disable duplicate Stop; on failure, clear pending and leave `isActive=true`/Stop available.
 - Delete rather than deprecate old fields/events/helpers. Regenerate generated GraphQL types after schema/query edits.
 - Update documentation only in the later delivery stage after integrated-state refresh.

@@ -3328,3 +3328,86 @@ DR-004 final report-time confirmation:
 Ticket HEAD: 55c5b3c914d64059361d47ec87a29da0e4eb9bbb
 origin/personal: 2a7271c9d78b71b919f7dbfa3b8f97f61c3a2e2b
 Ahead/behind: 22	0
+
+===== SR-006 DELIVERY RE-ENTRY LATEST-BASE REFRESH (2026-08-03) =====
+Reviewed source/test head: 2308784b57d9d7fe9aab8fd4591e4924f9f36d7d
+Reviewed package checkpoint: df3fe87e78ccc734128ce0b96a4e4281e2f55405
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+Fetched origin/personal: 2a7271c9d78b71b919f7dbfa3b8f97f61c3a2e2b
+Ahead/behind before integration: 27	0
+
+New target commits:
+
+SR-006 integrated-state basis:
+Ticket HEAD: df3fe87e78ccc734128ce0b96a4e4281e2f55405
+origin/personal: 2a7271c9d78b71b919f7dbfa3b8f97f61c3a2e2b
+Ahead/behind: 27	0
+No new target commit required integration; rerunning the focused SR-006 presentation suite against the checkpointed reviewed package.
+Command: pnpm test:nuxt components/workspace/common/__tests__/TeamActivityDot.spec.ts components/workspace/history/__tests__/workspaceHistoryTeamDefinitionGroups.spec.ts components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts components/workspace/running/__tests__/RunningTeamGroup.spec.ts components/workspace/running/__tests__/RunningTeamRow.spec.ts --run
+
+> autobyteus@1.4.41 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/workspace/common/__tests__/TeamActivityDot.spec.ts components/workspace/history/__tests__/workspaceHistoryTeamDefinitionGroups.spec.ts components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts components/workspace/running/__tests__/RunningTeamGroup.spec.ts components/workspace/running/__tests__/RunningTeamRow.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web
+
+stderr | components/workspace/history/__tests__/workspaceHistoryTeamDefinitionGroups.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/running/__tests__/RunningTeamRow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/common/__tests__/TeamActivityDot.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/running/__tests__/RunningTeamGroup.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/running/__tests__/RunningTeamRow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/common/__tests__/TeamActivityDot.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/running/__tests__/RunningTeamGroup.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/history/__tests__/workspaceHistoryTeamDefinitionGroups.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/common/__tests__/TeamActivityDot.spec.ts (1 test) 7ms
+ ✓ components/workspace/history/__tests__/workspaceHistoryTeamDefinitionGroups.spec.ts (2 tests) 3ms
+ ✓ components/workspace/running/__tests__/RunningTeamGroup.spec.ts (4 tests) 25ms
+ ✓ components/workspace/running/__tests__/RunningTeamRow.spec.ts (4 tests) 28ms
+ ✓ components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts (5 tests) 56ms
+
+ Test Files  5 passed (5)
+      Tests  16 passed (16)
+   Start at  16:34:33
+   Duration  5.93s (transform 3.03s, setup 25.74s, collect 397ms, tests 119ms, environment 1.27s, prepare 723ms)
+
+SR-006 delivery focused exit: 0
+===== DR-005 REPORT-TIME REMOTE CONFIRMATION =====
+Timestamp: 2026-08-03T16:45:03+02:00
+From github.com-ryan:AutoByteus/autobyteus-workspace
+ * branch                personal   -> FETCH_HEAD
+Ticket HEAD: df3fe87e78ccc734128ce0b96a4e4281e2f55405
+origin/personal: 2a7271c9d78b71b919f7dbfa3b8f97f61c3a2e2b
+Ahead/behind: 27	0

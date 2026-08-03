@@ -235,6 +235,20 @@ member status separate. `isActive=true` does not imply that any particular
 member is `running` or `initializing`; members keep their own scoped status or
 default to `offline/canInterrupt=false` until an exact `AGENT_STATUS` arrives.
 Frontend reconciliation must never fan root activity out to member rows.
+
+Workspace presentation may render that binary root fact without restoring a
+team status model. `TeamActivityDot.vue` accepts only `isActive` plus localized
+accessible copy. Each exact history or running team-run row passes only that
+run's authoritative `isActive`: active is a solid blue dot, inactive is a solid
+gray dot, and neither state pulses or encodes a five-state lifecycle. A rendered
+team-definition group derives a presentation-only `hasActiveRuns` value from
+`runs.some(run => run.isActive)` over the exact child runs it displays. That
+any-active cue remains visible while the group is collapsed, reacts when the
+last active child becomes inactive, and is not a persisted/transported
+definition field. Representative ordering, leaf-agent status, socket
+subscription, and Stop/pending state must not influence either the exact-run
+cue or the group projection.
+
 Delegated task executions are task-scoped transient child entities rather than
 structural team topology. When team stream payloads carry explicit task-agent
 identity (`execution_kind: "task_agent"`, `task_agent_instance_id`,

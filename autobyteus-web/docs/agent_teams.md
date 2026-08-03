@@ -76,9 +76,15 @@ application/package provenance so embedded teams remain distinguishable from
 standalone shared teams.
 
 Team definitions are reusable configuration, not runtime subjects. Definition
-catalog, detail, and group surfaces therefore expose no runtime status field,
+catalog and detail surfaces therefore expose no owned runtime status field,
 status dot, or lifecycle label. Runtime liveness belongs only to a concrete team
-run, and five-state status belongs only to exact leaf agents.
+run, and five-state status belongs only to exact leaf agents. Workspace history
+and running-team presentation may group displayed runs by definition and show a
+presentation-only any-active cue for that rendered collection. The group dot is
+derived from `runs.some(run => run.isActive)` and is not stored on, transported
+with, or inferred as a status of the definition. Each child run row still shows
+only its own binary `isActive` cue; neither cue depends on representative member
+status, socket subscription, or Stop/pending state.
 
 ## Default Launch Preferences
 

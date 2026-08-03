@@ -77,3 +77,61 @@ Result: Pass (exit 0)
 
 Command: obsolete lifecycle documentation scan
 Result: Pass (no matches)
+
+SR-006 presentation documentation validation
+Timestamp: 2026-08-03T14:35:52Z
+Integrated HEAD before delivery docs: df3fe87e78ccc734128ce0b96a4e4281e2f55405
+Tracked base: 2a7271c9d78b71b919f7dbfa3b8f97f61c3a2e2b
+Ahead/behind (HEAD...origin/personal): 27	0
+
+Command: git diff --check
+Result: Pass (exit 0)
+
+Command: obsolete lifecycle documentation scan
+Result: Pass (no matches)
+
+Command: required binary presentation guidance scan
+autobyteus-web/docs/agent_integration_minimal_bridge.md:179:  team-definition group may derive `runs.some(run => run.isActive)` solely as
+autobyteus-web/docs/settings.md:240:team status model. `TeamActivityDot.vue` accepts only `isActive` plus localized
+autobyteus-web/docs/settings.md:244:team-definition group derives a presentation-only `hasActiveRuns` value from
+autobyteus-web/docs/settings.md:245:`runs.some(run => run.isActive)` over the exact child runs it displays. That
+autobyteus-web/docs/agent_execution_architecture.md:179:team status model. `TeamActivityDot.vue` accepts only `isActive` plus localized
+autobyteus-web/docs/agent_execution_architecture.md:183:team-definition group derives a presentation-only `hasActiveRuns` value from
+autobyteus-web/docs/agent_execution_architecture.md:184:`runs.some(run => run.isActive)` over the exact child runs it displays. That
+autobyteus-web/docs/agent_teams.md:83:presentation-only any-active cue for that rendered collection. The group dot is
+autobyteus-web/docs/agent_teams.md:84:derived from `runs.some(run => run.isActive)` and is not stored on, transported
+Result: Pass (exact-run and presentation-only group guidance present)
+
+DR-005 final documentation and handoff validation
+Timestamp: 2026-08-03T16:44:52+02:00
+Checkpoint HEAD: df3fe87e78ccc734128ce0b96a4e4281e2f55405
+Tracked base before report-time refresh: 2a7271c9d78b71b919f7dbfa3b8f97f61c3a2e2b
+Ahead/behind: 27	0
+
+Command: git diff --check
+Result: Pass (exit 0)
+
+Command: obsolete lifecycle documentation scan
+Result: Pass (no matches)
+
+Command: required DR-005 presentation guidance scan
+autobyteus-web/docs/settings.md:240:team status model. `TeamActivityDot.vue` accepts only `isActive` plus localized
+autobyteus-web/docs/settings.md:242:run's authoritative `isActive`: active is a solid blue dot, inactive is a solid
+autobyteus-web/docs/settings.md:244:team-definition group derives a presentation-only `hasActiveRuns` value from
+autobyteus-web/docs/settings.md:245:`runs.some(run => run.isActive)` over the exact child runs it displays. That
+autobyteus-web/docs/settings.md:708:light-blue treatment is presentation-only and preserves hover plus
+autobyteus-web/docs/settings.md:892:    - Tool display names and statuses are backend-provided canonical values. Runtime-specific transport names such as Agent Tools MCP-prefixed Claude/Codex tool names must be normalized before streaming; frontend Activity and conversation components should render `toolName` and lifecycle state directly instead of stripping provider prefixes or inferring execution from presentation-only segments.
+autobyteus-web/docs/settings.md:908:    - `TokenUsageMeterPanel.vue` is presentation-only: it renders the approved focused-run Token Meter hierarchy (`Latest prompt`, `Gross input`, `Output`, `Total estimate`, `Input breakdown`, `Pricing details`, and collapsed `Calculation details`) and never imports provider pricing metadata or recalculates model prices.
+autobyteus-web/docs/agent_integration_minimal_bridge.md:179:  team-definition group may derive `runs.some(run => run.isActive)` solely as
+autobyteus-web/docs/agent_teams.md:83:presentation-only any-active cue for that rendered collection. The group dot is
+autobyteus-web/docs/agent_teams.md:84:derived from `runs.some(run => run.isActive)` and is not stored on, transported
+autobyteus-web/docs/agent_teams.md:162:callers. That light-blue treatment is presentation-only and preserves hover and
+autobyteus-web/docs/agent_execution_architecture.md:179:team status model. `TeamActivityDot.vue` accepts only `isActive` plus localized
+autobyteus-web/docs/agent_execution_architecture.md:181:run's authoritative `isActive`: active is a solid blue dot, inactive is a solid
+autobyteus-web/docs/agent_execution_architecture.md:183:team-definition group derives a presentation-only `hasActiveRuns` value from
+autobyteus-web/docs/agent_execution_architecture.md:184:`runs.some(run => run.isActive)` over the exact child runs it displays. That
+autobyteus-web/docs/agent_execution_architecture.md:658:light-blue treatment is presentation-only and preserves hover plus
+autobyteus-web/docs/agent_execution_architecture.md:785:preserving exact final content. It is presentation-only: WebSocket protocol,
+autobyteus-web/docs/agent_execution_architecture.md:920:    - Tool display names and statuses are backend-provided canonical values. Runtime-specific transport names such as Agent Tools MCP-prefixed Claude/Codex tool names must be normalized before streaming; frontend Activity and conversation components should render `toolName` and lifecycle state directly instead of stripping provider prefixes or inferring execution from presentation-only segments.
+autobyteus-web/docs/agent_execution_architecture.md:936:    - `TokenUsageMeterPanel.vue` is presentation-only: it renders the approved focused-run Token Meter hierarchy (`Latest prompt`, `Gross input`, `Output`, `Total estimate`, `Input breakdown`, `Pricing details`, and collapsed `Calculation details`) and never imports provider pricing metadata or recalculates model prices.
+Result: Pass

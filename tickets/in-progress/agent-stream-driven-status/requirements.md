@@ -1,6 +1,6 @@
 # Requirements Doc
 
-## Status (`Design-ready` — Binary Team Activity Presentation Revision User Approved 2026-08-03)
+## Status (`Design-ready` — Live Codex Steering / Interrupt-Result Refinement Approved 2026-08-03)
 
 ## Goal / Problem Statement
 
@@ -22,6 +22,8 @@ The simple canonical agent rule remains:
 
 A stream event means agent `running` only when it belongs to the current open turn. Late output from an already completed/retired turn must still render but must not reopen busy state.
 
+The delivery-verification defect adds one exact identity rule: when Codex accepts additional input while identified turn A is already open, the input is same-turn steering into A, not a new current turn. AutoByteus must preserve A through that steering operation so the provider's terminal event for A can settle the public lifecycle. A returned/request correlation identifier must never replace the provider's actual current-turn identity.
+
 For a team, member activity is deliberately not folded upward. A live team remains `isActive=true` when its members are idle, running, initializing, or in error. A team becomes inactive only when it is not present as a live registered team run; connection state, content-delta arrival, and member aggregation are not substitutes for that fact.
 
 ## Current And Desired Behavior (Mandatory)
@@ -37,6 +39,8 @@ For a team, member activity is deliberately not folded upward. A live team remai
 | BEH-007 | A root team run owns a five-state aggregate derived from member agent/subteam states and separately owns `isActive`. Frontend hydration repeatedly converts `isActive` to status and status back to active. | A root team run owns only binary `isActive`, sourced from authoritative live registration. Member states never determine team activity. | Team creation, restore, termination, history, selection, exact member routing, and member snapshots remain supported. | REQ-014, REQ-015, REQ-018; AC-017, AC-018, AC-019, AC-020, AC-024 |
 | BEH-008 | The original team-run row used a five-color aggregate; the delivered candidate correctly switched actions to `isActive` but removed the run-row dot. User feedback says the row is clearer when liveness remains visible beside the run name. | Stop is available exactly while `isActive`; inactive persisted runs may be archived/deleted under their existing lifecycle constraints. Every root team-run row shows a binary activity indicator derived directly from that run's `isActive`. A local `stopPending` flag only prevents duplicate requests. | Existing confirmation, toast/error, draft deletion, cleanup behavior, and leaf-agent five-state dots remain. | REQ-016, REQ-018, REQ-020; AC-017, AC-018, AC-022, AC-023, AC-026 |
 | BEH-009 | The current ticket branch removes aggregate team status, but a task team created inside an ordinary subteam carries child-local logical-team coordinates after its leaf member/source paths are rebased to the root stream. Live routing loses the relative leaf selector and reconnect mapping rejects the snapshot. | Public/frontend five-state team status remains removed. Every live and initial leaf-agent status uses one internally consistent coordinate frame at each team boundary, including task teams below one or more ordinary subteams. Team liveness, task stage, failures, and open-work checks remain separately owned. | Per-member `AGENT_STATUS` identity/payload, task-delegation records/stages, explicit operation errors, and the supported nested `delegate_task` path remain observable. | REQ-015, REQ-017, REQ-019; AC-020, AC-021, AC-024, AC-025 |
+| BEH-010 | In the live Codex candidate, reviewer input arrives while turn A is open. Codex treats it as same-turn steering into A, but `CodexThread.sendTurn()` always calls `turn/start`, installs response ID B as the current turn, and records the input under B. Provider completion for A then cannot clear phantom B, so the server continues to snapshot `running` after Codex is idle. | Additional input accepted while identified Codex turn A is open uses the provider's explicit same-turn steering operation with an exact A precondition. Success preserves/returns A; terminal A settles idle. A race or non-steerable rejection leaves identity unchanged and returns a structured failure; it never installs a phantom B. | Idle Codex input still starts a normal new turn. Current/retired-turn safeguards, inter-agent delivery, transcript rendering, other runtime adapters, and team/member routing remain unchanged. | REQ-002, REQ-005, REQ-012, REQ-017, REQ-021; AC-004, AC-011, AC-015, AC-021, AC-027, AC-028 |
+| BEH-011 | The red Stop click reaches the exact member and fails with `RUNTIME_COMMAND_FAILED: No active turn id`, but standalone and team stream handlers only log most interrupt rejections; the Electron UI receives no command result, so clicking appears to do nothing. | Every standalone/member `INTERRUPT_GENERATION` receives a discriminated control-command acknowledgement/result. Rejection/failure is visibly reported on the originating surface, success is acknowledged without optimistically changing lifecycle, and exact team target identity is retained. | `AGENT_STATUS` remains the only lifecycle authority; provider terminal events still settle accepted interruption; generic runtime `ERROR` and team Stop/termination semantics remain separate. | REQ-008, REQ-019, REQ-022; AC-002, AC-029 |
 
 ## Investigation Findings
 
@@ -52,6 +56,10 @@ For a team, member activity is deliberately not folded upward. A live team remai
 - Removing the aggregate requires separating its non-presentation consumers: task stage remains task-owned; member statuses remain agent-owned; explicit failures remain events/results; task-team settlement receives an explicit internal open-work predicate rather than a public team status.
 - Expanded source review proved that “any team depth” includes a supported task team launched by a leaf agent inside an ordinary persistent subteam. Root-stream leaf member/source and logical-team coordinates must be rebased together; a transport fallback must not guess missing scope.
 - Post-delivery user feedback distinguishes removing the five-state team aggregate from removing all visual activity. The accepted correction is binary: a run dot reads only that run's `isActive`, while a parent agent-team/definition dot reads `runs.some(run => run.isActive)`.
+- The current delivery-verification screenshots expose a different contradiction: the server itself snapshots the selected Codex member as `running`, while 17 exact interrupt attempts are rejected because the Codex backend has no active turn.
+- Native Codex evidence proves the provider opened and completed turn A. A reviewer delivery accepted during A is represented by Codex as a user message inside A, while the AutoByteus accepted-input trace alone assigns it B. `CodexThread.sendTurn()` is the identity-replacement point because it always calls `turn/start` and unconditionally `markTurnStarted(responseTurnId)`.
+- The current Codex app-server schema exposes `turn/steer { threadId, expectedTurnId, input } -> { turnId }` with an exact active-turn precondition. This preserves supported busy delivery while making completion/steer races explicit.
+- The visible button is correctly routed. The apparent no-op is a second defect: non-target interrupt failures are log-only and no interrupt acknowledgement reaches either streaming frontend.
 
 Detailed evidence:
 
@@ -64,17 +72,21 @@ Detailed evidence:
 | --- | --- | --- | --- | --- | --- |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/production-trace-evidence.md` | Evidence-only production trace and live snapshot probe | REQ-001–REQ-012 | AC-001–AC-015 | Complete / N/A | Grounds the agent contradiction, overlapping-send risk, live snapshot capability, and late-event constraint. |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/team-status-simplification-evidence.md` | Evidence-only team-definition/team-run authority, consumer trace, and post-delivery presentation correction | REQ-013–REQ-020 | AC-016–AC-026 | Complete / N/A | Grounds removal of definition-owned status, preservation of binary team activity cues, member-status preservation, and separation of former aggregate consumers. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/codex-steering-stale-running-evidence.md` | Evidence-only live Electron, server, AutoByteus trace, native Codex rollout, protocol-schema, and command-path correlation | REQ-002, REQ-005, REQ-012, REQ-019, REQ-021–REQ-022 | AC-002, AC-004, AC-011, AC-027–AC-029 | Complete / N/A | Proves the phantom-turn identity replacement and log-only interrupt rejection; constrains the safe current-turn steering and command-result boundaries. |
 | `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_6557dd2b51c3__image.png` | User-supplied agent UI evidence | REQ-001, REQ-008 | AC-001, AC-009 | Accepted evidence / N/A | Shows agent `Running` while the primary control remains the send icon. |
 | `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_9d9c83cf3d30__image.png` | User-supplied team hierarchy evidence | REQ-013–REQ-017 | AC-016, AC-017, AC-021, AC-023 | Accepted evidence / N/A | Shows redundant team-run status plus Stop and independently useful member-agent status dots. |
 | `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_ead75793b5e3__image.png` | User-supplied team-definition UI evidence | REQ-013 | AC-016 | Accepted evidence / N/A | Shows a runtime-status dot incorrectly rendered on the reusable `Software Engineering Team` definition group. |
 | `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_0fa01fdeb308__image.png` | User-supplied post-delivery UI evidence and explicit feedback | REQ-016, REQ-020 | AC-023, AC-026 | Approved behavior evidence / Approved 2026-08-03 | Shows the delivered team-definition and team-run rows without activity dots; user feedback explicitly requires binary activity in both positions for clarity. |
+| `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_638f89bebf84__image.png` | User-supplied live Electron defect evidence | REQ-002, REQ-005, REQ-021–REQ-022 | AC-004, AC-027–AC-029 | Accepted evidence / N/A | Shows final completed content while the writer remains `Running` and the red member interrupt is visible but ineffective. |
+| `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_3456bc49f3dc__image.png` | User-supplied focused live Electron defect evidence | REQ-008, REQ-019, REQ-022 | AC-002, AC-029 | Accepted evidence / N/A | Confirms the exact team member remains blue/running and the composer presents the red Stop control after output has ceased. |
 
 ## Design Health Assessment (Mandatory)
 
 - Original change posture: `Bug Fix`, lifecycle/status `Refactor`, and team-status contract `Cleanup`; original scope `Large`.
 - Accepted baseline result: The original `Missing Invariant`, `Boundary Or Ownership Issue`, `Duplicated Policy Or Coordination`, `Shared Structure Looseness`, and keyboard `Local Implementation Defect` findings were resolved through `SR-005` and passed architecture, source, API/E2E, and proportional test-code review.
-- `SR-006` posture: localized user-approved `Behavior Change`; current design issue signal is `No` in lifecycle/state ownership and `Yes` only for a `Local Presentation Omission`.
-- Refactor posture for `SR-006`: `Not Required` beyond a tight boolean-only presentation component and a presentation-group projection.
+- `SR-006` posture: localized user-approved `Behavior Change`; current design issue signal was `No` in lifecycle/state ownership and `Yes` only for a `Local Presentation Omission`. That revision passed its complete pipeline.
+- Current verification-defect posture: `Bug Fix` with a Codex-specific `Local Implementation Defect` at the provider command boundary plus a cross-stream `Missing Command-Result Invariant`. The accepted runtime-neutral lifecycle owner is sound and must not be relaxed to hide the wrong turn identity.
+- Refactor posture: `Required, bounded`. Add one explicit start-versus-steer decision inside `CodexThread` and one discriminated interrupt acknowledgement arm at the existing command transport boundary. Do not add timers, generic snapshot overrides, a new lifecycle field, or provider-specific logic to `AgentRun`/frontend state.
 - Evidence basis:
   - Accepted source has one agent lifecycle authority, one manager-owned team `isActive`, no public aggregate team lifecycle, no definition-owned status, and unified action guards.
   - Exact run rows already carry `isActive`; definition display groups already carry every displayed child run and therefore need no backend/store expansion.
@@ -91,6 +103,8 @@ Detailed evidence:
 6. Do not infer team activity from member aggregation, deltas, frontend context-map membership, or WebSocket connectivity.
 7. Preserve leaf-member `AGENT_STATUS` through the team envelope without changing its status data. Separate task stage, explicit failure, and internal open-work predicates from team liveness.
 8. Route every primary composer trigger and every team Stop trigger through one local request guard without making request-pending state another lifecycle authority.
+9. At the Codex provider boundary, start only when no current turn exists; otherwise steer into the exact current turn with an active-turn precondition and preserve that turn identity through the returned operation result and memory trace.
+10. Return an explicit interrupt command acknowledgement for standalone and team-member routes. Surface rejection/failure without treating the acknowledgement as agent lifecycle or a runtime error event.
 
 ## Scope Classification (`Large`)
 
@@ -114,6 +128,8 @@ The expanded change crosses the server runtime-neutral agent lifecycle pipeline,
 - UC-014: Inside a team, each leaf agent independently receives and renders its five-state status and exposes member interrupt only while that member is running.
 - UC-015: Nested/task-team display and cleanup use binary live-instance or task-domain lifecycle facts without reintroducing a public five-state team aggregate.
 - UC-016: A user scans a collapsed agent-team/definition group and its expanded child run rows and can immediately distinguish whether any run is active and which exact runs are active.
+- UC-017: A Codex member receives supported additional input while turn A is open; it steers that input into A, preserves A as current, completes A, and becomes idle rather than retaining a phantom turn.
+- UC-018: A user clicks interrupt for a standalone or exact team member; the UI receives an accepted/rejected/failed command acknowledgement, reports failure visibly, and still derives lifecycle only from canonical agent events/status.
 
 ## Out of Scope
 
@@ -123,7 +139,7 @@ The expanded change crosses the server runtime-neutral agent lifecycle pipeline,
 - Suppressing, deleting, or reordering legitimate late transcript/tool/activity content.
 - Adding inactivity/quiet-period timers.
 - Provider-specific model reasoning or tool-loop redesign.
-- Changing exact standalone/member interrupt commands or adding aggregate/team-wide generation interrupt.
+- Adding aggregate/team-wide generation interrupt or changing exact member targeting semantics. The existing `INTERRUPT_GENERATION` command gains a result acknowledgement but remains the same control operation.
 - Release/deployment unless requested later.
 
 ## Functional Requirements
@@ -148,6 +164,8 @@ The expanded change crosses the server runtime-neutral agent lifecycle pipeline,
 - **REQ-018 — Team lifecycle convergence and request pending:** Create/restore success MUST establish active; successful termination/unregistration MUST establish inactive; initial load/reconnect/history refresh MUST converge from the authoritative server fact. A frontend stream disconnect alone MUST NOT set inactive. A local `stopPending`/termination-in-flight flag MAY disable duplicate Stop requests but MUST NOT replace or alter `isActive`; a failed stop keeps the team active and stoppable.
 - **REQ-019 — Separate formerly conflated concerns:** Explicit team operation failures MUST remain observable through operation results/events; task delegation/execution MUST retain its task-domain stage; any internal settlement decision requiring “open work” MUST use a dedicated member/task-work predicate. None of these concerns may recreate or depend on a public five-state team aggregate.
 - **REQ-020 — Binary team activity indicators:** A root team-run row MUST render a compact binary activity indicator from that exact run's authoritative `isActive`. Its parent agent-team/definition group row MUST render active when at least one displayed child run has `isActive=true`, otherwise inactive. Active MUST use a clear solid blue treatment and inactive a neutral solid gray treatment; neither treatment may pulse or map through `AgentStatus`, member aggregation, representative-run selection, socket state, task stage, or a restored team-status DTO. The same binary source MUST drive accessible `Active`/`Inactive` meaning.
+- **REQ-021 — Codex current-turn steering identity:** When no Codex turn is current, accepted input MUST start a new provider turn and establish only its returned identity. A delayed start response MUST reconcile with provider start/terminal notifications and MUST NOT reinstall a returned turn that already completed, failed, was interrupted, or otherwise terminally cleared. When identified Codex turn A is already current and the runtime supports additional input, the backend MUST submit that input as same-turn steering with an exact A precondition. Successful steering MUST return and preserve A across the Codex thread, `AgentOperationResult`, canonical `AgentRun` lifecycle, accepted-input memory trace, and subsequent output; it MUST NOT call the new-turn transition with a different response/request identifier. If A completes first or cannot be steered, the operation MUST return a structured failure, MUST leave current identity governed by fresh provider evidence, and MUST NOT fabricate B. This rule applies at the Codex provider boundary regardless of whether the accepted input originated from team delivery, direct delivery, a system notification, or another supported `AgentRun.postUserMessage` caller.
+- **REQ-022 — Interrupt command acknowledgement:** Every standalone and exact team-member `INTERRUPT_GENERATION` request MUST receive one discriminated command acknowledgement/result that identifies the command, accepted/rejected/failed outcome, code/message when not accepted, and the exact standalone run or team member route/run target. An accepted result MUST NOT optimistically set idle; canonical provider terminal/status events remain lifecycle authority. A rejected/failed result MUST be visibly surfaced and MUST NOT remain server-log-only, masquerade as success, or be transported as a generic agent/runtime `ERROR`. Existing `AGENT_COMMAND_ACK` MAY be cleanly widened as a discriminated union, but the existing `SEND_MESSAGE` arm and deduplication semantics MUST remain intact.
 
 ## Acceptance Criteria
 
@@ -177,10 +195,15 @@ The expanded change crosses the server runtime-neutral agent lifecycle pipeline,
 - **AC-024:** Workspace history and team resume results derive `isActive` from the authoritative team-run manager and do not derive it from member state, aggregate status, a frontend context map, or socket connection state.
 - **AC-025:** Task-team terminal cleanup, operational failure observation, and settlement/open-work decisions continue to function using task/failure/member-work facts with no dependency on a public aggregate team lifecycle.
 - **AC-026:** With two child team runs where one has `isActive=true` and one has `isActive=false`, the parent agent-team/definition row renders one solid blue active indicator, the active run row renders solid blue, and the inactive run row renders neutral gray. After the last active run becomes inactive, the parent indicator becomes gray. Collapsing the group preserves the correct parent signal; changing member-agent status, representative ordering, or socket connection alone does not change either binary indicator. Both indicators expose an accessible active/inactive label.
+- **AC-027:** Given Codex current turn A and an accepted reviewer/inter-agent delivery before A completes, the provider request is `turn/steer` with `expectedTurnId=A`; the returned operation result, accepted-input trace, backend current turn, and canonical lifecycle all remain A. `TURN_COMPLETED(A)` then produces server/frontend `idle`, removes the member Stop action, and a reconnect snapshot is also `idle`.
+- **AC-028:** Given Codex turn A completes immediately before steering or reports A as non-steerable, the delivery returns a structured failure, no B becomes current or appears as the accepted turn, and canonical status reflects the provider's actual current-turn evidence without a timeout or an old-turn safety relaxation. Given start response S arrives after terminal S was already processed, S is returned only for accepted-input correlation and canonical status remains terminal/idle rather than reopening `running`.
+- **AC-029:** For both standalone and exact team-member interrupt, one click sends one command identity and receives one matching acknowledgement. Accepted acknowledgement waits for terminal lifecycle to remove Stop. Rejected/failed acknowledgement, including no active provider turn, is visibly reported with its code/message and exact target; it is not only logged, does not append a false runtime failure, and does not claim the agent became idle unless canonical status says so.
 
 ## Constraints / Dependencies
 
 - Existing `AGENT_STATUS` and targeted `INTERRUPT_GENERATION` concepts should be reused for agents; no parallel legacy/new agent status path is allowed.
+- The bundled Codex app-server version exposes `turn/steer` with `threadId`, `expectedTurnId`, and input plus a returned `turnId`. The implementation must validate/preserve the exact expected identity and handle precondition/non-steerable rejection without falling back to active `turn/start`.
+- Command acknowledgement is a control-plane result. It may repeat exact target identity but must not carry or infer an alternative agent lifecycle, and frontend feedback must not use generic agent `ERROR` handling.
 - Provider runtime events may arrive asynchronously or out of order. Canonical `turn_id`/`turnId` normalization and retired/current turn tracking must remain authoritative.
 - Agent status repetition increases message count but not provider computation; it is explicitly acceptable for correctness. Existing content-delta presentation batching may remain if companion ordering/repair is preserved.
 - Team events require exact member route/run identity and must not fall back to aggregate/team-wide generation interrupt.
@@ -196,21 +219,23 @@ The expanded change crosses the server runtime-neutral agent lifecycle pipeline,
 - Existing data to preserve, discard/rebuild, transform, or quarantine: Preserve all identities, topology, transcripts, traces, activities, task records, summaries, and termination metadata. Agent live lifecycle and team `isActive` are recalculated from active runtime/manager state. Removed aggregate team status is computed live and carries no required stored meaning.
 - Unacceptable data loss or corruption: Loss/suppression of late activity, incorrect member targeting, loss of task lifecycle, incorrect team Stop eligibility, or admission of duplicate/concurrent user commands due state drift.
 - Relevant availability, maintenance-window, or rollout constraints: None known; frontend and server contract change ships together, and restarted runtimes rebuild live state naturally.
-- Related requirement and acceptance-criteria IDs: REQ-011, REQ-012, REQ-014–REQ-020; AC-008, AC-011, AC-012, AC-018–AC-026.
+- Related requirement and acceptance-criteria IDs: REQ-011, REQ-012, REQ-014–REQ-022; AC-008, AC-011, AC-012, AC-018–AC-029.
 
 ## Assumptions
 
 - Every supported agent runtime can expose a runtime-neutral turn start/current-turn identity and a completion/interruption terminal boundary, directly or through the existing server converter.
-- Existing single-agent and exact team-member interrupt routes are valid whenever the corresponding agent status is `running`.
+- Existing single-agent and exact team-member interrupt routes are valid whenever the corresponding agent status is `running`; a command-result acknowledgement is needed for the narrow completion/click race and any runtime rejection.
+- Supported Codex busy input is intended to preserve the provider's current turn rather than queue or open a second turn; this matches the observed native provider behavior and existing inter-agent workflow.
 - The server active-team-run manager remains the product authority for whether a root team run is live and terminable.
 - Team definitions do not own a runtime status. Their group row may expose only the presentation-derived any-child-active cue defined by REQ-020; users also need exact run activity, child team-run Stop, and member-agent statuses.
 - Redundant agent status companions are preferable to sparse transition-only events; no analogous five-state companion is required for the team aggregate because that aggregate is removed.
 
 ## Risks / Open Questions
 
-- The complete expanded basis is user-approved. The aggregate team-status paths are already removed in the accepted baseline; SR-006 must preserve that result while restoring only the two binary presentation cues.
+- The complete lifecycle/team/presentation basis through SR-006 and the Codex steering/interrupt-result refinement are user-approved. `SR-007` must preserve the accepted source foundation while making only the approved provider-boundary and command-result changes.
 - Some non-content agent operational events may omit turn identity. They may repeat current agent status but cannot create a new turn without current-turn/command evidence.
-- Interrupt- or stop-request-in-flight presentation may use local disabled/pending state, but it must not become another lifecycle authority.
+- Interrupt- or stop-request-in-flight presentation may use local disabled/pending state, but it must not become another lifecycle authority. The approved change does not require a new interrupt-pending lifecycle; it requires a matching control result and visible failure.
+- The exact UI feedback presentation (inline command error versus toast) may be chosen in design if it is immediate, localized, accessible, and does not become a runtime `ERROR` segment. The behavioral requirement is visible non-silent feedback.
 - Removing root/nested `TEAM_STATUS` requires explicit replacement of three real consumers rather than silent deletion: task-team cleanup, team failure observation, and task-team open-work settlement. REQ-019 fixes the intended semantics; exact interfaces belong in the design revision.
 - If a surface has a genuine reason to show a nested team run's liveness, it may consume binary activity; it must not use a five-state member aggregate. Structural team-definition nodes still have no runtime status.
 
@@ -238,6 +263,8 @@ The expanded change crosses the server runtime-neutral agent lifecycle pipeline,
 | REQ-018 | UC-011, UC-012, UC-013 |
 | REQ-019 | UC-011, UC-014, UC-015 |
 | REQ-020 | UC-010, UC-011, UC-012, UC-013, UC-016 |
+| REQ-021 | UC-001, UC-006, UC-007, UC-009, UC-014, UC-017 |
+| REQ-022 | UC-002, UC-003, UC-014, UC-018 |
 
 ## Acceptance-Criteria-To-Scenario Intent
 
@@ -269,6 +296,9 @@ The expanded change crosses the server runtime-neutral agent lifecycle pipeline,
 | AC-024 | Team history/resume activity comes from manager authority. |
 | AC-025 | Former aggregate consumers use their own domain facts. |
 | AC-026 | Team definition-group and exact run rows expose accessible binary activity. |
+| AC-027 | Busy Codex input preserves current turn A and terminal A settles idle. |
+| AC-028 | Codex steering race/non-steerable rejection creates no phantom turn. |
+| AC-029 | Standalone/team-member interrupt outcomes are matched and visibly acknowledged. |
 
 ## Approval Status
 
@@ -298,4 +328,15 @@ After inspecting the delivery candidate, the user explicitly required activity t
 - the parent agent-team/definition row shows whether any child team run is active;
 - both indicators are retained for scan clarity, while the five-state aggregate, representative-run borrowing, and team lifecycle DTO remain removed.
 
-This requirement correction is the authoritative `SR-006` input. It supersedes only the earlier instruction to remove definition/run dots; all lifecycle ownership, agent status, task-team identity, Stop, and aggregate-removal behavior remains approved and unchanged. Fresh architecture review is required before implementation resumes; the prior delivery candidate is no longer completion-ready.
+This requirement correction is the authoritative `SR-006` input. It supersedes only the earlier instruction to remove definition/run dots; all lifecycle ownership, agent status, task-team identity, Stop, and aggregate-removal behavior remains approved and unchanged. The `SR-006` implementation subsequently passed the complete architecture/source/API-E2E/test-review pipeline and delivery rebuilt the candidate.
+
+### Approved live Codex steering / interrupt-result refinement (2026-08-03)
+
+The current live verification found a new source defect after that accepted baseline:
+
+- additional input received during Codex turn A must preserve A through explicit same-turn steering; it must not install a second response/request ID B;
+- completion of A must therefore settle the canonical agent to idle and remove the red member Stop action;
+- each standalone/member interrupt click must receive a discriminated accepted/rejected/failed result, and rejection must be visible rather than server-log-only;
+- no timeout, generic idle snapshot override, provider-specific frontend lifecycle, generic runtime `ERROR`, or relaxation of old-turn safeguards is allowed.
+
+The user explicitly approved the previously recommended correction after reviewing the Codex/AutoByteus turn distinction. BEH-010–BEH-011, REQ-021–REQ-022, and AC-027–AC-029 are therefore locked input for `SR-007` design. The approval does not authorize provider-specific frontend lifecycle, timeout-based idle inference, weakening current/retired-turn safeguards, or changing native AutoByteus queued-turn behavior.

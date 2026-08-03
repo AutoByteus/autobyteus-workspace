@@ -1,144 +1,97 @@
 # Delivery / Release / Deployment Report
 
-## Release / Publication / Deployment Scope
+## Current Delivery Result
 
-Repository finalization remains mandatory only after explicit one-off user verification. Release, publication, and deployment are not applicable to this ticket: the approved requirements exclude them unless separately requested, and no such request has been received.
-
-## Handoff Summary
-
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/handoff-summary.md`
-- Handoff summary status: `Updated`
+- Ticket: `agent-stream-driven-status`
+- Current revision: `DR-005`
+- Result: `Ready for explicit user verification`
+- Prior `DR-004` candidate: superseded because it predates reviewed `SR-006`
+- Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/handoff-summary.md`
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/delivery-revision-record.md`
-- Current delivery revision ID: `DR-004`
-- Notes: The candidate now includes the newly advanced `origin/personal`, the post-integration durable suite passed, and a local unsigned macOS ARM64 version `1.4.41` DMG/ZIP has been rebuilt; finalization is held.
 
-## Initial Delivery Integration Refresh
+## Integrated-State Refresh
 
-- Bootstrap base reference: `origin/personal` at `4b29481d5b6eaea64aebb20abcb5e4d784ea1178`
-- Latest tracked remote base reference checked: `origin/personal` at `2a7271c9d78b71b919f7dbfa3b8f97f61c3a2e2b`
-- Base advanced since bootstrap or previous refresh: `Yes` — 35 commits beyond bootstrap; 9 commits beyond the version `1.4.40` verification candidate
-- New base commits integrated into the ticket branch: `Yes`
-- Local checkpoint commit result: `Completed` — reviewed candidate `f4fe07d5d5a980e4bee43f7d81d0db4809e5d780`; delivery-doc protection `09393ba9e8a4657396b192ab4198ed775c455a7b`; first-package protection `b08ff4e01cd1b4531c46cd225c2012573935e90c`; latest package protection `73b3ae13de347c249b02354b367fc9e16362c902`
-- Integration method: `Merge`
-- Integration result: `Completed` — initial merge `8590a84869ba2d428b62d73374ceae0962cece9f`; second merge `50a3c41c5061c2b4fcbf8af1ad86051ea01859e5`; first user-requested merge `0f3b36a04332e1e14b092a04f9313737e95305c4`; latest merge `55c5b3c914d64059361d47ec87a29da0e4eb9bbb`; no conflicts
-- Post-integration executable checks rerun: `Yes`
-- Post-integration verification result: `Passed` — including after the latest integration, 10 files / 49 tests passed with one existing provider-gated skip
-- No-rerun rationale (only if no new base commits were integrated): N/A
-- Delivery edits started only after integrated state was current: `Yes`
-- Handoff state current with latest tracked remote base: `Yes` — post-build fetch confirmed ticket HEAD `55c5b3c9` is 22 commits ahead / 0 behind `origin/personal` `2a7271c9d`.
-- Blocker (if applicable): None for local package preparation. Repository finalization is held by required explicit user verification; a fresh finalization-time target check remains mandatory afterward.
+- Recorded base: `origin/personal`
+- Latest fetched target: `2a7271c9d78b71b919f7dbfa3b8f97f61c3a2e2b`
+- Reviewed package checkpoint: `df3fe87e78ccc734128ce0b96a4e4281e2f55405`
+- Comparison: 27 commits ahead / 0 behind
+- New target commits integrated during `DR-005`: `No` — the latest tracked base was already an ancestor of the reviewed package
+- No-rerun rationale: a merge-triggered regression rerun was not required because the target was unchanged; delivery nevertheless ran the focused `SR-006` presentation suite
+- Post-refresh check: `Pass` — 5 files / 16 tests
+- Evidence: `delivery-integrated-state-refresh.log`
+
+## Review And Coverage Authority
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| Implementation source review | `CRR-007 Pass` | `code-review-revision-record.md`, `code-review-report.md` |
+| API/E2E execution | `API-REV-003 Pass`, 97.1% confidence | `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md` |
+| Durable browser-test review | `CRR-008 Pass`, 2 added / 0 updated / 0 removed, no findings | `api-e2e-test-review-report.md`, `code-review-revision-record.md` |
+| Final real-browser scenarios | 4/4 Pass; no browser failures; deterministic cleanup | `api-e2e-evidence/sr006-browser/evidence.json` |
+| Delivery integrated-state suite | 5 files / 16 tests Pass | `delivery-integrated-state-refresh.log` |
+
+## Documentation Sync
+
+- Result: `Updated — Pass`
+- Current `SR-006` docs: four frontend durable docs now describe exact-run binary activity presentation and the rendered definition group's presentation-only `runs.some(run => run.isActive)` cue
+- Historical clean-cut docs: the six server/cross-package docs remain accurate
+- Validation: whitespace, obsolete-lifecycle, and required presentation-guidance scans passed
+- Evidence: `docs-sync-report.md`, `docs-sync-validation.log`
+
+## Local Electron Verification Package
+
+- Result: `Pass`
+- Version/platform: `1.4.41`, macOS ARM64
+- Build type: unsigned/unnotarized local verification build; not a release
+- Source basis: checkpointed reviewed `SR-006` package `df3fe87e78ccc734128ce0b96a4e4281e2f55405`
+- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.41.dmg`
+- DMG SHA-256: `39fc996138ee0e0b472c35ad9d5315296d5fa6cd15c5b299027abfdad02b85f6`
+- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.41.zip`
+- ZIP SHA-256: `06a70f29bf7081dd38970d65315ff9ff0b623ee9cdb6f7453104f47a3c1f56ec`
+- Validation: build guards/server preparation passed; DMG checksum valid; app Mach-O ARM64; staged and packaged `node-pty` helper checks/spawn probes passed
+- Evidence: `delivery-electron-build.log`
 
 ## User Verification
 
-- Initial explicit user completion/verification received: `No`
-- Initial verification / acceptance reference: Pending user response to `handoff-summary.md`
-- Renewed verification required after later re-integration: `No` at this pre-verification stage; the final candidate already includes the second refresh. A later target advance that materially changes the handoff will require renewed verification.
-- Renewed verification received: `Not needed`
-- Renewed verification / acceptance reference: N/A
+- Explicit user completion/verification received: `No`
+- Current requested action: test the `DR-005` version `1.4.41` DMG and report a defect or explicitly authorize finalization
+- Renewed verification: not currently needed; it will be required if a later target refresh materially changes the verified candidate
 
-## Docs Sync Result
+## Ticket And Repository Finalization
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/docs-sync-report.md`
-- Docs sync result: `Updated`
-- Docs updated: ten durable server, cross-package, and frontend documents listed in the docs sync report
-- No-impact rationale (if applicable): N/A
-
-## Ticket State Transition
-
-- Ticket moved to `tickets/done/agent-stream-driven-status`: `No`
-- Archived ticket path: N/A — remains `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status`
-
-## Version / Tag / Release Commit
-
-Not applicable. No ticket-owned version bump, release commit, or tag is requested or required. The integrated base already carries version `1.4.41`; the local unsigned DMG/ZIP is a verification artifact only, not a release.
-
-## Repository Finalization
-
-- Bootstrap context source: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/investigation-notes.md`
-- Ticket branch: `codex/agent-stream-driven-status`
-- Ticket branch commit result: Delivery safety/docs checkpoints and base merges completed; final delivery/artifact commit not performed pending user verification
-- Ticket branch push result: Not performed — verification gate
-- Finalization target remote: `origin`
-- Finalization target branch: `personal`
-- Target advanced after verification / acceptance: N/A — verification not yet received
-- Delivery-owned edits protected before re-integration: `Completed` — latest protection checkpoint `73b3ae13de347c249b02354b367fc9e16362c902`
-- Re-integration before final merge result: `Completed` for the current pre-verification advance at `55c5b3c914d64059361d47ec87a29da0e4eb9bbb`; finalization-time refresh remains required after user verification
-- Target branch update result: Not performed — verification gate
-- Merge into target result: Not performed — verification gate
-- Push target branch result: Not performed — verification gate
-- Repository finalization status: `Blocked`
-- Blocker (if applicable): Required explicit user completion/verification has not been received.
+- Ticket path: remains `tickets/in-progress/agent-stream-driven-status`
+- Ticket moved to `tickets/done`: `No` — verification gate
+- Final delivery commit: `Not performed` — verification gate
+- Ticket branch push: `Not performed` — verification gate
+- Finalization target: local `personal`, remote `origin/personal`
+- Target refresh after acceptance: `Pending` — mandatory after explicit verification
+- Merge/push target: `Not performed` — verification gate
+- Worktree/branch cleanup: `Not performed` — active verification candidate retained
+- Finalization status: `Held for explicit user verification`
 
 ## Release / Publication / Deployment
 
 - Applicable: `No`
-- Method: `Other` — not applicable
-- Method reference / command: N/A
-- Release/publication/deployment result: `Not required`
-- Local verification package result: `Completed` — unsigned/unnotarized macOS ARM64 version `1.4.41` DMG and ZIP rebuilt from latest-base integrated HEAD `55c5b3c914d64059361d47ec87a29da0e4eb9bbb`; see `delivery-electron-build.log`.
-- Release notes handoff result: `Not required`
-- Blocker (if applicable): N/A
+- Reason: requirements do not request a version bump, release, publication, tag, deployment, or persisted-data migration
+- Local DMG/ZIP classification: verification artifacts only
+- Release notes: not required
+- Deployment steps: none
 
-## Post-Finalization Cleanup
+## Persisted Data
 
-- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status`
-- Worktree cleanup result: `Blocked` — retained for verification/finalization
-- Worktree prune result: `Blocked` — retained for verification/finalization
-- Local ticket branch cleanup result: `Blocked` — retained for verification/finalization
-- Remote branch cleanup result: `Not required` — ticket branch has not been pushed
-- Blocker (if applicable): Cleanup before user verification/finalization would destroy the active candidate.
+- Decision: `Directly Usable — No Migration`
+- Reason: no stored schema, transcript, runtime identity, or metadata format changed; existing history remains usable with manager-owned binary liveness and exact leaf status
 
-## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
+## Residual Risk
 
-- Classification: N/A
-- Recommended recipient: N/A
-- Why final handoff could not complete: The verification handoff is complete. Only the normal explicit user gate prevents repository finalization.
+- Configured external-provider execution was unavailable; one existing provider-gated case remains skipped.
+- Unrelated frontend baseline debt remains outside this ticket.
+- No additional material browser/shell boundary remains unclassified; current browser coverage passed and the desktop candidate is ready for the requested manual verification.
 
-## Release Notes Summary
+## Rollback / Stop Criteria
 
-- Release notes artifact created before verification / acceptance: `No`
-- Archived release notes artifact used for release/publication: N/A
-- Release notes status: `Not required`
-
-## Deployment Steps
-
-None. No deployment target or method is in scope.
-
-## Environment Or Persisted-Data Transition Notes
-
-- Approved persisted-data decision: `Directly Usable — No Migration`
-- Delivery action required: `None`
-- Result and evidence: No schema, stored transcript, runtime identity, or metadata format changed. Integrated workspace/archive GraphQL coverage passed with existing history, binary manager liveness, exact leaf status, and no root status. See `api-e2e-execution-coverage-report.md` and `delivery-integrated-state-refresh.log`.
-- Migration completion, validation, recovery, and rollout evidence, only when `Migration Required`: N/A
-
-## Verification Checks
-
-| Check | Result | Evidence |
-| --- | --- | --- |
-| Latest tracked remote base fetched and compared | Pass — post-build checked base `2a7271c9d78b71b919f7dbfa3b8f97f61c3a2e2b`; branch ahead 22 / behind 0 | `delivery-integrated-state-refresh.log` |
-| Reviewed candidate protected before integration | Pass — `f4fe07d5d5a980e4bee43f7d81d0db4809e5d780` | Git checkpoint and refresh log |
-| Initial base merge | Pass — no conflicts, `8590a84869ba2d428b62d73374ceae0962cece9f` | Git merge and refresh log |
-| Initial post-integration durable suite | Pass — 10 files / 49 tests; 1 existing provider-gated skip | `delivery-integrated-state-refresh.log` |
-| Later delivery edits protected before second integration | Pass — `09393ba9e8a4657396b192ab4198ed775c455a7b` | Git checkpoint and refresh log |
-| Second base merge | Pass — no conflicts, `50a3c41c5061c2b4fcbf8af1ad86051ea01859e5` | Git merge and refresh log |
-| Latest user-requested base merge | Pass — `ba6ebc2a2` merged without conflicts into `0f3b36a04332e1e14b092a04f9313737e95305c4` | Git merge and refresh log |
-| Latest post-integration durable suite | Pass — 10 files / 49 tests; 1 existing provider-gated skip | `delivery-integrated-state-refresh.log` |
-| Second user-requested base merge | Pass — `2a7271c9d` merged without conflicts into `55c5b3c914d64059361d47ec87a29da0e4eb9bbb` | Git merge and refresh log |
-| Second latest post-integration durable suite | Pass — 10 files / 49 tests; 1 existing provider-gated skip | `delivery-integrated-state-refresh.log` |
-| Final post-integration durable suite | Pass — 10 files / 49 tests; 1 existing provider-gated skip | `delivery-integrated-state-refresh.log` |
-| Implementation source review | Pass — `CRR-004` | `code-review-revision-record.md` |
-| API/E2E execution | Pass — `API-REV-002`, 96.7% confidence | `api-e2e-execution-coverage-report.md` |
-| Proportional durable-test review | Pass — `CRR-006`, no unresolved findings | `api-e2e-test-review-report.md` |
-| Documentation whitespace validation | Pass — `git diff --check` | `docs-sync-validation.log` |
-| Obsolete lifecycle documentation scan | Pass — no `TEAM_STATUS`, `AgentTeamStatus`, or removed aggregate service references | `docs-sync-validation.log` |
-| Local Electron package rebuild | Pass — macOS ARM64 version `1.4.41` DMG/ZIP emitted from latest-base integrated HEAD `55c5b3c914d64059361d47ec87a29da0e4eb9bbb` | `delivery-electron-build.log` |
-| DMG integrity and architecture | Pass — `hdiutil verify` valid; app executable is Mach-O ARM64 | `delivery-electron-build.log` |
-| Packaged terminal native runtime | Pass — staged and packaged `node-pty` helper checks and real spawn probes passed | `delivery-electron-build.log` |
-
-## Rollback Criteria
-
-Before finalization, stop and leave the ticket branch/worktree intact if user verification finds incorrect agent lifecycle convergence, root liveness changes from member/transport state, aggregate status reappearing, incorrect nested task-team leaf mapping, or Stop failure incorrectly deactivating a team. After a future authorized merge, revert the ticket merge rather than restoring aggregate status compatibility aliases. No persisted-data rollback or migration recovery path is required.
+Before finalization, stop and retain the ticket branch/worktree if verification finds incorrect turn convergence, root liveness derived from member/transport/action state, aggregate status reappearing, incorrect nested task-team routing, failed Stop deactivating a team, exact sibling activity cues leaking into one another, or the definition-group cue failing to follow its displayed children's any-active state. After an authorized merge, revert the ticket merge rather than restoring aggregate-status compatibility aliases.
 
 ## Final Status
 
-`Ready for explicit user verification — latest origin/personal integration, post-integration executable checks, docs sync, handoff preparation, and the rebuilt macOS ARM64 Electron package passed. Repository finalization remains blocked by the required user signal and subsequent finalization-time target refresh.`
+`Pass for delivery preparation. The latest tracked base is present, SR-006 review and browser authority are current, focused integrated checks and docs sync passed, and the rebuilt macOS ARM64 Electron package is validated. Repository finalization remains held until explicit user verification and a subsequent final target refresh.`

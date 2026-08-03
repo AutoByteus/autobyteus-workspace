@@ -12,6 +12,8 @@ The latest `design-review-report.md` remains authoritative. This record is the c
 | ARCH-REV-004 | Round 4 / SR-004 scoped leaf-snapshot rework | SR-004 | Fail | Pass | ARCH-FIND-003 |
 | ARCH-REV-005 | Round 5 / CRR-003 coordinate-frame design rework | SR-005 | Pass, then downstream Fail / Design Impact | Pass | CODE-FIND-002, CODE-FIND-003; ARCH-FIND-001–003 dispositions rechecked |
 | ARCH-REV-006 | Round 6 / user-approved post-delivery binary presentation correction | SR-006 | Pass; accepted source reached DR-004 verification hold | Pass | No new findings; prior architecture/code/test findings rechecked |
+| ARCH-REV-007 | Round 7 / post-DR-005 Codex steering and interrupt-result refinement | SR-007 | Pass; accepted SR-006 source reached DR-005 before live defects | Fail / Design Impact | ARCH-FIND-004; prior findings rechecked |
+| ARCH-REV-008 | Round 8 / failure-safe immediate interrupt admission rework | SR-008 | Fail / Design Impact | Pass | ARCH-FIND-004 resolved; prior findings rechecked |
 
 ## Revision Entries
 
@@ -150,3 +152,52 @@ None.
 - Material classification changes: `N/A`; this is an approved bounded presentation correction, not a lifecycle or aggregate-status restoration.
 - Recommended recipient: `implementation_engineer`
 - Remaining risks or uncertainty: Implementation/source review must prove both group-builder paths, exact sibling booleans, last-active-to-inactive reactivity, both history/running placements, accessibility/localization, no pulse, independence from representative/member/socket/action state, and unchanged agent dots/Stop behavior. Delivery-owned dirty reports/logs and the superseded Electron candidate must remain protected; fresh API/E2E investigation and a rebuilt delivery candidate follow source review.
+
+### ARCH-REV-007 — Interrupt transport admission needs one complete failure transition
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/design-review-report.md`
+- Review round and trigger: Round 7; user-approved `SR-007` after live `DR-005` verification proved phantom Codex turn B and silent exact-member interrupt failures.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/solution-revision-record.md` and `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/codex-steering-stale-running-evidence.md`; new `ARCH-FIND-004`.
+- Relevant solution revision IDs: `SR-007`; accepted foundation `SR-002`, `SR-005`, and `SR-006`.
+- Prior authoritative decision: `ARCH-REV-006` / `Pass`; downstream `IR-005`, `CRR-007`, `API-REV-003`, `CRR-008`, and `DR-005` accepted that foundation before live verification reopened the task.
+- Current authoritative decision: `Fail / Design Impact`.
+- What changed in the review result or what baseline was established: The Codex design correctly keeps `CodexThread` as the serialized provider decision owner, separates required start/steer response parsing, prevents late start responses from reopening the most recently settled turn, preserves exact A on steer, forbids fallback, and leaves canonical lifecycle unchanged. The command-result union, same-connection server response, exact frontend match, projection interception, and accepted-ack lifecycle separation are also sound. The remaining design omission is the reachable Stop action after a socket has already disconnected/reentered reconnecting, or a synchronous send failure: the service registers pending state and calls a throwing transport, but no exact transition removes the entry, invokes the local transport-failure callback once, and returns not-admitted to the store.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| ARCH-FIND-001 | Resolved | Remains Resolved | `SR-002`, `ARCH-REV-002`, preserved source through `DR-005`, `SR-007` | Provider input selection remains behind the existing single `AgentRun` gateway; no direct event origin or alternate public listener is added. |
+| ARCH-FIND-002 | Resolved | Remains Resolved | `SR-002`, `ARCH-REV-002`, preserved source through `DR-005`, `SR-007` | `SR-007` explicitly preserves `AgentTurnLifecycleState` precedence and fixes identity at `CodexThread`; ack and transport feedback cannot mutate lifecycle. |
+| ARCH-FIND-003 | Resolved | Remains Resolved | `SR-004`, `ARCH-REV-004`, `SR-005`, accepted source through `DR-005` | No recursive leaf carrier, task-team stream scope, prefixing, or live/reconnect mapping is changed. |
+| CODE-FIND-001–CODE-FIND-003 | Resolved | Remain Resolved | accepted `IR-005` / `CRR-007` source baseline | `SR-007` preserves companion batching, nested coordinate rebasing, strict leaf mapping, and manager fixture corrections. |
+| TEST-FIND-001–TEST-FIND-002 | Resolved | Remain Resolved | `API-REV-002`, `API-REV-003`, `CRR-006`, `CRR-008` | Existing durable corrections remain baseline evidence; fresh `SR-007` coverage is still required after source rework. |
+
+- New or remaining finding IDs: `ARCH-FIND-004`.
+- Material classification changes: The complete `SR-007` result is `Fail / Design Impact`; the accepted `SR-006` foundation remains valid.
+- Recommended recipient: `solution_designer` for a focused transport-admission design correction; implementation remains blocked.
+- Remaining risks or uncertainty: Provider error-envelope variation, input/notification race execution, same-socket acknowledgement exactness, frontend no-optimistic-idle behavior, and realistic Codex/browser verification remain downstream risks after `ARCH-FIND-004` is resolved.
+
+### ARCH-REV-008 — Failure-safe interrupt transport admission passes
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/design-review-report.md`
+- Review round and trigger: Round 8; focused re-review of `SR-008` resolving `ARCH-FIND-004` from `ARCH-REV-007`.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/solution-revision-record.md`; `ARCH-FIND-004`.
+- Relevant solution revision IDs: `SR-008`; architecture-approved `SR-007` provider/server/admitted-request design; accepted foundations `SR-002`, `SR-005`, and `SR-006`.
+- Prior authoritative decision: `ARCH-REV-007` / `Fail / Design Impact`.
+- Current authoritative decision: `Pass`.
+- What changed in the review result or what baseline was established: Both frontend streaming services now return one truthful boolean from a shared `interruptCommandAdmission.ts` transition. The helper registers the exact command/target, reads connection state immediately before send, skips and completes nonconnected attempts, catches send races, deletes before callback, and leaves only successfully sent commands pending. Automatic and intentional disconnect drain only still-pending IDs through the same completion function. Therefore nonconnection, send throw, reentrant disconnect-plus-throw, acknowledgement-plus-disconnect, and repeated disconnect cannot produce stale entries or duplicate feedback. The store returns the service boolean unchanged while the synchronous exact-target callback owns one toast. No local path fabricates an acknowledgement, changes agent/team lifecycle, appends transcript error, hides Stop, or queues/retries through reconnect.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| ARCH-FIND-004 | Open / Blocking / Design Impact | Resolved | `ARCH-REV-007`, `ARCH-MP-001`, `SR-008`; design DS-015 admission/helper/signatures/disconnect/coverage sections | `tryAdmitInterruptCommand` owns register -> immediate state read -> send/catch -> boolean. `completePendingInterruptTransportFailure` deletes before exact callback and is a no-op when absent. `drainPendingInterruptTransportFailures` snapshots only current IDs. Both services delegate and return the boolean; stores return it unchanged. Coverage explicitly spans disconnected/connecting/reconnecting, send throw, reentrant disconnect-plus-throw, admitted disconnect, acknowledgement before disconnect, repeated disconnect, exact identity, stale-map absence, one toast, and no ack/lifecycle/transcript/retry side effect. |
+| ARCH-FIND-001–ARCH-FIND-003 | Resolved | Remain Resolved | `ARCH-REV-002`, `ARCH-REV-004`, `ARCH-REV-005`, preserved `SR-008` scope | `SR-008` changes only frontend interrupt admission mechanics; the single `AgentRun` gateway, lifecycle precedence, and recursive scoped leaf contracts remain unchanged. |
+| CODE-FIND-001–CODE-FIND-003 | Resolved | Remain Resolved | accepted `IR-005` / `CRR-007` source baseline | No companion batching, nested coordinate, strict mapper, or manager fixture decision is reopened. |
+| TEST-FIND-001–TEST-FIND-002 | Resolved | Remain Resolved | `API-REV-002`, `API-REV-003`, `CRR-006`, `CRR-008` | Accepted corrections remain baseline evidence; fresh `SR-008` investigation/execution remains required after source review. |
+
+- New or remaining finding IDs: `None`.
+- Material classification changes: `ARCH-FIND-004` / `Design Impact` is resolved; current classification is `N/A`.
+- Recommended recipient: `implementation_engineer`.
+- Remaining risks or uncertainty: Implementation and source review must prove helper reuse rather than duplicated service logic, exact boolean/callback ordering, delete-before-callback under reentrancy, intentional disconnect before handler/context teardown, all Codex start/steer races, same-socket acknowledgement matching, and no optimistic lifecycle. Fresh realistic Codex/browser-equivalent coverage remains downstream work.
