@@ -12,6 +12,7 @@ The latest `code-review-report.md` or `api-e2e-test-review-report.md` remains au
 | CRR-004 | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/code-review-report.md` | Implementation Review round 4 / `IR-004` | Fail / Design Impact | Pass | `CODE-FIND-001`, `CODE-FIND-002`, `CODE-FIND-003` |
 | CRR-005 | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-test-review-report.md` | API/E2E Test-Code Review round 1 / `API-REV-001` | Pass (implementation source) | Fail / Local Fix (durable tests) | `TEST-FIND-001`, `TEST-FIND-002` |
 | CRR-006 | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-test-review-report.md` | API/E2E Test-Code Review round 2 / `API-REV-002` | Fail / Local Fix (durable tests) | Pass | `TEST-FIND-001`, `TEST-FIND-002` |
+| CRR-007 | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/code-review-report.md` | Implementation Review round 5 / `IR-005` after `DR-004` user feedback | Pass (accepted `SR-005` source) | Pass | None |
 
 ## Revision Entries
 
@@ -163,3 +164,31 @@ None.
 - Material score or classification changes: No implementation scorecard or confidence rescore applies. Proportional test review changes from `Fail / Local Fix` to `Pass`; API/E2E confidence remains the reported `96.7%`.
 - Recommended recipient: `delivery_engineer`
 - Remaining risks or uncertainty: unchanged and non-blocking — unavailable configured external-provider execution, unrelated frontend baseline debt, and no material browser/shell boundary requiring direct execution.
+
+### CRR-007 — Binary team-activity presentation passes source review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/code-review-report.md`
+- Review entry point and round: `Implementation Review` / implementation-source round `5`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/implementation-handoff.md`; `IR-005`; no finding ID
+- Relevant solution revision IDs: `SR-006`, preserving accepted `SR-005`
+- Relevant architecture-review revision IDs: `ARCH-REV-006`
+- Relevant implementation revision IDs: `IR-005`
+- Relevant API/E2E revision IDs: accepted prior baseline `API-REV-002`; fresh `SR-006` investigation pending
+- Relevant delivery revision IDs: `DR-004` integrated start; its no-dot candidate is superseded for completion
+- Prior authoritative result: implementation source `Pass` at `CRR-004`, durable test-code `Pass` at `CRR-006`, and delivery candidate `Pass` at `DR-004`; the user then approved the bounded `SR-006` presentation correction
+- Current authoritative result: `Pass` -> `api_e2e_engineer`
+- What changed in the review result and why: `IR-005` adds one boolean-only `TeamActivityDot`, feeds exact run rows only from their own authoritative `isActive`, and feeds definition groups only from their final displayed runs' any-active projection. Both workspace-history and running-team surfaces use the shared solid blue/gray, non-pulsing, localized, accessible visual. No lifecycle, store, action, protocol, leaf-agent, or backend source changed.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CODE-FIND-001` | Resolved | Remains Resolved | `IR-002`, `CRR-002`, preserved through `IR-005` | No stream source changed; implementation's relevant regression set remains green. |
+| `CODE-FIND-002` | Resolved | Remains Resolved | `SR-005`, `IR-004`, `CRR-004`, preserved through `IR-005` | No recursive task-team coordinate source changed; production delta is frontend presentation only. |
+| `CODE-FIND-003` | Resolved | Remains Resolved | `IR-004`, `CRR-004`, preserved through `IR-005` | No manager interface or test double changed. |
+| `TEST-FIND-001`, `TEST-FIND-002` | Resolved | Remain Resolved In Accepted Prior Coverage | `API-REV-002`, `CRR-006` | The accepted durable test files were not changed by `IR-005`; prior execution is retained as baseline context but not treated as `SR-006` sign-off. |
+
+- New or remaining finding IDs: `None`
+- Material score or classification changes: the current bounded implementation scores `9.7/10` (`96.6/100`), with every category at least `9.0`. No failure classification applies.
+- Recommended recipient: `api_e2e_engineer`
+- Remaining risks or uncertainty: API/E2E must create a fresh `SR-006` coverage investigation and realistically validate mixed siblings, collapsed groups, final active-to-inactive transition, accessibility, no pulse, and independence from representative/member/subscription/Stop state. Repository-wide frontend typecheck remains baseline non-green. Delivery docs and Electron artifacts predate `SR-006` and require later refresh.
