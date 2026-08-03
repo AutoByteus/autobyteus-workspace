@@ -439,6 +439,7 @@ describe("Team lifecycle and nested task-team WebSocket integration", () => {
       primary.socket.send(JSON.stringify({
         type: "INTERRUPT_GENERATION",
         payload: {
+          command_id: "client_interrupt_nested_leaf",
           target_member_route_key: ROOT_MEMBER_PATH.join("/"),
           target_member_run_id: MEMBER_RUN_ID,
         },
@@ -448,6 +449,21 @@ describe("Team lifecycle and nested task-team WebSocket integration", () => {
           ROOT_MEMBER_PATH.join("/"),
           MEMBER_RUN_ID,
         );
+      });
+      await waitForMessageCount(primary.messages, 8);
+      expect(primary.messages[7]).toEqual({
+        type: "AGENT_COMMAND_ACK",
+        payload: {
+          command_type: "INTERRUPT_GENERATION",
+          command_id: "client_interrupt_nested_leaf",
+          state: "accepted",
+          target: {
+            target_kind: "team_member",
+            team_run_id: ROOT_TEAM_RUN_ID,
+            member_route_key: ROOT_MEMBER_PATH.join("/"),
+            member_run_id: MEMBER_RUN_ID,
+          },
+        },
       });
 
       const primaryClosed = waitForSocketClose(primary.socket);

@@ -201,6 +201,7 @@ describe('focused team member interrupt UI-to-WebSocket e2e', () => {
     expect(JSON.parse(mockWsSend.mock.calls[0][0])).toEqual({
       type: 'INTERRUPT_GENERATION',
       payload: {
+        command_id: expect.stringMatching(/^client_interrupt_/),
         target_member_route_key: 'code_reviewer',
         target_member_run_id: 'team-1::code_reviewer',
       },

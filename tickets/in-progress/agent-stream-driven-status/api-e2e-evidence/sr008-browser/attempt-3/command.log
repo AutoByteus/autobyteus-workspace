@@ -1,0 +1,16 @@
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+locator.innerText: Error: strict mode violation: locator('.fixed.top-5.right-5') resolved to 2 elements:
+    1) <div data-v-1e8f3ca9="" class="fixed top-5 right-5 z-[100] w-full max-w-sm">…</div> aka locator('div').nth(2)
+    2) <div data-v-1e8f3ca9="" class="fixed top-5 right-5 z-[100] w-full max-w-sm">…</div> aka locator('div').filter({ hasText: /^Could not stop browser-agent-run: The provider has no active turn\.$/ }).nth(4)
+
+Call log:
+[2m  - waiting for locator('.fixed.top-5.right-5')[22m
+
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:268:63
+    at async runScenario (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:178:57)
+    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:259:3
+
+Node.js v22.23.1

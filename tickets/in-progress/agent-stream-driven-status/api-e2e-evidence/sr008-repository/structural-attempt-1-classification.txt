@@ -1,0 +1,2 @@
+Classification: validation-harness scope error, not a product or durable-test failure.
+The first scan recursively entered generated packaged Electron/mobile-web/dist artifacts and applied a heuristic to assertions and intentionally invalid-input tests. Those paths are not current repository source requests. The corrected authoritative scan is limited to the changed current request fixtures and records their exact diff plus current source boundaries.

@@ -577,6 +577,70 @@ describe("Agent websocket backend-owned command lifecycle integration", () => {
     }
   });
 
+  it("returns exact same-socket interrupt acknowledgements without publishing lifecycle state", async () => {
+    const runId = "agent-interrupt-ack";
+    const activeRun = new FakeRuntimeRun(runId, { initialStatus: "running" });
+    (activeRun.interrupt as ReturnType<typeof vi.fn>)
+      .mockResolvedValueOnce({ accepted: true })
+      .mockResolvedValueOnce({
+        accepted: false,
+        code: "NO_ACTIVE_TURN",
+        message: "The provider has no active turn to interrupt.",
+      });
+    const harness = await startAgentWsHarness({ runId, activeRun, metadata: buildMetadata(runId) });
+    const socket = new WebSocket(`${harness.baseUrl}/ws/agent/${runId}`);
+    const messages = captureMessages(socket);
+    try {
+      await waitForOpen(socket);
+      await waitForBufferedMessage(messages, 0);
+      await waitForBufferedMessage(messages, 1);
+
+      socket.send(JSON.stringify({
+        type: "INTERRUPT_GENERATION",
+        payload: { command_id: "client_interrupt_accept" },
+      }));
+      const accepted = await waitForMessageMatching(
+        messages,
+        (message) =>
+          message.type === "AGENT_COMMAND_ACK" &&
+          message.payload.command_id === "client_interrupt_accept",
+        2,
+      );
+      expect(accepted.payload).toEqual({
+        command_type: "INTERRUPT_GENERATION",
+        command_id: "client_interrupt_accept",
+        state: "accepted",
+        target: { target_kind: "standalone_run", run_id: runId },
+      });
+
+      socket.send(JSON.stringify({
+        type: "INTERRUPT_GENERATION",
+        payload: { command_id: "client_interrupt_provider_reject" },
+      }));
+      const failed = await waitForMessageMatching(
+        messages,
+        (message) =>
+          message.type === "AGENT_COMMAND_ACK" &&
+          message.payload.command_id === "client_interrupt_provider_reject",
+        3,
+      );
+      expect(failed.payload).toEqual({
+        command_type: "INTERRUPT_GENERATION",
+        command_id: "client_interrupt_provider_reject",
+        state: "failed",
+        code: "NO_ACTIVE_TURN",
+        message: "The provider has no active turn to interrupt.",
+        target: { target_kind: "standalone_run", run_id: runId },
+      });
+      expect(activeRun.interrupt).toHaveBeenCalledTimes(2);
+      expect(messages.slice(2).some((message) => message.type === "AGENT_STATUS")).toBe(false);
+      expect(activeRun.getStatusSnapshot()).toEqual({ status: "running", agent_id: runId });
+    } finally {
+      socket.close();
+      await harness.app.close();
+    }
+  });
+
   it("keeps non-SEND commands active-only after identity-only connect", async () => {
     const runId = "agent-e2e";
     const metadata = buildMetadata(runId);
@@ -587,12 +651,29 @@ describe("Agent websocket backend-owned command lifecycle integration", () => {
       await waitForOpen(socket);
       await waitForBufferedMessage(messages, 0);
       await waitForBufferedMessage(messages, 1);
-      socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION" }));
-      await new Promise((resolve) => setTimeout(resolve, 80));
+      socket.send(JSON.stringify({
+        type: "INTERRUPT_GENERATION",
+        payload: { command_id: "client_interrupt_inactive" },
+      }));
+      const ack = await waitForMessageMatching(
+        messages,
+        (message) =>
+          message.type === "AGENT_COMMAND_ACK" &&
+          message.payload.command_id === "client_interrupt_inactive",
+        2,
+      );
 
       expect(harness.agentRunService.restoreAgentRun).not.toHaveBeenCalled();
       expect(harness.agentRunService.activatePreparedRun).not.toHaveBeenCalled();
-      expect(messages).toHaveLength(2);
+      expect(ack.payload).toEqual({
+        command_type: "INTERRUPT_GENERATION",
+        command_id: "client_interrupt_inactive",
+        state: "rejected",
+        code: "RUN_NOT_FOUND",
+        message: `Agent run '${runId}' is not active.`,
+        target: { target_kind: "standalone_run", run_id: runId },
+      });
+      expect(messages).toHaveLength(3);
     } finally {
       socket.close();
       await harness.app.close();

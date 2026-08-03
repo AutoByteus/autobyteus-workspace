@@ -6,7 +6,8 @@
 | --- | --- | --- | --- | --- |
 | API-REV-001 | `code_reviewer` / `CRR-004` / API-E2E round 1 | `SR-005`, `ARCH-REV-005`, `IR-004`, `CRR-004` | N/A | Pass / 96.7% |
 | API-REV-002 | `code_reviewer` / `CRR-005` test review / API-E2E round 2 | `API-REV-001`, `CRR-005`, `TEST-FIND-001`, `TEST-FIND-002` | Pass / 96.7%; test review Fail | Pass / 96.7%; test re-review passed at `CRR-006` |
-| API-REV-003 | `code_reviewer` / `CRR-007` / API/E2E round 3 | `SR-006`, `ARCH-REV-006`, `IR-005`, `CRR-007` | Pass / 96.7% (`SR-005` baseline) | Pass / 97.1%; proportional review pending |
+| API-REV-003 | `code_reviewer` / `CRR-007` / API/E2E round 3 | `SR-006`, `ARCH-REV-006`, `IR-005`, `CRR-007` | Pass / 96.7% (`SR-005` baseline) | Pass / 97.1%; test review passed at `CRR-008` |
+| API-REV-004 | `code_reviewer` / `CRR-009` / API/E2E round 4 | `SR-007/008`, `ARCH-REV-007/008`, `IR-006`, `CRR-009` | Pass / 97.1% (`SR-006` baseline) | Pass / 97.1%; proportional review pending |
 
 ## Revision Entries
 
@@ -96,6 +97,49 @@ None. There was no prior completed authoritative API/E2E result. Fresh round-loc
 - Canonical artifacts updated: coverage investigation, execution report, revision record, `sr006-repository/`, and `sr006-browser/` under `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/`.
 - Prior result and confidence: `API-REV-002 Pass / 96.7%`; proportional re-review passed at `CRR-006`.
 - Current result and confidence: `Pass / 97.1%`.
-- New or remaining failure IDs: `None`; proportional review of the two new durable files is pending.
-- Recommended recipient: `code_reviewer` for proportional test-code review; do not route to delivery directly.
+- New or remaining failure IDs: `None`; the two new durable files later passed proportional review at `CRR-008`.
+- Recommended recipient at API-REV-003 completion: `code_reviewer`; proportional review later passed at `CRR-008`.
 - Remaining risks: no authenticated backend or packaged Electron run, both intentionally outside the presentation-only changed boundary; repository-wide frontend typecheck debt remains upstream-documented and unrelated.
+
+### API-REV-004 — Prove exact Codex steering and observable interrupt results
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/code-review-report.md`; API/E2E execution round 4 / first `SR-008` round
+- Triggering finding or scenario IDs: `ARCH-FIND-004` verified resolved in source; new `API-E2E-020–027` and `SR008-BR-001–004`
+- Related solution, architecture-review, implementation, code-review, or delivery revision IDs: `SR-007`, `SR-008`, `ARCH-REV-007`, `ARCH-REV-008`, `IR-006`, `CRR-009`; accepted preservation baseline `API-REV-003` / `CRR-008`; superseded delivery context `DR-005`
+- Why recorded: live `DR-005` verification exposed the busy-Codex phantom-turn and log-only interrupt-result defects, producing a material runtime/API/frontend correction after the accepted `SR-006` candidate. Prior coverage could preserve lifecycle/activity/companion behavior but could not sign off strict steering, current interrupt acknowledgements, or rendered failure feedback.
+- Coverage decisions or durable paths changed:
+  - added `autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs` and `autobyteus-web/tests/e2e/fixtures/interrupt-result-presentation.page.vue`;
+  - updated live Codex thread and memory coverage, three real WebSocket integrations, four provider-origin runtime E2Es, and the focused team Stop component integration;
+  - replaced obsolete missing-command-ID/no-response expectations in place;
+  - removed no files and added no compatibility-only assertion.
+- Scenarios added/rechecked: strict idle start versus exact active-A steer, no phantom B, deterministic start/terminal and steer/terminal races, structured rejection/no fallback, same-A memory, live remote-thread restore, standalone accepted/failed/rejected same-socket results, root-to-task-team-leaf exact interrupt/reconnect, nonconnected/send/disconnect exactly-once cleanup, one localized toast, Stop until canonical idle, no transcript/team/activity mutation, and preserved lifecycle/binary activity/companion behavior.
+- Commands, environment, fixture, or broader-validation delta:
+  - server build Pass;
+  - focused server Pass (18 runnable) and frontend Pass (6 files / 118 tests);
+  - expanded server Pass (10 files / 116 runnable, 31 provider-gated skips) and frontend Pass (16 files / 144 tests);
+  - fresh capability preflight Pass (18/18);
+  - live Codex thread Pass (5/5), memory Pass (2/2), manager restore Pass (3/3);
+  - Chrome/Nuxt/real-WS browser Pass (4/4, zero page/console errors, full cleanup);
+  - guards, structural/current-protocol scans, and `git diff --check` Pass.
+
+#### Prior Failure Resolution
+
+| Prior Scenario / Failure Reference | Previous Classification | Current Resolution | Evidence |
+| --- | --- | --- | --- |
+| `API-REV-003` residual: no authenticated backend/provider journey | Bounded untested scope | Fresh bundled Codex preflight and 10 live Codex tests directly prove current provider start/steer/terminal/memory/restore/interrupt behavior. | `api-e2e-evidence/sr008-live/` |
+| Browser attempts 1–4 | Local Fix / API/E2E probe or fixture expectation | Selector scope, toast owner, duplicated container, and disconnect-message expectations were corrected without production edits; final four scenarios pass. | `api-e2e-evidence/sr008-browser/attempt-*-classification.txt`; final `evidence.json` |
+| Structural attempts 1–2 | Local Fix / API/E2E scan scope/schema | Generated-package recursion and an incorrect evidence-field assumption were removed; final current-source/payload/browser-cleanup scan passes. | `api-e2e-evidence/sr008-repository/structural-attempt-*-classification.txt`; final `structural.log` |
+
+- Canonical artifacts updated:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-execution-coverage-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-evidence/sr008-repository/`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-evidence/sr008-live/`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-evidence/sr008-browser/`
+- Prior result and confidence: `API-REV-003 Pass / 97.1%`; proportional review passed at `CRR-008`. This is preservation context, not `SR-008` sign-off.
+- Current result and confidence: `Pass / 97.1%`.
+- New or remaining failure IDs: `None`; proportional review of two added and ten updated durable files is pending.
+- Recommended recipient: `code_reviewer` for proportional durable-test review; do not route to delivery directly.
+- Remaining risks: exact live provider rejection/race injection is unavailable but directly covered deterministically at the production owner; browser peer is controlled while server and browser real-socket layers pass separately; unrelated external-provider secrets/local endpoints and repository-wide frontend typecheck debt remain outside the changed boundary; packaged Electron not run because no shell source changed.
+- Product iteration callback: `Not Required`.

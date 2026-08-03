@@ -4,124 +4,142 @@
 
 - Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/requirements.md`
 - Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/design-spec.md` (`SR-006`)
-- Supplemental Task Artifacts: `production-trace-evidence.md`, `team-status-simplification-evidence.md`, and four user screenshots identified in the upstream package
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/design-spec.md`
+- Supplemental Task Artifacts: `production-trace-evidence.md`, `team-status-simplification-evidence.md`, `codex-steering-stale-running-evidence.md`, and the six user screenshots listed in the implementation/code-review package
 - Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/solution-revision-record.md`
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/design-review-report.md`
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/architecture-review-revision-record.md`
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/implementation-handoff.md`
-- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/implementation-revision-record.md` (`IR-005`)
+- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/implementation-revision-record.md`
 - Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/code-review-report.md`
-- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/code-review-revision-record.md` (`CRR-007`)
-- Delivery Revision Record (delivery re-entry only): `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/delivery-revision-record.md`
-- Relevant Delivery Revision IDs: `DR-004` is superseded verification-candidate context, not current sign-off.
+- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/code-review-revision-record.md`
+- Delivery Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/delivery-revision-record.md` (superseded `DR-005` context only)
 - API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-003`
-- Current Investigation Round: `3` / first round for `SR-006`
-- Trigger: `code_reviewer` source Pass `CRR-007` for `IR-005` / `SR-006`
-- Prior Investigation Reviewed: `API-REV-002` / accepted `SR-005` baseline only; it does not cover the new binary presentation.
-- Latest Authoritative Investigation: this completed `SR-006` investigation, created 2026-08-03 before any SR-006 API/E2E durable edit or final execution and updated from fresh evidence.
+- Current API/E2E Revision ID: `API-REV-004`
+- Current Investigation Round: `4` / first `SR-008` round
+- Trigger: `CRR-009` source-review Pass for `IR-006` / `SR-008`, reviewer artifact commit `a634155ba`
+- Prior Investigation Reviewed: `Yes` — `API-REV-003` / `SR-006` is accepted preservation and browser-presentation context only, not `SR-008` sign-off.
+- Latest Authoritative Investigation: this `SR-008` investigation, written before any `SR-008` durable coverage edit or final execution.
 
 ## Current Requirement And Design Basis
 
-`SR-006` is a bounded frontend presentation correction on top of the accepted `SR-005` lifecycle and transport behavior. A root team run still owns only authoritative binary `isActive`. Every exact team-run row must render that exact boolean. A displayed team-definition/group row must render `runs.some(run => run.isActive)` over its final displayed children. The shared visual must be solid blue when active, solid neutral gray when inactive, never pulse, and expose localized accessible active/inactive meaning. Representative ordering, member `AgentStatus`, `isSubscribed`, Stop pending/failure, action availability, and socket activity must not affect either dot.
+`REQ-021`, `AC-027`, and `AC-028` require the bundled Codex runtime to use strict `turn/start` only while idle and strict `turn/steer(expectedTurnId=A)` while provider turn A is identified. Steering must preserve A through the operation result, runtime memory association, canonical lifecycle, terminal settlement, and reconnect; start/terminal and steer/terminal races must not reopen or invent a phantom B. A non-steerable, mismatched, malformed, or provider-rejected steer must remain a structured failure and must never fall back to `turn/start`.
 
-No backend, GraphQL, WebSocket, store, team lifecycle, Stop policy, task-team coordinate, persistence, or Electron-shell boundary changed. Prior `API-REV-002` remains valid preservation evidence for those unchanged boundaries, but is not counted as direct proof of `AC-026` or the new `REQ-020` presentation.
+`REQ-022` and `AC-029` require every current standalone or exact team-member `INTERRUPT_GENERATION` request to carry a client command ID and complete with one discriminated same-socket `AGENT_COMMAND_ACK`. Accepted means provider/runtime admission only and cannot optimistically set idle. Rejected/failed results retain exact command and target identity, expose a code/message visibly, and must not become a generic runtime error, transcript entry, team-activity mutation, or retry. Locally nonconnected, synchronous-send-failed, and disconnected admitted commands must each complete exactly once.
+
+Preserved requirements remain active regression constraints: member `AGENT_STATUS` is canonical and event-driven; exact team-run activity stays manager-owned binary `isActive`; task-team routes use the established outward coordinate frame; Stop is enabled only by canonical running status; companion batching stays transparent; persisted state is `Not Affected`; no legacy interrupt or active-input fallback may be protected.
 
 ## Changed Behavior Summary
 
 | Behavior ID / Boundary | Change Type | Upstream Evidence | Coverage Consequence |
 | --- | --- | --- | --- |
-| BEH-006 / REQ-013, REQ-020 / AC-016, AC-026 | Changed | `requirements.md`, `design-spec.md`, `IR-005`, `CRR-007` | Prove definition groups have no five-state status and display any-child binary activity in both expanded and collapsed states. |
-| BEH-008 / REQ-016, REQ-020 / AC-023, AC-026 | Changed | Same package | Prove each history/running run row reads only its own `isActive`, with mixed active/inactive siblings. |
-| TeamActivityDot visual/accessibility | Added | `DS-010`, `IR-005`, `CRR-007` | Prove computed blue/gray treatment, no animation, `role=img`, localized `aria-label`, and `title` in a real browser engine. |
-| Final active-to-inactive transition | Added presentation behavior | AC-026 | Prove exact active row and both parent groups react to the last active boolean becoming false. |
-| Member/socket/action independence | Preserved ownership, newly displayed | REQ-015, REQ-018, REQ-020; AC-020, AC-022, AC-026 | Vary representative/member status, subscription, Stop pending/failure, and action facts without changing a dot unless `isActive` changes. |
-| Accepted SR-005 agent/team lifecycle, transport, task and history contracts | Preserved | API-REV-002 / CRR-006 | Retain as baseline context; rerun only focused frontend regressions that protect the presentation boundary. |
+| Codex idle input -> strict start S | Changed | `REQ-021`, `AC-028`, `BEH-010` | Recheck method schema and real bundled provider start/terminal behavior. |
+| Codex active input -> strict steer A | Added | `REQ-021`, `AC-027`, live phantom-B evidence | Add real app-server execution proving exact A, no second start, terminal idle, and memory association. |
+| Start/terminal and steer/terminal races | Added | `AC-028`, reviewed `lastTerminalTurnId` design | Preserve deterministic race coverage and execute broader live terminal settlement where deterministic. |
+| Structured steer rejection/no fallback | Added | `REQ-021`, `AC-028` | Preserve direct mocked/provider-protocol assertions; scan and execute failure path without accepting a fallback B. |
+| Standalone interrupt result | Added | `REQ-022`, `AC-029`, `BEH-011` | Update stale real WebSocket scenarios to current command ID and assert exact same-socket accepted/rejected/failed arms. |
+| Exact nested team interrupt result | Added | `REQ-022`, `AC-029`, task-team coordinate contract | Update root -> ordinary subteam -> task team -> leaf WebSocket coverage with exact ack identity and reconnect convergence. |
+| Frontend admission/cleanup/result presentation | Added | `ARCH-FIND-004` resolved, `BEH-011` | Preserve focused helper/service/store tests and add real-browser WebSocket/toast/Stop journey. |
+| Agent lifecycle, binary team activity, companion batching | Preserved | prior `API-REV-002/003`, `CRR-009` | Rerun affected preservation suites; ack cannot flush content or mutate status/activity. |
 
 ## Changed Surface And Boundary Classification
 
 | Surface / Boundary | Affected? | Actual Changed Boundary | Repository Evidence Available | Material Risk Not Exercised By That Evidence | Candidate Broader Validation Mode |
 | --- | --- | --- | --- | --- | --- |
-| Domain / backend logic | No | None | Accepted API-REV-002 | None introduced by SR-006 | None |
-| API / transport / contract | No | None | Accepted WebSocket/GraphQL coverage | None introduced by SR-006 | None |
-| Frontend component / state | Yes | Final group/run projection into `TeamActivityDot` | Five mounted/component suites, 16 tests | Happy DOM does not prove real CSS computed color, visibility after collapse, or browser accessibility attributes together | Browser |
-| Browser integration / user journey | Yes | Rendered workspace-history and running-team hierarchy | No SR-006 browser test exists | Exact visual parity, collapse preservation, transition, and real DOM computed styles remain unobserved | Browser |
-| Authentication / session / permissions | No | No auth change; deterministic fixture can isolate presentation | N/A | None | None |
-| Desktop renderer / web-equivalent UI | Yes | Vue/Nuxt renderer shared by browser and Electron | Mounted tests | Real Chromium/Nuxt compilation and rendering not yet proven | Browser via Nuxt dev fixture |
-| Desktop shell / Electron-specific integration | No | No preload, IPC, window, packaging, or lifecycle source change | Prior delivery package only | Rebuilding is delivery-owned; shell adds no evidence for boolean DOM behavior | None |
-| Process / lifecycle | No | Upstream booleans unchanged | API-REV-002 | None introduced | None |
-| Persisted-data transition | No functional change | Display-only reading of existing `isActive` | Direct-use history tests | No migration risk | Browser fixture with current/history-shaped nodes |
-| Worker / queue / distributed coordination | No | None | N/A | None | None |
-| External integration | No | None | N/A | None | None |
+| Domain / backend logic | Yes | `CodexThread` serialized start/steer identity and structured result | Unit tests directly script request/notification races | Bundled provider response/timing | Live Codex app-server |
+| API / transport / contract | Yes | Discriminated interrupt ack over originating WebSocket | Handler units | Real Fastify/`ws` ordering, exact socket/target | Integration WebSocket |
+| Frontend component / state | Yes | Shared admission, service correlation, store-owned toast | 5 focused changed suites / 117 tests | Browser DOM/toast and real socket timing | Chrome + owned WS fixture |
+| Browser integration / user journey | Yes | Stop click -> command -> ack/disconnect -> toast/canonical status | Mounted component test is mocked and currently has stale payload expectation | Real WebSocket, rendered toast count, Stop persistence | Browser |
+| Authentication / session / permissions | No | No auth shape changed | Existing session handshake | None material | None |
+| Desktop renderer / web-equivalent UI | Yes | Ordinary Nuxt/Vue renderer behavior | Component tests | Real Chromium rendering/event loop | Browser |
+| Desktop shell / Electron-specific integration | No | No preload/IPC/window/package source changed | N/A | None | None |
+| Process / lifecycle | Yes | Codex provider turn terminal race; socket reconnect/disconnect | Unit lifecycle and prior reconnect integration | Live app-server process and browser socket disconnect | Live provider + lifecycle/browser |
+| Persisted-data transition | No | Runtime-ephemeral IDs/correlation only | Handoff says `Not Affected` | None | None |
+| Worker / queue / distributed coordination | No | No worker/queue change | N/A | None | None |
+| External integration | Yes | Bundled `codex app-server` protocol | Env-gated live integration exists | Current installed/authenticated CLI behavior | `RUN_CODEX_E2E=1` focused live run |
 
 ## Project Execution Discovery
 
-- Assigned task worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status`
-- Project stack: Nuxt 3 / Vue 3 / Pinia / Tailwind; Vitest with Vue Test Utils; Electron wrapper; Playwright Core browser probes.
-- Conflicting, missing, or unclear instructions: none. `autobyteus-web/AGENTS.md` requires `--run` for Nuxt Vitest. Browser probes in `autobyteus-web/tests/e2e` establish the project pattern of temporarily installing a fixture page, starting owned Nuxt dev on an ephemeral loopback port, launching local Chrome through Playwright Core, recording JSON/screenshots/logs, then removing the installed page and terminating the owned process group.
-- Required environment variables or secrets available: `N/A`; the planned deterministic presentation fixture requires no backend or authentication.
-- Browser availability discovered before execution: local Google Chrome exists at `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome`.
+- Assigned worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status`
+- Stack: pnpm monorepo; TypeScript/Fastify/WebSocket/Vitest server; Nuxt/Vue/Pinia/Vitest frontend; Playwright Core + installed Chrome for durable browser probes; Electron wraps the same renderer.
+- Conflicting/missing instructions: none. Existing dirty delivery/solution artifacts are upstream-owned and must not be reverted or swept into an API/E2E commit.
+- Required environment/secrets available: Codex binary `0.146.0` is installed. Provider/auth availability must be established by fresh execution; secret values will not be recorded. Chrome `150.0.7871.187` is available.
 
 | Instruction / Configuration Path | Authority / Purpose | Commands, Setup, Or Constraints Learned |
 | --- | --- | --- |
-| `autobyteus-web/AGENTS.md` | Repository developer/test instructions | Use `pnpm test:nuxt ... --run`; never use watch mode for one-shot validation. |
-| `autobyteus-web/README.md` | Web/Electron development | `pnpm dev` is the browser-equivalent Nuxt path; browser mode normally uses a backend, but this fixture is presentation-local. |
-| `autobyteus-web/package.json` | Authoritative scripts/dependencies | `test:nuxt`, localization guards, `playwright-core`, Nuxt dev. |
-| `autobyteus-web/tests/e2e/diagram-zoom-viewer-probe.mjs` | Project-owned fixture-page browser pattern | Install a temporary page, choose an ephemeral port, own and clean Nuxt/browser processes, retain evidence. |
-| `autobyteus-web/nuxt.config.ts` and Vitest configuration | Rendering/test configuration | Production component imports and Tailwind styles are available in the fixture and mounted tests. |
+| `autobyteus-server-ts/AGENTS.md` | Server test authority | Use `pnpm -C autobyteus-server-ts exec vitest run ... --no-watch`; integration path supported. |
+| `autobyteus-web/AGENTS.md` | Frontend test authority | Use `pnpm -C autobyteus-web test:nuxt <paths> --run`; avoid watch mode. |
+| root `README.md`, `autobyteus-server-ts/README.md` | E2E/live runtime | Deterministic `pnpm test:e2e`; Codex live suites require `RUN_CODEX_E2E=1`; test-owned temp app data; targeted cleanup exists. |
+| `autobyteus-web/README.md` | Browser/web-equivalent desktop | Browser development path is authoritative for ordinary renderer behavior; Playwright Core/local Chrome probes are supported. |
+| root/server/web `package.json` | Scripts | Server build/typecheck/tests; Nuxt tests/guards; direct durable browser-probe invocation. |
 
 | Component / Dependency | Working Directory | Start / Setup Command | Runtime / Resource Notes | Readiness Check | Stop / Cleanup Method |
 | --- | --- | --- | --- | --- | --- |
-| Focused Vitest | `autobyteus-web` | `pnpm test:nuxt <files> --run` | Existing dependencies | Exit status and Vitest summary | Process exits |
-| Nuxt fixture | `autobyteus-web` | Probe-owned `pnpm exec nuxi dev --host 127.0.0.1 --port <ephemeral>` | Temporary page under `pages/`; no backend | HTTP route plus fixture ready marker | Probe terminates owned process group and deletes installed page |
-| Chromium | Probe-owned Playwright context | `chromium.launch({ executablePath })` | Headless local Chrome | Semantic locator visible | Close context/browser in `finally` |
+| Repository tests | worktree root | focused pnpm/Vitest commands | test-owned DB/temp state | process exit | Vitest teardown |
+| Codex app-server | server package | `RUN_CODEX_E2E=1 pnpm exec vitest run <live files> --no-watch` | test creates temp workspace/client | startup-ready/model catalog | thread/client manager teardown + temp removal |
+| Nuxt browser fixture | web package | durable probe starts `nuxi dev` on free loopback port | no production/user data | HTTP fixture route | probe-owned process-group termination and page removal |
+| Browser fixture WS server | durable probe | ephemeral loopback `ws` server | deterministic standalone/team ack/status scripts | socket open/recorded connection | close clients/server |
+| Chrome | probe | Playwright Core local executable | headless, isolated context | page ready/DOM controls | browser/context close |
 
-| Data / Fixture / Identity Need | Existing Project Mechanism Or Creation Method | Environment / Data-Safety Notes | Cleanup / Retention |
+| Data / Fixture / Identity Need | Existing Mechanism | Safety Notes | Cleanup / Retention |
 | --- | --- | --- | --- |
-| Mixed sibling team runs | Deterministic fixture page constructs active/inactive `AgentTeamContext` and history-shaped `TeamTreeNode` values | No user data, server, workspace, or secrets | Fixture source retained; installed page removed |
-| Member/status/socket/action variants | Fixture control mutates only local reactive inputs | Proves independence without pretending to execute backend lifecycle | Reset by browser/context close |
-| Active-to-inactive transition | Fixture control sets the sole active run's `isActive=false` | Directly exercises Vue reactivity and parent recomputation | Ephemeral |
-| Locales | Project localization preference control or fixture-visible locale controls | English and Simplified Chinese only | Browser storage/context removed |
+| Codex workspace/run/thread | live integration temp directories and run IDs | isolated from user workspace/history | terminate threads and remove temp dirs |
+| Standalone/team WebSocket identities | in-test fake `AgentRun`/`TeamRun` and exact nested route constants | no persistent data | app/socket close |
+| Browser run/team/context | deterministic fixture-created Pinia state | no auth/backend/user data | route, sockets, processes removed |
 
 ## Persisted Data Transition Coverage Basis
 
-- Approved decision: `Directly Usable — No Migration`; SR-006 itself does not change persisted data.
-- References: `requirements.md` persisted-data outcome; `design-spec.md`; `implementation-handoff.md` Persisted Data Transition Check.
-- Representative setup: current/history-shaped run nodes with existing `isActive` values are passed through the normal display-group builder and production history surface.
-- Planned evidence: unit builder coverage plus browser rendering of the production history surface; no migration/recovery scenario applies.
-- Upstream ambiguity or reroute required: none.
+- Approved decision: `Not Affected`.
+- References: design `Persisted Data / State Transition Decision`; implementation handoff `Persisted Data Transition Check`.
+- All new provider-turn and pending interrupt state is ephemeral. No schema, GraphQL, history DTO, or migration changed.
+- Memory coverage validates current raw-trace turn association, not a migration. No compatibility or dual-read coverage is allowed.
 
 ## Existing Durable Coverage Inventory
 
-| Path / Scenario | Current Assertion Or Intent | Related Requirement / Acceptance Criteria / Design | Validity Decision | Evidence | Action |
+| Path / Scenario | Current Intent | Related Requirement | Validity Decision | Evidence | Action |
 | --- | --- | --- | --- | --- | --- |
-| `components/workspace/common/__tests__/TeamActivityDot.spec.ts` | Boolean classes, no pulse, role/label/title, reactive transition | REQ-020; AC-023/026 | Still Valid | Source inspection and CRR-007 | Rerun; browser probe supplements computed-style proof. |
-| `components/workspace/history/__tests__/workspaceHistoryTeamDefinitionGroups.spec.ts` | Any-child over final runs, representative/member independence, history and leftover paths | REQ-013/020; AC-016/026 | Still Valid | Source inspection and CRR-007 | Rerun. |
-| `components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts` | Mixed sibling exact dots, parent transition, collapsed run state, action independence | REQ-013/016/020; AC-016/023/026 | Still Valid | Source inspection and CRR-007 | Rerun; browser probe covers real collapsed group visibility and visual output. |
-| `components/workspace/running/__tests__/RunningTeamGroup.spec.ts` | Any-child and last-active transition; subscription variation | REQ-020; AC-026 | Still Valid | Source inspection and CRR-007 | Rerun. |
-| `components/workspace/running/__tests__/RunningTeamRow.spec.ts` | Exact-run dot independent of subscription/member/action | REQ-016/020; AC-023/026 | Still Valid | Source inspection and CRR-007 | Rerun. |
-| `stores/__tests__/agentTeamRunStore.spec.ts` | Real Stop pending/failure and lifecycle ownership | REQ-018; AC-018/022 | Still Valid (preservation) | IR-005 and prior API-REV-002 | Focused regression rerun; do not modify. |
-| `services/agentStreaming/__tests__/TeamStreamingService.spec.ts` | Lifecycle/subscription separation and batching | REQ-018/020; AC-019/026 | Still Valid (preservation) | IR-005 and prior API-REV-002 | Focused regression rerun; do not modify. |
-| `utils/__tests__/workspaceStatusDotPresentation.spec.ts` and agent dot coverage | Agent five-state visual remains agent-only | REQ-015/017/020; AC-020/023 | Still Valid (negative preservation) | IR-005 / CRR-007 | Focused regression rerun. |
-| Prior ten-file API/E2E durable server set | Team lifecycle, exact leaf, Stop, task, history contracts | SR-005 / AC-001–025 | Still Valid baseline, not SR-006 sign-off | API-REV-002 / CRR-006 | Do not rerun wholesale because no backend/API/store source changed. |
-| Existing browser probes (`workspace-responsive`, `diagram-zoom-viewer`, `vnc-live`) | Other product journeys | No SR-006 presentation assertion | Out Of Scope | Source inventory | Reuse their harness pattern, not their scenarios. |
+| `tests/unit/.../codex-thread.test.ts` strict start/steer/races/rejections | Method selection, serialization, strict identities, terminal precedence, no fallback | REQ-021 / AC-027/028 | Still Valid | Direct request/notification control; source review passed | Rerun unchanged. |
+| `tests/unit/.../codex-agent-run-backend.test.ts` structured result | Preserve codes across runtime adapter | REQ-021 | Still Valid | Direct adapter assertions | Rerun unchanged. |
+| `tests/integration/.../codex-thread.integration.test.ts` live start/interrupt | Real bundled app-server start/terminal/interrupt | AC-027/028 | Needs Update | No live active-A steer assertion | Add exact live steer scenario. |
+| `tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts` | Real raw-trace persistence | AC-027 | Needs Update | Only one ordinary turn; no steered input/turn association | Add steer-to-same-A memory assertion if live flow is deterministic. |
+| `tests/unit/services/...agent*-stream-handler.test.ts` | Every interrupt ack arm/target | REQ-022 / AC-029 | Still Valid | Current command IDs and discriminated acks | Rerun unchanged. |
+| `tests/integration/agent/agent-websocket.integration.test.ts` | Real Fastify standalone lifecycle/command | REQ-022 / AC-029 | Needs Update | Existing interrupt sends no command ID and expects silence | Replace obsolete expectation with exact rejected/accepted/failed ack checks. |
+| `tests/integration/agent/agent-team-websocket.integration.test.ts` | Real Fastify team targeting | REQ-022 / AC-029 | Needs Update | Interrupt requests are pre-command-ID and do not assert ack | Add IDs and exact ack assertions. |
+| `tests/integration/agent/team-lifecycle-websocket.integration.test.ts` | Exact nested task-team leaf + reconnect | AC-027/029 | Needs Update | Route/reconnect is valid but interrupt omits ID/ack | Add exact nested same-socket ack barrier; retain reconnect running->idle assertions. |
+| Runtime interrupt E2Es for AutoByteus/Claude | Provider interrupt/resume/follow-up | REQ-022 preserved origins | Needs Update | Current requests omit required `command_id`, so they no longer execute approved path | Add IDs; keep provider behavior assertions; assert ack where practical. |
+| Frontend admission/service/store suites | Exact correlation, nonconnected/send/disconnect cleanup, one callback, no lifecycle mutation | ARCH-FIND-004 / AC-029 | Still Valid | Current 5 files / 117 tests passed | Rerun unchanged. |
+| `AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts` | Visible focused team Stop -> exact socket target | AC-029 | Needs Update | Expected payload omits new `command_id` | Assert generated command ID plus exact route/run. |
+| Existing SR-006 browser probe | Binary team activity presentation | preserved BEH-006/007 | Still Valid | `API-REV-003` and `CRR-008` accepted | Rerun only as preservation if changed browser fixture exposes risk; no edit. |
+| Existing browser probe for SR-008 | None | AC-029 | Replace / absent | No real-browser Stop/result coverage exists | Add focused durable probe/fixture. |
 
 ## Stale Or Obsolete Coverage Decisions
 
-None. No existing SR-006-relevant assertion is obsolete, and no test will be removed or disabled.
+| Path / Scenario | Obsolete Assertion | Why Obsolete | Upstream Evidence | Replacement Coverage | No-Replacement Rationale |
+| --- | --- | --- | --- | --- | --- |
+| `agent-websocket.integration.test.ts` inactive interrupt | Missing-ID request produces no message | Every current interrupt must complete with an ack; command ID is required | REQ-022 / AC-029 | Same real socket asserts `RUN_NOT_FOUND` with exact ID/target and no restore | N/A |
+| Existing server/browser interrupt payload expectations | Interrupt payload has target only or no payload | Current protocol requires `command_id`; old request proves only invalid-command behavior | REQ-022 / BEH-011 | Update in place with command ID and retain provider/routing assertions | N/A |
+
+No durable file will be deleted. No compatibility-only scenario is retained.
 
 ## Durable Coverage To Add
 
-| Scenario ID | Behavior / Boundary | Requirement / Acceptance Criteria / Design Evidence | Planned Artifact / Path | Why Durable Coverage Is Needed |
+| Scenario ID | Behavior / Boundary | Requirement | Planned Artifact / Path | Why Durable |
 | --- | --- | --- | --- | --- |
-| API-E2E-017 | Production history and running surfaces in real Chromium with mixed siblings, collapsed group signal, last-active transition, exact labels/title/role, solid computed colors/no animation | BEH-006/008; REQ-013/016/020; AC-016/023/026 | `autobyteus-web/tests/e2e/team-activity-presentation-probe.mjs`; fixture `tests/e2e/fixtures/team-activity-presentation.page.vue` | Existing mounted tests do not prove real Nuxt/Tailwind/Chromium rendering and collapse visibility together. |
-| API-E2E-018 | Dot independence from representative/member AgentStatus, `isSubscribed`, and Stop pending/failure/action facts | REQ-015/018/020; AC-020/022/026 | Same probe and fixture | Direct browser observation prevents a passing unit test from hiding an integration coupling. |
-| API-E2E-019 | Localized accessible meaning in English and Simplified Chinese | REQ-020; AC-026 | Same probe and fixture | Tests current catalogs and production `$t` resolution in the actual renderer. |
+| API-E2E-020 | Real Codex idle start then active-A steer, exact A, terminal idle | REQ-021 / AC-027/028 | `codex-thread.integration.test.ts` | Provider schema/behavior can drift independently of mocks. |
+| API-E2E-021 | Steered user input persists under canonical A | AC-027 | `codex-live-memory-persistence.e2e.test.ts` when deterministic | Guards the phantom-B memory association defect. |
+| API-E2E-022 | Standalone real socket exact accepted/failed/inactive ack | REQ-022 / AC-029 | `agent-websocket.integration.test.ts` | Handler units bypass real WebSocket ordering/same-socket evidence. |
+| API-E2E-023 | Nested root -> ordinary subteam -> task team -> leaf exact ack and reconnect convergence | AC-027/029 | `team-lifecycle-websocket.integration.test.ts` | Directly protects the reported nested route and connection boundary. |
+| API-E2E-024 | Browser standalone accepted/failed/disconnect behavior | AC-029 | new web E2E probe + fixture | User-visible Stop/toast/canonical transition requires browser evidence. |
+| API-E2E-025 | Browser nested team failure exactness and no team/transcript mutation | AC-029 | same probe + fixture | Shared mechanics still need exact team surface proof. |
 
 ## Durable Coverage To Update
 
-None planned. If browser execution reveals a real durable gap in existing component tests, update this investigation before editing them.
+| Scenario ID | Existing Path / Scenario | Required Update | Requirement | Notes |
+| --- | --- | --- | --- | --- |
+| API-E2E-022 | `agent-websocket.integration.test.ts` | Add IDs and exact accepted/failed/rejected ack assertions | REQ-022 / AC-029 | No lifecycle payload in interrupt ack. |
+| API-E2E-023 | `agent-team-websocket.integration.test.ts`, `team-lifecycle-websocket.integration.test.ts` | Add IDs, exact target acks, deterministic wait | REQ-022 / AC-029 | Includes exact nested leaf. |
+| API-E2E-026 | AutoByteus/Claude runtime interrupt E2Es | Add command IDs and retain current provider settlement/resume | REQ-022 | Removes stale invalid-request fixtures. |
+| API-E2E-027 | `AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts` | Match generated `client_interrupt_*` ID | AC-029 | Keeps click-to-exact-target proof valid. |
 
 ## Durable Coverage To Remove
 
@@ -129,92 +147,93 @@ None.
 
 ## Repository Coverage Execution Plan And Results
 
-| Order | Command | Working Directory / Configuration | Boundary Or Scenario Proven | Result | Evidence / Output Path |
+All commands ran from the assigned worktree. Status sidecars are `0` for every authoritative result.
+
+| Order | Command / Scope | Working Directory / Configuration | Boundary Proven | Result | Evidence / Output Path |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `pnpm test:nuxt` with the exact five SR-006 component/projection files and `--run` | `autobyteus-web` | Direct changed component/projection behavior | Pass — 5 files / 16 tests | `api-e2e-evidence/sr006-repository/focused.log` |
-| 2 | `node tests/e2e/team-activity-presentation-probe.mjs --output-dir ...` | `autobyteus-web`; owned ephemeral Nuxt/Chrome | API-E2E-017–019 real browser-equivalent journey | Pass — 4/4 browser scenarios after one retained harness-only failed attempt | `api-e2e-evidence/sr006-browser/evidence.json`; screenshots; `attempt-1-*` |
-| 3 | Expanded relevant frontend regression set | `autobyteus-web`; 13 explicit files, `--run` | Presentation plus unchanged agent-dot, team store Stop, stream lifecycle/subscription boundaries | Pass — 13 files / 84 tests | `api-e2e-evidence/sr006-repository/expanded.log` |
-| 4 | `pnpm guard:web-boundary`, `pnpm guard:localization-boundary`, `pnpm audit:localization-literals` | `autobyteus-web` | Web/localization boundary and catalog integrity | Pass — all three guards; zero unresolved literals | `api-e2e-evidence/sr006-repository/guards.log` |
-| 5 | Production forbidden-coupling scans and `git diff --check` | Worktree root | No aggregate status, AgentStatus conversion, pulse, socket/action coupling, malformed patch, fixture leak, or owned Nuxt process | Pass | `api-e2e-evidence/sr006-repository/structural.log` |
+| 1 | focused changed server/API files | server, Vitest | updated real sockets plus current Codex integration (live file skipped without flag) | Pass — 3 files / 18 tests; 1 live file / 5 tests skipped here by design | `api-e2e-evidence/sr008-repository/server-focused.log` |
+| 2 | focused frontend helper/service/store/component files | web, Nuxt Vitest | admission, correlation, exactly-once cleanup, one-toast owner, Stop/lifecycle invariants | Pass — 6 files / 118 tests | `api-e2e-evidence/sr008-repository/frontend-focused.log` |
+| 3 | `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` | root/server | server compile contract | Pass | `api-e2e-evidence/sr008-repository/server-build.log` |
+| 4 | explicit 13-file expanded server set | server, Vitest | strict Codex unit races/rejections, standalone/team real sockets, nested reconnect, lifecycle/companion preservation, provider-origin fixtures | Pass — 10 files / 116 tests; 3 provider-gated files / 31 tests skipped | `api-e2e-evidence/sr008-repository/server-expanded.log`; classification alongside |
+| 5 | explicit 16-file expanded frontend set | web, Nuxt Vitest | interrupt admission/result plus binary team activity, recovery, history, exact team Stop, companion batching | Pass — 16 files / 144 tests | `api-e2e-evidence/sr008-repository/frontend-expanded.log`; classification alongside |
+| 6 | web/localization guards and literal audit | web | web boundary and localized result-message integrity | Pass | `api-e2e-evidence/sr008-repository/frontend-guards.log` |
+| 7 | structural/current-payload/legacy/diff checks | root | no API/E2E source edit, clean diff, current IDs, strict start/steer owner, clean browser result/cleanup | Pass | `api-e2e-evidence/sr008-repository/structural.log` |
+| 8 | fresh real-provider capability preflight | root | current provider capability without value disclosure | Pass — 18/18; Codex selected; absent external secrets/local endpoints classified | `api-e2e-evidence/sr008-live/preflight.log`; `preflight-classification.txt` |
+| 9 | live Codex thread suite with `RUN_CODEX_E2E=1` | server, installed/authenticated Codex CLI `0.146.0` | start, exact active-A steer/no phantom B, terminal, approve/deny, interrupt | Pass — 1 file / 5 tests | `api-e2e-evidence/sr008-live/codex-thread-live.log` |
+| 10 | live Codex memory suite with `RUN_CODEX_E2E=1` | server | initial and steered input retained under canonical A, terminal idle | Pass — 1 file / 2 tests | `api-e2e-evidence/sr008-live/codex-steer-memory.log` |
+| 11 | live Codex thread-manager suite with `RUN_CODEX_E2E=1` | server | remote thread restore/reconnect and same-ID continuation | Pass — 1 file / 3 tests | `api-e2e-evidence/sr008-live/codex-thread-manager-live.log` |
+| 12 | durable Playwright Core probe, owned Nuxt + loopback WS, Chrome | web | rendered exact result, one toast, Stop persistence, canonical terminal, disconnect cleanup, nested team invariants | Pass — 4/4 scenarios; zero page/console errors | `api-e2e-evidence/sr008-browser/evidence.json` |
 
-### Execution-Informed Investigation Update — Browser Harness Attempt 1
-
-- The focused five-file run passed `16/16`.
-- The first browser-probe attempt reached the production surfaces and directly observed the expected active blue. It then failed on a test-harness expectation, not product behavior: this repository intentionally overrides Tailwind `gray-400` to `#999999` (`rgb(153, 153, 153)`), while the probe assumed Tailwind's stock `rgb(156, 163, 175)`. `bg-gray-400` remains the reviewed neutral-gray implementation.
-- Nuxt's first Vite dependency-optimization warm-up also produced aborted-module/504 console noise, and the deliberately unreachable health URL used by the fixture produced unrelated browser errors. The durable probe will be corrected to use the repository's authoritative custom gray token, intercept the unrelated global health request, warm/reload once after dependency optimization, and clear startup-only browser events before scenario observation.
-- Coverage validity and product expectations are unchanged. This is a `Local Fix` to the API/E2E-owned durable probe before rerun. The failed attempt remains retained at `api-e2e-evidence/sr006-browser/evidence.json` until the authoritative rerun replaces it; command log/status preserve the chronology.
+Fresh non-green observations were classified rather than inherited: provider-gated tests were skipped because the fresh preflight found their external secrets/endpoints absent; expected negative-path stderr did not fail assertions; four browser harness attempts and two structural-scan harness attempts are retained with classifications. None exposed an implementation defect.
 
 ## Post-Repository Confidence Scorecard
 
-This scorecard deliberately excludes the browser result to show why broader validation was required. The final browser-adjusted score is recorded in the execution report.
+These scores reflect repository/build/integration execution before crediting the live Codex and rendered-browser runs. Real Fastify/`ws` integration is repository coverage and is included here; the live external process and Chrome journeys are reserved for the final score in the execution report.
 
-| Confidence Category | Score | What Supports The Score | Remaining Uncertainty | Additional Validation That Could Improve It |
-| --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 96% | Five changed suites prove mixed siblings, any-child grouping, exact rows, final transition, accessibility attributes, and independence | Real browser output not included in this score | Browser journey |
-| Changed-boundary execution directness | 96% | Production Vue components and builder mounted directly; 16/16 focused | happy-dom approximates CSS/rendering | Browser journey |
-| Cross-boundary integration realism and mock gap | 92% | History/running surfaces, store Stop, stream lifecycle, recovery, and agent-dot regressions pass 84/84 | Deterministic component inputs rather than a real renderer | Browser fixture with both production surfaces |
-| Environment, configuration, identity, and fixture fidelity | 90% | Typed current/history fixtures use exact run/member identities and current catalogs | Browser engine/Tailwind computed output absent | Nuxt/Chrome fixture |
-| Failure, edge-case, lifecycle, and recovery evidence | 95% | Mixed siblings, final transition, Stop failure/pending store path, subscription separation, and recovery pass | Collapsed live transition not observed in browser | Browser journey |
-| User-surface, browser, and desktop-shell confidence | 84% | Mounted surface semantics are strong; shell is not affected | No real browser CSS, visibility, or screenshot evidence | Required Chrome run |
-| Durable regression coverage quality and relevance | 95% | Narrow requirement-linked component/projection tests and relevant regressions pass | Browser gap remains | Durable browser probe |
+| Confidence Category | Score | What Supports The Score | Remaining Uncertainty | Additional Validation |
+| --- | ---: | --- | --- | --- |
+| Requirement and acceptance-criteria proof | 94% | Direct strict-method/race/rejection tests, exact real-socket acknowledgements, frontend invariants | Bundled provider and rendered UI not yet credited | Live Codex + browser |
+| Changed-boundary execution directness | 94% | Production Codex owner, handlers, services, stores, and component executed | Provider subprocess and browser event loop not yet credited | Live Codex + Chrome |
+| Cross-boundary integration realism and mock gap | 92% | Real Fastify WebSockets and integrated Nuxt/component/store suites | Server and browser peer remain separately controlled | Live provider + real browser WS |
+| Environment, configuration, identity, and fixture fidelity | 92% | Current TypeScript build, actual nested identities, current schemas/config | Current provider auth/model and Chrome not yet credited | Preflight + live/browser |
+| Failure, edge-case, lifecycle, and recovery evidence | 95% | Deterministic races/rejections plus real accepted/rejected/failed socket arms and reconnect | Browser disconnect/toast behavior not yet credited | Chrome disconnect/result journeys |
+| User-surface, browser, and desktop-shell confidence | 84% | Component/store tests prove logic; no shell boundary changed | No rendered browser proof yet | Chrome; Electron not required |
+| Durable regression coverage quality and relevance | 96% | Narrow requirement-linked updates, no deletions/compatibility fixtures, combined suites green | Proportional test review remains downstream | Code reviewer test pass |
 
-- Overall post-repository confidence: `92.6%`
-- Calculation method: simple average of seven categories, rounded to one decimal.
-- Every critical acceptance criterion directly proven: `No` before browser — real user-surface portions of AC-026 remained indirect.
-- Any applicable category below `90%`: `Yes` — user-surface/browser confidence 84%.
-- Default clean-confidence target of 95% met: `No` before browser.
-- Material residual risks: real CSS token output, collapse visibility, localized accessibility in Chromium, and cross-surface reactive parity.
+- Overall post-repository confidence: `92.4%` (simple average of seven applicable categories).
+- Every critical acceptance criterion directly proven: `No — live provider identity and rendered result/Stop behavior still required at this gate.`
+- Any applicable category below `90%`: `Yes — user-surface/browser 84%.`
+- Default clean-confidence target met: `No`.
+- Material residual risks: actual bundled `turn/steer` schema/identity, live thread restore/memory, browser same-event-loop ack/disconnect handling, duplicate toast, and optimistic Stop/lifecycle mutation.
 
 ## Broader Validation Decision
 
-- Decision: `Required`
-- Selected execution mode: `Browser`
-- Specific gap: real Chromium/Nuxt/Tailwind rendering, collapse visibility, reactive final transition, computed solid colors/no animation, localized accessible DOM, and independence across both production surfaces.
-- Why it materially improves confidence: the changed boundary is presentation. A browser engine directly evaluates the production components, styles, reactivity, and accessibility attributes that happy-dom component tests only approximate.
-- Expected confidence after validation: met; final 97.1% is recorded in the execution report.
-- Browser-specific rationale: required for this user-facing visual correction; actual Electron is unnecessary because no shell boundary changed.
+- Decision: `Required`.
+- Selected modes: `Live API / Lifecycle` through the installed bundled Codex app-server, plus `Browser` through production Nuxt/Vue/Pinia services/components and real loopback WebSockets in Chrome.
+- Gap addressed: repository tests control provider responses and DOM/socket timing; the two historically defective boundaries require real subprocess and renderer event loops.
+- Expected confidence: at least `95%`, with no category below `90%`, only if every selected journey passes.
+- Browser rationale: one-toast visibility, Stop persistence, canonical terminal convergence, and absence of transcript/team mutation are web-equivalent user-surface requirements. Electron execution is not required because no shell/preload/IPC source changed.
 
 ## Desktop Application Validation Decision
 
-- Framework: Electron wrapping the same Nuxt renderer.
-- Relevant instructions: `autobyteus-web/README.md` web development and desktop build sections.
-- Web-equivalent behavior: all SR-006 behavior is ordinary Vue/Nuxt DOM, styling, localization, and reactivity.
+- Framework: Electron wrapping Nuxt.
+- Web-equivalent behavior: all changed frontend behavior is ordinary Vue/Pinia/WebSocket/localization DOM behavior.
 - Shell-specific behavior: none.
-- Chosen approach: local Chrome against an owned Nuxt fixture page using production components.
-- Effect on any already-running desktop application: `None`.
-- Not directly proven: packaged Electron pixels; negligible because no IPC/preload/window/packaging or shell CSS boundary changed. Delivery remains responsible for rebuilding the superseded package.
+- Chosen approach: Chrome against an owned Nuxt fixture and real loopback WS server.
+- Effect on user Electron application: none.
+- Not directly proven: packaged Electron rendering; negligible because no shell/package boundary changed and delivery owns the eventual integrated rebuild.
 
-## Live Environment And Fixture Plan
+## Live Environment And Fixture Result
 
-- Startup: probe copies its retained fixture to an otherwise absent temporary page, selects an ephemeral `127.0.0.1` port, starts Nuxt dev, waits for the route, then launches headless local Chrome.
-- Environment: no backend, auth, user data, or external services; deterministic local presentation data only.
-- Fixtures: one team definition with exact active and inactive siblings in history and running representations; varied member statuses, subscription/action/pending flags; reactive controls for collapse, independence mutations, locale, and final settlement.
-- Journeys: inspect expanded mixed siblings; collapse group and verify parent remains visible/active; mutate unrelated facts and verify no dot changes; settle final active run and verify all exact/parent dots become inactive; switch locale and verify accessible labels.
-- Evidence: JSON assertions, Nuxt log, browser events, screenshots before/after transition, computed styles, animation names, semantic attributes.
-- Cleanup: close pages/contexts/browser; terminate only the probe-owned Nuxt process group; remove only the installed fixture page; verify no owned process remains.
+- Fresh preflight passed 18/18 capability checks without retaining secret values. Bundled Codex CLI `0.146.0` was installed, authenticated, and successfully executed; unrelated managed-provider secrets and LM Studio/Ollama were unavailable and are classified in evidence.
+- Live Codex used test-owned temporary workspaces/run/thread identities. The thread, memory, and manager suites all passed and cleaned clients/threads/temp state through their teardowns.
+- The durable browser probe chose free loopback Nuxt/WS ports, launched isolated headless Chrome `150.0.7871.187`, mounted actual production stores/services/component/global toast UI, and asserted semantic DOM/state plus exact recorded frames.
+- Browser scenarios `SR008-BR-001..004` passed: standalone failed ack, accepted ack followed by canonical idle, pending disconnect, and exact nested team failed ack.
+- Four initial browser attempts are retained and classified as probe/fixture expectation errors; the final run has zero failures, zero page errors, zero console errors, and terminated only its owned Nuxt process. No screenshot was required because semantic DOM/state and exact frame evidence directly established the material behavior.
 
-## Temporary Executable Validation Plan
+## Temporary Executable Validation Plan / Result
 
-None. The browser coverage belongs in the repository as a durable probe because it validates a user-visible contract that can regress independently of unit tests.
+None. The provider and browser coverage is repository-resident and durable. Failed harness attempts are retained only as truthful evidence chronology, not as accepted results.
 
 ## Not Tested / Infeasible / Deferred
 
-| Behavior / Boundary | Reason | Risk | Required Follow-Up Or Escalation |
+| Boundary | Reason | Risk | Follow-Up |
 | --- | --- | --- | --- |
-| Packaged Electron rendering | No shell-specific source changed; browser exercises the shared renderer directly | Negligible SR-006 risk | Delivery rebuilds the superseded package after API/E2E/test review. |
-| Authenticated real running-team backend journey | No API/store/lifecycle source changed; deterministic fixture isolates the exact presentation contract and avoids external state | Low; upstream boolean provenance remains accepted by API-REV-002 | None unless browser evidence exposes a source mismatch. |
-| Repository-wide frontend typecheck | Current package records 5,457 baseline diagnostics at 8 GB and no IR-005 changed-file hit | Existing repository debt, not hidden as pass | Keep prior fresh implementation/review evidence; use runtime compilation and focused tests for current scope. |
+| Packaged Electron | No shell/preload/IPC/package source changed | Negligible | Delivery integrated rebuild |
+| Forced live provider rejection or exact terminal-race injection | Bundled provider offers no deterministic timing/error injection | Low: production owner is directly covered with deterministic request/notification scripts; real start/steer/terminal all pass | Retain deterministic coverage; do not fabricate live control |
+| External AutoByteus/Claude managed-provider journeys | Fresh preflight found secrets absent; origins unchanged | Low: updated fixtures compile, fake Claude runtime paths pass, and shared current socket/result path has real integration/browser proof | Run only if provider credentials become part of scope |
+| Repository-wide frontend typecheck | Upstream `IR-006` already records 5,456 baseline diagnostics and zero changed-source intersection; this round changes tests/fixtures only | Low for changed scope: Nuxt Vitest and real Nuxt browser compilation pass | Repository-wide debt remains separate |
 
 ## Ambiguities Or Reroute Triggers
 
-None identified. Any browser observation contradicting AC-026 will be recorded as a fresh failure and routed through `code_reviewer` for origin classification.
+None. All selected critical scenarios passed; no requirement, design, implementation, or environment finding requires reroute.
 
 ## Investigation Decision
 
-- Proceed To API/E2E Execution: `Yes — completed`
-- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `Yes` — add the browser probe and deterministic fixture; update/remove none.
-- Post-repository confidence: `92.6%` before the required browser run.
-- Broader validation decision: `Required — Browser; completed Pass for 4/4 scenarios`
-- Reroute Required Before Validation Execution: `No`
-- Recommended Recipient If Reroute Required: `N/A`
-- Notes: Because durable coverage will be added, any Pass returns through `code_reviewer` for proportional test-code review before delivery.
+- Proceed To API/E2E Execution: `Completed`.
+- Repository-Resident Durable Coverage Added / Updated / Removed: `Yes — two files added, ten files updated, none removed.`
+- Post-repository confidence: `92.4%`.
+- Broader validation decision: `Required and completed — live Codex, live thread restore/memory, real Fastify WebSockets, and Chrome.`
+- Reroute Required Before Validation Execution: `No`.
+- Recommended next recipient: `code_reviewer` for proportional durable-test review after the execution report and `API-REV-004` are finalized.
+- Notes: This is the authoritative `SR-008` investigation. `API-REV-003` remains accepted `SR-006` historical context only.

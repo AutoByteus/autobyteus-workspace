@@ -1,0 +1,4 @@
+Fresh preflight result: Pass (18/18 capability checks).
+Configured live boundary used for SR-008: bundled Codex CLI/app-server, available and successfully executed by all selected live suites.
+Unavailable but unchanged provider origins: managed OpenAI, DeepSeek, Gemini, Anthropic, AutoByteus, and Serper secrets are absent; LM Studio/Ollama endpoints are unavailable. Their provider-gated runtime journeys therefore remain skipped, while current command-ID and interrupt-result behavior is directly covered at the shared real WebSocket boundary, deterministic provider adapter seams, and browser client boundary.
+No secret values are retained.

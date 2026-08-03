@@ -249,6 +249,89 @@ describeCodexThreadIntegration("CodexThread integration (live transport)", () =>
     expect(thread.currentStatus).toBe("IDLE");
   }, 120_000);
 
+  it("steers the exact active live turn without starting a phantom replacement", async () => {
+    const workspaceRoot = await createWorkspace("codex-thread-live-steer");
+    clientManager = new CodexAppServerClientManager({
+      createClient: (cwd) =>
+        new CodexAppServerClient({
+          command: "codex",
+          args: ["app-server"],
+          cwd,
+          requestTimeoutMs: 45_000,
+        }),
+    });
+    threadManager = new CodexThreadManager(
+      clientManager,
+      undefined,
+      new CodexClientThreadRouter(),
+    );
+    const modelIdentifier = await fetchCodexMiniModelIdentifier(clientManager, workspaceRoot);
+    const runId = "run-thread-live-steer";
+    createdRunIds.add(runId);
+
+    const thread = await threadManager.createThread(
+      createRunContext({
+        runId,
+        workingDirectory: workspaceRoot,
+        model: modelIdentifier,
+        reasoningEffort: "medium",
+        approvalPolicy: CodexApprovalPolicy.NEVER,
+      }),
+    );
+    await waitForStartupReady(thread.startup.waitForReady);
+
+    const observed: CodexAppServerMessage[] = [];
+    const unsubscribe = thread.subscribeAppServerMessages((message) => observed.push(message));
+    try {
+      const commandStartedPromise = waitForAppServerMessage(
+        (listener) => thread.subscribeAppServerMessages(listener),
+        (event) => {
+          if (event.method !== CodexThreadEventName.ITEM_STARTED) return false;
+          const item = event.params.item;
+          return Boolean(item && typeof item === "object" && !Array.isArray(item) &&
+            (item as { type?: unknown }).type === "commandExecution");
+        },
+        90_000,
+      );
+      const completedPromise = waitForAppServerMessage(
+        (listener) => thread.subscribeAppServerMessages(listener),
+        (event) => event.method === CodexThreadEventName.TURN_COMPLETED,
+        120_000,
+      );
+
+      const started = await thread.submitInput(new AgentInputUserMessage(
+        "Use the terminal tool to execute `sleep 8` exactly once. Do not simulate it. After it finishes, reply with FIRST_DONE.",
+      ));
+      expect(started).toMatchObject({ kind: "started" });
+      expect(started.turnId).toBeTruthy();
+      await commandStartedPromise;
+      expect(thread.activeTurnId).toBe(started.turnId);
+
+      const steered = await thread.submitInput(new AgentInputUserMessage(
+        "Continue this exact active turn and include SECOND_INPUT_ACK in the final reply.",
+      ));
+      expect(steered).toEqual({ kind: "steered", turnId: started.turnId });
+      expect(thread.activeTurnId).toBe(started.turnId);
+      expect(thread.currentStatus).toBe("RUNNING");
+
+      await completedPromise;
+      await waitForThreadState(() => thread.activeTurnId === null && thread.currentStatus === "IDLE");
+      const startedTurnIds = observed
+        .filter((message) => message.method === CodexThreadEventName.TURN_STARTED)
+        .map((message) => {
+          const turn = message.params.turn;
+          return turn && typeof turn === "object" && !Array.isArray(turn)
+            ? (turn as { id?: unknown }).id
+            : null;
+        })
+        .filter((turnId): turnId is string => typeof turnId === "string");
+      expect(new Set(startedTurnIds)).toEqual(new Set([started.turnId]));
+      expect(thread.lastTerminalTurnId).toBe(started.turnId);
+    } finally {
+      unsubscribe();
+    }
+  }, 180_000);
+
   it("requests terminal approval, approves it, and completes the command", async () => {
     const workspaceRoot = await createWorkspace("codex-thread-approval");
     clientManager = new CodexAppServerClientManager({
