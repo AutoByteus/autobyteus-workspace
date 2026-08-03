@@ -245,6 +245,7 @@ const settingsMessages = {
   'settings.components.settings.VoiceInputExtensionCard.installPhase.installingVoiceInput': '正在安装语音输入',
   'settings.components.settings.VoiceInputExtensionCard.test.start': '开始测试',
   'settings.components.settings.VoiceInputExtensionCard.test.stop': '停止测试',
+  'settings.components.settings.VoiceInputExtensionCard.test.starting': '正在启动麦克风...',
   'settings.components.settings.VoiceInputExtensionCard.test.recording': '正在录制测试样本...',
   'settings.components.settings.VoiceInputExtensionCard.test.transcribing': '正在转写测试样本...',
   'settings.components.settings.VoiceInputExtensionCard.audioStatus.permissionDenied': '麦克风访问被拒绝。请先为 AutoByteus 授予麦克风权限，然后刷新音源。',

@@ -8,7 +8,9 @@ The data flow follows a top-down approach:
 
 1.  **Orchestration Layer (Stores)**: Manages lifecycle, user input, and WebSocket streaming connections.
 2.  **Service Layer (Event Routing)**: Dispatches incoming structured WebSocket events to specific handlers.
-3.  **Segment Processing (Handlers)**: Updates the reactive `AgentContext` and sidecar stores based on event payloads.
+3.  **Presentation Control**: Batches fine-grained stream-content receipts at a
+    fixed cadence while forcing content through before semantic boundaries.
+4.  **Segment Processing (Handlers)**: Updates the reactive `AgentContext` and sidecar stores based on event payloads.
 
 ```mermaid
 graph TD
@@ -17,7 +19,9 @@ graph TD
     Backend-->|WebSocket Event| Store
     Store-->|Event Data| Service[Service Layer]
 
-    Service-->|Dispatch| Handler{Event Handlers}
+    Service-->|Fine-grained content| Presentation[Stream Content Presentation]
+    Presentation-->|Bounded batch| Handler{Event Handlers}
+    Service-->|Semantic events| Handler
 
     Handler-->|Segment Created/Updated| Context[Agent Context State]
     Handler-->|File changes / outputs| RunFileChangeStore[Run File Change Store]
@@ -730,7 +734,39 @@ The service layer bridges the gap between the WebSocket transport and the applic
 - **Responsibilities**:
   1.  Maintains the WebSocket connection (`transport/WebSocketClient`).
   2.  Parses raw JSON messages into typed `ServerMessage` objects (`protocol/messageTypes`).
-  3.  Dispatches messages to the appropriate pure-function handler.
+  3.  Routes `SEGMENT_CONTENT` through the shared stream-presentation scheduler
+      and dispatches semantic messages to the appropriate pure-function handler.
+
+### Bounded Stream-Content Presentation
+
+`AgentStreamingService` and `TeamStreamingService` each own an instance of the
+shared `StreamContentPresentationScheduler`. The policy is protocol-level and
+runtime-agnostic: it does not select a different path for AutoByteus, Codex, a
+particular provider, or a particular model.
+
+- The first pending content receipt starts a fixed 100 ms presentation window.
+  Later receipts join that window without moving its deadline, so a continuous
+  stream cannot starve presentation as it could with a debounce.
+- Pending content remains partitioned by exact `AgentContext` and by the
+  backend's turn, segment id, and segment type. Delta bytes retain receipt order;
+  only the latest true receipt timestamp for each context is retained for live
+  activity recency.
+- A batch applies the context activity timestamp, appends each coalesced content
+  payload, and commits at most one Event Monitor presentation revision when the
+  rendered conversation actually changed. Transport event count is therefore
+  not the presentation revision count.
+- Every non-content message flushes all earlier pending content before its
+  semantic handler runs. Context replacement, explicit disconnect, and remote
+  disconnect also flush, preserving content-before-end/status/tool/teardown
+  ordering and preventing timers from targeting detached contexts.
+- Team routing still resolves structural members and transient task-agent or
+  task-team children before enqueueing. The scheduler receives the already
+  resolved context and never guesses team identity.
+
+This layer bounds reactive conversation and whole-source Markdown work while
+preserving exact final content. It is presentation-only: WebSocket protocol,
+raw traces, working-context snapshots, run history, and other persisted data
+remain unchanged and require no migration.
 
 ### Dispatch Logic
 
@@ -739,7 +775,7 @@ Incoming events are routed based on their `type`:
 | Event Type                | Handler Function                                   | Purpose                                                         |
 | :------------------------ | :------------------------------------------------- | :-------------------------------------------------------------- |
 | `SEGMENT_START`           | `segmentHandler.handleSegmentStart`                | Creates or merges a transcript UI segment (Text, Code, Tool) and seeds/hydrates a pending Activity row for eligible displayable tool segments. |
-| `SEGMENT_CONTENT`         | `segmentHandler.handleSegmentContent`              | Appends streaming content (deltas) to an existing segment.      |
+| `SEGMENT_CONTENT`         | `StreamContentPresentationScheduler` -> `streamContentBatchProjector` -> `segmentHandler.handleSegmentContent` | Coalesces exact ordered deltas into a bounded presentation batch before appending them to existing segments. |
 | `SEGMENT_END`             | `segmentHandler.handleSegmentEnd`                  | Finalizes transcript segment state/metadata, including interrupted/failed terminalization, and hydrates the matching Activity row without inventing execution success. |
 | `TURN_STARTED`            | inline lifecycle handling                          | Marks a new turn boundary in the protocol; current clients treat it as an observable lifecycle checkpoint. |
 | `TURN_COMPLETED`          | `agentStatusHandler.handleTurnCompleted`           | Marks the current AI message complete for that turn without waiting only for idle inference. |
@@ -779,7 +815,15 @@ These handlers are pure functions that take a payload and an `AgentContext`, and
 #### `segmentHandler.ts`
 
 - **`handleSegmentStart`**: Finds the current AI message (or creates one) and pushes/merges a new Segment object (e.g., `ToolCallSegment`, `WriteFileSegment`) for transcript structure. When that segment is an eligible displayable tool invocation with a stable invocation id and tool identity, it delegates to `toolActivityProjection.ts` to seed or hydrate the matching pending Activity row. File-change sidecar state is still not inferred here; the backend emits dedicated `FILE_CHANGE` events for the Artifacts experience.
-- **`handleSegmentContent`**: Finds the segment by backend-provided `segment_type` + `id` and appends string deltas. This powers the "typewriter" effect. The frontend intentionally trusts that identity contract; provider adapters must emit different ids for distinct text blocks that belong on different sides of tool cards instead of relying on frontend runtime-specific reorder logic.
+- **`handleSegmentContent`**: Finds the segment by backend-provided
+  `segment_type` + `id`, appends string deltas, and reports whether visible
+  presentation state changed. Live services call it through the bounded batch
+  projector rather than once per transport receipt. This powers the
+  "typewriter" effect without coupling Vue mutation cadence to provider chunk
+  size. The frontend intentionally trusts the identity contract; provider
+  adapters must emit different ids for distinct text blocks that belong on
+  different sides of tool cards instead of relying on frontend runtime-specific
+  reorder logic.
 - **`handleSegmentEnd`**: Performs transcript cleanup, sets the final tool name if it was streamed lazily, preserves final metadata such as arguments, and marks the segment as "parsed" (ready for execution state changes). When the backend sends `interrupted` or `failed` terminal metadata, it marks the segment/tool row terminal (`interrupted` or `error`) and stores the reason/error instead of leaving a spinner. It also delegates segment metadata hydration to `toolActivityProjection.ts`; lifecycle events remain authoritative for successful execution and terminal result/error state.
 
 Reasoning/Thinking rendering follows the same generic identity contract. Live

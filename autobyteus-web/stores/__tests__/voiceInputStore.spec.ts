@@ -28,7 +28,7 @@ const extensionsStoreMock = {
     enabled: true,
     settings: {
       languageMode: 'auto',
-      audioInputDeviceId: null,
+      audioInputDeviceId: null as string | null,
     },
   },
 }
@@ -122,6 +122,129 @@ describe('voiceInputStore', () => {
     })
   })
 
+  it('commits starting synchronously, guards duplicate starts, and cancels without a late commit', async () => {
+    let resolveInitialization!: () => void
+    extensionsStoreMock.initialize.mockImplementationOnce(() => new Promise<void>((resolve) => {
+      resolveInitialization = resolve
+    }))
+    const store = useVoiceInputStore()
+
+    const startup = store.startRecording('composer')
+    expect(store.isStarting).toBe(true)
+    expect(store.isRecording).toBe(false)
+    expect(store.recordingSource).toBe('composer')
+
+    await store.startRecording('composer')
+    expect(extensionsStoreMock.initialize).toHaveBeenCalledOnce()
+
+    await store.cancelOperationForSource('settings-test')
+    expect(store.isStarting).toBe(true)
+    await store.cancelOperationForSource('composer')
+    expect(store.isStarting).toBe(false)
+    expect(store.recordingSource).toBe(null)
+
+    resolveInitialization()
+    await startup
+    expect(store.isRecording).toBe(false)
+    expect(getUserMediaMock).not.toHaveBeenCalled()
+    expect(addToastMock).not.toHaveBeenCalled()
+  })
+
+  it('disposes resources acquired by a startup invalidated before commit', async () => {
+    let resolveMedia!: (stream: MediaStream) => void
+    const stopMock = vi.fn()
+    getUserMediaMock.mockImplementationOnce(() => new Promise<MediaStream>((resolve) => {
+      resolveMedia = resolve
+    }))
+    const store = useVoiceInputStore()
+    const startup = store.startRecording('settings-test')
+    await vi.waitFor(() => expect(getUserMediaMock).toHaveBeenCalledOnce())
+
+    await store.cancelOperationForSource('settings-test')
+    resolveMedia({ getTracks: () => [{ stop: stopMock }] } as unknown as MediaStream)
+    await startup
+
+    expect(stopMock).toHaveBeenCalledOnce()
+    expect(store.isStarting).toBe(false)
+    expect(store.isRecording).toBe(false)
+    expect(addToastMock).not.toHaveBeenCalled()
+  })
+
+  it('clears starting state and preserves the permission-denied error path', async () => {
+    permissionsQueryMock.mockResolvedValue({ state: 'denied' })
+    const store = useVoiceInputStore()
+
+    await store.startRecording('composer')
+
+    expect(getUserMediaMock).not.toHaveBeenCalled()
+    expect(store.isStarting).toBe(false)
+    expect(store.isRecording).toBe(false)
+    expect(store.recordingSource).toBe(null)
+    expect(store.microphonePermissionState).toBe('denied')
+    expect(store.latestResult?.outcome).toBe('error')
+    expect(store.latestResult?.error).toContain('permission is denied')
+    expect(addToastMock).toHaveBeenCalledWith(
+      expect.stringContaining('permission is denied'),
+      'error',
+    )
+  })
+
+  it('disposes acquired resources and clears starting when AudioWorklet setup fails', async () => {
+    const stopMock = vi.fn()
+    const closeMock = vi.fn().mockResolvedValue(undefined)
+    const addModuleMock = vi.fn().mockRejectedValue(new Error('worklet setup failed'))
+    getUserMediaMock.mockResolvedValue({
+      getTracks: () => [{ stop: stopMock }],
+    })
+
+    vi.stubGlobal('AudioContext', class {
+      state = 'running'
+      audioWorklet = { addModule: addModuleMock }
+      resume = vi.fn().mockResolvedValue(undefined)
+      close = closeMock
+    } as any)
+
+    const store = useVoiceInputStore()
+
+    await store.startRecording('settings-test')
+
+    expect(addModuleMock).toHaveBeenCalledOnce()
+    expect(stopMock).toHaveBeenCalledOnce()
+    expect(closeMock).toHaveBeenCalledOnce()
+    expect(store.isStarting).toBe(false)
+    expect(store.isRecording).toBe(false)
+    expect(store.recordingSource).toBe(null)
+    expect(store.latestResult?.outcome).toBe('error')
+    expect(store.latestResult?.error).toContain('worklet setup failed')
+
+    vi.unstubAllGlobals()
+  })
+
+  it('cancels only the matching recording source and preserves transcription', async () => {
+    const stopMock = vi.fn()
+    const closeMock = vi.fn().mockResolvedValue(undefined)
+    const store = useVoiceInputStore()
+    store.isRecording = true
+    store.recordingSource = 'composer'
+    store.stream = { getTracks: () => [{ stop: stopMock }] } as any
+    store.audioContext = { close: closeMock } as any
+
+    await store.cancelOperationForSource('settings-test')
+    expect(store.isRecording).toBe(true)
+    expect(stopMock).not.toHaveBeenCalled()
+
+    await store.cancelOperationForSource('composer')
+    expect(store.isRecording).toBe(false)
+    expect(stopMock).toHaveBeenCalledOnce()
+    expect(closeMock).toHaveBeenCalledOnce()
+
+    store.isTranscribing = true
+    store.recordingSource = 'settings-test'
+    await store.cancelOperationForSource('settings-test')
+    expect(store.isTranscribing).toBe(true)
+    expect(store.recordingSource).toBe('settings-test')
+  })
+
   it('appends transcript text into the current draft without sending', async () => {
     const store = useVoiceInputStore()
     const capturePayload = {
@@ -153,7 +276,7 @@ describe('voiceInputStore', () => {
     } as any
     store.isRecording = true
     store.recordingSource = 'composer'
-    store.composerTargetContext = activeContextStoreMock.activeAgentContext
+    store.composerTargetContext = activeContextStoreMock.activeAgentContext as any
 
     await store.stopRecording()
 
@@ -206,7 +329,7 @@ describe('voiceInputStore', () => {
     } as any
     store.isRecording = true
     store.recordingSource = 'composer'
-    store.composerTargetContext = activeContextStoreMock.activeAgentContext
+    store.composerTargetContext = activeContextStoreMock.activeAgentContext as any
 
     await store.stopRecording()
 
@@ -254,7 +377,7 @@ describe('voiceInputStore', () => {
     } as any
     store.isRecording = true
     store.recordingSource = 'composer'
-    store.composerTargetContext = activeContextStoreMock.activeAgentContext
+    store.composerTargetContext = activeContextStoreMock.activeAgentContext as any
 
     await store.stopRecording()
 
@@ -302,7 +425,7 @@ describe('voiceInputStore', () => {
     } as any
     store.isRecording = true
     store.recordingSource = 'composer'
-    store.composerTargetContext = activeContextStoreMock.activeAgentContext
+    store.composerTargetContext = activeContextStoreMock.activeAgentContext as any
 
     await store.stopRecording()
 
@@ -337,7 +460,7 @@ describe('voiceInputStore', () => {
 
     const store = useVoiceInputStore()
     await store.startRecording('composer')
-    expect(store.composerTargetContext?.contextId).toBe('ctx-architecture')
+    expect((store.composerTargetContext as unknown as MockAgentContext)?.contextId).toBe('ctx-architecture')
     expect(store.composerTargetContext?.requirement).toBe('please review')
 
     const capturePayload = {

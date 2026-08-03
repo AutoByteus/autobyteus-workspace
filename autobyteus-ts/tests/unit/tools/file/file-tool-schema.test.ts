@@ -1,16 +1,14 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { defaultToolRegistry } from '../../../../src/tools/registry/tool-registry.js';
 import { registerEditFileTool } from '../../../../src/tools/file/edit-file.js';
-import { registerInsertInFileTool } from '../../../../src/tools/file/insert-in-file.js';
 import { registerReadFileTool } from '../../../../src/tools/file/read-file.js';
-import { registerReplaceInFileTool } from '../../../../src/tools/file/replace-in-file.js';
 import { registerWriteFileTool } from '../../../../src/tools/file/write-file.js';
 import {
   FILE_TOOL_BASE_DIR_DESCRIPTION,
   FILE_TOOL_PATH_DESCRIPTION,
 } from '../../../../src/tools/file/file-tool-schema.js';
 
-const TOOL_NAMES = ['read_file', 'write_file', 'edit_file', 'replace_in_file', 'insert_in_file'];
+const TOOL_NAMES = ['read_file', 'write_file', 'edit_file'];
 
 describe('generic file-tool serialized path schemas', () => {
   beforeEach(() => {
@@ -18,11 +16,9 @@ describe('generic file-tool serialized path schemas', () => {
     registerReadFileTool();
     registerWriteFileTool();
     registerEditFileTool();
-    registerReplaceInFileTool();
-    registerInsertInFileTool();
   });
 
-  it('uses identical canonical path/base_dir wording and optionality across all five tools', () => {
+  it('uses identical canonical path/base_dir wording and optionality across all three tools', () => {
     for (const toolName of TOOL_NAMES) {
       const definition = defaultToolRegistry.getToolDefinition(toolName);
       const schema = definition?.argumentSchema;

@@ -39,6 +39,8 @@ import type {
   ConversationTargetAddress,
   ConversationTargetSegment,
 } from '~/types/agent/ConversationTargetAddress';
+import { StreamContentPresentationScheduler } from './presentation/StreamContentPresentationScheduler';
+import { projectStreamContentBatch } from './presentation/streamContentBatchProjector';
 
 const shouldLogStreaming = (): boolean => {
   if (typeof window === 'undefined') return false;
@@ -93,6 +95,7 @@ export class TeamStreamingService {
   private wsClient: IWebSocketClient;
   private teamContext: AgentTeamContext | null = null;
   private wsEndpoint: string;
+  private readonly contentPresentationScheduler: StreamContentPresentationScheduler;
   private readonly approvalTokenByInvocationId = new Map<string, unknown>();
   private readonly approvalTargetByInvocationId = new Map<string, ToolApprovalTarget>();
 
@@ -105,6 +108,9 @@ export class TeamStreamingService {
   constructor(wsEndpoint: string, options: TeamStreamingServiceOptions = {}) {
     this.wsClient = options.wsClient || new WebSocketClient();
     this.wsEndpoint = wsEndpoint;
+    this.contentPresentationScheduler = new StreamContentPresentationScheduler(
+      projectStreamContentBatch,
+    );
   }
 
   get connectionState(): ConnectionState {
@@ -112,6 +118,7 @@ export class TeamStreamingService {
   }
 
   attachContext(teamContext: AgentTeamContext): void {
+    this.contentPresentationScheduler.flush();
     this.teamContext = teamContext;
   }
 
@@ -119,7 +126,7 @@ export class TeamStreamingService {
    * Connect to a team's WebSocket stream.
    */
   connect(teamRunId: string, teamContext: AgentTeamContext): void {
-    this.teamContext = teamContext;
+    this.attachContext(teamContext);
 
     this.wsClient.on('onMessage', this.handleMessage);
     this.wsClient.on('onConnect', this.handleConnect);
@@ -133,6 +140,7 @@ export class TeamStreamingService {
   }
 
   disconnect(): void {
+    this.contentPresentationScheduler.flush();
     this.wsClient.off('onMessage', this.handleMessage);
     this.wsClient.off('onConnect', this.handleConnect);
     this.wsClient.off('onDisconnect', this.handleDisconnect);
@@ -225,9 +233,15 @@ export class TeamStreamingService {
 
     try {
       const message = parseServerMessage(raw);
+      const receivedAt = message.type === 'SEGMENT_CONTENT'
+        ? new Date().toISOString()
+        : null;
+      if (message.type !== 'SEGMENT_CONTENT') {
+        this.contentPresentationScheduler.flush();
+      }
       this.trackApprovalRequest(message);
       this.logMessage(message);
-      this.dispatchMessage(message, this.teamContext);
+      this.dispatchMessage(message, this.teamContext, receivedAt);
     } catch (e) {
       console.error('Failed to parse WebSocket message:', e);
     }
@@ -242,6 +256,7 @@ export class TeamStreamingService {
 
   private handleDisconnect = (reason?: string): void => {
     console.log('Team WebSocket disconnected:', reason);
+    this.contentPresentationScheduler.flush();
     if (this.teamContext) {
       this.teamContext.isSubscribed = false;
     }
@@ -436,7 +451,11 @@ export class TeamStreamingService {
     });
   }
 
-  private dispatchMessage(message: ServerMessage, teamContext: AgentTeamContext): void {
+  private dispatchMessage(
+    message: ServerMessage,
+    teamContext: AgentTeamContext,
+    receivedAt: string | null = null,
+  ): void {
     this.refreshTaskDelegationRecords(message, teamContext);
     if (message.type === 'TEAM_STATUS') {
       const projectionResult = handleTaskExecutionProjectionMessage(teamContext, message);
@@ -492,7 +511,17 @@ export class TeamStreamingService {
       return;
     }
 
-    dispatchGenericTeamMemberMessage(message, memberResolution.context);
+    if (message.type === 'SEGMENT_CONTENT') {
+      if (!receivedAt) {
+        throw new Error('SEGMENT_CONTENT receipt time is required before enqueue.');
+      }
+      this.contentPresentationScheduler.enqueue(memberResolution.context, {
+        payload: message.payload,
+        receivedAt,
+      });
+    } else {
+      dispatchGenericTeamMemberMessage(message, memberResolution.context);
+    }
 
     if (removeTaskAgentAfterMessage && taskAgentIdentity) {
       removeTaskAgentContext(teamContext, taskAgentIdentity);

@@ -1,0 +1,62 @@
+Verification source: d468f409a7ebb603280ae1917d287338469795a2
+Host: Darwin arm64
+
+=== Staged server terminal runtime ===
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+
+=== Packaged server terminal runtime ===
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+
+=== Bundle metadata and architecture ===
+/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+com.autobyteus.app
+1.4.36
+This app needs access to the microphone
+
+=== DMG verification ===
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $64AE4C51
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $72BE08A1
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $F1BEAA60
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $AE3FD109
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $F1BEAA60
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $CC2023F3
+Die überprüfte CRC32-Prüfsumme ist $8D5108E2
+hdiutil: verify: checksum of "/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.36.dmg" is VALID
+
+=== ZIP verification ===
+No errors detected in compressed data of /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.36.zip.
+ZIP integrity: OK
+
+=== Artifact sizes and SHA-256 ===
+/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.36.dmg | 402446937 bytes
+1afee324bfbdb33742406a43ebbad977f7b5fd94b4b7055533898575d84d44e2  /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.36.dmg
+/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.36.dmg.blockmap | 420388 bytes
+7d6bab2e6913bc4297b0aadf0485ffac3ca831c0e3f47e1c6a10946ced8e079a  /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.36.dmg.blockmap
+/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.36.zip | 398092103 bytes
+4262b87df226d6bc8124930e9299eaac7553f1fb36f28735cde6d35073096d10  /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.36.zip
+/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.36.zip.blockmap | 409693 bytes
+52eefee4fd80cfa87a2aec5c2576ea29e1c4c894417f2e80a3b650d9ebdc5341  /Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-runtime-streaming-ui-performance/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.36.zip.blockmap
+
+=== Signing state ===
+App has a code signature.
+
+=== Signing clarification ===
+The README local build ran with no APPLE_SIGNING_IDENTITY. electron-builder skipped application signing.
+The inherited root executable has only an ad-hoc/linker signature (Signature=adhoc; TeamIdentifier=not set); this is not a Developer ID signature and the bundle is not notarized.
+A deep codesign verification is not claimed for this local package; macOS may require explicit user approval to open it.

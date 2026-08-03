@@ -1,0 +1,1616 @@
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+prisma:info Starting a sqlite pool with 21 connections.
+DeepSeek edit benchmark pro-mechanism-pilot
+models=deepseek-v4-pro thinking=enabled/high tool_call_format=api_tool_call
+variants=replace,write,bash scenarios=small_exact,multiline_config,repeated_target,late_insertion trials=1
+evidence=/Users/normy/autobyteus_org/autobyteus-worktrees/autobyteus-ts-edit-format-investigation/tickets/in-progress/autobyteus-ts-edit-format-investigation/benchmark-evidence/pro-mechanism-pilot.jsonl
+START deepseek-v4-pro/enabled/replace/small_exact/t1
+Discovering Ollama models from host: http://127.0.0.1:11434
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+Discovering LM Studio models from host: http://127.0.0.1:1234
+Could not connect to LM Studio at http://127.0.0.1:1234. Ensure the server is running. fetch failed
+AgentRuntimeState initialized for agent_id 'deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826': LLM instance 'DeepSeekLLM' and 2 tools prepared and stored in state.
+AgentContext composed for agent_id 'deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826' with config: 'DeepSeekEditBenchmark_replace_small_exact_1'.
+AgentWorker initialized for agent_id 'deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826'.
+Registered AgentContext for agent_id 'deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826'. Context registered.
+Agent facade initialized for agent_id 'deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826'.
+Agent 'deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826' created and stored successfully.
+Agent 'deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826' requesting runtime to start.
+AgentRuntime for 'deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826': Starting worker.
+AgentWorker 'deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826': Starting...
+AgentWorker 'deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826' asyncRun(): Starting.
+Agent 'deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826': Runtime init completed (event store initialized).
+Agent 'deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826': Runtime init completed (status deriver initialized).
+Agent 'deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826': Runtime init completed (AgentEventInbox initialized).
+Agent 'deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826': Runtime init completed (AgentEventScheduler initialized).
+Agent 'deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: 63384876-4f62-48f8-ae87-9258328578b7, AgentID: deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826': Bootstrapper starting direct lifecycle execution.
+Agent 'deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826': Executing McpServerPrewarmingStep.
+Agent 'deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826': Executing SystemPromptProcessingStep.
+Agent 'deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826': No configured skills. Skipping injection.
+Agent 'deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826': Final processed system prompt configured on LLM instance. Final length: 337.
+Agent 'deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826': Final processed system prompt:
+---
+You are benchmarking file-edit reliability. Always inspect the target with the available read tool before editing. Use absolute paths. Perform the requested change using the available tool(s), preserve unrelated content, then finish concisely. For modifications, use replace_in_file with exact old_text and new_text copied from the file.
+---
+Agent 'deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: 63384876-4f62-48f8-ae87-9258328578b7, AgentID: deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826' initialized successfully. Entering main event scheduler loop.
+AgentExternalEventNotifier (NotifierID: 63384876-4f62-48f8-ae87-9258328578b7, AgentID: deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 63384876-4f62-48f8-ae87-9258328578b7, AgentID: deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 63384876-4f62-48f8-ae87-9258328578b7, AgentID: deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826) emitted agent_status. Kwarg keys for emit: agent_id,payload
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 63384876-4f62-48f8-ae87-9258328578b7, AgentID: deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826',
+  prompt_tokens: 1230,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: 63384876-4f62-48f8-ae87-9258328578b7, AgentID: deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 63384876-4f62-48f8-ae87-9258328578b7, AgentID: deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 63384876-4f62-48f8-ae87-9258328578b7, AgentID: deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 63384876-4f62-48f8-ae87-9258328578b7, AgentID: deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 63384876-4f62-48f8-ae87-9258328578b7, AgentID: deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 63384876-4f62-48f8-ae87-9258328578b7, AgentID: deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 63384876-4f62-48f8-ae87-9258328578b7, AgentID: deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 63384876-4f62-48f8-ae87-9258328578b7, AgentID: deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 63384876-4f62-48f8-ae87-9258328578b7, AgentID: deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826) emitted agent_status. Kwarg keys for emit: agent_id,payload
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 63384876-4f62-48f8-ae87-9258328578b7, AgentID: deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826',
+  prompt_tokens: 1404,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: 63384876-4f62-48f8-ae87-9258328578b7, AgentID: deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 63384876-4f62-48f8-ae87-9258328578b7, AgentID: deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 63384876-4f62-48f8-ae87-9258328578b7, AgentID: deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 63384876-4f62-48f8-ae87-9258328578b7, AgentID: deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 63384876-4f62-48f8-ae87-9258328578b7, AgentID: deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 63384876-4f62-48f8-ae87-9258328578b7, AgentID: deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 63384876-4f62-48f8-ae87-9258328578b7, AgentID: deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 63384876-4f62-48f8-ae87-9258328578b7, AgentID: deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 63384876-4f62-48f8-ae87-9258328578b7, AgentID: deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 63384876-4f62-48f8-ae87-9258328578b7, AgentID: deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826',
+  prompt_tokens: 1650,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: 63384876-4f62-48f8-ae87-9258328578b7, AgentID: deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 63384876-4f62-48f8-ae87-9258328578b7, AgentID: deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 63384876-4f62-48f8-ae87-9258328578b7, AgentID: deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 63384876-4f62-48f8-ae87-9258328578b7, AgentID: deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826' requesting runtime to stop (timeout: 20s).
+AgentExternalEventNotifier (NotifierID: 63384876-4f62-48f8-ae87-9258328578b7, AgentID: deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826': Stop requested.
+AgentExternalEventNotifier (NotifierID: 63384876-4f62-48f8-ae87-9258328578b7, AgentID: deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826' asyncRun() loop has finished.
+AgentWorker 'deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826': Running shutdown sequence on worker loop.
+AgentWorker 'deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826': Shutdown resource cleanup completed successfully.
+AgentWorker 'deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826'.
+AgentRuntime for 'deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826': Context unregistered.
+AgentRuntime for 'deepseekeditbenchmark_replace_small_exact_1_file_edit_benchmark_agent_5826' stop() method completed.
+END   deepseek-v4-pro/enabled/replace/small_exact/t1 PASS first=replace_in_file failures=0 state=completed ms=5603
+START deepseek-v4-pro/enabled/replace/multiline_config/t1
+AgentRuntimeState initialized for agent_id 'deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004': LLM instance 'DeepSeekLLM' and 2 tools prepared and stored in state.
+AgentContext composed for agent_id 'deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004' with config: 'DeepSeekEditBenchmark_replace_multiline_config_1'.
+AgentWorker initialized for agent_id 'deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004'.
+Registered AgentContext for agent_id 'deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004'. Context registered.
+Agent facade initialized for agent_id 'deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004'.
+Agent 'deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004' created and stored successfully.
+Agent 'deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004' requesting runtime to start.
+AgentRuntime for 'deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004': Starting worker.
+AgentWorker 'deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004': Starting...
+AgentWorker 'deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004' asyncRun(): Starting.
+Agent 'deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004': Runtime init completed (event store initialized).
+Agent 'deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004': Runtime init completed (status deriver initialized).
+Agent 'deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004': Runtime init completed (AgentEventInbox initialized).
+Agent 'deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004': Runtime init completed (AgentEventScheduler initialized).
+Agent 'deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: 766a344c-74df-4084-832f-fb25a75e4d73, AgentID: deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004': Bootstrapper starting direct lifecycle execution.
+Agent 'deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004': Executing McpServerPrewarmingStep.
+Agent 'deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004': Executing SystemPromptProcessingStep.
+Agent 'deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004': No configured skills. Skipping injection.
+Agent 'deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004': Final processed system prompt configured on LLM instance. Final length: 337.
+Agent 'deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004': Final processed system prompt:
+---
+You are benchmarking file-edit reliability. Always inspect the target with the available read tool before editing. Use absolute paths. Perform the requested change using the available tool(s), preserve unrelated content, then finish concisely. For modifications, use replace_in_file with exact old_text and new_text copied from the file.
+---
+Agent 'deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: 766a344c-74df-4084-832f-fb25a75e4d73, AgentID: deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004' initialized successfully. Entering main event scheduler loop.
+AgentExternalEventNotifier (NotifierID: 766a344c-74df-4084-832f-fb25a75e4d73, AgentID: deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 766a344c-74df-4084-832f-fb25a75e4d73, AgentID: deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 766a344c-74df-4084-832f-fb25a75e4d73, AgentID: deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004) emitted agent_status. Kwarg keys for emit: agent_id,payload
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 766a344c-74df-4084-832f-fb25a75e4d73, AgentID: deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004',
+  prompt_tokens: 1241,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: 766a344c-74df-4084-832f-fb25a75e4d73, AgentID: deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 766a344c-74df-4084-832f-fb25a75e4d73, AgentID: deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 766a344c-74df-4084-832f-fb25a75e4d73, AgentID: deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 766a344c-74df-4084-832f-fb25a75e4d73, AgentID: deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 766a344c-74df-4084-832f-fb25a75e4d73, AgentID: deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 766a344c-74df-4084-832f-fb25a75e4d73, AgentID: deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 766a344c-74df-4084-832f-fb25a75e4d73, AgentID: deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 766a344c-74df-4084-832f-fb25a75e4d73, AgentID: deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 766a344c-74df-4084-832f-fb25a75e4d73, AgentID: deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004) emitted agent_status. Kwarg keys for emit: agent_id,payload
+ApiToolCallStreamingResponseHandler finalized 2 tool invocations.
+AgentExternalEventNotifier (NotifierID: 766a344c-74df-4084-832f-fb25a75e4d73, AgentID: deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004',
+  prompt_tokens: 1442,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: 766a344c-74df-4084-832f-fb25a75e4d73, AgentID: deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 766a344c-74df-4084-832f-fb25a75e4d73, AgentID: deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 766a344c-74df-4084-832f-fb25a75e4d73, AgentID: deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 766a344c-74df-4084-832f-fb25a75e4d73, AgentID: deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 766a344c-74df-4084-832f-fb25a75e4d73, AgentID: deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 766a344c-74df-4084-832f-fb25a75e4d73, AgentID: deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 766a344c-74df-4084-832f-fb25a75e4d73, AgentID: deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 766a344c-74df-4084-832f-fb25a75e4d73, AgentID: deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 766a344c-74df-4084-832f-fb25a75e4d73, AgentID: deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 766a344c-74df-4084-832f-fb25a75e4d73, AgentID: deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 766a344c-74df-4084-832f-fb25a75e4d73, AgentID: deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 766a344c-74df-4084-832f-fb25a75e4d73, AgentID: deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 766a344c-74df-4084-832f-fb25a75e4d73, AgentID: deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 766a344c-74df-4084-832f-fb25a75e4d73, AgentID: deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 766a344c-74df-4084-832f-fb25a75e4d73, AgentID: deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004',
+  prompt_tokens: 1906,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: 766a344c-74df-4084-832f-fb25a75e4d73, AgentID: deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 766a344c-74df-4084-832f-fb25a75e4d73, AgentID: deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 766a344c-74df-4084-832f-fb25a75e4d73, AgentID: deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 766a344c-74df-4084-832f-fb25a75e4d73, AgentID: deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004' requesting runtime to stop (timeout: 20s).
+AgentExternalEventNotifier (NotifierID: 766a344c-74df-4084-832f-fb25a75e4d73, AgentID: deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004': Stop requested.
+AgentExternalEventNotifier (NotifierID: 766a344c-74df-4084-832f-fb25a75e4d73, AgentID: deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004' asyncRun() loop has finished.
+AgentWorker 'deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004': Running shutdown sequence on worker loop.
+AgentWorker 'deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004': Shutdown resource cleanup completed successfully.
+AgentWorker 'deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004'.
+AgentRuntime for 'deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004': Context unregistered.
+AgentRuntime for 'deepseekeditbenchmark_replace_multiline_config_1_file_edit_benchmark_agent_1004' stop() method completed.
+END   deepseek-v4-pro/enabled/replace/multiline_config/t1 PASS first=replace_in_file failures=0 state=completed ms=7475
+START deepseek-v4-pro/enabled/replace/repeated_target/t1
+AgentRuntimeState initialized for agent_id 'deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850': LLM instance 'DeepSeekLLM' and 2 tools prepared and stored in state.
+AgentContext composed for agent_id 'deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850' with config: 'DeepSeekEditBenchmark_replace_repeated_target_1'.
+AgentWorker initialized for agent_id 'deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850'.
+Registered AgentContext for agent_id 'deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850'. Context registered.
+Agent facade initialized for agent_id 'deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850'.
+Agent 'deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850' created and stored successfully.
+Agent 'deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850' requesting runtime to start.
+AgentRuntime for 'deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850': Starting worker.
+AgentWorker 'deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850': Starting...
+AgentWorker 'deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850' asyncRun(): Starting.
+Agent 'deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850': Runtime init completed (event store initialized).
+Agent 'deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850': Runtime init completed (status deriver initialized).
+Agent 'deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850': Runtime init completed (AgentEventInbox initialized).
+Agent 'deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850': Runtime init completed (AgentEventScheduler initialized).
+Agent 'deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: cb14fd6d-3f93-41be-b6b6-a63bbb54afa5, AgentID: deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850': Bootstrapper starting direct lifecycle execution.
+Agent 'deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850': Executing McpServerPrewarmingStep.
+Agent 'deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850': Executing SystemPromptProcessingStep.
+Agent 'deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850': No configured skills. Skipping injection.
+Agent 'deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850': Final processed system prompt configured on LLM instance. Final length: 337.
+Agent 'deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850': Final processed system prompt:
+---
+You are benchmarking file-edit reliability. Always inspect the target with the available read tool before editing. Use absolute paths. Perform the requested change using the available tool(s), preserve unrelated content, then finish concisely. For modifications, use replace_in_file with exact old_text and new_text copied from the file.
+---
+Agent 'deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: cb14fd6d-3f93-41be-b6b6-a63bbb54afa5, AgentID: deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850' initialized successfully. Entering main event scheduler loop.
+AgentExternalEventNotifier (NotifierID: cb14fd6d-3f93-41be-b6b6-a63bbb54afa5, AgentID: deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: cb14fd6d-3f93-41be-b6b6-a63bbb54afa5, AgentID: deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: cb14fd6d-3f93-41be-b6b6-a63bbb54afa5, AgentID: deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850) emitted agent_status. Kwarg keys for emit: agent_id,payload
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: cb14fd6d-3f93-41be-b6b6-a63bbb54afa5, AgentID: deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850',
+  prompt_tokens: 1234,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: cb14fd6d-3f93-41be-b6b6-a63bbb54afa5, AgentID: deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: cb14fd6d-3f93-41be-b6b6-a63bbb54afa5, AgentID: deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: cb14fd6d-3f93-41be-b6b6-a63bbb54afa5, AgentID: deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: cb14fd6d-3f93-41be-b6b6-a63bbb54afa5, AgentID: deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: cb14fd6d-3f93-41be-b6b6-a63bbb54afa5, AgentID: deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: cb14fd6d-3f93-41be-b6b6-a63bbb54afa5, AgentID: deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: cb14fd6d-3f93-41be-b6b6-a63bbb54afa5, AgentID: deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: cb14fd6d-3f93-41be-b6b6-a63bbb54afa5, AgentID: deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: cb14fd6d-3f93-41be-b6b6-a63bbb54afa5, AgentID: deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850) emitted agent_status. Kwarg keys for emit: agent_id,payload
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: cb14fd6d-3f93-41be-b6b6-a63bbb54afa5, AgentID: deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850',
+  prompt_tokens: 1421,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: cb14fd6d-3f93-41be-b6b6-a63bbb54afa5, AgentID: deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: cb14fd6d-3f93-41be-b6b6-a63bbb54afa5, AgentID: deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: cb14fd6d-3f93-41be-b6b6-a63bbb54afa5, AgentID: deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: cb14fd6d-3f93-41be-b6b6-a63bbb54afa5, AgentID: deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: cb14fd6d-3f93-41be-b6b6-a63bbb54afa5, AgentID: deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: cb14fd6d-3f93-41be-b6b6-a63bbb54afa5, AgentID: deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: cb14fd6d-3f93-41be-b6b6-a63bbb54afa5, AgentID: deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: cb14fd6d-3f93-41be-b6b6-a63bbb54afa5, AgentID: deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: cb14fd6d-3f93-41be-b6b6-a63bbb54afa5, AgentID: deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: cb14fd6d-3f93-41be-b6b6-a63bbb54afa5, AgentID: deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850',
+  prompt_tokens: 1708,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: cb14fd6d-3f93-41be-b6b6-a63bbb54afa5, AgentID: deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: cb14fd6d-3f93-41be-b6b6-a63bbb54afa5, AgentID: deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: cb14fd6d-3f93-41be-b6b6-a63bbb54afa5, AgentID: deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: cb14fd6d-3f93-41be-b6b6-a63bbb54afa5, AgentID: deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850' requesting runtime to stop (timeout: 20s).
+AgentExternalEventNotifier (NotifierID: cb14fd6d-3f93-41be-b6b6-a63bbb54afa5, AgentID: deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850': Stop requested.
+AgentExternalEventNotifier (NotifierID: cb14fd6d-3f93-41be-b6b6-a63bbb54afa5, AgentID: deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850' asyncRun() loop has finished.
+AgentWorker 'deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850': Running shutdown sequence on worker loop.
+AgentWorker 'deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850': Shutdown resource cleanup completed successfully.
+AgentWorker 'deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850'.
+AgentRuntime for 'deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850': Context unregistered.
+AgentRuntime for 'deepseekeditbenchmark_replace_repeated_target_1_file_edit_benchmark_agent_2850' stop() method completed.
+END   deepseek-v4-pro/enabled/replace/repeated_target/t1 PASS first=replace_in_file failures=0 state=completed ms=5904
+START deepseek-v4-pro/enabled/replace/late_insertion/t1
+AgentRuntimeState initialized for agent_id 'deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629': LLM instance 'DeepSeekLLM' and 2 tools prepared and stored in state.
+AgentContext composed for agent_id 'deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629' with config: 'DeepSeekEditBenchmark_replace_late_insertion_1'.
+AgentWorker initialized for agent_id 'deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629'.
+Registered AgentContext for agent_id 'deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629'. Context registered.
+Agent facade initialized for agent_id 'deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629'.
+Agent 'deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629' created and stored successfully.
+Agent 'deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629' requesting runtime to start.
+AgentRuntime for 'deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629': Starting worker.
+AgentWorker 'deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629': Starting...
+AgentWorker 'deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629' asyncRun(): Starting.
+Agent 'deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629': Runtime init completed (event store initialized).
+Agent 'deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629': Runtime init completed (status deriver initialized).
+Agent 'deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629': Runtime init completed (AgentEventInbox initialized).
+Agent 'deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629': Runtime init completed (AgentEventScheduler initialized).
+Agent 'deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629': Bootstrapper starting direct lifecycle execution.
+Agent 'deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629': Executing McpServerPrewarmingStep.
+Agent 'deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629': Executing SystemPromptProcessingStep.
+Agent 'deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629': No configured skills. Skipping injection.
+Agent 'deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629': Final processed system prompt configured on LLM instance. Final length: 337.
+Agent 'deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629': Final processed system prompt:
+---
+You are benchmarking file-edit reliability. Always inspect the target with the available read tool before editing. Use absolute paths. Perform the requested change using the available tool(s), preserve unrelated content, then finish concisely. For modifications, use replace_in_file with exact old_text and new_text copied from the file.
+---
+Agent 'deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629' initialized successfully. Entering main event scheduler loop.
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_status. Kwarg keys for emit: agent_id,payload
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629',
+  prompt_tokens: 1245,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_status. Kwarg keys for emit: agent_id,payload
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629',
+  prompt_tokens: 1765,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_status. Kwarg keys for emit: agent_id,payload
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629',
+  prompt_tokens: 2078,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629',
+  prompt_tokens: 2606,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629' requesting runtime to stop (timeout: 20s).
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629': Stop requested.
+AgentExternalEventNotifier (NotifierID: 9d75b45b-9d90-4b57-b6f9-bfb409cfcdeb, AgentID: deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629' asyncRun() loop has finished.
+AgentWorker 'deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629': Running shutdown sequence on worker loop.
+AgentWorker 'deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629': Shutdown resource cleanup completed successfully.
+AgentWorker 'deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629'.
+AgentRuntime for 'deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629': Context unregistered.
+AgentRuntime for 'deepseekeditbenchmark_replace_late_insertion_1_file_edit_benchmark_agent_9629' stop() method completed.
+END   deepseek-v4-pro/enabled/replace/late_insertion/t1 PASS first=replace_in_file failures=0 state=completed ms=9120
+START deepseek-v4-pro/enabled/write/small_exact/t1
+AgentRuntimeState initialized for agent_id 'deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745': LLM instance 'DeepSeekLLM' and 2 tools prepared and stored in state.
+AgentContext composed for agent_id 'deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745' with config: 'DeepSeekEditBenchmark_write_small_exact_1'.
+AgentWorker initialized for agent_id 'deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745'.
+Registered AgentContext for agent_id 'deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745'. Context registered.
+Agent facade initialized for agent_id 'deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745'.
+Agent 'deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745' created and stored successfully.
+Agent 'deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745' requesting runtime to start.
+AgentRuntime for 'deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745': Starting worker.
+AgentWorker 'deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745': Starting...
+AgentWorker 'deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745' asyncRun(): Starting.
+Agent 'deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745': Runtime init completed (event store initialized).
+Agent 'deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745': Runtime init completed (status deriver initialized).
+Agent 'deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745': Runtime init completed (AgentEventInbox initialized).
+Agent 'deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745': Runtime init completed (AgentEventScheduler initialized).
+Agent 'deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: c8fc4384-28d3-4f4b-bdb9-8b1ce3854125, AgentID: deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745': Bootstrapper starting direct lifecycle execution.
+Agent 'deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745': Executing McpServerPrewarmingStep.
+Agent 'deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745': Executing SystemPromptProcessingStep.
+Agent 'deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745': No configured skills. Skipping injection.
+Agent 'deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745': Final processed system prompt configured on LLM instance. Final length: 322.
+Agent 'deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745': Final processed system prompt:
+---
+You are benchmarking file-edit reliability. Always inspect the target with the available read tool before editing. Use absolute paths. Perform the requested change using the available tool(s), preserve unrelated content, then finish concisely. For modifications, use write_file and provide the complete final file content.
+---
+Agent 'deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: c8fc4384-28d3-4f4b-bdb9-8b1ce3854125, AgentID: deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745' initialized successfully. Entering main event scheduler loop.
+AgentExternalEventNotifier (NotifierID: c8fc4384-28d3-4f4b-bdb9-8b1ce3854125, AgentID: deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c8fc4384-28d3-4f4b-bdb9-8b1ce3854125, AgentID: deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c8fc4384-28d3-4f4b-bdb9-8b1ce3854125, AgentID: deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745) emitted agent_status. Kwarg keys for emit: agent_id,payload
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: c8fc4384-28d3-4f4b-bdb9-8b1ce3854125, AgentID: deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745',
+  prompt_tokens: 1138,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: c8fc4384-28d3-4f4b-bdb9-8b1ce3854125, AgentID: deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c8fc4384-28d3-4f4b-bdb9-8b1ce3854125, AgentID: deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c8fc4384-28d3-4f4b-bdb9-8b1ce3854125, AgentID: deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c8fc4384-28d3-4f4b-bdb9-8b1ce3854125, AgentID: deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c8fc4384-28d3-4f4b-bdb9-8b1ce3854125, AgentID: deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c8fc4384-28d3-4f4b-bdb9-8b1ce3854125, AgentID: deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c8fc4384-28d3-4f4b-bdb9-8b1ce3854125, AgentID: deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c8fc4384-28d3-4f4b-bdb9-8b1ce3854125, AgentID: deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c8fc4384-28d3-4f4b-bdb9-8b1ce3854125, AgentID: deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745) emitted agent_status. Kwarg keys for emit: agent_id,payload
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: c8fc4384-28d3-4f4b-bdb9-8b1ce3854125, AgentID: deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745',
+  prompt_tokens: 1286,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: c8fc4384-28d3-4f4b-bdb9-8b1ce3854125, AgentID: deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c8fc4384-28d3-4f4b-bdb9-8b1ce3854125, AgentID: deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c8fc4384-28d3-4f4b-bdb9-8b1ce3854125, AgentID: deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c8fc4384-28d3-4f4b-bdb9-8b1ce3854125, AgentID: deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c8fc4384-28d3-4f4b-bdb9-8b1ce3854125, AgentID: deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c8fc4384-28d3-4f4b-bdb9-8b1ce3854125, AgentID: deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c8fc4384-28d3-4f4b-bdb9-8b1ce3854125, AgentID: deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c8fc4384-28d3-4f4b-bdb9-8b1ce3854125, AgentID: deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c8fc4384-28d3-4f4b-bdb9-8b1ce3854125, AgentID: deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c8fc4384-28d3-4f4b-bdb9-8b1ce3854125, AgentID: deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745',
+  prompt_tokens: 1517,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: c8fc4384-28d3-4f4b-bdb9-8b1ce3854125, AgentID: deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c8fc4384-28d3-4f4b-bdb9-8b1ce3854125, AgentID: deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c8fc4384-28d3-4f4b-bdb9-8b1ce3854125, AgentID: deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c8fc4384-28d3-4f4b-bdb9-8b1ce3854125, AgentID: deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745' requesting runtime to stop (timeout: 20s).
+AgentExternalEventNotifier (NotifierID: c8fc4384-28d3-4f4b-bdb9-8b1ce3854125, AgentID: deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745': Stop requested.
+AgentExternalEventNotifier (NotifierID: c8fc4384-28d3-4f4b-bdb9-8b1ce3854125, AgentID: deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745' asyncRun() loop has finished.
+AgentWorker 'deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745': Running shutdown sequence on worker loop.
+AgentWorker 'deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745': Shutdown resource cleanup completed successfully.
+AgentWorker 'deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745'.
+AgentRuntime for 'deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745': Context unregistered.
+AgentRuntime for 'deepseekeditbenchmark_write_small_exact_1_file_edit_benchmark_agent_8745' stop() method completed.
+END   deepseek-v4-pro/enabled/write/small_exact/t1 PASS first=write_file failures=0 state=completed ms=6112
+START deepseek-v4-pro/enabled/write/multiline_config/t1
+AgentRuntimeState initialized for agent_id 'deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567': LLM instance 'DeepSeekLLM' and 2 tools prepared and stored in state.
+AgentContext composed for agent_id 'deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567' with config: 'DeepSeekEditBenchmark_write_multiline_config_1'.
+AgentWorker initialized for agent_id 'deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567'.
+Registered AgentContext for agent_id 'deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567'. Context registered.
+Agent facade initialized for agent_id 'deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567'.
+Agent 'deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567' created and stored successfully.
+Agent 'deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567' requesting runtime to start.
+AgentRuntime for 'deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567': Starting worker.
+AgentWorker 'deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567': Starting...
+AgentWorker 'deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567' asyncRun(): Starting.
+Agent 'deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567': Runtime init completed (event store initialized).
+Agent 'deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567': Runtime init completed (status deriver initialized).
+Agent 'deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567': Runtime init completed (AgentEventInbox initialized).
+Agent 'deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567': Runtime init completed (AgentEventScheduler initialized).
+Agent 'deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: 2fab760b-1022-4556-8589-144770ee80e0, AgentID: deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567': Bootstrapper starting direct lifecycle execution.
+Agent 'deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567': Executing McpServerPrewarmingStep.
+Agent 'deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567': Executing SystemPromptProcessingStep.
+Agent 'deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567': No configured skills. Skipping injection.
+Agent 'deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567': Final processed system prompt configured on LLM instance. Final length: 322.
+Agent 'deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567': Final processed system prompt:
+---
+You are benchmarking file-edit reliability. Always inspect the target with the available read tool before editing. Use absolute paths. Perform the requested change using the available tool(s), preserve unrelated content, then finish concisely. For modifications, use write_file and provide the complete final file content.
+---
+Agent 'deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: 2fab760b-1022-4556-8589-144770ee80e0, AgentID: deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567' initialized successfully. Entering main event scheduler loop.
+AgentExternalEventNotifier (NotifierID: 2fab760b-1022-4556-8589-144770ee80e0, AgentID: deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 2fab760b-1022-4556-8589-144770ee80e0, AgentID: deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 2fab760b-1022-4556-8589-144770ee80e0, AgentID: deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567) emitted agent_status. Kwarg keys for emit: agent_id,payload
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 2fab760b-1022-4556-8589-144770ee80e0, AgentID: deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567',
+  prompt_tokens: 1149,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: 2fab760b-1022-4556-8589-144770ee80e0, AgentID: deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 2fab760b-1022-4556-8589-144770ee80e0, AgentID: deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 2fab760b-1022-4556-8589-144770ee80e0, AgentID: deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 2fab760b-1022-4556-8589-144770ee80e0, AgentID: deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 2fab760b-1022-4556-8589-144770ee80e0, AgentID: deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 2fab760b-1022-4556-8589-144770ee80e0, AgentID: deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 2fab760b-1022-4556-8589-144770ee80e0, AgentID: deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 2fab760b-1022-4556-8589-144770ee80e0, AgentID: deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 2fab760b-1022-4556-8589-144770ee80e0, AgentID: deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567) emitted agent_status. Kwarg keys for emit: agent_id,payload
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 2fab760b-1022-4556-8589-144770ee80e0, AgentID: deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567',
+  prompt_tokens: 1345,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: 2fab760b-1022-4556-8589-144770ee80e0, AgentID: deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 2fab760b-1022-4556-8589-144770ee80e0, AgentID: deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 2fab760b-1022-4556-8589-144770ee80e0, AgentID: deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 2fab760b-1022-4556-8589-144770ee80e0, AgentID: deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 2fab760b-1022-4556-8589-144770ee80e0, AgentID: deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 2fab760b-1022-4556-8589-144770ee80e0, AgentID: deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 2fab760b-1022-4556-8589-144770ee80e0, AgentID: deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 2fab760b-1022-4556-8589-144770ee80e0, AgentID: deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 2fab760b-1022-4556-8589-144770ee80e0, AgentID: deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 2fab760b-1022-4556-8589-144770ee80e0, AgentID: deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567',
+  prompt_tokens: 1645,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: 2fab760b-1022-4556-8589-144770ee80e0, AgentID: deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 2fab760b-1022-4556-8589-144770ee80e0, AgentID: deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 2fab760b-1022-4556-8589-144770ee80e0, AgentID: deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 2fab760b-1022-4556-8589-144770ee80e0, AgentID: deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567' requesting runtime to stop (timeout: 20s).
+AgentExternalEventNotifier (NotifierID: 2fab760b-1022-4556-8589-144770ee80e0, AgentID: deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567': Stop requested.
+AgentExternalEventNotifier (NotifierID: 2fab760b-1022-4556-8589-144770ee80e0, AgentID: deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567' asyncRun() loop has finished.
+AgentWorker 'deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567': Running shutdown sequence on worker loop.
+AgentWorker 'deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567': Shutdown resource cleanup completed successfully.
+AgentWorker 'deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567'.
+AgentRuntime for 'deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567': Context unregistered.
+AgentRuntime for 'deepseekeditbenchmark_write_multiline_config_1_file_edit_benchmark_agent_4567' stop() method completed.
+END   deepseek-v4-pro/enabled/write/multiline_config/t1 PASS first=write_file failures=0 state=completed ms=6814
+START deepseek-v4-pro/enabled/write/repeated_target/t1
+AgentRuntimeState initialized for agent_id 'deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119': LLM instance 'DeepSeekLLM' and 2 tools prepared and stored in state.
+AgentContext composed for agent_id 'deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119' with config: 'DeepSeekEditBenchmark_write_repeated_target_1'.
+AgentWorker initialized for agent_id 'deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119'.
+Registered AgentContext for agent_id 'deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119'. Context registered.
+Agent facade initialized for agent_id 'deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119'.
+Agent 'deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119' created and stored successfully.
+Agent 'deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119' requesting runtime to start.
+AgentRuntime for 'deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119': Starting worker.
+AgentWorker 'deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119': Starting...
+AgentWorker 'deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119' asyncRun(): Starting.
+Agent 'deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119': Runtime init completed (event store initialized).
+Agent 'deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119': Runtime init completed (status deriver initialized).
+Agent 'deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119': Runtime init completed (AgentEventInbox initialized).
+Agent 'deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119': Runtime init completed (AgentEventScheduler initialized).
+Agent 'deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: c21b252c-2b24-4725-9673-8a0db6b41e7f, AgentID: deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119': Bootstrapper starting direct lifecycle execution.
+Agent 'deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119': Executing McpServerPrewarmingStep.
+Agent 'deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119': Executing SystemPromptProcessingStep.
+Agent 'deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119': No configured skills. Skipping injection.
+Agent 'deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119': Final processed system prompt configured on LLM instance. Final length: 322.
+Agent 'deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119': Final processed system prompt:
+---
+You are benchmarking file-edit reliability. Always inspect the target with the available read tool before editing. Use absolute paths. Perform the requested change using the available tool(s), preserve unrelated content, then finish concisely. For modifications, use write_file and provide the complete final file content.
+---
+Agent 'deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: c21b252c-2b24-4725-9673-8a0db6b41e7f, AgentID: deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119' initialized successfully. Entering main event scheduler loop.
+AgentExternalEventNotifier (NotifierID: c21b252c-2b24-4725-9673-8a0db6b41e7f, AgentID: deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c21b252c-2b24-4725-9673-8a0db6b41e7f, AgentID: deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c21b252c-2b24-4725-9673-8a0db6b41e7f, AgentID: deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119) emitted agent_status. Kwarg keys for emit: agent_id,payload
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: c21b252c-2b24-4725-9673-8a0db6b41e7f, AgentID: deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119',
+  prompt_tokens: 1146,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: c21b252c-2b24-4725-9673-8a0db6b41e7f, AgentID: deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c21b252c-2b24-4725-9673-8a0db6b41e7f, AgentID: deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c21b252c-2b24-4725-9673-8a0db6b41e7f, AgentID: deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c21b252c-2b24-4725-9673-8a0db6b41e7f, AgentID: deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c21b252c-2b24-4725-9673-8a0db6b41e7f, AgentID: deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c21b252c-2b24-4725-9673-8a0db6b41e7f, AgentID: deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c21b252c-2b24-4725-9673-8a0db6b41e7f, AgentID: deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c21b252c-2b24-4725-9673-8a0db6b41e7f, AgentID: deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c21b252c-2b24-4725-9673-8a0db6b41e7f, AgentID: deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119) emitted agent_status. Kwarg keys for emit: agent_id,payload
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: c21b252c-2b24-4725-9673-8a0db6b41e7f, AgentID: deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119',
+  prompt_tokens: 1335,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: c21b252c-2b24-4725-9673-8a0db6b41e7f, AgentID: deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c21b252c-2b24-4725-9673-8a0db6b41e7f, AgentID: deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c21b252c-2b24-4725-9673-8a0db6b41e7f, AgentID: deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c21b252c-2b24-4725-9673-8a0db6b41e7f, AgentID: deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c21b252c-2b24-4725-9673-8a0db6b41e7f, AgentID: deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c21b252c-2b24-4725-9673-8a0db6b41e7f, AgentID: deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c21b252c-2b24-4725-9673-8a0db6b41e7f, AgentID: deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c21b252c-2b24-4725-9673-8a0db6b41e7f, AgentID: deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c21b252c-2b24-4725-9673-8a0db6b41e7f, AgentID: deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c21b252c-2b24-4725-9673-8a0db6b41e7f, AgentID: deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119',
+  prompt_tokens: 1597,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: c21b252c-2b24-4725-9673-8a0db6b41e7f, AgentID: deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c21b252c-2b24-4725-9673-8a0db6b41e7f, AgentID: deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c21b252c-2b24-4725-9673-8a0db6b41e7f, AgentID: deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c21b252c-2b24-4725-9673-8a0db6b41e7f, AgentID: deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119' requesting runtime to stop (timeout: 20s).
+AgentExternalEventNotifier (NotifierID: c21b252c-2b24-4725-9673-8a0db6b41e7f, AgentID: deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119': Stop requested.
+AgentExternalEventNotifier (NotifierID: c21b252c-2b24-4725-9673-8a0db6b41e7f, AgentID: deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119' asyncRun() loop has finished.
+AgentWorker 'deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119': Running shutdown sequence on worker loop.
+AgentWorker 'deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119': Shutdown resource cleanup completed successfully.
+AgentWorker 'deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119'.
+AgentRuntime for 'deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119': Context unregistered.
+AgentRuntime for 'deepseekeditbenchmark_write_repeated_target_1_file_edit_benchmark_agent_9119' stop() method completed.
+END   deepseek-v4-pro/enabled/write/repeated_target/t1 PASS first=write_file failures=0 state=completed ms=6205
+START deepseek-v4-pro/enabled/write/late_insertion/t1
+AgentRuntimeState initialized for agent_id 'deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967': LLM instance 'DeepSeekLLM' and 2 tools prepared and stored in state.
+AgentContext composed for agent_id 'deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967' with config: 'DeepSeekEditBenchmark_write_late_insertion_1'.
+AgentWorker initialized for agent_id 'deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967'.
+Registered AgentContext for agent_id 'deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967'. Context registered.
+Agent facade initialized for agent_id 'deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967'.
+Agent 'deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967' created and stored successfully.
+Agent 'deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967' requesting runtime to start.
+AgentRuntime for 'deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967': Starting worker.
+AgentWorker 'deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967': Starting...
+AgentWorker 'deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967' asyncRun(): Starting.
+Agent 'deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967': Runtime init completed (event store initialized).
+Agent 'deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967': Runtime init completed (status deriver initialized).
+Agent 'deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967': Runtime init completed (AgentEventInbox initialized).
+Agent 'deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967': Runtime init completed (AgentEventScheduler initialized).
+Agent 'deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: 9c47c4ed-3cd4-4c4d-a37d-9a8d3d566da8, AgentID: deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967': Bootstrapper starting direct lifecycle execution.
+Agent 'deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967': Executing McpServerPrewarmingStep.
+Agent 'deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967': Executing SystemPromptProcessingStep.
+Agent 'deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967': No configured skills. Skipping injection.
+Agent 'deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967': Final processed system prompt configured on LLM instance. Final length: 322.
+Agent 'deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967': Final processed system prompt:
+---
+You are benchmarking file-edit reliability. Always inspect the target with the available read tool before editing. Use absolute paths. Perform the requested change using the available tool(s), preserve unrelated content, then finish concisely. For modifications, use write_file and provide the complete final file content.
+---
+Agent 'deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: 9c47c4ed-3cd4-4c4d-a37d-9a8d3d566da8, AgentID: deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967' initialized successfully. Entering main event scheduler loop.
+AgentExternalEventNotifier (NotifierID: 9c47c4ed-3cd4-4c4d-a37d-9a8d3d566da8, AgentID: deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9c47c4ed-3cd4-4c4d-a37d-9a8d3d566da8, AgentID: deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9c47c4ed-3cd4-4c4d-a37d-9a8d3d566da8, AgentID: deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967) emitted agent_status. Kwarg keys for emit: agent_id,payload
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 9c47c4ed-3cd4-4c4d-a37d-9a8d3d566da8, AgentID: deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967',
+  prompt_tokens: 1153,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: 9c47c4ed-3cd4-4c4d-a37d-9a8d3d566da8, AgentID: deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9c47c4ed-3cd4-4c4d-a37d-9a8d3d566da8, AgentID: deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9c47c4ed-3cd4-4c4d-a37d-9a8d3d566da8, AgentID: deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9c47c4ed-3cd4-4c4d-a37d-9a8d3d566da8, AgentID: deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9c47c4ed-3cd4-4c4d-a37d-9a8d3d566da8, AgentID: deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9c47c4ed-3cd4-4c4d-a37d-9a8d3d566da8, AgentID: deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9c47c4ed-3cd4-4c4d-a37d-9a8d3d566da8, AgentID: deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9c47c4ed-3cd4-4c4d-a37d-9a8d3d566da8, AgentID: deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9c47c4ed-3cd4-4c4d-a37d-9a8d3d566da8, AgentID: deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967) emitted agent_status. Kwarg keys for emit: agent_id,payload
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 9c47c4ed-3cd4-4c4d-a37d-9a8d3d566da8, AgentID: deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967',
+  prompt_tokens: 1658,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: 9c47c4ed-3cd4-4c4d-a37d-9a8d3d566da8, AgentID: deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9c47c4ed-3cd4-4c4d-a37d-9a8d3d566da8, AgentID: deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9c47c4ed-3cd4-4c4d-a37d-9a8d3d566da8, AgentID: deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9c47c4ed-3cd4-4c4d-a37d-9a8d3d566da8, AgentID: deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9c47c4ed-3cd4-4c4d-a37d-9a8d3d566da8, AgentID: deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9c47c4ed-3cd4-4c4d-a37d-9a8d3d566da8, AgentID: deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9c47c4ed-3cd4-4c4d-a37d-9a8d3d566da8, AgentID: deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9c47c4ed-3cd4-4c4d-a37d-9a8d3d566da8, AgentID: deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9c47c4ed-3cd4-4c4d-a37d-9a8d3d566da8, AgentID: deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9c47c4ed-3cd4-4c4d-a37d-9a8d3d566da8, AgentID: deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967',
+  prompt_tokens: 2268,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: 9c47c4ed-3cd4-4c4d-a37d-9a8d3d566da8, AgentID: deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9c47c4ed-3cd4-4c4d-a37d-9a8d3d566da8, AgentID: deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9c47c4ed-3cd4-4c4d-a37d-9a8d3d566da8, AgentID: deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 9c47c4ed-3cd4-4c4d-a37d-9a8d3d566da8, AgentID: deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967' requesting runtime to stop (timeout: 20s).
+AgentExternalEventNotifier (NotifierID: 9c47c4ed-3cd4-4c4d-a37d-9a8d3d566da8, AgentID: deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967': Stop requested.
+AgentExternalEventNotifier (NotifierID: 9c47c4ed-3cd4-4c4d-a37d-9a8d3d566da8, AgentID: deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967' asyncRun() loop has finished.
+AgentWorker 'deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967': Running shutdown sequence on worker loop.
+AgentWorker 'deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967': Shutdown resource cleanup completed successfully.
+AgentWorker 'deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967'.
+AgentRuntime for 'deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967': Context unregistered.
+AgentRuntime for 'deepseekeditbenchmark_write_late_insertion_1_file_edit_benchmark_agent_4967' stop() method completed.
+END   deepseek-v4-pro/enabled/write/late_insertion/t1 PASS first=write_file failures=0 state=completed ms=8933
+START deepseek-v4-pro/enabled/bash/small_exact/t1
+AgentRuntimeState initialized for agent_id 'deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806': LLM instance 'DeepSeekLLM' and 2 tools prepared and stored in state.
+AgentContext composed for agent_id 'deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806' with config: 'DeepSeekEditBenchmark_bash_small_exact_1'.
+AgentWorker initialized for agent_id 'deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806'.
+Registered AgentContext for agent_id 'deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806'. Context registered.
+Agent facade initialized for agent_id 'deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806'.
+Agent 'deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806' created and stored successfully.
+Agent 'deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806' requesting runtime to start.
+AgentRuntime for 'deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806': Starting worker.
+AgentWorker 'deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806': Starting...
+AgentWorker 'deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806' asyncRun(): Starting.
+Agent 'deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806': Runtime init completed (event store initialized).
+Agent 'deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806': Runtime init completed (status deriver initialized).
+Agent 'deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806': Runtime init completed (AgentEventInbox initialized).
+Agent 'deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806': Runtime init completed (AgentEventScheduler initialized).
+Agent 'deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806': Bootstrapper starting direct lifecycle execution.
+Agent 'deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806': Executing McpServerPrewarmingStep.
+Agent 'deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806': Executing SystemPromptProcessingStep.
+Agent 'deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806': No configured skills. Skipping injection.
+Agent 'deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806': Final processed system prompt configured on LLM instance. Final length: 350.
+Agent 'deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806': Final processed system prompt:
+---
+You are benchmarking file-edit reliability. Always inspect the target with the available read tool before editing. Use absolute paths. Perform the requested change using the available tool(s), preserve unrelated content, then finish concisely. For modifications, use run_bash with a non-interactive command. Do not use any unavailable file-edit tool.
+---
+Agent 'deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806' initialized successfully. Entering main event scheduler loop.
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_status. Kwarg keys for emit: agent_id,payload
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806',
+  prompt_tokens: 1101,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_status. Kwarg keys for emit: agent_id,payload
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806',
+  prompt_tokens: 1251,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_status. Kwarg keys for emit: agent_id,payload
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806',
+  prompt_tokens: 1497,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806',
+  prompt_tokens: 1642,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806' requesting runtime to stop (timeout: 20s).
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806': Stop requested.
+AgentExternalEventNotifier (NotifierID: 7807aaee-1eec-4b18-931c-ea360a0140d6, AgentID: deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806' asyncRun() loop has finished.
+AgentWorker 'deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806': Running shutdown sequence on worker loop.
+AgentWorker 'deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806': Shutdown resource cleanup completed successfully.
+AgentWorker 'deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806'.
+AgentRuntime for 'deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806': Context unregistered.
+AgentRuntime for 'deepseekeditbenchmark_bash_small_exact_1_file_edit_benchmark_agent_1806' stop() method completed.
+END   deepseek-v4-pro/enabled/bash/small_exact/t1 PASS first=run_bash failures=0 state=completed ms=7918
+START deepseek-v4-pro/enabled/bash/multiline_config/t1
+AgentRuntimeState initialized for agent_id 'deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000': LLM instance 'DeepSeekLLM' and 2 tools prepared and stored in state.
+AgentContext composed for agent_id 'deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000' with config: 'DeepSeekEditBenchmark_bash_multiline_config_1'.
+AgentWorker initialized for agent_id 'deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000'.
+Registered AgentContext for agent_id 'deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000'. Context registered.
+Agent facade initialized for agent_id 'deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000'.
+Agent 'deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000' created and stored successfully.
+Agent 'deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000' requesting runtime to start.
+AgentRuntime for 'deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000': Starting worker.
+AgentWorker 'deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000': Starting...
+AgentWorker 'deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000' asyncRun(): Starting.
+Agent 'deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000': Runtime init completed (event store initialized).
+Agent 'deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000': Runtime init completed (status deriver initialized).
+Agent 'deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000': Runtime init completed (AgentEventInbox initialized).
+Agent 'deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000': Runtime init completed (AgentEventScheduler initialized).
+Agent 'deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000': Bootstrapper starting direct lifecycle execution.
+Agent 'deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000': Executing McpServerPrewarmingStep.
+Agent 'deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000': Executing SystemPromptProcessingStep.
+Agent 'deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000': No configured skills. Skipping injection.
+Agent 'deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000': Final processed system prompt configured on LLM instance. Final length: 350.
+Agent 'deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000': Final processed system prompt:
+---
+You are benchmarking file-edit reliability. Always inspect the target with the available read tool before editing. Use absolute paths. Perform the requested change using the available tool(s), preserve unrelated content, then finish concisely. For modifications, use run_bash with a non-interactive command. Do not use any unavailable file-edit tool.
+---
+Agent 'deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000' initialized successfully. Entering main event scheduler loop.
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_status. Kwarg keys for emit: agent_id,payload
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000',
+  prompt_tokens: 1110,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_status. Kwarg keys for emit: agent_id,payload
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000',
+  prompt_tokens: 1323,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_status. Kwarg keys for emit: agent_id,payload
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000',
+  prompt_tokens: 1598,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000',
+  prompt_tokens: 1785,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000' requesting runtime to stop (timeout: 20s).
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000': Stop requested.
+AgentExternalEventNotifier (NotifierID: 8e91ca1c-3dc0-4fef-8223-6f6b0d031cdf, AgentID: deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000' asyncRun() loop has finished.
+AgentWorker 'deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000': Running shutdown sequence on worker loop.
+AgentWorker 'deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000': Shutdown resource cleanup completed successfully.
+AgentWorker 'deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000'.
+AgentRuntime for 'deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000': Context unregistered.
+AgentRuntime for 'deepseekeditbenchmark_bash_multiline_config_1_file_edit_benchmark_agent_2000' stop() method completed.
+END   deepseek-v4-pro/enabled/bash/multiline_config/t1 PASS first=run_bash failures=0 state=completed ms=8932
+START deepseek-v4-pro/enabled/bash/repeated_target/t1
+AgentRuntimeState initialized for agent_id 'deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795': LLM instance 'DeepSeekLLM' and 2 tools prepared and stored in state.
+AgentContext composed for agent_id 'deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795' with config: 'DeepSeekEditBenchmark_bash_repeated_target_1'.
+AgentWorker initialized for agent_id 'deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795'.
+Registered AgentContext for agent_id 'deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795'. Context registered.
+Agent facade initialized for agent_id 'deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795'.
+Agent 'deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795' created and stored successfully.
+Agent 'deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795' requesting runtime to start.
+AgentRuntime for 'deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795': Starting worker.
+AgentWorker 'deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795': Starting...
+AgentWorker 'deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795' asyncRun(): Starting.
+Agent 'deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795': Runtime init completed (event store initialized).
+Agent 'deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795': Runtime init completed (status deriver initialized).
+Agent 'deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795': Runtime init completed (AgentEventInbox initialized).
+Agent 'deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795': Runtime init completed (AgentEventScheduler initialized).
+Agent 'deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795': Bootstrapper starting direct lifecycle execution.
+Agent 'deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795': Executing McpServerPrewarmingStep.
+Agent 'deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795': Executing SystemPromptProcessingStep.
+Agent 'deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795': No configured skills. Skipping injection.
+Agent 'deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795': Final processed system prompt configured on LLM instance. Final length: 350.
+Agent 'deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795': Final processed system prompt:
+---
+You are benchmarking file-edit reliability. Always inspect the target with the available read tool before editing. Use absolute paths. Perform the requested change using the available tool(s), preserve unrelated content, then finish concisely. For modifications, use run_bash with a non-interactive command. Do not use any unavailable file-edit tool.
+---
+Agent 'deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795' initialized successfully. Entering main event scheduler loop.
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_status. Kwarg keys for emit: agent_id,payload
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795',
+  prompt_tokens: 1109,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_status. Kwarg keys for emit: agent_id,payload
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795',
+  prompt_tokens: 1298,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_status. Kwarg keys for emit: agent_id,payload
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795',
+  prompt_tokens: 1684,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795',
+  prompt_tokens: 1868,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795' requesting runtime to stop (timeout: 20s).
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795': Stop requested.
+AgentExternalEventNotifier (NotifierID: ffc2b785-535c-411a-9ac0-b63cdc8ee033, AgentID: deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795' asyncRun() loop has finished.
+AgentWorker 'deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795': Running shutdown sequence on worker loop.
+AgentWorker 'deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795': Shutdown resource cleanup completed successfully.
+AgentWorker 'deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795'.
+AgentRuntime for 'deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795': Context unregistered.
+AgentRuntime for 'deepseekeditbenchmark_bash_repeated_target_1_file_edit_benchmark_agent_5795' stop() method completed.
+END   deepseek-v4-pro/enabled/bash/repeated_target/t1 PASS first=run_bash failures=0 state=completed ms=10130
+START deepseek-v4-pro/enabled/bash/late_insertion/t1
+AgentRuntimeState initialized for agent_id 'deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810': LLM instance 'DeepSeekLLM' and 2 tools prepared and stored in state.
+AgentContext composed for agent_id 'deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810' with config: 'DeepSeekEditBenchmark_bash_late_insertion_1'.
+AgentWorker initialized for agent_id 'deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810'.
+Registered AgentContext for agent_id 'deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810'. Context registered.
+Agent facade initialized for agent_id 'deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810'.
+Agent 'deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810' created and stored successfully.
+Agent 'deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810' requesting runtime to start.
+AgentRuntime for 'deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810': Starting worker.
+AgentWorker 'deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810': Starting...
+AgentWorker 'deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810' asyncRun(): Starting.
+Agent 'deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810': Runtime init completed (event store initialized).
+Agent 'deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810': Runtime init completed (status deriver initialized).
+Agent 'deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810': Runtime init completed (AgentEventInbox initialized).
+Agent 'deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810': Runtime init completed (AgentEventScheduler initialized).
+Agent 'deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810': Bootstrapper starting direct lifecycle execution.
+Agent 'deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810': Executing McpServerPrewarmingStep.
+Agent 'deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810': Executing SystemPromptProcessingStep.
+Agent 'deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810': No configured skills. Skipping injection.
+Agent 'deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810': Final processed system prompt configured on LLM instance. Final length: 350.
+Agent 'deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810': Final processed system prompt:
+---
+You are benchmarking file-edit reliability. Always inspect the target with the available read tool before editing. Use absolute paths. Perform the requested change using the available tool(s), preserve unrelated content, then finish concisely. For modifications, use run_bash with a non-interactive command. Do not use any unavailable file-edit tool.
+---
+Agent 'deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810' initialized successfully. Entering main event scheduler loop.
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_status. Kwarg keys for emit: agent_id,payload
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810',
+  prompt_tokens: 1118,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_status. Kwarg keys for emit: agent_id,payload
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810',
+  prompt_tokens: 1658,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_status. Kwarg keys for emit: agent_id,payload
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810',
+  prompt_tokens: 1952,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810',
+  prompt_tokens: 2467,
+  effective_total_context_tokens: 1000000,
+  context_derived_input_cap_tokens: 616000,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 616000,
+  reserved_output_tokens: 384000,
+  safety_margin_tokens: 256,
+  input_budget_tokens: 615744,
+  compaction_ratio: 0.8,
+  trigger_threshold_tokens: 492595,
+  override_active: false,
+  compaction_required: false
+}
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810' requesting runtime to stop (timeout: 20s).
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810': Stop requested.
+AgentExternalEventNotifier (NotifierID: 8c3ffc81-33ec-4943-9812-3cf8a240cd75, AgentID: deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810' asyncRun() loop has finished.
+AgentWorker 'deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810': Running shutdown sequence on worker loop.
+AgentWorker 'deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810': Shutdown resource cleanup completed successfully.
+AgentWorker 'deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810'.
+AgentRuntime for 'deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810': Context unregistered.
+AgentRuntime for 'deepseekeditbenchmark_bash_late_insertion_1_file_edit_benchmark_agent_7810' stop() method completed.
+END   deepseek-v4-pro/enabled/bash/late_insertion/t1 PASS first=run_bash failures=0 state=completed ms=8421
+DONE 12/12 exact tasks passed

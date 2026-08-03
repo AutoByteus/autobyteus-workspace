@@ -10,6 +10,7 @@ import {
 } from '~/services/agentStreaming/handlers/segmentIdentity';
 import {
   beginRecentEventMonitorMutation,
+  commitKnownRecentEventMonitorPresentationMutation,
   commitRecentEventMonitorMutation,
 } from '../recentEventMonitorMutationCommit';
 
@@ -117,5 +118,19 @@ describe('recent Event Monitor mutation commit', () => {
 
     expect(result.presentationChanged).toBe(true);
     expect(context.state.eventMonitorPresentationRevision).toBe(1);
+  });
+
+  it('enforces retention and commits exactly one handler-known presentation change', () => {
+    const segments = Array.from({ length: 101 }, (_, index) => mutableText(index));
+    const context = createContext(conversationWith([{
+      type: 'ai', text: '', timestamp: new Date(0), isComplete: false, segments,
+    }]));
+
+    const result = commitKnownRecentEventMonitorPresentationMutation(context);
+
+    expect(result).toMatchObject({ retentionChanged: true, presentationChanged: true });
+    expect(context.state.eventMonitorPresentationRevision).toBe(1);
+    expect(context.state.hasEarlierActiveTraceEvents).toBe(true);
+    expect((context.conversation.messages[0] as AIMessage).segments).toHaveLength(100);
   });
 });

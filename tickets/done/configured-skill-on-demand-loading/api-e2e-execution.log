@@ -1,0 +1,976 @@
+$ pnpm -C autobyteus-server-ts exec vitest run tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts --no-watch
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/configured-skill-on-demand-loading/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/configured-skill-on-demand-loading/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:80350) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/configured-skill-on-demand-loading/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/configured-skill-on-demand-loading/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-skill-on-demand-e2e-RwHPmu
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-skill-on-demand-e2e-RwHPmu/.env
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+Loading agent tool definitions...
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Loaded tool group: Media Tools
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Successfully registered tool definition: 'send_message_to'
+Loaded tool group: Agent Communication Tools
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Loaded tool group: Task Delegation Tools
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Loaded tool group: Browser Tools
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e
+Registering agent customization processors...
+System prompt processor definition 'ToolManifestInjector' (class: 'ToolManifestInjectorProcessor') registered successfully.
+System prompt processor definition 'AvailableSkillsProcessor' (class: 'AvailableSkillsProcessor') registered successfully.
+Registered system prompt processors: ToolManifestInjector, AvailableSkillsProcessor
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps skill tools explicit and reads updated skill files from the same active run
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps skill tools explicit and reads updated skill files from the same active run
+Agent Definition created successfully with ID: no-reader-1785669715755-5ecffa3996895
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps skill tools explicit and reads updated skill files from the same active run
+Resolved system prompt from fresh definition instructions for AgentDefinition no-reader-1785669715755-5ecffa3996895.
+MediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-skill-on-demand-e2e-RwHPmu/media
+Resolved skill 'fresh_skill_1785669715755_5ecffa3996895' to path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-skill-on-demand-e2e-RwHPmu/skills/fresh_skill_1785669715755_5ecffa3996895
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps skill tools explicit and reads updated skill files from the same active run
+AgentRuntimeState initialized for agent_id 'no-reader-run-1785669715755_5ecffa3996895'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'no-reader-run-1785669715755_5ecffa3996895': No tools provided in config.
+Agent 'no-reader-run-1785669715755_5ecffa3996895': LLM instance 'DeterministicLLM' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'no-reader-run-1785669715755_5ecffa3996895'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'no-reader-run-1785669715755_5ecffa3996895' with config: 'no-reader-1785669715755_5ecffa3996895'.
+AgentWorker initialized for agent_id 'no-reader-run-1785669715755_5ecffa3996895'.
+Registered AgentContext for agent_id 'no-reader-run-1785669715755_5ecffa3996895'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'no-reader-run-1785669715755_5ecffa3996895'. Context registered.
+Agent facade initialized for agent_id 'no-reader-run-1785669715755_5ecffa3996895'.
+Agent 'no-reader-run-1785669715755_5ecffa3996895' created and stored successfully.
+Agent 'no-reader-run-1785669715755_5ecffa3996895' requesting runtime to start.
+AgentRuntime for 'no-reader-run-1785669715755_5ecffa3996895': Starting worker.
+AgentWorker 'no-reader-run-1785669715755_5ecffa3996895': Starting...
+AgentWorker 'no-reader-run-1785669715755_5ecffa3996895' asyncRun(): Starting.
+Agent 'no-reader-run-1785669715755_5ecffa3996895': Runtime init completed (event store initialized).
+Agent 'no-reader-run-1785669715755_5ecffa3996895': Runtime init completed (status deriver initialized).
+Agent 'no-reader-run-1785669715755_5ecffa3996895': Runtime init completed (AgentEventInbox initialized).
+Agent 'no-reader-run-1785669715755_5ecffa3996895': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'no-reader-run-1785669715755_5ecffa3996895' to become idle (timeout: 30s)...
+AgentEventStream (ID: 558b0db4-a53b-466a-bfcd-567584527a01) initialized for agent_id 'no-reader-run-1785669715755_5ecffa3996895'. Subscribed to notifier.
+Agent 'no-reader-run-1785669715755_5ecffa3996895': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps skill tools explicit and reads updated skill files from the same active run
+AgentExternalEventNotifier (NotifierID: e10dea8c-6feb-40c5-af86-5e41aa7c0a41, AgentID: no-reader-run-1785669715755_5ecffa3996895) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps skill tools explicit and reads updated skill files from the same active run
+Agent 'no-reader-run-1785669715755_5ecffa3996895': Bootstrapper starting direct lifecycle execution.
+Agent 'no-reader-run-1785669715755_5ecffa3996895': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'no-reader-run-1785669715755_5ecffa3996895': Executing McpServerPrewarmingStep.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps skill tools explicit and reads updated skill files from the same active run
+Agent 'no-reader-run-1785669715755_5ecffa3996895': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'no-reader-run-1785669715755_5ecffa3996895': Executing SystemPromptProcessingStep.
+Agent 'no-reader-run-1785669715755_5ecffa3996895': Added 1 configured skill catalog entries with paths. mode='PRELOADED_ONLY'.
+Agent 'no-reader-run-1785669715755_5ecffa3996895': Final processed system prompt configured on LLM instance. Final length: 869.
+Agent 'no-reader-run-1785669715755_5ecffa3996895': Final processed system prompt:
+---
+Follow the configured skill catalog exactly.
+
+## Agent Skills
+
+### Skill Catalog
+
+- **fresh_skill_1785669715755_5ecffa3996895**: Active native configured skill freshness fixture
+  - **SKILL.md:** `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-skill-on-demand-e2e-RwHPmu/skills/fresh_skill_1785669715755_5ecffa3996895/SKILL.md`
+
+### Rules for Using Skills
+
+- Use a configured skill whenever it applies to the task.
+- When no configured skill applies, use the best available general approach.
+- When an applicable configured skill covers only part of the task, follow it for the covered part and use another available technique for the uncovered part.
+- Before beginning work governed by a skill, read its `SKILL.md` from the exact path listed above.
+- Resolve every relative path mentioned by a skill from the directory containing that skill's `SKILL.md`.
+
+---
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps skill tools explicit and reads updated skill files from the same active run
+Agent 'no-reader-run-1785669715755_5ecffa3996895': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps skill tools explicit and reads updated skill files from the same active run
+AgentExternalEventNotifier (NotifierID: e10dea8c-6feb-40c5-af86-5e41aa7c0a41, AgentID: no-reader-run-1785669715755_5ecffa3996895) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps skill tools explicit and reads updated skill files from the same active run
+AgentWorker 'no-reader-run-1785669715755_5ecffa3996895' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps skill tools explicit and reads updated skill files from the same active run
+Agent 'no-reader-run-1785669715755_5ecffa3996895' has become idle.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps skill tools explicit and reads updated skill files from the same active run
+AgentEventStream (ID: 558b0db4-a53b-466a-bfcd-567584527a01) for 'no-reader-run-1785669715755_5ecffa3996895': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps skill tools explicit and reads updated skill files from the same active run
+Removing agent 'no-reader-run-1785669715755_5ecffa3996895'. Attempting graceful shutdown.
+Agent 'no-reader-run-1785669715755_5ecffa3996895' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps skill tools explicit and reads updated skill files from the same active run
+AgentExternalEventNotifier (NotifierID: e10dea8c-6feb-40c5-af86-5e41aa7c0a41, AgentID: no-reader-run-1785669715755_5ecffa3996895) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps skill tools explicit and reads updated skill files from the same active run
+AgentWorker 'no-reader-run-1785669715755_5ecffa3996895': Stop requested.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps skill tools explicit and reads updated skill files from the same active run
+AgentExternalEventNotifier (NotifierID: e10dea8c-6feb-40c5-af86-5e41aa7c0a41, AgentID: no-reader-run-1785669715755_5ecffa3996895) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps skill tools explicit and reads updated skill files from the same active run
+AgentWorker 'no-reader-run-1785669715755_5ecffa3996895' asyncRun() loop has finished.
+AgentWorker 'no-reader-run-1785669715755_5ecffa3996895': Running shutdown sequence on worker loop.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps skill tools explicit and reads updated skill files from the same active run
+AgentWorker 'no-reader-run-1785669715755_5ecffa3996895': Shutdown resource cleanup completed successfully.
+AgentWorker 'no-reader-run-1785669715755_5ecffa3996895': Shutdown sequence completed.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps skill tools explicit and reads updated skill files from the same active run
+Unregistered AgentContext for agent_id 'no-reader-run-1785669715755_5ecffa3996895'.
+AgentRuntime for 'no-reader-run-1785669715755_5ecffa3996895': Context unregistered.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps skill tools explicit and reads updated skill files from the same active run
+AgentRuntime for 'no-reader-run-1785669715755_5ecffa3996895' stop() method completed.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps skill tools explicit and reads updated skill files from the same active run
+Agent Definition created successfully with ID: reader-1785669715755-5ecffa3996895
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps skill tools explicit and reads updated skill files from the same active run
+Resolved system prompt from fresh definition instructions for AgentDefinition reader-1785669715755-5ecffa3996895.
+MediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-skill-on-demand-e2e-RwHPmu/media
+Resolved skill 'fresh_skill_1785669715755_5ecffa3996895' to path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-skill-on-demand-e2e-RwHPmu/skills/fresh_skill_1785669715755_5ecffa3996895
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps skill tools explicit and reads updated skill files from the same active run
+AgentRuntimeState initialized for agent_id 'reader-run-1785669715755_5ecffa3996895'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'reader-run-1785669715755_5ecffa3996895': LLM instance 'DeterministicLLM' and 1 tools prepared and stored in state.
+AgentContext composed for agent_id 'reader-run-1785669715755_5ecffa3996895'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'reader-run-1785669715755_5ecffa3996895' with config: 'reader-1785669715755_5ecffa3996895'.
+AgentWorker initialized for agent_id 'reader-run-1785669715755_5ecffa3996895'.
+Registered AgentContext for agent_id 'reader-run-1785669715755_5ecffa3996895'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'reader-run-1785669715755_5ecffa3996895'. Context registered.
+Agent facade initialized for agent_id 'reader-run-1785669715755_5ecffa3996895'.
+Agent 'reader-run-1785669715755_5ecffa3996895' created and stored successfully.
+Agent 'reader-run-1785669715755_5ecffa3996895' requesting runtime to start.
+AgentRuntime for 'reader-run-1785669715755_5ecffa3996895': Starting worker.
+AgentWorker 'reader-run-1785669715755_5ecffa3996895': Starting...
+AgentWorker 'reader-run-1785669715755_5ecffa3996895' asyncRun(): Starting.
+Agent 'reader-run-1785669715755_5ecffa3996895': Runtime init completed (event store initialized).
+Agent 'reader-run-1785669715755_5ecffa3996895': Runtime init completed (status deriver initialized).
+Agent 'reader-run-1785669715755_5ecffa3996895': Runtime init completed (AgentEventInbox initialized).
+Agent 'reader-run-1785669715755_5ecffa3996895': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'reader-run-1785669715755_5ecffa3996895' to become idle (timeout: 30s)...
+AgentEventStream (ID: d4d6d47d-f8a8-4701-80b2-d2c6cfce439a) initialized for agent_id 'reader-run-1785669715755_5ecffa3996895'. Subscribed to notifier.
+Agent 'reader-run-1785669715755_5ecffa3996895': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps skill tools explicit and reads updated skill files from the same active run
+AgentExternalEventNotifier (NotifierID: 67c7b836-f548-4065-b4f4-70da551faad4, AgentID: reader-run-1785669715755_5ecffa3996895) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps skill tools explicit and reads updated skill files from the same active run
+Agent 'reader-run-1785669715755_5ecffa3996895': Bootstrapper starting direct lifecycle execution.
+Agent 'reader-run-1785669715755_5ecffa3996895': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'reader-run-1785669715755_5ecffa3996895': Executing McpServerPrewarmingStep.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps skill tools explicit and reads updated skill files from the same active run
+Agent 'reader-run-1785669715755_5ecffa3996895': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'reader-run-1785669715755_5ecffa3996895': Executing SystemPromptProcessingStep.
+Agent 'reader-run-1785669715755_5ecffa3996895': Added 1 configured skill catalog entries with paths. mode='PRELOADED_ONLY'.
+Agent 'reader-run-1785669715755_5ecffa3996895': Final processed system prompt configured on LLM instance. Final length: 869.
+Agent 'reader-run-1785669715755_5ecffa3996895': Final processed system prompt:
+---
+Follow the configured skill catalog exactly.
+
+## Agent Skills
+
+### Skill Catalog
+
+- **fresh_skill_1785669715755_5ecffa3996895**: Active native configured skill freshness fixture
+  - **SKILL.md:** `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/configured-skill-on-demand-e2e-RwHPmu/skills/fresh_skill_1785669715755_5ecffa3996895/SKILL.md`
+
+### Rules for Using Skills
+
+- Use a configured skill whenever it applies to the task.
+- When no configured skill applies, use the best available general approach.
+- When an applicable configured skill covers only part of the task, follow it for the covered part and use another available technique for the uncovered part.
+- Before beginning work governed by a skill, read its `SKILL.md` from the exact path listed above.
+- Resolve every relative path mentioned by a skill from the directory containing that skill's `SKILL.md`.
+
+---
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps skill tools explicit and reads updated skill files from the same active run
+Agent 'reader-run-1785669715755_5ecffa3996895': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps skill tools explicit and reads updated skill files from the same active run
+AgentExternalEventNotifier (NotifierID: 67c7b836-f548-4065-b4f4-70da551faad4, AgentID: reader-run-1785669715755_5ecffa3996895) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps skill tools explicit and reads updated skill files from the same active run
+AgentWorker 'reader-run-1785669715755_5ecffa3996895' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps skill tools explicit and reads updated skill files from the same active run
+Agent 'reader-run-1785669715755_5ecffa3996895' has become idle.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps skill tools explicit and reads updated skill files from the same active run
+AgentEventStream (ID: d4d6d47d-f8a8-4701-80b2-d2c6cfce439a) for 'reader-run-1785669715755_5ecffa3996895': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps skill tools explicit and reads updated skill files from the same active run
+Removing agent 'reader-run-1785669715755_5ecffa3996895'. Attempting graceful shutdown.
+Agent 'reader-run-1785669715755_5ecffa3996895' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps skill tools explicit and reads updated skill files from the same active run
+AgentExternalEventNotifier (NotifierID: 67c7b836-f548-4065-b4f4-70da551faad4, AgentID: reader-run-1785669715755_5ecffa3996895) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps skill tools explicit and reads updated skill files from the same active run
+AgentWorker 'reader-run-1785669715755_5ecffa3996895': Stop requested.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps skill tools explicit and reads updated skill files from the same active run
+AgentExternalEventNotifier (NotifierID: 67c7b836-f548-4065-b4f4-70da551faad4, AgentID: reader-run-1785669715755_5ecffa3996895) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps skill tools explicit and reads updated skill files from the same active run
+AgentWorker 'reader-run-1785669715755_5ecffa3996895' asyncRun() loop has finished.
+AgentWorker 'reader-run-1785669715755_5ecffa3996895': Running shutdown sequence on worker loop.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps skill tools explicit and reads updated skill files from the same active run
+AgentWorker 'reader-run-1785669715755_5ecffa3996895': Shutdown resource cleanup completed successfully.
+AgentWorker 'reader-run-1785669715755_5ecffa3996895': Shutdown sequence completed.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps skill tools explicit and reads updated skill files from the same active run
+Unregistered AgentContext for agent_id 'reader-run-1785669715755_5ecffa3996895'.
+AgentRuntime for 'reader-run-1785669715755_5ecffa3996895': Context unregistered.
+
+stdout | tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts > Configured skill on-demand loading active native runtime e2e > keeps skill tools explicit and reads updated skill files from the same active run
+AgentRuntime for 'reader-run-1785669715755_5ecffa3996895' stop() method completed.
+
+ ✓ tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts (1 test) 173ms
+stdout | tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:80355) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts > Tool catalog cleanup GraphQL e2e > does not expose removed local tools in LOCAL runtime catalog
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+Loading agent tool definitions...
+
+stdout | tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts > Tool catalog cleanup GraphQL e2e > does not expose removed local tools in LOCAL runtime catalog
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/configured-skill-on-demand-loading/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/configured-skill-on-demand-loading/autobyteus-server-ts
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Loaded tool group: Media Tools
+
+stdout | tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts > Tool catalog cleanup GraphQL e2e > does not expose removed local tools in LOCAL runtime catalog
+Successfully registered tool definition: 'publish_artifacts'
+Loaded tool group: Published Artifact Tools
+
+stdout | tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts > Tool catalog cleanup GraphQL e2e > does not expose removed local tools in LOCAL runtime catalog
+Successfully registered tool definition: 'send_message_to'
+Loaded tool group: Agent Communication Tools
+
+stdout | tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts > Tool catalog cleanup GraphQL e2e > does not expose removed local tools in LOCAL runtime catalog
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Loaded tool group: Task Delegation Tools
+
+stdout | tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts > Tool catalog cleanup GraphQL e2e > does not expose removed local tools in LOCAL runtime catalog
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Loaded tool group: Browser Tools
+
+ ✓ tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts (1 test) 62ms
+
+ Test Files  2 passed (2)
+      Tests  2 passed (2)
+   Start at  13:21:51
+   Duration  5.98s (transform 3.22s, setup 14ms, import 5.23s, tests 234ms, environment 0ms)
+
+$ pnpm -C autobyteus-ts exec vitest run tests/unit/agent/system-prompt-processor/available-skills-processor.test.ts tests/integration/agent/agent-skills.test.ts tests/integration/tools/file/read-file.test.ts tests/unit/memory/working-context-snapshot-bootstrapper.test.ts --no-watch
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/configured-skill-on-demand-loading/autobyteus-ts
+
+stdout | tests/unit/agent/system-prompt-processor/available-skills-processor.test.ts > AvailableSkillsProcessor > returns the original prompt unchanged when no skills are configured
+Agent 'test_agent': No configured skills. Skipping skill catalog.
+
+stdout | tests/unit/agent/system-prompt-processor/available-skills-processor.test.ts > AvailableSkillsProcessor > does not advertise registry-only skills when no skills are configured
+Agent 'test_agent': No configured skills. Skipping skill catalog.
+
+stdout | tests/unit/agent/system-prompt-processor/available-skills-processor.test.ts > AvailableSkillsProcessor > returns the original prompt unchanged when skill access mode is NONE
+Agent 'test_agent': Skill access mode is NONE. Skipping skill catalog.
+
+stdout | tests/unit/agent/system-prompt-processor/available-skills-processor.test.ts > AvailableSkillsProcessor > returns the original prompt unchanged when configured names do not resolve
+Agent 'test_agent': Configured skills produced no catalog entries. Skipping skill catalog.
+
+stdout | tests/unit/agent/system-prompt-processor/available-skills-processor.test.ts > AvailableSkillsProcessor > renders the exact configured catalog contract in configured order without skill bodies
+Agent 'test_agent': Added 2 configured skill catalog entries with paths. mode='PRELOADED_ONLY'.
+
+ ✓ tests/unit/agent/system-prompt-processor/available-skills-processor.test.ts (5 tests) 3ms
+stdout | tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > reads file content with line numbers
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > reads file content without line numbers
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > reads file with line range
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > rejects invalid line range
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > rejects missing path argument
+Successfully registered tool definition: 'read_file'
+
+stderr | tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > rejects missing path argument
+Invalid arguments for tool 'read_file': Required parameter 'path' is missing.
+
+stdout | tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > resolves relative paths from an explicit absolute base directory
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > rejects relative paths without an explicit base directory
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > returns empty string for empty file
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > throws when file does not exist
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > allows absolute paths outside the workspace root
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/read-file.test.ts > read_file tool (integration) > wraps IO errors
+Successfully registered tool definition: 'read_file'
+
+ ✓ tests/integration/tools/file/read-file.test.ts (11 tests) 14ms
+ ✓ tests/unit/memory/working-context-snapshot-bootstrapper.test.ts (5 tests) 12ms
+stdout | tests/integration/agent/agent-skills.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent/agent-skills.test.ts > AgentFactory skill integration > advertises configured skill metadata and exact entry path without injecting its body
+AgentFactory (Singleton) initialized.
+AgentRuntimeState initialized for agent_id 'testagent_tester_4541'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'testagent_tester_4541': No tools provided in config.
+Agent 'testagent_tester_4541': LLM instance 'DummyLLM' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'testagent_tester_4541'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'testagent_tester_4541' with config: 'TestAgent'.
+AgentWorker initialized for agent_id 'testagent_tester_4541'.
+Registered AgentContext for agent_id 'testagent_tester_4541'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'testagent_tester_4541'. Context registered.
+Agent facade initialized for agent_id 'testagent_tester_4541'.
+Agent 'testagent_tester_4541' created and stored successfully.
+Agent 'testagent_tester_4541': Added 1 configured skill catalog entries with paths. mode='PRELOADED_ONLY'.
+
+stdout | tests/integration/agent/agent-skills.test.ts > AgentFactory skill integration > leaves the prompt unchanged for registry-only skills with an empty configured set
+AgentFactory (Singleton) initialized.
+AgentRuntimeState initialized for agent_id 'generalist_assistant_3941'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'generalist_assistant_3941': No tools provided in config.
+Agent 'generalist_assistant_3941': LLM instance 'DummyLLM' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'generalist_assistant_3941'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'generalist_assistant_3941' with config: 'Generalist'.
+AgentWorker initialized for agent_id 'generalist_assistant_3941'.
+Registered AgentContext for agent_id 'generalist_assistant_3941'. Total registered contexts: 2
+AgentRuntime initialized for agent_id 'generalist_assistant_3941'. Context registered.
+Agent facade initialized for agent_id 'generalist_assistant_3941'.
+Agent 'generalist_assistant_3941' created and stored successfully.
+Agent 'generalist_assistant_3941': No configured skills. Skipping skill catalog.
+
+ ✓ tests/integration/agent/agent-skills.test.ts (2 tests) 8ms
+
+ Test Files  4 passed (4)
+      Tests  23 passed (23)
+   Start at  13:21:57
+   Duration  1.09s (transform 1.06s, setup 56ms, import 1.44s, tests 36ms, environment 0ms)
+
+$ pnpm -C autobyteus-server-ts exec vitest run tests/e2e/skills/skills-graphql.e2e.test.ts tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts tests/unit/agent-execution/backends/claude/backend/claude-session-bootstrapper.test.ts tests/unit/agent-execution/backends/claude/claude-workspace-skill-materializer.test.ts --no-watch
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/configured-skill-on-demand-loading/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/configured-skill-on-demand-loading/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:80387) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/configured-skill-on-demand-loading/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/configured-skill-on-demand-loading/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-skills-data-vOBvbo
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-skills-data-vOBvbo/.env
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > materializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > materializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+Initialized server settings service with 19 predefined settings
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > materializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+Agent definition cache populated with 2 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > materializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+[2026-08-02T11:22:03.712Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-08-02T11:22:03.713Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > materializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+[2026-08-02T11:22:03.713Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > materializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > materializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+Agent definition cache populated with 2 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > materializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > materializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > materializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+[2026-08-02T11:22:03.726Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > materializes imported shared-agent canonical single-skill and multi-skill layouts for Codex runtime
+[2026-08-02T11:22:03.727Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+Agent definition cache populated with 2 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+[2026-08-02T11:22:03.740Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+[2026-08-02T11:22:03.740Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+Agent definition cache populated with 2 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+Resolved system prompt from fresh definition instructions for AgentDefinition autobyteus-single-agent-1785669723727_87ca225aa0115.
+Resolved skill 'autobyteus_single_1785669723727_87ca225aa0115' to path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1785669723727_87ca225aa0115-KYzJJn/agents/autobyteus-single-agent-1785669723727_87ca225aa0115/skills/autobyteus_single_1785669723727_87ca225aa0115
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+Resolved system prompt from fresh definition instructions for AgentDefinition autobyteus-multi-agent-1785669723727_87ca225aa0115.
+Resolved skill 'autobyteus_tone_1785669723727_87ca225aa0115' to path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1785669723727_87ca225aa0115-KYzJJn/agents/autobyteus-multi-agent-1785669723727_87ca225aa0115/skills/autobyteus_tone_1785669723727_87ca225aa0115
+Resolved skill 'autobyteus_outline_1785669723727_87ca225aa0115' to path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1785669723727_87ca225aa0115-KYzJJn/agents/autobyteus-multi-agent-1785669723727_87ca225aa0115/skills/autobyteus_outline_1785669723727_87ca225aa0115
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+[2026-08-02T11:22:03.747Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > passes imported canonical single-skill and multi-skill paths to the AutoByteus runtime config
+[2026-08-02T11:22:03.747Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+Agent definition cache populated with 3 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+[2026-08-02T11:22:03.758Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+[2026-08-02T11:22:03.759Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+Agent definition cache populated with 3 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1785669723748_10299241165fc-NmY6Oy/agents/shared-single-1785669723748_10299241165fc/skills/single_private_1785669723748_10299241165fc' with max_depth=null
+Creating on-demand SkillWorkspace for: single_private_1785669723748_10299241165fc
+Creating on-demand SkillWorkspace for: single_private_1785669723748_10299241165fc
+Creating on-demand SkillWorkspace for: tone_1785669723748_10299241165fc
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1785669723748_10299241165fc-NmY6Oy/agents/shared-single-1785669723748_10299241165fc/skills/single_private_1785669723748_10299241165fc.
+Initialized SkillWorkspace for skill 'single_private_1785669723748_10299241165fc' at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1785669723748_10299241165fc-NmY6Oy/agents/shared-single-1785669723748_10299241165fc/skills/single_private_1785669723748_10299241165fc
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1785669723748_10299241165fc-NmY6Oy/agents/shared-single-1785669723748_10299241165fc/skills/single_private_1785669723748_10299241165fc.
+Initialized SkillWorkspace for skill 'single_private_1785669723748_10299241165fc' at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1785669723748_10299241165fc-NmY6Oy/agents/shared-single-1785669723748_10299241165fc/skills/single_private_1785669723748_10299241165fc
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1785669723748_10299241165fc-NmY6Oy/agents/shared-multi-1785669723748_10299241165fc/skills/tone_1785669723748_10299241165fc.
+Initialized SkillWorkspace for skill 'tone_1785669723748_10299241165fc' at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1785669723748_10299241165fc-NmY6Oy/agents/shared-multi-1785669723748_10299241165fc/skills/tone_1785669723748_10299241165fc
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+Created WorkspaceFileExplorer for skill_ws_single_private_1785669723748_10299241165fc (graphql-folder-children).
+Created WorkspaceFileExplorer for skill_ws_single_private_1785669723748_10299241165fc (graphql-file-content).
+Created WorkspaceFileExplorer for skill_ws_tone_1785669723748_10299241165fc (graphql-file-content).
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1785669723748_10299241165fc-NmY6Oy/agents/shared-single-1785669723748_10299241165fc/skills/single_private_1785669723748_10299241165fc' completed in 0.0070 seconds.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+[2026-08-02T11:22:03.786Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility
+[2026-08-02T11:22:03.786Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+[2026-08-02T11:22:03.798Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+[2026-08-02T11:22:03.799Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 2 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1785669723786_b431d020561a7-HjgvC6/agent-teams/team-1785669723786_b431d020561a7/skills/team_shared_1785669723786_b431d020561a7' with max_depth=null
+Creating on-demand SkillWorkspace for: team_shared_1785669723786_b431d020561a7
+Creating on-demand SkillWorkspace for: team_shared_1785669723786_b431d020561a7
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1785669723786_b431d020561a7-HjgvC6/agent-teams/team-1785669723786_b431d020561a7/skills/team_shared_1785669723786_b431d020561a7.
+Initialized SkillWorkspace for skill 'team_shared_1785669723786_b431d020561a7' at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1785669723786_b431d020561a7-HjgvC6/agent-teams/team-1785669723786_b431d020561a7/skills/team_shared_1785669723786_b431d020561a7
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1785669723786_b431d020561a7-HjgvC6/agent-teams/team-1785669723786_b431d020561a7/skills/team_shared_1785669723786_b431d020561a7.
+Initialized SkillWorkspace for skill 'team_shared_1785669723786_b431d020561a7' at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1785669723786_b431d020561a7-HjgvC6/agent-teams/team-1785669723786_b431d020561a7/skills/team_shared_1785669723786_b431d020561a7
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+Created WorkspaceFileExplorer for skill_ws_team_shared_1785669723786_b431d020561a7 (graphql-folder-children).
+Created WorkspaceFileExplorer for skill_ws_team_shared_1785669723786_b431d020561a7 (graphql-file-content).
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-package-private-local-1785669723786_b431d020561a7-HjgvC6/agent-teams/team-1785669723786_b431d020561a7/skills/team_shared_1785669723786_b431d020561a7' completed in 0.0060 seconds.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+[2026-08-02T11:22:03.819Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts > Agent package private skills GraphQL e2e > imports team-local private and team-shared skills with context guards plus warn-and-skip guards
+[2026-08-02T11:22:03.819Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+
+ ✓ tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts (4 tests) 177ms
+stdout | tests/e2e/skills/skills-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:80389) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/skills/skills-graphql.e2e.test.ts > Skills GraphQL e2e > creates and queries a skill
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/configured-skill-on-demand-loading/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/configured-skill-on-demand-loading/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-sL4jxU
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-sL4jxU/.env
+
+stdout | tests/e2e/skills/skills-graphql.e2e.test.ts > Skills GraphQL e2e > does not expose removed skill history fields, operations, or types
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-asySQK
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-asySQK/.env
+
+stdout | tests/e2e/skills/skills-graphql.e2e.test.ts > Skills GraphQL e2e > uploads a file and reads content/tree
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-qi2GGO
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-qi2GGO/.env
+
+stdout | tests/e2e/skills/skills-graphql.e2e.test.ts > Skills GraphQL e2e > uploads a file and reads content/tree
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-qi2GGO/skills/file_skill' with max_depth=null
+
+stdout | tests/e2e/skills/skills-graphql.e2e.test.ts > Skills GraphQL e2e > uploads a file and reads content/tree
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-qi2GGO/skills/file_skill' completed in 0.0020 seconds.
+
+stdout | tests/e2e/skills/skills-graphql.e2e.test.ts > Skills GraphQL e2e > reloads the skill catalog after external file edits and returns refreshed sources
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-XBnFL5
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-XBnFL5/.env
+
+stdout | tests/e2e/skills/skills-graphql.e2e.test.ts > Skills GraphQL e2e > deletes a skill
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-YmK8pH
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-graphql-YmK8pH/.env
+
+ ✓ tests/e2e/skills/skills-graphql.e2e.test.ts (5 tests) 166ms
+ ✓ tests/unit/agent-execution/backends/claude/claude-workspace-skill-materializer.test.ts (5 tests) 15ms
+stdout | tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:80391) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stderr | tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts > CodexThreadBootstrapper > falls back to workspace materialization when the discoverable-skill probe fails
+Failed to preflight discoverable Codex skills for '/tmp/codex-workspace'; falling back to workspace materialization: Error: skills/list failed
+
+ ✓ tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts (23 tests) 11ms
+stdout | tests/unit/agent-execution/backends/claude/backend/claude-session-bootstrapper.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:80395) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/agent-execution/backends/claude/backend/claude-session-bootstrapper.test.ts (1 test) 3ms
+
+ Test Files  5 passed (5)
+      Tests  38 passed (38)
+   Start at  13:21:59
+   Duration  7.74s (transform 3.17s, setup 20ms, import 6.58s, tests 372ms, environment 0ms)
+
+$ git diff --check

@@ -1,0 +1,63 @@
+
+> autobyteus@1.4.34 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run components/fileExplorer/__tests__/FileViewer.spec.ts components/fileExplorer/viewers/__tests__/HtmlPreviewer.spec.ts components/fileExplorer/viewers/__tests__/MarkdownPreviewer.spec.ts utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts components/mobile/__tests__/MobileFileViewer.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/event-monitor-html-file-preview/autobyteus-web
+
+stderr | components/fileExplorer/viewers/__tests__/HtmlPreviewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/fileExplorer/__tests__/FileViewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileFileViewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/fileExplorer/viewers/__tests__/MarkdownPreviewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/fileExplorer/__tests__/FileViewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileFileViewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/fileExplorer/viewers/__tests__/HtmlPreviewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/fileExplorer/viewers/__tests__/MarkdownPreviewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/eventMonitorFilePaths/__tests__/absoluteFilePathAction.spec.ts (45 tests) 7ms
+ ✓ components/fileExplorer/viewers/__tests__/HtmlPreviewer.spec.ts (3 tests) 18ms
+ ✓ components/fileExplorer/__tests__/FileViewer.spec.ts (6 tests) 23ms
+ ✓ components/fileExplorer/viewers/__tests__/MarkdownPreviewer.spec.ts (2 tests) 15ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts (18 tests) 133ms
+ ✓ components/mobile/__tests__/MobileFileViewer.spec.ts (6 tests) 57ms
+
+ Test Files  6 passed (6)
+      Tests  80 passed (80)
+   Start at  19:03:37
+   Duration  7.95s (transform 3.75s, setup 39.98s, collect 635ms, tests 253ms, environment 2.23s, prepare 1.77s)
+

@@ -447,6 +447,86 @@ describe('TeamStreamingService', () => {
     expect(teamContext.isSubscribed).toBe(false);
   });
 
+  it('flushes interleaved member content before a semantic event with per-context receipt recency', () => {
+    vi.useFakeTimers();
+    const { callbacks, service } = createWsHarness();
+    const teamContext = withEventMonitorPresentationState(createTeamContextWithWorker());
+    const coordinator = teamContext.leafAgentContextsByRouteKey.get('coordinator');
+    const worker = teamContext.leafAgentContextsByRouteKey.get('worker');
+    service.connect('team-1', teamContext);
+    const onMessage = callbacks.get('onMessage')!;
+    const sendContent = (route: string, runId: string, delta: string, receivedAt: string) => {
+      vi.setSystemTime(new Date(receivedAt));
+      onMessage(JSON.stringify({
+        type: 'SEGMENT_CONTENT',
+        payload: {
+          id: `segment-${route}`,
+          turn_id: 'turn-1',
+          segment_type: 'text',
+          delta,
+          agent_id: runId,
+          member_route_key: route,
+          member_path: [route],
+          source_route_key: route,
+          source_path: [route],
+        },
+      }));
+    };
+
+    sendContent('worker', 'worker-run-1', 'A1', '2026-08-01T10:00:00.001Z');
+    sendContent('coordinator', 'coordinator-run-1', 'B', '2026-08-01T10:00:00.002Z');
+    sendContent('worker', 'worker-run-1', 'A2', '2026-08-01T10:00:00.003Z');
+    expect(worker.conversation.messages).toEqual([]);
+    expect(coordinator.conversation.messages).toEqual([]);
+
+    onMessage(JSON.stringify({
+      type: 'AGENT_STATUS',
+      payload: {
+        status: 'running',
+        can_interrupt: true,
+        agent_id: 'worker-run-1',
+        member_route_key: 'worker',
+        member_path: ['worker'],
+        source_route_key: 'worker',
+        source_path: ['worker'],
+      },
+    }));
+
+    expect(worker.conversation.messages[0].segments[0].content).toBe('A1A2');
+    expect(coordinator.conversation.messages[0].segments[0].content).toBe('B');
+    expect(worker.conversation.updatedAt).toBe('2026-08-01T10:00:00.003Z');
+    expect(coordinator.conversation.updatedAt).toBe('2026-08-01T10:00:00.002Z');
+    expect(worker.state.eventMonitorPresentationRevision).toBe(1);
+    expect(coordinator.state.eventMonitorPresentationRevision).toBe(1);
+
+    sendContent('worker', 'worker-run-1', 'C1', '2026-08-01T10:00:00.004Z');
+    onMessage(JSON.stringify({
+      type: 'SEGMENT_CONTENT',
+      payload: {
+        id: 'segment-worker-2',
+        turn_id: 'turn-1',
+        segment_type: 'reasoning',
+        delta: 'C2',
+        agent_id: 'worker-run-1',
+        member_route_key: 'worker',
+        member_path: ['worker'],
+        source_route_key: 'worker',
+        source_path: ['worker'],
+      },
+    }));
+    expect(worker.conversation.messages[0].segments).toHaveLength(1);
+
+    teamContext.isSubscribed = true;
+    callbacks.get('onDisconnect')?.('remote closed');
+
+    expect(worker.conversation.messages[0].segments).toHaveLength(2);
+    expect(worker.conversation.messages[0].segments[0].content).toBe('A1A2C1');
+    expect(worker.conversation.messages[0].segments[1].content).toBe('C2');
+    expect(worker.state.eventMonitorPresentationRevision).toBe(2);
+    expect(teamContext.isSubscribed).toBe(false);
+    vi.useRealTimers();
+  });
+
   it('reattaches lifecycle callbacks to the latest team context', () => {
     const callbacks = new Map<string, (payload?: any) => void>();
     const wsClient = {
@@ -1358,6 +1438,27 @@ describe('TeamStreamingService', () => {
 
     callbacks.get('onMessage')?.(
       JSON.stringify({
+        type: 'SEGMENT_CONTENT',
+        payload: {
+          id: 'task-agent-segment-1',
+          turn_id: 'task-agent-turn-1',
+          segment_type: 'text',
+          delta: 'Nested task-agent output',
+          agent_id: 'task-agent-run-1',
+          member_route_key: 'worker',
+          member_path: ['worker'],
+          source_route_key: 'worker',
+          source_path: ['worker'],
+          task_agent_instance_id: 'task-agent-instance-1',
+          task_agent_run_id: 'task-agent-run-1',
+          task_id: 'task-1',
+        },
+      }),
+    );
+    expect(taskContext.conversation.messages).toHaveLength(0);
+
+    callbacks.get('onMessage')?.(
+      JSON.stringify({
         type: 'MEMBER_INPUT_MESSAGE',
         payload: {
           content: 'Task-agent work packet',
@@ -1373,8 +1474,9 @@ describe('TeamStreamingService', () => {
       }),
     );
 
-    expect(taskContext.conversation.messages).toHaveLength(1);
-    expect(taskContext.conversation.messages[0]).toMatchObject({
+    expect(taskContext.conversation.messages).toHaveLength(2);
+    expect(taskContext.conversation.messages[0].segments[0].content).toBe('Nested task-agent output');
+    expect(taskContext.conversation.messages[1]).toMatchObject({
       type: 'user',
       text: 'Task-agent work packet',
       messageId: 'work-packet-1',

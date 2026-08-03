@@ -45,6 +45,15 @@ describe('absolute Event Monitor file path policy', () => {
     });
   });
 
+  it('classifies an SVG file URI as an Image action candidate', () => {
+    expect(resolveEventMonitorMarkdownFileDestination('file:///tmp/DIAGRAM.SVG')).toEqual({
+      kind: 'valid',
+      normalizedCandidate: '/tmp/DIAGRAM.SVG',
+      previewType: 'Image',
+      rawDestination: 'file:///tmp/DIAGRAM.SVG',
+    });
+  });
+
   it('preserves supported bare absolute-link resolution as a valid action candidate', () => {
     expect(resolveEventMonitorMarkdownFileDestination('/tmp/report%20final.md')).toEqual({
       kind: 'valid',
@@ -144,6 +153,7 @@ describe('absolute Event Monitor file path policy', () => {
       ['/tmp/readme.md', 'Text'],
       ['/tmp/preview.lua', 'Text'],
       ['/tmp/screenshot.png', 'Image'],
+      ['/tmp/diagram.svg', 'Image'],
       ['/tmp/recording.mp3', 'Audio'],
       ['/tmp/demo.mp4', 'Video'],
       ['/tmp/report.csv', 'Excel'],

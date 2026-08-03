@@ -176,21 +176,23 @@ function mergeSegmentStartMetadata(
 export function handleSegmentContent(
   payload: SegmentContentPayload,
   context: AgentContext
-) {
+): boolean {
   if (typeof payload.id !== 'string' || payload.id.trim().length === 0) {
     console.warn('[SegmentHandler] Dropping SEGMENT_CONTENT with invalid id', payload);
-    return;
+    return false;
   }
   const delta = typeof payload.delta === 'string' ? payload.delta : '';
   if (!delta) {
-    return;
+    return false;
   }
   let segment = findSegmentById(context, payload.id, payload.segment_type);
+  let segmentCreated = false;
   if (!segment) {
     segment = createSyntheticSegmentFromContent(payload.id, payload.turn_id, payload.segment_type ?? 'text', context);
+    segmentCreated = true;
   }
 
-  appendContentToSegment(segment, delta);
+  return appendContentToSegment(segment, delta) || segmentCreated;
 }
 
 /**
@@ -250,7 +252,6 @@ export function findOrCreateAIMessage(context: AgentContext): AIMessage {
   };
 
   context.conversation.messages.push(newMessage);
-  context.conversation.updatedAt = new Date().toISOString();
 
   return newMessage;
 }

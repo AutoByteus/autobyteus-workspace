@@ -144,6 +144,29 @@ audio, video, PDF, CSV, and Excel content. Failure states stay in the normal
 Files/viewer status surface and do not navigate the application or rewrite the
 original Event Monitor content.
 
+#### HTML Preview Resource Contract
+
+The shared `FileViewer` passes `relativeResourceContext` through to
+`HtmlPreviewer` when a text file is opened in preview mode. HTML source
+selection is explicit:
+
+- A workspace-relative file with `{ kind: "workspace", workspaceId }` is
+  rendered from the bound REST static route for that workspace. The relative
+  path is encoded segment-by-segment.
+- A trusted local absolute file, including an Event Monitor Electron preview,
+  and any HTML file without workspace context is rendered from the content
+  already loaded into a managed Blob URL. The absolute host path is never
+  interpolated into a workspace static URL or sent to the server.
+- Both paths use the existing sandboxed iframe. Blob URLs are revoked when
+  content/source changes and when the viewer is unmounted.
+
+The server remains authoritative for static-route containment. Absolute or
+traversal candidates sent to the static route are rejected and must not expose
+an outside HTML payload. Do not restore path-only or global-active-workspace
+inference to select a static URL. Relative assets in local HTML retain the
+existing Blob-base limitation; expanding that behavior requires an approved
+follow-up resource/security design.
+
 Event Monitor raw Markdown `file:` destinations use the same scoped capability
 as absolute-path candidates. Only empty-authority absolute URIs with valid
 paths and supported preview types become actions. Authorities, query/fragment
@@ -997,7 +1020,7 @@ if (wsFileExplorerState.filesToIgnoreNextModify.has(node.path)) {
 function determineFileType(
   filePath: string
 ): "Text" | "Image" | "Audio" | "Video" | "Excel" {
-  const imageExtensions = [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"];
+  const imageExtensions = [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".svg"];
   const audioExtensions = [".mp3", ".wav", ".m4a", ".flac", ".ogg", ".aac"];
   const videoExtensions = [".mp4", ".mov", ".avi", ".mkv", ".webm"];
   const excelExtensions = [".xlsx", ".xls", ".xlsm", ".csv"];

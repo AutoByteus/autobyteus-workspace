@@ -1,6 +1,6 @@
 <template>
   <section class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
-    <div class="flex items-start justify-between gap-4">
+    <div class="flex flex-col items-start gap-4 lg:flex-row lg:justify-between">
       <div class="space-y-3">
         <div class="flex items-center gap-3">
           <div class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-50 text-blue-600">
@@ -78,7 +78,7 @@
               <button
                 type="button"
                 class="text-xs font-medium text-blue-700 transition-colors hover:text-blue-800 disabled:cursor-not-allowed disabled:opacity-50"
-                :disabled="busy || voiceInputStore.isRecording || voiceInputStore.isTranscribing"
+                :disabled="busy || voiceInputStore.isStarting || voiceInputStore.isRecording || voiceInputStore.isTranscribing"
                 @click="refreshAudioInputs"
               >
                 {{ t('settings.components.settings.VoiceInputExtensionCard.refresh') }}
@@ -86,7 +86,7 @@
             </div>
             <select
               class="w-full max-w-sm rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900"
-              :disabled="busy || extension.status !== 'installed'"
+              :disabled="busy || extension.status !== 'installed' || voiceInputStore.isStarting || voiceInputStore.isRecording || voiceInputStore.isTranscribing"
               :value="selectedAudioInputValue"
               @change="handleAudioInputDeviceChange"
             >
@@ -106,16 +106,17 @@
         </div>
 
         <div v-if="extension.status === 'installed'" class="space-y-3 rounded-xl border border-gray-200 bg-gray-50 p-4">
-          <div class="flex items-center justify-between gap-3">
+          <div class="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p class="text-sm font-medium text-gray-900">{{ t('settings.components.settings.VoiceInputExtensionCard.test_voice_input') }}</p>
               <p class="text-xs text-gray-600">{{ t('settings.components.settings.VoiceInputExtensionCard.record_a_short_sample_here_to') }}</p>
             </div>
             <button
               type="button"
-              class="rounded-md px-3 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+              class="self-start rounded-md px-3 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60 sm:self-auto"
               :class="isSettingsTestRecording ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-blue-600 text-white hover:bg-blue-700'"
               :disabled="settingsTestButtonDisabled"
+              :aria-busy="isSettingsTestStarting ? 'true' : undefined"
               @click="handleSettingsTestToggle"
             >
               {{ settingsTestButtonLabel }}
@@ -147,13 +148,19 @@
           </div>
 
           <div
-            v-if="isSettingsTestRecording || isSettingsTestTranscribing"
+            v-if="isSettingsTestStarting || isSettingsTestRecording || isSettingsTestTranscribing"
             class="rounded-lg border px-3 py-2 text-sm"
             :class="isSettingsTestRecording ? 'border-red-200 bg-red-50 text-red-700' : 'border-blue-200 bg-blue-50 text-blue-700'"
           >
-            {{ isSettingsTestRecording
-              ? t('settings.components.settings.VoiceInputExtensionCard.test.recording')
-              : t('settings.components.settings.VoiceInputExtensionCard.test.transcribing') }}
+            <span v-if="isSettingsTestStarting" class="inline-flex items-center gap-2">
+              <span class="h-3.5 w-3.5 animate-spin rounded-full border-2 border-blue-200 border-t-blue-700"></span>
+              {{ t('settings.components.settings.VoiceInputExtensionCard.test.starting') }}
+            </span>
+            <template v-else>
+              {{ isSettingsTestRecording
+                ? t('settings.components.settings.VoiceInputExtensionCard.test.recording')
+                : t('settings.components.settings.VoiceInputExtensionCard.test.transcribing') }}
+            </template>
           </div>
 
           <div v-if="settingsTestResult" class="space-y-2 rounded-lg border border-gray-200 bg-white px-3 py-3">
@@ -189,11 +196,11 @@
         <div class="text-xs text-gray-500">
           {{ t('settings.components.settings.VoiceInputExtensionCard.runtime', { value: extension.runtimeVersion || t('settings.components.settings.VoiceInputExtensionCard.notInstalled') }) }}
           <span v-if="extension.modelVersion"> · {{ t('settings.components.settings.VoiceInputExtensionCard.model', { value: extension.modelVersion }) }}</span>
-          <span v-if="extension.backendKind"> · {{ t('settings.components.settings.VoiceInputExtensionCard.backend', { value: backendLabel }) }}</span>
+          <span v-if="extension.backendKind"> · {{ t('settings.components.settings.VoiceInputExtensionCard.backend', { value: backendLabel || '' }) }}</span>
         </div>
       </div>
 
-      <div class="flex items-center gap-2">
+      <div class="flex flex-wrap items-center gap-2 lg:justify-end">
         <button
           v-if="extension.status === 'installing'"
           type="button"
@@ -260,7 +267,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue';
+import { computed, onBeforeUnmount, onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import type { ManagedExtensionState } from '~/electron/extensions/types';
 import { useLocalization } from '~/composables/useLocalization';
@@ -287,10 +294,9 @@ const voiceInputStore = useVoiceInputStore();
 const { latestResult } = storeToRefs(voiceInputStore);
 const { t } = useLocalization();
 
-onMounted(async () => {
-  await voiceInputStore.initialize();
-  await voiceInputStore.refreshAudioInputDevices();
-});
+onMounted(async () => { await voiceInputStore.initialize(); await voiceInputStore.refreshAudioInputDevices(); });
+
+onBeforeUnmount(() => { void voiceInputStore.cancelOperationForSource('settings-test'); });
 
 const canOpenFolder = computed(() => props.extension.status === 'installed' || props.extension.status === 'error');
 
@@ -376,18 +382,25 @@ const isSettingsTestRecording = computed(() => (
   voiceInputStore.isRecording && voiceInputStore.recordingSource === 'settings-test'
 ));
 
+const isSettingsTestStarting = computed(() => (
+  voiceInputStore.isStarting && voiceInputStore.recordingSource === 'settings-test'
+));
+
 const isSettingsTestTranscribing = computed(() => (
   voiceInputStore.isTranscribing && settingsTestResult.value?.source === 'settings-test'
 ));
 
 const settingsTestButtonLabel = computed(() => (
-  isSettingsTestRecording.value
-    ? t('settings.components.settings.VoiceInputExtensionCard.test.stop')
-    : t('settings.components.settings.VoiceInputExtensionCard.test.start')
+  isSettingsTestStarting.value
+    ? t('settings.components.settings.VoiceInputExtensionCard.test.starting')
+    : isSettingsTestRecording.value
+      ? t('settings.components.settings.VoiceInputExtensionCard.test.stop')
+      : t('settings.components.settings.VoiceInputExtensionCard.test.start')
 ));
 
 const showSettingsTestReset = computed(() => (
-  isSettingsTestRecording.value
+  isSettingsTestStarting.value
+  || isSettingsTestRecording.value
   || settingsTestResult.value?.outcome === 'error'
   || settingsTestResult.value?.outcome === 'recording'
 ));
@@ -438,7 +451,9 @@ const audioInputStatusClass = computed(() => {
 const settingsTestButtonDisabled = computed(() => (
   props.busy
   || !props.extension.enabled
+  || voiceInputStore.isStarting
   || voiceInputStore.isTranscribing
+  || (voiceInputStore.isRecording && voiceInputStore.recordingSource !== 'settings-test')
   || voiceInputStore.microphonePermissionState === 'denied'
   || voiceInputStore.selectedAudioInputUnavailable
 ));

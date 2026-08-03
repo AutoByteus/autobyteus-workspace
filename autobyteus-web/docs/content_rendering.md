@@ -50,7 +50,7 @@ flowchart TD
 | Type      | Extensions                      | Viewer Component  |
 | --------- | ------------------------------- | ----------------- |
 | Text/Code | `.js`, `.py`, `.ts`, etc.       | MonacoEditor      |
-| Image     | `.jpg`, `.png`, `.gif`, `.webp` | ImageViewer       |
+| Image     | `.jpg`, `.jpeg`, `.png`, `.gif`, `.bmp`, `.webp`, `.svg` | ImageViewer       |
 | Video     | `.mp4`, `.mov`, `.webm`         | VideoPlayer       |
 | Audio     | `.mp3`, `.wav`, `.m4a`          | AudioPlayer       |
 | PDF       | `.pdf`                          | PdfViewer         |
@@ -156,7 +156,11 @@ attribute, artifact/reference record, or API request.
 Action eligibility and File Explorer type routing share the pure
 `utils/fileExplorer/fileTypePolicy.ts` policy. Supported text/code/Markdown/HTML
 families (including `.lua`) and the established image, audio, video, PDF, CSV,
-and Excel families may produce an Event Monitor action. ZIP/DMG/PKG/application
+and Excel families may produce an Event Monitor action. The image family
+includes `.svg` (case-insensitively); after classification, workspace, trusted
+local, and Artifacts-tab content continues through its existing authorized
+content boundary into `FileViewer` and the URL-based `ImageViewer` rather than
+an SVG source or inline-DOM renderer. ZIP/DMG/PKG/application
 bundles, archives, generic binaries, and unknown extensions remain literal
 source-faithful content with no Files affordance, filesystem read, media URL,
 workspace fetch, or panel switch. A supported-looking path that is missing,
@@ -223,6 +227,32 @@ The server remains authoritative for containment. Workspace content paths are
 resolved lexically below the selected workspace root, and absolute or sibling
 prefix traversal candidates are rejected even if a client bypasses frontend
 normalization. Existing symlink semantics are unchanged.
+
+### HTML Preview Source Selection
+
+`FileViewer.vue` forwards the file's optional `relativeResourceContext` to
+`HtmlPreviewer.vue`. The HTML adapter chooses its iframe source from that
+explicit resource identity; it must not infer workspace authority from a
+global active-workspace store or from the file path alone.
+
+- Workspace-relative HTML with `{ kind: "workspace", workspaceId }` uses the
+  bound REST static route, with each path segment encoded:
+  `/rest/workspaces/<workspaceId>/static/<relative-path>`.
+- Local absolute HTML and HTML without workspace resource context use the
+  already-loaded content in a managed `Blob` URL. The adapter does not send
+  the host absolute path to a workspace route. Blob URLs are revoked when the
+  source changes or the viewer unmounts.
+- The iframe remains sandboxed with `allow-scripts allow-same-origin` for both
+  source strategies. Mobile workspace HTML continues to use the raw,
+  read-only mobile presentation described above rather than this rich iframe
+  path.
+
+The backend static route remains the containment authority. An absolute path
+or traversal candidate must not be converted into a workspace static URL or
+used to bypass the workspace boundary; the server rejects such candidates
+without returning the outside file payload. Relative local HTML assets loaded
+from the existing Blob base may retain browser-origin limitations; changing
+that behavior requires a separate trusted-resource design.
 
 ### Mermaid Support
 
