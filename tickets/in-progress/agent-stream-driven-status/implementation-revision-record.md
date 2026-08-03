@@ -11,6 +11,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-003 | `architecture_reviewer`; `design-review-report.md`; `ARCH-REV-004` | `ARCH-FIND-003` resolved by `SR-004` | `Expanded Rework` | `SR-002`, `SR-004`, `ARCH-REV-002`, `ARCH-REV-004`, preserved `CRR-002`; `API-REV N/A`, `DR N/A` | Manager-owned binary team lifecycle, scoped leaf snapshots, aggregate removal, and frontend activity/pending contraction implemented; focused checks pass; ready for source re-review |
 | IR-004 | `architecture_reviewer`; `design-review-report.md`; `ARCH-REV-005` after `CRR-003` | `CODE-FIND-002`, `CODE-FIND-003` | `Design-Impact Rework + Local Fix` | `SR-005`, `ARCH-REV-005`, `CRR-003`; preserved `IR-001`–`IR-003`; `API-REV N/A`, `DR N/A` | Single-coordinate-frame task-team stream scope and stale manager-double fix implemented; focused checks pass; ready for source re-review |
 | IR-005 | `architecture_reviewer`; `design-review-report.md`; `ARCH-REV-006` after user feedback during `DR-004` | `N/A` | `User-Approved Presentation Change` | `SR-006`, `ARCH-REV-006`; preserves `CRR-004`, `API-REV-002`, `CRR-006`, `DR-004` baseline | Binary exact-run and any-displayed-child group activity dots implemented; focused checks pass; ready for source review |
+| IR-006 | `architecture_reviewer`; `design-review-report.md`; `ARCH-REV-008` after `ARCH-REV-007` | `ARCH-FIND-004` resolved in design | `User-Approved Defect Refinement` | `SR-007`, `SR-008`, `ARCH-REV-007`, `ARCH-REV-008`; preserves `CRR-007`, `API-REV-003`, `CRR-008`, `DR-005` baseline | Exact Codex steering, discriminated interrupt results, and failure-safe frontend admission implemented; focused checks pass; ready for source review |
 
 ## Revision Entries
 
@@ -179,3 +180,35 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
   - Delivery-owned protected artifact hashes, frontend-only boundary, forbidden aggregate/conversion scan, source-size guard, and `git diff --check`: pass.
 - Next recipient or routing: `code_reviewer` for `IR-005` source review. API/E2E remains blocked until it passes, then must investigate `SR-006` afresh.
 - Remaining limitations or risks: no authenticated live-running-team browser fixture was available; mounted rendering/interaction is complete, but realistic browser-equivalent validation and a rebuilt delivery candidate remain downstream work. Product iteration callback is `Not Required` because this revision implements the approved user correction.
+
+### IR-006 — Preserve Codex turn identity and complete interrupt attempts observably
+
+- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/design-review-report.md`; `ARCH-REV-008` after `ARCH-REV-007` returned `ARCH-FIND-004`
+- Triggering finding IDs: `ARCH-FIND-004` resolved by the approved `SR-008` design; no new architecture finding
+- Classification: `User-Approved Defect Refinement`
+- Prior authoritative result: `SR-006` passed `CRR-007`, `API-REV-003`, `CRR-008`, and reached `DR-005`. Live verification then exposed Codex current-turn replacement and log-only interrupt failures. `ARCH-REV-007` accepted the provider/server result design but failed the frontend immediate-admission edge; `ARCH-REV-008` passed the complete `SR-008` design.
+- Current authoritative result: Implemented in source/test commit `274086704a58fb837c61159bf2a3274cb56c176f`; focused implementation checks pass; ready for source review.
+- Related solution revision IDs: `SR-007`, `SR-008`, preserving `SR-002`, `SR-004`, `SR-005`, `SR-006`
+- Related architecture-review revision IDs: `ARCH-REV-007`, `ARCH-REV-008`
+- Related code-review revision IDs: accepted prior source/test reviews `CRR-007`, `CRR-008`; current source review pending
+- Related API/E2E revision IDs: accepted prior presentation state `API-REV-003`; fresh `SR-008` investigation/execution pending
+- Related delivery revision IDs: `DR-005` implementation start; its Electron candidate is superseded for completion by the approved defect correction
+- Why this implementation revision is recorded: It executes the user-approved live-defect correction while preserving the accepted runtime-neutral lifecycle/team/presentation architecture and adds the missing failure-safe transport admission transition required by `ARCH-FIND-004`.
+- Approved behavior or requirement IDs affected: `BEH-010`, `BEH-011`; `REQ-002`, `REQ-005`, `REQ-008`, `REQ-012`, `REQ-017`, `REQ-019`, `REQ-021`, `REQ-022`; `AC-002`, `AC-004`, `AC-011`, `AC-015`, `AC-021`, `AC-027`, `AC-028`, `AC-029`; preserved `BEH-001`–`BEH-009`.
+- Implementation delta:
+  - Replaced `CodexThread.sendTurn` with serialized `submitInput`, strict idle start versus identified current-turn steer, method-specific response parsing, exact-A validation/preservation, terminal-response guard, and no fallback.
+  - Added structured Codex submission errors and preserved their code/message through the backend operation result without adding provider fields to the runtime-neutral contract.
+  - Widened `AGENT_COMMAND_ACK` with a tight interrupt arm and added one shared server builder; standalone/team handlers acknowledge accepted, rejected, and failed outcomes on the originating socket with exact targets and no status.
+  - Added one shared frontend admission/completion helper covering register-before-send, immediate `ConnectionState`, send-throw rollback, delete-guarded callback, and pending-only disconnect drain.
+  - Updated standalone/team streaming services for exact result matching and early team interception; updated stores for fresh command IDs, boolean passthrough, and one localized failure toast without lifecycle/transcript mutation.
+  - Extracted team approval tracking and team interrupt handling to keep changed source within the size guardrail without changing their established contracts.
+- Changed files or areas: server Codex thread/backend and command/stream transport handlers; frontend streaming protocol/services/shared admission helper/stores/localization; focused Codex/backend/handler/service/helper/store tests; two live Codex integration call sites renamed for compile compatibility.
+- Local validation and result:
+  - Server build TypeScript: pass.
+  - Focused server regression set: 4 files / 88 tests pass.
+  - Focused frontend regression set: 5 files / 117 tests pass.
+  - Web/localization guards and localization literal audit: pass.
+  - Frontend repository typecheck remains non-green with 5456 baseline diagnostics at 8 GB; no `IR-006` changed-file hit. Default 4 GB run exhausted heap.
+  - Protected delivery/upstream artifact hashes, source-size guard, forbidden-path scans, staged-path audit, and `git diff --check`: pass.
+- Next recipient or routing: `code_reviewer` for `IR-006` source review. API/E2E remains blocked until review passes.
+- Remaining limitations or risks: configured live Codex start/steer and response races, real same-socket WebSocket results, reconnect/send-failure behavior, and rendered toast/Stop transitions remain downstream API/E2E work. Existing delivery docs/logs/build artifacts were protected and require later refresh/rebuild. Product iteration callback is `Not Required` because this revision implements the already approved defect refinement.
