@@ -1,14 +1,21 @@
-## What's New
+# Native TODO Capability Removal
 
-- Native AutoByteus agents now receive a concise catalog of their configured skills and read the current `SKILL.md` instructions from the advertised path when needed.
+## Removed
 
-## Improvements
+- Removed the native `autobyteus-ts` personal TODO tools: `create_todo_list`, `add_todo`, `get_todo_list`, and `update_todo_status`.
+- Removed the transient native TODO model, runtime state, notifier/event, stream payload, and AutoByteus-native TODO mapping.
 
-- Skill instruction updates can be observed on the next direct read in an active native run without restarting it.
-- Launch-time prompts stay smaller by carrying skill names, descriptions, and paths instead of complete instruction bodies.
-- File and shell access remains explicitly controlled by each agent definition rather than being granted automatically with a skill.
+## Preserved
 
-## Fixes
+- File tools and skills remain the supported way for native agents to maintain workspace task files.
+- Server/Codex `TODO_LIST_UPDATE` progress, WebSocket mapping, web TODO handling, generic tools, and server task delegation remain supported.
 
-- Removed stale launch-time skill-body copies and the redundant dedicated skill-loading tool group.
-- Prevented unconfigured or unresolved skills from being advertised to native agents.
+## Compatibility And Data
+
+- No persisted-data migration is required; the removed native TODO state was in-memory only.
+- Consumers importing the intentionally removed native TODO classes, barrels, event names, or stream types must migrate to file/skill-based task tracking.
+
+## Validation
+
+- Changed-boundary validation passed: native 7-file/32-test focus, native build, server 4-file/96-test focus, source-only server typecheck/build, preserved server E2E and task-delegation integration, built Codex-to-WebSocket TODO mapping, and web TODO handler/stream tests.
+- The server package typecheck and full native Vitest commands remain red due to confirmed unchanged repository configuration/environment origins; these are explicitly not clean-pass claims.
