@@ -50,7 +50,7 @@ This is the initial delivery handoff for `remove-todo-list-tools`. The implement
 
 ## Version / Tag / Release Commit
 
-Release selection: `v1.4.41`, the next patch after current `v1.4.40`. Release commit: `d792ea38c8bd97fd24fa8a2687db0bdbfcd55d1e`; annotated tag `v1.4.41` object: `a1653e3f3e6c3be12ca3860d9a311568086e5b12`.
+Release selection: `v1.4.41`, the next patch after current `v1.4.40`. Release commit: `d792ea38c8bd97fd24fa8a2687db0bdbfcd55d1e`; annotated tag `v1.4.41` object: `a1653e3f3e6c3be12ca3860d9a311568086e5b12`. Final delivery-record commits `ff891642bc59afc9a7a6913ca59ff5c83951a298` and `36e6f493da6531538be4bf4dd23198924e9df663` are on `origin/personal` after the release commit.
 
 ## Repository Finalization
 
@@ -117,6 +117,7 @@ v1.4.41 release execution, workflow monitoring, GitHub Release verification, and
 - Delivery integrity: `git diff --check` — `Pass`; `git diff --check origin/personal...HEAD` — `Pass`.
 - Changed-boundary evidence: `Pass with residual repository-health caveats / 94.5%`, as reported by API/E2E Round 1.
 - Final integrated target checks: `Pass`; `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/tickets/done/remove-todo-list-tools/test-results/final-integrated-checks.log` records `git diff --check` and `pnpm --filter autobyteus-ts build` at merge commit `e2a8126a9`.
+- Final remote target: `origin/personal@36e6f493da6531538be4bf4dd23198924e9df663`.
 - Release and publication audit: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/tickets/done/remove-todo-list-tools/test-results/release-v1.4.41.log`, `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/tickets/done/remove-todo-list-tools/test-results/release-workflow-monitor.log`, and `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/tickets/done/remove-todo-list-tools/test-results/publication-audit-v1.4.41.log`.
 - Cleanup audit: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/tickets/done/remove-todo-list-tools/test-results/final-cleanup-audit.log`.
 - Focused native Vitest: `7 files / 32 tests passed`.

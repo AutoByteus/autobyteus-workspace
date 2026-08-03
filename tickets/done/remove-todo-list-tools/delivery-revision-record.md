@@ -66,6 +66,7 @@
 - Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/tickets/done/remove-todo-list-tools/docs-sync-report.md`.
 - Handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/tickets/done/remove-todo-list-tools/handoff-summary.md`.
 - Release/publication/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-todo-list-tools/tickets/done/remove-todo-list-tools/release-deployment-report.md`.
+- Final target snapshot: `origin/personal@36e6f493da6531538be4bf4dd23198924e9df663`.
 - Cleanup result: Temporary integration worktree `/tmp/remove-todo-list-tools-finalize-20260803` and release clone `/tmp/remove-todo-list-tools-release-20260803` were removed; worktree metadata was pruned; local and remote ticket branch references were deleted. The dedicated ticket worktree remains detached at the final personal snapshot so all absolute canonical artifact paths remain readable. The unrelated dirty local `personal` worktree was not modified.
 - User verification/finalization state: Explicit verification was received; repository finalization, v1.4.41 release/publication, deployment workflows, and safe cleanup are complete.
 - Why this delivery revision was recorded: Establishes the terminal delivery result and makes cleanup/retention decisions auditable rather than inferred.

@@ -13,7 +13,8 @@
 ## Latest-Base Delivery State
 
 - Bootstrap/finalization target: remote `origin`, branch `personal`.
-- Current tracked base: `origin/personal@ba6ebc2a2fbf56f17ee6bbb965f3f153307db3d2`.
+- Current tracked base: `origin/personal@ba6ebc2a2fbf56f17ee6bbb965f3f153307db3d2` (bootstrap).
+- Final delivered target: `origin/personal@36e6f493da6531538be4bf4dd23198924e9df663`.
 - Reviewed implementation head: `fa0fd927a0c59a40eb6c2cd464b13a682c168d88` (`Remove native todo list tools and stream path`).
 - Relationship after delivery refresh: `origin/personal...HEAD` is `0` behind / `1` ahead; merge base equals current `origin/personal`.
 - Integration method/result: Initial base refresh was `Already current`; finalization used a clean temporary worktree and a conflict-free merge. Ticket commit `24edd28976b34eeb32e8ba8bbebae7a50362fa84` merged into `personal` as `e2a8126a9b9046018e8113a6c68c0c311078fe0f`.
@@ -70,7 +71,7 @@
 
 - Explicit user completion/verification received: `Yes`, on `2026-08-03`; the user authorized finalization and a new version release.
 - Release selection: `v1.4.41`, inferred as the next patch after current `v1.4.40`.
-- Finalization status: `Completed`; ticket archived, ticket branch pushed, merged into `personal`, and `origin/personal` updated. Release commit `d792ea38c8bd97fd24fa8a2687db0bdbfcd55d1e` and tag `v1.4.41` were pushed; all tag-triggered workflows and publication checks passed. Temporary integration/release worktrees and ticket branch references were safely cleaned; the ticket worktree remains detached to preserve artifact paths.
+- Finalization status: `Completed`; ticket archived, ticket branch pushed, merged into `personal`, and `origin/personal` updated. Release commit `d792ea38c8bd97fd24fa8a2687db0bdbfcd55d1e` and tag `v1.4.41` were pushed; final delivery records are on `origin/personal@36e6f493da6531538be4bf4dd23198924e9df663`; all tag-triggered workflows and publication checks passed. Temporary integration/release worktrees and ticket branch references were safely cleaned; the ticket worktree remains detached to preserve artifact paths.
 - Required user action: `None`; v1.4.41 is released and the ticket is complete. API-008/API-009 caveats remain explicit repository-health notes.
 
 ## Terminal Result
