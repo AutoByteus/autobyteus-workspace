@@ -9,22 +9,26 @@ import type { StartTaskTeamInstanceRequest } from "../../domain/task-team-instan
 import type { ConversationTargetAddress } from "../../domain/conversation-target-address.js";
 import type {
   InterAgentMessageDeliveryIntent,
+  InterAgentMessageParticipant,
 } from "../../domain/inter-agent-message-delivery.js";
 import {
-  TeamRunEventSourceType,
+  buildDeliveryEndpointForParticipant,
+  buildTeamMemberAddress,
+} from "../../domain/inter-agent-message-delivery.js";
+import {
   type TeamRunEvent,
   type TeamRunEventListener,
   type TeamRunEventUnsubscribe,
-  type TeamRunStatusUpdateData,
 } from "../../domain/team-run-event.js";
 import type { TeamMemberSelector } from "../../domain/team-run-member-identity.js";
 import {
   selectorFromMemberRouteKey,
   selectorToRouteKey,
 } from "../../domain/team-run-member-identity.js";
+import type { TeamMemberRunConfig, TeamRunMemberConfig } from "../../domain/team-run-config.js";
+import type { MemberLogicalAddressContext } from "../../domain/member-logical-address-context.js";
 import type { TeamManager } from "../team-manager.js";
 import { MixedTeamRunContext, type MixedTeamMemberContext } from "./mixed-team-run-context.js";
-import { normalizeMixedParentBoundaryDeliveryIntent } from "./mixed-parent-boundary-delivery-intent.js";
 import { MixedSubTeamRunFactory } from "./mixed-sub-team-run-factory.js";
 import { MixedPersistentMemberRegistry } from "./members/mixed-persistent-member-registry.js";
 import { MixedTaskAgentInstanceRegistry } from "./members/mixed-task-agent-instance-registry.js";
@@ -36,53 +40,24 @@ import { TeamMemberDeliveryCoordinator } from "./delivery/team-member-delivery-c
 import { MixedConversationTargetRouter } from "./conversation-target/mixed-conversation-target-router.js";
 import { disposeTaskAgentDirectory, getTaskAgentDirectory } from "../../task-delegation/task-agent-directory.js";
 import { disposeTaskTeamActiveRunDirectoryForParentTeamRun, getTaskTeamActiveRunDirectory } from "../../task-delegation/task-team-active-run-directory.js";
-
-const buildRunNotFoundResult = (teamRunId: string): AgentOperationResult => ({
-  accepted: false,
-  code: "RUN_NOT_FOUND",
-  message: `Run '${teamRunId}' is not active.`,
-});
-
-const isOperationResult = (
-  value: MixedTeamMemberContext | AgentOperationResult,
-): value is AgentOperationResult => "accepted" in value;
-
-const buildTargetMemberRunMismatchResult = (
-  targetMemberRouteKey: string,
-  targetMemberRunId: string,
-): AgentOperationResult => ({
-  accepted: false,
-  code: "TARGET_MEMBER_RUN_MISMATCH",
-  message: `Team member route key '${targetMemberRouteKey}' does not match member run '${targetMemberRunId}'.`,
-});
-
-const buildTargetMemberNotFoundResult = (
-  targetMemberRouteKey: string,
-): AgentOperationResult => ({
-  accepted: false,
-  code: "TARGET_MEMBER_NOT_FOUND",
-  message: `Team member route key '${targetMemberRouteKey}' was not found.`,
-});
-
-const buildTargetMemberRunInactiveResult = (
-  targetMemberRouteKey: string,
-): AgentOperationResult => ({
-  accepted: false,
-  code: "RUN_NOT_FOUND",
-  message: `Team member route key '${targetMemberRouteKey}' is not active.`,
-});
+import { TeamLogicalPlacementResolver } from "../../services/team-logical-placement-resolver.js";
+import type { ResolvedTeamLogicalPlacement } from "../../services/resolved-team-logical-placement.js";
+import { CollaborationContractError, isCollaborationContractError } from "../../../agent-collaboration/domain/collaboration-contract-error.js";
+import { buildRunNotFoundResult, buildTargetMemberNotFoundResult, buildTargetMemberRunInactiveResult, buildTargetMemberRunMismatchResult, isAgentOperationResult } from "./mixed-team-manager-results.js";
+import { MixedTeamEventBus } from "./mixed-team-event-bus.js";
+import { MixedTeamStatusPublisher } from "./mixed-team-status-publisher.js";
 
 export class MixedTeamManager implements TeamManager {
   private teamContext: TeamRunContext<MixedTeamRunContext> | null;
   private lifecycleState: "active" | "terminating" | "terminated" = "active";
   private terminationPromise: Promise<AgentOperationResult> | null = null;
-  private rootOfflinePublished = false;
   private readonly persistentMembers: MixedPersistentMemberRegistry;
   private readonly taskAgentInstances: MixedTaskAgentInstanceRegistry;
   private readonly taskTeamInstances: MixedTaskTeamInstanceRegistry;
   private readonly deliveryCoordinator: TeamMemberDeliveryCoordinator;
-  private readonly eventListeners = new Set<TeamRunEventListener>();
-  private lastTeamStatus: string | null = "INITIALIZING";
+  private readonly logicalPlacementResolver = new TeamLogicalPlacementResolver();
+  private readonly eventBus = new MixedTeamEventBus();
+  private readonly statusPublisher = new MixedTeamStatusPublisher(this.eventBus);
 
   constructor(
     context: TeamRunContext<MixedTeamRunContext>,
@@ -99,7 +74,7 @@ export class MixedTeamManager implements TeamManager {
     });
     const configResolver = new MixedTeamMemberConfigResolver(context);
     const sharedCallbacks = {
-      publish: (event: TeamRunEvent) => this.publish(event),
+      publish: (event: TeamRunEvent) => this.eventBus.publish(event),
       notifyStatusChange: () => this.publishTeamStatusIfChanged(),
       deliverInterAgentMessage: (request: InterAgentMessageDeliveryIntent) =>
         this.deliverInterAgentMessage(request),
@@ -127,8 +102,7 @@ export class MixedTeamManager implements TeamManager {
     this.deliveryCoordinator = new TeamMemberDeliveryCoordinator({
       teamContext: context,
       memberRegistry: this.persistentMembers,
-      taskAgentDelivery: this.taskAgentInstances,
-      publish: (event) => this.publish(event),
+      publish: (event) => this.eventBus.publish(event),
       notifyStatusChange: () => this.publishTeamStatusIfChanged(),
     });
   }
@@ -170,7 +144,7 @@ export class MixedTeamManager implements TeamManager {
       return buildRunNotFoundResult("unknown");
     }
     const resolved = this.persistentMembers.resolveContext(target);
-    if (isOperationResult(resolved)) {
+    if (isAgentOperationResult(resolved)) {
       return resolved;
     }
     const taskAgentRunId = targetMemberRunId?.trim();
@@ -207,7 +181,43 @@ export class MixedTeamManager implements TeamManager {
     if (intent.teamRunId !== teamContext.runId) {
       return this.deliverToParentBoundary(intent);
     }
-    return this.deliveryCoordinator.deliver(intent);
+    try {
+      const placement = this.resolveLogicalPlacement(
+        intent.recipientName,
+        intent.callerAddressing,
+      );
+      const target = placement.kind === "agent" ? placement.subject : placement.ingress;
+      if (target.absoluteAddress === intent.callerAddressing.memberAddress) {
+        throw new CollaborationContractError(
+          "COLLABORATION_SELF_TARGET_REJECTED",
+          `Collaboration target '${placement.subject.absoluteAddress}' resolves to the calling Agent.`,
+        );
+      }
+      return this.deliveryCoordinator.deliver(intent, this.materializeMessageRecipient(target));
+    } catch (error) {
+      if (!isCollaborationContractError(error)) {
+        throw error;
+      }
+      return { accepted: false, code: error.code, message: error.message };
+    }
+  }
+
+  resolveLogicalPlacement(
+    recipientName: string,
+    callerAddressing: MemberLogicalAddressContext,
+  ): ResolvedTeamLogicalPlacement {
+    const teamContext = this.getRoutableTeamContext();
+    if (
+      !teamContext?.config ||
+      teamContext.runId !== teamContext.runtimeContext.collaborationRootTeamRunId ||
+      callerAddressing.rootTeamRunId !== teamContext.runId
+    ) {
+      throw new CollaborationContractError(
+        "COLLABORATION_CONTEXT_REQUIRED",
+        "Logical placement resolution requires the active collaboration-root TeamRun.",
+      );
+    }
+    return this.logicalPlacementResolver.resolve(teamContext.config, recipientName, callerAddressing);
   }
 
   async approveToolInvocation(
@@ -233,7 +243,7 @@ export class MixedTeamManager implements TeamManager {
       );
     }
     const resolved = this.persistentMembers.resolveContext(target);
-    if (isOperationResult(resolved)) {
+    if (isAgentOperationResult(resolved)) {
       return resolved;
     }
     const taskAgentRunId = targetMemberRunId?.trim();
@@ -261,7 +271,7 @@ export class MixedTeamManager implements TeamManager {
     const targetSelector = selectorFromMemberRouteKey(normalizedTargetMemberRouteKey);
     const canonicalTargetMemberRouteKey = selectorToRouteKey(targetSelector);
     const memberContext = this.persistentMembers.resolveContext(targetSelector);
-    if (isOperationResult(memberContext)) {
+    if (isAgentOperationResult(memberContext)) {
       return memberContext.code === "TARGET_MEMBER_NOT_FOUND"
         ? buildTargetMemberNotFoundResult(canonicalTargetMemberRouteKey)
         : memberContext;
@@ -360,13 +370,10 @@ export class MixedTeamManager implements TeamManager {
     return this.terminationPromise;
   }
 
-  publishEvent(event: TeamRunEvent): void { this.publish(event); }
+  publishEvent(event: TeamRunEvent): void { this.eventBus.publish(event); }
 
   subscribeToEvents(listener: TeamRunEventListener): TeamRunEventUnsubscribe {
-    this.eventListeners.add(listener);
-    return () => {
-      this.eventListeners.delete(listener);
-    };
+    return this.eventBus.subscribe(listener);
   }
 
 
@@ -374,7 +381,7 @@ export class MixedTeamManager implements TeamManager {
     intent: InterAgentMessageDeliveryIntent,
   ): Promise<AgentOperationResult> {
     const parentBoundary = this.teamContext?.runtimeContext.parentBoundary ?? null;
-    if (!parentBoundary || intent.teamRunId !== parentBoundary.parentTeamRunId) {
+    if (!parentBoundary || intent.teamRunId !== parentBoundary.collaborationRootTeamRunId) {
       return Promise.resolve({
         accepted: false,
         code: "TARGET_MEMBER_NOT_FOUND",
@@ -382,13 +389,71 @@ export class MixedTeamManager implements TeamManager {
       });
     }
 
-    return parentBoundary.deliverInterAgentMessage(
-      normalizeMixedParentBoundaryDeliveryIntent({
-        intent,
-        parentBoundary,
-        taskTeamInstance: this.teamContext?.runtimeContext.taskTeamInstance ?? null,
+    return parentBoundary.deliverInterAgentMessage(intent);
+  }
+
+  private materializeMessageRecipient(
+    coordinate: { absoluteAddress: string; memberRouteKey: string },
+  ) {
+    const teamContext = this.teamContext;
+    if (!teamContext?.config) {
+      throw new CollaborationContractError(
+        "COLLABORATION_CONTEXT_REQUIRED",
+        "The collaboration-root TeamRun is not active.",
+      );
+    }
+    const config = this.findAgentConfig(teamContext.config.memberTree, coordinate.memberRouteKey);
+    if (!config?.memberRunId) {
+      throw new CollaborationContractError(
+        "COLLABORATION_TARGET_NOT_FOUND",
+        `Collaboration target '${coordinate.absoluteAddress}' has no executable Agent runtime.`,
+      );
+    }
+    const selector = selectorFromMemberRouteKey(coordinate.memberRouteKey);
+    const memberContext = this.persistentMembers.resolveContext(selector);
+    if (isAgentOperationResult(memberContext)) {
+      throw new CollaborationContractError(
+        "COLLABORATION_TARGET_NOT_FOUND",
+        `Collaboration target '${coordinate.absoluteAddress}' is not reachable.`,
+      );
+    }
+    const participant: InterAgentMessageParticipant = {
+      memberKind: "agent",
+      memberName: config.memberName,
+      memberPath: [...config.memberPath],
+      memberRouteKey: config.memberRouteKey,
+      memberRunId: config.memberRunId,
+      address: buildTeamMemberAddress({
+        teamRunId: teamContext.runId,
+        memberPath: config.memberPath,
+        memberRouteKey: config.memberRouteKey,
       }),
-    );
+      platformRunId: memberContext.memberKind === "agent"
+        ? memberContext.getPlatformAgentRunId()
+        : null,
+      teamDefinitionId: null,
+    };
+    return {
+      memberContext,
+      endpoint: buildDeliveryEndpointForParticipant(participant, selector),
+      targetAgentRunId: config.memberRunId,
+    };
+  }
+
+  private findAgentConfig(
+    members: readonly TeamRunMemberConfig[],
+    routeKey: string,
+  ): TeamMemberRunConfig | null {
+    for (const member of members) {
+      if (member.memberKind === "agent" && member.memberRouteKey === routeKey) {
+        return member;
+      }
+      if (member.memberKind === "agent_team") {
+        const nested = this.findAgentConfig(member.memberConfigs, routeKey);
+        if (nested) return nested;
+      }
+    }
+    return null;
   }
 
   private getRoutableTeamContext(): TeamRunContext<MixedTeamRunContext> | null {
@@ -425,15 +490,15 @@ export class MixedTeamManager implements TeamManager {
         }
       }
 
-      this.publishRootOffline(teamContext);
+      this.statusPublisher.publishRootOffline(teamContext);
       this.persistentMembers.dispose();
       this.taskAgentInstances.dispose();
       this.taskTeamInstances.dispose();
       disposeTaskAgentDirectory(teamContext.runId);
       disposeTaskTeamActiveRunDirectoryForParentTeamRun(teamContext.runId);
       this.teamContext = null;
-      this.eventListeners.clear();
-      this.lastTeamStatus = null;
+      this.eventBus.clear();
+      this.statusPublisher.reset();
       this.lifecycleState = "terminated";
       this.terminationPromise = null;
       return { accepted: true };
@@ -448,47 +513,12 @@ export class MixedTeamManager implements TeamManager {
     }
   }
 
-  private publishRootOffline(teamContext: TeamRunContext<MixedTeamRunContext>): void {
-    if (this.rootOfflinePublished) {
-      return;
-    }
-    this.rootOfflinePublished = true;
-    this.publish({
-      eventSourceType: TeamRunEventSourceType.TEAM,
-      teamRunId: teamContext.runId,
-      sourcePath: [],
-      data: {
-        status: "offline",
-      } satisfies TeamRunStatusUpdateData,
-    });
-    this.lastTeamStatus = "offline";
-  }
-
   private publishTeamStatusIfChanged(): void {
-    if (!this.teamContext) {
-      return;
-    }
-    if (this.lifecycleState === "terminating") {
-      return;
-    }
-    const nextStatus = this.getStatusSnapshot().status;
-    if (nextStatus === this.lastTeamStatus) {
-      return;
-    }
-    this.publish({
-      eventSourceType: TeamRunEventSourceType.TEAM,
-      teamRunId: this.teamContext.runId,
-      sourcePath: [],
-      data: {
-        status: nextStatus,
-      } satisfies TeamRunStatusUpdateData,
+    this.statusPublisher.publishIfChanged({
+      context: this.teamContext,
+      terminating: this.lifecycleState === "terminating",
+      status: () => this.getStatusSnapshot().status,
     });
-    this.lastTeamStatus = nextStatus;
   }
 
-  private publish(event: TeamRunEvent): void {
-    for (const listener of this.eventListeners) {
-      listener(event);
-    }
-  }
 }

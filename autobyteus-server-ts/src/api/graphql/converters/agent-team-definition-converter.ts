@@ -6,6 +6,7 @@ import {
 } from "../../../agent-team-definition/domain/enums.js";
 import {
   AgentTeamDefinition as GraphqlAgentTeamDefinition,
+  AgentTeamHandoff as GraphqlAgentTeamHandoff,
   TeamMember as GraphqlTeamMember,
 } from "../types/agent-team-definition.js";
 import { toGraphqlDefaultLaunchConfig } from "../types/default-launch-config.js";
@@ -50,6 +51,13 @@ export class AgentTeamDefinitionConverter {
         refType: toGraphqlRefType(member.refType),
         refScope: toGraphqlRefScope(member.refScope),
       }));
+      const graphqlHandoffs: GraphqlAgentTeamHandoff[] = domainDefinition.handoffs.map(
+        (handoff) => ({
+          from: handoff.from,
+          to: handoff.to,
+          rules: [...handoff.rules],
+        }),
+      );
 
       return {
         id: String(domainDefinition.id ?? ""),
@@ -60,6 +68,7 @@ export class AgentTeamDefinitionConverter {
         avatarUrl: domainDefinition.avatarUrl ?? null,
         nodes: graphqlNodes,
         coordinatorMemberName: domainDefinition.coordinatorMemberName,
+        handoffs: graphqlHandoffs,
         ownershipScope: toGraphqlOwnershipScope(domainDefinition.ownershipScope),
         ownerTeamId: domainDefinition.ownerTeamId ?? null,
         ownerTeamName: domainDefinition.ownerTeamName ?? null,

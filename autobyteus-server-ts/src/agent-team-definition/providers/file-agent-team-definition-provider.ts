@@ -100,6 +100,7 @@ export class FileAgentTeamDefinitionProvider {
               refScope: member.refScope ?? null,
             }),
         ) ?? [],
+        handoffs: config.handoffs ?? [],
         ownershipScope: sourcePaths.kind,
         ownerTeamId: sourcePaths.kind === "team_local" ? sourcePaths.ownerTeamId : null,
         ownerTeamName: sourcePaths.kind === "team_local" ? sourcePaths.ownerTeamName ?? null : null,

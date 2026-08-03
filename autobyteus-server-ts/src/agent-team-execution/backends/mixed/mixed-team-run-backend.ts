@@ -10,6 +10,7 @@ import type { MixedTeamRunContextEnvelope } from "./mixed-team-run-context.js";
 import type { StartTaskAgentInstanceRequest } from "../../domain/task-agent-instance.js";
 import type { StartTaskTeamInstanceRequest } from "../../domain/task-team-instance.js";
 import type { ConversationTargetAddress } from "../../domain/conversation-target-address.js";
+import type { MemberLogicalAddressContext } from "../../domain/member-logical-address-context.js";
 
 const buildRunNotFoundResult = (runId: string): AgentOperationResult => ({
   accepted: false,
@@ -111,6 +112,13 @@ export class MixedTeamRunBackend implements TeamRunBackend {
     } catch (error) {
       return buildCommandFailure("deliver inter-agent message", error);
     }
+  }
+
+  resolveLogicalPlacement(
+    recipientName: string,
+    callerAddressing: MemberLogicalAddressContext,
+  ) {
+    return this.teamManager.resolveLogicalPlacement(recipientName, callerAddressing);
   }
 
   async approveToolInvocation(

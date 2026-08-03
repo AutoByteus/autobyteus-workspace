@@ -1,7 +1,8 @@
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
-import { buildInterAgentMessageDeliveryIntent } from "../../agent-team-execution/services/inter-agent-message-delivery-intent-builder.js";
+import { buildInterAgentMessageDeliveryIntentFromRecipientName } from "../../agent-team-execution/services/inter-agent-message-delivery-intent-builder.js";
 import type { AgentRunMessageSenderContext } from "../domain/agent-run-message-sender.js";
 import { describeSendMessageTargetSelector } from "../domain/send-message-target-selector.js";
+import { isCollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
 import {
   getGlobalAgentRunMessageRouter,
   type GlobalAgentRunMessageDeliveryInput,
@@ -68,7 +69,8 @@ export class SendMessageToDispatcher {
     }
 
     const memberTeamContext = input.sender.memberTeamContext;
-    if (!memberTeamContext?.sendMessageToEnabled || !memberTeamContext.deliverInterAgentMessage) {
+    const delivery = memberTeamContext?.collaboration.deliverInterAgentMessage ?? null;
+    if (!memberTeamContext?.sendMessageToEnabled || !delivery) {
       return {
         accepted: false,
         code: "TEAM_CONTEXT_REQUIRED",
@@ -76,9 +78,9 @@ export class SendMessageToDispatcher {
       };
     }
 
-    const intentResult = buildInterAgentMessageDeliveryIntent({
+    const intentResult = buildInterAgentMessageDeliveryIntentFromRecipientName({
       memberTeamContext,
-      target: parsed.target,
+      recipientName: parsed.target.recipientName,
       content,
       messageType: parsed.messageType,
       referenceFiles: parsed.referenceFiles,
@@ -91,7 +93,15 @@ export class SendMessageToDispatcher {
       };
     }
 
-    const result = await memberTeamContext.deliverInterAgentMessage(intentResult.intent);
+    let result: AgentOperationResult;
+    try {
+      result = await delivery(intentResult.intent);
+    } catch (error) {
+      if (!isCollaborationContractError(error)) {
+        throw error;
+      }
+      return { accepted: false, code: error.code, message: error.message };
+    }
     if (!result.accepted) {
       return result;
     }

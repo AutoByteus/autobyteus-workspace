@@ -79,6 +79,7 @@ export class AgentTeamRunManager {
       coordinatorMemberName: config.coordinatorMemberName,
       coordinatorMemberRouteKey: config.coordinatorMemberRouteKey,
       memberTree: this.attachRuntimeMemberIds(config.memberTree),
+      effectiveHandoffs: config.effectiveHandoffs,
     });
     const activeRun = new TeamRun({
       context: new TeamRunContext({
@@ -262,6 +263,7 @@ export class AgentTeamRunManager {
       coordinatorMemberName: config.coordinatorMemberName,
       coordinatorMemberRouteKey: config.coordinatorMemberRouteKey,
       memberTree: config.memberTree,
+      effectiveHandoffs: config.effectiveHandoffs,
     });
   }
 }

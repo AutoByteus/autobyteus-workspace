@@ -164,6 +164,7 @@ const cloneConfiguredExposure = (
   enabledMediaToolNames: [...exposure.enabledMediaToolNames],
   enabledTaskDelegationToolNames: [...exposure.enabledTaskDelegationToolNames],
   sendMessageToConfigured: exposure.sendMessageToConfigured,
+  getHandoffRulesConfigured: exposure.getHandoffRulesConfigured,
   publishArtifactsConfigured: exposure.publishArtifactsConfigured,
 });
 

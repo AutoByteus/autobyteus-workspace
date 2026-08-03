@@ -7,8 +7,11 @@ import type { TeamMemberRuntimeContext } from "../domain/team-run-context.js";
 import type { TeamRunMetadata, TeamRunMemberMetadata } from "../../run-history/store/team-run-metadata-types.js";
 
 const buildMixedRuntimeContextFromMetadata = (input: {
+  rootTeamRunId: string;
   coordinatorMemberRouteKey: string | null;
   memberTree: readonly TeamRunMemberMetadata[];
+  handoffs: TeamRunMetadata["handoffs"];
+  teamMountPath?: readonly string[];
 }): MixedTeamRunContext =>
   new MixedTeamRunContext({
     coordinatorMemberRouteKey: input.coordinatorMemberRouteKey,
@@ -31,18 +34,26 @@ const buildMixedRuntimeContextFromMetadata = (input: {
         teamDefinitionId: member.teamDefinitionId,
         childTeamRunId: member.teamRunId,
         childRuntimeContext: buildMixedRuntimeContextFromMetadata({
+          rootTeamRunId: input.rootTeamRunId,
           coordinatorMemberRouteKey: member.coordinatorMemberRouteKey,
           memberTree: member.memberTree,
+          handoffs: input.handoffs,
+          teamMountPath: member.memberPath,
         }),
       });
     }),
+    collaborationRootTeamRunId: input.rootTeamRunId,
+    teamMountPath: [...(input.teamMountPath ?? [])],
+    effectiveHandoffs: input.handoffs,
   });
 
 export const buildRestoreTeamRunRuntimeContext = (
   metadata: TeamRunMetadata,
 ): MixedTeamRunContext => buildMixedRuntimeContextFromMetadata({
+  rootTeamRunId: metadata.teamRunId,
   coordinatorMemberRouteKey: metadata.coordinatorMemberRouteKey,
   memberTree: metadata.memberTree,
+  handoffs: metadata.handoffs,
 });
 
 export const getRuntimeMemberContexts = (

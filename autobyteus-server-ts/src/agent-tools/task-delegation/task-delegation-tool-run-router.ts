@@ -14,6 +14,10 @@ import {
   getTeamRunService,
   type TeamRunService,
 } from "../../agent-team-execution/services/team-run-service.js";
+import {
+  getSubTeamActiveRunDirectory,
+  type SubTeamActiveRunDirectory,
+} from "../../agent-team-execution/services/sub-team-active-run-directory.js";
 import type { TaskDelegationToolContext } from "./task-delegation-tool-contract.js";
 
 export type TaskDelegationSubmitRoute =
@@ -29,17 +33,32 @@ export type TaskDelegationSubmitRoute =
       taskTeamInstance: TaskTeamInstanceIdentity;
     };
 
+export type TaskDelegationDelegateRoute = {
+  service: TaskDelegationService;
+  currentRun: TeamRun;
+  rootRun: TeamRun;
+};
+
 export class TaskDelegationToolRunRouter {
   constructor(private readonly dependencies: {
     teamRunService?: TeamRunService;
     runRegistry?: TaskDelegationRunRegistry;
     taskTeamActiveRunDirectory?: TaskTeamActiveRunDirectory;
+    subTeamActiveRunDirectory?: SubTeamActiveRunDirectory;
   } = {}) {}
 
   async resolveServiceForDelegateOrReview(
     context: TaskDelegationToolContext,
   ): Promise<TaskDelegationService> {
     return this.getService(await this.resolveActiveTeamRun(context.teamRunId));
+  }
+
+  async resolveRouteForDelegate(
+    context: TaskDelegationToolContext,
+  ): Promise<TaskDelegationDelegateRoute> {
+    const currentRun = await this.resolveActiveTeamRun(context.teamRunId);
+    const rootRun = await this.resolveRootTeamRun(context.addressing.rootTeamRunId);
+    return { service: this.getService(currentRun), currentRun, rootRun };
   }
 
   async resolveServiceForSubmit(
@@ -73,28 +92,45 @@ export class TaskDelegationToolRunRouter {
       );
     }
 
-    const topLevelRun = await (this.dependencies.teamRunService ?? getTeamRunService())
-      .resolveTeamRun(teamRunId);
-    if (topLevelRun) {
-      if (topLevelRun.runId !== teamRunId) {
-        throw new TaskDelegationError(
-          "TEAM_RUN_MISMATCH",
-          `Resolved team run '${topLevelRun.runId}' does not match bound context '${teamRunId}'.`,
-        );
-      }
-      return topLevelRun;
-    }
+    const subTeamRun = (this.dependencies.subTeamActiveRunDirectory ?? getSubTeamActiveRunDirectory())
+      .resolveActiveRun(teamRunId);
+    if (subTeamRun) return subTeamRun;
 
     const taskTeamRun = (this.dependencies.taskTeamActiveRunDirectory ?? getTaskTeamActiveRunDirectory())
       .resolveActiveRun(teamRunId);
     if (taskTeamRun) return taskTeamRun;
+
+    const restoredTopLevelRun = await (this.dependencies.teamRunService ?? getTeamRunService())
+      .resolveTeamRun(teamRunId);
+    if (restoredTopLevelRun) {
+      if (restoredTopLevelRun.runId !== teamRunId) {
+        throw new TaskDelegationError(
+          "TEAM_RUN_MISMATCH",
+          `Resolved team run '${restoredTopLevelRun.runId}' does not match bound context '${teamRunId}'.`,
+        );
+      }
+      return restoredTopLevelRun;
+    }
     throw new TaskDelegationError(
       "TEAM_RUN_NOT_FOUND",
-      `Team run '${teamRunId}' is not active, could not be restored, and is not an active task-scoped team run.`,
+      `Team run '${teamRunId}' is not active, could not be restored, and is not an active child TeamRun.`,
     );
   }
 
   getService(run: TeamRun): TaskDelegationService {
     return (this.dependencies.runRegistry ?? getTaskDelegationRunRegistry()).getOrCreate(run);
+  }
+
+  private async resolveRootTeamRun(rootTeamRunId: string): Promise<TeamRun> {
+    const normalized = rootTeamRunId.trim();
+    const rootRun = await (this.dependencies.teamRunService ?? getTeamRunService())
+      .resolveTeamRun(normalized);
+    if (!rootRun || rootRun.runId !== normalized) {
+      throw new TaskDelegationError(
+        "TEAM_RUN_NOT_FOUND",
+        `Collaboration root TeamRun '${normalized}' is not active.`,
+      );
+    }
+    return rootRun;
   }
 }

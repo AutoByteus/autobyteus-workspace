@@ -146,6 +146,13 @@ export class AgentTeamDefinitionService {
     ) {
       existing.coordinatorMemberName = updateData.coordinatorMemberName;
     }
+    if (updateData.handoffs !== null && updateData.handoffs !== undefined) {
+      existing.handoffs = updateData.handoffs.map((handoff) => ({
+        from: handoff.from,
+        to: handoff.to,
+        rules: [...handoff.rules],
+      }));
+    }
     if (updateData.avatarUrl !== null && updateData.avatarUrl !== undefined) {
       existing.avatarUrl = normalizeOptionalString(updateData.avatarUrl);
     }

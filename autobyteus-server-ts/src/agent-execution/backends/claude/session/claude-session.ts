@@ -403,6 +403,7 @@ export class ClaudeSession {
       content: options.content,
       sendMessageToEnabled: configuredToolingOptions.sendMessageToToolingEnabled,
       taskDelegationEnabled: configuredToolingOptions.taskDelegationToolingEnabled,
+      getHandoffRulesEnabled: this.runContext.runtimeContext.configuredToolExposure.getHandoffRulesConfigured,
     });
     const agentToolsMcpDescriptor = (
       configuredToolingOptions.agentToolsMcpToolingRequested ||

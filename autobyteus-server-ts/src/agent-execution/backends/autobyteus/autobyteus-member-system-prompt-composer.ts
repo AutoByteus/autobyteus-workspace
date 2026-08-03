@@ -37,8 +37,9 @@ export const composeAutoByteusMemberSystemPrompt = (
     sendMessageToEnabled: exposure.sendMessageToConfigured,
     recipientNameDeliveryEnabled:
       input.memberTeamContext.sendMessageToEnabled &&
-      Boolean(input.memberTeamContext.deliverInterAgentMessage),
+      Boolean(input.memberTeamContext.collaboration.deliverInterAgentMessage),
     taskDelegationEnabled: exposure.enabledTaskDelegationToolNames.length > 0,
+    getHandoffRulesEnabled: exposure.getHandoffRulesConfigured,
   });
 
   return [

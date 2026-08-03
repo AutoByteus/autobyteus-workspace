@@ -2,71 +2,37 @@ import {
   cloneTaskTeamInstanceIdentity,
   type TaskTeamInstanceIdentity,
 } from "../../agent-team-execution/domain/task-team-instance.js";
+import { createMemberLogicalAddressContext } from "../../agent-team-execution/domain/member-logical-address-context.js";
 import { TaskDelegationError } from "../../agent-team-execution/task-delegation/task-delegation-record.js";
-import type {
-  TaskDelegationContextMember,
-  TaskDelegationMemberIdentity,
-  TaskDelegationTeamIngressIdentity,
-  TaskDelegationTeamIdentity,
-} from "../../agent-team-execution/task-delegation/task-delegation-target.js";
-import { runtimeKindFromString } from "../../runtime-management/runtime-kind-enum.js";
 import type { TaskDelegationToolContext } from "./task-delegation-tool-contract.js";
 
-type NativeTaskDelegationTeamIngressContext = {
-  memberName?: unknown;
-  memberPath?: unknown;
-  memberRouteKey?: unknown;
-  memberRunId?: unknown;
-  runtimeKind?: unknown;
-  role?: unknown;
-  description?: unknown;
-};
-
-type NativeTaskDelegationMemberContext = {
-  memberKind?: unknown;
-  memberName?: unknown;
-  memberPath?: unknown;
-  memberRouteKey?: unknown;
-  memberRunId?: unknown;
-  runtimeKind?: unknown;
-  role?: unknown;
-  description?: unknown;
+type NativeTeamContext = {
+  teamRunId?: unknown;
   teamDefinitionId?: unknown;
-  childTeamRunId?: unknown;
-  coordinatorMemberRouteKey?: unknown;
-  ingress?: NativeTaskDelegationTeamIngressContext | null;
-  representative?: NativeTaskDelegationTeamIngressContext | null;
-};
-
-type NativeTaskDelegationTeamContext = {
-  teamRunId?: string;
-  teamDefinitionId?: string | null;
-  teamName?: string | null;
-  currentMemberName?: string;
-  memberName?: string;
-  currentMemberPath?: string[];
-  memberPath?: string[];
-  currentMemberRouteKey?: string;
-  memberRouteKey?: string;
-  currentMemberRunId?: string;
-  memberRunId?: string;
+  teamName?: unknown;
+  currentMemberName?: unknown;
+  currentMemberPath?: unknown;
+  currentMemberRouteKey?: unknown;
+  currentMemberRunId?: unknown;
+  addressing?: {
+    rootTeamRunId?: unknown;
+    memberPath?: unknown;
+    immediateTeamPath?: unknown;
+  };
   taskAgentInstanceId?: string | null;
   taskAgentRunId?: string | null;
   taskId?: string | null;
   logicalMemberRouteKey?: string | null;
   taskTeamInstance?: TaskTeamInstanceIdentity | null;
-  coordinatorMemberRouteKey?: string | null;
-  members?: NativeTaskDelegationMemberContext[];
+  coordinatorMemberRouteKey?: unknown;
 };
 
 export type NativeTaskDelegationToolExecutionContext = {
   config?: { name?: string };
-  customData?: {
-    teamContext?: NativeTaskDelegationTeamContext;
-  };
+  customData?: { teamContext?: NativeTeamContext };
 };
 
-const normalizeRequiredString = (value: unknown, fieldName: string): string => {
+const required = (value: unknown, fieldName: string): string => {
   const normalized = typeof value === "string" ? value.trim() : "";
   if (!normalized) {
     throw new TaskDelegationError(
@@ -77,145 +43,55 @@ const normalizeRequiredString = (value: unknown, fieldName: string): string => {
   return normalized;
 };
 
-const normalizeOptionalString = (value: unknown): string | null => {
-  const normalized = typeof value === "string" ? value.trim() : "";
-  return normalized || null;
-};
+const optional = (value: unknown): string | null =>
+  typeof value === "string" && value.trim() ? value.trim() : null;
 
-const normalizePath = (
-  value: unknown,
-  fallbackMemberName: string,
-  fieldName: string,
-): string[] => {
-  if (value === undefined || value === null) return [fallbackMemberName];
-  if (!Array.isArray(value)) {
-    throw new TaskDelegationError(
-      "TEAM_RUN_CONTEXT_REQUIRED",
-      `Task delegation tools require ${fieldName} to be an array in team context.`,
-    );
+const path = (value: unknown, fieldName: string): string[] => {
+  if (!Array.isArray(value) || value.length === 0) {
+    throw new TaskDelegationError("TEAM_RUN_CONTEXT_REQUIRED", `${fieldName} must be a non-empty array.`);
   }
-  if (value.length === 0) return [fallbackMemberName];
-  return value.map((segment, index) =>
-    normalizeRequiredString(segment, `${fieldName}[${index}]`),
-  );
-};
-
-const normalizeIngress = (
-  ingress: NativeTaskDelegationTeamIngressContext | null | undefined,
-  fieldName: string,
-): TaskDelegationTeamIngressIdentity => {
-  if (!ingress) {
-    throw new TaskDelegationError(
-      "TEAM_RUN_CONTEXT_REQUIRED",
-      `Task delegation tools require ${fieldName} in team context.`,
-    );
-  }
-  const memberName = normalizeRequiredString(ingress.memberName, `${fieldName}.memberName`);
-  return {
-    memberName,
-    memberPath: normalizePath(ingress.memberPath, memberName, `${fieldName}.memberPath`),
-    memberRouteKey: normalizeRequiredString(
-      ingress.memberRouteKey,
-      `${fieldName}.memberRouteKey`,
-    ),
-    memberRunId: normalizeRequiredString(ingress.memberRunId, `${fieldName}.memberRunId`),
-    runtimeKind: runtimeKindFromString(ingress.runtimeKind, null),
-    role: normalizeOptionalString(ingress.role),
-    description: normalizeOptionalString(ingress.description),
-  };
-};
-
-const normalizeNativeMember = (
-  member: NativeTaskDelegationMemberContext,
-  index: number,
-): TaskDelegationContextMember => {
-  const memberKind = normalizeRequiredString(member.memberKind, `members[${index}].memberKind`);
-  if (memberKind !== "agent" && memberKind !== "agent_team") {
-    throw new TaskDelegationError(
-      "TEAM_RUN_CONTEXT_REQUIRED",
-      `Task delegation tools require members[${index}].memberKind to be 'agent' or 'agent_team'.`,
-    );
-  }
-  const memberName = normalizeRequiredString(member.memberName, `members[${index}].memberName`);
-  const baseMember = {
-    memberName,
-    memberPath: normalizePath(member.memberPath, memberName, `members[${index}].memberPath`),
-    memberRouteKey: normalizeRequiredString(
-      member.memberRouteKey,
-      `members[${index}].memberRouteKey`,
-    ),
-    memberRunId: normalizeRequiredString(member.memberRunId, `members[${index}].memberRunId`),
-    role: normalizeOptionalString(member.role),
-    description: normalizeOptionalString(member.description),
-  };
-  if (memberKind === "agent_team") {
-    return {
-      ...baseMember,
-      memberKind: "agent_team",
-      teamDefinitionId: normalizeRequiredString(
-        member.teamDefinitionId,
-        `members[${index}].teamDefinitionId`,
-      ),
-      childTeamRunId: normalizeOptionalString(member.childTeamRunId),
-      coordinatorMemberRouteKey: normalizeOptionalString(member.coordinatorMemberRouteKey),
-      ingress: normalizeIngress(
-        member.ingress ?? member.representative,
-        `members[${index}].ingress`,
-      ),
-    } satisfies TaskDelegationTeamIdentity;
-  }
-  return {
-    ...baseMember,
-    memberKind: "agent",
-    runtimeKind: runtimeKindFromString(member.runtimeKind, null),
-  } satisfies TaskDelegationMemberIdentity;
+  return value.map((segment, index) => required(segment, `${fieldName}[${index}]`));
 };
 
 export const buildTaskDelegationToolContextFromNativeContext = (
   context: NativeTaskDelegationToolExecutionContext,
 ): TaskDelegationToolContext => {
-  const teamContext = context.customData?.teamContext ?? null;
-  if (!teamContext) {
+  const team = context.customData?.teamContext;
+  if (!team?.addressing) {
     throw new TaskDelegationError(
       "TEAM_RUN_CONTEXT_REQUIRED",
-      "Task delegation tools require an active team context.",
+      "Task delegation tools require an active Team collaboration context.",
     );
   }
-  const memberName = normalizeRequiredString(
-    teamContext.currentMemberName ?? teamContext.memberName ?? context.config?.name,
-    "currentMemberName",
-  );
-  const memberPath = normalizePath(
-    teamContext.currentMemberPath ?? teamContext.memberPath,
-    memberName,
-    "currentMemberPath",
-  );
-  const caller = {
-    memberName,
-    memberPath,
-    memberRouteKey: normalizeRequiredString(
-      teamContext.currentMemberRouteKey ?? teamContext.memberRouteKey,
-      "currentMemberRouteKey",
-    ),
-    memberRunId: normalizeRequiredString(
-      teamContext.currentMemberRunId ?? teamContext.memberRunId,
-      "currentMemberRunId",
-    ),
-    taskAgentInstanceId: teamContext.taskAgentInstanceId ?? null,
-    taskAgentRunId: teamContext.taskAgentRunId ?? null,
-    taskId: teamContext.taskId ?? null,
-    logicalMemberRouteKey: teamContext.logicalMemberRouteKey ?? null,
-    taskTeamInstance: teamContext.taskTeamInstance
-      ? cloneTaskTeamInstanceIdentity(teamContext.taskTeamInstance)
-      : null,
-  };
-  const members = (teamContext.members ?? []).map(normalizeNativeMember);
+  const memberName = required(team.currentMemberName ?? context.config?.name, "currentMemberName");
+  const memberPath = path(team.currentMemberPath, "currentMemberPath");
+  const addressing = createMemberLogicalAddressContext({
+    rootTeamRunId: required(team.addressing.rootTeamRunId, "addressing.rootTeamRunId"),
+    memberPath: path(team.addressing.memberPath, "addressing.memberPath"),
+    immediateTeamPath: Array.isArray(team.addressing.immediateTeamPath)
+      ? team.addressing.immediateTeamPath.map((segment, index) => required(segment, `addressing.immediateTeamPath[${index}]`))
+      : [],
+  });
   return {
-    teamRunId: normalizeRequiredString(teamContext.teamRunId, "teamRunId"),
-    teamDefinitionId: normalizeOptionalString(teamContext.teamDefinitionId),
-    teamName: normalizeOptionalString(teamContext.teamName),
-    caller,
-    coordinatorMemberRouteKey: normalizeOptionalString(teamContext.coordinatorMemberRouteKey),
-    members,
+    teamRunId: required(team.teamRunId, "teamRunId"),
+    teamDefinitionId: optional(team.teamDefinitionId),
+    teamName: optional(team.teamName),
+    caller: {
+      memberKind: "agent",
+      memberName,
+      memberPath,
+      memberRouteKey: required(team.currentMemberRouteKey, "currentMemberRouteKey"),
+      memberRunId: required(team.currentMemberRunId, "currentMemberRunId"),
+      logicalAddress: addressing.memberAddress,
+      taskAgentInstanceId: team.taskAgentInstanceId ?? null,
+      taskAgentRunId: team.taskAgentRunId ?? null,
+      taskId: team.taskId ?? null,
+      logicalMemberRouteKey: team.logicalMemberRouteKey ?? null,
+      taskTeamInstance: team.taskTeamInstance
+        ? cloneTaskTeamInstanceIdentity(team.taskTeamInstance)
+        : null,
+    },
+    coordinatorMemberRouteKey: optional(team.coordinatorMemberRouteKey),
+    addressing,
   };
 };

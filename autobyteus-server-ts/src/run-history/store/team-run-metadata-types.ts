@@ -1,6 +1,7 @@
 import type { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
 
 export type TeamRunMemberMetadataKind = "agent" | "agent_team";
 
@@ -47,4 +48,5 @@ export interface TeamRunMetadata {
   createdAt: string;
   archivedAt?: string | null;
   memberTree: TeamRunMemberMetadata[];
+  handoffs: CollaborationHandoff[];
 }

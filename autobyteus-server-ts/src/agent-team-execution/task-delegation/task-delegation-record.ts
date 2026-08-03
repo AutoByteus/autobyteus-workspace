@@ -2,10 +2,10 @@ import type { ConversationTargetAddress } from "../domain/conversation-target-ad
 import type { TaskTeamInstanceIdentity } from "../domain/task-team-instance.js";
 import type { TaskExecutionInstance } from "./task-execution-instance.js";
 import type {
-  TaskDelegationContextMember,
   TaskDelegationMemberIdentity,
   TaskDelegationTarget,
 } from "./task-delegation-target.js";
+import type { MemberLogicalAddressContext } from "../domain/member-logical-address-context.js";
 
 export const TASK_DELEGATION_RECORDS_FILE_NAME = "task_delegation_records.json";
 
@@ -39,16 +39,11 @@ export type TaskDelegationContext = {
   teamName?: string | null;
   caller: TaskDelegationCallerIdentity;
   coordinatorMemberRouteKey?: string | null;
-  members: TaskDelegationContextMember[];
-};
-
-export type DelegateTaskTargetInput = {
-  kind: "member" | "team";
-  name: string;
+  addressing: MemberLogicalAddressContext;
 };
 
 export type TaskDelegationTaskInput = {
-  target: DelegateTaskTargetInput;
+  recipient_name: string;
   description: string;
   reference_files?: string[];
 };

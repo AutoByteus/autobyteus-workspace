@@ -8,10 +8,11 @@ import {
 } from "../../../agent-communication/services/send-message-to-tool-contract.js";
 import { buildSendMessageToParameterSchema } from "../../agent-communication/send-message-to-parameter-schema.js";
 import {
-  toAgentToolMcpOperationResult,
+  toAgentToolMcpToolResult,
   type AgentToolMcpAdapterProvider,
   type AgentToolMcpToolAdapter,
 } from "../agent-tool-mcp-adapter.js";
+import { toAgentCommunicationMcpToolResult, toAgentCommunicationToolResult } from "../../../agent-communication/services/agent-communication-tool-result.js";
 
 export class SendMessageToMcpAdapterProvider implements AgentToolMcpAdapterProvider {
   constructor(
@@ -29,11 +30,13 @@ export class SendMessageToMcpAdapterProvider implements AgentToolMcpAdapterProvi
         configuredMcpCollisionPolicy: "protect_static_adapter",
         isAvailable: () => true,
         execute: async ({ session, rawArguments }) =>
-          toAgentToolMcpOperationResult(await this.sendMessageDispatcher.dispatch({
-            toolName: SEND_MESSAGE_TO_TOOL_NAME,
-            rawArguments,
-            sender: session.sender,
-          })),
+          toAgentToolMcpToolResult(toAgentCommunicationMcpToolResult(toAgentCommunicationToolResult(
+            await this.sendMessageDispatcher.dispatch({
+              toolName: SEND_MESSAGE_TO_TOOL_NAME,
+              rawArguments,
+              sender: session.sender,
+            }),
+          ))),
       },
     ];
   }

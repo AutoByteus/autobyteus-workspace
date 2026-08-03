@@ -24,16 +24,8 @@ const normalizeRequired = (value: string | null | undefined, fieldName: string):
   return normalized;
 };
 
-const stripRoutePrefix = (routeKey: string, prefix: string): string => {
-  if (routeKey === prefix) return routeKey;
-  const prefixWithSlash = `${prefix}/`;
-  return routeKey.startsWith(prefixWithSlash) ? routeKey.slice(prefixWithSlash.length) : routeKey;
-};
-
-const stripPathPrefix = (path: readonly string[], prefix: readonly string[]): string[] => {
-  const matches = prefix.every((part, index) => path[index] === part);
-  return matches && path.length > prefix.length ? path.slice(prefix.length) : [...path];
-};
+const pathsEqual = (left: readonly string[], right: readonly string[]): boolean =>
+  left.length === right.length && left.every((segment, index) => segment === right[index]);
 
 export class TaskTeamRunIdentityFactory {
   constructor(
@@ -74,16 +66,13 @@ export class TaskTeamRunIdentityFactory {
     teamRun: TeamRun,
     target: TaskDelegationTeamIdentity,
   ): TeamSubTeamMemberRunConfig {
-    const stack = [...(teamRun.config?.memberTree ?? [])];
-    while (stack.length > 0) {
-      const member = stack.shift()!;
-      if (member.memberKind === "agent_team") {
-        if (member.memberRouteKey === target.memberRouteKey || member.memberRunId === target.memberRunId) {
-          return member;
-        }
-        stack.push(...member.memberConfigs);
-      }
-    }
+    const matches = (teamRun.config?.memberTree ?? []).filter(
+      (member): member is TeamSubTeamMemberRunConfig =>
+        member.memberKind === "agent_team" &&
+        member.memberRouteKey === target.memberRouteKey &&
+        pathsEqual(member.memberPath, target.memberPath),
+    );
+    if (matches.length === 1) return matches[0]!;
     throw new Error(`Team target '${target.memberRouteKey}' was not found in team run config.`);
   }
 
@@ -129,29 +118,22 @@ export class TaskTeamRunIdentityFactory {
   ): TaskTeamInstanceIdentity["ingress"] {
     const ingress = target.ingress;
     if (!ingress) throw new Error(`Team target '${target.memberName}' has no ingress member.`);
-    const match = this.findMemberConfig(config.memberConfigs, ingress.memberRouteKey);
+    const matches = config.memberConfigs.filter(
+      (member): member is TeamMemberRunConfig =>
+        member.memberKind === "agent" &&
+        member.memberRouteKey === ingress.memberRouteKey &&
+        pathsEqual(member.memberPath, ingress.memberPath),
+    );
+    const match = matches.length === 1 ? matches[0]! : null;
     if (!match || match.memberKind !== "agent") {
       throw new Error(`Ingress member '${ingress.memberRouteKey}' was not found in materialized task team config.`);
     }
     return {
       memberName: ingress.memberName,
-      memberPath: stripPathPrefix(ingress.memberPath, target.memberPath),
-      memberRouteKey: stripRoutePrefix(ingress.memberRouteKey, target.memberRouteKey),
+      memberPath: [...ingress.memberPath],
+      memberRouteKey: ingress.memberRouteKey,
       memberRunId: normalizeRequired(match.memberRunId, "ingress.memberRunId"),
     };
   }
 
-  private findMemberConfig(
-    members: readonly TeamRunMemberConfig[],
-    routeKey: string,
-  ): TeamRunMemberConfig | null {
-    for (const member of members) {
-      if (member.memberRouteKey === routeKey) return member;
-      if (member.memberKind === "agent_team") {
-        const nested = this.findMemberConfig(member.memberConfigs, routeKey);
-        if (nested) return nested;
-      }
-    }
-    return null;
-  }
 }

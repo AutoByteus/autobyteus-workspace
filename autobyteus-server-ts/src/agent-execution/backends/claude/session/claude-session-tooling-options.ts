@@ -1,11 +1,13 @@
 import type { MemberTeamContext } from "../../../../agent-team-execution/domain/member-team-context.js";
 import { PUBLISH_ARTIFACTS_TOOL_NAME } from "../../../../services/published-artifacts/published-artifact-tool-contract.js";
 import { SEND_MESSAGE_TO_TOOL_NAME } from "../../../../agent-communication/services/send-message-to-tool-contract.js";
+import { GET_HANDOFF_RULES_TOOL_NAME } from "../../../../agent-communication/services/get-handoff-rules-tool-contract.js";
 import type { ConfiguredAgentToolExposure } from "../../../shared/configured-agent-tool-exposure.js";
 import { buildClaudeAgentToolsMcpToolName } from "../agent-tools-mcp/claude-agent-tools-mcp-tool-name.js";
 
 export type ClaudeSessionToolingOptions = {
   sendMessageToToolingEnabled: boolean;
+  getHandoffRulesToolingEnabled: boolean;
   enabledBrowserToolNames: string[];
   enabledMediaToolNames: string[];
   enabledTaskDelegationToolNames: string[];
@@ -35,6 +37,8 @@ export const resolveClaudeSessionToolingOptions = (input: {
     input.configuredToolExposure.sendMessageToConfigured;
   const publishArtifactsToolingEnabled =
     input.configuredToolExposure.publishArtifactsConfigured;
+  const getHandoffRulesToolingEnabled =
+    Boolean(input.memberTeamContext) && input.configuredToolExposure.getHandoffRulesConfigured;
   const taskDelegationToolingEnabled =
     Boolean(input.memberTeamContext) && enabledTaskDelegationToolNames.length > 0;
   const configuredAgentToolsMcpToolNames = collectConfiguredAgentToolsMcpToolNames({
@@ -44,6 +48,7 @@ export const resolveClaudeSessionToolingOptions = (input: {
     enabledTaskDelegationToolNames,
     taskDelegationToolingEnabled,
     publishArtifactsToolingEnabled,
+    getHandoffRulesToolingEnabled,
   });
   const agentToolsMcpEnabledToolNames = normalizeToolNames(
     input.agentToolsMcpEnabledToolNames ?? configuredAgentToolsMcpToolNames,
@@ -55,6 +60,7 @@ export const resolveClaudeSessionToolingOptions = (input: {
 
   return {
     sendMessageToToolingEnabled,
+    getHandoffRulesToolingEnabled,
     enabledBrowserToolNames,
     enabledMediaToolNames,
     enabledTaskDelegationToolNames,
@@ -73,10 +79,14 @@ const collectConfiguredAgentToolsMcpToolNames = (input: {
   enabledTaskDelegationToolNames: string[];
   taskDelegationToolingEnabled: boolean;
   publishArtifactsToolingEnabled: boolean;
+  getHandoffRulesToolingEnabled: boolean;
 }): string[] => {
   const toolNames = new Set<string>();
   if (input.sendMessageToToolingEnabled) {
     toolNames.add(SEND_MESSAGE_TO_TOOL_NAME);
+  }
+  if (input.getHandoffRulesToolingEnabled) {
+    toolNames.add(GET_HANDOFF_RULES_TOOL_NAME);
   }
   for (const toolName of input.enabledBrowserToolNames) {
     toolNames.add(toolName);

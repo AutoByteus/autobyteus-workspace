@@ -12,7 +12,6 @@ import {
   type InterAgentMessageDeliveryHandler,
   type ResolvedInterAgentMessageDeliveryRequest,
 } from "../../../domain/inter-agent-message-delivery.js";
-import type { AgentMemberTeamDescriptor } from "../../../domain/member-team-context.js";
 import {
   selectorFromMemberRouteKey,
   selectorToRouteKey,
@@ -27,6 +26,8 @@ import type { MixedSubTeamRunFactory } from "../mixed-sub-team-run-factory.js";
 import { buildInterAgentDeliveryInputMessage } from "../../../services/inter-agent-message-runtime-builders.js";
 import { TeamCommandStatusOverlayStore } from "../../../services/team-command-status-overlay-store.js";
 import { getTokenUsageExecutionAddressBuilder } from "../../../services/token-usage-execution-address-builder.js";
+import { getSubTeamActiveRunDirectory } from "../../../services/sub-team-active-run-directory.js";
+import { getTaskDelegationRunRegistry } from "../../../task-delegation/task-delegation-run-registry.js";
 import { prefixMixedSubTeamEvent } from "../events/mixed-team-event-bridge.js";
 import type { MixedTeamEventPublish, MixedTeamMemberHandle, MixedTeamStatusChange } from "./mixed-team-member-handle.js";
 
@@ -221,6 +222,7 @@ export class MixedSubTeamMemberHandle implements MixedTeamMemberHandle {
   }
 
   dispose(): void {
+    this.unbindChildRun();
     this.unsubscribe?.();
     this.unsubscribe = null;
     this.childRun = null;
@@ -233,6 +235,7 @@ export class MixedSubTeamMemberHandle implements MixedTeamMemberHandle {
       return this.childRun;
     }
     const restoreRuntimeContext = this.context.childRuntimeContext;
+    this.unbindChildRun();
     this.unsubscribe?.();
     this.unsubscribe = null;
     this.childRun = null;
@@ -253,23 +256,15 @@ export class MixedSubTeamMemberHandle implements MixedTeamMemberHandle {
       restoreRuntimeContext,
       parentBoundary: {
         parentTeamRunId: this.options.parentContext.runId,
-        parentTeamDefinitionId: this.options.parentContext.config?.teamDefinitionId ?? null,
         memoryScope: childMemoryScope,
-        representedSubTeam: {
-          memberKind: "agent_team",
-          memberName: this.context.memberName,
-          memberPath: [...this.context.memberPath],
-          memberRouteKey: this.context.memberRouteKey,
-          memberRunId: this.context.memberRunId,
-          teamDefinitionId: this.context.teamDefinitionId,
-          childTeamRunId,
-          address: buildTeamMemberAddress({
-            teamRunId: this.options.parentContext.runId,
-            memberPath: this.context.memberPath,
-            memberRouteKey: this.context.memberRouteKey,
-          }),
-        },
-        parentMembers: this.buildParentBoundaryMembers(),
+        collaborationRootTeamRunId:
+          this.options.parentContext.runtimeContext.collaborationRootTeamRunId,
+        teamMountPath: [
+          ...this.options.parentContext.runtimeContext.teamMountPath,
+          ...this.options.config.memberPath,
+        ],
+        effectiveHandoffs:
+          this.options.parentContext.runtimeContext.effectiveHandoffs,
         deliverInterAgentMessage: this.options.deliverInterAgentMessage,
       },
       tokenUsageTeamScope: this.tokenUsageAddressBuilder.buildSubTeamScope({
@@ -279,6 +274,7 @@ export class MixedSubTeamMemberHandle implements MixedTeamMemberHandle {
     });
     this.context.childTeamRunId = this.childRun.runId;
     this.context.childRuntimeContext = this.childRun.getRuntimeContext() as MixedTeamRunContext;
+    getSubTeamActiveRunDirectory().bind(this.childRun);
     this.bindEvents(this.childRun);
     if (this.commandStatusOverlayStore.getTeamStatus({
       sourcePath: this.context.memberPath,
@@ -289,24 +285,12 @@ export class MixedSubTeamMemberHandle implements MixedTeamMemberHandle {
     return this.childRun;
   }
 
-  private buildParentBoundaryMembers(): AgentMemberTeamDescriptor[] {
-    return this.options.parentContext.runtimeContext.memberContexts
-      .filter((memberContext) => memberContext.memberKind === "agent")
-      .map((memberContext) => ({
-        memberKind: "agent" as const,
-        memberName: memberContext.memberName,
-        memberPath: [...memberContext.memberPath],
-        memberRouteKey: memberContext.memberRouteKey,
-        memberRunId: memberContext.memberRunId,
-        runtimeKind: memberContext.runtimeKind,
-        role: null,
-        description: null,
-        address: buildTeamMemberAddress({
-          teamRunId: this.options.parentContext.runId,
-          memberPath: memberContext.memberPath,
-          memberRouteKey: memberContext.memberRouteKey,
-        }),
-      }));
+  private unbindChildRun(): void {
+    const childTeamRunId = this.childRun?.runId ?? this.context.childTeamRunId;
+    getSubTeamActiveRunDirectory().unbind(childTeamRunId);
+    if (childTeamRunId) {
+      getTaskDelegationRunRegistry().detach(childTeamRunId);
+    }
   }
 
   private resolveDefaultChildRouteKey(): string | null {

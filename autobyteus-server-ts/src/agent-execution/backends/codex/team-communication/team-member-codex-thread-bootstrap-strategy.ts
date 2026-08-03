@@ -40,7 +40,7 @@ export class TeamMemberCodexThreadBootstrapStrategy implements CodexThreadBootst
     const sendMessageToEnabled = input.configuredToolExposure.sendMessageToConfigured;
     const recipientNameDeliveryEnabled =
       memberTeamContext.sendMessageToEnabled &&
-      Boolean(memberTeamContext.deliverInterAgentMessage);
+      Boolean(memberTeamContext.collaboration.deliverInterAgentMessage);
     const taskDelegationToolNames =
       input.configuredToolExposure.enabledTaskDelegationToolNames;
     const taskDelegationEnabled = taskDelegationToolNames.length > 0;
@@ -51,6 +51,7 @@ export class TeamMemberCodexThreadBootstrapStrategy implements CodexThreadBootst
       sendMessageToEnabled,
       recipientNameDeliveryEnabled,
       taskDelegationEnabled,
+      getHandoffRulesEnabled: input.configuredToolExposure.getHandoffRulesConfigured,
     });
 
     return {

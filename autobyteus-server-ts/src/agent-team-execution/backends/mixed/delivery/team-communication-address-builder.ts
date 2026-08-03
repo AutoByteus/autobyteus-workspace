@@ -13,14 +13,6 @@ const normalizeString = (value: string | null | undefined): string | null => {
   return normalized ? normalized : null;
 };
 
-const pathStartsWith = (path: readonly string[], prefix: readonly string[]): boolean =>
-  path.length >= prefix.length && prefix.every((segment, index) => path[index] === segment);
-
-const relativePathFromPrefix = (
-  path: readonly string[],
-  prefix: readonly string[],
-): string[] => (pathStartsWith(path, prefix) ? path.slice(prefix.length) : []);
-
 const memberSegmentFromRouteOrPath = (input: {
   memberRouteKey?: string | null;
   memberPath?: readonly string[] | null;
@@ -70,19 +62,10 @@ const buildStaticParticipantAddress = (
   participant: InterAgentMessageParticipant,
 ): ConversationTargetAddress => {
   const memberPath = [...participant.memberPath];
-  const representedPrefix = participant.representedSubTeam?.memberPath ?? [];
-  const relativePath = representedPrefix.length > 0
-    ? relativePathFromPrefix(memberPath, representedPrefix)
-    : [];
-  const parentRootedRouteKey = representedPrefix.length > 0
-    ? normalizeString(participant.memberRouteKey)
-      ?? (memberPath.length > 0 ? buildMemberRouteKeyFromPath(memberPath) : null)
-    : null;
   const memberRouteKey =
-    parentRootedRouteKey
+    normalizeString(participant.memberRouteKey)
     ?? normalizeString(participant.logicalMemberRouteKey)
-    ?? normalizeString(participant.memberRouteKey)
-    ?? (relativePath.length > 0 ? buildMemberRouteKeyFromPath(relativePath) : null);
+    ?? (memberPath.length > 0 ? buildMemberRouteKeyFromPath(memberPath) : null);
 
   return normalizeConversationTargetAddress(buildConversationAddressFromSegments(
     appendTaskAgentSegment([

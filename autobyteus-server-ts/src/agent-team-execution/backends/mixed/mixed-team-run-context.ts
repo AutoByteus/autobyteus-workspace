@@ -1,10 +1,9 @@
 import type { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 import type { AgentMemoryScope } from "../../../agent-memory/domain/agent-memory-location.js";
-import type { AgentMemberTeamDescriptor } from "../../domain/member-team-context.js";
 import type {
   InterAgentMessageDeliveryHandler,
-  TeamRepresentedSubTeam,
 } from "../../domain/inter-agent-message-delivery.js";
+import type { CollaborationHandoff } from "../../../agent-collaboration/domain/collaboration-handoff.js";
 import type { TaskTeamInstanceIdentity } from "../../domain/task-team-instance.js";
 import type { TokenUsageTeamExecutionScope } from "../../domain/token-usage-execution-scope.js";
 import { cloneTokenUsageTeamExecutionScope } from "../../domain/token-usage-execution-scope.js";
@@ -86,11 +85,10 @@ export type MixedTeamMemberContext = MixedAgentMemberContext | MixedSubTeamMembe
 
 export type MixedParentBoundaryContext = {
   parentTeamRunId: string;
-  parentTeamDefinitionId?: string | null;
-  parentTeamName?: string | null;
   memoryScope?: AgentMemoryScope | null;
-  representedSubTeam: TeamRepresentedSubTeam;
-  parentMembers: AgentMemberTeamDescriptor[];
+  collaborationRootTeamRunId: string;
+  teamMountPath: string[];
+  effectiveHandoffs: readonly CollaborationHandoff[];
   deliverInterAgentMessage: InterAgentMessageDeliveryHandler;
 };
 
@@ -100,6 +98,9 @@ export type MixedTeamRunContextInput = {
   parentBoundary?: MixedParentBoundaryContext | null;
   taskTeamInstance?: TaskTeamInstanceIdentity | null;
   tokenUsageTeamScope?: TokenUsageTeamExecutionScope | null;
+  collaborationRootTeamRunId: string;
+  teamMountPath?: string[] | null;
+  effectiveHandoffs?: readonly CollaborationHandoff[] | null;
 };
 
 export class MixedTeamRunContext {
@@ -108,6 +109,9 @@ export class MixedTeamRunContext {
   readonly parentBoundary: MixedParentBoundaryContext | null;
   readonly taskTeamInstance: TaskTeamInstanceIdentity | null;
   readonly tokenUsageTeamScope: TokenUsageTeamExecutionScope;
+  readonly collaborationRootTeamRunId: string;
+  readonly teamMountPath: readonly string[];
+  readonly effectiveHandoffs: readonly CollaborationHandoff[];
 
   constructor(input: MixedTeamRunContextInput) {
     this.coordinatorMemberRouteKey = input.coordinatorMemberRouteKey;
@@ -117,6 +121,13 @@ export class MixedTeamRunContext {
     this.tokenUsageTeamScope = input.tokenUsageTeamScope
       ? cloneTokenUsageTeamExecutionScope(input.tokenUsageTeamScope)
       : { rootTeamRunId: "", teamScopeAddress: { segments: [] } };
+    this.collaborationRootTeamRunId = input.collaborationRootTeamRunId;
+    this.teamMountPath = Object.freeze([...(input.teamMountPath ?? [])]);
+    this.effectiveHandoffs = Object.freeze(input.effectiveHandoffs?.map((handoff) => ({
+      from: handoff.from,
+      to: handoff.to,
+      rules: Object.freeze([...handoff.rules]),
+    })) ?? []);
   }
 }
 

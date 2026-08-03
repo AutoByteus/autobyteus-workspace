@@ -3,11 +3,14 @@ import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.
 import type { AgentDefinition } from "../../../agent-definition/domain/models.js";
 import type { MemberTeamContext } from "../../../agent-team-execution/domain/member-team-context.js";
 import { ensureAutoByteusSendMessageToToolRegistered } from "../../../agent-tools/agent-communication/send-message-to.js";
+import { ensureAutoByteusGetHandoffRulesToolRegistered } from "../../../agent-tools/agent-communication/get-handoff-rules.js";
 import { buildAgentRunMessageSenderContext } from "../../../agent-communication/domain/agent-run-message-sender.js";
 import { resolveAutoByteusStandaloneToolNames } from "./autobyteus-mixed-tool-exposure.js";
 import {
   createAutoByteusSendMessageToToolForSender,
   isSendMessageToToolName,
+  isGetHandoffRulesToolName,
+  createAutoByteusGetHandoffRulesToolForSender,
 } from "./agent-communication/autobyteus-send-message-tool-factory.js";
 
 type ToolResolutionLogger = {
@@ -43,8 +46,9 @@ export const resolveAutoByteusAgentTools = (input: {
   const actualToolNames: string[] = [];
 
   for (const name of resolvedToolNames) {
-    if (isSendMessageToToolName(name)) {
-      ensureAutoByteusSendMessageToToolRegistered();
+    if (isSendMessageToToolName(name) || isGetHandoffRulesToolName(name)) {
+      if (isSendMessageToToolName(name)) ensureAutoByteusSendMessageToToolRegistered();
+      else ensureAutoByteusGetHandoffRulesToolRegistered();
       if (!input.senderRunId?.trim()) {
         logger.warn(
           `Tool '${name}' defined in agent definition '${agentDefinition.name}' requires senderRunId. Skipping.`,
@@ -52,14 +56,15 @@ export const resolveAutoByteusAgentTools = (input: {
         continue;
       }
       try {
-        tools.push(createAutoByteusSendMessageToToolForSender(
-          buildAgentRunMessageSenderContext({
+        const sender = buildAgentRunMessageSenderContext({
             senderRunId: input.senderRunId,
             senderName: input.senderName ?? agentDefinition.name,
             runtimeKind: input.runtimeKind ?? null,
             memberTeamContext,
-          }),
-        ));
+          });
+        tools.push(isSendMessageToToolName(name)
+          ? createAutoByteusSendMessageToToolForSender(sender)
+          : createAutoByteusGetHandoffRulesToolForSender(sender));
         actualToolNames.push(name);
       } catch (error) {
         logger.error(

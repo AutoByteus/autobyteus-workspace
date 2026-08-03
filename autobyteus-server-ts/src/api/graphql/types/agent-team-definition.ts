@@ -8,6 +8,7 @@ import {
   Resolver,
   registerEnumType,
 } from "type-graphql";
+import { GraphQLError } from "graphql";
 import {
   AgentMemberRefScope,
   AgentTeamDefinitionOwnershipScope,
@@ -71,6 +72,30 @@ export class TeamMember {
 }
 
 @ObjectType()
+export class AgentTeamHandoff {
+  @Field(() => String)
+  from!: string;
+
+  @Field(() => String)
+  to!: string;
+
+  @Field(() => [String])
+  rules!: string[];
+}
+
+@InputType()
+export class AgentTeamHandoffInput {
+  @Field(() => String)
+  from!: string;
+
+  @Field(() => String)
+  to!: string;
+
+  @Field(() => [String])
+  rules!: string[];
+}
+
+@ObjectType()
 export class AgentTeamDefinition {
   @Field(() => String)
   id!: string;
@@ -92,6 +117,9 @@ export class AgentTeamDefinition {
 
   @Field(() => String)
   coordinatorMemberName!: string;
+
+  @Field(() => [AgentTeamHandoff])
+  handoffs!: AgentTeamHandoff[];
 
   @Field(() => String, { nullable: true })
   avatarUrl?: string | null;
@@ -156,6 +184,9 @@ export class CreateAgentTeamDefinitionInput {
   @Field(() => String)
   coordinatorMemberName!: string;
 
+  @Field(() => [AgentTeamHandoffInput], { nullable: true })
+  handoffs?: AgentTeamHandoffInput[] | null;
+
   @Field(() => String, { nullable: true })
   avatarUrl?: string | null;
 
@@ -185,6 +216,9 @@ export class UpdateAgentTeamDefinitionInput {
 
   @Field(() => String, { nullable: true })
   coordinatorMemberName?: string | null;
+
+  @Field(() => [AgentTeamHandoffInput], { nullable: true })
+  handoffs?: AgentTeamHandoffInput[] | null;
 
   @Field(() => String, { nullable: true })
   avatarUrl?: string | null;
@@ -281,6 +315,7 @@ export class AgentTeamDefinitionResolver {
         avatarUrl: input.avatarUrl ?? null,
         nodes: domainNodes,
         coordinatorMemberName: input.coordinatorMemberName,
+        handoffs: input.handoffs ?? [],
         defaultLaunchConfig: toDomainDefaultLaunchConfig(input.defaultLaunchConfig),
       });
 
@@ -288,7 +323,7 @@ export class AgentTeamDefinitionResolver {
       return AgentTeamDefinitionConverter.toGraphql(created);
     } catch (error) {
       logger.error(`Error creating agent team definition: ${String(error)}`);
-      throw new Error(`Failed to create agent team definition: ${String(error)}`);
+      throw toGraphqlDefinitionError(error, "Failed to create agent team definition");
     }
   }
 
@@ -318,6 +353,7 @@ export class AgentTeamDefinitionResolver {
         category: input.category ?? null,
         nodes: nodesUpdate,
         coordinatorMemberName: input.coordinatorMemberName ?? null,
+        handoffs: input.handoffs ?? null,
         avatarUrl: input.avatarUrl ?? null,
         defaultLaunchConfig: toDomainDefaultLaunchConfig(input.defaultLaunchConfig),
       });
@@ -326,7 +362,7 @@ export class AgentTeamDefinitionResolver {
       return AgentTeamDefinitionConverter.toGraphql(updated);
     } catch (error) {
       logger.error(`Error updating agent team definition: ${String(error)}`);
-      throw new Error(`Failed to update agent team definition: ${String(error)}`);
+      throw toGraphqlDefinitionError(error, "Failed to update agent team definition");
     }
   }
 
@@ -347,3 +383,11 @@ export class AgentTeamDefinitionResolver {
     }
   }
 }
+
+const toGraphqlDefinitionError = (error: unknown, prefix: string): GraphQLError => {
+  const code = typeof error === "object" && error !== null && typeof (error as { code?: unknown }).code === "string"
+    ? String((error as { code: string }).code)
+    : "AGENT_TEAM_DEFINITION_INVALID";
+  const message = error instanceof Error ? error.message : String(error);
+  return new GraphQLError(`${prefix}: ${message}`, { extensions: { code } });
+};

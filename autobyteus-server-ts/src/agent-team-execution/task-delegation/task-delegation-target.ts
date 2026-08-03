@@ -9,6 +9,7 @@ export type TaskDelegationMemberIdentity = {
   runtimeKind?: RuntimeKind | null;
   role?: string | null;
   description?: string | null;
+  logicalAddress?: string | null;
 };
 
 export type TaskDelegationTeamIngressIdentity = {
@@ -33,15 +34,12 @@ export type TaskDelegationTeamIdentity = {
   ingress: TaskDelegationTeamIngressIdentity | null;
   role?: string | null;
   description?: string | null;
+  logicalAddress?: string | null;
 };
 
 export type TaskDelegationTarget =
   | { kind: "member"; member: TaskDelegationMemberIdentity }
   | { kind: "team"; team: TaskDelegationTeamIdentity };
-
-export type TaskDelegationContextMember =
-  | TaskDelegationMemberIdentity
-  | TaskDelegationTeamIdentity;
 
 export const cloneTaskDelegationMemberIdentity = (
   identity: TaskDelegationMemberIdentity,
@@ -54,6 +52,7 @@ export const cloneTaskDelegationMemberIdentity = (
   runtimeKind: identity.runtimeKind ?? null,
   role: identity.role ?? null,
   description: identity.description ?? null,
+  logicalAddress: identity.logicalAddress ?? null,
 });
 
 export const cloneTaskDelegationTeamIngressIdentity = (
@@ -82,6 +81,7 @@ export const cloneTaskDelegationTeamIdentity = (
   ingress: identity.ingress ? cloneTaskDelegationTeamIngressIdentity(identity.ingress) : null,
   role: identity.role ?? null,
   description: identity.description ?? null,
+  logicalAddress: identity.logicalAddress ?? null,
 });
 
 export const cloneTaskDelegationTarget = (
@@ -95,3 +95,7 @@ export const getTaskDelegationTargetName = (target: TaskDelegationTarget): strin
 
 export const getTaskDelegationTargetRouteKey = (target: TaskDelegationTarget): string =>
   target.kind === "member" ? target.member.memberRouteKey : target.team.memberRouteKey;
+
+export const getTaskDelegationTargetLogicalAddress = (target: TaskDelegationTarget): string =>
+  (target.kind === "member" ? target.member.logicalAddress : target.team.logicalAddress)
+  ?? `/${getTaskDelegationTargetRouteKey(target)}`;

@@ -24,6 +24,8 @@ import type { TeamStatusPayload } from "./team-status-payload.js";
 import type { StartTaskAgentInstanceRequest } from "./task-agent-instance.js";
 import type { StartTaskTeamInstanceRequest } from "./task-team-instance.js";
 import type { ConversationTargetAddress } from "./conversation-target-address.js";
+import type { MemberLogicalAddressContext } from "./member-logical-address-context.js";
+import { CollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
 
 type TeamRunOptions = {
   context?: TeamRunContext<RuntimeTeamRunContext>;
@@ -106,6 +108,19 @@ export class TeamRun {
     intent: InterAgentMessageDeliveryIntent,
   ): Promise<AgentOperationResult> {
     return this.backend.deliverInterAgentMessage(intent);
+  }
+
+  resolveLogicalPlacement(
+    recipientName: string,
+    callerAddressing: MemberLogicalAddressContext,
+  ) {
+    if (callerAddressing.rootTeamRunId !== this.runId) {
+      throw new CollaborationContractError(
+        "COLLABORATION_CONTEXT_REQUIRED",
+        `Caller collaboration root '${callerAddressing.rootTeamRunId}' does not match TeamRun '${this.runId}'.`,
+      );
+    }
+    return this.backend.resolveLogicalPlacement(recipientName, callerAddressing);
   }
 
   async approveToolInvocation(

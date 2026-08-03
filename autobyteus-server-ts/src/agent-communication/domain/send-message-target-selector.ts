@@ -6,7 +6,7 @@ export type SendMessageTargetSelectorValidationResult =
   | { ok: true; target: SendMessageTargetSelector }
   | { ok: false; message: string };
 
-const normalizeOptional = (value: string | null | undefined): string | null => {
+const normalizeRunId = (value: string | null | undefined): string | null => {
   if (typeof value !== "string") {
     return null;
   }
@@ -14,13 +14,16 @@ const normalizeOptional = (value: string | null | undefined): string | null => {
   return normalized.length > 0 ? normalized : null;
 };
 
+const preserveLogicalAddress = (value: string | null | undefined): string | null =>
+  typeof value === "string" && value.length > 0 ? value : null;
+
 export const buildSendMessageTargetSelector = (input: {
   recipientName?: string | null;
   targetAgentRunId?: string | null;
   toolName?: string | null;
 }): SendMessageTargetSelectorValidationResult => {
-  const recipientName = normalizeOptional(input.recipientName);
-  const targetAgentRunId = normalizeOptional(input.targetAgentRunId);
+  const recipientName = preserveLogicalAddress(input.recipientName);
+  const targetAgentRunId = normalizeRunId(input.targetAgentRunId);
   const toolName = input.toolName?.trim() || "send_message_to";
 
   if (recipientName && targetAgentRunId) {

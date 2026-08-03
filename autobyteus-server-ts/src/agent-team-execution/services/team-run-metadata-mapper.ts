@@ -67,6 +67,7 @@ export class TeamRunMetadataMapper {
         coordinatorMemberName,
         coordinatorMemberRouteKey: metadata.coordinatorMemberRouteKey,
         memberTree,
+        effectiveHandoffs: metadata.handoffs,
       }),
       runtimeContext: buildRestoreTeamRunRuntimeContext(metadata),
     });
@@ -115,6 +116,11 @@ export class TeamRunMetadataMapper {
       createdAt,
       archivedAt: previousMetadata?.archivedAt ?? null,
       memberTree,
+      handoffs: config.effectiveHandoffs.map((handoff) => ({
+        from: handoff.from,
+        to: handoff.to,
+        rules: [...handoff.rules],
+      })),
     };
   }
 

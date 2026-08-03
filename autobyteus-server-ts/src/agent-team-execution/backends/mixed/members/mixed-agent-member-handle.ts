@@ -19,14 +19,12 @@ import type { AgentStatusPayload } from "../../../../agent-execution/domain/agen
 import { RuntimeKind } from "../../../../runtime-management/runtime-kind-enum.js";
 import { getAgentToolMcpSessionService } from "../../../../agent-tools/mcp/agent-tool-mcp-session-service.js";
 import type { TeamMemberRunConfig } from "../../../domain/team-run-config.js";
-import type { TeamRunMemberConfig } from "../../../domain/team-run-config.js";
 import { TeamBackendKind } from "../../../domain/team-backend-kind.js";
 import type { TaskAgentInstanceIdentity } from "../../../domain/task-agent-instance.js";
 import type { ConversationTargetAddress } from "../../../domain/conversation-target-address.js";
 import {
   getMemberTeamContextBuilder,
   type MemberTeamContextBuilder,
-  type MemberTeamContextMemberInput,
 } from "../../../services/member-team-context-builder.js";
 import { getInterAgentMessageRouter, type InterAgentMessageRouter } from "../../../services/inter-agent-message-router.js";
 import {
@@ -267,8 +265,9 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
       currentMemberRouteKey: this.context.memberRouteKey,
       currentMemberRunId: this.context.memberRunId,
       coordinatorMemberRouteKey: this.options.teamContext.runtimeContext.coordinatorMemberRouteKey,
-      members: this.buildMemberTeamContextInputs(),
-      parentBoundary: this.options.teamContext.runtimeContext.parentBoundary,
+      collaborationRootTeamRunId: this.options.teamContext.runtimeContext.collaborationRootTeamRunId,
+      teamMountPath: this.options.teamContext.runtimeContext.teamMountPath,
+      effectiveHandoffs: this.options.teamContext.runtimeContext.effectiveHandoffs,
       deliverInterAgentMessage: this.options.deliverInterAgentMessage,
       taskAgentInstance: this.options.taskAgentInstance ?? null,
       taskTeamInstance: this.resolveTaskTeamIngressBinding(),
@@ -311,75 +310,6 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
         "is missing memoryDir before AgentRun creation. " +
         "The mixed-team runtime owner must materialize member memoryDir upstream.",
     );
-  }
-
-  private buildMemberTeamContextInputs(): MemberTeamContextMemberInput[] {
-    return this.options.teamContext.runtimeContext.memberContexts.map((member) => {
-      const memberConfig = this.findMemberConfig(member.memberRouteKey);
-      if (member.memberKind === "agent_team") {
-        const subTeamConfig = memberConfig?.memberKind === "agent_team" ? memberConfig : null;
-        return {
-          memberKind: "agent_team" as const,
-          memberName: member.memberName,
-          memberPath: member.memberPath,
-          memberRouteKey: member.memberRouteKey,
-          memberRunId: member.memberRunId,
-          teamDefinitionId: member.teamDefinitionId,
-          childTeamRunId: member.childTeamRunId,
-          coordinatorMemberRouteKey: subTeamConfig?.coordinatorMemberRouteKey ?? null,
-          representative: subTeamConfig ? this.buildSubTeamRepresentative(subTeamConfig) : null,
-        };
-      }
-      return {
-        memberKind: "agent" as const,
-        memberName: member.memberName,
-        memberPath: member.memberPath,
-        memberRouteKey: member.memberRouteKey,
-        memberRunId: member.memberRunId,
-        runtimeKind: member.runtimeKind,
-        role: memberConfig?.role ?? null,
-        description: memberConfig?.description ?? null,
-      };
-    });
-  }
-
-  private buildSubTeamRepresentative(
-    subTeamConfig: Extract<TeamRunMemberConfig, { memberKind: "agent_team" }>,
-  ) {
-    const coordinatorRouteKey = subTeamConfig.coordinatorMemberRouteKey?.trim();
-    if (!coordinatorRouteKey) {
-      return null;
-    }
-    const representative = subTeamConfig.memberConfigs.find(
-      (member) => member.memberKind === "agent" && member.memberRouteKey === coordinatorRouteKey,
-    );
-    if (!representative || representative.memberKind !== "agent") {
-      return null;
-    }
-    return {
-      memberKind: "agent" as const,
-      memberName: representative.memberName,
-      memberPath: representative.memberPath,
-      memberRouteKey: representative.memberRouteKey,
-      memberRunId: representative.memberRunId!,
-      runtimeKind: representative.runtimeKind,
-      role: representative.role ?? null,
-      description: representative.description ?? null,
-    };
-  }
-
-  private findMemberConfig(memberRouteKey: string): TeamRunMemberConfig | null {
-    const stack = [...(this.options.teamContext.config?.memberTree ?? [])];
-    while (stack.length > 0) {
-      const memberConfig = stack.shift()!;
-      if (memberConfig.memberRouteKey === memberRouteKey) {
-        return memberConfig;
-      }
-      if (memberConfig.memberKind === "agent_team") {
-        stack.push(...memberConfig.memberConfigs);
-      }
-    }
-    return null;
   }
 
   private bindEvents(run: AgentRun): void {

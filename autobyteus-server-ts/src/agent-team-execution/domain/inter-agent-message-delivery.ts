@@ -1,6 +1,6 @@
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
-import type { SendMessageTargetSelector } from "../../agent-communication/domain/send-message-target-selector.js";
 import type { ConversationTargetAddress } from "./conversation-target-address.js";
+import type { MemberLogicalAddressContext } from "./member-logical-address-context.js";
 import {
   buildMemberRouteKeyFromPath,
   selectorFromMemberPath,
@@ -13,17 +13,6 @@ export type TeamMemberAddress = {
   memberRouteKey: string;
 };
 
-export type TeamRepresentedSubTeam = {
-  memberKind: "agent_team";
-  memberName: string;
-  memberPath: string[];
-  memberRouteKey: string;
-  memberRunId: string;
-  teamDefinitionId: string;
-  childTeamRunId?: string | null;
-  address: TeamMemberAddress;
-};
-
 export type InterAgentMessageParticipant = {
   memberKind: "agent" | "agent_team";
   memberName: string;
@@ -33,7 +22,6 @@ export type InterAgentMessageParticipant = {
   address: TeamMemberAddress;
   platformRunId?: string | null;
   teamDefinitionId?: string | null;
-  representedSubTeam?: TeamRepresentedSubTeam | null;
   taskAgentInstanceId?: string | null;
   taskAgentRunId?: string | null;
   taskId?: string | null;
@@ -47,9 +35,10 @@ export type InterAgentMessageDeliveryEndpoint = {
 
 export interface InterAgentMessageDeliveryIntent {
   teamRunId: string;
+  callerAddressing: MemberLogicalAddressContext;
   sender: InterAgentMessageDeliveryEndpoint;
   senderAddress?: ConversationTargetAddress | null;
-  target: SendMessageTargetSelector;
+  recipientName: string;
   content: string;
   messageType?: string | null;
   referenceFiles?: string[] | null;
@@ -90,9 +79,6 @@ const normalizePath = (value: readonly string[], fieldName: string): string[] =>
 const pathsEqual = (left: readonly string[], right: readonly string[]): boolean =>
   left.length === right.length && left.every((segment, index) => segment === right[index]);
 
-const pathStartsWith = (path: readonly string[], prefix: readonly string[]): boolean =>
-  path.length >= prefix.length && prefix.every((segment, index) => path[index] === segment);
-
 export const buildTeamMemberAddress = (input: {
   teamRunId: string;
   memberPath: readonly string[];
@@ -129,36 +115,6 @@ export const assertParticipantAddressInvariant = (
   }
   if (address.memberRouteKey !== participant.memberRouteKey) {
     throw new Error(`participant.address.memberRouteKey '${address.memberRouteKey}' does not match participant.memberRouteKey '${participant.memberRouteKey}'.`);
-  }
-  if (participant.representedSubTeam) {
-    assertRepresentedSubTeamAddressInvariant(participant.representedSubTeam);
-    if (participant.representedSubTeam.address.teamRunId !== address.teamRunId) {
-      throw new Error(`participant.representedSubTeam.address.teamRunId '${participant.representedSubTeam.address.teamRunId}' does not match participant.address.teamRunId '${address.teamRunId}'.`);
-    }
-    if (!pathStartsWith(participantPath, participant.representedSubTeam.memberPath)) {
-      throw new Error(`participant.representedSubTeam.memberPath '${participant.representedSubTeam.memberPath.join("/")}' is not a prefix of participant.memberPath '${participantPath.join("/")}'.`);
-    }
-  }
-};
-
-export const assertRepresentedSubTeamAddressInvariant = (
-  representedSubTeam: TeamRepresentedSubTeam,
-): void => {
-  const subTeamRouteKey = buildMemberRouteKeyFromPath(representedSubTeam.memberPath);
-  if (subTeamRouteKey !== representedSubTeam.memberRouteKey) {
-    throw new Error(`representedSubTeam.memberRouteKey '${representedSubTeam.memberRouteKey}' does not match representedSubTeam.memberPath '${subTeamRouteKey}'.`);
-  }
-  const address = buildTeamMemberAddress({
-    teamRunId: representedSubTeam.address.teamRunId,
-    memberPath: representedSubTeam.address.memberPath,
-    memberRouteKey: representedSubTeam.address.memberRouteKey,
-  });
-  const subTeamPath = normalizePath(representedSubTeam.memberPath, "representedSubTeam.memberPath");
-  if (!pathsEqual(address.memberPath, subTeamPath)) {
-    throw new Error(`representedSubTeam.address.memberPath '${address.memberPath.join("/")}' does not match representedSubTeam.memberPath '${subTeamPath.join("/")}'.`);
-  }
-  if (address.memberRouteKey !== representedSubTeam.memberRouteKey) {
-    throw new Error(`representedSubTeam.address.memberRouteKey '${address.memberRouteKey}' does not match representedSubTeam.memberRouteKey '${representedSubTeam.memberRouteKey}'.`);
   }
 };
 

@@ -1,10 +1,11 @@
-import {
-  buildScopedMemberResolutionContext,
-  resolveScopedAgentMemberRef,
-  resolveScopedTeamMemberRef,
-} from "../../agent-team-definition/utils/scoped-team-member-resolution.js";
-import type { AgentTeamDefinition, TeamMember } from "../../agent-team-definition/domain/models.js";
+import type { AgentTeamDefinition } from "../../agent-team-definition/domain/models.js";
 import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
+import {
+  TeamDefinitionGraphResolver,
+  type ResolvedTeamDefinitionGraph,
+  type ResolvedTeamDefinitionMember,
+} from "../../agent-team-definition/services/team-definition-graph-resolver.js";
+import { TeamHandoffCompiler } from "../../agent-team-definition/services/team-handoff-compiler.js";
 import { TeamBackendKind } from "../domain/team-backend-kind.js";
 import {
   TeamRunConfig,
@@ -112,6 +113,7 @@ export class TeamDefinitionTopologyPlanner {
       coordinatorMemberName: skeleton.coordinatorMemberName,
       coordinatorMemberRouteKey: skeleton.coordinatorMemberRouteKey,
       memberTree,
+      effectiveHandoffs: skeleton.effectiveHandoffs,
     });
 
     return {
@@ -147,95 +149,68 @@ export class TeamDefinitionTopologyPlanner {
 
   private async buildSkeleton(
     teamDefinitionId: string,
-    parentPath: string[],
-    visited: Set<string>,
+    _parentPath: string[],
+    _visited: Set<string>,
   ): Promise<{
     definition: AgentTeamDefinition;
     coordinatorMemberName: string | null;
     coordinatorMemberRouteKey: string | null;
     memberTree: MemberSkeleton[];
+    effectiveHandoffs: import("../../agent-collaboration/domain/collaboration-handoff.js").CollaborationHandoff[];
   }> {
     const normalizedTeamDefinitionId = normalizeRequiredString(teamDefinitionId, "teamDefinitionId");
-    if (visited.has(normalizedTeamDefinitionId)) {
-      throw new Error(
-        `Circular dependency detected in team definitions involving ID: ${normalizedTeamDefinitionId}`,
-      );
-    }
-    visited.add(normalizedTeamDefinitionId);
-
     const definition = await this.teamDefinitionService.getDefinitionById(normalizedTeamDefinitionId);
     if (!definition) {
       throw new Error(`AgentTeamDefinition with ID ${normalizedTeamDefinitionId} not found.`);
     }
-
-    const teamNodes = Array.isArray(definition.nodes) ? definition.nodes : [];
-    this.assertUniqueBoundaryMemberNames(definition, teamNodes);
-    const resolutionContext = buildScopedMemberResolutionContext(
+    const graph = await new TeamDefinitionGraphResolver().resolve({
+      rootDefinition: definition,
+      rootDefinitionId: normalizedTeamDefinitionId,
+      lookup: { getTeamById: (id) => this.teamDefinitionService.getDefinitionById(id) },
+    });
+    return {
       definition,
-      normalizedTeamDefinitionId,
-    );
-    const memberTree: MemberSkeleton[] = [];
-    for (const node of teamNodes) {
-      const memberName = normalizeRequiredString(node.memberName, "memberName");
-      const memberPath = buildMemberPath(parentPath, memberName);
-      const memberRouteKey = buildMemberRouteKeyFromPath(memberPath);
-      if (node.refType === "agent") {
-        memberTree.push({
-          kind: "agent",
-          memberName,
-          memberPath,
-          memberRouteKey,
-          agentDefinitionId: resolveScopedAgentMemberRef(resolutionContext, node),
-        });
-        continue;
-      }
-
-      const childTeamDefinitionId = resolveScopedTeamMemberRef(resolutionContext, node);
-      const child = await this.buildSkeleton(childTeamDefinitionId, memberPath, new Set(visited));
-      memberTree.push({
-        kind: "agent_team",
-        memberName,
-        memberPath,
-        memberRouteKey,
-        teamDefinitionId: childTeamDefinitionId,
-        coordinatorMemberRouteKey: child.coordinatorMemberRouteKey,
-        memberTree: child.memberTree,
-      });
-    }
-
-    const coordinatorMemberName = definition.coordinatorMemberName?.trim() || null;
-    const coordinatorNode = coordinatorMemberName
-      ? teamNodes.find((node) => node.memberName.trim() === coordinatorMemberName) ?? null
-      : null;
-    if (coordinatorMemberName && !coordinatorNode) {
-      throw new Error(
-        `Coordinator member name '${coordinatorMemberName}' not found in team '${definition.name}'.`,
-      );
-    }
-    if (coordinatorNode?.refType === "agent_team") {
-      throw new Error(
-        `The designated coordinator '${coordinatorMemberName}' must be an agent member, not an agent_team member.`,
-      );
-    }
-    const coordinatorMemberRouteKey = coordinatorMemberName
-      ? buildMemberRouteKeyFromPath(buildMemberPath(parentPath, coordinatorMemberName))
-      : memberTree[0]?.memberRouteKey ?? null;
-
-    return { definition, coordinatorMemberName, coordinatorMemberRouteKey, memberTree };
+      coordinatorMemberName: graph.coordinator.memberName,
+      coordinatorMemberRouteKey: buildMemberRouteKeyFromPath(graph.coordinator.absolutePath),
+      memberTree: this.graphMembersToSkeleton(graph.members),
+      effectiveHandoffs: new TeamHandoffCompiler().compile(graph),
+    };
   }
 
-  private assertUniqueBoundaryMemberNames(
-    definition: AgentTeamDefinition,
-    nodes: TeamMember[],
-  ): void {
-    const seen = new Set<string>();
-    for (const node of nodes) {
-      const memberName = normalizeRequiredString(node.memberName, "memberName");
-      if (seen.has(memberName)) {
-        throw new Error(`Duplicate member name '${memberName}' in team '${definition.name}'.`);
+  private graphMembersToSkeleton(
+    members: readonly ResolvedTeamDefinitionMember[],
+  ): MemberSkeleton[] {
+    return members.map((member) => {
+      const memberPath = [...member.absolutePath];
+      const memberRouteKey = buildMemberRouteKeyFromPath(memberPath);
+      if (member.kind === "agent") {
+        return {
+          kind: "agent",
+          memberName: member.memberName,
+          memberPath,
+          memberRouteKey,
+          agentDefinitionId: member.agentDefinitionId,
+        };
       }
-      seen.add(memberName);
-    }
+      return this.graphTeamToSkeleton(member.team, member.memberName, memberPath, memberRouteKey);
+    });
+  }
+
+  private graphTeamToSkeleton(
+    graph: ResolvedTeamDefinitionGraph,
+    memberName: string,
+    memberPath: string[],
+    memberRouteKey: string,
+  ): SubTeamSkeleton {
+    return {
+      kind: "agent_team",
+      memberName,
+      memberPath,
+      memberRouteKey,
+      teamDefinitionId: graph.definitionId,
+      coordinatorMemberRouteKey: buildMemberRouteKeyFromPath(graph.coordinator.absolutePath),
+      memberTree: this.graphMembersToSkeleton(graph.members),
+    };
   }
 
   private collectLeaves(memberTree: readonly MemberSkeleton[]): AgentSkeleton[] {

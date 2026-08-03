@@ -36,6 +36,8 @@ import {
   type TaskDelegationRecordsService,
 } from "./records/task-delegation-records-service.js";
 import type { ActiveTaskDelegationRecordEntry } from "./task-delegation-active-entry.js";
+import type { ResolvedTeamLogicalPlacement } from "../services/resolved-team-logical-placement.js";
+import { TaskDelegationTargetMapper } from "./task-delegation-target-mapper.js";
 
 export type TaskDelegationServiceOptions = {
   agentRunIdentityAllocator?: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
@@ -58,14 +60,20 @@ export class TaskDelegationService {
   private readonly recordsService: TaskDelegationRecordsService;
   private readonly persistenceScope: TaskDelegationPersistenceScope;
   private readonly addressBuilder: TaskDelegationAddressBuilder;
+  private readonly targetMapper = new TaskDelegationTargetMapper();
 
   constructor(
     private readonly teamRun: TeamRun,
     options: TaskDelegationServiceOptions = {},
   ) {
     this.persistenceScope = resolveTaskDelegationPersistenceScope(teamRun);
+    const runtimeContext = teamRun.getRuntimeContext() as { teamMountPath?: unknown } | null;
+    const teamMountPath = Array.isArray(runtimeContext?.teamMountPath)
+      ? runtimeContext.teamMountPath.filter((segment): segment is string => typeof segment === "string")
+      : [];
     this.addressBuilder = new TaskDelegationAddressBuilder(
       getTaskDelegationTaskTeamInstance(teamRun),
+      teamMountPath,
     );
     this.ledger = new TaskDelegationLedger(teamRun.runId);
     this.taskAgentDirectory = getTaskAgentDirectory(teamRun.runId);
@@ -129,12 +137,19 @@ export class TaskDelegationService {
   async delegateTask(
     context: TaskDelegationContext,
     input: DelegateTaskInput,
+    placement: ResolvedTeamLogicalPlacement,
   ): Promise<DelegateTaskResult> {
     this.assertTeamRunActive();
     this.inputResolver.assertContext(context);
     this.assertActiveTaskAgentCaller(context);
+    const task = this.inputResolver.normalizeCreateInput(input);
+    const config = this.teamRun.config;
+    if (!config) {
+      throw new TaskDelegationError("TASK_DELEGATION_TARGET_CONFIG_INVALID", "Current TeamRun config is required for task delegation.");
+    }
+    const target = this.targetMapper.fromPlacement(placement, context.addressing, config, context.caller);
     const taskId = await this.recordsService.reserveTaskId(this.persistenceScope);
-    const createInput = this.inputResolver.buildCreateInput(context, input, taskId);
+    const createInput = this.inputResolver.buildCreateInput(context, task, target, taskId);
     const referenceFiles = this.normalizeReferenceFiles(createInput.task.reference_files);
     this.ledger.createStartingEntry({
       taskId: createInput.taskId,

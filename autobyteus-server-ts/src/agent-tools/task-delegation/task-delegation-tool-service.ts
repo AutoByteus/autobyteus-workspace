@@ -9,7 +9,6 @@ import type {
   TaskDelegationCallerIdentity,
   TaskDelegationContext,
 } from "../../agent-team-execution/task-delegation/task-delegation-record.js";
-import { toTaskDelegationContextMember, toTaskDelegationMemberIdentity } from "./task-delegation-context-member-mapper.js";
 import type { TaskDelegationToolContext } from "./task-delegation-tool-contract.js";
 import { TaskDelegationToolRunRouter } from "./task-delegation-tool-run-router.js";
 
@@ -17,7 +16,12 @@ export const buildTaskDelegationToolContextFromMemberTeamContext = (
   memberTeamContext: MemberTeamContext,
 ): TaskDelegationToolContext => {
   const caller: TaskDelegationCallerIdentity = {
-    ...toTaskDelegationMemberIdentity(memberTeamContext),
+    memberKind: "agent",
+    memberName: memberTeamContext.memberName,
+    memberPath: [...memberTeamContext.memberPath],
+    memberRouteKey: memberTeamContext.memberRouteKey,
+    memberRunId: memberTeamContext.memberRunId,
+    logicalAddress: memberTeamContext.collaboration.addressing.memberAddress,
     ...(memberTeamContext.taskAgentInstance
       ? {
           taskAgentInstanceId: memberTeamContext.taskAgentInstance.taskAgentInstanceId,
@@ -34,7 +38,7 @@ export const buildTaskDelegationToolContextFromMemberTeamContext = (
     teamName: memberTeamContext.teamName,
     caller,
     coordinatorMemberRouteKey: memberTeamContext.coordinatorMemberRouteKey,
-    members: memberTeamContext.members.map(toTaskDelegationContextMember),
+    addressing: memberTeamContext.collaboration.addressing,
   };
 };
 
@@ -51,8 +55,9 @@ export class TaskDelegationToolService {
     context: TaskDelegationToolContext,
     input: DelegateTaskInput,
   ): Promise<DelegateTaskResult> {
-    const service = await this.runRouter.resolveServiceForDelegateOrReview(context);
-    return service.delegateTask(context, input);
+    const route = await this.runRouter.resolveRouteForDelegate(context);
+    const placement = route.rootRun.resolveLogicalPlacement(input.recipient_name, context.addressing);
+    return route.service.delegateTask(context, input, placement);
   }
 
   async submitTaskResult(

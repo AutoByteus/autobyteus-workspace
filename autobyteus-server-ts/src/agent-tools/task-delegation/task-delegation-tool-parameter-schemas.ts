@@ -12,25 +12,10 @@ import {
 
 export const buildDelegateTaskParameterSchema = (): ParameterSchema => new ParameterSchema([
   new ParameterDefinition({
-    name: "target",
-    type: ParameterType.OBJECT,
-    description: "Explicit accountable task target. Use kind=member for a physical current-team agent, or kind=team for a visible current-team subteam/team target.",
+    name: "recipient_name",
+    type: ParameterType.STRING,
+    description: "Rooted logical Agent-or-Team address using /... or immediate-Team-relative ./... syntax. The resolved target must be a direct child of the caller's immediate Team.",
     required: true,
-    objectSchema: new ParameterSchema([
-      new ParameterDefinition({
-        name: "kind",
-        type: ParameterType.ENUM,
-        enumValues: ["member", "team"],
-        description: "Target kind. Use member for a physical teammate; use team for a visible team/subteam accountable owner.",
-        required: true,
-      }),
-      new ParameterDefinition({
-        name: "name",
-        type: ParameterType.STRING,
-        description: "Exact target name from the delegate_task target roster for the selected target kind.",
-        required: true,
-      }),
-    ]),
   }),
   new ParameterDefinition({
     name: "description",

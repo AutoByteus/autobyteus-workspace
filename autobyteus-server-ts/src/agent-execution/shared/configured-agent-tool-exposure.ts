@@ -3,6 +3,7 @@ import { MEDIA_TOOL_NAMES } from "../../agent-tools/media/media-tool-contract.js
 import { TASK_DELEGATION_TOOL_NAMES } from "../../agent-tools/task-delegation/task-delegation-tool-contract.js";
 import { PUBLISH_ARTIFACTS_TOOL_NAME } from "../../services/published-artifacts/published-artifact-tool-contract.js";
 import { SEND_MESSAGE_TO_TOOL_NAME } from "../../agent-communication/services/send-message-to-tool-contract.js";
+import { GET_HANDOFF_RULES_TOOL_NAME } from "../../agent-communication/services/get-handoff-rules-tool-contract.js";
 
 const asTrimmedToolName = (value: unknown): string | null =>
   typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
@@ -13,6 +14,7 @@ export type ConfiguredAgentToolExposure = {
   enabledMediaToolNames: string[];
   enabledTaskDelegationToolNames: string[];
   sendMessageToConfigured: boolean;
+  getHandoffRulesConfigured: boolean;
   publishArtifactsConfigured: boolean;
 };
 
@@ -41,6 +43,7 @@ export const buildConfiguredAgentToolExposure = (
       TASK_DELEGATION_TOOL_NAMES.has(toolName),
     ),
     sendMessageToConfigured: configuredToolNameSet.has(SEND_MESSAGE_TO_TOOL_NAME),
+    getHandoffRulesConfigured: configuredToolNameSet.has(GET_HANDOFF_RULES_TOOL_NAME),
     publishArtifactsConfigured: configuredToolNameSet.has(PUBLISH_ARTIFACTS_TOOL_NAME),
   };
 };

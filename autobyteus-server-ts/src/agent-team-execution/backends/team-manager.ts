@@ -8,6 +8,8 @@ import type { TeamStatusPayload } from "../domain/team-status-payload.js";
 import type { StartTaskAgentInstanceRequest } from "../domain/task-agent-instance.js";
 import type { StartTaskTeamInstanceRequest } from "../domain/task-team-instance.js";
 import type { ConversationTargetAddress } from "../domain/conversation-target-address.js";
+import type { MemberLogicalAddressContext } from "../domain/member-logical-address-context.js";
+import type { ResolvedTeamLogicalPlacement } from "../services/resolved-team-logical-placement.js";
 
 export interface TeamManager {
   hasActiveMembers(): boolean;
@@ -25,6 +27,10 @@ export interface TeamManager {
   deliverInterAgentMessage(
     intent: InterAgentMessageDeliveryIntent,
   ): Promise<AgentOperationResult>;
+  resolveLogicalPlacement(
+    recipientName: string,
+    callerAddressing: MemberLogicalAddressContext,
+  ): ResolvedTeamLogicalPlacement;
   approveToolInvocation(
     target: TeamMemberSelector,
     invocationId: string,

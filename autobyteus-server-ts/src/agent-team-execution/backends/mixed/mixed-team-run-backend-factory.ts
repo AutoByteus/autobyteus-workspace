@@ -91,6 +91,10 @@ export class MixedTeamRunBackendFactory implements TeamRunBackendFactory {
       parentBoundary,
       taskTeamInstance,
       tokenUsageTeamScope: resolvedTokenUsageTeamScope,
+      collaborationRootTeamRunId:
+        parentBoundary?.collaborationRootTeamRunId ?? teamRunId,
+      teamMountPath: parentBoundary?.teamMountPath ?? [],
+      effectiveHandoffs: parentBoundary?.effectiveHandoffs ?? config.effectiveHandoffs,
     });
 
     return new TeamRunContext({
@@ -104,7 +108,8 @@ export class MixedTeamRunBackendFactory implements TeamRunBackendFactory {
         coordinatorMemberName: config.coordinatorMemberName,
         coordinatorMemberRouteKey: config.coordinatorMemberRouteKey,
         memberTree,
-        }),
+        effectiveHandoffs: config.effectiveHandoffs,
+      }),
       runtimeContext,
     });
   }

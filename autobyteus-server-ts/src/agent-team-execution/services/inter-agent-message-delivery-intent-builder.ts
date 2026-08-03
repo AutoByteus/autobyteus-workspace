@@ -5,8 +5,13 @@ import {
   type InterAgentMessageDeliveryIntent,
   type InterAgentMessageParticipant,
 } from "../domain/inter-agent-message-delivery.js";
-import type { SendMessageTargetSelector } from "../../agent-communication/domain/send-message-target-selector.js";
 import { selectorFromMemberPath } from "../domain/team-run-member-identity.js";
+import {
+  buildConversationAddressFromSegments,
+  normalizeConversationTargetAddress,
+  type ConversationTargetAddress,
+  type ConversationTargetSegment,
+} from "../domain/conversation-target-address.js";
 
 export type InterAgentMessageDeliveryIntentBuildResult =
   | { ok: true; intent: InterAgentMessageDeliveryIntent }
@@ -17,13 +22,13 @@ const buildSenderParticipant = (
 ): InterAgentMessageParticipant => ({
   memberKind: "agent",
   memberName: memberTeamContext.memberName,
-  memberPath: [...memberTeamContext.memberPath],
-  memberRouteKey: memberTeamContext.memberRouteKey,
+  memberPath: [...memberTeamContext.collaboration.addressing.memberPath],
+  memberRouteKey: memberTeamContext.collaboration.addressing.memberPath.join("/"),
   memberRunId: memberTeamContext.memberRunId,
   address: buildTeamMemberAddress({
-    teamRunId: memberTeamContext.teamRunId,
-    memberPath: memberTeamContext.memberPath,
-    memberRouteKey: memberTeamContext.memberRouteKey,
+    teamRunId: memberTeamContext.collaboration.addressing.rootTeamRunId,
+    memberPath: memberTeamContext.collaboration.addressing.memberPath,
+    memberRouteKey: memberTeamContext.collaboration.addressing.memberPath.join("/"),
   }),
   platformRunId: null,
   teamDefinitionId: null,
@@ -36,9 +41,30 @@ const buildSenderParticipant = (
     : {}),
 });
 
+const buildSenderConversationAddress = (
+  memberTeamContext: MemberTeamContext,
+): ConversationTargetAddress => {
+  const addressing = memberTeamContext.collaboration.addressing;
+  const taskAgentRunId = memberTeamContext.taskAgentInstance?.taskAgentRunId?.trim() || null;
+  const segments: ConversationTargetSegment[] = memberTeamContext.taskTeamInstance
+    ? [
+        { kind: "member", memberRouteKey: addressing.immediateTeamPath.join("/") },
+        {
+          kind: "task_team",
+          taskTeamRunId: memberTeamContext.taskTeamInstance.taskTeamRunId,
+        },
+        { kind: "member", memberRouteKey: memberTeamContext.memberRouteKey },
+      ]
+    : [{ kind: "member", memberRouteKey: addressing.memberPath.join("/") }];
+  if (taskAgentRunId) {
+    segments.push({ kind: "task_agent", taskAgentRunId });
+  }
+  return normalizeConversationTargetAddress(buildConversationAddressFromSegments(segments));
+};
+
 export const buildInterAgentMessageDeliveryIntent = (input: {
   memberTeamContext: MemberTeamContext;
-  target: SendMessageTargetSelector;
+  recipientName: string;
   content: string;
   messageType?: string | null;
   referenceFiles?: string[] | null;
@@ -52,9 +78,11 @@ export const buildInterAgentMessageDeliveryIntent = (input: {
   return {
     ok: true,
     intent: {
-      teamRunId: input.memberTeamContext.teamRunId,
-      target: input.target,
+      teamRunId: input.memberTeamContext.collaboration.addressing.rootTeamRunId,
+      callerAddressing: input.memberTeamContext.collaboration.addressing,
+      recipientName: input.recipientName,
       sender: senderEndpoint,
+      senderAddress: buildSenderConversationAddress(input.memberTeamContext),
       content: input.content,
       messageType: input.messageType,
       referenceFiles: input.referenceFiles,
@@ -70,7 +98,7 @@ export const buildInterAgentMessageDeliveryIntentFromRecipientName = (input: {
   referenceFiles?: string[] | null;
 }): InterAgentMessageDeliveryIntentBuildResult => buildInterAgentMessageDeliveryIntent({
   memberTeamContext: input.memberTeamContext,
-  target: { kind: "recipient_name", recipientName: input.recipientName.trim() },
+  recipientName: input.recipientName,
   content: input.content,
   messageType: input.messageType,
   referenceFiles: input.referenceFiles,

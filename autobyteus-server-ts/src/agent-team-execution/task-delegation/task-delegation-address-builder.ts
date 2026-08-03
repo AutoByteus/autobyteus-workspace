@@ -12,6 +12,7 @@ import type {
   TaskDelegationTarget,
   TaskDelegationTeamIdentity,
 } from "./task-delegation-target.js";
+import { buildMemberRouteKeyFromPath } from "../domain/team-run-member-identity.js";
 
 const normalizeString = (value: string | null | undefined): string | null => {
   const normalized = value?.trim();
@@ -28,23 +29,28 @@ const memberSegment = (routeKey: string | null | undefined, memberPath?: readonl
 
 const rootTaskTeamPrefix = (
   taskTeamInstance: TaskTeamInstanceIdentity | null,
+  currentTeamPath: readonly string[],
 ): ConversationTargetSegment[] => taskTeamInstance
   ? [
-      memberSegment(
-        taskTeamInstance.logicalTeam.memberRouteKey,
-        taskTeamInstance.logicalTeam.memberPath,
-      ),
+      memberSegment(buildMemberRouteKeyFromPath(currentTeamPath)),
       { kind: "task_team", taskTeamRunId: taskTeamInstance.taskTeamRunId },
     ]
   : [];
 
 export class TaskDelegationAddressBuilder {
-  constructor(private readonly taskTeamInstance: TaskTeamInstanceIdentity | null = null) {}
+  private readonly currentTeamPath: readonly string[];
+
+  constructor(
+    private readonly taskTeamInstance: TaskTeamInstanceIdentity | null = null,
+    currentTeamPath: readonly string[] = [],
+  ) {
+    this.currentTeamPath = Object.freeze([...currentTeamPath]);
+  }
 
   buildCallerAddress(caller: TaskDelegationCallerIdentity): ConversationTargetAddress {
     const segments: ConversationTargetSegment[] = [
-      ...rootTaskTeamPrefix(this.taskTeamInstance),
-      memberSegment(
+      ...rootTaskTeamPrefix(this.taskTeamInstance, this.currentTeamPath),
+      this.currentMemberSegment(
         caller.logicalMemberRouteKey ?? caller.memberRouteKey,
         caller.memberPath,
       ),
@@ -63,8 +69,8 @@ export class TaskDelegationAddressBuilder {
   buildTaskRunAddress(execution: TaskExecutionInstance): ConversationTargetAddress {
     if (execution.kind === "task_agent") {
       return this.address([
-        ...rootTaskTeamPrefix(this.taskTeamInstance),
-        memberSegment(
+        ...rootTaskTeamPrefix(this.taskTeamInstance, this.currentTeamPath),
+        this.currentMemberSegment(
           execution.taskAgentInstance.logicalMember.memberRouteKey,
           execution.taskAgentInstance.logicalMember.memberPath,
         ),
@@ -72,8 +78,8 @@ export class TaskDelegationAddressBuilder {
       ]);
     }
     return this.address([
-      ...rootTaskTeamPrefix(this.taskTeamInstance),
-      memberSegment(
+      ...rootTaskTeamPrefix(this.taskTeamInstance, this.currentTeamPath),
+      this.currentMemberSegment(
         execution.taskTeamInstance.logicalTeam.memberRouteKey,
         execution.taskTeamInstance.logicalTeam.memberPath,
       ),
@@ -85,16 +91,13 @@ export class TaskDelegationAddressBuilder {
     taskTeamInstance: TaskTeamInstanceIdentity,
   ): ConversationTargetAddress {
     return this.address([
-      ...rootTaskTeamPrefix(this.taskTeamInstance),
-      memberSegment(
+      ...rootTaskTeamPrefix(this.taskTeamInstance, this.currentTeamPath),
+      this.currentMemberSegment(
         taskTeamInstance.logicalTeam.memberRouteKey,
         taskTeamInstance.logicalTeam.memberPath,
       ),
       { kind: "task_team", taskTeamRunId: taskTeamInstance.taskTeamRunId },
-      memberSegment(
-        taskTeamInstance.ingress.memberRouteKey,
-        taskTeamInstance.ingress.memberPath,
-      ),
+      memberSegment(taskTeamInstance.ingress.memberName),
     ]);
   }
 
@@ -116,16 +119,29 @@ export class TaskDelegationAddressBuilder {
 
   private buildMemberTargetAddress(member: TaskDelegationMemberIdentity): ConversationTargetAddress {
     return this.address([
-      ...rootTaskTeamPrefix(this.taskTeamInstance),
-      memberSegment(member.memberRouteKey, member.memberPath),
+      ...rootTaskTeamPrefix(this.taskTeamInstance, this.currentTeamPath),
+      this.currentMemberSegment(member.memberRouteKey, member.memberPath),
     ]);
   }
 
   private buildTeamTargetAddress(team: TaskDelegationTeamIdentity): ConversationTargetAddress {
     return this.address([
-      ...rootTaskTeamPrefix(this.taskTeamInstance),
-      memberSegment(team.memberRouteKey, team.memberPath),
+      ...rootTaskTeamPrefix(this.taskTeamInstance, this.currentTeamPath),
+      this.currentMemberSegment(team.memberRouteKey, team.memberPath),
     ]);
+  }
+
+  private currentMemberSegment(
+    localRouteKey: string,
+    localPath: readonly string[],
+  ): ConversationTargetSegment {
+    if (this.taskTeamInstance) {
+      return memberSegment(localRouteKey, localPath);
+    }
+    return memberSegment(buildMemberRouteKeyFromPath([
+      ...this.currentTeamPath,
+      ...localPath,
+    ]));
   }
 
   private address(segments: ConversationTargetSegment[]): ConversationTargetAddress {

@@ -8,6 +8,10 @@ import {
   normalizeMemberPath,
 } from "./team-run-member-identity.js";
 import { normalizeMemberRouteKey } from "./team-run-member-identity.js";
+import {
+  cloneCollaborationHandoffs,
+  type CollaborationHandoff,
+} from "../../agent-collaboration/domain/collaboration-handoff.js";
 
 export type TeamRunMemberKind = "agent" | "agent_team";
 
@@ -171,35 +175,118 @@ export const hasSubTeamMemberConfigs = (
 ): boolean =>
   memberConfigs.some((member) => member.memberKind === "agent_team");
 
-export const stripMemberPathPrefix = (
-  memberConfigs: readonly TeamRunMemberConfig[],
-  prefix: readonly string[],
-): TeamRunMemberConfig[] => {
-  const normalizedPrefix = normalizeMemberPath(prefix);
-  const stripPath = (memberPath: readonly string[]): string[] => {
-    const normalizedPath = normalizeMemberPath(memberPath);
-    const matchesPrefix = normalizedPrefix.every((segment, index) => normalizedPath[index] === segment);
-    if (!matchesPrefix || normalizedPath.length <= normalizedPrefix.length) {
-      return normalizedPath;
-    }
-    return normalizedPath.slice(normalizedPrefix.length);
-  };
+export type TeamRunTopologyLocalizationErrorCode =
+  | "TEAM_RUN_LOCALIZATION_PREFIX_INVALID"
+  | "TEAM_RUN_COORDINATOR_INVALID";
 
-  const visit = (member: TeamRunMemberConfig): TeamRunMemberConfig => {
-    const memberPath = stripPath(member.memberPath);
+export class TeamRunTopologyLocalizationError extends Error {
+  constructor(
+    readonly code: TeamRunTopologyLocalizationErrorCode,
+    message: string,
+  ) {
+    super(message);
+    this.name = "TeamRunTopologyLocalizationError";
+  }
+}
+
+export type LocalizedSubTeamRunTopology = {
+  coordinatorMemberRouteKey: string;
+  memberTree: TeamRunMemberConfig[];
+};
+
+export const localizeSubTeamRunTopology = (
+  subTeamConfig: TeamSubTeamMemberRunConfig,
+): LocalizedSubTeamRunTopology => {
+  const mountPath = normalizeMemberPath(subTeamConfig.memberPath);
+
+  const localizeMember = (source: TeamRunMemberConfig): TeamRunMemberConfig => {
+    const sourcePath = normalizeMemberPath(source.memberPath);
+    const matchesPrefix =
+      sourcePath.length > mountPath.length &&
+      mountPath.every((segment, index) => sourcePath[index] === segment);
+    if (!matchesPrefix) {
+      throw new TeamRunTopologyLocalizationError(
+        "TEAM_RUN_LOCALIZATION_PREFIX_INVALID",
+        `Member path '${sourcePath.join("/")}' is not a strict descendant of subteam mount '${mountPath.join("/")}'.`,
+      );
+    }
+    const memberPath = sourcePath.slice(mountPath.length);
     const memberRouteKey = buildMemberRouteKeyFromPath(memberPath);
-    if (member.memberKind === "agent") {
-      return { ...member, memberPath, memberRouteKey };
+    if (source.memberKind === "agent") {
+      return {
+        ...source,
+        memberPath,
+        memberRouteKey,
+      };
+    }
+
+    const localizedChildren = source.memberConfigs.map(localizeMember);
+    const sourceCoordinator = resolveDirectSourceCoordinator(source);
+    const coordinatorIndex = source.memberConfigs.indexOf(sourceCoordinator);
+    const localizedCoordinator = localizedChildren[coordinatorIndex];
+    if (!localizedCoordinator || localizedCoordinator.memberKind !== "agent") {
+      throw invalidCoordinator(source.memberRouteKey);
     }
     return {
-      ...member,
+      ...source,
       memberPath,
       memberRouteKey,
-      memberConfigs: member.memberConfigs.map(visit),
+      coordinatorMemberRouteKey: localizedCoordinator.memberRouteKey,
+      memberConfigs: localizedChildren,
     };
   };
 
-  return memberConfigs.map(visit);
+  const sourceCoordinator = resolveDirectSourceCoordinator(subTeamConfig);
+  const coordinatorIndex = subTeamConfig.memberConfigs.indexOf(sourceCoordinator);
+  const memberTree = subTeamConfig.memberConfigs.map(localizeMember);
+  const localizedCoordinator = memberTree[coordinatorIndex];
+  if (!localizedCoordinator || localizedCoordinator.memberKind !== "agent") {
+    throw invalidCoordinator(subTeamConfig.memberRouteKey);
+  }
+  assertLocalizedCoordinatorInvariants(memberTree);
+  return {
+    coordinatorMemberRouteKey: localizedCoordinator.memberRouteKey,
+    memberTree,
+  };
+};
+
+const invalidCoordinator = (teamRouteKey: string): TeamRunTopologyLocalizationError =>
+  new TeamRunTopologyLocalizationError(
+    "TEAM_RUN_COORDINATOR_INVALID",
+    `Team '${teamRouteKey}' must identify exactly one direct Agent coordinator.`,
+  );
+
+const resolveDirectSourceCoordinator = (
+  team: Pick<TeamSubTeamMemberRunConfig, "memberRouteKey" | "coordinatorMemberRouteKey" | "memberConfigs">,
+): TeamMemberRunConfig => {
+  const coordinatorRouteKey = team.coordinatorMemberRouteKey?.trim() ?? "";
+  const matches = team.memberConfigs.filter(
+    (member): member is TeamMemberRunConfig =>
+      member.memberKind === "agent" && member.memberRouteKey === coordinatorRouteKey,
+  );
+  if (matches.length !== 1) {
+    throw invalidCoordinator(team.memberRouteKey);
+  }
+  return matches[0]!;
+};
+
+const assertLocalizedCoordinatorInvariants = (
+  members: readonly TeamRunMemberConfig[],
+): void => {
+  for (const member of members) {
+    if (member.memberKind !== "agent_team") {
+      continue;
+    }
+    const matches = member.memberConfigs.filter(
+      (child) =>
+        child.memberKind === "agent" &&
+        child.memberRouteKey === member.coordinatorMemberRouteKey,
+    );
+    if (matches.length !== 1) {
+      throw invalidCoordinator(member.memberRouteKey);
+    }
+    assertLocalizedCoordinatorInvariants(member.memberConfigs);
+  }
 };
 
 export class TeamRunConfig {
@@ -208,6 +295,7 @@ export class TeamRunConfig {
   readonly coordinatorMemberName: string | null;
   readonly coordinatorMemberRouteKey: string | null;
   readonly memberTree: TeamRunMemberConfig[];
+  readonly effectiveHandoffs: readonly CollaborationHandoff[];
   /** Derived flat leaf-agent projection. Do not use as authoritative nested topology. */
   readonly memberConfigs: TeamMemberRunConfig[];
 
@@ -218,6 +306,7 @@ export class TeamRunConfig {
     coordinatorMemberRouteKey?: string | null;
     memberConfigs?: TeamRunMemberConfigInput[];
     memberTree?: TeamRunMemberConfigInput[];
+    effectiveHandoffs?: readonly CollaborationHandoff[] | null;
   }) {
     this.teamDefinitionId = normalizeRequiredString(input.teamDefinitionId, "teamDefinitionId");
     this.teamBackendKind = input.teamBackendKind;
@@ -225,6 +314,9 @@ export class TeamRunConfig {
     const treeInput = input.memberTree ?? input.memberConfigs ?? [];
     this.memberTree = normalizeTeamRunMemberConfigTree(treeInput);
     this.memberConfigs = collectAgentMemberRunConfigs(this.memberTree);
+    this.effectiveHandoffs = Object.freeze(
+      cloneCollaborationHandoffs(input.effectiveHandoffs ?? []),
+    );
     this.coordinatorMemberRouteKey = normalizeOptionalString(input.coordinatorMemberRouteKey)
       ?? (this.coordinatorMemberName
         ? normalizeMemberRouteKey(this.coordinatorMemberName)

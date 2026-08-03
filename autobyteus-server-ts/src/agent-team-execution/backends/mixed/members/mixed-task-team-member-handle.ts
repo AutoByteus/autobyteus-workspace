@@ -5,7 +5,6 @@ import { buildAgentStatusPayload, normalizeAgentApiStatus } from "../../../../ag
 import type { TeamRun } from "../../../domain/team-run.js";
 import type { TeamRunContext } from "../../../domain/team-run-context.js";
 import { buildTeamMemberAddress, type InterAgentMessageDeliveryHandler, type ResolvedInterAgentMessageDeliveryRequest } from "../../../domain/inter-agent-message-delivery.js";
-import type { AgentMemberTeamDescriptor } from "../../../domain/member-team-context.js";
 import type { StartTaskTeamInstanceRequest } from "../../../domain/task-team-instance.js";
 import type { ConversationTargetAddress } from "../../../domain/conversation-target-address.js";
 import { selectorFromMemberRouteKey, type TeamMemberSelector } from "../../../domain/team-run-member-identity.js";
@@ -86,7 +85,7 @@ export class MixedTaskTeamMemberHandle implements MixedTeamMemberHandle {
       const childRun = await this.ensureReady();
       const result = await childRun.postMessage(
         this.options.request.message,
-        selectorFromMemberRouteKey(this.options.request.identity.ingress.memberRouteKey),
+        selectorFromMemberRouteKey(this.resolveChildIngressRouteKey(childRun)),
       );
       if (!result.accepted) {
         this.publishCommandStatus("error", result.message ?? null);
@@ -102,7 +101,7 @@ export class MixedTaskTeamMemberHandle implements MixedTeamMemberHandle {
 
   async postMessage(message: AgentInputUserMessage): Promise<AgentOperationResult> {
     const childRun = await this.ensureReady();
-    return childRun.postMessage(message, selectorFromMemberRouteKey(this.options.request.identity.ingress.memberRouteKey));
+    return childRun.postMessage(message, selectorFromMemberRouteKey(this.resolveChildIngressRouteKey(childRun)));
   }
 
   async postMessageToConversationTarget(
@@ -129,7 +128,7 @@ export class MixedTaskTeamMemberHandle implements MixedTeamMemberHandle {
   ): Promise<AgentOperationResult> {
     const childRun = await this.ensureReady();
     return childRun.approveToolInvocation(
-      target ?? selectorFromMemberRouteKey(this.options.request.identity.ingress.memberRouteKey),
+      target ?? selectorFromMemberRouteKey(this.resolveChildIngressRouteKey(childRun)),
       invocationId,
       approved,
       reason,
@@ -141,7 +140,7 @@ export class MixedTaskTeamMemberHandle implements MixedTeamMemberHandle {
     if (!this.childRun?.isActive()) return { accepted: true };
     const targetRouteKey = target?.kind === "route_key"
       ? target.memberRouteKey
-      : this.options.request.identity.ingress.memberRouteKey;
+      : this.resolveChildIngressRouteKey(this.childRun);
     return this.childRun.interruptMember(targetRouteKey, targetMemberRunId);
   }
 
@@ -181,23 +180,15 @@ export class MixedTaskTeamMemberHandle implements MixedTeamMemberHandle {
       childTeamRunId: identity.taskTeamRunId,
       parentBoundary: {
         parentTeamRunId: this.options.parentContext.runId,
-        parentTeamDefinitionId: this.options.parentContext.config?.teamDefinitionId ?? null,
         memoryScope: childMemoryScope,
-        representedSubTeam: {
-          memberKind: "agent_team",
-          memberName: identity.logicalTeam.memberName,
-          memberPath: [...identity.logicalTeam.memberPath],
-          memberRouteKey: identity.logicalTeam.memberRouteKey,
-          memberRunId: identity.logicalTeam.templateMemberRunId,
-          teamDefinitionId: identity.logicalTeam.teamDefinitionId,
-          childTeamRunId: identity.taskTeamRunId,
-          address: buildTeamMemberAddress({
-            teamRunId: this.options.parentContext.runId,
-            memberPath: identity.logicalTeam.memberPath,
-            memberRouteKey: identity.logicalTeam.memberRouteKey,
-          }),
-        },
-        parentMembers: this.buildParentBoundaryMembers(),
+        collaborationRootTeamRunId:
+          this.options.parentContext.runtimeContext.collaborationRootTeamRunId,
+        teamMountPath: [
+          ...this.options.parentContext.runtimeContext.teamMountPath,
+          ...this.options.request.teamConfig.memberPath,
+        ],
+        effectiveHandoffs:
+          this.options.parentContext.runtimeContext.effectiveHandoffs,
         deliverInterAgentMessage: this.options.deliverInterAgentMessage,
       },
       taskTeamInstance: identity,
@@ -214,24 +205,13 @@ export class MixedTaskTeamMemberHandle implements MixedTeamMemberHandle {
     return this.childRun;
   }
 
-  private buildParentBoundaryMembers(): AgentMemberTeamDescriptor[] {
-    return this.options.parentContext.runtimeContext.memberContexts
-      .filter((memberContext) => memberContext.memberKind === "agent")
-      .map((memberContext) => ({
-        memberKind: "agent" as const,
-        memberName: memberContext.memberName,
-        memberPath: [...memberContext.memberPath],
-        memberRouteKey: memberContext.memberRouteKey,
-        memberRunId: memberContext.memberRunId,
-        runtimeKind: memberContext.runtimeKind,
-        role: null,
-        description: null,
-        address: buildTeamMemberAddress({
-          teamRunId: this.options.parentContext.runId,
-          memberPath: memberContext.memberPath,
-          memberRouteKey: memberContext.memberRouteKey,
-        }),
-      }));
+  private resolveChildIngressRouteKey(childRun: TeamRun): string {
+    const runtime = childRun.getRuntimeContext() as MixedTeamRunContext | null;
+    const routeKey = runtime?.taskTeamInstance?.ingress.memberRouteKey?.trim() ?? "";
+    if (!routeKey) {
+      throw new Error(`Task TeamRun '${this.options.request.identity.taskTeamRunId}' has no localized ingress binding.`);
+    }
+    return routeKey;
   }
 
   private bindEvents(childRun: TeamRun): void {

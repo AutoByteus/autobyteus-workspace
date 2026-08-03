@@ -11,6 +11,7 @@ import {
   runtimeKindFromString,
 } from "../../runtime-management/runtime-kind-enum.js";
 import { buildMemberRouteKeyFromPath, normalizeMemberPath } from "../../agent-team-execution/domain/team-run-member-identity.js";
+import { normalizeCollaborationHandoffs } from "../../agent-collaboration/domain/collaboration-handoff.js";
 
 export const LEGACY_TEAM_RUN_METADATA_UPGRADE_REQUIRED_CODE =
   "LEGACY_TEAM_RUN_METADATA_UPGRADE_REQUIRED";
@@ -147,6 +148,7 @@ export const normalizeTeamRunMetadata = (
   createdAt: metadata.createdAt,
   archivedAt: normalizeArchivedAt(metadata.archivedAt),
   memberTree: metadata.memberTree.map(normalizeMemberMetadata),
+  handoffs: normalizeCollaborationHandoffs(metadata.handoffs),
 });
 
 const isApplicationExecutionContextLike = (value: unknown): boolean =>
@@ -271,6 +273,7 @@ export const validateTeamRunMetadataPayload = (
     createdAt: payload.createdAt,
     archivedAt: typeof payload.archivedAt === "string" ? payload.archivedAt : null,
     memberTree,
+    handoffs: normalizeCollaborationHandoffs(payload.handoffs),
   };
 };
 

@@ -38,6 +38,7 @@ export class TeamRunLaunchIdentityAssignment {
       coordinatorMemberName: config.coordinatorMemberName,
       coordinatorMemberRouteKey: config.coordinatorMemberRouteKey,
       memberTree: assignedTree,
+      effectiveHandoffs: config.effectiveHandoffs,
     });
   }
 

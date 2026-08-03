@@ -1,10 +1,9 @@
 import type { MemberTeamContext } from "../../../agent-team-execution/domain/member-team-context.js";
+import { cloneMemberLogicalAddressContext, type MemberLogicalAddressContext } from "../../../agent-team-execution/domain/member-logical-address-context.js";
 import {
   cloneTaskTeamInstanceIdentity,
   type TaskTeamInstanceIdentity,
 } from "../../../agent-team-execution/domain/task-team-instance.js";
-import type { TaskDelegationContextMember } from "../../../agent-team-execution/task-delegation/task-delegation-target.js";
-import { toTaskDelegationContextMember } from "../../../agent-tools/task-delegation/task-delegation-context-member-mapper.js";
 
 export type AutoByteusManagedTeamContext = {
   teamRunId: string;
@@ -14,33 +13,32 @@ export type AutoByteusManagedTeamContext = {
   currentMemberPath: string[];
   currentMemberRouteKey: string;
   currentMemberRunId: string;
+  addressing: MemberLogicalAddressContext;
   taskAgentInstanceId?: string | null;
   taskAgentRunId?: string | null;
   taskId?: string | null;
   logicalMemberRouteKey?: string | null;
   taskTeamInstance?: TaskTeamInstanceIdentity | null;
   coordinatorMemberRouteKey: string | null;
-  members: TaskDelegationContextMember[];
 };
 
 export const buildAutoByteusManagedTeamContext = (
-  memberTeamContext: MemberTeamContext,
+  context: MemberTeamContext,
 ): AutoByteusManagedTeamContext => ({
-  teamRunId: memberTeamContext.teamRunId,
-  teamDefinitionId: memberTeamContext.teamDefinitionId,
-  teamName: memberTeamContext.teamName,
-  currentMemberName: memberTeamContext.memberName,
-  currentMemberPath: [...memberTeamContext.memberPath],
-  currentMemberRouteKey: memberTeamContext.memberRouteKey,
-  currentMemberRunId: memberTeamContext.memberRunId,
-  taskAgentInstanceId: memberTeamContext.taskAgentInstance?.taskAgentInstanceId ?? null,
-  taskAgentRunId: memberTeamContext.taskAgentInstance?.taskAgentRunId ?? null,
-  taskId: memberTeamContext.taskAgentInstance?.taskId ?? null,
-  logicalMemberRouteKey:
-    memberTeamContext.taskAgentInstance?.logicalMember.memberRouteKey ?? null,
-  taskTeamInstance: memberTeamContext.taskTeamInstance
-    ? cloneTaskTeamInstanceIdentity(memberTeamContext.taskTeamInstance)
+  teamRunId: context.teamRunId,
+  teamDefinitionId: context.teamDefinitionId,
+  teamName: context.teamName,
+  currentMemberName: context.memberName,
+  currentMemberPath: [...context.memberPath],
+  currentMemberRouteKey: context.memberRouteKey,
+  currentMemberRunId: context.memberRunId,
+  addressing: cloneMemberLogicalAddressContext(context.collaboration.addressing),
+  taskAgentInstanceId: context.taskAgentInstance?.taskAgentInstanceId ?? null,
+  taskAgentRunId: context.taskAgentInstance?.taskAgentRunId ?? null,
+  taskId: context.taskAgentInstance?.taskId ?? null,
+  logicalMemberRouteKey: context.taskAgentInstance?.logicalMember.memberRouteKey ?? null,
+  taskTeamInstance: context.taskTeamInstance
+    ? cloneTaskTeamInstanceIdentity(context.taskTeamInstance)
     : null,
-  coordinatorMemberRouteKey: memberTeamContext.coordinatorMemberRouteKey,
-  members: memberTeamContext.members.map(toTaskDelegationContextMember),
+  coordinatorMemberRouteKey: context.coordinatorMemberRouteKey,
 });
