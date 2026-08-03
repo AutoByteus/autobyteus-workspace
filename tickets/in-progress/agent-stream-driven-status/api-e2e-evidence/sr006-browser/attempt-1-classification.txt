@@ -1,0 +1,1 @@
+Local harness failure: expected stock Tailwind gray-400, but repository overrides gray-400 to #999999; unrelated Vite optimization and health-request startup noise also observed. Product assertion not reached beyond the mismatch. See coverage investigation update.

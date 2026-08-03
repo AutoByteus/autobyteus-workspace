@@ -2,9 +2,9 @@
 
 The latest requirements, investigation notes, design spec, and supplements remain authoritative. This record is the durable solution-round and rationale index only.
 
-## Current Authority (2026-08-02)
+## Current Authority (2026-08-03)
 
-`SR-005` is the current proposed solution authority and is ready for architecture re-review of `CODE-FIND-002` after `CRR-003`. The user-approved behavior from `SR-003` is unchanged. `ARCH-REV-004` passed the representable `SR-004` carrier, but source review proved that carrying its child-local operational identity unchanged across an additional ordinary-team boundary mixes coordinate frames. `SR-005` derives a tight outward task-team stream scope and rebases its logical-team path together with live/snapshot source and member paths at every mixed-team boundary. `CODE-FIND-003` remains a mandatory implementation-local fixture repair after architecture approval. Implementation/API-E2E rework remains held until this design passes.
+`SR-006` is the current solution authority. `SR-005` passed architecture (`ARCH-REV-005`), implementation/source review (`IR-004` / `CRR-004`), API/E2E (`API-REV-002`), and proportional test-code review before delivery prepared `DR-004`. User feedback during that explicit verification hold established a presentation correction: users need binary activity dots both on each exact team-run row and on its parent agent-team definition group. `SR-006` derives both cues only from the accepted manager-owned `isActive` booleans—exact row from that run, group from `runs.some(run => run.isActive)`—without restoring `AgentTeamStatus`, `TEAM_STATUS`, a team DTO status field, member aggregation, or agent five-state visuals. The existing delivery candidate is therefore not completion-ready; this user-approved correction requires fresh architecture review and the normal downstream pipeline.
 
 ## Revision Index
 
@@ -15,6 +15,7 @@ The latest requirements, investigation notes, design spec, and supplements remai
 | SR-003 | User-approved requirements expansion after `ARCH-REV-002` / expanded solution round | N/A (requirements expansion) | Requirement And Design Expansion | Complete expanded solution ready for fresh architecture review |
 | SR-004 | Architecture Reviewer / `ARCH-REV-003` / round 3 rework | `ARCH-FIND-003` | Design Impact | Scoped recursive snapshot contract ready for architecture re-review |
 | SR-005 | Code Reviewer / `CRR-003` / expanded source review round 3 | `CODE-FIND-002`, `CODE-FIND-003` | Design Impact (controlling) + Local Fix | Coordinate-consistent task-team stream scope ready for architecture re-review |
+| SR-006 | User feedback during `DR-004` explicit verification hold | N/A (approved presentation correction) | Requirement And Presentation Change | Binary group and exact-run activity indicators ready for fresh architecture review |
 
 ## Revision Entries
 
@@ -160,3 +161,34 @@ The latest requirements, investigation notes, design spec, and supplements remai
 - Downstream and architecture-review impact: Architecture must re-review the complete `SR-005` coordinate contract before implementation. If it passes, implementation produces a new revision that changes the internal carrier/bridge/mapper, adds multi-boundary live/reconnect coverage, fixes the stale manager test double, and returns to code review. API/E2E remains blocked and its held edits remain untouched until source review passes.
 - Next recipient or routing: `architecture_reviewer`
 - Remaining gaps or risks: No requirement gap is known. Architecture approval is pending for the target-frame override, ordinary-boundary rebase, all-event coverage, strict leaf invariant, and exact live/reconnect parity. The held API/E2E investigation and edits are stale for this revision and must later be reconciled rather than treated as sign-off.
+
+### SR-006 — Binary team activity indicators at group and exact-run levels
+
+- Triggering role, report path, and round: User feedback during the explicit delivery verification hold for `DR-004`; user-supplied screenshot `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_0fa01fdeb308__image.png`; post-delivery presentation round
+- Triggering finding IDs: N/A — this is a user-approved presentation correction, not a downstream finding.
+- Prior authoritative result: `SR-005` passed `ARCH-REV-005`, was implemented as `IR-004`, passed source review in `CRR-004`, passed fresh API/E2E investigation/execution in `API-REV-002`, and passed proportional durable-test review. Delivery `DR-004` built a local candidate and correctly waited for explicit user verification.
+- Current authoritative result: `SR-006` adds binary activity cues at both levels users scan: an exact team-run row reflects only that run's `isActive`, and its definition group reflects whether any displayed child run is active. It is design-ready for fresh architecture review. The prior delivery candidate must not be finalized as the completed result.
+- Why this revision entry is recorded: Removing the former borrowed five-state team dots correctly simplified domain status ownership, but removing all team activity visuals also removed useful scan information. Exact-row activity answers “which run can I stop?” while definition-group activity answers “does this collapsed agent-team definition contain any active runs?” Both can be represented directly from the already-authoritative binary lifecycle without recreating aggregate team status.
+- Resolution:
+  - Add a boolean-only `TeamActivityDot` presentation primitive with `isActive` and a localized accessible label; active is solid blue, inactive solid gray, and neither state pulses.
+  - Exact history/running team-run rows pass their own `teamRun.isActive`/`team.isActive` directly to the dot.
+  - Agent-team definition groups derive `hasActiveRuns = runs.some(run => run.isActive)` from the final displayed child list and render one group dot. The value is not persisted, transported, or installed as definition lifecycle state.
+  - Keep agent `StatusDot` and its five-state/pulsing behavior unchanged. Do not map team activity to `running`/`offline`, inspect member statuses, use socket state, use the representative run, or couple the dot to Stop availability/pending state.
+  - Preserve every accepted `SR-005` server, GraphQL, WebSocket, task-team identity, leaf-agent status, and Stop mutation contract. This revision is a bounded frontend presentation change plus focused coverage and localization.
+- Approved behavior or requirement IDs affected: BEH-006 and BEH-008 are refined; REQ-013 and REQ-016 are clarified; new REQ-020 specifies both indicators; AC-016 and AC-023 are refined; new AC-026 verifies exact/group semantics. BEH-001–BEH-005/BEH-007/BEH-009, REQ-001–REQ-012/REQ-014–REQ-015/REQ-017–REQ-019, and AC-001–AC-015/AC-017–AC-022/AC-024–AC-025 remain preserved.
+- Canonical artifacts and sections updated:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/requirements.md` — user-approved two-level binary presentation requirements and acceptance criteria
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/investigation-notes.md` — accepted integrated baseline, current frontend component trace, user-feedback evidence, root-cause classification, and implementation constraints
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/design-spec.md` — `DS-013`, exact projection formulas, boolean-only component contract, surface/file mapping, rejection rules, sequence, coverage, and risks
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/solution-revision-record.md` — appended `SR-006`
+- Supplemental and triggering artifacts retained or updated:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/production-trace-evidence.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/team-status-simplification-evidence.md` — updated with the distinction between prohibited aggregate lifecycle and allowed binary presentation projections
+  - `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_6557dd2b51c3__image.png`
+  - `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_9d9c83cf3d30__image.png`
+  - `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_ead75793b5e3__image.png`
+  - `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_0fa01fdeb308__image.png`
+  - All accepted `SR-005` architecture, implementation, code-review, API/E2E, proportional test-review, and delivery-hold artifacts remain cumulative baseline evidence; they are not current `SR-006` sign-off.
+- Downstream and architecture-review impact: Architecture should verify that the group summary remains a presentation-only projection, that the exact row uses only its own binary lifecycle, that a separate component prevents reintroduction of five-state team semantics, and that both history and running surfaces are covered. On pass, implementation adds the bounded frontend change and local tests; source review follows; API/E2E performs a fresh coverage investigation; delivery refreshes against the latest base, rebuilds, and prepares new explicit verification.
+- Next recipient or routing: `architecture_reviewer`
+- Remaining gaps or risks: No requirement gap is known. The main implementation risks are computing group activity before the final history/current run merge, accidentally coupling dots to representative/member/socket/action state, or reusing the pulsing agent component. Focused coverage must prove mixed active/inactive siblings, all-inactive transition, both group-building paths, history/running parity, accessibility, and unchanged agent visuals/actions.

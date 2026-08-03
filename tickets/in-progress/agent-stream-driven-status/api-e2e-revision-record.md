@@ -5,7 +5,8 @@
 | Revision ID | Triggering Role / Report / Round | Related Upstream Revision IDs | Prior Result / Confidence | Current Result / Confidence |
 | --- | --- | --- | --- | --- |
 | API-REV-001 | `code_reviewer` / `CRR-004` / API-E2E round 1 | `SR-005`, `ARCH-REV-005`, `IR-004`, `CRR-004` | N/A | Pass / 96.7% |
-| API-REV-002 | `code_reviewer` / `CRR-005` test review / API-E2E round 2 | `API-REV-001`, `CRR-005`, `TEST-FIND-001`, `TEST-FIND-002` | Pass / 96.7%; test review Fail | Pass / 96.7%; re-review pending |
+| API-REV-002 | `code_reviewer` / `CRR-005` test review / API-E2E round 2 | `API-REV-001`, `CRR-005`, `TEST-FIND-001`, `TEST-FIND-002` | Pass / 96.7%; test review Fail | Pass / 96.7%; test re-review passed at `CRR-006` |
+| API-REV-003 | `code_reviewer` / `CRR-007` / API/E2E round 3 | `SR-006`, `ARCH-REV-006`, `IR-005`, `CRR-007` | Pass / 96.7% (`SR-005` baseline) | Pass / 97.1%; proportional review pending |
 
 ## Revision Entries
 
@@ -64,6 +65,37 @@ None. There was no prior completed authoritative API/E2E result. Fresh round-loc
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-evidence/sr005-repository/review-rework-final-durable.log`
 - Prior result and confidence: `API-REV-001 Pass / 96.7%`; proportional test review `Fail` on `TEST-FIND-001/002`
 - Current result and confidence: `Pass / 96.7%`; confidence unchanged because the corrections restore the claimed proof quality without changing product behavior or environment evidence
-- New or remaining failure IDs: `None` from API/E2E execution; reviewer confirmation of the two resolutions is pending
-- Recommended recipient: `code_reviewer` for proportional test re-review of the two corrected paths with the cumulative package
+- New or remaining failure IDs: `None`; the two resolutions were later confirmed by `CRR-006`
+- Recommended recipient at API-REV-002 completion: `code_reviewer`; proportional test re-review later passed at `CRR-006`
 - Remaining risks, blocked evidence, or untested scope: unchanged from API-REV-001 — unavailable external-provider process execution, unrelated frontend baseline debt, and no material browser/shell boundary requiring a run
+
+### API-REV-003 — Prove binary team activity in the real browser-equivalent renderer
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/code-review-report.md`; API/E2E execution round 3 / first `SR-006` round
+- Triggering finding or scenario IDs: no source finding; new API-E2E-017–019 / SR006-BR-001–004
+- Related solution, architecture-review, implementation, code-review, or delivery revision IDs: `SR-006`, `ARCH-REV-006`, `IR-005`, `CRR-007`; accepted baseline `API-REV-002` / `CRR-006`; superseded delivery context `DR-004`
+- Why recorded: the user-approved binary presentation correction added new exact-run and any-child group visuals after the accepted SR-005 API/E2E/delivery candidate. Prior evidence could not sign off real browser rendering, collapse, transition, styling, or accessibility.
+- Coverage decisions or durable paths changed:
+  - added `autobyteus-web/tests/e2e/team-activity-presentation-probe.mjs`;
+  - added `autobyteus-web/tests/e2e/fixtures/team-activity-presentation.page.vue`;
+  - existing five focused SR-006 tests remain valid and unchanged;
+  - no coverage was removed.
+- Scenarios added/rechecked: mixed active/inactive siblings, exact run and any-child group dots on both surfaces, collapsed activity, final active-to-inactive transition, member/representative/subscription/Stop independence, English/zh-CN labels/title/role, computed solid blue/custom-gray/no-animation, plus focused Stop/stream/recovery/agent-dot preservation.
+- Execution delta:
+  - focused SR-006: Pass / 5 files / 16 tests;
+  - expanded relevant frontend: Pass / 13 files / 84 tests;
+  - browser: Pass / 4 scenarios, zero final browser errors, two screenshots, full cleanup;
+  - web/localization guards, literal audit, structural scans, and `git diff --check`: Pass.
+
+#### Prior Failure Resolution
+
+| Prior Scenario / Failure Reference | Previous Classification | Current Resolution | Evidence |
+| --- | --- | --- | --- |
+| First SR006-BR-001 probe attempt | Local Fix / API/E2E harness expectation | Probe now expects repository-authoritative custom `gray-400=#999999`, isolates the unrelated health request, warms Vite, and records a clean scenario window. All four browser scenarios pass. | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-evidence/sr006-browser/attempt-1-classification.txt`; final `evidence.json` |
+
+- Canonical artifacts updated: coverage investigation, execution report, revision record, `sr006-repository/`, and `sr006-browser/` under `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/`.
+- Prior result and confidence: `API-REV-002 Pass / 96.7%`; proportional re-review passed at `CRR-006`.
+- Current result and confidence: `Pass / 97.1%`.
+- New or remaining failure IDs: `None`; proportional review of the two new durable files is pending.
+- Recommended recipient: `code_reviewer` for proportional test-code review; do not route to delivery directly.
+- Remaining risks: no authenticated backend or packaged Electron run, both intentionally outside the presentation-only changed boundary; repository-wide frontend typecheck debt remains upstream-documented and unrelated.

@@ -1,16 +1,16 @@
 # Design Spec
 
-## Status (`SR-005` — `CODE-FIND-002` Resolved In Design, Ready For Architecture Re-review)
+## Status (`SR-006` — User-Approved Binary Team Activity Presentation, Ready For Architecture Review)
 
-This is the implementation-authoritative target design for the complete approved requirements basis dated 2026-08-02. It preserves the agent lifecycle design that passed `ARCH-REV-002`, the manager-owned team simplification implemented by `IR-003`, and the representable leaf carrier introduced by `SR-004`. `SR-005` corrects the multi-boundary coordinate-frame defect proven by `CODE-FIND-002`; intended behavior is unchanged.
+This is the implementation-authoritative target design for the complete approved requirements basis through 2026-08-03. It preserves the complete `SR-005` implementation that passed `ARCH-REV-005`, `CRR-004`, API/E2E execution, and proportional durable-test review. `SR-006` is a user-approved post-delivery presentation correction: restore clear binary activity dots on both the parent agent-team/definition group and each exact team-run row without restoring the removed five-state aggregate.
 
-No source rework may begin until this `SR-005` package passes architecture re-review. API/E2E remains blocked. `CODE-FIND-003` is a required implementation-local test-double repair after the design passes.
+No `SR-006` source rework may begin until this package passes architecture review. The prior delivery candidate and its manual-verification artifacts are superseded for completion. `ARCH-FIND-001`–`ARCH-FIND-003`, `CODE-FIND-001`–`CODE-FIND-003`, and `TEST-FIND-001`–`TEST-FIND-002` remain resolved and must not be reopened by this presentation-only change.
 
 ## Current-State Read
 
-The ticket branch is not the original baseline. Commits `b1e96b73f` and `f453286d8` implement the passed `SR-002` agent foundation. Commit `9c4c6f095` implements the `SR-004` team expansion; `facc6a818` records `CRR-003`. Manager-owned binary team liveness, aggregate-team removal, Stop failure/pending semantics, and the preserved agent lifecycle/batching foundation remain sound. This design does not reopen `ARCH-FIND-001`, `ARCH-FIND-002`, or resolved `CODE-FIND-001`.
+The ticket branch is now a latest-base-integrated delivery candidate at `55c5b3c914d64059361d47ec87a29da0e4eb9bbb`, 22 commits ahead / 0 behind refreshed `origin/personal=2a7271c9d78b71b919f7dbfa3b8f97f61c3a2e2b` on 2026-08-03. Feature source `4eca42bf56831eb6561a0f8ceee949c62674c4da` implements the accepted `SR-005` design. Manager-owned binary team liveness, aggregate-team removal, Stop failure/pending semantics, nested stream coordinates, and the agent lifecycle/batching foundation are accepted current source.
 
-The remaining team model is structurally different and unnecessarily broad:
+The historical aggregate model that this ticket removed was structurally broad:
 
 - `AgentTeamRunManager.activeRuns` plus `TeamRun.isActive()` already determine whether a root team execution is live.
 - History and resume expose `isActive`, but `TeamRunStatusProjectionService` additionally folds member snapshots through `deriveTeamApiStatus` and exposes a root `status`.
@@ -20,11 +20,11 @@ The remaining team model is structurally different and unnecessarily broad:
 - Root and definition rows render five-color team dots even though the user action at the root is simply Stop while the run exists.
 - The same aggregate event is also used as a shortcut for task-team projection cleanup, team failure observation, and task-team open-work settlement.
 
-The aggregate therefore mixes five distinct subjects: definition metadata, root-run liveness, nested execution liveness, member-agent lifecycle, and task stage. Member `AGENT_STATUS` is still valid and must remain exact at every nesting depth. The root team action needs only manager-owned binary liveness. Task cleanup, failure, and settlement need their own facts.
+That aggregate mixed five distinct subjects and is now removed in accepted source. Member `AGENT_STATUS` remains exact at every nesting depth; root action/liveness uses manager-owned `isActive`; task cleanup, failure, and settlement use their own facts.
 
-`SR-004` fixed the original representability gap by carrying task-team identity through recursive snapshots. `CRR-003` then proved that the carried identity can still use the wrong frame. `MixedSubTeamRunFactory` strips an ordinary parent's path from the child config; a task team created there therefore records child-local `logicalTeam` coordinates. Its task-team handle correctly roots leaf and logical team to that child. When the outer ordinary handle bubbles the result to the root, the implemented shared core prefixes only leaf member/source paths and clones the full `TaskTeamInstanceIdentity`. The mapper compares root-relative source path with child-local logical-team path, loses the live relative selector, and throws for the initial snapshot.
+`SR-005` also resolved the prior recursive task-team coordinate defect by separating `TaskTeamStreamScope` from operational identity and rebasing all outward paths in one frame. That accepted design remains authoritative and unchanged.
 
-The failing path is product-supported: `root composer -> ordinary subteam leaf -> delegate_task to a visible child team target -> task-team activation -> leaf status/live or reconnect`. The correction is not a transport fallback. `SR-005` narrows the outward carrier to `TaskTeamStreamScope` (only task-team run/instance/task IDs plus logical-team path/key), defines those logical coordinates in the enclosing `teamRunId` frame, and rebases them at the same mixed-team boundary as source/member paths for every live event type and initial snapshot. Operational `TaskTeamInstanceIdentity` remains unchanged for activation, directories, persistence, ingress, and coordinator-local routing.
+The current frontend now correctly stores no team status enum. `WorkspaceHistoryWorkspaceSection.vue` renders a parent definition/group row and child root team-run rows with no activity dot. `RunningTeamGroup.vue` and `RunningTeamRow.vue` do the same. Both exact run models already expose `isActive`, and both group builders already own the complete `runs[]` collection. The new behavior therefore requires no server, GraphQL, WebSocket, store, lifecycle, or persistence change.
 
 Relevant verified paths and evidence are in [`investigation-notes.md`](./investigation-notes.md), [`production-trace-evidence.md`](./production-trace-evidence.md), and [`team-status-simplification-evidence.md`](./team-status-simplification-evidence.md).
 
@@ -54,11 +54,22 @@ socket                                     -> connected/disconnected only
 Stop request                               -> local stopPending only
 ```
 
+Presentation projects those existing facts without adding state:
+
+```text
+exact team-run activity dot     = teamRun.isActive
+agent-team/definition group dot = runs.some(run => run.isActive)
+active visual                   = solid blue + accessible "Active"
+inactive visual                 = solid gray + accessible "Inactive"
+```
+
+The group boolean belongs only to the display group. It is not written to a team definition, server response, store, history record, or stream. It never authorizes Stop. The exact run boolean continues to authorize Stop independently through the existing action policy.
+
 Make `AgentTeamRunManager` the only public team-liveness owner. It exposes a fresh binary snapshot and an idempotent lifecycle subscription for an exact root `teamRunId`. The team WebSocket binds both the run-event subscription and manager-lifecycle subscription, then performs a fresh manager read. It sends `TEAM_RUN_LIFECYCLE { team_run_id, is_active }`; it no longer sends root or nested aggregate `TEAM_STATUS`. Successful unregistration emits `false`; failed termination emits no false transition; disconnect emits nothing about liveness.
 
 Remove agent-like status snapshots from subteam and task-team handles. Team runtime snapshots recursively return `TeamLeafAgentStatusSnapshot`: a canonical agent status with required team-leaf identity plus a discriminated ordinary-member or task-team `TaskTeamStreamScope`. The task-team handle derives that tight scope from its operational `TaskTeamInstanceIdentity` in the immediate parent frame. Every outer ordinary boundary prefixes the scope's logical-team path together with source/member paths and rebuilds every route key. Every live event type and every initial snapshot calls the same `prefixMixedTeamStreamScope`; live agent and snapshot adapters additionally enforce a nonempty relative leaf selector. Both stream mappings call the same task-team identity flattener and never guess a missing prefix. Replace the settlement aggregate read with a private `TeamRun.hasOpenExecutionWork()` predicate. Replace task-team offline-event cleanup with task-delegation terminal/reconciliation facts. Remove the root aggregate-error branch from team lifecycle observation while retaining canonical member-agent failure observation and explicit operation failures.
 
-On the frontend, store root `isActive` directly; remove `AgentTeamStatus`, root/team `currentStatus`, definition/run team dots, and aggregate normalization/hydration. Use `isActive && !stopPending` for Stop. Show `AgentStatusDisplay` and status dots only for exact leaf-agent subjects. A root or subteam header has no agent status fallback. Mobile team-run liveness, where text is useful, is `Active` or `Inactive` from `isActive` only.
+On the frontend, continue to store root `isActive` directly and keep `AgentTeamStatus`, root/team `currentStatus`, and aggregate normalization/hydration removed. Use `isActive && !stopPending` for Stop. Keep `StatusDot` and `AgentStatusDisplay` agent-only. Add a separate `TeamActivityDot` that accepts only a boolean plus an accessible label; use it on the two desktop group/run surfaces. A root or subteam header has no agent status fallback. Mobile team-run liveness remains `Active` or `Inactive` text from `isActive` only.
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
@@ -69,9 +80,9 @@ On the frontend, store root `isActive` directly; remove `AgentTeamStatus`, root/
 | BEH-003 | System | REQ-005, REQ-006, REQ-007, REQ-011; AC-004, AC-005, AC-006, AC-007, AC-012 | Agent terminal/error/termination or reconnect | Snapshot race evidence and implemented foundation | Preserve matching terminal -> idle, terminal failure -> error, termination -> offline, fresh snapshot convergence | DS-003, DS-004, DS-007 |
 | BEH-004 | System | REQ-004, REQ-012; AC-008, AC-011, AC-012 | Late/duplicate retired-turn evidence | Production trace and turn-state evidence | Preserve late content while preventing retired turn A from reopening or disturbing B | DS-006 |
 | BEH-005 | User | REQ-008, REQ-009; AC-013, AC-014 | Click, Enter, or programmatic composer action | Composer source and implementation review | Preserve one action guard; initializing blocks, running interrupts, Shift+Enter inserts newline | DS-005 |
-| BEH-006 | User / Contract | REQ-013; AC-016 | Render a team-definition group | Team screenshot and definition-group source | Remove borrowed status field/dot/label; preserve name/avatar/count/disclosure/launch | DS-010 |
+| BEH-006 | User / Contract | REQ-013, REQ-020; AC-016, AC-026 | Scan a collapsed/expanded team-definition group | Delivery screenshot, user feedback, current group builder | Keep definition free of lifecycle; render `runs.some(isActive)` as a binary group activity dot; preserve name/avatar/count/disclosure/launch | DS-010, DS-013 |
 | BEH-007 | System / Contract | REQ-014, REQ-015, REQ-018; AC-017, AC-018, AC-019, AC-020, AC-024 | Create, restore, refresh, subscribe, terminate, or lose a root team run | Manager/history/resume and circular frontend projection evidence | Root team lifecycle is only manager-owned `isActive`; member state and socket state never determine it | DS-008 |
-| BEH-008 | User | REQ-016, REQ-018; AC-017, AC-018, AC-022, AC-023 | Stop, archive, delete, or render a team run | Workspace action/dot source | Stop uses `isActive` plus local pending; inactive history actions retain their existing lifecycle guards; no five-state team visuals | DS-008, DS-010 |
+| BEH-008 | User | REQ-016, REQ-018, REQ-020; AC-017, AC-018, AC-022, AC-023, AC-026 | Stop, archive, delete, or scan an exact team run | Delivery screenshot, user feedback, current history/running rows | Stop keeps `isActive` plus local pending; exact run row renders the same boolean as a separate binary dot; no five-state team visuals | DS-008, DS-010, DS-013 |
 | BEH-009 | System / Contract | REQ-015, REQ-017, REQ-019; AC-020, AC-021, AC-025 | Member live stream/initial reconnect at any depth, including ordinary subteam -> task team; task terminal/failure; settlement check | `CR-MP-002`, `CODE-FIND-002`, team bridge/flattener, task-team scoped resolver, task/failure/settlement owners | Preserve exact leaf-agent status through one representable and coordinate-consistent live/snapshot scope; move task cleanup, failure, and open-work decisions to their real owners; delete aggregate status | DS-004, DS-011, DS-012 |
 
 ## Relevant Supplemental Task Artifacts
@@ -79,32 +90,31 @@ On the frontend, store root `isActive` directly; remove `AgentTeamStatus`, root/
 | Artifact Path | Purpose | Related Requirement / Acceptance-Criteria IDs | Relationship To This Design | Status / Approval Applicability |
 | --- | --- | --- | --- | --- |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/production-trace-evidence.md` | Matched agent production trace and live snapshot probe | REQ-001–REQ-012 / AC-001–AC-015 | Grounds the preserved agent lifecycle/gateway design | Complete; evidence-only; approval N/A |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/team-status-simplification-evidence.md` | Team definition/run authority and aggregate-consumer trace | REQ-013–REQ-019 / AC-016–AC-025 | Grounds the clean team contraction and reassignment | Complete; evidence-only; approval N/A |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/team-status-simplification-evidence.md` | Team authority, aggregate-consumer trace, and binary presentation correction | REQ-013–REQ-020 / AC-016–AC-026 | Grounds clean aggregate removal plus binary group/run visuals | Updated; evidence-only; approval N/A |
 | `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_6557dd2b51c3__image.png` | Agent UI screenshot | REQ-001, REQ-008 / AC-001, AC-009 | Shows Running with the wrong primary action | User-supplied evidence; approval N/A |
 | `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_9d9c83cf3d30__image.png` | Team hierarchy screenshot | REQ-013–REQ-017 / AC-016, AC-017, AC-021, AC-023 | Distinguishes redundant root status from useful member status | User-supplied evidence; approval N/A |
 | `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_ead75793b5e3__image.png` | Team-definition screenshot | REQ-013 / AC-016 | Shows the invalid definition-level status dot | User-supplied evidence; approval N/A |
+| `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_0fa01fdeb308__image.png` | Delivery-candidate team UI screenshot | REQ-016, REQ-020 / AC-023, AC-026 | Shows both missing team activity positions that the user explicitly restored | User-supplied evidence; approved behavior 2026-08-03 |
 
 ## Task Design Health Assessment (Mandatory)
 
-- Change posture: `Bug Fix`, `Behavior Change`, `Refactor`, and `Cleanup`
-- Current design issue found: `Yes`
-- Root cause classification: `Missing Invariant`; `Boundary Or Ownership Issue`; `Duplicated Policy Or Coordination`; `Shared Structure Looseness`; local `Local Implementation Defect`
-- Refactor needed now: `Yes`
+- Change posture: prior `Bug Fix`/`Refactor`/`Cleanup` is accepted; `SR-006` is a localized user-approved `Behavior Change`.
+- Current design issue found: `No` in the accepted lifecycle/state architecture; `Yes` only in presentation sufficiency.
+- Root cause classification for SR-006: `Local Presentation Omission` after a deliberate schema contraction.
+- Refactor needed now: `No` beyond one tight reusable team-binary presentation component and one group projection field.
 - Evidence:
   - The original agent action was governed by two independently mutable fields; that part is already corrected on this branch.
-  - Team liveness has two public representations (`status` and `isActive`) and frontend code converts repeatedly between them.
-  - A definition borrows a child execution status despite having no runtime subject.
-  - A common member handle returns `AgentStatusPayload` for both agents and teams, forcing teams to masquerade as agents.
-  - `TEAM_STATUS` is used as display state, liveness, failure, task cleanup, and open-work inference.
-- `ARCH-FIND-003` confirmed that a plain recursive `AgentStatusPayload[]` loses task-team execution scope. `CODE-FIND-002` further proved that carrying a complete operational identity unchanged can mix coordinate frames after an additional ordinary parent boundary.
-- Design response: Preserve one agent lifecycle owner; establish `AgentTeamRunManager` as the sole public root-team liveness owner; specialize agent versus team member shapes; compose canonical agent status with a tight parent-frame `TaskTeamStreamScope`; rebase that scope at the same owner as source/member paths; give task/failure/settlement their own facts; delete aggregate server/frontend contracts and visuals.
-- Refactor rationale: Hiding the dots while retaining aggregate DTOs and status-to-active conversions would leave the same contradictory authority in code. Clean removal is smaller and more stable than maintaining a deprecated five-state team model.
+- Accepted source has one team liveness representation (`isActive`), no definition-owned status, specialized team/agent shapes, and no aggregate shortcut consumers.
+- The current group and run rows already receive the exact booleans needed; adding another domain/state contract would be unjustified.
+- Design response: preserve accepted ownership; derive `hasActiveRuns` only inside the display-group builder; render that boolean and exact run `isActive` through a separate `TeamActivityDot`.
+- Refactor rationale: Reusing the agent dot by synthesizing `running/offline` would undo semantic tightening. A boolean-only component is smaller and makes invalid five-state team input unrepresentable.
 - Intentional deferrals and residual risk: Provider internals, task-stage semantics, team topology, and general workspace styling remain unchanged. Repeated agent companions remain an accepted bandwidth tradeoff. The binary root lifecycle message is a small extra transport contract needed for live multi-client convergence; it is not another derived status.
 
 ## Terminology
 
 - **Agent lifecycle:** The five-state lifecycle of one exact `AgentRun`.
 - **Team definition:** Reusable configuration/topology; never a runtime subject.
+- **Team definition-group activity:** Presentation-only `hasActiveRuns = runs.some(run.isActive)` for the concrete child collection shown beneath a definition group; not a definition field or lifecycle.
 - **Root team run liveness:** `isActive` for one exact root `teamRunId`, owned by `AgentTeamRunManager` registration plus backend liveness.
 - **Team lifecycle message:** `TEAM_RUN_LIFECYCLE { team_run_id, is_active }`, a binary manager fact; not a member aggregate.
 - **Leaf-agent snapshot:** `AgentStatusPayload` for an actual agent execution, including exact route/path/run/task identity.
@@ -113,6 +123,7 @@ On the frontend, store root `isActive` directly; remove `AgentTeamStatus`, root/
 - **Mixed team stream scope:** Shared `teamRunId`/source-path/task-team envelope projected from every live `TeamRunEvent` type or a team leaf-agent snapshot and prefixed once at each parent boundary. Agent events/snapshots additionally carry a member path in the same frame.
 - **Open execution work:** Private boolean used only for safe task-team settlement; it is not a public status or display value.
 - **stopPending:** Frontend-local duplicate-request guard; it never changes `isActive`.
+- **Team activity dot:** Solid binary UI indicator that accepts only a boolean and accessible label; distinct from the agent-only five-state `StatusDot`.
 
 ## Design Reading Order
 
@@ -124,7 +135,7 @@ Read the agent spines as preserved branch foundations, then the manager-owned te
 - Preserve the already implemented removal of agent `can_interrupt` / `canInterrupt`; do not reintroduce a derived alias.
 - Delete backend `TeamStatusPayload`, `deriveTeamApiStatus`, root/nested `TeamRunEventSourceType.TEAM`, aggregate status overrides/deduplication, team command status construction, and aggregate snapshot/mapping code.
 - Delete public/frontend `AgentTeamStatus`, root history `status`, team context/tree `currentStatus`, team-status normalization/hydration, and `TEAM_STATUS` protocol handling.
-- Delete team-specific visual helpers/components and the team branch of the shared status dot; keep agent visuals.
+- Preserve deletion of five-state team visual helpers/components and the team branch of the agent `StatusDot`. Add a new boolean-only `TeamActivityDot`; do not retrofit the old helpers.
 - Do not accept old and new team payloads, retain an optional `status`, translate `status` into `isActive`, or publish both `TEAM_STATUS` and `TEAM_RUN_LIFECYCLE`.
 
 ## Persisted Data / State Transition Decision (Mandatory When Persisted Data May Be Affected)
@@ -136,7 +147,7 @@ Read the agent spines as preserved branch foundations, then the manager-owned te
 - Physical-store, privacy/security, disposal/rebuild, and operational constraints: No user data rewrite or deletion; server and frontend contracts ship together.
 - Decision: `Directly Usable — No Migration`
 - Decision rationale: Existing stored data remains meaningful and current readers can ignore obsolete historical superset fields. A bulk rewrite adds I/O/corruption/recovery cost without changing runtime authority.
-- Acceptance criteria or design constraints supported: REQ-011, REQ-012, REQ-014–REQ-019; AC-008, AC-011, AC-012, AC-018–AC-025.
+- Acceptance criteria or design constraints supported: REQ-011, REQ-012, REQ-014–REQ-020; AC-008, AC-011, AC-012, AC-018–AC-026.
 
 ### Migration Plan
 
@@ -158,6 +169,7 @@ N/A — the decision is `Directly Usable — No Migration`.
 | DS-010 | Bounded Local | BEH-006, BEH-008 | Definition/history read model | Team definition/run presentation | workspace history projection | Removes status from non-agent subjects |
 | DS-011 | Return-Event | BEH-009 | Task terminal/result/failure facts | Task projection cleanup and lifecycle observer | task delegation / operation / member failure owners | Replaces aggregate shortcuts |
 | DS-012 | Bounded Local | BEH-009 | Settlement request | settle now or wait | `TeamRun.hasOpenExecutionWork()` + task delegation service | Replaces aggregate status as work predicate |
+| DS-013 | Bounded Local | BEH-006, BEH-008 | Existing child-run `isActive` booleans | Accessible group/run activity dots | workspace presentation | Restores scan clarity without a new lifecycle or transport field |
 
 ## Primary Execution Spine(s)
 
@@ -178,9 +190,10 @@ N/A — the decision is `Directly Usable — No Migration`.
 | DS-007 | A listener binds first, then `AgentRun` reconciles a fresh backend lifecycle snapshot inside its queue and sends the canonical result. | agent snapshot | `AgentRun` | history/live precedence |
 | DS-008 | Manager registration is created/restored once, queried for history/resume, and removed once after accepted termination or detected backend death. The same owner notifies live subscribers with one binary fact. | root team run | `AgentTeamRunManager` | GraphQL mapper, socket session |
 | DS-009 | Awaited local events join runtime events before processors/finalization; no caller performs listener fanout or status pairing. | local agent event | `AgentRun` | producer-specific persistence |
-| DS-010 | Definition groups retain a representative only for definition metadata/avatar needs. Run rows read `isActive` for actions but render no team status. | definition, root team run | workspace history projection | accessibility text |
+| DS-010 | Definition groups retain a representative only for definition metadata/avatar needs. They never borrow that run's status; group/run presentation consumes binary activity through DS-013. | definition, root team run | workspace history projection | accessibility text |
 | DS-011 | Task terminal events and task-record refresh remove task projections; explicit operation results and leaf-agent terminal failures report failures. No team enum mediates them. | task, operation, failure | task/failure owners | scheduling and toast state |
 | DS-012 | Settlement asks task delegation whether records remain open and asks the child team run whether execution work remains; it settles only when both are false. | child team execution | `TeamRun` backend + settlement coordinator | task directories |
+| DS-013 | The group builder calculates `hasActiveRuns` from all displayed children. The group row renders that boolean; each exact run row renders its own `isActive`. Both use one boolean-only component with solid blue/gray and accessible labels. | team display group, root team run | workspace presentation | localization, focused component tests |
 
 ## Spine Actors / Main-Line Nodes
 
@@ -202,7 +215,7 @@ N/A — the decision is `Directly Usable — No Migration`.
 - **Task-team handle:** Child-run orchestration; derives one tight `TaskTeamStreamScope` from its operational `TaskTeamInstanceIdentity` in the immediate parent frame and supplies that same override to live/snapshot adapters; owns no five-state team status.
 - **Task delegation subsystem:** Task stage, terminal state, records, and task projection reconciliation.
 - **Frontend `AgentTeamContext`:** Root `isActive`, connection `isSubscribed`, focus, topology, and leaf contexts as separate fields.
-- **Workspace projection:** Definition grouping and action presentation; no lifecycle authority.
+- **Workspace projection:** Definition grouping, binary collection summary, and action presentation; no lifecycle authority. It may derive `hasActiveRuns` from already-projected child booleans but cannot persist or transport it.
 
 ## Thin Entry Facades / Public Wrappers (If Applicable)
 
@@ -229,7 +242,7 @@ N/A — the decision is `Directly Usable — No Migration`.
 | WebSocket `TEAM_STATUS` protocol/handler | Aggregate contract removed | `TEAM_RUN_LIFECYCLE`; leaf `AGENT_STATUS` | In This Change | No compatibility parsing |
 | frontend `AgentTeamStatus` and team `currentStatus` fields | Parallel authority | root `isActive`; leaf `AgentStatus` | In This Change | Remove imports/tests/fixtures |
 | team-status hydration/normalization and status-to-active helpers | Circular conversion | direct `isActive` application | In This Change | Keep agent normalization |
-| definition/run team dots, `TeamStatusDisplay`, `useTeamStatusVisuals`, team dot utilities | Wrong subject/presentation | no badge; optional Active/Inactive text | In This Change | Remove obsolete localization keys |
+| five-state definition/run team dots, `TeamStatusDisplay`, `useTeamStatusVisuals`, team branch in `StatusDot` | Wrong subject/presentation | separate boolean-only `TeamActivityDot`; existing Active/Inactive text | Already Removed; Do Not Restore | New component accepts no status enum and shares none of the old normalization |
 | task-team cleanup on offline `TEAM_STATUS` | Task stage disguised as lifecycle | terminal task event + record reconciliation | In This Change | No timer/status fallback |
 | root aggregate-error branch in team lifecycle observer | Duplicate failure inference | canonical leaf-agent failure + explicit operation result | In This Change | Preserve ATTACHED/TERMINATED |
 | one-second inactive polling in team lifecycle observer | Polls a fact the manager owns | manager lifecycle subscription | In This Change | Exact unregister notification emits TERMINATED |
@@ -294,9 +307,9 @@ The frontend may own connection state and request-pending state, but neither may
 - Team lifecycle transport contains only exact `team_run_id` and `is_active`; no member state, phase, error, interrupt permission, or socket state.
 - Leaf status transport retains exact route/path/run/task identity. Every live event type and every initial snapshot must call `prefixMixedTeamStreamScope`; live agent/snapshot mapping must call the same strict leaf validator and `buildTaskTeamScopedIdentityPayload`. No other layer may prefix or infer task-team scope.
 - Task projection depends on task events/records; failure observation depends on canonical agent failure/operation results; settlement depends on private work facts.
-- Frontend team action code depends on `isActive` and stopPending only. Archive/delete additionally use existing inactive history lifecycle flags.
+- Frontend team action code depends on exact-run `isActive` and stopPending only. Archive/delete additionally use existing inactive history lifecycle flags. Definition-group `hasActiveRuns` is display-only and cannot authorize an action.
 
-Forbidden shortcuts: status-to-active conversion, activity-to-status conversion, representative-child status on definitions, `context exists -> active`, `socket connected -> active`, root false writing member statuses, a compatibility `AgentTeamStatus`, a replacement public “team phase” enum, mapper/frontend scope guessing, or carrying a full operational `TaskTeamInstanceIdentity` as the outward stream coordinate.
+Forbidden shortcuts: status-to-active conversion, activity-to-`AgentStatus` conversion, representative-child status on definitions, persisting/transporting `hasActiveRuns`, `context exists -> active`, `socket connected -> active`, root false writing member statuses, a compatibility `AgentTeamStatus`, a replacement public “team phase” enum, mapper/frontend scope guessing, or carrying a full operational `TaskTeamInstanceIdentity` as the outward stream coordinate. Aggregating the displayed child booleans with `some(isActive)` is the one approved presentation projection.
 
 ## Interface Boundary Mapping
 
@@ -318,6 +331,8 @@ Forbidden shortcuts: status-to-active conversion, activity-to-status conversion,
 | `TeamRun.hasOpenExecutionWork()` | private team execution | Settlement-safe boolean | exact in-memory child `TeamRun` | Not GraphQL/WebSocket/frontend |
 | `TeamRunHistoryItem` GraphQL | root team history | History metadata + isActive + member statuses | exact root/team/member IDs | Root `status` removed |
 | frontend `AgentTeamContext` | opened team context | `isActive`, connection, focus, topology | exact `teamRunId` | No `currentStatus` |
+| `TeamActivityDot { isActive, label }` | team activity presentation | Solid binary visual + accessible meaning | caller-supplied boolean and localized label | No `AgentStatus`, phase, member state, or action policy |
+| `WorkspaceHistoryTeamDefinitionDisplayGroup.hasActiveRuns` | one displayed definition group | `runs.some(run.isActive)` | the group's existing exact child collection | Presentation-only; not persisted or transported |
 | `terminateTeamRun(teamRunId): Promise<boolean>` | root team operation | Return accepted success/failure | exact root `teamRunId` | Caller must handle false and clear pending |
 
 ## Interface Boundary Check
@@ -345,7 +360,8 @@ Forbidden shortcuts: status-to-active conversion, activity-to-status conversion,
 | Shared rebasing | `prefixMixedTeamStreamScope` | Yes | Low | Use for all live event types and initial snapshots |
 | Settlement predicate | `hasOpenExecutionWork` | Yes | Low | Do not call it status |
 | UI duplicate guard | `stopPending` / `terminatingTeamIds` | Yes | Low | Do not call active/terminating lifecycle |
-| Definition group | `WorkspaceHistoryTeamDefinitionDisplayGroup` | Yes | Low | Remove `status` field |
+| Definition group | `WorkspaceHistoryTeamDefinitionDisplayGroup` | Yes | Low | Keep status removed; add only derived `hasActiveRuns` |
+| Binary team visual | `TeamActivityDot` | Yes | Low | Boolean-only; do not reuse agent `StatusDot` |
 
 ## Existing Capability / Subsystem Reuse Check
 
@@ -358,7 +374,7 @@ Forbidden shortcuts: status-to-active conversion, activity-to-status conversion,
 | Task cleanup | task delegation projection/records | Extend | Owns task stage and terminality | N/A |
 | Team failure | canonical agent failure observer + operation results | Reuse | Existing explicit facts | N/A |
 | Settlement | existing coordinator/team backend | Extend | Existing decision owner | N/A |
-| Team visuals | workspace/mobile presentation | Simplify | Remove rather than replace | N/A |
+| Team activity visuals | workspace presentation + existing `isActive` | Extend | Reuse exact booleans; add one boolean-only component | No backend/state-model change |
 
 ## Subsystem / Capability-Area Allocation
 
@@ -371,7 +387,7 @@ Forbidden shortcuts: status-to-active conversion, activity-to-status conversion,
 | Run history GraphQL | root activity/member snapshot projection | DS-008 | history service | Refactor | Remove root status |
 | Task delegation | task stage/terminal cleanup | DS-011, DS-012 | task service/coordinator | Extend | No team enum |
 | Frontend runtime state | team isActive + leaf agent statuses | DS-004, DS-008 | stores/context | Refactor | Remove circular conversions |
-| Workspace/mobile UI | no definition/root status; binary action/text | DS-010 | presentation components | Simplify | Agent visuals remain |
+| Workspace/mobile UI | binary group/run activity; binary action/text; no five-state team status | DS-010, DS-013 | presentation components | Extend | Agent visuals and mobile text remain |
 
 ## Draft File Responsibility Mapping
 
@@ -387,7 +403,7 @@ Forbidden shortcuts: status-to-active conversion, activity-to-status conversion,
 | `team-stream-agent-identity-payload.ts` | streaming | live/initial identity flattener | consistent task-team stream scope to wire fields | One wire identity rule | `TaskTeamStreamScope` |
 | team history projection service renamed | history | projection | isActive + leaf snapshots | One list projection | lifecycle snapshot |
 | frontend protocol/context/history types | frontend state | contract | remove aggregate; add lifecycle message | Contract/state owners | isActive boolean |
-| workspace/mobile presentation files | UI | display | no team status/dots; direct actions | Existing surfaces | agent status visuals only |
+| workspace team presentation files | UI | display | binary group/run activity plus direct actions | Existing surfaces | no team status enum or member-derived color |
 
 ## Reusable Owned Structures Check
 
@@ -398,6 +414,7 @@ Forbidden shortcuts: status-to-active conversion, activity-to-status conversion,
 | recursive all-event/live/snapshot rebasing | `mixed-team-event-bridge.ts` | mixed team bridge | all path-bearing stream scope must change frames together | Yes | Yes | leaf-only or snapshot-only path mapper |
 | live/initial task-team wire fields | `team-stream-agent-identity-payload.ts` | team streaming | both mapper paths must flatten the same envelope | Yes | Yes | generic team status mapper |
 | agent status visuals | existing `workspaceStatusDotPresentation.ts` | frontend presentation | agent rows share it | Yes | Yes | team aggregate visuals |
+| binary team activity visual | new `TeamActivityDot.vue` | frontend presentation | history and running surfaces need the same strict boolean/color/accessibility semantics | Yes | Yes | generic status component or AgentStatus mapper |
 | task terminal cleanup policy | existing task execution router/projection | task delegation | all task terminal messages reconcile once | Yes | Yes | root lifecycle handler |
 
 ## Shared Structure / Data Model Tightness Check
@@ -437,7 +454,7 @@ Forbidden shortcuts: status-to-active conversion, activity-to-status conversion,
 | `autobyteus-web/stores/runHistoryTypes.ts` | frontend history | read model | no root status; specialized member rows | Exact query model | agent status/isActive |
 | `autobyteus-web/services/agentStreaming/TeamStreamingService.ts` + protocol | frontend transport | stream | lifecycle handler and exact leaf status | Existing socket client | DTOs |
 | `autobyteus-web/stores/agentTeamRunStore.ts` + history/open/recovery | frontend orchestration | store | direct activity application, cleanup | Existing lifecycle callers | isActive |
-| workspace/running/team/mobile components and composables | presentation | UI | remove team status and use direct actions/text | Existing surfaces | agent visuals |
+| workspace history/running components | presentation | UI | render binary group/run activity and use direct actions/text | Existing surfaces | AgentStatus mapping or aggregate helpers |
 
 ## Applied Patterns (If Any)
 
@@ -472,9 +489,17 @@ Forbidden shortcuts: status-to-active conversion, activity-to-status conversion,
 | `autobyteus-web/types/agent/AgentTeamContext.ts`, `stores/runHistoryTypes.ts` | Files/Change | state models | root isActive; specialized agent/team nodes | Canonical frontend models | team currentStatus |
 | `autobyteus-web/services/agentStreaming/{protocol/messageTypes.ts,TeamStreamingService.ts,handlers/teamHandler.ts}` | Files/Change | client stream | lifecycle boolean and leaf status | Existing transport | TEAM_STATUS compatibility |
 | `autobyteus-web/services/runHydration/**`, `runOpen/**`, `runRecovery/**`, history stores/helpers | Folder/Change | state convergence | direct isActive and member hydration | Existing convergence owners | synthetic team status |
-| `autobyteus-web/components/workspace/**`, `composables/mobile/useMobileWorkCatalog.ts` | Folder/Change | presentation/actions | no definition/root status, direct Stop, binary text | Existing UI surfaces | team five-state visuals |
+| `autobyteus-web/components/workspace/common/TeamActivityDot.vue` | File/New | team presentation | solid blue/gray boolean indicator with accessible caller label | Shared by two desktop team surfaces | AgentStatus, animation, aggregation, actions |
+| `autobyteus-web/components/workspace/history/workspaceHistoryTeamDefinitionGroups.ts` | File/Change | definition-group projection | add `hasActiveRuns = runs.some(run.isActive)` | Owns the displayed child collection | representative status or persisted state |
+| `autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue` | File/Change | workspace team presentation | render group `hasActiveRuns` and exact run `isActive` dots | Exact screenshot surface | lifecycle derivation or Stop changes |
+| `autobyteus-web/components/workspace/running/{RunningTeamGroup.vue,RunningTeamRow.vue}` | Files/Change | running team presentation | render any-child and exact-run activity dots | Existing alternate desktop surface | synthetic AgentStatus |
+| `autobyteus-web/components/workspace/common/__tests__/TeamActivityDot.spec.ts` | File/New | component contract coverage | colors, no pulse, label/title, boolean test attribute | Directly tests the tight primitive | agent status cases |
+| `autobyteus-web/components/workspace/history/__tests__/{workspaceHistoryTeamDefinitionGroups.spec.ts,WorkspaceHistoryWorkspaceSection.spec.ts}` | File/New + File/Change | history presentation coverage | both builder paths, mixed/all-inactive group projection, exact sibling rows, unchanged actions/member dots | Closest durable units for DS-013 | backend lifecycle tests |
+| `autobyteus-web/components/workspace/running/__tests__/{RunningTeamGroup.spec.ts,RunningTeamRow.spec.ts}` | Files/Change | running presentation coverage | any-child group and exact-run dot parity | Existing component suites | history/server behavior |
+| `autobyteus-web/localization/messages/{en,zh-CN}/workspace.generated.ts` | Files/Change | localization | accessible active/inactive group/run labels | Existing component-key catalogs | hard-coded user-facing labels |
+| `autobyteus-web/composables/mobile/useMobileWorkCatalog.ts` | File/No Change | mobile presentation | retain `Active`/`Inactive` text | Already correct | new dot or aggregate status |
 | `autobyteus-web/components/workspace/team/TeamStatusDisplay.vue`, `composables/useTeamStatusVisuals.ts` | Files/Delete | N/A | Remove | Unused/obsolete | N/A |
-| `autobyteus-web/components/workspace/common/StatusDot.vue`, `utils/workspaceStatusDotPresentation.ts` | Files/Change | agent visuals | agent-only dots | Status belongs to agent | team kind/branches |
+| `autobyteus-web/components/workspace/common/StatusDot.vue`, `utils/workspaceStatusDotPresentation.ts` | Files/No Change | agent visuals | agent-only five-state dots | Status belongs to agent | team kind/branches |
 
 ## Folder Boundary Check
 
@@ -486,6 +511,68 @@ Forbidden shortcuts: status-to-active conversion, activity-to-status conversion,
 | `services/agent-streaming` | Transport | Yes | Low | Mapping only, no lifecycle derivation |
 | `run-history/services` | Off-Spine projection | Yes | Low | Manager read + member snapshot projection |
 | frontend stores/services | Mixed Justified | Yes | Medium | Keep contract, convergence, and presentation responsibilities in their existing areas; remove conversions |
+
+## Binary Team Activity Presentation Contract (`SR-006`)
+
+### One boolean-only visual component
+
+Add `autobyteus-web/components/workspace/common/TeamActivityDot.vue`:
+
+```ts
+defineProps<{
+  isActive: boolean;
+  label: string;
+}>();
+```
+
+Contract:
+
+- Render a fixed solid circular dot using the existing workspace row size (`h-2 w-2 flex-shrink-0 rounded-full`).
+- `isActive=true` uses solid `bg-blue-500`; `false` uses solid `bg-gray-400`.
+- Never add `animate-pulse`: team activity means a live registered resource, not current agent generation.
+- Render `role="img"`, `aria-label=label`, and `title=label`; expose `data-test="team-activity-dot"` and `data-active="true|false"` for focused coverage.
+- Accept no `AgentStatus`, string status, member collection, task stage, socket state, or action callback. The caller owns the exact boolean and localized label.
+- Keep existing `StatusDot.vue` and `workspaceStatusDotPresentation.ts` agent-only and unchanged.
+
+### Definition/group projection
+
+Extend the internal presentation type only:
+
+```ts
+export type WorkspaceHistoryTeamDefinitionDisplayGroup = {
+  // existing identity/runs/representative metadata
+  hasActiveRuns: boolean;
+};
+```
+
+`buildWorkspaceTeamDefinitionDisplayGroups` sets `hasActiveRuns` from the exact child collection on each returned group:
+
+```ts
+hasActiveRuns = runs.some((run) => run.isActive);
+```
+
+In `buildDisplayGroupsFromTeamNodes`, initialize the field from the first run and update it when another run is appended; in `buildDisplayGroupsFromHistory`, calculate it from the already-complete `runs` array. Leftover/current-node groups pass through the first helper and therefore follow the identical rule. This requirement does not invent a cross-group merge: each rendered group summarizes exactly the `runs` collection it renders. It must not use `representativeRun`, member status, `isSubscribed`, draft/context existence, last-activity ordering, or Stop availability. A temporary draft with `isActive=false` does not make its group active when another displayed child is active.
+
+`WorkspaceHistoryWorkspaceSection.vue` renders `TeamActivityDot` immediately after the group disclosure control and before the existing team avatar/name. `RunningTeamGroup.vue`, whose `runs` are live contexts, computes the same `runs.some(run.isActive)` locally and renders the same component before the definition name. Both supply localized `Active team runs` / `No active team runs` meaning.
+
+### Exact run projection
+
+`WorkspaceHistoryWorkspaceSection.vue` renders `TeamActivityDot` immediately after the run disclosure control and before `formatTeamRunLabel(team)`, passing `team.isActive`. `RunningTeamRow.vue` renders it in the equivalent position before the run identifier, passing `teamRun.isActive`. Both supply localized `Active team run` / `Inactive team run` meaning.
+
+The existing Stop/archive/delete conditions remain unchanged. The visual and action read the same exact boolean but do not call or own one another. An inactive historical or draft row renders gray; an active registered row renders blue. A failed Stop leaves the dot blue after pending clears because `isActive` remains true; accepted termination turns it gray when the existing lifecycle projection applies false.
+
+### Coverage contract
+
+Focused durable frontend tests must prove:
+
+1. `TeamActivityDot` maps true/false to solid blue/gray, has no pulse class, and exposes accessible active/inactive labeling.
+2. A definition group with mixed active/inactive child runs is blue; after the last active child changes to inactive it is gray; representative ordering and member status changes do not affect it. Both `buildDisplayGroupsFromHistory` and `buildDisplayGroupsFromTeamNodes` (including the leftover/current-node route) are covered.
+3. Each exact workspace-history run row follows its own `isActive`, including simultaneous blue and gray siblings.
+4. `RunningTeamGroup` and `RunningTeamRow` render the same binary semantics.
+5. Definition and run rows contain no five-state status value or `AgentStatus` mapping; leaf-agent dots remain unchanged.
+6. Existing Stop success/failure/pending tests remain passing; the indicator introduces no click target or action behavior.
+
+No server/API/E2E contract is added. After source review, the API/E2E engineer still owns the formal coverage-validity decision and any proportionate browser-equivalent execution.
 
 ## Recursively Scoped Leaf-Agent Contract And Coordinate Frame (`ARCH-FIND-003`, `CODE-FIND-002`)
 
@@ -848,7 +935,8 @@ The team WebSocket must bind the manager lifecycle listener before its fresh man
 | Topic | Good Example | Bad / Avoided Shape | Why The Example Matters |
 | --- | --- | --- | --- |
 | Root lifecycle | `{ team_run_id: "T", is_active: true }` from manager | `{ status: "idle" }` derived from members | Idle members do not make a team inactive |
-| Definition row | `Software Engineering Team (27)` | blue/green dot copied from latest child | Definition has no runtime |
+| Definition group | solid blue when `group.runs.some(run.isActive)`, gray otherwise | five-state color copied from `representativeRun` or no activity cue | Group summary reveals active children without giving the definition a lifecycle |
+| Exact team-run row | solid blue from `team.isActive`, gray when false | no dot, or `running/offline` synthesized for agent `StatusDot` | Preserves scan clarity with the exact manager-owned fact |
 | Root action | `team.isActive && !stopPending -> Stop` | `team.currentStatus !== Offline -> Stop` | Uses the actual authority |
 | Leaf member | `AGENT_STATUS running, member_route_key=a/b, agent_id=R` | subteam node `status=running` | Only the agent owns five-state lifecycle |
 | Multi-boundary task-team leaf | child `review_team/.../critic` becomes root `research_group/review_team/.../critic`, and logical team becomes `research_group/review_team`; both map to `task-team-run-7/review_group/critic` | prefix leaf paths but clone child-local logical-team path | Live and reconnect must select the same transient execution leaf at arbitrary depth |
@@ -869,6 +957,8 @@ The team WebSocket must bind the manager lifecycle listener before its fresh man
 | Repair missing relative selector in mapper/frontend | Avoid bridge rework | Rejected | Rebase source/member/logical-team paths together at the mixed-team boundary; mapper validates and flattens only |
 | Use socket close as inactive fallback | Avoid lifecycle event | Rejected | Bind manager lifecycle + fresh snapshot |
 | Keep task cleanup on offline team event | Preserve router path | Rejected | Task terminal event/record reconciliation |
+| Reuse agent `StatusDot` with `isActive ? running : offline` | Avoid a new component | Rejected | Boolean-only `TeamActivityDot`; no AgentStatus conversion or pulse |
+| Persist/transport definition `hasActiveRuns` | Share the group summary broadly | Rejected | Derive from the group's already-present `runs[].isActive` at presentation boundary |
 
 ## Derived Layering (If Useful)
 
@@ -886,15 +976,14 @@ Task delegation and failure observation remain side capabilities consuming expli
 
 ## Change / Refactor Sequence
 
-1. Start from reviewed implementation source `9c4c6f095` and preserve manager-owned lifecycle, aggregate removal, Stop pending/failure behavior, the `SR-002` agent gateway, and `IR-002` presentation batching.
-2. Add `TaskTeamStreamScope` builder/clone; change `TeamRunEvent` and `TeamLeafAgentStatusSnapshot` from full operational `taskTeamInstance` to the tight `taskTeamScope`. Do not alter operational task-team identity/directory/persistence APIs.
-3. Replace `prefixMixedTeamAgentScope` with `prefixMixedTeamStreamScope`. Make every live event type and initial snapshot adapter call it; rebase retained logical-team scope at ordinary boundaries and accept only a target-frame override from task-team handles. Prefix agent member paths with the same private `prefixPath` rule.
-4. Update task-team handles to derive one scope per request/parent and pass it identically to live/snapshot adapters. Update conversation task-team detection to consume only the scoped run ID.
-5. Update the shared stream flattener to consume `TaskTeamStreamScope`, add symmetric live-agent/initial-leaf validation, and preserve existing wire fields/precedence. No mapper/frontend fallback is allowed.
-6. Add focused multi-boundary tests for `root -> ordinary subteam -> task team -> leaf`: retained-scope rebase, route-key rebuild, live mapper relative selector, initial mapper parity, repeated ordinary nesting/no double prefix, and invalid-frame rejection.
-7. Resolve `CODE-FIND-003` locally by extending the `team-run-service.test.ts` manager double with `subscribeToLifecycle` and `getLifecycleSnapshot`; rerun all 13 tests. Do not weaken the production manager interface.
-8. Rerun the prior changed server/frontend suites, TypeScript build, aggregate-obsolete scans, source-size/diff checks, and preserved batching/Stop tests; record `IR-004` and route source re-review.
-9. Do not overwrite or include the API/E2E engineer's held uncommitted files. Only after source review passes may API/E2E replace its stale investigation and reconcile durable coverage against the current contract.
+1. Start from integrated accepted source `55c5b3c914d64059361d47ec87a29da0e4eb9bbb`. Preserve every SR-005 server/transport/store contract and all accepted lifecycle/task/member behavior. Do not include or overwrite delivery-owned dirty artifacts.
+2. Add boolean-only `TeamActivityDot.vue` with exact solid blue/gray, no-pulse, accessibility, and test attributes. Keep agent `StatusDot` untouched.
+3. Extend `WorkspaceHistoryTeamDefinitionDisplayGroup` with derived `hasActiveRuns`; initialize/update it in `buildDisplayGroupsFromTeamNodes` and calculate it from the complete `runs[]` in `buildDisplayGroupsFromHistory`, including leftover/current-node groups.
+4. Render the group and exact-run dots in `WorkspaceHistoryWorkspaceSection.vue` at the agreed positions and add localized accessible labels.
+5. Render the same semantics in `RunningTeamGroup.vue` and `RunningTeamRow.vue`; do not alter mobile's existing Active/Inactive text.
+6. Add focused component/group/row coverage for mixed child activity, all-inactive transition, exact sibling states, no representative/member/socket influence, no pulse, accessibility, and unchanged leaf-agent dots/actions.
+7. Run the focused frontend tests, localization boundary/audit, repository formatting/diff checks, and the existing team Stop/presentation regression set. Classify any repository-baseline typecheck failures exactly rather than hiding them.
+8. Produce the next implementation revision and return source to code review. API/E2E then performs a fresh coverage investigation for SR-006 before delivery repeats latest-base refresh, docs sync, and manual verification preparation.
 
 ## Key Tradeoffs
 
@@ -904,6 +993,8 @@ Task delegation and failure observation remain side capabilities consuming expli
 - Specializing handle/node types touches more compile sites than leaving optional status fields, but it makes invalid team-as-agent states unrepresentable.
 - `error` remains work-blocking for private settlement to preserve current safety; this does not create a public team error state.
 - Clean-cut GraphQL/WebSocket contraction requires coordinated server/frontend changes, accepted because they ship together and stored data needs no migration.
+- A derived definition-group activity boolean is technically an aggregation, but it is intentionally bounded to presentation over already-authoritative child booleans; this keeps the valuable collapsed-group signal without recreating domain status.
+- A separate small component adds one file, but it prevents boolean liveness from being disguised as agent `running/offline` and prevents an active team resource from pulsing like current generation.
 
 ## Risks
 
@@ -913,11 +1004,13 @@ Task delegation and failure observation remain side capabilities consuming expli
 - Switching `TeamRunEvent` from full operational identity to tight stream scope must cover AGENT, TASK_DELEGATION, COMMUNICATION, and MEMBER_INPUT; a partial event-type cut would preserve hidden frame drift.
 - Removing pseudo team statuses may expose callers that used `currentStatus` for display or work inference; repository scans and discriminated types should force explicit replacement.
 - Task-team cleanup must remain correct for terminal success, failure, cancellation, reconnect, and record refresh without an offline fallback.
-- Existing held API/E2E edits were authored against the pre-expansion agent-only contract and must be reconciled rather than blindly committed.
+- The delivery candidate and its Electron package no longer represent the complete approved UI; they must not be finalized or reused as SR-006 verification evidence without rebuild/revalidation.
+- If `buildDisplayGroupsFromTeamNodes` does not update `hasActiveRuns` when appending another run, or the history path reads anything other than its complete `runs[]`, a collapsed group can show stale gray. Cover both builder paths and the leftover/current-node route.
+- Accidentally using `isSubscribed`, representative ordering, member status, or Stop availability would recreate the ownership defect under a new presentation name; tests must vary those facts independently.
 
 ## Guidance For Implementation
 
-- Treat `9c4c6f095` as the source starting state and `facc6a818` as the authoritative review record. Preserve the sound manager/aggregate-removal/frontend source and all earlier agent behavior.
+- Treat integrated HEAD `55c5b3c914d64059361d47ec87a29da0e4eb9bbb` as the source starting state; `ARCH-REV-005`, `CRR-004`, API/E2E reports, and test-code re-review remain the accepted baseline. Preserve all existing server/transport/state source.
 - Make manager transition notification idempotent: reject/non-register a backend that is not live; emit only when an exact run changes registered liveness; replacing one still-active instance under the same ID is boolean `true -> true`, not a false/true flicker; a failed terminate does not mutate the map or notify false.
 - Keep the lifecycle payload minimal. Do not add `status`, `phase`, member summaries, error text, interrupt permission, or connection state.
 - In the initial team stream, bind run events and manager lifecycle before reading; keep each coordinate-consistent `TeamLeafAgentStatusSnapshot` intact through `mapTeamLeafAgentStatusSnapshot`, then send the fresh root lifecycle and recursively mapped leaf messages.
@@ -927,6 +1020,8 @@ Task delegation and failure observation remain side capabilities consuming expli
 - Update the stale `TeamRunService` manager double as a test fixture. Do not add optional chaining/default lifecycle behavior to production to accommodate it.
 - Keep task terminality and operational failures observable after aggregate deletion; do not silently drop the former consumers.
 - Frontend lifecycle handlers update one subject only: root lifecycle -> `teamContext.isActive`; member status -> exact agent context; task event -> task projection; socket events -> `isSubscribed`.
+- The definition/group dot reads only `runs.some(run.isActive)` and is display-only. The exact run dot reads only that row's `isActive`. Do not make either a new store field or mutation guard.
+- Keep `TeamActivityDot` semantically tight: boolean + localized label, solid blue/gray, no pulse. Do not add a `kind`, string status, member list, or AgentStatus fallback.
 - Make `onTerminateTeam` check the store's boolean result. While pending, disable duplicate Stop; on failure, clear pending and leave `isActive=true`/Stop available.
 - Delete rather than deprecate old fields/events/helpers. Regenerate generated GraphQL types after schema/query edits.
 - Update documentation only in the later delivery stage after integrated-state refresh.

@@ -3,14 +3,14 @@
 ## Artifact Status
 
 - Type: Evidence-only supplemental artifact
-- Status: Complete; used as evidence for the user-approved 2026-08-02 requirements basis and `SR-003` design
+- Status: Updated; used as evidence for the user-approved 2026-08-02 simplification and the 2026-08-03 binary-activity presentation correction
 - Approval applicability: N/A — this file records observed product/source behavior and does not independently define intended behavior
-- Investigation date: 2026-08-02
+- Investigation dates: 2026-08-02 and 2026-08-03
 - Task worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status`
 
 ## Question Investigated
 
-Does an agent-team definition or team-run need the same five-state lifecycle shown for an agent, or can team state be reduced to definition metadata plus a binary live-run fact while member agents retain their own lifecycle?
+Does an agent-team definition or team-run need the same five-state lifecycle shown for an agent, and—after that aggregate is removed—what binary activity should remain visible on the definition/group and exact run rows?
 
 ## Evidence-Backed Answer
 
@@ -20,19 +20,43 @@ Yes, the public/frontend model can be materially simpler:
 2. A **team run** needs one operational fact: whether it is currently registered as a live run and can therefore be stopped (`isActive`).
 3. A **leaf member agent** retains the five-state agent lifecycle (`offline | initializing | idle | running | error`) because it governs the member's composer and interrupt action.
 4. A **task-delegation stage** is a separate business/execution-stage model. If shown, it must use its own task status rather than masquerade as a team or agent runtime lifecycle.
+5. Presentation may and should visualize the binary facts without recreating a lifecycle DTO: an exact run row shows its `isActive`, and the parent agent-team/definition group shows `runs.some(run => run.isActive)` so a collapsed group still reveals active work.
 
-The current code conflates these subjects. It creates a five-state aggregate for team runs, copies the latest team run's aggregate onto a team definition row, and then uses that aggregate to decide whether a team can be stopped, archived, or deleted even though the backend already exposes an authoritative `isActive` fact from its active-run manager.
+The pre-change code conflated these subjects. It created a five-state aggregate for team runs, copied the latest team run's aggregate onto a team definition row, and then used that aggregate to decide whether a team could be stopped, archived, or deleted even though the backend already exposed an authoritative `isActive` fact. The delivery candidate correctly removed that model but also removed both desktop dots. Post-delivery feedback establishes that the visuals were useful; only their old five-state/representative-run meaning was wrong.
 
 ## User-Supplied UI Evidence
 
 | Evidence | Observation | Meaning |
 | --- | --- | --- |
 | `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_ead75793b5e3__image.png` | A blue status dot appears beside the `Software Engineering Team (27)` definition/container. | A definition is being presented as if it had one current runtime state even though it groups many run instances. |
-| `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_9d9c83cf3d30__image.png` | The team-run row has both a colored status dot and a stop button; child agent rows also have their own status dots. | The root team dot duplicates the operational fact conveyed by Stop, while the member-agent dots carry the actionable lifecycle users actually need. |
+| `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_9d9c83cf3d30__image.png` | The team-run row has both a colored status dot and a stop button; child agent rows also have their own status dots. | The old dot's five-state/member-aggregate meaning was incorrect, but its position provided useful at-a-glance run activity. It should return with binary `isActive` semantics. |
+| `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_0fa01fdeb308__image.png` | In the delivery candidate, both the `continue please` parent group and its root team-run row omit activity dots while leaf agents retain gray status dots. | User feedback says both team positions are now harder to scan. The accepted correction restores binary activity on the parent group and exact run, without changing leaf-agent status. |
 
-## Current Frontend Production Path
+## Post-Delivery User Correction (2026-08-03)
 
-### Definition-level status is fabricated from a child run
+The original 2026-08-02 analysis treated the root dot as entirely redundant because Stop was present and treated the definition dot as invalid because it borrowed a representative run's five-state status. The user has now supplied direct feedback from additional users and explicitly changed the presentation requirement:
+
+- keep a status/activity dot on each exact agent-team run row;
+- keep a status/activity dot beside the parent agent-team name/group so a collapsed group reveals that active child runs exist;
+- retain both indicators for clarity.
+
+The ownership conclusion does **not** change. The correction is a presentation projection over the already-authoritative booleans:
+
+```text
+exact team-run dot       = teamRun.isActive
+agent-team group dot     = group.runs.some(run => run.isActive)
+member-agent dot         = that leaf AgentStatus (unchanged)
+```
+
+The group projection is not an owned definition lifecycle. It is a derived summary of the child collection displayed directly beneath that group. It must consider all children rather than selecting `representativeRun`, and it must not be serialized as a new backend/GraphQL/WebSocket/frontend team-status field.
+
+Recommended visual semantics are solid blue for active and neutral solid gray for inactive. They do not pulse because “team resource exists” is not “agent is currently generating.” Accessible text remains `Active` or `Inactive`.
+
+## Pre-Clean-Cut Frontend Production Path (Historical Evidence)
+
+The paths below explain why the five-state aggregate was removed. They describe the pre-clean-cut source, not the accepted `SR-005` implementation at integrated HEAD. The current delivery candidate has no team enum and no desktop group/run dots; `SR-006` restores only the binary visuals described above.
+
+### Definition-level status was fabricated from a child run
 
 ```text
 workspace history query
@@ -52,9 +76,9 @@ Evidence:
 - `autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue`
   - Renders `<StatusDot kind="team" :status="group.status" />` on the team definition row.
 
-Therefore the displayed definition status is not a fact owned by the definition. It is an arbitrary projection of whichever child run has the newest `lastActivityAt`.
+Therefore the former displayed definition status was not a fact owned by the definition. It was an arbitrary projection of whichever child run had the newest `lastActivityAt`.
 
-### Team-run actions use aggregate status instead of existing activity truth
+### Team-run actions used aggregate status instead of existing activity truth
 
 ```text
 TeamTreeNode.currentStatus
@@ -69,7 +93,7 @@ Evidence:
 - `autobyteus-web/composables/useWorkspaceHistoryMutations.ts` repeats the same status-based eligibility guard.
 - In contrast, standalone run rows already use `run.isActive` directly for terminate/archive/delete decisions.
 
-### Frontend team context duplicates lifecycle and connection state
+### Frontend team context duplicated lifecycle and connection state
 
 - `autobyteus-web/types/agent/AgentTeamContext.ts` stores both `currentStatus: AgentTeamStatus` and `isSubscribed`.
 - `autobyteus-web/stores/agentTeamContextsStore.ts` describes its map as active teams, but the map also contains temporary drafts and hydrated historical team contexts.
@@ -78,17 +102,17 @@ Evidence:
 - `autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts` converts `resumeConfig.isActive` back into synthetic `Running`/`Offline` team status.
 - `autobyteus-web/services/runRecovery/activeRunRecoveryCoordinator.ts` and `runHistoryLoadActions.ts` repeat aggregate team-status hydration and preservation rules even though active discovery is selected using `teamRun.isActive` first.
 
-This is a circular representation: authoritative binary activity becomes a synthetic aggregate status, and downstream code converts that status back into activity.
+This was a circular representation: authoritative binary activity became a synthetic aggregate status, and downstream code converted that status back into activity.
 
-### Team aggregate presentation appears in multiple surfaces
+### Team aggregate presentation appeared in multiple surfaces before the clean cut
 
-- Workspace history: status dots on both definition and run rows.
+- Workspace history: status dots on both definition and run rows. The delivery candidate removed both; the revised target restores binary-only dots from child/run `isActive`.
 - Legacy/running panel: `RunningTeamRow.vue` maps five team states to five colors while also exposing a close/stop control.
 - Team workspace header: `TeamWorkspaceView.vue` falls back from a focused member status to `activeTeamContext.currentStatus`, so an aggregate team status can be rendered through the agent status component.
 - Mobile recent work: `useMobileWorkCatalog.ts` consumes both `run.status` and `run.isActive`; an active team is always labeled `Running`, while inactive labels depend on aggregate status.
 - `TeamStatusDisplay.vue`, `useTeamStatusVisuals.ts`, `AgentTeamStatus.ts`, the team branch of `StatusDot.vue`, and the team presentation functions in `workspaceStatusDotPresentation.ts` exist solely to support the public five-state team display.
 
-## Current Backend Production Path
+## Pre-Clean-Cut Backend Production Path (Historical Evidence)
 
 ### Authoritative binary activity already exists
 
@@ -115,7 +139,7 @@ Evidence:
 
 The precise semantic is not “any JavaScript object reference exists.” It is “the team run has a live registration in the authoritative active-run manager.” Temporary frontend drafts and historical hydrated contexts are not active server team runs.
 
-### Five-state team status is a derived member aggregate
+### Five-state team status was a derived member aggregate
 
 ```text
 member AgentStatus snapshots
@@ -135,9 +159,9 @@ Evidence:
 - `team-run-event-websocket-message-mapper.ts` maps every team-source event to `TEAM_STATUS`.
 - `team-run-status-projection-service.ts` already returns both `isActive` and aggregate `status`, exposing two representations of different semantics.
 
-A live team whose members are all idle remains registered and stoppable. A live team with an errored member can also remain registered and stoppable. Therefore member aggregate status is not a correct substitute for team activity.
+A live team whose members are all idle remains registered and stoppable. A live team with an errored member can also remain registered and stoppable. Therefore the former member aggregate was not a correct substitute for team activity.
 
-### Aggregate status creates coordination work outside presentation
+### Aggregate status created coordination work outside presentation
 
 Production consumers that must be separated rather than blindly deleted:
 
@@ -159,6 +183,8 @@ This separation is necessary for a clean simplification: removing the five-state
 | Leaf agent member | Five-state `AgentStatus` | Owning `AgentRun` lifecycle projection | Team aggregate |
 | Task delegation/execution | Existing task status/stage | Task-delegation ledger/projection | Team or agent lifecycle enum |
 | Stop request in flight | Local `stopPending` request state | Invoking UI/store action | Team lifecycle/status |
+
+Presentation note: the definition's **domain state** remains none. Its workspace group may render the collection summary `hasActiveRuns = runs.some(isActive)`; that summary belongs to the display group, not the definition contract.
 
 ## Reachability Classification
 
@@ -190,10 +216,10 @@ This separation is necessary for a clean simplification: removing the five-state
 The simplest stable target is not to improve the five-state team aggregate. It is to remove it from the public/frontend model:
 
 ```text
-Team definition -> no status
-Team run        -> isActive from authoritative live registration
+Team definition -> no owned lifecycle; group dot = any displayed child isActive
+Team run        -> isActive from authoritative live registration; run dot = isActive
 Leaf agent      -> five-state AgentStatus from that AgentRun
 Task execution  -> task-domain stage, when applicable
 ```
 
-The stop action should be derived from `teamRun.isActive` plus local request-pending state. Member agents continue receiving their unchanged per-member status through the team envelope. No status is copied upward from a member to its team run or from a team run to its definition.
+The stop action remains derived from `teamRun.isActive` plus local request-pending state. Member agents continue receiving their unchanged per-member status through the team envelope. No five-state status is copied upward from a member to its team run or from a representative run to its definition. The two restored team visuals use only exact-run `isActive` and any-child `isActive`.

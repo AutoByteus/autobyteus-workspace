@@ -11,29 +11,37 @@
   - `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_6557dd2b51c3__image.png`
   - `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_9d9c83cf3d30__image.png`
   - `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_ead75793b5e3__image.png`
+  - `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_0fa01fdeb308__image.png`
 - Solution Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/solution-revision-record.md`
-- Relevant Solution Revision IDs: `SR-005`; `SR-003` remains the approved expanded-team basis, `SR-004` remains the representability baseline, and `SR-002` remains the preserved agent-foundation authority.
+- Relevant Solution Revision IDs: `SR-006`; `SR-005` remains the accepted lifecycle/coordinate/source baseline.
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-005`
-- Current Review Round: `5`
-- Trigger: Re-review of `SR-005` after `CRR-003` / `CODE-FIND-002` proved that the `SR-004` carrier mixed child-local logical-team coordinates with root-relative leaf paths on a supported multi-boundary path.
-- Prior Review Round Reviewed: `4` / `ARCH-REV-004` / `Pass`; triggering downstream result `CRR-003` / `Fail` / `Design Impact`.
-- Latest Authoritative Round: `5`
-- Current-State Evidence Basis: complete requirements remain user-approved; reviewed source HEAD `facc6a8184f0c481244accf59fd8aa30080a02c0` with implementation source at `9c4c6f09546b426ab27598a11753657b438c3fde`; `CRR-003` source trace and `CR-MP-002`; current task-team operational identity, mixed bridge, recursive snapshot, stream flattener, supported nested delegation path, and frontend scoped resolver; revised `TaskTeamStreamScope`, parent-frame rebasing invariant, all-event/snapshot adapters, strict mapper boundary, and concrete multi-boundary live/reconnect example; held pre-expansion API/E2E artifacts inspected only as stale continuation context and not treated as `SR-005` coverage.
+- Current Architecture Review Revision ID: `ARCH-REV-006`
+- Current Review Round: `6`
+- Trigger: Fresh review of the user-approved post-delivery `SR-006` presentation correction after feedback on the `DR-004` candidate.
+- Prior Review Round Reviewed: `5` / `ARCH-REV-005` / `Pass`; downstream `IR-004`, `CRR-004`, `API-REV-002`, `CRR-006`, and `DR-004` accepted the `SR-005` source before the user reopened presentation.
+- Latest Authoritative Round: `6`
+- Current-State Evidence Basis: requirements and presentation correction approved 2026-08-03; integrated HEAD `55c5b3c914d64059361d47ec87a29da0e4eb9bbb`, refreshed `origin/personal=2a7271c9d78b71b919f7dbfa3b8f97f61c3a2e2b`, 22 ahead / 0 behind; accepted `SR-005` source and cumulative implementation/source/API-E2E/test-review evidence; current workspace-history and running group/run components/builders; user screenshot and explicit two-position requirement; revised boolean-only presentation contract, formulas, localization/accessibility, file map, and focused coverage plan. Delivery-owned dirty reports/logs were read as protected continuation state and were not edited.
 - Downstream Continuation Artifacts Reviewed:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/implementation-handoff.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/implementation-revision-record.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/code-review-report.md`
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/code-review-revision-record.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-coverage-investigation.md` (`SR-002` basis; held/stale for the expansion)
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-execution-coverage-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-test-review-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/handoff-summary.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/delivery-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/docs-sync-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/release-deployment-report.md`
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
 - Overall Basis Status: `Confirmed`
-- Approved requirements / intended behavior understood: `Yes`. Agent runs retain the approved five-state lifecycle and exact interrupt behavior. Team definitions own no runtime status. Root team liveness is binary and manager-owned. Leaf-agent status, task stage, operation failure, internal open work, request pending, and socket state remain distinct subjects.
-- Relevant existing behavior and evidence confirmed: `Yes`. The active-run registry, aggregate status paths, definition borrowing, circular frontend projection, nested/task-team pseudo snapshots, termination ordering, task cleanup, failure observer, and settlement consumers were independently traced in the current source.
+- Approved requirements / intended behavior understood: `Yes`. Agent runs retain the approved five-state lifecycle and exact interrupt behavior. Team definitions still own no runtime lifecycle. Exact root team liveness remains binary and manager-owned. The user now requires two boolean presentation cues: exact row = exact `isActive`; displayed parent group = `runs.some(run => run.isActive)`.
+- Relevant existing behavior and evidence confirmed: `Yes`. The accepted source has no team status enum/DTO/event/currentStatus conversion and already supplies exact `isActive` on both history and running run models. Both group paths own the final displayed `runs[]`; current group/run rows omit activity dots, as shown in the user-reviewed delivery candidate.
 - Approved change, preserved behavior, and outside scope understood: `Yes`.
-- Remaining material ambiguity, if any: `None`. `SR-005` defines one enclosing-`TeamRun` coordinate frame for source paths, agent member paths, and task-team logical-team paths at every recursion boundary.
+- Remaining material ambiguity, if any: `None`. The user-approved formulas, colors, non-pulsing behavior, accessibility, placements, independence rules, and affected surfaces are explicit.
 
 | Behavior ID | Kind | Design Alignment With Approved Intent | Approved Trigger / Contract And Current-State Evidence | Target Outcome / Path / Spine Coherence | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -42,10 +50,10 @@
 | BEH-003 | System | Pass | Pass | Pass | Confirmed | Preserve implemented snapshot precedence. |
 | BEH-004 | System | Pass | Pass | Pass | Confirmed | None |
 | BEH-005 | User | Pass | Pass | Pass | Confirmed | None |
-| BEH-006 | User / Contract | Pass | Pass | Pass | Confirmed | None |
+| BEH-006 | User / Presentation | Pass | Pass | Pass | Confirmed | Derive the displayed group cue only as `group.runs.some(run => run.isActive)`; do not install definition lifecycle state. |
 | BEH-007 | System / Contract | Pass | Pass | Pass | Confirmed | None |
-| BEH-008 | User | Pass | Pass | Pass | Confirmed | None |
-| BEH-009 | System / Contract | Pass | Pass | Pass | Confirmed | Implement the tight parent-frame stream scope, every-event/snapshot rebasing core, strict leaf invariant, and live/reconnect parity defined by `SR-005`. |
+| BEH-008 | User / Presentation | Pass | Pass | Pass | Confirmed | Render each exact history/running team-run row from that row's own `isActive`; preserve Stop/pending policy. |
+| BEH-009 | System / Contract | Pass | Pass | Pass | Confirmed | Preserve the accepted `SR-005` coordinate-frame implementation unchanged. |
 
 ## Supplemental Artifact Coherence Verdict
 
@@ -56,6 +64,7 @@
 | Agent screenshot `ctx_6557dd2b51c3__image.png` | Pass | Pass | Pass | Pass | Pass | None |
 | Team hierarchy screenshot `ctx_9d9c83cf3d30__image.png` | Pass | Pass | Pass | Pass | Pass | None |
 | Team definition screenshot `ctx_ead75793b5e3__image.png` | Pass | Pass | Pass | Pass | Pass | None |
+| Post-delivery screenshot `ctx_0fa01fdeb308__image.png` | Pass | Pass | Pass | Pass | Pass | None |
 
 The investigation contains the canonical supplement inventory. Purpose, scope, core-artifact linkage, status, and evidence-only approval applicability are consistent.
 
@@ -63,10 +72,10 @@ The investigation contains the canonical supplement inventory. Purpose, scope, c
 
 | Assessment Area | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Assessment is present for the current task posture | Pass | The current package classifies bug fix, behavior change, refactor, and cleanup. | None |
-| Root-cause classification is explicit and evidence-backed | Pass | The duplicated agent authority, team status/activity loop, definition borrowing, generic handle shape, and conflated aggregate consumers are traced to current source. | None |
-| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | `Refactor needed now: Yes`. | None |
-| Refactor decision is supported by concrete design sections | Pass | Manager lifecycle, aggregate deletion, specialized handles, consumer reassignment, and frontend contraction implement the health decision. | None |
+| Assessment is present for the current task posture | Pass | `SR-006` is correctly classified as a localized user-approved behavior/presentation correction on an accepted refactored baseline. | None |
+| Root-cause classification is explicit and evidence-backed | Pass | The prior clean cut removed invalid five-state team visuals but also omitted useful binary scan cues; current rows already expose the needed booleans. | None |
+| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | No lifecycle/state refactor; add one tight reusable binary component and one display-group projection. | None |
+| Refactor decision is supported by concrete design sections | Pass | `TeamActivityDot`, `hasActiveRuns`, both surface placements, forbidden shortcuts, coverage, and file ownership implement the proportional correction. | None |
 
 ## Spine Inventory Verdict
 
@@ -84,8 +93,9 @@ The investigation contains the canonical supplement inventory. Purpose, scope, c
 | DS-010 | Bounded Local | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS-011 | Return-Event | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS-012 | Bounded Local | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-013 | Bounded Local / Presentation | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 
-The spine inventory is structurally sound. DS-004 now stretches across task-team creation inside an ordinary child, task-team handle projection, one or more outer ordinary boundaries, root stream mapping, and the exact frontend transient leaf. Live events and reconnect snapshots use the same coordinate transition and flattener.
+The preserved lifecycle and coordinate spines remain sound. DS-013 starts from already-projected exact run booleans, derives only the displayed collection summary, and ends at the two required desktop visual positions; it neither bypasses nor competes with `AgentTeamRunManager`.
 
 ## Boundary Encapsulation Verdict
 
@@ -96,6 +106,7 @@ The spine inventory is structurally sound. DS-004 now stretches across task-team
 | `TeamRun` / `MixedTeamManager` | Pass | Pass | Pass | Pass | Exact commands/events, coordinate-consistent recursive leaf collection, and private open-work remain separate from root registration. |
 | Task/failure/settlement owners | Pass | Pass | Pass | Pass | Aggregate consumers are reassigned without a public replacement enum. |
 | Frontend team state/actions | Pass | Pass | Pass | Pass | `isActive`, `isSubscribed`, and `stopPending` remain separate. |
+| Workspace group/run presentation | Pass | Pass | Pass | Pass | Exact rows consume exact `isActive`; groups summarize only their rendered child collection; neither owns lifecycle or actions. |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
 
@@ -106,6 +117,7 @@ The spine inventory is structurally sound. DS-004 now stretches across task-team
 | Mixed member recursion | Pass | Pass | Pass | Pass | The bridge owns every parent-frame transition; no mapper or frontend layer repairs child-local scope. |
 | Task/failure/open-work | Pass | Pass | Pass | Pass | Explicit task, failure, and private work facts replace `TEAM_STATUS`. |
 | Frontend | Pass | Pass | Pass | Pass | No status/activity conversion or team-phase alias. |
+| Team activity presentation | Pass | Pass | Pass | Pass | Allowed direction is exact booleans -> boolean-only dot; representative/member/socket/action/status shortcuts are explicitly forbidden. |
 
 ## Interface Boundary Verdict
 
@@ -120,19 +132,21 @@ The spine inventory is structurally sound. DS-004 now stretches across task-team
 | `TeamRun.hasOpenExecutionWork()` | Pass | Pass | Pass | Low | Pass |
 | `TeamRunHistoryItem` | Pass | Pass | Pass | Low | Pass |
 | frontend `AgentTeamContext` / terminate result | Pass | Pass | Pass | Low | Pass |
+| `TeamActivityDot { isActive, label }` | Pass | Pass | Pass | Low | Pass |
+| `WorkspaceHistoryTeamDefinitionDisplayGroup.hasActiveRuns` | Pass | Pass | Pass | Low | Pass |
 
-`AgentStatusPayload` remains tight and task-team-agnostic. `TaskTeamStreamScope` contains only outward task-team IDs and logical-team path/key, while the full operational identity remains local to task execution. The enclosing event/snapshot `teamRunId` defines the scope's frame. The task-team handle supplies only a target-parent-frame override; every ordinary parent rebases retained scope with source/member paths; the mapper only validates, subtracts, and flattens consistent coordinates.
+The preserved agent/team contracts remain tight. The new component cannot accept `AgentStatus`, a string phase, member data, socket state, or actions. `hasActiveRuns` is an internal display-group field derived from the same `runs[]` the group renders; it is not persisted, transported, or attached to the reusable definition.
 
 ## Existing Capability / Subsystem Reuse Verdict
 
 | Need / Concern | Existing Capability Area Was Checked? | Reuse / Extension Decision Is Sound? | New Support Piece Is Justified? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
 | Agent lifecycle/gateway | Pass | Pass | N/A | Pass | Preserve reviewed implementation. |
-| Root liveness | Pass | Pass | N/A | Pass | Extend the manager that owns the active map. |
-| Live binary delivery | Pass | Pass | N/A | Pass | Existing exact team socket is appropriate. |
+| Root liveness | Pass | Pass | N/A | Pass | Preserve the manager that owns the active map; presentation consumes existing projected booleans. |
+| Live binary delivery | Pass | Pass | N/A | Pass | Preserve the existing exact team socket; no new transport is needed. |
 | Nested leaf identity | Pass | Pass | Pass | Pass | The team-owned carrier composes canonical leaf status with tight stream scope; the mixed bridge owns all parent-frame rebasing and the stream mapper owns one strict live/initial flattening rule. |
 | Task cleanup/failure/settlement | Pass | Pass | N/A | Pass | Existing narrow owners are correctly extended. |
-| Team visuals | Pass | Pass | N/A | Pass | Remove rather than replace. |
+| Team visuals | Pass | Pass | Pass | Pass | Preserve deletion of five-state team visuals; add a distinct boolean-only primitive in the existing workspace presentation area. |
 
 ## Subsystem / Capability-Area Allocation Verdict
 
@@ -144,7 +158,7 @@ The spine inventory is structurally sound. DS-004 now stretches across task-team
 | Team streaming | Pass | Pass | Pass | Pass | Live events and initial snapshots both consume already-consistent scope through the same no-fallback validator/flattener. |
 | Run history GraphQL | Pass | Pass | Pass | Pass | Root status removal/member status preservation are clear. |
 | Task delegation | Pass | Pass | Pass | Pass | Task stage/cleanup and work checks remain task-owned. |
-| Frontend state/UI | Pass | Pass | Pass | Pass | Root activity, leaf agent lifecycle, and local pending are separated. |
+| Frontend state/UI | Pass | Pass | Pass | Pass | Root activity, leaf agent lifecycle, local pending, and presentation-only group summary remain separated. |
 
 ## Reusable Owned Structures Verdict
 
@@ -154,6 +168,8 @@ The spine inventory is structurally sound. DS-004 now stretches across task-team
 | Recursive all-event/live/snapshot identity rebasing | Pass | Pass | Pass | Pass | `prefixMixedTeamStreamScope` defines one frame transition for every event type and snapshot, with explicit target override, retained-scope rebase, route-key rebuild, and double-prefix prevention. |
 | Live/initial task-team wire identity | Pass | Pass | Pass | Pass | `buildTaskTeamScopedIdentityPayload` is the one transport-owned flattener used by both mappings. |
 | Agent status visuals | Pass | Pass | Pass | Pass | Agent-only reuse is appropriate. |
+| Binary team activity visual | Pass | Pass | Pass | Pass | One `TeamActivityDot` centralizes boolean colors/no-pulse/accessibility without becoming a generic status component. |
+| Displayed-group activity formula | Pass | Pass | Pass | Pass | Both history builder paths and the running group use the exact rendered child collection and the same `some(isActive)` rule. |
 | Task terminal cleanup | Pass | Pass | Pass | Pass | Existing task projection is the right owner. |
 
 ## Shared Structure / Data Model Tightness Verdict
@@ -166,6 +182,8 @@ The spine inventory is structurally sound. DS-004 now stretches across task-team
 | `TeamRunLifecycleSnapshot` | Pass | Pass | Pass | Pass | Pass | Minimal root binary fact. |
 | `AgentTeamContext` | Pass | Pass | Pass | Pass | Pass | Activity and subscription remain distinct. |
 | Specialized agent/team node unions | Pass | Pass | Pass | Pass | Pass | Five-state fields belong only to agent specializations. |
+| `TeamActivityDot` props | Pass | Pass | Pass | Pass | Pass | Boolean plus caller-localized label only; no status enum, aggregation input, animation, or action policy. |
+| `WorkspaceHistoryTeamDefinitionDisplayGroup.hasActiveRuns` | Pass | Pass | Pass | Pass | Pass | One presentation-only boolean with the exact any-displayed-child formula. |
 | Open-work result | Pass | Pass | Pass | Pass | Pass | Private boolean only. |
 
 ## File Responsibility Mapping Verdict
@@ -179,6 +197,7 @@ The spine inventory is structurally sound. DS-004 now stretches across task-team
 | team stream identity/snapshot service/mapper | Pass | Pass | Pass | Pass | Initial carriers map before unwrap; live and initial leaf paths share strict validation and flattening; root lifecycle remains manager-owned. |
 | task/failure/settlement files | Pass | Pass | Pass | Pass | Replacements are allocated to the existing owners. |
 | history/frontend state/presentation files | Pass | Pass | Pass | Pass | Clean contraction is explicit. |
+| `TeamActivityDot.vue` / group builder / history and running rows | Pass | Pass | Pass | Pass | Component, formula owner, exact placements, localization, and focused durable tests are concretely mapped. |
 
 ## Subsystem / Folder / File Placement Verdict
 
@@ -188,7 +207,7 @@ The spine inventory is structurally sound. DS-004 now stretches across task-team
 | Team domain/manager | Pass | Pass | Low | Pass | Binary lifecycle type belongs here. |
 | Mixed backend/bridge | Pass | Pass | Low | Pass | The shared coordinate rebaser belongs at the mixed-team parent transition used by all events and snapshots. |
 | Team streaming/history | Pass | Pass | Low | Pass | Transport/projection stay separate. |
-| Frontend state/presentation | Pass | Pass | Medium | Pass | Existing areas remain appropriate after conversion removal. |
+| Frontend state/presentation | Pass | Pass | Low | Pass | The new shared dot stays in workspace presentation; group projection stays beside the final displayed-run collection. |
 
 ## Removal / Decommission Completeness Verdict
 
@@ -198,7 +217,7 @@ The spine inventory is structurally sound. DS-004 now stretches across task-team
 | Root/nested team event/status protocol | Pass | Pass | Pass | Pass | Root binary lifecycle only; no nested aggregate replacement. |
 | Generic team-as-agent snapshots/overlays | Pass | Pass | Pass | Pass | The tight stream-scoped leaf carrier and specialized handle signatures replace pseudo team snapshots without broadening agent or operational task-team payloads. |
 | Root GraphQL/frontend team status/currentStatus conversions | Pass | Pass | Pass | Pass | Direct `isActive`. |
-| Team visuals/status helpers | Pass | Pass | Pass | Pass | Remove obsolete branches/components/localization. |
+| Five-state team visuals/status helpers | Pass | Pass | Pass | Pass | Preserve clean deletion; `TeamActivityDot` is a new boolean-only presentation primitive, not a compatibility restoration. |
 | Task cleanup/failure/open-work aggregate uses | Pass | Pass | Pass | Pass | Narrow fact owners are named. |
 
 ## Legacy / Backward-Compatibility Verdict
@@ -209,12 +228,13 @@ The spine inventory is structurally sound. DS-004 now stretches across task-team
 | Team GraphQL/WebSocket contract | No | Pass | Pass | No optional status, dual message, or alias. |
 | Frontend team lifecycle/visuals | No | Pass | Pass | No derived `AgentTeamStatus`. |
 | Generic mixed handles | No | Pass | Pass | Clean specialization is required in this change. |
+| Team activity dot | No compatibility path | Pass | Pass | No `isActive -> AgentStatus`, `AgentTeamStatus`, old visual helper, or pulse branch. |
 
 ## Persisted-Data Transition Verdict (When Applicable)
 
 | Area / Stored Subject | Approved Decision | Representative Reader / Semantic / Invariant Evidence Is Sufficient? | Direct Use, Rebuild, Or Migration Choice Is Proportionate? | Migration Safety Is Complete If Required? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| Run/team metadata, topology, transcripts, traces, tasks, termination history, live projections | Directly Usable — No Migration | Pass | Pass | N/A | Pass | Removed team aggregate and agent permission are computed/live fields; required stored semantics remain directly usable. |
+| Run/team metadata, topology, transcripts, traces, tasks, termination history, live projections | Directly Usable — No Migration | Pass | Pass | N/A | Pass | `SR-006` adds only a recomputed frontend display-group boolean and visual component; stored and transported data remain unchanged and directly usable. |
 
 ## Change / Refactor Safety Verdict
 
@@ -225,9 +245,10 @@ The spine inventory is structurally sound. DS-004 now stretches across task-team
 | Recursive leaf snapshot/handle specialization | Pass | Pass | Pass | Pass |
 | Former aggregate consumer reassignment | Pass | Pass | Pass | Pass |
 | Server/frontend aggregate removal | Pass | Pass | Pass | Pass |
-| Held API/E2E isolation and later reconciliation | Pass | Pass | Pass | Pass |
+| Fresh SR-006 coverage investigation after source review | Pass | Pass | Pass | Pass |
+| Post-delivery binary presentation correction | Pass | Pass | Pass | Pass |
 
-The sequence preserves the sound `IR-003` foundation, replaces the broad outward operational identity with the tight stream scope, centralizes all parent-frame transitions before mapper changes, adds symmetric live/reconnect invariants and multi-boundary tests, then repairs the stale manager test double. No production compatibility seam or transport guess is authorized.
+The sequence starts from the accepted integrated `SR-005` source, adds the tight component, derives the group field in both builder paths, renders group and exact-row cues on both desktop surfaces, then runs focused frontend/localization/action regression checks before source review and a fresh API/E2E coverage investigation. It does not reopen backend, transport, lifecycle, task, coordinate, or Stop contracts.
 
 ## Example Adequacy Verdict
 
@@ -237,21 +258,15 @@ The sequence preserves the sound `IR-003` foundation, replaces the broad outward
 | Definition/root presentation | Yes | Pass | Pass | Pass | Invalid aggregate presentation is clear. |
 | Live leaf member status | Yes | Pass | Pass | Pass | Exact leaf ownership is clear. |
 | Multi-boundary task-team leaf live/reconnect | Yes | Pass | Pass | Pass | The example shows operational identity staying child-local, derived scope in the immediate parent frame, outer ordinary rebasing of leaf/logical paths, identical wire payloads, and frontend route `task-team-run-7/review_group/critic`. |
+| Mixed active/inactive team siblings | Yes | Pass | Pass | Pass | Exact rows use their own booleans while the parent is active if either displayed child is active; the last-active-to-inactive transition is explicit. |
+| Presentation independence | Yes | Pass | Pass | Pass | Representative ordering, member status, socket state, draft/context presence, Stop pending, and five-state conversion are named as invalid alternatives. |
 | Failure/settlement/connection | Yes | Pass | Pass | Pass | Narrow replacements are clear. |
 
 ## Material Premise Validation (Only When Needed)
 
-### `CR-MP-002` — A task team can be launched inside an ordinary persistent subteam and must remain exactly addressable on the root team stream
+No new material premise requires validation. `SR-006` implements explicit user-approved presentation behavior on exposed workspace-history and running-team surfaces using data already present on the normal rendered path. It does not introduce failure/lifecycle machinery.
 
-- Classification: `Reachable`.
-- Independent product-supported initiating trigger: In the exposed team workspace composer, a user addresses a leaf agent inside an ordinary persistent subteam and asks it to delegate a task to a visible team target in that child run.
-- Governing contract: REQ-017 and AC-021 require live and reconnect `AGENT_STATUS` at any team depth to resolve the same exact leaf and preserve exact interrupt identity.
-- Forward production path: `team composer -> root TeamRun conversation target -> ordinary subteam handle -> child TeamRun leaf AgentRun -> supported delegate_task tool/visible team target -> child-local task-team activation -> task-team leaf event/snapshot -> outer ordinary subteam recursion -> root stream mapper -> frontend task-team leaf resolver`.
-- Current lifecycle state and consequence: The child-local operational identity is valid, but `SR-004`/`IR-003` rebases only leaf source/member paths at the outer ordinary boundary. The full carrier retains a child-local logical-team path, so initial mapping rejects the snapshot and live mapping loses the relative leaf selector. The selected running/interruptible leaf cannot be reached.
-- Evidence: `CRR-003` / `CODE-FIND-002`; `TaskDelegationToolsMcpAdapterProvider`, visible-target instruction/roster and input resolution paths; `MixedSubTeamRunFactory`, task-team identity factory/handle, mixed event bridge, stream identity flattener, and frontend scoped resolver traced in `investigation-notes.md`.
-- Design consequence: The scenario may drive the design. `SR-005` responds proportionately with one tight stream projection and one owned coordinate-frame transition; it adds no lifecycle state, public aggregate, mapper fallback, or frontend inference.
-
-The round-1 premises behind `ARCH-FIND-001` and `ARCH-FIND-002` remain reachable and addressed. `SR-005` preserves their resolved agent boundary and precedence rather than introducing a bypass.
+Prior material-premise decisions remain satisfied by the accepted `SR-005` source. In particular, `CR-MP-002` is resolved by the implemented coordinate-frame contract and is untouched by this presentation-only revision.
 
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
@@ -269,14 +284,11 @@ No new findings.
 
 Prior finding disposition:
 
-- `ARCH-FIND-001`: `Remains Resolved` — `SR-005` preserves ORIGIN-001–ORIGIN-007 behind the implemented single `AgentRun` gateway.
-- `ARCH-FIND-002`: `Remains Resolved` — `SR-005` preserves the run-owned lifecycle state and canonical fresh snapshot precedence.
-- `ARCH-FIND-003`: `Remains Resolved` — the recursive carrier remains representable, now tightened from broad operational identity to coordinate-consistent `TaskTeamStreamScope`.
-
-Triggering code-finding disposition:
-
-- `CODE-FIND-002`: `Resolved In Design` — source/member/logical-team paths share the enclosing event/snapshot frame; a target-parent override is created only by the task-team handle; every ordinary boundary rebases retained scope; every event type and reconnect snapshot uses the shared core; the mapper performs only strict validation/subtraction; and the multi-boundary example produces the same nonempty relative leaf selector live and on reconnect.
-- `CODE-FIND-003`: `Implementation-Local Fix Required` — extend the stale `TeamRunService` manager double with the already-authoritative lifecycle subscription/snapshot methods and rerun all 13 focused tests. No production design or compatibility fallback is needed.
+- `ARCH-FIND-001`: `Remains Resolved` — no agent event/gateway source changes are authorized.
+- `ARCH-FIND-002`: `Remains Resolved` — no agent lifecycle/snapshot changes are authorized.
+- `ARCH-FIND-003`: `Remains Resolved` — no recursive snapshot/identity changes are authorized.
+- `CODE-FIND-001`–`CODE-FIND-003`: `Remain Resolved In Accepted Source` — `SR-006` preserves batching, one-coordinate-frame task-team streams, and the repaired manager fixture.
+- `TEST-FIND-001`–`TEST-FIND-002`: `Remain Resolved In Accepted Durable Coverage` — fresh `SR-006` coverage investigation follows source review rather than reusing delivery evidence as sign-off.
 
 ## Classification
 
@@ -288,18 +300,15 @@ Triggering code-finding disposition:
 
 ## Residual Risks
 
-- Implementation must prove the target-parent override is built from the exact operational parent and that retained scope is rebased through repeated distinct ordinary boundaries without double prefixing.
-- AGENT, TASK_DELEGATION, COMMUNICATION, MEMBER_INPUT, and recursive initial leaf snapshots must all use `prefixMixedTeamStreamScope`; live `AGENT` and initial leaf mapping must reject empty/inconsistent task-team-relative leaf selectors.
-- `CODE-FIND-003` must be fixed locally and all 13 `TeamRunService` tests rerun without weakening the production lifecycle interface.
-- Implementation must continue verifying every register/unregister/stale-backend manager transition notifies exact-run lifecycle subscribers idempotently, including notification after backend event listeners are cleared.
-- Task terminal/failure/cancellation/reconnect cleanup and task-record reconciliation need focused source and downstream coverage after the aggregate offline fallback is removed.
-- The private open-work predicate must preserve current error-as-work-blocking and recursive task/member semantics without becoming public lifecycle.
-- Root Stop failure/pending, all-idle/member-error team liveness, socket disconnect independence, and definition/root visual removal require implementation and API/E2E proof.
-- Recursive snapshot implementation must preserve the carrier until stream mapping and prove exact live/reconnect wire parity with no early unwrap, copied relative-path algorithm, or mapper/frontend fallback.
-- The held API/E2E investigation and three uncommitted server test edits remain stale for `SR-005`; implementation must preserve them untouched and API/E2E must reconcile them only after expanded source rework/code review.
+- `hasActiveRuns` must be computed from each final rendered group's exact `runs[]`; both history builder paths and leftover/current-node grouping need focused proof.
+- Reactive last-active-to-inactive transitions must update the collapsed group cue; mixed siblings must retain distinct exact-row colors.
+- Implementation must not use representative ordering, member status, socket/subscription state, draft/context existence, Stop availability, or `stopPending` as an activity-dot source.
+- `TeamActivityDot` must remain boolean-only, solid blue/gray, non-pulsing, localized, accessible, and non-interactive; agent `StatusDot` and leaf actions must remain unchanged.
+- Both workspace-history and running group/run surfaces need durable component coverage, followed by a fresh API/E2E coverage-validity decision and rebuilt delivery candidate.
+- Delivery-owned dirty logs/reports and the superseded Electron candidate must remain protected; implementation must not stage or overwrite them.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
 - Material-Premise Gate: `Pass`
-- Notes: `SR-005` resolves the controlling `CODE-FIND-002` design impact with a tight outward task-team scope, one explicit enclosing-run coordinate invariant, an all-event/live/snapshot parent rebaser, strict no-fallback mapping, and a complete `root -> ordinary subteam -> task team -> leaf` example. `ARCH-FIND-001`–`ARCH-FIND-003` remain resolved. `CODE-FIND-003` is a bounded required test-fixture repair. The complete revised design is ready for implementation rework and subsequent source re-review.
+- Notes: `SR-006` restores useful binary scan cues without recreating team status. Exact rows read exact authoritative `isActive`; displayed parent groups derive only `runs.some(run => run.isActive)` in the presentation boundary; a separate boolean-only component prevents five-state conversion. All accepted `SR-005` lifecycle, action, leaf-agent, task, stream-coordinate, and removal contracts remain unchanged. The design is ready for bounded frontend implementation and subsequent source/coverage/delivery reruns.

@@ -11,6 +11,7 @@ The latest `design-review-report.md` remains authoritative. This record is the c
 | ARCH-REV-003 | Round 3 / user-approved expanded team-liveness design | SR-003 | Pass | Fail | ARCH-FIND-003 |
 | ARCH-REV-004 | Round 4 / SR-004 scoped leaf-snapshot rework | SR-004 | Fail | Pass | ARCH-FIND-003 |
 | ARCH-REV-005 | Round 5 / CRR-003 coordinate-frame design rework | SR-005 | Pass, then downstream Fail / Design Impact | Pass | CODE-FIND-002, CODE-FIND-003; ARCH-FIND-001–003 dispositions rechecked |
+| ARCH-REV-006 | Round 6 / user-approved post-delivery binary presentation correction | SR-006 | Pass; accepted source reached DR-004 verification hold | Pass | No new findings; prior architecture/code/test findings rechecked |
 
 ## Revision Entries
 
@@ -124,3 +125,28 @@ None.
 - Material classification changes: The controlling `CODE-FIND-002` / `Design Impact` is resolved in the design; current architecture classification is `N/A`. `CODE-FIND-003` remains required implementation work, not an architecture blocker.
 - Recommended recipient: `implementation_engineer`
 - Remaining risks or uncertainty: Implementation and source re-review must prove target-frame override correctness, repeated ordinary-boundary rebasing/no double prefix, all-event coverage, strict leaf rejection, exact live/reconnect parity, and the `CODE-FIND-003` unit repair. Manager, task cleanup/work, frontend Stop, and held API/E2E risks remain as previously recorded.
+
+### ARCH-REV-006 — Two-level binary team activity presentation passes
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/design-review-report.md`
+- Review round and trigger: Round 6; during the explicit `DR-004` verification hold, the user approved a presentation correction requiring binary activity beside both the parent agent-team/definition group and each exact team-run row.
+- Triggering role, report path, and finding IDs: User feedback via `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/solution-revision-record.md`; no downstream finding ID.
+- Relevant solution revision IDs: `SR-006`; accepted lifecycle/coordinate/source baseline from `SR-005`.
+- Prior authoritative decision: `ARCH-REV-005` / `Pass`; subsequent `IR-004`, `CRR-004`, `API-REV-002`, `CRR-006`, and `DR-004` accepted the prior source, but user completion verification remained open.
+- Current authoritative decision: `Pass`
+- What changed in the review result or what baseline was established: The presentation contract now distinguishes useful binary projection from prohibited aggregate lifecycle. Each exact run row renders only its own authoritative `isActive`. Each displayed parent group derives only `runs.some(run => run.isActive)` from the exact child collection it renders. A separate `TeamActivityDot { isActive, label }` owns solid blue/gray, no-pulse, localized accessible presentation and accepts no status enum, member data, socket state, or action policy. The group boolean is not persisted, transported, stored on a definition, or used to authorize Stop. Both workspace-history and running group/run surfaces and both history builder paths are mapped with focused coverage.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| ARCH-FIND-001 | Resolved | Remains Resolved | `SR-002`, `ARCH-REV-002`, accepted source, `SR-006` preserved-scope rules | `SR-006` authorizes no agent event/gateway changes. |
+| ARCH-FIND-002 | Resolved | Remains Resolved | `SR-002`, `ARCH-REV-002`, accepted source, `SR-006` preserved-scope rules | `SR-006` authorizes no agent lifecycle/snapshot changes. |
+| ARCH-FIND-003 | Resolved | Remains Resolved | `SR-004`, `ARCH-REV-004`, `SR-005`, accepted source | `SR-006` authorizes no leaf snapshot, stream-scope, or identity changes. |
+| CODE-FIND-001–CODE-FIND-003 | Resolved | Remain Resolved | `IR-004`, `CRR-004`, accepted integrated source | Presentation reads existing booleans and does not touch companion batching, coordinate rebasing, mapper invariants, or manager fixtures. |
+| TEST-FIND-001–TEST-FIND-002 | Resolved | Remain Resolved | `API-REV-002`, `CRR-006` | Existing durable corrections remain accepted; `SR-006` requires a fresh coverage investigation after its source review rather than treating prior delivery evidence as new sign-off. |
+
+- New or remaining architecture finding IDs: `None`
+- Material classification changes: `N/A`; this is an approved bounded presentation correction, not a lifecycle or aggregate-status restoration.
+- Recommended recipient: `implementation_engineer`
+- Remaining risks or uncertainty: Implementation/source review must prove both group-builder paths, exact sibling booleans, last-active-to-inactive reactivity, both history/running placements, accessibility/localization, no pulse, independence from representative/member/socket/action state, and unchanged agent dots/Stop behavior. Delivery-owned dirty reports/logs and the superseded Electron candidate must remain protected; fresh API/E2E investigation and a rebuilt delivery candidate follow source review.

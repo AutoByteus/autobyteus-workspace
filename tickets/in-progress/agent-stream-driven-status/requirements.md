@@ -1,6 +1,6 @@
 # Requirements Doc
 
-## Status (`Design-ready` — Complete Expanded Basis User Approved 2026-08-02)
+## Status (`Design-ready` — Binary Team Activity Presentation Revision User Approved 2026-08-03)
 
 ## Goal / Problem Statement
 
@@ -9,6 +9,7 @@ Fix the contradiction where a selected agent is visibly `Running` and streaming 
 - **Agent/member run:** `offline | initializing | idle | running | error`.
 - **Team definition:** no runtime status.
 - **Team run:** binary `isActive`, meaning a live `TeamRun` is registered in the authoritative server active-run directory and remains terminable.
+- **Team presentation:** a team-run row visualizes that run's `isActive`; its parent agent-team/definition group visualizes whether any child run is active. These are binary activity indicators, not five-state team lifecycles.
 - **Task delegation/execution:** its existing task-domain stage when that business state is shown; it is not a team or agent runtime status.
 
 The simple canonical agent rule remains:
@@ -32,9 +33,9 @@ For a team, member activity is deliberately not folded upward. A live team remai
 | BEH-003 | Idle/error/offline detection is spread among runtime projectors, command overlays, lifecycle fallbacks, snapshots, and frontend `isSending` cleanup; a retained local `initializing` override can shadow fresh backend current-turn evidence during reconnect. | `TURN_COMPLETED` or `TURN_INTERRUPTED` for the current turn immediately settles a live agent runtime to `idle`; terminal turn/runtime failure settles to `error`; termination/unavailability settles to `offline`; reconnect reconciles fresh current-turn evidence into the same projection and returns `running` rather than stale startup. | Recoverable tool/diagnostic errors do not terminalize the whole turn, and racy idle/initializing evidence does not close an identified current turn. | REQ-005, REQ-006, REQ-007, REQ-011; AC-004, AC-005, AC-006, AC-007, AC-012 |
 | BEH-004 | Generic old-turn activity previously caused stale `running`; current safeguards track retired/current turn identity, but derived statuses can still carry non-interruptible `running`. | Current-turn correlation remains mandatory: late output for retired turn A renders without changing status; it cannot close/reopen newer turn B or convert idle to running. | Late output is not discarded from transcript/activity/history. | REQ-004, REQ-012; AC-008, AC-011, AC-012 |
 | BEH-005 | The composer button can be disabled while `handleKeyDown` still invokes the primary action on Enter; production traces show a second user turn was recorded while the first continued. | Mouse, keyboard, and programmatic primary-action paths share one guard. While `initializing` or `running`, send cannot start another turn; `running` routes the action to interrupt. | Shift+Enter/newline behavior and normal idle send behavior remain unchanged. | REQ-008, REQ-009; AC-009, AC-013, AC-014 |
-| BEH-006 | A team definition row displays an `AgentTeamStatus` copied from whichever child run is selected as its latest `representativeRun`. A definition containing many historical/live runs is therefore shown as if it owned one runtime state. | Team definitions show identity, name, avatar, count, and disclosure only. They have no runtime-status field, dot, label, or aggregation. | Definition grouping, count, ordering, expansion, avatar, and run creation remain available. | REQ-013; AC-016 |
+| BEH-006 | The original UI copied one child run's five-state `AgentTeamStatus` onto the definition row; the delivered candidate removed the dot entirely. User feedback on that candidate says the parent agent-team name now lacks an at-a-glance signal that one or more child team runs are active. | The definition remains free of an owned runtime status field, but its workspace/running group row shows a binary presentation summary: active when **any** child run has authoritative `isActive=true`, otherwise inactive. It never selects a representative run's agent-like status. | Definition grouping, count, ordering, expansion, avatar, and run creation remain available. | REQ-013, REQ-020; AC-016, AC-026 |
 | BEH-007 | A root team run owns a five-state aggregate derived from member agent/subteam states and separately owns `isActive`. Frontend hydration repeatedly converts `isActive` to status and status back to active. | A root team run owns only binary `isActive`, sourced from authoritative live registration. Member states never determine team activity. | Team creation, restore, termination, history, selection, exact member routing, and member snapshots remain supported. | REQ-014, REQ-015, REQ-018; AC-017, AC-018, AC-019, AC-020, AC-024 |
-| BEH-008 | Team Stop, Archive, and Delete eligibility is derived from `currentStatus !== offline`; team rows also render a five-color dot beside a stop control. | Stop is available exactly while `isActive`; inactive persisted runs may be archived/deleted under their existing lifecycle constraints. Team definition/run surfaces do not render a five-state aggregate. A local `stopPending` flag only prevents duplicate requests. | Existing confirmation, toast/error, draft deletion, and cleanup behavior remain. | REQ-016, REQ-018; AC-017, AC-018, AC-022, AC-023 |
+| BEH-008 | The original team-run row used a five-color aggregate; the delivered candidate correctly switched actions to `isActive` but removed the run-row dot. User feedback says the row is clearer when liveness remains visible beside the run name. | Stop is available exactly while `isActive`; inactive persisted runs may be archived/deleted under their existing lifecycle constraints. Every root team-run row shows a binary activity indicator derived directly from that run's `isActive`. A local `stopPending` flag only prevents duplicate requests. | Existing confirmation, toast/error, draft deletion, cleanup behavior, and leaf-agent five-state dots remain. | REQ-016, REQ-018, REQ-020; AC-017, AC-018, AC-022, AC-023, AC-026 |
 | BEH-009 | The current ticket branch removes aggregate team status, but a task team created inside an ordinary subteam carries child-local logical-team coordinates after its leaf member/source paths are rebased to the root stream. Live routing loses the relative leaf selector and reconnect mapping rejects the snapshot. | Public/frontend five-state team status remains removed. Every live and initial leaf-agent status uses one internally consistent coordinate frame at each team boundary, including task teams below one or more ordinary subteams. Team liveness, task stage, failures, and open-work checks remain separately owned. | Per-member `AGENT_STATUS` identity/payload, task-delegation records/stages, explicit operation errors, and the supported nested `delegate_task` path remain observable. | REQ-015, REQ-017, REQ-019; AC-020, AC-021, AC-024, AC-025 |
 
 ## Investigation Findings
@@ -50,6 +51,7 @@ For a team, member activity is deliberately not folded upward. A live team remai
 - A live team with idle or errored members remains registered and must remain stoppable. A WebSocket disconnect, a temporary frontend draft, or a hydrated historical context does not change server team liveness.
 - Removing the aggregate requires separating its non-presentation consumers: task stage remains task-owned; member statuses remain agent-owned; explicit failures remain events/results; task-team settlement receives an explicit internal open-work predicate rather than a public team status.
 - Expanded source review proved that “any team depth” includes a supported task team launched by a leaf agent inside an ordinary persistent subteam. Root-stream leaf member/source and logical-team coordinates must be rebased together; a transport fallback must not guess missing scope.
+- Post-delivery user feedback distinguishes removing the five-state team aggregate from removing all visual activity. The accepted correction is binary: a run dot reads only that run's `isActive`, while a parent agent-team/definition dot reads `runs.some(run => run.isActive)`.
 
 Detailed evidence:
 
@@ -61,26 +63,23 @@ Detailed evidence:
 | Artifact Path | Type / Purpose | Related Requirement IDs | Related Acceptance-Criteria IDs | Status / Approval | Relationship To Requirements |
 | --- | --- | --- | --- | --- | --- |
 | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/production-trace-evidence.md` | Evidence-only production trace and live snapshot probe | REQ-001–REQ-012 | AC-001–AC-015 | Complete / N/A | Grounds the agent contradiction, overlapping-send risk, live snapshot capability, and late-event constraint. |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/team-status-simplification-evidence.md` | Evidence-only team-definition/team-run authority and consumer trace | REQ-013–REQ-019 | AC-016–AC-025 | Complete / N/A | Grounds removal of definition status, binary team activity, member-status preservation, and separation of former aggregate consumers. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/team-status-simplification-evidence.md` | Evidence-only team-definition/team-run authority, consumer trace, and post-delivery presentation correction | REQ-013–REQ-020 | AC-016–AC-026 | Complete / N/A | Grounds removal of definition-owned status, preservation of binary team activity cues, member-status preservation, and separation of former aggregate consumers. |
 | `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_6557dd2b51c3__image.png` | User-supplied agent UI evidence | REQ-001, REQ-008 | AC-001, AC-009 | Accepted evidence / N/A | Shows agent `Running` while the primary control remains the send icon. |
 | `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_9d9c83cf3d30__image.png` | User-supplied team hierarchy evidence | REQ-013–REQ-017 | AC-016, AC-017, AC-021, AC-023 | Accepted evidence / N/A | Shows redundant team-run status plus Stop and independently useful member-agent status dots. |
 | `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_ead75793b5e3__image.png` | User-supplied team-definition UI evidence | REQ-013 | AC-016 | Accepted evidence / N/A | Shows a runtime-status dot incorrectly rendered on the reusable `Software Engineering Team` definition group. |
+| `/Users/normy/.autobyteus/server-data/memory/agent_teams/software_engineering_team_07ac2d23b27f428ab16b435dd5a41dbc/solution_designer_d451145ec83142bfbc153440937b2cad/context_files/ctx_0fa01fdeb308__image.png` | User-supplied post-delivery UI evidence and explicit feedback | REQ-016, REQ-020 | AC-023, AC-026 | Approved behavior evidence / Approved 2026-08-03 | Shows the delivered team-definition and team-run rows without activity dots; user feedback explicitly requires binary activity in both positions for clarity. |
 
 ## Design Health Assessment (Mandatory)
 
-- Change posture: `Bug Fix`, lifecycle/status `Refactor`, and team-status contract `Cleanup`
-- Scope classification: `Large`
-- Initial design issue signal: `Yes`
-- Root cause classification: `Missing Invariant`, `Boundary Or Ownership Issue`, `Duplicated Policy Or Coordination`, `Shared Structure Looseness`, plus a `Local Implementation Defect` in keyboard action guarding.
-- Refactor posture: `Required Now`
+- Original change posture: `Bug Fix`, lifecycle/status `Refactor`, and team-status contract `Cleanup`; original scope `Large`.
+- Accepted baseline result: The original `Missing Invariant`, `Boundary Or Ownership Issue`, `Duplicated Policy Or Coordination`, `Shared Structure Looseness`, and keyboard `Local Implementation Defect` findings were resolved through `SR-005` and passed architecture, source, API/E2E, and proportional test-code review.
+- `SR-006` posture: localized user-approved `Behavior Change`; current design issue signal is `No` in lifecycle/state ownership and `Yes` only for a `Local Presentation Omission`.
+- Refactor posture for `SR-006`: `Not Required` beyond a tight boolean-only presentation component and a presentation-group projection.
 - Evidence basis:
-  - Agent `currentStatus` and `canInterrupt` independently govern header and action and can contradict one another.
-  - Runtime/local/derived agent events can bypass or race the canonical status owner.
-  - Team definition, team run, member agent, task stage, and connection state are represented through overlapping status shapes.
-  - The five-state team aggregate is referenced across 46 production/doc files and drives UI/actions even though authoritative `isActive` already exists.
-  - `TeamTreeNode` stores both `isActive` and `currentStatus`; history/open/recovery code converts repeatedly between them.
-  - Enter does not honor the same disabled guard as the button.
-- Requirement or scope impact: A local button or dot removal is insufficient. The change must establish one agent lifecycle owner, eliminate the public aggregate team lifecycle, preserve per-member status, and make authoritative team registration the sole source for team Stop/activity decisions.
+  - Accepted source has one agent lifecycle authority, one manager-owned team `isActive`, no public aggregate team lifecycle, no definition-owned status, and unified action guards.
+  - Exact run rows already carry `isActive`; definition display groups already carry every displayed child run and therefore need no backend/store expansion.
+  - Reusing agent `StatusDot` would synthesize an invalid five-state team status and add pulse semantics that binary team liveness does not own.
+- Requirement or scope impact: Preserve all accepted lifecycle/state contracts. Add only exact-run and any-child-active presentation projections, localization, and focused frontend coverage.
 
 ## Recommendations
 
@@ -108,12 +107,13 @@ The expanded change crosses the server runtime-neutral agent lifecycle pipeline,
 - UC-007: Late activity from completed turn A renders without reopening it; activity/terminal events from A cannot disturb newer turn B.
 - UC-008: Mouse click and Enter use the same agent action guard; no second send is admitted while initializing/running.
 - UC-009: Supported AutoByteus, Codex, and Claude runtimes expose the same public agent lifecycle contract in standalone and team-member flows.
-- UC-010: A workspace team-definition group renders definition metadata and child-run count without any status dot or label.
+- UC-010: A workspace team-definition group renders definition metadata, child-run count, and a binary any-child-active indicator without owning or borrowing a five-state runtime status.
 - UC-011: A created/restored team run remains active and stoppable regardless of whether its member agents are idle, initializing, running, or errored.
 - UC-012: A successfully terminated or otherwise absent server team run is inactive; Stop is unavailable and existing inactive-history actions apply.
 - UC-013: A frontend disconnect/reconnect or historical-context open does not manufacture team activity; authoritative server activity converges through history/resume/live lifecycle facts.
 - UC-014: Inside a team, each leaf agent independently receives and renders its five-state status and exposes member interrupt only while that member is running.
 - UC-015: Nested/task-team display and cleanup use binary live-instance or task-domain lifecycle facts without reintroducing a public five-state team aggregate.
+- UC-016: A user scans a collapsed agent-team/definition group and its expanded child run rows and can immediately distinguish whether any run is active and which exact runs are active.
 
 ## Out of Scope
 
@@ -140,13 +140,14 @@ The expanded change crosses the server runtime-neutral agent lifecycle pipeline,
 - **REQ-010 — Agent ordering and self-healing:** For a current-turn activity event, the status companion MUST be ordered early enough that the UI exposes interrupt no later than rendering that activity. For a terminal boundary, the resulting terminal/idle status MUST be ordered after the boundary so the final state is non-running.
 - **REQ-011 — Agent snapshot convergence:** Initial connect, reconnect, history refresh, and active recovery MUST converge on the same canonical agent projection used for live stream companions and MUST NOT overwrite a newer subscribed live agent status with a history placeholder.
 - **REQ-012 — Agent turn correlation:** Only output for the current open turn may establish/reinforce `running`. Late output for a retired turn MUST remain observable but MUST re-emit/preserve the actual current lifecycle; it MUST NOT reopen idle or disturb a newer current turn. Duplicate/out-of-order boundaries MUST remain idempotent.
-- **REQ-013 — Team definitions have no runtime status:** A team definition/container MUST NOT own, receive, derive, or render runtime status. Definition grouping MUST NOT select a child/representative run's status. Existing identity, count, avatar, disclosure, and launch behavior MUST remain.
+- **REQ-013 — Team definitions have no owned runtime status:** A team definition/container MUST NOT own, receive, or expose a runtime lifecycle field. Definition grouping MUST NOT select a child/representative run's five-state status. A presentation-only binary “has active runs” summary defined by REQ-020 is allowed and required; existing identity, count, avatar, disclosure, and launch behavior MUST remain.
 - **REQ-014 — Canonical team activity authority:** A team run's only public operational lifecycle fact MUST be `isActive: boolean`. `isActive=true` means the run is registered in the authoritative server active-team-run directory and its backend remains live; `isActive=false` means no such live registration exists. Temporary frontend drafts and hydrated history contexts are not active server team runs.
 - **REQ-015 — No aggregate team lifecycle:** Member agent statuses MUST NOT be folded into, copied to, or exposed as a five-state team status. The public server/frontend contract MUST remove the aggregate team `status`/`AgentTeamStatus` representation and root aggregate `TEAM_STATUS` stream path rather than retain a parallel compatibility path.
-- **REQ-016 — Team action and presentation policy:** Root team Stop visibility/eligibility MUST be derived directly from `isActive`; inactive archive/delete behavior MUST continue to use its existing history lifecycle constraints. Definition and root team-run rows MUST NOT render a five-state team dot/label. Desktop and mobile surfaces that label team-run liveness MUST use only `Active`/`Inactive` semantics when a label is needed.
+- **REQ-016 — Team action and presentation policy:** Root team Stop visibility/eligibility MUST be derived directly from `isActive`; inactive archive/delete behavior MUST continue to use its existing history lifecycle constraints. Definition-group and root team-run rows MUST NOT render a five-state team dot/label, but MUST render the binary activity indicators defined by REQ-020. Desktop and mobile surfaces that label team-run liveness MUST use only `Active`/`Inactive` semantics.
 - **REQ-017 — Member status preservation:** Leaf agent members inside any team depth MUST retain the same canonical five-state `AGENT_STATUS`, exact route/path/run identity, stream self-healing, and interrupt behavior as standalone agents. Live events and initial/reconnect snapshots MUST select the same exact leaf when a task team is launched inside one or more ordinary subteams; all scope coordinates exposed at a parent stream boundary MUST be in that boundary's frame. Removing team aggregate status MUST NOT rewrite, suppress, infer, or transport-guess member state.
 - **REQ-018 — Team lifecycle convergence and request pending:** Create/restore success MUST establish active; successful termination/unregistration MUST establish inactive; initial load/reconnect/history refresh MUST converge from the authoritative server fact. A frontend stream disconnect alone MUST NOT set inactive. A local `stopPending`/termination-in-flight flag MAY disable duplicate Stop requests but MUST NOT replace or alter `isActive`; a failed stop keeps the team active and stoppable.
 - **REQ-019 — Separate formerly conflated concerns:** Explicit team operation failures MUST remain observable through operation results/events; task delegation/execution MUST retain its task-domain stage; any internal settlement decision requiring “open work” MUST use a dedicated member/task-work predicate. None of these concerns may recreate or depend on a public five-state team aggregate.
+- **REQ-020 — Binary team activity indicators:** A root team-run row MUST render a compact binary activity indicator from that exact run's authoritative `isActive`. Its parent agent-team/definition group row MUST render active when at least one displayed child run has `isActive=true`, otherwise inactive. Active MUST use a clear solid blue treatment and inactive a neutral solid gray treatment; neither treatment may pulse or map through `AgentStatus`, member aggregation, representative-run selection, socket state, task stage, or a restored team-status DTO. The same binary source MUST drive accessible `Active`/`Inactive` meaning.
 
 ## Acceptance Criteria
 
@@ -165,16 +166,17 @@ The expanded change crosses the server runtime-neutral agent lifecycle pipeline,
 - **AC-013:** Pressing Enter while the selected agent is `initializing` does not call send or interrupt, even if a non-empty draft is present.
 - **AC-014:** Pressing Enter while the selected agent is `running` calls interrupt and never sends a second user command; Shift+Enter still inserts a newline.
 - **AC-015:** Durable coverage validates the public agent lifecycle and composer behavior across Codex, Claude, and native AutoByteus standalone/team-member paths, including current-turn activity, terminal completion/interruption, terminal error, late old-turn activity, reconnect, and keyboard guarding.
-- **AC-016:** Given a team definition containing zero, one, or multiple live/historical runs in any mixture of member states, its desktop/workspace row renders no status dot or label and does not change presentation when a different run becomes the latest representative.
+- **AC-016:** Given a team definition containing zero, one, or multiple live/historical runs in any mixture of member states, it exposes no owned five-state status and never changes because a different run becomes the latest representative; its only activity visual follows the any-child-`isActive` rule in AC-026.
 - **AC-017:** Given a root team run is registered/live, it has `isActive=true` and exposes Stop even when all members are idle, one or more members are in error, or no deltas are currently arriving.
 - **AC-018:** Given successful team termination/unregistration, `isActive` becomes false, Stop disappears, and existing eligible inactive history actions become available; a failed termination leaves `isActive=true` and Stop available after pending clears.
 - **AC-019:** Disconnecting the team WebSocket or navigating away does not by itself set `isActive=false`; reconnect/history refresh obtains the authoritative server activity fact.
 - **AC-020:** The workspace/team public contract no longer includes a root aggregate team `status`, root aggregate `TEAM_STATUS`, frontend `AgentTeamStatus`, or a team-context `currentStatus`; no compatibility alias/dual path remains.
 - **AC-021:** Live and initial/reconnect member `AGENT_STATUS` messages received through the root team stream retain exact member identity and update only the matching leaf agent's five-state status, including `root -> ordinary subteam(s) -> task team -> leaf`; the selected running member still exposes exact-member interrupt, and no missing-scope fallback treats that leaf as a task-team root.
 - **AC-022:** Repeated team Stop clicks while one request is pending produce at most one terminate operation; pending state does not mark the team inactive before server success.
-- **AC-023:** Team definition and root team-run rows in the workspace/running surfaces do not render five-state team colors. Mobile or other surfaces that need a team-run liveness label show only `Active` or `Inactive` from `isActive`.
+- **AC-023:** Team definition/group and root team-run rows in workspace/running surfaces render no five-state team colors or member-derived status. Their binary dots and any mobile/text labels expose only `Active` or `Inactive` semantics from authoritative run booleans.
 - **AC-024:** Workspace history and team resume results derive `isActive` from the authoritative team-run manager and do not derive it from member state, aggregate status, a frontend context map, or socket connection state.
 - **AC-025:** Task-team terminal cleanup, operational failure observation, and settlement/open-work decisions continue to function using task/failure/member-work facts with no dependency on a public aggregate team lifecycle.
+- **AC-026:** With two child team runs where one has `isActive=true` and one has `isActive=false`, the parent agent-team/definition row renders one solid blue active indicator, the active run row renders solid blue, and the inactive run row renders neutral gray. After the last active run becomes inactive, the parent indicator becomes gray. Collapsing the group preserves the correct parent signal; changing member-agent status, representative ordering, or socket connection alone does not change either binary indicator. Both indicators expose an accessible active/inactive label.
 
 ## Constraints / Dependencies
 
@@ -194,19 +196,19 @@ The expanded change crosses the server runtime-neutral agent lifecycle pipeline,
 - Existing data to preserve, discard/rebuild, transform, or quarantine: Preserve all identities, topology, transcripts, traces, activities, task records, summaries, and termination metadata. Agent live lifecycle and team `isActive` are recalculated from active runtime/manager state. Removed aggregate team status is computed live and carries no required stored meaning.
 - Unacceptable data loss or corruption: Loss/suppression of late activity, incorrect member targeting, loss of task lifecycle, incorrect team Stop eligibility, or admission of duplicate/concurrent user commands due state drift.
 - Relevant availability, maintenance-window, or rollout constraints: None known; frontend and server contract change ships together, and restarted runtimes rebuild live state naturally.
-- Related requirement and acceptance-criteria IDs: REQ-011, REQ-012, REQ-014–REQ-019; AC-008, AC-011, AC-012, AC-018–AC-025.
+- Related requirement and acceptance-criteria IDs: REQ-011, REQ-012, REQ-014–REQ-020; AC-008, AC-011, AC-012, AC-018–AC-026.
 
 ## Assumptions
 
 - Every supported agent runtime can expose a runtime-neutral turn start/current-turn identity and a completion/interruption terminal boundary, directly or through the existing server converter.
 - Existing single-agent and exact team-member interrupt routes are valid whenever the corresponding agent status is `running`.
 - The server active-team-run manager remains the product authority for whether a root team run is live and terminable.
-- Team definitions do not need a runtime badge; users need the child team-run Stop action and member-agent statuses instead.
+- Team definitions do not own a runtime status. Their group row may expose only the presentation-derived any-child-active cue defined by REQ-020; users also need exact run activity, child team-run Stop, and member-agent statuses.
 - Redundant agent status companions are preferable to sparse transition-only events; no analogous five-state companion is required for the team aggregate because that aggregate is removed.
 
 ## Risks / Open Questions
 
-- The complete expanded basis is user-approved. Design must preserve the implemented agent lifecycle foundation while cleanly removing/reassigning the aggregate team-status paths.
+- The complete expanded basis is user-approved. The aggregate team-status paths are already removed in the accepted baseline; SR-006 must preserve that result while restoring only the two binary presentation cues.
 - Some non-content agent operational events may omit turn identity. They may repeat current agent status but cannot create a new turn without current-turn/command evidence.
 - Interrupt- or stop-request-in-flight presentation may use local disabled/pending state, but it must not become another lifecycle authority.
 - Removing root/nested `TEAM_STATUS` requires explicit replacement of three real consumers rather than silent deletion: task-team cleanup, team failure observation, and task-team open-work settlement. REQ-019 fixes the intended semantics; exact interfaces belong in the design revision.
@@ -235,6 +237,7 @@ The expanded change crosses the server runtime-neutral agent lifecycle pipeline,
 | REQ-017 | UC-001, UC-002, UC-003, UC-006, UC-009, UC-014 |
 | REQ-018 | UC-011, UC-012, UC-013 |
 | REQ-019 | UC-011, UC-014, UC-015 |
+| REQ-020 | UC-010, UC-011, UC-012, UC-013, UC-016 |
 
 ## Acceptance-Criteria-To-Scenario Intent
 
@@ -265,6 +268,7 @@ The expanded change crosses the server runtime-neutral agent lifecycle pipeline,
 | AC-023 | Team presentation uses no five-state aggregate. |
 | AC-024 | Team history/resume activity comes from manager authority. |
 | AC-025 | Former aggregate consumers use their own domain facts. |
+| AC-026 | Team definition-group and exact run rows expose accessible binary activity. |
 
 ## Approval Status
 
@@ -280,10 +284,18 @@ The expanded change crosses the server runtime-neutral agent lifecycle pipeline,
 
 The user explicitly approved the second investigation and requirements update, including:
 
-- team definitions have no runtime status or dot;
+- team definitions have no owned runtime status, and the then-approved revision removed the borrowed five-state dot;
 - root team runs use only authoritative binary `isActive` for liveness and Stop;
 - the public/frontend five-state team aggregate and `AgentTeamStatus` are removed cleanly;
 - leaf member agents retain the approved five-state lifecycle unchanged through the team stream;
 - task stage, explicit failures, internal open-work decisions, socket state, and local Stop pending remain separate facts rather than another team lifecycle.
 
-The complete requirements basis remains locked and unchanged through design revision `SR-005`. `SR-005` makes the already-approved “any team depth” coordinate-frame invariant explicit after `CODE-FIND-002`; it introduces no new intended behavior and needs no additional user approval. Implementation rework remains blocked on architecture approval.
+### Approved binary team-activity presentation correction (2026-08-03)
+
+After inspecting the delivery candidate, the user explicitly required activity to remain visible in both places:
+
+- the exact team-run/instance row shows that run's binary `isActive`;
+- the parent agent-team/definition row shows whether any child team run is active;
+- both indicators are retained for scan clarity, while the five-state aggregate, representative-run borrowing, and team lifecycle DTO remain removed.
+
+This requirement correction is the authoritative `SR-006` input. It supersedes only the earlier instruction to remove definition/run dots; all lifecycle ownership, agent status, task-team identity, Stop, and aggregate-removal behavior remains approved and unchanged. Fresh architecture review is required before implementation resumes; the prior delivery candidate is no longer completion-ready.
