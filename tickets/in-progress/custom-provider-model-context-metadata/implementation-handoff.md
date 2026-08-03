@@ -9,21 +9,23 @@
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/solution-revision-record.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/design-review-report.md`
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/architecture-review-revision-record.md`
+- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-report.md`
+- Code review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-revision-record.md`
 - Triggering rework report, revision record, or evidence, when applicable: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/implementation-revision-record.md`
 
 ## Current Implementation Summary
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/implementation-revision-record.md`
-- Current implementation revision ID: `IR-002`
+- Current implementation revision ID: `IR-003`
 - Related solution revision IDs: `SR-005`, `SR-006`, `SR-007`, `SR-008`
 - Related architecture-review revision IDs: `ARCH-REV-002`, `ARCH-REV-003`
-- Related code-review revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001` (`CR-001` fixed; source re-review pending)
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A` (approved endpoint-scoped wire-alias extension)
+- Triggering finding IDs: `CR-001`
 
-The implementation now carries custom endpoint model limits from one existing `/models` response through normalized rows, exact endpoint/profile and fallback resolution, custom `LLMModel` construction, `ModelInfo`, server enrichment, and the existing runtime token-budget path. It also implements the newly approved exact Alibaba wire-alias profile for `deepseek-v4-flash-0731` -> `{ provider: DEEPSEEK, value: deepseek-v4-flash }`, while preserving the truthful unknown-capacity state instead of suppressing the token context section.
+The implementation now carries custom endpoint model limits from one existing `/models` response through normalized rows, exact endpoint/profile and fallback resolution, custom `LLMModel` construction, `ModelInfo`, server enrichment, and the existing runtime token-budget path. It also implements the newly approved exact Alibaba wire-alias profile for `deepseek-v4-flash-0731` -> `{ provider: DEEPSEEK, value: deepseek-v4-flash }`, refuses profile matching for non-empty query/hash URL variants, and preserves the truthful unknown-capacity state instead of suppressing the token context section.
 
 ## Reviewed Behavior Implementation Trace
 
@@ -32,7 +34,7 @@ The implementation now carries custom endpoint model limits from one existing `/
 | BEH-001 | Preserve valid discovered IDs while retaining recognized optional numeric metadata; malformed optional fields remain non-fatal. | `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-ts/src/llm/openai-compatible-endpoint-discovery.ts` (`normalizeOpenAICompatibleEndpointDiscoveredModels`, `probeEndpoint`) | Fixed alias allowlists, strict JSON-number validation, first-valid alias precedence, payload-order duplicate row merge, and existing timeout/credential/status behavior preserved. |
 | BEH-002 | Resolve custom model limits from exact endpoint/profile facts, then exact built-in identity fallback, while retaining source truth. | `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-ts/src/llm/metadata/openai-compatible-endpoint-model-metadata.ts`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-ts/src/llm/openai-compatible-endpoint-provider.ts`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-ts/src/llm/openai-compatible-endpoint-model.ts` | Exact canonical endpoint tuple plus model value gates profiles. The Alibaba Token Plan profiles supply documented Qwen plan facts and the explicit DeepSeek wire-alias reference; exact built-in fallback is per-field, lowest-valid, and marked inferred. |
 | BEH-003 | Make known custom capacity available to existing token budget/compaction code without provider-specific runtime branches. | `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-ts/src/llm/openai-compatible-endpoint-model.ts`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-ts/src/llm/models.ts` | Resolved numeric fields are populated before registry/runtime construction; `activeContextTokens`, token-budget precedence, compaction ratio, safety margin, and compaction implementation are unchanged. |
-| BEH-004 | Keep profile resolution bounded and exact; unknown models remain unknown rather than receiving a guessed default. | `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-ts/src/llm/metadata/openai-compatible-endpoint-model-metadata.ts` | No extra network request, documentation scraping, query-dependent identity, family/substring match, or global guessed default was added. |
+| BEH-004 | Keep profile resolution bounded and exact; unknown models remain unknown rather than receiving a guessed default. | `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-ts/src/llm/metadata/openai-compatible-endpoint-model-metadata.ts` | No extra network request, documentation scraping, query-dependent identity, family/substring match, or global guessed default was added. Non-empty query/hash variants are explicitly non-profile-addressable and fall through to advertised/exact-value fallback/unknown. |
 | BEH-005 | Show latest prompt usage with an explicit unavailable-limit state and no fake denominator. | `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/components/workspace/usage/TokenUsageMeterPanel.vue`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/localization/messages/en/shell.ts`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/localization/messages/zh-CN/shell.ts` | Known capacity keeps the existing percentage/progress display; unknown capacity shows prompt count plus localized `context limit unavailable`. |
 | REQ-012 / AC-014 | Allow a differing provider wire ID to inherit built-in metadata only through an exact endpoint-scoped profile reference. | `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-ts/src/llm/metadata/openai-compatible-endpoint-model-metadata.ts`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-ts/tests/unit/llm/metadata/openai-compatible-endpoint-model-metadata.test.ts` | Alibaba `deepseek-v4-flash-0731` matches only the exact Token Plan endpoint profile and resolves through canonical DeepSeek `{provider, value}` provenance. The same wire ID on another endpoint remains unknown; no suffix, fuzzy, family, or cross-endpoint aliasing was added. |
 | REQ-006 / REQ-009 / AC-011 | Preserve the five-kind per-field source and non-secret provenance across model and server boundaries. | `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-ts/src/llm/metadata/model-metadata-resolver.ts`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-ts/src/llm/models.ts`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-server-ts/src/llm-management/services/model-metadata-provisioning-service.ts` | `ResolvedMetadataSource` distinguishes `live`, `endpoint_profile`, `inferred_builtin`, `static_definition`, and `unknown`; server returns the merged source-bearing resolution and coarse GraphQL provenance remains truthful. |
@@ -40,7 +42,7 @@ The implementation now carries custom endpoint model limits from one existing `/
 ## Key Files Or Areas
 
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-ts/src/llm/openai-compatible-endpoint-discovery.ts`: fixed advertised alias normalization and duplicate precedence.
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-ts/src/llm/metadata/openai-compatible-endpoint-model-metadata.ts`: canonical endpoint identity, exact profiles including the Alibaba DeepSeek wire alias, fallback index, profile references, per-field precedence, and source provenance.
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-ts/src/llm/metadata/openai-compatible-endpoint-model-metadata.ts`: canonical endpoint identity, explicit query/hash addressability guard, exact profiles including the Alibaba DeepSeek wire alias, fallback index, profile references, per-field precedence, and source provenance.
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-ts/src/llm/metadata/model-metadata-resolver.ts`: shared five-kind source union and ordinary built-in live/static/unknown resolution.
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-ts/src/llm/openai-compatible-endpoint-provider.ts` and `openai-compatible-endpoint-model.ts`: fresh custom model resolution and canonical field mapping.
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-ts/src/llm/models.ts`: mandatory non-secret `ModelInfo.resolved_model_metadata` projection.
@@ -59,7 +61,7 @@ The implementation now carries custom endpoint model limits from one existing `/
 - Vendor profile documentation can change; profile updates require deliberate source/date review.
 - Exact built-in fallback is best effort and can differ from a custom plan. Endpoint-advertised and exact endpoint-profile fields remain higher precedence.
 - A repository-wide web TypeScript check is not clean on this base: it reports broad pre-existing missing Vue/generated Nuxt declarations and unrelated type errors. The affected component test and localization guards pass.
-- API/E2E, realistic synthetic endpoint, runtime compaction, catalog GraphQL, stale reload, secret-hygiene, and browser-level evidence remain downstream.
+- API/E2E, realistic synthetic endpoint, runtime compaction, catalog GraphQL, stale reload, secret-hygiene, and browser-level evidence remain downstream; source re-review is required before API/E2E starts.
 
 ## Task Design Health Assessment Implementation Check
 
@@ -97,7 +99,7 @@ The implementation now carries custom endpoint model limits from one existing `/
 ## Local Implementation Checks Run
 
 - `autobyteus-ts`: `tsc -p tsconfig.build.json --noEmit` — passed.
-- `autobyteus-ts` focused unit tests — 24 tests passed across discovery, metadata resolver (including the exact Alibaba DeepSeek wire-alias and cross-endpoint unknown cases), ordinary metadata resolver, custom endpoint provider, and model projection suites.
+- `autobyteus-ts` focused unit tests — 25 tests passed across discovery, metadata resolver (including the exact Alibaba DeepSeek wire-alias, cross-endpoint unknown, and query/fragment non-profile-addressable cases), ordinary metadata resolver, custom endpoint provider, and model projection suites.
 - `autobyteus-server-ts`: `tsc -p tsconfig.build.json --noEmit` — passed.
 - `autobyteus-server-ts/tests/unit/llm-management/model-metadata-provisioning-service.test.ts` — 9 tests passed, including source/value preservation.
 - `autobyteus-web`: `nuxt prepare` — passed; `TokenUsageMeterPanel.spec.ts` — 9 tests passed, including unknown-capacity rendering; `guard-localization-boundary`, `audit-localization-literals`, and `guard-web-boundary` — passed.
@@ -117,7 +119,7 @@ The implementation now carries custom endpoint model limits from one existing `/
 ## Downstream Coverage Hints / Suggested Scenarios
 
 - Verify every fixed advertised alias and invalid type, including nested/unrelated aliases, duplicate rows, and independent per-field fall-through.
-- Verify exact Alibaba Token Plan `qwen3.8-max-preview` and `qwen3.7-max` profile values, exact `deepseek-v4-flash-0731` wire-alias reference, exact canonical protocol/host/port/path matches, and host/path/protocol/port/query near-misses.
+- Verify exact Alibaba Token Plan `qwen3.8-max-preview` and `qwen3.7-max` profile values, exact `deepseek-v4-flash-0731` wire-alias reference, exact canonical protocol/host/port/path matches, and host/path/protocol/port/query near-misses. Query-only and fragment-bearing URLs must miss profiles.
 - Verify exact built-in fallback from any provider, duplicate exact-value candidates, lowest-valid per-field selection, deterministic tie provenance, unmatched unknown behavior, and that the DeepSeek wire ID remains unknown without the exact alias profile.
 - Verify `LLMModel.toModelInfo()` and server `EnrichedModelInfo` retain every source/provenance kind and map GraphQL coarse provenance truthfully.
 - Verify fresh model construction, stale last-known-good preservation, existing token-budget/compaction thresholds, explicit override behavior, discovery failure resilience, and secret/raw-payload hygiene.

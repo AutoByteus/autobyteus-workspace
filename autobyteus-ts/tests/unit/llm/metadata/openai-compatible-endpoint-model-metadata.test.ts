@@ -35,7 +35,7 @@ describe('OpenAI-compatible endpoint metadata resolver', () => {
   it('matches the exact Alibaba Token Plan profile and leaves undocumented fields unknown', () => {
     const resolver = new OpenAICompatibleEndpointModelMetadataResolver();
     const metadata = resolver.resolve({
-      endpointBaseUrl: 'HTTPS://TOKEN-PLAN.AP-SOUTHEAST-1.MAAS.ALIYUNCS.COM/compatible-mode/./v1/?ignored=true#fragment',
+      endpointBaseUrl: 'HTTPS://TOKEN-PLAN.AP-SOUTHEAST-1.MAAS.ALIYUNCS.COM/compatible-mode/./v1/',
       discoveredModel: discovered('qwen3.8-max-preview'),
     });
 
@@ -179,6 +179,34 @@ describe('OpenAI-compatible endpoint metadata resolver', () => {
       discoveredModel: discovered('deepseek-v4-flash'),
     });
     expect(canonicalValue.maxContextTokens).toMatchObject({
+      value: 1_000_000,
+      source: { kind: 'inferred_builtin', provider: LLMProvider.DEEPSEEK, value: 'deepseek-v4-flash' },
+    });
+  });
+
+  it('does not profile-match query or fragment variants', () => {
+    const resolver = new OpenAICompatibleEndpointModelMetadataResolver();
+    const endpoint = 'https://token-plan.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1';
+
+    const queryVariant = resolver.resolve({
+      endpointBaseUrl: `${endpoint}?plan=other`,
+      discoveredModel: discovered('deepseek-v4-flash-0731', { maxContextTokens: 123_456 }),
+    });
+    expect(queryVariant.maxContextTokens).toEqual({ value: 123_456, source: { kind: 'live' } });
+    expect(queryVariant.maxOutputTokens).toEqual({ value: null, source: { kind: 'unknown' } });
+
+    const fragmentVariant = resolver.resolve({
+      endpointBaseUrl: `${endpoint}#other`,
+      discoveredModel: discovered('deepseek-v4-flash-0731'),
+    });
+    expect(fragmentVariant.maxContextTokens).toEqual({ value: null, source: { kind: 'unknown' } });
+    expect(fragmentVariant.maxOutputTokens).toEqual({ value: null, source: { kind: 'unknown' } });
+
+    const exactFallbackAfterQueryMiss = resolver.resolve({
+      endpointBaseUrl: `${endpoint}?plan=other`,
+      discoveredModel: discovered('deepseek-v4-flash'),
+    });
+    expect(exactFallbackAfterQueryMiss.maxContextTokens).toMatchObject({
       value: 1_000_000,
       source: { kind: 'inferred_builtin', provider: LLMProvider.DEEPSEEK, value: 'deepseek-v4-flash' },
     });

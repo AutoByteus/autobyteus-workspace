@@ -131,9 +131,14 @@ const canonicalPath = (pathname: string): string => {
   return withoutTrailingSlashes === '/' ? '' : withoutTrailingSlashes;
 };
 
-export const canonicalizeOpenAICompatibleEndpointIdentity = (
+type ParsedEndpointIdentity = {
+  identity: CanonicalEndpointIdentity;
+  profileAddressable: boolean;
+};
+
+const parseOpenAICompatibleEndpointIdentity = (
   baseUrl: string,
-): CanonicalEndpointIdentity | null => {
+): ParsedEndpointIdentity | null => {
   let parsed: URL;
   try {
     parsed = new URL(baseUrl.trim());
@@ -154,8 +159,15 @@ export const canonicalizeOpenAICompatibleEndpointIdentity = (
     ? null
     : parsedPort;
 
-  return { protocol, hostname, port, basePath: canonicalPath(parsed.pathname) };
+  return {
+    identity: { protocol, hostname, port, basePath: canonicalPath(parsed.pathname) },
+    profileAddressable: parsed.search === '' && parsed.hash === '',
+  };
 };
+
+export const canonicalizeOpenAICompatibleEndpointIdentity = (
+  baseUrl: string,
+): CanonicalEndpointIdentity | null => parseOpenAICompatibleEndpointIdentity(baseUrl)?.identity ?? null;
 
 const sameEndpointIdentity = (
   left: CanonicalEndpointIdentity,
@@ -269,10 +281,10 @@ export class OpenAICompatibleEndpointModelMetadataResolver {
   ) {}
 
   resolve(input: OpenAICompatibleEndpointModelMetadataInput): ResolvedModelMetadata {
-    const endpointIdentity = canonicalizeOpenAICompatibleEndpointIdentity(input.endpointBaseUrl);
+    const parsedEndpoint = parseOpenAICompatibleEndpointIdentity(input.endpointBaseUrl);
     const modelValue = input.discoveredModel.value;
-    const profile = endpointIdentity
-      ? this.profiles.find((candidate) => sameEndpointIdentity(candidate, endpointIdentity)
+    const profile = parsedEndpoint?.profileAddressable
+      ? this.profiles.find((candidate) => sameEndpointIdentity(candidate, parsedEndpoint.identity)
         && candidate.modelValue === modelValue) ?? null
       : null;
     const advertised: PartialResolvedModelMetadata = input.discoveredModel;
