@@ -1,0 +1,40 @@
+# Delivery Revision Record
+
+## Revision Index
+
+| Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
+| --- | --- | --- | --- | --- |
+| DR-001 | Initial delivery entry after `CRR-006 Pass` and `API-REV-002 Pass` | N/A | Pass — latest tracked base integrated, current durable checks pass, docs synchronized, verification handoff ready; finalization held for explicit user verification | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/docs-sync-report.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/handoff-summary.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/release-deployment-report.md` |
+| DR-002 | User requested the documented Electron build for hands-on verification | `DR-001 Pass` | Pass — unsigned local macOS ARM64 DMG/ZIP built from reviewed HEAD `50a3c41c5061c2b4fcbf8af1ad86051ea01859e5`; DMG integrity, architecture, and staged/packaged `node-pty` spawn probes passed | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/delivery-electron-build.log`, `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/handoff-summary.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/release-deployment-report.md` |
+
+## Revision Entries
+
+### DR-001 — Integrated delivery refresh, documentation sync, and verification handoff
+
+- Delivery round and trigger: Initial delivery-stage entry after implementation source passed `CRR-004`, API/E2E passed `API-REV-002` at 96.7% confidence, and all ten changed durable test paths passed proportional re-review `CRR-006`.
+- Triggering upstream report, verification, or evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-test-review-report.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-execution-coverage-report.md`, and `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/code-review-revision-record.md`.
+- Prior authoritative result (`N/A` for `DR-001`): `N/A`.
+- Current authoritative result: `Pass` for delivery integration and documentation. The candidate is ready for explicit one-off user verification; archival, repository finalization, release/deployment, and cleanup remain gated.
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/docs-sync-report.md` — ten long-lived docs now describe binary root liveness, exact leaf status, strict task-team stream scope, history contraction, and frontend action/transport separation.
+- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/handoff-summary.md` — integrated candidate and cumulative evidence prepared for user verification.
+- Release/publication/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/release-deployment-report.md` — records release/deployment as out of scope and the user-verification hold.
+- Integration and post-integration verification: Bootstrap `origin/personal` was `4b29481d5b6eaea64aebb20abcb5e4d784ea1178`. Delivery protected the reviewed dirty package in `f4fe07d5d5a980e4bee43f7d81d0db4809e5d780`, merged the initially fetched `c9061a019b187f94ea70d28af83e66fcc8027555`, and passed 10 files / 49 tests with one provider-gated skip. When the tracked base advanced once more during docs sync, delivery protected the docs in `09393ba9e8a4657396b192ab4198ed775c455a7b`, merged final base `cc11ca9b22880c06f689c14df7a68cc455d61158` into `50a3c41c5061c2b4fcbf8af1ad86051ea01859e5`, and repeated the same passing 10-file / 49-test check. Exact evidence is in `delivery-integrated-state-refresh.log`.
+- User verification/finalization state: Explicit user completion/verification has not been received. No ticket archive, final delivery commit, branch push, target merge/push, release, deployment, or worktree/branch cleanup has been performed.
+- Why this baseline or delivery revision was recorded: Delivery requires a durable `DR-001` baseline; absence of an older record must not be interpreted as a prior delivery result.
+- Next recipient/action: User — verify the integrated agent/team lifecycle behavior and explicitly authorize completion/finalization if satisfied.
+- Remaining blockers, rollback concerns, or untested scope: Workflow hold only. External-provider execution was unavailable and remains the bounded residual risk; one provider-gated case was skipped. Existing unrelated frontend baseline debt remains recorded. API/E2E found no material browser/desktop boundary requiring direct execution.
+
+### DR-002 — Local Electron verification build
+
+- Delivery round and trigger: The user asked delivery to read the repository instructions and build Electron so the candidate could be tested manually.
+- Triggering upstream report, verification, or evidence: `DR-001` verification handoff at reviewed/integrated HEAD `50a3c41c5061c2b4fcbf8af1ad86051ea01859e5`.
+- Prior authoritative result: `DR-001 Pass` — source, API/E2E, proportional durable-test review, integration checks, and docs sync passed; explicit user verification remained pending.
+- Current authoritative result: `Pass` for local verification-build preparation. The documented no-notarization macOS command completed successfully on Darwin ARM64 and emitted an unsigned version `1.4.39` DMG, ZIP, blockmaps, updater metadata, and unpacked `.app`.
+- Build command: from `autobyteus-web`, `NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac`.
+- Primary user-test artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.39.dmg` (`384M`, SHA-256 `636c31b6e83cfd159a2446ff4e2da2b50697302d0a6fbf2fd94ac41df26c2bb5`).
+- Alternate artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.39.zip` (`385M`, SHA-256 `25b9c1eb7d9a19f2286f514f134de7c65fa72183ddde561832d4ce5d88cfd965`).
+- Validation: Build guards and localization audit passed; integrated server preparation/build passed; the app executable is Mach-O ARM64; `hdiutil verify` reported a valid DMG checksum; and both staged-server and packaged-app `verify-packaged-terminal-runtime.mjs --spawn-probe` checks passed.
+- Exact evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/delivery-electron-build.log`.
+- Remote-base observation: The required pre-handoff integration remains recorded in `DR-001`. A fresh fetch during this build request showed `origin/personal` had subsequently advanced to `ba6ebc2a2`; that unrelated post-handoff state was not silently merged into the reviewed candidate being prepared for user testing. Finalization-time refresh and materiality assessment remain mandatory after user verification.
+- User verification/finalization state: Explicit completion/verification has still not been received. The build request is not acceptance. No archive, final delivery commit, branch push, target merge/push, release, deployment, or cleanup was performed.
+- Next recipient/action: User — install/open the local DMG and perform the checks in `handoff-summary.md`; report defects or explicitly authorize finalization if satisfied.
