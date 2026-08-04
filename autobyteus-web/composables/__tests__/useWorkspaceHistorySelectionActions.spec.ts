@@ -1,6 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
 import { AgentStatus } from '~/types/agent/AgentStatus'
-import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus'
 import { useWorkspaceHistorySelectionActions } from '../useWorkspaceHistorySelectionActions'
 import type { TeamMemberTreeRow, TeamTreeNode } from '~/stores/runHistoryTypes'
 
@@ -20,7 +19,6 @@ const buildTeamMemberRow = (
   summary: '',
   lastActivityAt: '2026-05-17T00:00:00.000Z',
   currentStatus: AgentStatus.Offline,
-  lastKnownStatus: 'IDLE',
   isActive: false,
   deleteLifecycle: 'READY',
   children: [],
@@ -63,9 +61,7 @@ const buildTeamNode = (focusedMemberRouteKey: string): TeamTreeNode => {
     workspaceRootPath: '/tmp/workspace',
     summary: '',
     lastActivityAt: '2026-05-17T00:00:00.000Z',
-    lastKnownStatus: 'IDLE',
     isActive: false,
-    currentStatus: AgentTeamStatus.Offline,
     deleteLifecycle: 'READY',
     focusedMemberRouteKey,
     members: [],

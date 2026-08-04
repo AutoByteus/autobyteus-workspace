@@ -32,7 +32,7 @@ export type AgentRunCommandTurnAssociation =
   | { kind: "AWAITING_ANONYMOUS_START" }
   | { kind: "ANONYMOUS_ARMED"; armedAtSequence: number };
 
-export type AgentCommandAckPayload = {
+export type SendMessageCommandAckPayload = {
   command_type: "SEND_MESSAGE";
   run_id: string;
   message_id: string;
@@ -69,6 +69,6 @@ export type AgentRunCommandCoordinatorInput = {
 };
 
 export type AgentRunCommandCoordinatorResult = {
-  ack: AgentCommandAckPayload;
+  ack: SendMessageCommandAckPayload;
   turnId: string | null;
 };

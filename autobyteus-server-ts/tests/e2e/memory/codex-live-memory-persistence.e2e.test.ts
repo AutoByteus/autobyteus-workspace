@@ -418,4 +418,109 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
       unsubscribeRaw();
     }
   }, FLOW_TIMEOUT_MS);
+
+  it("persists a live steered input under the same canonical Codex turn identity", async () => {
+    const workspaceRoot = await createTempDir("codex-live-steer-memory-workspace");
+    const memoryDir = await createTempDir("codex-live-steer-memory-dir");
+    const runId = `run-codex-live-steer-memory-${randomUUID()}`;
+
+    clientManager = new CodexAppServerClientManager({
+      createClient: (cwd) =>
+        new CodexAppServerClient({
+          command: "codex",
+          args: ["app-server"],
+          cwd,
+          requestTimeoutMs: 45_000,
+        }),
+    });
+    threadManager = new CodexThreadManager(
+      clientManager,
+      undefined,
+      new CodexClientThreadRouter(),
+    );
+    const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
+    const recorder = new AgentRunMemoryRecorder();
+    const manager = new AgentRunManager({
+      autoByteusBackendFactory: unusedBackendFactory,
+      codexBackendFactory: createCodexFactory({
+        clientManager,
+        threadManager,
+        workspaceRoot,
+        runId,
+      }),
+      claudeBackendFactory: unusedBackendFactory,
+      runFileChangeService: createNoopSidecar() as never,
+      publishedArtifactRelayService: createNoopSidecar() as never,
+      memoryRecorder: recorder,
+    });
+    const run = await manager.createAgentRun(
+      new AgentRunConfig({
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+        agentDefinitionId: "agent-def-codex-live-steer-memory",
+        llmModelIdentifier: modelIdentifier,
+        autoExecuteTools: true,
+        workspaceId: "workspace-codex-live-steer-memory",
+        memoryDir,
+        llmConfig: { reasoning_effort: "medium" },
+        skillAccessMode: SkillAccessMode.NONE,
+      }),
+      runId,
+    );
+    createdRunIds.add(run.runId);
+
+    const thread = threadManager.getThread(run.runId);
+    expect(thread).toBeTruthy();
+    await waitForStartupReady(thread!.startup.waitForReady);
+    const events: AgentRunEvent[] = [];
+    const rawMessages: CodexAppServerMessage[] = [];
+    const unsubscribe = run.subscribeToEvents((event) => events.push(event));
+    const unsubscribeRaw = thread!.subscribeAppServerMessages((message) => rawMessages.push(message));
+    try {
+      const firstMarker = `STEER_MEMORY_FIRST_${randomUUID().replace(/-/g, "_")}`;
+      const secondMarker = `STEER_MEMORY_SECOND_${randomUUID().replace(/-/g, "_")}`;
+      const started = await run.postUserMessage(new AgentInputUserMessage(
+        `Remember ${firstMarker}. Use the terminal tool to execute sleep 8 exactly once; do not simulate it. Then answer briefly.`,
+      ));
+      expect(started).toMatchObject({ accepted: true });
+      expect(started.turnId).toBeTruthy();
+      await waitFor(() => rawMessages.some((message) => {
+        if (message.method !== "item/started") return false;
+        const item = asRecord(message.params.item);
+        return item.type === "commandExecution";
+      }), 90_000);
+      expect(thread!.activeTurnId).toBe(started.turnId);
+
+      const steered = await run.postUserMessage(new AgentInputUserMessage(
+        `Keep working in this exact turn and include ${secondMarker} in the final response.`,
+      ));
+      expect(steered).toMatchObject({ accepted: true, turnId: started.turnId });
+      expect(thread!.activeTurnId).toBe(started.turnId);
+
+      await waitForEvent(
+        events,
+        (event) =>
+          event.eventType === AgentRunEventType.AGENT_STATUS &&
+          event.payload.status === "idle",
+      );
+      await recorder.waitForIdle(run.runId);
+
+      const rawTraces = await readJsonl(path.join(memoryDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME));
+      const matchingUserTraces = rawTraces.filter((trace) =>
+        trace.trace_type === "user" &&
+        (String(trace.content ?? "").includes(firstMarker) ||
+          String(trace.content ?? "").includes(secondMarker)),
+      );
+      expect(matchingUserTraces).toHaveLength(2);
+      expect(matchingUserTraces.map((trace) => trace.turn_id)).toEqual([
+        started.turnId,
+        started.turnId,
+      ]);
+      expect(thread!.activeTurnId).toBeNull();
+      expect(thread!.lastTerminalTurnId).toBe(started.turnId);
+      expect(thread!.currentStatus).toBe("IDLE");
+    } finally {
+      unsubscribe();
+      unsubscribeRaw();
+    }
+  }, FLOW_TIMEOUT_MS);
 });

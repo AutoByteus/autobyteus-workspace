@@ -1,0 +1,1 @@
+Expected nonzero negative control. A temporary same-directory runner copy injected one console:error event before the final browser-health scan and one post-cleanup failure before evidence finalization. The corrected durable gate wrote both failures after ordinary cleanup and exited nonzero. The temporary runner copy was removed; no product source or durable scenario was changed.

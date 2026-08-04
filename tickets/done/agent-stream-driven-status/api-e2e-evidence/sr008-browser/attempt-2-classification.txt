@@ -1,0 +1,2 @@
+SR008 browser attempt 2 classification: Local Fix / API-E2E harness observation.
+The exact failure acknowledgement again reached production service code. The revised probe established one composable toast, showing the product callback was correct; the remaining selector assumption was superseded by direct product toast-state plus DOM assertions.

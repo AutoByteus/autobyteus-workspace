@@ -73,7 +73,7 @@ const buildTeamContext = (params: {
     coordinatorMemberRouteKey: params.coordinatorMemberRouteKey || Object.keys(params.memberContexts)[0] || null,
     historicalHydration: null,
     focusedMemberRouteKey: params.focusedMemberRouteKey,
-    currentStatus: 'OFFLINE',
+    isActive: false,
     isSubscribed: false,
   } as any;
 };

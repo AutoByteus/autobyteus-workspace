@@ -5,14 +5,13 @@ import { useMobileWorkStore } from '~/stores/mobileWorkStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import type { RunHistoryWorkspaceGroup } from '~/stores/runHistoryTypes';
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 
 describe('useMobileWorkCatalog', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
   });
 
-  it('maps query-shaped team runs from createdAt and status without legacy team fields', () => {
+  it('maps query-shaped team runs from createdAt and binary activity without legacy team status fields', () => {
     const teamRun = {
       teamRunId: 'team-run-1',
       teamDefinitionId: 'team-1',
@@ -20,7 +19,6 @@ describe('useMobileWorkCatalog', () => {
       coordinatorMemberRouteKey: 'lead',
       summary: 'Implement mobile QR scanning',
       createdAt: '2026-05-21T17:00:00.000Z',
-      status: AgentTeamStatus.Idle,
       isActive: false,
       members: [
         {
@@ -58,11 +56,11 @@ describe('useMobileWorkCatalog', () => {
 
     expect(recentWorkItems.value).toHaveLength(1);
     const item = recentWorkItems.value[0];
-    expect(item.meta).toContain('Idle');
+    expect(item.meta).toContain('Inactive');
     expect(item.context.kind).toBe('team-run');
     if (item.context.kind === 'team-run') {
       expect(item.context.lastActivityAt).toBe(teamRun.createdAt);
-      expect(item.context.statusLabel).toBe('Idle');
+      expect(item.context.statusLabel).toBe('Inactive');
       expect(item.context.focusedMemberRouteKey).toBe('reviewer');
     }
     expect('lastActivityAt' in teamRun).toBe(false);

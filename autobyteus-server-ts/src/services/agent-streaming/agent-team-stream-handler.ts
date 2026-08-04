@@ -5,11 +5,11 @@ import {
   ContextFileType,
 } from "autobyteus-ts";
 import type { TeamRun } from "../../agent-team-execution/domain/team-run.js";
+import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import {
   TeamRunService,
   getTeamRunService,
 } from "../../agent-team-execution/services/team-run-service.js";
-import { selectorToRouteKey } from "../../agent-team-execution/domain/team-run-member-identity.js";
 import type { TeamRunEvent } from "../../agent-team-execution/domain/team-run-event.js";
 import { TeamStreamBroadcaster, getTeamStreamBroadcaster } from "./team-stream-broadcaster.js";
 import { AgentSession } from "./agent-session.js";
@@ -25,20 +25,16 @@ import {
   ServerMessageType,
 } from "./models.js";
 import {
-  INTERRUPT_GENERATION_INVALID_TARGET_MESSAGE,
-  INTERRUPT_GENERATION_MISSING_TARGET_MESSAGE,
   TEAM_COMMAND_INVALID_TARGET_CODE,
-  resolveInterruptGenerationTargetRunId,
-  resolveInterruptGenerationTargetSelector,
-  hasInvalidCommandSelectorFields,
 } from "./team-command-selector-parser.js";
 import { resolveSendMessageConversationTargetAddress } from "./team-conversation-target-address-parser.js";
 import {
-  TeamRuntimeStatusSnapshotService,
-  getTeamRuntimeStatusSnapshotService,
-} from "./team-runtime-status-snapshot-service.js";
+  TeamRuntimeSnapshotService,
+  getTeamRuntimeSnapshotService,
+} from "./team-runtime-snapshot-service.js";
 import { convertTeamRunEventToServerMessage } from "./team-run-event-websocket-message-mapper.js";
 import { handleTeamToolApprovalCommand } from "./team-tool-approval-command-handler.js";
+import { handleTeamInterruptGenerationCommand } from "./team-interrupt-generation-command-handler.js";
 
 export type WebSocketConnection = {
   send: (data: string) => void;
@@ -48,11 +44,6 @@ export type WebSocketConnection = {
 type ClientMessage = {
   type?: string;
   payload?: Record<string, unknown>;
-};
-
-type InterruptGenerationTarget = {
-  targetMemberRouteKey: string;
-  targetMemberRunId: string | null;
 };
 
 const logger = {
@@ -76,6 +67,7 @@ export class AgentTeamStreamHandler {
   private readonly teamRunService: TeamRunService;
   private readonly activeTasks = new Map<string, Promise<void>>();
   private readonly eventUnsubscribers = new Map<string, () => void>();
+  private readonly lifecycleUnsubscribers = new Map<string, () => void>();
   private readonly sessionConnections = new Map<string, WebSocketConnection>();
   private readonly subscribedRunsBySessionId = new Map<string, TeamRun>();
   private readonly pendingMetadataRefreshTimers = new Map<string, NodeJS.Timeout>();
@@ -85,8 +77,12 @@ export class AgentTeamStreamHandler {
     teamRunService: TeamRunService = getTeamRunService(),
     broadcaster: TeamStreamBroadcaster = getTeamStreamBroadcaster(),
     agentRunEventMessageMapper: AgentRunEventMessageMapper = getAgentRunEventMessageMapper(),
-    private readonly statusSnapshotService: TeamRuntimeStatusSnapshotService =
-      getTeamRuntimeStatusSnapshotService(),
+    private readonly statusSnapshotService: TeamRuntimeSnapshotService =
+      getTeamRuntimeSnapshotService(),
+    private readonly teamRunManager: Pick<
+      AgentTeamRunManager,
+      "getLifecycleSnapshot" | "subscribeToLifecycle"
+    > = AgentTeamRunManager.getInstance(),
   ) {
     this.sessionManager = sessionManager;
     this.teamRunService = teamRunService;
@@ -164,14 +160,17 @@ export class AgentTeamStreamHandler {
         return;
       }
 
+      if (msgType === ClientMessageType.INTERRUPT_GENERATION) {
+        await this.handleInterruptGeneration(teamRunId, payload, connection ?? null);
+        return;
+      }
+
       if (!this.ensureActiveSessionSubscription(sessionId, teamRunId)) {
         logger.warn(`Team websocket session '${sessionId}' lost its active team subscription for run '${teamRunId}'.`);
         return;
       }
 
-      if (msgType === ClientMessageType.INTERRUPT_GENERATION) {
-        await this.handleInterruptGeneration(teamRunId, payload, connection ?? null);
-      } else if (msgType === ClientMessageType.APPROVE_TOOL) {
+      if (msgType === ClientMessageType.APPROVE_TOOL) {
         await this.handleToolApproval(teamRunId, payload, true, connection ?? null);
       } else if (msgType === ClientMessageType.DENY_TOOL) {
         await this.handleToolApproval(teamRunId, payload, false, connection ?? null);
@@ -190,11 +189,7 @@ export class AgentTeamStreamHandler {
     this.sessionConnections.delete(sessionId);
     this.subscribedRunsBySessionId.delete(sessionId);
 
-    const unsubscribe = this.eventUnsubscribers.get(sessionId);
-    this.eventUnsubscribers.delete(sessionId);
-    if (unsubscribe) {
-      unsubscribe();
-    }
+    this.unsubscribeSession(sessionId);
 
     this.sessionManager.closeSession(sessionId);
 
@@ -213,7 +208,11 @@ export class AgentTeamStreamHandler {
     connection: WebSocketConnection,
     teamRun: TeamRun,
   ): void {
-    for (const message of this.statusSnapshotService.getInitialMessages(teamRun)) {
+    const lifecycleSnapshot = this.teamRunManager.getLifecycleSnapshot(teamRun.runId);
+    for (const message of this.statusSnapshotService.getInitialMessages(
+      teamRun,
+      lifecycleSnapshot,
+    )) {
       connection.send(message.toJson());
     }
   }
@@ -266,11 +265,9 @@ export class AgentTeamStreamHandler {
       return true;
     }
 
-    const existingUnsubscribe = this.eventUnsubscribers.get(sessionId);
-    existingUnsubscribe?.();
-    this.eventUnsubscribers.delete(sessionId);
+    this.unsubscribeSession(sessionId);
 
-    const unsubscribe = teamRun.subscribeToEvents((event) => {
+    const unsubscribeEvents = teamRun.subscribeToEvents((event) => {
       try {
         connection.send(this.convertTeamEvent(event).toJson());
       } catch (error) {
@@ -278,13 +275,45 @@ export class AgentTeamStreamHandler {
       }
       this.scheduleMetadataRefresh(teamRun.runId, teamRun);
     });
-    if (!unsubscribe) {
+    if (!unsubscribeEvents) {
       return false;
     }
 
-    this.eventUnsubscribers.set(sessionId, unsubscribe);
+    let unsubscribeLifecycle: () => void;
+    try {
+      unsubscribeLifecycle = this.teamRunManager.subscribeToLifecycle(
+        teamRun.runId,
+        (snapshot) => {
+          try {
+            connection.send(new ServerMessage(ServerMessageType.TEAM_RUN_LIFECYCLE, {
+              team_run_id: snapshot.teamRunId,
+              is_active: snapshot.isActive,
+            }).toJson());
+          } catch (error) {
+            logger.error(`Error sending team lifecycle to WebSocket: ${String(error)}`);
+          }
+        },
+      );
+    } catch (error) {
+      unsubscribeEvents();
+      logger.error(`Failed to subscribe to team lifecycle: ${String(error)}`);
+      return false;
+    }
+
+    this.eventUnsubscribers.set(sessionId, unsubscribeEvents);
+    this.lifecycleUnsubscribers.set(sessionId, unsubscribeLifecycle);
     this.subscribedRunsBySessionId.set(sessionId, teamRun);
     return true;
+  }
+
+  private unsubscribeSession(sessionId: string): void {
+    const unsubscribeEvents = this.eventUnsubscribers.get(sessionId);
+    this.eventUnsubscribers.delete(sessionId);
+    unsubscribeEvents?.();
+
+    const unsubscribeLifecycle = this.lifecycleUnsubscribers.get(sessionId);
+    this.lifecycleUnsubscribers.delete(sessionId);
+    unsubscribeLifecycle?.();
   }
 
   private async handleSendMessage(
@@ -351,51 +380,12 @@ export class AgentTeamStreamHandler {
     payload: Record<string, unknown>,
     connection: WebSocketConnection | null,
   ): Promise<void> {
-    const activeRun = this.resolveCommandRun(teamRunId);
-    if (!activeRun) {
-      logger.warn(`INTERRUPT_GENERATION rejected for team run ${teamRunId}: active run not found.`);
-      return;
-    }
-
-    if (hasInvalidCommandSelectorFields(payload)) {
-      logger.warn(`INTERRUPT_GENERATION rejected for team run ${teamRunId}: ${INTERRUPT_GENERATION_INVALID_TARGET_MESSAGE}`);
-      this.sendInvalidTarget(connection, INTERRUPT_GENERATION_INVALID_TARGET_MESSAGE);
-      return;
-    }
-
-    const target = this.extractInterruptGenerationTarget(payload);
-    if (!target) {
-      logger.warn(`INTERRUPT_GENERATION rejected for team run ${teamRunId}: ${INTERRUPT_GENERATION_MISSING_TARGET_MESSAGE}`);
-      this.sendInvalidTarget(connection, INTERRUPT_GENERATION_MISSING_TARGET_MESSAGE);
-      return;
-    }
-
-    const result = await activeRun.interruptMember(
-      target.targetMemberRouteKey,
-      target.targetMemberRunId,
-    );
-    if (!result.accepted) {
-      logger.warn(
-        `INTERRUPT_GENERATION rejected for team run ${teamRunId}: [${result.code ?? "UNKNOWN"}] ${result.message ?? "no message"}`,
-      );
-      if (typeof result.code === "string" && result.code.startsWith("TARGET_MEMBER_")) {
-        this.sendInvalidTarget(connection, result.message ?? INTERRUPT_GENERATION_INVALID_TARGET_MESSAGE);
-      }
-    }
-  }
-
-  private extractInterruptGenerationTarget(
-    payload: Record<string, unknown>,
-  ): InterruptGenerationTarget | null {
-    const targetSelector = resolveInterruptGenerationTargetSelector(payload);
-    if (!targetSelector) {
-      return null;
-    }
-
-    return {
-      targetMemberRouteKey: selectorToRouteKey(targetSelector),
-      targetMemberRunId: resolveInterruptGenerationTargetRunId(payload),
-    };
+    await handleTeamInterruptGenerationCommand({
+      teamRunId,
+      payload,
+      connection,
+      activeRun: this.resolveCommandRun(teamRunId),
+    });
   }
 
   private async handleToolApproval(

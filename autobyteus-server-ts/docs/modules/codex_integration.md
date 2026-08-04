@@ -123,6 +123,25 @@ for local absolute paths, and keeps eligible images as `localImage` items.
 HTTP(S), data URL, empty, malformed, and unresolved locator values are not
 listed as local reference files.
 
+### Serialized input submission and active-turn steering
+
+`CodexThread.submitInput(...)` is the single owner of Codex input method
+selection and serializes concurrent submissions. After readiness, an idle
+thread sends `turn/start`; a thread with identified active turn A sends only
+`turn/steer` with `expectedTurnId: A`. Callers do not select the method or
+supply their own expected turn, and a rejected/mismatched steer must never fall
+back to `turn/start` and create a phantom B.
+
+Start and steer responses use separate strict response parsers. A start response
+installs its returned turn only when start/terminal notifications have not
+already reconciled it. A successful steer must return A, preserves A for input
+and memory correlation, and performs no new lifecycle transition. Provider
+terminal/interrupt/error notifications remain lifecycle authority; a terminal
+event processed while a request is in flight cannot be undone by its later
+response. Structured submission failures cross the backend operation result so
+command handlers can surface the provider code and message without inventing
+status.
+
 ## Model Catalog, Reasoning Effort, And Fast Mode Configuration
 
 Codex launch-time model configuration is driven by the Codex App Server

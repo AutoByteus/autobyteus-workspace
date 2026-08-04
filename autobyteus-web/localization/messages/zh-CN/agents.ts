@@ -92,6 +92,8 @@ const messages = {
   'agents.components.agents.GroupableTagInput.loading': '加载中...',
   'agents.components.agents.GroupableTagInput.add': '添加',
   'agents.components.agents.GroupableTagInput.remove': '移除',
+  'agents.store.interrupt.failed': '无法停止 {{target}}：{{detail}}',
+  'agents.store.interrupt.transportFailed': '无法向 {{target}} 发送停止命令：{{detail}}',
 } satisfies TranslationCatalog;
 
 export default messages;

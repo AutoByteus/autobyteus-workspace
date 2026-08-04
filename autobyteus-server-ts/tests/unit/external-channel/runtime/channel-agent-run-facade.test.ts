@@ -97,9 +97,15 @@ const createActiveRun = (options: {
       isActive: () => true,
       getContext: () => ({ runId: options.runId ?? "agent-1", config: { runtimeKind: options.runtimeKind ?? "codex_app_server" }, runtimeContext: null }) as any,
       getPlatformAgentRunId: () => options.runId ?? "agent-1",
-      getStatusSnapshot: () => ({ status: "running", can_interrupt: true }),
-      subscribeToEvents:
-        options.subscribeToEvents ?? vi.fn().mockReturnValue(() => undefined),
+      getLifecycleSnapshot: () => ({
+        availability: "active" as const,
+        phase: "idle" as const,
+        currentTurn: { kind: "NONE" as const },
+      }),
+      subscribeToSourceEventBatches: (listener: (events: readonly unknown[]) => void | Promise<void>) =>
+        (options.subscribeToEvents ?? vi.fn().mockReturnValue(() => undefined))(
+          (event: unknown) => listener([event]),
+        ),
       postUserMessage:
         options.postUserMessage ??
         vi.fn().mockResolvedValue({

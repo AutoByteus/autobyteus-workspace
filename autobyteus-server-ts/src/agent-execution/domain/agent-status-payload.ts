@@ -2,7 +2,6 @@ export type AgentApiStatus = "offline" | "initializing" | "idle" | "running" | "
 
 export type AgentStatusPayload = {
   status: AgentApiStatus;
-  can_interrupt: boolean;
   agent_id?: string;
   agent_name?: string;
   member_route_key?: string;
@@ -51,7 +50,6 @@ export const normalizeAgentApiStatus = (
 
 export const buildAgentStatusPayload = (input: {
   status: unknown;
-  canInterrupt?: boolean | null;
   agentId?: string | null;
   agentName?: string | null;
   memberRouteKey?: string | null;
@@ -65,7 +63,6 @@ export const buildAgentStatusPayload = (input: {
   const status = normalizeAgentApiStatus(input.status);
   const payload: AgentStatusPayload = {
     status,
-    can_interrupt: status === "running" && input.canInterrupt === true,
   };
   const agentId = typeof input.agentId === "string" ? input.agentId.trim() : "";
   if (agentId) {

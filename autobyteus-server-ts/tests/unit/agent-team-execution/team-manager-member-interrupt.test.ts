@@ -56,7 +56,7 @@ const createFakeAgentRun = () => ({
   approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
   interrupt: vi.fn().mockResolvedValue({ accepted: true }),
   terminate: vi.fn().mockResolvedValue({ accepted: true }),
-  getStatusSnapshot: vi.fn(() => ({ status: "running", can_interrupt: true })),
+  getStatusSnapshot: vi.fn(() => ({ status: "running" })),
   subscribeToEvents: vi.fn(() => () => undefined),
 });
 

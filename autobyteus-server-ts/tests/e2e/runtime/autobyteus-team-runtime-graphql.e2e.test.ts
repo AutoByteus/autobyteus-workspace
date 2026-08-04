@@ -858,10 +858,21 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
         JSON.stringify({
           type: "INTERRUPT_GENERATION",
           payload: {
+            command_id: "client_interrupt_autobyteus_team_worker",
             target_member_route_key: "worker",
             ...(workerRunId ? { target_member_run_id: workerRunId } : {}),
           },
         }),
+      );
+
+      await waitForMessageAfter(
+        messages,
+        interruptStartIndex,
+        (message) =>
+          message.type === "AGENT_COMMAND_ACK" &&
+          message.payload.command_id === "client_interrupt_autobyteus_team_worker" &&
+          message.payload.state === "accepted",
+        "worker accepted interrupt command acknowledgement",
       );
 
       await waitForMessageAfter(

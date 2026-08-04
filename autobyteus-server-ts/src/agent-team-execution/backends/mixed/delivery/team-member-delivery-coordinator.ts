@@ -21,7 +21,7 @@ import {
 } from "../../../services/team-member-input-event-builder.js";
 import type { MixedTeamRunContext, MixedTeamMemberContext } from "../mixed-team-run-context.js";
 import type { PersistentMemberRegistryAccess } from "../members/mixed-persistent-member-registry.js";
-import type { MixedTeamEventPublish, MixedTeamStatusChange } from "../members/mixed-team-member-handle.js";
+import type { MixedTeamEventPublish } from "../members/mixed-team-member-handle.js";
 import { buildTeamCommunicationAddressForParticipant } from "./team-communication-address-builder.js";
 
 export type LogicalMessageDeliveryRecipient = {
@@ -35,7 +35,6 @@ export class TeamMemberDeliveryCoordinator {
     teamContext: TeamRunContext<MixedTeamRunContext>;
     memberRegistry: PersistentMemberRegistryAccess;
     publish: MixedTeamEventPublish;
-    notifyStatusChange: MixedTeamStatusChange;
   }) {}
 
   async deliver(
@@ -50,7 +49,6 @@ export class TeamMemberDeliveryCoordinator {
         tracedRequest,
         () => this.publishCommunicationPayload(tracedRequest, payload),
       );
-    this.options.notifyStatusChange();
     return {
       ...result,
       memberRunId: tracedRequest.recipient.participant.memberRunId,

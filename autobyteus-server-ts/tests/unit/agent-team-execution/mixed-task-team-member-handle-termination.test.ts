@@ -74,7 +74,6 @@ const buildParentContext = () => new TeamRunContext({
 
 const buildHandle = () => {
   const publish = vi.fn();
-  const notifyStatusChange = vi.fn();
   const directory = new TaskTeamActiveRunDirectory();
   const request: StartTaskTeamInstanceRequest = {
     identity,
@@ -91,27 +90,18 @@ const buildHandle = () => {
     subTeamRunFactory: {} as never,
     taskTeamActiveRunDirectory: directory,
     publish,
-    notifyStatusChange,
     deliverInterAgentMessage: vi.fn(),
   });
-  return { handle, publish, notifyStatusChange, directory };
+  return { handle, publish, directory };
 };
 
 describe("MixedTaskTeamMemberHandle termination", () => {
-  it("publishes one scoped root offline fallback before disposal when no child offline was observed", async () => {
-    const { handle, publish, notifyStatusChange } = buildHandle();
+  it("disposes without publishing an aggregate team-status fallback", async () => {
+    const { handle, publish } = buildHandle();
 
     await expect(handle.terminate()).resolves.toEqual({ accepted: true });
 
-    expect(publish).toHaveBeenCalledTimes(1);
-    expect(publish).toHaveBeenCalledWith(expect.objectContaining({
-      eventSourceType: "TEAM",
-      teamRunId: "parent-team-run-1",
-      sourcePath: ["design_team"],
-      data: { status: "offline" },
-      taskTeamInstance: identity,
-    }));
-    expect(notifyStatusChange).toHaveBeenCalledTimes(1);
+    expect(publish).not.toHaveBeenCalled();
   });
 
   it("does not publish offline or dispose the child run when child termination rejects", async () => {

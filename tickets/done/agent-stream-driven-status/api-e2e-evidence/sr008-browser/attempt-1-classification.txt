@@ -1,0 +1,2 @@
+SR008 browser attempt 1 classification: Local Fix / API-E2E harness selector.
+The production browser path sent a current client_interrupt_* command and received the exact failed same-socket acknowledgement. The probe timed out because its toast-text locator matched both the message span and the nested close-icon span, so the observed match count was 2 instead of the asserted 1. The durable probe now counts the error toast container itself and isolates unrelated boot GraphQL requests. No product-source defect was observed; the attempt is retained for chronology.

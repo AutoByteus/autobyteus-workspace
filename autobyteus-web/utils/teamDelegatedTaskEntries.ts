@@ -166,6 +166,7 @@ const liveEntryFromNode = (
     ? formatTeamCommunicationAddressLabel(persistedRecord.receiverAddress)
     : resolveTargetName(teamContext, node);
   const taskExecutionStatus = node.taskExecutionStatus ?? null;
+  const agentStatus = node.memberKind === 'agent' ? node.currentStatus : null;
 
   return {
     kind: isTaskTeam ? 'task_team' : 'task_agent',
@@ -185,8 +186,8 @@ const liveEntryFromNode = (
     taskTargetKind,
     taskTargetName,
     runId,
-    status: context?.state.currentStatus ?? node.currentStatus ?? AgentStatus.Initializing,
-    statusLabel: formatStatus(taskExecutionStatus ?? context?.state.currentStatus ?? node.currentStatus ?? persistedRecord?.status),
+    status: context?.state.currentStatus ?? agentStatus ?? AgentStatus.Initializing,
+    statusLabel: formatStatus(taskExecutionStatus ?? context?.state.currentStatus ?? agentStatus ?? persistedRecord?.status),
   };
 };
 

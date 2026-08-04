@@ -1,0 +1,10 @@
+timestamp=2026-08-02T05:23:35Z
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status
+branch=codex/agent-stream-driven-status
+head=24256a6afc7f90c086ac1ba8e7d3ca1f528daae7
+status:
+ M autobyteus-server-ts/tests/e2e/agent/agent-command-correlated-status.e2e.test.ts
+ M autobyteus-server-ts/tests/integration/agent/agent-status-websocket.integration.test.ts
+?? tickets/in-progress/agent-stream-driven-status/api-e2e-coverage-investigation.md
+?? tickets/in-progress/agent-stream-driven-status/api-e2e-evidence/
+?? tickets/in-progress/agent-stream-driven-status/team-status-simplification-evidence.md

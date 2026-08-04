@@ -14,5 +14,4 @@ export const handleMemberInputMessage = (
     userMessage: buildUserMessageFromProjectionPayload(payload),
     retainExistingNonExecutableContextFiles: true,
   });
-  context.isSending = true;
 };

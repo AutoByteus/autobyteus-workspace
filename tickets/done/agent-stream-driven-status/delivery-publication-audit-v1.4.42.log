@@ -1,0 +1,49 @@
+===== v1.4.42 PUBLICATION AUDIT =====
+Timestamp: 2026-08-04T06:24:44+02:00
+Personal HEAD: 563a48443bd2f2140c294fcd14de9d8828560301
+origin/personal: 563a48443bd2f2140c294fcd14de9d8828560301
+Tag object: 1c3bf97e0580d7f48f653c57819f1fc37dcab87a
+Tag commit: 563a48443bd2f2140c294fcd14de9d8828560301
+Web version: 1.4.42
+Gateway version: 1.4.42
+
+===== REMOTE TAG =====
+1c3bf97e0580d7f48f653c57819f1fc37dcab87a	refs/tags/v1.4.42
+563a48443bd2f2140c294fcd14de9d8828560301	refs/tags/v1.4.42^{}
+
+===== RELEASE NOTES SYNC =====
+Curated release notes match archived ticket notes: PASS
+
+===== TAG-TRIGGERED WORKFLOWS =====
+30876231174	Desktop Release	push	completed	success	2026-08-04T03:57:45Z	2026-08-04T04:14:22Z	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30876231174
+30876231154	iOS App Store Connect Release	push	completed	success	2026-08-04T03:57:45Z	2026-08-04T04:10:54Z	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30876231154
+30876231125	Server Docker Release	push	completed	success	2026-08-04T03:57:45Z	2026-08-04T04:22:54Z	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30876231125
+30876231117	Release Messaging Gateway	push	completed	success	2026-08-04T03:57:45Z	2026-08-04T04:00:48Z	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30876231117
+30876231116	Android APK Release	push	completed	success	2026-08-04T03:57:45Z	2026-08-04T04:01:17Z	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/30876231116
+
+===== GITHUB RELEASE =====
+{"assetCount":21,"assets":[{"name":"autobyteus-message-gateway-1.4.42-node-generic.tar.gz","size":46502678,"state":"uploaded"},{"name":"autobyteus-message-gateway-1.4.42-node-generic.tar.gz.json","size":429,"state":"uploaded"},{"name":"autobyteus-message-gateway-1.4.42-node-generic.tar.gz.sha256","size":120,"state":"uploaded"},{"name":"AutoByteus_personal_android-1.4.42-release.apk","size":1846691,"state":"uploaded"},{"name":"AutoByteus_personal_android-1.4.42-release.apk.sha256","size":113,"state":"uploaded"},{"name":"AutoByteus_personal_linux-arm64-1.4.42.AppImage","size":357041218,"state":"uploaded"},{"name":"AutoByteus_personal_linux-x64-1.4.42.AppImage","size":368663601,"state":"uploaded"},{"name":"AutoByteus_personal_macos-arm64-1.4.42.dmg","size":434276365,"state":"uploaded"},{"name":"AutoByteus_personal_macos-arm64-1.4.42.dmg.blockmap","size":452365,"state":"uploaded"},{"name":"AutoByteus_personal_macos-arm64-1.4.42.zip","size":429965905,"state":"uploaded"},{"name":"AutoByteus_personal_macos-arm64-1.4.42.zip.blockmap","size":440765,"state":"uploaded"},{"name":"AutoByteus_personal_macos-x64-1.4.42.dmg","size":456461028,"state":"uploaded"},{"name":"AutoByteus_personal_macos-x64-1.4.42.dmg.blockmap","size":475115,"state":"uploaded"},{"name":"AutoByteus_personal_macos-x64-1.4.42.zip","size":451605421,"state":"uploaded"},{"name":"AutoByteus_personal_macos-x64-1.4.42.zip.blockmap","size":461657,"state":"uploaded"},{"name":"AutoByteus_personal_windows-1.4.42.exe","size":301741434,"state":"uploaded"},{"name":"latest-linux-arm64.yml","size":417,"state":"uploaded"},{"name":"latest-linux.yml","size":413,"state":"uploaded"},{"name":"latest-mac.yml","size":897,"state":"uploaded"},{"name":"latest.yml","size":354,"state":"uploaded"},{"name":"release-manifest.json","size":904,"state":"uploaded"}],"isDraft":false,"isPrerelease":false,"name":"v1.4.42","publishedAt":"2026-08-04T04:00:45Z","tagName":"v1.4.42","targetCommitish":"563a48443bd2f2140c294fcd14de9d8828560301","url":"https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.42"}
+
+===== DOCKER MULTI-ARCH IMAGE =====
+Name:      docker.io/autobyteus/autobyteus-server:1.4.42
+MediaType: application/vnd.oci.image.index.v1+json
+Digest:    sha256:0bda0355807e2f462d0a8190c338fd641dd403c72051d518c21afb257b1afcd5
+
+Manifests:
+  Name:      docker.io/autobyteus/autobyteus-server:1.4.42@sha256:9fd3f7eb566ae3dd22592b19e8faae0d4e5be40a7ebb12a9a3660e7a3ba4a10c
+  MediaType: application/vnd.oci.image.manifest.v1+json
+  Platform:  linux/amd64
+
+  Name:      docker.io/autobyteus/autobyteus-server:1.4.42@sha256:be2165d571b594a89df4d439d438aa15bc1306c5f001d27a34146457272815db
+  MediaType: application/vnd.oci.image.manifest.v1+json
+  Platform:  linux/arm64
+
+Publication audit result: PASS
+
+===== IOS APP STORE CONNECT / TESTFLIGHT UPLOAD PROOF =====
+Archive And Upload To App Store Connect	Upload IPA to App Store Connect/TestFlight	2026-08-04T04:10:46.5838900Z UPLOAD SUCCEEDED with no errors
+Archive And Upload To App Store Connect	Upload IPA to App Store Connect/TestFlight	2026-08-04T04:10:46.5839450Z Delivery UUID: 2995da49-4e22-4c56-ba3d-1e3c5168da35
+Archive And Upload To App Store Connect	Upload IPA to App Store Connect/TestFlight	2026-08-04T04:10:46.5841360Z No errors uploading archive at '/Users/runner/work/_temp/ios-publish-output/AutoByteus_personal_ios-1.4.42.ipa'.
+Archive And Upload To App Store Connect	Summarize iOS TestFlight upload	2026-08-04T04:10:46.5932370Z [36;1m  echo "iOS marketing/build: \`1.4.42 (103)\`"[0m
+Archive And Upload To App Store Connect	Summarize iOS TestFlight upload	2026-08-04T04:10:46.5953090Z [36;1m  echo "Upload step status: \`success\`"[0m
+Archive And Upload To App Store Connect	Summarize iOS TestFlight upload	2026-08-04T04:10:46.5954030Z [36;1m  echo "This workflow uploads to App Store Connect/TestFlight only. It does not submit for final App Store review or public release."[0m

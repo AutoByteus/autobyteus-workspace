@@ -4,7 +4,6 @@ import { AgentContext } from '~/types/agent/AgentContext';
 import { AgentRunState } from '~/types/agent/AgentRunState';
 import type { AgentRunConfig } from '~/types/agent/AgentRunConfig';
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import { useActiveContextStore } from '../activeContextStore';
 import { useAgentContextsStore } from '../agentContextsStore';
 import { useAgentSelectionStore } from '../agentSelectionStore';
@@ -37,7 +36,6 @@ const createAgentContext = (runId: string): AgentContext => {
   } as any;
   const context = new AgentContext(config, new AgentRunState(runId, conversation));
   context.state.currentStatus = AgentStatus.Running;
-  context.state.canInterrupt = true;
   return context;
 };
 
@@ -64,7 +62,7 @@ const buildTeamContext = (
     coordinatorMemberRouteKey: 'solution_designer',
     historicalHydration: null,
     focusedMemberRouteKey,
-    currentStatus: AgentTeamStatus.Running,
+    isActive: true,
     isSubscribed: true,
   };
 };
@@ -167,7 +165,7 @@ describe('activeContextStore interrupt routing', () => {
         ['solution_designer', solutionDesigner],
         ['delivery_engineer', deliveryEngineer],
       ], 'delivery_engineer'),
-      currentStatus: AgentTeamStatus.Offline,
+      isActive: false,
       isSubscribed: false,
     });
     selectionStore.selectRun('team-1', 'team');

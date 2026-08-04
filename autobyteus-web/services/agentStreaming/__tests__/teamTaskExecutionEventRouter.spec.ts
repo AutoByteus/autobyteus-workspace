@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import { handleTaskExecutionProjectionMessage } from '../teamTaskExecutionEventRouter';
 
 const buildTeamContext = () => {
@@ -23,7 +22,7 @@ const buildTeamContext = () => {
     ]),
     leafAgentContextsByRouteKey: new Map<string, any>(),
     focusedMemberRouteKey: 'implementation_engineer',
-    currentStatus: AgentTeamStatus.Running,
+    isActive: true,
     isSubscribed: true,
   } as any;
 };

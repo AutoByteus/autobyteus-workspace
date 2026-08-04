@@ -199,7 +199,7 @@ describe('openTeamRun', () => {
       coordinatorMemberRouteKey: 'member-a',
       historicalHydration: null,
       focusedMemberRouteKey: 'member-a',
-      currentStatus: 'Processing',
+      isActive: true,
       isSubscribed: true,
     };
     const projectedMembers = new Map([
@@ -271,7 +271,7 @@ describe('openTeamRun', () => {
       coordinatorMemberRouteKey: 'member-a',
       historicalHydration: null,
       focusedMemberRouteKey: 'member-a',
-      currentStatus: 'Processing',
+      isActive: true,
       isSubscribed: true,
     };
     const projectedMembers = new Map([
@@ -327,7 +327,7 @@ describe('openTeamRun', () => {
       coordinatorMemberRouteKey: 'member-a',
       historicalHydration: null,
       focusedMemberRouteKey: 'member-a',
-      currentStatus: 'running',
+      isActive: true,
       isSubscribed: true,
     };
     const projectedMembers = new Map([
@@ -368,7 +368,7 @@ describe('openTeamRun', () => {
       coordinatorMemberRouteKey: 'member-a',
       historicalHydration: null,
       focusedMemberRouteKey: 'task-agent-run-1',
-      currentStatus: 'running',
+      isActive: true,
       isSubscribed: true,
     } as any;
     const existingTaskAgentContext = ensureTaskAgentContext(existingContext, {
@@ -423,7 +423,6 @@ describe('openTeamRun', () => {
             runId: 'run-a',
             conversation: { id: 'existing-conversation', messages: [] },
             currentStatus: 'idle',
-            canInterrupt: true,
             eventMonitorPresentationRevision: 7,
             resetEventMonitorPresentationRevision() {
               this.eventMonitorPresentationRevision = 0;
@@ -434,7 +433,7 @@ describe('openTeamRun', () => {
       coordinatorMemberRouteKey: 'member-a',
       historicalHydration: null,
       focusedMemberRouteKey: 'member-a',
-      currentStatus: 'offline',
+      isActive: false,
       isSubscribed: false,
     };
     const projectedMembers = new Map([
@@ -456,7 +455,6 @@ describe('openTeamRun', () => {
 
     expect(existingContext.leafAgentContextsByRouteKey.get('member-a')?.state.conversation.id).toBe('projected-conversation');
     expect(existingContext.leafAgentContextsByRouteKey.get('member-a')?.state.currentStatus).toBe('idle');
-    expect(existingContext.leafAgentContextsByRouteKey.get('member-a')?.state.canInterrupt).toBe(false);
     expect(existingContext.leafAgentContextsByRouteKey.get('member-a')?.state.eventMonitorPresentationRevision).toBe(0);
     expect(connectToTeamStreamMock).toHaveBeenCalledWith('team-1');
   });

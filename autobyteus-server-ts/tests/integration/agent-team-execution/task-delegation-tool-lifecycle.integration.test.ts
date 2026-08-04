@@ -117,7 +117,7 @@ class ManagedCodexTeamBackend implements TeamRunBackend {
   private readonly memberNames = new Map<string, string>();
   private readonly childTaskTeams = new Map<string, { run: TeamRun; backend: ManagedCodexTeamBackend; identity: TaskTeamInstanceIdentity }>();
   private active = true;
-  private status = "running";
+  private openExecutionWork = true;
 
   constructor(
     private readonly config: TeamRunConfig,
@@ -141,17 +141,42 @@ class ManagedCodexTeamBackend implements TeamRunBackend {
     return this.childTaskTeams.get(taskTeamRunId) ?? null;
   }
 
-  setStatus(status: string): void {
-    this.status = status;
+  markPrivateExecutionWorkSettled(): void {
+    this.openExecutionWork = false;
   }
 
-  publishTeamStatus(status: string): void {
-    this.setStatus(status);
-    this.publishEvent({
-      eventSourceType: TeamRunEventSourceType.TEAM,
+  publishAcceptedTaskReconciliation(teamRun: TeamRun, taskId: string): void {
+    const taskAgentInstance = this.taskAgentStarts
+      .find((start) => start.identity.taskId === taskId)?.identity ?? null;
+    if (!taskAgentInstance) {
+      throw new Error(`Task agent identity not found for accepted task '${taskId}'.`);
+    }
+    this.markPrivateExecutionWorkSettled();
+    const reconciliation: TeamRunTaskDelegationEventPayload = {
+      eventType: "TASK_DELEGATION_RESULT_REVIEWED",
+      payload: {
+        teamRunId: this.runId,
+        rootTeamRunId:
+          this.runtimeOptions.parentBoundary?.memoryScope.rootTeamRunId ?? this.runId,
+        taskId,
+        previousStatus: "awaiting_review",
+        status: "accepted",
+        terminal: true,
+        execution: {
+          kind: "task_agent",
+          taskAgentInstance,
+        },
+        target_name: taskAgentInstance.logicalMember.memberName,
+      },
+    };
+    // Use the same typed TeamRun publication boundary as the production
+    // TaskDelegationEventPublisher so child settlement rechecks on a supported
+    // accepted-task reconciliation fact rather than a test-only event type.
+    teamRun.publishEvent({
+      eventSourceType: TeamRunEventSourceType.TASK_DELEGATION,
       teamRunId: this.runId,
-      sourcePath: [],
-      data: { status } as never,
+      sourcePath: [...taskAgentInstance.logicalMember.memberPath],
+      data: reconciliation,
     });
   }
 
@@ -253,8 +278,8 @@ class ManagedCodexTeamBackend implements TeamRunBackend {
   }
 
   isActive() { return this.active; }
-  getStatusSnapshot() { return { status: this.status, source_path: [] }; }
-  getMemberStatusSnapshots() { return []; }
+  getLeafAgentStatusSnapshots() { return []; }
+  hasOpenExecutionWork() { return this.openExecutionWork; }
   subscribeToEvents(listener: TeamRunEventListener): TeamRunEventUnsubscribe {
     this.listeners.add(listener);
     return () => { this.listeners.delete(listener); };
@@ -289,7 +314,7 @@ class ManagedCodexTeamBackend implements TeamRunBackend {
     }
     this.childTaskTeams.clear();
     this.active = false;
-    this.status = "offline";
+    this.openExecutionWork = false;
     return { accepted: true };
   }
 
@@ -1194,7 +1219,10 @@ describe("task delegation tool lifecycle integration", () => {
     await new Promise((resolve) => setTimeout(resolve, 0));
     expect(harness.runRegistry.getExisting(firstTaskTeamRunId!)?.hasOpenWork()).toBe(false);
     expect(getTaskAgentDirectory(firstTaskTeamRunId!).listActiveEntries()).toEqual([]);
-    firstTaskTeam!.backend.publishTeamStatus("idle");
+    firstTaskTeam!.backend.publishAcceptedTaskReconciliation(
+      firstTaskTeam!.run,
+      childTaskId,
+    );
     await vi.waitFor(() => {
       expect(harness.backend.taskTeamSettlements).toEqual([
         expect.objectContaining({
@@ -1235,11 +1263,11 @@ describe("task delegation tool lifecycle integration", () => {
     await executeSubmitTaskResultWithContext(harness, secondIngressContext, {
       message: "Second team result.",
     });
+    secondTaskTeam!.backend.markPrivateExecutionWorkSettled();
     await executeCoordinatorReview(harness, {
       task_id: "task_0003",
       decision: "accept",
     });
-    secondTaskTeam!.backend.publishTeamStatus("idle");
     await vi.waitFor(() => {
       expect(harness.backend.taskTeamSettlements).toEqual([
         expect.objectContaining({ requestedRunId: firstTaskTeamRunId, accepted: true }),

@@ -78,6 +78,7 @@ const sendInterruptGenerationOverSocket = (
     JSON.stringify({
       type: "INTERRUPT_GENERATION",
       payload: {
+        command_id: `client_interrupt_${input.targetMemberRouteKey.replace(/[^a-zA-Z0-9_-]/g, "_")}`,
         target_member_route_key: input.targetMemberRouteKey,
         ...(input.targetMemberRunId ? { target_member_run_id: input.targetMemberRunId } : {}),
       },

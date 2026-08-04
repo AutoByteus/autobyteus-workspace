@@ -118,14 +118,23 @@ export class GlobalAgentRunMessageRouter {
     const postResult = await targetRun.postUserMessage(
       buildDirectAgentRunInputMessage(runtimeInput),
     );
+    let publicationError: unknown = null;
     if (postResult.accepted) {
-      this.emitAcceptedDirectMessageEvent(targetRun, runtimeInput);
+      try {
+        await targetRun.publishEvent(buildDirectAgentRunInterAgentEvent(runtimeInput));
+      } catch (error) {
+        publicationError = error;
+      }
     }
 
     this.recordGrantUsage(grantDecision.kind === "allowed" ? grantDecision.grant : null, {
       accepted: postResult.accepted,
-      code: postResult.code ?? (postResult.accepted ? "DELIVERED" : "TARGET_AGENT_RUN_REJECTED_INPUT"),
-      message: postResult.message ?? null,
+      code: publicationError
+        ? "DELIVERED_EVENT_PUBLICATION_FAILED"
+        : postResult.code ?? (postResult.accepted ? "DELIVERED" : "TARGET_AGENT_RUN_REJECTED_INPUT"),
+      message: publicationError
+        ? `Message was accepted, but outward event publication failed: ${String(publicationError)}`
+        : postResult.message ?? null,
       senderRunId: input.sender.senderRunId,
       targetAgentRunId,
       messageType,
@@ -143,16 +152,13 @@ export class GlobalAgentRunMessageRouter {
     return {
       ...postResult,
       accepted: true,
-      code: postResult.code ?? "DELIVERED",
-      message: postResult.message ?? `Delivered message to ${targetAgentRunId}.`,
+      code: publicationError
+        ? "DELIVERED_EVENT_PUBLICATION_FAILED"
+        : postResult.code ?? "DELIVERED",
+      message: publicationError
+        ? `Message was accepted by ${targetAgentRunId}, but outward event publication failed: ${String(publicationError)}`
+        : postResult.message ?? `Delivered message to ${targetAgentRunId}.`,
     };
-  }
-
-  private emitAcceptedDirectMessageEvent(
-    targetRun: AgentRun,
-    input: Parameters<typeof buildDirectAgentRunInterAgentEvent>[0],
-  ): void {
-    targetRun.emitLocalEvent(buildDirectAgentRunInterAgentEvent(input));
   }
 
   private recordGrantUsage(

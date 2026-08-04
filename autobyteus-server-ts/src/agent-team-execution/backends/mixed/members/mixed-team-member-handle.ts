@@ -1,6 +1,6 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../../../agent-execution/domain/agent-operation-result.js";
-import type { AgentStatusPayload } from "../../../../agent-execution/domain/agent-status-payload.js";
+import type { TeamLeafAgentStatusSnapshot } from "../../../domain/team-leaf-agent-status-snapshot.js";
 import type { ResolvedInterAgentMessageDeliveryRequest } from "../../../domain/inter-agent-message-delivery.js";
 import type { TeamMemberSelector } from "../../../domain/team-run-member-identity.js";
 import type { TeamRunEventUnsubscribe } from "../../../domain/team-run-event.js";
@@ -10,7 +10,8 @@ import type { ConversationTargetAddress } from "../../../domain/conversation-tar
 export interface MixedTeamMemberHandle {
   readonly context: MixedTeamMemberContext;
   isActive(): boolean;
-  getStatusSnapshot(): AgentStatusPayload;
+  getLeafAgentStatusSnapshots(): TeamLeafAgentStatusSnapshot[];
+  hasOpenExecutionWork(): boolean;
   postMessage(message: AgentInputUserMessage): Promise<AgentOperationResult>;
   postMessageToConversationTarget(
     message: AgentInputUserMessage,
@@ -36,5 +37,4 @@ export interface MixedTeamMemberHandle {
 }
 
 export type MixedTeamEventPublish = (event: import("../../../domain/team-run-event.js").TeamRunEvent) => void;
-export type MixedTeamStatusChange = () => void;
 export type MixedTeamUnsubscribe = TeamRunEventUnsubscribe;

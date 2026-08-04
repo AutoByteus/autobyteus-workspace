@@ -1,8 +1,5 @@
-import {
-  buildAgentStatusPayload,
-  normalizeAgentApiStatus,
-  type AgentStatusPayload,
-} from "../../../domain/agent-status-payload.js";
+import type { AgentRuntimeLifecycleSnapshot } from "../../../domain/agent-runtime-lifecycle-snapshot.js";
+import { normalizeAgentApiStatus } from "../../../domain/agent-status-payload.js";
 
 export type ClaudeStatusSource = {
   currentStatus?: unknown;
@@ -23,18 +20,37 @@ const CLAUDE_STARTUP_STATUS_TOKENS = new Set([
   "uninitialized",
 ]);
 
-const normalizeClaudeAgentStatus = (value: unknown): AgentStatusPayload["status"] =>
-  CLAUDE_STARTUP_STATUS_TOKENS.has(normalizeToken(value) ?? "")
-    ? "initializing"
-    : normalizeAgentApiStatus(value, "idle");
+const normalizeClaudeAgentPhase = (
+  value: unknown,
+): AgentRuntimeLifecycleSnapshot["phase"] => {
+  if (CLAUDE_STARTUP_STATUS_TOKENS.has(normalizeToken(value) ?? "")) {
+    return "initializing";
+  }
+  const status = normalizeAgentApiStatus(value, "idle");
+  return status === "offline" ? "idle" : status;
+};
 
-export const projectClaudeAgentStatus = (source: ClaudeStatusSource): AgentStatusPayload => {
-  const status =
-    source.isActive === false
-      ? "offline"
-      : normalizeClaudeAgentStatus(source.currentStatus);
-  return buildAgentStatusPayload({
-    status,
-    canInterrupt: status === "running" && Boolean(source.activeTurnId) && source.isInterrupting !== true,
-  });
+export const projectClaudeAgentLifecycleSnapshot = (
+  source: ClaudeStatusSource,
+): AgentRuntimeLifecycleSnapshot => {
+  if (source.isActive === false) {
+    return {
+      availability: "offline",
+      phase: "idle",
+      currentTurn: { kind: "NONE" },
+    };
+  }
+  const turnId = typeof source.activeTurnId === "string"
+    ? source.activeTurnId.trim()
+    : "";
+  const projectedPhase = normalizeClaudeAgentPhase(source.currentStatus);
+  return {
+    availability: "active",
+    phase: turnId ? "running" : projectedPhase === "running"
+      ? "initializing"
+      : projectedPhase,
+    currentTurn: turnId
+      ? { kind: "IDENTIFIED", turnId }
+      : { kind: "NONE" },
+  };
 };

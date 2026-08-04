@@ -33,7 +33,7 @@ export class SkillImprovementTargetNotificationService {
     ].join("\n\n");
 
     try {
-      activeRun.emitLocalEvent({
+      await activeRun.publishEvent({
         eventType: AgentRunEventType.SYSTEM_TASK_NOTIFICATION,
         runId: activeRun.runId,
         payload: {

@@ -1,0 +1,2 @@
+SR008 browser attempt 4 classification: Local Fix / API-E2E harness expectation.
+SR008-BR-001 and SR008-BR-002 passed. SR008-BR-003 produced exactly one transport-failure toast and preserved running state/transcript, but the probe expected the literal word disconnected while production correctly surfaced the WebSocket close reason, "probe disconnect before ack". The expectation now verifies the actual deterministic close reason. No product-source defect was observed.

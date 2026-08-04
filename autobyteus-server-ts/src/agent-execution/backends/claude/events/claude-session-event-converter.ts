@@ -3,7 +3,7 @@ import {
   type AgentRunEvent,
 } from "../../../domain/agent-run-event.js";
 import { resolveAgentRunErrorEvidence } from "../../../domain/agent-run-error-evidence.js";
-import type { AgentStatusPayload } from "../../../domain/agent-status-payload.js";
+import type { AgentRuntimeLifecycleSnapshot } from "../../../domain/agent-runtime-lifecycle-snapshot.js";
 import { serializePayload } from "../../../../services/agent-streaming/payload-serialization.js";
 import { asObject, asString, type ClaudeSessionEvent } from "../claude-runtime-shared.js";
 import { normalizeClaudeAgentToolsToolNameForEvent } from "../agent-tools-mcp/claude-agent-tools-mcp-tool-name.js";
@@ -169,9 +169,10 @@ export const deriveClaudeAgentRunStatusHint = (
 export class ClaudeSessionEventConverter {
   constructor(
     private readonly runId: string,
-    private readonly getStatusPayload: () => AgentStatusPayload = () => ({
-      status: "offline",
-      can_interrupt: false,
+    private readonly getLifecycleSnapshot: () => AgentRuntimeLifecycleSnapshot = () => ({
+      availability: "offline",
+      phase: "idle",
+      currentTurn: { kind: "NONE" },
     }),
   ) {}
 
@@ -346,13 +347,7 @@ export class ClaudeSessionEventConverter {
           AgentRunEventType.ERROR,
           buildErrorPayload(payload),
         );
-        const evidence = resolveAgentRunErrorEvidence(errorEvent);
-        return evidence?.kind === "TURN_TERMINAL" || evidence?.kind === "RUNTIME_GLOBAL"
-          ? [
-              errorEvent,
-              this.createStatusEvent(claudeEventName, { status: "error", can_interrupt: false }),
-            ]
-          : [errorEvent];
+        return [errorEvent];
       }
       default:
         return [];
@@ -369,16 +364,16 @@ export class ClaudeSessionEventConverter {
   ): AgentRunEvent[] {
     return [
       this.createEvent(claudeEventName, lifecycleEventType, lifecyclePayload),
-      this.createStatusEvent(claudeEventName),
     ];
   }
 
   private createStatusEvent(
     claudeEventName: string,
-    payload: Partial<AgentStatusPayload> = {},
+    payload: Record<string, unknown> = {},
   ): AgentRunEvent {
+    const snapshot = this.getLifecycleSnapshot();
     return this.createEvent(claudeEventName, AgentRunEventType.AGENT_STATUS, {
-      ...this.getStatusPayload(),
+      status: snapshot.availability === "offline" ? "offline" : snapshot.phase,
       ...payload,
     });
   }

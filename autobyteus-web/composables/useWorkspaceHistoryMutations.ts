@@ -1,12 +1,11 @@
-import { ref } from 'vue';
+import { ref, type Ref } from 'vue';
 import type { RunTreeRow } from '~/utils/runTreeProjection';
 import type { TeamTreeNode } from '~/stores/runHistoryTypes';
-import type { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import { useLocalization } from '~/composables/useLocalization';
 
 export const useWorkspaceHistoryMutations = (params: {
   terminateRun: (runId: string) => Promise<boolean>;
-  terminateTeamRun: (teamRunId: string) => Promise<unknown>;
+  terminateTeamRun: (teamRunId: string) => Promise<boolean>;
   removeDraftRun: (runId: string) => Promise<boolean>;
   removeDraftTeam: (teamRunId: string) => Promise<boolean>;
   deleteRun: (runId: string) => Promise<boolean>;
@@ -14,11 +13,12 @@ export const useWorkspaceHistoryMutations = (params: {
   archiveRun: (runId: string) => Promise<boolean>;
   archiveTeamRun: (teamRunId: string) => Promise<boolean>;
   addToast: (message: string, type: 'success' | 'error' | 'warning' | 'info') => void;
-  canTerminateTeam: (status: AgentTeamStatus) => boolean;
+  canTerminateTeam: (isActive: boolean) => boolean;
+  stopPendingTeamIds: Ref<Record<string, boolean>>;
 }) => {
   const { t } = useLocalization();
   const terminatingRunIds = ref<Record<string, boolean>>({});
-  const terminatingTeamIds = ref<Record<string, boolean>>({});
+  const stopPendingTeamIds = params.stopPendingTeamIds;
   const deletingRunIds = ref<Record<string, boolean>>({});
   const deletingTeamIds = ref<Record<string, boolean>>({});
   const archivingRunIds = ref<Record<string, boolean>>({});
@@ -85,24 +85,19 @@ export const useWorkspaceHistoryMutations = (params: {
 
   const onTerminateTeam = async (teamRunId: string): Promise<void> => {
     const terminateErrorMessage = 'Failed to terminate team. Please try again.';
-    if (terminatingTeamIds.value[teamRunId]) {
+    if (stopPendingTeamIds.value[teamRunId]) {
       return;
     }
 
-    terminatingTeamIds.value = {
-      ...terminatingTeamIds.value,
-      [teamRunId]: true,
-    };
-
     try {
-      await params.terminateTeamRun(teamRunId);
+      const terminated = await params.terminateTeamRun(teamRunId);
+      if (!terminated) {
+        console.error(`Failed to terminate team '${teamRunId}'.`);
+        params.addToast(terminateErrorMessage, 'error');
+      }
     } catch (error) {
       console.error('Failed to terminate team:', error);
       params.addToast(terminateErrorMessage, 'error');
-    } finally {
-      const next = { ...terminatingTeamIds.value };
-      delete next[teamRunId];
-      terminatingTeamIds.value = next;
     }
   };
 
@@ -159,7 +154,7 @@ export const useWorkspaceHistoryMutations = (params: {
       return;
     }
 
-    if (params.canTerminateTeam(team.currentStatus) || team.deleteLifecycle !== 'READY') {
+    if (params.canTerminateTeam(team.isActive) || team.deleteLifecycle !== 'READY') {
       return;
     }
 
@@ -217,7 +212,7 @@ export const useWorkspaceHistoryMutations = (params: {
   const onArchiveTeam = async (team: TeamTreeNode): Promise<void> => {
     if (
       team.teamRunId.trim().startsWith('temp-') ||
-      params.canTerminateTeam(team.currentStatus) ||
+      params.canTerminateTeam(team.isActive) ||
       team.deleteLifecycle !== 'READY'
     ) {
       return;
@@ -328,7 +323,7 @@ export const useWorkspaceHistoryMutations = (params: {
 
   return {
     terminatingRunIds,
-    terminatingTeamIds,
+    stopPendingTeamIds,
     deletingRunIds,
     deletingTeamIds,
     showDeleteConfirmation,

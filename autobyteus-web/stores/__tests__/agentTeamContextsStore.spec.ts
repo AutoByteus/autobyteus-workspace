@@ -98,7 +98,7 @@ const buildTeamContext = (params: {
     coordinatorMemberRouteKey: params.memberRouteKeys[0],
     historicalHydration: params.historicalHydration ?? null,
     focusedMemberRouteKey: params.focusedMemberRouteKey,
-    currentStatus: 'idle' as any,
+    isActive: false,
     isSubscribed: false,
   }
 }

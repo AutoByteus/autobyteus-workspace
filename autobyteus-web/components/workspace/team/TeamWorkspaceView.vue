@@ -17,7 +17,7 @@
         <h4 v-if="activeTeamContext" class="text-base font-medium text-gray-800 truncate" :title="headerTitle">
           {{ headerTitle }}
         </h4>
-        <AgentStatusDisplay v-if="activeTeamContext" :status="headerStatus" />
+        <AgentStatusDisplay v-if="activeTeamContext && headerStatus" :status="headerStatus" />
       </div>
 
       <div class="flex flex-shrink-0 flex-wrap items-center justify-end gap-2 sm:gap-3">
@@ -80,7 +80,6 @@ import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore';
 import { useTeamMemberPresentation } from '~/composables/useTeamMemberPresentation';
-import { AgentStatus } from '~/types/agent/AgentStatus';
 import AgentUserInputForm from '~/components/agentInput/AgentUserInputForm.vue';
 import AgentStatusDisplay from '~/components/workspace/agent/AgentStatusDisplay.vue';
 import AgentTeamEventMonitor from '~/components/workspace/team/AgentTeamEventMonitor.vue';
@@ -136,9 +135,9 @@ const showSharedComposer = computed(() => (
 
 const headerStatus = computed(() => {
   return rosterFocusedMemberContext.value?.state.currentStatus
-    ?? rosterFocusedMemberNode.value?.currentStatus
-    ?? activeTeamContext.value?.currentStatus
-    ?? AgentStatus.Offline;
+    ?? (rosterFocusedMemberNode.value?.memberKind === 'agent'
+      ? rosterFocusedMemberNode.value.currentStatus
+      : null);
 });
 
 const headerTitle = computed(() => {

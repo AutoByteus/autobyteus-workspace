@@ -71,11 +71,10 @@ describe('agentStatusHandler', () => {
     mockContext = {
       state: { 
         currentStatus: AgentStatus.Idle,
-        canInterrupt: false,
         compactionStatus: null,
         runId: 'run-1',
       },
-      isSending: true,
+      submissionPending: true,
       conversation: {
         messages: []
       }
@@ -84,24 +83,22 @@ describe('agentStatusHandler', () => {
 
   describe('handleAgentStatus', () => {
     it('updates currentStatus', () => {
-      const payload: AgentStatusPayload = { status: 'running', can_interrupt: true };
+      const payload: AgentStatusPayload = { status: 'running' };
       handleAgentStatus(payload, mockContext);
       expect(mockContext.state.currentStatus).toBe(AgentStatus.Running);
-      expect(mockContext.state.canInterrupt).toBe(true);
     });
 
-    it('sets isSending to false when status is Idle', () => {
-      const payload: AgentStatusPayload = { status: 'idle', can_interrupt: false };
+    it('sets submissionPending to false when status is Idle', () => {
+      const payload: AgentStatusPayload = { status: 'idle' };
       handleAgentStatus(payload, mockContext);
-      expect(mockContext.isSending).toBe(false);
-      expect(mockContext.state.canInterrupt).toBe(false);
+      expect(mockContext.submissionPending).toBe(false);
     });
 
     it('marks last AI message as complete when Idle', () => {
       const aiMsg = { type: 'ai', isComplete: false };
       mockContext.conversation.messages.push(aiMsg);
       
-      const payload: AgentStatusPayload = { status: 'idle', can_interrupt: false };
+      const payload: AgentStatusPayload = { status: 'idle' };
       handleAgentStatus(payload, mockContext);
       
       expect(aiMsg.isComplete).toBe(true);

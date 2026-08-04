@@ -11,7 +11,7 @@
       </div>
       <button
         @click="promptTerminateTeam"
-        :disabled="isTeamRunTemporary"
+        :disabled="!activeTeam?.isActive || isStopPending"
         class="px-4 py-2 bg-red-100 text-red-700 font-semibold text-sm rounded-md border border-red-200 shadow-sm hover:bg-red-600 hover:text-white hover:border-red-600 hover:shadow transform transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
         :title="$t('workspace.components.workspace.team.TeamMembersPanel.terminate_team')"
       >
@@ -43,8 +43,8 @@
             Coord
           </span>
         </div>
-        <div v-if="member.context || member.node.currentStatus" class="mt-2">
-          <AgentStatusDisplay :status="member.context?.state.currentStatus ?? member.node.currentStatus" />
+        <div v-if="member.node.memberKind === 'agent' && (member.context || member.node.currentStatus)" class="mt-2">
+          <AgentStatusDisplay :status="member.context?.state.currentStatus ?? member.node.currentStatus ?? 'offline'" />
         </div>
       </div>
     </div>
@@ -94,8 +94,9 @@ const coordinatorName = computed(() => {
   return teamContextsStore.activeTeamContext?.coordinatorMemberRouteKey || null;
 });
 
-const isTeamRunTemporary = computed(() => {
-  return teamContextsStore.activeTeamContext?.teamRunId.startsWith('temp-') ?? false;
+const isStopPending = computed(() => {
+  const teamRunId = activeTeam.value?.teamRunId;
+  return teamRunId ? Boolean(teamRunStore.stopPendingTeamIds[teamRunId]) : false;
 });
 
 const isCoordinator = (memberRouteKey: string) => {

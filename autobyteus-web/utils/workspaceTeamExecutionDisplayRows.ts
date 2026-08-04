@@ -94,7 +94,7 @@ const transientStatusForNode = (
       ?? AgentStatus.Initializing;
   }
 
-  return node.currentStatus ?? AgentStatus.Initializing;
+  return null;
 };
 
 const buildTransientRow = (

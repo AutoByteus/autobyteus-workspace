@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import TeamWorkspaceView from '../TeamWorkspaceView.vue';
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 
 const {
   state,
@@ -161,7 +160,7 @@ const buildTeamContext = (overrides: Record<string, any> = {}) => {
         },
       }],
     ]),
-    currentStatus: AgentTeamStatus.Idle,
+    isActive: true,
     ...overrides,
   };
 };

@@ -22,12 +22,11 @@ const flush = async () => {
 
 const buildProjection = (overrides: Record<string, unknown> = {}) => ({
   status: "running",
-  canInterrupt: true,
   isActive: true,
   shouldConnectStream: true,
   lastKnownStatus: "ACTIVE",
   statusSource: "ACTIVE_RUNTIME",
-  statusPayload: { status: "running", can_interrupt: true, agent_id: "agent-123" },
+  statusPayload: { status: "running", agent_id: "agent-123" },
   ...overrides,
 });
 
@@ -40,7 +39,7 @@ describe("AgentStreamHandler", () => {
     runId: "agent-123",
     runtimeKind: "autobyteus",
     isActive: vi.fn().mockReturnValue(true),
-    getStatusSnapshot: vi.fn().mockReturnValue({ status: "running", can_interrupt: true }),
+    getStatusSnapshot: vi.fn().mockReturnValue({ status: "running" }),
     subscribeToEvents: vi.fn((_listener: (event: unknown) => void) => () => {}),
     postUserMessage: vi.fn().mockResolvedValue({ accepted: true, runtimeKind: "autobyteus" }),
     approveToolInvocation: vi
@@ -81,7 +80,7 @@ describe("AgentStreamHandler", () => {
           state: "accepted",
           accepted: true,
           duplicate: false,
-          status: { status: "running", can_interrupt: true, agent_id: input.runId },
+          status: { status: "running", agent_id: input.runId },
         },
         turnId: "turn-1",
       };
@@ -112,12 +111,11 @@ describe("AgentStreamHandler", () => {
     const agentRunService = createAgentRunService(null);
     const statusProjectionService = createStatusProjectionService(buildProjection({
       status: "offline",
-      canInterrupt: false,
       isActive: false,
       shouldConnectStream: false,
       lastKnownStatus: "IDLE",
       statusSource: "HISTORICAL_METADATA",
-      statusPayload: { status: "offline", can_interrupt: false, agent_id: "agent-123" },
+      statusPayload: { status: "offline", agent_id: "agent-123" },
     }));
     const handler = new AgentStreamHandler(
       sessionManager,
@@ -149,7 +147,7 @@ describe("AgentStreamHandler", () => {
       }),
       {
         type: ServerMessageType.AGENT_STATUS,
-        payload: { status: "offline", can_interrupt: false, agent_id: "agent-123" },
+        payload: { status: "offline", agent_id: "agent-123" },
       },
     ]);
   });
@@ -158,7 +156,7 @@ describe("AgentStreamHandler", () => {
     const agentRunService = createAgentRunService(null);
     const statusProjectionService = createStatusProjectionService(buildProjection({
       statusSource: "MISSING",
-      statusPayload: { status: "offline", can_interrupt: false, agent_id: "missing-agent" },
+      statusPayload: { status: "offline", agent_id: "missing-agent" },
     }));
     const handler = new AgentStreamHandler(
       new AgentSessionManager(),
@@ -371,11 +369,12 @@ describe("AgentStreamHandler", () => {
       getContext: () => context,
       isActive: () => isActive,
       getPlatformAgentRunId: () => null,
-      getStatusSnapshot: () => ({
-        status: isActive ? "idle" : "offline",
-        can_interrupt: false,
+      getLifecycleSnapshot: () => ({
+        availability: isActive ? "active" as const : "offline" as const,
+        phase: "idle" as const,
+        currentTurn: { kind: "NONE" as const },
       }),
-      subscribeToEvents: vi.fn().mockReturnValue(() => undefined),
+      subscribeToSourceEventBatches: vi.fn().mockReturnValue(() => undefined),
       postUserMessage: vi.fn().mockResolvedValue({ accepted: true }),
       approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
       interrupt: vi.fn().mockResolvedValue({ accepted: true }),
@@ -397,8 +396,7 @@ describe("AgentStreamHandler", () => {
       createCommandCoordinator({ activeRun }) as any,
       createStatusProjectionService(buildProjection({
         status: "idle",
-        canInterrupt: false,
-        statusPayload: { status: "idle", can_interrupt: false, agent_id: runId },
+        statusPayload: { status: "idle", agent_id: runId },
       })) as any,
     );
     const connection = {
@@ -417,7 +415,6 @@ describe("AgentStreamHandler", () => {
       type: ServerMessageType.AGENT_STATUS,
       payload: {
         status: "offline",
-        can_interrupt: false,
         agent_id: runId,
       },
     }));
@@ -499,12 +496,11 @@ describe("AgentStreamHandler", () => {
       commandCoordinator as any,
       createStatusProjectionService(buildProjection({
         status: "offline",
-        canInterrupt: false,
         isActive: false,
         shouldConnectStream: false,
         lastKnownStatus: "IDLE",
         statusSource: "PREPARED_IDENTITY",
-        statusPayload: { status: "offline", can_interrupt: false, agent_id: "agent-123" },
+        statusPayload: { status: "offline", agent_id: "agent-123" },
       })) as any,
     );
     const connection = {
@@ -558,11 +554,107 @@ describe("AgentStreamHandler", () => {
       sessionId as string,
       JSON.stringify({
         type: ClientMessageType.INTERRUPT_GENERATION,
+        payload: { command_id: "client_interrupt_missing" },
       }),
     );
 
     expect(commandCoordinator.postUserMessage).not.toHaveBeenCalled();
     expect(activeRun.interrupt).not.toHaveBeenCalled();
+    expect(connection.send.mock.calls.map(([raw]) => JSON.parse(raw as string)).at(-1)).toEqual({
+      type: ServerMessageType.AGENT_COMMAND_ACK,
+      payload: {
+        command_type: "INTERRUPT_GENERATION",
+        command_id: "client_interrupt_missing",
+        state: "rejected",
+        code: "RUN_NOT_FOUND",
+        message: "Agent run 'agent-123' is not active.",
+        target: { target_kind: "standalone_run", run_id: "agent-123" },
+      },
+    });
+  });
+
+  it("returns exactly one same-socket acknowledgement for an accepted interrupt", async () => {
+    const activeRun = createActiveRun({
+      interrupt: vi.fn().mockResolvedValue({ accepted: true }),
+    });
+    const handler = new AgentStreamHandler(
+      new AgentSessionManager(),
+      createAgentRunService(activeRun) as any,
+      undefined,
+      undefined,
+      createCommandCoordinator() as any,
+      createStatusProjectionService() as any,
+    );
+    const connection = { send: vi.fn(), close: vi.fn() };
+    const sessionId = await handler.connect(connection, "agent-123");
+    connection.send.mockClear();
+
+    await handler.handleMessage(sessionId!, JSON.stringify({
+      type: ClientMessageType.INTERRUPT_GENERATION,
+      payload: { command_id: " client_interrupt_accept " },
+    }));
+
+    expect(activeRun.interrupt).toHaveBeenCalledWith(null);
+    expect(connection.send).toHaveBeenCalledTimes(1);
+    expect(JSON.parse(connection.send.mock.calls[0][0])).toEqual({
+      type: ServerMessageType.AGENT_COMMAND_ACK,
+      payload: {
+        command_type: "INTERRUPT_GENERATION",
+        command_id: "client_interrupt_accept",
+        state: "accepted",
+        target: { target_kind: "standalone_run", run_id: "agent-123" },
+      },
+    });
+  });
+
+  it("rejects an empty interrupt command id before runtime execution", async () => {
+    const activeRun = createActiveRun({ interrupt: vi.fn().mockResolvedValue({ accepted: true }) });
+    const handler = new AgentStreamHandler(
+      new AgentSessionManager(), createAgentRunService(activeRun) as any,
+      undefined, undefined, createCommandCoordinator() as any,
+      createStatusProjectionService() as any,
+    );
+    const connection = { send: vi.fn(), close: vi.fn() };
+    const sessionId = await handler.connect(connection, "agent-123");
+    connection.send.mockClear();
+
+    await handler.handleMessage(sessionId!, JSON.stringify({
+      type: ClientMessageType.INTERRUPT_GENERATION,
+      payload: { command_id: "   " },
+    }));
+
+    expect(activeRun.interrupt).not.toHaveBeenCalled();
+    expect(JSON.parse(connection.send.mock.calls[0][0])).toMatchObject({
+      type: ServerMessageType.AGENT_COMMAND_ACK,
+      payload: { command_id: "", state: "rejected", code: "INVALID_COMMAND_ID" },
+    });
+  });
+
+  it("maps interrupt provider failures without emitting lifecycle status", async () => {
+    const activeRun = createActiveRun({
+      interrupt: vi.fn().mockResolvedValue({
+        accepted: false, code: "PROVIDER_REJECTED", message: "Cannot interrupt now.",
+      }),
+    });
+    const handler = new AgentStreamHandler(
+      new AgentSessionManager(), createAgentRunService(activeRun) as any,
+      undefined, undefined, createCommandCoordinator() as any,
+      createStatusProjectionService() as any,
+    );
+    const connection = { send: vi.fn(), close: vi.fn() };
+    const sessionId = await handler.connect(connection, "agent-123");
+    connection.send.mockClear();
+
+    await handler.handleMessage(sessionId!, JSON.stringify({
+      type: ClientMessageType.INTERRUPT_GENERATION,
+      payload: { command_id: "client_interrupt_failed" },
+    }));
+
+    expect(connection.send).toHaveBeenCalledTimes(1);
+    expect(JSON.parse(connection.send.mock.calls[0][0])).toMatchObject({
+      type: ServerMessageType.AGENT_COMMAND_ACK,
+      payload: { state: "failed", code: "PROVIDER_REJECTED" },
+    });
   });
 
   it("handles tool approvals for active sessions", async () => {

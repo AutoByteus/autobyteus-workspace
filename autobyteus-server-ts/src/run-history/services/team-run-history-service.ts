@@ -19,7 +19,7 @@ import {
   TeamRunHistoryCatalogService,
   getTeamRunHistoryCatalogService,
 } from "./team-run-history-catalog-service.js";
-import { TeamRunStatusProjectionService } from "./team-run-status-projection-service.js";
+import { TeamRunLiveProjectionService } from "./team-run-live-projection-service.js";
 import {
   getTeamRunLeafAgentMetadata,
   resolveTeamWorkspaceRootPath,
@@ -49,7 +49,7 @@ export class TeamRunHistoryService {
   private readonly metadataStore: TeamRunMetadataStore;
   private readonly catalogService: TeamRunHistoryCatalogService;
   private readonly teamRunManager: AgentTeamRunManager;
-  private readonly statusProjectionService: TeamRunStatusProjectionService;
+  private readonly liveProjectionService: TeamRunLiveProjectionService;
 
   constructor(
     memoryDir: string,
@@ -57,14 +57,14 @@ export class TeamRunHistoryService {
       metadataStore?: TeamRunMetadataStore;
       catalogService?: TeamRunHistoryCatalogService;
       teamRunManager?: AgentTeamRunManager;
-      statusProjectionService?: TeamRunStatusProjectionService;
+      liveProjectionService?: TeamRunLiveProjectionService;
     } = {},
   ) {
     this.metadataStore = options.metadataStore ?? new TeamRunMetadataStore(memoryDir);
     this.catalogService = options.catalogService ?? getTeamRunHistoryCatalogService();
     this.teamRunManager = options.teamRunManager ?? AgentTeamRunManager.getInstance();
-    this.statusProjectionService = options.statusProjectionService ??
-      new TeamRunStatusProjectionService(this.teamRunManager);
+    this.liveProjectionService = options.liveProjectionService ??
+      new TeamRunLiveProjectionService(this.teamRunManager);
   }
 
   async listTeamRunHistory(): Promise<TeamRunHistoryItem[]> {
@@ -72,7 +72,7 @@ export class TeamRunHistoryService {
     const items: TeamRunHistoryItem[] = [];
 
     for (const row of rows) {
-      const projection = this.statusProjectionService.getCatalogListStatusProjection(row.teamRunId);
+      const projection = this.liveProjectionService.getCatalogListLiveProjection(row.teamRunId);
       if (row.archivedAt && !projection.isActive) {
         continue;
       }
@@ -135,7 +135,6 @@ export class TeamRunHistoryService {
     metadata: TeamRunMetadata,
     projection: {
       isActive: boolean;
-      status: AgentApiStatus;
       memberStatusSnapshots: AgentStatusPayload[];
     },
   ): TeamRunHistoryItem {
@@ -150,7 +149,6 @@ export class TeamRunHistoryService {
       createdAt: row.createdAt,
       archivedAt: row.archivedAt ?? null,
       terminatedAt: row.terminatedAt ?? null,
-      status: projection.status,
       isActive: projection.isActive,
       members: getTeamRunLeafAgentMetadata(metadata).map((member) => ({
         memberRouteKey: member.memberRouteKey,

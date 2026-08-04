@@ -52,8 +52,8 @@ const createBackend = (input: {
     teamBackendKind: TeamBackendKind.MIXED,
     getRuntimeContext: () => runtimeContext,
     isActive: () => state.active,
-    getStatusSnapshot: () => ({ status: state.status as "idle" | "running" | "error" }),
-    getMemberStatusSnapshots: () => [],
+    getLeafAgentStatusSnapshots: () => [],
+    hasOpenExecutionWork: () => state.status === "running",
     subscribeToEvents: vi.fn().mockImplementation(() => () => undefined),
     postMessage: vi.fn().mockResolvedValue({ accepted: true }),
     deliverInterAgentMessage: vi.fn().mockResolvedValue({ accepted: true }),
@@ -99,7 +99,10 @@ describe("AgentTeamRunManager integration", () => {
       runFileChangeService: sidecars.runFileChangeService as never,
     });
 
-    const run = await manager.createTeamRun(createConfig([...memberRuntimeKinds]), "team-mixed");
+    const run = await manager.createTeamRun(
+      createConfig([...memberRuntimeKinds]),
+      "team-mixed",
+    );
 
     expect(run.teamBackendKind).toBe(TeamBackendKind.MIXED);
     expect(run.context?.coordinatorMemberName).toBe("Coordinator");
@@ -107,7 +110,9 @@ describe("AgentTeamRunManager integration", () => {
     expect(manager.listActiveRuns()).toContain(run.runId);
     expect(mixed.createBackend).toHaveBeenCalledTimes(1);
     expect(mixed.createBackend).toHaveBeenCalledWith(
-      expect.objectContaining({ teamBackendKind: TeamBackendKind.MIXED }),
+      expect.objectContaining({
+        teamBackendKind: TeamBackendKind.MIXED,
+      }),
       "team-mixed",
     );
     expect(sidecars.teamCommunicationService.attachToTeamRun).toHaveBeenCalledWith(run);
@@ -165,7 +170,10 @@ describe("AgentTeamRunManager integration", () => {
       mixedTeamRunBackendFactory: createFactory(created.backend),
     });
 
-    const run = await manager.createTeamRun(createConfig([RuntimeKind.CODEX_APP_SERVER]), "team-inactive");
+    const run = await manager.createTeamRun(
+      createConfig([RuntimeKind.CODEX_APP_SERVER]),
+      "team-inactive",
+    );
     expect(manager.getActiveRun(run.runId)?.runId).toBe(run.runId);
 
     created.state.active = false;
@@ -179,7 +187,10 @@ describe("AgentTeamRunManager integration", () => {
     const manager = new AgentTeamRunManager({
       mixedTeamRunBackendFactory: createFactory(failing.backend),
     });
-    const run = await manager.createTeamRun(createConfig([RuntimeKind.AUTOBYTEUS]), "team-failing-terminate");
+    const run = await manager.createTeamRun(
+      createConfig([RuntimeKind.AUTOBYTEUS]),
+      "team-failing-terminate",
+    );
 
     await expect(manager.terminateTeamRun(run.runId)).rejects.toBeInstanceOf(AgentTeamTerminationError);
   });

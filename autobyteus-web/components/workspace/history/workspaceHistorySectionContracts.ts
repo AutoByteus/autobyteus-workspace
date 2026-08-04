@@ -1,6 +1,5 @@
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import type { TeamMemberFocusTarget, TeamMemberTreeRow, TeamTreeNode } from '~/stores/runHistoryTypes';
-import type { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { RunTreeRow, RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
 
 export interface WorkspaceHistorySectionState {
@@ -33,7 +32,7 @@ export interface WorkspaceHistorySectionState {
     teamRunId: string,
     memberRouteKey: string,
   ) => void;
-  canTerminateTeam: (status: AgentTeamStatus) => boolean;
+  canTerminateTeam: (isActive: boolean) => boolean;
 }
 
 export interface WorkspaceHistoryAvatarBindings {

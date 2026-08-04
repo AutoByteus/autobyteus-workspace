@@ -9,7 +9,7 @@ import type { TaskTeamActiveRunDirectory } from "../../../task-delegation/task-t
 import type { MixedSubTeamRunFactory } from "../mixed-sub-team-run-factory.js";
 import type { MixedTeamRunContext } from "../mixed-team-run-context.js";
 import { MixedTaskTeamMemberHandle } from "./mixed-task-team-member-handle.js";
-import type { MixedTeamEventPublish, MixedTeamStatusChange } from "./mixed-team-member-handle.js";
+import type { MixedTeamEventPublish } from "./mixed-team-member-handle.js";
 
 export class MixedTaskTeamInstanceRegistry {
   private readonly handles = new Map<string, MixedTaskTeamMemberHandle>();
@@ -19,7 +19,6 @@ export class MixedTaskTeamInstanceRegistry {
     subTeamRunFactory: MixedSubTeamRunFactory;
     taskTeamActiveRunDirectory: TaskTeamActiveRunDirectory;
     publish: MixedTeamEventPublish;
-    notifyStatusChange: MixedTeamStatusChange;
     deliverInterAgentMessage: (request: InterAgentMessageDeliveryIntent) => Promise<AgentOperationResult>;
   }) {}
 
@@ -62,7 +61,6 @@ export class MixedTaskTeamInstanceRegistry {
       subTeamRunFactory: this.options.subTeamRunFactory,
       taskTeamActiveRunDirectory: this.options.taskTeamActiveRunDirectory,
       publish: this.options.publish,
-      notifyStatusChange: this.options.notifyStatusChange,
       deliverInterAgentMessage: this.options.deliverInterAgentMessage,
     });
     this.handles.set(runId, handle);

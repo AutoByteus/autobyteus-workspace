@@ -1,0 +1,1 @@
+This invocation was not used as validation evidence. macOS Bash 3 lacks mapfile; the empty array caused Vitest to start the entire server suite. The owned process was interrupted after unrelated stale-fixture failures were observed. The intended 52-file expanded command was executed separately and is authoritative.

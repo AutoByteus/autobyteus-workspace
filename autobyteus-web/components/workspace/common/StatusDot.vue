@@ -25,12 +25,9 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import type { AgentStatus } from '~/types/agent/AgentStatus';
-import type { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import {
   agentTransientStatusDotClass,
   agentStatusDotClass,
-  teamTransientStatusDotClass,
-  teamStatusDotClass,
   workspaceTransientStatusDotBaseClass,
   workspaceStatusDotBaseClass,
   type WorkspaceStatusDotVariant,
@@ -48,24 +45,17 @@ const transientRingDots = [
 ] as const;
 
 const props = withDefaults(defineProps<{
-  kind?: 'agent' | 'team';
-  status?: AgentStatus | AgentTeamStatus | string | null;
+  status?: AgentStatus | string | null;
   variant?: WorkspaceStatusDotVariant;
 }>(), {
-  kind: 'agent',
   status: null,
   variant: 'solid',
 });
 
 const dotClass = computed(() => {
   if (props.variant === 'transient') {
-    return props.kind === 'team'
-      ? teamTransientStatusDotClass(props.status)
-      : agentTransientStatusDotClass(props.status);
+    return agentTransientStatusDotClass(props.status);
   }
-
-  return props.kind === 'team'
-    ? teamStatusDotClass(props.status)
-    : agentStatusDotClass(props.status);
+  return agentStatusDotClass(props.status);
 });
 </script>

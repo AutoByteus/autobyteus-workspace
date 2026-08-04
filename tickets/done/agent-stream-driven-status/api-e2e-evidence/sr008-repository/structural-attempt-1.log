@@ -1,0 +1,118 @@
+$ git diff --check
+
+$ assert no uncommitted production source change
+Pass: API/E2E changes contain no uncommitted production source.
+
+$ assert current test INTERRUPT_GENERATION requests carry command_id
+Missing nearby command ID:
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:591
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:620
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:648
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:676
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:706
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/tests/unit/services/agent-streaming/agent-stream-handler.test.ts:556
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/tests/integration/agent/agent-websocket.integration.test.ts:590
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/tests/integration/agent/team-lifecycle-websocket.integration.test.ts:440
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/tests/integration/agent/agent-team-websocket.integration.test.ts:383
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/tests/integration/agent/agent-team-websocket.integration.test.ts:691
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/tests/integration/agent/agent-team-websocket.integration.test.ts:739
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/tests/integration/agent/agent-team-websocket.integration.test.ts:749
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/tests/integration/agent/agent-team-websocket.integration.test.ts:762
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts:79
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts:859
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:707
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:712
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:758
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:763
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:815
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:868
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:873
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:943
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts:886
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/mobile-web/_nuxt/Dfc7ysLu.js:153
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/mobile-web/_nuxt/Dfc7ysLu.js:153
+autobyteus-web/dist/renderer/_nuxt/agentRunStore.DQcCY2Ri.js:153
+autobyteus-web/dist/renderer/_nuxt/agentRunStore.DQcCY2Ri.js:153
+autobyteus-web/resources/server/tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:591
+autobyteus-web/resources/server/tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:620
+autobyteus-web/resources/server/tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:648
+autobyteus-web/resources/server/tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:676
+autobyteus-web/resources/server/tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts:706
+autobyteus-web/resources/server/tests/unit/services/agent-streaming/agent-stream-handler.test.ts:556
+autobyteus-web/resources/server/tests/integration/agent/agent-websocket.integration.test.ts:590
+autobyteus-web/resources/server/tests/integration/agent/team-lifecycle-websocket.integration.test.ts:440
+autobyteus-web/resources/server/tests/integration/agent/agent-team-websocket.integration.test.ts:383
+autobyteus-web/resources/server/tests/integration/agent/agent-team-websocket.integration.test.ts:691
+autobyteus-web/resources/server/tests/integration/agent/agent-team-websocket.integration.test.ts:739
+autobyteus-web/resources/server/tests/integration/agent/agent-team-websocket.integration.test.ts:749
+autobyteus-web/resources/server/tests/integration/agent/agent-team-websocket.integration.test.ts:762
+autobyteus-web/resources/server/tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts:79
+autobyteus-web/resources/server/tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts:859
+autobyteus-web/resources/server/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:707
+autobyteus-web/resources/server/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:712
+autobyteus-web/resources/server/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:758
+autobyteus-web/resources/server/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:763
+autobyteus-web/resources/server/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:815
+autobyteus-web/resources/server/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:868
+autobyteus-web/resources/server/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:873
+autobyteus-web/resources/server/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:943
+autobyteus-web/resources/server/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts:886
+autobyteus-web/resources/server/mobile-web/_nuxt/Dfc7ysLu.js:153
+autobyteus-web/resources/server/mobile-web/_nuxt/Dfc7ysLu.js:153
+autobyteus-web/dist-mobile/public/_nuxt/Dfc7ysLu.js:153
+autobyteus-web/dist-mobile/public/_nuxt/Dfc7ysLu.js:153
+autobyteus-web/.nuxt/dist/client/_nuxt/agentRunStore.DQcCY2Ri.js:153
+autobyteus-web/.nuxt/dist/client/_nuxt/agentRunStore.DQcCY2Ri.js:153
+
+$ assert strict Codex start/steer ownership and no fallback
+57: lastTerminalTurnId: string | null;
+70: lastTerminalTurnId?: string | null;
+81: this.lastTerminalTurnId = input.lastTerminalTurnId ?? null;
+145: this.lastTerminalTurnId = null;
+154: this.lastTerminalTurnId = completedTurnId;
+164: this.lastTerminalTurnId = this.activeTurnId;
+224: const payload = await this.client.request<unknown>("turn/start", {
+238: if (this.activeTurnId === null && this.lastTerminalTurnId !== turnId) {
+243: `Codex turn/start returned '${turnId}' while newer active turn '${this.activeTurnId}' is current.`,
+267: payload = await this.client.request<unknown>("turn/steer", {
+276: `Codex turn/steer rejected input for turn '${expectedTurnId}': ${detail}`,
+285: `Codex turn/steer returned '${turnId}' for expected turn '${expectedTurnId}'.`,
+384: this.lastTerminalTurnId = turnId;
+393: this.lastTerminalTurnId = this.activeTurnId;
+Pass: strict method owners/terminal guard are present; source review CRR-009 found no steer-to-start fallback.
+
+$ inspect current dirty path classes
+ M autobyteus-server-ts/tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts
+ M autobyteus-server-ts/tests/integration/agent/agent-team-websocket.integration.test.ts
+ M autobyteus-server-ts/tests/integration/agent/agent-websocket.integration.test.ts
+ M autobyteus-server-ts/tests/integration/agent/team-lifecycle-websocket.integration.test.ts
+ M autobyteus-server-ts/tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts
+ M autobyteus-web/components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts
+ M autobyteus-web/docs/agent_execution_architecture.md
+ M autobyteus-web/docs/agent_integration_minimal_bridge.md
+ M autobyteus-web/docs/agent_teams.md
+ M autobyteus-web/docs/settings.md
+ M tickets/in-progress/agent-stream-driven-status/api-e2e-coverage-investigation.md
+ M tickets/in-progress/agent-stream-driven-status/architecture-review-revision-record.md
+ M tickets/in-progress/agent-stream-driven-status/delivery-electron-build.log
+ M tickets/in-progress/agent-stream-driven-status/delivery-integrated-state-refresh.log
+ M tickets/in-progress/agent-stream-driven-status/delivery-revision-record.md
+ M tickets/in-progress/agent-stream-driven-status/design-review-report.md
+ M tickets/in-progress/agent-stream-driven-status/design-spec.md
+ M tickets/in-progress/agent-stream-driven-status/docs-sync-report.md
+ M tickets/in-progress/agent-stream-driven-status/docs-sync-validation.log
+ M tickets/in-progress/agent-stream-driven-status/handoff-summary.md
+ M tickets/in-progress/agent-stream-driven-status/investigation-notes.md
+ M tickets/in-progress/agent-stream-driven-status/release-deployment-report.md
+ M tickets/in-progress/agent-stream-driven-status/requirements.md
+ M tickets/in-progress/agent-stream-driven-status/solution-revision-record.md
+?? autobyteus-web/tests/e2e/fixtures/interrupt-result-presentation.page.vue
+?? autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs
+?? tickets/in-progress/agent-stream-driven-status/api-e2e-evidence/sr008-browser/
+?? tickets/in-progress/agent-stream-driven-status/api-e2e-evidence/sr008-live/
+?? tickets/in-progress/agent-stream-driven-status/api-e2e-evidence/sr008-repository/
+?? tickets/in-progress/agent-stream-driven-status/codex-steering-stale-running-evidence.md

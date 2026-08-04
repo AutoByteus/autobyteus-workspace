@@ -62,7 +62,6 @@ export const interruptServerManagedTeamMember = async (input: {
   targetMemberRunId?: string | null;
   findMemberContextByRouteKey: (routeKey: string) => SettledMemberContext | null;
   getMemberRun: (routeKey: string) => InterruptibleMemberRun | null;
-  publishTeamStatusIfChanged: () => void;
 }): Promise<AgentOperationResult> => {
   if (!input.teamContextActive) {
     return buildRunNotFoundResult("unknown");
@@ -82,7 +81,6 @@ export const interruptServerManagedTeamMember = async (input: {
   }
   const result = await memberRun.interrupt();
   if (result.accepted) {
-    input.publishTeamStatusIfChanged();
   }
   return result;
 };
@@ -94,7 +92,6 @@ export const settleServerManagedTeamMember = async (input: {
   findMemberContextByRouteKey: (routeKey: string) => SettledMemberContext | null;
   getMemberRun: (routeKey: string) => TerminableMemberRun | null;
   clearMemberRun: (routeKey: string) => void;
-  publishTeamStatusIfChanged: () => void;
 }): Promise<AgentOperationResult> => {
   if (!input.teamContextActive) {
     return buildRunNotFoundResult("unknown");
@@ -122,7 +119,6 @@ export const settleServerManagedTeamMember = async (input: {
   const result = await memberRun.terminate();
   if (result.accepted) {
     input.clearMemberRun(memberContext.memberRouteKey);
-    input.publishTeamStatusIfChanged();
   }
   return {
     ...result,
@@ -142,7 +138,6 @@ export const settleRegistryTeamMember = async (input: {
   resolveContext: (selector: TeamMemberSelector) => SettledMemberContext | AgentOperationResult;
   getMemberRun: (routeKey: string) => TerminableMemberRun | null;
   removeMember: (routeKey: string) => void;
-  publishTeamStatusIfChanged: () => void;
 }): Promise<AgentOperationResult> => {
   if (!input.teamContextActive) {
     return buildRunNotFoundResult("unknown");
@@ -184,7 +179,6 @@ export const settleRegistryTeamMember = async (input: {
   const result = await memberRun.terminate();
   if (result.accepted) {
     input.removeMember(memberContext.memberRouteKey);
-    input.publishTeamStatusIfChanged();
   }
   return {
     ...result,

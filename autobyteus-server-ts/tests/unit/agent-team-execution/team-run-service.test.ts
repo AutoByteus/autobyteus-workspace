@@ -15,6 +15,11 @@ describe("TeamRunService", () => {
       createTeamRun: vi.fn(),
       restoreTeamRun: vi.fn(),
       terminateTeamRun: vi.fn().mockResolvedValue(true),
+      subscribeToLifecycle: vi.fn().mockReturnValue(vi.fn()),
+      getLifecycleSnapshot: vi.fn((teamRunId: string) => ({
+        teamRunId,
+        isActive: Boolean(activeRun),
+      })),
     } as any;
     const teamRunMetadataService = {
       writeMetadata: vi.fn().mockResolvedValue(undefined),

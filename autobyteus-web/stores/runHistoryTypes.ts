@@ -1,6 +1,5 @@
 import type { AgentRuntimeKind, SkillAccessMode } from '~/types/agent/AgentRunConfig';
 import type { AgentStatus } from '~/types/agent/AgentStatus';
-import type { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { RunProjectionConversationEntry } from '~/services/runHydration/runProjectionConversation';
 import type { RunProjectionActivityEntry } from '~/services/runHydration/runProjectionActivityHydration';
 import type { TeamCommunicationMessage } from '~/stores/teamCommunicationTypes';
@@ -66,7 +65,6 @@ export interface RunResumeConfigPayload {
   editableFields: RunEditableFieldFlags;
 }
 
-export type TeamRunKnownStatus = 'ACTIVE' | 'IDLE' | 'ERROR';
 export type TeamRunDeleteLifecycle = 'READY' | 'CLEANUP_PENDING';
 
 export interface TeamRunMemberHistoryItem {
@@ -94,7 +92,6 @@ export interface TeamRunHistoryItem {
   createdAt: string;
   archivedAt?: string | null;
   terminatedAt?: string | null;
-  status: AgentTeamStatus;
   isActive: boolean;
   memberTree?: TeamRunMetadataMember[] | null;
   members: TeamRunMemberHistoryItem[];
@@ -172,8 +169,7 @@ export interface TeamMemberTreeRow {
   workspaceRootPath: string | null;
   summary: string;
   lastActivityAt: string;
-  currentStatus: AgentStatus;
-  lastKnownStatus: TeamRunKnownStatus;
+  currentStatus: AgentStatus | null;
   isActive: boolean;
   deleteLifecycle: TeamRunDeleteLifecycle;
   children: TeamMemberTreeRow[];
@@ -191,9 +187,7 @@ export interface TeamTreeNode {
   workspaceRootPath: string;
   summary: string;
   lastActivityAt: string;
-  lastKnownStatus: TeamRunKnownStatus;
   isActive: boolean;
-  currentStatus: AgentTeamStatus;
   deleteLifecycle: TeamRunDeleteLifecycle;
   focusedMemberRouteKey: string;
   members: TeamMemberTreeRow[];

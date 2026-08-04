@@ -1,0 +1,118 @@
+$ git diff --check
+
+$ assert no uncommitted production source change
+Pass: API/E2E changes contain no uncommitted production source.
+
+$ inspect changed current interrupt request fixtures
++          const interruptCommandId = "client_interrupt_autobyteus_runtime";
++            type: "INTERRUPT_GENERATION",
++            payload: { command_id: interruptCommandId },
++              message.type === "AGENT_COMMAND_ACK" &&
++              message.payload.command_id === interruptCommandId &&
++            command_id: "client_interrupt_autobyteus_team_worker",
++          message.type === "AGENT_COMMAND_ACK" &&
++          message.payload.command_id === "client_interrupt_autobyteus_team_worker" &&
++        type: "INTERRUPT_GENERATION",
++        payload: { command_id: "client_interrupt_claude_memory" },
++        type: "INTERRUPT_GENERATION",
++        payload: { command_id: "client_interrupt_claude_resume" },
++            command_id: "client_interrupt_claude_team_member",
++        type: "INTERRUPT_GENERATION",
++        payload: { command_id: "client_interrupt_claude_placeholder" },
++          type: "INTERRUPT_GENERATION",
++          payload: { command_id: "client_interrupt_claude_live" },
++        command_id: `client_interrupt_${input.targetMemberRouteKey.replace(/[^a-zA-Z0-9_-]/g, "_")}`,
++        command_id: "client_interrupt_alpha",
++      type: "AGENT_COMMAND_ACK",
++        command_type: "INTERRUPT_GENERATION",
++        command_id: "client_interrupt_alpha",
++        state: "accepted",
++          target_kind: "team_member",
++          command_id: "client_interrupt_stopped_team",
++      (message) => message.type === "AGENT_COMMAND_ACK" &&
++        message.payload.command_id === "client_interrupt_stopped_team",
++      command_type: "INTERRUPT_GENERATION",
++      command_id: "client_interrupt_stopped_team",
++      state: "rejected",
++        target_kind: "team_member",
++        payload: { command_id: "client_interrupt_missing_target" },
++      (message) => message.type === "AGENT_COMMAND_ACK" &&
++        message.payload.command_id === "client_interrupt_missing_target",
++      state: "rejected",
++          command_id: "client_interrupt_wrong_run",
++      (message) => message.type === "AGENT_COMMAND_ACK" &&
++        message.payload.command_id === "client_interrupt_wrong_run",
++      state: "failed",
++          command_id: "client_interrupt_valid_beta",
++      (message) => message.type === "AGENT_COMMAND_ACK" &&
++        message.payload.command_id === "client_interrupt_valid_beta",
++      command_type: "INTERRUPT_GENERATION",
++      command_id: "client_interrupt_valid_beta",
++      state: "accepted",
++        target_kind: "team_member",
++        type: "INTERRUPT_GENERATION",
++        payload: { command_id: "client_interrupt_accept" },
++          message.type === "AGENT_COMMAND_ACK" &&
++          message.payload.command_id === "client_interrupt_accept",
++        command_type: "INTERRUPT_GENERATION",
++        command_id: "client_interrupt_accept",
++        state: "accepted",
++        target: { target_kind: "standalone_run", run_id: runId },
++        type: "INTERRUPT_GENERATION",
++        payload: { command_id: "client_interrupt_provider_reject" },
++          message.type === "AGENT_COMMAND_ACK" &&
++          message.payload.command_id === "client_interrupt_provider_reject",
++        command_type: "INTERRUPT_GENERATION",
++        command_id: "client_interrupt_provider_reject",
++        state: "failed",
++        target: { target_kind: "standalone_run", run_id: runId },
++        type: "INTERRUPT_GENERATION",
++        payload: { command_id: "client_interrupt_inactive" },
++          message.type === "AGENT_COMMAND_ACK" &&
++          message.payload.command_id === "client_interrupt_inactive",
++        command_type: "INTERRUPT_GENERATION",
++        command_id: "client_interrupt_inactive",
++        state: "rejected",
++        target: { target_kind: "standalone_run", run_id: runId },
++          command_id: "client_interrupt_nested_leaf",
++        type: "AGENT_COMMAND_ACK",
++          command_type: "INTERRUPT_GENERATION",
++          command_id: "client_interrupt_nested_leaf",
++          state: "accepted",
++            target_kind: "team_member",
++        command_id: expect.stringMatching(/^client_interrupt_/),
+Pass: changed provider-origin runtime journeys add current command IDs (8 added command_id lines); current real-socket tests assert exact IDs/targets/results.
+
+$ assert strict Codex start/steer ownership and no fallback indicators
+57:  lastTerminalTurnId: string | null;
+70:    lastTerminalTurnId?: string | null;
+81:    this.lastTerminalTurnId = input.lastTerminalTurnId ?? null;
+145:    this.lastTerminalTurnId = null;
+154:    this.lastTerminalTurnId = completedTurnId;
+164:        this.lastTerminalTurnId = this.activeTurnId;
+224:    const payload = await this.client.request<unknown>("turn/start", {
+238:    if (this.activeTurnId === null && this.lastTerminalTurnId !== turnId) {
+243:        `Codex turn/start returned '${turnId}' while newer active turn '${this.activeTurnId}' is current.`,
+267:      payload = await this.client.request<unknown>("turn/steer", {
+276:        `Codex turn/steer rejected input for turn '${expectedTurnId}': ${detail}`,
+285:        `Codex turn/steer returned '${turnId}' for expected turn '${expectedTurnId}'.`,
+384:    this.lastTerminalTurnId = turnId;
+393:      this.lastTerminalTurnId = this.activeTurnId;
+Pass: strict method owners/terminal guard are present; CRR-009 and focused/live tests find no steer-to-start fallback.
+
+$ browser cleanup evidence
+[eval]:1
+const e=require('./tickets/in-progress/agent-stream-driven-status/api-e2e-evidence/sr008-browser/evidence.json'); if(e.failures.length||!e.cleanup?.fixtureRemoved||e.pageErrors.length||e.consoleErrors.length) process.exit(1); console.log(JSON.stringify({scenarios:e.scenarios.map(s=>[s.id,s.result]),cleanup:e.cleanup},null,2))
+                                                                                                                                                                                 ^
+
+TypeError: Cannot read properties of undefined (reading 'length')
+    at [eval]:1:178
+    at runScriptInThisContext (node:internal/vm:209:10)
+    at node:internal/process/execution:446:12
+    at [eval]-wrapper:6:24
+    at runScriptInContext (node:internal/process/execution:444:60)
+    at evalFunction (node:internal/process/execution:279:30)
+    at evalTypeScript (node:internal/process/execution:291:3)
+    at node:internal/main/eval_string:74:3
+
+Node.js v22.23.1
