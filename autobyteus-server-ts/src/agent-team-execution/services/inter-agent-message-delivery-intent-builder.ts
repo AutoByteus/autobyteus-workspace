@@ -1,5 +1,10 @@
 import type { MemberTeamContext } from "../domain/member-team-context.js";
 import {
+  getCollaborationAddressRouteKey,
+  getCollaborationAddressSegments,
+  getParentCollaborationAddress,
+} from "../../agent-collaboration/domain/collaboration-logical-address.js";
+import {
   buildDeliveryEndpointForParticipant,
   buildTeamMemberAddress,
   type InterAgentMessageDeliveryIntent,
@@ -19,43 +24,52 @@ export type InterAgentMessageDeliveryIntentBuildResult =
 
 const buildSenderParticipant = (
   memberTeamContext: MemberTeamContext,
-): InterAgentMessageParticipant => ({
-  memberKind: "agent",
-  memberName: memberTeamContext.memberName,
-  memberPath: [...memberTeamContext.collaboration.addressing.memberPath],
-  memberRouteKey: memberTeamContext.collaboration.addressing.memberPath.join("/"),
-  memberRunId: memberTeamContext.memberRunId,
-  address: buildTeamMemberAddress({
-    teamRunId: memberTeamContext.collaboration.addressing.rootTeamRunId,
-    memberPath: memberTeamContext.collaboration.addressing.memberPath,
-    memberRouteKey: memberTeamContext.collaboration.addressing.memberPath.join("/"),
-  }),
-  platformRunId: null,
-  teamDefinitionId: null,
-  ...(memberTeamContext.taskAgentInstance
-    ? {
-        taskAgentRunId: memberTeamContext.taskAgentInstance.taskAgentRunId,
-        taskId: memberTeamContext.taskAgentInstance.taskId,
-        logicalMemberRouteKey: memberTeamContext.taskAgentInstance.logicalMember.memberRouteKey,
-      }
-    : {}),
-});
+): InterAgentMessageParticipant => {
+  const addressing = memberTeamContext.collaboration.addressing;
+  const memberPath = [...getCollaborationAddressSegments(addressing.memberAddress)];
+  const memberRouteKey = getCollaborationAddressRouteKey(addressing.memberAddress);
+  return {
+    memberKind: "agent",
+    memberName: memberTeamContext.memberName,
+    memberPath,
+    memberRouteKey,
+    memberRunId: memberTeamContext.memberRunId,
+    address: buildTeamMemberAddress({
+      teamRunId: addressing.rootTeamRunId,
+      memberPath,
+      memberRouteKey,
+    }),
+    platformRunId: null,
+    teamDefinitionId: null,
+    ...(memberTeamContext.taskAgentInstance
+      ? {
+          taskAgentRunId: memberTeamContext.taskAgentInstance.taskAgentRunId,
+          taskId: memberTeamContext.taskAgentInstance.taskId,
+          logicalMemberRouteKey: memberTeamContext.taskAgentInstance.logicalMember.memberRouteKey,
+        }
+      : {}),
+  };
+};
 
 const buildSenderConversationAddress = (
   memberTeamContext: MemberTeamContext,
 ): ConversationTargetAddress => {
   const addressing = memberTeamContext.collaboration.addressing;
+  const immediateTeamAddress = getParentCollaborationAddress(addressing.memberAddress);
+  if (!immediateTeamAddress) {
+    throw new Error("Inter-Agent message sender must be an Agent inside a Team.");
+  }
   const taskAgentRunId = memberTeamContext.taskAgentInstance?.taskAgentRunId?.trim() || null;
   const segments: ConversationTargetSegment[] = memberTeamContext.taskTeamInstance
     ? [
-        { kind: "member", memberRouteKey: addressing.immediateTeamPath.join("/") },
+        { kind: "member", memberRouteKey: getCollaborationAddressRouteKey(immediateTeamAddress) },
         {
           kind: "task_team",
           taskTeamRunId: memberTeamContext.taskTeamInstance.taskTeamRunId,
         },
         { kind: "member", memberRouteKey: memberTeamContext.memberRouteKey },
       ]
-    : [{ kind: "member", memberRouteKey: addressing.memberPath.join("/") }];
+    : [{ kind: "member", memberRouteKey: getCollaborationAddressRouteKey(addressing.memberAddress) }];
   if (taskAgentRunId) {
     segments.push({ kind: "task_agent", taskAgentRunId });
   }

@@ -16,8 +16,7 @@ type NativeTeamContext = {
   currentMemberRunId?: unknown;
   addressing?: {
     rootTeamRunId?: unknown;
-    memberPath?: unknown;
-    immediateTeamPath?: unknown;
+    memberAddress?: unknown;
   };
   taskAgentInstanceId?: string | null;
   taskAgentRunId?: string | null;
@@ -65,12 +64,20 @@ export const buildTaskDelegationToolContextFromNativeContext = (
   }
   const memberName = required(team.currentMemberName ?? context.config?.name, "currentMemberName");
   const memberPath = path(team.currentMemberPath, "currentMemberPath");
+  const addressingKeys = Object.keys(team.addressing).sort();
+  if (
+    addressingKeys.length !== 2 ||
+    addressingKeys[0] !== "memberAddress" ||
+    addressingKeys[1] !== "rootTeamRunId"
+  ) {
+    throw new TaskDelegationError(
+      "TEAM_RUN_CONTEXT_REQUIRED",
+      "Task delegation addressing accepts only rootTeamRunId and memberAddress.",
+    );
+  }
   const addressing = createMemberLogicalAddressContext({
     rootTeamRunId: required(team.addressing.rootTeamRunId, "addressing.rootTeamRunId"),
-    memberPath: path(team.addressing.memberPath, "addressing.memberPath"),
-    immediateTeamPath: Array.isArray(team.addressing.immediateTeamPath)
-      ? team.addressing.immediateTeamPath.map((segment, index) => required(segment, `addressing.immediateTeamPath[${index}]`))
-      : [],
+    memberAddress: required(team.addressing.memberAddress, "addressing.memberAddress"),
   });
   return {
     teamRunId: required(team.teamRunId, "teamRunId"),

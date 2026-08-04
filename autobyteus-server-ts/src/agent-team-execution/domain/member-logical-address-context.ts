@@ -1,11 +1,12 @@
-import { formatAbsoluteCollaborationAddress } from "../../agent-collaboration/domain/collaboration-logical-address.js";
+import {
+  assertCanonicalCollaborationAddress,
+  getCollaborationAddressBasename,
+  type CanonicalCollaborationAddress,
+} from "../../agent-collaboration/domain/collaboration-logical-address.js";
 
 export type MemberLogicalAddressContext = Readonly<{
   rootTeamRunId: string;
-  memberAddress: string;
-  memberPath: readonly string[];
-  immediateTeamAddress: string;
-  immediateTeamPath: readonly string[];
+  memberAddress: CanonicalCollaborationAddress;
 }>;
 
 const required = (value: string, fieldName: string): string => {
@@ -18,20 +19,19 @@ const required = (value: string, fieldName: string): string => {
 
 export const createMemberLogicalAddressContext = (input: {
   rootTeamRunId: string;
-  memberPath: readonly string[];
-  immediateTeamPath: readonly string[];
+  memberAddress: string;
 }): MemberLogicalAddressContext => {
-  const memberPath = Object.freeze([...input.memberPath]);
-  const immediateTeamPath = Object.freeze([...input.immediateTeamPath]);
-  if (memberPath.length !== immediateTeamPath.length + 1) {
-    throw new Error("Member logical address must be a direct child of its immediate Team path.");
+  const keys = Object.keys(input).sort();
+  if (keys.length !== 2 || keys[0] !== "memberAddress" || keys[1] !== "rootTeamRunId") {
+    throw new Error("Member logical address context accepts only rootTeamRunId and memberAddress.");
+  }
+  const memberAddress = assertCanonicalCollaborationAddress(input.memberAddress);
+  if (!getCollaborationAddressBasename(memberAddress)) {
+    throw new Error("memberAddress must identify an Agent placement, not the root Team.");
   }
   return Object.freeze({
     rootTeamRunId: required(input.rootTeamRunId, "rootTeamRunId"),
-    memberAddress: formatAbsoluteCollaborationAddress(memberPath),
-    memberPath,
-    immediateTeamAddress: formatAbsoluteCollaborationAddress(immediateTeamPath),
-    immediateTeamPath,
+    memberAddress,
   });
 };
 
@@ -39,6 +39,5 @@ export const cloneMemberLogicalAddressContext = (
   context: MemberLogicalAddressContext,
 ): MemberLogicalAddressContext => createMemberLogicalAddressContext({
   rootTeamRunId: context.rootTeamRunId,
-  memberPath: context.memberPath,
-  immediateTeamPath: context.immediateTeamPath,
+  memberAddress: context.memberAddress,
 });

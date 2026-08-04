@@ -22,9 +22,6 @@ const createMemberTeamContext = () =>
       addressing: {
         rootTeamRunId: "team-1",
         memberAddress: "/professor",
-        memberPath: ["professor"],
-        immediateTeamAddress: "/",
-        immediateTeamPath: [],
       },
       deliverInterAgentMessage: vi.fn().mockResolvedValue({ accepted: true }),
     },

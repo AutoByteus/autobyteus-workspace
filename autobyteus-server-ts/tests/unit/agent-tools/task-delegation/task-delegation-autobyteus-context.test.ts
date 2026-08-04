@@ -18,9 +18,6 @@ const createContext = () => new MemberTeamContext({
     addressing: {
       rootTeamRunId: "delivery-team-run-1",
       memberAddress: "/program_manager",
-      memberPath: ["program_manager"],
-      immediateTeamAddress: "/",
-      immediateTeamPath: [],
     },
   },
 });
@@ -37,9 +34,6 @@ describe("buildTaskDelegationToolContextFromNativeContext", () => {
       addressing: {
         rootTeamRunId: "delivery-team-run-1",
         memberAddress: "/program_manager",
-        memberPath: ["program_manager"],
-        immediateTeamAddress: "/",
-        immediateTeamPath: [],
       },
     }));
     expect(managed).not.toHaveProperty("members");
@@ -57,19 +51,21 @@ describe("buildTaskDelegationToolContextFromNativeContext", () => {
       }),
       addressing: expect.objectContaining({
         memberAddress: "/program_manager",
-        immediateTeamAddress: "/",
       }),
     }));
+    expect(Object.keys(managed.addressing).sort()).toEqual(["memberAddress", "rootTeamRunId"]);
   });
 
-  it("clones addressing rather than exposing the MemberTeamContext arrays", () => {
+  it("clones and freezes the exact two-field addressing value", () => {
     const source = createContext();
     const managed = buildAutoByteusManagedTeamContext(source);
 
+    expect(managed.addressing).not.toBe(source.collaboration.addressing);
+    expect(Object.isFrozen(managed.addressing)).toBe(true);
     expect(() => {
-      managed.addressing.memberPath[0] = "mutated";
+      (managed.addressing as { memberAddress: string }).memberAddress = "/mutated";
     }).toThrow(/read only property/);
-    expect(source.collaboration.addressing.memberPath).toEqual(["program_manager"]);
+    expect(source.collaboration.addressing.memberAddress).toBe("/program_manager");
   });
 
   it("rejects a native context without collaboration addressing", () => {
@@ -85,7 +81,7 @@ describe("buildTaskDelegationToolContextFromNativeContext", () => {
     })).toThrow(/active Team collaboration context/);
   });
 
-  it("rejects inconsistent member and immediate-Team addressing", () => {
+  it("rejects removed derived addressing fields instead of accepting a legacy shape", () => {
     const managed = buildAutoByteusManagedTeamContext(createContext());
     expect(() => buildTaskDelegationToolContextFromNativeContext({
       customData: { teamContext: {
@@ -93,9 +89,8 @@ describe("buildTaskDelegationToolContextFromNativeContext", () => {
         addressing: {
           ...managed.addressing,
           memberPath: ["nested", "program_manager"],
-          immediateTeamPath: [],
         },
       } },
-    })).toThrow(/direct child of its immediate Team path/);
+    })).toThrow(/accepts only rootTeamRunId and memberAddress/);
   });
 });

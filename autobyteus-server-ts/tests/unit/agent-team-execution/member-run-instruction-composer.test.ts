@@ -11,8 +11,7 @@ const buildContext = (input: {
 } = {}): MemberTeamContext => {
   const addressing = createMemberLogicalAddressContext({
     rootTeamRunId: "root-team-run",
-    memberPath: ["research_team", "research_lead"],
-    immediateTeamPath: ["research_team"],
+    memberAddress: "/research_team/research_lead",
   });
   return new MemberTeamContext({
     teamRunId: "research-team-run",

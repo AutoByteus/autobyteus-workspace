@@ -2,7 +2,7 @@
 
 ## Status (`Draft`/`Design-ready`/`Refined`)
 
-`Design-ready` — the user-approved Ticket 1 behavior basis has been validated against the current code and remains the locked input to [design-spec.md](./design-spec.md). SR-004 established the user's clarified shared `send_message_to` / `delegate_task` recipient-address model. SR-005 tightens only the internal shared placement boundary after `ARCH-REV-003`; approved behavior is unchanged, architecture re-review is pending, and implementation has not started.
+`Refined — SR-006 user-approved; ready for architecture re-review` — SR-005 passed `ARCH-REV-004` and was implemented, reviewed, covered, and delivery-prepared. During explicit user verification, the user identified that the new collaboration caller context and shared placement still duplicate topology-derived address facts. SR-006 keeps the approved behavior but makes the mounted topology the sole logical-address authority and reduces the shared runtime contracts to one canonical address per placement. The user approved this focused revision and authorized architecture re-review; broader whole-TeamRun execution-identity normalization is deferred to a separate future phase.
 
 ## Goal / Problem Statement
 
@@ -13,8 +13,9 @@ Ticket 1 must give a Team-bound Agent:
 1. deterministic filesystem-like addresses for Agent and AgentTeam placements;
 2. a reusable natural-language `{from, to, rules}` handoff definition owned by AgentTeam;
 3. a read-only `get_handoff_rules` tool that returns only the caller's outgoing effective rules; and
-4. one consistent `send_message_to` Team route across AutoByteus, Codex, and Claude; and
-5. the same `/...` and `./...` recipient-address model for `delegate_task`, with task execution semantics applied only after the common address resolves to an Agent or Team placement.
+4. one consistent `send_message_to` Team route across AutoByteus, Codex, and Claude;
+5. the same `/...` and `./...` recipient-address model for `delegate_task`, with task execution semantics applied only after the common address resolves to an Agent or Team placement; and
+6. one canonical absolute logical address per mounted placement, with member paths, parent-Team identity, route selectors, and task-owner facts derived rather than duplicated in shared addressing structures.
 
 This ticket is limited to AutoByteus project runtime and definition contracts. Native AgentOrg and external repository-owned/pure-text Agent package edits are separate work.
 
@@ -33,6 +34,7 @@ This ticket is limited to AutoByteus project runtime and definition contracts. N
 | BEH-009 | AutoByteus, Codex, and Claude expose configured `send_message_to` through different adapters backed by the shared dispatcher, but current AutoByteus/MCP result adapters discard `AgentOperationResult.code`. | All supported runtimes expose the same configured `get_handoff_rules` and hierarchical `send_message_to` contracts, including an identical `{accepted,code,message,result}` envelope, through shared server ownership. | Provider-native event conversion and canonical tool naming remain runtime-local. | R-021, R-026; AC-019 |
 | BEH-010 | A TeamRun user message without an explicit target defaults to the root Team coordinator. | This coordinator-led Team ingress remains unchanged. | AgentTeam continues to require a direct Agent coordinator. | R-022; AC-020 |
 | BEH-011 | `delegate_task` currently accepts `{target:{kind:"member"\|"team",name}}`, resolves the flat name only against the current Team's direct task roster, and derives a Team target's ingress from the same synthetic representative descriptor used by flat communication. | `delegate_task.recipient_name` accepts the same `/...` and `./...` grammar as `send_message_to`, resolves through the same collaboration-root topology to a typed Agent or Team placement, and only then applies current direct-member task eligibility and maps an eligible placement to task-owned execution identity and real Team coordinator ingress. | Task eligibility remains limited to direct physical Agents/child Teams of the caller's immediate Team; task creation, task-Agent/task-Team materialization, `submit_task_result`, `review_task_result`, settlement, and exact task AgentRun communication retain task-protocol ownership. | R-023, R-027; AC-018, AC-022 |
+| BEH-012 | The implemented `MemberLogicalAddressContext` stores `memberAddress`, `memberPath`, `immediateTeamAddress`, and `immediateTeamPath`; its constructor accepts both path arrays and checks only their lengths. The implemented shared placement also repeats canonical subject address as route keys and owner path/local-route coordinates. | After the mounted topology determines a placement, the shared caller context stores only `{rootTeamRunId, memberAddress}`. The shared resolver returns only `{kind,address}` for an Agent or `{kind,address,ingressAddress}` for a Team. Parent Team, path segments, local name, route selector, and direct-owner eligibility are derived through the canonical address domain or resolved from topology. | Existing TeamRun execution configs, run/history/event identity, child localization, task execution identities, provider envelopes, and all approved message/task/handoff behavior remain unchanged. | R-028–R-031; AC-023–AC-025 |
 
 ## Investigation Findings
 
@@ -43,11 +45,14 @@ This ticket is limited to AutoByteus project runtime and definition contracts. N
 - Team definition persistence has multiple read/write paths: shared and team-local definitions use `TeamConfigRecord`; application-owned definitions have a separate config reader/writer; GraphQL maps create/update/read independently. All must agree on the handoff field.
 - TeamRun metadata has a strict normalizer/parser and is rewritten on create/restore/refresh. A run-stable handoff contract therefore must be added to the metadata/config snapshot rather than re-read from mutable definitions during restore.
 - No `get_handoff_rules` implementation exists. The established server-owned tool and Agent Tools MCP infrastructure used by `send_message_to` is the correct capability area to extend.
-- `SubTeamMemberTeamDescriptor.representative` is not communication-only today: task roster/context mapping converts it to `TaskDelegationTeamIdentity.ingress`, and valid Team targets fail when ingress is absent. Representative removal therefore requires the shared typed Team placement to carry real coordinator ingress plus a task-owned mapper that pairs its owner-local route with the caller's canonical local `TeamRunConfig.memberTree`.
+- `SubTeamMemberTeamDescriptor.representative` was not communication-only before SR-005: task roster/context mapping converted it to `TaskDelegationTeamIdentity.ingress`, and valid Team targets failed when ingress was absent. Representative removal therefore required the shared typed Team placement to carry real coordinator ingress. SR-006 keeps that configured ingress address and lets the task-owned mapper derive the direct parent and local names before pairing against the caller's canonical local `TeamRunConfig.memberTree`.
 - `SendMessageToDispatcher` preserves operation codes internally, but `AutoByteusSendMessageToTool` returns message-only strings and `AgentToolsMcpResultMapper` maps operation results to message-only MCP content. Both communication tools need one canonical provider-visible envelope and dedicated code-preserving adapters.
 - Current `stripMemberPathPrefix` rebases descendant `memberPath`/`memberRouteKey` but leaves nested Team `coordinatorMemberRouteKey` root/parent-prefixed. `MixedSubTeamRunFactory` separately strips only the newly created child's own coordinator key. A three-level child can therefore have a localized direct Agent route and a stale coordinator route, breaking exact task-ingress lookup.
 - `delegate_task` has a second public target language today: its schema requires a caller-supplied target kind plus a flat direct-member name, its input resolver matches `memberName`, and its rendered roster advertises those names. Because task delegation and ordinary messaging both select an Agent or Team placement before applying different operations, preserving this second name authority would contradict the ticket's canonical-address goal.
 - Existing focused tests explicitly assert synthetic representative and parent-boundary behavior. Those assertions become stale and must be replaced rather than retained as compatibility behavior.
+- The post-implementation `MemberLogicalAddressContext` factory derives its two display strings but still accepts independently supplied `memberPath` and `immediateTeamPath`. It validates only `memberPath.length === immediateTeamPath.length + 1`; contradictory values such as `['research_team','research_lead']` plus `['another_team']` pass that check and create inconsistent logical identity.
+- The post-implementation `ResolvedTeamLogicalPlacement` repeats facts already determined by its canonical address: Agent `memberRouteKey`, owner `teamPath`, one-segment `localMemberPath`, and `localMemberRouteKey`. Message delivery can derive a root selector from the effective Agent address, while task eligibility and current-local mapping can derive the target parent and basename from the same address.
+- The broader pre-existing execution topology still carries `memberPath`, `memberRouteKey`, and coordinator route fields through runtime, history, event, selector, and persistence contracts. Repository evidence found these names across 78, 128, and 34 production files respectively. Removing that older execution identity system is not proportionate to this collaboration-boundary correction and requires a separate persisted-contract investigation.
 
 See [investigation-notes.md](./investigation-notes.md) for exact paths and evidence.
 
@@ -55,16 +60,16 @@ See [investigation-notes.md](./investigation-notes.md) for exact paths and evide
 
 | Artifact Path | Type / Purpose | Related Requirement IDs | Related Acceptance-Criteria IDs | Status / Approval | Relationship To Requirements |
 | --- | --- | --- | --- | --- | --- |
-| [agent-team-addressing-handoff-contract.md](./agent-team-addressing-handoff-contract.md) | Intended-behavior protocol contract with grammar, schema, mounting, tool, examples, errors, and behavioral spans | R-001–R-027 | AC-001–AC-022 | `Design-ready`; user-approved through SR-004 and boundary-aligned in SR-005 | Makes the normative address and handoff behavior concrete; this requirements doc remains authoritative. |
+| [agent-team-addressing-handoff-contract.md](./agent-team-addressing-handoff-contract.md) | Intended-behavior protocol contract with grammar, schema, mounting, canonical-address derivation, tool, examples, errors, and behavioral spans | R-001–R-031 | AC-001–AC-025 | `Refined — SR-006 user-approved; ready for architecture re-review` | Makes the normative address, minimal shared runtime shapes, and handoff behavior concrete; this requirements doc remains authoritative. |
 
 ## Design Health Assessment (Mandatory)
 
 - Change posture: `Behavior Change`, `Feature`, and `Refactor`.
 - Initial design issue signal: `Yes`.
 - Root cause classification: `Boundary Or Ownership Issue`, `Duplicated Policy Or Coordination`, `Shared Structure Looseness`, and `Legacy Or Compatibility Pressure`.
-- Refactor posture: `Likely Needed`.
-- Evidence basis: A truthful recursive topology already exists, but Agent-facing instructions and delivery resolve a second flat projection assembled independently in `MemberTeamContextBuilder` and `TeamMessageRecipientResolver`. Child coordinator projection and coordinator-only parent reachability are workarounds for the flat boundary. Adding handoffs directly to that roster would preserve two address authorities.
-- Requirement or scope impact: Ticket 1 must replace the flat logical-recipient authority cleanly, create one reusable collaboration-facing contract, and remove synthetic recipient behavior. It must not retain bare-name fallback or introduce AgentOrg types.
+- Refactor posture: `Required`; SR-006 narrows the implemented shared structures before completion.
+- Evidence basis: The original flat authorities are removed, but the resulting collaboration structures still preserve overlapping representations of one mounted logical placement. The caller context accepts two independently supplied path arrays, and the placement result repeats address-derived owner and selector fields. This violates the shared-structure tightness rule and permits contradictory identity without adding operation capability.
+- Requirement or scope impact: Ticket 1 must retain one shared logical resolver but reduce its caller and result contracts to canonical addresses only. Existing execution/runtime/history path and route projections remain internal, non-authoritative execution data and are not normalized in this revision.
 
 ## Recommendations
 
@@ -79,6 +84,8 @@ See [investigation-notes.md](./investigation-notes.md) for exact paths and evide
 9. Serialize both communication tools through one `{accepted,code,message,result}` provider envelope; AutoByteus returns its JSON text, while MCP returns the same JSON text plus the same object in `structuredContent`.
 10. Replace the public `delegate_task` `{target:{kind,name}}` selector cleanly with `recipient_name`; do not retain flat-name, caller-supplied-kind, or task-roster lookup fallbacks. A task roster may advertise canonical addresses but is not an address authority.
 11. Keep Ticket 1 static per TeamRun. Dynamic graph refresh, member add/remove, handoff invalidation, and notifications belong to Ticket 2 AgentOrg.
+12. Treat the mounted topology as the sole constructor of canonical placement addresses. Store only `{rootTeamRunId, memberAddress}` in the shared caller context; derive its parent Team, segments, and route form through the strict address domain.
+13. Tighten `ResolvedTeamLogicalPlacement` to Agent `{kind,address}` or Team `{kind,address,ingressAddress}`. Derive message selectors, task direct-owner eligibility, and exact current-local member names from those addresses; do not carry a second owner or route coordinate.
 
 ## Scope Classification (`Small`/`Medium`/`Large`)
 
@@ -103,6 +110,7 @@ See [investigation-notes.md](./investigation-notes.md) for exact paths and evide
 | UC-013 | A Team definition and current-format historical TeamRun with no handoffs remain usable as an empty-handoff case. |
 | UC-014 | A user posts to a TeamRun without an explicit target and reaches the existing root coordinator ingress. |
 | UC-015 | A Team-bound Agent delegates a task to an Agent or Team placement using the same relative or absolute logical recipient address accepted by `send_message_to`; target type is derived from topology rather than supplied by the caller. |
+| UC-016 | Persistent, restored, task-Agent, and task-Team members use one canonical member address as their shared logical coordinate; message and task consumers derive parent/local/selector facts without independently supplied path or owner representations. |
 
 ## Out of Scope
 
@@ -116,6 +124,7 @@ See [investigation-notes.md](./investigation-notes.md) for exact paths and evide
 - Production frontend changes.
 - Cross-process/distributed messaging, inactive-run inboxes, or resurrection of inactive AgentRuns.
 - Changing task submission, review, settlement, exact task-run messaging, or task ownership beyond the caller's immediate Team; Ticket 1 changes the task selector/address resolution while preserving current direct-target lifecycle eligibility.
+- Removing or migrating the broader pre-existing TeamRun execution/history/event `memberPath`, `memberRouteKey`, `coordinatorMemberRouteKey`, or conversation-address schemas. SR-006 removes these only from the new shared collaboration context/placement boundary; a whole-execution-topology normalization requires a separate ticket and persisted-data decision.
 
 ## Functional Requirements
 
@@ -143,9 +152,13 @@ See [investigation-notes.md](./investigation-notes.md) for exact paths and evide
 - **R-022 — Coordinator-led Team entry:** TeamRun messages with no explicit member target shall continue to select the root Team's configured coordinator; AgentTeam shall continue to require a direct Agent coordinator.
 - **R-023 — Shared addressing, separate task execution:** `send_message_to` and `delegate_task` shall share the same strict parser, caller-relative/root-absolute normalization, collaboration-root topology traversal, canonical placement identity, and syntax/topology failure codes. Task delegation shall separately own eligibility checks, task Agent/Team identity, coordinator ingress, task lifecycle, token scoping, and exact task-run messaging; it shall not treat handoffs as ACLs or derive identity from a communication representative. Every eligible resolved Team task target shall receive non-null `TaskDelegationTeamIngressIdentity` from its configured direct Agent coordinator in canonical topology, without root/local fallback.
 - **R-024 — No external package edits:** Ticket 1 shall not edit external repository-owned Agent package Markdown/JSON or treat those package updates as an implementation prerequisite for project compilation/tests.
-- **R-025 — Dedicated collaboration contract:** Agent-facing address resolution, outgoing handoff lookup, and Team-route delivery wiring shall consume one semantically tight collaboration contract. Team instruction/task/token concerns may compose it, but flat recipient projections shall not remain a parallel authority. A shared resolved placement may expose canonical logical coordinates, exact Team ingress, and owner-local pairing only; it shall not expose full TeamRun configs or label static template/snapshot run identity as the active task-scoped owner.
+- **R-025 — Dedicated collaboration contract:** Agent-facing address resolution, outgoing handoff lookup, and Team-route delivery wiring shall consume one semantically tight collaboration contract. Team instruction/task/token concerns may compose it, but flat recipient projections shall not remain a parallel authority. The shared resolved placement may expose only its canonical logical address and, for a Team, exact configured ingress address; it shall not expose derived owner/path/route projections, full TeamRun configs, or static template/snapshot run identity as the active task-scoped owner.
 - **R-026 — Error integrity:** Syntax, topology traversal, missing target, self target, invalid Team ingress, duplicate edge, and missing collaboration context shall produce distinguishable typed failures; rejected attempts shall not deliver recipient input or emit accepted Team Communication. Public AutoByteus and MCP results for both communication tools shall expose required `accepted`, `code`, `message`, and `result` fields; adapters shall preserve an internal operation code exactly and use a documented fallback only when the internal result omitted one.
 - **R-027 — Hierarchical task recipient selector:** `delegate_task` shall accept one required `recipient_name` string using exactly the R-007 grammar and shall remove the public `{target:{kind,name}}` selector. Resolution shall infer Agent versus Team from the same canonical placement returned for `send_message_to`. After shared resolution, existing task eligibility remains separately enforced: the placement must be a direct physical Agent or direct child Team of the caller's immediate Team, and the caller Agent remains ineligible. An eligible Agent starts task-Agent execution; an eligible Team starts task-Team execution through real coordinator ingress. A resolved non-direct placement fails with `TASK_DELEGATION_TARGET_NOT_ELIGIBLE`, without name fallback, caller-supplied kind, or a separate task roster authority.
+- **R-028 — One canonical logical address:** Once the reusable definition graph is mounted for a TeamRun, each Team or Agent placement shall have exactly one canonical absolute collaboration address. Root-relative or caller-relative strings are request expressions only; `./...` shall be resolved immediately to the canonical absolute address and shall not be stored as a second identity.
+- **R-029 — Minimal caller coordinate:** `MemberLogicalAddressContext` shall contain exactly `rootTeamRunId` and the caller's canonical absolute Agent `memberAddress`. It shall not store or accept independent `memberPath`, `immediateTeamPath`, `immediateTeamAddress`, route-key, owner, target, handoff, or operation fields. The collaboration address domain shall derive segments, basename, parent Team address/path, and selector form from `memberAddress`.
+- **R-030 — Minimal shared placement:** The one result shared by `send_message_to` and `delegate_task` shall be exactly Agent `{kind:"agent", address}` or Team `{kind:"team", address, ingressAddress}`. `address` and `ingressAddress` are canonical absolute logical addresses. The result shall not carry subject wrappers, owner coordinates, member paths, route keys, configs, handles, provider/runtime settings, definition IDs, or run/member/task lifecycle identities.
+- **R-031 — Derived operation mapping:** Message delivery shall derive its private root member selector from the resolved effective Agent address. Task delegation shall derive the caller Team and target owner Team with `parentAddress`, derive the direct target name with `basename`, and require exact equality of those canonical parent addresses before matching exactly one direct current-local config of the resolved kind. A Team task target shall additionally require `parentAddress(ingressAddress) === team.address` and exactly one configured direct Agent ingress matching `basename(ingressAddress)`. No consumer may retry root/local shapes, search globally by leaf name, or reconstruct a parallel owner coordinate.
 
 ## Acceptance Criteria
 
@@ -171,12 +184,15 @@ See [investigation-notes.md](./investigation-notes.md) for exact paths and evide
 - **AC-020:** Posting a user message to a TeamRun with no target still reaches its root coordinator.
 - **AC-021:** Project docs describing AgentTeam communication, Agent tools/MCP, Team definition files, and run metadata reflect the new contract; external Agent package prose is explicitly excluded.
 - **AC-022:** From `/research_team/research_lead`, `delegate_task({recipient_name:"./field_team",...})` and `send_message_to({recipient_name:"./field_team"})` resolve the same `/research_team/field_team` Team placement; task delegation starts one task-Team through `/research_team/field_team/field_lead`. Delegating to a direct Agent by relative or equivalent absolute address resolves the same Agent placement and starts one task-Agent. A syntactically valid cross-branch or deeper non-direct address is resolved by the common topology but rejected as `TASK_DELEGATION_TARGET_NOT_ELIGIBLE`. Bare names, caller-supplied `kind`, malformed/missing paths, and the caller Agent are rejected before activation with no flat-name fallback.
+- **AC-023:** Every persistent, restored, task-Agent, and task-Team caller collaboration context has the exhaustive shape `{rootTeamRunId, memberAddress}`. For `/research_team/research_lead`, shared address functions derive `['research_team','research_lead']`, parent `/research_team`, basename `research_lead`, and route key `research_team/research_lead`; no independently supplied path can contradict the canonical address.
+- **AC-024:** For equivalent absolute and relative inputs, both message and task paths receive byte-for-byte/deep-equal minimal placements: Agent `{kind:"agent",address:"/research_team/analyst"}` or Team `{kind:"team",address:"/research_team/field_team",ingressAddress:"/research_team/field_team/field_lead"}`. Tests prove the absence of `subject`, `owner`, `memberPath`, `memberRouteKey`, config, handle, and lifecycle fields.
+- **AC-025:** Direct Agent and child-Team task activation, cross-branch/deeper task rejection, nested/upward/cross-branch message delivery, Team-ingress self rejection, instructions, `get_handoff_rules`, exact-run messaging, events, restoration, and provider envelopes retain their approved observable results after every collaboration-context and placement consumer derives its needed path/selector/owner fact from canonical addresses.
 
 ## Constraints / Dependencies
 
 - Bootstrap base is fresh `origin/personal` commit `2a7271c9d78b71b919f7dbfa3b8f97f61c3a2e2b` as of 2026-08-03.
 - Existing AgentRun and AgentTeamRun lifecycle, lazy nested Team startup, event conversion, Team Communication projection, task delegation, and token/memory identity must remain truthfully owned.
-- Existing `memberPath`/`memberRouteKey` infrastructure should be reused/tightened rather than replaced with a second graph representation.
+- Existing `memberPath`/`memberRouteKey` execution infrastructure remains a non-authoritative internal projection for runtime/history/event consumers in SR-006. The collaboration boundary shall neither copy those fields into its context/result nor create a second topology representation.
 - Tool exposure remains configuration-gated, matching current server-owned Agent tool policy. External packages that want `get_handoff_rules` must add it in their separate package change.
 - The same strict logical-address domain and rooted placement resolver must serve `send_message_to` and `delegate_task`; operation-specific delivery or task activation code may consume the typed placement but may not parse or reinterpret the address independently.
 - Ticket 2 AgentOrg should be able to reuse the canonical address/edge/tool contracts, but Ticket 1 shall contain no AgentOrg domain dependency.
@@ -193,6 +209,7 @@ See [investigation-notes.md](./investigation-notes.md) for exact paths and evide
   - Missing current-format run snapshot normalizes to `[]`.
   - New definition and run writes persist canonical arrays.
   - No historical topology/member/run identity may be rewritten or re-derived.
+  - SR-006 changes only ephemeral in-process collaboration caller/placement values; it does not change Team definition JSON, TeamRun metadata, task record files, or public history/event schemas.
 - Unacceptable data loss or corruption:
   - Dropping authored handoffs during update/write.
   - Rebinding a restored historical run to newer definition rules.
@@ -219,6 +236,7 @@ See [investigation-notes.md](./investigation-notes.md) for exact paths and evide
 - Current run metadata schema has a previous explicit legacy upgrade boundary. The new optional snapshot must remain compatible with the current recursive format without reviving unsupported flat schemas.
 - Provider prompt lifecycles differ: AutoByteus and Codex bootstrap instructions differently from Claude per-turn input composition. Rule content must stay tool-retrieved even if stable protocol text is rendered at provider-appropriate times.
 - External packages will temporarily retain old prose/tool configuration until their separate change. Ticket 1 intentionally provides no runtime fallback for their bare recipient names.
+- The broader TeamRun execution model still duplicates recursive containment as persisted member paths/routes and coordinator routes. That cleanup is intentionally not hidden inside SR-006: it spans runtime selection, history, status/events, conversation addresses, task identities, and stored metadata, and needs its own investigation and transition decision.
 
 ## Requirement-To-Use-Case Coverage
 
@@ -239,6 +257,7 @@ See [investigation-notes.md](./investigation-notes.md) for exact paths and evide
 | UC-013 | R-018–R-020 |
 | UC-014 | R-022 |
 | UC-015 | R-007–R-009, R-023, R-027 |
+| UC-016 | R-028–R-031 |
 
 ## Acceptance-Criteria-To-Scenario Intent
 
@@ -253,7 +272,8 @@ See [investigation-notes.md](./investigation-notes.md) for exact paths and evide
 | AC-019 | Cross-runtime adapter/live parity coverage. |
 | AC-021 | Durable project documentation coverage. |
 | AC-022 | Shared message/task address parsing and placement resolution, direct-target task activation, non-direct/cross-branch task rejection, Team ingress, and clean-cut selector removal. |
+| AC-023–AC-025 | Minimal caller/placement shapes, deterministic address derivation, construction-path coverage, and preserved message/task/handoff/provider behavior. |
 
 ## Approval Status
 
-`Approved / Design-ready.` The user explicitly approved the two-ticket split and the core Ticket 1 contract: root/relative slash addressing, one consistent model for standalone and nested AgentTeams, truthful Team paths instead of fake representatives, unchanged `from`/`to` handoff endpoints with natural-language `rules`, sender-only retrieval through `get_handoff_rules`, and a static AgentTeam foundation for later dynamic AgentOrg reuse. SR-002 clarified the typed-result and task-owned ingress boundaries; SR-003 corrected the supporting recursive TeamRun localization invariant. In SR-004 the user explicitly clarified that selecting a task recipient and selecting a message recipient must use the same canonical logical addressing model. That clarification is approved behavior and supersedes the prior direct-name task selector design. SR-005 narrows only the implementation-facing placement value per `DR-003`; it does not change the approved address, handoff, or task behavior basis.
+`Refined — SR-006 user-approved; ready for architecture re-review.` The user explicitly approved the two-ticket split and the core Ticket 1 contract: root/relative slash addressing, one consistent model for standalone and nested AgentTeams, truthful Team paths instead of fake representatives, unchanged `from`/`to` handoff endpoints with natural-language `rules`, sender-only retrieval through `get_handoff_rules`, and a static AgentTeam foundation for later dynamic AgentOrg reuse. SR-004 established that message and task selection share one address model, and SR-005 passed architecture review with a coordinate-only common placement. During final verification, the user further established that the mounted topology deterministically decides one canonical address and every path/parent/route/owner representation is derived. SR-006 applies that principle to the shared data structures. The user approved SR-006 and authorized architecture re-review, while explicitly deferring the larger whole-execution path/route normalization to a separate future phase.

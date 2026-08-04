@@ -32,9 +32,6 @@ const memberTeamContext = new MemberTeamContext({
     addressing: {
       rootTeamRunId: "team-run-1",
       memberAddress: "/coordinator",
-      memberPath: ["coordinator"],
-      immediateTeamAddress: "/",
-      immediateTeamPath: [],
     },
   },
   members: [

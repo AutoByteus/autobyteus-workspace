@@ -15,8 +15,7 @@ const buildContext = (handoffs: Array<{ from: string; to: string; rules: string[
   const collaboration = new MemberCollaborationContext({
     addressing: createMemberLogicalAddressContext({
       rootTeamRunId: "root-run",
-      memberPath: ["research_team", "research_lead"],
-      immediateTeamPath: ["research_team"],
+      memberAddress: "/research_team/research_lead",
     }),
     outgoingHandoffs: handoffs,
   });

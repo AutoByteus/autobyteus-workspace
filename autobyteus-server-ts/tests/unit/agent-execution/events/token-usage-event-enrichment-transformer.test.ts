@@ -37,9 +37,6 @@ const runContext = new AgentRunContext({
         addressing: {
           rootTeamRunId: 'team-run-1',
           memberAddress: '/planner/worker',
-          memberPath: ['planner', 'worker'],
-          immediateTeamAddress: '/planner',
-          immediateTeamPath: ['planner'],
         },
       },
       tokenUsageExecutionScope: {

@@ -82,9 +82,6 @@ const createMemberTeamContext = (
       addressing: {
         rootTeamRunId: "team-1",
         memberAddress: "/professor",
-        memberPath: ["professor"],
-        immediateTeamAddress: "/",
-        immediateTeamPath: [],
       },
       deliverInterAgentMessage: sendMessageToEnabled ? deliverInterAgentMessage : null,
     },
@@ -250,7 +247,6 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         addressing: expect.objectContaining({
           rootTeamRunId: "team-1",
           memberAddress: "/professor",
-          immediateTeamAddress: "/",
         }),
       }),
     );

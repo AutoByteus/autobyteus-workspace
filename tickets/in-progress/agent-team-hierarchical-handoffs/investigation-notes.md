@@ -3,12 +3,12 @@
 ## Investigation Status
 
 - Bootstrap Status: `Complete`
-- Current Status: `Complete for SR-005 architecture re-review handoff`
-- Investigation Goal: Produce a concrete AgentTeam-only prerequisite ticket for truthful hierarchical addressing shared by messaging and task delegation, plus consistent natural-language handoff retrieval/delivery.
+- Current Status: `SR-006 refactor investigation complete and user-approved; ready for architecture re-review`
+- Investigation Goal: Preserve the implemented hierarchical addressing/handoff behavior while tightening the new shared caller and placement structures so the mounted topology and its one canonical address remain the only logical-address authority.
 - Scope Classification: `Large`
 - Scope Classification Rationale: The clean-cut behavior crosses Team definition domain/persistence/API surfaces, recursive topology/run snapshots, Agent-facing context and instructions, shared server-owned tools, mixed Team delivery/event behavior, task target resolution/activation routing, restoration, provider adapters, and broad tests. AgentOrg, live Team reconciliation, external packages, and frontend are excluded.
-- Scope Summary: AutoByteus project code only. Introduce static AgentTeam-authored handoffs and one hierarchical logical recipient-address model shared by `send_message_to` and `delegate_task`, reusable by a later AgentOrg ticket.
-- Primary Questions Resolved: Current message/task address and roster paths, nested Team projection, definition and GraphQL readers/writers, tool exposure, run snapshot/restoration, mount/rebase semantics, shared address grammar, task-specific post-resolution semantics, preserved exact-run behavior, clean-cut removals, current data compatibility, and likely coverage surface.
+- Scope Summary: AutoByteus project code only. SR-005 is implemented and downstream-validated; SR-006 is a targeted design rework of the ephemeral collaboration caller/placement boundary. It does not reopen handoff semantics, provider results, execution/history schemas, or dynamic AgentOrg scope.
+- Primary Questions Resolved: Which implemented logical-address fields are redundant; which consumers can derive parent/path/selector/local-name facts from one canonical address; whether task direct-owner mapping still remains exact; whether persisted data changes; and whether broader TeamRun execution identity normalization belongs in this round.
 
 ## Request Context
 
@@ -32,6 +32,8 @@ The user explicitly decided:
 
 During SR-004 clarification, the user explicitly rejected a separate task target naming system: task delegation selects a recipient just as message delivery does, so `delegate_task` must use the same canonical `/...` and `./...` logical addressing model as `send_message_to`. Different execution semantics may follow resolution, but there must not be a second flat task address authority.
 
+During final user verification after SR-005 implementation and downstream delivery preparation, the user further clarified that mounting the Team definition graph deterministically decides each placement's one canonical address. `memberPath`, immediate-Team path/address, route key, owner Team, and local name are derived views and must not be duplicated as independent shared identity. The user requested another design-principles-led simplification round and initially instructed the solution designer to stop for user review. The user subsequently approved SR-006 and authorized architecture re-review, while deferring broader whole-TeamRun execution-identity normalization to a separate future phase.
+
 The bootstrap package was received by the current software-engineering team as the approved Ticket 1 requirements basis. The solution designer independently re-read the current definition, topology, runtime, tool, metadata, and documentation paths and produced the initial design. No implementation handoff is produced by this role.
 
 ## Environment Discovery / Bootstrap Context
@@ -53,7 +55,7 @@ The bootstrap package was received by the current software-engineering team as t
 
 | Artifact Path | Purpose And Scope | Evidence, Context, Or Decision Captured | Core Artifact(s) Supported | Related Requirement / Acceptance-Criteria IDs | Status | Approval Applicability / State | Follow-Up Needed |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/agent-team-addressing-handoff-contract.md` | Normative Ticket 1 protocol supplement | Shared message/task address grammar, Team ingress, path examples, schema, rule semantics, mount/rebase composition, tool result, persistence behavior, errors, and use-case spans | Requirements; design spec | R-001–R-027 / AC-001–AC-022 | `Design-ready` | Intended-behavior authority approved by user through SR-004; SR-005 narrows only its internal placement boundary | Keep aligned if architecture review changes the solution basis |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/agent-team-addressing-handoff-contract.md` | Normative Ticket 1 protocol supplement | Shared message/task address grammar, canonical-address derivation, Team ingress, schema, mount/rebase composition, tool result, persistence behavior, errors, and use-case spans | Requirements; design spec | R-001–R-031 / AC-001–AC-025 | `Refined — SR-006 user-approved; ready for architecture re-review` | Intended-behavior authority updated for the user's one-canonical-address clarification | User-approved; architecture re-review authorized |
 
 ## Source Log
 
@@ -99,8 +101,18 @@ The bootstrap package was received by the current software-engineering team as t
 | 2026-08-03 | User clarification | Conversation following SR-003 handoff | Confirm whether task delegation should retain its separate target-name model | User stated that delegating a task and sending a message both select a recipient and therefore must use the same addressing model | Supersede SR-003 task-selector design in SR-004 |
 | 2026-08-03 | Code | `agent-tools/task-delegation/task-delegation-tool-{parameter-schemas,input-parsers,manifest}.ts`; `task-delegation/task-delegation-{record,input-resolver}.ts`; `services/delegation-target-roster-builder.ts` | Trace the current public task target language and authority | Tool input is `{target:{kind:"member"\|"team",name}}`; resolver matches `memberName` in a direct-member context; prompt roster advertises flat names | Replace with `recipient_name`; common topology infers type; remove flat-kind/name lookup and authority |
 | 2026-08-03 | Code | `task-delegation/task-delegation-{service,activation-coordinator,target,address-builder}.ts`; `task-team-run-identity-factory.ts`; `backends/mixed/members/mixed-task-{agent,team}-instance-registry.ts` | Trace post-resolution task execution and eligibility constraints | Task identities already carry route/path and records persist structured conversation addresses, but each service/registry intentionally activates against its current TeamRun's direct runtime contexts | Share address resolution, then preserve current direct-target task eligibility; do not silently add cross-TeamRun task ownership |
+| 2026-08-04 | User clarification | Ticket conversation during explicit delivery verification | Decide whether canonical caller/placement data should retain multiple path/address/owner forms | User established that mounting topology deterministically decides one canonical address and every other logical path/owner/route view is derived; requested a principles-led refactor and user review before reviewer handoff | Produce SR-006 and stop for user review |
+| 2026-08-04 | User approval and scope decision | Ticket conversation after SR-006 user review | Decide whether to submit SR-006 and whether whole-execution identity normalization belongs in this round | User approved the focused SR-006 collaboration-boundary contraction, authorized architecture re-review, and explicitly deferred the larger whole-TeamRun refactor to a later phase | Submit the cumulative SR-006 package to `architecture_reviewer`; do not expand this round |
+| 2026-08-04 | Doc | `solution-designer/design-principles.md` | Reapply shared-structure tightness, ownership, spine, removal, and persisted-data principles | Shared reusable structures must remove redundant parallel representations; topology remains authoritative; derived execution projections must not cross the shared collaboration boundary | Applied in SR-006 |
+| 2026-08-04 | Code | `agent-team-execution/domain/member-logical-address-context.ts`; `services/member-team-context-builder.ts`; `agent-tools/task-delegation/task-delegation-autobyteus-context.ts` | Audit the implemented caller address shape and construction seams | Context stores five fields. Factory accepts `memberPath` plus `immediateTeamPath`, derives strings, and checks only relative lengths; the native adapter independently parses both arrays | Replace input/result with `{rootTeamRunId,memberAddress}` and derive every view through the address domain |
+| 2026-08-04 | Code | `agent-team-execution/services/resolved-team-logical-placement.ts`; `team-logical-placement-resolver.ts`; `task-delegation-target-mapper.ts`; `mixed-team-manager.ts` | Audit shared placement consumers and minimum required facts | Agent route key is derivable from address; owner Team/local path/route are derivable from subject address; message needs only effective Agent address, and task mapping needs target parent/basename plus Team ingress address | Tighten placement to Agent `{kind,address}` or Team `{kind,address,ingressAddress}` |
+| 2026-08-04 | Command | `rg -l "memberPath" autobyteus-server-ts/src \| wc -l`; equivalent commands for `memberRouteKey` and `coordinatorMemberRouteKey` | Assess whether the entire execution topology should be normalized inside SR-006 | Fields appear in 78, 128, and 34 production files and cross run history, events/status, selectors, task identities, message participants, and metadata | Defer whole-execution normalization to a separately investigated ticket; remove the fields only from the new collaboration context/result |
+| 2026-08-04 | Code | `run-history/store/team-run-metadata-{types,schema}.ts`; `agent-team-execution/services/team-run-metadata-mapper.ts`; `task-delegation/task-delegation-record.ts` | Determine persisted-data effect of the focused refactor | Caller context and resolved placement are ephemeral. Task record files persist conversation addresses and kind, not `MemberLogicalAddressContext`; TeamRun metadata remains unchanged | `Not Affected`; no migration or compatibility reader |
+| 2026-08-04 | Git / downstream artifacts | `git log -6 --oneline`; `git status --short`; implementation/review/API-E2E/delivery reports | Establish current branch state before design rework | SR-005 implementation commits are `2ed26efb9` and `93cc7ed34`; downstream checkpoint is `c3cafa6a4`; delivery-owned doc changes remain untouched | Solution designer edits only authoritative solution artifacts |
 
 ## Relevant Existing Behavior And Production Paths
+
+BEH-001–BEH-011 below retain the initial pre-implementation baseline that justified SR-001–SR-005. BEH-012 records the post-implementation state that is the direct current input to SR-006; the downstream implementation/review/coverage artifacts remain authoritative evidence for the now-implemented earlier behaviors.
 
 | Behavior ID | Kind | Current Supported Trigger Or Governing Contract | Current Production Path And Lifecycle | Meaningful Current Outcome / Invariants | Evidence |
 | --- | --- | --- | --- | --- | --- |
@@ -115,12 +127,13 @@ The bootstrap package was received by the current software-engineering team as t
 | BEH-009 | Contract | Agent config includes a server-owned tool | AutoByteus bound BaseTool or Agent Tools MCP descriptor -> shared server dispatcher/service -> provider result adapter | Tool exposure is configuration-gated; Codex/Claude names normalize to canonical application tool names; current AutoByteus/MCP result mappings do not preserve `AgentOperationResult.code` | Tool resolver, AutoByteus wrapper, MCP provider/result mapper files |
 | BEH-010 | User | Post TeamRun user message without member selector | `TeamRun.postMessage` -> `resolvePostMessageTarget` -> configured coordinator route -> backend/member | Root coordinator is default Team ingress | `domain/team-run.ts` |
 | BEH-011 | Contract | Team member calls `delegate_task` with `{target:{kind,name}}`, delegates/reviews a task, or addresses an exact task AgentRun | Tool schema/parser -> direct flat task roster in generic `MemberTeamContext.members` -> name/kind input resolver -> task Agent/Team identity; Team ingress is mapped from `representative` -> current-TeamRun activation | Task execution is distinct from ordinary communication, but current public addressing is a second flat authority and Team ingress depends on the synthetic representative descriptor slated for removal | Task tool schema/parser/manifest, delegation roster/context mapper, input resolver, activation coordinator, task instance registries |
+| BEH-012 | Contract / Refactor | Any implemented Team member context construction followed by message or task recipient resolution | Mounted `TeamRunConfig.memberTree` -> `MemberTeamContextBuilder` -> five-field `MemberLogicalAddressContext`; root `TeamLogicalPlacementResolver` -> subject/owner/route-bearing placement -> message or task consumer | Approved runtime behavior works and passed downstream coverage, but one logical placement is repeated as address/path/immediate-Team/route/owner values; constructor length validation cannot prove the two supplied paths share the same prefix | Current branch `c3cafa6a4`; files and commands in 2026-08-04 source-log rows |
 
 ## Design Health Assessment Evidence
 
 - Change posture: `Behavior Change`, `Feature`, and `Refactor`.
 - Candidate root cause classification: `Boundary Or Ownership Issue`, `Duplicated Policy Or Coordination`, `Shared Structure Looseness`, `Legacy Or Compatibility Pressure`.
-- Refactor posture evidence summary: A correct recursive topology already exists, but Agent communication builds and consumes a separate flat view in two places. Adding handoff edges to that view would multiply policy and preserve synthetic identities. The correct response is a clean replacement centered on one collaboration topology/binding.
+- Refactor posture evidence summary: SR-005 removed the flat authorities, but its implemented shared context/result still repeat facts derivable from one canonical mounted address. SR-006 should perform a clean contraction of those ephemeral structures, while the broader persisted execution identity model remains a separate concern.
 
 | Evidence Source | Observation | Design Health Implication | Follow-Up Needed |
 | --- | --- | --- | --- |
@@ -132,6 +145,9 @@ The bootstrap package was received by the current software-engineering team as t
 | Definition provider split | Application-owned config has a separate parser/writer | A partial schema addition would silently drop data on one ownership scope | Explicitly cover all readers/writers/API converters |
 | Metadata schema | Strict current-format parser rewrites canonical metadata | Run-stable handoffs need explicit snapshot fields | Keep optional field directly usable; no old/new business path |
 | Current tests/docs | Explicitly assert short roster representatives | Compatibility retention would keep the wrong public contract | Replace stale assertions/docs cleanly |
+| `member-logical-address-context.ts` | One context stores two paths and their two formatted strings | Shared structure looseness; contradictory independently supplied paths remain representable | Store only root run ID plus canonical member address |
+| `resolved-team-logical-placement.ts` | Subject address is accompanied by address-derived route and owner fields | Shared result carries redundant parallel identity | Return only kind/address and Team ingress address |
+| Run-history/event/task execution identity inventory | Path/route fields cross many older persisted and runtime contracts | Whole-system normalization is a distinct large refactor with persisted-data implications | Do not hide it inside SR-006; explicitly defer |
 
 ## Relevant Files / Components
 
@@ -173,6 +189,11 @@ The bootstrap package was received by the current software-engineering team as t
 | `.../agent-team-execution/backends/mixed/mixed-sub-team-run-factory.ts` | Persistent/restored/task child config construction | Calls path stripper and separately strips the top-level coordinator route | Call the one localization helper and perform no additional string route stripping |
 | `.../agent-team-execution/task-delegation/task-delegation-activation-coordinator.ts`; mixed task instance registries | Activate task execution against one TeamRun's direct contexts | Shared root resolution can select a placement beyond current task ownership | Preserve direct-target eligibility after resolution; keep lifecycle/ledger/review semantics and current manager ownership unchanged |
 | Provider prompt/tool exposure files | Per-runtime materialization | Contracts converge through shared composer/exposure | Preserve configuration gating and canonical names |
+| `.../domain/member-logical-address-context.ts` | Implemented shared caller coordinate | Stores member address/path and immediate-Team address/path; factory accepts both paths | Replace with exact `{rootTeamRunId,memberAddress}` and domain derivation functions |
+| `.../services/resolved-team-logical-placement.ts` | Implemented shared message/task placement | Carries subject wrapper, route keys, and owner path/local route in addition to canonical address | Replace with exact Agent/Team address union; preserve Team ingress address only |
+| `.../services/team-logical-placement-resolver.ts` | Root topology traversal | Currently reads caller `immediateTeamPath` and copies config paths/routes into result | Derive caller parent from its address and derive visited addresses from traversal segments/member names |
+| `.../task-delegation/task-delegation-target-mapper.ts` | Post-resolution task eligibility/current-local mapping | Currently depends on placement owner coordinate | Derive target parent/basename and Team ingress basename from canonical addresses; exact direct config matching remains task-owned |
+| `.../services/inter-agent-message-delivery-intent-builder.ts`; `backends/mixed/mixed-team-manager.ts` | Sender intent and private delivery endpoint | Currently consume context paths and placement route coordinate | Derive participant path/route and private root selector from canonical Agent address |
 
 ## Runtime / Probe Findings
 
@@ -180,6 +201,8 @@ The bootstrap package was received by the current software-engineering team as t
 | --- | --- | --- | --- | --- |
 | 2026-08-03 | Script | Repository-wide Python scan of `team-config.json` member names | 10 observed names; none blank, trimmed incorrectly, reserved, slash-containing, or backslash-containing | Proposed path-segment validation has no observed stored-data rewrite need |
 | 2026-08-03 | Test attempt | `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/member-team-context-builder.test.ts tests/unit/agent-team-execution/member-run-instruction-composer.test.ts tests/unit/agent-team-execution/mixed-sub-team-member-handle.test.ts tests/unit/agent-tools/team-communication/send-message-to.test.ts --no-file-parallelism` | Command exited 254 before collection: `Command "vitest" not found`; fresh worktree dependencies are not installed | No behavioral test result claimed; receiving team must install/prepare normally before execution |
+| 2026-08-04 | Static construction probe | Read `createMemberLogicalAddressContext` and evaluate its sole relationship guard against `memberPath=['research_team','research_lead']`, `immediateTeamPath=['another_team']` | Length condition passes although the derived member and parent Team addresses contradict each other | The data shape, not another guard, is the root issue; remove the second supplied path |
+| 2026-08-04 | Downstream evidence read | Implementation handoff, code review, API/E2E execution report, delivery revision record | SR-005 behavior passed implementation review and broad deterministic coverage before this refactor request | SR-006 acceptance requires preserved behavior plus focused minimal-shape proofs; no claim that SR-006 code has run yet |
 
 ## External / Public Source Findings
 
@@ -300,13 +323,32 @@ The clean target is one common logical placement resolver returning a typed Agen
 
 Current task activation is scoped to a `TeamRun`: `TaskDelegationService` holds a run-bound ledger and calls `TeamRun.startTaskAgentInstance` / `startTaskTeamInstance`, while mixed task registries search only that run's direct member contexts. The user clarified addressing, not cross-TeamRun task ownership. The proportionate target therefore lets the common resolver identify any root placement, then requires the resolved placement's owning Team path to equal the caller's immediate Team path. Non-direct/deeper/cross-branch placements receive a task-specific eligibility error without name fallback. Historical task records already store structured `ConversationTargetAddress` and receiver kind rather than the live flat selector, so this public input cleanup does not itself require record migration.
 
-### 17. The proposed shared placement must not become a config or lifecycle carrier
+### 17. SR-005 finding: the proposed shared placement must not become a config or lifecycle carrier
 
 `ARCH-REV-003` confirmed the common resolver and current-TeamRun task policy, then identified a boundary contradiction in the proposed return type. `ResolvedAgentPlacement.memberConfig` and `ResolvedAgentTeamPlacement.teamConfig` would expose complete root snapshot configs—including provider, workspace, runtime, and recursive child settings—through `TeamRun.resolveLogicalPlacement`, even though that facade exists specifically to prevent task tooling from reading TeamRun config. The proposed `owningTeamRunId` is also not a truthful active-owner identity when a task-scoped TeamRun instantiates the same logical Team placement under a distinct run ID.
 
-Neither operation needs those values. Root message delivery already owns the config, registry, and handle lookup behind `MixedTeamManager`; after shared resolution it needs only the selected Agent/Team logical coordinates and, for a Team, the exact ingress Agent coordinate. Task delegation intentionally joins the placement's logical owning Team path and owner-local member path/route to the caller's **current** canonical local config, which remains the sole source of task runtime IDs, role/description, Team definition ID, and coordinator materialization identity.
+Neither operation needs those config or lifecycle values. Root message delivery already owns the config, registry, and handle lookup behind `MixedTeamManager`; after shared resolution it needs only the selected logical Agent address or configured Team ingress address. Task delegation obtains task runtime IDs, role/description, Team definition ID, and coordinator materialization identity from the caller's **current** canonical local config.
 
-The corrected shared value should therefore contain only deeply immutable root-canonical subject coordinates, a nullable structural owner-local coordinate for the root Team, and a minimal root-canonical Agent coordinate for Team ingress. It should omit all config objects, member/run IDs, provider/runtime settings, handles, and lifecycle identity. Message delivery converts the chosen Agent coordinate into a private delivery endpoint inside the root mixed manager; task mapping converts the owner-local coordinate into execution identity inside the current task service. This keeps one resolver and one identical placement shape without making either operation consume the other's state.
+SR-005 therefore narrowed the shared value to immutable logical coordinates and omitted all config objects, member/run IDs, provider/runtime settings, handles, and lifecycle identity. That was the correct response to `DR-003`; §18 records the later post-implementation evidence that the remaining route/owner coordinates are themselves derivable and should now be removed by SR-006. The enduring conclusion is one resolver and one identical placement shape without either operation consuming the other's state.
+
+### 18. SR-005 still models one canonical placement more than once
+
+The SR-005 implementation proves that the resolver boundary can remain config-independent, but its shared values are not yet minimal. `MemberLogicalAddressContext` stores a canonical member string, its segment array, the parent-Team string, and the parent-Team segment array. Its factory reduces risk by deriving the two strings, yet still accepts two independent arrays and checks only their relative lengths. It does not require `immediateTeamPath` to be the exact prefix of `memberPath`, so contradictory caller identity remains constructible.
+
+The shared placement repeats the same issue one layer later. For an Agent, `memberRouteKey` is the canonical address without its leading slash. For any non-root subject, `owner.teamPath` is `parentAddress(subject)`, `localMemberPath` is `[basename(subject)]`, and `localMemberRouteKey` is `basename(subject)`. These values do not add domain meaning; they create parallel representations that every constructor and consumer must keep synchronized.
+
+The principles-led correction is a contraction, not a new abstraction:
+
+- `MemberLogicalAddressContext = {rootTeamRunId, memberAddress}`;
+- `ResolvedTeamLogicalPlacement = {kind:"agent",address} | {kind:"team",address,ingressAddress}`;
+- strict address-domain operations own `segments`, `basename`, `parentAddress`, and root selector derivation;
+- the resolver derives addresses from its topology traversal cursor rather than copying stored config paths/routes;
+- message delivery derives the private selector from the selected effective Agent address; and
+- task policy compares `parentAddress(target)` to `parentAddress(caller)`, then performs one exact direct current-local config match by the derived basename and resolved kind. Team ingress must be a direct Agent whose canonical parent equals the Team address.
+
+This does not make an address replace the topology. Syntax derives structural views; topology lookup still determines existence, Agent-versus-Team kind, configured Team ingress, and execution config. `rootTeamRunId` remains necessary because the same canonical logical address can exist in multiple concurrent TeamRun snapshots. Exact AgentRun/task identities remain separately owned.
+
+The larger `TeamRunConfig`/metadata/event route system predates this shared collaboration boundary and is materially wider. Static inventory shows 78 production files mentioning `memberPath`, 128 mentioning `memberRouteKey`, and 34 mentioning `coordinatorMemberRouteKey`. Those fields participate in history lookup, status/event payloads, conversation segments, task identities, memory/token scopes, and current metadata. Removing them may be a valuable future topology normalization, but it requires separate behavior/persistence investigation. SR-006 makes them non-authoritative for collaboration without pretending to solve that broader system.
 
 ## Persisted Data Transition Evidence (When Applicable)
 
@@ -318,16 +360,17 @@ The corrected shared value should therefore contain only deeply immutable root-c
   - Add optional authored definition edges.
   - Add optional effective TeamRun snapshot.
   - Replace public message and task logical recipient meaning; no stored member topology identity changes. Existing task records already persist canonical structured addresses and typed receiver kind, not the live flat selector.
+  - SR-006 contracts `MemberLogicalAddressContext` and `ResolvedTeamLogicalPlacement`, both ephemeral in-process values. It does not alter stored Team definitions, TeamRun metadata, task record files, or public history/event payloads.
 - Normal readers and writers, including unknown/extra-field behavior:
   - Definition normalizers explicitly select known fields; writers reconstruct records, so the handoff field must be added to all normalizers/writers.
   - TeamRun metadata parser/normalizer explicitly constructs the current type and writers canonicalize it, so the new optional field must be recognized and written.
 - Representative direct-read or compatibility evidence:
   - Existing configs omit the new field and already have safe member names.
   - Existing current metadata validator requires core recursive fields but can be extended to accept an absent optional field as empty.
-- Required semantics and invariants preserved by direct use: `Yes` — missing handoffs truthfully means no native handoff edges; current member paths/run IDs remain unchanged.
+- Required semantics and invariants preserved by direct use: `Yes` — missing handoffs truthfully means no native handoff edges; current member paths/run IDs remain unchanged; SR-006 needs no persisted-data reader or writer change.
 - Physical storage, privacy/security, disposal, rebuild, or operational constraints: Natural-language rules may contain user-authored work policy but no new secret store is introduced. Atomic JSON write behavior already exists. No disposal/rebuild is needed.
 - Concrete benefit, cost, and risk of migration if it remains a candidate: A bulk rewrite provides no semantic benefit and adds unnecessary operational/history risk. Migration is rejected.
-- Existing migration framework or lifecycle constraints, only if migration may be required: Current TeamRun schema has an explicit unsupported legacy-flat metadata boundary, but this ticket does not need to alter or revive it.
+- Existing migration framework or lifecycle constraints, only if migration may be required: Current TeamRun schema has an explicit unsupported legacy-flat metadata boundary, but this ticket does not need to alter or revive it. The SR-006-specific outcome is `Not Affected`.
 
 ## Constraints / Dependencies / Compatibility Facts
 
@@ -344,6 +387,10 @@ The corrected shared value should therefore contain only deeply immutable root-c
 
 ## Open Unknowns / Risks
 
+- SR-006 must update every caller-context construction/clone/parser seam atomically. Leaving one provider/native adapter dependent on removed path arrays would make configured task tools diverge even if logical resolution itself is correct.
+- Task mapping by derived basename is exact only after canonical parent-address equality and the existing case-insensitive sibling uniqueness invariant. Implementation must preserve that order and reject zero/multiple direct matches; it must not turn basename into a global lookup.
+- Team task ingress mapping must prove that `parentAddress(ingressAddress)` equals the resolved Team address before matching the exact direct Agent name/configured coordinator. This preserves the ingress invariant without carrying an owner or route coordinate.
+- The broader execution topology field cleanup may be valuable, but its product and persistence reach are not yet fully investigated. It must remain outside SR-006 rather than becoming an unreviewed expansion.
 - Snapshot propagation remains an implementation risk because several `TeamRunConfig` constructors must preserve the new field. The design resolves ownership but implementation review must audit every reconstruction.
 - Persistent child Teams and task-team instances share `MixedSubTeamRunFactory` but currently receive partially localized nested coordinator routes. SR-003 assigns one recursive localizer; implementation must prove persistent create, restore, and task-child calls all consume its canonical result while collaboration retains a separate root mount.
 - Task-agent and task-Team instances use logical member identities and `MemberTeamContext`. SR-004 removes the direct target projection as an address authority: every task caller must receive the shared root addressing binding, and resolved targets must map to task identities with non-null Team ingress without communication/task aliases or handoff ACLs.
@@ -353,6 +400,18 @@ The corrected shared value should therefore contain only deeply immutable root-c
 - Team Communication DTOs currently show actual participants. If the product later wants both requested Team ingress and resolved Agent recipient displayed, that is an additional UI/history requirement and is not required by Ticket 1.
 - No current tests ran in this fresh worktree because dependencies were absent. Investigation findings are code/doc/data evidence, not runtime validation.
 
-## Notes For Architecture Reviewer
+## Notes For Architecture Re-review — SR-006
 
-SR-004 supersedes the task-target portion of SR-003 after an explicit user requirement clarification. `send_message_to` and `delegate_task` share one strict parser, root resolver, and typed placement; the old task `{kind,name}` roster is removed, and direct-target eligibility plus task identity/ingress begin only afterward. SR-005 resolves `DR-003` by making that common placement a deeply immutable coordinate-only value with no config or lifecycle identity. Message delivery converts its effective Agent coordinate into runtime endpoint data privately inside the root manager; task delegation maps its logical owner-local route against the caller's current config. The SR-003 recursive localizer and SR-002 provider result correction remain authoritative. Architecture re-review should verify the minimal field/import boundary without splitting message/task shapes. Snapshot propagation, address-context completeness, event identity, and executable provider parity remain downstream risks.
+SR-005 passed architecture review and the implementation/review/API-E2E/delivery pipeline. SR-006 is a user-requested contraction of the new shared logical-address structures, not a change to handoff behavior, address grammar, routing, task lifecycle, provider results, or persistence.
+
+The proposed review decision is:
+
+1. topology mounting determines one canonical absolute address for every placement;
+2. shared caller identity is exactly `{rootTeamRunId, memberAddress}`;
+3. shared resolution returns exactly Agent `{kind,address}` or Team `{kind,address,ingressAddress}`;
+4. address-domain functions derive segments, parent Team, basename, and root route selector;
+5. topology still determines existence, kind, and Team ingress;
+6. task/message execution identities remain owned by their existing private subsystems; and
+7. the older whole-TeamRun path/route persistence model is explicitly deferred to a separate investigation.
+
+The user approved this SR-006 decision set and authorized submission to `architecture_reviewer`. The broader whole-execution path/route normalization remains explicitly outside this round and should be investigated as a separate future refactor rather than being inferred into SR-006.

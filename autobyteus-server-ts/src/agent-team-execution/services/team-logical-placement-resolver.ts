@@ -1,6 +1,9 @@
 import {
   formatAbsoluteCollaborationAddress,
+  getCollaborationAddressSegments,
+  getParentCollaborationAddress,
   resolveRuntimeCollaborationAddress,
+  type CanonicalCollaborationAddress,
 } from "../../agent-collaboration/domain/collaboration-logical-address.js";
 import { CollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
 import type { MemberLogicalAddressContext } from "../domain/member-logical-address-context.js";
@@ -13,12 +16,11 @@ import type {
 import {
   createResolvedAgentPlacement,
   createResolvedAgentTeamPlacement,
-  type ResolvedPlacementOwnerCoordinate,
   type ResolvedTeamLogicalPlacement,
 } from "./resolved-team-logical-placement.js";
 
 type TeamCursor = {
-  path: readonly string[];
+  address: CanonicalCollaborationAddress;
   coordinatorMemberRouteKey: string | null;
   members: readonly TeamRunMemberConfig[];
 };
@@ -29,20 +31,25 @@ export class TeamLogicalPlacementResolver {
     recipientName: string,
     callerAddressing: MemberLogicalAddressContext,
   ): ResolvedTeamLogicalPlacement {
-    const targetPath = resolveRuntimeCollaborationAddress(
-      recipientName,
-      callerAddressing.immediateTeamPath,
-    );
+    const immediateTeamAddress = getParentCollaborationAddress(callerAddressing.memberAddress);
+    if (!immediateTeamAddress) {
+      throw new CollaborationContractError(
+        "COLLABORATION_CONTEXT_REQUIRED",
+        "The caller collaboration address must identify an Agent inside a Team.",
+      );
+    }
+    const targetAddress = resolveRuntimeCollaborationAddress(recipientName, immediateTeamAddress);
+    const targetPath = getCollaborationAddressSegments(targetAddress);
     if (targetPath.length === 0) {
       return this.buildTeamPlacement({
-        path: [],
+        address: formatAbsoluteCollaborationAddress([]),
         coordinatorMemberRouteKey: rootConfig.coordinatorMemberRouteKey,
         members: rootConfig.memberTree,
-      }, null);
+      });
     }
 
     let team: TeamCursor = {
-      path: [],
+      address: formatAbsoluteCollaborationAddress([]),
       coordinatorMemberRouteKey: rootConfig.coordinatorMemberRouteKey,
       members: rootConfig.memberTree,
     };
@@ -55,12 +62,15 @@ export class TeamLogicalPlacementResolver {
           `Collaboration target '${formatAbsoluteCollaborationAddress(targetPath)}' was not found.`,
         );
       }
-      const owner = this.buildOwner(team.path, segment);
+      const memberAddress = formatAbsoluteCollaborationAddress([
+        ...getCollaborationAddressSegments(team.address),
+        segment,
+      ]);
       const isFinal = index === targetPath.length - 1;
       if (isFinal) {
         return member.memberKind === "agent"
-          ? this.buildAgentPlacement(member, owner)
-          : this.buildTeamPlacement(this.toTeamCursor(member), owner);
+          ? createResolvedAgentPlacement({ address: memberAddress })
+          : this.buildTeamPlacement(this.toTeamCursor(member, memberAddress));
       }
       if (member.memberKind !== "agent_team") {
         throw new CollaborationContractError(
@@ -68,7 +78,7 @@ export class TeamLogicalPlacementResolver {
           `Collaboration address '${formatAbsoluteCollaborationAddress(targetPath)}' uses Agent '${segment}' as an intermediate segment.`,
         );
       }
-      team = this.toTeamCursor(member);
+      team = this.toTeamCursor(member, memberAddress);
     }
     throw new CollaborationContractError(
       "COLLABORATION_TARGET_NOT_FOUND",
@@ -76,22 +86,8 @@ export class TeamLogicalPlacementResolver {
     );
   }
 
-  private buildAgentPlacement(
-    member: TeamMemberRunConfig,
-    owner: ResolvedPlacementOwnerCoordinate,
-  ): ResolvedTeamLogicalPlacement {
-    return createResolvedAgentPlacement({
-      subject: {
-        absoluteAddress: formatAbsoluteCollaborationAddress(member.memberPath),
-        memberRouteKey: member.memberRouteKey,
-      },
-      owner,
-    });
-  }
-
   private buildTeamPlacement(
     team: TeamCursor,
-    owner: ResolvedPlacementOwnerCoordinate | null,
   ): ResolvedTeamLogicalPlacement {
     const coordinatorRouteKey = team.coordinatorMemberRouteKey?.trim() ?? "";
     const matches = team.members.filter(
@@ -101,34 +97,25 @@ export class TeamLogicalPlacementResolver {
     if (matches.length !== 1) {
       throw new CollaborationContractError(
         "COLLABORATION_TEAM_INGRESS_INVALID",
-        `Team '${formatAbsoluteCollaborationAddress(team.path)}' has no exact direct Agent coordinator ingress.`,
+        `Team '${team.address}' has no exact direct Agent coordinator ingress.`,
       );
     }
     const ingress = matches[0]!;
     return createResolvedAgentTeamPlacement({
-      subject: { absoluteAddress: formatAbsoluteCollaborationAddress(team.path) },
-      owner,
-      ingress: {
-        absoluteAddress: formatAbsoluteCollaborationAddress(ingress.memberPath),
-        memberRouteKey: ingress.memberRouteKey,
-      },
+      address: team.address,
+      ingressAddress: formatAbsoluteCollaborationAddress([
+        ...getCollaborationAddressSegments(team.address),
+        ingress.memberName,
+      ]),
     });
   }
 
-  private buildOwner(
-    teamPath: readonly string[],
-    memberName: string,
-  ): ResolvedPlacementOwnerCoordinate {
+  private toTeamCursor(
+    member: TeamSubTeamMemberRunConfig,
+    address: CanonicalCollaborationAddress,
+  ): TeamCursor {
     return {
-      teamPath: [...teamPath],
-      localMemberPath: [memberName],
-      localMemberRouteKey: memberName,
-    };
-  }
-
-  private toTeamCursor(member: TeamSubTeamMemberRunConfig): TeamCursor {
-    return {
-      path: [...member.memberPath],
+      address,
       coordinatorMemberRouteKey: member.coordinatorMemberRouteKey,
       members: member.memberConfigs,
     };

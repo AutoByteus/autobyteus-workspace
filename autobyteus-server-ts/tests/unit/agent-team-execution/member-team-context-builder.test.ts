@@ -45,9 +45,6 @@ describe("MemberTeamContextBuilder", () => {
     expect(result.collaboration.addressing).toEqual({
       rootTeamRunId: "team-1",
       memberAddress: "/product_manager",
-      memberPath: ["product_manager"],
-      immediateTeamAddress: "/",
-      immediateTeamPath: [],
     });
     expect(result.collaboration.outgoingHandoffs).toEqual([effectiveHandoffs[0]]);
     expect(result.collaboration.deliverInterAgentMessage).toBe(deliverInterAgentMessage);
@@ -58,6 +55,10 @@ describe("MemberTeamContextBuilder", () => {
       currentRunAddress: { segments: [{ kind: "member", memberRouteKey: "product_manager" }] },
     });
     expect(Object.isFrozen(result.collaboration.addressing)).toBe(true);
+    expect(Object.keys(result.collaboration.addressing).sort()).toEqual([
+      "memberAddress",
+      "rootTeamRunId",
+    ]);
     expect(Object.isFrozen(result.collaboration.outgoingHandoffs)).toBe(true);
   });
 
@@ -84,9 +85,6 @@ describe("MemberTeamContextBuilder", () => {
     expect(result.collaboration.addressing).toEqual({
       rootTeamRunId: "root-run",
       memberAddress: "/research_team/field_team/interviewer",
-      memberPath: ["research_team", "field_team", "interviewer"],
-      immediateTeamAddress: "/research_team/field_team",
-      immediateTeamPath: ["research_team", "field_team"],
     });
     expect(result.collaboration.outgoingHandoffs).toHaveLength(1);
     expect(result.sendMessageToEnabled).toBe(false);
@@ -111,7 +109,7 @@ describe("MemberTeamContextBuilder", () => {
     expect(result.sendMessageToEnabled).toBe(true);
   });
 
-  it("clones address and handoff arrays so later source mutation cannot change the binding", async () => {
+  it("keeps the canonical address and cloned handoffs unchanged after source mutation", async () => {
     const currentMemberPath = ["research_lead"];
     const teamMountPath = ["research_team"];
     const rules = ["When field research is required."];

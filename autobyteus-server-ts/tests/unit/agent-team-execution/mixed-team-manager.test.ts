@@ -99,9 +99,6 @@ const buildRootCanonicalIntent = (): InterAgentMessageDeliveryIntent => ({
   callerAddressing: {
     rootTeamRunId: "parent-1",
     memberAddress: "/BuildSquad/review_lead",
-    memberPath: ["BuildSquad", "review_lead"],
-    immediateTeamAddress: "/BuildSquad",
-    immediateTeamPath: ["BuildSquad"],
   },
   recipientName: "/program_manager",
   sender: {
@@ -264,6 +261,47 @@ const createParentManagerWithTaskTeamTarget = () => {
     taskTeamConfig: config.memberTree[0],
   };
 };
+
+describe("MixedTeamManager logical message materialization", () => {
+  it("derives its private root selector from the minimal Team ingress address", async () => {
+    const { manager } = createParentManagerWithTaskTeamTarget();
+    const resolveContext = vi.spyOn((manager as any).persistentMembers, "resolveContext");
+    const deliver = vi.spyOn((manager as any).deliveryCoordinator, "deliver")
+      .mockResolvedValue({ accepted: true, code: "DELIVERED" });
+    const intent: InterAgentMessageDeliveryIntent = {
+      ...buildRootCanonicalIntent(),
+      callerAddressing: {
+        rootTeamRunId: "parent-1",
+        memberAddress: "/program_manager",
+      },
+      recipientName: "/BuildSquad",
+    };
+
+    await expect(manager.deliverInterAgentMessage(intent)).resolves.toEqual({
+      accepted: true,
+      code: "DELIVERED",
+    });
+    expect(resolveContext).toHaveBeenCalledWith({
+      kind: "route_key",
+      memberRouteKey: "BuildSquad/review_lead",
+    });
+    expect(deliver).toHaveBeenCalledWith(
+      intent,
+      expect.objectContaining({
+        endpoint: expect.objectContaining({
+          selector: {
+            kind: "route_key",
+            memberRouteKey: "BuildSquad/review_lead",
+          },
+          participant: expect.objectContaining({
+            memberName: "review_lead",
+            memberRouteKey: "BuildSquad/review_lead",
+          }),
+        }),
+      }),
+    );
+  });
+});
 
 
 describe("MixedTeamManager termination lifecycle", () => {

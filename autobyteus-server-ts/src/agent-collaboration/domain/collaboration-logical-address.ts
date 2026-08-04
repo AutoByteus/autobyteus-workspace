@@ -1,5 +1,11 @@
 import { CollaborationContractError } from "./collaboration-contract-error.js";
 
+declare const canonicalCollaborationAddressBrand: unique symbol;
+
+export type CanonicalCollaborationAddress = string & {
+  readonly [canonicalCollaborationAddressBrand]: true;
+};
+
 export type ParsedRuntimeCollaborationAddress = Readonly<{
   origin: "root" | "immediate_team";
   segments: readonly string[];
@@ -94,22 +100,66 @@ export const parseDefinitionCollaborationAddress = (
 
 export const formatAbsoluteCollaborationAddress = (
   segments: readonly string[],
-): string => {
+): CanonicalCollaborationAddress => {
   for (const segment of segments) {
     assertValidCollaborationMemberName(segment, "address segment");
   }
-  return segments.length === 0 ? "/" : `/${segments.join("/")}`;
+  return (segments.length === 0 ? "/" : `/${segments.join("/")}`) as CanonicalCollaborationAddress;
+};
+
+export const getCollaborationAddressSegments = (
+  value: string,
+): readonly string[] => {
+  const parsed = parseRuntimeCollaborationAddress(value);
+  if (parsed.origin !== "root") {
+    return invalidAddress(value, "a canonical absolute address is required");
+  }
+  return parsed.segments;
+};
+
+export const assertCanonicalCollaborationAddress = (
+  value: string,
+): CanonicalCollaborationAddress => {
+  getCollaborationAddressSegments(value);
+  return value as CanonicalCollaborationAddress;
+};
+
+export const getCollaborationAddressBasename = (
+  value: string,
+): string | null => getCollaborationAddressSegments(value).at(-1) ?? null;
+
+export const getParentCollaborationAddress = (
+  value: string,
+): CanonicalCollaborationAddress | null => {
+  const segments = getCollaborationAddressSegments(value);
+  return segments.length === 0
+    ? null
+    : formatAbsoluteCollaborationAddress(segments.slice(0, -1));
+};
+
+export const getCollaborationAddressRouteKey = (
+  value: string,
+): string => getCollaborationAddressSegments(value).join("/");
+
+export const isCollaborationAddressAncestor = (
+  candidateAncestor: string,
+  candidateDescendant: string,
+): boolean => {
+  const ancestor = getCollaborationAddressSegments(candidateAncestor);
+  const descendant = getCollaborationAddressSegments(candidateDescendant);
+  return ancestor.length < descendant.length &&
+    ancestor.every((segment, index) => descendant[index] === segment);
 };
 
 export const resolveRuntimeCollaborationAddress = (
   value: string,
-  immediateTeamPath: readonly string[],
-): readonly string[] => {
+  immediateTeamAddress: string,
+): CanonicalCollaborationAddress => {
   const parsed = parseRuntimeCollaborationAddress(value);
   const segments = parsed.origin === "root"
     ? parsed.segments
-    : [...immediateTeamPath, ...parsed.segments];
-  return Object.freeze([...segments]);
+    : [...getCollaborationAddressSegments(immediateTeamAddress), ...parsed.segments];
+  return formatAbsoluteCollaborationAddress(segments);
 };
 
 export const rebaseDefinitionCollaborationAddress = (

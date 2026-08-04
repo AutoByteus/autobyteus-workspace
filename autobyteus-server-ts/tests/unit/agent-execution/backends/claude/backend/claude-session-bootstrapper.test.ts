@@ -21,9 +21,6 @@ const createMemberTeamContext = () =>
       addressing: {
         rootTeamRunId: "team-run-1",
         memberAddress: "/Professor",
-        memberPath: ["Professor"],
-        immediateTeamAddress: "/",
-        immediateTeamPath: [],
       },
     },
   });

@@ -81,14 +81,12 @@ const buildRootConfig = (): TeamRunConfig => {
 
 const rootCaller = createMemberLogicalAddressContext({
   rootTeamRunId: "root-run",
-  memberPath: ["product_manager"],
-  immediateTeamPath: [],
+  memberAddress: "/product_manager",
 });
 
 const nestedCaller = createMemberLogicalAddressContext({
   rootTeamRunId: "root-run",
-  memberPath: ["research_team", "field_team", "interviewer"],
-  immediateTeamPath: ["research_team", "field_team"],
+  memberAddress: "/research_team/field_team/interviewer",
 });
 
 describe("TeamLogicalPlacementResolver", () => {
@@ -102,19 +100,14 @@ describe("TeamLogicalPlacementResolver", () => {
     expect(relative).toEqual(absolute);
     expect(relative).toEqual({
       kind: "agent",
-      subject: {
-        absoluteAddress: "/research_team/field_team/interviewer",
-        memberRouteKey: "research_team/field_team/interviewer",
-      },
-      owner: {
-        teamPath: ["research_team", "field_team"],
-        localMemberPath: ["interviewer"],
-        localMemberRouteKey: "interviewer",
-      },
+      address: "/research_team/field_team/interviewer",
     });
     expect(Object.isFrozen(relative)).toBe(true);
-    expect(Object.isFrozen(relative.subject)).toBe(true);
-    expect(Object.isFrozen(relative.owner.teamPath)).toBe(true);
+    expect(Object.keys(relative).sort()).toEqual(["address", "kind"]);
+    expect(relative).not.toHaveProperty("subject");
+    expect(relative).not.toHaveProperty("owner");
+    expect(relative).not.toHaveProperty("memberPath");
+    expect(relative).not.toHaveProperty("memberRouteKey");
     expect(relative).not.toHaveProperty("memberConfig");
     expect(relative).not.toHaveProperty("memberRunId");
     expect(relative).not.toHaveProperty("teamRunId");
@@ -127,24 +120,19 @@ describe("TeamLogicalPlacementResolver", () => {
       "./field_team",
       createMemberLogicalAddressContext({
         rootTeamRunId: "root-run",
-        memberPath: ["research_team", "research_lead"],
-        immediateTeamPath: ["research_team"],
+        memberAddress: "/research_team/research_lead",
       }),
     );
 
     expect(placement).toEqual({
       kind: "team",
-      subject: { absoluteAddress: "/research_team/field_team" },
-      owner: {
-        teamPath: ["research_team"],
-        localMemberPath: ["field_team"],
-        localMemberRouteKey: "field_team",
-      },
-      ingress: {
-        absoluteAddress: "/research_team/field_team/field_lead",
-        memberRouteKey: "research_team/field_team/field_lead",
-      },
+      address: "/research_team/field_team",
+      ingressAddress: "/research_team/field_team/field_lead",
     });
+    expect(Object.keys(placement).sort()).toEqual(["address", "ingressAddress", "kind"]);
+    expect(placement).not.toHaveProperty("subject");
+    expect(placement).not.toHaveProperty("owner");
+    expect(placement).not.toHaveProperty("ingress");
   });
 
   it("resolves immediate and collaboration-root Team ingress without synthetic identity", () => {
@@ -153,25 +141,13 @@ describe("TeamLogicalPlacementResolver", () => {
 
     expect(resolver.resolve(config, "./", nestedCaller)).toEqual({
       kind: "team",
-      subject: { absoluteAddress: "/research_team/field_team" },
-      owner: {
-        teamPath: ["research_team"],
-        localMemberPath: ["field_team"],
-        localMemberRouteKey: "field_team",
-      },
-      ingress: {
-        absoluteAddress: "/research_team/field_team/field_lead",
-        memberRouteKey: "research_team/field_team/field_lead",
-      },
+      address: "/research_team/field_team",
+      ingressAddress: "/research_team/field_team/field_lead",
     });
     expect(resolver.resolve(config, "/", nestedCaller)).toEqual({
       kind: "team",
-      subject: { absoluteAddress: "/" },
-      owner: null,
-      ingress: {
-        absoluteAddress: "/product_manager",
-        memberRouteKey: "product_manager",
-      },
+      address: "/",
+      ingressAddress: "/product_manager",
     });
   });
 
@@ -182,8 +158,8 @@ describe("TeamLogicalPlacementResolver", () => {
     const fieldLead = resolver.resolve(config, "/research_team/field_team/team_lead", nestedCaller);
     const designLead = resolver.resolve(config, "/design_team/team_lead", nestedCaller);
 
-    expect(fieldLead.subject.absoluteAddress).toBe("/research_team/field_team/team_lead");
-    expect(designLead.subject.absoluteAddress).toBe("/design_team/team_lead");
+    expect(fieldLead.address).toBe("/research_team/field_team/team_lead");
+    expect(designLead.address).toBe("/design_team/team_lead");
     expect(fieldLead).not.toEqual(designLead);
   });
 

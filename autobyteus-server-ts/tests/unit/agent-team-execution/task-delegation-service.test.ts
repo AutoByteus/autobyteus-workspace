@@ -255,8 +255,7 @@ const buildContext = (caller = coordinator, _members = [coordinator, worker, rev
   coordinatorMemberRouteKey: coordinator.memberRouteKey,
   addressing: createMemberLogicalAddressContext({
     rootTeamRunId: "team-run-1",
-    memberPath: caller.memberPath,
-    immediateTeamPath: caller.memberPath.slice(0, -1),
+    memberAddress: `/${caller.memberPath.join("/")}`,
   }),
 });
 

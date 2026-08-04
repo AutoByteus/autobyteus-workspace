@@ -15,9 +15,6 @@ const buildContext = () => new MemberTeamContext({
     addressing: {
       rootTeamRunId: "team-1",
       memberAddress: "/sender",
-      memberPath: ["sender"],
-      immediateTeamAddress: "/",
-      immediateTeamPath: [],
     },
     deliverInterAgentMessage: vi.fn(),
   },

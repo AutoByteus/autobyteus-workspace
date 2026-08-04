@@ -1,4 +1,5 @@
 import type { MemberLogicalAddressContext } from "../domain/member-logical-address-context.js";
+import { getParentCollaborationAddress } from "../../agent-collaboration/domain/collaboration-logical-address.js";
 
 export const renderMemberCollaborationInstruction = (input: {
   addressing: MemberLogicalAddressContext;
@@ -6,9 +7,13 @@ export const renderMemberCollaborationInstruction = (input: {
   taskDelegationEnabled: boolean;
   getHandoffRulesEnabled: boolean;
 }): string => {
+  const immediateTeamAddress = getParentCollaborationAddress(input.addressing.memberAddress);
+  if (!immediateTeamAddress) {
+    throw new Error("Member collaboration instructions require an Agent address inside a Team.");
+  }
   const lines = [
     `Your absolute collaboration address is \`${input.addressing.memberAddress}\`.`,
-    `Your immediate Team address is \`${input.addressing.immediateTeamAddress}\`.`,
+    `Your immediate Team address is \`${immediateTeamAddress}\`.`,
   ];
   if (input.sendMessageToEnabled || input.taskDelegationEnabled) {
     lines.push(

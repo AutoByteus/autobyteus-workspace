@@ -48,8 +48,7 @@ const buildCurrentResearchConfig = () => new TeamRunConfig({
 
 const addressing = createMemberLogicalAddressContext({
   rootTeamRunId: "root-run",
-  memberPath: ["research_team", "research_lead"],
-  immediateTeamPath: ["research_team"],
+  memberAddress: "/research_team/research_lead",
 });
 
 const caller = {
@@ -64,15 +63,7 @@ const caller = {
 describe("TaskDelegationTargetMapper", () => {
   it("maps a direct Agent placement to current-Team execution identity", () => {
     const placement = createResolvedAgentPlacement({
-      subject: {
-        absoluteAddress: "/research_team/analyst",
-        memberRouteKey: "research_team/analyst",
-      },
-      owner: {
-        teamPath: ["research_team"],
-        localMemberPath: ["analyst"],
-        localMemberRouteKey: "analyst",
-      },
+      address: "/research_team/analyst",
     });
 
     expect(new TaskDelegationTargetMapper().fromPlacement(
@@ -95,16 +86,8 @@ describe("TaskDelegationTargetMapper", () => {
 
   it("maps a direct Team placement through its exact localized real coordinator", () => {
     const placement = createResolvedAgentTeamPlacement({
-      subject: { absoluteAddress: "/research_team/field_team" },
-      owner: {
-        teamPath: ["research_team"],
-        localMemberPath: ["field_team"],
-        localMemberRouteKey: "field_team",
-      },
-      ingress: {
-        absoluteAddress: "/research_team/field_team/field_lead",
-        memberRouteKey: "research_team/field_team/field_lead",
-      },
+      address: "/research_team/field_team",
+      ingressAddress: "/research_team/field_team/field_lead",
     });
 
     expect(new TaskDelegationTargetMapper().fromPlacement(
@@ -134,15 +117,7 @@ describe("TaskDelegationTargetMapper", () => {
 
   it("rejects a valid cross-branch or deeper placement before task activation identity exists", () => {
     const placement = createResolvedAgentPlacement({
-      subject: {
-        absoluteAddress: "/design_team/designer",
-        memberRouteKey: "design_team/designer",
-      },
-      owner: {
-        teamPath: ["design_team"],
-        localMemberPath: ["designer"],
-        localMemberRouteKey: "designer",
-      },
+      address: "/design_team/designer",
     });
 
     expect(() => new TaskDelegationTargetMapper().fromPlacement(
@@ -155,15 +130,7 @@ describe("TaskDelegationTargetMapper", () => {
 
   it("rejects the caller Agent even when its direct current-Team config matches", () => {
     const placement = createResolvedAgentPlacement({
-      subject: {
-        absoluteAddress: "/research_team/research_lead",
-        memberRouteKey: "research_team/research_lead",
-      },
-      owner: {
-        teamPath: ["research_team"],
-        localMemberPath: ["research_lead"],
-        localMemberRouteKey: "research_lead",
-      },
+      address: "/research_team/research_lead",
     });
 
     expect(() => new TaskDelegationTargetMapper().fromPlacement(
@@ -180,22 +147,28 @@ describe("TaskDelegationTargetMapper", () => {
     if (!fieldTeam || fieldTeam.memberKind !== "agent_team") throw new Error("fixture invalid");
     fieldTeam.coordinatorMemberRouteKey = "research_team/field_team/field_lead";
     const placement = createResolvedAgentTeamPlacement({
-      subject: { absoluteAddress: "/research_team/field_team" },
-      owner: {
-        teamPath: ["research_team"],
-        localMemberPath: ["field_team"],
-        localMemberRouteKey: "field_team",
-      },
-      ingress: {
-        absoluteAddress: "/research_team/field_team/field_lead",
-        memberRouteKey: "research_team/field_team/field_lead",
-      },
+      address: "/research_team/field_team",
+      ingressAddress: "/research_team/field_team/field_lead",
     });
 
     expect(() => new TaskDelegationTargetMapper().fromPlacement(
       placement,
       addressing,
       config,
+      caller,
+    )).toThrow(expect.objectContaining({ code: "TASK_TEAM_TARGET_INGRESS_NOT_FOUND" }));
+  });
+
+  it("rejects a Team ingress outside the resolved Team before local coordinator mapping", () => {
+    const placement = createResolvedAgentTeamPlacement({
+      address: "/research_team/field_team",
+      ingressAddress: "/research_team/analyst",
+    });
+
+    expect(() => new TaskDelegationTargetMapper().fromPlacement(
+      placement,
+      addressing,
+      buildCurrentResearchConfig(),
       caller,
     )).toThrow(expect.objectContaining({ code: "TASK_TEAM_TARGET_INGRESS_NOT_FOUND" }));
   });

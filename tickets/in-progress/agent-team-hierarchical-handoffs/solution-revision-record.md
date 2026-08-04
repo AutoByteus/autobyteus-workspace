@@ -1,6 +1,6 @@
 # Solution Revision Record
 
-The latest requirements, investigation notes, design spec, and approved contract supplement remain authoritative. This record indexes completed solution rounds without duplicating those artifacts.
+The latest requirements, investigation notes, design spec, and current contract supplement remain authoritative. This record indexes completed solution rounds without duplicating those artifacts. SR-006 is user-approved and ready for architecture re-review.
 
 ## Revision Index
 
@@ -11,6 +11,7 @@ The latest requirements, investigation notes, design spec, and approved contract
 | SR-003 | `architecture_reviewer` / `design-review-report.md` / round 2 | `DR-001` | `Design Impact` | `Ready for architecture re-review` |
 | SR-004 | User clarification after SR-003 handoff | Shared `delegate_task` recipient addressing | `Requirement Clarification / Design Impact` | `Ready for architecture re-review` |
 | SR-005 | `architecture_reviewer` / `design-review-report.md` / round 3 | `DR-003` | `Design Impact` | `Ready for architecture re-review` |
+| SR-006 | User final-verification clarification after downstream delivery checkpoint | `BEH-012`, `R-028`–`R-031`, `AC-023`–`AC-025` | `Requirement Clarification / Design Refactor` | `Ready for architecture re-review` |
 
 ## Revision Entries
 
@@ -114,3 +115,26 @@ The latest requirements, investigation notes, design spec, and approved contract
 - Downstream and architecture-review impact: Re-review should verify that no config or ambiguous lifecycle run identity crosses `TeamRun.resolveLogicalPlacement`, while both operations still receive one identical typed placement and resolver. `DR-001` / `DR-002` corrections remain unchanged. Implementation remains blocked until Pass.
 - Next recipient or routing: `architecture_reviewer` for round 4.
 - Remaining gaps or risks: The resolver/manager implementation must resist reintroducing rich private traversal or endpoint state into the shared value; current-local task pairing, address-context completeness, config-copy completeness, provider parity, and event identity remain downstream implementation/test risks. No implementation or runtime verification is claimed.
+
+### SR-006 — Make the canonical logical address the only shared address authority
+
+- Triggering role, report path, and round: User clarification during final verification after delivery checkpoint `c3cafa6a4`; no architecture report triggered this revision.
+- Triggering finding IDs: `BEH-012`, `R-028`–`R-031`, `AC-023`–`AC-025`; use case `UC-016`.
+- Prior authoritative result: SR-005 passed `ARCH-REV-004`, was implemented in `2ed26efb9` and `93cc7ed34`, passed code review and API/E2E, and reached the downstream delivery checkpoint. The delivery-ready result remains the implemented baseline until this user-requested refactor is approved and re-enters review.
+- Current authoritative result: `User-approved; ready for architecture re-review`.
+- Why this revision entry is recorded: The implemented caller context stores canonical address, path, immediate-Team address, and immediate-Team path in parallel, while the implemented placement stores canonical subject plus derivable route and owner/local coordinates. The context factory validates only relative array length, so contradictory paths can satisfy construction. Once the mounted topology fixes a canonical address, these parallel fields are derivatives rather than independent facts.
+- Resolution:
+  - Contract `MemberLogicalAddressContext` to exactly immutable `{rootTeamRunId,memberAddress}`. Make the canonical address domain the sole owner of segment, basename, parent-Team, ancestor, and route-key derivation.
+  - Contract the one shared message/task placement to exact Agent `{kind,address}` or Team `{kind,address,ingressAddress}`. Retain Team ingress only because the configured coordinator is a topology fact that cannot be derived from the Team address.
+  - Keep one resolver and one identical placement for both operations. Message delivery derives its private selector from the effective Agent address. Task delegation derives caller/target parent addresses, proves exact equality, then derives the target basename and matches one direct current-local config of the resolved kind. Team mapping additionally proves ingress parent equality and matches the configured direct coordinator Agent.
+  - Remove derived context/placement fields cleanly with no aliases, fallback shapes, owner-coordinate cache, or global leaf-name search. Preserve `rootTeamRunId` as concrete TeamRun scope and preserve exact AgentRun/task IDs as separate runtime identities.
+  - Defer whole-execution `memberPath` / `memberRouteKey` / coordinator-route normalization to a separate investigation because those older runtime/history/event projections cross at least 78/128/34 production files and may have persisted-state implications. SR-006 only prevents them from crossing the shared collaboration boundary.
+- Approved behavior or requirement IDs affected: User-approved `BEH-012`, `R-028`–`R-031`, `AC-023`–`AC-025`, `UC-016`; preserved `BEH-001`–`BEH-011`, `R-001`–`R-027`, `AC-001`–`AC-022` remain unchanged.
+- Canonical artifacts and sections updated:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/requirements.md` — added the one-address behavior, requirements, acceptance criteria, scope, and preserved observable outcomes.
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/investigation-notes.md` — recorded post-implementation field/consumer/persistence evidence, contradictory-context construction risk, occurrence counts, downstream state, and the broader deferral rationale.
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/design-spec.md` — contracted DS-003/DS-009/DS-010 models and data-flow spines, address derivation ownership, exact operation mappings, atomic change sequence, file responsibilities, examples, risks, and test seams.
+- Supplemental artifacts updated, added, or removed: Updated `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/agent-team-addressing-handoff-contract.md` with the exact two-field caller coordinate, exact minimal placement union, derivation rules, and Team-ingress exception. No supplement was added or removed.
+- Downstream and architecture-review impact: The user's SR-006 approval supersedes the current delivery checkpoint for this ticket. The cumulative package must return to `architecture_reviewer`; after Pass, the refactor must proceed through implementation, code review, API/E2E coverage investigation/execution, any required coverage re-review, and delivery again. No implementation starts before architecture Pass.
+- Next recipient or routing: `architecture_reviewer` for SR-006 re-review. The user explicitly authorized this handoff and deferred the larger whole-execution identity refactor to a separate future phase.
+- Remaining gaps or risks: Atomic update of all context consumers, parent-before-basename task mapping, exact Team-ingress parent proof, root-manager-private route derivation, and regression coverage are required. The older execution identity system remains intentional deferred debt rather than a hidden second collaboration authority. No code change or runtime verification is claimed in SR-006.

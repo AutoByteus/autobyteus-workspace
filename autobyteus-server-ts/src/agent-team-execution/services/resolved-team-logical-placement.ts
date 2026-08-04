@@ -1,68 +1,36 @@
-export type ResolvedLogicalAgentCoordinate = Readonly<{
-  absoluteAddress: string;
-  memberRouteKey: string;
-}>;
-
-export type ResolvedLogicalTeamCoordinate = Readonly<{
-  absoluteAddress: string;
-}>;
-
-export type ResolvedPlacementOwnerCoordinate = Readonly<{
-  teamPath: readonly string[];
-  localMemberPath: readonly [string];
-  localMemberRouteKey: string;
-}>;
+import {
+  assertCanonicalCollaborationAddress,
+  getCollaborationAddressBasename,
+  type CanonicalCollaborationAddress,
+} from "../../agent-collaboration/domain/collaboration-logical-address.js";
 
 export type ResolvedAgentPlacement = Readonly<{
   kind: "agent";
-  subject: ResolvedLogicalAgentCoordinate;
-  owner: ResolvedPlacementOwnerCoordinate;
+  address: CanonicalCollaborationAddress;
 }>;
 
 export type ResolvedAgentTeamPlacement = Readonly<{
   kind: "team";
-  subject: ResolvedLogicalTeamCoordinate;
-  owner: ResolvedPlacementOwnerCoordinate | null;
-  ingress: ResolvedLogicalAgentCoordinate;
+  address: CanonicalCollaborationAddress;
+  ingressAddress: CanonicalCollaborationAddress;
 }>;
 
-export type ResolvedTeamLogicalPlacement =
-  | ResolvedAgentPlacement
-  | ResolvedAgentTeamPlacement;
-
-const agentCoordinate = (
-  input: ResolvedLogicalAgentCoordinate,
-): ResolvedLogicalAgentCoordinate => Object.freeze({
-  absoluteAddress: input.absoluteAddress,
-  memberRouteKey: input.memberRouteKey,
-});
-
-const ownerCoordinate = (
-  input: ResolvedPlacementOwnerCoordinate,
-): ResolvedPlacementOwnerCoordinate => Object.freeze({
-  teamPath: Object.freeze([...input.teamPath]),
-  localMemberPath: Object.freeze([input.localMemberPath[0]]) as readonly [string],
-  localMemberRouteKey: input.localMemberRouteKey,
-});
+export type ResolvedTeamLogicalPlacement = ResolvedAgentPlacement | ResolvedAgentTeamPlacement;
 
 export const createResolvedAgentPlacement = (input: {
-  subject: ResolvedLogicalAgentCoordinate;
-  owner: ResolvedPlacementOwnerCoordinate;
+  address: string;
 }): ResolvedAgentPlacement => Object.freeze({
   kind: "agent",
-  subject: agentCoordinate(input.subject),
-  owner: ownerCoordinate(input.owner),
+  address: requiredAgentAddress(input.address, "address"),
 });
 
 export const createResolvedAgentTeamPlacement = (input: {
-  subject: ResolvedLogicalTeamCoordinate;
-  owner: ResolvedPlacementOwnerCoordinate | null;
-  ingress: ResolvedLogicalAgentCoordinate;
+  address: string;
+  ingressAddress: string;
 }): ResolvedAgentTeamPlacement => Object.freeze({
   kind: "team",
-  subject: Object.freeze({ absoluteAddress: input.subject.absoluteAddress }),
-  owner: input.owner ? ownerCoordinate(input.owner) : null,
-  ingress: agentCoordinate(input.ingress),
+  address: assertCanonicalCollaborationAddress(input.address),
+  ingressAddress: requiredAgentAddress(input.ingressAddress, "ingressAddress"),
 });
 
 export const cloneResolvedTeamLogicalPlacement = (
@@ -70,3 +38,14 @@ export const cloneResolvedTeamLogicalPlacement = (
 ): ResolvedTeamLogicalPlacement => placement.kind === "agent"
   ? createResolvedAgentPlacement(placement)
   : createResolvedAgentTeamPlacement(placement);
+
+const requiredAgentAddress = (
+  value: string,
+  fieldName: string,
+): CanonicalCollaborationAddress => {
+  const address = assertCanonicalCollaborationAddress(value);
+  if (!getCollaborationAddressBasename(address)) {
+    throw new Error(`${fieldName} must identify an Agent placement, not the root Team.`);
+  }
+  return address;
+};

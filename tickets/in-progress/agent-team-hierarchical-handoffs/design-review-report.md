@@ -7,21 +7,21 @@
 - Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/design-spec.md`
 - Supplemental Task Artifacts Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/agent-team-addressing-handoff-contract.md`
 - Solution Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/solution-revision-record.md`
-- Relevant Solution Revision IDs: `SR-001`, `SR-002`, `SR-003`, `SR-004`, `SR-005`
+- Relevant Solution Revision IDs: `SR-001`, `SR-002`, `SR-003`, `SR-004`, `SR-005`, `SR-006`
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-004`
-- Current Review Round: `4`
-- Trigger: `SR-005` re-review of the remaining `DR-003` shared-placement boundary finding.
-- Prior Review Round Reviewed: `ARCH-REV-003` / round 3 / `Fail`
-- Latest Authoritative Round: `4`
-- Current-State Evidence Basis: The complete cumulative SR-005 package; prior review artifacts; independent re-read of current TeamRun topology/localization, mixed child lifecycle, task tool context/input/run-router/service/activation, root manager/backend, communication result, and persisted task-record paths at base commit `2a7271c9d78b71b919f7dbfa3b8f97f61c3a2e2b`. No executable test result is claimed because dependencies remain absent.
+- Current Architecture Review Revision ID: `ARCH-REV-005`
+- Current Review Round: `5`
+- Trigger: User-approved `SR-006` post-implementation refinement contracting the shared collaboration caller and placement values to canonical logical addresses; the user explicitly deferred broader whole-TeamRun execution-identity normalization.
+- Prior Review Round Reviewed: `ARCH-REV-004` / round 4 / `Pass`
+- Latest Authoritative Round: `5`
+- Current-State Evidence Basis: The complete cumulative SR-006 package; the implemented/reviewed/API-E2E-covered delivery checkpoint at `c3cafa6a4873224947883d1566ee47978972ae1d`; the implementation, code-review, API/E2E, and delivery artifacts that exposed the redundant shared address representations; and an independent re-read of the current caller-context, placement, root-delivery, task-mapping, TeamRun topology/localization, persistence/history, and provider boundaries. Existing downstream checks establish the SR-005 implementation baseline only; no executable verification of the not-yet-implemented SR-006 contraction is claimed.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Overall Basis Status (`Confirmed`/`Contradicted`/`Blocked`): `Confirmed` — the user-approved SR-004 requirement shares logical placement identity while preserving current TeamRun-local task eligibility and lifecycle.
-- Approved requirements / intended behavior understood: `Yes` — both tools use one `/`/`./` address authority; task policy begins only after common typed placement resolution.
-- Relevant existing behavior and evidence confirmed: `Yes` — current task inputs use a second flat `{kind,name}` authority, task services/registries are current-TeamRun-local, task-scoped TeamRuns can instantiate one logical Team placement with a different active run ID, and current child localization leaves nested coordinator routes stale.
-- Approved change, preserved behavior, and outside scope understood: `Yes` — common recipient identity does not add cross-TeamRun task activation, AgentOrg, dynamic reconciliation, frontend work, or external package edits.
+- Overall Basis Status (`Confirmed`/`Contradicted`/`Blocked`): `Confirmed` — SR-006 preserves the approved hierarchical message/task behavior while making the canonical mounted address the only shared logical-placement authority.
+- Approved requirements / intended behavior understood: `Yes` — the caller context is exactly `{rootTeamRunId,memberAddress}`; both operations receive the identical Agent `{kind,address}` or Team `{kind,address,ingressAddress}` value; Team ingress remains configured topology; and the larger persisted execution-identity refactor is explicitly deferred by the user.
+- Relevant existing behavior and evidence confirmed: `Yes` — the implemented SR-005 caller context accepts independently supplied member/immediate-Team paths and checks only their lengths, while the placement repeats the subject address as route and owner coordinates. Current root message delivery needs a selector derivable from the effective Agent address, and task delegation can prove current-Team direct eligibility from parent-address equality before matching the current localized config by basename and kind.
+- Approved change, preserved behavior, and outside scope understood: `Yes` — SR-006 changes only ephemeral collaboration/address projections. TeamRun configs, persisted topology, run/history/event/task identity, DS-011 localization, task lifecycle, exact-run delivery, handoff snapshots, provider envelopes, AgentOrg, dynamic reconciliation, frontend work, and external packages remain unchanged or outside scope.
 - Remaining material ambiguity, if any: `None.`
 
 | Behavior ID | Kind | Design Alignment With Approved Intent (`Pass`/`Fail`) | Approved Trigger / Contract And Current-State Evidence (`Pass`/`Fail`/`Unclear`) | Target Outcome / Path / Spine Coherence (`Pass`/`Fail`/`Unclear`) | Status (`Confirmed`/`Needs Correction`/`Unclear`) | Required Action |
@@ -36,22 +36,23 @@
 | BEH-008 | Operational | Pass | Pass | Pass | Confirmed | None. |
 | BEH-009 | Contract | Pass | Pass | Pass | Confirmed | None. |
 | BEH-010 | User | Pass | Pass | Pass | Confirmed | None. |
-| BEH-011 | Contract | Pass | Pass | Pass | Confirmed | None; SR-003–SR-005 now define the complete supported path and tight shared boundary. |
+| BEH-011 | Contract | Pass | Pass | Pass | Confirmed | None; SR-003–SR-006 preserve the complete supported path and task-owned direct-target policy. |
+| BEH-012 | Contract | Pass | Pass | Pass | Confirmed | None; the minimal address-only caller/placement contracts, derived views, private message endpoint mapping, and current-local task mapping are complete. |
 
 ## Supplemental Artifact Coherence Verdict
 
 | Artifact | Purpose And Scope Are Clear? (`Pass`/`Fail`) | Linked To Relevant Core Artifacts? (`Pass`/`Fail`) | Internally Complete? (`Pass`/`Fail`) | Consistent With Related Core Artifacts? (`Pass`/`Fail`) | Status And Approval Applicability Are Clear? (`Pass`/`Fail`) | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| `agent-team-addressing-handoff-contract.md` | Pass | Pass | Pass | Pass | Pass | None; it is aligned to the user-approved shared message/task address contract and preserved task eligibility. |
+| `agent-team-addressing-handoff-contract.md` | Pass | Pass | Pass | Pass | Pass | None; it is aligned to the user-approved minimal caller/placement shapes, shared message/task contract, preserved task eligibility, and explicit broader-refactor deferral. |
 
 ## Task Design Health Assessment Verdict
 
 | Assessment Area | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Assessment is present for the current task posture | Pass | Current flat message/task authorities, overloaded representatives, partial child localization, and provider code loss are explicit. | None. |
-| Root-cause classification is explicit and evidence-backed | Pass | Current files and production paths support the boundary, duplication, shared-structure, and legacy-pressure classifications. | None. |
-| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | One shared address context/resolver, strict localizer, task mapper, and focused provider projection are required now; cross-TeamRun task ownership remains deferred. | None. |
-| Refactor decision is supported by concrete design sections or residual-risk rationale | Pass | DS-009, DS-010, DS-011, named boundaries, change order, removals, examples, and tests make the response actionable. | None. |
+| Assessment is present for the current task posture | Pass | The cumulative assessment retains the original flat-authority/localization/provider issues and adds the implemented SR-005 caller/placement representation overlap that triggers SR-006. | None. |
+| Root-cause classification is explicit and evidence-backed | Pass | Current source shows independently supplied member/immediate-Team path arrays and repeated address-derived route/owner coordinates; the runtime consumers demonstrate those views can be derived without changing behavior. | None. |
+| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | SR-006 requires the focused collaboration-value contraction now; cross-TeamRun task ownership and whole-execution path/route normalization are separately and explicitly deferred. | None. |
+| Refactor decision is supported by concrete design sections or residual-risk rationale | Pass | BEH-012, DS-009, DS-010, the address-domain derivatives, named construction/consumer boundaries, change order, removals, examples, and focused tests make the response actionable; the 78/128/34-file execution-identity inventory makes the broader deferral proportionate. | None. |
 
 ## Spine Inventory Verdict
 
@@ -69,7 +70,7 @@
 | DS-010 | Task resolution/mapping/lifecycle | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS-011 | Child topology localization | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
 
-DS-009 now returns one coordinate-only, deeply immutable placement union. Rich traversal/config state remains private to the resolver/root manager, and task execution identity remains current-TeamRun-local.
+DS-009 now returns one address-only, deeply immutable placement union. Rich traversal/config state remains private to the resolver/root manager, all syntactic views derive from the canonical address, and task execution identity remains current-TeamRun-local.
 
 ## Boundary Encapsulation Verdict
 
@@ -78,7 +79,7 @@ DS-009 now returns one coordinate-only, deeply immutable placement union. Rich t
 | AgentTeam definition service / graph compiler | Pass | Pass | Pass | Pass | Definition and launch share compiler semantics. |
 | Root mixed Team delivery | Pass | Pass | Pass | Pass | Only the collaboration root resolves logical placements; child message managers forward. |
 | Member logical-address/collaboration contexts | Pass | Pass | Pass | Pass | Shared caller origin remains separate from handoffs, delivery, and task lifecycle. |
-| Root `TeamRun.resolveLogicalPlacement` facade | Pass | Pass | Pass | Pass | SR-005 returns only the coordinate union; config and delivery endpoint state stay private. |
+| Root `TeamRun.resolveLogicalPlacement` facade | Pass | Pass | Pass | Pass | SR-006 returns only the minimal address union; config, derived selectors, and delivery endpoint state stay private. |
 | Task-delegation target mapper | Pass | Pass | Pass | Pass | It consumes the shared placement and exact current-local config route without reparsing or cross-manager routing. |
 | Child topology localizer | Pass | Pass | Pass | Pass | SR-003 assigns one strict config-domain owner and one mixed lifecycle caller. |
 | Public communication result boundary | Pass | Pass | Pass | Pass | One code-preserving envelope and focused provider adapters remain explicit. |
@@ -91,7 +92,7 @@ DS-009 now returns one coordinate-only, deeply immutable placement union. Rich t
 | `agent-collaboration/domain` | Pass | Pass | Pass | Pass | Runtime-neutral values only. |
 | Definition graph/compiler | Pass | Pass | Pass | Pass | No runtime/persistence bypass. |
 | Root mixed delivery/resolver | Pass | Pass | Pass | Pass | Child managers do not resolve partial namespaces. |
-| Shared placement facade -> task tooling | Pass | Pass | Pass | Pass | The facade carries only immutable subject/owner/ingress coordinates; task IDs/settings come from the current local service. |
+| Shared placement facade -> task tooling | Pass | Pass | Pass | Pass | The facade carries only immutable address/ingress-address coordinates; parent/name views derive after resolution, while task IDs/settings come from the current local service. |
 | Task delegation vs communication | Pass | Pass | Pass | Pass | Address placement is shared; eligibility/activation and message delivery remain distinct. |
 | Child-config localization -> task mapper | Pass | Pass | Pass | Pass | DS-011 supplies one canonical local tree; no fallback remains. |
 | Provider adapters vs shared services | Pass | Pass | Pass | Pass | Adapters serialize/project without translating semantic codes. |
@@ -111,7 +112,7 @@ DS-009 now returns one coordinate-only, deeply immutable placement union. Rich t
 | `get_handoff_rules()` | Pass | Pass | Pass | Low | Pass |
 | `AgentCommunicationToolResultEnvelope` | Pass | Pass | Pass | Low | Pass |
 
-The placement interface is now exhaustive and semantically tight: Agent `{kind,subject,owner}` and Team `{kind,subject,owner,ingress}` carry only canonical/root selector and structural owner-local coordinates.
+The placement interface is exhaustive and semantically tight: Agent `{kind,address}` and Team `{kind,address,ingressAddress}` carry only canonical mounted addresses; parent paths, basenames, route selectors, and owner eligibility are derived rather than transported.
 
 ## Existing Capability / Subsystem Reuse Verdict
 
@@ -148,7 +149,7 @@ The placement interface is now exhaustive and semantically tight: Agent `{kind,s
 | Collaboration error codes | Pass | Pass | Pass | Pass | Shared syntax/topology failures remain operation-neutral. |
 | Resolved definition graph | Pass | Pass | Pass | Pass | No runtime IDs. |
 | Member logical-address context | Pass | Pass | Pass | Pass | Tight caller origin shared by both operations. |
-| Resolved Team logical placement | Pass | Pass | Pass | Pass | Config-independent subject/owner/ingress coordinates are shared by both operations. |
+| Resolved Team logical placement | Pass | Pass | Pass | Pass | Config-independent Agent address or Team address/configured ingress address is shared by both operations. |
 | Communication result envelope | Pass | Pass | Pass | Pass | Shared by communication tools/providers only. |
 
 ## Shared Structure / Data Model Tightness Verdict
@@ -157,9 +158,9 @@ The placement interface is now exhaustive and semantically tight: Agent `{kind,s
 | --- | --- | --- | --- | --- | --- | --- |
 | `CollaborationHandoff` | Pass | Pass | Pass | Pass | Pass | Exact tight edge shape. |
 | `TeamRunConfig.memberTree + effectiveHandoffs` | Pass | Pass | Pass | Pass | Pass | Topology remains singular. |
-| `MemberLogicalAddressContext` | Pass | Pass | Pass | Pass | Pass | Root/member/immediate-Team origin only. |
+| `MemberLogicalAddressContext` | Pass | Pass | Pass | Pass | Pass | Exactly root TeamRun ID plus canonical member address; parent/path/route views are derived. |
 | `MemberCollaborationContext` | Pass | Pass | Pass | Pass | Pass | Addressing, outgoing edges, and delivery only. |
-| `ResolvedTeamLogicalPlacement` | Pass | Pass | Pass | Pass | Pass | Exhaustive coordinate-only variants omit config, handle, setting, definition, member-run, and TeamRun lifecycle identity. |
+| `ResolvedTeamLogicalPlacement` | Pass | Pass | Pass | Pass | Pass | Exhaustive address-only variants omit derived path/route/owner projections plus config, handle, setting, definition, member-run, and TeamRun lifecycle identity. |
 | Child-local `TeamRunConfig.memberTree` invariant | Pass | Pass | Pass | Pass | Pass | DS-011 recursively pairs every Team coordinator with its localized direct Agent. |
 | `AgentCommunicationToolResultEnvelope` | Pass | Pass | Pass | Pass | Pass | One required field set/no second error channel. |
 
@@ -217,6 +218,7 @@ The placement interface is now exhaustive and semantically tight: Agent `{kind,s
 | AgentTeam `team-config.json` | Directly Usable — No Migration | Pass | Pass | N/A | Pass | Missing field means empty. |
 | TeamRun `team_run_metadata.json` | Directly Usable — No Migration | Pass | Pass | N/A | Pass | Optional snapshot preserves current recursive identity. |
 | Task delegation records | Not Affected | Pass | Pass | N/A | Pass | Stored records contain structured addresses/kind, not the removed live selector object. |
+| SR-006 caller/placement projections | Not Affected | Pass | Pass | N/A | Pass | The contracted values are ephemeral runtime projections; persisted TeamRun/member/task/history/event identity shapes remain unchanged and the broader normalization is deferred. |
 
 ## Change / Refactor Safety Verdict
 
@@ -227,14 +229,15 @@ The placement interface is now exhaustive and semantically tight: Agent `{kind,s
 | Shared placement before message/task flat-authority removal | Pass | Pass | Pass | Pass |
 | Task mapping before task-ID/ledger mutation | Pass | Pass | Pass | Pass |
 | Code-preserving provider result rollout | Pass | Pass | Pass | Pass |
+| SR-006 minimal context/placement contraction across constructors and consumers | Pass | Pass | Pass | Pass |
 
 ## Example Adequacy Verdict
 
 | Topic / Area | Example Was Needed? (`Yes`/`No`) | Example Is Present And Clear? (`Pass`/`Fail`/`N/A`) | Bad / Avoided Shape Is Explained When Helpful? (`Pass`/`Fail`/`N/A`) | Verdict (`Pass`/`Fail`) | Notes |
 | --- | --- | --- | --- | --- | --- |
 | Address canonicalization/root delivery | Yes | Pass | Pass | Pass | Nested collaboration examples remain clear. |
-| Shared message/task placement | Yes | Pass | Pass | Pass | Both operations receive the same Team subject before policy. |
-| Current-Team task eligibility | Yes | Pass | Pass | Pass | Direct owner path/local route and cross-branch rejection are explicit. |
+| Shared message/task placement | Yes | Pass | Pass | Pass | Both operations receive the same minimal Agent/Team address value before policy. |
+| Current-Team task eligibility | Yes | Pass | Pass | Pass | Derived caller/target parent equality, post-proof basename/kind lookup, configured Team ingress validation, and cross-branch rejection are explicit. |
 | Handoff composition | Yes | Pass | Pass | Pass | Rebase semantics are explicit. |
 | Context split | Yes | Pass | Pass | Pass | Shared addressing vs operation state is clear. |
 | Three-level child-local task ingress | Yes | Pass | Pass | Pass | Persistent/create/restore/task-child localization and exact mapping are concrete. |
@@ -250,7 +253,7 @@ The placement interface is now exhaustive and semantically tight: Agent `{kind,s
 
 ## Review Decision
 
-`Pass` — the behavior basis is confirmed, all prior findings are resolved, the shared placement boundary is tight, and the cumulative SR-005 design is ready for implementation.
+`Pass` — the behavior basis is confirmed, all prior findings remain resolved, and the cumulative SR-006 design is ready for focused implementation without expanding into the explicitly deferred whole-execution identity refactor.
 
 ## Findings
 
@@ -268,12 +271,14 @@ The placement interface is now exhaustive and semantically tight: Agent `{kind,s
 
 - `DR-001` is resolved: DS-011 now recursively localizes every nested Team coordinator route and covers persistent create, restore, and task-child lifecycle entrypoints before exact task mapping.
 - `DR-002` remains resolved: supplied operation codes cross the focused AutoByteus/MCP communication envelope unchanged.
-- `DR-003` is resolved: the common placement is coordinate-only, config-independent, deeply immutable, and contains no ambiguous lifecycle identity; private message endpoints and current-local task identities remain behind their owners.
-- Implementation must still audit `TeamRunConfig` snapshot copies, address-context construction for persistent/restored/task Agents, root-to-current-local pairing, atomic task schema/provider updates, event identity, and executable provider equality.
-- Runtime verification remains downstream work after normal dependency/environment setup.
+- `DR-003` remains resolved: SR-006 further contracts the common placement to canonical address/configured-ingress values only; private message endpoints and current-local task identities remain behind their owners.
+- Implementation must update every caller-context clone/construction seam, minimal placement constructor/resolver consumer, private root delivery selector derivation, current-local task mapper, provider/native adapter, and focused durable assertion atomically; stale path/owner/route fields must not survive as aliases or fallbacks.
+- Task mapping must preserve the ordering invariant: prove exact caller/target parent-address equality before basename lookup, match direct current-local config by exact kind, and validate Team ingress against the configured direct coordinator before task-ID reservation or ledger mutation.
+- Existing SR-005 executable evidence does not verify SR-006. Focused and broader coverage must be rerun after implementation, including persistent/restored/task contexts and identical message/task placement values.
+- Whole-TeamRun `memberPath`/`memberRouteKey`/coordinator-route normalization remains a separate future persisted-contract phase by explicit user decision; it is not a hidden completion item for this round.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
 - Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass`
-- Notes: `ARCH-REV-004` / `SR-005`. `DR-001`, `DR-002`, and `DR-003` are resolved; no Requirement Gap, Design Impact, or Unclear finding remains.
+- Notes: `ARCH-REV-005` / `SR-006`. `DR-001`, `DR-002`, and `DR-003` remain resolved; no Requirement Gap, Design Impact, or Unclear finding remains.

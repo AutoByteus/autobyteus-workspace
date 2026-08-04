@@ -48,9 +48,6 @@ const createRunContext = (
               addressing: {
                 rootTeamRunId: input.teamRunId,
                 memberAddress: `/${runId}`,
-                memberPath: [runId],
-                immediateTeamAddress: "/",
-                immediateTeamPath: [],
               },
             },
           })

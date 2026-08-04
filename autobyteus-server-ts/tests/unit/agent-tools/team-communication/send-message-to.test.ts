@@ -38,8 +38,7 @@ const createMemberTeamContext = (
   collaboration: new MemberCollaborationContext({
     addressing: createMemberLogicalAddressContext({
       rootTeamRunId: "team-run-1",
-      memberPath: ["professor"],
-      immediateTeamPath: [],
+      memberAddress: "/professor",
     }),
     deliverInterAgentMessage,
   }),

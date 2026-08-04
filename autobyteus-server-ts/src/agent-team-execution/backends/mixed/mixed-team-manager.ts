@@ -43,6 +43,7 @@ import { disposeTaskTeamActiveRunDirectoryForParentTeamRun, getTaskTeamActiveRun
 import { TeamLogicalPlacementResolver } from "../../services/team-logical-placement-resolver.js";
 import type { ResolvedTeamLogicalPlacement } from "../../services/resolved-team-logical-placement.js";
 import { CollaborationContractError, isCollaborationContractError } from "../../../agent-collaboration/domain/collaboration-contract-error.js";
+import { getCollaborationAddressRouteKey } from "../../../agent-collaboration/domain/collaboration-logical-address.js";
 import { buildRunNotFoundResult, buildTargetMemberNotFoundResult, buildTargetMemberRunInactiveResult, buildTargetMemberRunMismatchResult, isAgentOperationResult } from "./mixed-team-manager-results.js";
 import { MixedTeamEventBus } from "./mixed-team-event-bus.js";
 import { MixedTeamStatusPublisher } from "./mixed-team-status-publisher.js";
@@ -186,14 +187,17 @@ export class MixedTeamManager implements TeamManager {
         intent.recipientName,
         intent.callerAddressing,
       );
-      const target = placement.kind === "agent" ? placement.subject : placement.ingress;
-      if (target.absoluteAddress === intent.callerAddressing.memberAddress) {
+      const targetAddress = placement.kind === "agent" ? placement.address : placement.ingressAddress;
+      if (targetAddress === intent.callerAddressing.memberAddress) {
         throw new CollaborationContractError(
           "COLLABORATION_SELF_TARGET_REJECTED",
-          `Collaboration target '${placement.subject.absoluteAddress}' resolves to the calling Agent.`,
+          `Collaboration target '${placement.address}' resolves to the calling Agent.`,
         );
       }
-      return this.deliveryCoordinator.deliver(intent, this.materializeMessageRecipient(target));
+      return this.deliveryCoordinator.deliver(
+        intent,
+        this.materializeMessageRecipient(targetAddress),
+      );
     } catch (error) {
       if (!isCollaborationContractError(error)) {
         throw error;
@@ -393,7 +397,7 @@ export class MixedTeamManager implements TeamManager {
   }
 
   private materializeMessageRecipient(
-    coordinate: { absoluteAddress: string; memberRouteKey: string },
+    address: string,
   ) {
     const teamContext = this.teamContext;
     if (!teamContext?.config) {
@@ -402,19 +406,20 @@ export class MixedTeamManager implements TeamManager {
         "The collaboration-root TeamRun is not active.",
       );
     }
-    const config = this.findAgentConfig(teamContext.config.memberTree, coordinate.memberRouteKey);
+    const routeKey = getCollaborationAddressRouteKey(address);
+    const config = this.findAgentConfig(teamContext.config.memberTree, routeKey);
     if (!config?.memberRunId) {
       throw new CollaborationContractError(
         "COLLABORATION_TARGET_NOT_FOUND",
-        `Collaboration target '${coordinate.absoluteAddress}' has no executable Agent runtime.`,
+        `Collaboration target '${address}' has no executable Agent runtime.`,
       );
     }
-    const selector = selectorFromMemberRouteKey(coordinate.memberRouteKey);
+    const selector = selectorFromMemberRouteKey(routeKey);
     const memberContext = this.persistentMembers.resolveContext(selector);
     if (isAgentOperationResult(memberContext)) {
       throw new CollaborationContractError(
         "COLLABORATION_TARGET_NOT_FOUND",
-        `Collaboration target '${coordinate.absoluteAddress}' is not reachable.`,
+        `Collaboration target '${address}' is not reachable.`,
       );
     }
     const participant: InterAgentMessageParticipant = {

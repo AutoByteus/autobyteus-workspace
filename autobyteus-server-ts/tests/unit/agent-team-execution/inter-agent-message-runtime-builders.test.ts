@@ -44,9 +44,6 @@ const buildRequest = (
   callerAddressing: {
     rootTeamRunId: "team-1",
     memberAddress: "/Writer",
-    memberPath: ["Writer"],
-    immediateTeamAddress: "/",
-    immediateTeamPath: [],
   },
   recipientName: "/Reviewer",
   sender: endpoint(participant({

@@ -12,6 +12,7 @@ import {
   normalizeExplicitAbsoluteLocalReferenceFiles,
   type ExplicitAbsoluteLocalReferenceFileValidationError,
 } from "../../services/reference-files/absolute-local-reference-files.js";
+import { createMemberLogicalAddressContext } from "../domain/member-logical-address-context.js";
 
 export const normalizeRequiredTaskDelegationString = (
   value: string,
@@ -55,9 +56,7 @@ export class TaskDelegationInputResolver {
     normalizeRequiredTaskDelegationString(context.caller.memberRouteKey, "caller.memberRouteKey");
     normalizeRequiredTaskDelegationString(context.caller.memberRunId, "caller.memberRunId");
     normalizeRequiredTaskDelegationString(context.addressing.rootTeamRunId, "addressing.rootTeamRunId");
-    if (context.addressing.memberAddress !== `/${context.addressing.memberPath.join("/")}`) {
-      throw new TaskDelegationError("TEAM_RUN_CONTEXT_REQUIRED", "Task delegation caller addressing is inconsistent.");
-    }
+    createMemberLogicalAddressContext(context.addressing);
     this.assertTaskAgentCallerShape(context.caller);
   }
 

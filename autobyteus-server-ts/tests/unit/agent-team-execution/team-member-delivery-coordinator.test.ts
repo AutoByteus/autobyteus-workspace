@@ -44,9 +44,6 @@ const intent: InterAgentMessageDeliveryIntent = {
   callerAddressing: {
     rootTeamRunId: "root-run",
     memberAddress: "/research/research_lead",
-    memberPath: ["research", "research_lead"],
-    immediateTeamAddress: "/research",
-    immediateTeamPath: ["research"],
   },
   recipientName: "/product_manager",
   sender: buildDeliveryEndpointForParticipant(sender),

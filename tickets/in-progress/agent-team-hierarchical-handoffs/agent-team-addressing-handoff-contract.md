@@ -5,21 +5,22 @@
 - Canonical path: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/agent-team-addressing-handoff-contract.md`
 - Type: Intended-behavior contract supplement
 - Scope: Ticket 1 — static AgentTeam definition/run behavior only
-- Status: `Design-ready`; SR-005 shared-placement boundary tightening awaiting architecture re-review
-- Approval applicability: The user approved the AgentTeam-first split, filesystem-like addressing, unchanged `from`/`to` handoff endpoints, sender-only rule retrieval, Team-as-coordinator-ingress targeting, clean removal of synthetic child-team representatives, and the same canonical recipient addressing for `send_message_to` and `delegate_task`. This file is the normative supplement for the current solution and downstream implementation/review.
-- Related requirements: R-001 through R-027
-- Related acceptance criteria: AC-001 through AC-022
+- Status: `Refined — SR-006 user-approved; ready for architecture re-review`
+- Approval applicability: The user approved the AgentTeam-first split, filesystem-like addressing, unchanged `from`/`to` handoff endpoints, sender-only rule retrieval, Team-as-coordinator-ingress targeting, clean removal of synthetic child-team representatives, and the same canonical recipient addressing for `send_message_to` and `delegate_task`. During final verification, the user further established that mounted topology determines one canonical address and all path/parent/route/owner forms are derived. The user approved this SR-006 contraction and authorized architecture re-review; broader whole-TeamRun execution-identity normalization is a separate future phase.
+- Related requirements: R-001 through R-031
+- Related acceptance criteria: AC-001 through AC-025
 
 ## 1. Contract Purpose
 
 An AgentTeam is a reusable, coordinator-led collaboration tree. Its member topology must be addressable without flattening child teams or pretending that a child coordinator is a direct member of its parent. The same topology supplies stable natural-language handoffs that an Agent can retrieve when deciding whether and where to pass work.
 
-This contract deliberately separates four concepts:
+This contract deliberately separates five concepts:
 
 1. **Topology** answers which Agent or AgentTeam placement an address denotes.
 2. **Handoff guidance** tells a source Agent when it should send work to a target.
 3. **Recipient addressing** resolves the same logical address to an Agent or Team placement for any supported recipient-oriented operation.
 4. **Operation semantics** apply after resolution: `send_message_to` delivers an ordinary message, while `delegate_task` creates task execution for the resolved placement.
+5. **Identity derivation** stores one canonical absolute logical address after mounting; paths, parents, local names, and route selectors are views of that address rather than parallel identities.
 
 Handoffs are guidance, not access-control rules and not a framework-evaluated condition language.
 
@@ -32,6 +33,7 @@ Handoffs are guidance, not access-control rules and not a framework-evaluated co
 - **Team ingress**: Delivery to a Team placement, resolved to that Team placement's configured coordinator Agent.
 - **Authored address**: An absolute address stored inside one reusable AgentTeam definition and interpreted from that definition's own root.
 - **Effective address**: The authored address after the definition is mounted into the outer collaboration tree.
+- **Canonical logical address**: The single absolute `/...` identity assigned to a mounted Agent or Team placement. `./...` is only a caller-relative request expression and is never stored as placement identity.
 
 AgentTeam remains coordinator-led. Its configured coordinator must remain a direct Agent member of that Team definition. Ticket 1 does not turn AgentTeam into the coordinator-free AgentOrg subject planned for Ticket 2.
 
@@ -83,6 +85,61 @@ Each authored `memberName` used as a path segment must:
 - be unique among siblings, including rejection of sibling names that differ only by case.
 
 Address resolution uses the exact stored spelling. The case-insensitive sibling uniqueness rule prevents two LLM-visible addresses that differ only by letter case.
+
+### 3.5 One canonical address and derived views
+
+Definition mounting determines the canonical address by concatenating the parent mount address and each `memberName`. Once the mounted topology is fixed, a placement has exactly one canonical logical address:
+
+```text
+mounted topology: /research_team/research_lead
+canonical address: /research_team/research_lead
+```
+
+The shared caller coordinate is exhaustive:
+
+```ts
+type MemberLogicalAddressContext = Readonly<{
+  rootTeamRunId: string;
+  memberAddress: CanonicalCollaborationAddress;
+}>;
+```
+
+`rootTeamRunId` selects the concrete run snapshot; `memberAddress` selects the logical Agent placement inside it. The context contains no supplied member path, immediate-Team path/address, route key, owner coordinate, target list, handoffs, or operation state.
+
+The strict collaboration-address domain derives:
+
+```text
+segments(/research_team/research_lead)
+  = [research_team, research_lead]
+
+basename(/research_team/research_lead)
+  = research_lead
+
+parentAddress(/research_team/research_lead)
+  = /research_team
+
+routeKey(/research_team/research_lead)
+  = research_team/research_lead
+```
+
+These functions return values, not stored identity fields. A provider adapter may clone the canonical string but must not reconstruct or accept a parallel path array. Topology lookup, not string syntax, determines whether an address exists, whether it denotes an Agent or Team, and which configured Agent is a Team's ingress.
+
+The shared placement result is likewise exhaustive:
+
+```ts
+type ResolvedTeamLogicalPlacement =
+  | Readonly<{
+      kind: "agent";
+      address: CanonicalCollaborationAddress;
+    }>
+  | Readonly<{
+      kind: "team";
+      address: CanonicalCollaborationAddress;
+      ingressAddress: CanonicalCollaborationAddress;
+    }>;
+```
+
+For a Team, `ingressAddress` is retained because it is a configured topology fact, not syntactically derivable from the Team address. Subject wrappers, owner objects, path arrays, route keys, config objects, handles, and lifecycle IDs are forbidden in this shared value.
 
 ## 4. Addressing Examples
 
@@ -439,17 +496,19 @@ AutoByteus returns canonical JSON text rather than `Error: <message>` or message
 
 The old public `{target:{kind:"member"|"team",name}}` shape is removed. The common logical placement resolver, not the caller, determines whether the canonical address denotes an Agent or Team. The same parsed and normalized address must resolve to the same placement for `send_message_to` and `delegate_task`.
 
-That placement is a deeply immutable logical-coordinate value only: canonical subject address, the exact root route key only when an Agent coordinate needs private message delivery, nullable logical owner Team plus owner-local direct path/route, and the exact canonical Agent ingress for a Team. Derivable root subject paths and Team route keys are omitted. It contains no TeamRun/member config, runtime/provider setting, handle, role/description, definition ID, member run ID, TeamRun ID, or active/template owner-run claim. Message delivery obtains runtime endpoint data privately inside the root manager; task delegation obtains execution identity from the caller's current canonical local TeamRun config.
+That placement is exactly Agent `{kind:"agent",address}` or Team `{kind:"team",address,ingressAddress}`. It contains no subject wrapper, owner coordinate, member path, route key, TeamRun/member config, runtime/provider setting, handle, role/description, definition ID, member run ID, TeamRun ID, or active/template owner-run claim. Message delivery derives its private root selector from the effective Agent address and obtains endpoint data inside the root manager; task delegation derives direct-parent/local-name facts from the placement address and obtains execution identity from the caller's current canonical local TeamRun config.
 
 Operation behavior starts only after common resolution:
 
-- a direct Agent placement in the caller's immediate Team maps to task-owned `TaskDelegationMemberIdentity` and starts a task-Agent;
-- a direct child Team placement in the caller's immediate Team maps to task-owned `TaskDelegationTeamIdentity`, obtains its real direct coordinator as `TaskDelegationTeamIngressIdentity`, and starts a task-Team;
+- derive `callerTeamAddress = parentAddress(caller.memberAddress)` and `targetOwnerAddress = parentAddress(placement.address)`;
+- only exact equality of those canonical addresses makes the placement a candidate direct task target; root Team has no parent and is ineligible;
+- a direct Agent placement maps its derived basename to exactly one direct current-local Agent config, becomes task-owned `TaskDelegationMemberIdentity`, and starts a task-Agent;
+- a direct child Team placement maps its derived basename to exactly one direct current-local Team config, requires `parentAddress(ingressAddress) === placement.address`, maps the ingress basename to exactly one configured direct coordinator Agent, and starts a task-Team;
 - the caller Agent is rejected, and any otherwise valid non-direct/deeper/cross-branch placement is rejected with `TASK_DELEGATION_TARGET_NOT_ELIGIBLE` before activation;
 - exact `target_agent_run_id` remains message-only and is not a task selector; and
 - handoff edges remain guidance and never authorize delegation.
 
-Any Agent or Team placement in the collaboration root is address-resolvable, so both tools agree on what a path denotes. Task eligibility remains the current lifecycle boundary rather than expanding silently: the resolved placement must be a direct target owned by the caller's immediate TeamRun. A task target manifest may list eligible canonical absolute addresses, roles, and descriptions for discovery, but it is not a resolver and must not advertise or accept flat names. Existing activation, review ownership, submission/review, and settlement semantics remain unchanged.
+Any Agent or Team placement in the collaboration root is address-resolvable, so both tools agree on what a path denotes. Task eligibility remains the current lifecycle boundary rather than expanding silently: the resolved placement's derived parent must be the caller's derived immediate Team. Basename matching occurs only after that exact parent check and only against direct configs, so it is not a flat/global name authority. A task target manifest may list eligible canonical absolute addresses, roles, and descriptions for discovery, but it is not a resolver and must not advertise or accept flat names. Existing activation, review ownership, submission/review, and settlement semantics remain unchanged.
 
 Removing synthetic communication representatives does not remove the real coordinator identity required by a resolved Team task target. The task-delegation subsystem maps the common typed placement into task execution identity from canonical runtime topology; it does not derive task targets from a communication roster.
 
@@ -473,7 +532,7 @@ Persistent/restored or task field_team child:
 field_lead                            Agent; child root coordinator field_lead
 ```
 
-The same child factory and localization operation govern persistent create, restore, and task Team child creation. Restore runtime state and task identity are applied after the topology shape is canonical. For a direct eligible target, task ingress mapping performs exact equality in the caller's current TeamRun canonical local config; it has no parent/root prefix fallback.
+The same child factory and localization operation govern persistent create, restore, and task Team child creation. Restore runtime state and task identity are applied after the topology shape is canonical. For a direct eligible target, task ingress mapping uses derived subject/ingress basenames only inside the already-proven canonical parent/Team boundary and performs exact kind/coordinator matching in the caller's current TeamRun canonical local config; it has no parent/root prefix fallback.
 
 That task ingress:
 
@@ -548,6 +607,7 @@ This matrix states the minimum end-to-end span that the solution and downstream 
 | UC-012 Team default entry | User posts to TeamRun without explicit member target | Existing TeamRun default-target selection -> root coordinator Agent | Existing coordinator-led Team entry remains unchanged. |
 | UC-015 Hierarchical Agent task delegation | Agent calls `delegate_task({recipient_name:"./peer",...})` | Shared parser -> shared root placement resolver -> direct-target eligibility -> current TeamRun task-agent activation -> existing task lifecycle | The same Agent placement selected by message addressing receives one managed task execution. |
 | UC-015 Hierarchical Team task delegation | `/research_team/research_lead` calls `delegate_task({recipient_name:"./field_team",...})` | Shared parser -> shared root placement resolver -> direct-child eligibility -> exact task-owned Team ingress -> current TeamRun task-team activation -> existing task lifecycle | The same Team placement selected by message addressing receives one task-Team through its real coordinator. |
+| UC-016 Canonical-address derivation | Any persistent/restored/task member invokes a recipient operation | Mounted topology -> `{rootTeamRunId,memberAddress}` -> address-domain parent/basename/selector derivation -> minimal placement -> operation policy | No duplicate path/owner/route identity crosses the shared boundary; existing operation result is preserved. |
 | Preserved recursive task-Team materialization | Resolved task address denotes a direct child Team of the caller at any root nesting level | Root placement -> owning current-local subteam config -> strict recursive child localization -> exact coordinator ingress -> task-team factory | Eligible Team target retains non-null real ingress after communication representatives are removed; no root/local fallback exists. |
 
 ## 14. Explicit Non-Goals
@@ -563,3 +623,4 @@ This matrix states the minimum end-to-end span that the solution and downstream 
 - changes to external repository-owned Agent/AgentTeam text packages
 - frontend work
 - changes to task submission, review, settlement, or exact task-run messaging semantics beyond routing the newly resolved logical placement
+- removal or migration of the broader pre-existing TeamRun/history/event/task `memberPath`, `memberRouteKey`, coordinator-route, or conversation-address schemas; SR-006 only prevents those execution projections from becoming shared collaboration identity

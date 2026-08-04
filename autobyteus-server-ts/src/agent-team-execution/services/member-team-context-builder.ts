@@ -1,4 +1,5 @@
 import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
+import { formatAbsoluteCollaborationAddress } from "../../agent-collaboration/domain/collaboration-logical-address.js";
 import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import type { TaskAgentInstanceIdentity } from "../domain/task-agent-instance.js";
 import type { TaskTeamInstanceIdentity } from "../domain/task-team-instance.js";
@@ -47,8 +48,7 @@ export class MemberTeamContextBuilder {
     const teamMountPath = [...(input.teamMountPath ?? [])];
     const addressing = createMemberLogicalAddressContext({
       rootTeamRunId: input.collaborationRootTeamRunId,
-      memberPath: [...teamMountPath, ...currentMemberPath],
-      immediateTeamPath: teamMountPath,
+      memberAddress: formatAbsoluteCollaborationAddress([...teamMountPath, ...currentMemberPath]),
     });
     const collaboration = new MemberCollaborationContext({
       addressing,

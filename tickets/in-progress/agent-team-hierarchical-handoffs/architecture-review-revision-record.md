@@ -10,6 +10,7 @@ The latest `design-review-report.md` remains authoritative. This record indexes 
 | ARCH-REV-002 | Round 2 / SR-002 re-review | `SR-002` | `Fail` | `Fail` | `DR-001`, `DR-002` |
 | ARCH-REV-003 | Round 3 / SR-003 and SR-004 re-review | `SR-003`, `SR-004` | `Fail` | `Fail` | `DR-001`, `DR-002`, `DR-003` |
 | ARCH-REV-004 | Round 4 / SR-005 re-review | `SR-005` | `Fail` | `Pass` | `DR-003` |
+| ARCH-REV-005 | Round 5 / user-approved SR-006 post-implementation refinement | `SR-006` | `Pass` | `Pass` | None |
 
 ## Revision Entries
 
@@ -96,3 +97,26 @@ The latest `design-review-report.md` remains authoritative. This record indexes 
 - Material classification changes: `DR-003` resolved; authoritative decision changes from `Fail` to `Pass`.
 - Recommended recipient: `implementation_engineer`
 - Remaining risks or uncertainty: Snapshot copy completeness, persistent/restored/task address-context construction, root/current-local pairing, atomic task schema/provider changes, event identity, and executable provider parity remain implementation/test risks assigned to downstream implementation/review/coverage stages.
+
+### ARCH-REV-005 — Address-only collaboration values preserve the pass without broadening execution identity scope
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/design-review-report.md`
+- Review round and trigger: Round 5; the user approved SR-006 after verification of the implemented/reviewed/API-E2E-covered delivery checkpoint exposed redundant address-derived fields in the shared caller and placement values.
+- Triggering role, report path, and finding IDs: `solution_designer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/solution-revision-record.md` plus the cumulative implementation, review, coverage, and delivery artifacts; no new or reopened finding ID.
+- Relevant solution revision IDs: `SR-006`, preserving `SR-001`–`SR-005`
+- Prior authoritative decision: `Pass`
+- Current authoritative decision: `Pass`
+- What changed in the review result or what baseline was established: SR-006 contracts `MemberLogicalAddressContext` to root TeamRun ID plus one canonical member address and contracts the identical message/task placement to Agent address or Team address/configured ingress address. Address-domain derivatives replace transported parent/path/route/owner views; root message endpoint materialization remains private, and task mapping proves direct ownership before exact current-local config/ingress mapping. Independent review confirmed that the larger whole-TeamRun execution-identity normalization crosses persistence/history/event/task contracts and may remain in the explicitly user-deferred future phase without weakening this focused boundary.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `DR-001` | Resolved | Remains Resolved | `SR-003`; `SR-006`; `ARCH-REV-005` | The strict recursive DS-011 localization boundary and exact direct coordinator invariant are unchanged; SR-006 consumes the current canonical local config without route-shape fallback. |
+| `DR-002` | Resolved | Remains Resolved | `SR-002`; `SR-006`; `ARCH-REV-005` | The code-preserving AutoByteus/MCP envelope is unchanged; only the cloned address context/placement payloads contract. |
+| `DR-003` | Resolved | Remains Resolved | `SR-005`; `SR-006`; `ARCH-REV-005` | The common placement remains operation-neutral, config-independent, and deeply immutable, and now removes the remaining derived subject/owner/route projections; Team ingress is retained only because configured coordinator selection is not derivable from Team address. |
+
+- New or remaining finding IDs: `None`
+- Material classification changes: `None`; the authoritative decision remains `Pass`.
+- Recommended recipient: `implementation_engineer`
+- Remaining risks or uncertainty: SR-006 still requires atomic updates across every caller-context construction/clone path, placement resolver/consumer, private message selector derivation, current-local task mapping, providers, and durable tests. Existing SR-005 executable evidence must not be represented as SR-006 verification. Whole-execution path/route normalization remains explicitly deferred to a separate persisted-contract design phase.

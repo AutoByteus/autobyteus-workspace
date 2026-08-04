@@ -104,9 +104,6 @@ const createMemberTeamContext = () =>
       addressing: {
         rootTeamRunId: "team-1",
         memberAddress: "/ping",
-        memberPath: ["ping"],
-        immediateTeamAddress: "/",
-        immediateTeamPath: [],
       },
     },
   });
