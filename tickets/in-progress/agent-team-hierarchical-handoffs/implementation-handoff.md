@@ -15,15 +15,16 @@
 
 ## Current Implementation State
 
-- Implementation revision: `IR-005`
-- Implementation cycle: `Approved Design Rework`
+- Implementation revision: `IR-006`
+- Implementation cycle: `Local Fix`
 - Current solution: `SR-012` (`SR-001` through `SR-012` cumulative)
 - Architecture approval: `ARCH-REV-007` Pass (`ARCH-REV-001` through `ARCH-REV-007` cumulative)
 - Triggering design finding: `DR-004`, resolved by SR-012; `DR-001` through `DR-003` remain resolved. No open requirement, design-impact, or unclear finding remains.
-- Prior code review: `CRR-001` through `CRR-008` apply to earlier SR-005/SR-006 states only. SR-012 has not been source-reviewed.
+- Current code review: `CRR-009` Fail — Local Fix identified `CR-F-003` and `CR-F-004`; IR-006 implements both corrections and awaits re-review. `CRR-001` through `CRR-008` apply to earlier states.
 - Prior API/E2E: through `API-REV-004`, SR-006 only. No prior result is claimed for SR-012.
 - Prior delivery: through `DR-003`, SR-006 only.
-- Production source commit: `3927e878db0318138b6e39ad7cea1b032584e08f` (`refactor: adopt canonical rooted AgentTeam identity`).
+- SR-012 baseline source commit: `3927e878db0318138b6e39ad7cea1b032584e08f` (`refactor: adopt canonical rooted AgentTeam identity`).
+- IR-006 local-fix source commit: `5430ee064193471694a0bdd056b36ce57ee97d8b` (`fix: route nested collaboration through root manager`).
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/implementation-revision-record.md`
 
 ## Implementation Summary
@@ -38,12 +39,18 @@ Blocking migration converts framework-owned TeamRun metadata, communication/task
 
 The frontend now consumes the recursive `rootTeam`, derives canonical address indexes, and keys persistent/task state using canonical execution addresses. No production compatibility map, scoped route, path/route alias, or V4 adapter was introduced.
 
+### IR-006 Local Fix Summary
+
+- `CR-F-003`: every non-root `MixedTeamManager` now forwards an inter-Agent intent through its existing `parentBoundary` before recipient resolution or runtime materialization. The chain terminates at the root manager, which alone validates the intent's root TeamRun ID and uses the root registry/coordinator. Persistent, restored, nested, and task-child contexts all carry this placement boundary. A foreign-root intent therefore reaches the root and is rejected there; no retry, fallback, or alternate address form was added.
+- `CR-F-004`: `publish-artifacts-tool.ts` now derives publication and notification Agent identity only from the current artifact `runId`/tool `agentId`. Both `customData.member_run_id` reads were removed, and the expanded current-production audit finds no occurrence of that obsolete key.
+- Change posture: bounded bug fix and clean-cut legacy removal. Root-cause classification: one incorrect ownership/placement branch plus one stale compatibility fallback. No design refactor or persisted-data change is needed.
+
 ## Reviewed Behavior Trace
 
 | Behavior | Implementation result |
 | --- | --- |
 | BEH-001 | Definition handoffs remain validated and compile into immutable rooted snapshots; rejected updates still validate detached candidates before persistence. |
-| BEH-002–BEH-003 | `send_message_to.recipient_address` uses the strict expression parser and one rooted resolver; root/upward/cross-branch/Team-coordinator delivery remains operation-owned by the root manager. |
+| BEH-002–BEH-003 | `send_message_to.recipient_address` uses the strict expression parser and one rooted resolver; non-root managers forward through their placement boundary before the root manager alone resolves/materializes root, upward, cross-branch, and Team-coordinator delivery. |
 | BEH-004 | Schema-v3 `rootTeam` replaces localized route-bearing trees; persistent children select absolute nodes and task TeamRuns allocate fresh typed run IDs. |
 | BEH-005–BEH-006 | Intrinsic handoff lookup returns only `{handoffs:[{when,recipient_address}]}` and the shared instruction carries the mandatory filesystem-like completion protocol. |
 | BEH-007 | Exact `target_agent_run_id` routing, codes, and send result envelope remain separate and unchanged. |
@@ -56,7 +63,7 @@ The frontend now consumes the recursive `rootTeam`, derives canonical address in
 | BEH-015 | Store-owned backup/transaction conversion runs before strict current-schema readers; contradictory inputs fail instead of being guessed. |
 | BEH-016 | GraphQL/REST/WebSocket/SDK/application/frontend boundaries use canonical address/execution shapes; exact application SDK V5 is built and V4 is rejected. |
 | BEH-017 | Storage-private lineage is `ancestorTeamRunIds`; existing memory/context physical locations are derived without moving files. |
-| BEH-018 | Production seams required by the imported nested-classroom scenario are implemented. The three live runtime/model rows were not run and remain mandatory API/E2E work; no prior evidence is reused. |
+| BEH-018 | Production seams required by the imported nested-classroom scenario are implemented, including nested persistent/task-child root-bound forwarding. The three live runtime/model rows were not run and remain mandatory API/E2E work; no prior evidence is reused. |
 
 ## Key Areas
 
@@ -82,11 +89,22 @@ The frontend now consumes the recursive `rootTeam`, derives canonical address in
 - Backward-compatibility mechanisms introduced: `None`.
 - Current runtime dual-read/write or fallback: `None`; legacy handling is isolated to migration/incompatibility input boundaries.
 - Removed current authorities include route/path/name recipient aliases, conversation target/scoped-route types, persistent-child topology localization, generic member-run identity, duplicate token/task execution scopes, and V4 application SDK exports/artifacts.
+- The current publish-artifacts runtime contains no `member_run_id` read or writer and does not accept that retired generic identity as a fallback.
 - Production identity audits found no stale current route/name/path identity in the server runtime, web production code, or project application source/built/vendor/importable artifacts outside explicit migration/incompatibility boundaries.
 - Current SDK `dist`, application vendor copies, application build products, and importable packages were regenerated rather than selectively patched.
 - Changed production files satisfy the implementation size guard: all are at or below 500 effective non-empty lines; the largest checked files are 498 and 499 lines.
 
 ## Implementation-Scoped Checks
+
+### IR-006 Delta
+
+- `autobyteus-server-ts`: production `pnpm exec tsc -p tsconfig.build.json --noEmit --pretty false` — passed.
+- `autobyteus-server-ts`: `pnpm run build:full` — passed, including clean build and built-in Agent bootstrap smoke.
+- Built-JavaScript normal-path proof (`/tmp/sr012-crf003-built-probe.mjs`) — passed for persistent-child root-bound delivery, task-child root-bound delivery, and foreign-root rejection at the root manager. Three parent-boundary calls were observed across the three cases; no local/root retry was used.
+- Expanded `member_run_id` audit across current runtime source and built output — zero occurrences; no normal-runtime allowlist is needed.
+- Focused diff, whitespace, staged-path, and file-size checks — passed; the two changed source files are 203 and 179 effective non-empty lines.
+
+### IR-005 Baseline
 
 - `autobyteus-server-ts`: `pnpm exec tsc -p tsconfig.build.json --noEmit` — passed.
 - `autobyteus-server-ts`: `pnpm run build:full` — passed, including clean build, assets, and built-in Agent bootstrap smoke.
@@ -103,6 +121,8 @@ The frontend now consumes the recursive `rootTeam`, derives canonical address in
 
 ## Frontend Rendered Result
 
+IR-006 is backend-only and does not change a rendered surface. The cumulative IR-005 frontend result remains:
+
 - Nuxt production output was served and `/agent-teams` was inspected at 1440x1000 and 390x844.
 - Search input, Reload action, Create affordance, responsive layout, and absence of horizontal overflow were verified. Evidence: `/tmp/sr012-agent-teams.png` and `/tmp/sr012-agent-teams-mobile.png`.
 - The local backend was unavailable, so only the truthful error/empty state was exercisable; no live Team hierarchy/task/history workflow is claimed.
@@ -117,6 +137,7 @@ The frontend now consumes the recursive `rootTeam`, derives canonical address in
 - The temporary SQLite migration proof is deliberately narrow synthetic implementation evidence, not a durable migration test suite.
 - Stale V4 wording remains in SDK README files; those are durable delivery documentation and were intentionally not edited during implementation. Delivery documentation sync remains required after code/API gates pass.
 - Prior SR-006 CRR/API/delivery evidence is not SR-012 verification.
+- CRR-009 keeps API/E2E blocked until IR-006 passes source re-review; no downstream execution was started during the local fix.
 
 ## Task Design Health Check
 
