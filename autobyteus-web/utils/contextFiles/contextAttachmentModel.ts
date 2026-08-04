@@ -107,7 +107,7 @@ const parseUploadedLocator = (
       draftOwner: {
         kind: 'team_member_draft',
         draftTeamRunId: decodePathSegment(draftTeamMatch[1]),
-        memberRouteKey: decodePathSegment(draftTeamMatch[2]),
+        memberAddress: decodePathSegment(draftTeamMatch[2]),
       },
     };
   }

@@ -1,6 +1,6 @@
 import { AgentRunManager } from "../agent-execution/services/agent-run-manager.js";
 import { AgentTeamRunManager } from "../agent-team-execution/services/agent-team-run-manager.js";
-import type { TeamMemberRunConfig, TeamRunMemberConfig } from "../agent-team-execution/domain/team-run-config.js";
+import type { TeamRunNode } from "../agent-team-execution/domain/team-run-config.js";
 import { buildFilesystemWorkspaceId } from "./workspace-registry-store.js";
 import { canonicalizeWorkspaceRootPath } from "./workspace-path-utils.js";
 
@@ -54,7 +54,7 @@ export class WorkspaceRemovalGuard {
       if (!teamRun?.config) {
         continue;
       }
-      if (teamMemberTreeUsesWorkspace(teamRun.config.memberTree, workspaceRootPath)) {
+      if (teamMemberTreeUsesWorkspace(teamRun.config.rootTeam.children, workspaceRootPath)) {
         blockers.push({ kind: "team_run", runId: teamRunId });
       }
     }
@@ -95,22 +95,22 @@ const workspaceIdUsesRoot = (
 };
 
 const teamMemberTreeUsesWorkspace = (
-  members: readonly TeamRunMemberConfig[],
+  members: readonly TeamRunNode[],
   workspaceRootPath: string,
 ): boolean => members.some((member) => teamMemberUsesWorkspace(member, workspaceRootPath));
 
 const teamMemberUsesWorkspace = (
-  member: TeamRunMemberConfig,
+  member: TeamRunNode,
   workspaceRootPath: string,
 ): boolean => {
-  if (member.memberKind === "agent_team") {
-    return teamMemberTreeUsesWorkspace(member.memberConfigs, workspaceRootPath);
+  if (member.kind === "agent_team") {
+    return teamMemberTreeUsesWorkspace(member.children, workspaceRootPath);
   }
   return agentMemberUsesWorkspace(member, workspaceRootPath);
 };
 
 const agentMemberUsesWorkspace = (
-  member: TeamMemberRunConfig,
+  member: Extract<TeamRunNode, { kind: "agent" }>,
   workspaceRootPath: string,
 ): boolean => {
   const candidateRoot = member.workspaceRootPath?.trim();

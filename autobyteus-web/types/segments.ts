@@ -36,16 +36,7 @@ export interface ToolInvocationLifecycle {
 }
 
 export interface ToolApprovalTarget {
-  memberRouteKey?: string | null;
-  memberPath?: string[] | null;
-  sourceRouteKey?: string | null;
-  sourcePath?: string[] | null;
-  taskAgentRunId?: string | null;
-  taskTeamRunId?: string | null;
-  teamRouteKey?: string | null;
-  teamPath?: string[] | null;
-  taskTeamRelativeMemberRouteKey?: string | null;
-  taskTeamRelativeMemberPath?: string[] | null;
+  executionAddress: import('~/types/agent/TeamExecutionAddress').TeamExecutionAddress;
 }
 
 export interface AIResponseTextSegment {

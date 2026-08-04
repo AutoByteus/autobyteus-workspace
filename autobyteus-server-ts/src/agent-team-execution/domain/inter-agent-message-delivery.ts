@@ -1,44 +1,27 @@
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
-import type { ConversationTargetAddress } from "./conversation-target-address.js";
+import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { MemberLogicalAddressContext } from "./member-logical-address-context.js";
-import {
-  buildMemberRouteKeyFromPath,
-  selectorFromMemberPath,
-  type TeamMemberSelector,
-} from "./team-run-member-identity.js";
+import type { TeamExecutionAddress } from "./team-execution-address.js";
 
-export type TeamMemberAddress = {
-  teamRunId: string;
-  memberPath: string[];
-  memberRouteKey: string;
-};
-
-export type InterAgentMessageParticipant = {
-  memberKind: "agent" | "agent_team";
-  memberName: string;
-  memberPath: string[];
-  memberRouteKey: string;
-  memberRunId: string;
-  address: TeamMemberAddress;
-  platformRunId?: string | null;
-  teamDefinitionId?: string | null;
-  taskAgentInstanceId?: string | null;
-  taskAgentRunId?: string | null;
+export type InterAgentMessageParticipant = Readonly<{
+  kind: "agent";
+  executionAddress: TeamExecutionAddress;
+  agentRunId: string;
+  displayName: string;
+  runtimeKind: RuntimeKind;
+  platformAgentRunId?: string | null;
   taskId?: string | null;
-  logicalMemberRouteKey?: string | null;
-};
+}>;
 
-export type InterAgentMessageDeliveryEndpoint = {
+export type InterAgentMessageDeliveryEndpoint = Readonly<{
   participant: InterAgentMessageParticipant;
-  selector: TeamMemberSelector;
-};
+}>;
 
 export interface InterAgentMessageDeliveryIntent {
-  teamRunId: string;
+  rootTeamRunId: string;
   callerAddressing: MemberLogicalAddressContext;
   sender: InterAgentMessageDeliveryEndpoint;
-  senderAddress?: ConversationTargetAddress | null;
-  recipientName: string;
+  recipientAddress: string;
   content: string;
   messageType?: string | null;
   referenceFiles?: string[] | null;
@@ -46,8 +29,8 @@ export interface InterAgentMessageDeliveryIntent {
 
 export interface ResolvedInterAgentMessageDeliveryRequest extends InterAgentMessageDeliveryIntent {
   recipient: InterAgentMessageDeliveryEndpoint;
-  senderAddress: ConversationTargetAddress;
-  receiverAddress: ConversationTargetAddress;
+  senderAddress: TeamExecutionAddress;
+  receiverAddress: TeamExecutionAddress;
   resolvedTargetKind: "logical_member" | "agent_run" | "task_agent_run";
   targetAgentRunId: string;
   taskId?: string | null;
@@ -60,68 +43,6 @@ export type InterAgentMessageDeliveryHandler = (
   intent: InterAgentMessageDeliveryIntent,
 ) => Promise<AgentOperationResult>;
 
-const normalizeRequiredString = (value: string, fieldName: string): string => {
-  const normalized = value.trim();
-  if (!normalized) {
-    throw new Error(`${fieldName} cannot be empty.`);
-  }
-  return normalized;
-};
-
-const normalizePath = (value: readonly string[], fieldName: string): string[] => {
-  const path = value.map((segment, index) => normalizeRequiredString(segment, `${fieldName}[${index}]`));
-  if (path.length === 0) {
-    throw new Error(`${fieldName} cannot be empty.`);
-  }
-  return path;
-};
-
-const pathsEqual = (left: readonly string[], right: readonly string[]): boolean =>
-  left.length === right.length && left.every((segment, index) => segment === right[index]);
-
-export const buildTeamMemberAddress = (input: {
-  teamRunId: string;
-  memberPath: readonly string[];
-  memberRouteKey?: string | null;
-}): TeamMemberAddress => {
-  const memberPath = normalizePath(input.memberPath, "memberPath");
-  const derivedRouteKey = buildMemberRouteKeyFromPath(memberPath);
-  const memberRouteKey = input.memberRouteKey?.trim() || derivedRouteKey;
-  if (memberRouteKey !== derivedRouteKey) {
-    throw new Error(`memberRouteKey '${memberRouteKey}' does not match memberPath '${derivedRouteKey}'.`);
-  }
-  return {
-    teamRunId: normalizeRequiredString(input.teamRunId, "teamRunId"),
-    memberPath,
-    memberRouteKey,
-  };
-};
-
-export const assertParticipantAddressInvariant = (
-  participant: InterAgentMessageParticipant,
-): void => {
-  const address = buildTeamMemberAddress({
-    teamRunId: participant.address.teamRunId,
-    memberPath: participant.address.memberPath,
-    memberRouteKey: participant.address.memberRouteKey,
-  });
-  const participantRouteKey = buildMemberRouteKeyFromPath(participant.memberPath);
-  if (participantRouteKey !== participant.memberRouteKey) {
-    throw new Error(`participant.memberRouteKey '${participant.memberRouteKey}' does not match participant.memberPath '${participantRouteKey}'.`);
-  }
-  const participantPath = normalizePath(participant.memberPath, "participant.memberPath");
-  if (!pathsEqual(address.memberPath, participantPath)) {
-    throw new Error(`participant.address.memberPath '${address.memberPath.join("/")}' does not match participant.memberPath '${participantPath.join("/")}'.`);
-  }
-  if (address.memberRouteKey !== participant.memberRouteKey) {
-    throw new Error(`participant.address.memberRouteKey '${address.memberRouteKey}' does not match participant.memberRouteKey '${participant.memberRouteKey}'.`);
-  }
-};
-
 export const buildDeliveryEndpointForParticipant = (
   participant: InterAgentMessageParticipant,
-  selector: TeamMemberSelector = selectorFromMemberPath(participant.address.memberPath),
-): InterAgentMessageDeliveryEndpoint => {
-  assertParticipantAddressInvariant(participant);
-  return { participant, selector };
-};
+): InterAgentMessageDeliveryEndpoint => Object.freeze({ participant });

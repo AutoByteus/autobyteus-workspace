@@ -11,7 +11,7 @@ import {
 } from '~/utils/teamDefinitionMembers'
 
 export interface MobileTeamMemberFocusRow {
-  routeKey: string
+  memberAddress: string
   label: string
   detail: string
 }
@@ -22,9 +22,9 @@ export const buildMobileTeamMemberFocusRows = (
 ): MobileTeamMemberFocusRow[] => leafMembers.map((member) => {
   const agentName = getAgentDefinitionName(member.agentDefinitionId)
   return {
-    routeKey: member.memberRouteKey,
-    label: member.memberPath.join(' › ') || member.memberName,
-    detail: agentName || member.displayName || member.memberName,
+    memberAddress: member.address,
+    label: member.address.split('/').filter(Boolean).join(' › ') || member.displayName,
+    detail: agentName || member.displayName,
   }
 })
 
@@ -64,43 +64,45 @@ export function useMobileTeamMemberFocusCoordinator(contextRef: Ref<MobileWorkCo
     }
   })
 
-  const memberTree = computed(() => teamContext.value?.memberTree || definitionMemberTree.value)
+  const memberTree = computed(() => teamContext.value?.rootTeam.children || definitionMemberTree.value)
   const leafMembers = computed(() => flattenLeafAgentMemberNodes(memberTree.value))
   const memberRows = computed(() => buildMobileTeamMemberFocusRows(
     leafMembers.value,
     (agentDefinitionId) => agentDefinitionStore.getAgentDefinitionById(agentDefinitionId)?.name || null,
   ))
-  const focusedMemberRouteKey = computed(() => {
+  const focusedMemberAddress = computed(() => {
     const context = contextRef.value
     if (context?.kind !== 'team-run') {
       return ''
     }
-    return teamContext.value?.focusedMemberRouteKey || context.focusedMemberRouteKey || ''
+    return teamContext.value?.focusedExecutionAddress.memberAddress || context.focusedExecutionAddress.memberAddress || ''
   })
   const focusedMemberLabel = computed(() => (
-    memberRows.value.find((row) => row.routeKey === focusedMemberRouteKey.value)?.label
-    || focusedMemberRouteKey.value
+    memberRows.value.find((row) => row.memberAddress === focusedMemberAddress.value)?.label
+    || focusedMemberAddress.value
     || 'Choose member'
   ))
 
-  async function focusMember(memberRouteKey: string): Promise<void> {
+  async function focusMember(memberAddress: string): Promise<void> {
     const context = contextRef.value
-    const normalizedMemberRouteKey = memberRouteKey.trim()
+    const normalizedMemberAddress = memberAddress.trim()
     error.value = null
     if (context?.kind !== 'team-run') {
       error.value = 'Open a team run before changing focused member.'
       throw new Error(error.value)
     }
-    if (!memberRows.value.some((row) => row.routeKey === normalizedMemberRouteKey)) {
+    if (!memberRows.value.some((row) => row.memberAddress === normalizedMemberAddress)) {
       error.value = 'Choose a focusable team member.'
       throw new Error(error.value)
     }
 
     isUpdating.value = true
     try {
-      await teamContextsStore.focusMemberAndEnsureHydrated(context.teamRunId, normalizedMemberRouteKey)
-      mobileWorkStore.updateFocusedTeamMember(context.teamRunId, normalizedMemberRouteKey)
-      mobileWorkStore.rememberFocusedTeamMember(context.teamRunId, normalizedMemberRouteKey)
+      await teamContextsStore.focusMemberAndEnsureHydrated(context.teamRunId, normalizedMemberAddress)
+      const focused = teamContextsStore.getTeamContextById(context.teamRunId)?.focusedExecutionAddress
+      if (!focused) throw new Error('Focused Team execution is unavailable.')
+      mobileWorkStore.updateFocusedTeamMember(context.teamRunId, focused)
+      mobileWorkStore.rememberFocusedTeamMember(context.teamRunId, focused)
     } catch (cause) {
       const message = cause instanceof Error ? cause.message : 'Failed to change focused team member.'
       error.value = message
@@ -113,7 +115,7 @@ export function useMobileTeamMemberFocusCoordinator(contextRef: Ref<MobileWorkCo
   return {
     error,
     focusedMemberLabel,
-    focusedMemberRouteKey,
+    focusedMemberAddress,
     focusMember,
     isUpdating,
     memberRows,

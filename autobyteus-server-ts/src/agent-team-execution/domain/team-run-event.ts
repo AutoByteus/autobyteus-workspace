@@ -1,9 +1,7 @@
 import type { AgentRunEvent } from "../../agent-execution/domain/agent-run-event.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { TaskAgentInstanceIdentity } from "./task-agent-instance.js";
-import type { TaskTeamStreamScope } from "./task-team-stream-scope.js";
-import type { ConversationTargetAddress } from "./conversation-target-address.js";
-import { buildMemberRouteKeyFromPath } from "./team-run-member-identity.js";
+import type { TeamExecutionAddress } from "./team-execution-address.js";
 
 export enum TeamRunEventSourceType {
   AGENT = "AGENT",
@@ -12,18 +10,15 @@ export enum TeamRunEventSourceType {
   MEMBER_INPUT = "MEMBER_INPUT",
 }
 
-export type TeamRunAgentEventPayload = {
+export type TeamRunAgentEventPayload = Readonly<{
   runtimeKind: RuntimeKind;
-  memberName: string;
-  memberRunId: string;
-  memberPath: string[];
-  memberRouteKey: string;
+  executionAddress: TeamExecutionAddress;
+  displayName: string;
   agentEvent: AgentRunEvent;
   taskAgentInstance?: TaskAgentInstanceIdentity | null;
-};
+}>;
 
-
-export type TeamRunTaskDelegationEventPayload = {
+export type TeamRunTaskDelegationEventPayload = Readonly<{
   eventType:
     | "TASK_DELEGATION_TERMINAL_STATUS"
     | "TASK_DELEGATION_STATUS_UPDATED"
@@ -31,55 +26,47 @@ export type TeamRunTaskDelegationEventPayload = {
     | "TASK_DELEGATION_RESULT_SUBMITTED"
     | "TASK_DELEGATION_RESULT_REVIEWED";
   payload: unknown;
-};
+}>;
 
-export type TeamCommunicationReferenceFile = {
+export type TeamCommunicationReferenceFile = Readonly<{
   referenceId: string;
   path: string;
   type: string;
   createdAt: string;
   updatedAt: string;
-};
+}>;
 
-export type TeamRunCommunicationEventPayload = {
+export type TeamRunCommunicationEventPayload = Readonly<{
   messageId: string;
   teamRunId: string;
-  senderAddress: ConversationTargetAddress;
-  receiverAddress: ConversationTargetAddress;
+  senderAddress: TeamExecutionAddress;
+  receiverAddress: TeamExecutionAddress;
   content: string;
   messageType: string;
-  referenceFiles: TeamCommunicationReferenceFile[];
+  referenceFiles: readonly TeamCommunicationReferenceFile[];
   createdAt: string;
-};
+}>;
 
-export type TeamRunMemberInputOrigin =
-  | "user_message"
-  | "inter_agent_delivery";
+export type TeamRunMemberInputOrigin = "user_message" | "inter_agent_delivery";
 
-export type TeamRunMemberInputContextFile = {
+export type TeamRunMemberInputContextFile = Readonly<{
   path: string;
   type?: string | null;
-};
+}>;
 
-export type TeamRunMemberInputEventPayload = {
+export type TeamRunMemberInputEventPayload = Readonly<{
   messageId: string;
   dedupeKey: string;
   teamRunId: string;
-  recipientMemberRunId: string;
-  recipientMemberName: string;
-  recipientMemberPath: string[];
-  recipientMemberRouteKey: string;
+  recipientAddress: TeamExecutionAddress;
   content: string;
   inputOrigin: TeamRunMemberInputOrigin;
   receivedAt: string;
-  contextFilePaths: TeamRunMemberInputContextFile[];
-  senderRunId?: string | null;
-  senderMemberName?: string | null;
-  senderMemberPath?: string[] | null;
-  senderMemberRouteKey?: string | null;
+  contextFilePaths: readonly TeamRunMemberInputContextFile[];
+  senderAddress?: TeamExecutionAddress | null;
   parentCommunicationMessageId?: string | null;
   taskAgentInstance?: TaskAgentInstanceIdentity | null;
-};
+}>;
 
 export type TeamRunEventData =
   | TeamRunAgentEventPayload
@@ -87,23 +74,12 @@ export type TeamRunEventData =
   | TeamRunCommunicationEventPayload
   | TeamRunMemberInputEventPayload;
 
-export type TeamRunEvent = {
+export type TeamRunEvent = Readonly<{
   eventSourceType: TeamRunEventSourceType;
   teamRunId: string;
+  executionAddress: TeamExecutionAddress;
   data: TeamRunEventData;
-  /** Canonical runtime source identity. Root/team-level events use an empty path. */
-  sourcePath: string[];
-  /** Task-team execution scope expressed in this event's teamRunId coordinate frame. */
-  taskTeamScope?: TaskTeamStreamScope | null;
-  /** Deprecated transport/display alias only. Do not use as domain identity. */
-  subTeamNodeName?: string | null;
-};
-
-export const getTeamRunEventSourceRouteKey = (event: TeamRunEvent): string | null =>
-  Array.isArray(event.sourcePath) && event.sourcePath.length > 0
-    ? buildMemberRouteKeyFromPath(event.sourcePath)
-    : null;
+}>;
 
 export type TeamRunEventListener = (event: TeamRunEvent) => void;
-
 export type TeamRunEventUnsubscribe = () => void;

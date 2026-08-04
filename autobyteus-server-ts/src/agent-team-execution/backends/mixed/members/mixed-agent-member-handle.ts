@@ -1,58 +1,42 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+import { getAgentTeamAddressBasename, getParentAgentTeamAddress, type AgentTeamAddress } from "../../../../agent-collaboration/domain/agent-team-address.js";
 import { AgentRunConfig } from "../../../../agent-execution/domain/agent-run-config.js";
 import type { AgentRun } from "../../../../agent-execution/domain/agent-run.js";
 import { isAgentRunEvent } from "../../../../agent-execution/domain/agent-run-event.js";
 import type { AgentOperationResult } from "../../../../agent-execution/domain/agent-operation-result.js";
 import { AgentRunManager } from "../../../../agent-execution/services/agent-run-manager.js";
-import type { TeamRunContext } from "../../../domain/team-run-context.js";
-import type {
-  InterAgentMessageDeliveryIntent,
-  ResolvedInterAgentMessageDeliveryRequest,
-} from "../../../domain/inter-agent-message-delivery.js";
-import type { TeamMemberSelector } from "../../../domain/team-run-member-identity.js";
-import {
-  TeamRunEventSourceType,
-  type TeamRunAgentEventPayload,
-  type TeamRunMemberInputEventPayload,
-} from "../../../domain/team-run-event.js";
-import type { AgentStatusPayload } from "../../../../agent-execution/domain/agent-status-payload.js";
-import { RuntimeKind } from "../../../../runtime-management/runtime-kind-enum.js";
 import { getAgentToolMcpSessionService } from "../../../../agent-tools/mcp/agent-tool-mcp-session-service.js";
-import type { TeamMemberRunConfig } from "../../../domain/team-run-config.js";
-import { TeamBackendKind } from "../../../domain/team-backend-kind.js";
+import { RuntimeKind } from "../../../../runtime-management/runtime-kind-enum.js";
+import { buildFilesystemWorkspaceId } from "../../../../workspaces/workspace-registry-store.js";
+import { getAgentMemoryLocationService } from "../../../../agent-memory/services/agent-memory-location-service.js";
+import type { TeamRunContext } from "../../../domain/team-run-context.js";
+import type { InterAgentMessageDeliveryIntent, ResolvedInterAgentMessageDeliveryRequest } from "../../../domain/inter-agent-message-delivery.js";
+import type { TeamRunAgentNode } from "../../../domain/team-run-config.js";
 import type { TaskAgentInstanceIdentity } from "../../../domain/task-agent-instance.js";
-import type { ConversationTargetAddress } from "../../../domain/conversation-target-address.js";
-import {
-  getMemberTeamContextBuilder,
-  type MemberTeamContextBuilder,
-} from "../../../services/member-team-context-builder.js";
+import { TeamRunEventSourceType, type TeamRunAgentEventPayload, type TeamRunMemberInputEventPayload } from "../../../domain/team-run-event.js";
+import { buildTeamLeafAgentStatusSnapshot, type TeamLeafAgentStatusPayload } from "../../../domain/team-leaf-agent-status-snapshot.js";
+import { getMemberTeamContextBuilder, type MemberTeamContextBuilder } from "../../../services/member-team-context-builder.js";
 import { getInterAgentMessageRouter, type InterAgentMessageRouter } from "../../../services/inter-agent-message-router.js";
-import {
-  buildInterAgentDeliveryInputMessage,
-} from "../../../services/inter-agent-message-runtime-builders.js";
+import { buildInterAgentDeliveryInputMessage } from "../../../services/inter-agent-message-runtime-builders.js";
 import { buildTeamMemberInputEventPayload } from "../../../services/team-member-input-event-builder.js";
-import {
-  buildTaskDelegationSystemTaskNotificationEvent,
-  isTaskDelegationSystemTaskNotificationMessage,
-} from "../../../task-delegation/task-delegation-system-message-visibility.js";
 import { MemberCommandStatusOverlayStore } from "../../../services/member-command-status-overlay-store.js";
-import {
-  buildOrdinaryTeamLeafAgentStatusSnapshot,
-  type TeamLeafAgentStatusPayload,
-} from "../../../domain/team-leaf-agent-status-snapshot.js";
-import type { MixedTeamRunContext, MixedAgentMemberContext } from "../mixed-team-run-context.js";
+import { buildTaskDelegationSystemTaskNotificationEvent, isTaskDelegationSystemTaskNotificationMessage } from "../../../task-delegation/task-delegation-system-message-visibility.js";
+import type { MixedAgentMemberContext, MixedTeamRunContext } from "../mixed-team-run-context.js";
 import type { MixedTeamEventPublish, MixedTeamMemberHandle } from "./mixed-team-member-handle.js";
+
+const displayNameFor = (context: MixedAgentMemberContext): string =>
+  getAgentTeamAddressBasename(context.address) ?? context.agentRunId;
 
 export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
   readonly context: MixedAgentMemberContext;
   private agentRun: AgentRun | null = null;
   private unsubscribe: (() => void) | null = null;
-  private readonly commandStatusOverlayStore: MemberCommandStatusOverlayStore;
+  private readonly overlay: MemberCommandStatusOverlayStore;
 
   constructor(private readonly options: {
     teamContext: TeamRunContext<MixedTeamRunContext>;
     context: MixedAgentMemberContext;
-    config: TeamMemberRunConfig;
+    config: TeamRunAgentNode;
     agentRunManager?: AgentRunManager;
     memberTeamContextBuilder?: MemberTeamContextBuilder;
     interAgentMessageRouter?: InterAgentMessageRouter;
@@ -61,54 +45,42 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
     taskAgentInstance?: TaskAgentInstanceIdentity | null;
   }) {
     this.context = options.context;
-    this.commandStatusOverlayStore = new MemberCommandStatusOverlayStore({
-      getTeamRunId: () => this.options.teamContext.runId,
-      publishEvent: this.options.publish,
+    this.overlay = new MemberCommandStatusOverlayStore({
+      getTeamRunId: () => this.options.teamContext.config.rootTeam.teamRunId,
+      publishEvent: options.publish,
     });
   }
 
-  isActive(): boolean {
-    return this.agentRun?.isActive() ?? false;
-  }
+  isActive(): boolean { return this.agentRun?.isActive() ?? false; }
 
-  private getAgentStatusPayload(): TeamLeafAgentStatusPayload {
-    const snapshot = this.commandStatusOverlayStore.getMemberStatusSnapshot({
-      memberContext: this.context,
-      taskAgentInstance: this.options.taskAgentInstance ?? null,
-      fallback: () => this.agentRun?.getStatusSnapshot() ?? {
-        status: "offline" as const,
-        agent_id: this.context.memberRunId,
-        agent_name: this.context.memberName,
-      },
+  private statusPayload(): TeamLeafAgentStatusPayload {
+    const snapshot = this.overlay.getMemberStatusSnapshot({
+      memberContext: this.statusIdentity(),
+      fallback: () => this.agentRun?.getStatusSnapshot() ?? { status: "offline" },
     });
     return {
       ...snapshot,
-      agent_id: this.context.memberRunId,
-      agent_name: this.context.memberName,
-      member_route_key: this.context.memberRouteKey,
-      member_path: this.context.memberPath,
-      source_route_key: this.context.memberRouteKey,
-      source_path: this.context.memberPath,
-      ...(this.options.taskAgentInstance
-        ? {
-            task_agent_instance_id: this.options.taskAgentInstance.taskAgentInstanceId,
-            task_agent_run_id: this.options.taskAgentInstance.taskAgentRunId,
-            task_id: this.options.taskAgentInstance.taskId,
-          }
-        : {}),
-    } satisfies TeamLeafAgentStatusPayload;
+      agent_id: this.context.agentRunId,
+      agent_name: displayNameFor(this.context),
+      execution_address: this.executionAddress(),
+      ...(this.options.taskAgentInstance ? {
+        task_agent_instance_id: this.options.taskAgentInstance.taskAgentInstanceId,
+        task_agent_run_id: this.options.taskAgentInstance.taskAgentRunId,
+        task_id: this.options.taskAgentInstance.taskId,
+      } : {}),
+    };
   }
 
   getLeafAgentStatusSnapshots() {
-    return [buildOrdinaryTeamLeafAgentStatusSnapshot({
-      teamRunId: this.options.teamContext.runId,
-      payload: this.getAgentStatusPayload(),
+    return [buildTeamLeafAgentStatusSnapshot({
+      teamRunId: this.options.teamContext.config.rootTeam.teamRunId,
+      executionAddress: this.executionAddress(),
+      payload: this.statusPayload(),
     })];
   }
 
   hasOpenExecutionWork(): boolean {
-    const status = this.getAgentStatusPayload().status;
-    return status === "initializing" || status === "running" || status === "error";
+    return ["initializing", "running", "error"].includes(this.statusPayload().status);
   }
 
   async postMessage(message: AgentInputUserMessage): Promise<AgentOperationResult> {
@@ -119,121 +91,65 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
       this.context.platformAgentRunId = run.getPlatformAgentRunId() ?? this.context.platformAgentRunId;
       if (result.accepted) {
         if (isTaskDelegationSystemTaskNotificationMessage(message)) {
-          try {
-            await run.publishEvent(buildTaskDelegationSystemTaskNotificationEvent(run.runId, message));
-          } catch (error) {
-            console.warn(
-              `[MixedAgentMemberHandle] task-delegation notification publication failed for '${run.runId}': ${String(error)}`,
-            );
-          }
-        } else {
-          this.publishMemberInput(message);
-        }
-      } else {
-        this.publishCommandStatus("error", result.message ?? null);
-      }
-      return { ...result, memberRunId: this.context.memberRunId, memberName: this.context.memberName };
+          await run.publishEvent(buildTaskDelegationSystemTaskNotificationEvent(run.runId, message));
+        } else this.publishMemberInput(message);
+      } else this.publishCommandStatus("error", result.message ?? null);
+      return { ...result, agentRunId: this.context.agentRunId, displayName: displayNameFor(this.context) };
     } catch (error) {
       this.publishCommandStatus("error", String(error));
       throw error;
     }
   }
 
-  async postMessageToConversationTarget(
-    _message: AgentInputUserMessage,
-    _address: ConversationTargetAddress,
-  ): Promise<AgentOperationResult> {
-    return {
-      accepted: false,
-      code: "INVALID_TARGET",
-      message: `Agent member '${this.context.memberRouteKey}' cannot contain child conversation target segments.`,
-    };
+  async postMessageToAddress(message: AgentInputUserMessage, target: AgentTeamAddress, targetAgentRunId: string | null = null): Promise<AgentOperationResult> {
+    if (target !== this.context.address) return { accepted: false, code: "TARGET_MEMBER_NOT_FOUND", message: `Agent '${this.context.address}' cannot route '${target}'.` };
+    const requested = targetAgentRunId?.trim();
+    if (requested && requested !== this.context.agentRunId) return { accepted: false, code: "TARGET_AGENT_RUN_MISMATCH", message: `Agent '${target}' does not own AgentRun '${requested}'.` };
+    return this.postMessage(message);
   }
 
-  async deliverInterMemberMessage(
-    request: ResolvedInterAgentMessageDeliveryRequest,
-    beforePublishMemberInput: (() => void) | null = null,
-  ): Promise<AgentOperationResult> {
+  async deliverInterMemberMessage(request: ResolvedInterAgentMessageDeliveryRequest, beforePublishMemberInput: (() => void) | null = null): Promise<AgentOperationResult> {
     this.publishCommandStatus("initializing");
-    try {
-      const run = await this.ensureReady();
-      const result = await (this.options.interAgentMessageRouter ?? getInterAgentMessageRouter()).deliver({
-        recipientRun: run,
-        request,
-      });
-      this.context.platformAgentRunId = run.getPlatformAgentRunId() ?? this.context.platformAgentRunId;
-      if (result.accepted) {
-        beforePublishMemberInput?.();
-        this.publishMemberInput(buildInterAgentDeliveryInputMessage(request));
-      } else {
-        this.publishCommandStatus("error", result.message ?? null);
-      }
-      return { ...result, memberRunId: this.context.memberRunId, memberName: this.context.memberName };
-    } catch (error) {
-      this.publishCommandStatus("error", String(error));
-      throw error;
-    }
-  }
-
-  private publishMemberInput(message: AgentInputUserMessage): void {
-    this.options.publish({
-      eventSourceType: TeamRunEventSourceType.MEMBER_INPUT,
-      teamRunId: this.options.teamContext.runId,
-      sourcePath: this.context.memberPath,
-      data: buildTeamMemberInputEventPayload({
-        teamRunId: this.options.teamContext.runId,
-        memberContext: this.context,
-        message,
-        taskAgentInstance: this.options.taskAgentInstance ?? null,
-      }) satisfies TeamRunMemberInputEventPayload,
-    });
-  }
-
-  async approveToolInvocation(
-    _target: TeamMemberSelector | null,
-    invocationId: string,
-    approved: boolean,
-    reason: string | null = null,
-  ): Promise<AgentOperationResult> {
     const run = await this.ensureReady();
-    return run.approveToolInvocation(invocationId, approved, reason ?? null);
+    const result = await (this.options.interAgentMessageRouter ?? getInterAgentMessageRouter()).deliver({ recipientRun: run, request });
+    this.context.platformAgentRunId = run.getPlatformAgentRunId() ?? this.context.platformAgentRunId;
+    if (result.accepted) {
+      beforePublishMemberInput?.();
+      this.publishMemberInput(buildInterAgentDeliveryInputMessage(request));
+    } else this.publishCommandStatus("error", result.message ?? null);
+    return { ...result, agentRunId: this.context.agentRunId, displayName: displayNameFor(this.context) };
   }
 
-  async interrupt(
-    _target: TeamMemberSelector | null,
-    targetMemberRunId: string | null = null,
-  ): Promise<AgentOperationResult> {
-    const normalizedTargetMemberRunId = targetMemberRunId?.trim();
-    if (normalizedTargetMemberRunId && normalizedTargetMemberRunId !== this.context.memberRunId) {
-      return {
-        accepted: false,
-        code: "TARGET_MEMBER_RUN_MISMATCH",
-        message: `Team member route key '${this.context.memberRouteKey}' does not match member run '${normalizedTargetMemberRunId}'.`,
-      };
-    }
+  async approveToolInvocation(_target: AgentTeamAddress | null, invocationId: string, approved: boolean, reason: string | null = null): Promise<AgentOperationResult> {
+    return (await this.ensureReady()).approveToolInvocation(invocationId, approved, reason);
+  }
+
+  async interrupt(_target: AgentTeamAddress | null, targetAgentRunId: string | null = null): Promise<AgentOperationResult> {
+    const target = targetAgentRunId?.trim();
+    if (target && target !== this.context.agentRunId) return {
+      accepted: false,
+      code: "TARGET_AGENT_RUN_MISMATCH",
+      message: `Agent '${this.context.address}' does not own AgentRun '${target}'.`,
+    };
     return this.agentRun ? this.agentRun.interrupt() : { accepted: true };
   }
 
   async terminate(): Promise<AgentOperationResult> {
-    const run = this.agentRun;
-    const result = run ? await run.terminate() : { accepted: true };
-    if (result.accepted) {
-      this.dispose();
-    }
+    const result = this.agentRun ? await this.agentRun.terminate() : { accepted: true };
+    if (result.accepted) this.dispose();
     return result;
   }
 
   dispose(): void {
     this.unsubscribe?.();
     this.unsubscribe = null;
-    getAgentToolMcpSessionService().revokeAgentToolMcpSessionsForMemberRun(this.context.memberRunId);
+    getAgentToolMcpSessionService().revokeAgentToolMcpSessionsForAgentRun(this.context.agentRunId);
     this.agentRun = null;
-    this.commandStatusOverlayStore.clear();
+    this.overlay.clear();
   }
 
   adoptExistingRun(run: AgentRun): void {
     this.unsubscribe?.();
-    this.unsubscribe = null;
     this.agentRun = run;
     this.context.platformAgentRunId = run.getPlatformAgentRunId() ?? this.context.platformAgentRunId;
     this.bindEvents(run);
@@ -244,126 +160,118 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
     this.unsubscribe?.();
     this.unsubscribe = null;
     this.agentRun = null;
-    this.commandStatusOverlayStore.clear();
+    this.overlay.clear();
     return run;
   }
 
   private async ensureReady(): Promise<AgentRun> {
-    if (this.agentRun?.isActive()) {
-      return this.agentRun;
-    }
+    if (this.agentRun?.isActive()) return this.agentRun;
     this.unsubscribe?.();
-    this.unsubscribe = null;
-    this.agentRun = null;
-    const memberRunConfig = await this.buildMemberRunConfig();
     const manager = this.options.agentRunManager ?? AgentRunManager.getInstance();
-    this.agentRun = typeof this.context.platformAgentRunId === "string" && this.context.platformAgentRunId.trim().length > 0
-      ? await manager.restoreAgentRunFromPlatformState({
-          runId: this.context.memberRunId,
-          config: memberRunConfig,
-          platformAgentRunId: this.context.platformAgentRunId,
-        })
-      : await manager.createAgentRun(memberRunConfig, this.context.memberRunId);
+    const config = await this.buildAgentRunConfig();
+    this.agentRun = this.context.platformAgentRunId
+      ? await manager.restoreAgentRunFromPlatformState({ runId: this.context.agentRunId, config, platformAgentRunId: this.context.platformAgentRunId })
+      : await manager.createAgentRun(config, this.context.agentRunId);
     this.context.platformAgentRunId = this.agentRun.getPlatformAgentRunId() ?? this.context.platformAgentRunId;
     this.bindEvents(this.agentRun);
     return this.agentRun;
   }
 
-  private async buildMemberRunConfig(): Promise<AgentRunConfig> {
-    this.assertRecordableMemberMemoryDir();
+  private async buildAgentRunConfig(): Promise<AgentRunConfig> {
+    const node = this.options.config;
     const memberTeamContext = await (this.options.memberTeamContextBuilder ?? getMemberTeamContextBuilder()).build({
-      teamRunId: this.options.teamContext.runId,
-      teamDefinitionId: this.options.teamContext.config?.teamDefinitionId ?? "",
-      teamBackendKind: TeamBackendKind.MIXED,
-      currentMemberName: this.context.memberName,
-      currentMemberPath: this.context.memberPath,
-      currentMemberRouteKey: this.context.memberRouteKey,
-      currentMemberRunId: this.context.memberRunId,
-      coordinatorMemberRouteKey: this.options.teamContext.runtimeContext.coordinatorMemberRouteKey,
-      collaborationRootTeamRunId: this.options.teamContext.runtimeContext.collaborationRootTeamRunId,
-      teamMountPath: this.options.teamContext.runtimeContext.teamMountPath,
-      effectiveHandoffs: this.options.teamContext.runtimeContext.effectiveHandoffs,
+      teamContext: this.options.teamContext,
+      agentNode: node,
       deliverInterAgentMessage: this.options.deliverInterAgentMessage,
       taskAgentInstance: this.options.taskAgentInstance ?? null,
-      taskTeamInstance: this.resolveTaskTeamIngressBinding(),
-      tokenUsageTeamScope: this.options.teamContext.runtimeContext.tokenUsageTeamScope,
+      taskTeamInstance: this.options.teamContext.runtimeContext.taskTeamInstance,
     });
-
+    const rootTeamRunId = this.options.teamContext.config.rootTeam.teamRunId;
+    const memoryDir = getAgentMemoryLocationService().getTeamAgentRunLocation({
+      rootTeamRunId,
+      ancestorTeamRunIds: this.ancestorTeamRunIds(),
+      agentRunId: this.context.agentRunId,
+    }).memoryDir;
     return new AgentRunConfig({
-      agentDefinitionId: this.options.config.agentDefinitionId,
-      llmModelIdentifier: this.options.config.llmModelIdentifier,
-      autoExecuteTools: this.options.config.autoExecuteTools,
-      workspaceId: this.options.config.workspaceId,
-      memoryDir: this.options.config.memoryDir ?? null,
-      llmConfig: this.options.config.llmConfig,
-      skillAccessMode: this.options.config.skillAccessMode,
-      runtimeKind: this.options.config.runtimeKind,
+      agentDefinitionId: node.agentDefinitionId,
+      llmModelIdentifier: node.llmModelIdentifier,
+      autoExecuteTools: node.autoExecuteTools,
+      workspaceId: node.workspaceRootPath ? buildFilesystemWorkspaceId(node.workspaceRootPath) : null,
+      memoryDir,
+      llmConfig: node.llmConfig as Record<string, unknown> | null,
+      skillAccessMode: node.skillAccessMode,
+      runtimeKind: node.runtimeKind,
       memberTeamContext,
-      applicationExecutionContext: this.options.config.applicationExecutionContext ?? null,
+      applicationExecutionContext: node.applicationExecutionContext,
     });
   }
 
-  private resolveTaskTeamIngressBinding() {
-    const taskTeamInstance = this.options.teamContext.runtimeContext.taskTeamInstance ?? null;
-    if (!taskTeamInstance) {
-      return null;
+  private ancestorTeamRunIds(): string[] {
+    const ids: string[] = [];
+    let address = getParentAgentTeamAddress(this.context.address);
+    while (address && address !== "/") {
+      const team = this.options.teamContext.index.getTeam(address);
+      if (!team) throw new Error(`Missing ancestor AgentTeam '${address}'.`);
+      ids.unshift(team.teamRunId);
+      address = getParentAgentTeamAddress(address);
     }
-    return taskTeamInstance.ingress.memberRouteKey === this.context.memberRouteKey
-      ? taskTeamInstance
-      : null;
+    return ids;
   }
 
-  private assertRecordableMemberMemoryDir(): void {
-    if (this.options.config.runtimeKind === RuntimeKind.AUTOBYTEUS) {
-      return;
-    }
-    if (typeof this.options.config.memoryDir === "string" && this.options.config.memoryDir.trim().length > 0) {
-      return;
-    }
-    throw new Error(
-      `Executable mixed-team member '${this.context.memberRouteKey}' (${this.context.memberRunId}) ` +
-        "is missing memoryDir before AgentRun creation. " +
-        "The mixed-team runtime owner must materialize member memoryDir upstream.",
-    );
+  private executionAddress() { return this.options.teamContext.runtimeContext.teamExecutionAddress.memberAddress === this.context.address && this.options.taskAgentInstance
+    ? { ...this.options.teamContext.runtimeContext.teamExecutionAddress, taskAgentRunId: this.options.taskAgentInstance.taskAgentRunId }
+    : { ...this.options.teamContext.runtimeContext.teamExecutionAddress, memberAddress: this.context.address, taskAgentRunId: this.options.taskAgentInstance?.taskAgentRunId ?? null };
+  }
+
+  private statusIdentity() { return { executionAddress: this.executionAddress(), displayName: displayNameFor(this.context), agentRunId: this.context.agentRunId }; }
+
+  private publishMemberInput(message: AgentInputUserMessage): void {
+    const payload = buildTeamMemberInputEventPayload({
+      teamRunId: this.options.teamContext.config.rootTeam.teamRunId,
+      memberContext: this.context,
+      executionAddress: this.executionAddress(),
+      message,
+      taskAgentInstance: this.options.taskAgentInstance ?? null,
+    }) satisfies TeamRunMemberInputEventPayload;
+    this.options.publish({
+      eventSourceType: TeamRunEventSourceType.MEMBER_INPUT,
+      teamRunId: this.options.teamContext.config.rootTeam.teamRunId,
+      executionAddress: this.executionAddress(),
+      data: payload,
+    });
   }
 
   private bindEvents(run: AgentRun): void {
     this.unsubscribe?.();
     this.unsubscribe = run.subscribeToEvents((event: unknown) => {
-      if (!isAgentRunEvent(event)) {
-        return;
-      }
+      if (!isAgentRunEvent(event)) return;
       this.context.platformAgentRunId = run.getPlatformAgentRunId() ?? this.context.platformAgentRunId;
       const teamEvent = {
         eventSourceType: TeamRunEventSourceType.AGENT,
-        teamRunId: this.options.teamContext.runId,
-        sourcePath: this.context.memberPath,
+        teamRunId: this.options.teamContext.config.rootTeam.teamRunId,
+        executionAddress: this.executionAddress(),
         data: {
           runtimeKind: this.context.runtimeKind,
-          memberName: this.context.memberName,
-          memberRunId: this.context.memberRunId,
-          memberPath: this.context.memberPath,
-          memberRouteKey: this.context.memberRouteKey,
+          executionAddress: this.executionAddress(),
+          displayName: displayNameFor(this.context),
           agentEvent: event,
           taskAgentInstance: this.options.taskAgentInstance ?? null,
         } satisfies TeamRunAgentEventPayload,
       };
-      this.commandStatusOverlayStore.recordReplacementEvents([teamEvent]);
+      this.overlay.recordReplacementEvents([teamEvent]);
       this.options.publish(teamEvent);
     });
   }
 
   private publishCommandStatus(status: "initializing" | "error", errorMessage: string | null = null): void {
-    if (this.agentRun) {
-      return;
-    }
-    this.commandStatusOverlayStore.publishMemberCommandStatus({
+    if (this.agentRun) return;
+    this.overlay.publishMemberCommandStatus({
       runtimeKind: this.context.runtimeKind,
-      memberContext: this.context,
+      memberContext: this.statusIdentity(),
       taskAgentInstance: this.options.taskAgentInstance ?? null,
       status,
       errorMessage,
-      currentStatus: () => this.getAgentStatusPayload().status,
+      currentStatus: () => this.statusPayload().status,
     });
   }
 }

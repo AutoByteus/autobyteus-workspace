@@ -75,9 +75,9 @@ export class TeamRunHistoryResolver {
   @Query(() => TeamMemberRunProjectionPayload)
   async getTeamMemberRunProjection(
     @Arg("teamRunId", () => String) teamRunId: string,
-    @Arg("memberRouteKey", () => String) memberRouteKey: string,
+    @Arg("memberAddress", () => String) memberAddress: string,
   ): Promise<TeamMemberRunProjectionPayload> {
-    const projection = await this.teamMemberRunProjectionService.getProjection(teamRunId, memberRouteKey);
+    const projection = await this.teamMemberRunProjectionService.getProjection(teamRunId, memberAddress);
     return {
       agentRunId: projection.agentRunId,
       conversation: projection.conversation,
@@ -91,10 +91,10 @@ export class TeamRunHistoryResolver {
   @Query(() => EventMonitorActiveTracePageObject)
   async getTeamMemberEventMonitorActiveTracePage(
     @Arg("teamRunId", () => String) teamRunId: string,
-    @Arg("memberRouteKey", () => String) memberRouteKey: string,
+    @Arg("memberAddress", () => String) memberAddress: string,
     @Arg("beforeCursor", () => String, { nullable: true }) beforeCursor?: string | null,
   ): Promise<EventMonitorActiveTracePageObject> {
-    return this.teamMemberRunProjectionService.getActiveTracePage(teamRunId, memberRouteKey, beforeCursor);
+    return this.teamMemberRunProjectionService.getActiveTracePage(teamRunId, memberAddress, beforeCursor);
   }
 
   @Mutation(() => DeleteStoredTeamRunMutationResult)

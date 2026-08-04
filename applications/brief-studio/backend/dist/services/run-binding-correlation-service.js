@@ -13,7 +13,7 @@ const toBindingRecord = (briefId, binding, updatedAt) => ({
     briefId,
     bindingId: binding.bindingId,
     launchRequestId: binding.launchRequestId,
-    runId: binding.runtime.runId,
+    runId: binding.runtime.subject === "AGENT_RUN" ? binding.runtime.agentRunId : binding.runtime.teamRunId,
     createdAt: binding.createdAt,
     updatedAt,
     artifactCatchupCompletedAt: null,

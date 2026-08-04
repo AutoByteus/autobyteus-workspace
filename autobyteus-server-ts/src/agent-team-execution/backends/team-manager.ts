@@ -1,14 +1,13 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import type { InterAgentMessageDeliveryIntent } from "../domain/inter-agent-message-delivery.js";
-import type { TeamMemberSelector } from "../domain/team-run-member-identity.js";
+import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { TeamRunEventListener, TeamRunEventUnsubscribe } from "../domain/team-run-event.js";
 import type { TeamLeafAgentStatusSnapshot } from "../domain/team-leaf-agent-status-snapshot.js";
 import type { StartTaskAgentInstanceRequest } from "../domain/task-agent-instance.js";
 import type { StartTaskTeamInstanceRequest } from "../domain/task-team-instance.js";
-import type { ConversationTargetAddress } from "../domain/conversation-target-address.js";
 import type { MemberLogicalAddressContext } from "../domain/member-logical-address-context.js";
-import type { ResolvedTeamLogicalPlacement } from "../services/resolved-team-logical-placement.js";
+import type { ResolvedTeamRecipient } from "../services/resolved-team-recipient.js";
 
 export interface TeamManager {
   hasActiveMembers(): boolean;
@@ -16,42 +15,38 @@ export interface TeamManager {
   hasOpenExecutionWork(): boolean;
   postMessage(
     message: AgentInputUserMessage,
-    target: TeamMemberSelector,
-    targetMemberRunId?: string | null,
-  ): Promise<AgentOperationResult>;
-  postMessageToConversationTarget(
-    message: AgentInputUserMessage,
-    address: ConversationTargetAddress,
+    target: AgentTeamAddress,
+    targetAgentRunId?: string | null,
   ): Promise<AgentOperationResult>;
   deliverInterAgentMessage(
     intent: InterAgentMessageDeliveryIntent,
   ): Promise<AgentOperationResult>;
-  resolveLogicalPlacement(
-    recipientName: string,
+  resolveRecipient(
+    recipientAddress: string,
     callerAddressing: MemberLogicalAddressContext,
-  ): ResolvedTeamLogicalPlacement;
+  ): ResolvedTeamRecipient;
   approveToolInvocation(
-    target: TeamMemberSelector,
+    target: AgentTeamAddress,
     invocationId: string,
     approved: boolean,
     reason?: string | null,
-    targetMemberRunId?: string | null,
+    targetAgentRunId?: string | null,
     taskTeamRunId?: string | null,
   ): Promise<AgentOperationResult>;
   interruptMember(
-    targetMemberRouteKey: string,
-    targetMemberRunId?: string | null,
+    target: AgentTeamAddress,
+    targetAgentRunId?: string | null,
   ): Promise<AgentOperationResult>;
   settleMember(
-    targetMemberRouteKey: string,
-    targetMemberRunId?: string | null,
+    target: AgentTeamAddress,
+    targetAgentRunId?: string | null,
     reason?: string | null,
   ): Promise<AgentOperationResult>;
   startTaskAgentInstance(
     request: StartTaskAgentInstanceRequest,
   ): Promise<AgentOperationResult>;
   settleTaskAgentInstance(
-    logicalMemberRouteKey: string,
+    target: AgentTeamAddress,
     taskAgentRunId: string,
     reason?: string | null,
   ): Promise<AgentOperationResult>;
@@ -59,12 +54,12 @@ export interface TeamManager {
     request: StartTaskTeamInstanceRequest,
   ): Promise<AgentOperationResult>;
   postMessageToTaskTeamInstance(
-    logicalTeamRouteKey: string,
+    target: AgentTeamAddress,
     taskTeamRunId: string,
     message: AgentInputUserMessage,
   ): Promise<AgentOperationResult>;
   settleTaskTeamInstance(
-    logicalTeamRouteKey: string,
+    target: AgentTeamAddress,
     taskTeamRunId: string,
     reason?: string | null,
   ): Promise<AgentOperationResult>;

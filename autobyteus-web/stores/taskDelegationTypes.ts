@@ -1,19 +1,19 @@
-import type { ConversationTargetAddress } from '~/types/agent/ConversationTargetAddress';
+import type { TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 import type { TeamReferenceFile } from '~/types/teamReferenceFile';
 
 export type TaskDelegationStatus = 'active' | 'awaiting_review' | 'accepted';
-export type TaskDelegationReceiverTargetKind = 'member' | 'team';
+export type TaskDelegationReceiverTargetKind = 'agent' | 'agent_team';
 
 export interface TaskDelegationTaskRunReference {
-  address: ConversationTargetAddress;
+  address: TeamExecutionAddress;
   startedAt: string;
 }
 
 export interface TaskDelegationSubmissionUpdate {
   kind: 'submission';
   submissionId: string;
-  senderAddress: ConversationTargetAddress;
-  receiverAddress: ConversationTargetAddress;
+  senderAddress: TeamExecutionAddress;
+  receiverAddress: TeamExecutionAddress;
   content: string;
   referenceFiles: TeamReferenceFile[];
   createdAt: string;
@@ -22,8 +22,8 @@ export interface TaskDelegationSubmissionUpdate {
 export interface TaskDelegationReviewUpdate {
   kind: 'review';
   reviewId: string;
-  senderAddress: ConversationTargetAddress;
-  receiverAddress: ConversationTargetAddress;
+  senderAddress: TeamExecutionAddress;
+  receiverAddress: TeamExecutionAddress;
   reviewedSubmissionId: string;
   decision: 'accept' | 'request_revision';
   content: string | null;
@@ -36,8 +36,8 @@ export type TaskDelegationUpdate = TaskDelegationSubmissionUpdate | TaskDelegati
 export interface TaskDelegationRecord {
   taskId: string;
   status: TaskDelegationStatus;
-  senderAddress: ConversationTargetAddress;
-  receiverAddress: ConversationTargetAddress;
+  senderAddress: TeamExecutionAddress;
+  receiverAddress: TeamExecutionAddress;
   receiverTargetKind: TaskDelegationReceiverTargetKind;
   content: string;
   referenceFiles: TeamReferenceFile[];

@@ -52,7 +52,7 @@ export const projectLessonExecutionEvent = async (
         status: resolveStatus(event.family, lesson.status),
         updatedAt: event.publishedAt,
         latestBindingId: event.binding.bindingId,
-        latestRunId: event.binding.runtime.runId,
+        latestRunId: event.binding.runtime.subject === "AGENT_RUN" ? event.binding.runtime.agentRunId : event.binding.runtime.teamRunId,
         latestBindingStatus: event.binding.status,
         lastErrorMessage: event.binding.lastErrorMessage ?? null,
         closedAt: event.family === "RUN_TERMINATED" ? (lesson.closedAt ?? event.publishedAt) : lesson.closedAt,

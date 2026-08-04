@@ -1,57 +1,66 @@
 import { flattenLeafAgentMemberNodes } from '~/utils/teamDefinitionMembers';
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
+import {
+  createTeamExecutionAddress,
+  parseTeamExecutionAddress,
+  serializeTeamExecutionAddress,
+} from '~/types/agent/TeamExecutionAddress';
 
 export interface TokenUsageTeamMemberIdentity {
-  memberRouteKey: string;
+  memberAddress: string;
   displayName: string;
   runId: string | null;
   isFocused: boolean;
 }
 
 export type TokenUsageMemberDisplayNameResolver = (
-  memberRouteKey: string,
+  memberAddress: string,
   memberContext?: AgentContext | null,
 ) => string;
 
-export const resolveFocusedLeafMemberRouteKey = (team: AgentTeamContext | null): string => {
+export const resolveFocusedLeafMemberAddress = (team: AgentTeamContext | null): string => {
   if (!team) return '';
-  const requestedRouteKey = team.focusedMemberRouteKey?.trim() || '';
-  return requestedRouteKey && team.leafAgentContextsByRouteKey.has(requestedRouteKey)
-    ? requestedRouteKey
-    : '';
+  const requested = team.focusedExecutionAddress;
+  return team.agentExecutionsByKey.has(serializeTeamExecutionAddress(requested))
+    ? requested.memberAddress : '';
 };
 
 export const buildTokenUsageTeamMemberIdentities = (params: {
   team: AgentTeamContext | null;
-  focusedRouteKey: string;
+  focusedMemberAddress: string;
   getMemberDisplayName: TokenUsageMemberDisplayNameResolver;
 }): TokenUsageTeamMemberIdentity[] => {
   const team = params.team;
   if (!team) return [];
 
   const identities: TokenUsageTeamMemberIdentity[] = [];
-  const seenRouteKeys = new Set<string>();
+  const seenMemberAddresses = new Set<string>();
 
-  const appendIdentity = (memberRouteKey: string, displayName: string): void => {
-    const normalizedRouteKey = memberRouteKey.trim();
-    if (!normalizedRouteKey || seenRouteKeys.has(normalizedRouteKey)) return;
-    seenRouteKeys.add(normalizedRouteKey);
-    const context = team.leafAgentContextsByRouteKey.get(normalizedRouteKey) || null;
-    const node = team.memberNodesByRouteKey.get(normalizedRouteKey) || null;
+  const appendIdentity = (memberAddress: string, displayName: string): void => {
+    const normalizedMemberAddress = memberAddress.trim();
+    if (!normalizedMemberAddress || seenMemberAddresses.has(normalizedMemberAddress)) return;
+    seenMemberAddresses.add(normalizedMemberAddress);
+    const context = team.agentExecutionsByKey.get(serializeTeamExecutionAddress(createTeamExecutionAddress({
+      rootTeamRunId: team.teamRunId,
+      memberAddress: normalizedMemberAddress,
+    }))) || null;
+    const node = team.memberNodesByAddress.get(normalizedMemberAddress) || null;
     identities.push({
-      memberRouteKey: normalizedRouteKey,
-      displayName: displayName || node?.displayName || params.getMemberDisplayName(normalizedRouteKey, context),
-      runId: context?.state.runId || node?.memberRunId || null,
-      isFocused: normalizedRouteKey === params.focusedRouteKey,
+      memberAddress: normalizedMemberAddress,
+      displayName: displayName || node?.displayName || params.getMemberDisplayName(normalizedMemberAddress, context),
+      runId: context?.state.runId || (node?.kind === 'agent' ? node.agentRunId : null),
+      isFocused: normalizedMemberAddress === params.focusedMemberAddress,
     });
   };
 
-  for (const node of flattenLeafAgentMemberNodes(team.memberTree || [])) {
-    appendIdentity(node.memberRouteKey, node.displayName || node.memberName);
+  for (const node of flattenLeafAgentMemberNodes(team.rootTeam.children || [])) {
+    appendIdentity(node.address, node.displayName);
   }
-  for (const [memberRouteKey, context] of team.leafAgentContextsByRouteKey.entries()) {
-    appendIdentity(memberRouteKey, params.getMemberDisplayName(memberRouteKey, context));
+  for (const [executionKey, context] of team.agentExecutionsByKey.entries()) {
+    let memberAddress = '';
+    try { memberAddress = parseTeamExecutionAddress(JSON.parse(executionKey)).memberAddress; } catch { continue; }
+    appendIdentity(memberAddress, params.getMemberDisplayName(memberAddress, context));
   }
 
   return identities;

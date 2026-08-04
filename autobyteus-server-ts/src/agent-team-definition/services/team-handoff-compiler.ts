@@ -3,9 +3,10 @@ import {
   type CollaborationHandoff,
 } from "../../agent-collaboration/domain/collaboration-handoff.js";
 import {
-  formatAbsoluteCollaborationAddress,
-  parseDefinitionCollaborationAddress,
-} from "../../agent-collaboration/domain/collaboration-logical-address.js";
+  createAgentTeamAddress,
+  assertAgentTeamAddress,
+  getAgentTeamAddressSegments,
+} from "../../agent-collaboration/domain/agent-team-address.js";
 import { CollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
 import type {
   ResolvedTeamDefinitionAgent,
@@ -40,14 +41,14 @@ export class TeamHandoffCompiler {
         );
       }
       const toEndpoint = this.resolveEndpoint(graph, handoff.to);
-      const from = formatAbsoluteCollaborationAddress(fromEndpoint.agent.absolutePath);
+      const from = createAgentTeamAddress(fromEndpoint.agent.absolutePath);
       const to = toEndpoint.kind === "agent"
-        ? formatAbsoluteCollaborationAddress(toEndpoint.agent.absolutePath)
-        : formatAbsoluteCollaborationAddress(toEndpoint.team.mountPath);
+        ? createAgentTeamAddress(toEndpoint.agent.absolutePath)
+        : createAgentTeamAddress(toEndpoint.team.mountPath);
       const effectiveTargetAgent = toEndpoint.kind === "agent"
         ? toEndpoint.agent
         : toEndpoint.team.coordinator;
-      if (from === formatAbsoluteCollaborationAddress(effectiveTargetAgent.absolutePath)) {
+      if (from === createAgentTeamAddress(effectiveTargetAgent.absolutePath)) {
         throw new CollaborationContractError(
           "COLLABORATION_SELF_TARGET_REJECTED",
           `Handoff '${from}' -> '${to}' resolves back to the source Agent.`,
@@ -96,7 +97,7 @@ export class TeamHandoffCompiler {
     graph: ResolvedTeamDefinitionGraph,
     value: string,
   ): ResolvedEndpoint {
-    const segments = parseDefinitionCollaborationAddress(value);
+    const segments = getAgentTeamAddressSegments(assertAgentTeamAddress(value));
     if (segments.length === 0) {
       return { kind: "team", team: graph };
     }

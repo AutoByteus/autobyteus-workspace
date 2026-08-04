@@ -8,11 +8,12 @@ import {
   TeamRunMetadataService,
 } from "../../run-history/services/team-run-metadata-service.js";
 import type { TeamMemberAgentMemoryLocation } from "../../agent-memory/domain/agent-memory-location.js";
+import type { TeamExecutionAddress } from "../../agent-team-execution/domain/team-execution-address.js";
 
 export type ResolveChannelTurnReplyInput = {
-  agentRunId: string;
+  agentRunId?: string | null;
   turnId: string;
-  teamRunId?: string | null;
+  executionAddress?: TeamExecutionAddress | null;
 };
 
 export class ChannelTurnReplyRecoveryService {
@@ -29,10 +30,10 @@ export class ChannelTurnReplyRecoveryService {
   async resolveReplyText(
     input: ResolveChannelTurnReplyInput,
   ): Promise<string | null> {
-    const agentRunId = normalizeRequiredString(input.agentRunId, "agentRunId");
+    const agentRunId = normalizeOptionalString(input.agentRunId ?? null);
     const turnId = normalizeRequiredString(input.turnId, "turnId");
-    const teamRunId = normalizeOptionalString(input.teamRunId ?? null);
-    const traces = await this.readRawTraces(agentRunId, teamRunId);
+    if (!agentRunId && !input.executionAddress) throw new Error("agentRunId or executionAddress is required.");
+    const traces = await this.readRawTraces(agentRunId, input.executionAddress ?? null);
     return mergeAssistantTraceText(
       traces.filter(
         (trace) =>
@@ -45,13 +46,13 @@ export class ChannelTurnReplyRecoveryService {
   }
 
   private async readRawTraces(
-    agentRunId: string,
-    teamRunId: string | null,
+    agentRunId: string | null,
+    executionAddress: TeamExecutionAddress | null,
   ): Promise<MemoryTraceEvent[]> {
-    const teamTarget = teamRunId
-      ? await this.resolveTeamMemberMemoryTarget(teamRunId, agentRunId)
+    const teamTarget = executionAddress
+      ? await this.resolveTeamMemberMemoryTarget(executionAddress)
       : null;
-    if (teamRunId && !teamTarget) {
+    if (executionAddress && !teamTarget) {
       return [];
     }
     const store = teamTarget
@@ -62,7 +63,7 @@ export class ChannelTurnReplyRecoveryService {
       : new MemoryFileStore(this.memoryDir, {
           warnOnMissingFiles: false,
         });
-    const runId = teamTarget ? path.basename(teamTarget.memoryDir) : agentRunId;
+    const runId = teamTarget ? path.basename(teamTarget.memoryDir) : agentRunId!;
     const memoryService = new AgentMemoryService(store);
     return (
       memoryService.getRunMemoryView(runId, {
@@ -76,14 +77,14 @@ export class ChannelTurnReplyRecoveryService {
   }
 
   private async resolveTeamMemberMemoryTarget(
-    teamRunId: string,
-    agentRunId: string,
+    executionAddress: TeamExecutionAddress,
   ): Promise<TeamMemberAgentMemoryLocation | null> {
-    const directMetadata = await this.teamMetadataService.readMetadata(teamRunId);
+    const teamRunId = executionAddress.taskTeamRunIds.at(-1) ?? executionAddress.rootTeamRunId;
+    const directMetadata = await this.teamMetadataService.readMetadata(executionAddress.rootTeamRunId);
     const directTarget = directMetadata
       ? this.memoryLocationService.resolveTeamMemberLocationFromMetadata(
           directMetadata,
-          { memberRunId: agentRunId },
+          { memberAddress: executionAddress.memberAddress },
           teamRunId,
         )
       : null;
@@ -99,7 +100,7 @@ export class ChannelTurnReplyRecoveryService {
       const target = metadata
         ? this.memoryLocationService.resolveTeamMemberLocationFromMetadata(
             metadata,
-            { memberRunId: agentRunId },
+            { memberAddress: executionAddress.memberAddress },
             teamRunId,
           )
         : null;

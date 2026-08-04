@@ -1,9 +1,3 @@
-import type { ApplicationAgentBindingRecord } from "../domain/models.js";
-import {
-  buildScopedMemberResolutionContext,
-  resolveScopedAgentMemberRef,
-  resolveScopedTeamMemberRef,
-} from "../../agent-team-definition/utils/scoped-team-member-resolution.js";
 import { randomUUID } from "node:crypto";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import type {
@@ -15,415 +9,156 @@ import type {
   ApplicationTeamMemberLaunchConfig,
   ApplicationTeamRunLaunch,
 } from "@autobyteus/application-sdk-contracts";
-import { normalizeMemberRouteKey } from "../../agent-team-execution/domain/team-run-member-identity.js";
-import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import { getAgentTeamAddressBasename, type AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
+import { createTeamExecutionAddress } from "../../agent-team-execution/domain/team-execution-address.js";
+import type { TeamRunAgentNode } from "../../agent-team-execution/domain/team-run-config.js";
+import { TeamRunService, getTeamRunService, type TeamRunMemberConfigInput } from "../../agent-team-execution/services/team-run-service.js";
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import { AgentRunService, getAgentRunService } from "../../agent-execution/services/agent-run-service.js";
-import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
-import { TeamRunService, getTeamRunService } from "../../agent-team-execution/services/team-run-service.js";
-import type { TeamMemberRunConfig } from "../../agent-team-execution/domain/team-run-config.js";
-import { buildMemberRouteKeyFromPath } from "../../agent-team-execution/domain/team-run-member-identity.js";
-import type { ApplicationExecutionContext } from "../domain/models.js";
-import {
-  ApplicationExecutionResourceResolver,
-  type ResolvedApplicationExecutionResource,
-} from "./application-execution-resource-resolver.js";
+import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import type { ApplicationAgentBindingRecord, ApplicationExecutionContext } from "../domain/models.js";
 import { ApplicationRunBindingStore } from "../stores/application-run-binding-store.js";
 import { ApplicationRunLookupStore } from "../stores/application-run-lookup-store.js";
+import { ApplicationExecutionResourceResolver, type ResolvedApplicationExecutionResource } from "./application-execution-resource-resolver.js";
 
-type TeamMemberDescriptor = {
-  memberName: string;
-  memberRouteKey: string;
-  displayName: string;
-  teamPath: string[];
-  agentDefinitionId: string;
-};
-
-const collectBindingRunIds = (binding: ApplicationAgentBindingRecord): string[] =>
-  Array.from(
-    new Set([
-      binding.runtime.runId,
-      ...binding.runtime.members.map((member) => member.runId),
-    ]),
-  );
-
-const toSkillAccessMode = (
-  value: SkillAccessMode | string | null | undefined,
-): SkillAccessMode => {
-  if (value === undefined || value === null || value === SkillAccessMode.PRELOADED_ONLY) {
-    return SkillAccessMode.PRELOADED_ONLY;
-  }
-  if (value === SkillAccessMode.NONE) {
-    return SkillAccessMode.NONE;
-  }
+const required = (value: string, field: string): string => { const result = value.trim(); if (!result) throw new Error(`${field} is required.`); return result; };
+const skillMode = (value: SkillAccessMode | string | null | undefined): SkillAccessMode => {
+  if (value == null || value === SkillAccessMode.PRELOADED_ONLY) return SkillAccessMode.PRELOADED_ONLY;
+  if (value === SkillAccessMode.NONE) return SkillAccessMode.NONE;
   throw new Error(`Unsupported skillAccessMode '${value}'.`);
 };
-
-type ExplicitStartMethod = "startAgent" | "startAgentTeam";
-
-const requireMethodLaunchKind = (
-  method: ExplicitStartMethod,
-  expectedKind: ResolvedApplicationExecutionResource["kind"],
-  launch: ApplicationAgentRunLaunch | ApplicationTeamRunLaunch,
-): void => {
-  if (launch.kind !== expectedKind) {
-    throw new Error(
-      `${method} requires launch.kind '${expectedKind}'; received '${launch.kind}'.`,
-    );
-  }
-};
-
-const requireMethodResourceKind = (
-  method: ExplicitStartMethod,
-  expectedKind: ResolvedApplicationExecutionResource["kind"],
-  resource: ResolvedApplicationExecutionResource,
-): void => {
-  if (resource.kind !== expectedKind) {
-    throw new Error(
-      `${method} requires an '${expectedKind}' execution resource; resolved '${resource.kind}'.`,
-    );
-  }
-};
-
-const requireNonEmptyString = (value: string, fieldName: string): string => {
-  const normalized = value.trim();
-  if (!normalized) {
-    throw new Error(`${fieldName} is required.`);
-  }
-  return normalized;
+const collectRunIds = (binding: ApplicationAgentBindingRecord): string[] => binding.runtime.subject === "AGENT_RUN"
+  ? [binding.runtime.agentRunId]
+  : [binding.runtime.teamRunId, ...binding.runtime.members.map((member) => member.agentRunId)];
+const leafAgents = (root: import("../../agent-team-execution/domain/team-run-config.js").TeamRunAgentTeamNode): TeamRunAgentNode[] => {
+  const result: TeamRunAgentNode[] = [];
+  const visit = (node: import("../../agent-team-execution/domain/team-run-config.js").TeamRunNode): void => {
+    if (node.kind === "agent") result.push(node); else node.children.forEach(visit);
+  };
+  root.children.forEach(visit); return result;
 };
 
 export class ApplicationRunBindingLaunchService {
-  constructor(
-    private readonly dependencies: {
-      executionResourceResolver?: ApplicationExecutionResourceResolver;
-      bindingStore?: ApplicationRunBindingStore;
-      lookupStore?: ApplicationRunLookupStore;
-      agentRunService?: AgentRunService;
-      teamRunService?: TeamRunService;
-      agentDefinitionService?: AgentDefinitionService;
-      agentTeamDefinitionService?: AgentTeamDefinitionService;
-    } = {},
-  ) {}
+  constructor(private readonly dependencies: {
+    executionResourceResolver?: ApplicationExecutionResourceResolver;
+    bindingStore?: ApplicationRunBindingStore;
+    lookupStore?: ApplicationRunLookupStore;
+    agentRunService?: AgentRunService;
+    teamRunService?: TeamRunService;
+    agentDefinitionService?: AgentDefinitionService;
+  } = {}) {}
+  private get resolver() { return this.dependencies.executionResourceResolver ?? new ApplicationExecutionResourceResolver(); }
+  private get bindings() { return this.dependencies.bindingStore ?? new ApplicationRunBindingStore(); }
+  private get lookups() { return this.dependencies.lookupStore ?? new ApplicationRunLookupStore(); }
+  private get agents() { return this.dependencies.agentRunService ?? getAgentRunService(); }
+  private get teams() { return this.dependencies.teamRunService ?? getTeamRunService(); }
+  private get definitions() { return this.dependencies.agentDefinitionService ?? AgentDefinitionService.getInstance(); }
 
-  private get executionResourceResolver(): ApplicationExecutionResourceResolver {
-    return this.dependencies.executionResourceResolver ?? new ApplicationExecutionResourceResolver();
+  async startAgentRunBinding(applicationId: string, input: ApplicationStartAgentInput): Promise<ApplicationAgentBindingRecord> {
+    if (input.launch.kind !== "AGENT") throw new Error("startAgent requires launch.kind 'AGENT'.");
+    const resource = await this.resolver.resolveExecutionResource(applicationId, input.executionResourceRef);
+    if (resource.kind !== "AGENT") throw new Error("startAgent requires an 'AGENT' execution resource.");
+    const seed = { applicationId, bindingId: randomUUID(), launchRequestId: required(input.launchRequestId, "launchRequestId") };
+    return this.startAgent(seed, input.executionResourceRef, resource, input.launch);
   }
 
-  private get bindingStore(): ApplicationRunBindingStore {
-    return this.dependencies.bindingStore ?? new ApplicationRunBindingStore();
+  async startAgentTeamRunBinding(applicationId: string, input: ApplicationStartAgentTeamInput): Promise<ApplicationAgentBindingRecord> {
+    if (input.launch.kind !== "AGENT_TEAM") throw new Error("startAgentTeam requires launch.kind 'AGENT_TEAM'.");
+    const resource = await this.resolver.resolveExecutionResource(applicationId, input.executionResourceRef);
+    if (resource.kind !== "AGENT_TEAM") throw new Error("startAgentTeam requires an 'AGENT_TEAM' execution resource.");
+    const seed = { applicationId, bindingId: randomUUID(), launchRequestId: required(input.launchRequestId, "launchRequestId") };
+    return this.startTeam(seed, input.executionResourceRef, resource, input.launch);
   }
 
-  private get lookupStore(): ApplicationRunLookupStore {
-    return this.dependencies.lookupStore ?? new ApplicationRunLookupStore();
-  }
-
-  private get agentRunService(): AgentRunService {
-    return this.dependencies.agentRunService ?? getAgentRunService();
-  }
-
-  private get teamRunService(): TeamRunService {
-    return this.dependencies.teamRunService ?? getTeamRunService();
-  }
-
-  private get agentDefinitionService(): AgentDefinitionService {
-    return this.dependencies.agentDefinitionService ?? AgentDefinitionService.getInstance();
-  }
-
-  private get agentTeamDefinitionService(): AgentTeamDefinitionService {
-    return this.dependencies.agentTeamDefinitionService ?? AgentTeamDefinitionService.getInstance();
-  }
-
-  async startAgentRunBinding(
-    applicationId: string,
-    input: ApplicationStartAgentInput,
-  ): Promise<ApplicationAgentBindingRecord> {
-    requireMethodLaunchKind("startAgent", "AGENT", input.launch);
-    const resource = await this.executionResourceResolver.resolveExecutionResource(applicationId, input.executionResourceRef);
-    requireMethodResourceKind("startAgent", "AGENT", resource);
-
-    const bindingSeed = {
-      applicationId,
-      bindingId: randomUUID(),
-      launchRequestId: requireNonEmptyString(input.launchRequestId, "launchRequestId"),
+  private async startAgent(seed: { applicationId: string; bindingId: string; launchRequestId: string }, ref: ApplicationExecutionResourceRef, resource: ResolvedApplicationExecutionResource, launch: ApplicationAgentRunLaunch): Promise<ApplicationAgentBindingRecord> {
+    const definition = await this.definitions.getAgentDefinitionById(resource.definitionId);
+    const displayName = definition?.name?.trim() || resource.name;
+    const context: ApplicationExecutionContext = {
+      applicationId: seed.applicationId,
+      bindingId: seed.bindingId,
+      producer: { executionAddress: createTeamExecutionAddress({ rootTeamRunId: seed.bindingId, memberAddress: "/" }), displayName, runtimeKind: "AGENT" },
     };
-
-    return this.startAgentBinding(bindingSeed, input.executionResourceRef, resource, input.launch);
-  }
-
-  async startAgentTeamRunBinding(
-    applicationId: string,
-    input: ApplicationStartAgentTeamInput,
-  ): Promise<ApplicationAgentBindingRecord> {
-    requireMethodLaunchKind("startAgentTeam", "AGENT_TEAM", input.launch);
-    const resource = await this.executionResourceResolver.resolveExecutionResource(applicationId, input.executionResourceRef);
-    requireMethodResourceKind("startAgentTeam", "AGENT_TEAM", resource);
-
-    const bindingSeed = {
-      applicationId,
-      bindingId: randomUUID(),
-      launchRequestId: requireNonEmptyString(input.launchRequestId, "launchRequestId"),
-    };
-
-    return this.startTeamBinding(bindingSeed, input.executionResourceRef, resource, input.launch);
-  }
-
-  private async startAgentBinding(
-    bindingSeed: { applicationId: string; bindingId: string; launchRequestId: string },
-    executionResourceRef: ApplicationExecutionResourceRef,
-    resource: ResolvedApplicationExecutionResource,
-    launch: ApplicationAgentRunLaunch,
-  ): Promise<ApplicationAgentBindingRecord> {
-    const memberSummary = await this.buildSingleAgentMemberSummary(resource);
-    const applicationExecutionContext = this.buildExecutionContext(bindingSeed, memberSummary);
-    const agentRun = await this.agentRunService.createAgentRun({
+    const run = await this.agents.createAgentRun({
       agentDefinitionId: resource.definitionId,
       workspaceRootPath: launch.workspaceRootPath,
       workspaceId: launch.workspaceId ?? null,
       llmModelIdentifier: launch.llmModelIdentifier,
       autoExecuteTools: Boolean(launch.autoExecuteTools),
       llmConfig: launch.llmConfig ?? null,
-      skillAccessMode: toSkillAccessMode(launch.skillAccessMode),
+      skillAccessMode: skillMode(launch.skillAccessMode),
       runtimeKind: launch.runtimeKind ?? RuntimeKind.AUTOBYTEUS,
-      applicationExecutionContext,
+      applicationExecutionContext: context,
     });
-    applicationExecutionContext.producer.runId = agentRun.runId;
-
     const now = new Date().toISOString();
     const binding: ApplicationAgentBindingRecord = {
-      bindingId: bindingSeed.bindingId,
-      applicationId: bindingSeed.applicationId,
-      launchRequestId: bindingSeed.launchRequestId,
-      status: "ATTACHED",
-      executionResourceRef: structuredClone(executionResourceRef),
-      runtime: {
-        subject: "AGENT_RUN",
-        runId: agentRun.runId,
-        definitionId: resource.definitionId,
-        members: [{ ...memberSummary, runId: agentRun.runId }],
-      },
-      createdAt: now,
-      updatedAt: now,
-      terminatedAt: null,
-      lastErrorMessage: null,
+      ...seed, status: "ATTACHED", executionResourceRef: structuredClone(ref),
+      runtime: { subject: "AGENT_RUN", agentRunId: run.runId, definitionId: resource.definitionId, members: [] },
+      createdAt: now, updatedAt: now, terminatedAt: null, lastErrorMessage: null,
     };
-    await this.bindingStore.persistBinding(binding);
-    this.lookupStore.replaceBindingLookups(bindingSeed.applicationId, binding.bindingId, collectBindingRunIds(binding));
-    return binding;
+    return this.persist(binding);
   }
 
-  private async startTeamBinding(
-    bindingSeed: { applicationId: string; bindingId: string; launchRequestId: string },
-    executionResourceRef: ApplicationExecutionResourceRef,
-    resource: ResolvedApplicationExecutionResource,
-    launch: ApplicationTeamRunLaunch,
-  ): Promise<ApplicationAgentBindingRecord> {
-    const memberDescriptors = await this.collectTeamMemberDescriptors(resource.definitionId);
-    const memberConfigs = launch.mode === "preset"
-      ? await this.teamRunService.buildMemberConfigsFromLaunchPreset({
-          teamDefinitionId: resource.definitionId,
-          launchPreset: {
-            workspaceRootPath: launch.launchPreset.workspaceRootPath,
-            llmModelIdentifier: launch.launchPreset.llmModelIdentifier,
-            autoExecuteTools: Boolean(launch.launchPreset.autoExecuteTools),
-            skillAccessMode: toSkillAccessMode(launch.launchPreset.skillAccessMode),
-            runtimeKind: (launch.launchPreset.runtimeKind ?? RuntimeKind.AUTOBYTEUS) as RuntimeKind,
-            llmConfig: launch.launchPreset.llmConfig ?? null,
-          },
-        })
-      : this.buildExplicitMemberConfigs(resource.definitionId, memberDescriptors, launch.memberConfigs);
-
-    const memberConfigByRouteKey = new Map<string, TeamMemberRunConfig>();
-    const applicationExecutionContextByRouteKey = new Map<string, ApplicationExecutionContext>();
-    for (const memberConfig of memberConfigs) {
-      const memberRouteKey = normalizeMemberRouteKey(
-        memberConfig.memberRouteKey ?? memberConfig.memberName,
-      );
-      const descriptor = memberDescriptors.find((entry) => entry.memberRouteKey === memberRouteKey);
-      if (!descriptor) {
-        throw new Error(`Team launch member '${memberConfig.memberName}' is not part of the bound team.`);
-      }
-      const applicationExecutionContext = this.buildExecutionContext(
-        bindingSeed,
-        this.buildTeamMemberSummary(descriptor, ""),
-      );
-      applicationExecutionContextByRouteKey.set(memberRouteKey, applicationExecutionContext);
-      memberConfigByRouteKey.set(memberRouteKey, {
-        ...memberConfig,
-        memberRouteKey,
-        agentDefinitionId: descriptor.agentDefinitionId,
-        applicationExecutionContext,
-      });
-    }
-
-    const teamRun = await this.teamRunService.createTeamRun({
-      teamDefinitionId: resource.definitionId,
-      memberConfigs: memberDescriptors.map((descriptor) => {
-        const memberConfig = memberConfigByRouteKey.get(descriptor.memberRouteKey);
-        if (!memberConfig) {
-          throw new Error(`Team launch member '${descriptor.memberName}' is missing launch configuration.`);
-        }
-        return memberConfig;
-      }),
-    });
-
-    const runtimeMemberConfigs = teamRun.config?.memberConfigs ?? [];
-    const runtimeMembers = memberDescriptors.map((descriptor) => {
-      const memberConfig = runtimeMemberConfigs.find(
-        (entry) => normalizeMemberRouteKey(entry.memberRouteKey ?? entry.memberName) === descriptor.memberRouteKey,
-      );
-      const memberRunId = memberConfig?.memberRunId?.trim() || teamRun.runId;
-      const applicationExecutionContext = applicationExecutionContextByRouteKey.get(descriptor.memberRouteKey);
-      if (applicationExecutionContext) {
-        applicationExecutionContext.producer.runId = memberRunId;
-      }
-      return this.buildTeamMemberSummary(
-        descriptor,
-        memberRunId,
-      );
-    });
-
-    const now = new Date().toISOString();
-    const binding: ApplicationAgentBindingRecord = {
-      bindingId: bindingSeed.bindingId,
-      applicationId: bindingSeed.applicationId,
-      launchRequestId: bindingSeed.launchRequestId,
-      status: "ATTACHED",
-      executionResourceRef: structuredClone(executionResourceRef),
-      runtime: {
-        subject: "TEAM_RUN",
-        runId: teamRun.runId,
-        definitionId: resource.definitionId,
-        members: runtimeMembers,
-      },
-      createdAt: now,
-      updatedAt: now,
-      terminatedAt: null,
-      lastErrorMessage: null,
-    };
-    await this.bindingStore.persistBinding(binding);
-    this.lookupStore.replaceBindingLookups(bindingSeed.applicationId, binding.bindingId, collectBindingRunIds(binding));
-    return binding;
-  }
-
-  private async buildSingleAgentMemberSummary(
-    resource: ResolvedApplicationExecutionResource,
-  ): Promise<ApplicationAgentTeamBindingMember> {
-    const definition = await this.agentDefinitionService.getAgentDefinitionById(resource.definitionId);
-    const memberName = resource.localId ?? (definition?.name?.trim() || resource.definitionId);
-    return {
-      memberName,
-      memberRouteKey: normalizeMemberRouteKey(memberName),
-      displayName: definition?.name?.trim() || resource.name,
-      teamPath: [],
-      runId: "",
-      runtimeKind: "AGENT",
-    };
-  }
-
-  private buildTeamMemberSummary(
-    descriptor: TeamMemberDescriptor,
-    runId: string,
-  ): ApplicationAgentTeamBindingMember {
-    return {
-      memberName: descriptor.memberName,
-      memberRouteKey: descriptor.memberRouteKey,
-      displayName: descriptor.displayName,
-      teamPath: [...descriptor.teamPath],
-      runId,
+  private async startTeam(seed: { applicationId: string; bindingId: string; launchRequestId: string }, ref: ApplicationExecutionResourceRef, resource: ResolvedApplicationExecutionResource, launch: ApplicationTeamRunLaunch): Promise<ApplicationAgentBindingRecord> {
+    const teamRunId = await this.teams.allocateTeamRunId(resource.definitionId);
+    const configs = launch.mode === "preset"
+      ? await this.teams.buildMemberConfigsFromLaunchPreset({ teamDefinitionId: resource.definitionId, launchPreset: {
+          workspaceRootPath: launch.launchPreset.workspaceRootPath,
+          llmModelIdentifier: launch.launchPreset.llmModelIdentifier,
+          autoExecuteTools: Boolean(launch.launchPreset.autoExecuteTools),
+          skillAccessMode: skillMode(launch.launchPreset.skillAccessMode),
+          runtimeKind: (launch.launchPreset.runtimeKind ?? RuntimeKind.AUTOBYTEUS) as RuntimeKind,
+          llmConfig: launch.launchPreset.llmConfig ?? null,
+        } })
+      : launch.memberConfigs.map((config) => this.explicitConfig(config));
+    const withContexts = configs.map((config) => ({
+      ...config,
+      applicationExecutionContext: this.teamContext(seed, teamRunId, config.memberAddress),
+    }));
+    const teamRun = await this.teams.createTeamRun({ teamDefinitionId: resource.definitionId, teamRunId, memberConfigs: withContexts });
+    const members: ApplicationAgentTeamBindingMember[] = leafAgents(teamRun.config.rootTeam).map((node) => ({
+      memberAddress: node.address,
+      displayName: getAgentTeamAddressBasename(node.address) ?? node.address,
+      agentRunId: node.agentRunId,
       runtimeKind: "AGENT_TEAM_MEMBER",
+    }));
+    const now = new Date().toISOString();
+    const binding: ApplicationAgentBindingRecord = {
+      ...seed, status: "ATTACHED", executionResourceRef: structuredClone(ref),
+      runtime: { subject: "TEAM_RUN", teamRunId: teamRun.teamRunId, definitionId: resource.definitionId, members },
+      createdAt: now, updatedAt: now, terminatedAt: null, lastErrorMessage: null,
+    };
+    return this.persist(binding);
+  }
+
+  private explicitConfig(input: ApplicationTeamMemberLaunchConfig): TeamRunMemberConfigInput {
+    return {
+      memberAddress: input.memberAddress,
+      agentDefinitionId: input.agentDefinitionId,
+      llmModelIdentifier: input.llmModelIdentifier,
+      autoExecuteTools: Boolean(input.autoExecuteTools),
+      skillAccessMode: skillMode(input.skillAccessMode),
+      workspaceRootPath: input.workspaceRootPath?.trim() || null,
+      llmConfig: input.llmConfig ?? null,
+      runtimeKind: input.runtimeKind ?? RuntimeKind.AUTOBYTEUS,
+      applicationExecutionContext: null,
     };
   }
 
-  private buildExecutionContext(
-    bindingSeed: { applicationId: string; bindingId: string; launchRequestId: string },
-    member: ApplicationAgentTeamBindingMember,
-  ): ApplicationExecutionContext {
+  private teamContext(seed: { applicationId: string; bindingId: string }, teamRunId: string, memberAddress: string): ApplicationExecutionContext {
     return {
-      applicationId: bindingSeed.applicationId,
-      bindingId: bindingSeed.bindingId,
+      applicationId: seed.applicationId,
+      bindingId: seed.bindingId,
       producer: {
-        runId: member.runId,
-        memberRouteKey: member.memberRouteKey,
-        memberName: member.memberName,
-        displayName: member.displayName,
-        teamPath: [...member.teamPath],
-        runtimeKind: member.runtimeKind,
+        executionAddress: createTeamExecutionAddress({ rootTeamRunId: teamRunId, memberAddress }),
+        displayName: getAgentTeamAddressBasename(memberAddress as AgentTeamAddress),
+        runtimeKind: "AGENT_TEAM_MEMBER",
       },
     };
   }
 
-  private buildExplicitMemberConfigs(
-    teamDefinitionId: string,
-    memberDescriptors: TeamMemberDescriptor[],
-    memberConfigs: ApplicationTeamMemberLaunchConfig[],
-  ): TeamMemberRunConfig[] {
-    const descriptorByRouteKey = new Map(
-      memberDescriptors.map((descriptor) => [descriptor.memberRouteKey, descriptor]),
-    );
-    return memberConfigs.map((memberConfig) => {
-      const memberRouteKey = normalizeMemberRouteKey(
-        memberConfig.memberRouteKey ?? memberConfig.memberName,
-      );
-      const descriptor = descriptorByRouteKey.get(memberRouteKey);
-      if (!descriptor) {
-        throw new Error(`Team launch member '${memberConfig.memberName}' is not part of team '${teamDefinitionId}'.`);
-      }
-      if (
-        memberConfig.agentDefinitionId?.trim()
-        && memberConfig.agentDefinitionId.trim() !== descriptor.agentDefinitionId
-      ) {
-        throw new Error(
-          `Team launch member '${memberConfig.memberName}' cannot override agentDefinitionId '${memberConfig.agentDefinitionId}'.`,
-        );
-      }
-      return {
-        memberKind: "agent" as const,
-        memberName: descriptor.memberName,
-        memberPath: [...descriptor.teamPath, descriptor.memberName],
-        memberRouteKey: descriptor.memberRouteKey,
-        agentDefinitionId: descriptor.agentDefinitionId,
-        llmModelIdentifier: memberConfig.llmModelIdentifier,
-        autoExecuteTools: Boolean(memberConfig.autoExecuteTools),
-        skillAccessMode: toSkillAccessMode(memberConfig.skillAccessMode),
-        workspaceId: memberConfig.workspaceId ?? null,
-        workspaceRootPath: memberConfig.workspaceRootPath?.trim() || null,
-        llmConfig: memberConfig.llmConfig ?? null,
-        runtimeKind: (memberConfig.runtimeKind ?? RuntimeKind.AUTOBYTEUS) as RuntimeKind,
-      } satisfies TeamMemberRunConfig;
-    });
-  }
-
-  private async collectTeamMemberDescriptors(
-    teamDefinitionId: string,
-    teamPath: string[] = [],
-  ): Promise<TeamMemberDescriptor[]> {
-    const definition = await this.agentTeamDefinitionService.getDefinitionById(teamDefinitionId);
-    if (!definition) {
-      throw new Error(`Agent team definition '${teamDefinitionId}' was not found.`);
-    }
-
-    const resolutionContext = buildScopedMemberResolutionContext(definition, teamDefinitionId);
-    const descriptors: TeamMemberDescriptor[] = [];
-    for (const node of definition.nodes) {
-      if (node.refType === "agent") {
-        const memberPath = [...teamPath, node.memberName.trim()];
-        descriptors.push({
-          memberName: node.memberName,
-          memberRouteKey: buildMemberRouteKeyFromPath(memberPath),
-          displayName: node.memberName,
-          teamPath: [...teamPath],
-          agentDefinitionId: resolveScopedAgentMemberRef(resolutionContext, node),
-        });
-        continue;
-      }
-      descriptors.push(
-        ...(await this.collectTeamMemberDescriptors(
-          resolveScopedTeamMemberRef(resolutionContext, node),
-          [...teamPath, node.memberName.trim()],
-        )),
-      );
-    }
-    return descriptors;
+  private async persist(binding: ApplicationAgentBindingRecord): Promise<ApplicationAgentBindingRecord> {
+    await this.bindings.persistBinding(binding);
+    this.lookups.replaceBindingLookups(binding.applicationId, binding.bindingId, collectRunIds(binding));
+    return binding;
   }
 }

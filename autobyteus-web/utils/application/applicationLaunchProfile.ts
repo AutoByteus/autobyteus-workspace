@@ -17,8 +17,8 @@ export type ApplicationAgentLaunchProfileDraft = {
 }
 
 export type ApplicationTeamMemberProfileDraft = {
-  memberRouteKey: string
-  memberName: string
+  memberAddress: string
+  displayName: string
   agentDefinitionId: string
   runtimeKind: string
   llmModelIdentifier: string
@@ -159,8 +159,8 @@ const buildAgentLaunchProfileDraft = (
 const buildTeamMemberProfileDraft = (
   memberProfile: ApplicationConfiguredTeamMemberProfile,
 ): ApplicationTeamMemberProfileDraft => ({
-  memberRouteKey: memberProfile.memberRouteKey,
-  memberName: memberProfile.memberName,
+  memberAddress: memberProfile.memberAddress,
+  displayName: memberProfile.displayName,
   agentDefinitionId: memberProfile.agentDefinitionId,
   runtimeKind: normalizeOptionalString(memberProfile.runtimeKind),
   llmModelIdentifier: normalizeOptionalString(memberProfile.llmModelIdentifier),
@@ -177,7 +177,7 @@ const buildTeamLaunchProfileDraft = (
   },
   memberProfiles: [...(launchProfile?.memberProfiles ?? [])]
     .map((memberProfile) => buildTeamMemberProfileDraft(memberProfile))
-    .sort((left, right) => left.memberRouteKey.localeCompare(right.memberRouteKey)),
+    .sort((left, right) => left.memberAddress.localeCompare(right.memberAddress)),
 })
 
 const buildLaunchProfileDraft = (
@@ -259,8 +259,8 @@ const buildTeamLaunchProfile = (
       : null,
     memberProfiles: [...draft.memberProfiles]
       .map((memberProfile) => ({
-        memberRouteKey: memberProfile.memberRouteKey,
-        memberName: memberProfile.memberName,
+        memberAddress: memberProfile.memberAddress,
+        displayName: memberProfile.displayName,
         agentDefinitionId: memberProfile.agentDefinitionId,
         ...(normalizeOptionalString(memberProfile.llmModelIdentifier)
           ? { llmModelIdentifier: normalizeOptionalString(memberProfile.llmModelIdentifier) }
@@ -269,7 +269,7 @@ const buildTeamLaunchProfile = (
           ? { runtimeKind: normalizeOptionalString(memberProfile.runtimeKind) }
           : {}),
       }))
-      .sort((left, right) => left.memberRouteKey.localeCompare(right.memberRouteKey)),
+      .sort((left, right) => left.memberAddress.localeCompare(right.memberAddress)),
   }
 }
 

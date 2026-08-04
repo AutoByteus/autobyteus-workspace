@@ -33,7 +33,7 @@ export type MobileWorkContext =
       title: string;
       summary: string;
       workspaceRootPath: string;
-      focusedMemberRouteKey: string;
+      focusedExecutionAddress: TeamExecutionAddress;
       isActive: boolean;
       lastActivityAt: string;
       statusLabel: string;
@@ -104,7 +104,7 @@ export function mobileWorkContextKey(context: MobileWorkContext): string {
     case 'agent-run':
       return `agent-run:${context.runId}`;
     case 'team-run':
-      return `team-run:${context.teamRunId}:${context.focusedMemberRouteKey}`;
+      return `team-run:${context.teamRunId}:${JSON.stringify(context.focusedExecutionAddress)}`;
     case 'agent-definition':
       return `agent-definition:${context.agentDefinitionId}`;
     case 'team-definition':
@@ -151,3 +151,4 @@ export function preferredTabForMobileContext(context: MobileWorkContext): Mobile
       return 'chat';
   }
 }
+import type { TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';

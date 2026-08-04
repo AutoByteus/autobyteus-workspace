@@ -37,7 +37,6 @@ export type {
   SystemTaskNotificationPayload,
   FileChangePayload,
   ErrorPayload,
-  ConversationTargetAddressPayload,
   SendMessagePayload,
   InterruptGenerationPayload,
   ToolActionPayload,

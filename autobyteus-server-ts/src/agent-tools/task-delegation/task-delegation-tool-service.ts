@@ -16,20 +16,9 @@ export const buildTaskDelegationToolContextFromMemberTeamContext = (
   memberTeamContext: MemberTeamContext,
 ): TaskDelegationToolContext => {
   const caller: TaskDelegationCallerIdentity = {
-    memberKind: "agent",
-    memberName: memberTeamContext.memberName,
-    memberPath: [...memberTeamContext.memberPath],
-    memberRouteKey: memberTeamContext.memberRouteKey,
-    memberRunId: memberTeamContext.memberRunId,
-    logicalAddress: memberTeamContext.collaboration.addressing.memberAddress,
-    ...(memberTeamContext.taskAgentInstance
-      ? {
-          taskAgentInstanceId: memberTeamContext.taskAgentInstance.taskAgentInstanceId,
-          taskAgentRunId: memberTeamContext.taskAgentInstance.taskAgentRunId,
-          taskId: memberTeamContext.taskAgentInstance.taskId,
-          logicalMemberRouteKey: memberTeamContext.taskAgentInstance.logicalMember.memberRouteKey,
-        }
-      : {}),
+    executionAddress: memberTeamContext.executionAddress,
+    agentRunId: memberTeamContext.agentRunId,
+    taskAgentInstance: memberTeamContext.taskAgentInstance,
     taskTeamInstance: memberTeamContext.taskTeamInstance ?? null,
   };
   return {
@@ -37,7 +26,7 @@ export const buildTaskDelegationToolContextFromMemberTeamContext = (
     teamDefinitionId: memberTeamContext.teamDefinitionId,
     teamName: memberTeamContext.teamName,
     caller,
-    coordinatorMemberRouteKey: memberTeamContext.coordinatorMemberRouteKey,
+    coordinatorAddress: memberTeamContext.coordinatorAddress,
     addressing: memberTeamContext.collaboration.addressing,
   };
 };
@@ -56,7 +45,7 @@ export class TaskDelegationToolService {
     input: DelegateTaskInput,
   ): Promise<DelegateTaskResult> {
     const route = await this.runRouter.resolveRouteForDelegate(context);
-    const placement = route.rootRun.resolveLogicalPlacement(input.recipient_name, context.addressing);
+    const placement = route.rootRun.resolveRecipient(input.recipient_address, context.addressing);
     return route.service.delegateTask(context, input, placement);
   }
 

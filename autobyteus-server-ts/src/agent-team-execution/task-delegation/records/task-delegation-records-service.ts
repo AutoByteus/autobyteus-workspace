@@ -93,7 +93,7 @@ export class TaskDelegationRecordsService {
   }
 
   private rootTeamMemoryDir(rootTeamRunId: string): string {
-    return this.layout.getTeamDirPath({ rootTeamRunId, teamRunPath: [] });
+    return this.layout.getTeamDirPath({ rootTeamRunId, ancestorTeamRunIds: [] });
   }
 
   private async enqueue<T>(rootTeamRunIdInput: string, operation: QueueOperation<T>): Promise<T> {

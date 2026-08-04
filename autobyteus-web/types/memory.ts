@@ -62,9 +62,9 @@ export interface AgentTeamWithMemorySummary {
 }
 
 export interface TeamMemberMemoryTargetSummary {
-  memberRouteKey: string;
+  memberAddress: string;
   memberName: string;
-  memberRunId: string;
+  agentRunId: string;
   agentDefinitionId?: string | null;
   lastUpdatedAt?: string | null;
   memory: MemoryAvailabilitySummary;
@@ -152,8 +152,8 @@ export type MemoryInspectTarget =
       teamDefinitionId?: string | null;
       teamDefinitionName?: string | null;
       teamRunId: string;
-      memberRunId: string;
-      memberRouteKey?: string | null;
+      agentRunId: string;
+      memberAddress?: string | null;
       memberName?: string | null;
       lastUpdatedAt?: string | null;
       source?: MemoryExplorerSourceInput;

@@ -8,10 +8,10 @@ export const createBriefArtifactRevisionRepository = (db) => ({
         artifact_kind,
         publication_kind,
         path,
-        producer_member_route_key,
+        producer_member_address,
         published_at,
         projected_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`).run(input.revisionId, input.briefId, input.bindingId, input.runId, input.artifactKind, input.publicationKind, input.path, input.producerMemberRouteKey, input.publishedAt, input.projectedAt);
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`).run(input.revisionId, input.briefId, input.bindingId, input.runId, input.artifactKind, input.publicationKind, input.path, input.producerMemberAddress, input.publishedAt, input.projectedAt);
         return Number(result.changes ?? 0) > 0;
     },
 });

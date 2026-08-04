@@ -140,7 +140,7 @@ import type {
   TeamCommunicationPerspectiveMessage,
   TeamCommunicationReferenceFile,
 } from '~/stores/teamCommunicationTypes';
-import type { ConversationTargetAddress } from '~/types/agent/ConversationTargetAddress';
+import type { TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 import MarkdownRenderer from '~/components/conversation/segments/renderer/MarkdownRenderer.vue';
 import {
   referenceFileIcon,
@@ -150,7 +150,7 @@ import TeamCommunicationReferenceViewer from './TeamCommunicationReferenceViewer
 
 const props = defineProps<{
   teamRunId: string;
-  focusedAddress?: ConversationTargetAddress | null;
+  focusedAddress?: TeamExecutionAddress | null;
 }>();
 
 const { t } = useLocalization();
@@ -166,7 +166,7 @@ const { paneWidth: leftPaneWidth, startResize } = useHorizontalSplitResize({
 });
 
 const hasFocusedMemberIdentity = computed(() => Boolean(
-  props.focusedAddress?.segments?.length,
+  props.focusedAddress?.memberAddress,
 ));
 const perspective = computed(() =>
   teamCommunicationStore.getPerspectiveForAddress(props.teamRunId, props.focusedAddress),

@@ -203,7 +203,7 @@ export const createBriefRunLaunchService = (context: ApplicationHandlerContext) 
             briefId,
             bindingId: binding.bindingId,
             launchRequestId: binding.launchRequestId,
-            runId: binding.runtime.runId,
+            runId: binding.runtime.teamRunId,
             createdAt: binding.createdAt,
             updatedAt: launchedAt,
             artifactCatchupCompletedAt: null,
@@ -220,7 +220,7 @@ export const createBriefRunLaunchService = (context: ApplicationHandlerContext) 
             status: launchProjection.status,
             updatedAt: launchProjection.updatedAt,
             latestBindingId: binding.bindingId,
-            latestRunId: binding.runtime.runId,
+            latestRunId: binding.runtime.teamRunId,
             latestBindingStatus: launchProjection.latestBindingStatus,
             lastErrorMessage: launchProjection.lastErrorMessage,
           });
@@ -230,14 +230,14 @@ export const createBriefRunLaunchService = (context: ApplicationHandlerContext) 
       await context.publishNotification("brief.draft_run_started", {
         briefId,
         bindingId: binding.bindingId,
-        runId: binding.runtime.runId,
+        runId: binding.runtime.teamRunId,
         launchedAt,
       });
 
       return {
         briefId,
         bindingId: binding.bindingId,
-        runId: binding.runtime.runId,
+        runId: binding.runtime.teamRunId,
         status: binding.status,
       };
     } catch (error) {
@@ -253,7 +253,7 @@ export const createBriefRunLaunchService = (context: ApplicationHandlerContext) 
               : "blocked",
             updatedAt: launchedAt,
             latestBindingId: reconciled?.binding.bindingId ?? null,
-            latestRunId: reconciled?.binding.runtime.runId ?? null,
+            latestRunId: reconciled ? (reconciled.binding.runtime.subject === "AGENT_RUN" ? reconciled.binding.runtime.agentRunId : reconciled.binding.runtime.teamRunId) : null,
             latestBindingStatus: reconciled?.binding.status ?? "FAILED",
             lastErrorMessage: message,
           });

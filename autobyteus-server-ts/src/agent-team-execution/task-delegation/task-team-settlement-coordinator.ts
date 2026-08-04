@@ -54,14 +54,14 @@ export class TaskTeamSettlementCoordinator {
     pending.status = "settling";
     try {
       const result = await this.dependencies.parentTeamRun.settleTaskTeamInstance(
-        pending.taskTeamInstance.logicalTeam.memberRouteKey,
+        entry.memberAddress,
         pending.taskTeamInstance.taskTeamRunId,
         `task_team_delegation_safe_after_${pending.requestedAt}`,
       );
       if (result.accepted) {
         pending.status = "settled";
         this.unsubscribeFromChildEvents(taskTeamRunId);
-        this.dependencies.runRegistry.detach(entry.activeRun.runId);
+        this.dependencies.runRegistry.detach(entry.activeRun.teamRunId);
         this.dependencies.taskTeamDirectory.unbind(taskTeamRunId);
       } else {
         pending.status = "settlement_requested";
@@ -78,9 +78,9 @@ export class TaskTeamSettlementCoordinator {
   }
 
   private hasOpenChildWork(childRun: TeamRun): boolean {
-    const childService = this.dependencies.runRegistry.getExisting(childRun.runId);
+    const childService = this.dependencies.runRegistry.getExisting(childRun.teamRunId);
     if (childService?.hasOpenWork()) return true;
-    if (getTaskAgentDirectory(childRun.runId).listActiveEntries().length > 0) return true;
+    if (getTaskAgentDirectory(childRun.teamRunId).listActiveEntries().length > 0) return true;
     return childRun.hasOpenExecutionWork();
   }
 

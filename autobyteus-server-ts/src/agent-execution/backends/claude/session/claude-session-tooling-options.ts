@@ -34,11 +34,11 @@ export const resolveClaudeSessionToolingOptions = (input: {
     ...input.configuredToolExposure.enabledTaskDelegationToolNames,
   ];
   const sendMessageToToolingEnabled =
-    input.configuredToolExposure.sendMessageToConfigured;
+    Boolean(input.memberTeamContext) || input.configuredToolExposure.sendMessageToConfigured;
   const publishArtifactsToolingEnabled =
     input.configuredToolExposure.publishArtifactsConfigured;
   const getHandoffRulesToolingEnabled =
-    Boolean(input.memberTeamContext) && input.configuredToolExposure.getHandoffRulesConfigured;
+    Boolean(input.memberTeamContext);
   const taskDelegationToolingEnabled =
     Boolean(input.memberTeamContext) && enabledTaskDelegationToolNames.length > 0;
   const configuredAgentToolsMcpToolNames = collectConfiguredAgentToolsMcpToolNames({

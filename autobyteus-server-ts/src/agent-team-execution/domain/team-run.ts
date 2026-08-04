@@ -1,283 +1,105 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
+import { assertAgentTeamAddress, type AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
+import { CollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
 import type { InterAgentMessageDeliveryIntent } from "./inter-agent-message-delivery.js";
 import type { TeamRunConfig } from "./team-run-config.js";
 import type { TeamRunBackend } from "../backends/team-run-backend.js";
-import {
-  getRuntimeMemberContexts,
-  type RuntimeTeamRunContext,
-  type TeamRunContext,
-} from "./team-run-context.js";
-import {
-  selectorFromMemberRouteKey,
-  type TeamMemberSelector,
-} from "./team-run-member-identity.js";
-import {
-  type TeamRunEvent,
-  type TeamRunEventListener,
-  type TeamRunEventUnsubscribe,
-} from "./team-run-event.js";
+import type { RuntimeTeamRunContext, TeamRunContext } from "./team-run-context.js";
+import type { TeamRunEvent, TeamRunEventListener, TeamRunEventUnsubscribe } from "./team-run-event.js";
 import type { StartTaskAgentInstanceRequest } from "./task-agent-instance.js";
 import type { StartTaskTeamInstanceRequest } from "./task-team-instance.js";
-import type { ConversationTargetAddress } from "./conversation-target-address.js";
 import type { MemberLogicalAddressContext } from "./member-logical-address-context.js";
-import { CollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
-
-type TeamRunOptions = {
-  context?: TeamRunContext<RuntimeTeamRunContext>;
-  runId?: string;
-  config?: TeamRunConfig | null;
-  backend: TeamRunBackend;
-};
 
 export class TeamRun {
-  readonly context: TeamRunContext<RuntimeTeamRunContext> | null;
+  readonly context: TeamRunContext<RuntimeTeamRunContext>;
   private readonly backend: TeamRunBackend;
-  private readonly configValue: TeamRunConfig | null;
 
-  constructor(options: TeamRunOptions) {
-    this.context = options.context ?? null;
+  constructor(options: {
+    context: TeamRunContext<RuntimeTeamRunContext>;
+    backend: TeamRunBackend;
+  }) {
+    this.context = options.context;
     this.backend = options.backend;
-    this.configValue = options.context?.config ?? options.config ?? null;
   }
 
-  get runId(): string {
-    return this.context?.runId ?? this.backend.runId;
-  }
-
-  get teamBackendKind(): TeamRunBackend["teamBackendKind"] {
-    return this.context?.teamBackendKind ?? this.backend.teamBackendKind;
-  }
-
-  get config(): TeamRunConfig | null {
-    return this.configValue;
-  }
-
-  isActive(): boolean {
-    return this.backend.isActive();
-  }
-
-  getRuntimeContext() {
-    return this.context?.runtimeContext ?? this.backend.getRuntimeContext();
-  }
-
+  get teamRunId(): string { return this.context.teamRunId; }
+  get teamBackendKind() { return this.context.teamBackendKind; }
+  get config(): TeamRunConfig { return this.context.config; }
+  isActive(): boolean { return this.backend.isActive(); }
+  getRuntimeContext() { return this.context.runtimeContext; }
   subscribeToEvents(listener: TeamRunEventListener): TeamRunEventUnsubscribe {
     return this.backend.subscribeToEvents(listener);
   }
+  getLeafAgentStatusSnapshots() { return this.backend.getLeafAgentStatusSnapshots(); }
+  hasOpenExecutionWork(): boolean { return this.backend.hasOpenExecutionWork(); }
 
-  getLeafAgentStatusSnapshots() {
-    return this.backend.getLeafAgentStatusSnapshots();
-  }
-
-  hasOpenExecutionWork(): boolean {
-    return this.backend.hasOpenExecutionWork();
-  }
-
-  async postMessage(
+  postMessage(
     message: AgentInputUserMessage,
-    target: TeamMemberSelector | null = null,
-    targetMemberRunId: string | null = null,
+    targetMemberAddress: string | null = null,
+    targetAgentRunId: string | null = null,
   ): Promise<AgentOperationResult> {
-    return this.backend.postMessage(
-      message,
-      this.resolvePostMessageTarget(target),
-      targetMemberRunId,
-    );
+    const target = targetMemberAddress
+      ? assertAgentTeamAddress(targetMemberAddress)
+      : this.context.index.getTeam(this.context.teamAddress)?.coordinatorAddress ?? null;
+    return this.backend.postMessage(message, target, targetAgentRunId);
   }
 
-  async postMessageToConversationTarget(
-    message: AgentInputUserMessage,
-    address: ConversationTargetAddress,
-  ): Promise<AgentOperationResult> {
-    return this.backend.postMessageToConversationTarget(message, address);
-  }
-
-  async deliverInterAgentMessage(
-    intent: InterAgentMessageDeliveryIntent,
-  ): Promise<AgentOperationResult> {
+  deliverInterAgentMessage(intent: InterAgentMessageDeliveryIntent): Promise<AgentOperationResult> {
     return this.backend.deliverInterAgentMessage(intent);
   }
 
-  resolveLogicalPlacement(
-    recipientName: string,
-    callerAddressing: MemberLogicalAddressContext,
-  ) {
-    if (callerAddressing.rootTeamRunId !== this.runId) {
+  resolveRecipient(recipientAddress: string, caller: MemberLogicalAddressContext) {
+    if (caller.rootTeamRunId !== this.config.rootTeam.teamRunId) {
       throw new CollaborationContractError(
         "COLLABORATION_CONTEXT_REQUIRED",
-        `Caller collaboration root '${callerAddressing.rootTeamRunId}' does not match TeamRun '${this.runId}'.`,
+        `Caller collaboration root '${caller.rootTeamRunId}' does not match TeamRun '${this.config.rootTeam.teamRunId}'.`,
       );
     }
-    return this.backend.resolveLogicalPlacement(recipientName, callerAddressing);
+    return this.backend.resolveRecipient(recipientAddress, caller);
   }
 
-  async approveToolInvocation(
-    target: TeamMemberSelector,
+  approveToolInvocation(
+    targetMemberAddress: string,
     invocationId: string,
     approved: boolean,
     reason: string | null = null,
-    targetMemberRunId: string | null = null,
+    targetAgentRunId: string | null = null,
     taskTeamRunId: string | null = null,
   ): Promise<AgentOperationResult> {
     return this.backend.approveToolInvocation(
-      target,
+      assertAgentTeamAddress(targetMemberAddress),
       invocationId,
       approved,
       reason,
-      targetMemberRunId,
+      targetAgentRunId,
       taskTeamRunId,
     );
   }
 
-  async interruptMember(
-    targetMemberRouteKey: string,
-    targetMemberRunId: string | null = null,
-  ): Promise<AgentOperationResult> {
-    const normalizedTargetMemberRouteKey = targetMemberRouteKey.trim();
-    if (!normalizedTargetMemberRouteKey) {
-      return {
-        accepted: false,
-        code: "TARGET_MEMBER_REQUIRED",
-        message: "targetMemberRouteKey is required.",
-      };
-    }
-    return this.backend.interruptMember(
-      normalizedTargetMemberRouteKey,
-      targetMemberRunId,
-    );
+  interruptMember(address: string, targetAgentRunId: string | null = null) {
+    return this.backend.interruptMember(assertAgentTeamAddress(address), targetAgentRunId);
   }
-
-  async settleMember(
-    targetMemberRouteKey: string,
-    targetMemberRunId: string | null = null,
-    reason: string | null = null,
-  ): Promise<AgentOperationResult> {
-    const normalizedTargetMemberRouteKey = targetMemberRouteKey.trim();
-    if (!normalizedTargetMemberRouteKey) {
-      return {
-        accepted: false,
-        code: "TARGET_MEMBER_REQUIRED",
-        message: "targetMemberRouteKey is required.",
-      };
-    }
-    return this.backend.settleMember(
-      normalizedTargetMemberRouteKey,
-      targetMemberRunId,
-      reason,
-    );
+  settleMember(address: string, targetAgentRunId: string | null = null, reason: string | null = null) {
+    return this.backend.settleMember(assertAgentTeamAddress(address), targetAgentRunId, reason);
   }
-
-  async startTaskAgentInstance(
-    request: StartTaskAgentInstanceRequest,
-  ): Promise<AgentOperationResult> {
+  startTaskAgentInstance(request: StartTaskAgentInstanceRequest) {
     return this.backend.startTaskAgentInstance(request);
   }
-
-  async settleTaskAgentInstance(
-    logicalMemberRouteKey: string,
-    taskAgentRunId: string,
-    reason: string | null = null,
-  ): Promise<AgentOperationResult> {
-    const normalizedLogicalMemberRouteKey = logicalMemberRouteKey.trim();
-    const normalizedTaskAgentRunId = taskAgentRunId.trim();
-    if (!normalizedLogicalMemberRouteKey || !normalizedTaskAgentRunId) {
-      return {
-        accepted: false,
-        code: "TASK_AGENT_TARGET_REQUIRED",
-        message: "logicalMemberRouteKey and taskAgentRunId are required.",
-      };
-    }
-    return this.backend.settleTaskAgentInstance(
-      normalizedLogicalMemberRouteKey,
-      normalizedTaskAgentRunId,
-      reason,
-    );
+  settleTaskAgentInstance(address: string, taskAgentRunId: string, reason: string | null = null) {
+    return this.backend.settleTaskAgentInstance(assertAgentTeamAddress(address), taskAgentRunId, reason);
   }
-
-
-  async startTaskTeamInstance(
-    request: StartTaskTeamInstanceRequest,
-  ): Promise<AgentOperationResult> {
+  startTaskTeamInstance(request: StartTaskTeamInstanceRequest) {
     return this.backend.startTaskTeamInstance(request);
   }
-
-  async postMessageToTaskTeamInstance(
-    logicalTeamRouteKey: string,
-    taskTeamRunId: string,
-    message: AgentInputUserMessage,
-  ): Promise<AgentOperationResult> {
-    const normalizedLogicalTeamRouteKey = logicalTeamRouteKey.trim();
-    const normalizedTaskTeamRunId = taskTeamRunId.trim();
-    if (!normalizedLogicalTeamRouteKey || !normalizedTaskTeamRunId) {
-      return {
-        accepted: false,
-        code: "TASK_TEAM_TARGET_REQUIRED",
-        message: "logicalTeamRouteKey and taskTeamRunId are required.",
-      };
-    }
-    return this.backend.postMessageToTaskTeamInstance(
-      normalizedLogicalTeamRouteKey,
-      normalizedTaskTeamRunId,
-      message,
-    );
+  postMessageToTaskTeamInstance(address: string, taskTeamRunId: string, message: AgentInputUserMessage) {
+    return this.backend.postMessageToTaskTeamInstance(assertAgentTeamAddress(address), taskTeamRunId, message);
   }
-
-  async settleTaskTeamInstance(
-    logicalTeamRouteKey: string,
-    taskTeamRunId: string,
-    reason: string | null = null,
-  ): Promise<AgentOperationResult> {
-    const normalizedLogicalTeamRouteKey = logicalTeamRouteKey.trim();
-    const normalizedTaskTeamRunId = taskTeamRunId.trim();
-    if (!normalizedLogicalTeamRouteKey || !normalizedTaskTeamRunId) {
-      return {
-        accepted: false,
-        code: "TASK_TEAM_TARGET_REQUIRED",
-        message: "logicalTeamRouteKey and taskTeamRunId are required.",
-      };
-    }
-    return this.backend.settleTaskTeamInstance(
-      normalizedLogicalTeamRouteKey,
-      normalizedTaskTeamRunId,
-      reason,
-    );
+  settleTaskTeamInstance(address: string, taskTeamRunId: string, reason: string | null = null) {
+    return this.backend.settleTaskTeamInstance(assertAgentTeamAddress(address), taskTeamRunId, reason);
   }
-
-  publishEvent(event: TeamRunEvent): void {
-    this.backend.publishEvent(event);
-  }
-
-  async terminate(): Promise<AgentOperationResult> {
-    return this.backend.terminate();
-  }
-
-  private resolvePostMessageTarget(
-    target: TeamMemberSelector | null,
-  ): TeamMemberSelector | null {
-    if (target) {
-      return target;
-    }
-
-    const coordinatorMemberRouteKey =
-      typeof this.context?.coordinatorMemberRouteKey === "string" &&
-      this.context.coordinatorMemberRouteKey.trim().length > 0
-        ? this.context.coordinatorMemberRouteKey.trim()
-        : typeof this.configValue?.coordinatorMemberRouteKey === "string" &&
-            this.configValue.coordinatorMemberRouteKey.trim().length > 0
-          ? this.configValue.coordinatorMemberRouteKey.trim()
-          : null;
-    if (coordinatorMemberRouteKey) {
-      return selectorFromMemberRouteKey(coordinatorMemberRouteKey);
-    }
-
-    const memberContexts = getRuntimeMemberContexts(this.context?.runtimeContext ?? null);
-    if (memberContexts.length === 1) {
-      const soleMemberRouteKey = memberContexts[0]?.memberRouteKey;
-      return typeof soleMemberRouteKey === "string" && soleMemberRouteKey.trim().length > 0
-        ? selectorFromMemberRouteKey(soleMemberRouteKey.trim())
-        : null;
-    }
-
-    return null;
-  }
+  publishEvent(event: TeamRunEvent): void { this.backend.publishEvent(event); }
+  terminate(): Promise<AgentOperationResult> { return this.backend.terminate(); }
 }
+
+export type TeamRunMemberAddress = AgentTeamAddress;

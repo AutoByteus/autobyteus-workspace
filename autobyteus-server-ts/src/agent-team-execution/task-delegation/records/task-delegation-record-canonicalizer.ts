@@ -1,4 +1,4 @@
-import { normalizeConversationTargetAddress } from "../../domain/conversation-target-address.js";
+import { createTeamExecutionAddress } from "../../domain/team-execution-address.js";
 import type {
   TaskDelegationRecord,
   TaskReferenceFile,
@@ -36,8 +36,8 @@ const canonicalReferenceFiles = (references: readonly TaskReferenceFile[]): Task
 const canonicalSubmission = (update: TaskSubmissionUpdate): TaskSubmissionUpdate => ({
   kind: "submission",
   submissionId: normalizeRequiredString(update.submissionId, "submissionId"),
-  senderAddress: normalizeConversationTargetAddress(update.senderAddress),
-  receiverAddress: normalizeConversationTargetAddress(update.receiverAddress),
+  senderAddress: createTeamExecutionAddress(update.senderAddress),
+  receiverAddress: createTeamExecutionAddress(update.receiverAddress),
   content: normalizeRequiredString(update.content, "submission.content"),
   referenceFiles: canonicalReferenceFiles(update.referenceFiles),
   createdAt: normalizeRequiredString(update.createdAt, "submission.createdAt"),
@@ -46,8 +46,8 @@ const canonicalSubmission = (update: TaskSubmissionUpdate): TaskSubmissionUpdate
 const canonicalReview = (update: TaskReviewUpdate): TaskReviewUpdate => ({
   kind: "review",
   reviewId: normalizeRequiredString(update.reviewId, "reviewId"),
-  senderAddress: normalizeConversationTargetAddress(update.senderAddress),
-  receiverAddress: normalizeConversationTargetAddress(update.receiverAddress),
+  senderAddress: createTeamExecutionAddress(update.senderAddress),
+  receiverAddress: createTeamExecutionAddress(update.receiverAddress),
   reviewedSubmissionId: normalizeRequiredString(update.reviewedSubmissionId, "reviewedSubmissionId"),
   decision: update.decision,
   content: update.content?.trim() || null,
@@ -64,14 +64,14 @@ export const canonicalizeTaskDelegationRecord = (
 ): TaskDelegationRecord => cloneTaskDelegationRecord({
   taskId: normalizeRequiredString(record.taskId, "taskId"),
   status: record.status,
-  senderAddress: normalizeConversationTargetAddress(record.senderAddress),
-  receiverAddress: normalizeConversationTargetAddress(record.receiverAddress),
+  senderAddress: createTeamExecutionAddress(record.senderAddress),
+  receiverAddress: createTeamExecutionAddress(record.receiverAddress),
   receiverTargetKind: record.receiverTargetKind,
   content: normalizeRequiredString(record.content, "content"),
   referenceFiles: canonicalReferenceFiles(record.referenceFiles),
   taskRun: record.taskRun
     ? {
-        address: normalizeConversationTargetAddress(record.taskRun.address),
+        address: createTeamExecutionAddress(record.taskRun.address),
         startedAt: normalizeRequiredString(record.taskRun.startedAt, "taskRun.startedAt"),
       }
     : null,

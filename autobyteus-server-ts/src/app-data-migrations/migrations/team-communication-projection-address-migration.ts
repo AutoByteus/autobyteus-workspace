@@ -1,129 +1,65 @@
 import fs from "node:fs/promises";
 import type { Dirent } from "node:fs";
 import path from "node:path";
-import {
-  normalizeConversationTargetAddress,
-  type ConversationTargetAddress,
-  type ConversationTargetSegment,
-} from "../../agent-team-execution/domain/conversation-target-address.js";
-import { buildMemberRouteKeyFromPath } from "../../agent-team-execution/domain/team-run-member-identity.js";
-import {
-  buildTeamCommunicationMessageId,
-  buildTeamCommunicationReferenceId,
-  normalizeTeamCommunicationReferencePath,
-} from "../../services/team-communication/team-communication-identity.js";
-import type {
-  TeamCommunicationMessage,
-  TeamCommunicationProjection,
-  TeamCommunicationReferenceFile,
-  TeamCommunicationReferenceFileType,
-} from "../../services/team-communication/team-communication-types.js";
-import type {
-  AppDataMigrationDefinition,
-  AppDataMigrationExecutionResult,
-  AppDataMigrationItemDetail,
-  AppDataMigrationSummary,
-} from "../domain/app-data-migration-types.js";
+import { createAgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
+import { createTeamExecutionAddress, type TeamExecutionAddress } from "../../agent-team-execution/domain/team-execution-address.js";
+import { buildTeamCommunicationMessageId, buildTeamCommunicationReferenceId, normalizeTeamCommunicationReferencePath } from "../../services/team-communication/team-communication-identity.js";
+import type { TeamCommunicationMessage, TeamCommunicationProjection, TeamCommunicationReferenceFile, TeamCommunicationReferenceFileType } from "../../services/team-communication/team-communication-types.js";
+import type { AppDataMigrationDefinition, AppDataMigrationExecutionResult, AppDataMigrationItemDetail, AppDataMigrationSummary } from "../domain/app-data-migration-types.js";
 
 const MIGRATION_ID = "20260701_team_communication_projection_addresses";
-const PROJECTION_FILE_NAME = "team_communication_messages.json";
-const OBSOLETE_MESSAGE_FIELDS = [
-  "teamRunId",
-  "team_run_id",
-  "senderRunId",
-  "sender_run_id",
-  "sender_agent_id",
-  "senderMemberKind",
-  "sender_member_kind",
-  "senderMemberName",
-  "sender_agent_name",
-  "senderMemberPath",
-  "sender_member_path",
-  "senderMemberRouteKey",
-  "sender_member_route_key",
-  "senderRepresentedSubTeam",
-  "sender_represented_subteam",
-  "receiverRunId",
-  "receiver_run_id",
-  "receiverMemberKind",
-  "receiver_member_kind",
-  "receiverMemberName",
-  "receiver_agent_name",
-  "receiverMemberPath",
-  "receiver_member_path",
-  "receiverMemberRouteKey",
-  "receiver_member_route_key",
-  "receiverRepresentedSubTeam",
-  "receiver_represented_subteam",
-  "taskTeamScope",
-  "task_team_scope",
-  "updatedAt",
-  "updated_at",
-];
-const OBSOLETE_ROOT_FIELDS = ["version", "updatedAt", "updated_at"];
-const CURRENT_PROJECTION_FIELDS = ["teamRunId", "messages"];
-const CURRENT_MESSAGE_FIELDS = [
-  "messageId",
-  "senderAddress",
-  "receiverAddress",
-  "content",
-  "messageType",
-  "createdAt",
-  "referenceFiles",
-];
-const CURRENT_REFERENCE_FIELDS = ["referenceId", "path", "type", "createdAt", "updatedAt"];
-const REFERENCE_FILE_TYPES: TeamCommunicationReferenceFileType[] = [
-  "file",
-  "image",
-  "audio",
-  "video",
-  "pdf",
-  "csv",
-  "excel",
-  "other",
-];
+const FILE_NAME = "team_communication_messages.json";
+const asRecord = (value: unknown): Record<string, unknown> | null => value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : null;
+const text = (value: unknown): string | null => typeof value === "string" && value.trim() ? value.trim() : null;
+const timestamp = (value: unknown): string | null => { const valueText = text(value); return valueText && !Number.isNaN(Date.parse(valueText)) ? new Date(valueText).toISOString() : null; };
+const pathParts = (value: unknown): string[] => Array.isArray(value) ? value.map(text).filter((item): item is string => !!item) : [];
+const exact = (record: Record<string, unknown>, keys: readonly string[]) => Object.keys(record).length === keys.length && keys.every((key) => Object.hasOwn(record, key));
 
-type ProjectionCandidate = {
-  itemId: string;
-  teamRunId: string;
-  filePath: string;
+const currentAddress = (value: unknown): TeamExecutionAddress | null => {
+  const record = asRecord(value);
+  if (!record || !exact(record, ["rootTeamRunId", "taskTeamRunIds", "memberAddress", "taskAgentRunId"])) return null;
+  try { return createTeamExecutionAddress(record as never); } catch { return null; }
 };
 
-const asRecord = (value: unknown): Record<string, unknown> | null => (
-  value && typeof value === "object" && !Array.isArray(value)
-    ? value as Record<string, unknown>
-    : null
-);
-
-const readString = (value: unknown): string =>
-  typeof value === "string" ? value.trim() : "";
-
-const readRequiredString = (value: unknown, fieldName: string): string => {
-  const normalized = readString(value);
-  if (!normalized) {
-    throw new Error(`${fieldName} is required.`);
+const legacyAddress = (message: Record<string, unknown>, prefix: "sender" | "receiver", rootTeamRunId: string): TeamExecutionAddress => {
+  const stored = message[`${prefix}Address`] ?? message[`${prefix}_address`];
+  const existing = currentAddress(stored);
+  if (existing) return existing;
+  const addressRecord = asRecord(stored);
+  const segments = Array.isArray(addressRecord?.segments) ? addressRecord!.segments : [];
+  let memberSegments: string[] = [];
+  const taskTeamRunIds: string[] = [];
+  let taskAgentRunId: string | null = null;
+  for (const raw of segments) {
+    const segment = asRecord(raw);
+    const kind = text(segment?.kind);
+    if (kind === "member") {
+      const parts = pathParts(segment?.memberPath ?? segment?.member_path);
+      const route = text(segment?.memberRouteKey ?? segment?.member_route_key);
+      memberSegments = parts.length ? parts : route?.split("/").filter(Boolean) ?? memberSegments;
+    } else if (kind === "task_team") {
+      const id = text(segment?.taskTeamRunId ?? segment?.task_team_run_id);
+      if (id) taskTeamRunIds.push(id);
+    } else if (kind === "task_agent") {
+      taskAgentRunId = text(segment?.taskAgentRunId ?? segment?.task_agent_run_id);
+    }
   }
-  return normalized;
-};
-
-const readStringPath = (value: unknown): string[] | null => {
-  if (!Array.isArray(value) || !value.every((entry) => typeof entry === "string")) {
-    return null;
+  if (!memberSegments.length) {
+    const parts = pathParts(message[`${prefix}MemberPath`] ?? message[`${prefix}_member_path`]);
+    const route = text(message[`${prefix}MemberRouteKey`] ?? message[`${prefix}_member_route_key`]);
+    memberSegments = parts.length ? parts : route?.split("/").filter(Boolean) ?? [];
+    taskAgentRunId ??= text(message[`${prefix}TaskAgentRunId`] ?? message[`${prefix}_task_agent_run_id`]);
   }
-  const pathParts = value.map((entry) => entry.trim()).filter(Boolean);
-  return pathParts.length > 0 ? pathParts : null;
+  if (!memberSegments.length) throw new Error(`${prefix} member address cannot be reconstructed.`);
+  return createTeamExecutionAddress({
+    rootTeamRunId,
+    taskTeamRunIds,
+    memberAddress: createAgentTeamAddress(memberSegments),
+    taskAgentRunId,
+  });
 };
 
-const readTimestamp = (value: unknown): string | null => {
-  const normalized = readString(value);
-  if (!normalized) {
-    return null;
-  }
-  const timestamp = Date.parse(normalized);
-  return Number.isFinite(timestamp) ? new Date(timestamp).toISOString() : null;
-};
-
-const inferReferenceFileType = (filePath: string): TeamCommunicationReferenceFileType => {
+const referenceType = (filePath: string): TeamCommunicationReferenceFileType => {
   const lower = filePath.toLowerCase();
   if (/\.(png|jpg|jpeg|gif|webp|svg)$/.test(lower)) return "image";
   if (/\.(mp3|wav|ogg|m4a|aac|flac)$/.test(lower)) return "audio";
@@ -133,344 +69,88 @@ const inferReferenceFileType = (filePath: string): TeamCommunicationReferenceFil
   if (/\.(xlsx|xls)$/.test(lower)) return "excel";
   return "file";
 };
-
-const normalizeReferenceType = (value: unknown): TeamCommunicationReferenceFileType | null =>
-  REFERENCE_FILE_TYPES.includes(value as TeamCommunicationReferenceFileType)
-    ? value as TeamCommunicationReferenceFileType
-    : null;
-
-const readJson = async (filePath: string): Promise<unknown> =>
-  JSON.parse(await fs.readFile(filePath, "utf-8")) as unknown;
-
-const createBackupPath = (filePath: string): string =>
-  `${filePath}.backup-${new Date().toISOString().replace(/[:.]/g, "-")}`;
-
-const createTempPath = (filePath: string): string =>
-  `${filePath}.${process.pid}.${Date.now()}.tmp`;
-
-const writeJsonAtomic = async (filePath: string, payload: unknown): Promise<void> => {
-  const tempPath = createTempPath(filePath);
-  await fs.writeFile(tempPath, `${JSON.stringify(payload, null, 2)}\n`, "utf-8");
-  await fs.rename(tempPath, filePath);
-};
-
-const buildSummary = (details: AppDataMigrationItemDetail[]): AppDataMigrationSummary => ({
-  scannedCount: details.length,
-  migratedCount: details.filter((detail) => detail.status === "MIGRATED").length,
-  skippedCount: details.filter((detail) => detail.status === "SKIPPED").length,
-  failedCount: details.filter((detail) => detail.status === "FAILED").length,
-  details,
-});
-
-const statusFromSummary = (summary: AppDataMigrationSummary): AppDataMigrationExecutionResult["status"] => {
-  if (summary.failedCount === 0) return "SUCCEEDED";
-  return summary.migratedCount + summary.skippedCount > 0 ? "SUCCEEDED_WITH_WARNINGS" : "FAILED";
-};
-
-const obsoleteFieldsPresent = (record: Record<string, unknown>, fields: readonly string[]): boolean =>
-  fields.some((field) => field in record);
-
-const hasOnlyFields = (record: Record<string, unknown>, allowedFields: readonly string[]): boolean =>
-  Object.keys(record).every((field) => allowedFields.includes(field));
-
-const parseAddressSegment = (value: unknown): ConversationTargetSegment => {
-  const record = asRecord(value);
-  if (!record) {
-    throw new Error("Conversation target segment is not an object.");
-  }
-  const kind = readRequiredString(record.kind, "address segment kind");
-  if (kind === "member") {
-    const memberRouteKey = readString(record.memberRouteKey) || readString(record.member_route_key);
-    const memberPath = readStringPath(record.memberPath) ?? readStringPath(record.member_path);
-    return {
-      kind: "member",
-      ...(memberRouteKey ? { memberRouteKey } : {}),
-      ...(memberPath ? { memberPath } : {}),
-    };
-  }
-  if (kind === "task_team") {
-    return { kind: "task_team", taskTeamRunId: readRequiredString(record.taskTeamRunId ?? record.task_team_run_id, "taskTeamRunId") };
-  }
-  if (kind === "task_agent") {
-    return { kind: "task_agent", taskAgentRunId: readRequiredString(record.taskAgentRunId ?? record.task_agent_run_id, "taskAgentRunId") };
-  }
-  throw new Error(`Unsupported conversation target segment kind '${kind}'.`);
-};
-
-const parseAddress = (value: unknown, fieldName: string): ConversationTargetAddress => {
-  const record = asRecord(value);
-  if (!record || !Array.isArray(record.segments) || record.segments.length === 0) {
-    throw new Error(`${fieldName} must contain one or more segments.`);
-  }
-  return normalizeConversationTargetAddress({
-    segments: record.segments.map(parseAddressSegment),
-  });
-};
-
-const readAddress = (
-  message: Record<string, unknown>,
-  camelKey: "senderAddress" | "receiverAddress",
-  snakeKey: "sender_address" | "receiver_address",
-): ConversationTargetAddress | null => {
-  const rawAddress = message[camelKey] ?? message[snakeKey];
-  return rawAddress === undefined ? null : parseAddress(rawAddress, camelKey);
-};
-
-const buildLegacyFlatAddress = (
-  message: Record<string, unknown>,
-  prefix: "sender" | "receiver",
-): ConversationTargetAddress => {
-  const routeKey = readString(message[`${prefix}MemberRouteKey`]) || readString(message[`${prefix}_member_route_key`]);
-  const memberPath = readStringPath(message[`${prefix}MemberPath`]) ?? readStringPath(message[`${prefix}_member_path`]);
-  const memberRouteKey = routeKey || (memberPath ? buildMemberRouteKeyFromPath(memberPath) : "");
-  if (!memberRouteKey) {
-    throw new Error(`${prefix} member route/path cannot be converted to an address.`);
-  }
-  const segments: ConversationTargetSegment[] = [{ kind: "member", memberRouteKey }];
-  const taskAgentRunId = readString(message[`${prefix}TaskAgentRunId`]) || readString(message[`${prefix}_task_agent_run_id`]);
-  if (taskAgentRunId) {
-    segments.push({ kind: "task_agent", taskAgentRunId });
-  }
-  return normalizeConversationTargetAddress({ segments });
-};
-
-const normalizeAddressForMigration = (
-  message: Record<string, unknown>,
-  prefix: "sender" | "receiver",
-): ConversationTargetAddress => {
-  const existing = readAddress(
-    message,
-    prefix === "sender" ? "senderAddress" : "receiverAddress",
-    prefix === "sender" ? "sender_address" : "receiver_address",
-  );
-  return existing ?? buildLegacyFlatAddress(message, prefix);
-};
-
-const readRawReferenceEntries = (message: Record<string, unknown>): unknown[] => {
+const references = (message: Record<string, unknown>, rootTeamRunId: string, messageId: string, createdAt: string): TeamCommunicationReferenceFile[] => {
   const raw = message.referenceFiles ?? message.reference_files ?? message.referenceFileEntries ?? message.reference_file_entries;
-  return Array.isArray(raw) ? raw : [];
-};
-
-const normalizeReferenceFiles = (input: {
-  teamRunId: string;
-  messageId: string;
-  messageCreatedAt: string;
-  message: Record<string, unknown>;
-}): TeamCommunicationReferenceFile[] => {
-  const referencesByPath = new Map<string, TeamCommunicationReferenceFile>();
-  for (const [index, rawReference] of readRawReferenceEntries(input.message).entries()) {
-    const record = asRecord(rawReference);
-    const rawPath = typeof rawReference === "string"
-      ? rawReference
-      : readString(record?.path);
-    const normalizedPath = normalizeTeamCommunicationReferencePath(rawPath);
-    if (!normalizedPath) {
-      throw new Error(`Reference file at index ${index} is missing path.`);
-    }
-    const createdAt = readTimestamp(record?.createdAt ?? record?.created_at) ?? input.messageCreatedAt;
-    const reference: TeamCommunicationReferenceFile = {
-      referenceId: readString(record?.referenceId ?? record?.reference_id) || buildTeamCommunicationReferenceId({
-        teamRunId: input.teamRunId,
-        messageId: input.messageId,
-        path: normalizedPath,
-      }),
-      path: normalizedPath,
-      type: normalizeReferenceType(record?.type) ?? inferReferenceFileType(normalizedPath),
-      createdAt,
-      updatedAt: readTimestamp(record?.updatedAt ?? record?.updated_at) ?? createdAt,
+  if (!Array.isArray(raw)) return [];
+  return raw.map((value) => {
+    const record = asRecord(value);
+    const filePath = normalizeTeamCommunicationReferencePath(text(record?.path) ?? text(value) ?? "");
+    if (!filePath) throw new Error("Reference file path is required.");
+    const referenceCreatedAt = timestamp(record?.createdAt ?? record?.created_at) ?? createdAt;
+    return {
+      referenceId: text(record?.referenceId ?? record?.reference_id) ?? buildTeamCommunicationReferenceId({ teamRunId: rootTeamRunId, messageId, path: filePath }),
+      path: filePath,
+      type: text(record?.type) as TeamCommunicationReferenceFileType || referenceType(filePath),
+      createdAt: referenceCreatedAt,
+      updatedAt: timestamp(record?.updatedAt ?? record?.updated_at) ?? referenceCreatedAt,
     };
-    const existing = referencesByPath.get(reference.path);
-    if (!existing || reference.updatedAt.localeCompare(existing.updatedAt) >= 0) {
-      referencesByPath.set(reference.path, reference);
-    }
-  }
-  return [...referencesByPath.values()];
-};
-
-const normalizeMessage = (
-  rawMessage: unknown,
-  teamRunId: string,
-): TeamCommunicationMessage => {
-  const message = asRecord(rawMessage);
-  if (!message) {
-    throw new Error("Team communication message is not an object.");
-  }
-  const senderAddress = normalizeAddressForMigration(message, "sender");
-  const receiverAddress = normalizeAddressForMigration(message, "receiver");
-  const content = typeof message.content === "string" ? message.content : null;
-  if (content === null) {
-    throw new Error("Team communication message content is required.");
-  }
-  const messageType = readString(message.messageType) || readString(message.message_type) || "agent_message";
-  const createdAt = readTimestamp(message.createdAt ?? message.created_at)
-    ?? readTimestamp(message.updatedAt ?? message.updated_at);
-  if (!createdAt) {
-    throw new Error("Team communication message createdAt is required.");
-  }
-  const messageId = readString(message.messageId) || readString(message.message_id) || buildTeamCommunicationMessageId({
-    teamRunId,
-    senderAddress,
-    receiverAddress,
-    messageType,
-    content,
-    createdAt,
   });
-  return {
-    messageId,
-    senderAddress,
-    receiverAddress,
-    content,
-    messageType,
-    createdAt,
-    referenceFiles: normalizeReferenceFiles({ teamRunId, messageId, messageCreatedAt: createdAt, message }),
-  };
 };
 
-const isCurrentAddress = (value: unknown): boolean => {
-  try {
-    parseAddress(value, "address");
-    return true;
-  } catch {
-    return false;
-  }
-};
-
-const isCurrentReferenceFile = (value: unknown): boolean => {
-  const reference = asRecord(value);
-  return Boolean(
-    reference &&
-    hasOnlyFields(reference, CURRENT_REFERENCE_FIELDS) &&
-    readString(reference.referenceId) &&
-    readString(reference.path) &&
-    normalizeReferenceType(reference.type) &&
-    readTimestamp(reference.createdAt) &&
-    readTimestamp(reference.updatedAt)
-  );
-};
-
-const isCurrentMessage = (value: unknown): boolean => {
+const convertMessage = (value: unknown, rootTeamRunId: string): TeamCommunicationMessage => {
   const message = asRecord(value);
-  return Boolean(
-    message &&
-    !obsoleteFieldsPresent(message, OBSOLETE_MESSAGE_FIELDS) &&
-    hasOnlyFields(message, CURRENT_MESSAGE_FIELDS) &&
-    readString(message.messageId) &&
-    isCurrentAddress(message.senderAddress) &&
-    isCurrentAddress(message.receiverAddress) &&
-    typeof message.content === "string" &&
-    readString(message.messageType) &&
-    readTimestamp(message.createdAt) &&
-    Array.isArray(message.referenceFiles) &&
-    message.referenceFiles.every(isCurrentReferenceFile)
-  );
+  if (!message || typeof message.content !== "string") throw new Error("Communication message content is required.");
+  const senderAddress = legacyAddress(message, "sender", rootTeamRunId);
+  const receiverAddress = legacyAddress(message, "receiver", rootTeamRunId);
+  const createdAt = timestamp(message.createdAt ?? message.created_at ?? message.updatedAt ?? message.updated_at);
+  if (!createdAt) throw new Error("Communication message createdAt is required.");
+  const messageType = text(message.messageType ?? message.message_type) ?? "agent_message";
+  const messageId = text(message.messageId ?? message.message_id) ?? buildTeamCommunicationMessageId({
+    teamRunId: rootTeamRunId, senderAddress, receiverAddress, messageType, content: message.content, createdAt,
+  });
+  return { messageId, senderAddress, receiverAddress, content: message.content, messageType, createdAt, referenceFiles: references(message, rootTeamRunId, messageId, createdAt) };
 };
 
-const isCurrentProjection = (payload: unknown): boolean => {
-  const projection = asRecord(payload);
-  return Boolean(
-    projection &&
-    hasOnlyFields(projection, CURRENT_PROJECTION_FIELDS) &&
-    readString(projection.teamRunId) &&
-    !obsoleteFieldsPresent(projection, OBSOLETE_ROOT_FIELDS) &&
-    Array.isArray(projection.messages) &&
-    projection.messages.every(isCurrentMessage)
-  );
+const convertProjection = (value: unknown, fallbackId: string): TeamCommunicationProjection => {
+  const record = asRecord(value);
+  if (!record || !Array.isArray(record.messages)) throw new Error("Communication projection is invalid.");
+  const teamRunId = text(record.teamRunId) ?? fallbackId;
+  return { teamRunId, messages: record.messages.map((message) => convertMessage(message, teamRunId)) };
 };
-
-const normalizeProjection = (payload: unknown, fallbackTeamRunId: string): TeamCommunicationProjection => {
-  const projection = asRecord(payload);
-  if (!projection) {
-    throw new Error("Team communication projection JSON root is not an object.");
-  }
-  const teamRunId = readString(projection.teamRunId) || fallbackTeamRunId;
-  if (!teamRunId) {
-    throw new Error("Team communication projection teamRunId is required.");
-  }
-  if (!Array.isArray(projection.messages)) {
-    throw new Error("Team communication projection messages field is not an array.");
-  }
-  return {
-    teamRunId,
-    messages: projection.messages.map((message) => normalizeMessage(message, teamRunId)),
-  };
+const isCurrent = (value: unknown): boolean => {
+  const record = asRecord(value);
+  return !!record && exact(record, ["teamRunId", "messages"]) && !!text(record.teamRunId) && Array.isArray(record.messages) && record.messages.every((value) => {
+    const message = asRecord(value);
+    return !!message && !!currentAddress(message.senderAddress) && !!currentAddress(message.receiverAddress);
+  });
 };
-
-const listProjectionCandidates = async (memoryDir: string): Promise<ProjectionCandidate[]> => {
-  const teamsRoot = path.join(memoryDir, "agent_teams");
-  let entries: Dirent[] = [];
-  try {
-    entries = await fs.readdir(teamsRoot, { withFileTypes: true });
-  } catch (error) {
-    if (String(error).includes("ENOENT")) {
-      return [];
-    }
-    throw error;
-  }
-  return entries
-    .filter((entry) => entry.isDirectory())
-    .map((entry) => ({
-      itemId: entry.name,
-      teamRunId: entry.name,
-      filePath: path.join(teamsRoot, entry.name, PROJECTION_FILE_NAME),
-    }))
-    .sort((left, right) => left.itemId.localeCompare(right.itemId));
-};
+const summary = (details: AppDataMigrationItemDetail[]): AppDataMigrationSummary => ({
+  scannedCount: details.length, migratedCount: details.filter((item) => item.status === "MIGRATED").length,
+  skippedCount: details.filter((item) => item.status === "SKIPPED").length,
+  failedCount: details.filter((item) => item.status === "FAILED").length, details,
+});
 
 export class TeamCommunicationProjectionAddressMigration implements AppDataMigrationDefinition {
   readonly id = MIGRATION_ID;
-  readonly displayName = "Team communication projection address migration";
-  readonly description = "Converts historical flat Team Communication projections to the address-first sender/receiver model.";
+  readonly displayName = "Team communication execution-address migration";
+  readonly description = "Converts communication projections to exact TeamExecutionAddress sender and receiver identities.";
   readonly requiredOnStartup = true;
-
   constructor(private readonly memoryDir: string) {}
-
   async execute(): Promise<AppDataMigrationExecutionResult> {
+    const root = path.join(this.memoryDir, "agent_teams");
+    let entries: Dirent[] = [];
+    try { entries = await fs.readdir(root, { withFileTypes: true }); } catch (error) { if (!String(error).includes("ENOENT")) throw error; }
     const details: AppDataMigrationItemDetail[] = [];
-    for (const candidate of await listProjectionCandidates(this.memoryDir)) {
+    for (const entry of entries.filter((item) => item.isDirectory())) {
+      const filePath = path.join(root, entry.name, FILE_NAME);
       try {
-        const payload = await readJson(candidate.filePath);
-        if (isCurrentProjection(payload)) {
-          details.push({
-            itemId: candidate.itemId,
-            filePath: candidate.filePath,
-            status: "SKIPPED",
-            message: "Team communication projection is already address-first.",
-          });
-          continue;
-        }
-        const converted = normalizeProjection(payload, candidate.teamRunId);
-        const backupPath = createBackupPath(candidate.filePath);
-        await fs.copyFile(candidate.filePath, backupPath);
-        await writeJsonAtomic(candidate.filePath, converted);
-        details.push({
-          itemId: candidate.itemId,
-          filePath: candidate.filePath,
-          status: "MIGRATED",
-          message: "Converted Team Communication projection to address-first sender/receiver addresses.",
-          backupPath,
-        });
+        const raw = JSON.parse(await fs.readFile(filePath, "utf8")) as unknown;
+        if (isCurrent(raw)) { details.push({ itemId: entry.name, filePath, status: "SKIPPED", message: "Already current." }); continue; }
+        const converted = convertProjection(raw, entry.name);
+        const backupPath = `${filePath}.backup-${Date.now()}`;
+        await fs.copyFile(filePath, backupPath);
+        const temp = `${filePath}.${process.pid}.tmp`;
+        await fs.writeFile(temp, JSON.stringify(converted, null, 2));
+        await fs.rename(temp, filePath);
+        details.push({ itemId: entry.name, filePath, backupPath, status: "MIGRATED", message: "Converted to exact execution addresses." });
       } catch (error) {
-        if (String(error).includes("ENOENT")) {
-          continue;
-        }
-        details.push({
-          itemId: candidate.itemId,
-          filePath: candidate.filePath,
-          status: "FAILED",
-          message: error instanceof Error ? error.message : String(error),
-        });
+        if (String(error).includes("ENOENT")) continue;
+        details.push({ itemId: entry.name, filePath, status: "FAILED", message: error instanceof Error ? error.message : String(error) });
       }
     }
-
-    const summary = buildSummary(details);
-    return {
-      status: statusFromSummary(summary),
-      summary,
-      errorMessage: summary.failedCount > 0
-        ? `${summary.failedCount} Team Communication projection file(s) could not be migrated.`
-        : null,
-    };
+    const migrationSummary = summary(details);
+    return { status: migrationSummary.failedCount ? "FAILED" : "SUCCEEDED", summary: migrationSummary,
+      errorMessage: migrationSummary.failedCount ? `${migrationSummary.failedCount} projection(s) failed.` : null };
   }
 }
-
 export const TEAM_COMMUNICATION_PROJECTION_ADDRESS_MIGRATION_ID = MIGRATION_ID;

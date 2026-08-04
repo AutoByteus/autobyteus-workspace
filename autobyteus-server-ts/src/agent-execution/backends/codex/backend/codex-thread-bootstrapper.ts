@@ -3,6 +3,7 @@ import {
   resolveSkillAccessMode,
 } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import type { AgentRunConfig } from "../../../domain/agent-run-config.js";
+import { getAgentTeamAddressBasename } from "../../../../agent-collaboration/domain/agent-team-address.js";
 import { AgentRunContext } from "../../../domain/agent-run-context.js";
 import { AgentDefinitionService } from "../../../../agent-definition/services/agent-definition-service.js";
 import { SkillService } from "../../../../skills/services/skill-service.js";
@@ -318,15 +319,14 @@ export class CodexThreadBootstrapper {
       owner: memberTeamContext
         ? {
             runId: input.runContext.runId,
-            teamRunId: memberTeamContext.teamRunId,
-            memberRunId: memberTeamContext.memberRunId,
-            memberRouteKey: memberTeamContext.memberRouteKey,
-            memberName: memberTeamContext.memberName,
+            executionAddress: memberTeamContext.executionAddress,
+            agentRunId: memberTeamContext.agentRunId,
+            displayName: getAgentTeamAddressBasename(memberTeamContext.memberAddress),
           }
         : { runId: input.runContext.runId },
       sender: buildAgentRunMessageSenderContext({
         senderRunId: input.runContext.runId,
-        senderName: memberTeamContext?.memberName ?? input.runContext.config.agentDefinitionId,
+        senderName: (memberTeamContext ? getAgentTeamAddressBasename(memberTeamContext.memberAddress) : null) ?? input.runContext.config.agentDefinitionId,
         runtimeKind: input.runContext.config.runtimeKind,
         memberTeamContext: memberTeamContext ?? null,
       }),

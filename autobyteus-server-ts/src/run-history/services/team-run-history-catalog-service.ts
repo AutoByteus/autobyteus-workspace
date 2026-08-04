@@ -115,9 +115,9 @@ const rowFromMetadata = (
   existing?: TeamRunIndexRowRecord | null,
   summary?: string | null,
 ): TeamRunIndexRowRecord => normalizeRow({
-  teamRunId: metadata.teamRunId,
-  teamDefinitionId: metadata.teamDefinitionId,
-  teamDefinitionName: existing?.teamDefinitionName || metadata.teamDefinitionName || metadata.teamDefinitionId,
+  teamRunId: metadata.rootTeam.teamRunId,
+  teamDefinitionId: metadata.rootTeam.teamDefinitionId,
+  teamDefinitionName: existing?.teamDefinitionName || metadata.teamDefinitionName || metadata.rootTeam.teamDefinitionId,
   workspaceRootPath: existing?.workspaceRootPath ?? resolveTeamWorkspaceRootPath(metadata) ?? null,
   summary: existing?.summary || summary || "",
   createdAt: existing?.createdAt || metadata.createdAt,
@@ -166,14 +166,12 @@ export class TeamRunHistoryCatalogService {
     summary?: string | null;
   }): Promise<void> {
     await this.enqueue(async () => {
-      const row = rowFromMetadata({ ...input.metadata, teamRunId: input.teamRunId }, null, input.summary);
+      if (input.metadata.rootTeam.teamRunId !== input.teamRunId) throw new Error("TeamRun metadata root identity mismatch.");
+      const row = rowFromMetadata(input.metadata, null, input.summary);
       if (this.state.rows.has(row.teamRunId) || await this.metadataStore.readMetadata(row.teamRunId)) {
         throw new Error(`Team run '${row.teamRunId}' already exists in team history.`);
       }
-      await this.metadataStore.writeMetadata(row.teamRunId, {
-        ...input.metadata,
-        teamRunId: row.teamRunId,
-      });
+      await this.metadataStore.writeMetadata(row.teamRunId, input.metadata);
       const stagedRows = cloneRows(this.state.rows);
       stagedRows.set(row.teamRunId, row);
       try {
@@ -196,14 +194,12 @@ export class TeamRunHistoryCatalogService {
     await this.enqueue(async () => {
       const teamRunId = normalizeSafeTeamRunId(input.teamRunId);
       const previousMetadata = await this.metadataStore.readMetadata(teamRunId);
-      await this.metadataStore.writeMetadata(teamRunId, {
-        ...input.metadata,
-        teamRunId,
-      });
+      if (input.metadata.rootTeam.teamRunId !== teamRunId) throw new Error("TeamRun metadata root identity mismatch.");
+      await this.metadataStore.writeMetadata(teamRunId, input.metadata);
       const stagedRows = cloneRows(this.state.rows);
       const current = stagedRows.get(teamRunId) ?? null;
       stagedRows.set(teamRunId, normalizeRow({
-        ...rowFromMetadata({ ...input.metadata, teamRunId }, current),
+        ...rowFromMetadata(input.metadata, current),
         terminatedAt: null,
       }));
       try {
@@ -225,10 +221,9 @@ export class TeamRunHistoryCatalogService {
     await this.enqueue(async () => {
       const teamRunId = normalizeSafeTeamRunId(input.teamRunId);
       const existing = await this.metadataStore.readMetadata(teamRunId);
+      if (input.metadata.rootTeam.teamRunId !== teamRunId) throw new Error("TeamRun metadata root identity mismatch.");
       await this.metadataStore.writeMetadata(teamRunId, {
         ...input.metadata,
-        teamRunId,
-        teamDefinitionId: existing?.teamDefinitionId ?? input.metadata.teamDefinitionId,
         teamDefinitionName: existing?.teamDefinitionName ?? input.metadata.teamDefinitionName,
         createdAt: existing?.createdAt ?? input.metadata.createdAt,
         archivedAt: existing?.archivedAt ?? input.metadata.archivedAt ?? null,

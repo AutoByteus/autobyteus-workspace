@@ -115,7 +115,7 @@
           :global-runtime-kind="config.runtimeKind"
           :global-llm-model="config.llmModelIdentifier"
           :global-llm-config="config.llmConfig"
-          :coordinator-member-route-key="coordinatorMemberRouteKey"
+          :coordinator-address="coordinatorAddress"
           :disabled="isFormReadOnly"
           :advanced-initially-expanded="readOnlyMode"
           :read-only-mode="readOnlyMode"
@@ -200,21 +200,21 @@ const meaningfulOverrideCount = computed(() =>
     hasMeaningfulMemberOverride(override),
   ).length,
 )
-const coordinatorMemberRouteKey = computed(() => {
+const coordinatorAddress = computed(() => {
   const coordinatorMemberName = props.teamDefinition.coordinatorMemberName?.trim() || ''
   if (!coordinatorMemberName) return ''
-  return memberTree.value.find((node) => node.memberName === coordinatorMemberName)?.memberRouteKey || coordinatorMemberName
+  return memberTree.value.find((node) => node.displayName === coordinatorMemberName)?.address || coordinatorMemberName
 })
 
 useTeamRunRuntimeCatalogSync(toRef(props, 'config'))
 
-const handleOverrideUpdate = (memberRouteKey: string, override: MemberConfigOverride | null) => {
+const handleOverrideUpdate = (memberAddress: string, override: MemberConfigOverride | null) => {
   if (isFormReadOnly.value) return
   const overrides = { ...(props.config.memberOverrides || {}) }
   if (override && hasMeaningfulMemberOverride(override)) {
-    overrides[memberRouteKey] = override
+    overrides[memberAddress] = override
   } else {
-    delete overrides[memberRouteKey]
+    delete overrides[memberAddress]
   }
   props.config.memberOverrides = overrides
 }

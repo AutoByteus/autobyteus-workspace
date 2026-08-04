@@ -22,8 +22,8 @@ export type ApplicationRecoveryOutcome = {
 const collectBindingRunIds = (binding: ApplicationAgentBindingRecord): string[] =>
   Array.from(
     new Set([
-      binding.runtime.runId,
-      ...binding.runtime.members.map((member) => member.runId),
+      binding.runtime.subject === "AGENT_RUN" ? binding.runtime.agentRunId : binding.runtime.teamRunId,
+      ...binding.runtime.members.map((member) => member.agentRunId),
     ]),
   );
 

@@ -28,7 +28,6 @@ export const buildTokenUsageRunSummary = (
     root_team_run_id: input.rootTeamRunIdOverride ?? latest?.root_team_run_id ?? null,
     execution_address: latest?.execution_address ?? null,
     member_agent_run_id: latest?.member_agent_run_id ?? null,
-    member_route_key: latest?.member_route_key ?? null,
     agent_definition_id: latest?.agent_definition_id ?? null,
     workspace_id: latest?.workspace_id ?? null,
     gross_input_tokens: aggregate.gross_input_tokens,

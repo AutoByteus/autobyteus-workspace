@@ -11,303 +11,150 @@ import { DEFAULT_AGENT_RUNTIME_KIND, type AgentRunConfig } from '~/types/agent/A
 import { AgentRunState } from '~/types/agent/AgentRunState';
 import type { Conversation } from '~/types/conversation';
 import {
-  buildTeamMemberTreeFromDefinition,
+  buildTeamRunRootFromDefinition,
   flattenLeafAgentMemberNodes,
-  indexTeamMemberNodesByRouteKey,
-  normalizeMemberRouteKey,
-  resolveInitialFocusedMemberRouteKey,
+  indexTeamMemberNodesByAddress,
+  resolveInitialFocusedMemberAddress,
 } from '~/utils/teamDefinitionMembers';
 import { buildTeamRunMemberConfigRecords } from '~/utils/teamRunMemberConfigBuilder';
 import { ensureHistoricalTeamMemberHydrated } from '~/services/runHydration/teamRunContextHydrationService';
-import { resolveActiveExecutionFocusedMemberRouteKey } from '~/utils/teamActiveExecutionMembers';
+import {
+  createTeamExecutionAddress,
+  serializeTeamExecutionAddress,
+  type TeamExecutionAddress,
+} from '~/types/agent/TeamExecutionAddress';
 
-interface AgentTeamContextsState {
-  /** All active agent team runs, indexed by team run ID. */
-  teams: Map<string, AgentTeamContext>;
-}
+interface AgentTeamContextsState { teams: Map<string, AgentTeamContext> }
+const executionForMember = (teamRunId: string, memberAddress: string): TeamExecutionAddress =>
+  createTeamExecutionAddress({ rootTeamRunId: teamRunId, memberAddress });
 
 export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
-  state: (): AgentTeamContextsState => ({
-    teams: new Map(),
-  }),
-
+  state: (): AgentTeamContextsState => ({ teams: new Map() }),
   getters: {
-    /** Returns the currently selected team context based on selection store. */
     activeTeamContext(): AgentTeamContext | null {
-      const selectionStore = useAgentSelectionStore();
-      if (selectionStore.selectedType === 'team' && selectionStore.selectedRunId) {
-        return this.teams.get(selectionStore.selectedRunId) || null;
-      }
-      return null;
+      const selection = useAgentSelectionStore();
+      return selection.selectedType === 'team' && selection.selectedRunId
+        ? this.teams.get(selection.selectedRunId) || null
+        : null;
     },
-
-    /** Returns all active team runs as an array. */
-    allTeamRuns(state): AgentTeamContext[] {
-      return Array.from(state.teams.values());
-    },
-
-    /** Returns the focused leaf agent context for the active team, or null when a subteam node is focused. */
+    allTeamRuns(state): AgentTeamContext[] { return Array.from(state.teams.values()); },
     focusedMemberContext(): AgentContext | null {
-      const activeTeam = this.activeTeamContext as AgentTeamContext | null;
-      if (!activeTeam) return null;
-      return activeTeam.leafAgentContextsByRouteKey.get(activeTeam.focusedMemberRouteKey) || null;
+      const team = this.activeTeamContext as AgentTeamContext | null;
+      return team?.agentExecutionsByKey.get(serializeTeamExecutionAddress(team.focusedExecutionAddress)) || null;
     },
-
     focusedMemberNode() {
-      const activeTeam = this.activeTeamContext as AgentTeamContext | null;
-      if (!activeTeam) return null;
-      return activeTeam.memberNodesByRouteKey.get(activeTeam.focusedMemberRouteKey) || null;
+      const team = this.activeTeamContext as AgentTeamContext | null;
+      return team?.memberNodesByAddress.get(team.focusedExecutionAddress.memberAddress) || null;
     },
-
-    activeExecutionFocusedMemberRouteKey(): string {
-      const activeTeam = this.activeTeamContext as AgentTeamContext | null;
-      return activeTeam ? resolveActiveExecutionFocusedMemberRouteKey(activeTeam) : '';
+    activeExecutionFocusedMemberAddress(): string {
+      return (this.activeTeamContext as AgentTeamContext | null)?.focusedExecutionAddress.memberAddress || '';
     },
-
-    activeExecutionFocusedMemberContext(): AgentContext | null {
-      const activeTeam = this.activeTeamContext as AgentTeamContext | null;
-      if (!activeTeam) return null;
-      const routeKey = resolveActiveExecutionFocusedMemberRouteKey(activeTeam);
-      return routeKey ? activeTeam.leafAgentContextsByRouteKey.get(routeKey) || null : null;
-    },
-
-    activeExecutionFocusedMemberNode() {
-      const activeTeam = this.activeTeamContext as AgentTeamContext | null;
-      if (!activeTeam) return null;
-      const routeKey = resolveActiveExecutionFocusedMemberRouteKey(activeTeam);
-      return routeKey ? activeTeam.memberNodesByRouteKey.get(routeKey) || null : null;
-    },
-
-    /** Returns all leaf agent contexts for the active team. */
-    teamMembers(): { memberRouteKey: string; context: AgentContext }[] {
-      const activeTeam = this.activeTeamContext as AgentTeamContext | null;
-      if (!activeTeam) return [];
-      return Array.from(activeTeam.leafAgentContextsByRouteKey.entries()).map(([memberRouteKey, context]) => ({
-        memberRouteKey,
+    activeExecutionFocusedMemberContext(): AgentContext | null { return this.focusedMemberContext as AgentContext | null; },
+    activeExecutionFocusedMemberNode() { return this.focusedMemberNode; },
+    teamMembers(): { memberAddress: string; context: AgentContext }[] {
+      const team = this.activeTeamContext as AgentTeamContext | null;
+      if (!team) return [];
+      return Array.from(team.agentExecutionsByKey.entries()).map(([executionKey, context]) => ({
+        memberAddress: (JSON.parse(executionKey) as TeamExecutionAddress).memberAddress,
         context,
       }));
     },
-
-    getTeamContextById: (state) => (teamRunId: string): AgentTeamContext | undefined => {
-      return state.teams.get(teamRunId);
-    },
+    getTeamContextById: (state) => (teamRunId: string): AgentTeamContext | undefined => state.teams.get(teamRunId),
   },
-
   actions: {
-    /**
-     * Creates a new team run from the current run config template.
-     */
     createRunFromTemplate(options: { selectionMode?: 'desktop' | 'mobile' } = {}): string {
-      const selectionStore = useAgentSelectionStore();
-      const teamDefinitionStore = useAgentTeamDefinitionStore();
-      const agentDefinitionStore = useAgentDefinitionStore();
-      const runConfigStore = useTeamRunConfigStore();
-
-      const template = runConfigStore.config;
-      if (!template) {
-        throw new Error('No team run config template available');
-      }
-
-      const teamDef = teamDefinitionStore.getAgentTeamDefinitionById(template.teamDefinitionId);
-      if (!teamDef) {
-        throw new Error(`Team definition ${template.teamDefinitionId} not found.`);
-      }
-
-      const readiness = runConfigStore.launchReadiness;
-      if (!readiness.canLaunch) {
-        throw new Error(readiness.blockingIssues[0]?.message || 'Team configuration is not launch-ready.');
-      }
-
+      const selection = useAgentSelectionStore();
+      const teamDefinitions = useAgentTeamDefinitionStore();
+      const agentDefinitions = useAgentDefinitionStore();
+      const template = useTeamRunConfigStore().config;
+      if (!template) throw new Error('No team run config template available');
+      const definition = teamDefinitions.getAgentTeamDefinitionById(template.teamDefinitionId);
+      if (!definition) throw new Error(`Team definition ${template.teamDefinitionId} not found.`);
+      const readiness = useTeamRunConfigStore().launchReadiness;
+      if (!readiness.canLaunch) throw new Error(readiness.blockingIssues[0]?.message || 'Team configuration is not launch-ready.');
       const teamRunId = `temp-team-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
-      const memberTree = buildTeamMemberTreeFromDefinition(teamDef, {
-        getTeamDefinitionById: (teamDefinitionId: string) =>
-          teamDefinitionStore.getAgentTeamDefinitionById(teamDefinitionId),
-      });
-      const memberNodesByRouteKey = indexTeamMemberNodesByRouteKey(memberTree);
-      const leafMembers = flattenLeafAgentMemberNodes(memberTree);
-      const leafAgentContextsByRouteKey = new Map<string, AgentContext>();
-
-      const memberConfigRecords = buildTeamRunMemberConfigRecords({
-        config: template,
-        leafMembers,
-      });
-
-      for (const memberRecord of memberConfigRecords) {
-        const agentDef = agentDefinitionStore.getAgentDefinitionById(memberRecord.agentDefinitionId);
-        const defName = agentDef?.name || memberRecord.memberName;
-
-        const memberConfig: AgentRunConfig = {
-          agentDefinitionId: memberRecord.agentDefinitionId,
-          agentDefinitionName: defName,
-          llmModelIdentifier: memberRecord.llmModelIdentifier,
-          runtimeKind: memberRecord.runtimeKind || DEFAULT_AGENT_RUNTIME_KIND,
-          workspaceId: memberRecord.workspaceId ?? null,
-          workspaceMetadata: memberRecord.workspaceMetadata ?? null,
-          autoExecuteTools: memberRecord.autoExecuteTools,
-          skillAccessMode: memberRecord.skillAccessMode,
-          llmConfig: memberRecord.llmConfig,
+      const rootTeam = buildTeamRunRootFromDefinition(definition, {
+        getTeamDefinitionById: (id) => teamDefinitions.getAgentTeamDefinitionById(id),
+      }, teamRunId);
+      const members = flattenLeafAgentMemberNodes(rootTeam.children);
+      const agentExecutionsByKey = new Map<string, AgentContext>();
+      for (const member of buildTeamRunMemberConfigRecords({ config: template, leafMembers: members })) {
+        const name = agentDefinitions.getAgentDefinitionById(member.agentDefinitionId)?.name || member.displayName;
+        const config: AgentRunConfig = {
+          agentDefinitionId: member.agentDefinitionId,
+          agentDefinitionName: name,
+          llmModelIdentifier: member.llmModelIdentifier,
+          runtimeKind: member.runtimeKind || DEFAULT_AGENT_RUNTIME_KIND,
+          workspaceId: member.workspaceId ?? null,
+          workspaceMetadata: member.workspaceMetadata ?? null,
+          autoExecuteTools: member.autoExecuteTools,
+          skillAccessMode: member.skillAccessMode,
+          llmConfig: member.llmConfig,
           isLocked: false,
         };
-
+        const executionAddress = executionForMember(teamRunId, member.memberAddress);
         const conversation: Conversation = {
-          id: `${teamRunId}::${memberRecord.memberRouteKey}`,
-          messages: [],
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-          agentDefinitionId: memberRecord.agentDefinitionId,
-          agentName: defName,
+          id: serializeTeamExecutionAddress(executionAddress), messages: [], createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(), agentDefinitionId: member.agentDefinitionId, agentName: name,
         };
-
-        const memberContext = new AgentContext(
-          memberConfig,
-          new AgentRunState(conversation.id, conversation)
-        );
-
-        leafAgentContextsByRouteKey.set(memberRecord.memberRouteKey, memberContext);
+        agentExecutionsByKey.set(conversation.id, new AgentContext(config, new AgentRunState(conversation.id, conversation)));
       }
-
-      const configCopy = buildEditableTeamRunSeed(template) as TeamRunConfig;
-      const coordinatorMemberRouteKey = normalizeMemberRouteKey(teamDef.coordinatorMemberName);
-      const focusedMemberRouteKey = resolveInitialFocusedMemberRouteKey({
-        memberTree,
-        coordinatorMemberRouteKey,
-      });
-
-      const newContext: AgentTeamContext = {
-        teamRunId,
-        config: configCopy,
-        memberTree,
-        memberNodesByRouteKey,
-        leafAgentContextsByRouteKey,
-        coordinatorMemberRouteKey,
-        historicalHydration: null,
-        focusedMemberRouteKey,
-        isActive: false,
-        isSubscribed: false,
+      const focusedExecutionAddress = executionForMember(teamRunId, resolveInitialFocusedMemberAddress(rootTeam));
+      const context: AgentTeamContext = {
+        teamRunId, config: buildEditableTeamRunSeed(template) as TeamRunConfig, rootTeam,
+        memberNodesByAddress: indexTeamMemberNodesByAddress(rootTeam), agentExecutionsByKey,
+        historicalHydration: null, focusedExecutionAddress, isActive: false, isSubscribed: false,
       };
-
-      this.teams.set(teamRunId, newContext);
-      if (options.selectionMode === 'mobile') {
-        selectionStore.selectRunWithoutShellNavigation(teamRunId, 'team');
-      } else {
-        selectionStore.selectRun(teamRunId, 'team');
-      }
-
+      this.teams.set(teamRunId, context);
+      options.selectionMode === 'mobile'
+        ? selection.selectRunWithoutShellNavigation(teamRunId, 'team')
+        : selection.selectRun(teamRunId, 'team');
       return teamRunId;
     },
-
     lockConfig(teamRunId: string) {
-      const context = this.teams.get(teamRunId);
-      if (!context) return;
-
-      context.config.isLocked = true;
-      context.leafAgentContextsByRouteKey.forEach((member) => {
-        member.config.isLocked = true;
-      });
+      const context = this.teams.get(teamRunId); if (!context) return;
+      context.config.isLocked = true; context.agentExecutionsByKey.forEach((agent) => { agent.config.isLocked = true; });
     },
-
-    promoteTemporaryTeamRunId(temporaryTeamRunId: string, permanentTeamRunId: string) {
-      const context = this.teams.get(temporaryTeamRunId);
-      if (!context) return;
-
-      context.teamRunId = permanentTeamRunId;
-      context.leafAgentContextsByRouteKey.forEach(member => {
-        if (member.state.conversation.id.startsWith(temporaryTeamRunId)) {
-          const memberRunId = member.state.conversation.id.replace(
-            temporaryTeamRunId,
-            permanentTeamRunId,
-          );
-          member.state.conversation.id = memberRunId;
-          member.state.runId = memberRunId;
-        }
-      });
-
-      this.teams.delete(temporaryTeamRunId);
-      this.teams.set(permanentTeamRunId, context);
-
-      const selectionStore = useAgentSelectionStore();
-      if (
-        selectionStore.selectedType === 'team' &&
-        selectionStore.selectedRunId === temporaryTeamRunId
-      ) {
-        selectionStore.selectRunWithoutShellNavigation(permanentTeamRunId, 'team');
+    promoteTemporaryTeamRunId(temporaryId: string, permanentId: string) {
+      const context = this.teams.get(temporaryId); if (!context) return;
+      const nextExecutions = new Map<string, AgentContext>();
+      for (const [key, agent] of context.agentExecutionsByKey) {
+        const previous = JSON.parse(key) as TeamExecutionAddress;
+        const next = createTeamExecutionAddress({ ...previous, rootTeamRunId: permanentId });
+        const nextKey = serializeTeamExecutionAddress(next);
+        agent.state.conversation.id = nextKey; agent.state.runId = nextKey; nextExecutions.set(nextKey, agent);
       }
+      context.teamRunId = permanentId;
+      context.rootTeam.teamRunId = permanentId;
+      context.agentExecutionsByKey = nextExecutions;
+      context.focusedExecutionAddress = createTeamExecutionAddress({ ...context.focusedExecutionAddress, rootTeamRunId: permanentId });
+      this.teams.delete(temporaryId); this.teams.set(permanentId, context);
+      const selection = useAgentSelectionStore();
+      if (selection.selectedType === 'team' && selection.selectedRunId === temporaryId) selection.selectRunWithoutShellNavigation(permanentId, 'team');
     },
-
-    addTeamContext(context: AgentTeamContext) {
-      this.teams.set(context.teamRunId, context);
-    },
-
-    /**
-     * Remove a team context.
-     * If the removed team was selected, auto-select another remaining team.
-     */
+    addTeamContext(context: AgentTeamContext) { this.teams.set(context.teamRunId, context); },
     removeTeamContext(teamRunId: string) {
-      const context = this.teams.get(teamRunId);
-      if (context) {
-        context.unsubscribe?.();
-        this.teams.delete(teamRunId);
-
-        const selectionStore = useAgentSelectionStore();
-        if (selectionStore.selectedType === 'team' && selectionStore.selectedRunId === teamRunId) {
-          const remainingTeams = Array.from(this.teams.keys());
-          if (remainingTeams.length > 0) {
-            selectionStore.selectRun(remainingTeams[0], 'team');
-          } else {
-            selectionStore.clearSelection();
-          }
-        }
+      const context = this.teams.get(teamRunId); if (!context) return;
+      context.unsubscribe?.(); this.teams.delete(teamRunId);
+      const selection = useAgentSelectionStore();
+      if (selection.selectedType === 'team' && selection.selectedRunId === teamRunId) {
+        const next = this.teams.keys().next().value as string | undefined;
+        next ? selection.selectRun(next, 'team') : selection.clearSelection();
       }
     },
-
-    setFocusedMember(memberRouteKey: string) {
-      const activeTeam = this.activeTeamContext;
-      const normalizedMemberRouteKey = memberRouteKey.trim();
-      if (
-        !activeTeam ||
-        !activeTeam.memberNodesByRouteKey.has(normalizedMemberRouteKey) ||
-        activeTeam.focusedMemberRouteKey === normalizedMemberRouteKey
-      ) {
-        return;
-      }
-
-      activeTeam.focusedMemberRouteKey = normalizedMemberRouteKey;
+    setFocusedExecutionAddress(address: TeamExecutionAddress) {
+      const team = this.activeTeamContext;
+      if (!team || address.rootTeamRunId !== team.teamRunId || !team.memberNodesByAddress.has(address.memberAddress)) return;
+      team.focusedExecutionAddress = createTeamExecutionAddress(address);
     },
-
-    async focusMemberAndEnsureHydrated(teamRunId: string, memberRouteKey: string): Promise<void> {
-      const teamContext = this.teams.get(teamRunId);
-      if (!teamContext) {
-        return;
+    async focusMemberAndEnsureHydrated(teamRunId: string, memberAddress: string): Promise<void> {
+      const team = this.teams.get(teamRunId); if (!team) return;
+      const node = team.memberNodesByAddress.get(memberAddress); if (!node) return;
+      const address = executionForMember(teamRunId, memberAddress);
+      team.focusedExecutionAddress = address;
+      if (node.kind === 'agent' && !address.taskAgentRunId && address.taskTeamRunIds.length === 0) {
+        await ensureHistoricalTeamMemberHydrated({ teamContext: team, memberAddress });
       }
-      const normalizedMemberRouteKey = memberRouteKey.trim();
-      const targetNode = teamContext.memberNodesByRouteKey.get(normalizedMemberRouteKey) || null;
-      if (!targetNode) {
-        return;
-      }
-
-      const selectionStore = useAgentSelectionStore();
-      const isActiveSelection =
-        selectionStore.selectedType === 'team' &&
-        selectionStore.selectedRunId === teamRunId;
-
-      if (isActiveSelection) {
-        this.setFocusedMember(normalizedMemberRouteKey);
-      } else if (teamContext.focusedMemberRouteKey !== normalizedMemberRouteKey) {
-        teamContext.focusedMemberRouteKey = normalizedMemberRouteKey;
-      }
-
-      if (targetNode.memberKind !== 'agent') {
-        return;
-      }
-      if (targetNode.isTaskAgentInstance || targetNode.isTaskTeamChildProjection || targetNode.isTaskTeamInstance) {
-        return;
-      }
-
-      await ensureHistoricalTeamMemberHydrated({
-        teamContext,
-        memberRouteKey: normalizedMemberRouteKey,
-      });
     },
-
   },
 });

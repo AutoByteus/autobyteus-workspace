@@ -45,15 +45,15 @@
     <div v-if="expanded" class="ml-5 mt-0.5">
       <TeamMemberRow
         v-for="member in displayMembers"
-        :key="member.node.memberRouteKey"
-        :member-name="member.node.displayName || member.node.memberName"
-        :member-route-key="member.node.memberRouteKey"
+        :key="member.node.address"
+        :member-name="member.node.displayName"
+        :member-address="member.node.address"
         :member-context="member.context"
-        :member-status="member.node.memberKind === 'agent' ? member.node.currentStatus : null"
+        :member-status="member.node.kind === 'agent' ? member.node.currentStatus : null"
         :style="{ marginLeft: `${member.depth * 12}px` }"
-        :is-focused="activeExecutionFocusedMemberRouteKey === member.node.memberRouteKey"
-        :is-coordinator="member.node.memberRouteKey === coordinatorRouteKey"
-        @select="handleMemberSelect"
+        :is-focused="sameTeamExecutionAddress(activeExecutionFocusedMemberAddress, executionForNode(member.node))"
+        :is-coordinator="member.node.address === coordinatorAddress"
+        @select="() => handleMemberSelect(member.node)"
       />
       <div v-if="displayMembers.length === 0" class="text-xs text-gray-400 py-1 px-2">{{ $t('workspace.components.workspace.running.RunningTeamRow.no_members_yet') }}</div>
     </div>
@@ -63,23 +63,24 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import TeamActivityDot from '~/components/workspace/common/TeamActivityDot.vue';
-import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
+import type { AgentTeamContext, TeamMemberNode } from '~/types/agent/AgentTeamContext';
+import { createTeamExecutionAddress, sameTeamExecutionAddress, serializeTeamExecutionAddress, type TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 import TeamMemberRow from './TeamMemberRow.vue';
 import {
   flattenActiveExecutionMemberNodesForDisplay,
-  resolveActiveExecutionFocusedMemberRouteKey,
+  resolveActiveExecutionFocus,
 } from '~/utils/teamActiveExecutionMembers';
 
 const props = defineProps<{
   teamRun: AgentTeamContext;
   isSelected?: boolean;
-  coordinatorRouteKey?: string;
+  coordinatorAddress?: string;
 }>();
 
 const emit = defineEmits<{
   (e: 'select', id: string): void;
   (e: 'delete', id: string): void;
-  (e: 'select-member', teamRunId: string, memberRouteKey: string): void;
+  (e: 'select-member', teamRunId: string, executionAddress: TeamExecutionAddress): void;
 }>();
 
 const expanded = ref(false);
@@ -89,8 +90,8 @@ watch(() => props.isSelected, (selected) => {
   if (selected) {
     expanded.value = true;
     // Auto-focus coordinator if no member is focused
-    if (!props.teamRun.focusedMemberRouteKey && props.coordinatorRouteKey) {
-      emit('select-member', props.teamRun.teamRunId, props.coordinatorRouteKey);
+    if (!props.teamRun.focusedExecutionAddress && props.coordinatorAddress) {
+      emit('select-member', props.teamRun.teamRunId, createTeamExecutionAddress({ rootTeamRunId: props.teamRun.teamRunId, memberAddress: props.coordinatorAddress }));
     }
   }
 }, { immediate: true });
@@ -98,12 +99,12 @@ watch(() => props.isSelected, (selected) => {
 const displayMembers = computed(() =>
   flattenActiveExecutionMemberNodesForDisplay(props.teamRun).map((entry) => ({
     ...entry,
-    context: props.teamRun.leafAgentContextsByRouteKey.get(entry.node.memberRouteKey) || null,
+    context: props.teamRun.agentExecutionsByKey.get(serializeTeamExecutionAddress(executionForNode(entry.node))) || null,
   })),
 );
 
-const activeExecutionFocusedMemberRouteKey = computed(() =>
-  resolveActiveExecutionFocusedMemberRouteKey(props.teamRun),
+const activeExecutionFocusedMemberAddress = computed(() =>
+  resolveActiveExecutionFocus(props.teamRun),
 );
 
 const handleTeamClick = () => {
@@ -113,8 +114,10 @@ const handleTeamClick = () => {
   emit('select', props.teamRun.teamRunId);
 };
 
-const handleMemberSelect = (memberRouteKey: string) => {
-  emit('select-member', props.teamRun.teamRunId, memberRouteKey);
+const executionForNode = (node: TeamMemberNode): TeamExecutionAddress => node.executionAddress ?? createTeamExecutionAddress({ rootTeamRunId: props.teamRun.teamRunId, memberAddress: node.address });
+
+const handleMemberSelect = (node: TeamMemberNode) => {
+  emit('select-member', props.teamRun.teamRunId, executionForNode(node));
 };
 
 const formatId = (id: string) => {

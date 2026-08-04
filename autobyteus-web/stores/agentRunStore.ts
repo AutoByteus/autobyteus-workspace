@@ -56,7 +56,9 @@ const createClientInterruptCommandId = (): string =>
 const showInterruptCommandResult = (ack: InterruptGenerationCommandAckPayload): void => {
   if (ack.state === 'accepted') return;
   useToasts().addToast(localizationRuntime.translate('agents.store.interrupt.failed', {
-    target: ack.target.target_kind === 'standalone_run' ? ack.target.run_id : ack.target.member_route_key,
+    target: ack.target.target_kind === 'standalone_run'
+      ? ack.target.run_id
+      : ack.target.execution_address?.memberAddress || ack.target.team_run_id,
     detail: ack.message,
   }), 'error');
 };
@@ -65,7 +67,7 @@ const showInterruptTransportFailure = (failure: InterruptCommandTransportFailure
   useToasts().addToast(localizationRuntime.translate('agents.store.interrupt.transportFailed', {
     target: failure.target.target_kind === 'standalone_run'
       ? failure.target.run_id
-      : failure.target.member_route_key,
+      : failure.target.execution_address?.memberAddress || failure.target.team_run_id,
     detail: failure.reason.message,
   }), 'error');
 };

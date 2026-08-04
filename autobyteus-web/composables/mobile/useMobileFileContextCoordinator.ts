@@ -10,6 +10,7 @@ import {
   createWorkspaceContextAttachment,
   inferContextAttachmentType,
 } from '~/utils/contextFiles/contextAttachmentModel';
+import { sameTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 
 export type MobileAttachmentTarget = 'active-run' | 'mobile-draft' | 'pending-team-run' | 'none';
 
@@ -45,7 +46,7 @@ export function useMobileFileContextCoordinator() {
       return selectionStore.selectedType === 'team'
         && selectionStore.selectedRunId === context.teamRunId
         && Boolean(team)
-        && team?.focusedMemberRouteKey === context.focusedMemberRouteKey
+        && Boolean(team && sameTeamExecutionAddress(team.focusedExecutionAddress, context.focusedExecutionAddress))
         && Boolean(activeContextStore.activeAgentContext);
     }
     return false;

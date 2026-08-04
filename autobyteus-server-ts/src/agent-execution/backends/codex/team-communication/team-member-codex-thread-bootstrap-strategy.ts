@@ -37,10 +37,8 @@ export class TeamMemberCodexThreadBootstrapStrategy implements CodexThreadBootst
       };
     }
 
-    const sendMessageToEnabled = input.configuredToolExposure.sendMessageToConfigured;
-    const recipientNameDeliveryEnabled =
-      memberTeamContext.sendMessageToEnabled &&
-      Boolean(memberTeamContext.collaboration.deliverInterAgentMessage);
+    const sendMessageToEnabled = true;
+    const recipientAddressDeliveryEnabled = Boolean(memberTeamContext.collaboration.deliverInterAgentMessage);
     const taskDelegationToolNames =
       input.configuredToolExposure.enabledTaskDelegationToolNames;
     const taskDelegationEnabled = taskDelegationToolNames.length > 0;
@@ -49,9 +47,9 @@ export class TeamMemberCodexThreadBootstrapStrategy implements CodexThreadBootst
       agentInstruction: input.agentInstruction,
       memberTeamContext,
       sendMessageToEnabled,
-      recipientNameDeliveryEnabled,
+      recipientAddressDeliveryEnabled,
       taskDelegationEnabled,
-      getHandoffRulesEnabled: input.configuredToolExposure.getHandoffRulesConfigured,
+      getHandoffRulesEnabled: true,
     });
 
     return {

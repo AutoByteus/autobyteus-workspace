@@ -1,196 +1,84 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+import { isAgentTeamAddressAncestor, type AgentTeamAddress } from "../../../../agent-collaboration/domain/agent-team-address.js";
 import type { AgentOperationResult } from "../../../../agent-execution/domain/agent-operation-result.js";
-import type { AgentMemoryScope } from "../../../../agent-memory/domain/agent-memory-location.js";
 import type { TeamRun } from "../../../domain/team-run.js";
 import type { TeamRunContext } from "../../../domain/team-run-context.js";
-import {
-  type InterAgentMessageDeliveryHandler,
-  type ResolvedInterAgentMessageDeliveryRequest,
-} from "../../../domain/inter-agent-message-delivery.js";
-import {
-  selectorFromMemberRouteKey,
-  selectorToRouteKey,
-  stripSelectorTopLevel,
-  type TeamMemberSelector,
-} from "../../../domain/team-run-member-identity.js";
-import type { TeamSubTeamMemberRunConfig } from "../../../domain/team-run-config.js";
-import type { ConversationTargetAddress } from "../../../domain/conversation-target-address.js";
+import type { InterAgentMessageDeliveryHandler, ResolvedInterAgentMessageDeliveryRequest } from "../../../domain/inter-agent-message-delivery.js";
+import type { TeamRunAgentTeamNode } from "../../../domain/team-run-config.js";
 import type { MixedTeamRunContext, MixedSubTeamMemberContext } from "../mixed-team-run-context.js";
 import type { MixedSubTeamRunFactory } from "../mixed-sub-team-run-factory.js";
 import { buildInterAgentDeliveryInputMessage } from "../../../services/inter-agent-message-runtime-builders.js";
 import { getSubTeamActiveRunDirectory } from "../../../services/sub-team-active-run-directory.js";
-import { getTokenUsageExecutionAddressBuilder } from "../../../services/token-usage-execution-address-builder.js";
 import { getTaskDelegationRunRegistry } from "../../../task-delegation/task-delegation-run-registry.js";
-import {
-  prefixMixedSubTeamEvent,
-  prefixMixedTeamLeafAgentStatusSnapshot,
-} from "../events/mixed-team-event-bridge.js";
 import type { MixedTeamEventPublish, MixedTeamMemberHandle } from "./mixed-team-member-handle.js";
-
-
-const normalizeRequiredRunId = (value: string | null | undefined, fieldName: string): string => {
-  const normalized = typeof value === "string" ? value.trim() : "";
-  if (!normalized) {
-    throw new Error(`${fieldName} is required.`);
-  }
-  return normalized;
-};
-
-const getTeamContextMemoryScope = (
-  context: TeamRunContext<MixedTeamRunContext>,
-): AgentMemoryScope =>
-  context.runtimeContext.parentBoundary?.memoryScope
-    ? {
-        rootTeamRunId: context.runtimeContext.parentBoundary.memoryScope.rootTeamRunId,
-        teamRunPath: [...context.runtimeContext.parentBoundary.memoryScope.teamRunPath],
-      }
-    : { rootTeamRunId: context.runId, teamRunPath: [] };
-
-const unsupportedSubteamApproval = (memberName: string): AgentOperationResult => ({
-  accepted: false,
-  code: "TARGET_MEMBER_NOT_AGENT",
-  message: `Team member '${memberName}' is a subteam; approve a nested agent by memberPath or memberRouteKey.`,
-});
-
-const buildTargetMemberRunInactiveResult = (
-  targetMemberRouteKey: string,
-): AgentOperationResult => ({
-  accepted: false,
-  code: "RUN_NOT_FOUND",
-  message: `Team member route key '${targetMemberRouteKey}' is not active.`,
-});
 
 export class MixedSubTeamMemberHandle implements MixedTeamMemberHandle {
   readonly context: MixedSubTeamMemberContext;
   private childRun: TeamRun | null = null;
   private unsubscribe: (() => void) | null = null;
-  private readonly tokenUsageAddressBuilder = getTokenUsageExecutionAddressBuilder();
 
   constructor(private readonly options: {
     parentContext: TeamRunContext<MixedTeamRunContext>;
     context: MixedSubTeamMemberContext;
-    config: TeamSubTeamMemberRunConfig;
+    config: TeamRunAgentTeamNode;
     subTeamRunFactory: MixedSubTeamRunFactory;
     publish: MixedTeamEventPublish;
     deliverInterAgentMessage: InterAgentMessageDeliveryHandler;
-  }) {
-    this.context = options.context;
-  }
+  }) { this.context = options.context; }
 
-  isActive(): boolean {
-    return this.childRun?.isActive() ?? false;
-  }
-
-  getLeafAgentStatusSnapshots() {
-    return this.childRun?.getLeafAgentStatusSnapshots().map((snapshot) =>
-      prefixMixedTeamLeafAgentStatusSnapshot({
-        parentTeamRunId: this.options.parentContext.runId,
-        sourcePrefix: this.context.memberPath,
-        snapshot,
-      })) ?? [];
-  }
-
-  hasOpenExecutionWork(): boolean {
-    return this.childRun?.hasOpenExecutionWork() ?? false;
-  }
+  isActive(): boolean { return this.childRun?.isActive() ?? false; }
+  getLeafAgentStatusSnapshots() { return this.childRun?.getLeafAgentStatusSnapshots() ?? []; }
+  hasOpenExecutionWork(): boolean { return this.childRun?.hasOpenExecutionWork() ?? false; }
 
   async postMessage(message: AgentInputUserMessage): Promise<AgentOperationResult> {
-    try {
-      const childRun = await this.ensureReady();
-      const result = await childRun.postMessage(message, null);
-      return { ...result, memberRunId: this.context.memberRunId, memberName: this.context.memberName };
-    } catch (error) {
-      throw error;
-    }
+    const child = await this.ensureReady();
+    const result = await child.postMessage(message, this.options.config.coordinatorAddress);
+    return { ...result, displayName: this.context.address };
   }
 
-  async postMessageToConversationTarget(
-    message: AgentInputUserMessage,
-    address: ConversationTargetAddress,
-  ): Promise<AgentOperationResult> {
-    if (address.segments.length === 0) {
-      return this.postMessage(message);
+  async postMessageToAddress(message: AgentInputUserMessage, target: AgentTeamAddress, targetAgentRunId: string | null = null): Promise<AgentOperationResult> {
+    if (target !== this.context.address && !isAgentTeamAddressAncestor(this.context.address, target)) {
+      return { accepted: false, code: "TARGET_MEMBER_NOT_FOUND", message: `Target '${target}' is outside AgentTeam '${this.context.address}'.` };
     }
-
-    try {
-      const childRun = await this.ensureReady();
-      const result = await childRun.postMessageToConversationTarget(message, address);
-      return { ...result, memberRunId: this.context.memberRunId, memberName: this.context.memberName };
-    } catch (error) {
-      throw error;
-    }
+    return (await this.ensureReady()).postMessage(
+      message,
+      target === this.context.address ? this.options.config.coordinatorAddress : target,
+      targetAgentRunId,
+    );
   }
 
-  async deliverInterMemberMessage(
-    request: ResolvedInterAgentMessageDeliveryRequest,
-    beforePublishMemberInput: (() => void) | null = null,
-  ): Promise<AgentOperationResult> {
-    try {
-      const childRun = await this.ensureReady();
-      const childSelector = stripSelectorTopLevel(request.recipient.selector);
-      const result = await childRun.postMessage(buildInterAgentDeliveryInputMessage(request), childSelector);
-      if (result.accepted) {
-        beforePublishMemberInput?.();
-      }
-      return { ...result, memberRunId: this.context.memberRunId, memberName: this.context.memberName };
-    } catch (error) {
-      throw error;
+  async deliverInterMemberMessage(request: ResolvedInterAgentMessageDeliveryRequest, beforePublishMemberInput: (() => void) | null = null): Promise<AgentOperationResult> {
+    if (!isAgentTeamAddressAncestor(this.context.address, request.receiverAddress.memberAddress)) {
+      return { accepted: false, code: "COLLABORATION_TARGET_NOT_FOUND", message: `Recipient '${request.receiverAddress.memberAddress}' is outside AgentTeam '${this.context.address}'.` };
     }
+    const result = await (await this.ensureReady()).postMessage(
+      buildInterAgentDeliveryInputMessage(request),
+      request.receiverAddress.memberAddress,
+      request.targetAgentRunId,
+    );
+    if (result.accepted) beforePublishMemberInput?.();
+    return result;
   }
 
-  async approveToolInvocation(
-    target: TeamMemberSelector | null,
-    invocationId: string,
-    approved: boolean,
-    reason: string | null = null,
-  ): Promise<AgentOperationResult> {
-    if (!target) {
-      return unsupportedSubteamApproval(this.context.memberName);
-    }
-    const childSelector = stripSelectorTopLevel(target) ?? target;
-    const childRun = await this.ensureReady();
-    return childRun.approveToolInvocation(childSelector, invocationId, approved, reason ?? null);
+  async approveToolInvocation(target: AgentTeamAddress | null, invocationId: string, approved: boolean, reason: string | null = null, targetAgentRunId: string | null = null): Promise<AgentOperationResult> {
+    if (!target) return { accepted: false, code: "TARGET_AGENT_REQUIRED", message: "A target Agent address is required." };
+    return (await this.ensureReady()).approveToolInvocation(target, invocationId, approved, reason, targetAgentRunId);
   }
 
-  async interrupt(
-    target: TeamMemberSelector | null,
-    targetMemberRunId: string | null = null,
-  ): Promise<AgentOperationResult> {
-    if (!this.childRun?.isActive()) {
-      const targetRouteKey = target ? selectorToRouteKey(target) : this.context.memberRouteKey;
-      return buildTargetMemberRunInactiveResult(targetRouteKey);
-    }
-
-    const childSelector = target ? stripSelectorTopLevel(target) : null;
-    if (childSelector) {
-      return this.childRun.interruptMember(
-        selectorToRouteKey(childSelector),
-        targetMemberRunId,
-      );
-    }
-
-    const defaultChildRouteKey = this.resolveDefaultChildRouteKey();
-    if (!defaultChildRouteKey) {
-      return {
-        accepted: false,
-        code: "TARGET_MEMBER_REQUIRED",
-        message: "target member selector is required.",
-      };
-    }
-
-    return this.childRun.interruptMember(defaultChildRouteKey, null);
+  async interrupt(target: AgentTeamAddress | null, targetAgentRunId: string | null = null): Promise<AgentOperationResult> {
+    if (!target) target = this.options.config.coordinatorAddress;
+    if (!this.childRun?.isActive()) return { accepted: false, code: "RUN_NOT_FOUND", message: `AgentTeam '${this.context.address}' is not active.` };
+    return this.childRun.interruptMember(target, targetAgentRunId);
   }
 
   async terminate(): Promise<AgentOperationResult> {
     const result = this.childRun ? await this.childRun.terminate() : { accepted: true };
-    if (result.accepted) {
-      this.dispose();
-    }
+    if (result.accepted) this.dispose();
     return result;
   }
 
   dispose(): void {
-    this.unbindChildRun();
+    this.unbind();
     this.unsubscribe?.();
     this.unsubscribe = null;
     this.childRun = null;
@@ -198,94 +86,32 @@ export class MixedSubTeamMemberHandle implements MixedTeamMemberHandle {
   }
 
   private async ensureReady(): Promise<TeamRun> {
-    if (this.childRun?.isActive()) {
-      return this.childRun;
-    }
-    const restoreRuntimeContext = this.context.childRuntimeContext;
-    this.unbindChildRun();
+    if (this.childRun?.isActive()) return this.childRun;
+    const restored = this.context.childRuntimeContext;
+    this.unbind();
     this.unsubscribe?.();
-    this.unsubscribe = null;
-    this.childRun = null;
-    this.context.childRuntimeContext = null;
-    const childTeamRunId = normalizeRequiredRunId(
-      this.context.childTeamRunId ?? this.options.config.childTeamRunId,
-      `childTeamRunId for subteam '${this.context.memberRouteKey}'`,
-    );
-    const parentMemoryScope = getTeamContextMemoryScope(this.options.parentContext);
-    const childMemoryScope: AgentMemoryScope = {
-      rootTeamRunId: parentMemoryScope.rootTeamRunId,
-      teamRunPath: [...parentMemoryScope.teamRunPath, childTeamRunId],
-    };
     this.childRun = await this.options.subTeamRunFactory.createOrRestore({
-      parentTeamRunId: this.options.parentContext.runId,
-      subTeamConfig: this.options.config,
-      childTeamRunId,
-      restoreRuntimeContext,
+      config: this.options.parentContext.config,
+      teamNode: this.options.config,
+      restoreRuntimeContext: restored,
       parentBoundary: {
-        parentTeamRunId: this.options.parentContext.runId,
-        memoryScope: childMemoryScope,
-        collaborationRootTeamRunId:
-          this.options.parentContext.runtimeContext.collaborationRootTeamRunId,
-        teamMountPath: [
-          ...this.options.parentContext.runtimeContext.teamMountPath,
-          ...this.options.config.memberPath,
-        ],
-        effectiveHandoffs:
-          this.options.parentContext.runtimeContext.effectiveHandoffs,
+        parentTeamRunId: this.options.parentContext.teamRunId,
+        rootTeamRunId: this.options.parentContext.config.rootTeam.teamRunId,
+        parentTeamAddress: this.options.parentContext.teamAddress,
         deliverInterAgentMessage: this.options.deliverInterAgentMessage,
       },
-      tokenUsageTeamScope: this.tokenUsageAddressBuilder.buildSubTeamScope({
-        parentScope: this.options.parentContext.runtimeContext.tokenUsageTeamScope,
-        representedMemberRouteKey: this.context.memberRouteKey,
-      }),
+      taskTeamInstance: this.options.parentContext.runtimeContext.taskTeamInstance,
+      taskTeamRunIds: this.options.parentContext.taskTeamRunIds,
     });
-    this.context.childTeamRunId = this.childRun.runId;
     this.context.childRuntimeContext = this.childRun.getRuntimeContext() as MixedTeamRunContext;
     getSubTeamActiveRunDirectory().bind(this.childRun);
-    this.bindEvents(this.childRun);
+    this.unsubscribe = this.childRun.subscribeToEvents(this.options.publish);
     return this.childRun;
   }
 
-  private unbindChildRun(): void {
-    const childTeamRunId = this.childRun?.runId ?? this.context.childTeamRunId;
-    getSubTeamActiveRunDirectory().unbind(childTeamRunId);
-    if (childTeamRunId) {
-      getTaskDelegationRunRegistry().detach(childTeamRunId);
-    }
-  }
-
-  private resolveDefaultChildRouteKey(): string | null {
-    const configuredRouteKey = this.options.config.coordinatorMemberRouteKey?.trim();
-    if (configuredRouteKey) {
-      return selectorToRouteKey(selectorFromMemberRouteKey(configuredRouteKey));
-    }
-    const runtimeContext = this.childRun?.getRuntimeContext();
-    const coordinatorRouteKey =
-      typeof runtimeContext?.coordinatorMemberRouteKey === "string" &&
-      runtimeContext.coordinatorMemberRouteKey.trim().length > 0
-        ? runtimeContext.coordinatorMemberRouteKey.trim()
-        : null;
-    if (coordinatorRouteKey) {
-      return selectorToRouteKey(selectorFromMemberRouteKey(coordinatorRouteKey));
-    }
-    const memberContexts = Array.isArray((runtimeContext as MixedTeamRunContext | null)?.memberContexts)
-      ? (runtimeContext as MixedTeamRunContext).memberContexts
-      : [];
-    if (memberContexts.length === 1) {
-      return selectorToRouteKey(selectorFromMemberRouteKey(memberContexts[0].memberRouteKey));
-    }
-    return null;
-  }
-
-  private bindEvents(childRun: TeamRun): void {
-    this.unsubscribe?.();
-    this.unsubscribe = childRun.subscribeToEvents((event) => {
-      const prefixedEvent = prefixMixedSubTeamEvent({
-        parentTeamRunId: this.options.parentContext.runId,
-        sourcePrefix: this.context.memberPath,
-        event,
-      });
-      this.options.publish(prefixedEvent);
-    });
+  private unbind(): void {
+    const id = this.childRun?.teamRunId ?? this.context.teamRunId;
+    getSubTeamActiveRunDirectory().unbind(id);
+    getTaskDelegationRunRegistry().detach(id);
   }
 }

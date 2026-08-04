@@ -57,10 +57,11 @@ const sameDraftOwner = (
   if (left.kind === 'agent_draft' && right.kind === 'agent_draft') {
     return left.draftRunId === right.draftRunId;
   }
-  return (
-    left.draftTeamRunId === right.draftTeamRunId &&
-    left.memberRouteKey === right.memberRouteKey
-  );
+  if (left.kind === 'team_member_draft' && right.kind === 'team_member_draft') {
+    return left.draftTeamRunId === right.draftTeamRunId
+      && left.memberAddress === right.memberAddress;
+  }
+  return false;
 };
 
 const resolveAttachmentFetchUrl = (locator: string): string => {
@@ -250,6 +251,7 @@ export function useContextAttachmentComposer<TSubject>(options: {
     if (!target || !target.draftOwner || files.length === 0) {
       return;
     }
+    const draftOwner = target.draftOwner;
 
     await Promise.all(
       files.map(async (file) => {
@@ -269,7 +271,7 @@ export function useContextAttachmentComposer<TSubject>(options: {
         ];
 
         try {
-          const attachment = await contextFileUploadStore.uploadAttachment({ owner: target.draftOwner, file });
+          const attachment = await contextFileUploadStore.uploadAttachment({ owner: draftOwner, file });
           commitTargetAttachments(target, (current) => {
             if (current.some((existingAttachment) => sameAttachment(existingAttachment, attachment))) {
               return current;

@@ -87,7 +87,7 @@ export class TeamCommunicationProjectionService {
 
     return normalizeTeamCommunicationProjection(
       await this.projectionStore.readProjection(
-        this.teamLayout.getTeamDirPath({ rootTeamRunId: normalizedTeamRunId, teamRunPath: [] }),
+        this.teamLayout.getTeamDirPath({ rootTeamRunId: normalizedTeamRunId, ancestorTeamRunIds: [] }),
       ),
       { teamRunId: normalizedTeamRunId },
     );

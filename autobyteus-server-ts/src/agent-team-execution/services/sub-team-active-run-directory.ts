@@ -5,7 +5,7 @@ export class SubTeamActiveRunDirectory {
   private readonly runsById = new Map<string, TeamRun>();
 
   bind(run: TeamRun): void {
-    const runId = run.runId.trim();
+    const runId = run.teamRunId.trim();
     if (!runId) {
       throw new Error("childTeamRunId is required.");
     }

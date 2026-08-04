@@ -41,10 +41,10 @@
             :key="teamRun.teamRunId"
             :team-run="teamRun"
             :is-selected="teamRun.teamRunId === selectedRunId"
-            :coordinator-route-key="coordinatorRouteKey"
+            :coordinator-address="coordinatorAddress"
             @select="$emit('select', $event)"
             @delete="$emit('delete', $event)"
-            @select-member="(teamRunId, memberRouteKey) => $emit('select-member', teamRunId, memberRouteKey)"
+            @select-member="(teamRunId, executionAddress) => $emit('select-member', teamRunId, executionAddress)"
         />
     </div>
   </div>
@@ -55,6 +55,7 @@ import { computed, ref } from 'vue';
 import { Icon } from '@iconify/vue';
 import TeamActivityDot from '~/components/workspace/common/TeamActivityDot.vue';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
+import type { TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 import RunningTeamRow from './RunningTeamRow.vue';
 
 const props = defineProps<{
@@ -62,14 +63,14 @@ const props = defineProps<{
     definitionId: string;
     runs: AgentTeamContext[];
     selectedRunId: string | null;
-    coordinatorRouteKey?: string;
+    coordinatorAddress?: string;
 }>();
 
 defineEmits<{
     (e: 'create', definitionId: string): void;
     (e: 'select', runId: string): void;
     (e: 'delete', runId: string): void;
-    (e: 'select-member', teamRunId: string, memberRouteKey: string): void;
+    (e: 'select-member', teamRunId: string, executionAddress: TeamExecutionAddress): void;
 }>();
 
 const isExpanded = ref(true);

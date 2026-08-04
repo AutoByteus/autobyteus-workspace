@@ -11,6 +11,7 @@ import {
   MemoryRunSummaryBuilder,
   hasMemoryAvailability,
 } from "./memory-run-summary-builder.js";
+import { getAgentTeamAddressBasename } from "../../agent-collaboration/domain/agent-team-address.js";
 
 export type TeamMemoryMemberTargetRecord = {
   member: TeamRunAgentMemberMetadata;
@@ -38,6 +39,8 @@ export class TeamMemoryMemberTargetBuilder {
         targets.push({ member: target.member, memory });
       }
     }
-    return targets.sort((a, b) => a.member.memberName.localeCompare(b.member.memberName));
+    return targets.sort((a, b) =>
+      (getAgentTeamAddressBasename(a.member.address) ?? a.member.address)
+        .localeCompare(getAgentTeamAddressBasename(b.member.address) ?? b.member.address));
   }
 }

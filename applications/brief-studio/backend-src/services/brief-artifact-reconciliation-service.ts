@@ -20,9 +20,9 @@ const isTerminalBinding = (binding: ApplicationAgentBinding | ApplicationAgentTe
 
 const resolveBindingRunIds = (binding: ApplicationAgentBinding | ApplicationAgentTeamBinding): string[] => {
   if (binding.runtime.members.length > 0) {
-    return binding.runtime.members.map((member) => member.runId);
+    return binding.runtime.members.map((member) => member.agentRunId);
   }
-  return [binding.runtime.runId];
+  return [binding.runtime.subject === "AGENT_RUN" ? binding.runtime.agentRunId : binding.runtime.teamRunId];
 };
 
 const sortArtifacts = <T extends { updatedAt: string; createdAt: string }>(artifacts: T[]): T[] =>
@@ -38,17 +38,22 @@ const resolveProducerForRun = (
   binding: ApplicationAgentBinding | ApplicationAgentTeamBinding,
   runId: string,
 ): ApplicationExecutionProducer | null => {
-  const member = binding.runtime.members.find((candidate) => candidate.runId === runId) ?? null;
+  if (binding.runtime.subject !== "TEAM_RUN") {
+    return null;
+  }
+  const member = binding.runtime.members.find((candidate) => candidate.agentRunId === runId) ?? null;
   if (!member) {
     return null;
   }
   return {
-    runId,
-    memberRouteKey: member.memberRouteKey,
-    memberName: member.memberName,
+    executionAddress: {
+      rootTeamRunId: binding.runtime.teamRunId,
+      taskTeamRunIds: [],
+      memberAddress: member.memberAddress,
+      taskAgentRunId: null,
+    },
     displayName: member.displayName,
     runtimeKind: member.runtimeKind,
-    teamPath: [...member.teamPath],
   };
 };
 
@@ -148,13 +153,13 @@ export const createBriefArtifactReconciliationService = (context: ApplicationHan
     description: string | null;
     publishedAt: string;
   }): Promise<void> {
-    if (!input.producer?.memberRouteKey) {
-      throw new Error("Brief Studio artifact projection requires producer.memberRouteKey.");
+    if (!input.producer?.executionAddress.memberAddress) {
+      throw new Error("Brief Studio artifact projection requires producer.executionAddress.memberAddress.");
     }
     const producer = input.producer;
 
     const briefId = createRunBindingCorrelationService(context).resolveBriefIdForBinding(input.binding);
-    const pathRule = resolveBriefArtifactPathRule(producer.memberRouteKey, input.path);
+    const pathRule = resolveBriefArtifactPathRule(producer.executionAddress.memberAddress, input.path);
     const body = await requireRevisionText(context, {
       runId: input.runId,
       revisionId: input.revisionId,
@@ -180,7 +185,7 @@ export const createBriefArtifactReconciliationService = (context: ApplicationHan
           artifactKind: pathRule.artifactKind,
           publicationKind: pathRule.publicationKind,
           path: input.path,
-          producerMemberRouteKey: producer.memberRouteKey,
+          producerMemberAddress: producer.executionAddress.memberAddress,
           publishedAt: input.publishedAt,
           projectedAt,
         })) {
@@ -196,7 +201,7 @@ export const createBriefArtifactReconciliationService = (context: ApplicationHan
           path: input.path,
           description: input.description ?? null,
           body,
-          producerMemberRouteKey: producer.memberRouteKey,
+          producerMemberAddress: producer.executionAddress.memberAddress,
           updatedAt: input.publishedAt,
         });
         briefRepository.upsertProjectedBrief({
@@ -205,7 +210,7 @@ export const createBriefArtifactReconciliationService = (context: ApplicationHan
           status: pathRule.resolveStatus(brief.status),
           updatedAt: input.publishedAt,
           latestBindingId: input.binding.bindingId,
-          latestRunId: input.binding.runtime.runId,
+          latestRunId: input.binding.runtime.subject === "AGENT_RUN" ? input.binding.runtime.agentRunId : input.binding.runtime.teamRunId,
           latestBindingStatus: input.binding.status,
           lastErrorMessage: null,
         });

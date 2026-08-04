@@ -84,7 +84,7 @@
 import { computed, ref, watch } from 'vue';
 import { Icon } from '@iconify/vue';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
-import type { ConversationTargetAddress } from '~/types/agent/ConversationTargetAddress';
+import type { TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 import { useHorizontalSplitResize } from '~/composables/useHorizontalSplitResize';
 import { deriveDelegatedTaskEntries, type DelegatedTaskEntry } from '~/utils/teamDelegatedTaskEntries';
 import { useTaskDelegationStore } from '~/stores/taskDelegationStore';
@@ -93,7 +93,7 @@ import TeamDelegatedTaskNavigator from '~/components/workspace/team/TeamDelegate
 
 const props = withDefaults(defineProps<{
   teamContext: AgentTeamContext;
-  focusedAddress?: ConversationTargetAddress | null;
+  focusedAddress?: TeamExecutionAddress | null;
   collapsed?: boolean;
 }>(), {
   focusedAddress: undefined,

@@ -56,7 +56,7 @@ export interface RunHistoryFetchStoreLike {
   teamResumeConfigByTeamRunId: Record<string, TeamRunResumeConfigPayload>;
   selectedRunId: string | null;
   selectedTeamRunId: string | null;
-  selectedTeamMemberRouteKey: string | null;
+  selectedTeamMemberAddress: string | null;
   openingRun: boolean;
   findAgentNameByRunId(runId: string): string | null;
   ensureWorkspaceByRootPath(rootPath: string): Promise<string | null>;
@@ -137,15 +137,15 @@ const buildMemberStatusSnapshotsFromHistory = (
   teamRun: TeamRunHistoryItem,
 ): TeamMemberLiveSnapshot[] =>
   teamRun.members.map((member) => ({
-    memberRouteKey: member.memberRouteKey,
-    memberName: member.memberName,
-    memberRunId: member.memberRunId,
+    memberAddress: member.memberAddress,
+    displayName: member.displayName,
+    agentRunId: member.agentRunId,
     currentStatus: member.status,
   }));
 
-const getLeafAgentContextsByRouteKey = (teamContext: any): Map<string, any> => {
-  if (teamContext?.leafAgentContextsByRouteKey instanceof Map) {
-    return teamContext.leafAgentContextsByRouteKey;
+const getAgentExecutionsByKey = (teamContext: any): Map<string, any> => {
+  if (teamContext?.agentExecutionsByKey instanceof Map) {
+    return teamContext.agentExecutionsByKey;
   }
   return teamContext?.members instanceof Map ? teamContext.members : new Map();
 };
@@ -220,7 +220,7 @@ export const reconcileDiscoveredActiveRuns = async (
       agentTeamRunStore.disconnectTeamStream(teamContext.teamRunId);
     }
     teamContext.isActive = false;
-    getLeafAgentContextsByRouteKey(teamContext).forEach((memberContext) => {
+    getAgentExecutionsByKey(teamContext).forEach((memberContext) => {
       if (memberContext.state.currentStatus !== AgentStatus.Error) {
         applyOfflineOrTerminalCleanup(memberContext);
       } else {
@@ -240,7 +240,7 @@ export const reconcileDiscoveredActiveRuns = async (
       }, {
         preserveCurrentStatus: existingTeamContext.isSubscribed,
       });
-      getLeafAgentContextsByRouteKey(existingTeamContext).forEach((memberContext) => {
+      getAgentExecutionsByKey(existingTeamContext).forEach((memberContext) => {
         memberContext.config.isLocked = true;
       });
       if (!existingTeamContext.isSubscribed) {
@@ -252,7 +252,7 @@ export const reconcileDiscoveredActiveRuns = async (
     try {
       const result = await hydrateLiveTeamRunContext({
         teamRunId,
-        memberRouteKey: null,
+        memberAddress: null,
         resolveWorkspaceMetadataByRootPath: (rootPath: string) =>
           store.resolveWorkspaceMetadataByRootPath(rootPath),
         ensureWorkspaceByRootPath: (rootPath: string) => store.ensureWorkspaceByRootPath(rootPath),
@@ -260,8 +260,8 @@ export const reconcileDiscoveredActiveRuns = async (
       });
       teamContextsStore.addTeamContext(result.hydratedContext);
       hydrateTeamMemberActivitiesFromProjection({
-        members: result.hydratedContext.leafAgentContextsByRouteKey,
-        projectionByMemberRouteKey: result.projectionByMemberRouteKey,
+        members: result.hydratedContext.agentExecutionsByKey,
+        projectionByMemberAddress: result.projectionByMemberAddress,
       });
       agentTeamRunStore.connectToTeamStream(teamRunId);
     } catch (error) {
@@ -290,7 +290,7 @@ export const openHistoricalRun = async (
     store.resumeConfigByRunId[runId] = result.resumeConfig;
     store.selectedRunId = result.runId;
     store.selectedTeamRunId = null;
-    store.selectedTeamMemberRouteKey = null;
+    store.selectedTeamMemberAddress = null;
   } catch (error: any) {
     store.error = error?.message || `Failed to open run '${runId}'.`;
     throw error;

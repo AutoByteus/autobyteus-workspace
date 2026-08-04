@@ -13,6 +13,10 @@ import type {
   ChannelRunOutputTarget,
 } from "../domain/models.js";
 import { normalizeNullableString, parseDate } from "../../persistence/file/store-utils.js";
+import {
+  createTeamExecutionAddress,
+  type TeamExecutionAddress,
+} from "../../agent-team-execution/domain/team-execution-address.js";
 
 export type ChannelRunOutputTargetRow =
   | {
@@ -22,9 +26,7 @@ export type ChannelRunOutputTargetRow =
   | {
       targetType: "TEAM";
       teamRunId: string;
-      entryMemberRunId: string | null;
-      entryMemberRouteKey: string | null;
-      entryMemberPath: string[] | null;
+      entryExecutionAddress: TeamExecutionAddress | null;
     };
 
 export type ChannelRunOutputDeliveryRow = {
@@ -83,9 +85,9 @@ export const targetToRow = (
     : {
         targetType: "TEAM",
         teamRunId: target.teamRunId,
-        entryMemberRunId: normalizeNullableString(target.entryMemberRunId),
-        entryMemberRouteKey: normalizeNullableString(target.entryMemberRouteKey),
-        entryMemberPath: normalizeMemberPath(target.entryMemberPath),
+        entryExecutionAddress: target.entryExecutionAddress
+          ? createTeamExecutionAddress(target.entryExecutionAddress)
+          : null,
       };
 
 export const rowToTarget = (
@@ -99,9 +101,9 @@ export const rowToTarget = (
     : {
         targetType: "TEAM",
         teamRunId: target.teamRunId,
-        entryMemberRunId: normalizeNullableString(target.entryMemberRunId),
-        entryMemberRouteKey: normalizeNullableString(target.entryMemberRouteKey),
-        entryMemberPath: normalizeMemberPath(target.entryMemberPath),
+        entryExecutionAddress: target.entryExecutionAddress
+          ? createTeamExecutionAddress(target.entryExecutionAddress)
+          : null,
       };
 
 export const toRecord = (
@@ -131,13 +133,3 @@ export const sortByUpdatedDesc = (
   [...rows].sort((a, b) => parseDate(b.updatedAt).getTime() - parseDate(a.updatedAt).getTime());
 
 export type { ExternalChannelProvider, ExternalChannelTransport };
-
-const normalizeMemberPath = (value: readonly string[] | null | undefined): string[] | null => {
-  if (!Array.isArray(value)) {
-    return null;
-  }
-  const normalized = value
-    .map((segment) => normalizeNullableString(segment))
-    .filter((segment): segment is string => Boolean(segment));
-  return normalized.length > 0 ? normalized : null;
-};

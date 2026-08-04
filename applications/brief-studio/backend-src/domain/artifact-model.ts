@@ -15,6 +15,6 @@ export type BriefArtifactRecord = {
   path: string;
   description: string | null;
   body: string;
-  producerMemberRouteKey: string;
+  producerMemberAddress: string;
   updatedAt: string;
 };

@@ -2,6 +2,7 @@ import { computed, ref, watch, type Ref } from 'vue';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useMobileWorkStore } from '~/stores/mobileWorkStore';
 import type { MobileWorkContext } from '~/types/mobileWork';
+import { serializeTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 
 export function useMobilePendingTeamRunAttachments(contextRef: Ref<MobileWorkContext | null>) {
   const teamContextsStore = useAgentTeamContextsStore();
@@ -23,9 +24,9 @@ export function useMobilePendingTeamRunAttachments(contextRef: Ref<MobileWorkCon
     },
   );
 
-  async function flushPendingTeamRunAttachmentsToFocusedMember(teamRunId: string, memberRouteKey: string): Promise<void> {
+  async function flushPendingTeamRunAttachmentsToFocusedMember(teamRunId: string, memberAddress: string): Promise<void> {
     const normalizedTeamRunId = teamRunId.trim();
-    const normalizedMemberRouteKey = memberRouteKey.trim();
+    const normalizedMemberAddress = memberAddress.trim();
     const attachments = mobileWorkStore.getPendingTeamRunAttachments(normalizedTeamRunId);
     if (attachments.length === 0) {
       error.value = null;
@@ -38,9 +39,12 @@ export function useMobilePendingTeamRunAttachments(contextRef: Ref<MobileWorkCon
       throw new Error(error.value);
     }
 
-    const focusedNode = teamContext.memberNodesByRouteKey.get(normalizedMemberRouteKey) || null;
-    const focusedMember = teamContext.leafAgentContextsByRouteKey.get(normalizedMemberRouteKey) || null;
-    if (!focusedNode || focusedNode.memberKind !== 'agent' || !focusedMember) {
+    const focusedNode = teamContext.memberNodesByAddress.get(normalizedMemberAddress) || null;
+    const focusedMember = teamContext.agentExecutionsByKey.get(serializeTeamExecutionAddress({
+      ...teamContext.focusedExecutionAddress,
+      memberAddress: normalizedMemberAddress,
+    })) || null;
+    if (!focusedNode || focusedNode.kind !== 'agent' || !focusedMember) {
       error.value = 'Choose a team member before sending with pending context files.';
       throw new Error(error.value);
     }
@@ -62,8 +66,8 @@ export function useMobilePendingTeamRunAttachments(contextRef: Ref<MobileWorkCon
     }
 
     const teamContext = teamContextsStore.getTeamContextById(context.teamRunId);
-    const focusedMemberRouteKey = teamContext?.focusedMemberRouteKey || context.focusedMemberRouteKey;
-    await flushPendingTeamRunAttachmentsToFocusedMember(context.teamRunId, focusedMemberRouteKey || '');
+    const focusedMemberAddress = teamContext?.focusedExecutionAddress.memberAddress || context.focusedExecutionAddress.memberAddress;
+    await flushPendingTeamRunAttachmentsToFocusedMember(context.teamRunId, focusedMemberAddress);
   }
 
   return {

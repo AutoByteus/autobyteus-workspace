@@ -5,9 +5,9 @@ import {
   resolveScopedTeamMemberRef,
 } from "../utils/scoped-team-member-resolution.js";
 import {
-  assertValidCollaborationMemberName,
-  formatAbsoluteCollaborationAddress,
-} from "../../agent-collaboration/domain/collaboration-logical-address.js";
+  assertValidAgentTeamMemberName,
+  createAgentTeamAddress,
+} from "../../agent-collaboration/domain/agent-team-address.js";
 import { CollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
 
 export type ResolvedTeamDefinitionAgent = Readonly<{
@@ -82,7 +82,7 @@ export class TeamDefinitionGraphResolver {
     const members: ResolvedTeamDefinitionMember[] = [];
 
     for (const node of nodes) {
-      const memberName = assertValidCollaborationMemberName(node.memberName);
+      const memberName = assertValidAgentTeamMemberName(node.memberName);
       const absolutePath = Object.freeze([...mountPath, memberName]);
       if (node.refType === "agent") {
         const agentDefinitionId = resolveScopedAgentMemberRef(resolutionContext, node);
@@ -141,7 +141,7 @@ export class TeamDefinitionGraphResolver {
     if (coordinatorMatches.length !== 1) {
       throw new CollaborationContractError(
         "COLLABORATION_TEAM_INGRESS_INVALID",
-        `Team '${formatAbsoluteCollaborationAddress(mountPath)}' must have exactly one direct Agent coordinator '${coordinatorName}'.`,
+        `Team '${createAgentTeamAddress(mountPath)}' must have exactly one direct Agent coordinator '${coordinatorName}'.`,
       );
     }
 
@@ -160,7 +160,7 @@ export class TeamDefinitionGraphResolver {
   ): void {
     const seen = new Map<string, string>();
     for (const node of nodes) {
-      const memberName = assertValidCollaborationMemberName(node.memberName);
+      const memberName = assertValidAgentTeamMemberName(node.memberName);
       const folded = memberName.toLocaleLowerCase("en-US");
       const existing = seen.get(folded);
       if (existing) {

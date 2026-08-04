@@ -1,16 +1,12 @@
 import type { TaskAgentInstanceIdentity } from "../domain/task-agent-instance.js";
 import { cloneTaskTeamInstanceIdentity } from "../domain/task-team-instance.js";
 import type { TaskTeamInstanceIdentity } from "../domain/task-team-instance.js";
-import { cloneTaskAgentIdentity } from "./task-agent-instance-identity.js";
+import { cloneTaskAgentInstanceIdentity } from "../domain/task-agent-instance.js";
 import { cloneTaskExecutionInstance } from "./task-execution-instance.js";
-import {
-  cloneTaskDelegationMemberIdentity,
-  cloneTaskDelegationTarget,
-  getTaskDelegationTargetRouteKey,
-} from "./task-delegation-target.js";
+import { cloneTaskDelegationTarget } from "./task-delegation-target.js";
 import type { TaskDelegationPersistenceScope } from "./task-delegation-persistence-scope.js";
 import {
-  cloneTaskConversationAddress,
+  cloneTaskExecutionAddress,
   cloneTaskDelegationRecord,
   cloneTaskReferenceFiles,
   cloneTaskRunReference,
@@ -36,16 +32,16 @@ import type {
   ActiveTaskDelegationStartingEntry,
   TaskDelegationLedgerEntry,
 } from "./task-delegation-active-entry.js";
-import type { ConversationTargetAddress } from "../domain/conversation-target-address.js";
+import type { TeamExecutionAddress } from "../domain/team-execution-address.js";
 
 export type CreateTaskDelegationStartingEntryInput = {
   taskId: string;
   persistenceScope: TaskDelegationPersistenceScope;
   target: TaskDelegationTarget;
   reviewOwner: TaskDelegationDelegatorIdentity;
-  senderAddress: ConversationTargetAddress;
-  receiverAddress: ConversationTargetAddress;
-  receiverTargetKind: "member" | "team";
+  senderAddress: TeamExecutionAddress;
+  receiverAddress: TeamExecutionAddress;
+  receiverTargetKind: "agent" | "agent_team";
   content: string;
   referenceFiles: TaskReferenceFile[];
 };
@@ -67,17 +63,17 @@ export type TaskResultReviewTransition = {
 const cloneScope = (scope: TaskDelegationPersistenceScope): TaskDelegationPersistenceScope => ({
   rootTeamRunId: scope.rootTeamRunId,
   currentTeamRunId: scope.currentTeamRunId,
-  teamRunPath: [...scope.teamRunPath],
+  ancestorTeamRunIds: [...scope.ancestorTeamRunIds],
 });
 
 const cloneDelegatorIdentity = (
   identity: TaskDelegationDelegatorIdentity,
 ): TaskDelegationDelegatorIdentity => ({
-  ...cloneTaskDelegationMemberIdentity(identity),
-  taskAgentInstanceId: identity.taskAgentInstanceId ?? null,
-  taskAgentRunId: identity.taskAgentRunId ?? null,
-  taskId: identity.taskId ?? null,
-  logicalMemberRouteKey: identity.logicalMemberRouteKey ?? null,
+  executionAddress: cloneTaskExecutionAddress(identity.executionAddress),
+  agentRunId: identity.agentRunId,
+  taskAgentInstance: identity.taskAgentInstance
+    ? cloneTaskAgentInstanceIdentity(identity.taskAgentInstance)
+    : null,
   taskTeamInstance: identity.taskTeamInstance
     ? cloneTaskTeamInstanceIdentity(identity.taskTeamInstance)
     : null,
@@ -91,13 +87,13 @@ const cloneStartingEntry = (
   persistenceScope: cloneScope(entry.persistenceScope),
   target: cloneTaskDelegationTarget(entry.target),
   reviewOwner: cloneDelegatorIdentity(entry.reviewOwner),
-  senderAddress: cloneTaskConversationAddress(entry.senderAddress),
-  receiverAddress: cloneTaskConversationAddress(entry.receiverAddress),
+  senderAddress: cloneTaskExecutionAddress(entry.senderAddress),
+  receiverAddress: cloneTaskExecutionAddress(entry.receiverAddress),
   receiverTargetKind: entry.receiverTargetKind,
   content: entry.content,
   referenceFiles: cloneTaskReferenceFiles(entry.referenceFiles),
   boundExecution: entry.boundExecution ? cloneTaskExecutionInstance(entry.boundExecution) : null,
-  delegatorReplyRecipientName: entry.delegatorReplyRecipientName,
+  delegatorReplyRecipientAddress: entry.delegatorReplyRecipientAddress,
   delegatorReplyTargetAgentRunId: entry.delegatorReplyTargetAgentRunId,
   createdAt: entry.createdAt,
 });
@@ -111,7 +107,7 @@ const cloneRecordEntry = (
   target: cloneTaskDelegationTarget(entry.target),
   reviewOwner: cloneDelegatorIdentity(entry.reviewOwner),
   taskRunExecution: cloneTaskExecutionInstance(entry.taskRunExecution),
-  delegatorReplyRecipientName: entry.delegatorReplyRecipientName,
+  delegatorReplyRecipientAddress: entry.delegatorReplyRecipientAddress,
   delegatorReplyTargetAgentRunId: entry.delegatorReplyTargetAgentRunId,
 });
 
@@ -137,13 +133,13 @@ export class TaskDelegationLedger {
       persistenceScope: cloneScope(input.persistenceScope),
       target: cloneTaskDelegationTarget(input.target),
       reviewOwner: cloneDelegatorIdentity(input.reviewOwner),
-      senderAddress: cloneTaskConversationAddress(input.senderAddress),
-      receiverAddress: cloneTaskConversationAddress(input.receiverAddress),
+      senderAddress: cloneTaskExecutionAddress(input.senderAddress),
+      receiverAddress: cloneTaskExecutionAddress(input.receiverAddress),
       receiverTargetKind: input.receiverTargetKind,
       content: input.content,
       referenceFiles: cloneTaskReferenceFiles(input.referenceFiles),
       boundExecution: null,
-      delegatorReplyRecipientName: null,
+      delegatorReplyRecipientAddress: null,
       delegatorReplyTargetAgentRunId: null,
       createdAt,
     };
@@ -194,15 +190,15 @@ export class TaskDelegationLedger {
   bindTaskAgent(input: {
     taskId: string;
     taskAgentInstance: TaskAgentInstanceIdentity;
-    delegatorReplyRecipientName?: string | null;
+    delegatorReplyRecipientAddress?: string | null;
     delegatorReplyTargetAgentRunId?: string | null;
   }): ActiveTaskDelegationStartingEntry {
     const entry = this.requireStarting(input.taskId);
     entry.boundExecution = {
       kind: "task_agent",
-      taskAgentInstance: cloneTaskAgentIdentity(input.taskAgentInstance),
+      taskAgentInstance: cloneTaskAgentInstanceIdentity(input.taskAgentInstance),
     };
-    entry.delegatorReplyRecipientName = input.delegatorReplyRecipientName?.trim() || null;
+    entry.delegatorReplyRecipientAddress = input.delegatorReplyRecipientAddress?.trim() || null;
     entry.delegatorReplyTargetAgentRunId = input.delegatorReplyTargetAgentRunId?.trim() || null;
     return cloneStartingEntry(entry);
   }
@@ -210,7 +206,7 @@ export class TaskDelegationLedger {
   bindTaskTeam(input: {
     taskId: string;
     taskTeamInstance: TaskTeamInstanceIdentity;
-    delegatorReplyRecipientName?: string | null;
+    delegatorReplyRecipientAddress?: string | null;
     delegatorReplyTargetAgentRunId?: string | null;
   }): ActiveTaskDelegationStartingEntry {
     const entry = this.requireStarting(input.taskId);
@@ -218,7 +214,7 @@ export class TaskDelegationLedger {
       kind: "task_team",
       taskTeamInstance: cloneTaskTeamInstanceIdentity(input.taskTeamInstance),
     };
-    entry.delegatorReplyRecipientName = input.delegatorReplyRecipientName?.trim() || null;
+    entry.delegatorReplyRecipientAddress = input.delegatorReplyRecipientAddress?.trim() || null;
     entry.delegatorReplyTargetAgentRunId = input.delegatorReplyTargetAgentRunId?.trim() || null;
     return cloneStartingEntry(entry);
   }
@@ -226,7 +222,7 @@ export class TaskDelegationLedger {
   activateStartingEntry(input: {
     taskId: string;
     taskRun: TaskRunReference;
-    receiverAddress?: ConversationTargetAddress | null;
+    receiverAddress?: TeamExecutionAddress | null;
   }): ActiveTaskDelegationRecordEntry {
     const starting = this.requireStarting(input.taskId);
     if (!starting.boundExecution) {
@@ -235,8 +231,8 @@ export class TaskDelegationLedger {
     const record: TaskDelegationRecord = {
       taskId: starting.taskId,
       status: "active",
-      senderAddress: cloneTaskConversationAddress(starting.senderAddress),
-      receiverAddress: cloneTaskConversationAddress(input.receiverAddress ?? starting.receiverAddress),
+      senderAddress: cloneTaskExecutionAddress(starting.senderAddress),
+      receiverAddress: cloneTaskExecutionAddress(input.receiverAddress ?? starting.receiverAddress),
       receiverTargetKind: starting.receiverTargetKind,
       content: starting.content,
       referenceFiles: cloneTaskReferenceFiles(starting.referenceFiles),
@@ -251,7 +247,7 @@ export class TaskDelegationLedger {
       target: cloneTaskDelegationTarget(starting.target),
       reviewOwner: cloneDelegatorIdentity(starting.reviewOwner),
       taskRunExecution: cloneTaskExecutionInstance(starting.boundExecution),
-      delegatorReplyRecipientName: starting.delegatorReplyRecipientName,
+      delegatorReplyRecipientAddress: starting.delegatorReplyRecipientAddress,
       delegatorReplyTargetAgentRunId: starting.delegatorReplyTargetAgentRunId,
     };
     this.entriesById.set(input.taskId, entry);
@@ -313,8 +309,8 @@ export class TaskDelegationLedger {
     const reviewUpdate = {
       kind: "review" as const,
       reviewId: `${record.taskId}_review_${String(reviewSequence).padStart(4, "0")}`,
-      senderAddress: cloneTaskConversationAddress(record.senderAddress),
-      receiverAddress: cloneTaskConversationAddress(record.taskRun!.address),
+      senderAddress: cloneTaskExecutionAddress(record.senderAddress),
+      receiverAddress: cloneTaskExecutionAddress(record.taskRun!.address),
       reviewedSubmissionId: pendingSubmissionId,
       decision: input.decision,
       content: input.comment,
@@ -338,12 +334,12 @@ export class TaskDelegationLedger {
     };
   }
 
-  hasCurrentWorkForAssignee(memberRouteKey: string): boolean {
-    const normalizedRouteKey = memberRouteKey.trim();
-    if (!normalizedRouteKey) return false;
+  hasCurrentWorkForAssignee(memberAddress: string): boolean {
+    const normalizedAddress = memberAddress.trim();
+    if (!normalizedAddress) return false;
     return [...this.entriesById.values()].some((entry) => {
       if (entry.phase === "record" && isTaskDelegationTerminalStatus(entry.record.status)) return false;
-      return getTaskDelegationTargetRouteKey(entry.target) === normalizedRouteKey;
+      return entry.target.address === normalizedAddress;
     });
   }
 
@@ -359,7 +355,7 @@ export class TaskDelegationLedger {
       const executionBlocks = entry.phase === "record" &&
         entry.taskRunExecution.kind === "task_agent" &&
         entry.taskRunExecution.taskAgentInstance.taskAgentRunId === normalizedRunId;
-      return executionBlocks || entry.reviewOwner.taskAgentRunId === normalizedRunId;
+      return executionBlocks || entry.reviewOwner.taskAgentInstance?.taskAgentRunId === normalizedRunId;
     });
   }
 
@@ -402,8 +398,8 @@ export class TaskDelegationLedger {
     const submissionUpdate = {
       kind: "submission" as const,
       submissionId: `${record.taskId}_submission_${String(sequence).padStart(4, "0")}`,
-      senderAddress: cloneTaskConversationAddress(record.taskRun!.address),
-      receiverAddress: cloneTaskConversationAddress(record.senderAddress),
+      senderAddress: cloneTaskExecutionAddress(record.taskRun!.address),
+      receiverAddress: cloneTaskExecutionAddress(record.senderAddress),
       content: message,
       referenceFiles: cloneTaskReferenceFiles(referenceFiles),
       createdAt: now,

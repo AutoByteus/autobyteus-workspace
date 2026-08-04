@@ -87,7 +87,7 @@ import SkillImprovementComposerCta from '~/components/workspace/skill-improvemen
 import type { SkillImprovementComposerCtaTarget } from '~/components/workspace/skill-improvement/skillImprovementComposerCtaTarget';
 import WorkspaceHeaderActions from '~/components/workspace/common/WorkspaceHeaderActions.vue';
 import { buildEditableTeamRunSeed } from '~/composables/useDefinitionLaunchDefaults';
-import { resolveTeamConversationTargetAddress } from '~/utils/teamConversationTargetAddress';
+import { serializeTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 
 const teamContextsStore = useAgentTeamContextsStore();
 const teamRunStore = useAgentTeamRunStore();
@@ -103,39 +103,24 @@ const { getMemberAvatarUrl, getMemberDisplayName, getMemberInitials } = useTeamM
 const RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID = 'autobyteus-retrospective-skill-improver';
 
 const activeTeamContext = computed(() => teamContextsStore.activeTeamContext);
-const activeExecutionFocusedMemberRouteKey = computed(() => teamContextsStore.activeExecutionFocusedMemberRouteKey);
-const rosterFocusedMemberRouteKey = computed(() =>
-  resolveDisplayFocusedMemberRouteKey(activeTeamContext.value?.focusedMemberRouteKey),
-);
-const userMessageTarget = computed(() => {
+const focusedExecutionAddress = computed(() => activeTeamContext.value?.focusedExecutionAddress ?? null);
+const focusedMemberContext = computed(() => {
   const team = activeTeamContext.value;
-  return team
-    ? resolveTeamConversationTargetAddress(team, {
-      allowSubteam: true,
-      allowActiveExecutionSafetyFallback: true,
-    })
-    : null;
+  const address = focusedExecutionAddress.value;
+  return team && address ? team.agentExecutionsByKey.get(serializeTeamExecutionAddress(address)) ?? null : null;
 });
-const focusedMemberContext = computed(() => userMessageTarget.value?.context ?? null);
-const focusedMemberNode = computed(() => userMessageTarget.value?.node ?? null);
-const rosterFocusedMemberContext = computed(() => {
+const focusedMemberNode = computed(() => {
   const team = activeTeamContext.value;
-  const routeKey = rosterFocusedMemberRouteKey.value;
-  return team && routeKey ? team.leafAgentContextsByRouteKey.get(routeKey) || null : null;
+  return team ? team.memberNodesByAddress.get(team.focusedExecutionAddress.memberAddress) ?? null : null;
 });
-const rosterFocusedMemberNode = computed(() => {
-  const team = activeTeamContext.value;
-  const routeKey = rosterFocusedMemberRouteKey.value;
-  return team && routeKey ? team.memberNodesByRouteKey.get(routeKey) || null : null;
-});
+const rosterFocusedMemberContext = focusedMemberContext;
+const rosterFocusedMemberNode = focusedMemberNode;
 
-const showSharedComposer = computed(() => (
-  Boolean(activeTeamContext.value) && userMessageTarget.value?.node.memberKind === 'agent_team'
-));
+const showSharedComposer = computed(() => focusedMemberNode.value?.kind === 'agent_team');
 
 const headerStatus = computed(() => {
   return rosterFocusedMemberContext.value?.state.currentStatus
-    ?? (rosterFocusedMemberNode.value?.memberKind === 'agent'
+    ?? (rosterFocusedMemberNode.value?.kind === 'agent'
       ? rosterFocusedMemberNode.value.currentStatus
       : null);
 });
@@ -146,27 +131,26 @@ const headerTitle = computed(() => {
     return '';
   }
 
-  const focusedMemberRouteKey = rosterFocusedMemberRouteKey.value;
-  if (!focusedMemberRouteKey) {
+  const focusedMemberAddress = focusedExecutionAddress.value?.memberAddress ?? '';
+  if (!focusedMemberAddress) {
     return team.config.teamDefinitionName || 'Team';
   }
 
   return rosterFocusedMemberNode.value?.displayName
-    || getMemberDisplayName(focusedMemberRouteKey, rosterFocusedMemberContext.value)
+    || getMemberDisplayName(focusedMemberAddress, rosterFocusedMemberContext.value)
     || team.config.teamDefinitionName
     || 'Team';
 });
 
 const composerTargetTitle = computed(() => {
   const team = activeTeamContext.value;
-  const target = userMessageTarget.value;
+  const target = focusedMemberNode.value;
   if (!team || !target) {
     return headerTitle.value;
   }
 
-  return target.displayLabel
-    || target.node.displayName
-    || getMemberDisplayName(target.localTargetKey, target.context)
+  return target.displayName
+    || getMemberDisplayName(target.address, focusedMemberContext.value)
     || team.config.teamDefinitionName
     || 'Team';
 });
@@ -180,7 +164,7 @@ const teamMemberSkillImprovementTarget = computed<SkillImprovementComposerCtaTar
   return {
     kind: 'team-member',
     teamRunId: team.teamRunId,
-    memberRunId: member.state.runId,
+    agentRunId: member.state.runId,
     isHelperRun:
       member.config.agentDefinitionId === RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID ||
       member.config.agentDefinitionName === 'Retrospective Skill Improver',
@@ -189,12 +173,12 @@ const teamMemberSkillImprovementTarget = computed<SkillImprovementComposerCtaTar
 
 const headerAvatarUrl = computed(() => {
   const team = activeTeamContext.value;
-  const focusedRouteKey = rosterFocusedMemberRouteKey.value;
-  if (!team || !focusedRouteKey || rosterFocusedMemberNode.value?.memberKind === 'agent_team') {
+  const focusedMemberAddress = focusedExecutionAddress.value?.memberAddress ?? '';
+  if (!team || !focusedMemberAddress || rosterFocusedMemberNode.value?.kind === 'agent_team') {
     return '';
   }
 
-  return getMemberAvatarUrl(focusedRouteKey, rosterFocusedMemberContext.value);
+  return getMemberAvatarUrl(focusedMemberAddress, rosterFocusedMemberContext.value);
 });
 
 const showHeaderAvatarImage = computed(() => Boolean(headerAvatarUrl.value) && !headerAvatarLoadError.value);
@@ -203,23 +187,6 @@ const headerAvatarInitials = computed(() => getMemberInitials(headerTitle.value)
 watch(headerAvatarUrl, () => {
   headerAvatarLoadError.value = false;
 });
-
-function resolveDisplayFocusedMemberRouteKey(candidate: string | null | undefined): string {
-  const team = activeTeamContext.value;
-  const normalizedCandidate = candidate?.trim() || '';
-  if (
-    team &&
-    normalizedCandidate &&
-    (
-      team.memberNodesByRouteKey.has(normalizedCandidate) ||
-      team.leafAgentContextsByRouteKey.has(normalizedCandidate)
-    )
-  ) {
-    return normalizedCandidate;
-  }
-
-  return activeExecutionFocusedMemberRouteKey.value;
-}
 
 const sendSubteamMessage = async () => {
   const text = subteamDraft.value.trim();

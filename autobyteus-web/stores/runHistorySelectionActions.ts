@@ -10,6 +10,7 @@ import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import { openTeamRun } from '~/services/runOpen/teamRunOpenCoordinator';
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
+import { createTeamExecutionAddress, serializeTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 
 type RunHistorySelectionMode = 'desktop' | 'mobile';
 
@@ -22,9 +23,9 @@ interface RunHistorySelectionStoreLike {
   error: string | null;
   selectedRunId: string | null;
   selectedTeamRunId: string | null;
-  selectedTeamMemberRouteKey: string | null;
+  selectedTeamMemberAddress: string | null;
   teamResumeConfigByTeamRunId: Record<string, TeamRunResumeConfigPayload>;
-  openTeamMemberRun(teamRunId: string, memberRouteKey: string, options?: RunHistoryOpenOptions): Promise<void>;
+  openTeamMemberRun(teamRunId: string, memberAddress: string, options?: RunHistoryOpenOptions): Promise<void>;
   openRun(runId: string, options?: RunHistoryOpenOptions): Promise<void>;
   ensureWorkspaceByRootPath(rootPath: string): Promise<string | null>;
   resolveWorkspaceMetadataByRootPath(rootPath: string): Promise<WorkspaceMetadata | null>;
@@ -33,7 +34,7 @@ interface RunHistorySelectionStoreLike {
 export const openTeamMemberRunFromHistory = async (
   store: RunHistorySelectionStoreLike,
   teamRunId: string,
-  memberRouteKey: string,
+  memberAddress: string,
   options: RunHistoryOpenOptions = {},
 ): Promise<void> => {
   store.openingRun = true;
@@ -41,7 +42,7 @@ export const openTeamMemberRunFromHistory = async (
   try {
     const result = await openTeamRun({
       teamRunId,
-      memberRouteKey,
+      memberAddress,
       resolveWorkspaceMetadataByRootPath: (path: string) =>
         store.resolveWorkspaceMetadataByRootPath(path),
       ensureWorkspaceByRootPath: (path: string) => store.ensureWorkspaceByRootPath(path),
@@ -50,7 +51,7 @@ export const openTeamMemberRunFromHistory = async (
 
     store.teamResumeConfigByTeamRunId[result.resumeConfig.teamRunId] = result.resumeConfig;
     store.selectedTeamRunId = result.teamRunId;
-    store.selectedTeamMemberRouteKey = result.focusedMemberRouteKey;
+    store.selectedTeamMemberAddress = result.focusedExecutionAddress.memberAddress;
     store.selectedRunId = null;
   } catch (error: any) {
     store.error = error?.message || `Failed to open team '${teamRunId}'.`;
@@ -68,22 +69,23 @@ export const selectTreeRunFromHistory = async (
     const teamContextsStore = useAgentTeamContextsStore();
     const selectionStore = useAgentSelectionStore();
     const localTeamContext = teamContextsStore.getTeamContextById(row.teamRunId);
-    const legacyMembers = (localTeamContext as unknown as { members?: unknown } | null)?.members;
-    const memberNodesByRouteKey =
-      localTeamContext?.memberNodesByRouteKey instanceof Map
-        ? localTeamContext.memberNodesByRouteKey
-        : legacyMembers instanceof Map
-          ? legacyMembers
-          : null;
+    const executionAddress = row.executionAddress ?? createTeamExecutionAddress({
+      rootTeamRunId: row.teamRunId,
+      memberAddress: row.memberAddress,
+    });
+    const memberNodesByAddress = localTeamContext?.memberNodesByAddress ?? null;
     const shouldReuseLocalTeamContext = Boolean(
-      localTeamContext && memberNodesByRouteKey?.has(row.memberRouteKey),
+      localTeamContext && (
+        memberNodesByAddress?.has(row.memberAddress)
+        || localTeamContext.agentExecutionsByKey.has(serializeTeamExecutionAddress(executionAddress))
+      ),
     );
-    const localTargetMemberRouteKey = row.memberRouteKey;
+    const localTargetMemberAddress = row.memberAddress;
     const localMemberProjectionLoadState =
-      localTeamContext?.historicalHydration?.memberProjectionLoadStateByRouteKey[localTargetMemberRouteKey]
+      localTeamContext?.historicalHydration?.memberProjectionLoadStateByAddress[localTargetMemberAddress]
       ?? null;
-    const memberNode = memberNodesByRouteKey?.get(localTargetMemberRouteKey);
-    const isLeafAgent = memberNode?.memberKind === 'agent' || legacyMembers instanceof Map;
+    const memberNode = memberNodesByAddress?.get(localTargetMemberAddress);
+    const isLeafAgent = memberNode?.kind === 'agent';
     const shouldShowOpeningIndicator = Boolean(localTeamContext?.historicalHydration && isLeafAgent)
       && localMemberProjectionLoadState !== 'loaded';
 
@@ -95,9 +97,13 @@ export const selectTreeRunFromHistory = async (
 
       try {
         selectionStore.selectRun(row.teamRunId, 'team');
-        await teamContextsStore.focusMemberAndEnsureHydrated?.(row.teamRunId, localTargetMemberRouteKey);
+        if (executionAddress.taskTeamRunIds.length > 0 || executionAddress.taskAgentRunId) {
+          teamContextsStore.setFocusedExecutionAddress(executionAddress);
+        } else {
+          await teamContextsStore.focusMemberAndEnsureHydrated?.(row.teamRunId, localTargetMemberAddress);
+        }
         store.selectedTeamRunId = row.teamRunId;
-        store.selectedTeamMemberRouteKey = localTargetMemberRouteKey;
+        store.selectedTeamMemberAddress = localTargetMemberAddress;
         store.selectedRunId = null;
         useTeamRunConfigStore().clearConfig();
         useAgentRunConfigStore().clearConfig();
@@ -113,7 +119,7 @@ export const selectTreeRunFromHistory = async (
       }
       return;
     }
-    await store.openTeamMemberRun(row.teamRunId, row.memberRouteKey);
+    await store.openTeamMemberRun(row.teamRunId, row.memberAddress);
     return;
   }
 
@@ -132,7 +138,7 @@ export const selectTreeRunFromHistory = async (
   selectionStore.selectRun(row.runId, 'agent');
   store.selectedRunId = row.runId;
   store.selectedTeamRunId = null;
-  store.selectedTeamMemberRouteKey = null;
+  store.selectedTeamMemberAddress = null;
   useTeamRunConfigStore().clearConfig();
   useAgentRunConfigStore().clearConfig();
 };

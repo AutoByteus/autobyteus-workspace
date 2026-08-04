@@ -2,14 +2,13 @@ import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-in
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
 import type { InterAgentMessageDeliveryIntent } from "../../domain/inter-agent-message-delivery.js";
 import type { TeamRunEventListener, TeamRunEventUnsubscribe } from "../../domain/team-run-event.js";
-import type { TeamMemberSelector } from "../../domain/team-run-member-identity.js";
+import type { AgentTeamAddress } from "../../../agent-collaboration/domain/agent-team-address.js";
 import { TeamBackendKind } from "../../domain/team-backend-kind.js";
 import type { TeamRunBackend } from "../team-run-backend.js";
 import type { TeamManager } from "../team-manager.js";
 import type { MixedTeamRunContextEnvelope } from "./mixed-team-run-context.js";
 import type { StartTaskAgentInstanceRequest } from "../../domain/task-agent-instance.js";
 import type { StartTaskTeamInstanceRequest } from "../../domain/task-team-instance.js";
-import type { ConversationTargetAddress } from "../../domain/conversation-target-address.js";
 import type { MemberLogicalAddressContext } from "../../domain/member-logical-address-context.js";
 
 const buildRunNotFoundResult = (runId: string): AgentOperationResult => ({
@@ -39,8 +38,10 @@ export class MixedTeamRunBackend implements TeamRunBackend {
     this.teamManager = teamManager;
   }
 
-  get runId(): string {
-    return this.context.runId;
+  getTeamRunContext(): MixedTeamRunContextEnvelope { return this.context; }
+
+  get teamRunId(): string {
+    return this.context.teamRunId;
   }
 
   get teamBackendKind() {
@@ -69,35 +70,20 @@ export class MixedTeamRunBackend implements TeamRunBackend {
 
   async postMessage(
     message: AgentInputUserMessage,
-    target: TeamMemberSelector | null = null,
-    targetMemberRunId: string | null = null,
+    target: AgentTeamAddress | null = null,
+    targetAgentRunId: string | null = null,
   ): Promise<AgentOperationResult> {
     if (!this.isActive()) {
-      return buildRunNotFoundResult(this.runId);
+      return buildRunNotFoundResult(this.teamRunId);
     }
     if (!target) {
       return buildTargetMemberRequiredResult();
     }
 
     try {
-      return await this.teamManager.postMessage(message, target, targetMemberRunId);
+      return await this.teamManager.postMessage(message, target, targetAgentRunId);
     } catch (error) {
       return buildCommandFailure("post team message", error);
-    }
-  }
-
-  async postMessageToConversationTarget(
-    message: AgentInputUserMessage,
-    address: ConversationTargetAddress,
-  ): Promise<AgentOperationResult> {
-    if (!this.isActive()) {
-      return buildRunNotFoundResult(this.runId);
-    }
-
-    try {
-      return await this.teamManager.postMessageToConversationTarget(message, address);
-    } catch (error) {
-      return buildCommandFailure("post team conversation target message", error);
     }
   }
 
@@ -105,7 +91,7 @@ export class MixedTeamRunBackend implements TeamRunBackend {
     intent: InterAgentMessageDeliveryIntent,
   ): Promise<AgentOperationResult> {
     if (!this.isActive()) {
-      return buildRunNotFoundResult(this.runId);
+      return buildRunNotFoundResult(this.teamRunId);
     }
     try {
       return await this.teamManager.deliverInterAgentMessage(intent);
@@ -114,23 +100,23 @@ export class MixedTeamRunBackend implements TeamRunBackend {
     }
   }
 
-  resolveLogicalPlacement(
-    recipientName: string,
+  resolveRecipient(
+    recipientAddress: string,
     callerAddressing: MemberLogicalAddressContext,
   ) {
-    return this.teamManager.resolveLogicalPlacement(recipientName, callerAddressing);
+    return this.teamManager.resolveRecipient(recipientAddress, callerAddressing);
   }
 
   async approveToolInvocation(
-    target: TeamMemberSelector,
+    target: AgentTeamAddress,
     invocationId: string,
     approved: boolean,
     reason: string | null = null,
-    targetMemberRunId: string | null = null,
+    targetAgentRunId: string | null = null,
     taskTeamRunId: string | null = null,
   ): Promise<AgentOperationResult> {
     if (!this.isActive()) {
-      return buildRunNotFoundResult(this.runId);
+      return buildRunNotFoundResult(this.teamRunId);
     }
     try {
       return await this.teamManager.approveToolInvocation(
@@ -138,7 +124,7 @@ export class MixedTeamRunBackend implements TeamRunBackend {
         invocationId,
         approved,
         reason,
-        targetMemberRunId,
+        targetAgentRunId,
         taskTeamRunId,
       );
     } catch (error) {
@@ -147,44 +133,29 @@ export class MixedTeamRunBackend implements TeamRunBackend {
   }
 
   async interruptMember(
-    targetMemberRouteKey: string,
-    targetMemberRunId: string | null = null,
+    target: AgentTeamAddress,
+    targetAgentRunId: string | null = null,
   ): Promise<AgentOperationResult> {
     if (!this.isActive()) {
-      return buildRunNotFoundResult(this.runId);
+      return buildRunNotFoundResult(this.teamRunId);
     }
-    if (typeof targetMemberRouteKey !== "string" || targetMemberRouteKey.trim().length === 0) {
-      return buildTargetMemberRequiredResult();
-    }
-
     try {
-      return await this.teamManager.interruptMember(
-        targetMemberRouteKey.trim(),
-        targetMemberRunId,
-      );
+      return await this.teamManager.interruptMember(target, targetAgentRunId);
     } catch (error) {
       return buildCommandFailure("interrupt team member", error);
     }
   }
 
   async settleMember(
-    targetMemberRouteKey: string,
-    targetMemberRunId: string | null = null,
+    target: AgentTeamAddress,
+    targetAgentRunId: string | null = null,
     reason: string | null = null,
   ): Promise<AgentOperationResult> {
     if (!this.isActive()) {
-      return buildRunNotFoundResult(this.runId);
+      return buildRunNotFoundResult(this.teamRunId);
     }
-    if (typeof targetMemberRouteKey !== "string" || targetMemberRouteKey.trim().length === 0) {
-      return buildTargetMemberRequiredResult();
-    }
-
     try {
-      return await this.teamManager.settleMember(
-        targetMemberRouteKey.trim(),
-        targetMemberRunId,
-        reason,
-      );
+      return await this.teamManager.settleMember(target, targetAgentRunId, reason);
     } catch (error) {
       return buildCommandFailure("settle team member", error);
     }
@@ -194,7 +165,7 @@ export class MixedTeamRunBackend implements TeamRunBackend {
     request: StartTaskAgentInstanceRequest,
   ): Promise<AgentOperationResult> {
     if (!this.isActive()) {
-      return buildRunNotFoundResult(this.runId);
+      return buildRunNotFoundResult(this.teamRunId);
     }
     try {
       return await this.teamManager.startTaskAgentInstance(request);
@@ -204,16 +175,16 @@ export class MixedTeamRunBackend implements TeamRunBackend {
   }
 
   async settleTaskAgentInstance(
-    logicalMemberRouteKey: string,
+    target: AgentTeamAddress,
     taskAgentRunId: string,
     reason: string | null = null,
   ): Promise<AgentOperationResult> {
     if (!this.isActive()) {
-      return buildRunNotFoundResult(this.runId);
+      return buildRunNotFoundResult(this.teamRunId);
     }
     try {
       return await this.teamManager.settleTaskAgentInstance(
-        logicalMemberRouteKey,
+        target,
         taskAgentRunId,
         reason,
       );
@@ -227,7 +198,7 @@ export class MixedTeamRunBackend implements TeamRunBackend {
     request: StartTaskTeamInstanceRequest,
   ): Promise<AgentOperationResult> {
     if (!this.isActive()) {
-      return buildRunNotFoundResult(this.runId);
+      return buildRunNotFoundResult(this.teamRunId);
     }
     try {
       return await this.teamManager.startTaskTeamInstance(request);
@@ -237,16 +208,16 @@ export class MixedTeamRunBackend implements TeamRunBackend {
   }
 
   async postMessageToTaskTeamInstance(
-    logicalTeamRouteKey: string,
+    target: AgentTeamAddress,
     taskTeamRunId: string,
     message: AgentInputUserMessage,
   ): Promise<AgentOperationResult> {
     if (!this.isActive()) {
-      return buildRunNotFoundResult(this.runId);
+      return buildRunNotFoundResult(this.teamRunId);
     }
     try {
       return await this.teamManager.postMessageToTaskTeamInstance(
-        logicalTeamRouteKey,
+        target,
         taskTeamRunId,
         message,
       );
@@ -256,16 +227,16 @@ export class MixedTeamRunBackend implements TeamRunBackend {
   }
 
   async settleTaskTeamInstance(
-    logicalTeamRouteKey: string,
+    target: AgentTeamAddress,
     taskTeamRunId: string,
     reason: string | null = null,
   ): Promise<AgentOperationResult> {
     if (!this.isActive()) {
-      return buildRunNotFoundResult(this.runId);
+      return buildRunNotFoundResult(this.teamRunId);
     }
     try {
       return await this.teamManager.settleTaskTeamInstance(
-        logicalTeamRouteKey,
+        target,
         taskTeamRunId,
         reason,
       );

@@ -1,5 +1,6 @@
 import type { ActiveTaskDelegationWorkEntry } from "./task-delegation-active-entry.js";
 import { deriveTaskLabel } from "./task-delegation-record-derived.js";
+import { getAgentTeamAddressBasename } from "../../agent-collaboration/domain/agent-team-address.js";
 
 const renderList = (items: readonly string[]): string =>
   items.length > 0 ? items.map((item) => `- ${item}`).join("\n") : "- None specified";
@@ -58,7 +59,7 @@ export class TaskDelegationWorkPacketRenderer {
     return [
       title,
       `Task ID: ${entryTaskId(entry)}`,
-      `Task review owner: ${entry.reviewOwner.memberName}`,
+      `Task review owner: ${getAgentTeamAddressBasename(entry.reviewOwner.executionAddress.memberAddress) ?? entry.reviewOwner.executionAddress.memberAddress}`,
       "Description:",
       content,
       "Reference files:",

@@ -29,7 +29,7 @@ type RunHistoryMutationStoreLike = {
   workspaceGroups: RunHistoryWorkspaceGroup[];
   selectedRunId: string | null;
   selectedTeamRunId: string | null;
-  selectedTeamMemberRouteKey: string | null;
+  selectedTeamMemberAddress: string | null;
   refreshTreeQuietly(limitPerAgent?: number): Promise<void>;
 };
 
@@ -85,7 +85,7 @@ const cleanupStoredTeamRunLocalState = (
 
   if (store.selectedTeamRunId === teamRunId) {
     store.selectedTeamRunId = null;
-    store.selectedTeamMemberRouteKey = null;
+    store.selectedTeamMemberAddress = null;
   }
 };
 

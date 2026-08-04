@@ -6,7 +6,7 @@ import type {
   TaskDelegationTaskInput,
   TaskReferenceFile,
 } from "./task-delegation-record.js";
-import { getTaskDelegationTargetLogicalAddress } from "./task-delegation-target.js";
+import { getTaskDelegationTargetAddress } from "./task-delegation-target.js";
 import type { TaskDelegationTarget } from "./task-delegation-target.js";
 
 const normalizeReferencePath = (value: string): string => value.replace(/\\/g, "/").trim();
@@ -60,7 +60,7 @@ export const buildTaskDelegationArguments = (input: {
   content: string;
   referenceFiles: readonly TaskReferenceFile[];
 }): TaskDelegationTaskInput => ({
-  recipient_name: getTaskDelegationTargetLogicalAddress(input.target),
+  recipient_address: getTaskDelegationTargetAddress(input.target),
   description: input.content,
   reference_files: input.referenceFiles.map((reference) => reference.path),
 });

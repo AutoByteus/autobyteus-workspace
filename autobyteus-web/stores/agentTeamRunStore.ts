@@ -33,7 +33,6 @@ import { flattenLeafAgentMemberNodes } from '~/utils/teamDefinitionMembers';
 import { buildTeamRunMemberConfigRecords } from '~/utils/teamRunMemberConfigBuilder';
 import { evaluateTeamRunLaunchReadiness } from '~/utils/teamRunLaunchReadiness';
 import { resolveEffectiveMemberRuntimeKind } from '~/utils/teamRunConfigUtils';
-import { resolveTeamConversationTargetAddressResult } from '~/utils/teamConversationTargetAddress';
 import {
   applyOfflineOrTerminalCleanup,
 } from '~/services/runStatus/agentRuntimeStatusState';
@@ -44,7 +43,7 @@ import {
   type LocalUserSubmissionHandle,
 } from '~/services/runSubmission/localUserSubmission';
 import {
-  reconcileTeamContextMemberRunIdsFromBackend,
+  reconcileTeamContextAgentRunIdsFromBackend,
 } from '~/services/runHydration/teamRunMemberIdentityReconciler';
 import {
   beginRecentEventMonitorMutation,
@@ -52,8 +51,16 @@ import {
 } from '~/services/eventMonitor/recentEventMonitorMutationCommit';
 import { useToasts } from '~/composables/useToasts';
 import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
+import {
+  createTeamExecutionAddress,
+  serializeTeamExecutionAddress,
+  type TeamExecutionAddress,
+} from '~/types/agent/TeamExecutionAddress';
 
-// Maintain a map of streaming services per team run
+type CurrentTeamMemberConfigInput = Omit<TeamMemberConfigInput, 'memberName' | 'memberAddress'> & {
+  memberAddress: string;
+};
+
 const teamStreamingServices = new Map<string, TeamStreamingService>();
 
 const buildClientMessageId = (): string => {
@@ -70,7 +77,9 @@ const buildClientInterruptCommandId = (): string =>
 const showInterruptCommandResult = (ack: InterruptGenerationCommandAckPayload): void => {
   if (ack.state === 'accepted') return;
   useToasts().addToast(localizationRuntime.translate('agents.store.interrupt.failed', {
-    target: ack.target.target_kind === 'team_member' ? ack.target.member_route_key : ack.target.run_id,
+    target: ack.target.target_kind === 'team_member'
+      ? ack.target.execution_address?.memberAddress ?? ack.target.team_run_id
+      : ack.target.run_id,
     detail: ack.message,
   }), 'error');
 };
@@ -78,7 +87,7 @@ const showInterruptCommandResult = (ack: InterruptGenerationCommandAckPayload): 
 const showInterruptTransportFailure = (failure: InterruptCommandTransportFailure): void => {
   useToasts().addToast(localizationRuntime.translate('agents.store.interrupt.transportFailed', {
     target: failure.target.target_kind === 'team_member'
-      ? failure.target.member_route_key
+      ? failure.target.execution_address?.memberAddress ?? failure.target.team_run_id
       : failure.target.run_id,
     detail: failure.reason.message,
   }), 'error');
@@ -115,8 +124,7 @@ interface TerminateAgentTeamRunMutationPayload {
 
 export interface FocusedTeamMemberInterruptTarget {
   teamRunId: string;
-  targetMemberRouteKey: string;
-  targetMemberRunId?: string | null;
+  executionAddress: TeamExecutionAddress;
 }
 
 export const useAgentTeamRunStore = defineStore('agentTeamRun', {
@@ -126,9 +134,6 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
   }),
 
   actions: {
-    /**
-     * Establish WebSocket connection for a team run.
-     */
     connectToTeamStream(teamRunId: string): TeamStreamingService | null {
       const teamContextsStore = useAgentTeamContextsStore();
       const teamContext = teamContextsStore.getTeamContextById(teamRunId);
@@ -234,7 +239,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         if (teamContext) {
           teamContext.isSubscribed = false;
           teamContext.isActive = false;
-          teamContext.leafAgentContextsByRouteKey.forEach((member) => {
+          teamContext.agentExecutionsByKey.forEach((member) => {
             applyOfflineOrTerminalCleanup(member);
             useAgentActivityStore().clearActivities(member.state.runId);
           });
@@ -296,7 +301,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
 
       teamContext.isSubscribed = false;
       teamContext.isActive = false;
-      teamContext.leafAgentContextsByRouteKey.forEach((member) => {
+      teamContext.agentExecutionsByKey.forEach((member) => {
         applyOfflineOrTerminalCleanup(member);
         useAgentActivityStore().clearActivities(member.state.runId);
       });
@@ -314,23 +319,16 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         throw new Error('No active team context.');
       }
 
-      const targetResolution = resolveTeamConversationTargetAddressResult(activeTeam, {
-        allowSubteam: true,
-        allowActiveExecutionSafetyFallback: true,
-      });
-      const messageTarget = targetResolution.target;
-      if (!messageTarget) {
-        const focusedRouteKey = targetResolution.focusedMemberRouteKey || '<empty>';
-        const reason = targetResolution.reason || 'unknown';
-        throw new Error(`No valid focused team message target '${focusedRouteKey}' (${reason}).`);
-      }
-
-      const focusedMember = messageTarget.context;
-      const focusedNode = messageTarget.node;
+      const initialExecutionAddress = createTeamExecutionAddress(activeTeam.focusedExecutionAddress);
+      const initialExecutionKey = serializeTeamExecutionAddress(initialExecutionAddress);
+      const focusedMember = activeTeam.agentExecutionsByKey.get(initialExecutionKey) ?? null;
+      const focusedNode = activeTeam.memberNodesByAddress.get(initialExecutionAddress.memberAddress) ?? null;
+      if (!focusedNode) throw new Error(`Focused Team execution '${initialExecutionAddress.memberAddress}' is not present.`);
       const isTemporary = activeTeam.teamRunId.startsWith('temp-');
       let finalTeamRunId = activeTeam.teamRunId;
-      const conversationTargetKey = messageTarget.localTargetKey;
-      const targetUploadKey = conversationTargetKey;
+      let targetExecutionAddress = initialExecutionAddress;
+      let conversationTargetKey = initialExecutionKey;
+      const targetUploadKey = initialExecutionAddress.memberAddress;
       const teamResumeConfig = !isTemporary
         ? runHistoryStore.teamResumeConfigByTeamRunId[finalTeamRunId] || null
         : null;
@@ -338,11 +336,11 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       let localSubmission: LocalUserSubmissionHandle | null = null;
 
       try {
-        let memberConfigs: TeamMemberConfigInput[] | null = null;
+        let memberConfigs: CurrentTeamMemberConfigInput[] | null = null;
         if (isTemporary) {
           this.isLaunching = true;
 
-          const leafMembers = flattenLeafAgentMemberNodes(activeTeam.memberTree);
+          const leafMembers = flattenLeafAgentMemberNodes(activeTeam.rootTeam.children);
 
           const runtimeKinds = new Set<string>();
           runtimeKinds.add(activeTeam.config.runtimeKind || DEFAULT_AGENT_RUNTIME_KIND);
@@ -368,7 +366,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
           memberConfigs = buildTeamRunMemberConfigRecords({
             config: activeTeam.config,
             leafMembers,
-          }).map(({ workspaceMetadata: _workspaceMetadata, ...memberConfig }) => ({
+          }).map(({ workspaceMetadata: _workspaceMetadata, displayName: _displayName, ...memberConfig }) => ({
             ...memberConfig,
             skillAccessMode: memberConfig.skillAccessMode as TeamMemberConfigInput['skillAccessMode'],
           }));
@@ -413,11 +411,16 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
 
           finalTeamRunId = permanentTeamRunId;
           teamContextsStore.promoteTemporaryTeamRunId(activeTeam.teamRunId, permanentTeamRunId);
+          targetExecutionAddress = createTeamExecutionAddress({
+            ...initialExecutionAddress,
+            rootTeamRunId: permanentTeamRunId,
+          });
+          conversationTargetKey = serializeTeamExecutionAddress(targetExecutionAddress);
           const promotedTeamContext = teamContextsStore.getTeamContextById(permanentTeamRunId);
           if (!promotedTeamContext) {
             throw new Error(`Team context '${permanentTeamRunId}' not found after creation.`);
           }
-          await reconcileTeamContextMemberRunIdsFromBackend({
+          await reconcileTeamContextAgentRunIdsFromBackend({
             teamContext: promotedTeamContext,
             teamRunId: permanentTeamRunId,
           });
@@ -458,8 +461,8 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
           attachments: contextAttachments,
         });
 
-        const finalFocusedMember = finalTeamContext.leafAgentContextsByRouteKey.get(conversationTargetKey) || null;
-        if (focusedNode.memberKind === 'agent' && !finalFocusedMember) {
+        const finalFocusedMember = finalTeamContext.agentExecutionsByKey.get(conversationTargetKey) || null;
+        if (focusedNode.kind === 'agent' && !finalFocusedMember) {
           throw new Error(`Focused member '${conversationTargetKey}' not found after team creation.`);
         }
 
@@ -487,7 +490,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         const service = await this.ensureTeamStreamConnected(finalTeamRunId);
         service.sendMessage(
           text,
-          messageTarget.address,
+          targetExecutionAddress,
           submissionPlan.executable.contextFilePaths,
           submissionPlan.executable.imageUrls,
           { messageId, dedupeKey },
@@ -541,14 +544,14 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
 
     interruptFocusedMemberGeneration(target: FocusedTeamMemberInterruptTarget): boolean {
       const teamRunId = target.teamRunId.trim();
-      const targetMemberRouteKey = target.targetMemberRouteKey.trim();
+      const executionAddress = createTeamExecutionAddress(target.executionAddress);
 
       if (!teamRunId) {
         console.warn('Cannot interrupt generation: team run ID is required.');
         return false;
       }
-      if (!targetMemberRouteKey) {
-        console.warn('Cannot interrupt generation: target member route key is required.');
+      if (executionAddress.rootTeamRunId !== teamRunId) {
+        console.warn('Cannot interrupt generation: execution address does not belong to the Team run.');
         return false;
       }
 
@@ -559,8 +562,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       }
 
       return service.interruptGeneration(buildClientInterruptCommandId(), {
-        targetMemberRouteKey,
-        targetMemberRunId: target.targetMemberRunId,
+        executionAddress,
       });
     },
   },

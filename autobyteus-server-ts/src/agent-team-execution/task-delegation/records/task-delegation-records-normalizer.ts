@@ -1,4 +1,4 @@
-import { normalizeConversationTargetAddress } from "../../domain/conversation-target-address.js";
+import { createTeamExecutionAddress } from "../../domain/team-execution-address.js";
 import type {
   TaskDelegationRecord,
   TaskDelegationRecordsFile,
@@ -10,138 +10,124 @@ import type {
 } from "../task-delegation-record.js";
 import { canonicalizeTaskDelegationRecord } from "./task-delegation-record-canonicalizer.js";
 
-const TASK_REFERENCE_TYPES = new Set<TaskDelegationReferenceFileType>([
-  "file",
-  "image",
-  "audio",
-  "video",
-  "pdf",
-  "csv",
-  "excel",
-  "other",
+const REFERENCE_TYPES = new Set<TaskDelegationReferenceFileType>([
+  "file", "image", "audio", "video", "pdf", "csv", "excel", "other",
 ]);
 
-const asRecord = (value: unknown): Record<string, unknown> | null => (
-  value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : null
-);
-
-const readString = (value: unknown): string | null => (
-  typeof value === "string" && value.trim().length > 0 ? value.trim() : null
-);
-
-const readReference = (value: unknown): TaskReferenceFile | null => {
-  const record = asRecord(value);
-  if (!record) return null;
-  const referenceId = readString(record.referenceId);
-  const path = readString(record.path);
-  const createdAt = readString(record.createdAt);
-  const updatedAt = readString(record.updatedAt) ?? createdAt;
-  const type = readString(record.type) as TaskDelegationReferenceFileType | null;
-  if (!referenceId || !path || !createdAt || !updatedAt || !type || !TASK_REFERENCE_TYPES.has(type)) return null;
-  return { referenceId, path, type, createdAt, updatedAt };
+const object = (value: unknown, label: string): Record<string, unknown> => {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    throw new Error(`${label} must be an object.`);
+  }
+  return value as Record<string, unknown>;
 };
 
-const readReferences = (value: unknown): TaskReferenceFile[] => (
-  Array.isArray(value) ? value.map(readReference).filter((entry): entry is TaskReferenceFile => Boolean(entry)) : []
-);
-
-const readSubmission = (record: Record<string, unknown>): TaskSubmissionUpdate | null => {
-  const submissionId = readString(record.submissionId);
-  const content = readString(record.content);
-  const createdAt = readString(record.createdAt);
-  const senderAddressRaw = asRecord(record.senderAddress);
-  const receiverAddressRaw = asRecord(record.receiverAddress);
-  if (!submissionId || !content || !createdAt || !senderAddressRaw || !receiverAddressRaw) return null;
-  return {
-    kind: "submission",
-    submissionId,
-    senderAddress: normalizeConversationTargetAddress(senderAddressRaw as never),
-    receiverAddress: normalizeConversationTargetAddress(receiverAddressRaw as never),
-    content,
-    referenceFiles: readReferences(record.referenceFiles),
-    createdAt,
-  };
-};
-
-const readReview = (record: Record<string, unknown>): TaskReviewUpdate | null => {
-  const reviewId = readString(record.reviewId);
-  const reviewedSubmissionId = readString(record.reviewedSubmissionId);
-  const createdAt = readString(record.createdAt);
-  const decision = readString(record.decision);
-  const senderAddressRaw = asRecord(record.senderAddress);
-  const receiverAddressRaw = asRecord(record.receiverAddress);
-  if (!reviewId || !reviewedSubmissionId || !createdAt || !senderAddressRaw || !receiverAddressRaw) return null;
-  if (decision !== "accept" && decision !== "request_revision") return null;
-  return {
-    kind: "review",
-    reviewId,
-    senderAddress: normalizeConversationTargetAddress(senderAddressRaw as never),
-    receiverAddress: normalizeConversationTargetAddress(receiverAddressRaw as never),
-    reviewedSubmissionId,
-    decision,
-    content: typeof record.content === "string" && record.content.trim().length > 0 ? record.content.trim() : null,
-    referenceFiles: readReferences(record.referenceFiles),
-    createdAt,
-  };
-};
-
-const readUpdate = (value: unknown): TaskUpdate | null => {
-  const record = asRecord(value);
-  if (!record) return null;
-  return record.kind === "submission" ? readSubmission(record) : record.kind === "review" ? readReview(record) : null;
-};
-
-const readRecord = (value: unknown): TaskDelegationRecord | null => {
-  const record = asRecord(value);
-  if (!record) return null;
-  const taskId = readString(record.taskId);
-  const status = readString(record.status);
-  const content = readString(record.content);
-  const createdAt = readString(record.createdAt);
-  const senderAddressRaw = asRecord(record.senderAddress);
-  const receiverAddressRaw = asRecord(record.receiverAddress);
-  const receiverTargetKind = readString(record.receiverTargetKind);
-  if (!taskId || !content || !createdAt || !senderAddressRaw || !receiverAddressRaw) return null;
-  if (status !== "active" && status !== "awaiting_review" && status !== "accepted") return null;
-  if (receiverTargetKind !== "member" && receiverTargetKind !== "team") return null;
-  const taskRunRaw = asRecord(record.taskRun);
-  const taskRun = taskRunRaw && asRecord(taskRunRaw.address) && readString(taskRunRaw.startedAt)
-    ? { address: normalizeConversationTargetAddress(taskRunRaw.address as never), startedAt: readString(taskRunRaw.startedAt)! }
-    : null;
-  try {
-    return canonicalizeTaskDelegationRecord({
-      taskId,
-      status,
-      senderAddress: normalizeConversationTargetAddress(senderAddressRaw as never),
-      receiverAddress: normalizeConversationTargetAddress(receiverAddressRaw as never),
-      receiverTargetKind,
-      content,
-      referenceFiles: readReferences(record.referenceFiles),
-      taskRun,
-      updates: Array.isArray(record.updates)
-        ? record.updates.map(readUpdate).filter((entry): entry is TaskUpdate => Boolean(entry))
-        : [],
-      createdAt,
-    });
-  } catch {
-    return null;
+const exactKeys = (value: Record<string, unknown>, expected: readonly string[], label: string): void => {
+  const actual = Object.keys(value).sort();
+  const target = [...expected].sort();
+  if (actual.length !== target.length || actual.some((key, index) => key !== target[index])) {
+    throw new Error(`${label} has unsupported or missing field(s).`);
   }
 };
 
+const text = (value: unknown, label: string): string => {
+  if (typeof value !== "string" || !value.trim()) throw new Error(`${label} is required.`);
+  return value.trim();
+};
+
+const references = (value: unknown, label: string): TaskReferenceFile[] => {
+  if (!Array.isArray(value)) throw new Error(`${label} must be an array.`);
+  return value.map((entry, index) => {
+    const record = object(entry, `${label}[${index}]`);
+    exactKeys(record, ["referenceId", "path", "type", "createdAt", "updatedAt"], `${label}[${index}]`);
+    const type = text(record.type, `${label}[${index}].type`) as TaskDelegationReferenceFileType;
+    if (!REFERENCE_TYPES.has(type)) throw new Error(`${label}[${index}].type is unsupported.`);
+    return {
+      referenceId: text(record.referenceId, `${label}[${index}].referenceId`),
+      path: text(record.path, `${label}[${index}].path`),
+      type,
+      createdAt: text(record.createdAt, `${label}[${index}].createdAt`),
+      updatedAt: text(record.updatedAt, `${label}[${index}].updatedAt`),
+    };
+  });
+};
+
+const submission = (record: Record<string, unknown>, label: string): TaskSubmissionUpdate => {
+  exactKeys(record, ["kind", "submissionId", "senderAddress", "receiverAddress", "content", "referenceFiles", "createdAt"], label);
+  return {
+    kind: "submission",
+    submissionId: text(record.submissionId, `${label}.submissionId`),
+    senderAddress: createTeamExecutionAddress(object(record.senderAddress, `${label}.senderAddress`) as never),
+    receiverAddress: createTeamExecutionAddress(object(record.receiverAddress, `${label}.receiverAddress`) as never),
+    content: text(record.content, `${label}.content`),
+    referenceFiles: references(record.referenceFiles, `${label}.referenceFiles`),
+    createdAt: text(record.createdAt, `${label}.createdAt`),
+  };
+};
+
+const review = (record: Record<string, unknown>, label: string): TaskReviewUpdate => {
+  exactKeys(record, ["kind", "reviewId", "senderAddress", "receiverAddress", "reviewedSubmissionId", "decision", "content", "referenceFiles", "createdAt"], label);
+  const decision = text(record.decision, `${label}.decision`);
+  if (decision !== "accept" && decision !== "request_revision") throw new Error(`${label}.decision is unsupported.`);
+  if (record.content !== null && typeof record.content !== "string") throw new Error(`${label}.content must be a string or null.`);
+  return {
+    kind: "review",
+    reviewId: text(record.reviewId, `${label}.reviewId`),
+    senderAddress: createTeamExecutionAddress(object(record.senderAddress, `${label}.senderAddress`) as never),
+    receiverAddress: createTeamExecutionAddress(object(record.receiverAddress, `${label}.receiverAddress`) as never),
+    reviewedSubmissionId: text(record.reviewedSubmissionId, `${label}.reviewedSubmissionId`),
+    decision,
+    content: typeof record.content === "string" && record.content.trim() ? record.content.trim() : null,
+    referenceFiles: references(record.referenceFiles, `${label}.referenceFiles`),
+    createdAt: text(record.createdAt, `${label}.createdAt`),
+  };
+};
+
+const update = (value: unknown, label: string): TaskUpdate => {
+  const record = object(value, label);
+  return record.kind === "submission"
+    ? submission(record, label)
+    : record.kind === "review"
+      ? review(record, label)
+      : (() => { throw new Error(`${label}.kind is unsupported.`); })();
+};
+
+const taskRecord = (value: unknown, label: string): TaskDelegationRecord => {
+  const record = object(value, label);
+  exactKeys(record, ["taskId", "status", "senderAddress", "receiverAddress", "receiverTargetKind", "content", "referenceFiles", "taskRun", "updates", "createdAt"], label);
+  const status = text(record.status, `${label}.status`);
+  if (status !== "active" && status !== "awaiting_review" && status !== "accepted") throw new Error(`${label}.status is unsupported.`);
+  const receiverTargetKind = text(record.receiverTargetKind, `${label}.receiverTargetKind`);
+  if (receiverTargetKind !== "agent" && receiverTargetKind !== "agent_team") throw new Error(`${label}.receiverTargetKind is unsupported.`);
+  if (!Array.isArray(record.updates)) throw new Error(`${label}.updates must be an array.`);
+  const taskRunRecord = record.taskRun === null ? null : object(record.taskRun, `${label}.taskRun`);
+  if (taskRunRecord) exactKeys(taskRunRecord, ["address", "startedAt"], `${label}.taskRun`);
+  return canonicalizeTaskDelegationRecord({
+    taskId: text(record.taskId, `${label}.taskId`),
+    status,
+    senderAddress: createTeamExecutionAddress(object(record.senderAddress, `${label}.senderAddress`) as never),
+    receiverAddress: createTeamExecutionAddress(object(record.receiverAddress, `${label}.receiverAddress`) as never),
+    receiverTargetKind,
+    content: text(record.content, `${label}.content`),
+    referenceFiles: references(record.referenceFiles, `${label}.referenceFiles`),
+    taskRun: taskRunRecord ? {
+      address: createTeamExecutionAddress(object(taskRunRecord.address, `${label}.taskRun.address`) as never),
+      startedAt: text(taskRunRecord.startedAt, `${label}.taskRun.startedAt`),
+    } : null,
+    updates: record.updates.map((entry, index) => update(entry, `${label}.updates[${index}]`)),
+    createdAt: text(record.createdAt, `${label}.createdAt`),
+  });
+};
+
+/** Strict current-schema reader. Legacy shapes are owned only by startup migration. */
 export const normalizeTaskDelegationRecordsFile = (
   value: unknown,
   fallback: { teamRunId: string },
 ): TaskDelegationRecordsFile => {
-  const parsed = asRecord(value);
-  const teamRunId = readString(parsed?.teamRunId) ?? fallback.teamRunId;
-  const records = Array.isArray(parsed?.records)
-    ? parsed.records.map(readRecord).filter((entry): entry is TaskDelegationRecord => Boolean(entry))
-    : [];
-  return {
-    teamRunId,
-    records: records.sort((left, right) => {
-      const byCreatedAt = left.createdAt.localeCompare(right.createdAt);
-      return byCreatedAt !== 0 ? byCreatedAt : left.taskId.localeCompare(right.taskId);
-    }),
-  };
+  const file = object(value, "Task delegation records file");
+  exactKeys(file, ["teamRunId", "records"], "Task delegation records file");
+  const teamRunId = text(file.teamRunId, "teamRunId");
+  if (teamRunId !== fallback.teamRunId.trim()) throw new Error(`Task records teamRunId '${teamRunId}' does not match '${fallback.teamRunId}'.`);
+  if (!Array.isArray(file.records)) throw new Error("Task delegation records must be an array.");
+  const records = file.records.map((entry, index) => taskRecord(entry, `records[${index}]`));
+  return { teamRunId, records: records.sort((left, right) => left.createdAt.localeCompare(right.createdAt) || left.taskId.localeCompare(right.taskId)) };
 };

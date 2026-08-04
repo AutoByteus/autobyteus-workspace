@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS brief_artifacts (
   summary TEXT,
   artifact_ref_json TEXT NOT NULL,
   is_final INTEGER NOT NULL,
-  producer_member_route_key TEXT NOT NULL,
+  producer_member_address TEXT NOT NULL,
   updated_at TEXT NOT NULL,
   PRIMARY KEY (brief_id, artifact_kind)
 );

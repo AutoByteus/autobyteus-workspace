@@ -2,8 +2,8 @@
   <div class="rounded-xl border border-slate-200 bg-white p-4">
     <div class="mb-3 flex items-center justify-between">
       <div>
-        <p class="text-sm font-medium text-slate-900">{{ member.memberName }}</p>
-        <p class="text-xs text-slate-500">{{ member.memberRouteKey }}</p>
+        <p class="text-sm font-medium text-slate-900">{{ member.displayName }}</p>
+        <p class="text-xs text-slate-500">{{ member.memberAddress }}</p>
       </div>
       <span v-if="hasOverride" class="rounded-full border border-amber-100 bg-amber-50 px-2 py-1 text-xs font-medium text-amber-700">
         {{ $t('applications.components.applications.ApplicationTeamMemberOverrideItem.overrideActive') }}
@@ -108,7 +108,7 @@ const isUnresolvedInheritedModel = computed(() => (
 const unresolvedInheritedModelMessage = computed(() => buildUnavailableInheritedModelMessage({
   globalLlmModelIdentifier: props.globalLlmModelIdentifier,
   runtimeKind: effectiveRuntimeKind.value,
-  memberName: props.member.memberName,
+  memberName: props.member.displayName,
 }))
 const modelPlaceholder = computed(() => (
   isUnresolvedInheritedModel.value

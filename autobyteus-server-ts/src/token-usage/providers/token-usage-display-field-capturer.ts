@@ -14,10 +14,9 @@ import {
   getTeamRunMetadataService,
   type TeamRunMetadataService,
 } from "../../run-history/services/team-run-metadata-service.js";
-import type {
-  TeamRunMemberMetadata,
-  TeamRunMetadata,
-} from "../../run-history/store/team-run-metadata-types.js";
+import type { TeamRunMetadata } from "../../run-history/store/team-run-metadata-types.js";
+import { collectTeamRunAgentNodes } from "../../agent-team-execution/domain/team-run-config.js";
+import { getAgentTeamAddressBasename } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { TokenUsageUpdatedPayload } from "../../agent-execution/domain/agent-run-token-usage.js";
 
 const compactOptional = (value: string | null | undefined): string | null => {
@@ -32,21 +31,12 @@ const normalizeDateString = (value: string | null | undefined): string | null =>
   return Number.isNaN(parsed.getTime()) ? null : parsed.toISOString();
 };
 
-const flattenMembers = (members: readonly TeamRunMemberMetadata[]): TeamRunMemberMetadata[] => (
-  members.flatMap((member) => [
-    member,
-    ...(member.memberKind === "agent_team" ? flattenMembers(member.memberTree) : []),
-  ])
-);
-
-const findMember = (metadata: TeamRunMetadata | null, input: {
-  memberAgentRunId: string | null;
-  memberRouteKey: string | null;
-}): TeamRunMemberMetadata | null => {
+const findMember = (metadata: TeamRunMetadata | null, payload: TokenUsageUpdatedPayload) => {
   if (!metadata) return null;
-  const members = flattenMembers(metadata.memberTree);
-  return members.find((member) => Boolean(input.memberAgentRunId && member.memberRunId === input.memberAgentRunId)) ??
-    members.find((member) => Boolean(input.memberRouteKey && member.memberRouteKey === input.memberRouteKey)) ??
+  const members = collectTeamRunAgentNodes(metadata.rootTeam);
+  const address = payload.execution_address?.memberAddress ?? null;
+  return members.find((member) => Boolean(address && member.address === address)) ??
+    members.find((member) => Boolean(payload.member_agent_run_id && member.agentRunId === payload.member_agent_run_id)) ??
     null;
 };
 
@@ -79,7 +69,7 @@ export class TokenUsageDisplayFieldCapturer {
         normalizeDateString(catalogRow?.createdAt) ??
         normalizeDateString(metadata?.preparedAt) ??
         normalizeDateString(metadata?.startedAt),
-      member_name: compactOptional(payload.member_name),
+      member_display_name: compactOptional(payload.member_display_name),
     };
   }
 
@@ -91,10 +81,7 @@ export class TokenUsageDisplayFieldCapturer {
       this.getTeamCatalog().getCatalogRow(teamRunId).catch(() => null),
       this.getTeamMetadata().readMetadata(teamRunId).catch(() => null),
     ]);
-    const member = findMember(metadata, {
-      memberAgentRunId: payload.member_agent_run_id ?? payload.run_id,
-      memberRouteKey: payload.member_route_key,
-    });
+    const member = findMember(metadata, payload);
 
     return {
       ...payload,
@@ -106,9 +93,8 @@ export class TokenUsageDisplayFieldCapturer {
       run_created_at: normalizeDateString(payload.run_created_at) ??
         normalizeDateString(catalogRow?.createdAt) ??
         normalizeDateString(metadata?.createdAt),
-      member_name: compactOptional(payload.member_name) ??
-        compactOptional(member?.memberName) ??
-        compactOptional(payload.member_route_key),
+      member_display_name: compactOptional(payload.member_display_name) ??
+        compactOptional(member ? getAgentTeamAddressBasename(member.address) : null),
     };
   }
 

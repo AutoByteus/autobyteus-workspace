@@ -15,13 +15,13 @@ import type {
   ApplicationSupportedTeamMemberOverrideDeclaration,
 } from "@autobyteus/application-sdk-contracts";
 import type { TeamLeafAgentMember } from "../../agent-team-execution/services/team-definition-traversal-service.js";
-import { normalizeMemberRouteKey } from "../../agent-team-execution/domain/team-run-member-identity.js";
+import { assertAgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { LegacyApplicationConfiguredLaunchDefaults } from "../stores/application-execution-resource-configuration-store.js";
 
 const AGENT_LAUNCH_PROFILE_KEYS = new Set(["kind", "llmModelIdentifier", "runtimeKind", "workspaceRootPath"]);
 const TEAM_LAUNCH_PROFILE_KEYS = new Set(["kind", "defaults", "memberProfiles"]);
 const TEAM_LAUNCH_DEFAULT_KEYS = new Set(["llmModelIdentifier", "runtimeKind", "workspaceRootPath"]);
-const TEAM_MEMBER_PROFILE_KEYS = new Set(["memberRouteKey", "memberName", "agentDefinitionId", "llmModelIdentifier", "runtimeKind"]);
+const TEAM_MEMBER_PROFILE_KEYS = new Set(["memberAddress", "displayName", "agentDefinitionId", "llmModelIdentifier", "runtimeKind"]);
 
 export class LaunchProfileValidationError extends Error {
   constructor(
@@ -245,10 +245,10 @@ const normalizeTeamMemberProfile = (
   const record = structuredClone(value) as Record<string, unknown>;
   assertNoUnknownKeys(record, TEAM_MEMBER_PROFILE_KEYS, "launchProfile.memberProfiles[]");
 
-  const memberRouteKey = normalizeMemberRouteKey(
-    normalizeRequiredString(record.memberRouteKey, "launchProfile.memberProfiles[].memberRouteKey"),
+  const memberAddress = assertAgentTeamAddress(
+    normalizeRequiredString(record.memberAddress, "launchProfile.memberProfiles[].memberAddress"),
   );
-  const memberName = normalizeRequiredString(record.memberName, "launchProfile.memberProfiles[].memberName");
+  const displayName = normalizeRequiredString(record.displayName, "launchProfile.memberProfiles[].displayName");
   const agentDefinitionId = normalizeRequiredString(
     record.agentDefinitionId,
     "launchProfile.memberProfiles[].agentDefinitionId",
@@ -272,8 +272,8 @@ const normalizeTeamMemberProfile = (
   }
 
   return {
-    memberRouteKey,
-    memberName,
+    memberAddress,
+    displayName,
     agentDefinitionId,
     ...(llmModelIdentifier ? { llmModelIdentifier } : {}),
     ...(runtimeKind ? { runtimeKind } : {}),
@@ -322,27 +322,27 @@ const normalizeTeamLaunchProfile = (
     normalizeTeamMemberProfile(memberProfile, slot, memberOverrideDeclaration),
   );
 
-  const seenRouteKeys = new Set<string>();
+  const seenAddresses = new Set<string>();
   for (const memberProfile of memberProfiles) {
-    if (seenRouteKeys.has(memberProfile.memberRouteKey)) {
+    if (seenAddresses.has(memberProfile.memberAddress)) {
       throw new LaunchProfileValidationError(
         "PROFILE_MALFORMED",
-        `Application execution resource slot '${slot.slotKey}' has duplicate team memberRouteKey '${memberProfile.memberRouteKey}'.`,
+        `Application execution resource slot '${slot.slotKey}' has duplicate team memberAddress '${memberProfile.memberAddress}'.`,
       );
     }
-    seenRouteKeys.add(memberProfile.memberRouteKey);
+    seenAddresses.add(memberProfile.memberAddress);
   }
 
-  const currentMemberByRouteKey = new Map(
-    currentTeamMembers.map((member) => [member.memberRouteKey, member]),
+  const currentMemberByAddress = new Map<string, TeamLeafAgentMember>(
+    currentTeamMembers.map((member) => [member.memberAddress, member]),
   );
   const staleMembers: NonNullable<ApplicationExecutionResourceConfigurationIssue["staleMembers"]> = [];
   for (const memberProfile of memberProfiles) {
-    const currentMember = currentMemberByRouteKey.get(memberProfile.memberRouteKey);
+    const currentMember = currentMemberByAddress.get(memberProfile.memberAddress);
     if (!currentMember) {
       staleMembers.push({
-        memberRouteKey: memberProfile.memberRouteKey,
-        memberName: memberProfile.memberName,
+        memberAddress: memberProfile.memberAddress,
+        displayName: memberProfile.displayName,
         agentDefinitionId: memberProfile.agentDefinitionId,
         reason: "MISSING_FROM_TEAM",
       });
@@ -350,8 +350,8 @@ const normalizeTeamLaunchProfile = (
     }
     if (currentMember.agentDefinitionId !== memberProfile.agentDefinitionId) {
       staleMembers.push({
-        memberRouteKey: memberProfile.memberRouteKey,
-        memberName: memberProfile.memberName,
+        memberAddress: memberProfile.memberAddress,
+        displayName: memberProfile.displayName,
         agentDefinitionId: memberProfile.agentDefinitionId,
         reason: "AGENT_CHANGED",
         currentAgentDefinitionId: currentMember.agentDefinitionId,
@@ -359,7 +359,7 @@ const normalizeTeamLaunchProfile = (
     }
   }
 
-  const missingCurrentMembers = currentTeamMembers.some((member) => !seenRouteKeys.has(member.memberRouteKey));
+  const missingCurrentMembers = currentTeamMembers.some((member) => !seenAddresses.has(member.memberAddress));
   if (staleMembers.length > 0 || missingCurrentMembers || memberProfiles.length !== currentTeamMembers.length) {
     throw new LaunchProfileValidationError(
       "TEAM_TOPOLOGY_CHANGED",
@@ -376,14 +376,14 @@ const normalizeTeamLaunchProfile = (
     }
     throw new LaunchProfileValidationError(
       "PROFILE_MALFORMED",
-      `Application execution resource slot '${slot.slotKey}' requires an effective llmModelIdentifier for team member '${memberProfile.memberName}'. Add a team default or a member override before saving.`,
+      `Application execution resource slot '${slot.slotKey}' requires an effective llmModelIdentifier for team member '${memberProfile.displayName}'. Add a team default or a member override before saving.`,
     );
   }
 
   return {
     kind: "AGENT_TEAM",
     defaults,
-    memberProfiles: memberProfiles.sort((left, right) => left.memberRouteKey.localeCompare(right.memberRouteKey)),
+    memberProfiles: memberProfiles.sort((left, right) => left.memberAddress.localeCompare(right.memberAddress)),
   };
 };
 
@@ -442,8 +442,8 @@ export const buildLegacyLaunchProfile = (input: {
         }
       : null,
     memberProfiles: (input.currentTeamMembers ?? []).map((member) => ({
-      memberRouteKey: member.memberRouteKey,
-      memberName: member.memberName,
+      memberAddress: member.memberAddress,
+      displayName: member.displayName,
       agentDefinitionId: member.agentDefinitionId,
     })),
   };

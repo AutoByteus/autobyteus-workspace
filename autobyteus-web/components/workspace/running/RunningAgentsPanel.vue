@@ -29,7 +29,7 @@
             :definition-name="group.definitionName"
             :runs="group.runs"
             :selected-run-id="selectedTeamRunId"
-            :coordinator-route-key="getCoordinatorRouteKey(group.runs[0] || null)"
+            :coordinator-address="getCoordinatorAddress(group.runs[0] || null)"
             @create="createTeamRun"
             @select="selectTeamRun"
             @delete="deleteTeamRun"
@@ -55,6 +55,7 @@ import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { buildEditableAgentRunSeed, buildEditableTeamRunSeed } from '~/composables/useDefinitionLaunchDefaults';
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
+import type { TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 import RunningAgentGroup from './RunningAgentGroup.vue';
 import RunningTeamGroup from './RunningTeamGroup.vue';
 
@@ -153,7 +154,7 @@ const getTeamUpdatedAt = (team: AgentTeamContext): string | null | undefined => 
     return team.historicalHydration.updatedAt;
   }
 
-  return Array.from(team.leafAgentContextsByRouteKey.values())
+  return Array.from(team.agentExecutionsByKey.values())
     .map((member) => member.state.conversation?.updatedAt)
     .sort((left, right) => toTimestamp(right) - toTimestamp(left))[0] ?? null;
 };
@@ -210,14 +211,14 @@ const selectTeamRun = (runId: string) => {
   emit('run-selected', { type: 'team', runId });
 };
 
-const selectTeamMember = (teamRunId: string, memberRouteKey: string) => {
+const selectTeamMember = (teamRunId: string, executionAddress: TeamExecutionAddress) => {
   selectionStore.selectRun(teamRunId, 'team');
-  teamContextsStore.setFocusedMember(memberRouteKey);
+  teamContextsStore.setFocusedExecutionAddress(executionAddress);
   emit('run-selected', { type: 'team', runId: teamRunId });
 };
 
-const getCoordinatorRouteKey = (team: AgentTeamContext | null): string | undefined => {
-  return team?.coordinatorMemberRouteKey || undefined;
+const getCoordinatorAddress = (team: AgentTeamContext | null): string | undefined => {
+  return team?.rootTeam.coordinatorAddress || undefined;
 };
 
 const deleteAgentRun = async (runId: string) => {

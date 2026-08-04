@@ -71,7 +71,6 @@ import { useTaskDelegationStore } from '~/stores/taskDelegationStore';
 import TeamCommunicationPanel from '~/components/workspace/team/TeamCommunicationPanel.vue';
 import TeamDelegatedTasksSection from '~/components/workspace/team/TeamDelegatedTasksSection.vue';
 import { deriveDelegatedTaskEntries } from '~/utils/teamDelegatedTaskEntries';
-import { resolveTeamConversationTargetAddressResult } from '~/utils/teamConversationTargetAddress';
 
 type TeamOverviewSection = 'messages' | 'delegatedTasks';
 
@@ -87,10 +86,7 @@ const delegatedTasksExpanded = computed(() => expandedSection.value === 'delegat
 const focusedCommunicationAddress = computed(() => {
   const teamContext = activeTeamContext.value;
   if (!teamContext) return null;
-  return resolveTeamConversationTargetAddressResult(teamContext, {
-    allowSubteam: true,
-    allowActiveExecutionSafetyFallback: true,
-  }).target?.address ?? null;
+  return teamContext.focusedExecutionAddress;
 });
 const delegatedTaskEntries = computed(() => {
   const teamContext = activeTeamContext.value;

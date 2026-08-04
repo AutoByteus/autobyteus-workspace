@@ -120,9 +120,9 @@ export const LIST_AGENT_TEAM_RUNS_WITH_MEMORY = gql`
           hasRawArchive
         }
         memberTargets {
-          memberRouteKey
-          memberName
-          memberRunId
+          memberAddress
+          displayName
+          agentRunId
           agentDefinitionId
           lastUpdatedAt
           memory {

@@ -4,6 +4,7 @@ import type { RunProjectionConversationEntry } from '~/services/runHydration/run
 import type { RunProjectionActivityEntry } from '~/services/runHydration/runProjectionActivityHydration';
 import type { TeamCommunicationMessage } from '~/stores/teamCommunicationTypes';
 import type { TaskDelegationRecord } from '~/stores/taskDelegationTypes';
+import type { TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 
 export type RunKnownStatus = 'ACTIVE' | 'IDLE' | 'ERROR' | 'TERMINATED';
 
@@ -68,9 +69,9 @@ export interface RunResumeConfigPayload {
 export type TeamRunDeleteLifecycle = 'READY' | 'CLEANUP_PENDING';
 
 export interface TeamRunMemberHistoryItem {
-  memberRouteKey: string;
-  memberName: string;
-  memberRunId: string;
+  memberAddress: string;
+  displayName: string;
+  agentRunId: string;
   status: AgentStatus;
   runtimeKind?: AgentRuntimeKind | null;
   runtimeReference?: {
@@ -86,14 +87,14 @@ export interface TeamRunHistoryItem {
   teamRunId: string;
   teamDefinitionId: string;
   teamDefinitionName: string;
-  coordinatorMemberRouteKey: string;
+  coordinatorAddress: string;
   workspaceRootPath?: string | null;
   summary: string;
   createdAt: string;
   archivedAt?: string | null;
   terminatedAt?: string | null;
   isActive: boolean;
-  memberTree?: TeamRunMetadataMember[] | null;
+  rootTeam: TeamRunMetadataSubTeamMember;
   members: TeamRunMemberHistoryItem[];
 }
 
@@ -106,17 +107,15 @@ export interface TeamRunHistoryDefinitionGroup {
 export type TeamRunMetadataMemberKind = 'agent' | 'agent_team';
 
 export interface TeamRunMetadataMemberBase {
-  memberKind: TeamRunMetadataMemberKind;
-  memberRouteKey: string;
-  memberPath: string[];
-  memberName: string;
-  memberRunId: string;
+  kind: TeamRunMetadataMemberKind;
+  address: string;
   role?: string | null;
   description?: string | null;
 }
 
 export interface TeamRunMetadataAgentMember extends TeamRunMetadataMemberBase {
-  memberKind: 'agent';
+  kind: 'agent';
+  agentRunId: string;
   runtimeKind: AgentRuntimeKind;
   platformAgentRunId?: string | null;
   agentDefinitionId: string;
@@ -125,14 +124,15 @@ export interface TeamRunMetadataAgentMember extends TeamRunMetadataMemberBase {
   skillAccessMode?: SkillAccessMode | null;
   llmConfig: Record<string, unknown> | null;
   workspaceRootPath: string | null;
+  applicationExecutionContext: Record<string, unknown> | null;
 }
 
 export interface TeamRunMetadataSubTeamMember extends TeamRunMetadataMemberBase {
-  memberKind: 'agent_team';
+  kind: 'agent_team';
   teamDefinitionId: string;
-  teamRunId?: string | null;
-  coordinatorMemberRouteKey?: string | null;
-  memberTree: TeamRunMetadataMember[];
+  teamRunId: string;
+  coordinatorAddress: string;
+  children: TeamRunMetadataMember[];
 }
 
 export type TeamRunMetadataMember =
@@ -140,13 +140,12 @@ export type TeamRunMetadataMember =
   | TeamRunMetadataSubTeamMember;
 
 export interface TeamRunMetadataPayload {
-  teamRunId: string;
-  teamDefinitionId: string;
+  schemaVersion: 3;
   teamDefinitionName: string;
-  coordinatorMemberRouteKey: string;
   createdAt: string;
   archivedAt?: string | null;
-  memberTree: TeamRunMetadataMember[];
+  rootTeam: TeamRunMetadataSubTeamMember;
+  handoffs: Array<{ from: string; to: string; rules: string[] }>;
 }
 
 export interface TeamRunResumeConfigPayload {
@@ -157,15 +156,13 @@ export interface TeamRunResumeConfigPayload {
 
 export interface TeamMemberTreeRow {
   teamRunId: string;
-  memberKind: 'agent' | 'agent_team';
-  memberRouteKey: string;
-  memberPath: string[];
-  memberName: string;
+  kind: 'agent' | 'agent_team';
+  memberAddress: string;
   displayName: string;
-  memberRunId?: string | null;
+  agentRunId?: string | null;
   teamDefinitionId?: string | null;
   teamRunIdForNode?: string | null;
-  coordinatorMemberRouteKey?: string | null;
+  coordinatorAddress?: string | null;
   workspaceRootPath: string | null;
   summary: string;
   lastActivityAt: string;
@@ -177,7 +174,8 @@ export interface TeamMemberTreeRow {
 
 export interface TeamMemberFocusTarget {
   teamRunId: string;
-  memberRouteKey: string;
+  memberAddress: string;
+  executionAddress?: TeamExecutionAddress;
 }
 
 export interface TeamTreeNode {
@@ -189,9 +187,9 @@ export interface TeamTreeNode {
   lastActivityAt: string;
   isActive: boolean;
   deleteLifecycle: TeamRunDeleteLifecycle;
-  focusedMemberRouteKey: string;
+  focusedExecutionAddress: TeamExecutionAddress;
+  rootTeam: TeamMemberTreeRow;
   members: TeamMemberTreeRow[];
-  memberTree: TeamMemberTreeRow[];
 }
 
 export interface ListWorkspaceRunHistoryQueryData {

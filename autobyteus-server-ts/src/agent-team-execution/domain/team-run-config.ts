@@ -3,323 +3,179 @@ import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js"
 import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
 import type { TeamBackendKind } from "./team-backend-kind.js";
 import {
-  buildMemberPath,
-  buildMemberRouteKeyFromPath,
-  normalizeMemberPath,
-} from "./team-run-member-identity.js";
-import { normalizeMemberRouteKey } from "./team-run-member-identity.js";
+  appendAgentTeamAddress,
+  assertAgentTeamAddress,
+  getAgentTeamAddressBasename,
+  getParentAgentTeamAddress,
+  type AgentTeamAddress,
+} from "../../agent-collaboration/domain/agent-team-address.js";
 import {
   cloneCollaborationHandoffs,
   type CollaborationHandoff,
 } from "../../agent-collaboration/domain/collaboration-handoff.js";
 
-export type TeamRunMemberKind = "agent" | "agent_team";
+export type TeamRunAgentNode = Readonly<{
+  kind: "agent";
+  address: AgentTeamAddress;
+  agentDefinitionId: string;
+  agentRunId: string;
+  platformAgentRunId: string | null;
+  role: string | null;
+  description: string | null;
+  runtimeKind: RuntimeKind;
+  llmModelIdentifier: string;
+  llmConfig: Readonly<Record<string, unknown>> | null;
+  autoExecuteTools: boolean;
+  skillAccessMode: SkillAccessMode;
+  workspaceRootPath: string | null;
+  applicationExecutionContext: ApplicationExecutionContext | null;
+}>;
 
-export type TeamRunMemberConfigBase = {
-  memberKind: TeamRunMemberKind;
-  memberName: string;
-  memberPath: string[];
-  memberRouteKey: string;
-  memberRunId?: string | null;
+export type TeamRunAgentTeamNode = Readonly<{
+  kind: "agent_team";
+  address: AgentTeamAddress;
+  teamDefinitionId: string;
+  teamRunId: string;
+  coordinatorAddress: AgentTeamAddress;
   role?: string | null;
   description?: string | null;
-};
+  children: readonly TeamRunNode[];
+}>;
 
-export type TeamMemberRunConfig = TeamRunMemberConfigBase & {
-  memberKind: "agent";
+export type TeamRunNode = TeamRunAgentNode | TeamRunAgentTeamNode;
+
+export type TeamAgentLaunchSettings = Readonly<{
+  memberAddress: AgentTeamAddress;
   agentDefinitionId: string;
   llmModelIdentifier: string;
   autoExecuteTools: boolean;
   skillAccessMode: SkillAccessMode;
-  workspaceId?: string | null;
-  workspaceRootPath?: string | null;
-  memoryDir?: string | null;
-  llmConfig?: Record<string, unknown> | null;
+  workspaceRootPath: string | null;
+  llmConfig: Readonly<Record<string, unknown>> | null;
   runtimeKind: RuntimeKind;
-  applicationExecutionContext?: ApplicationExecutionContext | null;
-};
+  applicationExecutionContext: ApplicationExecutionContext | null;
+}>;
 
-export type TeamSubTeamMemberRunConfig = TeamRunMemberConfigBase & {
-  memberKind: "agent_team";
-  teamDefinitionId: string;
-  coordinatorMemberRouteKey: string | null;
-  childTeamRunId?: string | null;
-  memberConfigs: TeamRunMemberConfig[];
-};
-
-export type TeamRunMemberConfig = TeamMemberRunConfig | TeamSubTeamMemberRunConfig;
-
-export type TeamMemberRunConfigInput = Omit<
-  Partial<TeamMemberRunConfig>,
-  "memberKind"
-> & {
-  memberKind?: "agent" | null;
-  memberName: string;
-  agentDefinitionId: string;
-  llmModelIdentifier: string;
-  autoExecuteTools: boolean;
-  skillAccessMode: SkillAccessMode;
-  runtimeKind: RuntimeKind;
-};
-
-export type TeamSubTeamMemberRunConfigInput = Omit<
-  Partial<TeamSubTeamMemberRunConfig>,
-  "memberKind" | "memberConfigs"
-> & {
-  memberKind: "agent_team";
-  memberName: string;
-  teamDefinitionId: string;
-  memberConfigs: TeamRunMemberConfigInput[];
-};
-
-export type TeamRunMemberConfigInput =
-  | TeamMemberRunConfigInput
-  | TeamSubTeamMemberRunConfigInput
-  | TeamRunMemberConfig;
-
-const normalizeRequiredString = (value: string, fieldName: string): string => {
-  const normalized = value.trim();
-  if (!normalized) {
-    throw new Error(`${fieldName} is required.`);
-  }
+const required = (value: string, fieldName: string): string => {
+  const normalized = typeof value === "string" ? value.trim() : "";
+  if (!normalized) throw new Error(`${fieldName} is required.`);
   return normalized;
 };
 
-const normalizeOptionalString = (value: string | null | undefined): string | null =>
-  typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
+const optional = (value: string | null | undefined): string | null =>
+  typeof value === "string" && value.trim() ? value.trim() : null;
 
-const hasExplicitMemberPath = (
-  input: { memberPath?: string[] | readonly string[] | null },
-): input is { memberPath: string[] | readonly string[] } =>
-  Array.isArray(input.memberPath) && input.memberPath.length > 0;
+const freezeObjectGraph = <T>(value: T): Readonly<T> => {
+  if (!value || typeof value !== "object" || Object.isFrozen(value)) return value;
+  for (const child of Object.values(value)) freezeObjectGraph(child);
+  return Object.freeze(value);
+};
 
-export const normalizeTeamRunMemberConfigTree = (
-  memberConfigs: readonly TeamRunMemberConfigInput[],
-  parentPath: readonly string[] = [],
-): TeamRunMemberConfig[] =>
-  memberConfigs.map((memberConfig) => normalizeTeamRunMemberConfig(memberConfig, parentPath));
+const freezeRecord = (
+  value: Record<string, unknown> | null | undefined,
+): Readonly<Record<string, unknown>> | null => value
+  ? freezeObjectGraph(structuredClone(value))
+  : null;
 
-const normalizeTeamRunMemberConfig = (
-  input: TeamRunMemberConfigInput,
-  parentPath: readonly string[],
-): TeamRunMemberConfig => {
-  const memberName = normalizeRequiredString(input.memberName, "memberName");
-  const memberPath = hasExplicitMemberPath(input)
-    ? normalizeMemberPath(input.memberPath)
-    : buildMemberPath(parentPath, memberName);
-  const memberRouteKey = normalizeMemberRouteKey(
-    input.memberRouteKey ?? buildMemberRouteKeyFromPath(memberPath),
+export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
+  const address = assertAgentTeamAddress(node.address);
+  if (node.kind === "agent") {
+    if (address === "/") throw new Error("The root TeamRun node must be an AgentTeam.");
+    return Object.freeze({
+      kind: "agent",
+      address,
+      agentDefinitionId: required(node.agentDefinitionId, `agentDefinitionId at '${address}'`),
+      agentRunId: required(node.agentRunId, `agentRunId at '${address}'`),
+      platformAgentRunId: optional(node.platformAgentRunId),
+      role: node.role ?? null,
+      description: node.description ?? null,
+      runtimeKind: node.runtimeKind,
+      llmModelIdentifier: required(node.llmModelIdentifier, `llmModelIdentifier at '${address}'`),
+      llmConfig: freezeRecord(node.llmConfig as Record<string, unknown> | null),
+      autoExecuteTools: Boolean(node.autoExecuteTools),
+      skillAccessMode: node.skillAccessMode,
+      workspaceRootPath: optional(node.workspaceRootPath),
+      applicationExecutionContext: node.applicationExecutionContext
+        ? freezeObjectGraph(structuredClone(node.applicationExecutionContext))
+        : null,
+    });
+  }
+  const children = Object.freeze(node.children.map(cloneTeamRunNode));
+  const coordinatorAddress = assertAgentTeamAddress(node.coordinatorAddress);
+  const directCoordinator = children.filter((child) =>
+    child.kind === "agent" && child.address === coordinatorAddress,
   );
-
-  if (input.memberKind === "agent_team") {
-    return {
-      memberKind: "agent_team",
-      memberName,
-      memberPath,
-      memberRouteKey,
-      memberRunId: normalizeOptionalString(input.memberRunId),
-      role: input.role ?? null,
-      description: input.description ?? null,
-      teamDefinitionId: normalizeRequiredString(input.teamDefinitionId, "teamDefinitionId"),
-      coordinatorMemberRouteKey: normalizeOptionalString(input.coordinatorMemberRouteKey),
-      childTeamRunId: normalizeOptionalString(input.childTeamRunId),
-      memberConfigs: normalizeTeamRunMemberConfigTree(input.memberConfigs, memberPath),
-    };
+  if (directCoordinator.length !== 1) {
+    throw new Error(`AgentTeam '${address}' must have exactly one direct Agent coordinator '${coordinatorAddress}'.`);
   }
-
-  return {
-    memberKind: "agent",
-    memberName,
-    memberPath,
-    memberRouteKey,
-    memberRunId: normalizeOptionalString(input.memberRunId),
-    role: input.role ?? null,
-    description: input.description ?? null,
-    agentDefinitionId: normalizeRequiredString(input.agentDefinitionId, "agentDefinitionId"),
-    llmModelIdentifier: normalizeRequiredString(input.llmModelIdentifier, "llmModelIdentifier"),
-    autoExecuteTools: Boolean(input.autoExecuteTools),
-    skillAccessMode: input.skillAccessMode,
-    workspaceId: input.workspaceId ?? null,
-    workspaceRootPath: input.workspaceRootPath ?? null,
-    memoryDir: input.memoryDir ?? null,
-    llmConfig: input.llmConfig ?? null,
-    runtimeKind: input.runtimeKind,
-    applicationExecutionContext: input.applicationExecutionContext ?? null,
-  };
-};
-
-export const collectAgentMemberRunConfigs = (
-  memberConfigs: readonly TeamRunMemberConfig[],
-): TeamMemberRunConfig[] => {
-  const agents: TeamMemberRunConfig[] = [];
-  const visit = (members: readonly TeamRunMemberConfig[]): void => {
-    for (const member of members) {
-      if (member.memberKind === "agent") {
-        agents.push({ ...member, memberPath: [...member.memberPath] });
-      } else {
-        visit(member.memberConfigs);
-      }
+  const seen = new Set<string>();
+  for (const child of children) {
+    if (getParentAgentTeamAddress(child.address) !== address) {
+      throw new Error(`Node '${child.address}' is not a direct child of AgentTeam '${address}'.`);
     }
-  };
-  visit(memberConfigs);
-  return agents;
-};
-
-export const collectTopLevelAgentMemberRunConfigs = (
-  memberConfigs: readonly TeamRunMemberConfig[],
-): TeamMemberRunConfig[] =>
-  memberConfigs.filter((member): member is TeamMemberRunConfig => member.memberKind === "agent");
-
-export const hasSubTeamMemberConfigs = (
-  memberConfigs: readonly TeamRunMemberConfig[],
-): boolean =>
-  memberConfigs.some((member) => member.memberKind === "agent_team");
-
-export type TeamRunTopologyLocalizationErrorCode =
-  | "TEAM_RUN_LOCALIZATION_PREFIX_INVALID"
-  | "TEAM_RUN_COORDINATOR_INVALID";
-
-export class TeamRunTopologyLocalizationError extends Error {
-  constructor(
-    readonly code: TeamRunTopologyLocalizationErrorCode,
-    message: string,
-  ) {
-    super(message);
-    this.name = "TeamRunTopologyLocalizationError";
+    const name = getAgentTeamAddressBasename(child.address)!;
+    const expected = appendAgentTeamAddress(address, name);
+    if (child.address !== expected) throw new Error(`Node '${child.address}' is not canonical.`);
+    const folded = name.toLocaleLowerCase("en-US");
+    if (seen.has(folded)) throw new Error(`AgentTeam '${address}' has duplicate child '${name}'.`);
+    seen.add(folded);
   }
-}
-
-export type LocalizedSubTeamRunTopology = {
-  coordinatorMemberRouteKey: string;
-  memberTree: TeamRunMemberConfig[];
-};
-
-export const localizeSubTeamRunTopology = (
-  subTeamConfig: TeamSubTeamMemberRunConfig,
-): LocalizedSubTeamRunTopology => {
-  const mountPath = normalizeMemberPath(subTeamConfig.memberPath);
-
-  const localizeMember = (source: TeamRunMemberConfig): TeamRunMemberConfig => {
-    const sourcePath = normalizeMemberPath(source.memberPath);
-    const matchesPrefix =
-      sourcePath.length > mountPath.length &&
-      mountPath.every((segment, index) => sourcePath[index] === segment);
-    if (!matchesPrefix) {
-      throw new TeamRunTopologyLocalizationError(
-        "TEAM_RUN_LOCALIZATION_PREFIX_INVALID",
-        `Member path '${sourcePath.join("/")}' is not a strict descendant of subteam mount '${mountPath.join("/")}'.`,
-      );
-    }
-    const memberPath = sourcePath.slice(mountPath.length);
-    const memberRouteKey = buildMemberRouteKeyFromPath(memberPath);
-    if (source.memberKind === "agent") {
-      return {
-        ...source,
-        memberPath,
-        memberRouteKey,
+  const placement = address === "/"
+    ? {}
+    : {
+        role: node.role ?? null,
+        description: node.description ?? null,
       };
-    }
+  return Object.freeze({
+    kind: "agent_team",
+    address,
+    teamDefinitionId: required(node.teamDefinitionId, `teamDefinitionId at '${address}'`),
+    teamRunId: required(node.teamRunId, `teamRunId at '${address}'`),
+    coordinatorAddress,
+    ...placement,
+    children,
+  });
+};
 
-    const localizedChildren = source.memberConfigs.map(localizeMember);
-    const sourceCoordinator = resolveDirectSourceCoordinator(source);
-    const coordinatorIndex = source.memberConfigs.indexOf(sourceCoordinator);
-    const localizedCoordinator = localizedChildren[coordinatorIndex];
-    if (!localizedCoordinator || localizedCoordinator.memberKind !== "agent") {
-      throw invalidCoordinator(source.memberRouteKey);
-    }
-    return {
-      ...source,
-      memberPath,
-      memberRouteKey,
-      coordinatorMemberRouteKey: localizedCoordinator.memberRouteKey,
-      memberConfigs: localizedChildren,
-    };
+export const collectTeamRunAgentNodes = (rootTeam: TeamRunAgentTeamNode): TeamRunAgentNode[] => {
+  const output: TeamRunAgentNode[] = [];
+  const visit = (node: TeamRunNode): void => {
+    if (node.kind === "agent") output.push(node);
+    else node.children.forEach(visit);
   };
-
-  const sourceCoordinator = resolveDirectSourceCoordinator(subTeamConfig);
-  const coordinatorIndex = subTeamConfig.memberConfigs.indexOf(sourceCoordinator);
-  const memberTree = subTeamConfig.memberConfigs.map(localizeMember);
-  const localizedCoordinator = memberTree[coordinatorIndex];
-  if (!localizedCoordinator || localizedCoordinator.memberKind !== "agent") {
-    throw invalidCoordinator(subTeamConfig.memberRouteKey);
-  }
-  assertLocalizedCoordinatorInvariants(memberTree);
-  return {
-    coordinatorMemberRouteKey: localizedCoordinator.memberRouteKey,
-    memberTree,
-  };
+  rootTeam.children.forEach(visit);
+  return output;
 };
 
-const invalidCoordinator = (teamRouteKey: string): TeamRunTopologyLocalizationError =>
-  new TeamRunTopologyLocalizationError(
-    "TEAM_RUN_COORDINATOR_INVALID",
-    `Team '${teamRouteKey}' must identify exactly one direct Agent coordinator.`,
-  );
+export const projectAgentLaunchSettings = (
+  rootTeam: TeamRunAgentTeamNode,
+): TeamAgentLaunchSettings[] => collectTeamRunAgentNodes(rootTeam).map((node) => Object.freeze({
+  memberAddress: node.address,
+  agentDefinitionId: node.agentDefinitionId,
+  llmModelIdentifier: node.llmModelIdentifier,
+  autoExecuteTools: node.autoExecuteTools,
+  skillAccessMode: node.skillAccessMode,
+  workspaceRootPath: node.workspaceRootPath,
+  llmConfig: node.llmConfig,
+  runtimeKind: node.runtimeKind,
+  applicationExecutionContext: node.applicationExecutionContext,
+}));
 
-const resolveDirectSourceCoordinator = (
-  team: Pick<TeamSubTeamMemberRunConfig, "memberRouteKey" | "coordinatorMemberRouteKey" | "memberConfigs">,
-): TeamMemberRunConfig => {
-  const coordinatorRouteKey = team.coordinatorMemberRouteKey?.trim() ?? "";
-  const matches = team.memberConfigs.filter(
-    (member): member is TeamMemberRunConfig =>
-      member.memberKind === "agent" && member.memberRouteKey === coordinatorRouteKey,
-  );
-  if (matches.length !== 1) {
-    throw invalidCoordinator(team.memberRouteKey);
-  }
-  return matches[0]!;
-};
-
-const assertLocalizedCoordinatorInvariants = (
-  members: readonly TeamRunMemberConfig[],
-): void => {
-  for (const member of members) {
-    if (member.memberKind !== "agent_team") {
-      continue;
-    }
-    const matches = member.memberConfigs.filter(
-      (child) =>
-        child.memberKind === "agent" &&
-        child.memberRouteKey === member.coordinatorMemberRouteKey,
-    );
-    if (matches.length !== 1) {
-      throw invalidCoordinator(member.memberRouteKey);
-    }
-    assertLocalizedCoordinatorInvariants(member.memberConfigs);
-  }
-};
-
+/** Immutable current-schema runtime aggregate. */
 export class TeamRunConfig {
-  readonly teamDefinitionId: string;
   readonly teamBackendKind: TeamBackendKind;
-  readonly coordinatorMemberName: string | null;
-  readonly coordinatorMemberRouteKey: string | null;
-  readonly memberTree: TeamRunMemberConfig[];
-  readonly effectiveHandoffs: readonly CollaborationHandoff[];
-  /** Derived flat leaf-agent projection. Do not use as authoritative nested topology. */
-  readonly memberConfigs: TeamMemberRunConfig[];
+  readonly rootTeam: TeamRunAgentTeamNode;
+  readonly handoffs: readonly CollaborationHandoff[];
 
   constructor(input: {
-    teamDefinitionId: string;
     teamBackendKind: TeamBackendKind;
-    coordinatorMemberName?: string | null;
-    coordinatorMemberRouteKey?: string | null;
-    memberConfigs?: TeamRunMemberConfigInput[];
-    memberTree?: TeamRunMemberConfigInput[];
-    effectiveHandoffs?: readonly CollaborationHandoff[] | null;
+    rootTeam: TeamRunAgentTeamNode;
+    handoffs?: readonly CollaborationHandoff[] | null;
   }) {
-    this.teamDefinitionId = normalizeRequiredString(input.teamDefinitionId, "teamDefinitionId");
     this.teamBackendKind = input.teamBackendKind;
-    this.coordinatorMemberName = normalizeOptionalString(input.coordinatorMemberName);
-    const treeInput = input.memberTree ?? input.memberConfigs ?? [];
-    this.memberTree = normalizeTeamRunMemberConfigTree(treeInput);
-    this.memberConfigs = collectAgentMemberRunConfigs(this.memberTree);
-    this.effectiveHandoffs = Object.freeze(
-      cloneCollaborationHandoffs(input.effectiveHandoffs ?? []),
-    );
-    this.coordinatorMemberRouteKey = normalizeOptionalString(input.coordinatorMemberRouteKey)
-      ?? (this.coordinatorMemberName
-        ? normalizeMemberRouteKey(this.coordinatorMemberName)
-        : null);
+    this.rootTeam = cloneTeamRunNode(input.rootTeam) as TeamRunAgentTeamNode;
+    if (this.rootTeam.address !== "/") throw new Error("Root AgentTeam address must be '/'.");
+    this.handoffs = Object.freeze(cloneCollaborationHandoffs(input.handoffs ?? []));
+    Object.freeze(this);
   }
 }

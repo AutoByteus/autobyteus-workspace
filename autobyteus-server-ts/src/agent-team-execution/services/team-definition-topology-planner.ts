@@ -1,4 +1,3 @@
-import type { AgentTeamDefinition } from "../../agent-team-definition/domain/models.js";
 import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import {
   TeamDefinitionGraphResolver,
@@ -6,280 +5,177 @@ import {
   type ResolvedTeamDefinitionMember,
 } from "../../agent-team-definition/services/team-definition-graph-resolver.js";
 import { TeamHandoffCompiler } from "../../agent-team-definition/services/team-handoff-compiler.js";
+import type { AgentRunIdentityAllocator } from "../../agent-execution/services/agent-run-identity-allocator.js";
+import {
+  createAgentTeamAddress,
+  type AgentTeamAddress,
+} from "../../agent-collaboration/domain/agent-team-address.js";
+import { generateTeamRunIdForDefinitionName } from "../domain/team-run-id.js";
 import { TeamBackendKind } from "../domain/team-backend-kind.js";
 import {
+  projectAgentLaunchSettings,
   TeamRunConfig,
-  type TeamMemberRunConfigInput,
-  type TeamRunMemberConfig,
-  type TeamRunMemberConfigInput,
+  type TeamAgentLaunchSettings,
+  type TeamRunAgentTeamNode,
+  type TeamRunNode,
 } from "../domain/team-run-config.js";
-import {
-  buildMemberPath,
-  buildMemberRouteKeyFromPath,
-} from "../domain/team-run-member-identity.js";
+import { createTeamExecutionAddress } from "../domain/team-execution-address.js";
 
-export type TeamDefinitionTopologyPlan = {
-  teamDefinitionId: string;
-  coordinatorMemberName: string | null;
-  coordinatorMemberRouteKey: string | null;
-  teamBackendKind: TeamBackendKind;
-  hasSubTeams: boolean;
-  memberTree: TeamRunMemberConfig[];
-  leafMemberConfigs: import("../domain/team-run-config.js").TeamMemberRunConfig[];
-  config: TeamRunConfig;
+export type TeamAgentLaunchInput = Omit<TeamAgentLaunchSettings, "memberAddress" | "agentDefinitionId"> & {
+  memberAddress: string;
+  agentDefinitionId?: string | null;
 };
+
+export type TeamDefinitionTopologyPlan = Readonly<{
+  teamDefinitionName: string;
+  hasSubTeams: boolean;
+  config: TeamRunConfig;
+  agentLaunchSettings: readonly TeamAgentLaunchSettings[];
+}>;
 
 type TeamDefinitionLookup = Pick<AgentTeamDefinitionService, "getDefinitionById">;
+type AgentIdAllocator = Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
 
-type AgentSkeleton = {
-  kind: "agent";
-  memberName: string;
-  memberPath: string[];
-  memberRouteKey: string;
-  agentDefinitionId: string;
-};
-
-type SubTeamSkeleton = {
-  kind: "agent_team";
-  memberName: string;
-  memberPath: string[];
-  memberRouteKey: string;
-  teamDefinitionId: string;
-  coordinatorMemberRouteKey: string | null;
-  memberTree: MemberSkeleton[];
-};
-
-type MemberSkeleton = AgentSkeleton | SubTeamSkeleton;
-
-const normalizeRequiredString = (value: string, fieldName: string): string => {
+const required = (value: string, fieldName: string): string => {
   const normalized = value.trim();
-  if (!normalized) {
-    throw new Error(`${fieldName} is required.`);
-  }
+  if (!normalized) throw new Error(`${fieldName} is required.`);
   return normalized;
 };
 
-const isAgentConfigInput = (
-  input: TeamRunMemberConfigInput,
-): input is TeamMemberRunConfigInput => input.memberKind !== "agent_team";
-
 export class TeamDefinitionTopologyPlanner {
-  constructor(private readonly teamDefinitionService: TeamDefinitionLookup) {}
+  constructor(
+    private readonly teamDefinitionService: TeamDefinitionLookup,
+    private readonly agentRunIdentityAllocator: AgentIdAllocator,
+  ) {}
 
   async buildPlan(input: {
     teamDefinitionId: string;
-    memberConfigs: TeamRunMemberConfigInput[];
+    teamRunId: string;
+    memberConfigs: readonly TeamAgentLaunchInput[];
   }): Promise<TeamDefinitionTopologyPlan> {
-    const teamDefinitionId = normalizeRequiredString(input.teamDefinitionId, "teamDefinitionId");
-    const skeleton = await this.buildSkeleton(teamDefinitionId, [], new Set());
-    const leaves = this.collectLeaves(skeleton.memberTree);
-    const configByRouteKey = new Map<string, TeamMemberRunConfigInput>();
-    const configsByName = new Map<string, TeamMemberRunConfigInput[]>();
-
-    for (const rawConfig of input.memberConfigs) {
-      if (!isAgentConfigInput(rawConfig)) {
-        continue;
-      }
-      if (rawConfig.memberRouteKey?.trim()) {
-        configByRouteKey.set(rawConfig.memberRouteKey.trim(), rawConfig);
-      }
-      const byName = configsByName.get(rawConfig.memberName) ?? [];
-      byName.push(rawConfig);
-      configsByName.set(rawConfig.memberName, byName);
-    }
-
-    const duplicateLeafNames = new Set<string>();
-    const leafNameCounts = new Map<string, number>();
-    for (const leaf of leaves) {
-      leafNameCounts.set(leaf.memberName, (leafNameCounts.get(leaf.memberName) ?? 0) + 1);
-    }
-    for (const [memberName, count] of leafNameCounts.entries()) {
-      if (count > 1) {
-        duplicateLeafNames.add(memberName);
-      }
-    }
-
-    const memberTree = this.hydrateSkeleton(skeleton.memberTree, {
-      configByRouteKey,
-      configsByName,
-      duplicateLeafNames,
-    });
-    const hasSubTeams = memberTree.some((member) => member.memberKind === "agent_team");
-    const teamBackendKind = TeamBackendKind.MIXED;
-
-    const config = new TeamRunConfig({
-      teamDefinitionId,
-      teamBackendKind,
-      coordinatorMemberName: skeleton.coordinatorMemberName,
-      coordinatorMemberRouteKey: skeleton.coordinatorMemberRouteKey,
-      memberTree,
-      effectiveHandoffs: skeleton.effectiveHandoffs,
-    });
-
-    return {
-      teamDefinitionId,
-      coordinatorMemberName: skeleton.coordinatorMemberName,
-      coordinatorMemberRouteKey: skeleton.coordinatorMemberRouteKey,
-      teamBackendKind,
-      hasSubTeams,
-      memberTree: config.memberTree,
-      leafMemberConfigs: config.memberConfigs,
-      config,
-    };
-  }
-
-  async buildPresetLeafMemberConfigs(input: {
-    teamDefinitionId: string;
-    launchPreset: Omit<TeamMemberRunConfigInput, "memberName" | "agentDefinitionId">;
-  }): Promise<TeamMemberRunConfigInput[]> {
-    const skeleton = await this.buildSkeleton(
-      normalizeRequiredString(input.teamDefinitionId, "teamDefinitionId"),
-      [],
-      new Set(),
-    );
-    return this.collectLeaves(skeleton.memberTree).map((leaf) => ({
-      ...input.launchPreset,
-      memberName: leaf.memberName,
-      memberPath: leaf.memberPath,
-      memberRouteKey: leaf.memberRouteKey,
-      agentDefinitionId: leaf.agentDefinitionId,
-      memberKind: "agent" as const,
-    }));
-  }
-
-  private async buildSkeleton(
-    teamDefinitionId: string,
-    _parentPath: string[],
-    _visited: Set<string>,
-  ): Promise<{
-    definition: AgentTeamDefinition;
-    coordinatorMemberName: string | null;
-    coordinatorMemberRouteKey: string | null;
-    memberTree: MemberSkeleton[];
-    effectiveHandoffs: import("../../agent-collaboration/domain/collaboration-handoff.js").CollaborationHandoff[];
-  }> {
-    const normalizedTeamDefinitionId = normalizeRequiredString(teamDefinitionId, "teamDefinitionId");
-    const definition = await this.teamDefinitionService.getDefinitionById(normalizedTeamDefinitionId);
-    if (!definition) {
-      throw new Error(`AgentTeamDefinition with ID ${normalizedTeamDefinitionId} not found.`);
-    }
+    const teamDefinitionId = required(input.teamDefinitionId, "teamDefinitionId");
+    const definition = await this.teamDefinitionService.getDefinitionById(teamDefinitionId);
+    if (!definition) throw new Error(`AgentTeamDefinition with ID ${teamDefinitionId} not found.`);
     const graph = await new TeamDefinitionGraphResolver().resolve({
       rootDefinition: definition,
-      rootDefinitionId: normalizedTeamDefinitionId,
+      rootDefinitionId: teamDefinitionId,
       lookup: { getTeamById: (id) => this.teamDefinitionService.getDefinitionById(id) },
     });
-    return {
-      definition,
-      coordinatorMemberName: graph.coordinator.memberName,
-      coordinatorMemberRouteKey: buildMemberRouteKeyFromPath(graph.coordinator.absolutePath),
-      memberTree: this.graphMembersToSkeleton(graph.members),
-      effectiveHandoffs: new TeamHandoffCompiler().compile(graph),
-    };
-  }
-
-  private graphMembersToSkeleton(
-    members: readonly ResolvedTeamDefinitionMember[],
-  ): MemberSkeleton[] {
-    return members.map((member) => {
-      const memberPath = [...member.absolutePath];
-      const memberRouteKey = buildMemberRouteKeyFromPath(memberPath);
-      if (member.kind === "agent") {
-        return {
-          kind: "agent",
-          memberName: member.memberName,
-          memberPath,
-          memberRouteKey,
-          agentDefinitionId: member.agentDefinitionId,
-        };
-      }
-      return this.graphTeamToSkeleton(member.team, member.memberName, memberPath, memberRouteKey);
+    const settingsByAddress = new Map<AgentTeamAddress, TeamAgentLaunchInput>();
+    for (const launch of input.memberConfigs) {
+      const address = createAgentTeamAddress(
+        launch.memberAddress === "/" ? [] : launch.memberAddress.slice(1).split("/"),
+      );
+      if (settingsByAddress.has(address)) throw new Error(`Duplicate launch settings for '${address}'.`);
+      settingsByAddress.set(address, launch);
+    }
+    const rootTeam = await this.compileTeamNode(graph, createAgentTeamAddress([]), input.teamRunId, input.teamRunId, settingsByAddress);
+    if (settingsByAddress.size !== projectAgentLaunchSettings(rootTeam).length) {
+      const known = new Set(projectAgentLaunchSettings(rootTeam).map((item) => item.memberAddress));
+      const extra = [...settingsByAddress.keys()].filter((address) => !known.has(address));
+      if (extra.length) throw new Error(`Launch settings reference unknown Team member '${extra[0]}'.`);
+    }
+    const config = new TeamRunConfig({
+      teamBackendKind: TeamBackendKind.MIXED,
+      rootTeam,
+      handoffs: new TeamHandoffCompiler().compile(graph),
+    });
+    return Object.freeze({
+      teamDefinitionName: definition.name,
+      hasSubTeams: rootTeam.children.some((node) => node.kind === "agent_team"),
+      config,
+      agentLaunchSettings: Object.freeze(projectAgentLaunchSettings(config.rootTeam)),
     });
   }
 
-  private graphTeamToSkeleton(
+  async buildPresetAgentLaunchSettings(input: {
+    teamDefinitionId: string;
+    launchPreset: Omit<TeamAgentLaunchInput, "memberAddress" | "agentDefinitionId">;
+  }): Promise<TeamAgentLaunchInput[]> {
+    const definition = await this.teamDefinitionService.getDefinitionById(input.teamDefinitionId);
+    if (!definition) throw new Error(`AgentTeamDefinition with ID ${input.teamDefinitionId} not found.`);
+    const graph = await new TeamDefinitionGraphResolver().resolve({
+      rootDefinition: definition,
+      rootDefinitionId: input.teamDefinitionId,
+      lookup: { getTeamById: (id) => this.teamDefinitionService.getDefinitionById(id) },
+    });
+    const output: TeamAgentLaunchInput[] = [];
+    const visit = (members: readonly ResolvedTeamDefinitionMember[]): void => {
+      for (const member of members) {
+        if (member.kind === "agent") {
+          output.push({
+            ...input.launchPreset,
+            memberAddress: createAgentTeamAddress(member.absolutePath),
+            agentDefinitionId: member.agentDefinitionId,
+          });
+        } else visit(member.team.members);
+      }
+    };
+    visit(graph.members);
+    return output;
+  }
+
+  private async compileTeamNode(
     graph: ResolvedTeamDefinitionGraph,
-    memberName: string,
-    memberPath: string[],
-    memberRouteKey: string,
-  ): SubTeamSkeleton {
+    address: AgentTeamAddress,
+    teamRunId: string,
+    rootTeamRunId: string,
+    settingsByAddress: ReadonlyMap<AgentTeamAddress, TeamAgentLaunchInput>,
+  ): Promise<TeamRunAgentTeamNode> {
+    const placement = address === "/" ? {} : { role: null, description: null };
     return {
       kind: "agent_team",
-      memberName,
-      memberPath,
-      memberRouteKey,
+      address,
       teamDefinitionId: graph.definitionId,
-      coordinatorMemberRouteKey: buildMemberRouteKeyFromPath(graph.coordinator.absolutePath),
-      memberTree: this.graphMembersToSkeleton(graph.members),
+      teamRunId: required(teamRunId, `teamRunId at '${address}'`),
+      coordinatorAddress: createAgentTeamAddress(graph.coordinator.absolutePath),
+      ...placement,
+      children: await Promise.all(graph.members.map((member) => this.compileMember(member, rootTeamRunId, settingsByAddress))),
     };
   }
 
-  private collectLeaves(memberTree: readonly MemberSkeleton[]): AgentSkeleton[] {
-    const leaves: AgentSkeleton[] = [];
-    for (const member of memberTree) {
-      if (member.kind === "agent") {
-        leaves.push(member);
-      } else {
-        leaves.push(...this.collectLeaves(member.memberTree));
-      }
-    }
-    return leaves;
-  }
-
-  private hydrateSkeleton(
-    memberTree: readonly MemberSkeleton[],
-    lookup: {
-      configByRouteKey: Map<string, TeamMemberRunConfigInput>;
-      configsByName: Map<string, TeamMemberRunConfigInput[]>;
-      duplicateLeafNames: Set<string>;
-    },
-  ): TeamRunMemberConfig[] {
-    return memberTree.map((member) => {
-      if (member.kind === "agent_team") {
-        return {
-          memberKind: "agent_team" as const,
-          memberName: member.memberName,
-          memberPath: member.memberPath,
-          memberRouteKey: member.memberRouteKey,
-          teamDefinitionId: member.teamDefinitionId,
-          coordinatorMemberRouteKey: member.coordinatorMemberRouteKey,
-          memberConfigs: this.hydrateSkeleton(member.memberTree, lookup),
-        } satisfies TeamRunMemberConfig;
-      }
-
-      const launchConfig = this.resolveLaunchConfig(member, lookup);
-      return {
-        ...launchConfig,
-        memberKind: "agent" as const,
-        memberName: member.memberName,
-        memberPath: member.memberPath,
-        memberRouteKey: member.memberRouteKey,
-        agentDefinitionId: member.agentDefinitionId,
-      } satisfies TeamRunMemberConfig;
-    });
-  }
-
-  private resolveLaunchConfig(
-    leaf: AgentSkeleton,
-    lookup: {
-      configByRouteKey: Map<string, TeamMemberRunConfigInput>;
-      configsByName: Map<string, TeamMemberRunConfigInput[]>;
-      duplicateLeafNames: Set<string>;
-    },
-  ): TeamMemberRunConfigInput {
-    const routeKeyMatch = lookup.configByRouteKey.get(leaf.memberRouteKey) ?? null;
-    if (routeKeyMatch) {
-      return routeKeyMatch;
-    }
-    const byName = lookup.configsByName.get(leaf.memberName) ?? [];
-    if (byName.length === 1 && !lookup.duplicateLeafNames.has(leaf.memberName)) {
-      return byName[0]!;
-    }
-    if (byName.length > 1 || lookup.duplicateLeafNames.has(leaf.memberName)) {
-      throw new Error(
-        `Launch config for nested member '${leaf.memberName}' is ambiguous; use memberRouteKey '${leaf.memberRouteKey}'.`,
+  private async compileMember(
+    member: ResolvedTeamDefinitionMember,
+    rootTeamRunId: string,
+    settingsByAddress: ReadonlyMap<AgentTeamAddress, TeamAgentLaunchInput>,
+  ): Promise<TeamRunNode> {
+    const address = createAgentTeamAddress(member.absolutePath);
+    if (member.kind === "agent_team") {
+      return this.compileTeamNode(
+        member.team,
+        address,
+        generateTeamRunIdForDefinitionName(member.team.definition.name),
+        rootTeamRunId,
+        settingsByAddress,
       );
     }
-    throw new Error(`Launch config for team member '${leaf.memberRouteKey}' was not provided.`);
+    const launch = settingsByAddress.get(address);
+    if (!launch) throw new Error(`Launch settings for Team member '${address}' were not provided.`);
+    if (launch.agentDefinitionId && launch.agentDefinitionId !== member.agentDefinitionId) {
+      throw new Error(`Launch settings for '${address}' reference the wrong Agent definition.`);
+    }
+    const agentRunId = await this.agentRunIdentityAllocator.allocateForAgentDefinition(member.agentDefinitionId);
+    return {
+      kind: "agent",
+      address,
+      agentDefinitionId: member.agentDefinitionId,
+      agentRunId,
+      platformAgentRunId: null,
+      role: null,
+      description: null,
+      runtimeKind: launch.runtimeKind,
+      llmModelIdentifier: launch.llmModelIdentifier,
+      llmConfig: launch.llmConfig,
+      autoExecuteTools: launch.autoExecuteTools,
+      skillAccessMode: launch.skillAccessMode,
+      workspaceRootPath: launch.workspaceRootPath,
+      applicationExecutionContext: launch.applicationExecutionContext ? {
+        ...launch.applicationExecutionContext,
+        producer: {
+          ...launch.applicationExecutionContext.producer,
+          executionAddress: createTeamExecutionAddress({ rootTeamRunId, memberAddress: address }),
+        },
+      } : null,
+    };
   }
-
 }

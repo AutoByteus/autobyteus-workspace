@@ -1,4 +1,4 @@
-import type { ConversationTargetAddress } from "../../agent-team-execution/domain/conversation-target-address.js";
+import type { TeamExecutionAddress } from "../../agent-team-execution/domain/team-execution-address.js";
 
 export type TeamCommunicationReferenceFileType =
   | "file"
@@ -20,8 +20,8 @@ export interface TeamCommunicationReferenceFile {
 
 export interface TeamCommunicationMessage {
   messageId: string;
-  senderAddress: ConversationTargetAddress;
-  receiverAddress: ConversationTargetAddress;
+  senderAddress: TeamExecutionAddress;
+  receiverAddress: TeamExecutionAddress;
   content: string;
   messageType: string;
   createdAt: string;

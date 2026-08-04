@@ -1,133 +1,83 @@
 import type { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 import type { AgentMemoryScope } from "../../../agent-memory/domain/agent-memory-location.js";
-import type {
-  InterAgentMessageDeliveryHandler,
-} from "../../domain/inter-agent-message-delivery.js";
-import type { CollaborationHandoff } from "../../../agent-collaboration/domain/collaboration-handoff.js";
+import type { InterAgentMessageDeliveryHandler } from "../../domain/inter-agent-message-delivery.js";
 import type { TaskTeamInstanceIdentity } from "../../domain/task-team-instance.js";
-import type { TokenUsageTeamExecutionScope } from "../../domain/token-usage-execution-scope.js";
-import { cloneTokenUsageTeamExecutionScope } from "../../domain/token-usage-execution-scope.js";
+import type { TeamExecutionAddress } from "../../domain/team-execution-address.js";
 import type {
   TeamAgentMemberRuntimeContext,
-  TeamMemberRuntimeContext,
   TeamRunContext,
   TeamSubTeamMemberRuntimeContext,
 } from "../../domain/team-run-context.js";
-
-export type MixedAgentMemberContextInput = {
-  memberName: string;
-  memberPath: string[];
-  memberRouteKey: string;
-  memberRunId: string;
-  runtimeKind: RuntimeKind;
-  platformAgentRunId: string | null;
-};
+import type { AgentTeamAddress } from "../../../agent-collaboration/domain/agent-team-address.js";
 
 export class MixedAgentMemberContext implements TeamAgentMemberRuntimeContext {
-  readonly memberKind = "agent" as const;
-  readonly memberName: string;
-  readonly memberPath: string[];
-  readonly memberRouteKey: string;
-  readonly memberRunId: string;
+  readonly kind = "agent" as const;
+  readonly address: AgentTeamAddress;
+  readonly agentRunId: string;
   readonly runtimeKind: RuntimeKind;
   platformAgentRunId: string | null;
 
-  constructor(input: MixedAgentMemberContextInput) {
-    this.memberName = input.memberName;
-    this.memberPath = [...input.memberPath];
-    this.memberRouteKey = input.memberRouteKey;
-    this.memberRunId = input.memberRunId;
+  constructor(input: {
+    address: AgentTeamAddress;
+    agentRunId: string;
+    runtimeKind: RuntimeKind;
+    platformAgentRunId: string | null;
+  }) {
+    this.address = input.address;
+    this.agentRunId = input.agentRunId;
     this.runtimeKind = input.runtimeKind;
     this.platformAgentRunId = input.platformAgentRunId;
   }
-
-  getPlatformAgentRunId(): string | null {
-    return this.platformAgentRunId;
-  }
+  getPlatformAgentRunId(): string | null { return this.platformAgentRunId; }
 }
 
-export type MixedSubTeamMemberContextInput = {
-  memberName: string;
-  memberPath: string[];
-  memberRouteKey: string;
-  memberRunId: string;
-  teamDefinitionId: string;
-  childTeamRunId: string | null;
-  childRuntimeContext?: MixedTeamRunContext | null;
-};
-
 export class MixedSubTeamMemberContext implements TeamSubTeamMemberRuntimeContext {
-  readonly memberKind = "agent_team" as const;
-  readonly memberName: string;
-  readonly memberPath: string[];
-  readonly memberRouteKey: string;
-  readonly memberRunId: string;
+  readonly kind = "agent_team" as const;
+  readonly address: AgentTeamAddress;
   readonly teamDefinitionId: string;
-  childTeamRunId: string | null;
-  childRuntimeContext: MixedTeamRunContext | null = null;
+  readonly teamRunId: string;
+  childRuntimeContext: MixedTeamRunContext | null;
 
-  constructor(input: MixedSubTeamMemberContextInput) {
-    this.memberName = input.memberName;
-    this.memberPath = [...input.memberPath];
-    this.memberRouteKey = input.memberRouteKey;
-    this.memberRunId = input.memberRunId;
+  constructor(input: {
+    address: AgentTeamAddress;
+    teamDefinitionId: string;
+    teamRunId: string;
+    childRuntimeContext?: MixedTeamRunContext | null;
+  }) {
+    this.address = input.address;
     this.teamDefinitionId = input.teamDefinitionId;
-    this.childTeamRunId = input.childTeamRunId;
+    this.teamRunId = input.teamRunId;
     this.childRuntimeContext = input.childRuntimeContext ?? null;
   }
-
-  getPlatformAgentRunId(): string | null {
-    return null;
-  }
+  getPlatformAgentRunId(): null { return null; }
 }
 
 export type MixedTeamMemberContext = MixedAgentMemberContext | MixedSubTeamMemberContext;
 
-export type MixedParentBoundaryContext = {
+export type MixedParentBoundaryContext = Readonly<{
   parentTeamRunId: string;
   memoryScope?: AgentMemoryScope | null;
-  collaborationRootTeamRunId: string;
-  teamMountPath: string[];
-  effectiveHandoffs: readonly CollaborationHandoff[];
+  rootTeamRunId: string;
+  parentTeamAddress: AgentTeamAddress;
   deliverInterAgentMessage: InterAgentMessageDeliveryHandler;
-};
-
-export type MixedTeamRunContextInput = {
-  coordinatorMemberRouteKey: string | null;
-  memberContexts: MixedTeamMemberContext[];
-  parentBoundary?: MixedParentBoundaryContext | null;
-  taskTeamInstance?: TaskTeamInstanceIdentity | null;
-  tokenUsageTeamScope?: TokenUsageTeamExecutionScope | null;
-  collaborationRootTeamRunId: string;
-  teamMountPath?: string[] | null;
-  effectiveHandoffs?: readonly CollaborationHandoff[] | null;
-};
+}>;
 
 export class MixedTeamRunContext {
-  readonly coordinatorMemberRouteKey: string | null;
   readonly memberContexts: MixedTeamMemberContext[];
   readonly parentBoundary: MixedParentBoundaryContext | null;
   readonly taskTeamInstance: TaskTeamInstanceIdentity | null;
-  readonly tokenUsageTeamScope: TokenUsageTeamExecutionScope;
-  readonly collaborationRootTeamRunId: string;
-  readonly teamMountPath: readonly string[];
-  readonly effectiveHandoffs: readonly CollaborationHandoff[];
+  readonly teamExecutionAddress: TeamExecutionAddress;
 
-  constructor(input: MixedTeamRunContextInput) {
-    this.coordinatorMemberRouteKey = input.coordinatorMemberRouteKey;
+  constructor(input: {
+    memberContexts: MixedTeamMemberContext[];
+    parentBoundary?: MixedParentBoundaryContext | null;
+    taskTeamInstance?: TaskTeamInstanceIdentity | null;
+    teamExecutionAddress: TeamExecutionAddress;
+  }) {
     this.memberContexts = [...input.memberContexts];
     this.parentBoundary = input.parentBoundary ?? null;
     this.taskTeamInstance = input.taskTeamInstance ?? null;
-    this.tokenUsageTeamScope = input.tokenUsageTeamScope
-      ? cloneTokenUsageTeamExecutionScope(input.tokenUsageTeamScope)
-      : { rootTeamRunId: "", teamScopeAddress: { segments: [] } };
-    this.collaborationRootTeamRunId = input.collaborationRootTeamRunId;
-    this.teamMountPath = Object.freeze([...(input.teamMountPath ?? [])]);
-    this.effectiveHandoffs = Object.freeze(input.effectiveHandoffs?.map((handoff) => ({
-      from: handoff.from,
-      to: handoff.to,
-      rules: Object.freeze([...handoff.rules]),
-    })) ?? []);
+    this.teamExecutionAddress = input.teamExecutionAddress;
   }
 }
 

@@ -8,22 +8,27 @@ const TERMINAL_BINDING_STATUSES = new Set(["TERMINATED", "FAILED", "ORPHANED"]);
 const isTerminalBinding = (binding) => TERMINAL_BINDING_STATUSES.has(binding.status);
 const resolveBindingRunIds = (binding) => {
     if (binding.runtime.members.length > 0) {
-        return binding.runtime.members.map((member) => member.runId);
+        return binding.runtime.members.map((member) => member.agentRunId);
     }
-    return [binding.runtime.runId];
+    return [binding.runtime.subject === "AGENT_RUN" ? binding.runtime.agentRunId : binding.runtime.teamRunId];
 };
 const resolveProducerForRun = (binding, runId) => {
-    const member = binding.runtime.members.find((candidate) => candidate.runId === runId) ?? null;
+    if (binding.runtime.subject !== "TEAM_RUN") {
+        return null;
+    }
+    const member = binding.runtime.members.find((candidate) => candidate.agentRunId === runId) ?? null;
     if (!member) {
         return null;
     }
     return {
-        runId,
-        memberRouteKey: member.memberRouteKey,
-        memberName: member.memberName,
+        executionAddress: {
+            rootTeamRunId: binding.runtime.teamRunId,
+            taskTeamRunIds: [],
+            memberAddress: member.memberAddress,
+            taskAgentRunId: null,
+        },
         displayName: member.displayName,
         runtimeKind: member.runtimeKind,
-        teamPath: [...member.teamPath],
     };
 };
 const sortArtifacts = (artifacts) => [...artifacts].sort((left, right) => {
@@ -119,7 +124,7 @@ export const createLessonArtifactReconciliationService = (context) => ({
                 status: lesson.status === "closed" ? "closed" : "active",
                 updatedAt: input.publishedAt,
                 latestBindingId: input.binding.bindingId,
-                latestRunId: input.binding.runtime.runId,
+                latestRunId: input.binding.runtime.subject === "AGENT_RUN" ? input.binding.runtime.agentRunId : input.binding.runtime.teamRunId,
                 latestBindingStatus: input.binding.status,
                 lastErrorMessage: null,
                 closedAt: lesson.closedAt,

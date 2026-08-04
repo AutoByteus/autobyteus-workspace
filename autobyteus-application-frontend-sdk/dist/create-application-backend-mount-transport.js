@@ -1,4 +1,4 @@
-import { ApplicationAgentConnectionError, getApplicationAgentTargetPathSegments, } from "@autobyteus/application-sdk-contracts";
+import { ApplicationAgentConnectionError, getApplicationAgentTargetUrlSegments, } from "@autobyteus/application-sdk-contracts";
 import { createApplicationBackendWebSocketConnection } from "./application-backend-websocket-connection.js";
 import { createApplicationBackendWebSocketTransport, } from "./application-backend-websocket-transport.js";
 import { createApplicationAgentConnection } from "./application-agent-connection.js";
@@ -186,7 +186,7 @@ export const createApplicationBackendMountTransport = (options) => {
             try {
                 url = composeApplicationWebSocketUrl({
                     baseUrl,
-                    pathSegments: getApplicationAgentTargetPathSegments(address),
+                    pathSegments: getApplicationAgentTargetUrlSegments(address),
                 });
             }
             catch {

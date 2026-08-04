@@ -68,7 +68,7 @@ const breadcrumb = computed(() => {
     return `Agents / ${agent} / ${target.runLabel || target.runId}`;
   }
   const team = target.teamDefinitionName || target.teamDefinitionId || 'Agent Team';
-  const member = target.memberName || target.memberRouteKey || target.memberRunId;
+  const member = target.memberName || target.memberAddress || target.agentRunId;
   return `Agent Teams / ${team} / ${target.teamRunId} / ${member}`;
 });
 
@@ -81,7 +81,7 @@ const metadataLine = computed(() => {
     const workspace = target.workspaceRootPath ? `Workspace: ${target.workspaceRootPath}` : `Run: ${target.runId}`;
     return target.lastUpdatedAt ? `${workspace} · Updated: ${formatTimestamp(target.lastUpdatedAt)}` : workspace;
   }
-  const memberRun = `Member run: ${target.memberRunId}`;
+  const memberRun = `Member run: ${target.agentRunId}`;
   return target.lastUpdatedAt ? `${memberRun} · Updated: ${formatTimestamp(target.lastUpdatedAt)}` : memberRun;
 });
 

@@ -2,8 +2,8 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import {
   APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION_V1,
-  APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V4,
-  APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V4,
+  APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V5,
+  APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V5,
   type ApplicationBackendBundleManifestV1,
   type ApplicationBackendSupportedExposures,
 } from '@autobyteus/application-sdk-contracts';
@@ -28,8 +28,8 @@ export const createBackendBundleManifest = (
     semver: input.targetRuntimeSemver,
   },
   sdkCompatibility: {
-    backendDefinitionContractVersion: APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V4,
-    frontendSdkContractVersion: APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V4,
+    backendDefinitionContractVersion: APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V5,
+    frontendSdkContractVersion: APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V5,
   },
   supportedExposures: input.supportedExposures,
   ...(input.hasMigrations ? { migrationsDir: 'backend/migrations' } : {}),

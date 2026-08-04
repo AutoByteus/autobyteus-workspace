@@ -213,13 +213,13 @@ export class AgentTeamWithMemoryPage {
 @ObjectType()
 export class TeamMemberMemoryTargetSummary {
   @Field(() => String)
-  memberRouteKey!: string;
+  memberAddress!: string;
 
   @Field(() => String)
-  memberName!: string;
+  displayName!: string;
 
   @Field(() => String)
-  memberRunId!: string;
+  agentRunId!: string;
 
   @Field(() => String, { nullable: true })
   agentDefinitionId?: string | null;

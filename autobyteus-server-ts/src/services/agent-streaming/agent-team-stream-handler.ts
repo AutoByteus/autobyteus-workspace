@@ -25,9 +25,10 @@ import {
   ServerMessageType,
 } from "./models.js";
 import {
+  parseCommandExecutionAddress,
   TEAM_COMMAND_INVALID_TARGET_CODE,
-} from "./team-command-selector-parser.js";
-import { resolveSendMessageConversationTargetAddress } from "./team-conversation-target-address-parser.js";
+  TEAM_COMMAND_INVALID_TARGET_MESSAGE,
+} from "./team-execution-address-command-parser.js";
 import {
   TeamRuntimeSnapshotService,
   getTeamRuntimeSnapshotService,
@@ -208,7 +209,7 @@ export class AgentTeamStreamHandler {
     connection: WebSocketConnection,
     teamRun: TeamRun,
   ): void {
-    const lifecycleSnapshot = this.teamRunManager.getLifecycleSnapshot(teamRun.runId);
+    const lifecycleSnapshot = this.teamRunManager.getLifecycleSnapshot(teamRun.teamRunId);
     for (const message of this.statusSnapshotService.getInitialMessages(
       teamRun,
       lifecycleSnapshot,
@@ -273,7 +274,7 @@ export class AgentTeamStreamHandler {
       } catch (error) {
         logger.error(`Error sending team event to WebSocket: ${String(error)}`);
       }
-      this.scheduleMetadataRefresh(teamRun.runId, teamRun);
+      this.scheduleMetadataRefresh(teamRun.teamRunId, teamRun);
     });
     if (!unsubscribeEvents) {
       return false;
@@ -282,7 +283,7 @@ export class AgentTeamStreamHandler {
     let unsubscribeLifecycle: () => void;
     try {
       unsubscribeLifecycle = this.teamRunManager.subscribeToLifecycle(
-        teamRun.runId,
+        teamRun.teamRunId,
         (snapshot) => {
           try {
             connection.send(new ServerMessage(ServerMessageType.TEAM_RUN_LIFECYCLE, {
@@ -321,12 +322,12 @@ export class AgentTeamStreamHandler {
     payload: Record<string, unknown>,
     connection: WebSocketConnection | null,
   ): Promise<void> {
-    const teamRunId = teamRun.runId;
+    const teamRunId = teamRun.teamRunId;
     const content = typeof payload.content === "string" ? payload.content : "";
-    const targetAddress = resolveSendMessageConversationTargetAddress(payload, teamRunId);
-    if (!targetAddress.ok) {
-      logger.warn(`SEND_MESSAGE rejected for team run ${teamRunId}: ${targetAddress.message}`);
-      this.sendInvalidTarget(connection, targetAddress.message);
+    const executionAddress = parseCommandExecutionAddress(payload, teamRunId);
+    if (!executionAddress) {
+      logger.warn(`SEND_MESSAGE rejected for team run ${teamRunId}: ${TEAM_COMMAND_INVALID_TARGET_MESSAGE}`);
+      this.sendInvalidTarget(connection, TEAM_COMMAND_INVALID_TARGET_MESSAGE);
       return;
     }
 
@@ -360,7 +361,12 @@ export class AgentTeamStreamHandler {
       metadata,
     });
 
-    const result = await teamRun.postMessageToConversationTarget(userMessage, targetAddress.address);
+    const taskTeamRunId = executionAddress.taskTeamRunIds.at(-1) ?? null;
+    const result = executionAddress.taskAgentRunId
+      ? await teamRun.postMessage(userMessage, executionAddress.memberAddress, executionAddress.taskAgentRunId)
+      : taskTeamRunId
+        ? await teamRun.postMessageToTaskTeamInstance(executionAddress.memberAddress, taskTeamRunId, userMessage)
+        : await teamRun.postMessage(userMessage, executionAddress.memberAddress);
     if (!result.accepted) {
       logger.warn(
         `SEND_MESSAGE rejected for team run ${teamRunId}: [${result.code ?? "UNKNOWN"}] ${result.message ?? "no message"}`,

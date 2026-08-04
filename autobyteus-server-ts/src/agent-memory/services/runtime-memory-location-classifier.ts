@@ -21,9 +21,8 @@ export type RuntimeMemoryLocation = {
     | {
         kind: "team_member";
         rootTeamRunId: string;
-        memberRunId: string;
-        memberRouteKey: string;
-        memberPath: string[];
+        memberAddress: string;
+        agentRunId: string;
       };
 };
 
@@ -164,9 +163,9 @@ export class RuntimeMemoryLocationClassifier {
           });
           continue;
         }
-        if (metadata.teamRunId !== teamRunId) {
+        if (metadata.rootTeam.teamRunId !== teamRunId) {
           throw new Error(
-            `Metadata teamRunId '${metadata.teamRunId}' does not match directory '${teamRunId}'.`,
+            `Metadata teamRunId '${metadata.rootTeam.teamRunId}' does not match directory '${teamRunId}'.`,
           );
         }
         for (const exact of this.locationService.listTeamMemberLocationsFromMetadata(metadata)) {
@@ -178,13 +177,12 @@ export class RuntimeMemoryLocationClassifier {
               WORKING_CONTEXT_SNAPSHOT_FILE_NAME,
             ),
             runtimeKind: runtimeKindFromString(exact.member.runtimeKind),
-            snapshotAgentId: exact.memberRunId,
+            snapshotAgentId: exact.agentRunId,
             subject: {
               kind: "team_member",
               rootTeamRunId: exact.rootTeamRunId,
-              memberRunId: exact.memberRunId,
-              memberRouteKey: exact.memberRouteKey,
-              memberPath: [...exact.memberPath],
+              memberAddress: exact.memberAddress,
+              agentRunId: exact.agentRunId,
             },
           });
         }

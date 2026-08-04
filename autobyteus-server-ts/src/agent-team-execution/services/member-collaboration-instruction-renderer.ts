@@ -1,35 +1,16 @@
 import type { MemberLogicalAddressContext } from "../domain/member-logical-address-context.js";
-import { getParentCollaborationAddress } from "../../agent-collaboration/domain/collaboration-logical-address.js";
 
 export const renderMemberCollaborationInstruction = (input: {
   addressing: MemberLogicalAddressContext;
-  sendMessageToEnabled: boolean;
-  taskDelegationEnabled: boolean;
-  getHandoffRulesEnabled: boolean;
-}): string => {
-  const immediateTeamAddress = getParentCollaborationAddress(input.addressing.memberAddress);
-  if (!immediateTeamAddress) {
-    throw new Error("Member collaboration instructions require an Agent address inside a Team.");
-  }
-  const lines = [
-    `Your absolute collaboration address is \`${input.addressing.memberAddress}\`.`,
-    `Your immediate Team address is \`${immediateTeamAddress}\`.`,
-  ];
-  if (input.sendMessageToEnabled || input.taskDelegationEnabled) {
-    lines.push(
-      "For logical Team recipients, `recipient_name` must be a rooted absolute address (`/...`) or an immediate-Team-relative address (`./...`). Bare names are invalid.",
-      "A Team address targets that Team through its configured coordinator ingress Agent; an Agent address targets that Agent.",
-    );
-  }
-  if (input.sendMessageToEnabled) {
-    lines.push(
-      "`send_message_to.target_agent_run_id` is separate: use it only for an exact currently active AgentRun id, never as a Team logical address.",
-    );
-  }
-  if (input.getHandoffRulesEnabled) {
-    lines.push(
-      "Call `get_handoff_rules` when you need the configured outgoing handoff guidance for your current logical Agent address.",
-    );
-  }
-  return lines.join("\n");
-};
+  taskDelegationEnabled?: boolean;
+}): string => [
+  `Your canonical absolute AgentTeam address is \`${input.addressing.memberAddress}\`.`,
+  "",
+  "AgentTeam members and nested AgentTeams use filesystem-like logical addresses. These are not operating-system file paths. `/` denotes the root AgentTeam, `/research_team` denotes an AgentTeam, `/research_team/research_lead` denotes an Agent, and `./peer` starts from your immediate AgentTeam. Addressing an AgentTeam sends through its configured coordinator. Bare names, `../`, and backslashes are invalid.",
+  "",
+  "Before completing your work, or before stopping because you are blocked, you must call `get_handoff_rules`. Each returned item contains `when`, the condition to evaluate, and `recipient_address`, the Agent or AgentTeam to contact. Call `send_message_to` once for each distinct applicable `recipient_address`, in the order its first applicable item appears. Multiple applicable conditions for the same address are reasons for one handoff, not duplicate messages. Do not claim a handoff unless delivery is accepted. If no item applies, complete normally.",
+  ...(input.taskDelegationEnabled ? [
+    "",
+    "`delegate_task.recipient_address` uses the same logical-address grammar. A task target must be a direct Agent or AgentTeam child of your immediate AgentTeam; deeper and cross-branch addresses remain valid for message delivery but are not task-eligible.",
+  ] : []),
+].join("\n");

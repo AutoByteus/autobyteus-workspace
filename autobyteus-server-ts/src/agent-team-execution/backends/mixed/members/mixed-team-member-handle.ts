@@ -1,11 +1,10 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../../../agent-execution/domain/agent-operation-result.js";
+import type { AgentTeamAddress } from "../../../../agent-collaboration/domain/agent-team-address.js";
 import type { TeamLeafAgentStatusSnapshot } from "../../../domain/team-leaf-agent-status-snapshot.js";
 import type { ResolvedInterAgentMessageDeliveryRequest } from "../../../domain/inter-agent-message-delivery.js";
-import type { TeamMemberSelector } from "../../../domain/team-run-member-identity.js";
-import type { TeamRunEventUnsubscribe } from "../../../domain/team-run-event.js";
+import type { TeamRunEvent, TeamRunEventUnsubscribe } from "../../../domain/team-run-event.js";
 import type { MixedTeamMemberContext } from "../mixed-team-run-context.js";
-import type { ConversationTargetAddress } from "../../../domain/conversation-target-address.js";
 
 export interface MixedTeamMemberHandle {
   readonly context: MixedTeamMemberContext;
@@ -13,28 +12,26 @@ export interface MixedTeamMemberHandle {
   getLeafAgentStatusSnapshots(): TeamLeafAgentStatusSnapshot[];
   hasOpenExecutionWork(): boolean;
   postMessage(message: AgentInputUserMessage): Promise<AgentOperationResult>;
-  postMessageToConversationTarget(
+  postMessageToAddress(
     message: AgentInputUserMessage,
-    address: ConversationTargetAddress,
+    target: AgentTeamAddress,
+    targetAgentRunId?: string | null,
   ): Promise<AgentOperationResult>;
   deliverInterMemberMessage(
     request: ResolvedInterAgentMessageDeliveryRequest,
     beforePublishMemberInput?: (() => void) | null,
   ): Promise<AgentOperationResult>;
   approveToolInvocation(
-    target: TeamMemberSelector | null,
+    target: AgentTeamAddress | null,
     invocationId: string,
     approved: boolean,
     reason?: string | null,
-    targetMemberRunId?: string | null,
+    targetAgentRunId?: string | null,
   ): Promise<AgentOperationResult>;
-  interrupt(
-    target: TeamMemberSelector | null,
-    targetMemberRunId?: string | null,
-  ): Promise<AgentOperationResult>;
+  interrupt(target: AgentTeamAddress | null, targetAgentRunId?: string | null): Promise<AgentOperationResult>;
   terminate(): Promise<AgentOperationResult>;
   dispose(): void;
 }
 
-export type MixedTeamEventPublish = (event: import("../../../domain/team-run-event.js").TeamRunEvent) => void;
+export type MixedTeamEventPublish = (event: TeamRunEvent) => void;
 export type MixedTeamUnsubscribe = TeamRunEventUnsubscribe;

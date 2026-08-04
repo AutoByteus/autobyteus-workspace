@@ -59,13 +59,13 @@ export class TeamCommunicationService {
 
     return () => {
       unsubscribe();
-      this.clearTeamRunState(teamRun.runId);
+      this.clearTeamRunState(teamRun.teamRunId);
     };
   }
 
   async getProjectionForTeamRun(teamRun: TeamRun): Promise<TeamCommunicationProjection> {
-    await this.waitForPendingProjectionUpdates(teamRun.runId);
-    return this.loadProjection(teamRun.runId);
+    await this.waitForPendingProjectionUpdates(teamRun.teamRunId);
+    return this.loadProjection(teamRun.teamRunId);
   }
 
   private isTeamCommunicationMessageTeamEvent(event: TeamRunEvent): boolean {
@@ -83,16 +83,16 @@ export class TeamCommunicationService {
   }
 
   private enqueueTeamEvent(teamRun: TeamRun, event: TeamRunEvent): Promise<void> {
-    const key = teamRun.runId;
+    const key = teamRun.teamRunId;
     const previous = this.operationQueueByTeamRunId.get(key) ?? Promise.resolve();
     const next = previous
       .catch(() => undefined)
       .then(async () => {
         try {
-          await this.handleTeamCommunicationEvent(teamRun.runId, event);
+          await this.handleTeamCommunicationEvent(teamRun.teamRunId, event);
         } catch (error) {
           logger.warn(
-            `TeamCommunicationService: failed processing message for team '${teamRun.runId}': ${String(error)}`,
+            `TeamCommunicationService: failed processing message for team '${teamRun.teamRunId}': ${String(error)}`,
           );
         }
       });
@@ -178,7 +178,7 @@ export class TeamCommunicationService {
     }
 
     this.projectionByTeamRunId.set(teamRunId, projection);
-    const teamMemoryDir = this.teamLayout.getTeamDirPath({ rootTeamRunId: teamRunId, teamRunPath: [] });
+    const teamMemoryDir = this.teamLayout.getTeamDirPath({ rootTeamRunId: teamRunId, ancestorTeamRunIds: [] });
     const projectionPath = getTeamCommunicationProjectionPath(teamMemoryDir);
     await this.projectionStore.writeProjection(teamMemoryDir, projection);
     logger.info(
@@ -194,7 +194,7 @@ export class TeamCommunicationService {
 
     const loaded = normalizeTeamCommunicationProjection(
       await this.projectionStore.readProjection(
-        this.teamLayout.getTeamDirPath({ rootTeamRunId: teamRunId, teamRunPath: [] }),
+        this.teamLayout.getTeamDirPath({ rootTeamRunId: teamRunId, ancestorTeamRunIds: [] }),
       ),
       { teamRunId },
     );

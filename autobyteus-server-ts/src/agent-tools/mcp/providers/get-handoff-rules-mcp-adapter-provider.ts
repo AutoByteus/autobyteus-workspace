@@ -12,7 +12,6 @@ import {
   type AgentToolMcpAdapterProvider,
   type AgentToolMcpToolAdapter,
 } from "../agent-tool-mcp-adapter.js";
-import { toAgentCommunicationMcpToolResult } from "../agent-communication-mcp-result-mapper.js";
 
 export class GetHandoffRulesMcpAdapterProvider implements AgentToolMcpAdapterProvider {
   constructor(private readonly service: GetHandoffRulesService = getGetHandoffRulesService()) {}
@@ -26,10 +25,13 @@ export class GetHandoffRulesMcpAdapterProvider implements AgentToolMcpAdapterPro
       },
       configuredMcpCollisionPolicy: "protect_static_adapter" as const,
       isAvailable: ({ sender }) => Boolean(sender?.memberTeamContext?.collaboration),
-      execute: async ({ session }) =>
-        toAgentToolMcpToolResult(toAgentCommunicationMcpToolResult(
-          this.service.getRules(session.sender.memberTeamContext?.collaboration),
-        )),
+      execute: async ({ session }) => {
+        const result = this.service.getRules(session.sender.memberTeamContext?.collaboration);
+        return toAgentToolMcpToolResult({
+          content: [{ type: "text", text: JSON.stringify(result) }],
+          structuredContent: result,
+        });
+      },
     }];
   }
 }

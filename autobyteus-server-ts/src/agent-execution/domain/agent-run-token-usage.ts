@@ -29,7 +29,6 @@ export interface TokenUsageRunSummaryPayload {
   root_team_run_id: string | null;
   execution_address: TokenUsageExecutionAddress | null;
   member_agent_run_id: string | null;
-  member_route_key: string | null;
   agent_definition_id: string | null;
   workspace_id: string | null;
   gross_input_tokens: number;
@@ -83,7 +82,6 @@ export interface TokenUsageUpdatedPayload {
   root_team_run_id: string | null;
   execution_address: TokenUsageExecutionAddress | null;
   member_agent_run_id: string | null;
-  member_route_key: string | null;
   agent_definition_id: string | null;
   workspace_id: string | null;
   task_agent_instance_id: string | null;
@@ -93,7 +91,7 @@ export interface TokenUsageUpdatedPayload {
   agent_name: string | null;
   run_summary: string | null;
   run_created_at: string | null;
-  member_name: string | null;
+  member_display_name: string | null;
   runtime_kind: TokenUsageRuntimeKind;
   model_provider: string | null;
   provider_name: string | null;
@@ -279,7 +277,7 @@ export const createTokenUsageUpdatedPayload = (input: {
     qualityFlags.add("provider_name_top_level_nested_conflict");
   }
   const providerName = topLevelProviderName ?? nestedProviderName;
-  const executionAddressSource = source.execution_address ?? source.executionAddress;
+  const executionAddressSource = source.execution_address;
   const executionAddress = executionAddressSource === undefined || executionAddressSource === null
     ? null
     : normalizeTokenUsageExecutionAddress(executionAddressSource);
@@ -298,7 +296,6 @@ export const createTokenUsageUpdatedPayload = (input: {
     root_team_run_id: asString(source.root_team_run_id),
     execution_address: executionAddress,
     member_agent_run_id: asString(source.member_agent_run_id),
-    member_route_key: asString(source.member_route_key),
     agent_definition_id: asString(source.agent_definition_id),
     workspace_id: asString(source.workspace_id),
     task_agent_instance_id: asString(source.task_agent_instance_id),
@@ -308,7 +305,7 @@ export const createTokenUsageUpdatedPayload = (input: {
     agent_name: asString(source.agent_name),
     run_summary: asString(source.run_summary),
     run_created_at: asString(source.run_created_at),
-    member_name: asString(source.member_name),
+    member_display_name: asString(source.member_display_name),
     runtime_kind: runtimeKind,
     model_provider: asString(source.model_provider) ?? asString(usage?.model_provider),
     provider_name: providerName,

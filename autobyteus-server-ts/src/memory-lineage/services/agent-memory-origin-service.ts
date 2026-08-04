@@ -55,7 +55,7 @@ export class AgentMemoryOriginService {
         }).memoryDir
       : (await this.locationService.resolveTeamMemberLocation({
           teamRunId: scope.runId,
-          memberRunId: target.memberId,
+          agentRunId: target.memberId,
         }))?.memoryDir ?? null;
     if (!runDir) {
       throw new Error(

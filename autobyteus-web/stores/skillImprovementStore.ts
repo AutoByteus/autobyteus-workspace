@@ -68,7 +68,7 @@ export const useSkillImprovementStore = defineStore('skillImprovement', () => {
   const errorByKey = ref<Record<string, string>>({})
 
   const agentKey = (runId: string): string => `agent:${runId}`
-  const teamMemberKey = (teamRunId: string, memberRunId: string): string => `team-member:${teamRunId}:${memberRunId}`
+  const teamMemberKey = (teamRunId: string, agentRunId: string): string => `team-member:${teamRunId}:${agentRunId}`
 
   const setLoading = (key: string, loading: boolean): void => {
     loadingKeys.value = { ...loadingKeys.value, [key]: loading }
@@ -111,14 +111,14 @@ export const useSkillImprovementStore = defineStore('skillImprovement', () => {
     }
   }
 
-  const fetchTeamMemberEligibility = async (teamRunId: string, memberRunId: string): Promise<SkillImprovementEligibility> => {
-    const key = teamMemberKey(teamRunId, memberRunId)
+  const fetchTeamMemberEligibility = async (teamRunId: string, agentRunId: string): Promise<SkillImprovementEligibility> => {
+    const key = teamMemberKey(teamRunId, agentRunId)
     setLoading(key, true)
     clearError(key)
     try {
       const { data, errors } = await getApolloClient().query<TeamMemberEligibilityResult>({
         query: GetTeamMemberSkillImprovementEligibility,
-        variables: { teamRunId, memberRunId },
+        variables: { teamRunId, agentRunId },
         fetchPolicy: 'network-only',
       })
       if (errors && errors.length > 0) {
@@ -154,10 +154,10 @@ export const useSkillImprovementStore = defineStore('skillImprovement', () => {
     return result
   }
 
-  const startTeamMemberSkillImprovement = async (teamRunId: string, memberRunId: string): Promise<StartResult> => {
+  const startTeamMemberSkillImprovement = async (teamRunId: string, agentRunId: string): Promise<StartResult> => {
     const { data, errors } = await getApolloClient().mutate<StartTeamMemberResult>({
       mutation: StartTeamMemberSkillImprovement,
-      variables: { input: { teamRunId, memberRunId } },
+      variables: { input: { teamRunId, agentRunId } },
     })
     if (errors && errors.length > 0) {
       throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))

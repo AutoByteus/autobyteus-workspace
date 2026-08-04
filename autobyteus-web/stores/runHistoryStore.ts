@@ -66,7 +66,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
     teamResumeConfigByTeamRunId: {} as Record<string, TeamRunResumeConfigPayload>,
     selectedRunId: null as string | null,
     selectedTeamRunId: null as string | null,
-    selectedTeamMemberRouteKey: null as string | null,
+    selectedTeamMemberAddress: null as string | null,
     teamDraftProjectionRevision: 0,
     loading: false,
     openingRun: false,
@@ -200,7 +200,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
       selectionStore.clearSelection();
       this.selectedRunId = null;
       this.selectedTeamRunId = null;
-      this.selectedTeamMemberRouteKey = null;
+      this.selectedTeamMemberAddress = null;
     },
 
     async createWorkspace(rootPath: string): Promise<string> {
@@ -456,10 +456,10 @@ export const useRunHistoryStore = defineStore('runHistory', {
 
     async openTeamMemberRun(
       teamRunId: string,
-      memberRouteKey: string,
+      memberAddress: string,
       options: { selectionMode?: RunHistorySelectionMode } = {},
     ): Promise<void> {
-      await openTeamMemberRunFromHistory(this, teamRunId, memberRouteKey, options);
+      await openTeamMemberRunFromHistory(this, teamRunId, memberAddress, options);
     },
 
     async selectTreeRun(

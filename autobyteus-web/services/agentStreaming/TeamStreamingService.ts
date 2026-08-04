@@ -2,8 +2,7 @@
  * TeamStreamingService - Facade for agent team WebSocket streaming.
  *
  * Connects to team endpoint and routes events to appropriate team members
- * by canonical nested source route/path identity, with run IDs used only
- * after route resolution for runtime correlation.
+ * by exact canonical execution address.
  */
 
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
@@ -15,7 +14,6 @@ import {
   type ServerMessage,
   type TeamClientMessage,
   type InterruptGenerationPayload,
-  type ConversationTargetAddressPayload,
   type InterruptGenerationCommandAckPayload,
   type InterruptCommandTransportFailure,
   type PendingInterruptCommand,
@@ -37,10 +35,7 @@ import { getActiveRemoteAccessCredential } from '~/utils/remoteAccess/authorized
 import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAuth';
 import { getApolloClient } from '~/utils/apolloClient';
 import { scheduleTaskDelegationRecordsRefresh } from '~/services/runHydration/taskDelegationHydrationService';
-import type {
-  ConversationTargetAddress,
-  ConversationTargetSegment,
-} from '~/types/agent/ConversationTargetAddress';
+import { createTeamExecutionAddress, type TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 import { StreamContentPresentationScheduler } from './presentation/StreamContentPresentationScheduler';
 import { projectStreamContentBatch } from './presentation/streamContentBatchProjector';
 import { shouldFlushPendingContentBefore } from './presentation/streamContentPresentationFlushPolicy';
@@ -75,32 +70,8 @@ export interface TeamStreamingServiceOptions {
 }
 
 export interface TeamInterruptGenerationTarget {
-  targetMemberRouteKey: string;
-  targetMemberRunId?: string | null;
+  executionAddress: TeamExecutionAddress;
 }
-
-const toConversationTargetSegmentPayload = (
-  segment: ConversationTargetSegment,
-): ConversationTargetAddressPayload['segments'][number] => {
-  if (segment.kind === 'member') {
-    return {
-      kind: 'member',
-      ...(segment.memberRouteKey ? { member_route_key: segment.memberRouteKey } : {}),
-      ...(segment.memberPath ? { member_path: [...segment.memberPath] } : {}),
-    };
-  }
-  if (segment.kind === 'task_team') {
-    return { kind: 'task_team', task_team_run_id: segment.taskTeamRunId };
-  }
-  return { kind: 'task_agent', task_agent_run_id: segment.taskAgentRunId };
-};
-
-const toConversationTargetAddressPayload = (
-  address: ConversationTargetAddress,
-): ConversationTargetAddressPayload => ({
-  ...(address.parentTeamRunId ? { parent_team_run_id: address.parentTeamRunId } : {}),
-  segments: address.segments.map(toConversationTargetSegmentPayload),
-});
 
 export class TeamStreamingService {
   private wsClient: IWebSocketClient;
@@ -173,7 +144,7 @@ export class TeamStreamingService {
 
   sendMessage(
     content: string,
-    conversationTargetAddress: ConversationTargetAddress,
+    executionAddress: TeamExecutionAddress,
     contextFilePaths?: string[],
     imageUrls?: string[],
     identity?: { messageId?: string; dedupeKey?: string },
@@ -184,7 +155,7 @@ export class TeamStreamingService {
         content,
         context_file_paths: contextFilePaths,
         image_urls: imageUrls,
-        conversation_target_address: toConversationTargetAddressPayload(conversationTargetAddress),
+        execution_address: createTeamExecutionAddress(executionAddress),
         message_id: identity?.messageId,
         dedupe_key: identity?.dedupeKey,
       },
@@ -226,28 +197,19 @@ export class TeamStreamingService {
 
   interruptGeneration(commandId: string, target: TeamInterruptGenerationTarget): boolean {
     const normalizedCommandId = commandId.trim();
-    const targetMemberRouteKey = target.targetMemberRouteKey.trim();
-    if (!targetMemberRouteKey) {
-      throw new Error('Cannot interrupt generation: target member route key is required.');
-    }
-
-    const targetMemberRunId = target.targetMemberRunId?.trim() || null;
+    const executionAddress = createTeamExecutionAddress(target.executionAddress);
     const entry: PendingInterruptCommand = {
       commandId: normalizedCommandId,
       target: {
         target_kind: 'team_member',
         team_run_id: this.teamRunId ?? '',
-        member_route_key: targetMemberRouteKey,
-        member_run_id: targetMemberRunId,
+        execution_address: executionAddress,
       },
     };
     const payload: InterruptGenerationPayload = {
       command_id: normalizedCommandId,
-      target_member_route_key: targetMemberRouteKey,
+      execution_address: executionAddress,
     };
-    if (targetMemberRunId) {
-      payload.target_member_run_id = targetMemberRunId;
-    }
 
     const message: TeamClientMessage = {
       type: 'INTERRUPT_GENERATION',

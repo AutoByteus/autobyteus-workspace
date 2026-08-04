@@ -1,11 +1,10 @@
-import type { ConversationTargetAddress } from "../domain/conversation-target-address.js";
+import type { TeamExecutionAddress } from "../domain/team-execution-address.js";
+import type { TaskAgentInstanceIdentity } from "../domain/task-agent-instance.js";
 import type { TaskTeamInstanceIdentity } from "../domain/task-team-instance.js";
 import type { TaskExecutionInstance } from "./task-execution-instance.js";
-import type {
-  TaskDelegationMemberIdentity,
-  TaskDelegationTarget,
-} from "./task-delegation-target.js";
+import type { TaskDelegationTarget } from "./task-delegation-target.js";
 import type { MemberLogicalAddressContext } from "../domain/member-logical-address-context.js";
+import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 
 export const TASK_DELEGATION_RECORDS_FILE_NAME = "task_delegation_records.json";
 
@@ -23,11 +22,10 @@ export const isTaskDelegationTerminalStatus = (
   status: TaskDelegationStatus,
 ): status is TaskDelegationTerminalStatus => status === "accepted";
 
-export type TaskDelegationCallerIdentity = TaskDelegationMemberIdentity & {
-  taskAgentInstanceId?: string | null;
-  taskAgentRunId?: string | null;
-  taskId?: string | null;
-  logicalMemberRouteKey?: string | null;
+export type TaskDelegationCallerIdentity = {
+  executionAddress: TeamExecutionAddress;
+  agentRunId: string;
+  taskAgentInstance?: TaskAgentInstanceIdentity | null;
   taskTeamInstance?: TaskTeamInstanceIdentity | null;
 };
 
@@ -38,12 +36,12 @@ export type TaskDelegationContext = {
   teamDefinitionId?: string | null;
   teamName?: string | null;
   caller: TaskDelegationCallerIdentity;
-  coordinatorMemberRouteKey?: string | null;
+  coordinatorAddress?: AgentTeamAddress | null;
   addressing: MemberLogicalAddressContext;
 };
 
 export type TaskDelegationTaskInput = {
-  recipient_name: string;
+  recipient_address: string;
   description: string;
   reference_files?: string[];
 };
@@ -91,15 +89,15 @@ export type TaskReferenceFile = {
 export type TaskDelegationReferenceFilePayload = TaskReferenceFile;
 
 export type TaskRunReference = {
-  address: ConversationTargetAddress;
+  address: TeamExecutionAddress;
   startedAt: string;
 };
 
 export type TaskSubmissionUpdate = {
   kind: "submission";
   submissionId: string;
-  senderAddress: ConversationTargetAddress;
-  receiverAddress: ConversationTargetAddress;
+  senderAddress: TeamExecutionAddress;
+  receiverAddress: TeamExecutionAddress;
   content: string;
   referenceFiles: TaskReferenceFile[];
   createdAt: string;
@@ -108,8 +106,8 @@ export type TaskSubmissionUpdate = {
 export type TaskReviewUpdate = {
   kind: "review";
   reviewId: string;
-  senderAddress: ConversationTargetAddress;
-  receiverAddress: ConversationTargetAddress;
+  senderAddress: TeamExecutionAddress;
+  receiverAddress: TeamExecutionAddress;
   reviewedSubmissionId: string;
   decision: TaskResultReviewDecision;
   content: string | null;
@@ -122,9 +120,9 @@ export type TaskUpdate = TaskSubmissionUpdate | TaskReviewUpdate;
 export type TaskDelegationRecord = {
   taskId: string;
   status: TaskDelegationStatus;
-  senderAddress: ConversationTargetAddress;
-  receiverAddress: ConversationTargetAddress;
-  receiverTargetKind: "member" | "team";
+  senderAddress: TeamExecutionAddress;
+  receiverAddress: TeamExecutionAddress;
+  receiverTargetKind: "agent" | "agent_team";
   content: string;
   referenceFiles: TaskReferenceFile[];
   taskRun: TaskRunReference | null;
@@ -157,7 +155,7 @@ export type TaskDelegationWarning = {
   code: "TASK_NOTIFICATION_DELIVERY_FAILED";
   notification_type: TaskDelegationNotificationType;
   task_id: string;
-  target_member_route_key: string;
+  target_member_address: string;
   target_task_agent_run_id?: string | null;
   target_task_team_run_id?: string | null;
   message: string;
@@ -166,14 +164,14 @@ export type TaskDelegationWarning = {
 export type TaskDelegationNotificationDeliveryOutcome = {
   notificationType: TaskDelegationNotificationType;
   delivered: boolean;
-  targetMemberRouteKey: string;
+  targetMemberAddress: string;
   targetTaskAgentRunId?: string | null;
   targetTaskTeamRunId?: string | null;
   warning: TaskDelegationWarning | null;
 };
 
 export type TaskDelegationActivationResult = {
-  target: { kind: TaskDelegationTarget["kind"]; name: string };
+  target: { kind: TaskDelegationTarget["kind"]; address: string };
   accepted: boolean;
   task_id: string;
   execution_kind: TaskExecutionInstance["kind"] | null;
@@ -302,5 +300,3 @@ export class TaskDelegationError extends Error {
     this.name = "TaskDelegationError";
   }
 }
-
-export type { TaskDelegationMemberIdentity } from "./task-delegation-target.js";

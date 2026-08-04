@@ -148,7 +148,7 @@ export class MemoryViewResolver {
   @Query(() => AgentMemoryView)
   async getTeamMemberRunMemoryView(
     @Arg("teamRunId", () => String) teamRunId: string,
-    @Arg("memberRunId", () => String) memberRunId: string,
+    @Arg("agentRunId", () => String) agentRunId: string,
     @Arg("source", () => MemoryExplorerSourceInput, { nullable: true }) source?: MemoryExplorerSourceInput | null,
     @Arg("includeWorkingContext", () => Boolean, { defaultValue: true })
     includeWorkingContext = true,
@@ -162,14 +162,14 @@ export class MemoryViewResolver {
   ): Promise<AgentMemoryView> {
     const resolvedSource = await getMemoryExplorerSourceService().resolveSource(source as never);
     const location = await new AgentMemoryLocationService({ memoryDir: resolvedSource.rootDir })
-      .resolveTeamMemberLocation({ teamRunId, memberRunId });
+      .resolveTeamMemberLocation({ teamRunId, agentRunId: agentRunId });
     const teamDir = location ? path.dirname(location.memoryDir) : null;
     if (!teamDir) {
-      return MemoryViewConverter.toGraphql({ runId: memberRunId });
+      return MemoryViewConverter.toGraphql({ runId: agentRunId });
     }
     const store = new MemoryFileStore(teamDir, { runRootSubdir: "", warnOnMissingFiles: !resolvedSource.readOnly });
     const service = new AgentMemoryService(store);
-    const view = service.getRunMemoryView(memberRunId, {
+    const view = service.getRunMemoryView(agentRunId, {
       includeWorkingContext,
       includeEpisodic,
       includeSemantic,

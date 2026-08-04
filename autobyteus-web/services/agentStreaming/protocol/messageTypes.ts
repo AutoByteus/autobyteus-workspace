@@ -23,7 +23,7 @@ export type { MemberInputMessageContextFilePathPayload, MemberInputMessagePayloa
 export type { UserMessageContextFilePathPayload, UserMessageProjectionPayload } from './userMessagePayloadTypes';
 import type { TeamStreamIdentityPayload } from './teamStreamIdentityTypes';
 import type { TokenUsageUpdatedPayload as TokenUsageUpdatedPayloadBase } from '~/types/tokenUsageMeter';
-import type { ConversationTargetAddress } from '~/types/agent/ConversationTargetAddress';
+import type { TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 export type { TaskAgentIdentityPayload, TaskTeamIdentityPayload, TeamStreamIdentityPayload } from './teamStreamIdentityTypes';
 
 // ============================================================================
@@ -145,8 +145,6 @@ export interface ToolApprovalTokenPayload {
   teamRunId: string;
   invocationId: string;
   invocationVersion: number;
-  targetMemberRouteKey?: string;
-  targetMemberPath?: string[];
 }
 
 export interface ToolExecutionStartedPayload extends TeamStreamIdentityPayload {
@@ -266,15 +264,12 @@ export interface TeamCommunicationReferenceFilePayload {
 export interface TeamCommunicationMessagePayload {
   messageId: string;
   teamRunId: string;
-  senderAddress: ConversationTargetAddress;
-  receiverAddress: ConversationTargetAddress;
+  senderAddress: TeamExecutionAddress;
+  receiverAddress: TeamExecutionAddress;
   content: string;
   messageType: string;
   createdAt: string;
   referenceFiles: TeamCommunicationReferenceFilePayload[];
-  source_path?: string[];
-  source_route_key?: string;
-  sub_team_node_name?: string | null;
 }
 
 export interface InterAgentMessagePayload extends TeamStreamIdentityPayload {
@@ -329,9 +324,7 @@ export interface ErrorPayload extends TeamStreamIdentityPayload {
 }
 
 
-export type TokenUsageUpdatedPayload =
-  TokenUsageUpdatedPayloadBase
-  & Omit<TeamStreamIdentityPayload, 'member_path' | 'member_route_key'>;
+export type TokenUsageUpdatedPayload = TokenUsageUpdatedPayloadBase & TeamStreamIdentityPayload;
 
 // --- Server Message Union ---
 
@@ -382,65 +375,25 @@ export interface SendMessagePayload {
   content: string;
   context_file_paths?: string[];
   image_urls?: string[];
-  conversation_target_address?: ConversationTargetAddressPayload;
-  conversationTargetAddress?: ConversationTargetAddress;
-  target_member_route_key?: string;
-  target_member_path?: string[];
-  targetMemberRouteKey?: string;
-  targetMemberPath?: string[];
+  execution_address?: TeamExecutionAddress;
   message_id?: string;
   dedupe_key?: string;
 }
 
-export interface ConversationTargetAddressPayload {
-  parent_team_run_id?: string | null;
-  segments: Array<
-    | { kind: 'member'; member_route_key?: string; member_path?: string[] }
-    | { kind: 'task_team'; task_team_run_id: string }
-    | { kind: 'task_agent'; task_agent_run_id: string }
-  >;
-}
-
 export interface ToolActionPayload {
   invocation_id: string;
-  member_route_key?: string;
-  member_path?: string[];
-  source_route_key?: string;
-  source_path?: string[];
-  memberRouteKey?: string;
-  memberPath?: string[];
-  sourceRouteKey?: string;
-  sourcePath?: string[];
-  target_member_route_key?: string;
-  target_member_path?: string[];
-  targetMemberRouteKey?: string;
-  targetMemberPath?: string[];
-  task_agent_run_id?: string;
-  taskAgentRunId?: string;
-  target_member_run_id?: string;
-  targetMemberRunId?: string;
-  task_team_run_id?: string;
-  taskTeamRunId?: string;
-  team_route_key?: string;
-  teamRouteKey?: string;
-  team_path?: string[];
-  teamPath?: string[];
-  task_team_relative_member_route_key?: string;
-  taskTeamRelativeMemberRouteKey?: string;
-  task_team_relative_member_path?: string[];
-  taskTeamRelativeMemberPath?: string[];
+  execution_address?: TeamExecutionAddress;
   reason?: string;
   approval_token?: ToolApprovalTokenPayload;
 }
 
+export interface AgentInterruptGenerationPayload {
+  command_id: string;
+}
+
 export interface InterruptGenerationPayload {
   command_id: string;
-  target_member_route_key?: string;
-  target_member_path?: string[];
-  targetMemberRouteKey?: string;
-  targetMemberPath?: string[];
-  target_member_run_id?: string;
-  targetMemberRunId?: string;
+  execution_address: TeamExecutionAddress;
 }
 
 export type SendMessageClientMessage = {
@@ -450,7 +403,7 @@ export type SendMessageClientMessage = {
 
 export type AgentInterruptGenerationClientMessage = {
   type: 'INTERRUPT_GENERATION';
-  payload: InterruptGenerationPayload;
+  payload: AgentInterruptGenerationPayload;
 };
 
 export type TeamInterruptGenerationClientMessage = {

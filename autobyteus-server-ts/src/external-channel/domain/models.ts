@@ -2,6 +2,8 @@ import type { ExternalChannelProvider } from "autobyteus-ts/external-channel/pro
 import type { ExternalChannelTransport } from "autobyteus-ts/external-channel/channel-transport.js";
 import type { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
+import type { TeamExecutionAddress } from "../../agent-team-execution/domain/team-execution-address.js";
 
 export type ChannelBindingTargetType = "AGENT" | "TEAM";
 
@@ -37,8 +39,7 @@ export type ChannelBinding = {
   teamDefinitionId: string | null;
   teamLaunchPreset: ChannelBindingTeamLaunchPreset | null;
   teamRunId: string | null;
-  targetMemberRouteKey: string | null;
-  targetMemberPath: string[] | null;
+  targetMemberAddress: AgentTeamAddress | null;
   allowTransportFallback: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -72,8 +73,7 @@ export type UpsertChannelBindingInput = {
   teamDefinitionId?: string | null;
   teamLaunchPreset?: ChannelBindingTeamLaunchPreset | null;
   teamRunId?: string | null;
-  targetMemberRouteKey?: string | null;
-  targetMemberPath?: string[] | null;
+  targetMemberAddress?: string | null;
   allowTransportFallback?: boolean;
 };
 
@@ -153,9 +153,7 @@ export type ChannelStandaloneRunOutputTarget = {
 export type ChannelTeamRunOutputTarget = {
   targetType: "TEAM";
   teamRunId: string;
-  entryMemberRunId: string | null;
-  entryMemberRouteKey: string | null;
-  entryMemberPath: string[] | null;
+  entryExecutionAddress: TeamExecutionAddress | null;
 };
 
 export type ChannelRunOutputTarget =

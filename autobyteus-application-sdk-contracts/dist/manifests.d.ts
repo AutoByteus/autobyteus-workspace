@@ -37,7 +37,7 @@ export type ApplicationManifestV4 = {
     icon?: string | null;
     ui: {
         entryHtml: string;
-        frontendSdkContractVersion: "4";
+        frontendSdkContractVersion: "5";
     };
     backend: {
         bundleManifest: string;

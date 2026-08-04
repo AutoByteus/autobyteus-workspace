@@ -4,6 +4,7 @@ import type {
   ChannelOutputRoute,
   ChannelRunOutputTarget,
 } from "../domain/models.js";
+import { createTeamExecutionAddress } from "../../agent-team-execution/domain/team-execution-address.js";
 import type { DeliveryEventService } from "./delivery-event-service.js";
 import type { ChannelBindingService } from "./channel-binding-service.js";
 
@@ -217,9 +218,9 @@ const normalizeTarget = (target: ChannelRunOutputTarget): ChannelRunOutputTarget
   return {
     targetType: "TEAM",
     teamRunId: normalizeRequiredString(target.teamRunId, "target.teamRunId"),
-    entryMemberRunId: normalizeOptionalString(target.entryMemberRunId),
-    entryMemberRouteKey: normalizeOptionalString(target.entryMemberRouteKey),
-    entryMemberPath: normalizeMemberPath(target.entryMemberPath),
+    entryExecutionAddress: target.entryExecutionAddress
+      ? createTeamExecutionAddress(target.entryExecutionAddress)
+      : null,
   };
 };
 
@@ -241,9 +242,7 @@ const targetMetadata = (target: ChannelRunOutputTarget): Record<string, unknown>
   return {
     targetType: target.targetType,
     teamRunId: target.teamRunId,
-    memberRunId: target.entryMemberRunId,
-    memberRouteKey: target.entryMemberRouteKey,
-    memberPath: target.entryMemberPath,
+    entryExecutionAddress: target.entryExecutionAddress,
   };
 };
 
@@ -260,16 +259,6 @@ const normalizeOptionalString = (value: string | null | undefined): string | nul
     return null;
   }
   const normalized = value.trim();
-  return normalized.length > 0 ? normalized : null;
-};
-
-const normalizeMemberPath = (value: readonly string[] | null | undefined): string[] | null => {
-  if (!Array.isArray(value)) {
-    return null;
-  }
-  const normalized = value
-    .map((segment) => normalizeOptionalString(segment))
-    .filter((segment): segment is string => Boolean(segment));
   return normalized.length > 0 ? normalized : null;
 };
 

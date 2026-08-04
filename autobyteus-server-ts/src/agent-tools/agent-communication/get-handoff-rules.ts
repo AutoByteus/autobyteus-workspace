@@ -13,7 +13,6 @@ import {
   GET_HANDOFF_RULES_TOOL_DESCRIPTION,
   GET_HANDOFF_RULES_TOOL_NAME,
 } from "../../agent-communication/services/get-handoff-rules-tool-contract.js";
-import { serializeAgentCommunicationToolResult } from "../../agent-communication/services/agent-communication-tool-result.js";
 import { buildGetHandoffRulesParameterSchema } from "./get-handoff-rules-parameter-schema.js";
 
 const OWNER = "server-owned-agent-communication";
@@ -34,9 +33,9 @@ export class AutoByteusGetHandoffRulesTool extends BaseTool<unknown, Record<stri
   static getArgumentSchema() { return buildGetHandoffRulesParameterSchema(); }
 
   protected async _execute(): Promise<string> {
-    const envelope = (this.options.service ?? getGetHandoffRulesService())
+    const result = (this.options.service ?? getGetHandoffRulesService())
       .getRules(this.options.memberTeamContext?.collaboration);
-    return serializeAgentCommunicationToolResult(envelope);
+    return JSON.stringify(result);
   }
 }
 

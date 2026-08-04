@@ -9,7 +9,7 @@ type TeamMemberRunMemoryViewQuery = { getTeamMemberRunMemoryView?: RunMemoryView
 type ViewVariables = {
   runId?: string;
   teamRunId?: string;
-  memberRunId?: string;
+  agentRunId?: string;
   source?: MemoryExplorerSourceInput;
   includeWorkingContext?: boolean;
   includeEpisodic?: boolean;
@@ -41,7 +41,7 @@ const sameTarget = (a: MemoryInspectTarget | null, b: MemoryInspectTarget): bool
   if (!a || a.kind !== b.kind || sourceKey(a.source) !== sourceKey(b.source)) return false;
   if (a.kind === 'agent_run' && b.kind === 'agent_run') return a.runId === b.runId;
   if (a.kind === 'team_member_run' && b.kind === 'team_member_run') {
-    return a.teamRunId === b.teamRunId && a.memberRunId === b.memberRunId;
+    return a.teamRunId === b.teamRunId && a.agentRunId === b.agentRunId;
   }
   return false;
 };
@@ -136,7 +136,7 @@ export const useMemoryInspectorStore = defineStore('memoryInspectorStore', {
         rawTraceFileName: this.includeRawTraces ? this.selectedRawTraceFileName : null,
       };
       if (target.kind === 'agent_run') return { ...common, runId: target.runId };
-      return { ...common, teamRunId: target.teamRunId, memberRunId: target.memberRunId };
+      return { ...common, teamRunId: target.teamRunId, agentRunId: target.agentRunId };
     },
 
     clear() {

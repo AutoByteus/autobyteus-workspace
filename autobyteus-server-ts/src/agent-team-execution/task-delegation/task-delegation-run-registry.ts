@@ -19,16 +19,16 @@ export class TaskDelegationRunRegistry {
   }
 
   getOrCreate(run: TeamRun): TaskDelegationService {
-    const existing = this.entries.get(run.runId) ?? null;
+    const existing = this.entries.get(run.teamRunId) ?? null;
     if (existing && existing.run === run && run.isActive()) {
       return existing.service;
     }
     if (existing) {
       existing.service.dispose();
-      this.entries.delete(run.runId);
+      this.entries.delete(run.teamRunId);
     }
     const service = new TaskDelegationService(run, this.serviceOptions);
-    this.entries.set(run.runId, { run, service });
+    this.entries.set(run.teamRunId, { run, service });
     return service;
   }
 

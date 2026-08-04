@@ -4,6 +4,7 @@ import {
   getTeamStreamBroadcaster,
 } from "./team-stream-broadcaster.js";
 import { createExternalUserMessageServerMessage } from "./external-user-message-server-message.js";
+import type { TeamExecutionAddress } from "../../agent-team-execution/domain/team-execution-address.js";
 
 export type TeamLiveMessagePublisherDependencies = {
   broadcaster?: TeamStreamBroadcaster;
@@ -19,23 +20,17 @@ export class TeamLiveMessagePublisher {
   publishExternalUserMessage(input: {
     teamRunId: string;
     envelope: ExternalMessageEnvelope;
-    agentName?: string | null;
-    agentId?: string | null;
-    memberRouteKey?: string | null;
-    memberPath?: readonly string[] | null;
-    sourceRouteKey?: string | null;
-    sourcePath?: readonly string[] | null;
+    executionAddress: TeamExecutionAddress;
+    displayName?: string | null;
+    agentRunId?: string | null;
   }): number {
     return this.broadcaster.publishToTeamRun(
       input.teamRunId,
       createExternalUserMessageServerMessage({
         envelope: input.envelope,
-        agentName: input.agentName ?? null,
-        agentId: input.agentId ?? null,
-        memberRouteKey: input.memberRouteKey ?? null,
-        memberPath: input.memberPath ?? null,
-        sourceRouteKey: input.sourceRouteKey ?? null,
-        sourcePath: input.sourcePath ?? null,
+        executionAddress: input.executionAddress,
+        displayName: input.displayName ?? null,
+        agentRunId: input.agentRunId ?? null,
       }),
     );
   }

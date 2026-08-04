@@ -7,6 +7,7 @@ import { ChannelRunFacade } from "../runtime/channel-run-facade.js";
 import { ChannelBindingService } from "./channel-binding-service.js";
 import { ChannelMessageReceiptService } from "./channel-message-receipt-service.js";
 import { ChannelThreadLockService } from "./channel-thread-lock-service.js";
+import { createTeamExecutionAddress } from "../../agent-team-execution/domain/team-execution-address.js";
 
 export type ChannelIngressDisposition = "ACCEPTED" | "UNBOUND" | "DUPLICATE";
 
@@ -264,18 +265,15 @@ const normalizeDispatchTarget = (
   }
 
   const teamRunId = normalizeRequiredString(dispatch.teamRunId, "dispatch.teamRunId");
-  const memberRunId = normalizeNullableString(dispatch.memberRunId ?? null);
   return {
     dispatch: {
       dispatchTargetType: "TEAM",
       teamRunId,
-      memberRunId,
-      memberRouteKey: normalizeNullableString(dispatch.memberRouteKey ?? null),
-      memberPath: normalizeMemberPath(dispatch.memberPath),
+      executionAddress: createTeamExecutionAddress(dispatch.executionAddress),
       turnId: normalizeRequiredString(dispatch.turnId, "dispatch.turnId"),
       dispatchedAt,
     },
-    persistedAgentRunId: memberRunId,
+    persistedAgentRunId: null,
     persistedTeamRunId: teamRunId,
   };
 };
@@ -290,11 +288,7 @@ const toRunOutputTarget = (
   return {
     targetType: "TEAM",
     teamRunId: dispatch.teamRunId,
-    entryMemberRunId: normalizeNullableString(dispatch.memberRunId ?? null),
-    entryMemberRouteKey:
-      normalizeNullableString(dispatch.memberRouteKey ?? null) ??
-      normalizeNullableString(binding.targetMemberRouteKey ?? null),
-    entryMemberPath: normalizeMemberPath(dispatch.memberPath) ?? normalizeMemberPath(binding.targetMemberPath),
+    entryExecutionAddress: createTeamExecutionAddress(dispatch.executionAddress),
   };
 };
 
@@ -313,9 +307,9 @@ const toRunOutputTargetFromReceipt = (
   return {
     targetType: "TEAM",
     teamRunId,
-    entryMemberRunId: normalizeNullableString(receipt.agentRunId),
-    entryMemberRouteKey: normalizeNullableString(binding.targetMemberRouteKey ?? null),
-    entryMemberPath: normalizeMemberPath(binding.targetMemberPath),
+    entryExecutionAddress: binding.targetMemberAddress
+      ? createTeamExecutionAddress({ rootTeamRunId: teamRunId, memberAddress: binding.targetMemberAddress })
+      : null,
   };
 };
 
@@ -332,16 +326,6 @@ const normalizeNullableString = (value: string | null | undefined): string | nul
     return null;
   }
   const normalized = value.trim();
-  return normalized.length > 0 ? normalized : null;
-};
-
-const normalizeMemberPath = (value: readonly string[] | null | undefined): string[] | null => {
-  if (!Array.isArray(value)) {
-    return null;
-  }
-  const normalized = value
-    .map((segment) => normalizeNullableString(segment))
-    .filter((segment): segment is string => Boolean(segment));
   return normalized.length > 0 ? normalized : null;
 };
 

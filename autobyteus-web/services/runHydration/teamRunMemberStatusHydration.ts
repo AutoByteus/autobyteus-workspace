@@ -4,9 +4,9 @@ import { hydrateActivitiesFromProjection } from './runProjectionActivityHydratio
 import { applyMemberOrHistoryStatusSnapshot } from '~/services/runStatus/agentRuntimeStatusState';
 
 export interface TeamMemberLiveSnapshot {
-  memberRouteKey: string | null;
-  memberName: string;
-  memberRunId: string | null;
+  memberAddress: string | null;
+  displayName: string;
+  agentRunId: string | null;
   currentStatus: string;
 }
 
@@ -23,20 +23,26 @@ const applyMemberStatuses = (
   const statusByRunId = new Map<string, TeamMemberLiveSnapshot>();
 
   snapshots.forEach((snapshot) => {
-    const routeKey = snapshot.memberRouteKey?.trim() || '';
+    const routeKey = snapshot.memberAddress?.trim() || '';
     if (routeKey) {
       statusByKey.set(routeKey, snapshot);
     }
-    const runId = snapshot.memberRunId?.trim() || '';
+    const runId = snapshot.agentRunId?.trim() || '';
     if (runId) {
       statusByRunId.set(runId, snapshot);
     }
   });
 
-  members.forEach((memberContext, memberRouteKey) => {
+  members.forEach((memberContext, executionKey) => {
     memberContext.config.isLocked = true;
+    let memberAddress = '';
+    try {
+      memberAddress = JSON.parse(executionKey).memberAddress || '';
+    } catch {
+      return;
+    }
     const matched =
-      statusByKey.get(memberRouteKey) ||
+      statusByKey.get(memberAddress) ||
       statusByRunId.get(memberContext.state.runId);
     if (matched) {
       applyMemberOrHistoryStatusSnapshot(memberContext, matched.currentStatus, {
@@ -48,14 +54,15 @@ const applyMemberStatuses = (
 
 export const hydrateTeamMemberActivitiesFromProjection = (params: {
   members: Map<string, any>;
-  projectionByMemberRouteKey: Map<string, TeamMemberRunProjectionPayload | null>;
-  memberRouteKeys?: string[];
+  projectionByMemberAddress: Map<string, TeamMemberRunProjectionPayload | null>;
+  memberAddresses?: string[];
 }): void => {
-  const memberRouteKeys = params.memberRouteKeys ?? Array.from(params.members.keys());
-  memberRouteKeys.forEach((memberRouteKey) => {
-    const normalizedMemberRouteKey = memberRouteKey.trim();
-    const memberContext = params.members.get(normalizedMemberRouteKey) || null;
-    const projection = params.projectionByMemberRouteKey.get(normalizedMemberRouteKey) || null;
+  const requested = params.memberAddresses ? new Set(params.memberAddresses) : null;
+  params.members.forEach((memberContext, executionKey) => {
+    let normalizedMemberAddress = '';
+    try { normalizedMemberAddress = JSON.parse(executionKey).memberAddress || ''; } catch { return; }
+    if (requested && !requested.has(normalizedMemberAddress)) return;
+    const projection = params.projectionByMemberAddress.get(normalizedMemberAddress) || null;
     if (!memberContext || !projection) {
       return;
     }
@@ -68,11 +75,5 @@ export const applyLiveTeamMemberStatusSnapshot = (
   snapshot: TeamMemberStatusSnapshotSet,
   options: { preserveCurrentStatus?: boolean } = {},
 ): void => {
-  const leafAgentContextsByRouteKey =
-    context.leafAgentContextsByRouteKey instanceof Map
-      ? context.leafAgentContextsByRouteKey
-      : (context as unknown as { members?: unknown }).members instanceof Map
-        ? (context as unknown as { members: Map<string, any> }).members
-        : new Map<string, any>();
-  applyMemberStatuses(leafAgentContextsByRouteKey, snapshot.memberStatuses || [], options);
+  applyMemberStatuses(context.agentExecutionsByKey, snapshot.memberStatuses || [], options);
 };

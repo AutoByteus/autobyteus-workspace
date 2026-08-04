@@ -36,8 +36,8 @@ const normalizeModelConfig = (
 const modelConfigKey = (config: Record<string, unknown> | null | undefined): string =>
   JSON.stringify(normalizeModelConfig(config) ?? null)
 
-const memberRouteKey = (member: { memberRouteKey: string }): string =>
-  member.memberRouteKey?.trim() || ''
+const memberAddress = (member: { address: string }): string =>
+  member.address.trim()
 
 type TeamMetadataMember = ReturnType<typeof flattenTeamRunAgentMetadata>[number]
 
@@ -53,7 +53,7 @@ const pickDominantValue = <T>(
   members: TeamMetadataMember[],
   getValue: (member: TeamMetadataMember) => T,
   getKey: (value: T) => string,
-  preferredRouteKey: string,
+  preferredMemberAddress: string,
 ): T | null => {
   if (members.length === 0) {
     return null
@@ -72,7 +72,7 @@ const pickDominantValue = <T>(
     const existing = tally.get(key)
     if (existing) {
       existing.count += 1
-      if (memberRouteKey(member) === preferredRouteKey) {
+      if (memberAddress(member) === preferredMemberAddress) {
         existing.includesPreferred = true
       }
       return
@@ -82,7 +82,7 @@ const pickDominantValue = <T>(
       value,
       count: 1,
       firstIndex: index,
-      includesPreferred: memberRouteKey(member) === preferredRouteKey,
+      includesPreferred: memberAddress(member) === preferredMemberAddress,
     })
   })
 
@@ -101,7 +101,7 @@ const pickDominantValue = <T>(
 
 const pickDominantRuntimeModelConfig = (
   members: TeamMetadataMember[],
-  preferredRouteKey: string,
+  preferredMemberAddress: string,
 ): {
   runtimeKind: AgentRuntimeKind
   llmModelIdentifier: string
@@ -112,7 +112,7 @@ const pickDominantRuntimeModelConfig = (
       members,
       normalizedMetadataMemberRuntimeKind,
       (value) => String(value),
-      preferredRouteKey,
+      preferredMemberAddress,
     ) ?? DEFAULT_AGENT_RUNTIME_KIND
 
   const runtimeMembers = members.filter((member) =>
@@ -124,7 +124,7 @@ const pickDominantRuntimeModelConfig = (
       runtimeMembers,
       normalizedMetadataMemberModelIdentifier,
       (value) => value,
-      preferredRouteKey,
+      preferredMemberAddress,
     ) ?? ''
 
   const modelSourceMembers = runtimeMembers.filter((member) =>
@@ -136,7 +136,7 @@ const pickDominantRuntimeModelConfig = (
       modelSourceMembers.length > 0 ? modelSourceMembers : runtimeMembers,
       (member) => normalizeModelConfig(member.llmConfig ?? null),
       (value) => modelConfigKey(value),
-      preferredRouteKey,
+      preferredMemberAddress,
     ) ?? null
 
   return {
@@ -222,12 +222,12 @@ export const reconstructTeamRunConfigFromMetadata = (params: {
   primaryWorkspaceMetadata: WorkspaceMetadata | null
   isLocked: boolean
 }): TeamRunConfig => {
-  const members = flattenTeamRunAgentMetadata(params.metadata.memberTree).filter((member) =>
-    Boolean(memberRouteKey(member)),
+  const members = flattenTeamRunAgentMetadata(params.metadata.rootTeam.children).filter((member) =>
+    Boolean(memberAddress(member)),
   )
   if (members.length === 0) {
     return {
-      teamDefinitionId: params.metadata.teamDefinitionId,
+      teamDefinitionId: params.metadata.rootTeam.teamDefinitionId,
       teamDefinitionName: params.metadata.teamDefinitionName,
       runtimeKind: DEFAULT_AGENT_RUNTIME_KIND,
       workspaceId: params.primaryWorkspaceMetadata?.workspaceId ?? null,
@@ -241,21 +241,21 @@ export const reconstructTeamRunConfigFromMetadata = (params: {
     }
   }
 
-  const preferredRouteKey =
-    params.metadata.coordinatorMemberRouteKey?.trim() || memberRouteKey(members[0])
+  const preferredMemberAddress =
+    params.metadata.rootTeam.coordinatorAddress.trim() || memberAddress(members[0])
 
   const {
     runtimeKind,
     llmModelIdentifier,
     llmConfig,
-  } = pickDominantRuntimeModelConfig(members, preferredRouteKey)
+  } = pickDominantRuntimeModelConfig(members, preferredMemberAddress)
 
   const autoExecuteTools =
     pickDominantValue(
       members,
       (member) => Boolean(member.autoExecuteTools),
       (value) => String(value),
-      preferredRouteKey,
+      preferredMemberAddress,
     ) ?? false
 
   const skillAccessMode =
@@ -263,7 +263,7 @@ export const reconstructTeamRunConfigFromMetadata = (params: {
       members,
       (member) => normalizeSkillAccessMode(member.skillAccessMode),
       (value) => value,
-      preferredRouteKey,
+      preferredMemberAddress,
     ) ?? 'PRELOADED_ONLY'
 
   const memberOverrides: Record<string, MemberConfigOverride> = {}
@@ -290,14 +290,14 @@ export const reconstructTeamRunConfigFromMetadata = (params: {
       override.llmConfig = memberConfig
     }
 
-    const routeKey = memberRouteKey(member)
+    const routeKey = memberAddress(member)
     if (routeKey && hasMeaningfulMemberOverride(override)) {
       memberOverrides[routeKey] = override
     }
   })
 
   return {
-    teamDefinitionId: params.metadata.teamDefinitionId,
+    teamDefinitionId: params.metadata.rootTeam.teamDefinitionId,
     teamDefinitionName: params.metadata.teamDefinitionName,
     runtimeKind,
     workspaceId: params.primaryWorkspaceMetadata?.workspaceId ?? null,

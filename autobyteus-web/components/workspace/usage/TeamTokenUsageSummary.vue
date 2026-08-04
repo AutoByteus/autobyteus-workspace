@@ -37,12 +37,12 @@
 
           <tr
             v-for="row in rows"
-            :key="row.memberRouteKey"
+            :key="row.memberAddress"
             class="team-token-row"
             :class="{ 'team-token-row-focused': row.isFocused }"
             data-test="team-token-row"
             :data-focused="row.isFocused ? 'true' : 'false'"
-            :data-member-route-key="row.memberRouteKey"
+            :data-member-route-key="row.memberAddress"
           >
             <th scope="row" class="team-token-member-cell">
               <span class="team-token-member-primary">
@@ -53,7 +53,7 @@
                   {{ $t('shell.tokenUsage.focusedBadge') }}
                 </span>
               </span>
-              <span v-if="row.memberRouteKey !== row.displayName" class="team-token-route" :title="row.memberRouteKey">{{ row.memberRouteKey }}</span>
+              <span v-if="row.memberAddress !== row.displayName" class="team-token-route" :title="row.memberAddress">{{ row.memberAddress }}</span>
             </th>
 
             <template v-if="row.summary">

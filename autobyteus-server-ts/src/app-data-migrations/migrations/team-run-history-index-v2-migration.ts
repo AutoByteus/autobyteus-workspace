@@ -15,7 +15,7 @@ import { TeamRunHistoryIndexStore } from "../../run-history/store/team-run-histo
 import { canonicalizeWorkspaceRootPath } from "../../run-history/utils/workspace-path-normalizer.js";
 import {
   getTeamRunLeafAgentMetadata,
-  resolveTeamRunLeafAgentByRouteKey,
+  resolveTeamRunLeafAgentByAddress,
 } from "../../run-history/services/team-run-metadata-flattener.js";
 import { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
 import { compactSummary, extractSummaryFromRawTraces } from "../../run-history/services/run-history-service-helpers.js";
@@ -218,9 +218,9 @@ const resolveWorkspaceRootPath = (
     }
   }
   const leaves = getTeamRunLeafAgentMetadata(metadata);
-  const coordinator = resolveTeamRunLeafAgentByRouteKey(
+  const coordinator = resolveTeamRunLeafAgentByAddress(
     metadata,
-    metadata.coordinatorMemberRouteKey,
+    metadata.rootTeam.coordinatorAddress,
   );
   const candidate = coordinator?.workspaceRootPath?.trim() ||
     leaves.find((member) => member.workspaceRootPath?.trim())?.workspaceRootPath?.trim() ||
@@ -283,8 +283,8 @@ const extractSummaryFromCoordinator = (
   const locations = locationService.listTeamMemberLocationsFromMetadata(metadata);
   const coordinatorTarget = locationService.resolveTeamMemberLocationFromMetadata(
     metadata,
-    { memberRouteKey: metadata.coordinatorMemberRouteKey },
-    metadata.teamRunId,
+    { memberAddress: metadata.rootTeam.coordinatorAddress },
+    metadata.rootTeam.teamRunId,
   ) ?? locations[0];
   if (!coordinatorTarget) {
     return "";
@@ -372,7 +372,7 @@ export class TeamRunHistoryIndexV2AppDataMigration implements AppDataMigrationDe
       }
 
       const existingRow = existing.rowsById.get(record.teamRunId);
-      let teamDefinitionId = record.metadata.teamDefinitionId.trim() ||
+      let teamDefinitionId = record.metadata.rootTeam.teamDefinitionId.trim() ||
         (typeof existingRow?.teamDefinitionId === "string" ? existingRow.teamDefinitionId.trim() : "") ||
         parseTeamDefinitionIdFromRunId(record.teamRunId) ||
         "";

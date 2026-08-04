@@ -20,6 +20,7 @@ import {
   normalizeMemoryExplorerSearch,
   pageMemoryExplorerEntries,
 } from "./memory-explorer-page.js";
+import { getAgentTeamAddressBasename } from "../../agent-collaboration/domain/agent-team-address.js";
 
 type TeamRunRecord = {
   teamRunId: string;
@@ -110,7 +111,7 @@ export class TeamMemoryExplorerService {
       }
       const memory = mergeMemoryAvailability(memberTargets.map((target) => target.memory));
       const catalogRow = catalogRows.get(teamRunId) ?? null;
-      const teamDefinitionId = metadata.teamDefinitionId.trim();
+      const teamDefinitionId = metadata.rootTeam.teamDefinitionId.trim();
       if (!teamDefinitionId) {
         continue;
       }
@@ -166,9 +167,9 @@ export class TeamMemoryExplorerService {
       includesMemoryExplorerQuery(run.catalogRow?.summary, query) ||
       includesMemoryExplorerQuery(run.catalogRow?.workspaceRootPath, query) ||
       run.memberTargets.some(({ member }) =>
-        includesMemoryExplorerQuery(member.memberName, query) ||
-        includesMemoryExplorerQuery(member.memberRouteKey, query) ||
-        includesMemoryExplorerQuery(member.memberRunId, query) ||
+        includesMemoryExplorerQuery(getAgentTeamAddressBasename(member.address), query) ||
+        includesMemoryExplorerQuery(member.address, query) ||
+        includesMemoryExplorerQuery(member.agentRunId, query) ||
         includesMemoryExplorerQuery(member.agentDefinitionId, query),
       )
     );
@@ -179,7 +180,7 @@ export class TeamMemoryExplorerService {
     const memberKeys = new Set<string>();
     for (const run of group.runs) {
       for (const target of run.memberTargets) {
-        memberKeys.add(target.member.memberRouteKey);
+        memberKeys.add(target.member.address);
       }
     }
     return {
@@ -195,7 +196,7 @@ export class TeamMemoryExplorerService {
   private toRunSummary(run: TeamRunRecord): AgentTeamRunMemorySummary {
     return {
       teamRunId: run.teamRunId,
-      teamDefinitionId: run.metadata.teamDefinitionId,
+      teamDefinitionId: run.metadata.rootTeam.teamDefinitionId,
       teamDefinitionName: run.catalogRow?.teamDefinitionName ?? run.metadata.teamDefinitionName,
       summary: run.catalogRow?.summary ?? null,
       workspaceRootPath: run.catalogRow?.workspaceRootPath ?? null,
@@ -208,9 +209,9 @@ export class TeamMemoryExplorerService {
 
   private toMemberTargetSummary(target: TeamMemoryMemberTargetRecord): TeamMemberMemoryTargetSummary {
     return {
-      memberRouteKey: target.member.memberRouteKey,
-      memberName: target.member.memberName,
-      memberRunId: target.member.memberRunId,
+      memberAddress: target.member.address,
+      displayName: getAgentTeamAddressBasename(target.member.address) ?? target.member.address,
+      agentRunId: target.member.agentRunId,
       agentDefinitionId: target.member.agentDefinitionId,
       lastUpdatedAt: target.memory.availability.latestMemoryAt,
       memory: target.memory.availability,

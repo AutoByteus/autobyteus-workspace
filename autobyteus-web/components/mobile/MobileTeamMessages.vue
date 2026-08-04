@@ -70,7 +70,6 @@ import {
   referenceFileIcon,
   referenceFileName,
 } from '~/utils/teamCommunication/referenceFilePresentation';
-import { resolveTeamConversationTargetAddressResult } from '~/utils/teamConversationTargetAddress';
 
 const props = defineProps<{
   context: MobileWorkContext | null;
@@ -93,11 +92,7 @@ const activeTeamContext = computed(() => {
 const messages = computed(() => {
   const team = activeTeamContext.value;
   if (!team) return [];
-  const focusedAddress = resolveTeamConversationTargetAddressResult(team, {
-    allowSubteam: true,
-    allowActiveExecutionSafetyFallback: true,
-  }).target?.address ?? null;
-  return teamCommunicationStore.getPerspectiveForAddress(team.teamRunId, focusedAddress).messages;
+  return teamCommunicationStore.getPerspectiveForAddress(team.teamRunId, team.focusedExecutionAddress).messages;
 });
 
 function openReference(

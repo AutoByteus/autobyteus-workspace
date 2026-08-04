@@ -1,69 +1,52 @@
+import { assertAgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
+import type { TeamRunNode } from "../../agent-team-execution/domain/team-run-config.js";
 import type {
   TeamRunAgentMemberMetadata,
   TeamRunMemberMetadata,
   TeamRunMetadata,
-  TeamRunSubTeamMemberMetadata,
 } from "../store/team-run-metadata-types.js";
 
-export type TeamRunTopLevelMemberSummary =
-  | TeamRunAgentMemberMetadata
-  | TeamRunSubTeamMemberMetadata;
-
 export const flattenTeamRunAgentMemberMetadata = (
-  memberTree: readonly TeamRunMemberMetadata[],
+  nodes: readonly TeamRunMemberMetadata[],
 ): TeamRunAgentMemberMetadata[] => {
   const agents: TeamRunAgentMemberMetadata[] = [];
-  const visit = (members: readonly TeamRunMemberMetadata[]): void => {
-    for (const member of members) {
-      if (member.memberKind === "agent") {
-        agents.push({ ...member, memberPath: [...member.memberPath] });
-      } else {
-        visit(member.memberTree);
-      }
-    }
+  const visit = (node: TeamRunNode): void => {
+    if (node.kind === "agent") agents.push(node);
+    else node.children.forEach(visit);
   };
-  visit(memberTree);
+  nodes.forEach(visit);
   return agents;
 };
 
 export const getTeamRunLeafAgentMetadata = (
   metadata: TeamRunMetadata,
-): TeamRunAgentMemberMetadata[] => flattenTeamRunAgentMemberMetadata(metadata.memberTree);
+): TeamRunAgentMemberMetadata[] => flattenTeamRunAgentMemberMetadata(metadata.rootTeam.children);
 
 export const getTeamRunTopLevelMemberSummaries = (
   metadata: TeamRunMetadata,
-): TeamRunTopLevelMemberSummary[] => metadata.memberTree.map((member) => ({
-  ...member,
-  memberPath: [...member.memberPath],
-  ...(member.memberKind === "agent_team" ? { memberTree: member.memberTree.map((child) => ({ ...child })) } : {}),
-} as TeamRunTopLevelMemberSummary));
+): TeamRunMemberMetadata[] => [...metadata.rootTeam.children];
 
-export const resolveTeamRunMemberByRouteKey = (
+export const resolveTeamRunMemberByAddress = (
   metadata: TeamRunMetadata,
-  memberRouteKey: string,
+  address: string,
 ): TeamRunMemberMetadata | null => {
-  const stack = [...metadata.memberTree];
-  while (stack.length > 0) {
-    const member = stack.shift()!;
-    if (member.memberRouteKey === memberRouteKey) {
-      return member;
-    }
-    if (member.memberKind === "agent_team") {
-      stack.push(...member.memberTree);
-    }
+  const canonical = assertAgentTeamAddress(address);
+  const stack: TeamRunNode[] = [...metadata.rootTeam.children];
+  while (stack.length) {
+    const node = stack.shift()!;
+    if (node.address === canonical) return node;
+    if (node.kind === "agent_team") stack.push(...node.children);
   }
   return null;
 };
 
-export const resolveTeamRunLeafAgentByRouteKey = (
+export const resolveTeamRunLeafAgentByAddress = (
   metadata: TeamRunMetadata,
-  memberRouteKey: string,
+  address: string,
 ): TeamRunAgentMemberMetadata | null => {
-  const member = resolveTeamRunMemberByRouteKey(metadata, memberRouteKey);
-  return member?.memberKind === "agent" ? member : null;
+  const node = resolveTeamRunMemberByAddress(metadata, address);
+  return node?.kind === "agent" ? node : null;
 };
 
-export const resolveTeamWorkspaceRootPath = (
-  metadata: TeamRunMetadata,
-): string | null =>
+export const resolveTeamWorkspaceRootPath = (metadata: TeamRunMetadata): string | null =>
   getTeamRunLeafAgentMetadata(metadata).find((member) => member.workspaceRootPath)?.workspaceRootPath ?? null;

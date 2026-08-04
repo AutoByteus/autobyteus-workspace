@@ -1,46 +1,35 @@
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
-import type {
-  TeamRunMetadata,
-  TeamRunMemberMetadata,
-} from "./team-run-metadata-types.js";
-import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
-import { canonicalizeWorkspaceRootPath } from "../utils/workspace-path-normalizer.js";
-import { normalizeMemberRouteKey } from "../../agent-team-execution/domain/team-run-member-identity.js";
 import {
-  RuntimeKind,
-  runtimeKindFromString,
-} from "../../runtime-management/runtime-kind-enum.js";
-import { buildMemberRouteKeyFromPath, normalizeMemberPath } from "../../agent-team-execution/domain/team-run-member-identity.js";
-import { normalizeCollaborationHandoffs } from "../../agent-collaboration/domain/collaboration-handoff.js";
+  normalizeCollaborationHandoffs,
+  type CollaborationHandoff,
+} from "../../agent-collaboration/domain/collaboration-handoff.js";
+import {
+  cloneTeamRunNode,
+  type TeamRunAgentTeamNode,
+} from "../../agent-team-execution/domain/team-run-config.js";
+import type { TeamRunMetadata } from "./team-run-metadata-types.js";
+import { assertAgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
+import { TeamRunTreeIndex } from "../../agent-team-execution/services/team-run-tree-index.js";
+import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 
 export const LEGACY_TEAM_RUN_METADATA_UPGRADE_REQUIRED_CODE =
   "LEGACY_TEAM_RUN_METADATA_UPGRADE_REQUIRED";
 export const LEGACY_TEAM_RUN_METADATA_UPGRADE_REQUIRED_MESSAGE =
-  "This team run was created by an older version and has not been upgraded. Open Settings -> Server -> Migrations for details or retry.";
+  "This team run uses an obsolete metadata schema. Complete the required server data migration before starting runtime services.";
 
 export class UnsupportedLegacyTeamRunMetadataError extends Error {
   readonly code = LEGACY_TEAM_RUN_METADATA_UPGRADE_REQUIRED_CODE;
-  readonly teamRunId: string;
-
-  constructor(teamRunId: string) {
-    super(
-      `Unsupported legacy team run metadata for '${teamRunId}': flat memberMetadata/runVersion schema would lose topology.`,
-    );
+  constructor(readonly teamRunId: string) {
+    super(`Team run '${teamRunId}' requires migration to schemaVersion 3.`);
     this.name = "UnsupportedLegacyTeamRunMetadataError";
-    this.teamRunId = teamRunId;
   }
 }
 
 export class LegacyTeamRunMetadataUpgradeRequiredError extends Error {
   readonly code = LEGACY_TEAM_RUN_METADATA_UPGRADE_REQUIRED_CODE;
-  readonly teamRunId: string;
-  readonly technicalMessage: string;
-
-  constructor(input: { teamRunId: string; technicalMessage: string }) {
+  constructor(readonly teamRunId: string, readonly technicalMessage: string) {
     super(LEGACY_TEAM_RUN_METADATA_UPGRADE_REQUIRED_MESSAGE);
     this.name = "LegacyTeamRunMetadataUpgradeRequiredError";
-    this.teamRunId = input.teamRunId;
-    this.technicalMessage = input.technicalMessage;
   }
 }
 
@@ -48,236 +37,156 @@ export const isUnsupportedLegacyTeamRunMetadataError = (
   error: unknown,
 ): error is UnsupportedLegacyTeamRunMetadataError =>
   error instanceof UnsupportedLegacyTeamRunMetadataError ||
-  (typeof error === "object" &&
-    error !== null &&
+  (!!error && typeof error === "object" &&
     (error as { name?: unknown }).name === "UnsupportedLegacyTeamRunMetadataError");
 
 export const isLegacyTeamRunMetadataUpgradeRequiredError = (
   error: unknown,
 ): error is LegacyTeamRunMetadataUpgradeRequiredError =>
   error instanceof LegacyTeamRunMetadataUpgradeRequiredError ||
-  (typeof error === "object" &&
-    error !== null &&
-    ((error as { name?: unknown }).name === "LegacyTeamRunMetadataUpgradeRequiredError" ||
-      (error as { code?: unknown }).code === LEGACY_TEAM_RUN_METADATA_UPGRADE_REQUIRED_CODE));
+  (!!error && typeof error === "object" &&
+    (error as { code?: unknown }).code === LEGACY_TEAM_RUN_METADATA_UPGRADE_REQUIRED_CODE);
 
 export const toLegacyTeamRunMetadataUpgradeRequiredError = (
   error: UnsupportedLegacyTeamRunMetadataError,
 ): LegacyTeamRunMetadataUpgradeRequiredError =>
-  new LegacyTeamRunMetadataUpgradeRequiredError({
-    teamRunId: error.teamRunId,
-    technicalMessage: error.message,
-  });
+  new LegacyTeamRunMetadataUpgradeRequiredError(error.teamRunId, error.message);
 
-const normalizeArchivedAt = (value: string | null | undefined): string | null =>
-  typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
+const required = (value: unknown, fieldName: string): string => {
+  const normalized = typeof value === "string" ? value.trim() : "";
+  if (!normalized) throw new Error(`${fieldName} is required.`);
+  return normalized;
+};
 
-const normalizeApplicationExecutionContext = (
-  value: ApplicationExecutionContext | null | undefined,
-): ApplicationExecutionContext | null => {
+const exactKeys = (value: Record<string, unknown>, expected: readonly string[], label: string): void => {
+  const actual = Object.keys(value).sort();
+  const target = [...expected].sort();
+  if (actual.length !== target.length || actual.some((key, index) => key !== target[index])) {
+    throw new Error(`${label} has unsupported or missing field(s).`);
+  }
+};
+
+const record = (value: unknown, label: string): Record<string, unknown> => {
   if (!value || typeof value !== "object" || Array.isArray(value)) {
-    return null;
+    throw new Error(`${label} must be an object.`);
   }
-  return { ...value };
+  return value as Record<string, unknown>;
 };
 
-const normalizeOptionalString = (value: unknown): string | null =>
-  typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
-
-const normalizeBaseMember = <T extends TeamRunMemberMetadata>(member: T): T => {
-  const memberPath = normalizeMemberPath(member.memberPath);
-  return {
-    ...member,
-    memberName: member.memberName.trim(),
-    memberPath,
-    memberRouteKey: normalizeMemberRouteKey(member.memberRouteKey || buildMemberRouteKeyFromPath(memberPath)),
-    memberRunId: member.memberRunId.trim(),
-    role: member.role ?? null,
-    description: member.description ?? null,
-  };
+const validateNullableString = (value: unknown, label: string): void => {
+  if (value !== null && typeof value !== "string") throw new Error(`${label} must be a string or null.`);
 };
 
-const normalizeMemberMetadata = (
-  memberMetadata: TeamRunMemberMetadata,
-): TeamRunMemberMetadata => {
-  const base = normalizeBaseMember(memberMetadata);
-  if (base.memberKind === "agent_team") {
-    return {
-      ...base,
-      teamDefinitionId: base.teamDefinitionId.trim(),
-      teamRunId: normalizeOptionalString(base.teamRunId),
-      coordinatorMemberRouteKey: normalizeOptionalString(base.coordinatorMemberRouteKey),
-      memberTree: base.memberTree.map(normalizeMemberMetadata),
-    };
-  }
-
-  return {
-    ...base,
-    runtimeKind: runtimeKindFromString(base.runtimeKind) ?? RuntimeKind.AUTOBYTEUS,
-    platformAgentRunId: normalizeOptionalString(base.platformAgentRunId),
-    agentDefinitionId: base.agentDefinitionId.trim(),
-    llmModelIdentifier: base.llmModelIdentifier.trim(),
-    autoExecuteTools: Boolean(base.autoExecuteTools),
-    skillAccessMode:
-      base.skillAccessMode === SkillAccessMode.NONE ||
-      base.skillAccessMode === SkillAccessMode.PRELOADED_ONLY
-        ? base.skillAccessMode
-        : SkillAccessMode.PRELOADED_ONLY,
-    llmConfig:
-      base.llmConfig &&
-      typeof base.llmConfig === "object" &&
-      !Array.isArray(base.llmConfig)
-        ? { ...base.llmConfig }
-        : null,
-    workspaceRootPath: base.workspaceRootPath
-      ? canonicalizeWorkspaceRootPath(base.workspaceRootPath)
-      : null,
-    applicationExecutionContext: normalizeApplicationExecutionContext(
-      base.applicationExecutionContext,
-    ),
-  };
-};
-
-export const normalizeTeamRunMetadata = (
-  metadata: TeamRunMetadata,
-): TeamRunMetadata => ({
-  teamRunId: metadata.teamRunId.trim(),
-  teamDefinitionId: metadata.teamDefinitionId.trim(),
-  teamDefinitionName: metadata.teamDefinitionName.trim(),
-  coordinatorMemberRouteKey: normalizeMemberRouteKey(metadata.coordinatorMemberRouteKey),
-  createdAt: metadata.createdAt,
-  archivedAt: normalizeArchivedAt(metadata.archivedAt),
-  memberTree: metadata.memberTree.map(normalizeMemberMetadata),
-  handoffs: normalizeCollaborationHandoffs(metadata.handoffs),
-});
-
-const isApplicationExecutionContextLike = (value: unknown): boolean =>
-  value === undefined ||
-  value === null ||
-  (typeof value === "object" && !Array.isArray(value));
-
-const isAgentMemberMetadataLike = (payload: Record<string, unknown>): boolean =>
-  payload.memberKind === "agent" &&
-  typeof payload.memberRouteKey === "string" &&
-  Array.isArray(payload.memberPath) &&
-  payload.memberPath.every((entry) => typeof entry === "string") &&
-  typeof payload.memberName === "string" &&
-  typeof payload.memberRunId === "string" &&
-  typeof payload.runtimeKind === "string" &&
-  (typeof payload.platformAgentRunId === "string" || payload.platformAgentRunId === null) &&
-  typeof payload.agentDefinitionId === "string" &&
-  typeof payload.llmModelIdentifier === "string" &&
-  typeof payload.autoExecuteTools === "boolean" &&
-  Object.values(SkillAccessMode).includes(payload.skillAccessMode as SkillAccessMode) &&
-  (payload.llmConfig === null || (typeof payload.llmConfig === "object" && !Array.isArray(payload.llmConfig))) &&
-  (typeof payload.workspaceRootPath === "string" || payload.workspaceRootPath === null) &&
-  isApplicationExecutionContextLike(payload.applicationExecutionContext);
-
-const isSubTeamMemberMetadataLike = (payload: Record<string, unknown>): boolean =>
-  payload.memberKind === "agent_team" &&
-  typeof payload.memberRouteKey === "string" &&
-  Array.isArray(payload.memberPath) &&
-  payload.memberPath.every((entry) => typeof entry === "string") &&
-  typeof payload.memberName === "string" &&
-  typeof payload.memberRunId === "string" &&
-  typeof payload.teamDefinitionId === "string" &&
-  (typeof payload.teamRunId === "string" || payload.teamRunId === null) &&
-  (typeof payload.coordinatorMemberRouteKey === "string" || payload.coordinatorMemberRouteKey === null) &&
-  Array.isArray(payload.memberTree);
-
-const toMemberMetadata = (value: unknown): TeamRunMemberMetadata | null => {
-  if (!value || typeof value !== "object" || Array.isArray(value)) {
-    return null;
-  }
-  const payload = value as Record<string, unknown>;
-  if (isAgentMemberMetadataLike(payload)) {
-    return {
-      memberKind: "agent",
-      memberRouteKey: String(payload.memberRouteKey),
-      memberPath: payload.memberPath as string[],
-      memberName: String(payload.memberName),
-      memberRunId: String(payload.memberRunId),
-      runtimeKind: runtimeKindFromString(String(payload.runtimeKind)) ?? RuntimeKind.AUTOBYTEUS,
-      platformAgentRunId: typeof payload.platformAgentRunId === "string" ? payload.platformAgentRunId : null,
-      agentDefinitionId: String(payload.agentDefinitionId),
-      llmModelIdentifier: String(payload.llmModelIdentifier),
-      autoExecuteTools: Boolean(payload.autoExecuteTools),
-      skillAccessMode: payload.skillAccessMode as SkillAccessMode,
-      llmConfig: payload.llmConfig as Record<string, unknown> | null,
-      workspaceRootPath: typeof payload.workspaceRootPath === "string" ? payload.workspaceRootPath : null,
-      applicationExecutionContext: payload.applicationExecutionContext as ApplicationExecutionContext | null | undefined,
-      role: normalizeOptionalString(payload.role),
-      description: normalizeOptionalString(payload.description),
-    };
-  }
-  if (isSubTeamMemberMetadataLike(payload)) {
-    const memberTree: TeamRunMemberMetadata[] = [];
-    for (const child of payload.memberTree as unknown[]) {
-      const parsedChild = toMemberMetadata(child);
-      if (!parsedChild) {
-        return null;
-      }
-      memberTree.push(parsedChild);
+const validateNodeShape = (value: unknown, label: string, isRoot = false): void => {
+  const node = record(value, label);
+  if (node.kind === "agent") {
+    exactKeys(node, [
+      "kind", "address", "agentDefinitionId", "agentRunId", "platformAgentRunId",
+      "role", "description", "runtimeKind", "llmModelIdentifier", "llmConfig",
+      "autoExecuteTools", "skillAccessMode", "workspaceRootPath", "applicationExecutionContext",
+    ], label);
+    required(node.address, `${label}.address`);
+    required(node.agentDefinitionId, `${label}.agentDefinitionId`);
+    required(node.agentRunId, `${label}.agentRunId`);
+    validateNullableString(node.platformAgentRunId, `${label}.platformAgentRunId`);
+    validateNullableString(node.role, `${label}.role`);
+    validateNullableString(node.description, `${label}.description`);
+    if (!Object.values(RuntimeKind).includes(node.runtimeKind as RuntimeKind)) {
+      throw new Error(`${label}.runtimeKind is unsupported.`);
     }
-    return {
-      memberKind: "agent_team",
-      memberRouteKey: String(payload.memberRouteKey),
-      memberPath: payload.memberPath as string[],
-      memberName: String(payload.memberName),
-      memberRunId: String(payload.memberRunId),
-      teamDefinitionId: String(payload.teamDefinitionId),
-      teamRunId: typeof payload.teamRunId === "string" ? payload.teamRunId : null,
-      coordinatorMemberRouteKey: typeof payload.coordinatorMemberRouteKey === "string" ? payload.coordinatorMemberRouteKey : null,
-      memberTree,
-      role: normalizeOptionalString(payload.role),
-      description: normalizeOptionalString(payload.description),
-    };
+    required(node.llmModelIdentifier, `${label}.llmModelIdentifier`);
+    if (node.llmConfig !== null && (!node.llmConfig || typeof node.llmConfig !== "object" || Array.isArray(node.llmConfig))) {
+      throw new Error(`${label}.llmConfig must be an object or null.`);
+    }
+    if (typeof node.autoExecuteTools !== "boolean") throw new Error(`${label}.autoExecuteTools must be boolean.`);
+    if (!Object.values(SkillAccessMode).includes(node.skillAccessMode as SkillAccessMode)) {
+      throw new Error(`${label}.skillAccessMode is unsupported.`);
+    }
+    validateNullableString(node.workspaceRootPath, `${label}.workspaceRootPath`);
+    if (node.applicationExecutionContext !== null && (!node.applicationExecutionContext || typeof node.applicationExecutionContext !== "object" || Array.isArray(node.applicationExecutionContext))) {
+      throw new Error(`${label}.applicationExecutionContext must be an object or null.`);
+    }
+    return;
   }
-  return null;
+  if (node.kind !== "agent_team") throw new Error(`${label}.kind is unsupported.`);
+  exactKeys(node, isRoot
+    ? ["kind", "address", "teamDefinitionId", "teamRunId", "coordinatorAddress", "children"]
+    : [
+        "kind", "address", "teamDefinitionId", "teamRunId", "coordinatorAddress",
+        "role", "description", "children",
+      ], label);
+  required(node.address, `${label}.address`);
+  required(node.teamDefinitionId, `${label}.teamDefinitionId`);
+  required(node.teamRunId, `${label}.teamRunId`);
+  required(node.coordinatorAddress, `${label}.coordinatorAddress`);
+  if (!isRoot) {
+    validateNullableString(node.role, `${label}.role`);
+    validateNullableString(node.description, `${label}.description`);
+  }
+  if (!Array.isArray(node.children)) throw new Error(`${label}.children must be an array.`);
+  node.children.forEach((child, index) => validateNodeShape(child, `${label}.children[${index}]`));
+};
+
+const validateHandoffTopology = (
+  rootTeam: TeamRunAgentTeamNode,
+  handoffs: readonly CollaborationHandoff[],
+): void => {
+  const index = new TeamRunTreeIndex(rootTeam);
+  const seen = new Set<string>();
+  for (const [position, handoff] of handoffs.entries()) {
+    const from = assertAgentTeamAddress(handoff.from);
+    const to = assertAgentTeamAddress(handoff.to);
+    if (!index.getAgent(from)) throw new Error(`handoffs[${position}].from must resolve to an Agent.`);
+    if (!index.getNode(to)) throw new Error(`handoffs[${position}].to must resolve to an Agent or AgentTeam.`);
+    const key = `${from}\u0000${to}`;
+    if (seen.has(key)) throw new Error(`Duplicate handoff '${from}' -> '${to}'.`);
+    seen.add(key);
+  }
+};
+
+export const normalizeTeamRunMetadata = (metadata: TeamRunMetadata): TeamRunMetadata => {
+  const rootTeam = cloneTeamRunNode(metadata.rootTeam) as TeamRunAgentTeamNode;
+  if (rootTeam.address !== "/") throw new Error("TeamRun metadata rootTeam address must be '/'.");
+  const handoffs = Object.freeze(normalizeCollaborationHandoffs(metadata.handoffs));
+  validateHandoffTopology(rootTeam, handoffs);
+  return Object.freeze({
+    schemaVersion: 3 as const,
+    teamDefinitionName: required(metadata.teamDefinitionName, "teamDefinitionName"),
+    createdAt: required(metadata.createdAt, "createdAt"),
+    archivedAt: typeof metadata.archivedAt === "string" && metadata.archivedAt.trim()
+      ? metadata.archivedAt.trim()
+      : null,
+    rootTeam,
+    handoffs,
+  });
 };
 
 export const validateTeamRunMetadataPayload = (
   value: unknown,
   teamRunId: string,
 ): TeamRunMetadata => {
-  if (!value || typeof value !== "object") {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
     throw new Error(`Invalid team run metadata format for '${teamRunId}'.`);
   }
   const payload = value as Record<string, unknown>;
-  if ("memberMetadata" in payload || "runVersion" in payload) {
-    throw new UnsupportedLegacyTeamRunMetadataError(teamRunId);
+  if (payload.schemaVersion !== 3) throw new UnsupportedLegacyTeamRunMetadataError(teamRunId);
+  exactKeys(payload, ["schemaVersion", "teamDefinitionName", "createdAt", "archivedAt", "rootTeam", "handoffs"], "TeamRun metadata");
+  validateNodeShape(payload.rootTeam, "TeamRun metadata.rootTeam", true);
+  const rootTeam = cloneTeamRunNode(payload.rootTeam as TeamRunAgentTeamNode) as TeamRunAgentTeamNode;
+  if (rootTeam.teamRunId !== teamRunId) {
+    throw new Error(`TeamRun metadata root teamRunId '${rootTeam.teamRunId}' does not match directory '${teamRunId}'.`);
   }
-  if (
-    typeof payload.teamRunId !== "string" ||
-    typeof payload.teamDefinitionId !== "string" ||
-    typeof payload.teamDefinitionName !== "string" ||
-    typeof payload.coordinatorMemberRouteKey !== "string" ||
-    typeof payload.createdAt !== "string" ||
-    !Array.isArray(payload.memberTree)
-  ) {
-    throw new Error(`Invalid team run metadata format for '${teamRunId}'.`);
-  }
-  const memberTree: TeamRunMemberMetadata[] = [];
-  for (const member of payload.memberTree) {
-    const parsed = toMemberMetadata(member);
-    if (!parsed) {
-      throw new Error(`Invalid team run metadata memberTree for '${teamRunId}'.`);
-    }
-    memberTree.push(parsed);
-  }
-  return {
-    teamRunId: payload.teamRunId,
-    teamDefinitionId: payload.teamDefinitionId,
-    teamDefinitionName: payload.teamDefinitionName,
-    coordinatorMemberRouteKey: payload.coordinatorMemberRouteKey,
-    createdAt: payload.createdAt,
+  if (!Array.isArray(payload.handoffs)) throw new Error("TeamRun metadata handoffs must be an array.");
+  const handoffs = normalizeCollaborationHandoffs(payload.handoffs);
+  validateHandoffTopology(rootTeam, handoffs);
+  return normalizeTeamRunMetadata({
+    schemaVersion: 3,
+    teamDefinitionName: required(payload.teamDefinitionName, "teamDefinitionName"),
+    createdAt: required(payload.createdAt, "createdAt"),
     archivedAt: typeof payload.archivedAt === "string" ? payload.archivedAt : null,
-    memberTree,
-    handoffs: normalizeCollaborationHandoffs(payload.handoffs),
-  };
+    rootTeam,
+    handoffs,
+  });
 };
 
-export const parseCurrentTeamRunMetadata = (
-  value: unknown,
-  teamRunId: string,
-): TeamRunMetadata => normalizeTeamRunMetadata(validateTeamRunMetadataPayload(value, teamRunId));
+export const parseCurrentTeamRunMetadata = validateTeamRunMetadataPayload;

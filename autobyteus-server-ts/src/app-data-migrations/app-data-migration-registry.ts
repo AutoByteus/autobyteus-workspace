@@ -15,6 +15,8 @@ import { RemoveGlobalSkillDiscoveryModeMigration } from "./migrations/remove-glo
 import { CustomProviderV1AppDataMigration } from "./migrations/custom-provider-v1-app-data-migration.js";
 import { RemoveExternalRuntimeWorkingContextSnapshotsMigration } from "./migrations/remove-external-runtime-working-context-snapshots-migration.js";
 import { MigrateNativeWorkingContextSnapshotsV5Migration } from "./migrations/migrate-native-working-context-snapshots-v5-migration.js";
+import { TeamCanonicalIdentityMigration } from "./migrations/team-canonical-identity-migration.js";
+import { TokenUsageLegacyRouteColumnDropMigration } from "./migrations/token-usage-legacy-route-column-drop-migration.js";
 
 export class AppDataMigrationRegistry {
   private readonly definitions: AppDataMigrationDefinition[];
@@ -27,6 +29,10 @@ export class AppDataMigrationRegistry {
         appConfigProvider.config.getAppDataDir(),
       ),
       new TeamRunMetadataMemberTreeMigration(appConfigProvider.config.getMemoryDir()),
+      new TeamCanonicalIdentityMigration(
+        appConfigProvider.config.getMemoryDir(),
+        appConfigProvider.config.getAppDataDir(),
+      ),
       new RemoveExternalRuntimeWorkingContextSnapshotsMigration(
         appConfigProvider.config.getMemoryDir(),
       ),
@@ -41,6 +47,7 @@ export class AppDataMigrationRegistry {
       new TokenUsageCustomProviderModelValueBackfillMigration(),
       new TokenUsageProviderNameSnapshotBackfillMigration(),
       new TokenUsageLegacyPathColumnsDropMigration(),
+      new TokenUsageLegacyRouteColumnDropMigration(),
       new RemoveSelfEvolutionRunMetadataMigration(appConfigProvider.config.getMemoryDir()),
       new TeamRunHistoryIndexV2AppDataMigration(appConfigProvider.config.getMemoryDir()),
       new RunHistoryIndexV2AppDataMigration(appConfigProvider.config.getMemoryDir()),

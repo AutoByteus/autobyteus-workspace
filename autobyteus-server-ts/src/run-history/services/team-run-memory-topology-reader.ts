@@ -2,7 +2,8 @@ import {
   TeamRunMetadataService,
   getTeamRunMetadataService,
 } from "./team-run-metadata-service.js";
-import type { TeamRunMemberMetadata, TeamRunMetadata } from "../store/team-run-metadata-types.js";
+import type { TeamRunAgentTeamNode, TeamRunNode } from "../../agent-team-execution/domain/team-run-config.js";
+import type { TeamRunMetadata } from "../store/team-run-metadata-types.js";
 
 const normalizeOptionalString = (value: string | null | undefined): string | null =>
   typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
@@ -23,28 +24,17 @@ export class TeamRunMemoryTopologyReader {
 
     for (const storedTeamRunId of await this.metadataService.listTeamRunIds()) {
       const metadata = await this.metadataService.readMetadata(storedTeamRunId);
-      if (metadata && this.memberTreeContainsTeamRunId(metadata.memberTree, normalizedTeamRunId)) {
+      if (metadata && this.treeContainsTeamRunId(metadata.rootTeam, normalizedTeamRunId)) {
         return metadata;
       }
     }
     return null;
   }
 
-  private memberTreeContainsTeamRunId(
-    members: readonly TeamRunMemberMetadata[],
-    teamRunId: string,
-  ): boolean {
-    for (const member of members) {
-      if (member.memberKind !== "agent_team") {
-        continue;
-      }
-      if (member.teamRunId === teamRunId || member.memberRunId === teamRunId) {
-        return true;
-      }
-      if (this.memberTreeContainsTeamRunId(member.memberTree, teamRunId)) {
-        return true;
-      }
-    }
-    return false;
+  private treeContainsTeamRunId(team: TeamRunAgentTeamNode, teamRunId: string): boolean {
+    if (team.teamRunId === teamRunId) return true;
+    return team.children.some((node: TeamRunNode) =>
+      node.kind === "agent_team" && this.treeContainsTeamRunId(node, teamRunId),
+    );
   }
 }

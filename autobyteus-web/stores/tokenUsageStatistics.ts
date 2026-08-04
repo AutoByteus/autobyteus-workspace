@@ -11,7 +11,7 @@ import type {
   TokenUsageTaskRowKind,
   TokenUsageTaskStatisticsRow,
 } from '~/types/tokenUsageStatistics';
-import type { ConversationTargetAddress } from '~/types/agent/ConversationTargetAddress';
+import { parseTeamExecutionAddress, type TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 import type { TokenUsageApiCostStatus, TokenUsageCacheState } from '~/types/tokenUsageMeter';
 
 interface TokenUsageStatisticsState {
@@ -145,12 +145,9 @@ const normalizeTaskRowKind = (value?: string | null): TokenUsageTaskRowKind => {
   return 'AGENT_RUN';
 };
 
-const normalizeExecutionAddress = (value: unknown): ConversationTargetAddress | null => {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
-  const segments = (value as { segments?: unknown }).segments;
-  return Array.isArray(segments)
-    ? { segments: segments as ConversationTargetAddress['segments'] }
-    : null;
+const normalizeExecutionAddress = (value: unknown): TeamExecutionAddress | null => {
+  if (value === null || value === undefined) return null;
+  try { return parseTeamExecutionAddress(value); } catch { return null; }
 };
 
 const normalizeTaskRow = (row: TaskRowPayload): TokenUsageTaskStatisticsRow => ({
@@ -158,7 +155,7 @@ const normalizeTaskRow = (row: TaskRowPayload): TokenUsageTaskStatisticsRow => (
   rowKind: normalizeTaskRowKind(row.rowKind),
   runId: row.runId ?? null,
   rootTeamRunId: row.rootTeamRunId ?? null,
-  memberRouteKey: row.memberRouteKey ?? null,
+  memberAddress: row.memberAddress ?? null,
   memberAgentRunId: row.memberAgentRunId ?? null,
   taskAgentRunId: row.taskAgentRunId ?? null,
   taskTeamRunId: row.taskTeamRunId ?? null,

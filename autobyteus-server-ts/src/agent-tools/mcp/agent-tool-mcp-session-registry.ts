@@ -10,6 +10,7 @@ import {
 } from "./agent-tool-mcp-session.js";
 import { cloneConfiguredMcpAgentToolSource } from "./configured-mcp/configured-mcp-agent-tool-source.js";
 import { cloneAgentToolMcpToolRouteTable } from "./agent-tool-mcp-tool-route.js";
+import { serializeTeamExecutionAddress } from "../../agent-team-execution/domain/team-execution-address.js";
 
 const SESSION_ID_RANDOM_BYTES = 18;
 const TOKEN_RANDOM_BYTES = 32;
@@ -175,16 +176,16 @@ const doesOwnerMatch = (
   if (candidate.runId !== undefined && sessionOwner.runId !== candidate.runId) {
     return false;
   }
-  if (candidate.teamRunId !== undefined && sessionOwner.teamRunId !== candidate.teamRunId) {
+  if (candidate.agentRunId !== undefined && sessionOwner.agentRunId !== candidate.agentRunId) {
     return false;
   }
-  if (candidate.memberRunId !== undefined && sessionOwner.memberRunId !== candidate.memberRunId) {
+  if (candidate.displayName !== undefined && sessionOwner.displayName !== candidate.displayName) {
     return false;
   }
-  if (candidate.memberRouteKey !== undefined && sessionOwner.memberRouteKey !== candidate.memberRouteKey) {
-    return false;
-  }
-  if (candidate.memberName !== undefined && sessionOwner.memberName !== candidate.memberName) {
+  if (candidate.executionAddress !== undefined && (
+    !sessionOwner.executionAddress || !candidate.executionAddress ||
+    serializeTeamExecutionAddress(sessionOwner.executionAddress) !== serializeTeamExecutionAddress(candidate.executionAddress)
+  )) {
     return false;
   }
   return Object.keys(candidate).length > 0;

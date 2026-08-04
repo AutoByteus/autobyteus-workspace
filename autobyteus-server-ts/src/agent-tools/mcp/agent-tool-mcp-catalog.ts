@@ -103,7 +103,10 @@ export class AgentToolMcpCatalog {
     input: ConfiguredAgentToolExposure | AgentToolMcpAvailabilityContext,
   ): AgentToolMcpSessionToolExposure {
     const context = this.normalizeAvailabilityContext(input);
-    const configuredToolNames = normalizeToolNames(context.configuredExposure.configuredToolNames);
+    const configuredToolNames = normalizeToolNames([
+      ...context.configuredExposure.configuredToolNames,
+      ...(context.sender?.memberTeamContext ? ["send_message_to", "get_handoff_rules"] : []),
+    ]);
     const activeStaticAdapters = this.resolveActiveStaticAdapters(configuredToolNames, context);
     const protectedStaticAdapters = this.resolveProtectedStaticAdapters(configuredToolNames);
     const configuredMcpResolution = this.configuredMcpSourceResolver.resolve({

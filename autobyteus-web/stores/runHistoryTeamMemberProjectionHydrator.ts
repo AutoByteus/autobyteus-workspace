@@ -14,19 +14,20 @@ import {
   preserveCanonicalAgentStatus,
 } from '~/services/runStatus/agentRuntimeStatusState';
 import { flattenTeamRunAgentMetadata } from '~/stores/runHistoryMetadata';
+import { createTeamExecutionAddress, memberAddressBasename, serializeTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 
 export const fetchTeamMemberProjections = async (params: {
   client: any;
   getTeamMemberRunProjectionQuery: any;
   teamRunId: string;
   metadata: TeamRunMetadataPayload;
-  toTeamMemberKey: (member: { memberRouteKey: string; memberName: string }) => string;
+  toTeamMemberKey: (member: { address: string }) => string;
 }): Promise<Map<string, TeamMemberRunProjectionPayload | null>> => {
-  const projectionByMemberRouteKey = new Map<string, TeamMemberRunProjectionPayload | null>();
+  const projectionByMemberAddress = new Map<string, TeamMemberRunProjectionPayload | null>();
   await Promise.all(
-    flattenTeamRunAgentMetadata(params.metadata.memberTree).map(async (member) => {
-      const normalizedMemberRouteKey = params.toTeamMemberKey(member).trim();
-      if (!normalizedMemberRouteKey) {
+    flattenTeamRunAgentMetadata(params.metadata.rootTeam.children).map(async (member) => {
+      const normalizedMemberAddress = params.toTeamMemberKey(member).trim();
+      if (!normalizedMemberAddress) {
         return;
       }
 
@@ -35,7 +36,7 @@ export const fetchTeamMemberProjections = async (params: {
           query: params.getTeamMemberRunProjectionQuery,
           variables: {
             teamRunId: params.teamRunId,
-            memberRouteKey: normalizedMemberRouteKey,
+            memberAddress: normalizedMemberAddress,
           },
           fetchPolicy: 'network-only',
         });
@@ -46,30 +47,30 @@ export const fetchTeamMemberProjections = async (params: {
           );
         }
 
-        projectionByMemberRouteKey.set(
-          normalizedMemberRouteKey,
+        projectionByMemberAddress.set(
+          normalizedMemberAddress,
           projectionResponse.data?.getTeamMemberRunProjection || null,
         );
       } catch (projectionError) {
         console.warn(
-          `[runHistoryStore] Failed to fetch team-member projection for '${member.memberRouteKey}'`,
+          `[runHistoryStore] Failed to fetch team-member projection for '${member.address}'`,
           projectionError,
         );
-        projectionByMemberRouteKey.set(normalizedMemberRouteKey, null);
+        projectionByMemberAddress.set(normalizedMemberAddress, null);
       }
     }),
   );
-  return projectionByMemberRouteKey;
+  return projectionByMemberAddress;
 };
 
 export const fetchTeamMemberProjection = async (params: {
   client: any;
   getTeamMemberRunProjectionQuery: any;
   teamRunId: string;
-  memberRouteKey: string;
+  memberAddress: string;
 }): Promise<TeamMemberRunProjectionPayload | null> => {
-  const normalizedMemberRouteKey = params.memberRouteKey.trim();
-  if (!normalizedMemberRouteKey) {
+  const normalizedMemberAddress = params.memberAddress.trim();
+  if (!normalizedMemberAddress) {
     return null;
   }
 
@@ -78,7 +79,7 @@ export const fetchTeamMemberProjection = async (params: {
       query: params.getTeamMemberRunProjectionQuery,
       variables: {
         teamRunId: params.teamRunId,
-        memberRouteKey: normalizedMemberRouteKey,
+        memberAddress: normalizedMemberAddress,
       },
       fetchPolicy: 'network-only',
     });
@@ -92,7 +93,7 @@ export const fetchTeamMemberProjection = async (params: {
     return projectionResponse.data?.getTeamMemberRunProjection || null;
   } catch (projectionError) {
     console.warn(
-      `[runHistoryStore] Failed to fetch team-member projection for '${normalizedMemberRouteKey}'`,
+      `[runHistoryStore] Failed to fetch team-member projection for '${normalizedMemberAddress}'`,
       projectionError,
     );
     return null;
@@ -101,33 +102,33 @@ export const fetchTeamMemberProjection = async (params: {
 
 const buildTeamMemberConversation = (params: {
   teamRunId: string;
-  metadata: TeamRunMetadataPayload;
+  metadata: Pick<TeamRunMetadataPayload, 'createdAt'>;
   member: ReturnType<typeof flattenTeamRunAgentMetadata>[number];
-  normalizedMemberRouteKey: string;
+  normalizedMemberAddress: string;
   projection: TeamMemberRunProjectionPayload | null;
 }): AgentContext['state']['conversation'] => {
-  const memberRunId = params.member.memberRunId || params.normalizedMemberRouteKey;
+  const agentRunId = params.member.agentRunId || params.normalizedMemberAddress;
   const conversation = params.projection
     ? buildConversationFromProjection(
-      memberRunId,
+      agentRunId,
       params.projection.conversation || [],
       {
         agentDefinitionId: params.member.agentDefinitionId,
-        agentName: params.member.memberName,
+        agentName: memberAddressBasename(params.member.address),
         llmModelIdentifier: params.member.llmModelIdentifier,
       },
     )
     : {
-      id: `${params.teamRunId}::${params.normalizedMemberRouteKey}`,
+      id: `${params.teamRunId}::${params.normalizedMemberAddress}`,
       messages: [],
       createdAt: params.metadata.createdAt,
       updatedAt: params.metadata.createdAt,
       agentDefinitionId: params.member.agentDefinitionId,
-      agentName: params.member.memberName,
+      agentName: memberAddressBasename(params.member.address),
       llmModelIdentifier: params.member.llmModelIdentifier,
     };
 
-  conversation.id = `${params.teamRunId}::${params.normalizedMemberRouteKey}`;
+  conversation.id = `${params.teamRunId}::${params.normalizedMemberAddress}`;
   if (conversation.messages.length === 0) {
     conversation.createdAt = params.metadata.createdAt;
     conversation.updatedAt = params.projection?.lastActivityAt || params.metadata.createdAt;
@@ -144,7 +145,7 @@ const buildTeamMemberConfig = (params: {
   isActive: boolean;
 }): AgentRunConfig => ({
   agentDefinitionId: params.member.agentDefinitionId,
-  agentDefinitionName: params.member.memberName,
+  agentDefinitionName: memberAddressBasename(params.member.address),
   llmModelIdentifier: params.member.llmModelIdentifier,
   runtimeKind: params.member.runtimeKind || DEFAULT_AGENT_RUNTIME_KIND,
   workspaceId: params.workspaceMetadata?.workspaceId ?? null,
@@ -157,23 +158,23 @@ const buildTeamMemberConfig = (params: {
 
 export const applyProjectionToTeamMemberContext = (params: {
   teamRunId: string;
-  metadata: TeamRunMetadataPayload;
+  metadata: Pick<TeamRunMetadataPayload, 'createdAt'>;
   member: ReturnType<typeof flattenTeamRunAgentMetadata>[number];
   projection: TeamMemberRunProjectionPayload | null;
   memberContext: AgentContext;
   isActive: boolean;
 }): void => {
-  const normalizedMemberRouteKey = params.member.memberRouteKey.trim();
-  if (!normalizedMemberRouteKey) {
+  const normalizedMemberAddress = params.member.address.trim();
+  if (!normalizedMemberAddress) {
     return;
   }
 
-  const memberRunId = params.member.memberRunId || normalizedMemberRouteKey;
+  const agentRunId = params.member.agentRunId || normalizedMemberAddress;
   const conversation = buildTeamMemberConversation({
     teamRunId: params.teamRunId,
     metadata: params.metadata,
     member: params.member,
-    normalizedMemberRouteKey,
+    normalizedMemberAddress,
     projection: params.projection,
   });
 
@@ -189,7 +190,7 @@ export const applyProjectionToTeamMemberContext = (params: {
         : null),
     isActive: params.isActive,
   });
-  params.memberContext.state.runId = memberRunId;
+  params.memberContext.state.runId = agentRunId;
   params.memberContext.state.conversation = conversation;
   params.memberContext.state.resetEventMonitorPresentationRevision();
   params.memberContext.state.hasEarlierActiveTraceEvents = params.projection?.hasEarlierActiveTraceEvents === true;
@@ -202,33 +203,33 @@ export const applyProjectionToTeamMemberContext = (params: {
   );
 
   if (params.projection) {
-    hydrateActivitiesFromProjection(memberRunId, params.projection.activities || []);
+    hydrateActivitiesFromProjection(agentRunId, params.projection.activities || []);
   }
 };
 
 interface TeamMemberContextBuildResult {
   members: Map<string, AgentContext>;
   primaryWorkspaceMetadata: WorkspaceMetadata | null;
-  memberWorkspaceMetadatasByRouteKey: Record<string, WorkspaceMetadata>;
+  memberWorkspaceMetadatasByAddress: Record<string, WorkspaceMetadata>;
 }
 
 const buildTeamMemberContextsFromReferences = (params: {
   teamRunId: string;
   metadata: TeamRunMetadataPayload;
   isActive: boolean;
-  projectionByMemberRouteKey: Map<string, TeamMemberRunProjectionPayload | null>;
-  toTeamMemberKey: (member: { memberRouteKey: string; memberName: string }) => string;
-  memberWorkspaceMetadatasByRouteKey: Record<string, WorkspaceMetadata>;
+  projectionByMemberAddress: Map<string, TeamMemberRunProjectionPayload | null>;
+  toTeamMemberKey: (member: { address: string }) => string;
+  memberWorkspaceMetadatasByAddress: Record<string, WorkspaceMetadata>;
 }): TeamMemberContextBuildResult => {
   const members = new Map<string, AgentContext>();
   let primaryWorkspaceMetadata: WorkspaceMetadata | null = null;
-  for (const member of flattenTeamRunAgentMetadata(params.metadata.memberTree)) {
-    const normalizedMemberRouteKey = params.toTeamMemberKey(member).trim();
-    if (!normalizedMemberRouteKey) {
+  for (const member of flattenTeamRunAgentMetadata(params.metadata.rootTeam.children)) {
+    const normalizedMemberAddress = params.toTeamMemberKey(member).trim();
+    if (!normalizedMemberAddress) {
       continue;
     }
     const workspaceMetadata =
-      params.memberWorkspaceMetadatasByRouteKey[normalizedMemberRouteKey] ?? null;
+      params.memberWorkspaceMetadatasByAddress[normalizedMemberAddress] ?? null;
     if (workspaceMetadata && !primaryWorkspaceMetadata) {
       primaryWorkspaceMetadata = workspaceMetadata;
     }
@@ -237,21 +238,21 @@ const buildTeamMemberContextsFromReferences = (params: {
       workspaceMetadata,
       isActive: params.isActive,
     });
-    const memberRunId = member.memberRunId || normalizedMemberRouteKey;
-    const projection = params.projectionByMemberRouteKey.get(params.toTeamMemberKey(member)) || null;
+    const agentRunId = member.agentRunId || normalizedMemberAddress;
+    const projection = params.projectionByMemberAddress.get(params.toTeamMemberKey(member)) || null;
     const conversation = buildTeamMemberConversation({
       teamRunId: params.teamRunId,
       metadata: params.metadata,
       member,
-      normalizedMemberRouteKey,
+      normalizedMemberAddress,
       projection,
     });
 
-    const state = new AgentRunState(memberRunId, conversation);
+    const state = new AgentRunState(agentRunId, conversation);
     state.hasEarlierActiveTraceEvents = projection?.hasEarlierActiveTraceEvents === true;
     initializeRuntimeStatusState(state, AgentStatus.Offline);
     members.set(
-      normalizedMemberRouteKey,
+      serializeTeamExecutionAddress(createTeamExecutionAddress({ rootTeamRunId: params.teamRunId, memberAddress: normalizedMemberAddress })),
       new AgentContext(memberConfig, state),
     );
   }
@@ -259,7 +260,7 @@ const buildTeamMemberContextsFromReferences = (params: {
   return {
     members,
     primaryWorkspaceMetadata,
-    memberWorkspaceMetadatasByRouteKey: params.memberWorkspaceMetadatasByRouteKey,
+    memberWorkspaceMetadatasByAddress: params.memberWorkspaceMetadatasByAddress,
   };
 };
 
@@ -267,15 +268,15 @@ export const buildLiveTeamMemberContexts = async (params: {
   teamRunId: string;
   metadata: TeamRunMetadataPayload;
   isActive: boolean;
-  projectionByMemberRouteKey: Map<string, TeamMemberRunProjectionPayload | null>;
-  toTeamMemberKey: (member: { memberRouteKey: string; memberName: string }) => string;
+  projectionByMemberAddress: Map<string, TeamMemberRunProjectionPayload | null>;
+  toTeamMemberKey: (member: { address: string }) => string;
   activateWorkspaceByRootPath: (path: string) => Promise<string | null>;
   resolveWorkspaceMetadataByRootPath: (path: string) => Promise<WorkspaceMetadata | null>;
 }): Promise<TeamMemberContextBuildResult> => {
-  const memberWorkspaceMetadatasByRouteKey: Record<string, WorkspaceMetadata> = {};
-  for (const member of flattenTeamRunAgentMetadata(params.metadata.memberTree)) {
-    const normalizedMemberRouteKey = params.toTeamMemberKey(member).trim();
-    if (!normalizedMemberRouteKey || !member.workspaceRootPath) {
+  const memberWorkspaceMetadatasByAddress: Record<string, WorkspaceMetadata> = {};
+  for (const member of flattenTeamRunAgentMetadata(params.metadata.rootTeam.children)) {
+    const normalizedMemberAddress = params.toTeamMemberKey(member).trim();
+    if (!normalizedMemberAddress || !member.workspaceRootPath) {
       continue;
     }
     const activatedWorkspaceId = await params.activateWorkspaceByRootPath(member.workspaceRootPath);
@@ -287,36 +288,36 @@ export const buildLiveTeamMemberContexts = async (params: {
         })
       : null);
     if (workspaceMetadata) {
-      memberWorkspaceMetadatasByRouteKey[normalizedMemberRouteKey] = workspaceMetadata;
+      memberWorkspaceMetadatasByAddress[normalizedMemberAddress] = workspaceMetadata;
     }
   }
   return buildTeamMemberContextsFromReferences({
     ...params,
-    memberWorkspaceMetadatasByRouteKey,
+    memberWorkspaceMetadatasByAddress,
   });
 };
 
 export const buildHistoricalTeamMemberContextShells = async (params: {
   teamRunId: string;
   metadata: TeamRunMetadataPayload;
-  projectionByMemberRouteKey: Map<string, TeamMemberRunProjectionPayload | null>;
-  toTeamMemberKey: (member: { memberRouteKey: string; memberName: string }) => string;
+  projectionByMemberAddress: Map<string, TeamMemberRunProjectionPayload | null>;
+  toTeamMemberKey: (member: { address: string }) => string;
   resolveWorkspaceMetadataByRootPath: (path: string) => Promise<WorkspaceMetadata | null>;
 }): Promise<TeamMemberContextBuildResult> => {
-  const memberWorkspaceMetadatasByRouteKey: Record<string, WorkspaceMetadata> = {};
-  for (const member of flattenTeamRunAgentMetadata(params.metadata.memberTree)) {
-    const normalizedMemberRouteKey = params.toTeamMemberKey(member).trim();
-    if (!normalizedMemberRouteKey || !member.workspaceRootPath) {
+  const memberWorkspaceMetadatasByAddress: Record<string, WorkspaceMetadata> = {};
+  for (const member of flattenTeamRunAgentMetadata(params.metadata.rootTeam.children)) {
+    const normalizedMemberAddress = params.toTeamMemberKey(member).trim();
+    if (!normalizedMemberAddress || !member.workspaceRootPath) {
       continue;
     }
     const workspaceMetadata = await params.resolveWorkspaceMetadataByRootPath(member.workspaceRootPath);
     if (workspaceMetadata) {
-      memberWorkspaceMetadatasByRouteKey[normalizedMemberRouteKey] = workspaceMetadata;
+      memberWorkspaceMetadatasByAddress[normalizedMemberAddress] = workspaceMetadata;
     }
   }
   return buildTeamMemberContextsFromReferences({
     ...params,
     isActive: false,
-    memberWorkspaceMetadatasByRouteKey,
+    memberWorkspaceMetadatasByAddress,
   });
 };

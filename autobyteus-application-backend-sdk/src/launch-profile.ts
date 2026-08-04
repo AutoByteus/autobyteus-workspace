@@ -125,10 +125,9 @@ export const buildConfiguredTeamMemberLaunchConfigs = (input: {
   return input.launchProfile.memberProfiles.map((memberProfile) => ({
     llmModelIdentifier: requireNonEmptyString(
       normalizeOptionalString(memberProfile.llmModelIdentifier) ?? defaultLlmModelIdentifier,
-      `llmModelIdentifier for team member '${memberProfile.memberName}'`,
+      `llmModelIdentifier for team member '${memberProfile.memberAddress}'`,
     ),
-    memberName: memberProfile.memberName,
-    memberRouteKey: memberProfile.memberRouteKey,
+    memberAddress: memberProfile.memberAddress,
     agentDefinitionId: memberProfile.agentDefinitionId,
     autoExecuteTools: true,
     skillAccessMode,

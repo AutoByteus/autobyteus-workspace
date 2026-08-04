@@ -1,5 +1,5 @@
 import type { TokenUsageApiCostStatus, TokenUsageCacheState } from '~/types/tokenUsageMeter';
-import type { ConversationTargetAddress } from '~/types/agent/ConversationTargetAddress';
+import type { TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 
 export type TokenUsageCreatedTimeSource = 'RUN_HISTORY' | 'FIRST_USAGE_OBSERVED';
 export type TokenUsageTaskRowKind = 'TEAM_RUN' | 'AGENT_RUN' | 'MEMBER_RUN' | 'TASK_TEAM_RUN' | 'TASK_AGENT_RUN';
@@ -46,12 +46,12 @@ export interface TokenUsageTaskStatisticsRow {
   rowKind: TokenUsageTaskRowKind;
   runId: string | null;
   rootTeamRunId: string | null;
-  memberRouteKey: string | null;
+  memberAddress: string | null;
   memberAgentRunId: string | null;
   taskAgentRunId: string | null;
   taskTeamRunId: string | null;
   taskId: string | null;
-  executionAddress: ConversationTargetAddress | null;
+  executionAddress: TeamExecutionAddress | null;
   displayName: string;
   summary: string | null;
   createdAt: string;

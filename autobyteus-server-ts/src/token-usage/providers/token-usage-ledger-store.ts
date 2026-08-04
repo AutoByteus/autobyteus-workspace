@@ -5,12 +5,14 @@ import type {
 import { buildTokenUsageRunSummary } from "../projections/token-usage-run-summary-adapter.js";
 import { SqlTokenUsageLedgerRepository } from "../repositories/sql/token-usage-ledger-repository.js";
 import { TokenUsageDisplayFieldCapturer } from "./token-usage-display-field-capturer.js";
+import type { TeamExecutionAddress } from "../../agent-team-execution/domain/team-execution-address.js";
+import { serializeTeamExecutionAddress } from "../../agent-team-execution/domain/team-execution-address.js";
 
 const hasMissingDisplayField = (event: TokenUsageUpdatedPayload): boolean => (
   event.root_team_run_id
     ? !event.team_name ||
       !event.run_created_at ||
-      Boolean((event.member_agent_run_id || event.member_route_key) && !event.member_name)
+      Boolean(event.execution_address && !event.member_display_name)
     : !event.agent_name || !event.run_created_at
 );
 
@@ -22,7 +24,7 @@ const hasDisplayFieldChange = (
   original.agent_name !== captured.agent_name ||
   original.run_summary !== captured.run_summary ||
   original.run_created_at !== captured.run_created_at ||
-  original.member_name !== captured.member_name
+  original.member_display_name !== captured.member_display_name
 );
 
 export class TokenUsageLedgerStore {
@@ -59,16 +61,14 @@ export class TokenUsageLedgerStore {
 
   async getTeamMemberSummary(input: {
     rootTeamRunId: string;
-    memberAgentRunId?: string | null;
-    memberRouteKey?: string | null;
+    executionAddress: TeamExecutionAddress;
   }): Promise<TokenUsageRunSummaryPayload> {
     const events = (await this.repository.listEventsByTeamRunId(input.rootTeamRunId)).filter((event) => {
-      if (input.memberAgentRunId && event.member_agent_run_id !== input.memberAgentRunId) return false;
-      if (input.memberRouteKey && event.member_route_key !== input.memberRouteKey) return false;
-      return true;
+      return !!event.execution_address &&
+        serializeTeamExecutionAddress(event.execution_address) === serializeTeamExecutionAddress(input.executionAddress);
     });
     return buildTokenUsageRunSummary({
-      runId: events[0]?.run_id ?? input.memberAgentRunId ?? input.rootTeamRunId,
+      runId: events[0]?.run_id ?? input.rootTeamRunId,
       events,
       rootTeamRunIdOverride: input.rootTeamRunId,
     });

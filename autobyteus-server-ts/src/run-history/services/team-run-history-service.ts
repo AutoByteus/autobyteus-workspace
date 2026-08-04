@@ -24,6 +24,7 @@ import {
   getTeamRunLeafAgentMetadata,
   resolveTeamWorkspaceRootPath,
 } from "./team-run-metadata-flattener.js";
+import { getAgentTeamAddressBasename } from "../../agent-collaboration/domain/agent-team-address.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
@@ -138,12 +139,11 @@ export class TeamRunHistoryService {
       memberStatusSnapshots: AgentStatusPayload[];
     },
   ): TeamRunHistoryItem {
-    const coordinatorMemberRouteKey = resolveCoordinatorMemberRouteKey(metadata);
     return {
       teamRunId: row.teamRunId,
       teamDefinitionId: row.teamDefinitionId,
       teamDefinitionName: row.teamDefinitionName,
-      coordinatorMemberRouteKey,
+      coordinatorAddress: metadata.rootTeam.coordinatorAddress,
       workspaceRootPath: row.workspaceRootPath ?? resolveTeamWorkspaceRootPath(metadata) ?? null,
       summary: row.summary,
       createdAt: row.createdAt,
@@ -151,9 +151,9 @@ export class TeamRunHistoryService {
       terminatedAt: row.terminatedAt ?? null,
       isActive: projection.isActive,
       members: getTeamRunLeafAgentMetadata(metadata).map((member) => ({
-        memberRouteKey: member.memberRouteKey,
-        memberName: member.memberName,
-        memberRunId: member.memberRunId,
+        memberAddress: member.address,
+        displayName: getAgentTeamAddressBasename(member.address) ?? member.address,
+        agentRunId: member.agentRunId,
         status: this.resolveMemberHistoryStatus(member, projection.memberStatusSnapshots),
         runtimeKind: member.runtimeKind,
         platformAgentRunId: member.platformAgentRunId,
@@ -163,7 +163,7 @@ export class TeamRunHistoryService {
         llmConfig: member.llmConfig ?? null,
         workspaceRootPath: member.workspaceRootPath,
       })),
-      memberTree: metadata.memberTree,
+      rootTeam: metadata.rootTeam,
     };
   }
 
@@ -176,17 +176,12 @@ export class TeamRunHistoryService {
     statusSnapshots: AgentStatusPayload[],
   ): AgentApiStatus {
     const snapshot = statusSnapshots.find((candidate) =>
-      candidate.agent_id === member.memberRunId ||
+      candidate.agent_id === member.agentRunId ||
       candidate.agent_id === member.platformAgentRunId,
     );
     return snapshot?.status ?? "offline";
   }
 }
-
-const resolveCoordinatorMemberRouteKey = (metadata: TeamRunMetadata): string =>
-  metadata.coordinatorMemberRouteKey.trim() ||
-  getTeamRunLeafAgentMetadata(metadata)[0]?.memberRouteKey?.trim() ||
-  "";
 
 let cachedTeamRunHistoryService: TeamRunHistoryService | null = null;
 

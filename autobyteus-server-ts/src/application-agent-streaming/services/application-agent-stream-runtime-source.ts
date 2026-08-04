@@ -34,17 +34,15 @@ export class ApplicationAgentStreamRuntimeSource {
     const run = (this.dependencies.teamRunManager ?? AgentTeamRunManager.getInstance())
       .getActiveRun(descriptor.runtimeRunId);
     if (!run) throw runtimeNotActive();
-    const selectedRouteKey = descriptor.address.target.kind === "AGENT_TEAM_MEMBER"
-      ? descriptor.address.target.memberRouteKey
+    const selectedAddress = descriptor.address.target.kind === "AGENT_TEAM_MEMBER"
+      ? descriptor.address.target.memberAddress
       : null;
     return run.subscribeToEvents((event) => {
       try {
-        if (selectedRouteKey) {
+        if (selectedAddress) {
           if (event.eventSourceType !== TeamRunEventSourceType.AGENT) return;
           const payload = event.data as TeamRunAgentEventPayload;
-          const producerRouteKey = payload.taskAgentInstance?.logicalMember.memberRouteKey
-            ?? payload.memberRouteKey;
-          if (producerRouteKey !== selectedRouteKey) return;
+          if (payload.executionAddress.memberAddress !== selectedAddress) return;
         }
         const producer = event.eventSourceType === TeamRunEventSourceType.AGENT
           ? resolveTeamAgentProducer(descriptor, event.data as TeamRunAgentEventPayload)
@@ -63,13 +61,12 @@ const resolveTeamAgentProducer = (
   const task = payload.taskAgentInstance ?? null;
   if (task) {
     return {
-      runId: task.taskAgentRunId,
-      memberRouteKey: task.logicalMember.memberRouteKey,
-      memberName: task.logicalMember.memberName,
-      displayName: task.logicalMember.memberName,
+      executionAddress: payload.executionAddress,
+      displayName: payload.displayName,
       runtimeKind: "AGENT_TEAM_MEMBER",
-      teamPath: [...task.logicalMember.memberPath],
     };
   }
-  return descriptor.producers.find((producer) => producer.memberRouteKey === payload.memberRouteKey) ?? null;
+  return descriptor.producers.find((producer) =>
+    producer.executionAddress.memberAddress === payload.executionAddress.memberAddress,
+  ) ?? null;
 };

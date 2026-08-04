@@ -209,7 +209,7 @@ export class SkillImprovementImproverSessionService {
   }
 
   private resolveTargetAgentRunId(target: SkillImprovementTargetRef): string {
-    return target.kind === "agent_run" ? target.runId : target.memberRunId;
+    return target.kind === "agent_run" ? target.runId : target.agentRunId;
   }
 
   buildTriggerRequest(input: {

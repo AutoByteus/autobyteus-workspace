@@ -66,7 +66,7 @@ export const GET_AGENT_RUN_MEMORY_VIEW = gql`
 export const GET_TEAM_MEMBER_RUN_MEMORY_VIEW = gql`
   query GetTeamMemberRunMemoryView(
     $teamRunId: String!
-    $memberRunId: String!
+    $agentRunId: String!
     $source: MemoryExplorerSourceInput
     $includeWorkingContext: Boolean
     $includeEpisodic: Boolean
@@ -79,7 +79,7 @@ export const GET_TEAM_MEMBER_RUN_MEMORY_VIEW = gql`
   ) {
     getTeamMemberRunMemoryView(
       teamRunId: $teamRunId
-      memberRunId: $memberRunId
+      agentRunId: $agentRunId
       source: $source
       includeWorkingContext: $includeWorkingContext
       includeEpisodic: $includeEpisodic

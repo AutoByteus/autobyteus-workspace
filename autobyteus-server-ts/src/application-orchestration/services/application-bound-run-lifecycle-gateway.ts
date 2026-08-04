@@ -24,8 +24,8 @@ export class ApplicationBoundRunLifecycleGateway {
     listener: (event: ObservedRunLifecycleEvent) => void,
   ): Promise<(() => void) | null> {
     if (bindingRuntime.runtimeSubject === "AGENT_RUN") {
-      return this.agentRunService.observeAgentRunLifecycle(bindingRuntime.runId, listener);
+      return this.agentRunService.observeAgentRunLifecycle(bindingRuntime.agentRunId, listener);
     }
-    return this.teamRunService.observeTeamRunLifecycle(bindingRuntime.runId, listener);
+    return this.teamRunService.observeTeamRunLifecycle(bindingRuntime.teamRunId, listener);
   }
 }

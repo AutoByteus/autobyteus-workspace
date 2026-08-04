@@ -14,6 +14,7 @@ import type {
 } from "../../../token-usage/domain/statistics-models.js";
 import { TokenUsageLedgerStore } from "../../../token-usage/providers/token-usage-ledger-store.js";
 import { TokenUsageStatisticsProvider } from "../../../token-usage/providers/statistics-provider.js";
+import { normalizeTokenUsageExecutionAddress } from "../../../token-usage/domain/execution-address.js";
 
 @ObjectType()
 export class TokenUsageUnitPriceSummaryGraphql {
@@ -171,9 +172,6 @@ export class TokenUsageRunSummaryGraphql extends TokenUsageCostSummaryAggregateG
   memberAgentRunId?: string | null;
 
   @Field(() => String, { nullable: true })
-  memberRouteKey?: string | null;
-
-  @Field(() => String, { nullable: true })
   agentDefinitionId?: string | null;
 
   @Field(() => String, { nullable: true })
@@ -213,7 +211,7 @@ export class TokenUsageTaskStatisticsRowGraphql {
   rootTeamRunId?: string | null;
 
   @Field(() => String, { nullable: true })
-  memberRouteKey?: string | null;
+  memberAddress?: string | null;
 
   @Field(() => String, { nullable: true })
   memberAgentRunId?: string | null;
@@ -439,7 +437,6 @@ const toTokenUsageRunSummaryGraphql = (summary: TokenUsageRunSummaryPayload): To
   rootTeamRunId: summary.root_team_run_id,
   executionAddress: summary.execution_address,
   memberAgentRunId: summary.member_agent_run_id,
-  memberRouteKey: summary.member_route_key,
   agentDefinitionId: summary.agent_definition_id,
   workspaceId: summary.workspace_id,
   latestPromptTokens: summary.latest_prompt_tokens,
@@ -455,7 +452,7 @@ const toTaskRow = (row: TokenUsageTaskStatisticsRow): TokenUsageTaskStatisticsRo
   rowKind: row.rowKind,
   runId: row.runId,
   rootTeamRunId: row.rootTeamRunId,
-  memberRouteKey: row.memberRouteKey,
+  memberAddress: row.memberAddress,
   memberAgentRunId: row.memberAgentRunId,
   taskAgentRunId: row.taskAgentRunId,
   taskTeamRunId: row.taskTeamRunId,
@@ -548,14 +545,12 @@ export class TokenUsageStatisticsResolver {
   @Query(() => TokenUsageRunSummaryGraphql)
   async getTeamMemberTokenUsageSummary(
     @Arg("teamRunId", () => String) teamRunId: string,
-    @Arg("memberAgentRunId", () => String, { nullable: true }) memberAgentRunId?: string | null,
-    @Arg("memberRouteKey", () => String, { nullable: true }) memberRouteKey?: string | null,
+    @Arg("executionAddress", () => GraphQLJSON) executionAddress: unknown,
   ): Promise<TokenUsageRunSummaryGraphql> {
     const store = new TokenUsageLedgerStore();
     return toTokenUsageRunSummaryGraphql(await store.getTeamMemberSummary({
       rootTeamRunId: teamRunId,
-      memberAgentRunId: memberAgentRunId ?? null,
-      memberRouteKey: memberRouteKey ?? null,
+      executionAddress: normalizeTokenUsageExecutionAddress(executionAddress) ?? (() => { throw new Error("executionAddress is invalid."); })(),
     }));
   }
 }

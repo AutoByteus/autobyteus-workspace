@@ -62,7 +62,7 @@ export class RestoreAgentTeamRunResult {
 @InputType()
 export class TeamMemberConfigInput {
   @Field(() => String)
-  memberName!: string;
+  memberAddress!: string;
 
   @Field(() => String)
   agentDefinitionId!: string;
@@ -84,9 +84,6 @@ export class TeamMemberConfigInput {
 
   @Field(() => GraphQLJSON, { nullable: true })
   llmConfig?: Record<string, unknown> | null;
-
-  @Field(() => String, { nullable: true })
-  memberRouteKey?: string | null;
 
   @Field(() => String, { nullable: true })
   runtimeKind?: string | null;
@@ -118,7 +115,7 @@ export class AgentTeamRunResolver {
       return {
         success: true,
         message: "Agent team run created successfully.",
-        teamRunId: run.runId,
+        teamRunId: run.teamRunId,
       };
     } catch (error) {
       logger.error(`Error creating agent team run: ${String(error)}`);
@@ -153,7 +150,7 @@ export class AgentTeamRunResolver {
       return {
         success: true,
         message: "Agent team run restored successfully.",
-        teamRunId: run.runId,
+        teamRunId: run.teamRunId,
       };
     } catch (error) {
       logger.error(`Error restoring agent team run with ID ${teamRunId}: ${String(error)}`);

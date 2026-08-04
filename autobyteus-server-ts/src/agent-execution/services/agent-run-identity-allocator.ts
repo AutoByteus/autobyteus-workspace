@@ -4,7 +4,7 @@ import { appConfigProvider } from "../../config/app-config-provider.js";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import { AgentRunMetadataService, getAgentRunMetadataService } from "../../run-history/services/agent-run-metadata-service.js";
 import { TeamRunMetadataService, getTeamRunMetadataService } from "../../run-history/services/team-run-metadata-service.js";
-import type { TeamRunMemberMetadata } from "../../run-history/store/team-run-metadata-types.js";
+import type { TeamRunNode } from "../../agent-team-execution/domain/team-run-config.js";
 import { AgentRunManager } from "./agent-run-manager.js";
 import {
   createUuidIdentityToken,
@@ -115,36 +115,21 @@ export class AgentRunIdentityAllocator {
       }
       if (await this.pathExists(this.memoryLayout.getTeamAgentRunDirPath({
         rootTeamRunId: teamRunId,
-        teamRunPath: [],
+        ancestorTeamRunIds: [],
       }, runId))) {
         return true;
       }
       const metadata = await this.teamRunMetadataService.readMetadata(teamRunId);
-      if (metadata && this.memberTreeContainsRunId(metadata.memberTree, runId)) {
+      if (metadata && this.treeContainsRunId(metadata.rootTeam, runId)) {
         return true;
       }
     }
     return false;
   }
 
-  private memberTreeContainsRunId(
-    members: readonly TeamRunMemberMetadata[],
-    runId: string,
-  ): boolean {
-    for (const member of members) {
-      if (member.memberRunId === runId) {
-        return true;
-      }
-      if (member.memberKind === "agent_team") {
-        if (member.teamRunId === runId) {
-          return true;
-        }
-        if (this.memberTreeContainsRunId(member.memberTree, runId)) {
-          return true;
-        }
-      }
-    }
-    return false;
+  private treeContainsRunId(node: TeamRunNode, runId: string): boolean {
+    if (node.kind === "agent") return node.agentRunId === runId || node.platformAgentRunId === runId;
+    return node.teamRunId === runId || node.children.some((child) => this.treeContainsRunId(child, runId));
   }
 
   private async pathExists(filePath: string): Promise<boolean> {

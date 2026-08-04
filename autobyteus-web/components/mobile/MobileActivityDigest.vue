@@ -64,7 +64,6 @@ import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useTeamCommunicationStore } from '~/stores/teamCommunicationStore';
 import type { MobileWorkContext } from '~/types/mobileWork';
-import { resolveTeamConversationTargetAddressResult } from '~/utils/teamConversationTargetAddress';
 
 const props = defineProps<{
   context: MobileWorkContext | null;
@@ -94,11 +93,7 @@ const hasTeamContext = computed(() => Boolean(activeTeamContext.value || props.c
 const teamMessages = computed(() => {
   const team = activeTeamContext.value;
   if (!team) return [];
-  const focusedAddress = resolveTeamConversationTargetAddressResult(team, {
-    allowSubteam: true,
-    allowActiveExecutionSafetyFallback: true,
-  }).target?.address ?? null;
-  return teamCommunicationStore.getPerspectiveForAddress(team.teamRunId, focusedAddress).messages;
+  return teamCommunicationStore.getPerspectiveForAddress(team.teamRunId, team.focusedExecutionAddress).messages;
 });
 const runActivities = computed(() => focusedRunId.value ? activityStore.getActivities(focusedRunId.value) : []);
 const filters = computed(() => [

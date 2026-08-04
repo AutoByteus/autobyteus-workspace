@@ -63,7 +63,7 @@ export class ContextFileLocalPathResolver {
         parseDraftContextFileOwnerDescriptor({
           kind: "team_member_draft",
           draftTeamRunId: decodePathSegment(teamDraftMatch[1]),
-          memberRouteKey: decodePathSegment(teamDraftMatch[2]),
+          memberAddress: decodePathSegment(teamDraftMatch[2]),
         }),
         decodePathSegment(teamDraftMatch[3]),
       );
@@ -86,7 +86,7 @@ export class ContextFileLocalPathResolver {
         parseFinalContextFileOwnerDescriptor({
           kind: "team_member_final",
           teamRunId: decodePathSegment(teamMatch[1]),
-          memberRouteKey: decodePathSegment(teamMatch[2]),
+          memberAddress: decodePathSegment(teamMatch[2]),
         }),
         decodePathSegment(teamMatch[3]),
       );

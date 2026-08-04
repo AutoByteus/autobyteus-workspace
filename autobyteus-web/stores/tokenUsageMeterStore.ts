@@ -24,7 +24,6 @@ const emptySummary = (runId: string): TokenUsageRunSummary => ({
   rootTeamRunId: null,
   executionAddress: null,
   memberAgentRunId: null,
-  memberRouteKey: null,
   agentDefinitionId: null,
   workspaceId: null,
   grossInputTokens: 0,
@@ -206,7 +205,6 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
       rootTeamRunId: payload.root_team_run_id ?? summary.rootTeamRunId,
       executionAddress: payload.execution_address ?? summary.executionAddress,
       memberAgentRunId: payload.member_agent_run_id ?? summary.memberAgentRunId,
-      memberRouteKey: payload.member_route_key ?? summary.memberRouteKey,
       agentDefinitionId: payload.agent_definition_id ?? summary.agentDefinitionId,
       workspaceId: payload.workspace_id ?? summary.workspaceId,
       grossInputTokens,
@@ -285,7 +283,7 @@ export const useTokenUsageMeterStore = defineStore('tokenUsageMeter', () => {
     return upsertLedgerBackedTeamSummary(teamRunId, summary);
   }
 
-  async function fetchTeamMemberSummary(input: { teamRunId: string; memberAgentRunId?: string | null; memberRouteKey?: string | null }): Promise<TokenUsageRunSummary | null> {
+  async function fetchTeamMemberSummary(input: { teamRunId: string; executionAddress: TokenUsageRunSummary['executionAddress'] }): Promise<TokenUsageRunSummary | null> {
     const client = getApolloClient();
     const { data } = await client.query({ query: GET_TEAM_MEMBER_TOKEN_USAGE_SUMMARY, variables: input, fetchPolicy: 'network-only' });
     const summary = data?.getTeamMemberTokenUsageSummary as TokenUsageRunSummary | undefined;

@@ -1,39 +1,23 @@
+import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
+import { CollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
 import type { MemberCollaborationContext } from "../../agent-team-execution/domain/member-collaboration-context.js";
-import type { AgentCommunicationToolResultEnvelope } from "./agent-communication-tool-result.js";
-import { communicationRejection } from "./agent-communication-tool-result.js";
 
-export type GetHandoffRulesResult = {
-  member_address: string;
-  handoffs: Array<{ from: string; to: string; rules: string[] }>;
-};
+export type HandoffInstruction = Readonly<{ when: string; recipient_address: AgentTeamAddress }>;
+export type GetHandoffRulesResult = Readonly<{ handoffs: readonly HandoffInstruction[] }>;
 
 export class GetHandoffRulesService {
-  getRules(
-    collaboration: MemberCollaborationContext | null | undefined,
-  ): AgentCommunicationToolResultEnvelope<GetHandoffRulesResult> {
-    if (!collaboration) {
-      return communicationRejection(
-        "COLLABORATION_CONTEXT_REQUIRED",
-        "get_handoff_rules requires an active Team collaboration context.",
-      );
-    }
-    const handoffs = collaboration.outgoingHandoffs.map((handoff) => ({
-      from: handoff.from,
-      to: handoff.to,
-      rules: [...handoff.rules],
-    }));
-    return {
-      accepted: true,
-      code: "HANDOFF_RULES_RETRIEVED",
-      message: `Retrieved ${handoffs.length} outgoing handoff rule edge${handoffs.length === 1 ? "" : "s"}.`,
-      result: {
-        member_address: collaboration.addressing.memberAddress,
-        handoffs,
-      },
-    };
+  getRules(collaboration: MemberCollaborationContext | null | undefined): GetHandoffRulesResult {
+    if (!collaboration) throw new CollaborationContractError(
+      "COLLABORATION_CONTEXT_REQUIRED",
+      "get_handoff_rules requires an active Team collaboration context.",
+    );
+    return Object.freeze({
+      handoffs: Object.freeze(collaboration.outgoingHandoffs.flatMap((handoff) =>
+        handoff.rules.map((when) => Object.freeze({ when, recipient_address: handoff.to as AgentTeamAddress })),
+      )),
+    });
   }
 }
 
 let cachedService: GetHandoffRulesService | null = null;
-export const getGetHandoffRulesService = (): GetHandoffRulesService =>
-  cachedService ??= new GetHandoffRulesService();
+export const getGetHandoffRulesService = () => cachedService ??= new GetHandoffRulesService();

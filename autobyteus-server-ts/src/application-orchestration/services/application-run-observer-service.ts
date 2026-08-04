@@ -31,16 +31,16 @@ type ObserverRegistration = {
   rejectInitialAttachedEvent: (error: unknown) => void;
 };
 
-const buildRuntimeDescriptor = (binding: ApplicationAgentBindingRecord): BoundRunRuntimeDescriptor => ({
-  runtimeSubject: binding.runtime.subject,
-  runId: binding.runtime.runId,
-});
+const buildRuntimeDescriptor = (binding: ApplicationAgentBindingRecord): BoundRunRuntimeDescriptor =>
+  binding.runtime.subject === "AGENT_RUN"
+    ? { runtimeSubject: "AGENT_RUN", agentRunId: binding.runtime.agentRunId }
+    : { runtimeSubject: "TEAM_RUN", teamRunId: binding.runtime.teamRunId };
 
 const collectBindingRunIds = (binding: ApplicationAgentBindingRecord): string[] =>
   Array.from(
     new Set([
-      binding.runtime.runId,
-      ...binding.runtime.members.map((member) => member.runId),
+      binding.runtime.subject === "AGENT_RUN" ? binding.runtime.agentRunId : binding.runtime.teamRunId,
+      ...binding.runtime.members.map((member) => member.agentRunId),
     ]),
   );
 

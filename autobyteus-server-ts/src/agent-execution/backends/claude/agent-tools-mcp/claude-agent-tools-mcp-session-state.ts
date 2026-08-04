@@ -5,6 +5,7 @@ import type {
 } from "../../../../agent-tools/mcp/agent-tool-mcp-session.js";
 import type { AgentToolMcpSessionService } from "../../../../agent-tools/mcp/agent-tool-mcp-session-service.js";
 import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
+import { getAgentTeamAddressBasename } from "../../../../agent-collaboration/domain/agent-team-address.js";
 
 export type ClaudeAgentToolsMcpSessionServiceLike = Pick<
   AgentToolMcpSessionService,
@@ -31,7 +32,7 @@ export class ClaudeAgentToolsMcpSessionState {
       sender: buildAgentRunMessageSenderContext({
         senderRunId: runContext.runId,
         senderName:
-          runContext.runtimeContext.memberTeamContext?.memberName ??
+          (runContext.runtimeContext.memberTeamContext ? getAgentTeamAddressBasename(runContext.runtimeContext.memberTeamContext.memberAddress) : null) ??
           runContext.config.agentDefinitionId,
         runtimeKind: runContext.config.runtimeKind,
         memberTeamContext: runContext.runtimeContext.memberTeamContext,
@@ -60,9 +61,8 @@ const buildAgentToolsMcpOwnerIdentity = (
   }
   return {
     runId: runContext.runId,
-    teamRunId: memberTeamContext.teamRunId,
-    memberRunId: memberTeamContext.memberRunId,
-    memberRouteKey: memberTeamContext.memberRouteKey,
-    memberName: memberTeamContext.memberName,
+    executionAddress: memberTeamContext.executionAddress,
+    agentRunId: memberTeamContext.agentRunId,
+    displayName: getAgentTeamAddressBasename(memberTeamContext.memberAddress),
   };
 };

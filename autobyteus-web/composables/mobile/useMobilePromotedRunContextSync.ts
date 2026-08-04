@@ -77,15 +77,13 @@ export function useMobilePromotedRunContextSync() {
       mobileWorkStore.clearPendingTeamRunAttachments(context.teamRunId);
     }
 
-    const focusedMemberRouteKey = promotedTeam.focusedMemberRouteKey || context.focusedMemberRouteKey;
-    if (focusedMemberRouteKey) {
-      mobileWorkStore.rememberFocusedTeamMember(selectedTeamRunId, focusedMemberRouteKey);
-    }
+    const focusedExecutionAddress = promotedTeam.focusedExecutionAddress;
+    mobileWorkStore.rememberFocusedTeamMember(selectedTeamRunId, focusedExecutionAddress);
 
     mobileWorkStore.selectContext({
       ...context,
       teamRunId: selectedTeamRunId,
-      focusedMemberRouteKey,
+      focusedExecutionAddress,
       isActive: true,
       lastActivityAt: new Date().toISOString(),
     }, mobileWorkStore.activeTab);

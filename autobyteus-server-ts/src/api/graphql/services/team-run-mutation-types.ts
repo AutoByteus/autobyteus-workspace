@@ -1,14 +1,13 @@
 import type { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 
 export interface TeamMemberConfigPayload {
-  memberName: string;
+  memberAddress: string;
   agentDefinitionId: string;
   llmModelIdentifier: string;
   autoExecuteTools: boolean;
   workspaceId?: string | null;
   workspaceRootPath?: string | null;
   llmConfig?: Record<string, unknown> | null;
-  memberRouteKey?: string | null;
   runtimeKind?: string | null;
 }
 

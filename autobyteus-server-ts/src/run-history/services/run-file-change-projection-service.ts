@@ -1,7 +1,10 @@
 import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import type { TeamRun } from "../../agent-team-execution/domain/team-run.js";
-import type { TeamMemberRunConfig } from "../../agent-team-execution/domain/team-run-config.js";
+import {
+  collectTeamRunAgentNodes,
+  type TeamRunAgentNode,
+} from "../../agent-team-execution/domain/team-run-config.js";
 import {
   AgentRunMetadataService,
   getAgentRunMetadataService,
@@ -168,7 +171,7 @@ export class RunFileChangeProjectionService {
     const projection = normalizeRunFileChangeProjection(
       await this.projectionStore.readProjection(input.target.memoryDir),
       {
-        runId: input.target.memberRunId,
+        runId: input.target.agentRunId,
         workspaceRootPath,
       },
     );
@@ -190,17 +193,16 @@ export class RunFileChangeProjectionService {
 
   private async readActiveTeamMemberProjectionContext(
     teamRun: TeamRun,
-    memberRunId: string,
+    agentRunId: string,
   ): Promise<ProjectionContext> {
-    const memberConfig = this.resolveTeamMemberConfig(teamRun, memberRunId);
+    const memberConfig = this.resolveTeamMemberConfig(teamRun, agentRunId);
     const workspaceRootPath =
-      normalizeOptionalString(memberConfig?.workspaceRootPath)
-      ?? this.resolveWorkspaceRootPath(memberConfig?.workspaceId);
+      normalizeOptionalString(memberConfig?.workspaceRootPath);
 
     return {
       projection: await this.runFileChangeService.getProjectionForTeamMemberRun(
         teamRun,
-        memberRunId,
+        agentRunId,
       ),
       workspaceRootPath,
       isActiveRun: true,
@@ -208,12 +210,12 @@ export class RunFileChangeProjectionService {
   }
 
   private async findActiveTeamMember(
-    memberRunId: string,
-  ): Promise<{ teamRun: TeamRun; memberConfig: TeamMemberRunConfig } | null> {
+    agentRunId: string,
+  ): Promise<{ teamRun: TeamRun; memberConfig: TeamRunAgentNode } | null> {
     const teamRunManager = this.getTeamRunManager();
     for (const teamRunId of teamRunManager.listActiveRuns()) {
       const teamRun = teamRunManager.getTeamRun(teamRunId);
-      const memberConfig = teamRun ? this.resolveTeamMemberConfig(teamRun, memberRunId) : null;
+      const memberConfig = teamRun ? this.resolveTeamMemberConfig(teamRun, agentRunId) : null;
       if (teamRun && memberConfig) {
         return { teamRun, memberConfig };
       }
@@ -222,7 +224,7 @@ export class RunFileChangeProjectionService {
   }
 
   private async findHistoricalTeamMember(
-    memberRunId: string,
+    agentRunId: string,
   ): Promise<{ target: TeamMemberAgentMemoryLocation } | null> {
     const teamMetadataService = this.getTeamMetadataService();
     for (const teamRunId of await teamMetadataService.listTeamRunIds()) {
@@ -230,7 +232,7 @@ export class RunFileChangeProjectionService {
       const target = metadata
         ? this.memoryLocationService.resolveTeamMemberLocationFromMetadata(
             metadata,
-            { memberRunId },
+            { agentRunId: agentRunId },
             teamRunId,
           )
         : null;
@@ -243,13 +245,10 @@ export class RunFileChangeProjectionService {
 
   private resolveTeamMemberConfig(
     teamRun: TeamRun,
-    memberRunId: string,
-  ): TeamMemberRunConfig | null {
-    return (
-      teamRun.config?.memberConfigs.find(
-        (candidate) => candidate.memberRunId === memberRunId,
-      ) ?? null
-    );
+    agentRunId: string,
+  ): TeamRunAgentNode | null {
+    return collectTeamRunAgentNodes(teamRun.config.rootTeam)
+      .find((candidate) => candidate.agentRunId === agentRunId) ?? null;
   }
 
   private resolveWorkspaceRootPath(workspaceId: string | null | undefined): string | null {

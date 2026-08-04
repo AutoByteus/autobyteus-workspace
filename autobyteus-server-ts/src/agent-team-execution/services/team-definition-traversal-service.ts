@@ -4,12 +4,11 @@ import {
   resolveScopedTeamMemberRef,
 } from "../../agent-team-definition/utils/scoped-team-member-resolution.js";
 import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
-import { normalizeMemberRouteKey } from "../domain/team-run-member-identity.js";
-import type { TeamMemberRunConfig } from "../domain/team-run-config.js";
+import { appendAgentTeamAddress, createAgentTeamAddress, type AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 
 export type TeamLeafAgentMember = {
-  memberName: string;
-  memberRouteKey: string;
+  memberAddress: AgentTeamAddress;
+  displayName: string;
   agentDefinitionId: string;
 };
 
@@ -19,25 +18,7 @@ export class TeamDefinitionTraversalService {
   constructor(private readonly teamDefinitionService: TeamDefinitionLookup) {}
 
   async collectLeafAgentMembers(teamDefinitionId: string): Promise<TeamLeafAgentMember[]> {
-    return this.collectLeafAgentMembersRecursive(teamDefinitionId, new Set());
-  }
-
-  async resolveCoordinatorMemberName(
-    teamDefinitionId: string,
-    memberConfigs: TeamMemberRunConfig[],
-  ): Promise<string | null> {
-    const configuredCoordinatorMemberName = await this.resolveLeafCoordinatorMemberName(
-      teamDefinitionId,
-    );
-
-    if (!configuredCoordinatorMemberName) {
-      return memberConfigs[0]?.memberName?.trim() || null;
-    }
-
-    return (
-      memberConfigs.find((memberConfig) => memberConfig.memberName === configuredCoordinatorMemberName)
-        ?.memberName ?? configuredCoordinatorMemberName
-    );
+    return this.collectLeafAgentMembersRecursive(teamDefinitionId, createAgentTeamAddress([]), new Set());
   }
 
   async resolveLeafCoordinatorMemberName(teamDefinitionId: string): Promise<string | null> {
@@ -46,6 +27,7 @@ export class TeamDefinitionTraversalService {
 
   private async collectLeafAgentMembersRecursive(
     teamDefinitionId: string,
+    parentAddress: AgentTeamAddress,
     visited: Set<string>,
   ): Promise<TeamLeafAgentMember[]> {
     const normalizedTeamDefinitionId = normalizeRequiredString(teamDefinitionId, "teamDefinitionId");
@@ -72,8 +54,8 @@ export class TeamDefinitionTraversalService {
       if (node.refType === "agent") {
         const agentDefinitionId = resolveScopedAgentMemberRef(resolutionContext, node);
         members.push({
-          memberName: node.memberName.trim(),
-          memberRouteKey: normalizeMemberRouteKey(node.memberName),
+          memberAddress: appendAgentTeamAddress(parentAddress, node.memberName),
+          displayName: node.memberName.trim(),
           agentDefinitionId,
         });
         continue;
@@ -81,6 +63,7 @@ export class TeamDefinitionTraversalService {
 
       members.push(...(await this.collectLeafAgentMembersRecursive(
         resolveScopedTeamMemberRef(resolutionContext, node),
+        appendAgentTeamAddress(parentAddress, node.memberName),
         new Set(visited),
       )));
     }

@@ -20,30 +20,18 @@ class TaskDelegationReferenceFileObject {
 }
 
 @ObjectType()
-class TaskDelegationTargetSegmentObject {
+class TaskDelegationTargetAddressObject {
   @Field(() => String)
-  kind!: string;
+  rootTeamRunId!: string;
 
-  @Field(() => String, { nullable: true })
-  memberRouteKey?: string | null;
+  @Field(() => [String])
+  taskTeamRunIds!: string[];
 
-  @Field(() => [String], { nullable: true })
-  memberPath?: string[] | null;
-
-  @Field(() => String, { nullable: true })
-  taskTeamRunId?: string | null;
+  @Field(() => String)
+  memberAddress!: string;
 
   @Field(() => String, { nullable: true })
   taskAgentRunId?: string | null;
-}
-
-@ObjectType()
-class TaskDelegationTargetAddressObject {
-  @Field(() => String, { nullable: true })
-  parentTeamRunId?: string | null;
-
-  @Field(() => [TaskDelegationTargetSegmentObject])
-  segments!: TaskDelegationTargetSegmentObject[];
 }
 
 @ObjectType()
@@ -129,6 +117,6 @@ export class TaskDelegationResolver {
   async getTaskDelegationRecords(
     @Arg("teamRunId", () => String) teamRunId: string,
   ): Promise<TaskDelegationRecordObject[]> {
-    return this.recordsService.getTaskDelegationRecords(teamRunId) as Promise<TaskDelegationRecordObject[]>;
+    return this.recordsService.getTaskDelegationRecords(teamRunId) as unknown as Promise<TaskDelegationRecordObject[]>;
   }
 }

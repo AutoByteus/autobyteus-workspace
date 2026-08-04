@@ -24,16 +24,10 @@ import {
   latestTaskSubmission,
 } from "./task-delegation-record-derived.js";
 import { getTaskExecutionKind, getTaskExecutionRunId } from "./task-execution-instance.js";
-import { getTaskDelegationTargetName } from "./task-delegation-target.js";
 import {
   buildTaskDelegationArguments,
   buildTaskDelegationReferenceFiles,
 } from "./task-delegation-reference-file.js";
-
-const sourcePathForEntry = (entry: ActiveTaskDelegationRecordEntry): string[] =>
-  entry.target.kind === "member"
-    ? entry.target.member.memberPath
-    : entry.target.team.memberPath;
 
 const taskArgumentsForEntry = (entry: ActiveTaskDelegationRecordEntry) =>
   buildTaskDelegationArguments({
@@ -70,7 +64,7 @@ export class TaskDelegationEventPublisher {
     this.publish({
       teamRun: input.teamRun,
       teamRunId: input.teamRunId,
-      sourcePath: sourcePathForEntry(input.entry),
+      executionAddress: input.entry.record.receiverAddress,
       eventType: "TASK_DELEGATION_ACTIVATED",
       target: input.entry.target,
       payload,
@@ -112,7 +106,7 @@ export class TaskDelegationEventPublisher {
     this.publish({
       teamRun: input.teamRun,
       teamRunId: input.teamRunId,
-      sourcePath: sourcePathForEntry(input.entry),
+      executionAddress: input.entry.record.receiverAddress,
       eventType: "TASK_DELEGATION_STATUS_UPDATED",
       target: input.entry.target,
       payload,
@@ -148,7 +142,7 @@ export class TaskDelegationEventPublisher {
     this.publish({
       teamRun: input.teamRun,
       teamRunId: input.teamRunId,
-      sourcePath: sourcePathForEntry(input.entry),
+      executionAddress: input.entry.record.receiverAddress,
       eventType: "TASK_DELEGATION_RESULT_SUBMITTED",
       target: input.entry.target,
       payload,
@@ -187,7 +181,7 @@ export class TaskDelegationEventPublisher {
     this.publish({
       teamRun: input.teamRun,
       teamRunId: input.teamRunId,
-      sourcePath: sourcePathForEntry(input.entry),
+      executionAddress: input.entry.record.receiverAddress,
       eventType: "TASK_DELEGATION_RESULT_REVIEWED",
       target: input.entry.target,
       payload,
@@ -197,7 +191,7 @@ export class TaskDelegationEventPublisher {
   private publish(input: {
     teamRun: TeamRun;
     teamRunId: string;
-    sourcePath: string[];
+    executionAddress: ActiveTaskDelegationRecordEntry["record"]["receiverAddress"];
     eventType: TeamRunTaskDelegationEventPayload["eventType"];
     target: ActiveTaskDelegationRecordEntry["target"];
     payload: unknown;
@@ -205,13 +199,10 @@ export class TaskDelegationEventPublisher {
     input.teamRun.publishEvent({
       eventSourceType: TeamRunEventSourceType.TASK_DELEGATION,
       teamRunId: input.teamRunId,
-      sourcePath: input.sourcePath,
+      executionAddress: input.executionAddress,
       data: {
         eventType: input.eventType,
-        payload: {
-          ...(input.payload as Record<string, unknown>),
-          target_name: getTaskDelegationTargetName(input.target),
-        },
+        payload: input.payload,
       },
     });
   }

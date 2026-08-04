@@ -34,12 +34,10 @@ export const composeAutoByteusMemberSystemPrompt = (
     teamInstruction: normalizeInstruction(input.memberTeamContext.teamInstruction),
     agentInstruction: baseAgentInstruction,
     memberTeamContext: input.memberTeamContext,
-    sendMessageToEnabled: exposure.sendMessageToConfigured,
-    recipientNameDeliveryEnabled:
-      input.memberTeamContext.sendMessageToEnabled &&
-      Boolean(input.memberTeamContext.collaboration.deliverInterAgentMessage),
+    sendMessageToEnabled: true,
+    recipientAddressDeliveryEnabled: Boolean(input.memberTeamContext.collaboration.deliverInterAgentMessage),
     taskDelegationEnabled: exposure.enabledTaskDelegationToolNames.length > 0,
-    getHandoffRulesEnabled: exposure.getHandoffRulesConfigured,
+    getHandoffRulesEnabled: true,
   });
 
   return [

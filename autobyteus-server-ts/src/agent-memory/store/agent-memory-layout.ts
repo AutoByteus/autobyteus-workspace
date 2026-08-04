@@ -54,7 +54,7 @@ export class AgentMemoryLayout {
   getTeamDirPath(scope: AgentMemoryScope): string {
     const segments = [
       normalizePathSegment(scope.rootTeamRunId, "rootTeamRunId"),
-      ...scope.teamRunPath.map((segment, index) => normalizePathSegment(segment, `teamRunPath[${index}]`)),
+      ...scope.ancestorTeamRunIds.map((segment, index) => normalizePathSegment(segment, `ancestorTeamRunIds[${index}]`)),
     ];
     return resolveSafePath(this.teamRootDir, ...segments);
   }

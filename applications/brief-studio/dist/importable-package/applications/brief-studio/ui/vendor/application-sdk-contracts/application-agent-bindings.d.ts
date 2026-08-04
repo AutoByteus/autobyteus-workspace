@@ -1,4 +1,5 @@
 import type { ApplicationExecutionResourceRef } from "./execution-resources.js";
+import type { ApplicationTeamExecutionAddress } from "./team-execution-address.js";
 export type ApplicationAgentBindingStatus = "ATTACHED" | "TERMINATING" | "TERMINATED" | "FAILED" | "ORPHANED";
 type ApplicationAgentBindingFields = {
     bindingId: string;
@@ -14,23 +15,21 @@ type ApplicationAgentBindingFields = {
 export type ApplicationAgentBinding = ApplicationAgentBindingFields & {
     runtime: {
         subject: "AGENT_RUN";
-        runId: string;
+        agentRunId: string;
         definitionId: string;
         members: [];
     };
 };
 export type ApplicationAgentTeamBindingMember = {
-    memberName: string;
-    memberRouteKey: string;
+    memberAddress: string;
     displayName: string;
-    teamPath: string[];
-    runId: string;
+    agentRunId: string;
     runtimeKind: "AGENT" | "AGENT_TEAM_MEMBER";
 };
 export type ApplicationAgentTeamBinding = ApplicationAgentBindingFields & {
     runtime: {
         subject: "TEAM_RUN";
-        runId: string;
+        teamRunId: string;
         definitionId: string;
         members: ApplicationAgentTeamBindingMember[];
     };
@@ -44,7 +43,7 @@ export type ApplicationAgentTarget = {
     kind: "AGENT_TEAM_RUN";
 } | {
     kind: "AGENT_TEAM_MEMBER";
-    memberRouteKey: string;
+    memberAddress: string;
 };
 export type ApplicationAgentTargetAddress = {
     bindingId: string;
@@ -63,12 +62,9 @@ export type ApplicationAgentInput = {
 };
 export type ApplicationExecutionProducerRuntimeKind = "AGENT" | "AGENT_TEAM_MEMBER";
 export type ApplicationExecutionProducer = {
-    runId: string;
-    memberRouteKey: string;
-    memberName: string | null;
+    executionAddress: ApplicationTeamExecutionAddress;
     displayName: string | null;
     runtimeKind: ApplicationExecutionProducerRuntimeKind;
-    teamPath: string[];
 };
 export {};
 //# sourceMappingURL=application-agent-bindings.d.ts.map

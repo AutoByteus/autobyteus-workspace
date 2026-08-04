@@ -1,253 +1,53 @@
-import type { AgentTeamContext, SubTeamMemberNode, TeamMemberNode } from '~/types/agent/AgentTeamContext';
-import type { ConversationTargetSegment } from '~/types/agent/ConversationTargetAddress';
+import { AgentContext } from '~/types/agent/AgentContext';
+import type { AgentTeamContext, SubTeamMemberNode } from '~/types/agent/AgentTeamContext';
+import { AgentRunState } from '~/types/agent/AgentRunState';
+import type { Conversation } from '~/types/conversation';
 import type { ServerMessage } from './protocol';
-import {
-  buildRouteKeyFromPath,
-  buildTaskExecutionTimelineEntry,
-  applyTaskDelegationProjectionDetails,
-  extractTaskDelegationProjectionDetails,
-  normalizeProjectionPath,
-  normalizeProjectionString,
-  normalizeTaskExecutionStatusFromPayload,
-  isTerminalTaskExecutionProjectionStatus,
-  type TaskExecutionProjectionStatus,
-} from './teamTaskExecutionProjection';
-import {
-  cloneTaskTeamChildTree,
-  removeTaskTeamChildProjections,
-} from './teamTaskTeamChildProjection';
-import { resolveActiveExecutionFocusedMemberRouteKey } from '~/utils/teamActiveExecutionMembers';
+import { createTeamExecutionAddress, serializeTeamExecutionAddress, type TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 
-export interface TaskTeamExecutionProjectionIdentity {
-  taskTeamRunId: string;
-  taskTeamInstanceId: string | null;
-  taskId: string | null;
-  logicalTeamRouteKey: string | null;
-  logicalTeamPath: string[];
-  conversationTargetSegments?: ConversationTargetSegment[];
-}
-
-const payloadFor = (message: ServerMessage): Record<string, unknown> | null => (
-  'payload' in message && message.payload && typeof message.payload === 'object'
-    ? message.payload as Record<string, unknown>
-    : null
-);
-
-const findStructuralTeamNode = (
-  teamContext: AgentTeamContext,
-  identity: TaskTeamExecutionProjectionIdentity,
-): SubTeamMemberNode | null => {
-  const byRoute = identity.logicalTeamRouteKey
-    ? teamContext.memberNodesByRouteKey.get(identity.logicalTeamRouteKey) ?? null
-    : null;
-  if (byRoute?.memberKind === 'agent_team' && !byRoute.isTaskTeamInstance) {
-    return byRoute as SubTeamMemberNode;
-  }
-  const routeFromPath = buildRouteKeyFromPath(identity.logicalTeamPath);
-  const byPath = routeFromPath ? teamContext.memberNodesByRouteKey.get(routeFromPath) ?? null : null;
-  return byPath?.memberKind === 'agent_team' && !byPath.isTaskTeamInstance
-    ? byPath as SubTeamMemberNode
-    : null;
-};
-
-const removeTaskTeamRootFromTree = (
-  nodes: readonly TeamMemberNode[],
-  taskTeamRunId: string,
-): TeamMemberNode[] => {
-  const retained: TeamMemberNode[] = [];
-  for (const node of nodes) {
-    if (node.memberRouteKey === taskTeamRunId || node.parentTaskTeamRunId === taskTeamRunId) {
-      continue;
-    }
-    if (node.memberKind !== 'agent_team') {
-      retained.push(node);
-      continue;
-    }
-    retained.push({ ...node, children: removeTaskTeamRootFromTree(node.children, taskTeamRunId) });
-  }
-  return retained;
-};
-
-const insertTaskTeamRootNearStructuralTeam = (
-  nodes: readonly TeamMemberNode[],
-  taskTeamNode: SubTeamMemberNode,
-  structuralTeamRouteKey: string | null,
-): TeamMemberNode[] => {
-  if (!structuralTeamRouteKey) return [...nodes, taskTeamNode];
-  let inserted = false;
-  const visit = (source: readonly TeamMemberNode[]): TeamMemberNode[] => source.flatMap((node) => {
-    const withChildren: TeamMemberNode = node.memberKind === 'agent_team'
-      ? { ...node, children: visit(node.children) }
-      : node;
-    if (node.memberRouteKey !== structuralTeamRouteKey) return [withChildren];
-    inserted = true;
-    return [withChildren, taskTeamNode];
-  });
-  const updated = visit(nodes);
-  return inserted ? updated : [...updated, taskTeamNode];
-};
-
-const buildDisplayName = (
-  structuralTeam: SubTeamMemberNode | null,
-  identity: TaskTeamExecutionProjectionIdentity,
-): string => {
-  const base = structuralTeam?.displayName
-    || structuralTeam?.memberName
-    || identity.logicalTeamPath.at(-1)
-    || identity.logicalTeamRouteKey
-    || 'Task team';
-  return `${base} · ${identity.taskId || identity.taskTeamRunId}`;
-};
-
-const cloneConversationTargetSegments = (
-  segments: readonly ConversationTargetSegment[] | null | undefined,
-): ConversationTargetSegment[] => (segments ?? []).map((segment) => ({
-  ...segment,
-  ...(segment.kind === 'member' && segment.memberPath ? { memberPath: [...segment.memberPath] } : {}),
-}));
-
-const buildTaskTeamRootConversationSegments = (
-  identity: TaskTeamExecutionProjectionIdentity,
-): ConversationTargetSegment[] | undefined => {
-  if (identity.conversationTargetSegments?.length) {
-    return cloneConversationTargetSegments(identity.conversationTargetSegments);
-  }
-  const logicalTeamRouteKey = identity.logicalTeamRouteKey ?? buildRouteKeyFromPath(identity.logicalTeamPath);
-  return logicalTeamRouteKey
-    ? [
-        { kind: 'member', memberRouteKey: logicalTeamRouteKey },
-        { kind: 'task_team', taskTeamRunId: identity.taskTeamRunId },
-      ]
-    : undefined;
-};
-
+export interface TaskTeamExecutionProjectionIdentity { executionAddress: TeamExecutionAddress }
 export const extractTaskTeamIdentity = (message: ServerMessage): TaskTeamExecutionProjectionIdentity | null => {
-  const payload = payloadFor(message);
-  if (!payload) return null;
-  const executionKind = normalizeProjectionString(payload.execution_kind) ?? normalizeProjectionString(payload.executionKind);
-  const taskTeamRunId = normalizeProjectionString(payload.task_team_run_id) ?? normalizeProjectionString(payload.taskTeamRunId);
-  if (executionKind !== 'task_team' || !taskTeamRunId) return null;
-  const logicalTeamPath = normalizeProjectionPath(payload.team_path).length > 0
-    ? normalizeProjectionPath(payload.team_path)
-    : normalizeProjectionPath(payload.teamPath);
-  return {
-    taskTeamRunId,
-    taskTeamInstanceId: normalizeProjectionString(payload.task_team_instance_id) ?? normalizeProjectionString(payload.taskTeamInstanceId),
-    taskId: normalizeProjectionString(payload.task_id) ?? normalizeProjectionString(payload.taskId),
-    logicalTeamRouteKey: normalizeProjectionString(payload.team_route_key)
-      ?? normalizeProjectionString(payload.teamRouteKey)
-      ?? buildRouteKeyFromPath(logicalTeamPath),
-    logicalTeamPath,
-  };
+  const raw = 'payload' in message && message.payload && typeof message.payload === 'object'
+    ? (message.payload as { execution_address?: unknown }).execution_address
+    : null;
+  if (!raw) return null;
+  try {
+    const executionAddress = createTeamExecutionAddress(raw as never);
+    return executionAddress.taskTeamRunIds.length ? { executionAddress } : null;
+  } catch { return null; }
 };
-
-export const ensureTaskTeamExecutionProjection = (
-  teamContext: AgentTeamContext,
-  identity: TaskTeamExecutionProjectionIdentity,
-  initialStatus: TaskExecutionProjectionStatus = 'active',
-): SubTeamMemberNode => {
-  const existing = teamContext.memberNodesByRouteKey.get(identity.taskTeamRunId) ?? null;
-  const structuralTeam = findStructuralTeamNode(teamContext, identity);
-  const displayName = existing?.displayName || buildDisplayName(structuralTeam, identity);
-  const children = existing?.memberKind === 'agent_team' && existing.isTaskTeamInstance
-    ? [...existing.children]
-    : cloneTaskTeamChildTree(teamContext, identity, structuralTeam?.children ?? []);
-  const node: SubTeamMemberNode = {
-    memberKind: 'agent_team',
-    memberName: displayName,
-    displayName,
-    memberPath: [identity.taskTeamRunId],
-    memberRouteKey: identity.taskTeamRunId,
-    memberRunId: identity.taskTeamRunId,
-    teamDefinitionId: structuralTeam?.teamDefinitionId ?? 'task-team',
-    teamRunId: identity.taskTeamRunId,
-    coordinatorMemberRouteKey: structuralTeam?.coordinatorMemberRouteKey ?? null,
-    children,
-    isTaskTeamInstance: true,
-    taskTeamInstanceId: identity.taskTeamInstanceId,
-    taskTeamRunId: identity.taskTeamRunId,
-    taskId: identity.taskId,
-    logicalTeamRouteKey: identity.logicalTeamRouteKey,
-    logicalTeamPath: [...identity.logicalTeamPath],
-    conversationTargetSegments: buildTaskTeamRootConversationSegments(identity),
-    taskExecutionStatus: existing?.taskExecutionStatus ?? initialStatus,
-    taskTimeline: existing?.taskTimeline ? [...existing.taskTimeline] : [],
-    taskLabel: existing?.taskLabel ?? null,
-    taskDescription: existing?.taskDescription ?? null,
-    taskReferenceFiles: existing?.taskReferenceFiles ? existing.taskReferenceFiles.map((reference) => ({ ...reference })) : [],
-    taskArguments: existing?.taskArguments ?? null,
-    taskTargetKind: existing?.taskTargetKind ?? null,
-    taskTargetName: existing?.taskTargetName ?? null,
+export const ensureTaskTeamMemberExecutionContext = (team: AgentTeamContext, address: TeamExecutionAddress): AgentContext | null => {
+  const key = serializeTeamExecutionAddress(address);
+  const existing = team.agentExecutionsByKey.get(key); if (existing) return existing;
+  const node = team.memberNodesByAddress.get(address.memberAddress);
+  if (!node || node.kind !== 'agent') return null;
+  let base: AgentContext | null = null;
+  for (const [candidateKey, context] of team.agentExecutionsByKey) {
+    try { if ((JSON.parse(candidateKey) as TeamExecutionAddress).memberAddress === address.memberAddress) { base = context; break; } }
+    catch { /* exact keys only */ }
+  }
+  if (!base) return null;
+  const now = new Date().toISOString();
+  const conversation: Conversation = {
+    id: key, messages: [], createdAt: now, updatedAt: now,
+    agentDefinitionId: base.config.agentDefinitionId, agentName: base.config.agentDefinitionName,
+    llmModelIdentifier: base.config.llmModelIdentifier,
   };
-
-  teamContext.memberNodesByRouteKey = new Map(teamContext.memberNodesByRouteKey).set(identity.taskTeamRunId, node);
-  teamContext.memberTree = insertTaskTeamRootNearStructuralTeam(
-    removeTaskTeamRootFromTree(teamContext.memberTree, identity.taskTeamRunId),
-    node,
-    structuralTeam?.memberRouteKey ?? identity.logicalTeamRouteKey,
-  );
-  return node;
+  const context = new AgentContext({ ...base.config, isLocked: true }, new AgentRunState(key, conversation));
+  context.isSubscribed = true; team.agentExecutionsByKey = new Map(team.agentExecutionsByKey).set(key, context); return context;
 };
-
-export const updateTaskTeamExecutionProjectionFromEvent = (
-  teamContext: AgentTeamContext,
-  message: ServerMessage,
-): { node: SubTeamMemberNode; shouldCleanup: boolean } | null => {
-  const identity = extractTaskTeamIdentity(message);
-  if (!identity) return null;
-  const payload = payloadFor(message) ?? {};
-  const eventType = normalizeProjectionString(payload.event_type) ?? normalizeProjectionString(payload.eventType) ?? message.type;
-  const status = normalizeTaskExecutionStatusFromPayload(eventType, payload.status, payload.decision ?? payload.review_decision);
-  const node = ensureTaskTeamExecutionProjection(teamContext, identity, status);
-  applyTaskDelegationProjectionDetails(node, extractTaskDelegationProjectionDetails(message));
-  node.taskExecutionStatus = status;
-  node.taskTimeline = [
-    ...(node.taskTimeline ?? []),
-    buildTaskExecutionTimelineEntry({
-      eventType,
-      status,
-      existingCount: node.taskTimeline?.length ?? 0,
-      message: normalizeProjectionString(payload.message) ?? normalizeProjectionString(payload.reason),
-    }),
-  ];
-  teamContext.memberNodesByRouteKey = new Map(teamContext.memberNodesByRouteKey).set(node.memberRouteKey, node);
-  return {
-    node,
-    shouldCleanup: isTerminalTaskExecutionProjectionStatus(status),
-  };
+export const ensureTaskTeamExecutionProjection = (team: AgentTeamContext, identity: TaskTeamExecutionProjectionIdentity): SubTeamMemberNode | null => {
+  const node = team.memberNodesByAddress.get(identity.executionAddress.memberAddress); return node?.kind === 'agent_team' ? node : null;
 };
-
-export const removeTaskTeamExecutionProjection = (
-  teamContext: AgentTeamContext,
-  taskTeamRunId: string,
-): void => {
-  removeTaskTeamChildProjections(teamContext, taskTeamRunId);
-  const scopedPrefix = `${taskTeamRunId}/`;
-  const memberNodes = new Map(teamContext.memberNodesByRouteKey);
-  const routeKeysToRemove = new Set<string>([taskTeamRunId]);
-  for (const [routeKey, node] of memberNodes.entries()) {
-    if (routeKey === taskTeamRunId || node.parentTaskTeamRunId === taskTeamRunId || routeKey.startsWith(scopedPrefix)) {
-      routeKeysToRemove.add(routeKey);
-      memberNodes.delete(routeKey);
-    }
+export const updateTaskTeamExecutionProjectionFromEvent = (team: AgentTeamContext, message: ServerMessage) => {
+  const identity = extractTaskTeamIdentity(message); const node = identity ? ensureTaskTeamExecutionProjection(team, identity) : null;
+  return node ? { node, shouldCleanup: false } : null;
+};
+export const removeTaskTeamExecutionProjection = (team: AgentTeamContext, taskTeamRunId: string): void => {
+  const next = new Map(team.agentExecutionsByKey);
+  for (const key of next.keys()) {
+    try { if ((JSON.parse(key) as TeamExecutionAddress).taskTeamRunIds.includes(taskTeamRunId)) next.delete(key); }
+    catch { /* exact keys only */ }
   }
-  const leafContexts = new Map(teamContext.leafAgentContextsByRouteKey);
-  for (const [routeKey, context] of leafContexts.entries()) {
-    const conversationId = context.state.conversation.id;
-    const runId = context.state.runId ?? '';
-    if (
-      routeKeysToRemove.has(routeKey) ||
-      routeKey.startsWith(scopedPrefix) ||
-      conversationId.startsWith(scopedPrefix) ||
-      runId.startsWith(scopedPrefix)
-    ) {
-      leafContexts.delete(routeKey);
-    }
-  }
-  teamContext.memberNodesByRouteKey = memberNodes;
-  teamContext.leafAgentContextsByRouteKey = leafContexts;
-  teamContext.memberTree = removeTaskTeamRootFromTree(teamContext.memberTree, taskTeamRunId);
-  if (teamContext.focusedMemberRouteKey === taskTeamRunId || teamContext.focusedMemberRouteKey.startsWith(scopedPrefix)) {
-    teamContext.focusedMemberRouteKey = resolveActiveExecutionFocusedMemberRouteKey(teamContext);
-  }
+  team.agentExecutionsByKey = next;
 };

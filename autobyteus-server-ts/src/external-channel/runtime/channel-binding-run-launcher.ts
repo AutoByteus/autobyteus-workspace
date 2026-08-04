@@ -114,9 +114,9 @@ export class ChannelBindingRunLauncher {
     if (cachedTeamRunId) {
       try {
         const restoredRun = await this.teamRunService.restoreTeamRun(cachedTeamRunId);
-        await this.bindingService.upsertBindingTeamRunId(binding.id, restoredRun.runId);
-        this.bindingRunRegistry.claimTeamRun(binding.id, restoredRun.runId);
-        return restoredRun.runId;
+        await this.bindingService.upsertBindingTeamRunId(binding.id, restoredRun.teamRunId);
+        this.bindingRunRegistry.claimTeamRun(binding.id, restoredRun.teamRunId);
+        return restoredRun.teamRunId;
       } catch {
         // Fall through to lazy-create a fresh run for this binding.
       }
@@ -130,7 +130,7 @@ export class ChannelBindingRunLauncher {
       teamDefinitionId: launchTarget.teamDefinitionId,
       memberConfigs,
     });
-    const teamRunId = run.runId;
+    const teamRunId = run.teamRunId;
     await this.bindingService.upsertBindingTeamRunId(binding.id, teamRunId);
     this.bindingRunRegistry.claimTeamRun(binding.id, teamRunId);
     return teamRunId;

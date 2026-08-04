@@ -1,150 +1,22 @@
-import {
-  buildConversationAddressFromSegments,
-  normalizeConversationTargetAddress,
-  type ConversationTargetAddress,
-  type ConversationTargetSegment,
-} from "../domain/conversation-target-address.js";
-import type { TaskTeamInstanceIdentity } from "../domain/task-team-instance.js";
+import { createTeamExecutionAddress, type TeamExecutionAddress } from "../domain/team-execution-address.js";
 import type { TaskExecutionInstance } from "./task-execution-instance.js";
 import type { TaskDelegationCallerIdentity } from "./task-delegation-record.js";
-import type {
-  TaskDelegationMemberIdentity,
-  TaskDelegationTarget,
-  TaskDelegationTeamIdentity,
-} from "./task-delegation-target.js";
-import { buildMemberRouteKeyFromPath } from "../domain/team-run-member-identity.js";
-
-const normalizeString = (value: string | null | undefined): string | null => {
-  const normalized = value?.trim();
-  return normalized ? normalized : null;
-};
-
-const memberSegment = (routeKey: string | null | undefined, memberPath?: readonly string[] | null): ConversationTargetSegment => {
-  const memberRouteKey = normalizeString(routeKey);
-  if (memberRouteKey) return { kind: "member", memberRouteKey };
-  const normalizedPath = (memberPath ?? []).map((part) => part.trim()).filter(Boolean);
-  if (normalizedPath.length > 0) return { kind: "member", memberPath: normalizedPath };
-  throw new Error("Task delegation address requires a member route key or path.");
-};
-
-const rootTaskTeamPrefix = (
-  taskTeamInstance: TaskTeamInstanceIdentity | null,
-  currentTeamPath: readonly string[],
-): ConversationTargetSegment[] => taskTeamInstance
-  ? [
-      memberSegment(buildMemberRouteKeyFromPath(currentTeamPath)),
-      { kind: "task_team", taskTeamRunId: taskTeamInstance.taskTeamRunId },
-    ]
-  : [];
+import type { TaskDelegationTarget } from "./task-delegation-target.js";
 
 export class TaskDelegationAddressBuilder {
-  private readonly currentTeamPath: readonly string[];
-
-  constructor(
-    private readonly taskTeamInstance: TaskTeamInstanceIdentity | null = null,
-    currentTeamPath: readonly string[] = [],
-  ) {
-    this.currentTeamPath = Object.freeze([...currentTeamPath]);
+  constructor(private readonly currentTeamExecution: TeamExecutionAddress) {}
+  buildCallerAddress(caller: TaskDelegationCallerIdentity) { return createTeamExecutionAddress(caller.executionAddress); }
+  buildTargetAddress(target: TaskDelegationTarget) { return createTeamExecutionAddress({ ...this.currentTeamExecution, memberAddress: target.address, taskAgentRunId: null }); }
+  buildTaskRunAddress(execution: TaskExecutionInstance, targetAddress: TeamExecutionAddress) {
+    return execution.kind === "task_agent"
+      ? createTeamExecutionAddress({ ...targetAddress, taskAgentRunId: execution.taskAgentInstance.taskAgentRunId })
+      : createTeamExecutionAddress({ ...targetAddress, taskTeamRunIds: [...targetAddress.taskTeamRunIds, execution.taskTeamInstance.taskTeamRunId], taskAgentRunId: null });
   }
-
-  buildCallerAddress(caller: TaskDelegationCallerIdentity): ConversationTargetAddress {
-    const segments: ConversationTargetSegment[] = [
-      ...rootTaskTeamPrefix(this.taskTeamInstance, this.currentTeamPath),
-      this.currentMemberSegment(
-        caller.logicalMemberRouteKey ?? caller.memberRouteKey,
-        caller.memberPath,
-      ),
-    ];
-    const taskAgentRunId = normalizeString(caller.taskAgentRunId);
-    if (taskAgentRunId) segments.push({ kind: "task_agent", taskAgentRunId });
-    return this.address(segments);
+  buildTaskTeamIngressAddress(taskRunAddress: TeamExecutionAddress, coordinatorAddress: string) {
+    return createTeamExecutionAddress({ ...taskRunAddress, memberAddress: coordinatorAddress, taskAgentRunId: null });
   }
-
-  buildTargetAddress(target: TaskDelegationTarget): ConversationTargetAddress {
-    return target.kind === "member"
-      ? this.buildMemberTargetAddress(target.member)
-      : this.buildTeamTargetAddress(target.team);
-  }
-
-  buildTaskRunAddress(execution: TaskExecutionInstance): ConversationTargetAddress {
-    if (execution.kind === "task_agent") {
-      return this.address([
-        ...rootTaskTeamPrefix(this.taskTeamInstance, this.currentTeamPath),
-        this.currentMemberSegment(
-          execution.taskAgentInstance.logicalMember.memberRouteKey,
-          execution.taskAgentInstance.logicalMember.memberPath,
-        ),
-        { kind: "task_agent", taskAgentRunId: execution.taskAgentInstance.taskAgentRunId },
-      ]);
-    }
-    return this.address([
-      ...rootTaskTeamPrefix(this.taskTeamInstance, this.currentTeamPath),
-      this.currentMemberSegment(
-        execution.taskTeamInstance.logicalTeam.memberRouteKey,
-        execution.taskTeamInstance.logicalTeam.memberPath,
-      ),
-      { kind: "task_team", taskTeamRunId: execution.taskTeamInstance.taskTeamRunId },
-    ]);
-  }
-
-  buildTaskTeamIngressAddress(
-    taskTeamInstance: TaskTeamInstanceIdentity,
-  ): ConversationTargetAddress {
-    return this.address([
-      ...rootTaskTeamPrefix(this.taskTeamInstance, this.currentTeamPath),
-      this.currentMemberSegment(
-        taskTeamInstance.logicalTeam.memberRouteKey,
-        taskTeamInstance.logicalTeam.memberPath,
-      ),
-      { kind: "task_team", taskTeamRunId: taskTeamInstance.taskTeamRunId },
-      memberSegment(taskTeamInstance.ingress.memberName),
-    ]);
-  }
-
-  buildSubmissionSenderAddress(taskRunAddress: ConversationTargetAddress): ConversationTargetAddress {
-    return normalizeConversationTargetAddress(taskRunAddress);
-  }
-
-  buildSubmissionReceiverAddress(reviewOwnerAddress: ConversationTargetAddress): ConversationTargetAddress {
-    return normalizeConversationTargetAddress(reviewOwnerAddress);
-  }
-
-  buildReviewSenderAddress(reviewOwnerAddress: ConversationTargetAddress): ConversationTargetAddress {
-    return normalizeConversationTargetAddress(reviewOwnerAddress);
-  }
-
-  buildReviewReceiverAddress(taskRunAddress: ConversationTargetAddress): ConversationTargetAddress {
-    return normalizeConversationTargetAddress(taskRunAddress);
-  }
-
-  private buildMemberTargetAddress(member: TaskDelegationMemberIdentity): ConversationTargetAddress {
-    return this.address([
-      ...rootTaskTeamPrefix(this.taskTeamInstance, this.currentTeamPath),
-      this.currentMemberSegment(member.memberRouteKey, member.memberPath),
-    ]);
-  }
-
-  private buildTeamTargetAddress(team: TaskDelegationTeamIdentity): ConversationTargetAddress {
-    return this.address([
-      ...rootTaskTeamPrefix(this.taskTeamInstance, this.currentTeamPath),
-      this.currentMemberSegment(team.memberRouteKey, team.memberPath),
-    ]);
-  }
-
-  private currentMemberSegment(
-    localRouteKey: string,
-    localPath: readonly string[],
-  ): ConversationTargetSegment {
-    if (this.taskTeamInstance) {
-      return memberSegment(localRouteKey, localPath);
-    }
-    return memberSegment(buildMemberRouteKeyFromPath([
-      ...this.currentTeamPath,
-      ...localPath,
-    ]));
-  }
-
-  private address(segments: ConversationTargetSegment[]): ConversationTargetAddress {
-    return normalizeConversationTargetAddress(buildConversationAddressFromSegments(segments));
-  }
+  buildSubmissionSenderAddress(address: TeamExecutionAddress) { return createTeamExecutionAddress(address); }
+  buildSubmissionReceiverAddress(address: TeamExecutionAddress) { return createTeamExecutionAddress(address); }
+  buildReviewSenderAddress(address: TeamExecutionAddress) { return createTeamExecutionAddress(address); }
+  buildReviewReceiverAddress(address: TeamExecutionAddress) { return createTeamExecutionAddress(address); }
 }

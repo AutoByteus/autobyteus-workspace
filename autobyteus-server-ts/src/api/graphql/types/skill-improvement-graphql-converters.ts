@@ -39,8 +39,8 @@ const toGraphqlSkillTarget = (value: SkillImprovementSkillTarget): GraphqlSkillI
 });
 
 const toGraphqlTarget = (value: SkillImprovementTargetRef): GraphqlSkillImprovementTargetRef => value.kind === "agent_run"
-  ? { kind: value.kind, runId: value.runId, teamRunId: null, memberRunId: null }
-  : { kind: value.kind, runId: null, teamRunId: value.teamRunId, memberRunId: value.memberRunId };
+  ? { kind: value.kind, runId: value.runId, teamRunId: null, agentRunId: null }
+  : { kind: value.kind, runId: null, teamRunId: value.teamRunId, agentRunId: value.agentRunId };
 
 const toGraphqlNotificationSummary = (
   value?: SkillImprovementNotificationSummary | null,

@@ -33,8 +33,8 @@ export type PreparedTeamApplicationLaunch = {
   teamDefinition: AgentTeamDefinition
   config: TeamRunConfig
   leafMembers: Array<{
-    memberName: string
-    memberRouteKey: string
+    displayName: string
+    address: string
     agentDefinitionId: string
   }>
 }

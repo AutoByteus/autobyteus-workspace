@@ -8,11 +8,12 @@ export * from "./application-iframe-contract.js";
 export * from "./application-agent-bindings.js";
 export * from "./application-agent-events.js";
 export * from "./application-agent-communication.js";
-export * from "./application-agent-target-path.js";
+export * from "./application-agent-target-url.js";
 export * from "./application-websockets.js";
+export * from "./team-execution-address.js";
 export declare const APPLICATION_BACKEND_BUNDLE_CONTRACT_VERSION_V1: "1";
-export declare const APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V4: "4";
-export declare const APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V4: "4";
+export declare const APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V5: "5";
+export declare const APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V5: "5";
 export declare const APPLICATION_EVENT_DELIVERY_SEMANTICS: "AT_LEAST_ONCE";
 export type ApplicationRouteMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "HEAD" | "OPTIONS";
 export type ApplicationSkillAccessMode = "PRELOADED_ONLY" | "NONE";
@@ -35,8 +36,8 @@ export type ApplicationBackendBundleManifestV1 = {
         semver: string;
     };
     sdkCompatibility: {
-        backendDefinitionContractVersion: typeof APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V4;
-        frontendSdkContractVersion: typeof APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V4;
+        backendDefinitionContractVersion: typeof APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V5;
+        frontendSdkContractVersion: typeof APPLICATION_FRONTEND_SDK_CONTRACT_VERSION_V5;
     };
     supportedExposures: ApplicationBackendSupportedExposures;
     migrationsDir?: string | null;
@@ -61,8 +62,7 @@ export type ApplicationNotificationMessage = {
 };
 export type ApplicationRuntimeInput = {
     text: string;
-    targetMemberRouteKey?: string | null;
-    targetMemberPath?: string[] | null;
+    targetMemberAddress?: string | null;
     contextFiles?: ApplicationRuntimeInputContextFile[] | null;
     metadata?: Record<string, unknown> | null;
 };
@@ -85,8 +85,7 @@ export type ApplicationTeamRunPreset = {
     llmConfig?: Record<string, unknown> | null;
 };
 export type ApplicationTeamMemberLaunchConfig = {
-    memberName: string;
-    memberRouteKey?: string | null;
+    memberAddress: string;
     agentDefinitionId?: string | null;
     llmModelIdentifier: string;
     autoExecuteTools: boolean;
@@ -230,7 +229,7 @@ export type ApplicationRouteDefinition = {
     handler: ApplicationRouteHandler;
 };
 export type ApplicationBackendDefinition = {
-    definitionContractVersion: typeof APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V4;
+    definitionContractVersion: typeof APPLICATION_BACKEND_DEFINITION_CONTRACT_VERSION_V5;
     lifecycle?: {
         onStart?: ApplicationLifecycleHook;
         onStop?: ApplicationLifecycleHook;

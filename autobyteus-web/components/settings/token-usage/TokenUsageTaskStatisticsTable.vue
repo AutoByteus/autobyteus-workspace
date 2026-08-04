@@ -353,9 +353,9 @@ const rowMetadata = (row: TokenUsageTaskStatisticsRow): string => {
   }
   if (row.rowKind === 'MEMBER_RUN') {
     if (row.memberAgentRunId) {
-      return $t('settings.components.settings.TokenUsageStatistics.memberRunIdSuffix', { id: shortId(row.memberAgentRunId) });
+      return $t('settings.components.settings.TokenUsageStatistics.agentRunIdSuffix', { id: shortId(row.memberAgentRunId) });
     }
-    return shortId(row.memberRouteKey);
+    return shortId(row.memberAddress);
   }
   return $t('settings.components.settings.TokenUsageStatistics.runIdSuffix', { id: shortId(row.runId) });
 };

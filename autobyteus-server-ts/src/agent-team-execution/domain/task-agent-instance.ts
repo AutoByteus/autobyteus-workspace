@@ -1,34 +1,22 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
-import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import type { TeamExecutionAddress } from "./team-execution-address.js";
+import type { TeamRunAgentNode } from "./team-run-config.js";
 
-export type LogicalTaskAgentMemberIdentity = {
-  memberName: string;
-  memberPath: string[];
-  memberRouteKey: string;
-  templateMemberRunId: string;
-  runtimeKind?: RuntimeKind | null;
-};
-
-export type TaskAgentInstanceIdentity = {
+export type TaskAgentInstanceIdentity = Readonly<{
   taskAgentInstanceId: string;
   taskAgentRunId: string;
-  teamRunId: string;
+  owningTeamRunId: string;
   taskId: string;
-  logicalMember: LogicalTaskAgentMemberIdentity;
   createdAt: string;
-};
+}>;
 
-export type StartTaskAgentInstanceRequest = {
+export type StartTaskAgentInstanceRequest = Readonly<{
   identity: TaskAgentInstanceIdentity;
+  receiver: TeamExecutionAddress;
+  sourceNode: TeamRunAgentNode;
   message: AgentInputUserMessage;
-};
+}>;
 
 export const cloneTaskAgentInstanceIdentity = (
   identity: TaskAgentInstanceIdentity,
-): TaskAgentInstanceIdentity => ({
-  ...identity,
-  logicalMember: {
-    ...identity.logicalMember,
-    memberPath: [...identity.logicalMember.memberPath],
-  },
-});
+): TaskAgentInstanceIdentity => Object.freeze({ ...identity });

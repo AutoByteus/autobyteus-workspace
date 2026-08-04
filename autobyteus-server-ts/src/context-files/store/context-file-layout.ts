@@ -42,7 +42,7 @@ export class ContextFileLayout {
       "team-runs",
       owner.draftTeamRunId,
       "members",
-      owner.memberRouteKey,
+      owner.memberAddress,
       "context_files",
     );
   }

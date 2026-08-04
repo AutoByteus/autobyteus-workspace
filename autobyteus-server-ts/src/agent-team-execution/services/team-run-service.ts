@@ -1,10 +1,5 @@
 import { TeamRun } from "../domain/team-run.js";
-import {
-  type TeamMemberRunConfig,
-  TeamRunConfig,
-  type TeamRunMemberConfig,
-  type TeamRunMemberConfigInput as DomainTeamRunMemberConfigInput,
-} from "../domain/team-run-config.js";
+import type { TeamAgentLaunchSettings } from "../domain/team-run-config.js";
 import { AgentTeamRunManager } from "./agent-team-run-manager.js";
 import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
@@ -13,7 +8,6 @@ import {
   runtimeKindFromString,
 } from "../../runtime-management/runtime-kind-enum.js";
 import { getWorkspaceManager, type WorkspaceManager } from "../../workspaces/workspace-manager.js";
-import { FILESYSTEM_WORKSPACE_ID_PREFIX } from "../../workspaces/workspace-registry-store.js";
 import { canonicalizeWorkspaceRootPath } from "../../workspaces/workspace-path-utils.js";
 import {
   AgentMemoryLocationService,
@@ -38,10 +32,8 @@ import {
 import { TeamRunMetadataMapper } from "./team-run-metadata-mapper.js";
 import { TeamDefinitionTopologyPlanner } from "./team-definition-topology-planner.js";
 import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
-import { TeamBackendKind } from "../domain/team-backend-kind.js";
 import { generateTeamRunIdForDefinitionName } from "../domain/team-run-id.js";
 import { AgentRunIdentityAllocator } from "../../agent-execution/services/agent-run-identity-allocator.js";
-import { TeamRunLaunchIdentityAssignment } from "./team-run-launch-identity-assignment.js";
 import { AgentRunCanonicalFailureObserver } from "../../agent-execution/events/agent-run-canonical-failure-observer.js";
 
 export interface TeamRunPresetInput {
@@ -53,18 +45,13 @@ export interface TeamRunPresetInput {
   llmConfig?: Record<string, unknown> | null;
 }
 
-type TeamRunMemberConfigInput = {
-  memberKind?: "agent" | null;
-  memberName: string;
-  memberPath?: string[] | null;
-  memberRouteKey?: string | null;
-  agentDefinitionId: string;
+export type TeamRunMemberConfigInput = {
+  memberAddress: string;
+  agentDefinitionId?: string | null;
   llmModelIdentifier: string;
   autoExecuteTools: boolean;
   skillAccessMode: SkillAccessMode;
-  workspaceId?: string | null;
   workspaceRootPath?: string | null;
-  memoryDir?: string | null;
   llmConfig?: Record<string, unknown> | null;
   runtimeKind?: RuntimeKind | string | null;
   applicationExecutionContext?: ApplicationExecutionContext | null;
@@ -73,30 +60,9 @@ type TeamRunMemberConfigInput = {
 export interface CreateTeamRunInput {
   teamDefinitionId: string;
   memberConfigs: TeamRunMemberConfigInput[];
+  /** Preallocated by an internal caller that must embed the canonical identity in launch context. */
+  teamRunId?: string | null;
 }
-
-const hasNonBlankString = (value: unknown): value is string =>
-  typeof value === "string" && value.trim().length > 0;
-
-const assertPublicLaunchInputHasNoManualRunIds = (
-  memberConfigs: readonly unknown[],
-): void => {
-  for (const rawMemberConfig of memberConfigs) {
-    const memberConfig = rawMemberConfig as Record<string, unknown>;
-    const memberLabel = String(
-      memberConfig.memberRouteKey ?? memberConfig.memberName ?? "unknown",
-    );
-    if (hasNonBlankString(memberConfig.memberRunId)) {
-      throw new Error(`Public team launch cannot supply memberRunId for member '${memberLabel}'.`);
-    }
-    if (hasNonBlankString(memberConfig.childTeamRunId)) {
-      throw new Error(`Public team launch cannot supply childTeamRunId for member '${memberLabel}'.`);
-    }
-    if (Array.isArray(memberConfig.memberConfigs)) {
-      assertPublicLaunchInputHasNoManualRunIds(memberConfig.memberConfigs);
-    }
-  }
-};
 
 export class TeamRunService {
   private readonly teamDefinitionService: AgentTeamDefinitionService;
@@ -140,10 +106,10 @@ export class TeamRunService {
   async buildMemberConfigsFromLaunchPreset(input: {
     teamDefinitionId: string;
     launchPreset: TeamRunPresetInput;
-  }): Promise<TeamMemberRunConfig[]> {
+  }): Promise<TeamRunMemberConfigInput[]> {
     const teamDefinitionId = normalizeRequiredString(input.teamDefinitionId, "teamDefinitionId");
     const launchPreset = normalizeLaunchPreset(input.launchPreset);
-    const leafMemberInputs = await this.teamDefinitionTopologyPlanner.buildPresetLeafMemberConfigs({
+    return this.teamDefinitionTopologyPlanner.buildPresetAgentLaunchSettings({
       teamDefinitionId,
       launchPreset: {
         llmModelIdentifier: launchPreset.llmModelIdentifier,
@@ -152,14 +118,9 @@ export class TeamRunService {
         workspaceRootPath: launchPreset.workspaceRootPath,
         llmConfig: launchPreset.llmConfig ?? null,
         runtimeKind: launchPreset.runtimeKind,
+        applicationExecutionContext: null,
       },
     });
-
-    return new TeamRunConfig({
-      teamDefinitionId,
-      teamBackendKind: TeamBackendKind.MIXED,
-      memberConfigs: leafMemberInputs,
-    }).memberConfigs;
   }
 
   async observeTeamRunLifecycle(
@@ -173,7 +134,7 @@ export class TeamRunService {
 
     listener({
       runtimeSubject: "TEAM_RUN",
-      runId: run.runId,
+      runId: run.teamRunId,
       phase: "ATTACHED",
       occurredAt: new Date().toISOString(),
     });
@@ -187,13 +148,13 @@ export class TeamRunService {
       terminalPhase = "TERMINATED";
       listener({
         runtimeSubject: "TEAM_RUN",
-        runId: run.runId,
+        runId: run.teamRunId,
         phase: "TERMINATED",
         occurredAt: new Date().toISOString(),
       });
     };
     const unsubscribeLifecycle = this.agentTeamRunManager.subscribeToLifecycle(
-      run.runId,
+      run.teamRunId,
       (snapshot) => observeLifecycle(snapshot.isActive),
     );
     const unsubscribeEvents = run.subscribeToEvents((event) => {
@@ -208,7 +169,7 @@ export class TeamRunService {
         terminalPhase = "FAILED";
         listener({
           runtimeSubject: "TEAM_RUN",
-          runId: run.runId,
+          runId: run.teamRunId,
           phase: "FAILED",
           occurredAt: new Date().toISOString(),
           errorMessage: failure.message,
@@ -216,7 +177,7 @@ export class TeamRunService {
       }
     });
     observeLifecycle(
-      this.agentTeamRunManager.getLifecycleSnapshot(run.runId).isActive,
+      this.agentTeamRunManager.getLifecycleSnapshot(run.teamRunId).isActive,
     );
 
     return () => {
@@ -226,66 +187,57 @@ export class TeamRunService {
   }
 
   async createTeamRun(input: CreateTeamRunInput): Promise<TeamRun> {
-    assertPublicLaunchInputHasNoManualRunIds(input.memberConfigs);
     const workspaceActivationsByCanonicalRoot = new Map<
       string,
-      Promise<{ workspaceId: string; workspaceRootPath: string }>
+      Promise<string>
     >();
 
     const ensureWorkspaceOnceByRootPath = (
       rawRootPath: string,
-    ): Promise<{ workspaceId: string; workspaceRootPath: string }> => {
+    ): Promise<string> => {
       const canonicalRootPath = canonicalizeWorkspaceRootPath(rawRootPath);
       const existingActivation = workspaceActivationsByCanonicalRoot.get(canonicalRootPath);
       if (existingActivation) {
         return existingActivation;
       }
       const activation = this.workspaceManager.ensureWorkspaceByRootPath(canonicalRootPath)
-        .then((workspace) => ({
-          workspaceId: workspace.workspaceId,
-          workspaceRootPath: workspace.getBasePath?.() ?? canonicalRootPath,
-        }));
+        .then((workspace) => workspace.getBasePath?.() ?? canonicalRootPath);
       workspaceActivationsByCanonicalRoot.set(canonicalRootPath, activation);
       return activation;
     };
 
     const memberConfigs = await Promise.all(
       input.memberConfigs.map(async (memberConfig) => {
-        let workspaceId = memberConfig.workspaceId?.trim() || null;
         let workspaceRootPath = memberConfig.workspaceRootPath?.trim() || null;
 
         if (workspaceRootPath) {
-          const workspace = await ensureWorkspaceOnceByRootPath(workspaceRootPath);
-          workspaceId = workspace.workspaceId;
-          workspaceRootPath = workspace.workspaceRootPath;
-        } else if (workspaceId?.startsWith(FILESYSTEM_WORKSPACE_ID_PREFIX)) {
-          throw new Error(
-            "workspaceRootPath is required when launching a team with filesystem workspace metadata.",
-          );
+          workspaceRootPath = await ensureWorkspaceOnceByRootPath(workspaceRootPath);
         }
 
         return {
           ...memberConfig,
           runtimeKind: resolveRuntimeKind(memberConfig.runtimeKind),
-          workspaceId,
           workspaceRootPath,
+          llmConfig: memberConfig.llmConfig ?? null,
+          applicationExecutionContext: memberConfig.applicationExecutionContext ?? null,
         };
       }),
     );
+    const teamRunId = input.teamRunId == null
+      ? await this.allocateTeamRunId(input.teamDefinitionId)
+      : normalizeRequiredString(input.teamRunId, "teamRunId");
     const plan = await this.teamDefinitionTopologyPlanner.buildPlan({
       teamDefinitionId: input.teamDefinitionId,
-      memberConfigs: memberConfigs as DomainTeamRunMemberConfigInput[],
+      teamRunId,
+      memberConfigs: memberConfigs as Array<TeamAgentLaunchSettings & { memberAddress: string }>,
     });
-    const config = plan.config;
-    const identityAssignment = this.teamRunLaunchIdentityAssignment;
-    identityAssignment.assertNoManualRunIdsForLaunch(config);
-    const teamRunId = await this.allocateTeamRunId(config.teamDefinitionId);
-    const assignedConfig = await identityAssignment.assignRunIdsForLaunch(config, teamRunId);
-    const run = await this.agentTeamRunManager.createTeamRun(assignedConfig, teamRunId);
-    const metadata = await this.teamRunMetadataMapper.buildMetadata(run);
+    const run = await this.agentTeamRunManager.createTeamRun(plan.config, teamRunId);
+    const metadata = await this.teamRunMetadataMapper.buildMetadata(run, {
+      teamDefinitionName: plan.teamDefinitionName,
+    });
 
     await this.teamRunHistoryCatalogService.recordTeamRunCreated({
-      teamRunId: run.runId,
+      teamRunId: run.teamRunId,
       metadata,
       summary: "",
     });
@@ -294,7 +246,7 @@ export class TeamRunService {
   }
 
 
-  private async allocateTeamRunId(teamDefinitionId: string): Promise<string> {
+  async allocateTeamRunId(teamDefinitionId: string): Promise<string> {
     const definition = await this.teamDefinitionService.getDefinitionById(teamDefinitionId);
     if (!definition) {
       throw new Error(
@@ -302,13 +254,6 @@ export class TeamRunService {
       );
     }
     return generateTeamRunIdForDefinitionName(definition.name);
-  }
-
-  private get teamRunLaunchIdentityAssignment(): TeamRunLaunchIdentityAssignment {
-    return new TeamRunLaunchIdentityAssignment({
-      teamDefinitionService: this.teamDefinitionService,
-      agentRunIdentityAllocator: this.agentRunIdentityAllocator,
-    });
   }
 
   async restoreTeamRun(teamRunId: string): Promise<TeamRun> {
@@ -379,18 +324,18 @@ export class TeamRunService {
     } = {},
   ): Promise<void> {
     await this.teamRunHistoryCatalogService.recordTeamRunSummary({
-      teamRunId: run.runId,
+      teamRunId: run.teamRunId,
       summary: input.summary ?? "",
     });
   }
 
   async refreshRunMetadata(run: TeamRun): Promise<void> {
-    const previousMetadata = await this.teamRunMetadataService.readMetadata(run.runId);
+    const previousMetadata = await this.teamRunMetadataService.readMetadata(run.teamRunId);
     const metadata = await this.teamRunMetadataMapper.buildMetadata(run, {
       previousMetadata,
     });
     await this.teamRunHistoryCatalogService.refreshTeamRunMetadata({
-      teamRunId: run.runId,
+      teamRunId: run.teamRunId,
       metadata,
     });
   }
@@ -414,7 +359,10 @@ export class TeamRunService {
   }
 
   private get teamDefinitionTopologyPlanner(): TeamDefinitionTopologyPlanner {
-    return new TeamDefinitionTopologyPlanner(this.teamDefinitionService);
+    return new TeamDefinitionTopologyPlanner(
+      this.teamDefinitionService,
+      this.agentRunIdentityAllocator,
+    );
   }
 
   private get teamRunMetadataMapper(): TeamRunMetadataMapper {

@@ -90,10 +90,12 @@ export class TeamRunMetadataStore {
 
   async writeMetadata(teamRunId: string, metadata: TeamRunMetadata): Promise<void> {
     const normalizedTeamRunId = normalizeTeamRunId(teamRunId);
-    const normalized = normalizeTeamRunMetadata({
-      ...metadata,
-      teamRunId: normalizedTeamRunId,
-    });
+    const normalized = normalizeTeamRunMetadata(metadata);
+    if (normalized.rootTeam.teamRunId !== normalizedTeamRunId) {
+      throw new Error(
+        `TeamRun metadata root teamRunId '${normalized.rootTeam.teamRunId}' does not match write target '${normalizedTeamRunId}'.`,
+      );
+    }
     const metadataPath = this.getMetadataPath(normalizedTeamRunId);
     await fs.mkdir(path.dirname(metadataPath), { recursive: true });
     const tempPath = createTempPath(metadataPath);

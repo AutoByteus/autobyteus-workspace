@@ -37,6 +37,10 @@ export const normalizeCollaborationHandoffs = (
       return invalidHandoff(`${fieldName}[${index}] must be an object.`);
     }
     const candidate = entry as Record<string, unknown>;
+    const keys = Object.keys(candidate).sort();
+    if (keys.length !== 3 || keys[0] !== "from" || keys[1] !== "rules" || keys[2] !== "to") {
+      return invalidHandoff(`${fieldName}[${index}] must contain exactly from, to, and rules.`);
+    }
     const from = typeof candidate.from === "string" ? candidate.from : "";
     const to = typeof candidate.to === "string" ? candidate.to : "";
     if (!from || !to) {

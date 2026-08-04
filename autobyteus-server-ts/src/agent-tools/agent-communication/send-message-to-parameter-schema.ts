@@ -8,9 +8,9 @@ import { SEND_MESSAGE_TO_FIELD_DESCRIPTIONS } from "../../agent-communication/se
 export const buildSendMessageToParameterSchema = (): ParameterSchema =>
   new ParameterSchema([
     new ParameterDefinition({
-      name: "recipient_name",
+      name: "recipient_address",
       type: ParameterType.STRING,
-      description: SEND_MESSAGE_TO_FIELD_DESCRIPTIONS.recipientName,
+      description: SEND_MESSAGE_TO_FIELD_DESCRIPTIONS.recipientAddress,
       required: false,
     }),
     new ParameterDefinition({

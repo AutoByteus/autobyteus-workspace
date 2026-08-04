@@ -48,7 +48,7 @@ export const createRunBindingCorrelationService = (context) => ({
                 lessonRepository.attachBinding({
                     lessonId,
                     bindingId: input.binding.bindingId,
-                    runId: input.binding.runtime.runId,
+                    runId: input.binding.runtime.subject === "AGENT_RUN" ? input.binding.runtime.agentRunId : input.binding.runtime.teamRunId,
                     bindingStatus: input.binding.status,
                     updatedAt: committedAt,
                 });
@@ -78,7 +78,7 @@ export const createRunBindingCorrelationService = (context) => ({
             lessonRepository.attachBinding({
                 lessonId: pendingLaunchRequest.lessonId,
                 bindingId: binding.bindingId,
-                runId: binding.runtime.runId,
+                runId: binding.runtime.subject === "AGENT_RUN" ? binding.runtime.agentRunId : binding.runtime.teamRunId,
                 bindingStatus: binding.status,
                 updatedAt: new Date().toISOString(),
             });

@@ -45,7 +45,7 @@ export class SkillImprovementTargetContextResolver {
   async resolve(target: SkillImprovementTargetRef): Promise<SkillImprovementTargetContext> {
     return target.kind === "agent_run"
       ? this.resolveAgentRun(target.runId)
-      : this.resolveTeamMember(target.teamRunId, target.memberRunId);
+      : this.resolveTeamMember(target.teamRunId, target.agentRunId);
   }
 
   private async resolveAgentRun(runId: string): Promise<SkillImprovementTargetContext> {
@@ -74,7 +74,7 @@ export class SkillImprovementTargetContextResolver {
 
   private async resolveTeamMember(
     teamRunId: string,
-    memberRunId: string,
+    agentRunId: string,
   ): Promise<SkillImprovementTargetContext> {
     const metadata = await this.teamRunMetadataService.readMetadata(teamRunId);
     if (!metadata) {
@@ -82,17 +82,17 @@ export class SkillImprovementTargetContextResolver {
     }
     const target = this.memoryLocationService.resolveTeamMemberLocationFromMetadata(
       metadata,
-      { memberRunId },
+      { agentRunId: agentRunId },
       teamRunId,
     );
     if (!target) {
-      throw new Error(`Agent member run '${memberRunId}' was not found in team run '${teamRunId}'.`);
+      throw new Error(`Agent member run '${agentRunId}' was not found in team run '${teamRunId}'.`);
     }
     const member = target.member;
     const definition = await this.loadAgentDefinition(member.agentDefinitionId);
     return {
-      target: { kind: "team_member_run", teamRunId, memberRunId },
-      sourceRunIds: [memberRunId],
+      target: { kind: "team_member_run", teamRunId, agentRunId },
+      sourceRunIds: [agentRunId],
       targetAgentDefinition: definition,
       agentDefinitionId: member.agentDefinitionId,
       agentName: definition.name,

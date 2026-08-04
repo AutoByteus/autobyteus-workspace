@@ -20,7 +20,7 @@ export type SkillImprovementEffectiveConfig = {
 
 export type SkillImprovementTargetRef =
   | { kind: "agent_run"; runId: string }
-  | { kind: "team_member_run"; teamRunId: string; memberRunId: string };
+  | { kind: "team_member_run"; teamRunId: string; agentRunId: string };
 
 export type ManualSkillImprovementRequestedFrom = "run_detail" | "team_run_detail" | "api";
 

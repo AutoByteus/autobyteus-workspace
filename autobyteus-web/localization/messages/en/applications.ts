@@ -29,7 +29,7 @@ const applicationMessages = {
   'applications.shared.pending': 'pending',
   'applications.shared.currentDelivery': 'Current delivery',
   'applications.shared.route': 'Route',
-  'applications.shared.teamPath': 'Team path',
+  'applications.shared.memberAddress': 'Member address',
   'applications.shared.artifacts': 'Artifacts',
   'applications.shared.root': 'root',
   'applications.shared.progress': 'Progress',

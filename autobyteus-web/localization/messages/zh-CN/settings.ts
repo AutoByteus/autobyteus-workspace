@@ -480,7 +480,7 @@ const settingsMessages = {
   'settings.components.settings.TokenUsageStatistics.collapseTeam': '收起团队成员',
   'settings.components.settings.TokenUsageStatistics.teamIdSuffix': '团队 {{id}}',
   'settings.components.settings.TokenUsageStatistics.runIdSuffix': '运行 {{id}}',
-  'settings.components.settings.TokenUsageStatistics.memberRunIdSuffix': '成员运行 {{id}}',
+  'settings.components.settings.TokenUsageStatistics.agentRunIdSuffix': '成员运行 {{id}}',
   'settings.components.settings.TokenUsageStatistics.taskTeamRunIdSuffix': '任务团队 {{id}}',
   'settings.components.settings.TokenUsageStatistics.taskAgentRunIdSuffix': '任务代理 {{id}}',
   'settings.components.settings.TokenUsageStatistics.cacheHitWithCached': '缓存命中 {{percent}} · 已缓存 {{cached}}',

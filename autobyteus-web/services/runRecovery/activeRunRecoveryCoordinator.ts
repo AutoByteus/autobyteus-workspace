@@ -51,20 +51,20 @@ const applyTeamHistoryStatusToExistingContext = (
     existingTeamContext.isSubscribed;
   const statusByKey = new Map(
     teamRun.members
-      .map((member) => [member.memberRouteKey.trim(), member.status] as const)
-      .filter(([memberRouteKey]) => Boolean(memberRouteKey)),
+      .map((member) => [member.memberAddress.trim(), member.status] as const)
+      .filter(([memberAddress]) => Boolean(memberAddress)),
   );
   const statusByRunId = new Map(
     teamRun.members
-      .map((member) => [member.memberRunId.trim(), member.status] as const)
-      .filter(([memberRunId]) => Boolean(memberRunId)),
+      .map((member) => [member.agentRunId.trim(), member.status] as const)
+      .filter(([agentRunId]) => Boolean(agentRunId)),
   );
 
   existingTeamContext.isActive = teamRun.isActive;
-  existingTeamContext.leafAgentContextsByRouteKey.forEach((memberContext, memberRouteKey) => {
+  existingTeamContext.agentExecutionsByKey.forEach((memberContext, memberAddress) => {
     memberContext.config.isLocked = true;
     const matchedStatus =
-      statusByKey.get(memberRouteKey) ||
+      statusByKey.get(memberAddress) ||
       statusByRunId.get(memberContext.state.runId);
     applyMemberOrHistoryStatusSnapshot(
       memberContext,
@@ -126,7 +126,7 @@ export const recoverActiveRunsFromHistory = async (
     try {
       const result = await openTeamRun({
         teamRunId,
-        memberRouteKey: null,
+        memberAddress: null,
         resolveWorkspaceMetadataByRootPath: input.resolveWorkspaceMetadataByRootPath,
         ensureWorkspaceByRootPath: input.ensureWorkspaceByRootPath,
         selectRun: false,

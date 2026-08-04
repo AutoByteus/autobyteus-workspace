@@ -36,7 +36,7 @@ import {
   type TaskDelegationRecordsService,
 } from "./records/task-delegation-records-service.js";
 import type { ActiveTaskDelegationRecordEntry } from "./task-delegation-active-entry.js";
-import type { ResolvedTeamLogicalPlacement } from "../services/resolved-team-logical-placement.js";
+import type { ResolvedTeamRecipient } from "../services/resolved-team-recipient.js";
 import { TaskDelegationTargetMapper } from "./task-delegation-target-mapper.js";
 
 export type TaskDelegationServiceOptions = {
@@ -67,16 +67,10 @@ export class TaskDelegationService {
     options: TaskDelegationServiceOptions = {},
   ) {
     this.persistenceScope = resolveTaskDelegationPersistenceScope(teamRun);
-    const runtimeContext = teamRun.getRuntimeContext() as { teamMountPath?: unknown } | null;
-    const teamMountPath = Array.isArray(runtimeContext?.teamMountPath)
-      ? runtimeContext.teamMountPath.filter((segment): segment is string => typeof segment === "string")
-      : [];
-    this.addressBuilder = new TaskDelegationAddressBuilder(
-      getTaskDelegationTaskTeamInstance(teamRun),
-      teamMountPath,
-    );
-    this.ledger = new TaskDelegationLedger(teamRun.runId);
-    this.taskAgentDirectory = getTaskAgentDirectory(teamRun.runId);
+    const runtimeContext = teamRun.getRuntimeContext() as import("../backends/mixed/mixed-team-run-context.js").MixedTeamRunContext;
+    this.addressBuilder = new TaskDelegationAddressBuilder(runtimeContext.teamExecutionAddress);
+    this.ledger = new TaskDelegationLedger(teamRun.teamRunId);
+    this.taskAgentDirectory = getTaskAgentDirectory(teamRun.config.rootTeam.teamRunId);
     this.taskTeamDirectory = options.taskTeamDirectory ?? getTaskTeamActiveRunDirectory();
     this.runRegistry = options.runRegistry ?? getTaskDelegationRunRegistry();
     this.recordsService = options.recordsService ?? getTaskDelegationRecordsService();
@@ -89,17 +83,12 @@ export class TaskDelegationService {
     );
     this.eventPublisher = new TaskDelegationEventPublisher();
     this.notificationDispatcher = new TaskDelegationNotificationDispatcher();
-    this.inputResolver = new TaskDelegationInputResolver(teamRun.runId);
+    this.inputResolver = new TaskDelegationInputResolver(teamRun.teamRunId);
     this.settlementCoordinator = new TaskDelegationSettlementCoordinator(
       teamRun,
       this.ledger,
       this.taskAgentDirectory,
-      {
-        coordinatorMemberRouteKey:
-          teamRun.context?.coordinatorMemberRouteKey ??
-          teamRun.config?.coordinatorMemberRouteKey ??
-          null,
-      },
+      { coordinatorAddress: teamRun.context.index.getTeam(teamRun.context.teamAddress)?.coordinatorAddress ?? null },
     );
     this.taskTeamSettlementCoordinator = new TaskTeamSettlementCoordinator({
       parentTeamRun: teamRun,
@@ -137,17 +126,13 @@ export class TaskDelegationService {
   async delegateTask(
     context: TaskDelegationContext,
     input: DelegateTaskInput,
-    placement: ResolvedTeamLogicalPlacement,
+    placement: ResolvedTeamRecipient,
   ): Promise<DelegateTaskResult> {
     this.assertTeamRunActive();
     this.inputResolver.assertContext(context);
     this.assertActiveTaskAgentCaller(context);
     const task = this.inputResolver.normalizeCreateInput(input);
-    const config = this.teamRun.config;
-    if (!config) {
-      throw new TaskDelegationError("TASK_DELEGATION_TARGET_CONFIG_INVALID", "Current TeamRun config is required for task delegation.");
-    }
-    const target = this.targetMapper.fromPlacement(placement, context.addressing, config, context.caller);
+    const target = this.targetMapper.fromRecipient(placement, context.addressing, this.teamRun.context, context.caller);
     const taskId = await this.recordsService.reserveTaskId(this.persistenceScope);
     const createInput = this.inputResolver.buildCreateInput(context, task, target, taskId);
     const referenceFiles = this.normalizeReferenceFiles(createInput.task.reference_files);
@@ -185,17 +170,20 @@ export class TaskDelegationService {
     const activeEntry = this.ledger.activateStartingEntry({
       taskId,
       taskRun: {
-        address: this.addressBuilder.buildTaskRunAddress(startingEntry.boundExecution),
+        address: this.addressBuilder.buildTaskRunAddress(startingEntry.boundExecution, startingEntry.receiverAddress),
         startedAt: new Date().toISOString(),
       },
       receiverAddress: startingEntry.boundExecution.kind === "task_team"
-        ? this.addressBuilder.buildTaskTeamIngressAddress(startingEntry.boundExecution.taskTeamInstance)
+        ? this.addressBuilder.buildTaskTeamIngressAddress(
+            this.addressBuilder.buildTaskRunAddress(startingEntry.boundExecution, startingEntry.receiverAddress),
+            startingEntry.target.kind === "agent_team" ? startingEntry.target.coordinatorAddress : startingEntry.receiverAddress.memberAddress,
+          )
         : startingEntry.receiverAddress,
     });
     await this.persistLifecycleRecord(activeEntry);
     this.eventPublisher.publishActivated({
       teamRun: this.teamRun,
-      teamRunId: this.teamRun.runId,
+      teamRunId: this.teamRun.teamRunId,
       entry: activeEntry,
     });
     return {
@@ -239,13 +227,13 @@ export class TaskDelegationService {
     if (!taskTeamInstance) {
       throw new TaskDelegationError("TASK_TEAM_CONTEXT_REQUIRED", "submit_task_result requires a bound task-team ingress context for team task results.");
     }
-    if (context.caller.taskAgentRunId?.trim()) {
+    if (context.caller.taskAgentInstance?.taskAgentRunId?.trim()) {
       throw new TaskDelegationError("TASK_TEAM_CONTEXT_REQUIRED", "Task-team ingress submission cannot be routed from a task-agent context.");
     }
-    if (taskTeamInstance.parentTeamRunId !== this.teamRun.runId) {
+    if (taskTeamInstance.parentTeamRunId !== this.teamRun.teamRunId) {
       throw new TaskDelegationError(
         "TASK_TEAM_PARENT_RUN_MISMATCH",
-        `Task-team run '${taskTeamInstance.taskTeamRunId}' belongs to parent team run '${taskTeamInstance.parentTeamRunId}', not '${this.teamRun.runId}'.`,
+        `Task-team run '${taskTeamInstance.taskTeamRunId}' belongs to parent TeamRun '${taskTeamInstance.parentTeamRunId}', not '${this.teamRun.teamRunId}'.`,
       );
     }
     return this.submitTaskTeamResult(
@@ -279,8 +267,8 @@ export class TaskDelegationService {
     });
     const { entry: updatedEntry, review, previousStatus } = transition;
     await this.persistLifecycleRecord(updatedEntry);
-    this.eventPublisher.publishResultReviewed({ teamRun: this.teamRun, teamRunId: this.teamRun.runId, previousStatus, entry: updatedEntry, review });
-    this.eventPublisher.publishStatusUpdated({ teamRun: this.teamRun, teamRunId: this.teamRun.runId, previousStatus, entry: updatedEntry });
+    this.eventPublisher.publishResultReviewed({ teamRun: this.teamRun, teamRunId: this.teamRun.teamRunId, previousStatus, entry: updatedEntry, review });
+    this.eventPublisher.publishStatusUpdated({ teamRun: this.teamRun, teamRunId: this.teamRun.teamRunId, previousStatus, entry: updatedEntry });
 
     if (input.decision === "request_revision") {
       const notificationOutcome = await this.notificationDispatcher.notifyRevisionRequested({ teamRun: this.teamRun, entry: updatedEntry, review });
@@ -320,8 +308,8 @@ export class TaskDelegationService {
   ): Promise<SubmitTaskResultResult> {
     const { entry: updatedEntry, submission, previousStatus } = transition;
     await this.persistLifecycleRecord(updatedEntry);
-    this.eventPublisher.publishResultSubmitted({ teamRun: this.teamRun, teamRunId: this.teamRun.runId, previousStatus, entry: updatedEntry, submission });
-    this.eventPublisher.publishStatusUpdated({ teamRun: this.teamRun, teamRunId: this.teamRun.runId, previousStatus, entry: updatedEntry });
+    this.eventPublisher.publishResultSubmitted({ teamRun: this.teamRun, teamRunId: this.teamRun.teamRunId, previousStatus, entry: updatedEntry, submission });
+    this.eventPublisher.publishStatusUpdated({ teamRun: this.teamRun, teamRunId: this.teamRun.teamRunId, previousStatus, entry: updatedEntry });
     const notificationOutcome = await this.notificationDispatcher.notifyResultSubmitted({ teamRun: this.teamRun, entry: updatedEntry, submission });
     this.logNotificationWarning(notificationOutcome);
     const notificationMessage = this.notificationWarningMessage(notificationOutcome);
@@ -354,40 +342,39 @@ export class TaskDelegationService {
 
   private assertTeamRunActive(): void {
     if (!this.teamRun.isActive()) {
-      throw new TaskDelegationError("TEAM_RUN_NOT_ACTIVE", `Team run '${this.teamRun.runId}' is not active.`);
+      throw new TaskDelegationError("TEAM_RUN_NOT_ACTIVE", `TeamRun '${this.teamRun.teamRunId}' is not active.`);
     }
   }
 
   private assertOriginalDelegator(context: TaskDelegationContext, entry: ActiveTaskDelegationRecordEntry): void {
     const caller = context.caller;
     const reviewOwner = entry.reviewOwner;
-    const callerLogicalRoute = caller.logicalMemberRouteKey?.trim() || caller.memberRouteKey.trim();
-    if (reviewOwner.memberRouteKey !== callerLogicalRoute || reviewOwner.memberName !== caller.memberName) {
-      throw new TaskDelegationError("DELEGATOR_NOT_AUTHORIZED", `Only task review owner '${reviewOwner.memberName}' may review delegated task '${entry.record.taskId}'.`);
+    if (reviewOwner.executionAddress.memberAddress !== caller.executionAddress.memberAddress) {
+      throw new TaskDelegationError("DELEGATOR_NOT_AUTHORIZED", `Only task review owner '${reviewOwner.executionAddress.memberAddress}' may review delegated task '${entry.record.taskId}'.`);
     }
-    if (reviewOwner.taskAgentRunId) {
+    if (reviewOwner.taskAgentInstance) {
       this.assertTaskAgentDelegatorIdentity(context, entry);
       return;
     }
-    if (caller.taskAgentRunId?.trim()) {
+    if (caller.taskAgentInstance?.taskAgentRunId?.trim()) {
       throw new TaskDelegationError("DELEGATOR_NOT_AUTHORIZED", `Task-agent caller is not the task review owner for delegated task '${entry.record.taskId}'.`);
     }
-    if (reviewOwner.memberRunId !== caller.memberRunId) {
-      throw new TaskDelegationError("DELEGATOR_NOT_AUTHORIZED", `Caller run '${caller.memberRunId}' is not the task review owner run for delegated task '${entry.record.taskId}'.`);
+    if (reviewOwner.agentRunId !== caller.agentRunId) {
+      throw new TaskDelegationError("DELEGATOR_NOT_AUTHORIZED", `Caller AgentRun '${caller.agentRunId}' is not the task review owner for delegated task '${entry.record.taskId}'.`);
     }
   }
 
   private assertTaskAgentDelegatorIdentity(context: TaskDelegationContext, entry: ActiveTaskDelegationRecordEntry): void {
     const caller = context.caller;
     const expected = entry.reviewOwner;
-    if (caller.taskAgentRunId !== expected.taskAgentRunId || caller.taskId !== expected.taskId || caller.memberRunId !== expected.taskAgentRunId) {
+    if (caller.taskAgentInstance?.taskAgentRunId !== expected.taskAgentInstance?.taskAgentRunId || caller.taskAgentInstance?.taskId !== expected.taskAgentInstance?.taskId || caller.agentRunId !== expected.taskAgentInstance?.taskAgentRunId) {
       throw new TaskDelegationError("DELEGATOR_NOT_AUTHORIZED", `Caller task-agent identity is not the task review owner for delegated task '${entry.record.taskId}'.`);
     }
     this.assertActiveTaskAgentCaller(context);
   }
 
   private requireBoundTaskAgentRunId(context: TaskDelegationContext): string {
-    const taskAgentRunId = context.caller.taskAgentRunId?.trim() || null;
+    const taskAgentRunId = context.caller.taskAgentInstance?.taskAgentRunId?.trim() || null;
     if (!taskAgentRunId) {
       throw new TaskDelegationError("TASK_AGENT_CONTEXT_REQUIRED", "submit_task_result is available only to a bound task-agent or task-team ingress context.");
     }
@@ -396,7 +383,7 @@ export class TaskDelegationService {
   }
 
   private assertActiveTaskAgentCaller(context: TaskDelegationContext): void {
-    const taskAgentRunId = context.caller.taskAgentRunId?.trim() || null;
+    const taskAgentRunId = context.caller.taskAgentInstance?.taskAgentRunId?.trim() || null;
     if (!taskAgentRunId) return;
     this.resolveActiveTaskAgentCallerEntry(context, taskAgentRunId, "perform task delegation actions");
   }
@@ -413,7 +400,7 @@ export class TaskDelegationService {
     if (!entry) {
       throw new TaskDelegationError("TASK_AGENT_NOT_ACTIVE", `Task-agent run '${taskAgentRunId}' is not an active task-agent for ${actionDescription}.`);
     }
-    const callerTaskId = context.caller.taskId?.trim() || null;
+    const callerTaskId = context.caller.taskAgentInstance?.taskId?.trim() || null;
     if (callerTaskId !== entry.taskId) {
       throw new TaskDelegationError("TASK_AGENT_NOT_AUTHORIZED", `Task-agent run '${taskAgentRunId}' is not bound to task '${callerTaskId ?? "(missing)"}'.`);
     }

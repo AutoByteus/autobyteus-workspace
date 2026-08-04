@@ -2,7 +2,7 @@ import { DEFAULT_AGENT_RUNTIME_KIND, runtimeKindToLabel } from '~/types/agent/Ag
 import { buildUnavailableInheritedModelMessage } from '~/utils/teamRunConfigUtils'
 
 export type TeamLaunchProfileMemberReadinessInput = {
-  memberName: string
+  displayName: string
   runtimeKind?: string | null
   llmModelIdentifier?: string | null
 }
@@ -16,7 +16,7 @@ export type TeamLaunchReadinessBlockingIssueCode =
 export type TeamLaunchReadinessBlockingIssue = {
   code: TeamLaunchReadinessBlockingIssueCode
   message: string
-  memberName: string
+  displayName: string
   runtimeKind: string
 }
 
@@ -63,7 +63,7 @@ export const evaluateTeamLaunchProfileReadiness = (input: {
     if (!runtimeCatalog) {
       blockingIssues.push({
         code: 'MODEL_CATALOG_PENDING',
-        memberName: memberProfile.memberName,
+        displayName: memberProfile.displayName,
         runtimeKind: effectiveRuntimeKind,
         message: `Models for ${runtimeKindToLabel(effectiveRuntimeKind)} are still loading.`,
       })
@@ -73,9 +73,9 @@ export const evaluateTeamLaunchProfileReadiness = (input: {
     if (!effectiveModelIdentifier) {
       blockingIssues.push({
         code: 'MODEL_REQUIRED',
-        memberName: memberProfile.memberName,
+        displayName: memberProfile.displayName,
         runtimeKind: effectiveRuntimeKind,
-        message: `${memberProfile.memberName} needs a model before this team setup can be saved.`,
+        message: `${memberProfile.displayName} needs a model before this team setup can be saved.`,
       })
       return
     }
@@ -87,21 +87,21 @@ export const evaluateTeamLaunchProfileReadiness = (input: {
     if (explicitModelIdentifier) {
       blockingIssues.push({
         code: 'MODEL_UNAVAILABLE',
-        memberName: memberProfile.memberName,
+        displayName: memberProfile.displayName,
         runtimeKind: effectiveRuntimeKind,
-        message: `${memberProfile.memberName} model ${explicitModelIdentifier} is unavailable for ${runtimeKindToLabel(effectiveRuntimeKind)}.`,
+        message: `${memberProfile.displayName} model ${explicitModelIdentifier} is unavailable for ${runtimeKindToLabel(effectiveRuntimeKind)}.`,
       })
       return
     }
 
     blockingIssues.push({
       code: 'UNRESOLVED_INHERITED_MODEL',
-      memberName: memberProfile.memberName,
+      displayName: memberProfile.displayName,
       runtimeKind: effectiveRuntimeKind,
       message: buildUnavailableInheritedModelMessage({
         globalLlmModelIdentifier: defaultLlmModelIdentifier,
         runtimeKind: effectiveRuntimeKind,
-        memberName: memberProfile.memberName,
+        memberName: memberProfile.displayName,
       }),
     })
   })

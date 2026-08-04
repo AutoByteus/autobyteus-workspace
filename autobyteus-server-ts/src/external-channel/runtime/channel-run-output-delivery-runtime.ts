@@ -285,15 +285,12 @@ export class ChannelRunOutputDeliveryRuntime {
   }
 
   private async recoverReplyText(record: ChannelRunOutputDeliveryRecord): Promise<string | null> {
-    const agentRunId = record.target.targetType === "AGENT"
-      ? record.target.agentRunId
-      : record.target.entryMemberRunId;
-    if (!agentRunId) {
-      return null;
-    }
+    const agentRunId = record.target.targetType === "AGENT" ? record.target.agentRunId : null;
+    const executionAddress = record.target.targetType === "TEAM" ? record.target.entryExecutionAddress : null;
+    if (!agentRunId && !executionAddress) return null;
     return this.turnReplyRecoveryService.resolveReplyText({
       agentRunId,
-      teamRunId: record.target.targetType === "TEAM" ? record.target.teamRunId : null,
+      executionAddress,
       turnId: record.turnId,
     });
   }

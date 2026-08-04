@@ -48,8 +48,8 @@ export type ApplicationConfiguredTeamLaunchDefaults = {
 };
 
 export type ApplicationConfiguredTeamMemberProfile = {
-  memberRouteKey: string;
-  memberName: string;
+  memberAddress: string;
+  displayName: string;
   agentDefinitionId: string;
   llmModelIdentifier?: string | null;
   runtimeKind?: string | null;
@@ -83,8 +83,8 @@ export type ApplicationExecutionResourceConfigurationIssue = {
   code: ApplicationExecutionResourceConfigurationIssueCode;
   message: string;
   staleMembers?: Array<{
-    memberRouteKey: string;
-    memberName: string;
+    memberAddress: string;
+    displayName: string;
     agentDefinitionId: string;
     reason: "MISSING_FROM_TEAM" | "AGENT_CHANGED";
     currentAgentDefinitionId?: string | null;

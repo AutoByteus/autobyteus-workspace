@@ -51,7 +51,7 @@ const toMemberRunMetadata = (
   teamWorkspaceRootPath: string | null | undefined,
   memberMemoryDir: string,
 ): AgentRunMetadata => ({
-  runId: member.memberRunId,
+  runId: member.agentRunId,
   agentDefinitionId: member.agentDefinitionId,
   workspaceRootPath: resolveMemberWorkspaceRootPath(member, teamWorkspaceRootPath),
   memoryDir: memberMemoryDir,
@@ -69,12 +69,13 @@ const findRuntimeMemberContext = (
 ): TeamMemberRuntimeContext | null => {
   for (const candidate of getRuntimeMemberContexts(runtimeContext)) {
     if (
-      candidate.memberRunId === member.memberRunId ||
-      candidate.memberRouteKey === member.memberRouteKey
+      candidate.kind === "agent" && (
+        candidate.agentRunId === member.agentRunId || candidate.address === member.address
+      )
     ) {
       return candidate;
     }
-    if (candidate.memberKind === "agent_team") {
+    if (candidate.kind === "agent_team") {
       const nested = findRuntimeMemberContext(
         (candidate as TeamSubTeamMemberRuntimeContext).childRuntimeContext ?? null,
         member,
@@ -122,19 +123,19 @@ export class TeamMemberRunViewProjectionService {
         : getAgentMemoryLocationService());
   }
 
-  async getProjection(teamRunId: string, memberRouteKey: string): Promise<TeamMemberRunProjection> {
+  async getProjection(teamRunId: string, memberAddress: string): Promise<TeamMemberRunProjection> {
     const normalizedTeamRunId = normalizeRequiredString(teamRunId, "teamRunId");
-    const normalizedMemberRouteKey = normalizeRequiredString(memberRouteKey, "memberRouteKey");
+    const normalizedMemberAddress = normalizeRequiredString(memberAddress, "memberAddress");
     const resumeConfig = await this.teamRunHistoryService.getTeamRunResumeConfig(normalizedTeamRunId);
     const target = this.memoryLocationService.resolveTeamMemberLocationFromMetadata(
       resumeConfig.metadata,
-      { memberRouteKey: normalizedMemberRouteKey },
+      { memberAddress: normalizedMemberAddress },
       normalizedTeamRunId,
     );
 
     if (!target) {
       throw new Error(
-        `Member route key '${normalizedMemberRouteKey}' not found for team run '${normalizedTeamRunId}'.`,
+        `Member address '${normalizedMemberAddress}' not found for team run '${normalizedTeamRunId}'.`,
       );
     }
     const binding = target.member;
@@ -145,7 +146,7 @@ export class TeamMemberRunViewProjectionService {
     };
 
     const projection = await this.agentRunViewProjectionService.getProjectionFromMetadata({
-      runId: binding.memberRunId,
+      runId: binding.agentRunId,
       metadata: toMemberRunMetadata(
         memberMetadataWithLivePlatformId,
         resolveTeamWorkspaceRootPath(resumeConfig.metadata),
@@ -165,30 +166,30 @@ export class TeamMemberRunViewProjectionService {
 
   async getActiveTracePage(
     teamRunId: string,
-    memberRouteKey: string,
+    memberAddress: string,
     beforeCursor?: string | null,
   ): Promise<EventMonitorActiveTracePage> {
     const normalizedTeamRunId = normalizeRequiredString(teamRunId, "teamRunId");
-    const normalizedMemberRouteKey = normalizeRequiredString(memberRouteKey, "memberRouteKey");
+    const normalizedMemberAddress = normalizeRequiredString(memberAddress, "memberAddress");
     const resumeConfig = await this.teamRunHistoryService.getTeamRunResumeConfig(normalizedTeamRunId);
     const target = this.memoryLocationService.resolveTeamMemberLocationFromMetadata(
       resumeConfig.metadata,
-      { memberRouteKey: normalizedMemberRouteKey },
+      { memberAddress: normalizedMemberAddress },
       normalizedTeamRunId,
     );
     if (!target) {
-      throw new Error(`Member route key '${normalizedMemberRouteKey}' not found for team run '${normalizedTeamRunId}'.`);
+      throw new Error(`Member address '${normalizedMemberAddress}' not found for team run '${normalizedTeamRunId}'.`);
     }
     const binding = target.member;
     return this.agentRunViewProjectionService.getActiveTracePageFromMetadata({
-      runId: binding.memberRunId,
+      runId: binding.agentRunId,
       metadata: toMemberRunMetadata(
         binding,
         resolveTeamWorkspaceRootPath(resumeConfig.metadata),
         target.memoryDir,
       ),
       beforeCursor,
-      canonicalSubject: `team:${normalizedTeamRunId}:member:${normalizedMemberRouteKey}`,
+      canonicalSubject: `team:${normalizedTeamRunId}:member:${normalizedMemberAddress}`,
     });
   }
 }

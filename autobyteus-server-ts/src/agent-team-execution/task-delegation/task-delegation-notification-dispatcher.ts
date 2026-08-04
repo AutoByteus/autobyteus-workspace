@@ -2,7 +2,7 @@ import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-u
 import { SenderType } from "autobyteus-ts/agent/sender-type.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import type { TeamRun } from "../domain/team-run.js";
-import { selectorFromMemberRouteKey } from "../domain/team-run-member-identity.js";
+import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { ActiveTaskDelegationRecordEntry } from "./task-delegation-active-entry.js";
 import type {
   TaskDelegationNotificationDeliveryOutcome,
@@ -24,8 +24,8 @@ const renderOperationResultMessage = (result: AgentOperationResult): string =>
   result.message?.trim() || result.code?.trim() || "The target runtime rejected the system task notification.";
 
 type NotificationTarget =
-  | { kind: "member"; memberRouteKey: string; taskAgentRunId: string | null }
-  | { kind: "task_team"; memberRouteKey: string; taskTeamRunId: string };
+  | { kind: "agent"; memberAddress: AgentTeamAddress; taskAgentRunId: string | null }
+  | { kind: "task_team"; memberAddress: AgentTeamAddress; taskTeamRunId: string };
 
 export class TaskDelegationNotificationDispatcher {
   constructor(
@@ -87,11 +87,11 @@ export class TaskDelegationNotificationDispatcher {
     const message = new AgentInputUserMessage(input.content, SenderType.SYSTEM, null, markTaskDelegationSystemTaskNotificationMetadata({
       ...input.metadata,
       sender_id: "system.task_delegation",
-      team_run_id: input.teamRun.runId,
+      team_run_id: input.teamRun.teamRunId,
       input_origin: "task_delegation_notification",
       task_notification_type: input.notificationType,
-      target_member_route_key: input.target.memberRouteKey,
-      target_task_agent_run_id: input.target.kind === "member" ? input.target.taskAgentRunId : null,
+      target_member_address: input.target.memberAddress,
+      target_task_agent_run_id: input.target.kind === "agent" ? input.target.taskAgentRunId : null,
       target_task_team_run_id: input.target.kind === "task_team" ? input.target.taskTeamRunId : null,
     }, {
       displayContent: input.displayContent,
@@ -100,13 +100,13 @@ export class TaskDelegationNotificationDispatcher {
     try {
       const result = input.target.kind === "task_team"
         ? await input.teamRun.postMessageToTaskTeamInstance(
-            input.target.memberRouteKey,
+            input.target.memberAddress,
             input.target.taskTeamRunId,
             message,
           )
         : await input.teamRun.postMessage(
             message,
-            selectorFromMemberRouteKey(input.target.memberRouteKey),
+            input.target.memberAddress,
             input.target.taskAgentRunId,
           );
       if (result.accepted) return this.delivered(input.notificationType, input.target);
@@ -122,10 +122,10 @@ export class TaskDelegationNotificationDispatcher {
   }
 
   private resolveDelegatorTarget(entry: ActiveTaskDelegationRecordEntry): NotificationTarget {
-    const taskAgentRunId = entry.reviewOwner.taskAgentRunId?.trim() || null;
+    const taskAgentRunId = entry.reviewOwner.taskAgentInstance?.taskAgentRunId ?? null;
     return {
-      kind: "member",
-      memberRouteKey: entry.reviewOwner.logicalMemberRouteKey?.trim() || entry.reviewOwner.memberRouteKey,
+      kind: "agent",
+      memberAddress: entry.reviewOwner.executionAddress.memberAddress,
       taskAgentRunId,
     };
   }
@@ -133,14 +133,14 @@ export class TaskDelegationNotificationDispatcher {
   private resolveExecutionTarget(entry: ActiveTaskDelegationRecordEntry): NotificationTarget {
     if (entry.taskRunExecution.kind === "task_agent") {
       return {
-        kind: "member",
-        memberRouteKey: entry.taskRunExecution.taskAgentInstance.logicalMember.memberRouteKey,
+        kind: "agent",
+        memberAddress: entry.record.receiverAddress.memberAddress,
         taskAgentRunId: entry.taskRunExecution.taskAgentInstance.taskAgentRunId,
       };
     }
     return {
       kind: "task_team",
-      memberRouteKey: entry.taskRunExecution.taskTeamInstance.logicalTeam.memberRouteKey,
+      memberAddress: entry.record.receiverAddress.memberAddress,
       taskTeamRunId: entry.taskRunExecution.taskTeamInstance.taskTeamRunId,
     };
   }
@@ -152,8 +152,8 @@ export class TaskDelegationNotificationDispatcher {
     return {
       notificationType,
       delivered: true,
-      targetMemberRouteKey: target.memberRouteKey,
-      targetTaskAgentRunId: target.kind === "member" ? target.taskAgentRunId : null,
+      targetMemberAddress: target.memberAddress,
+      targetTaskAgentRunId: target.kind === "agent" ? target.taskAgentRunId : null,
       targetTaskTeamRunId: target.kind === "task_team" ? target.taskTeamRunId : null,
       warning: null,
     };
@@ -169,15 +169,15 @@ export class TaskDelegationNotificationDispatcher {
       code: "TASK_NOTIFICATION_DELIVERY_FAILED",
       notification_type: notificationType,
       task_id: entry.record.taskId,
-      target_member_route_key: target.memberRouteKey,
-      target_task_agent_run_id: target.kind === "member" ? target.taskAgentRunId : null,
+      target_member_address: target.memberAddress,
+      target_task_agent_run_id: target.kind === "agent" ? target.taskAgentRunId : null,
       target_task_team_run_id: target.kind === "task_team" ? target.taskTeamRunId : null,
       message: reason,
     };
     return {
       notificationType,
       delivered: false,
-      targetMemberRouteKey: target.memberRouteKey,
+      targetMemberAddress: target.memberAddress,
       targetTaskAgentRunId: warning.target_task_agent_run_id ?? null,
       targetTaskTeamRunId: warning.target_task_team_run_id ?? null,
       warning,

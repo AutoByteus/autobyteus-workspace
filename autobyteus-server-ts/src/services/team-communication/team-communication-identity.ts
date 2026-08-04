@@ -1,10 +1,9 @@
 import { createHash } from "node:crypto";
 import path from "node:path";
 import {
-  conversationTargetAddressDebugString,
-  normalizeConversationTargetAddress,
-  type ConversationTargetAddress,
-} from "../../agent-team-execution/domain/conversation-target-address.js";
+  serializeTeamExecutionAddress,
+  type TeamExecutionAddress,
+} from "../../agent-team-execution/domain/team-execution-address.js";
 import {
   isAgentRunFilePathAbsolute,
   normalizeAgentRunFilePathDisplay,
@@ -13,8 +12,8 @@ import {
 const normalizeIdentityPart = (value: string | null | undefined): string =>
   (value ?? "").trim();
 
-const normalizeAddressIdentityPart = (address: ConversationTargetAddress): string =>
-  conversationTargetAddressDebugString(normalizeConversationTargetAddress(address));
+const normalizeAddressIdentityPart = (address: TeamExecutionAddress): string =>
+  serializeTeamExecutionAddress(address);
 
 export const normalizeTeamCommunicationReferencePath = (value: string): string =>
   normalizeAgentRunFilePathDisplay(value);
@@ -24,8 +23,8 @@ export const isAbsoluteTeamCommunicationReferencePath = (value: string): boolean
 
 export const buildTeamCommunicationMessageId = (input: {
   teamRunId: string;
-  senderAddress: ConversationTargetAddress;
-  receiverAddress: ConversationTargetAddress;
+  senderAddress: TeamExecutionAddress;
+  receiverAddress: TeamExecutionAddress;
   messageType: string;
   content: string;
   createdAt: string;

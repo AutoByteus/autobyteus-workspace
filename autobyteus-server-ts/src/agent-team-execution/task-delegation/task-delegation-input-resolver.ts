@@ -7,12 +7,13 @@ import {
   type TaskDelegationTaskInput,
 } from "./task-delegation-record.js";
 import type { TaskDelegationTarget } from "./task-delegation-target.js";
-import { cloneTaskDelegationMemberIdentity, cloneTaskDelegationTarget } from "./task-delegation-target.js";
+import { cloneTaskDelegationTarget } from "./task-delegation-target.js";
 import {
   normalizeExplicitAbsoluteLocalReferenceFiles,
   type ExplicitAbsoluteLocalReferenceFileValidationError,
 } from "../../services/reference-files/absolute-local-reference-files.js";
 import { createMemberLogicalAddressContext } from "../domain/member-logical-address-context.js";
+import { createTeamExecutionAddress } from "../domain/team-execution-address.js";
 
 export const normalizeRequiredTaskDelegationString = (
   value: string,
@@ -26,11 +27,9 @@ export const normalizeRequiredTaskDelegationString = (
 export const cloneTaskDelegationDelegatorIdentity = (
   identity: TaskDelegationCallerIdentity,
 ): TaskDelegationDelegatorIdentity => ({
-  ...cloneTaskDelegationMemberIdentity(identity),
-  taskAgentInstanceId: identity.taskAgentInstanceId ?? null,
-  taskAgentRunId: identity.taskAgentRunId ?? null,
-  taskId: identity.taskId ?? null,
-  logicalMemberRouteKey: identity.logicalMemberRouteKey ?? null,
+  executionAddress: createTeamExecutionAddress(identity.executionAddress),
+  agentRunId: identity.agentRunId,
+  taskAgentInstance: identity.taskAgentInstance ?? null,
   taskTeamInstance: identity.taskTeamInstance ?? null,
 });
 
@@ -52,17 +51,15 @@ export class TaskDelegationInputResolver {
         `Task delegation call is bound to team run '${contextTeamRunId}', not '${this.teamRunId}'.`,
       );
     }
-    normalizeRequiredTaskDelegationString(context.caller.memberName, "caller.memberName");
-    normalizeRequiredTaskDelegationString(context.caller.memberRouteKey, "caller.memberRouteKey");
-    normalizeRequiredTaskDelegationString(context.caller.memberRunId, "caller.memberRunId");
+    normalizeRequiredTaskDelegationString(context.caller.agentRunId, "caller.agentRunId");
+    createTeamExecutionAddress(context.caller.executionAddress);
     normalizeRequiredTaskDelegationString(context.addressing.rootTeamRunId, "addressing.rootTeamRunId");
     createMemberLogicalAddressContext(context.addressing);
-    this.assertTaskAgentCallerShape(context.caller);
   }
 
   normalizeCreateInput(input: DelegateTaskInput): TaskDelegationTaskInput {
     return {
-      recipient_name: input.recipient_name,
+      recipient_address: input.recipient_address,
       description: normalizeRequiredTaskDelegationString(input.description, "description"),
       reference_files: this.normalizeReferenceFiles(input.reference_files),
     };
@@ -96,17 +93,4 @@ export class TaskDelegationInputResolver {
     return result.referenceFiles;
   }
 
-  private assertTaskAgentCallerShape(caller: TaskDelegationCallerIdentity): void {
-    const fields = [
-      caller.taskAgentRunId?.trim(),
-      caller.taskId?.trim(),
-      caller.logicalMemberRouteKey?.trim(),
-    ];
-    if (fields.some(Boolean) && !fields.every(Boolean)) {
-      throw new TaskDelegationError(
-        "TASK_AGENT_CONTEXT_INCOMPLETE",
-        "Task-agent delegation context requires taskAgentRunId, taskId, and logicalMemberRouteKey.",
-      );
-    }
-  }
 }

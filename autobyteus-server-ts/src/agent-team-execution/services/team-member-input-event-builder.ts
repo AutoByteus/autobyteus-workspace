@@ -2,205 +2,100 @@ import { createHash } from "node:crypto";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { MixedAgentMemberContext } from "../backends/mixed/mixed-team-run-context.js";
 import type { TaskAgentInstanceIdentity } from "../domain/task-agent-instance.js";
-import type {
-  TeamRunMemberInputContextFile,
-  TeamRunMemberInputEventPayload,
-  TeamRunMemberInputOrigin,
-} from "../domain/team-run-event.js";
+import { createTeamExecutionAddress, serializeTeamExecutionAddress, type TeamExecutionAddress } from "../domain/team-execution-address.js";
+import type { TeamRunMemberInputContextFile, TeamRunMemberInputEventPayload, TeamRunMemberInputOrigin } from "../domain/team-run-event.js";
 
-const normalizeString = (value: unknown): string | null =>
-  typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
+const text = (value: unknown): string | null =>
+  typeof value === "string" && value.trim() ? value.trim() : null;
 
-const normalizeStringArray = (value: unknown): string[] | null => {
-  if (!Array.isArray(value)) {
-    return null;
-  }
-  const normalized = value
-    .map((item) => normalizeString(item))
-    .filter((item): item is string => Boolean(item));
-  return normalized.length > 0 ? normalized : null;
-};
-
-const CONTEXT_FILE_TYPE_BY_VALUE: Record<string, string> = {
-  audio: "Audio",
-  csv: "Csv",
-  docx: "Docx",
-  html: "Html",
-  image: "Image",
-  javascript: "Javascript",
-  json: "Json",
-  markdown: "Markdown",
-  pdf: "Pdf",
-  pptx: "Pptx",
-  python: "Python",
-  text: "Text",
-  unknown: "Unknown",
-  video: "Video",
-  xlsx: "Xlsx",
-  xml: "Xml",
-};
-
-const normalizeContextFileType = (value: unknown): string | null => {
-  const normalized = normalizeString(value);
-  if (!normalized) {
-    return null;
-  }
-  return CONTEXT_FILE_TYPE_BY_VALUE[normalized.toLowerCase()] ?? normalized;
-};
-
-const hashIdentity = (parts: readonly unknown[]): string =>
-  createHash("sha256")
-    .update(parts.map((part) => String(part ?? "")).join("\0"))
-    .digest("base64url")
-    .slice(0, 32);
+const hashIdentity = (parts: readonly unknown[]): string => createHash("sha256")
+  .update(parts.map((part) => String(part ?? "")).join("\0"))
+  .digest("base64url").slice(0, 32);
 
 export const buildTeamMemberInputMessageId = (input: {
   teamRunId: string;
-  memberRunId: string;
-  memberRouteKey: string;
+  executionAddress: TeamExecutionAddress;
   content: string;
   receivedAt: string;
   parentCommunicationMessageId?: string | null;
-}): string => {
-  const parentMessageId = normalizeString(input.parentCommunicationMessageId);
-  const hash = hashIdentity([
-    input.teamRunId,
-    input.memberRunId,
-    input.memberRouteKey,
-    parentMessageId ?? input.receivedAt,
-    input.content,
-  ]);
-  return `memberinput_${hash}`;
-};
+}): string => `memberinput_${hashIdentity([
+  input.teamRunId,
+  serializeTeamExecutionAddress(input.executionAddress),
+  text(input.parentCommunicationMessageId) ?? input.receivedAt,
+  input.content,
+])}`;
 
 export const buildTeamMemberInputDedupeKey = (input: {
   teamRunId: string;
-  memberRouteKey: string;
+  executionAddress: TeamExecutionAddress;
   messageId: string;
-}): string => `member_input:${input.teamRunId}:${input.memberRouteKey}:${input.messageId}`;
+}): string => `member_input:${input.teamRunId}:${serializeTeamExecutionAddress(input.executionAddress)}:${input.messageId}`;
 
 const readMetadata = (message: AgentInputUserMessage): Record<string, unknown> => {
   const metadata = (message as unknown as { metadata?: unknown }).metadata;
-  return metadata && typeof metadata === "object" && !Array.isArray(metadata)
-    ? metadata as Record<string, unknown>
-    : {};
+  return metadata && typeof metadata === "object" && !Array.isArray(metadata) ? metadata as Record<string, unknown> : {};
 };
 
-const readContextFilePath = (value: unknown): TeamRunMemberInputContextFile | null => {
-  if (typeof value === "string" && value.trim().length > 0) {
-    return { path: value.trim() };
-  }
-  if (!value || typeof value !== "object") {
-    return null;
-  }
-
+const contextFile = (value: unknown): TeamRunMemberInputContextFile | null => {
+  if (typeof value === "string" && value.trim()) return { path: value.trim() };
+  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
   const record = value as Record<string, unknown>;
-  const path =
-    normalizeString(record.uri) ??
-    normalizeString(record.path) ??
-    normalizeString(record.locator) ??
-    normalizeString(record.file_path);
-  if (!path) {
-    return null;
-  }
-  return {
-    path,
-    type: normalizeContextFileType(
-      record.file_type ??
-      record.fileType ??
-      record.type,
-    ),
-  };
+  const path = text(record.uri) ?? text(record.path) ?? text(record.locator) ?? text(record.file_path);
+  if (!path) return null;
+  return { path, type: text(record.file_type) ?? text(record.fileType) ?? text(record.type) };
 };
 
-const readContextFilePaths = (
-  message: AgentInputUserMessage,
-): TeamRunMemberInputContextFile[] => {
-  const contextFiles = (message as unknown as { contextFiles?: unknown }).contextFiles;
-  if (!Array.isArray(contextFiles)) {
-    return [];
-  }
-
-  return contextFiles
-    .map((item) => {
-      const dict =
-        item && typeof item === "object" && typeof (item as { toDict?: unknown }).toDict === "function"
-          ? (item as { toDict: () => unknown }).toDict()
-          : item;
-      return readContextFilePath(dict);
-    })
-    .filter((item): item is TeamRunMemberInputContextFile => Boolean(item));
+const readContextFiles = (message: AgentInputUserMessage): TeamRunMemberInputContextFile[] => {
+  const files = (message as unknown as { contextFiles?: unknown }).contextFiles;
+  if (!Array.isArray(files)) return [];
+  return files.map((item) => item && typeof item === "object" && typeof (item as { toDict?: unknown }).toDict === "function"
+    ? (item as { toDict: () => unknown }).toDict() : item)
+    .map(contextFile).filter((item): item is TeamRunMemberInputContextFile => Boolean(item));
 };
 
-const inferInputOrigin = (
-  message: AgentInputUserMessage,
-  metadata: Record<string, unknown>,
-): TeamRunMemberInputOrigin => {
-  const explicitOrigin = normalizeString(metadata.input_origin);
-  if (explicitOrigin === "inter_agent_delivery") {
-    return "inter_agent_delivery";
-  }
-  if (explicitOrigin === "user_message") {
-    return "user_message";
-  }
-  if (normalizeString(metadata.sender_agent_id)) {
-    return "inter_agent_delivery";
-  }
-  const senderType = normalizeString((message as unknown as { senderType?: unknown }).senderType);
-  return senderType === "agent" ? "inter_agent_delivery" : "user_message";
+const origin = (message: AgentInputUserMessage, metadata: Record<string, unknown>): TeamRunMemberInputOrigin => {
+  const explicit = text(metadata.input_origin);
+  if (explicit === "inter_agent_delivery" || explicit === "user_message") return explicit;
+  return text(metadata.sender_agent_id) || text((message as unknown as { senderType?: unknown }).senderType) === "agent"
+    ? "inter_agent_delivery" : "user_message";
+};
+
+const readExecutionAddress = (value: unknown): TeamExecutionAddress | null => {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+  try { return createTeamExecutionAddress(value as TeamExecutionAddress); } catch { return null; }
 };
 
 export const buildTeamMemberInputEventPayload = (input: {
   teamRunId: string;
   memberContext: MixedAgentMemberContext;
+  executionAddress: TeamExecutionAddress;
   message: AgentInputUserMessage;
   receivedAt?: string | null;
   taskAgentInstance?: TaskAgentInstanceIdentity | null;
 }): TeamRunMemberInputEventPayload => {
-  const receivedAt = normalizeString(input.receivedAt) ?? new Date().toISOString();
+  const receivedAt = text(input.receivedAt) ?? new Date().toISOString();
   const metadata = readMetadata(input.message);
-  const content = (input.message as unknown as { content?: unknown }).content;
-  const normalizedContent = typeof content === "string" ? content : "";
-  const parentCommunicationMessageId = normalizeString(metadata.parent_communication_message_id);
-  const messageId =
-    normalizeString(metadata.message_id) ??
-    normalizeString(metadata.recipient_input_message_id) ??
-    buildTeamMemberInputMessageId({
-      teamRunId: input.teamRunId,
-      memberRunId: input.memberContext.memberRunId,
-      memberRouteKey: input.memberContext.memberRouteKey,
-      content: normalizedContent,
-      receivedAt,
-      parentCommunicationMessageId,
-    });
-  const dedupeKey =
-    normalizeString(metadata.dedupe_key) ??
-    buildTeamMemberInputDedupeKey({
-      teamRunId: input.teamRunId,
-      memberRouteKey: input.memberContext.memberRouteKey,
-      messageId,
-    });
-
+  const contentValue = (input.message as unknown as { content?: unknown }).content;
+  const content = typeof contentValue === "string" ? contentValue : "";
+  const parentCommunicationMessageId = text(metadata.parent_communication_message_id);
+  const recipientAddress = createTeamExecutionAddress(input.executionAddress);
+  const messageId = text(metadata.message_id) ?? text(metadata.recipient_input_message_id) ?? buildTeamMemberInputMessageId({
+    teamRunId: input.teamRunId,
+    executionAddress: recipientAddress,
+    content,
+    receivedAt,
+    parentCommunicationMessageId,
+  });
   return {
     messageId,
-    dedupeKey,
+    dedupeKey: text(metadata.dedupe_key) ?? buildTeamMemberInputDedupeKey({ teamRunId: input.teamRunId, executionAddress: recipientAddress, messageId }),
     teamRunId: input.teamRunId,
-    recipientMemberRunId: input.memberContext.memberRunId,
-    recipientMemberName: input.memberContext.memberName,
-    recipientMemberPath: [...input.memberContext.memberPath],
-    recipientMemberRouteKey: input.memberContext.memberRouteKey,
-    content: normalizedContent,
-    inputOrigin: inferInputOrigin(input.message, metadata),
+    recipientAddress,
+    content,
+    inputOrigin: origin(input.message, metadata),
     receivedAt,
-    contextFilePaths: readContextFilePaths(input.message),
-    senderRunId: normalizeString(metadata.sender_agent_id),
-    senderMemberName: normalizeString(metadata.sender_agent_name),
-    senderMemberRouteKey:
-      normalizeString(metadata.sender_member_route_key) ??
-      normalizeString(metadata.sender_route_key),
-    senderMemberPath:
-      normalizeStringArray(metadata.sender_member_path) ??
-      normalizeStringArray(metadata.sender_path),
+    contextFilePaths: readContextFiles(input.message),
+    senderAddress: readExecutionAddress(metadata.sender_execution_address),
     parentCommunicationMessageId,
     ...(input.taskAgentInstance ? { taskAgentInstance: input.taskAgentInstance } : {}),
   };

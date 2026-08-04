@@ -29,16 +29,7 @@ export interface EventMonitorToolSummaryArgs {
 }
 
 export interface EventMonitorApprovalTarget {
-  memberRouteKey?: string | null;
-  memberPath?: string[] | null;
-  sourceRouteKey?: string | null;
-  sourcePath?: string[] | null;
-  taskAgentRunId?: string | null;
-  taskTeamRunId?: string | null;
-  teamRouteKey?: string | null;
-  teamPath?: string[] | null;
-  taskTeamRelativeMemberRouteKey?: string | null;
-  taskTeamRelativeMemberPath?: string[] | null;
+  executionAddress: import("../../agent-team-execution/domain/team-execution-address.js").TeamExecutionAddress;
 }
 
 interface VisualBase { visualId: string; eventId: string; kindOrdinal: number }

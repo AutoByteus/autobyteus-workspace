@@ -18,7 +18,7 @@
       </template>
     </AgentEventMonitor>
     <div
-      v-else-if="focusedMemberNode?.memberKind === 'agent_team'"
+      v-else-if="focusedMemberNode?.kind === 'agent_team'"
       class="min-h-0 flex-1 overflow-y-auto p-6"
     >
       <div class="rounded-xl border border-slate-200 bg-slate-50 p-5">
@@ -26,17 +26,17 @@
           {{ $t('workspace.components.workspace.team.AgentTeamEventMonitor.focused_subteam') }}
         </p>
         <h3 class="mt-1 text-lg font-semibold text-slate-900">{{ focusedMemberNode.displayName }}</h3>
-        <p class="mt-1 text-sm text-slate-500">{{ focusedMemberNode.memberRouteKey }}</p>
+        <p class="mt-1 text-sm text-slate-500">{{ focusedMemberNode.address }}</p>
         <div class="mt-4 grid gap-3 md:grid-cols-2">
           <button
             v-for="child in focusedMemberNode.children"
-            :key="child.memberRouteKey"
+            :key="child.address"
             type="button"
             class="rounded-lg border border-slate-200 bg-white p-3 text-left transition hover:border-indigo-200 hover:bg-indigo-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
-            @click="focusMemberRouteKey(child.memberRouteKey)"
+            @click="focusMemberAddress(child.address)"
           >
-            <p class="truncate text-sm font-medium text-slate-900">{{ child.displayName || child.memberName }}</p>
-            <p class="mt-0.5 truncate text-xs text-slate-500">{{ child.memberRouteKey }}</p>
+            <p class="truncate text-sm font-medium text-slate-900">{{ child.displayName }}</p>
+            <p class="mt-0.5 truncate text-xs text-slate-500">{{ child.address }}</p>
           </button>
         </div>
       </div>
@@ -61,6 +61,7 @@ import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useTeamMemberPresentation } from '~/composables/useTeamMemberPresentation';
 import AgentEventMonitor from '~/components/workspace/agent/AgentEventMonitor.vue';
 import { shouldShowMemberConversation } from '~/utils/teamActiveExecutionMembers';
+import { serializeTeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 
 const teamContextsStore = useAgentTeamContextsStore();
 const { getInterAgentSenderNameById, getMemberAvatarUrl, getMemberDisplayName } = useTeamMemberPresentation();
@@ -70,29 +71,17 @@ defineProps<{
 }>();
 
 const activeTeam = computed(() => teamContextsStore.activeTeamContext);
-const focusedMemberRouteKey = computed(() => {
-  const team = activeTeam.value;
-  const candidate = team?.focusedMemberRouteKey?.trim() || '';
-  if (
-    team &&
-    candidate &&
-    (
-      team.memberNodesByRouteKey.has(candidate) ||
-      team.leafAgentContextsByRouteKey.has(candidate)
-    )
-  ) {
-    return candidate;
-  }
-
-  return teamContextsStore.activeExecutionFocusedMemberRouteKey;
-});
+const focusedExecutionAddress = computed(() => activeTeam.value?.focusedExecutionAddress ?? null);
 const focusedMember = computed(() => {
-  const routeKey = focusedMemberRouteKey.value;
-  return routeKey ? activeTeam.value?.leafAgentContextsByRouteKey.get(routeKey) || null : null;
+  const team = activeTeam.value;
+  const address = focusedExecutionAddress.value;
+  return team && address
+    ? team.agentExecutionsByKey.get(serializeTeamExecutionAddress(address)) ?? null
+    : null;
 });
 const focusedMemberNode = computed(() => {
-  const routeKey = focusedMemberRouteKey.value;
-  return routeKey ? activeTeam.value?.memberNodesByRouteKey.get(routeKey) || null : null;
+  const team = activeTeam.value;
+  return team ? team.memberNodesByAddress.get(team.focusedExecutionAddress.memberAddress) ?? null : null;
 });
 const conversationOfFocusedMember = computed(() => (
   shouldShowMemberConversation(focusedMemberNode.value, focusedMember.value)
@@ -101,7 +90,7 @@ const conversationOfFocusedMember = computed(() => (
 ));
 
 const focusedMemberDisplayName = computed(() => {
-  const routeKey = focusedMemberRouteKey.value;
+  const routeKey = focusedExecutionAddress.value?.memberAddress ?? '';
   if (!routeKey) {
     return '';
   }
@@ -110,7 +99,7 @@ const focusedMemberDisplayName = computed(() => {
 });
 
 const focusedMemberAvatarUrl = computed(() => {
-  const routeKey = focusedMemberRouteKey.value;
+  const routeKey = focusedExecutionAddress.value?.memberAddress ?? '';
   if (!routeKey || !focusedMember.value) {
     return null;
   }
@@ -124,15 +113,15 @@ const interAgentSenderNameById = computed<Record<string, string>>(() => {
 const focusedBrowseSubject = computed(() => ({
   kind: 'teamMember' as const,
   teamRunId: activeTeam.value?.teamRunId || '',
-  memberRouteKey: focusedMemberRouteKey.value,
+  memberAddress: focusedExecutionAddress.value?.memberAddress ?? '',
   agentRunId: focusedMember.value?.state.runId || '',
 }));
 
-const focusMemberRouteKey = (memberRouteKey: string) => {
+const focusMemberAddress = (memberAddress: string) => {
   const teamRunId = activeTeam.value?.teamRunId;
   if (!teamRunId) {
     return;
   }
-  void teamContextsStore.focusMemberAndEnsureHydrated?.(teamRunId, memberRouteKey);
+  void teamContextsStore.focusMemberAndEnsureHydrated(teamRunId, memberAddress);
 };
 </script>

@@ -1,14 +1,7 @@
 import type { AgentOperationResult } from "../../../../agent-execution/domain/agent-operation-result.js";
 import type { AgentRunManager } from "../../../../agent-execution/services/agent-run-manager.js";
+import { getParentAgentTeamAddress, type AgentTeamAddress } from "../../../../agent-collaboration/domain/agent-team-address.js";
 import type { TeamRunContext } from "../../../domain/team-run-context.js";
-import type { TeamRunMemberConfig } from "../../../domain/team-run-config.js";
-import {
-  getSelectorTopLevelName,
-  resolveTeamMemberSelector,
-  selectorFromMemberPath,
-  selectorFromMemberRouteKey,
-  type TeamMemberSelector,
-} from "../../../domain/team-run-member-identity.js";
 import type { InterAgentMessageDeliveryIntent } from "../../../domain/inter-agent-message-delivery.js";
 import type { MixedTeamRunContext, MixedTeamMemberContext } from "../mixed-team-run-context.js";
 import { MixedAgentMemberHandle } from "./mixed-agent-member-handle.js";
@@ -17,12 +10,12 @@ import type { MixedTeamEventPublish, MixedTeamMemberHandle } from "./mixed-team-
 import { MixedTeamMemberConfigResolver } from "./mixed-team-member-config-resolver.js";
 
 export type PersistentMemberRegistryAccess = {
-  resolveContext(selector: TeamMemberSelector): MixedTeamMemberContext | AgentOperationResult;
+  resolveContext(address: AgentTeamAddress): MixedTeamMemberContext | AgentOperationResult;
   getOrCreate(context: MixedTeamMemberContext): MixedTeamMemberHandle;
 };
 
 export class MixedPersistentMemberRegistry implements PersistentMemberRegistryAccess {
-  private readonly handles = new Map<string, MixedTeamMemberHandle>();
+  private readonly handles = new Map<AgentTeamAddress, MixedTeamMemberHandle>();
 
   constructor(private readonly options: {
     teamContext: TeamRunContext<MixedTeamRunContext>;
@@ -35,62 +28,53 @@ export class MixedPersistentMemberRegistry implements PersistentMemberRegistryAc
 
   listHandles(): MixedTeamMemberHandle[] { return [...this.handles.values()]; }
 
-  remove(memberRouteKey: string): boolean {
-    const normalized = memberRouteKey.trim();
-    const handle = this.handles.get(normalized) ?? null;
+  remove(address: AgentTeamAddress): boolean {
+    const handle = this.handles.get(address);
     if (!handle) return false;
     handle.dispose();
-    this.handles.delete(normalized);
-    return true;
+    return this.handles.delete(address);
   }
 
-  resolveContext(selector: TeamMemberSelector): MixedTeamMemberContext | AgentOperationResult {
-    const resolution = resolveTeamMemberSelector(
-      selector,
-      this.options.teamContext.runtimeContext.memberContexts,
-    );
-    if (resolution.ok) return resolution.member;
-
-    const topLevelName = getSelectorTopLevelName(selector);
-    if (topLevelName) {
-      const topLevelSelector = selector.kind === "path"
-        ? selectorFromMemberPath([topLevelName])
-        : selectorFromMemberRouteKey(topLevelName);
-      const topLevelResolution = resolveTeamMemberSelector(
-        topLevelSelector,
-        this.options.teamContext.runtimeContext.memberContexts,
-      );
-      if (topLevelResolution.ok && topLevelResolution.member.memberKind === "agent_team") {
-        return topLevelResolution.member;
-      }
+  resolveContext(address: AgentTeamAddress): MixedTeamMemberContext | AgentOperationResult {
+    let candidate: AgentTeamAddress | null = address;
+    while (candidate && getParentAgentTeamAddress(candidate) !== this.options.teamContext.teamAddress) {
+      candidate = getParentAgentTeamAddress(candidate);
     }
-
-    return { accepted: false, code: resolution.code, message: resolution.message };
+    const context = candidate
+      ? this.options.teamContext.runtimeContext.memberContexts.find((item) => item.address === candidate) ?? null
+      : null;
+    return context ?? {
+      accepted: false,
+      code: "TARGET_MEMBER_NOT_FOUND",
+      message: `Team member '${address}' was not found below AgentTeam '${this.options.teamContext.teamAddress}'.`,
+    };
   }
 
   getOrCreate(context: MixedTeamMemberContext): MixedTeamMemberHandle {
-    const existing = this.handles.get(context.memberRouteKey) ?? null;
+    const existing = this.handles.get(context.address);
     if (existing) return existing;
-
-    const config = this.options.configResolver.resolve(context);
-    const handle = context.memberKind === "agent"
+    const node = this.options.configResolver.resolve(context);
+    const handle = context.kind === "agent" && node.kind === "agent"
       ? new MixedAgentMemberHandle({
           teamContext: this.options.teamContext,
           context,
-          config: config as Extract<TeamRunMemberConfig, { memberKind: "agent" }>,
+          config: node,
           agentRunManager: this.options.agentRunManager,
           publish: this.options.publish,
           deliverInterAgentMessage: this.options.deliverInterAgentMessage,
         })
-      : new MixedSubTeamMemberHandle({
-          parentContext: this.options.teamContext,
-          context,
-          config: config as Extract<TeamRunMemberConfig, { memberKind: "agent_team" }>,
-          subTeamRunFactory: this.options.subTeamRunFactory,
-          publish: this.options.publish,
-          deliverInterAgentMessage: this.options.deliverInterAgentMessage,
-        });
-    this.handles.set(context.memberRouteKey, handle);
+      : context.kind === "agent_team" && node.kind === "agent_team"
+        ? new MixedSubTeamMemberHandle({
+            parentContext: this.options.teamContext,
+            context,
+            config: node,
+            subTeamRunFactory: this.options.subTeamRunFactory,
+            publish: this.options.publish,
+            deliverInterAgentMessage: this.options.deliverInterAgentMessage,
+          })
+        : null;
+    if (!handle) throw new Error(`Runtime/config kind mismatch at '${context.address}'.`);
+    this.handles.set(context.address, handle);
     return handle;
   }
 

@@ -7,7 +7,10 @@ import type {
 } from "../domain/models.js";
 import type { ChannelRunOutputDeliveryProvider } from "../providers/channel-run-output-delivery-provider.js";
 import { getProviderProxySet } from "../providers/provider-proxy-set.js";
-import { buildMemberRouteKeyFromPath } from "../../agent-team-execution/domain/team-run-member-identity.js";
+import {
+  createTeamExecutionAddress,
+  serializeTeamExecutionAddress,
+} from "../../agent-team-execution/domain/team-execution-address.js";
 
 export type BuildChannelRunOutputDeliveryKeyInput = {
   bindingId: string;
@@ -163,9 +166,9 @@ const normalizeTarget = (target: ChannelRunOutputTarget): ChannelRunOutputTarget
   return {
     targetType: "TEAM",
     teamRunId: normalizeRequiredString(target.teamRunId, "target.teamRunId"),
-    entryMemberRunId: normalizeNullableString(target.entryMemberRunId),
-    entryMemberRouteKey: normalizeNullableString(target.entryMemberRouteKey),
-    entryMemberPath: normalizeMemberPath(target.entryMemberPath),
+    entryExecutionAddress: target.entryExecutionAddress
+      ? createTeamExecutionAddress(target.entryExecutionAddress)
+      : null,
   };
 };
 
@@ -178,19 +181,11 @@ const normalizeDeliveryKeyTarget = (
       agentRunId: target.agentRunId,
     };
   }
-  const memberIdentity =
-    target.entryMemberRouteKey ??
-    normalizeRouteKeyFromPath(target.entryMemberPath) ??
-    target.entryMemberRunId;
-  if (!memberIdentity) {
-    throw new Error(
-      "Team output delivery keys require entryMemberRouteKey, entryMemberPath, or entryMemberRunId.",
-    );
-  }
+  if (!target.entryExecutionAddress) throw new Error("Team output delivery keys require entryExecutionAddress.");
   return {
     targetType: "TEAM",
     teamRunId: target.teamRunId,
-    entryMemberIdentity: memberIdentity,
+    entryExecutionAddress: serializeTeamExecutionAddress(target.entryExecutionAddress),
   };
 };
 
@@ -220,22 +215,6 @@ const normalizeNullableString = (
   return normalized.length > 0 ? normalized : null;
 };
 
-const normalizeMemberPath = (value: readonly string[] | null | undefined): string[] | null => {
-  if (!Array.isArray(value)) {
-    return null;
-  }
-  const normalized = value
-    .map((segment) => normalizeNullableString(segment))
-    .filter((segment): segment is string => Boolean(segment));
-  return normalized.length > 0 ? normalized : null;
-};
-
-const normalizeRouteKeyFromPath = (
-  value: readonly string[] | null | undefined,
-): string | null => {
-  const path = normalizeMemberPath(value);
-  return path ? buildMemberRouteKeyFromPath(path) : null;
-};
 
 const normalizeDate = (value: Date, field: string): Date => {
   if (!(value instanceof Date) || Number.isNaN(value.getTime())) {

@@ -10,7 +10,7 @@ const nonEmptyString = (fieldName: string) =>
   z.string().trim().min(1, `${fieldName} is required`);
 
 const DelegateTaskInputSchema = z.object({
-  recipient_name: z.string(),
+  recipient_address: z.string(),
   description: nonEmptyString("description"),
   reference_files: z.array(nonEmptyString("reference_files item")).default([]),
 }).strict();
@@ -43,10 +43,10 @@ export const parseDelegateTaskInput = (
 ): DelegateTaskInput => {
   const result = DelegateTaskInputSchema.safeParse(rawArguments);
   if (!result.success) {
-    if (typeof rawArguments.recipient_name !== "string") {
+    if (typeof rawArguments.recipient_address !== "string") {
       throw new CollaborationContractError(
         "COLLABORATION_ADDRESS_INVALID",
-        "delegate_task recipient_name must be a logical address string.",
+        "delegate_task recipient_address must be a logical address string.",
       );
     }
     throw new Error(`Invalid delegate_task input: ${parseZodIssues(result.error)}`);

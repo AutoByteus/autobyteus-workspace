@@ -1,6 +1,7 @@
 import {
   AgentRunEventType,
   isAgentRunEvent,
+  type AgentRunEvent,
 } from "../../agent-execution/domain/agent-run-event.js";
 import {
   resolveAgentRunErrorEvidence,
@@ -10,6 +11,7 @@ import {
   TeamRunEventSourceType,
   type TeamRunEvent,
 } from "../../agent-team-execution/domain/team-run-event.js";
+import type { TeamExecutionAddress } from "../../agent-team-execution/domain/team-execution-address.js";
 
 export type ParsedChannelOutputEvent = {
   eventType: AgentRunEventType;
@@ -17,9 +19,7 @@ export type ParsedChannelOutputEvent = {
   errorEvidence: AgentRunErrorEvidence | null;
   agentRunId: string;
   teamRunId: string | null;
-  memberRunId: string | null;
-  memberRouteKey: string | null;
-  memberPath: string[] | null;
+  executionAddress: TeamExecutionAddress | null;
   turnId: string | null;
   text: string | null;
   textKind: ChannelOutputEventTextKind | null;
@@ -40,9 +40,7 @@ export const parseDirectChannelOutputEvent = (
     errorEvidence: resolveAgentRunErrorEvidence(event),
     agentRunId: event.runId,
     teamRunId: null,
-    memberRunId: null,
-    memberRouteKey: null,
-    memberPath: null,
+    executionAddress: null,
     turnId: resolveTurnIdFromPayload(event.payload),
     text: text.text,
     textKind: text.kind,
@@ -61,13 +59,9 @@ export const parseTeamChannelOutputEvent = (
   }
   return {
     ...parsedAgentEvent,
-    agentRunId: asNonEmptyString(event.data.memberRunId) ?? parsedAgentEvent.agentRunId,
+    agentRunId: asNonEmptyString(event.data.agentEvent.runId) ?? parsedAgentEvent.agentRunId,
     teamRunId: asNonEmptyString(event.teamRunId),
-    memberRunId: asNonEmptyString(event.data.memberRunId),
-    memberRouteKey: asNonEmptyString(event.data.memberRouteKey),
-    memberPath: Array.isArray(event.data.memberPath)
-      ? event.data.memberPath.map(asNonEmptyString).filter((value): value is string => Boolean(value))
-      : null,
+    executionAddress: event.data.executionAddress,
   };
 };
 
@@ -75,10 +69,8 @@ const isTeamAgentEvent = (
   event: unknown,
 ): event is TeamRunEvent & {
   data: {
-    memberRunId: string;
-    memberRouteKey?: string;
-    memberPath?: string[];
-    agentEvent: unknown;
+    executionAddress: TeamExecutionAddress;
+    agentEvent: AgentRunEvent;
   };
 } => {
   if (!event || typeof event !== "object") {

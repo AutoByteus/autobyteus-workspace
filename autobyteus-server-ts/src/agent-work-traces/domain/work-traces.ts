@@ -2,7 +2,7 @@ import type { MemoryTraceEvent } from "../../agent-memory/domain/models.js";
 
 export type AgentWorkTraceTargetRef =
   | { kind: "agent_run"; runId: string }
-  | { kind: "team_member_run"; teamRunId: string; memberRunId: string };
+  | { kind: "team_member_run"; teamRunId: string; agentRunId: string };
 
 export type AgentWorkTraceProjectionContext = {
   target: AgentWorkTraceTargetRef;

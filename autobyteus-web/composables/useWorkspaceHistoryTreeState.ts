@@ -110,13 +110,13 @@ export const useWorkspaceHistoryTreeState = (params: {
   const teamMemberKey = (
     workspaceId: string,
     teamRunId: string,
-    memberRouteKey: string,
+    memberAddress: string,
   ): string => {
     const normalizedWorkspace = workspaceKey(workspaceId);
     const normalizedTeamRunId = teamRunId.trim();
-    const normalizedMemberRouteKey = memberRouteKey.trim();
-    return normalizedWorkspace && normalizedTeamRunId && normalizedMemberRouteKey
-      ? `${normalizedWorkspace}::team-member::${normalizedTeamRunId}::${normalizedMemberRouteKey}`
+    const normalizedMemberAddress = memberAddress.trim();
+    return normalizedWorkspace && normalizedTeamRunId && normalizedMemberAddress
+      ? `${normalizedWorkspace}::team-member::${normalizedTeamRunId}::${normalizedMemberAddress}`
       : '';
   };
 
@@ -224,19 +224,19 @@ export const useWorkspaceHistoryTreeState = (params: {
   const isTeamMemberExpanded = (
     workspaceId: string,
     teamRunId: string,
-    memberRouteKey: string,
+    memberAddress: string,
   ): boolean => {
-    const key = teamMemberKey(workspaceId, teamRunId, memberRouteKey);
+    const key = teamMemberKey(workspaceId, teamRunId, memberAddress);
     return key ? expandedTeamMembers.value[key] ?? false : false;
   };
 
   const setTeamMemberExpanded = (
     workspaceId: string,
     teamRunId: string,
-    memberRouteKey: string,
+    memberAddress: string,
     expanded: boolean,
   ): void => {
-    const key = teamMemberKey(workspaceId, teamRunId, memberRouteKey);
+    const key = teamMemberKey(workspaceId, teamRunId, memberAddress);
     if (!key) {
       return;
     }
@@ -250,32 +250,32 @@ export const useWorkspaceHistoryTreeState = (params: {
   const toggleTeamMember = (
     workspaceId: string,
     teamRunId: string,
-    memberRouteKey: string,
+    memberAddress: string,
   ): void => {
     setTeamMemberExpanded(
       workspaceId,
       teamRunId,
-      memberRouteKey,
-      !isTeamMemberExpanded(workspaceId, teamRunId, memberRouteKey),
+      memberAddress,
+      !isTeamMemberExpanded(workspaceId, teamRunId, memberAddress),
     );
   };
 
-  const findTeamMemberAncestorRouteKeys = (
+  const findTeamMemberAncestorAddresses = (
     members: readonly TeamMemberTreeRow[],
-    targetMemberRouteKey: string,
+    targetMemberAddress: string,
   ): string[] | null => {
     for (const member of members) {
-      if (member.memberRouteKey === targetMemberRouteKey) {
+      if (member.memberAddress === targetMemberAddress) {
         return [];
       }
 
-      const childAncestors = findTeamMemberAncestorRouteKeys(
+      const childAncestors = findTeamMemberAncestorAddresses(
         member.children,
-        targetMemberRouteKey,
+        targetMemberAddress,
       );
       if (childAncestors) {
-        return member.memberKind === 'agent_team'
-          ? [member.memberRouteKey, ...childAncestors]
+        return member.kind === 'agent_team'
+          ? [member.memberAddress, ...childAncestors]
           : childAncestors;
       }
     }
@@ -286,18 +286,18 @@ export const useWorkspaceHistoryTreeState = (params: {
   const expandTeamMemberAncestors = (
     workspaceId: string,
     teamRunId: string,
-    memberRouteKey: string,
+    memberAddress: string,
     memberTree: readonly TeamMemberTreeRow[],
   ): boolean => {
-    const ancestorRouteKeys = findTeamMemberAncestorRouteKeys(memberTree, memberRouteKey);
-    if (!ancestorRouteKeys) {
+    const ancestorAddresses = findTeamMemberAncestorAddresses(memberTree, memberAddress);
+    if (!ancestorAddresses) {
       return false;
     }
 
-    for (const ancestorRouteKey of ancestorRouteKeys) {
-      setTeamMemberExpanded(workspaceId, teamRunId, ancestorRouteKey, true);
+    for (const ancestorAddress of ancestorAddresses) {
+      setTeamMemberExpanded(workspaceId, teamRunId, ancestorAddress, true);
     }
-    return ancestorRouteKeys.length > 0;
+    return ancestorAddresses.length > 0;
   };
 
   const revealAgentRunAncestry = (runId: string): boolean => {

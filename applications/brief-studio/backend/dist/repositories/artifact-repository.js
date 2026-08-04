@@ -6,7 +6,7 @@ const mapRow = (row) => ({
     path: row.path,
     description: row.description,
     body: row.body,
-    producerMemberRouteKey: row.producer_member_route_key,
+    producerMemberAddress: row.producer_member_address,
     updatedAt: row.updated_at,
 });
 export const createArtifactRepository = (db) => ({
@@ -19,7 +19,7 @@ export const createArtifactRepository = (db) => ({
         path,
         description,
         body,
-        producer_member_route_key,
+        producer_member_address,
         updated_at
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
       ON CONFLICT(brief_id, artifact_kind) DO UPDATE SET
@@ -28,12 +28,12 @@ export const createArtifactRepository = (db) => ({
         path = excluded.path,
         description = excluded.description,
         body = excluded.body,
-        producer_member_route_key = excluded.producer_member_route_key,
-        updated_at = excluded.updated_at`).run(input.briefId, input.artifactKind, input.publicationKind, input.revisionId, input.path, input.description, input.body, input.producerMemberRouteKey, input.updatedAt);
+        producer_member_address = excluded.producer_member_address,
+        updated_at = excluded.updated_at`).run(input.briefId, input.artifactKind, input.publicationKind, input.revisionId, input.path, input.description, input.body, input.producerMemberAddress, input.updatedAt);
     },
     listByBriefId(briefId) {
         const rows = db
-            .prepare(`SELECT brief_id, artifact_kind, publication_kind, revision_id, path, description, body, producer_member_route_key, updated_at
+            .prepare(`SELECT brief_id, artifact_kind, publication_kind, revision_id, path, description, body, producer_member_address, updated_at
            FROM brief_artifacts
           WHERE brief_id = ?
           ORDER BY CASE artifact_kind WHEN 'researcher' THEN 1 ELSE 2 END`)

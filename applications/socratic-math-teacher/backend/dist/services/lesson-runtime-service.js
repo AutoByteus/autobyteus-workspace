@@ -117,7 +117,7 @@ export const createLessonRuntimeService = (context) => ({
                         status: launchProjection.status,
                         updatedAt: launchProjection.updatedAt,
                         latestBindingId: binding.bindingId,
-                        latestRunId: binding.runtime.runId,
+                        latestRunId: binding.runtime.teamRunId,
                         latestBindingStatus: launchProjection.latestBindingStatus,
                         lastErrorMessage: launchProjection.lastErrorMessage,
                         closedAt: launchProjection.closedAt,
@@ -128,7 +128,7 @@ export const createLessonRuntimeService = (context) => ({
             await context.publishNotification("lesson.started", {
                 lessonId,
                 bindingId: binding.bindingId,
-                runId: binding.runtime.runId,
+                runId: binding.runtime.teamRunId,
                 createdAt,
             });
             return createLessonReadService(context).getLesson(lessonId);
@@ -144,7 +144,7 @@ export const createLessonRuntimeService = (context) => ({
                         status: "blocked",
                         updatedAt: createdAt,
                         latestBindingId: reconciled?.binding.bindingId ?? null,
-                        latestRunId: reconciled?.binding.runtime.runId ?? null,
+                        latestRunId: reconciled ? (reconciled.binding.runtime.subject === "AGENT_RUN" ? reconciled.binding.runtime.agentRunId : reconciled.binding.runtime.teamRunId) : null,
                         latestBindingStatus: reconciled?.binding.status ?? "FAILED",
                         lastErrorMessage: message,
                         closedAt: null,

@@ -1,8 +1,5 @@
 import { TeamRun } from "../domain/team-run.js";
-import {
-  TeamRunConfig,
-  type TeamRunMemberConfig,
-} from "../domain/team-run-config.js";
+import { TeamRunConfig } from "../domain/team-run-config.js";
 import { TeamRunContext, type RuntimeTeamRunContext } from "../domain/team-run-context.js";
 import type { MixedTeamRunContext } from "../backends/mixed/mixed-team-run-context.js";
 import type { TeamRunEventListener, TeamRunEventUnsubscribe } from "../domain/team-run-event.js";
@@ -11,7 +8,6 @@ import {
   getMixedTeamRunBackendFactory,
   type MixedTeamRunBackendFactory,
 } from "../backends/mixed/mixed-team-run-backend-factory.js";
-import { normalizeMemberRouteKey } from "../domain/team-run-member-identity.js";
 import { TeamBackendKind } from "../domain/team-backend-kind.js";
 import {
   TeamCommunicationService,
@@ -82,27 +78,12 @@ export class AgentTeamRunManager {
     const normalizedTeamRunId = normalizeRequiredRunId(teamRunId, "teamRunId");
     const config = this.withMixedBackendKind(input);
     const backend = await this.mixedTeamRunBackendFactory.createBackend(config, normalizedTeamRunId);
-    const normalizedConfig = new TeamRunConfig({
-      teamDefinitionId: config.teamDefinitionId,
-      teamBackendKind: TeamBackendKind.MIXED,
-      coordinatorMemberName: config.coordinatorMemberName,
-      coordinatorMemberRouteKey: config.coordinatorMemberRouteKey,
-      memberTree: this.attachRuntimeMemberIds(config.memberTree),
-      effectiveHandoffs: config.effectiveHandoffs,
-    });
     const activeRun = new TeamRun({
-      context: new TeamRunContext({
-        runId: backend.runId,
-        teamBackendKind: TeamBackendKind.MIXED,
-        coordinatorMemberName: normalizedConfig.coordinatorMemberName,
-        coordinatorMemberRouteKey: normalizedConfig.coordinatorMemberRouteKey,
-        config: normalizedConfig,
-        runtimeContext: backend.getRuntimeContext(),
-      }),
+      context: backend.getTeamRunContext(),
       backend,
     });
     this.registerActiveRun(activeRun);
-    logger.info(`Successfully created mixed team run '${activeRun.runId}'.`);
+    logger.info(`Successfully created mixed team run '${activeRun.teamRunId}'.`);
     return activeRun;
   }
 
@@ -110,14 +91,15 @@ export class AgentTeamRunManager {
     context: TeamRunContext<RuntimeTeamRunContext>,
   ): Promise<TeamRun> {
     if (!context.runtimeContext) {
-      throw new Error(`Team run '${context.runId}' restore requires a mixed runtime context.`);
+      throw new Error(`Team run '${context.teamRunId}' restore requires a mixed runtime context.`);
     }
     const mixedContext = new TeamRunContext<MixedTeamRunContext>({
-      runId: context.runId,
+      teamRunId: context.teamRunId,
+      teamAddress: context.teamAddress,
+      taskTeamRunIds: context.taskTeamRunIds,
       teamBackendKind: TeamBackendKind.MIXED,
-      coordinatorMemberName: context.coordinatorMemberName,
-      coordinatorMemberRouteKey: context.coordinatorMemberRouteKey,
-      config: context.config ? this.withMixedBackendKind(context.config) : null,
+      config: this.withMixedBackendKind(context.config),
+      index: context.index,
       runtimeContext: context.runtimeContext,
     });
     const backend = await this.mixedTeamRunBackendFactory.restoreBackend(mixedContext);
@@ -126,7 +108,7 @@ export class AgentTeamRunManager {
       backend,
     });
     this.registerActiveRun(activeRun);
-    logger.info(`Successfully restored mixed team run '${activeRun.runId}'.`);
+    logger.info(`Successfully restored mixed team run '${activeRun.teamRunId}'.`);
     return activeRun;
   }
 
@@ -187,9 +169,9 @@ export class AgentTeamRunManager {
 
   private registerActiveRun(run: TeamRun): void {
     if (!run.isActive()) {
-      throw new Error(`Cannot register inactive team run '${run.runId}'.`);
+      throw new Error(`Cannot register inactive team run '${run.teamRunId}'.`);
     }
-    const teamRunId = normalizeRequiredRunId(run.runId, "teamRunId");
+    const teamRunId = normalizeRequiredRunId(run.teamRunId, "teamRunId");
     this.transitionActiveRun({ teamRunId, nextRun: run });
   }
 
@@ -309,52 +291,14 @@ export class AgentTeamRunManager {
     return activeRun.subscribeToEvents(listener);
   }
 
-  private attachRuntimeMemberIds(
-    members: readonly TeamRunMemberConfig[],
-  ): TeamRunMemberConfig[] {
-    return members.map((memberConfig) => {
-      const memberRouteKey = normalizeMemberRouteKey(memberConfig.memberRouteKey);
-      const memberRunId = normalizeRequiredRunId(
-        memberConfig.memberRunId ?? "",
-        `memberRunId for member '${memberRouteKey}'`,
-      );
-      if (memberConfig.memberKind === "agent_team") {
-        const childTeamRunId = normalizeRequiredRunId(
-          memberConfig.childTeamRunId ?? "",
-          `childTeamRunId for member '${memberRouteKey}'`,
-        );
-        if (memberRunId !== childTeamRunId) {
-          throw new Error(
-            `agent_team wrapper memberRunId for '${memberRouteKey}' must equal childTeamRunId.`,
-          );
-        }
-        return {
-          ...memberConfig,
-          memberRouteKey,
-          memberRunId,
-          childTeamRunId,
-          memberConfigs: this.attachRuntimeMemberIds(memberConfig.memberConfigs),
-        };
-      }
-      return {
-        ...memberConfig,
-        memberRouteKey,
-        memberRunId,
-      };
-    });
-  }
-
   private withMixedBackendKind(config: TeamRunConfig): TeamRunConfig {
     if (config.teamBackendKind === TeamBackendKind.MIXED) {
       return config;
     }
     return new TeamRunConfig({
-      teamDefinitionId: config.teamDefinitionId,
       teamBackendKind: TeamBackendKind.MIXED,
-      coordinatorMemberName: config.coordinatorMemberName,
-      coordinatorMemberRouteKey: config.coordinatorMemberRouteKey,
-      memberTree: config.memberTree,
-      effectiveHandoffs: config.effectiveHandoffs,
+      rootTeam: config.rootTeam,
+      handoffs: config.handoffs,
     });
   }
 }

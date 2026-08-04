@@ -9,7 +9,7 @@ import type { WorkspaceExecutionLink } from '~/types/workspace/WorkspaceExecutio
 
 const EXECUTION_KIND_QUERY_KEY = 'workspaceExecutionKind'
 const EXECUTION_RUN_ID_QUERY_KEY = 'workspaceExecutionRunId'
-const EXECUTION_MEMBER_ROUTE_KEY_QUERY_KEY = 'workspaceExecutionMemberRouteKey'
+const EXECUTION_MEMBER_ADDRESS_QUERY_KEY = 'workspaceExecutionMemberAddress'
 
 const toFirstQueryValue = (value: LocationQueryValue | LocationQueryValue[] | undefined): string => {
   if (Array.isArray(value)) {
@@ -21,7 +21,7 @@ const toFirstQueryValue = (value: LocationQueryValue | LocationQueryValue[] | un
 export const createWorkspaceExecutionLinkSignature = (link: WorkspaceExecutionLink): string => (
   link.kind === 'agent'
     ? `agent:${link.runId}`
-    : `team:${link.teamRunId}:${link.memberRouteKey ?? ''}`
+    : `team:${link.teamRunId}:${link.memberAddress ?? ''}`
 )
 
 export const buildWorkspaceExecutionRoute = (
@@ -31,8 +31,8 @@ export const buildWorkspaceExecutionRoute = (
   query: {
     [EXECUTION_KIND_QUERY_KEY]: link.kind,
     [EXECUTION_RUN_ID_QUERY_KEY]: link.kind === 'agent' ? link.runId : link.teamRunId,
-    ...(link.kind === 'team' && link.memberRouteKey
-      ? { [EXECUTION_MEMBER_ROUTE_KEY_QUERY_KEY]: link.memberRouteKey }
+    ...(link.kind === 'team' && link.memberAddress
+      ? { [EXECUTION_MEMBER_ADDRESS_QUERY_KEY]: link.memberAddress }
       : {}),
   },
 })
@@ -42,7 +42,7 @@ export const parseWorkspaceExecutionLinkQuery = (
 ): WorkspaceExecutionLink | null => {
   const kind = toFirstQueryValue(query[EXECUTION_KIND_QUERY_KEY])
   const runId = toFirstQueryValue(query[EXECUTION_RUN_ID_QUERY_KEY])
-  const memberRouteKey = toFirstQueryValue(query[EXECUTION_MEMBER_ROUTE_KEY_QUERY_KEY]) || null
+  const memberAddress = toFirstQueryValue(query[EXECUTION_MEMBER_ADDRESS_QUERY_KEY]) || null
 
   if (!kind || !runId) {
     return null
@@ -59,7 +59,7 @@ export const parseWorkspaceExecutionLinkQuery = (
     return {
       kind: 'team',
       teamRunId: runId,
-      memberRouteKey,
+      memberAddress,
     }
   }
 
@@ -72,7 +72,7 @@ export const stripWorkspaceExecutionLinkQuery = (
   const nextQuery: LocationQueryRaw = { ...query }
   delete nextQuery[EXECUTION_KIND_QUERY_KEY]
   delete nextQuery[EXECUTION_RUN_ID_QUERY_KEY]
-  delete nextQuery[EXECUTION_MEMBER_ROUTE_KEY_QUERY_KEY]
+  delete nextQuery[EXECUTION_MEMBER_ADDRESS_QUERY_KEY]
   return nextQuery
 }
 
@@ -91,7 +91,7 @@ export const openWorkspaceExecutionLink = async (
 
   await openTeamRun({
     teamRunId: link.teamRunId,
-    memberRouteKey: link.memberRouteKey,
+    memberAddress: link.memberAddress,
     resolveWorkspaceMetadataByRootPath: resolveRunHistoryWorkspaceMetadataByRootPath,
     ensureWorkspaceByRootPath: ensureRunHistoryWorkspaceByRootPath,
   })

@@ -16,9 +16,11 @@ import {
 import { publishChannelBindingLifecycleEvent } from "./channel-binding-lifecycle-events.js";
 import {
   resolveTeamBindingCurrentOutputIdentity,
-  type ChannelTeamOutputTargetIdentity,
 } from "./channel-team-output-target-identity.js";
-import { buildMemberRouteKeyFromPath } from "../../agent-team-execution/domain/team-run-member-identity.js";
+import {
+  createTeamExecutionAddress,
+  serializeTeamExecutionAddress,
+} from "../../agent-team-execution/domain/team-execution-address.js";
 
 export type ChannelBindingServiceOptions = {
   allowTransportFallback?: boolean;
@@ -151,22 +153,10 @@ export class ChannelBindingService {
       return false;
     }
 
-    const currentTargetRouteKey = normalizeNullableString(binding.targetMemberRouteKey);
-    const targetRouteKey =
-      normalizeNullableString(target.entryMemberRouteKey) ??
-      normalizeRouteKeyFromPath(target.entryMemberPath);
-    if (currentTargetRouteKey && targetRouteKey) {
-      return currentTargetRouteKey === targetRouteKey;
-    }
-
     const teamRun = await this.getTeamRunService().resolveTeamRun(target.teamRunId);
-    if (!teamRun) {
-      return false;
-    }
-    return doesTeamIdentityMatchTarget(
-      resolveTeamBindingCurrentOutputIdentity(binding, teamRun),
-      target,
-    );
+    if (!teamRun || !target.entryExecutionAddress) return false;
+    const current = resolveTeamBindingCurrentOutputIdentity(binding, teamRun).executionAddress;
+    return !!current && serializeTeamExecutionAddress(current) === serializeTeamExecutionAddress(target.entryExecutionAddress);
   }
 
   private getTeamRunService(): Pick<TeamRunService, "resolveTeamRun"> {
@@ -205,44 +195,8 @@ const normalizeOutputTarget = (
   return {
     targetType: "TEAM",
     teamRunId: normalizeRequiredString(target.teamRunId, "target.teamRunId"),
-    entryMemberRunId: normalizeNullableString(target.entryMemberRunId),
-    entryMemberRouteKey: normalizeNullableString(target.entryMemberRouteKey),
-    entryMemberPath: normalizeMemberPath(target.entryMemberPath),
+    entryExecutionAddress: target.entryExecutionAddress
+      ? createTeamExecutionAddress(target.entryExecutionAddress)
+      : null,
   };
-};
-
-const doesTeamIdentityMatchTarget = (
-  identity: ChannelTeamOutputTargetIdentity,
-  target: Extract<ChannelRunOutputTarget, { targetType: "TEAM" }>,
-): boolean => {
-  const identityRouteKey =
-    normalizeNullableString(identity.memberRouteKey) ??
-    normalizeRouteKeyFromPath(identity.memberPath);
-  const targetRouteKey =
-    normalizeNullableString(target.entryMemberRouteKey) ??
-    normalizeRouteKeyFromPath(target.entryMemberPath);
-  if (identityRouteKey && targetRouteKey) {
-    return identityRouteKey === targetRouteKey;
-  }
-  if (identity.memberRunId && target.entryMemberRunId) {
-    return identity.memberRunId === target.entryMemberRunId;
-  }
-  return false;
-};
-
-const normalizeMemberPath = (value: readonly string[] | null | undefined): string[] | null => {
-  if (!Array.isArray(value)) {
-    return null;
-  }
-  const normalized = value
-    .map((segment) => normalizeNullableString(segment))
-    .filter((segment): segment is string => Boolean(segment));
-  return normalized.length > 0 ? normalized : null;
-};
-
-const normalizeRouteKeyFromPath = (
-  value: readonly string[] | null | undefined,
-): string | null => {
-  const path = normalizeMemberPath(value);
-  return path ? buildMemberRouteKeyFromPath(path) : null;
 };

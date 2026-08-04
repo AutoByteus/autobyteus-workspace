@@ -1,4 +1,4 @@
-import type { ConversationTargetAddress } from '~/types/agent/ConversationTargetAddress';
+import type { TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 
 export type TeamCommunicationReferenceFileType = 'file' | 'image' | 'audio' | 'video' | 'pdf' | 'csv' | 'excel' | 'other';
 export type TeamCommunicationDirection = 'sent' | 'received';
@@ -13,8 +13,8 @@ export interface TeamCommunicationReferenceFile {
 
 export interface TeamCommunicationMessage {
   messageId: string;
-  senderAddress: ConversationTargetAddress;
-  receiverAddress: ConversationTargetAddress;
+  senderAddress: TeamExecutionAddress;
+  receiverAddress: TeamExecutionAddress;
   content: string;
   messageType: string;
   createdAt: string;
@@ -23,14 +23,14 @@ export interface TeamCommunicationMessage {
 
 export interface TeamCommunicationPerspectiveMessage extends TeamCommunicationMessage {
   direction: TeamCommunicationDirection;
-  counterpartAddress: ConversationTargetAddress;
+  counterpartAddress: TeamExecutionAddress;
   counterpartKey: string;
   counterpartLabel: string;
   message: TeamCommunicationMessage;
 }
 
 export interface TeamCommunicationPerspectiveGroup {
-  counterpartAddress: ConversationTargetAddress;
+  counterpartAddress: TeamExecutionAddress;
   counterpartKey: string;
   counterpartLabel: string;
   messages: TeamCommunicationPerspectiveMessage[];

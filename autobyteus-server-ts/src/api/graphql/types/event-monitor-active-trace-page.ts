@@ -1,4 +1,5 @@
 import { createUnionType, Field, Float, ID, Int, ObjectType } from "type-graphql";
+import { GraphQLJSON } from "graphql-scalars";
 
 @ObjectType("EventMonitorActiveTraceAttachment")
 class EventMonitorActiveTraceAttachmentObject {
@@ -29,16 +30,7 @@ class EventMonitorToolSummaryArgsObject {
 
 @ObjectType("EventMonitorApprovalTarget")
 class EventMonitorApprovalTargetObject {
-  @Field(() => String, { nullable: true }) memberRouteKey?: string | null;
-  @Field(() => [String], { nullable: true }) memberPath?: string[] | null;
-  @Field(() => String, { nullable: true }) sourceRouteKey?: string | null;
-  @Field(() => [String], { nullable: true }) sourcePath?: string[] | null;
-  @Field(() => String, { nullable: true }) taskAgentRunId?: string | null;
-  @Field(() => String, { nullable: true }) taskTeamRunId?: string | null;
-  @Field(() => String, { nullable: true }) teamRouteKey?: string | null;
-  @Field(() => [String], { nullable: true }) teamPath?: string[] | null;
-  @Field(() => String, { nullable: true }) taskTeamRelativeMemberRouteKey?: string | null;
-  @Field(() => [String], { nullable: true }) taskTeamRelativeMemberPath?: string[] | null;
+  @Field(() => GraphQLJSON) executionAddress!: unknown;
 }
 
 @ObjectType("EventMonitorUserVisual")

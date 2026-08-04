@@ -9,6 +9,7 @@ import type {
   MobileWorkContext,
 } from '~/types/mobileWork';
 import { preferredTabForMobileContext } from '~/types/mobileWork';
+import { createTeamExecutionAddress, type TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
 
 const normalizeMobileTaskTab = (tab: MobileTaskTab | string | null | undefined): MobileTaskTab => (
   tab === 'chat' || tab === 'runs' || tab === 'files' || tab === 'artifacts' || tab === 'activity'
@@ -21,7 +22,7 @@ export const useMobileWorkStore = defineStore('mobileWork', () => {
   const activeTab = ref<MobileTaskTab>('chat');
   const draftContextAttachments = ref<ContextAttachment[]>([]);
   const pendingTeamRunAttachmentsByTeamRunId = ref<Record<string, ContextAttachment[]>>({});
-  const focusedMemberRouteKeyByTeamRunId = ref<Record<string, string>>({});
+  const focusedExecutionAddressByTeamRunId = ref<Record<string, TeamExecutionAddress>>({});
   const runSetupIntent = ref<MobileRunSetupIntent | null>(null);
   const nextRunSetupRevision = ref(0);
   const pendingFilePreviewRequest = ref<MobileFilePreviewRequest | null>(null);
@@ -165,30 +166,30 @@ export const useMobileWorkStore = defineStore('mobileWork', () => {
     return attachments;
   }
 
-  function rememberFocusedTeamMember(teamRunId: string, memberRouteKey: string): boolean {
+  function rememberFocusedTeamMember(teamRunId: string, executionAddress: TeamExecutionAddress): boolean {
     const normalizedTeamRunId = teamRunId.trim();
-    const normalizedMemberRouteKey = memberRouteKey.trim();
-    if (!normalizedTeamRunId || !normalizedMemberRouteKey) {
+    const normalized = createTeamExecutionAddress(executionAddress);
+    if (!normalizedTeamRunId || normalized.rootTeamRunId !== normalizedTeamRunId) {
       return false;
     }
-    focusedMemberRouteKeyByTeamRunId.value = {
-      ...focusedMemberRouteKeyByTeamRunId.value,
-      [normalizedTeamRunId]: normalizedMemberRouteKey,
+    focusedExecutionAddressByTeamRunId.value = {
+      ...focusedExecutionAddressByTeamRunId.value,
+      [normalizedTeamRunId]: normalized,
     };
     return true;
   }
 
-  function getRememberedFocusedTeamMember(teamRunId: string): string {
-    return focusedMemberRouteKeyByTeamRunId.value[teamRunId.trim()] || '';
+  function getRememberedFocusedTeamMember(teamRunId: string): TeamExecutionAddress | null {
+    return focusedExecutionAddressByTeamRunId.value[teamRunId.trim()] || null;
   }
 
-  function updateFocusedTeamMember(teamRunId: string, memberRouteKey: string): boolean {
+  function updateFocusedTeamMember(teamRunId: string, executionAddress: TeamExecutionAddress): boolean {
     const normalizedTeamRunId = teamRunId.trim();
-    const normalizedMemberRouteKey = memberRouteKey.trim();
+    const normalized = createTeamExecutionAddress(executionAddress);
     const current = currentContext.value;
     if (
       !normalizedTeamRunId ||
-      !normalizedMemberRouteKey ||
+      normalized.rootTeamRunId !== normalizedTeamRunId ||
       current?.kind !== 'team-run' ||
       current.teamRunId !== normalizedTeamRunId
     ) {
@@ -197,10 +198,10 @@ export const useMobileWorkStore = defineStore('mobileWork', () => {
 
     currentContext.value = {
       ...current,
-      focusedMemberRouteKey: normalizedMemberRouteKey,
+      focusedExecutionAddress: normalized,
     };
     pendingFilePreviewRequest.value = null;
-    rememberFocusedTeamMember(normalizedTeamRunId, normalizedMemberRouteKey);
+    rememberFocusedTeamMember(normalizedTeamRunId, normalized);
     return true;
   }
 
@@ -218,7 +219,7 @@ export const useMobileWorkStore = defineStore('mobileWork', () => {
     activeTab,
     draftContextAttachments,
     pendingTeamRunAttachmentsByTeamRunId,
-    focusedMemberRouteKeyByTeamRunId,
+    focusedExecutionAddressByTeamRunId,
     runSetupIntent,
     pendingFilePreviewRequest,
     draftContextAttachmentCount,

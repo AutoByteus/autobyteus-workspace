@@ -25,12 +25,12 @@ export interface WorkspaceHistorySectionState {
   isTeamMemberExpanded: (
     workspaceId: string,
     teamRunId: string,
-    memberRouteKey: string,
+    memberAddress: string,
   ) => boolean;
   toggleTeamMember: (
     workspaceId: string,
     teamRunId: string,
-    memberRouteKey: string,
+    memberAddress: string,
   ) => void;
   canTerminateTeam: (isActive: boolean) => boolean;
 }

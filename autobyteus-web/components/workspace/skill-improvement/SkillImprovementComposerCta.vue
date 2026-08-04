@@ -41,7 +41,7 @@ const targetKey = computed(() => {
   }
   return target.kind === 'agent'
     ? skillImprovementStore.agentKey(target.runId)
-    : skillImprovementStore.teamMemberKey(target.teamRunId, target.memberRunId);
+    : skillImprovementStore.teamMemberKey(target.teamRunId, target.agentRunId);
 });
 
 const actionLabel = computed(() => (
@@ -67,7 +67,7 @@ const isTemporaryTarget = computed(() => {
   }
   const ids = target.kind === 'agent'
     ? [target.runId]
-    : [target.teamRunId, target.memberRunId];
+    : [target.teamRunId, target.agentRunId];
   return ids.some((id) => id.startsWith('temp-') || id.startsWith('temp-team-'));
 });
 
@@ -113,7 +113,7 @@ const ensureEligibility = async (): Promise<void> => {
     await skillImprovementStore.fetchAgentRunEligibility(target.runId);
     return;
   }
-  await skillImprovementStore.fetchTeamMemberEligibility(target.teamRunId, target.memberRunId);
+  await skillImprovementStore.fetchTeamMemberEligibility(target.teamRunId, target.agentRunId);
 };
 
 const startSkillImprovement = async (): Promise<void> => {
@@ -125,7 +125,7 @@ const startSkillImprovement = async (): Promise<void> => {
   try {
     const latestEligibility = target.kind === 'agent'
       ? await skillImprovementStore.fetchAgentRunEligibility(target.runId)
-      : await skillImprovementStore.fetchTeamMemberEligibility(target.teamRunId, target.memberRunId);
+      : await skillImprovementStore.fetchTeamMemberEligibility(target.teamRunId, target.agentRunId);
     if (!latestEligibility.eligible) {
       addToast(
         t('workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.run_not_eligible'),
@@ -136,7 +136,7 @@ const startSkillImprovement = async (): Promise<void> => {
     if (target.kind === 'agent') {
       await skillImprovementStore.startAgentRunSkillImprovement(target.runId);
     } else {
-      await skillImprovementStore.startTeamMemberSkillImprovement(target.teamRunId, target.memberRunId);
+      await skillImprovementStore.startTeamMemberSkillImprovement(target.teamRunId, target.agentRunId);
     }
     addToast(
       t('workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.started_toast'),

@@ -47,7 +47,7 @@ type BriefArtifact {
   path: String!
   description: String
   body: String!
-  producerMemberRouteKey: String!
+  producerMemberAddress: String!
   updatedAt: String!
 }
 

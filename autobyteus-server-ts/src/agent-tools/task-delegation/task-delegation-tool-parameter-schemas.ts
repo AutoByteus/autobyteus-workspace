@@ -12,7 +12,7 @@ import {
 
 export const buildDelegateTaskParameterSchema = (): ParameterSchema => new ParameterSchema([
   new ParameterDefinition({
-    name: "recipient_name",
+    name: "recipient_address",
     type: ParameterType.STRING,
     description: "Rooted logical Agent-or-Team address using /... or immediate-Team-relative ./... syntax. The resolved target must be a direct child of the caller's immediate Team.",
     required: true,

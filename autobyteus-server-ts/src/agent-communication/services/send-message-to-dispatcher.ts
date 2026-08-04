@@ -1,5 +1,5 @@
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
-import { buildInterAgentMessageDeliveryIntentFromRecipientName } from "../../agent-team-execution/services/inter-agent-message-delivery-intent-builder.js";
+import { buildInterAgentMessageDeliveryIntentFromRecipientAddress } from "../../agent-team-execution/services/inter-agent-message-delivery-intent-builder.js";
 import type { AgentRunMessageSenderContext } from "../domain/agent-run-message-sender.js";
 import { describeSendMessageTargetSelector } from "../domain/send-message-target-selector.js";
 import { isCollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
@@ -70,17 +70,17 @@ export class SendMessageToDispatcher {
 
     const memberTeamContext = input.sender.memberTeamContext;
     const delivery = memberTeamContext?.collaboration.deliverInterAgentMessage ?? null;
-    if (!memberTeamContext?.sendMessageToEnabled || !delivery) {
+    if (!memberTeamContext || !delivery) {
       return {
         accepted: false,
         code: "TEAM_CONTEXT_REQUIRED",
-        message: `${toolName} recipient_name delivery requires an active team member context with send_message_to enabled.`,
+        message: `${toolName} recipient_address delivery requires an active Team collaboration context.`,
       };
     }
 
-    const intentResult = buildInterAgentMessageDeliveryIntentFromRecipientName({
+    const intentResult = buildInterAgentMessageDeliveryIntentFromRecipientAddress({
       memberTeamContext,
-      recipientName: parsed.target.recipientName,
+      recipientAddress: parsed.target.recipientAddress,
       content,
       messageType: parsed.messageType,
       referenceFiles: parsed.referenceFiles,

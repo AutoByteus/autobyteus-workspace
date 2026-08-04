@@ -1,89 +1,35 @@
+import type { TeamRunMetadata } from "../../run-history/store/team-run-metadata-types.js";
+import type { TeamRunAgentTeamNode } from "../domain/team-run-config.js";
+import { createTeamExecutionAddress } from "../domain/team-execution-address.js";
 import {
   MixedAgentMemberContext,
   MixedSubTeamMemberContext,
   MixedTeamRunContext,
 } from "../backends/mixed/mixed-team-run-context.js";
-import type { TeamMemberRuntimeContext } from "../domain/team-run-context.js";
-import type { TeamRunMetadata, TeamRunMemberMetadata } from "../../run-history/store/team-run-metadata-types.js";
 
-const buildMixedRuntimeContextFromMetadata = (input: {
-  rootTeamRunId: string;
-  coordinatorMemberRouteKey: string | null;
-  memberTree: readonly TeamRunMemberMetadata[];
-  handoffs: TeamRunMetadata["handoffs"];
-  teamMountPath?: readonly string[];
-}): MixedTeamRunContext =>
-  new MixedTeamRunContext({
-    coordinatorMemberRouteKey: input.coordinatorMemberRouteKey,
-    memberContexts: input.memberTree.map((member) => {
-      if (member.memberKind === "agent") {
-        return new MixedAgentMemberContext({
-          memberName: member.memberName,
-          memberPath: member.memberPath,
-          memberRouteKey: member.memberRouteKey,
-          memberRunId: member.memberRunId,
-          runtimeKind: member.runtimeKind,
-          platformAgentRunId: member.platformAgentRunId,
-        });
-      }
-      return new MixedSubTeamMemberContext({
-        memberName: member.memberName,
-        memberPath: member.memberPath,
-        memberRouteKey: member.memberRouteKey,
-        memberRunId: member.memberRunId,
-        teamDefinitionId: member.teamDefinitionId,
-        childTeamRunId: member.teamRunId,
-        childRuntimeContext: buildMixedRuntimeContextFromMetadata({
-          rootTeamRunId: input.rootTeamRunId,
-          coordinatorMemberRouteKey: member.coordinatorMemberRouteKey,
-          memberTree: member.memberTree,
-          handoffs: input.handoffs,
-          teamMountPath: member.memberPath,
-        }),
-      });
-    }),
-    collaborationRootTeamRunId: input.rootTeamRunId,
-    teamMountPath: [...(input.teamMountPath ?? [])],
-    effectiveHandoffs: input.handoffs,
-  });
+const buildRuntimeContext = (
+  rootTeamRunId: string,
+  team: TeamRunAgentTeamNode,
+): MixedTeamRunContext => new MixedTeamRunContext({
+  memberContexts: team.children.map((node) => node.kind === "agent"
+    ? new MixedAgentMemberContext({
+        address: node.address,
+        agentRunId: node.agentRunId,
+        runtimeKind: node.runtimeKind,
+        platformAgentRunId: node.platformAgentRunId,
+      })
+    : new MixedSubTeamMemberContext({
+        address: node.address,
+        teamDefinitionId: node.teamDefinitionId,
+        teamRunId: node.teamRunId,
+        childRuntimeContext: buildRuntimeContext(rootTeamRunId, node),
+      })),
+  teamExecutionAddress: createTeamExecutionAddress({
+    rootTeamRunId,
+    memberAddress: team.address,
+  }),
+});
 
 export const buildRestoreTeamRunRuntimeContext = (
   metadata: TeamRunMetadata,
-): MixedTeamRunContext => buildMixedRuntimeContextFromMetadata({
-  rootTeamRunId: metadata.teamRunId,
-  coordinatorMemberRouteKey: metadata.coordinatorMemberRouteKey,
-  memberTree: metadata.memberTree,
-  handoffs: metadata.handoffs,
-});
-
-export const getRuntimeMemberContexts = (
-  runtimeContext: unknown,
-): TeamMemberRuntimeContext[] => {
-  if (!runtimeContext || typeof runtimeContext !== "object") {
-    return [];
-  }
-  if (!("memberContexts" in runtimeContext)) {
-    return [];
-  }
-  const memberContexts = (runtimeContext as { memberContexts?: unknown[] }).memberContexts;
-  if (!Array.isArray(memberContexts)) {
-    return [];
-  }
-  return memberContexts.filter(isTeamMemberRuntimeContext);
-};
-
-const isTeamMemberRuntimeContext = (
-  value: unknown,
-): value is TeamMemberRuntimeContext => {
-  return (
-    !!value &&
-    typeof value === "object" &&
-    ((value as { memberKind?: unknown }).memberKind === "agent" ||
-      (value as { memberKind?: unknown }).memberKind === "agent_team") &&
-    typeof (value as { memberName?: unknown }).memberName === "string" &&
-    Array.isArray((value as { memberPath?: unknown }).memberPath) &&
-    typeof (value as { memberRouteKey?: unknown }).memberRouteKey === "string" &&
-    typeof (value as { memberRunId?: unknown }).memberRunId === "string" &&
-    typeof (value as { getPlatformAgentRunId?: unknown }).getPlatformAgentRunId === "function"
-  );
-};
+): MixedTeamRunContext => buildRuntimeContext(metadata.rootTeam.teamRunId, metadata.rootTeam);

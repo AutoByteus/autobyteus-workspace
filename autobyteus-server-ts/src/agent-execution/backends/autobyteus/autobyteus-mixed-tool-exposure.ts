@@ -3,6 +3,8 @@ import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.
 import type { MemberTeamContext } from "../../../agent-team-execution/domain/member-team-context.js";
 import { TeamBackendKind } from "../../../agent-team-execution/domain/team-backend-kind.js";
 import { TASK_DELEGATION_TOOL_NAMES } from "../../../agent-tools/task-delegation/task-delegation-tool-contract.js";
+import { SEND_MESSAGE_TO_TOOL_NAME } from "../../../agent-communication/services/send-message-to-tool-contract.js";
+import { GET_HANDOFF_RULES_TOOL_NAME } from "../../../agent-communication/services/get-handoff-rules-tool-contract.js";
 
 const LEGACY_LOCAL_TASK_PLAN_TOOL_NAMES = new Set<string>([
   "assign_task_to",
@@ -32,7 +34,7 @@ export const resolveAutoByteusStandaloneToolNames = (input: {
     return configuredToolNames;
   }
 
-  return configuredToolNames.filter((toolName) => {
+  const filtered = configuredToolNames.filter((toolName) => {
     const normalizedToolName = toolName.trim();
     if (LEGACY_LOCAL_TASK_PLAN_TOOL_NAMES.has(normalizedToolName)) {
       return false;
@@ -47,4 +49,5 @@ export const resolveAutoByteusStandaloneToolNames = (input: {
     const definition = defaultToolRegistry.getToolDefinition(normalizedToolName);
     return definition?.category !== ToolCategory.TASK_MANAGEMENT;
   });
+  return [...new Set([...filtered, SEND_MESSAGE_TO_TOOL_NAME, GET_HANDOFF_RULES_TOOL_NAME])];
 };

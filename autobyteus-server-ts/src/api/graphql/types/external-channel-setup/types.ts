@@ -57,10 +57,7 @@ export class ExternalChannelBindingGql {
   teamRunId?: string | null;
 
   @Field(() => String, { nullable: true })
-  targetMemberRouteKey?: string | null;
-
-  @Field(() => [String], { nullable: true })
-  targetMemberPath?: string[] | null;
+  targetMemberAddress?: string | null;
 
   @Field(() => Date)
   updatedAt!: Date;
@@ -201,8 +198,5 @@ export class UpsertExternalChannelBindingInput {
   teamLaunchPreset?: ExternalChannelTeamLaunchPresetInput | null;
 
   @Field(() => String, { nullable: true })
-  targetMemberRouteKey?: string | null;
-
-  @Field(() => [String], { nullable: true })
-  targetMemberPath?: string[] | null;
+  targetMemberAddress?: string | null;
 }
