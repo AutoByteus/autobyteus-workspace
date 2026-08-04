@@ -12,6 +12,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-004 | `delivery_engineer` / `delivery-integration-blocker.md` / `DR-002` | `N/A`; five latest-base merge conflicts | `Local Fix` | `SR-006`; `ARCH-REV-005`; `CRR-005`–`CRR-006`; `API-REV-003`; `DR-002` | `Integrated latest base; ready for code review` |
 | IR-005 | `architecture_reviewer` / `design-review-report.md` / `ARCH-REV-007` | `DR-004` resolved in SR-012; no open finding | `Approved Design Rework` | `SR-001`–`SR-012`; `ARCH-REV-001`–`ARCH-REV-007`; prior `CRR-008`, `API-REV-004`, `DR-003` apply only to SR-006 | `SR-012 production implementation complete; ready for code review` |
 | IR-006 | `code_reviewer` / `code-review-report.md` / `CRR-009` | `CR-F-003`, `CR-F-004` | `Local Fix` | `SR-012`; `ARCH-REV-007`; `CRR-009`; prior `API-REV-004`, `DR-003` apply only to SR-006 | `Both bounded findings corrected; ready for code re-review` |
+| IR-007 | `code_reviewer` / `code-review-report.md` / `CRR-011` | `CR-F-005` / `API-F-001` | `Local Fix` | `SR-012`; `ARCH-REV-007`; `CRR-010`–`CRR-011`; `API-REV-005`; prior `DR-003` applies only to SR-006 | `Rooted traversal classification corrected; ready for source re-review` |
 
 ## Revision Entries
 
@@ -134,3 +135,23 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: server production typecheck and `build:full`/bootstrap smoke passed. A built-JavaScript root/child construction passed persistent-child and task-child delivery to `/root-agent` through the root manager and foreign-root rejection at the root; the parent boundary was invoked once per case with no retry. Expanded source/built production audit found zero `member_run_id` occurrences. Diff/whitespace/path and size checks passed; changed source files remain 203/179 effective non-empty lines.
 - Next recipient or routing: `code_reviewer` for CRR-009 source re-review with the cumulative SR-012 package. Only after Pass may `api_e2e_engineer` begin the new coverage investigation/execution and mandatory imported three-runtime matrix.
 - Remaining limitations or risks: no durable test was changed or executed, and the built proof is implementation-scoped rather than downstream coverage. Restored-child parity is structurally shared through the same `parentBoundary` but still needs durable downstream coverage. Existing dirty tests and delivery documentation/artifacts remain unstaged; the protected delivery stash remains untouched. All IR-005 downstream evidence limitations remain.
+
+### IR-007 — Restore Agent-intermediate rooted traversal classification
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`; `CRR-011` API/E2E failure-origin review.
+- Triggering finding IDs: `CR-F-005`, originating from `API-F-001` / `SR012-ADDR-001B` in `API-REV-005`.
+- Classification: `Local Fix`.
+- Prior authoritative result: `CRR-010` source Pass for IR-006, followed by `CRR-011` Fail — Local Fix after API-REV-005 deterministically exposed the lost traversal code. API/E2E halted at 18% confidence.
+- Current authoritative result: rooted prefix classification is corrected in source commit `9a5bf14f66064fbeefd6ae8d63ed9f3221170d47`; the cumulative SR-012 implementation is ready for source re-review.
+- Related solution revision IDs: `SR-001` through `SR-012` (current `SR-012`).
+- Related architecture-review revision IDs: `ARCH-REV-001` through `ARCH-REV-007` (current Pass `ARCH-REV-007`).
+- Related code-review revision IDs: `CRR-010` is the prior IR-006 Pass; `CRR-011` is the triggering current failure-origin result.
+- Related API/E2E revision IDs: `API-REV-005` is the current halted SR-012 execution round and owns the valid fixture/test expectation.
+- Related delivery revision IDs: through `DR-003`, prior SR-006 lineage only.
+- Why this implementation revision is recorded: the SR-012 runtime resolver changed from segment-wise topology traversal to one final rooted-index lookup. That correctly found valid nodes but collapsed an existing Agent used before the final segment into the generic missing-target code, contrary to the approved stable error table shared by message and task addressing.
+- Approved behavior or requirement IDs affected: `R-023`, `R-026`; `AC-010`; the address/handoff contract stable error table; shared message/task resolver behavior. `CR-F-003` and `CR-F-004` remain resolved.
+- Implementation delta: after parsing/resolving one canonical address expression, `TeamRecipientResolver` now constructs each non-final prefix through `AgentTeamAddress` and checks it in the existing `TeamRunTreeIndex`. A missing prefix throws `COLLABORATION_TARGET_NOT_FOUND`; an Agent prefix throws `COLLABORATION_TRAVERSAL_INVALID`; the existing exact final lookup and Agent/AgentTeam result construction remain unchanged. No alternate routing structure, retry, fallback, or compatibility field was introduced.
+- Changed files or areas: `autobyteus-server-ts/src/agent-team-execution/services/team-recipient-resolver.ts`; implementation handoff and revision record. API/E2E fixtures/tests were not edited.
+- Local validation and result: server production typecheck and `build:full`/bootstrap smoke passed. A built-JavaScript current-schema probe returned `COLLABORATION_TRAVERSAL_INVALID` for `/product_manager/child`, retained `COLLABORATION_TARGET_NOT_FOUND` for missing intermediate and final segments, and still resolved a valid nested Agent. Diff/whitespace/alternate-identity checks passed; the resolver is 73 effective non-empty lines.
+- Next recipient or routing: `code_reviewer` for CRR-011 source re-review with the cumulative SR-012 package. On Pass, return to `api_e2e_engineer` to resume API-REV-005 without weakening its maintained current-schema expectation.
+- Remaining limitations or risks: implementation did not execute or change the API/E2E-owned durable tests; the local proof is implementation-scoped only. API-REV-005's remaining 42 dirty durable tests, broader migration/application/frontend/system work, and all three mandatory live provider rows remain outstanding. Existing delivery documentation/artifacts and the protected stash remain untouched.
