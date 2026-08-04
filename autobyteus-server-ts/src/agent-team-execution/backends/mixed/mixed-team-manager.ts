@@ -97,9 +97,10 @@ export class MixedTeamManager implements TeamManager {
   async deliverInterAgentMessage(intent: InterAgentMessageDeliveryIntent): Promise<AgentOperationResult> {
     const context = this.getContext();
     if (!context) return buildRunNotFoundResult("unknown");
+    const boundary = context.runtimeContext.parentBoundary;
+    if (boundary) return boundary.deliverInterAgentMessage(intent);
     if (intent.rootTeamRunId !== context.config.rootTeam.teamRunId) {
-      const boundary = context.runtimeContext.parentBoundary;
-      return boundary ? boundary.deliverInterAgentMessage(intent) : {
+      return {
         accepted: false, code: "TARGET_MEMBER_NOT_FOUND", message: `TeamRun '${intent.rootTeamRunId}' is not reachable.`,
       };
     }

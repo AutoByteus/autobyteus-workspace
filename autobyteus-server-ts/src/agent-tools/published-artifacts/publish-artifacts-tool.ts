@@ -66,9 +66,7 @@ const resolveFallbackRuntimeContext = (context: ToolContext) => {
             agent_id:
               typeof artifact.runId === "string" && artifact.runId.trim().length > 0
                 ? artifact.runId
-                : normalizeOptionalNonEmptyString(context.customData?.member_run_id)
-                  ?? normalizeOptionalNonEmptyString(context.agentId)
-                  ?? "",
+                : normalizeOptionalNonEmptyString(context.agentId) ?? "",
             path: typeof artifact.path === "string" ? artifact.path : "",
             type: typeof artifact.type === "string" ? artifact.type : "",
             revision_id: typeof artifact.revisionId === "string" ? artifact.revisionId : undefined,
@@ -129,10 +127,7 @@ export const buildPublishArtifactsParameterSchema = (): ParameterSchema => {
 const argumentSchema = buildPublishArtifactsParameterSchema();
 
 const publishArtifacts = async (context: ToolContext, rawArguments: unknown): Promise<string> => {
-  const runId =
-    normalizeOptionalNonEmptyString(context.customData?.member_run_id)
-    ?? normalizeOptionalNonEmptyString(context.agentId)
-    ?? "";
+  const runId = normalizeOptionalNonEmptyString(context.agentId) ?? "";
   if (!runId) {
     throw new Error("publish_artifacts requires an agent runtime context.");
   }
