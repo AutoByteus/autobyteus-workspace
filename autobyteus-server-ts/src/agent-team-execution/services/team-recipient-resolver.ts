@@ -1,4 +1,9 @@
-import { getParentAgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
+import {
+  createAgentTeamAddress,
+  getAgentTeamAddressSegments,
+  getParentAgentTeamAddress,
+  type AgentTeamAddress,
+} from "../../agent-collaboration/domain/agent-team-address.js";
 import {
   parseRecipientAddressExpression,
   resolveRecipientAddressExpression,
@@ -29,6 +34,7 @@ export class TeamRecipientResolver {
       parseRecipientAddressExpression(recipientAddress),
       callerTeamAddress,
     );
+    this.assertTraversable(index, address);
     const node = index.getNode(address);
     if (!node) {
       throw new CollaborationContractError(
@@ -42,5 +48,28 @@ export class TeamRecipientResolver {
           address: node.address,
           coordinatorAddress: node.coordinatorAddress,
         });
+  }
+
+  private assertTraversable(
+    index: TeamRunTreeIndex,
+    address: AgentTeamAddress,
+  ): void {
+    const segments = getAgentTeamAddressSegments(address);
+    for (let length = 1; length < segments.length; length += 1) {
+      const prefix = createAgentTeamAddress(segments.slice(0, length));
+      const node = index.getNode(prefix);
+      if (!node) {
+        throw new CollaborationContractError(
+          "COLLABORATION_TARGET_NOT_FOUND",
+          `Collaboration target '${address}' was not found.`,
+        );
+      }
+      if (node.kind === "agent") {
+        throw new CollaborationContractError(
+          "COLLABORATION_TRAVERSAL_INVALID",
+          `Collaboration address '${address}' uses Agent '${segments[length - 1]}' as an intermediate segment.`,
+        );
+      }
+    }
   }
 }
