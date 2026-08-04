@@ -8,6 +8,8 @@
 | `CRR-002` | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md` | IR-002 re-review / commit `93cc7ed34` | `Fail — Local Fix` | `Pass` | `CR-F-001`, `CR-F-002` |
 | `CRR-003` | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-test-review-report.md` | API-REV-001 proportional test review | `N/A — first test review; CRR-002 source Pass` | `Fail — Local Fix` | `TR-F-001` |
 | `CRR-004` | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-test-review-report.md` | API-REV-002 bounded reporting-resolution verification | `Fail — Local Fix` | `Pass` | `TR-F-001` |
+| `CRR-005` | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md` | IR-003 / SR-006 canonical-address-only source review | `Pass — SR-005 source/test checkpoint` | `Pass` | `None` |
+| `CRR-006` | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-test-review-report.md` | API-REV-003 proportional review of three SR-006 durable test updates | `N/A — CRR-005 source Pass` | `Pass` | `None` |
 
 ## Revision Entries
 
@@ -107,3 +109,49 @@ None.
 - Material score or classification changes: Reporting-only `Local Fix` cleared; no implementation scorecard, source review, or proportional test-code result was reopened.
 - Recommended recipient: `delivery_engineer`
 - Remaining risks or uncertainty: Unchanged bounded external Codex/Claude provider-process/bootstrap drift; capability-gated cases remain explicitly not counted as passes, while deterministic native/MCP projection passed.
+
+### CRR-005 — IR-003 canonical-address contraction passes source review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `3`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/implementation-handoff.md`; `IR-003`; no triggering finding ID because this is user-approved SR-006 rework.
+- Relevant solution revision IDs: `SR-001` through `SR-006` (current: `SR-006`)
+- Relevant architecture-review revision IDs: `ARCH-REV-001` through `ARCH-REV-005` (current: `ARCH-REV-005`)
+- Relevant implementation revision IDs: `IR-001` through `IR-003` (current: `IR-003`)
+- Relevant API/E2E revision IDs: `API-REV-001`, `API-REV-002` as SR-005 checkpoint context only
+- Relevant delivery revision IDs: `DR-001` as the interrupted SR-005 delivery checkpoint
+- Prior authoritative result: `CRR-002` source Pass (`9.4/10`), followed by `API-REV-002` / `CRR-004` Pass and `DR-001` for SR-005; none of those results proves SR-006.
+- Current authoritative result: `Pass` (`9.4/10`)
+- What changed in the review result and why: IR-003 makes canonical logical address the sole shared collaboration authority. The exact frozen caller and placement shapes, centralized derivations, root-private message selector materialization, parent-first current-local task mapping, Team ingress validation, and clean removal of redundant shared coordinates all match SR-006. Independent typecheck, build/bootstrap, 8-file/52-test execution, diff, size, stale-field, fixture, and production-path checks passed.
+
+#### Prior Finding Resolution
+
+None. `CR-F-001`, `CR-F-002`, and `TR-F-001` were already resolved before SR-006 and remain closed; this round had no unresolved prior source finding.
+
+- New or remaining finding IDs: `None`
+- Material score or classification changes: No classification change; the current SR-006 source result is a clean `Pass` with every score category at or above `9.0`.
+- Recommended recipient: `api_e2e_engineer`
+- Remaining risks or uncertainty: Prior executable evidence is SR-005-only. Fresh SR-006 coverage investigation/execution must cover exact persistent/restore/task contexts, equal message/task placements, preserved messaging/task/event/provider lifecycles, and the three known stale integration/API fixtures. The implementation-reported broad unit sweep had unrelated failures and is not counted as acceptance.
+
+### CRR-006 — API-REV-003 durable SR-006 test updates pass proportional review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-test-review-report.md`
+- Review entry point and round: `Successful API/E2E Test-Code Review`, round `3`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md`; `API-REV-003` Pass; `ADDR-CTX-LIFECYCLE-001`, `ADDR-CTX-MEMORY-001`, `ADDR-CTX-API-001`, and `ADDR-CTX-RESTORE-001`; no finding ID.
+- Relevant solution revision IDs: `SR-006`
+- Relevant architecture-review revision IDs: `ARCH-REV-005`
+- Relevant implementation revision IDs: `IR-003`
+- Relevant API/E2E revision IDs: `API-REV-003`
+- Relevant delivery revision IDs: `DR-001` as prior SR-005 checkpoint context only
+- Prior authoritative result: `N/A — first proportional test review for the SR-006 durable delta; CRR-005 source review remains Pass at 9.4/10`
+- Current authoritative result: `Pass`
+- What changed in the review result and why: The three maintained integration files remove obsolete positive addressing fields and add exact canonical two-field assertions for persistent, task-Agent, task-Team ingress, mixed-memory, initial TeamRun, and restored Coordinator/Specialist contexts. The changes remain inside coherent existing scenarios, reuse established harnesses, and directly prove AC-023/AC-025. Coverage artifacts and final logs agree with the exact three-file delta and clean focused/affected/E2E results.
+
+#### Prior Finding Resolution
+
+None. `TR-F-001` was already resolved by `CRR-004`; API-REV-003 records the correct current lineage and introduces no reporting or test-code finding.
+
+- New or remaining finding IDs: `None`
+- Material score or classification changes: No implementation scorecard was reopened. Proportional durable test-code result is `Pass`.
+- Recommended recipient: `delivery_engineer`
+- Remaining risks or uncertainty: Live Codex/Claude model processes remain capability-gated and are not counted as passes. The independent whole-server baseline has 24 unrelated failing files / 57 failing tests with zero intersection with SR-006 or the current three-file test delta; directly affected and deterministic E2E suites are clean.

@@ -1371,9 +1371,6 @@ describe("cross-runtime memory persistence integration", () => {
             addressing: {
               rootTeamRunId: input.teamRunId,
               memberAddress: `/${input.currentMemberName}`,
-              memberPath: [input.currentMemberName],
-              immediateTeamAddress: "/",
-              immediateTeamPath: [],
             },
           },
         })),
@@ -1386,6 +1383,10 @@ describe("cross-runtime memory persistence integration", () => {
     await handle.postMessage(new AgentInputUserMessage("team hello"));
     const memberBackend = createdBackends[0];
     expect(memberBackend).toBeTruthy();
+    expect(memberBackend.config.memberTeamContext?.collaboration.addressing).toEqual({
+      rootTeamRunId: teamRunId,
+      memberAddress: "/Coordinator",
+    });
     memberBackend.emit(AgentRunEventType.SEGMENT_CONTENT, {
       id: "team-text-1",
       segment_type: "text",

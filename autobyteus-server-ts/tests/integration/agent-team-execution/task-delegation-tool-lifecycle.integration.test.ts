@@ -483,8 +483,7 @@ const buildToolContext = (
     collaboration: {
       addressing: createMemberLogicalAddressContext({
         rootTeamRunId: taskTeamInstance?.parentTeamRunId ?? run.runId,
-        memberPath: addressingMemberPath,
-        immediateTeamPath: addressingMemberPath.slice(0, -1),
+        memberAddress: `/${addressingMemberPath.join("/")}`,
       }),
     },
     taskAgentInstance,
@@ -715,6 +714,10 @@ const reviewDelegationInput = memberDelegationInput(
 describe("task delegation tool lifecycle integration", () => {
   it("runs the server-managed delegate_task -> submit_task_result -> review_task_result -> idle settlement path", async () => {
     const harness = await createHarness();
+    expect(harness.coordinatorContext.addressing).toEqual({
+      rootTeamRunId: teamRunId,
+      memberAddress: "/coordinator",
+    });
     const createdDraft = await executeDelegateTask(harness, draftDelegationInput);
     const createdReview = await executeDelegateTask(harness, reviewDelegationInput);
 
@@ -978,6 +981,10 @@ describe("task delegation tool lifecycle integration", () => {
     const harness = await createHarness();
     await executeDelegateTask(harness, memberDelegationInput("worker", "Parent worker task."));
     const parentTaskAgent = findTaskAgentIdentity(harness.backend, "task_0001");
+    expect(buildTaskAgentToolContext(harness, "task_0001").addressing).toEqual({
+      rootTeamRunId: teamRunId,
+      memberAddress: "/worker",
+    });
 
     const childCreated = await executeDelegateTaskAsTaskAgent(
       harness,
@@ -1051,6 +1058,10 @@ describe("task delegation tool lifecycle integration", () => {
       null,
       firstTaskTeam!.identity,
     );
+    expect(firstIngressContext.addressing).toEqual({
+      rootTeamRunId: teamRunId,
+      memberAddress: "/design_team/team_lead",
+    });
     const childCreated = await executeDelegateTaskWithContext(
       harness,
       firstIngressContext,

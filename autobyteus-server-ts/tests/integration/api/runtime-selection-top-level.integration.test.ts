@@ -959,9 +959,9 @@ describe("runtime-selection top-level integration", () => {
         const coordinatorCreateConfig = harness.mixedMemberRunManager.createCalls[0]!;
         expect(coordinatorCreateConfig.runtimeKind).toBe(RuntimeKind.AUTOBYTEUS);
         expect(coordinatorCreateConfig.memberTeamContext?.teamBackendKind).toBe(TeamBackendKind.MIXED);
-        expect(coordinatorCreateConfig.memberTeamContext?.collaboration.addressing).toMatchObject({
+        expect(coordinatorCreateConfig.memberTeamContext?.collaboration.addressing).toEqual({
+          rootTeamRunId: teamRunId,
           memberAddress: "/Coordinator",
-          immediateTeamAddress: "/",
         });
         expect(coordinatorCreateConfig.memberTeamContext).not.toHaveProperty("allowedRecipientNames");
         expect(harness.mixedMemberRunManager.messages[0]).toMatchObject({
@@ -1056,6 +1056,10 @@ describe("runtime-selection top-level integration", () => {
           await waitForCondition(() => harness.mixedMemberRunManager.restoreCalls.length === 1);
           const coordinatorRestoreContext = harness.mixedMemberRunManager.restoreCalls[0]!;
           expect(coordinatorRestoreContext.config.runtimeKind).toBe(RuntimeKind.AUTOBYTEUS);
+          expect(coordinatorRestoreContext.config.memberTeamContext?.collaboration.addressing).toEqual({
+            rootTeamRunId: teamRunId,
+            memberAddress: "/Coordinator",
+          });
           expect(harness.mixedMemberRunManager.messages[2]).toMatchObject({
             runtimeKind: RuntimeKind.AUTOBYTEUS,
             content: "resume mixed coordination",
@@ -1075,6 +1079,10 @@ describe("runtime-selection top-level integration", () => {
           const specialistRestoreContext = harness.mixedMemberRunManager.restoreCalls[1]!;
           const specialistMetadata = metadata?.memberTree.find((member) => member.memberName === "Specialist");
           expect(specialistRestoreContext.config.runtimeKind).toBe(RuntimeKind.CODEX_APP_SERVER);
+          expect(specialistRestoreContext.config.memberTeamContext?.collaboration.addressing).toEqual({
+            rootTeamRunId: teamRunId,
+            memberAddress: "/Specialist",
+          });
           expect((specialistRestoreContext.runtimeContext as { threadId?: string | null })?.threadId).toBe(
             specialistMetadata?.platformAgentRunId,
           );
