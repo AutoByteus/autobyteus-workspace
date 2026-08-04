@@ -38,31 +38,41 @@ type AgentStatusPayload = {
   agent_name?: string;
 };
 
-type AgentCommandAckPayload = {
-  command_type: "SEND_MESSAGE";
-  run_id: string;
-  message_id: string;
-  dedupe_key: string;
-  state:
-    | "accepted"
-    | "duplicate_in_progress"
-    | "duplicate_completed"
-    | "duplicate_failed"
-    | "duplicate_rejected"
-    | "rejected"
-    | "failed";
-  accepted: boolean;
-  duplicate: boolean;
-  code?:
-    | "RUN_COMMAND_IN_PROGRESS"
-    | "INVALID_COMMAND_ID"
-    | "RUN_NOT_FOUND"
-    | "ACTIVATION_FAILED"
-    | "RUNTIME_REJECTED"
-    | "UNKNOWN_ERROR";
-  message?: string;
-  status?: AgentStatusPayload;
-};
+type AgentCommandAckPayload =
+  | {
+      command_type: "SEND_MESSAGE";
+      run_id: string;
+      message_id: string;
+      dedupe_key: string;
+      state:
+        | "accepted"
+        | "duplicate_in_progress"
+        | "duplicate_completed"
+        | "duplicate_failed"
+        | "duplicate_rejected"
+        | "rejected"
+        | "failed";
+      accepted: boolean;
+      duplicate: boolean;
+      code?: string;
+      message?: string;
+      status?: AgentStatusPayload;
+    }
+  | {
+      command_type: "INTERRUPT_GENERATION";
+      command_id: string;
+      state: "accepted" | "rejected" | "failed";
+      code?: string;
+      message?: string;
+      target:
+        | { target_kind: "standalone_run"; run_id: string }
+        | {
+            target_kind: "team_member";
+            team_run_id: string;
+            member_route_key: string;
+            member_run_id: string | null;
+          };
+    };
 
 type TeamStatusPayload = {
   status: "offline" | "initializing" | "idle" | "running" | "error";
@@ -321,8 +331,9 @@ explicit `TURN_STARTED`, command-correlated `AGENT_STATUS`, terminal/error
 events after handoff, or coordinator activation/post failure handling. Restored
 runtime snapshots/readiness, WebSocket bind success, `statusHint=ACTIVE` alone,
 persisted metadata, and active runtime snapshot availability do not clear or
-replace the overlay. The handler sends `AGENT_COMMAND_ACK` for
-accepted, duplicate, rejected, and failed outcomes. Retries with the same
+replace the overlay. The handler sends the `SEND_MESSAGE` arm of
+`AGENT_COMMAND_ACK` for accepted, duplicate, rejected, and failed outcomes.
+Retries with the same
 `(runId, message_id)` are idempotent; a different `message_id` while another
 command for the run is `STARTING` or `FORWARDED` is rejected with
 `RUN_COMMAND_IN_PROGRESS` rather than queued.
@@ -432,8 +443,18 @@ client sending `INTERRUPT_GENERATION` to `/ws/agent-team/:teamRunId` must includ
 guard for the expected member run id; it is never the authoritative selector.
 The server rejects missing target selectors and route-key/run-id mismatches
 without invoking a member runtime and without falling back to aggregate team
-interruption. The single-agent `/ws/agent/:runId` command remains a no-payload
-`INTERRUPT_GENERATION`.
+interruption. The single-agent `/ws/agent/:runId` command carries only the
+required `command_id` in its payload in addition to the socket-bound run
+identity.
+
+Both handlers retain the originating connection and send one exact
+`AGENT_COMMAND_ACK` interrupt arm when the socket remains writable. The result
+echoes the client command id and an exact standalone/team-member target.
+Missing/inactive targets and provider rejection use `rejected`/`failed` rather
+than lifecycle output. `accepted` means admission only: it does not publish
+idle, change team liveness, or mutate transcript content. A disconnect before
+result delivery is completed by the client as a local transport failure rather
+than by fabricating a server acknowledgement.
 
 Approval commands are active-turn control commands, not queued runtime input.
 For native AutoByteus single-agent runs, `APPROVE_TOOL` / `DENY_TOOL` delegate
@@ -453,8 +474,8 @@ membership in the active tool invocation batch is not enough for
 `APPROVE_TOOL` / `DENY_TOOL` to succeed. Auto-executing active tools and stale
 client retries therefore reject as no-pending without status mutation.
 
-`INTERRUPT_GENERATION` should also not be treated as an immediate send-readiness
-acknowledgement. A client that sends interrupt should wait for the backend's
+The accepted `INTERRUPT_GENERATION` acknowledgement is not immediate
+send-readiness. A client should wait for the backend's
 terminal lifecycle/status stream projection for the affected turn before
 enabling a follow-up send. Runtime adapters that own provider processes must
 finish their cancellation boundary first; for Claude Agent SDK sessions this

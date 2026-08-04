@@ -292,6 +292,16 @@ from the selected member's status and interrupt authority.
 
 `agentTeamRunStore.terminateTeamRun()` treats backend termination as the authority for persisted teams. Stop is available only while root `isActive` is true and that run has no `stopPending` request. It tears down local stream/member state and marks the team resume config inactive only after `TerminateAgentTeamRun` succeeds. If backend termination fails, the store clears pending, returns `false`, and leaves root activity, local member state, and run-history activity unchanged. Local temporary teams are the exception: they have no persisted backend runtime and are torn down locally. `isSubscribed` remains a separate transport fact and must not be used as liveness.
 
+The focused member interrupt/Stop action is separate from root termination.
+The store creates a fresh client interrupt command id and sends the exact
+team/member route plus optional run guard through `TeamStreamingService`. The
+service matches `AGENT_COMMAND_ACK` by command id and exact target before member
+projection. Accepted acknowledgement does not mark the member idle or change
+root `isActive`; the later canonical member terminal/status event removes the
+interrupt affordance. Rejected/failed acknowledgement or local
+not-connected/send/disconnect completion produces one member-aware localized
+toast without transcript, member-status, root-liveness, or retry side effects.
+
 Workspace team history is backed by the server V2 team catalog, not by durable
 live-status fields. `listWorkspaceRunHistory` returns team rows with
 `createdAt`, `archivedAt`, `terminatedAt`, manager-owned `isActive`, exact leaf

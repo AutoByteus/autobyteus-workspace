@@ -159,7 +159,16 @@ Agent teams use the same streaming protocol but connect to a different WebSocket
 - Routes incoming events to the exact member with path/route/run identity; name
   alone is not sufficient for nested or task-scoped executions.
 - Handles core events: `SEGMENT_*`, `TURN_*`, `AGENT_STATUS`,
-  `ASSISTANT_COMPLETE`, `TEAM_RUN_LIFECYCLE`, `ERROR`.
+  `AGENT_COMMAND_ACK`, `ASSISTANT_COMPLETE`, `TEAM_RUN_LIFECYCLE`, `ERROR`.
+- Sends every standalone or exact-member `INTERRUPT_GENERATION` with a fresh
+  client command id. Register the exact target before sending, match the
+  acknowledgement by command id plus target, and intercept a team interrupt
+  acknowledgement before generic member/task projection.
+- Treats interrupt `accepted` as admission only. `rejected`/`failed` server
+  results and local not-connected/send/disconnect completion produce one
+  target-aware error toast, but no interrupt result may synthesize status,
+  mutate transcript content, retry automatically, or fabricate a server
+  acknowledgement.
 - Treats member `AGENT_STATUS` as the source for each member's status and
   `canInterrupt`; root `TEAM_RUN_LIFECYCLE { team_run_id, is_active }` updates
   only team liveness, while connection/subscription state remains separate.
