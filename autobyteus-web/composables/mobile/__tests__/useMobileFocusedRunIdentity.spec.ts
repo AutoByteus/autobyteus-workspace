@@ -8,7 +8,6 @@ import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { AgentContext } from '~/types/agent/AgentContext';
 import { AgentRunState } from '~/types/agent/AgentRunState';
 import { DEFAULT_AGENT_RUNTIME_KIND, type AgentRunConfig } from '~/types/agent/AgentRunConfig';
-import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { AgentTeamContext, AgentTeamMemberNode } from '~/types/agent/AgentTeamContext';
 import type { Conversation } from '~/types/conversation';
 import type { MobileWorkContext } from '~/types/mobileWork';
@@ -20,6 +19,7 @@ function makeAgentRunConfig(agentDefinitionId = 'agent-1'): AgentRunConfig {
     llmModelIdentifier: 'test-model',
     runtimeKind: DEFAULT_AGENT_RUNTIME_KIND,
     workspaceId: 'workspace-1',
+    workspaceMetadata: null,
     autoExecuteTools: false,
     skillAccessMode: 'PRELOADED_ONLY',
     isLocked: false,
@@ -77,6 +77,7 @@ function seedTeamRun(): AgentTeamContext {
       teamDefinitionName: 'Software Team',
       runtimeKind: DEFAULT_AGENT_RUNTIME_KIND,
       workspaceId: 'workspace-1',
+      workspaceMetadata: null,
       llmModelIdentifier: 'test-model',
       llmConfig: null,
       autoExecuteTools: false,
@@ -96,7 +97,7 @@ function seedTeamRun(): AgentTeamContext {
     coordinatorMemberRouteKey: 'lead',
     historicalHydration: null,
     focusedMemberRouteKey: 'lead',
-    currentStatus: AgentTeamStatus.Offline,
+    isActive: false,
     isSubscribed: false,
   };
   useAgentTeamContextsStore().teams.set(context.teamRunId, context);

@@ -22,7 +22,7 @@ vi.mock('../transport', () => {
             DISCONNECTED: 'disconnected',
             CONNECTING: 'connecting',
             CONNECTED: 'connected',
-            DISCONNECTING: 'disconnecting',
+            RECONNECTING: 'reconnecting',
         }
     };
 });
@@ -49,14 +49,13 @@ describe('AgentStreamingService', () => {
                 conversation: mockConversation,
                 compactionStatus: null,
                 currentStatus: AgentStatus.Idle,
-                canInterrupt: false,
                 eventMonitorPresentationRevision: 0,
                 markEventMonitorPresentationChanged() {
                     this.eventMonitorPresentationRevision += 1;
                 },
             },
             conversation: mockConversation,
-            isSending: false,
+            submissionPending: false,
             config: {}
         };
     });
@@ -117,7 +116,7 @@ describe('AgentStreamingService', () => {
         });
         expect(mockConversation.messages[0].timestamp.toISOString()).toBe('2026-03-09T11:22:33.000Z');
         expect(mockConversation.updatedAt).toBeTruthy();
-        expect(mockAgentContext.isSending).toBe(true);
+        expect(mockAgentContext.submissionPending).toBe(false);
     });
 
     it('routes successful tool execution through the browser-owned post-success handler', () => {
@@ -177,32 +176,28 @@ describe('AgentStreamingService', () => {
         ['SYSTEM_TASK_NOTIFICATION', { sender_id: 'system', content: 'late task' }],
     ])('keeps canonical error for ordinary %s activity', (type, payload) => {
         mockAgentContext.state.currentStatus = AgentStatus.Error;
-        mockAgentContext.state.canInterrupt = false;
-        mockAgentContext.isSending = false;
+        mockAgentContext.submissionPending = false;
 
         (service as any).dispatchMessage({ type, payload }, mockAgentContext);
 
         expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Error);
-        expect(mockAgentContext.state.canInterrupt).toBe(false);
-        expect(mockAgentContext.isSending).toBe(false);
+        expect(mockAgentContext.submissionPending).toBe(false);
     });
 
     it('recovers error only when canonical AGENT_STATUS running arrives', () => {
         mockAgentContext.state.currentStatus = AgentStatus.Error;
 
         (service as any).dispatchMessage(
-            { type: 'AGENT_STATUS', payload: { status: 'running', can_interrupt: true } },
+            { type: 'AGENT_STATUS', payload: { status: 'running' } },
             mockAgentContext,
         );
 
         expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Running);
-        expect(mockAgentContext.state.canInterrupt).toBe(true);
     });
 
     it('keeps lifecycle status event-driven for non-error live activity', () => {
         mockAgentContext.state.currentStatus = AgentStatus.Idle;
-        mockAgentContext.state.canInterrupt = false;
-        mockAgentContext.isSending = false;
+        mockAgentContext.submissionPending = false;
 
         (service as any).dispatchMessage(
             {
@@ -217,30 +212,104 @@ describe('AgentStreamingService', () => {
         );
 
         expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Idle);
-        expect(mockAgentContext.isSending).toBe(false);
+        expect(mockAgentContext.submissionPending).toBe(false);
     });
 
     it('does not convert transport errors into lifecycle errors', () => {
         mockAgentContext.state.currentStatus = AgentStatus.Running;
-        mockAgentContext.state.canInterrupt = true;
         (service as any).attachContext(mockAgentContext);
 
         (service as any).handleError(new Error('socket failed'));
         (service as any).handleDisconnect('network reset');
 
         expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Running);
-        expect(mockAgentContext.state.canInterrupt).toBe(true);
         expect(mockAgentContext.isSubscribed).toBe(false);
     });
 
-    it('serializes single-agent interrupt without a team target payload', () => {
-        service.interruptGeneration();
-
-        const clientMock = (service as any).wsClient;
-        expect(clientMock.send).toHaveBeenCalledTimes(1);
-        expect(JSON.parse(clientMock.send.mock.calls[0][0])).toEqual({
-            type: 'INTERRUPT_GENERATION',
+    it('serializes and exactly matches an admitted standalone interrupt', () => {
+        const callbacks = new Map<string, (payload?: any) => void>();
+        const wsClient = {
+            state: 'connected', connect: vi.fn(), disconnect: vi.fn(), send: vi.fn(), off: vi.fn(),
+            on: vi.fn((event: string, callback: (payload?: any) => void) => callbacks.set(event, callback)),
+        } as any;
+        const onResult = vi.fn();
+        const admittedService = new AgentStreamingService('ws://localhost:8000/ws/agent', {
+            wsClient,
+            onInterruptCommandResult: onResult,
         });
+        mockAgentContext.state.currentStatus = AgentStatus.Running;
+        admittedService.connect('run-1', mockAgentContext);
+
+        expect(admittedService.interruptGeneration('client_interrupt_1')).toBe(true);
+        expect(JSON.parse(wsClient.send.mock.calls[0][0])).toEqual({
+            type: 'INTERRUPT_GENERATION',
+            payload: { command_id: 'client_interrupt_1' },
+        });
+        callbacks.get('onMessage')?.(JSON.stringify({
+            type: 'AGENT_COMMAND_ACK',
+            payload: {
+                command_type: 'INTERRUPT_GENERATION', command_id: 'client_interrupt_1',
+                state: 'accepted', target: { target_kind: 'standalone_run', run_id: 'wrong-run' },
+            },
+        }));
+        expect(onResult).not.toHaveBeenCalled();
+        callbacks.get('onMessage')?.(JSON.stringify({
+            type: 'AGENT_COMMAND_ACK',
+            payload: {
+                command_type: 'INTERRUPT_GENERATION', command_id: 'client_interrupt_1',
+                state: 'accepted', target: { target_kind: 'standalone_run', run_id: 'run-1' },
+            },
+        }));
+        expect(onResult).toHaveBeenCalledTimes(1);
+        expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Running);
+
+        callbacks.get('onMessage')?.(JSON.stringify({
+            type: 'AGENT_STATUS', payload: { status: 'idle' },
+        }));
+        expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Idle);
+    });
+
+    it.each(['disconnected', 'connecting', 'reconnecting'])('rejects standalone interrupt while %s without sending', (state) => {
+        const wsClient = {
+            state, connect: vi.fn(), disconnect: vi.fn(), send: vi.fn(), on: vi.fn(), off: vi.fn(),
+        } as any;
+        const onFailure = vi.fn();
+        const blockedService = new AgentStreamingService('ws://localhost:8000/ws/agent', {
+            wsClient,
+            onInterruptCommandTransportFailure: onFailure,
+        });
+        blockedService.connect('run-1', mockAgentContext);
+
+        expect(blockedService.interruptGeneration(`client_interrupt_${state}`)).toBe(false);
+        expect(wsClient.send).not.toHaveBeenCalled();
+        expect(onFailure).toHaveBeenCalledWith(expect.objectContaining({
+            target: { target_kind: 'standalone_run', run_id: 'run-1' },
+            reason: expect.objectContaining({ code: 'INTERRUPT_TRANSPORT_NOT_CONNECTED', connectionState: state }),
+        }));
+        expect((blockedService as any).pendingInterruptCommands.size).toBe(0);
+    });
+
+    it('completes reentrant disconnect-plus-send-throw exactly once', () => {
+        const callbacks = new Map<string, (payload?: any) => void>();
+        const wsClient = {
+            state: 'connected', connect: vi.fn(), disconnect: vi.fn(), off: vi.fn(),
+            on: vi.fn((event: string, callback: (payload?: any) => void) => callbacks.set(event, callback)),
+            send: vi.fn(() => {
+                callbacks.get('onDisconnect')?.('socket closed');
+                throw new Error('native send failed');
+            }),
+        } as any;
+        const onFailure = vi.fn();
+        const failingService = new AgentStreamingService('ws://localhost:8000/ws/agent', {
+            wsClient,
+            onInterruptCommandTransportFailure: onFailure,
+        });
+        failingService.connect('run-1', mockAgentContext);
+
+        expect(failingService.interruptGeneration('client_interrupt_throw')).toBe(false);
+        callbacks.get('onDisconnect')?.('again');
+        expect(onFailure).toHaveBeenCalledTimes(1);
+        expect((failingService as any).pendingInterruptCommands.size).toBe(0);
     });
 
     it('serializes standalone send command identity on SEND_MESSAGE', () => {
@@ -279,7 +348,6 @@ describe('AgentStreamingService', () => {
                     message: 'Another command is already running.',
                     status: {
                         status: 'initializing',
-                        can_interrupt: false,
                     },
                 },
             },
@@ -287,7 +355,6 @@ describe('AgentStreamingService', () => {
         );
 
         expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Initializing);
-        expect(mockAgentContext.state.canInterrupt).toBe(false);
         expect(mockConversation.messages).toHaveLength(1);
         expect(mockConversation.messages[0].segments).toContainEqual(
             expect.objectContaining({
@@ -367,7 +434,7 @@ describe('AgentStreamingService', () => {
         expect(mockAgentContext.state.eventMonitorPresentationRevision).toBe(2);
     });
 
-    it('batches standalone content at receipt-time cadence and flushes before segment end', () => {
+    it('batches companion-interleaved standalone content and flushes before segment end', () => {
         vi.useFakeTimers();
         const callbacks = new Map<string, (payload?: any) => void>();
         const wsClient = {
@@ -384,10 +451,20 @@ describe('AgentStreamingService', () => {
         }));
         vi.setSystemTime(new Date('2026-08-01T10:00:00.001Z'));
         onMessage(JSON.stringify({
+            type: 'AGENT_STATUS',
+            payload: { status: 'running', agent_id: 'test-agent-id' },
+        }));
+        expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Running);
+        onMessage(JSON.stringify({
             type: 'SEGMENT_CONTENT',
             payload: { id: 'segment-1', turn_id: 'turn-1', segment_type: 'text', delta: 'hello' },
         }));
         vi.setSystemTime(new Date('2026-08-01T10:00:00.050Z'));
+        onMessage(JSON.stringify({
+            type: 'AGENT_STATUS',
+            payload: { status: 'running', agent_id: 'test-agent-id' },
+        }));
+        expect(mockConversation.messages[0].segments[0].content).toBe('');
         onMessage(JSON.stringify({
             type: 'SEGMENT_CONTENT',
             payload: { id: 'segment-1', turn_id: 'turn-1', segment_type: 'text', delta: ' world' },
@@ -404,6 +481,11 @@ describe('AgentStreamingService', () => {
             type: 'SEGMENT_CONTENT',
             payload: { id: 'segment-1', turn_id: 'turn-1', segment_type: 'text', delta: '!' },
         }));
+        onMessage(JSON.stringify({
+            type: 'AGENT_STATUS',
+            payload: { status: 'running', agent_id: 'test-agent-id' },
+        }));
+        expect(mockConversation.messages[0].segments[0].content).toBe('hello world');
         onMessage(JSON.stringify({
             type: 'SEGMENT_END',
             payload: { id: 'segment-1', turn_id: 'turn-1', segment_type: 'text' },
@@ -440,7 +522,7 @@ describe('AgentStreamingService', () => {
             receivedAt: '2026-08-01T10:00:00.000Z',
         });
 
-        const replacementConversation = { messages: [], updatedAt: '' };
+        const replacementConversation: any = { messages: [], updatedAt: '' };
         const replacementContext = {
             ...mockAgentContext,
             state: {

@@ -1,0 +1,9 @@
+date=2026-08-03T19:38:38Z
+os=Darwin 25.5.0 arm64
+node=v22.23.1
+pnpm=10.28.2
+codex=codex-cli 0.146.0
+chrome=Google Chrome 150.0.7871.187
+worktree=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status
+head=a634155ba86464398a2132ab16f6eff14fbc2bd0
+branch=codex/agent-stream-driven-status

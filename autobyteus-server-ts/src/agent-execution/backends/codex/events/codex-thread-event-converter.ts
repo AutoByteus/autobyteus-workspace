@@ -1,5 +1,5 @@
 import type { AgentRunEvent } from "../../../domain/agent-run-event.js";
-import type { AgentStatusPayload } from "../../../domain/agent-status-payload.js";
+import type { AgentRuntimeLifecycleSnapshot } from "../../../domain/agent-runtime-lifecycle-snapshot.js";
 import { AgentRunEventType } from "../../../domain/agent-run-event.js";
 import { RuntimeKind } from "../../../../runtime-management/runtime-kind-enum.js";
 import { serializePayload } from "../../../../services/agent-streaming/payload-serialization.js";
@@ -94,8 +94,6 @@ export class CodexThreadEventConverter {
   private readonly turnEventConverterContext: CodexTurnEventConverterContext = {
     createEvent: (codexEventName, eventType, payload) =>
       this.createEvent(codexEventName, eventType, payload),
-    createStatusEvent: (codexEventName, payload) =>
-      this.createStatusEvent(codexEventName, payload),
     closeReasoningBlocksForBoundary: (codexEventName, payload) =>
       this.closeReasoningBlocksForBoundary(codexEventName, payload),
     closeAllReasoningBlocks: (codexEventName) => this.closeAllReasoningBlocks(codexEventName),
@@ -201,9 +199,10 @@ export class CodexThreadEventConverter {
   constructor(
     private readonly runId: string,
     private readonly workspaceRoot: string | null = null,
-    private readonly getStatusPayload: () => AgentStatusPayload = () => ({
-      status: "offline",
-      can_interrupt: false,
+    private readonly getLifecycleSnapshot: () => AgentRuntimeLifecycleSnapshot = () => ({
+      availability: "offline",
+      phase: "idle",
+      currentTurn: { kind: "NONE" },
     }),
   ) {
   }
@@ -316,10 +315,11 @@ export class CodexThreadEventConverter {
 
   private createStatusEvent(
     codexEventName: string,
-    payload: Partial<AgentStatusPayload> = {},
+    payload: Record<string, unknown> = {},
   ): AgentRunEvent {
+    const snapshot = this.getLifecycleSnapshot();
     return this.createEvent(codexEventName, AgentRunEventType.AGENT_STATUS, {
-      ...this.getStatusPayload(),
+      status: snapshot.availability === "offline" ? "offline" : snapshot.phase,
       ...payload,
     });
   }

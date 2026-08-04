@@ -109,9 +109,6 @@ class WorkspaceHistoryTeamRunItemObject {
   @Field(() => String, { nullable: true })
   terminatedAt?: string | null;
 
-  @Field(() => String)
-  status!: string;
-
   @Field(() => Boolean)
   isActive!: boolean;
 

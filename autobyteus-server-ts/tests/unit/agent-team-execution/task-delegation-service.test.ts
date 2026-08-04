@@ -53,8 +53,8 @@ class FakeTeamRunBackend implements TeamRunBackend {
 
   getRuntimeContext() { return null; }
   isActive(): boolean { return true; }
-  getStatusSnapshot() { return { status: "running" as const, source_path: [] }; }
-  getMemberStatusSnapshots() { return []; }
+  getLeafAgentStatusSnapshots() { return []; }
+  hasOpenExecutionWork() { return false; }
   subscribeToEvents(listener: TeamRunEventListener): TeamRunEventUnsubscribe {
     this.listeners.add(listener);
     return () => this.listeners.delete(listener);

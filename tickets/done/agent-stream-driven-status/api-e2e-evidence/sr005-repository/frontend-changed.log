@@ -1,0 +1,756 @@
+
+> autobyteus@1.4.37 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts components/agentInput/__tests__/AgentUserInputTextArea.spec.ts components/mobile/__tests__/MobileArtifacts.spec.ts components/mobile/__tests__/MobileContextSelectionRegression.spec.ts components/mobile/__tests__/MobileTeamMessages.spec.ts components/workspace/agent/__tests__/AgentCompactionLiveFlow.spec.ts components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts components/workspace/running/__tests__/RunningTeamGroup.spec.ts components/workspace/running/__tests__/RunningTeamRow.spec.ts components/workspace/team/__tests__/TeamDelegatedTaskNavigator.spec.ts components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts components/workspace/team/__tests__/TeamOverviewPanel.spec.ts components/workspace/team/__tests__/TeamWorkspaceView.spec.ts components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts composables/__tests__/useWorkspaceHistoryTreeState.spec.ts composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts composables/mobile/__tests__/useMobileWorkCatalog.spec.ts services/agentStreaming/__tests__/AgentStreamingService.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts services/agentStreaming/__tests__/teamTaskExecutionEventRouter.spec.ts services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts services/agentStreaming/handlers/__tests__/memberInputMessageHandler.spec.ts services/runHydration/__tests__/runtimeStatusNormalization.spec.ts services/runOpen/__tests__/agentRunOpenCoordinator.integration.spec.ts services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts services/runStatus/__tests__/agentRuntimeStatusState.spec.ts services/runSubmission/__tests__/agentPrimaryAction.spec.ts services/runSubmission/__tests__/localUserSubmission.spec.ts stores/__tests__/activeContextStore.spec.ts stores/__tests__/agentContextsStore.spec.ts stores/__tests__/agentRunStore.spec.ts stores/__tests__/agentTeamContextsStore.spec.ts stores/__tests__/agentTeamRunStore.spec.ts stores/__tests__/runHistoryStore.spec.ts stores/__tests__/runHistoryTeamMemberProjectionHydrator.spec.ts stores/__tests__/runHistoryTeamRows.spec.ts types/agent/__tests__/AgentContext.spec.ts utils/__tests__/teamActiveExecutionMembers.spec.ts utils/__tests__/teamConversationTargetAddress.spec.ts utils/__tests__/teamDelegatedTaskEntries.spec.ts utils/__tests__/workspaceStatusDotPresentation.spec.ts utils/__tests__/workspaceTeamExecutionDisplayRows.spec.ts --run --reporter=dot
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web
+
+stderr | components/workspace/agent/__tests__/AgentCompactionLiveFlow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentRunStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentInput/__tests__/AgentUserInputTextArea.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamOverviewPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/agent/__tests__/AgentCompactionLiveFlow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamWorkspaceView.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileContextSelectionRegression.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamOverviewPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentInput/__tests__/AgentUserInputTextArea.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentRunStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+·······························xxxxx··x··················································stderr | stores/__tests__/runHistoryStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileTeamMessages.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/mobile/__tests__/MobileArtifacts.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/running/__tests__/RunningTeamRow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentTeamRunStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/runHistoryStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileTeamMessages.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > openTeamMemberRun hydrates only the focused historical member and keeps siblings as shells
+[runHistoryStore] Failed to fetch task delegation records for team 'team-1' Error: [vitest] No "GetTaskDelegationRecords" export is defined on the "~/graphql/queries/runHistoryQueries" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+    at VitestMocker.createError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/vitest@3.2.4_@types+debug@4.1.12_@types+node@22.19.11_happy-dom@15.11.7_jiti@1.21.7_jsd_c4aeceb0540f1b53322b8b3ed72ae625/node_modules/vitest/dist/chunks/execute.B7h3T_Hc.js:284:17)
+    at Object.get (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/vitest@3.2.4_@types+debug@4.1.12_@types+node@22.19.11_happy-dom@15.11.7_jiti@1.21.7_jsd_c4aeceb0540f1b53322b8b3ed72ae625/node_modules/vitest/dist/chunks/execute.B7h3T_Hc.js:330:16)
+    at fetchAndHydrateTaskDelegationRecordsForTeam (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/services/runHydration/taskDelegationHydrationService.ts:29:14)
+    at loadHistoricalTeamRunContextHydrationPayload (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/services/runHydration/teamRunContextHydrationService.ts:328:9)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at openTeamRun (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts:129:7)
+    at openTeamMemberRunFromHistory (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/stores/runHistorySelectionActions.ts:42:20)
+    at Proxy.openTeamMemberRun (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/stores/runHistoryStore.ts:462:7)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/stores/__tests__/runHistoryStore.spec.ts:3059:5
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20 {
+  codeFrame: 'vi.mock(import("~/graphql/queries/runHistoryQueries"), async (importOriginal) => {\n' +
+    '  const actual = await importOriginal()\n' +
+    '  return {\n' +
+    '    ...actual,\n' +
+    '    // your mocked methods\n' +
+    '  }\n' +
+    '})'
+}
+
+stderr | stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > openTeamMemberRun uses non-running member placeholders and connects stream for active teams
+[runHistoryStore] Failed to fetch task delegation records for team 'team-1' Error: [vitest] No "GetTaskDelegationRecords" export is defined on the "~/graphql/queries/runHistoryQueries" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+    at VitestMocker.createError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/vitest@3.2.4_@types+debug@4.1.12_@types+node@22.19.11_happy-dom@15.11.7_jiti@1.21.7_jsd_c4aeceb0540f1b53322b8b3ed72ae625/node_modules/vitest/dist/chunks/execute.B7h3T_Hc.js:284:17)
+    at Object.get (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/vitest@3.2.4_@types+debug@4.1.12_@types+node@22.19.11_happy-dom@15.11.7_jiti@1.21.7_jsd_c4aeceb0540f1b53322b8b3ed72ae625/node_modules/vitest/dist/chunks/execute.B7h3T_Hc.js:330:16)
+    at fetchAndHydrateTaskDelegationRecordsForTeam (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/services/runHydration/taskDelegationHydrationService.ts:29:14)
+    at loadLiveTeamRunContextHydrationPayload (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/services/runHydration/teamRunContextHydrationService.ts:231:9)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at openTeamRun (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts:129:7)
+    at openTeamMemberRunFromHistory (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/stores/runHistorySelectionActions.ts:42:20)
+    at Proxy.openTeamMemberRun (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/stores/runHistoryStore.ts:462:7)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/stores/__tests__/runHistoryStore.spec.ts:3151:5
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20 {
+  codeFrame: 'vi.mock(import("~/graphql/queries/runHistoryQueries"), async (importOriginal) => {\n' +
+    '  const actual = await importOriginal()\n' +
+    '  return {\n' +
+    '    ...actual,\n' +
+    '    // your mocked methods\n' +
+    '  }\n' +
+    '})'
+}
+
+stderr | stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > openTeamMemberRun normalizes task-agent-only logical parent focus to the coordinator without promoting task-agent history
+[runHistoryStore] Failed to fetch task delegation records for team 'team-stale-route-1' Error: [vitest] No "GetTaskDelegationRecords" export is defined on the "~/graphql/queries/runHistoryQueries" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+    at VitestMocker.createError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/vitest@3.2.4_@types+debug@4.1.12_@types+node@22.19.11_happy-dom@15.11.7_jiti@1.21.7_jsd_c4aeceb0540f1b53322b8b3ed72ae625/node_modules/vitest/dist/chunks/execute.B7h3T_Hc.js:284:17)
+    at Object.get (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/vitest@3.2.4_@types+debug@4.1.12_@types+node@22.19.11_happy-dom@15.11.7_jiti@1.21.7_jsd_c4aeceb0540f1b53322b8b3ed72ae625/node_modules/vitest/dist/chunks/execute.B7h3T_Hc.js:330:16)
+    at fetchAndHydrateTaskDelegationRecordsForTeam (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/services/runHydration/taskDelegationHydrationService.ts:29:14)
+    at loadLiveTeamRunContextHydrationPayload (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/services/runHydration/teamRunContextHydrationService.ts:231:9)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at openTeamRun (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts:129:7)
+    at openTeamMemberRunFromHistory (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/stores/runHistorySelectionActions.ts:42:20)
+    at Proxy.openTeamMemberRun (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/stores/runHistoryStore.ts:462:7)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/stores/__tests__/runHistoryStore.spec.ts:3233:5
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20 {
+  codeFrame: 'vi.mock(import("~/graphql/queries/runHistoryQueries"), async (importOriginal) => {\n' +
+    '  const actual = await importOriginal()\n' +
+    '  return {\n' +
+    '    ...actual,\n' +
+    '    // your mocked methods\n' +
+    '  }\n' +
+    '})'
+}
+
+stderr | stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > openTeamMemberRun normalizes task-agent-only logical parent focus for an existing unsubscribed active context
+[runHistoryStore] Failed to fetch task delegation records for team 'team-stale-route-2' Error: [vitest] No "GetTaskDelegationRecords" export is defined on the "~/graphql/queries/runHistoryQueries" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+    at VitestMocker.createError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/vitest@3.2.4_@types+debug@4.1.12_@types+node@22.19.11_happy-dom@15.11.7_jiti@1.21.7_jsd_c4aeceb0540f1b53322b8b3ed72ae625/node_modules/vitest/dist/chunks/execute.B7h3T_Hc.js:284:17)
+    at Object.get (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/vitest@3.2.4_@types+debug@4.1.12_@types+node@22.19.11_happy-dom@15.11.7_jiti@1.21.7_jsd_c4aeceb0540f1b53322b8b3ed72ae625/node_modules/vitest/dist/chunks/execute.B7h3T_Hc.js:330:16)
+    at fetchAndHydrateTaskDelegationRecordsForTeam (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/services/runHydration/taskDelegationHydrationService.ts:29:14)
+    at loadLiveTeamRunContextHydrationPayload (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/services/runHydration/teamRunContextHydrationService.ts:231:9)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at openTeamRun (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts:129:7)
+    at openTeamMemberRunFromHistory (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/stores/runHistorySelectionActions.ts:42:20)
+    at Proxy.openTeamMemberRun (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/stores/runHistoryStore.ts:462:7)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/stores/__tests__/runHistoryStore.spec.ts:3326:5
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20 {
+  codeFrame: 'vi.mock(import("~/graphql/queries/runHistoryQueries"), async (importOriginal) => {\n' +
+    '  const actual = await importOriginal()\n' +
+    '  return {\n' +
+    '    ...actual,\n' +
+    '    // your mocked methods\n' +
+    '  }\n' +
+    '})'
+}
+
+stderr | stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > openTeamMemberRun trusts history active state and reconnects a team stream
+[runHistoryStore] Failed to fetch task delegation records for team 'team-stale-1' Error: [vitest] No "GetTaskDelegationRecords" export is defined on the "~/graphql/queries/runHistoryQueries" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+    at VitestMocker.createError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/vitest@3.2.4_@types+debug@4.1.12_@types+node@22.19.11_happy-dom@15.11.7_jiti@1.21.7_jsd_c4aeceb0540f1b53322b8b3ed72ae625/node_modules/vitest/dist/chunks/execute.B7h3T_Hc.js:284:17)
+    at Object.get (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/vitest@3.2.4_@types+debug@4.1.12_@types+node@22.19.11_happy-dom@15.11.7_jiti@1.21.7_jsd_c4aeceb0540f1b53322b8b3ed72ae625/node_modules/vitest/dist/chunks/execute.B7h3T_Hc.js:330:16)
+    at fetchAndHydrateTaskDelegationRecordsForTeam (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/services/runHydration/taskDelegationHydrationService.ts:29:14)
+    at loadLiveTeamRunContextHydrationPayload (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/services/runHydration/teamRunContextHydrationService.ts:231:9)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at openTeamRun (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts:129:7)
+    at openTeamMemberRunFromHistory (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/stores/runHistorySelectionActions.ts:42:20)
+    at Proxy.openTeamMemberRun (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/stores/runHistoryStore.ts:462:7)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/stores/__tests__/runHistoryStore.spec.ts:3392:5
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20 {
+  codeFrame: 'vi.mock(import("~/graphql/queries/runHistoryQueries"), async (importOriginal) => {\n' +
+    '  const actual = await importOriginal()\n' +
+    '  return {\n' +
+    '    ...actual,\n' +
+    '    // your mocked methods\n' +
+    '  }\n' +
+    '})'
+}
+
+stderr | stores/__tests__/runHistoryStore.spec.ts > runHistoryStore > openTeamMemberRun refreshes an existing team context in place
+[runHistoryStore] Failed to fetch task delegation records for team 'team-1' Error: [vitest] No "GetTaskDelegationRecords" export is defined on the "~/graphql/queries/runHistoryQueries" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+    at VitestMocker.createError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/vitest@3.2.4_@types+debug@4.1.12_@types+node@22.19.11_happy-dom@15.11.7_jiti@1.21.7_jsd_c4aeceb0540f1b53322b8b3ed72ae625/node_modules/vitest/dist/chunks/execute.B7h3T_Hc.js:284:17)
+    at Object.get (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/vitest@3.2.4_@types+debug@4.1.12_@types+node@22.19.11_happy-dom@15.11.7_jiti@1.21.7_jsd_c4aeceb0540f1b53322b8b3ed72ae625/node_modules/vitest/dist/chunks/execute.B7h3T_Hc.js:330:16)
+    at fetchAndHydrateTaskDelegationRecordsForTeam (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/services/runHydration/taskDelegationHydrationService.ts:29:14)
+    at loadHistoricalTeamRunContextHydrationPayload (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/services/runHydration/teamRunContextHydrationService.ts:328:9)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at openTeamRun (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts:129:7)
+    at openTeamMemberRunFromHistory (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/stores/runHistorySelectionActions.ts:42:20)
+    at Proxy.openTeamMemberRun (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/stores/runHistoryStore.ts:462:7)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/stores/__tests__/runHistoryStore.spec.ts:3542:5
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20 {
+  codeFrame: 'vi.mock(import("~/graphql/queries/runHistoryQueries"), async (importOriginal) => {\n' +
+    '  const actual = await importOriginal()\n' +
+    '  return {\n' +
+    '    ...actual,\n' +
+    '    // your mocked methods\n' +
+    '  }\n' +
+    '})'
+}
+
+··························································stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+··stdout | components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/mobile/__tests__/MobileArtifacts.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/running/__tests__/RunningTeamRow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentTeamRunStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stderr | stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore > does not mark a persisted team inactive when backend termination fails
+Error terminating team team-terminate-fails-1 on backend: Error: not found
+    at Proxy.terminateTeamRun (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/stores/agentTeamRunStore.ts:227:17)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts:397:20
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+···stderr | stores/__tests__/agentTeamRunStore.spec.ts > agentTeamRunStore > interruptFocusedMemberGeneration rejects missing member target without using active-team fallback
+Cannot interrupt generation: target member route key is required.
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > keeps subscription transport state separate from backend-owned team lifecycle
+Team WebSocket connected
+Team WebSocket disconnected: closed
+
+····················stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > batches companion-interleaved team content and flushes before a terminal boundary
+Team WebSocket disconnected: remote closed
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > reattaches lifecycle callbacks to the latest team context
+Team WebSocket connected
+Team WebSocket disconnected: closed
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > does not repair stale member error from focused-member fallback without explicit identity
+No member context found for message, skipping
+
+stdout | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > does not convert team transport errors into lifecycle errors
+Team WebSocket connected
+Team WebSocket disconnected: network reset
+
+stderr | services/agentStreaming/__tests__/TeamStreamingService.spec.ts > TeamStreamingService > does not convert team transport errors into lifecycle errors
+Team WebSocket error: Error: socket failed
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/services/agentStreaming/__tests__/TeamStreamingService.spec.ts:1005:32
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:155:11
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:26
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1863:10)
+    at runTest (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1574:12)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at runSuite (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
+    at runSuite (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
+
+··············································stderr | components/workspace/running/__tests__/RunningTeamGroup.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamDelegatedTaskNavigator.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/mobile/__tests__/useMobileWorkCatalog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentTeamContextsStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/activeContextStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/running/__tests__/RunningTeamGroup.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+···stderr | services/agentStreaming/__tests__/AgentStreamingService.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runOpen/__tests__/agentRunOpenCoordinator.integration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/team/__tests__/TeamDelegatedTaskNavigator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/mobile/__tests__/useMobileWorkCatalog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+····stderr | stores/__tests__/agentRunStore.spec.ts > agentRunStore > terminateRun should teardown local runtime and mark history inactive on success
+Error terminating run 'run-1': Error: failure
+    at Proxy.terminateRun (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/stores/agentRunStore.ts:381:17)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/stores/__tests__/agentRunStore.spec.ts:413:24
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+xx·x·stdout | stores/__tests__/agentTeamContextsStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/activeContextStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+············stdout | services/agentStreaming/__tests__/AgentStreamingService.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runOpen/__tests__/agentRunOpenCoordinator.integration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/__tests__/AgentStreamingService.spec.ts > AgentStreamingService > tracks subscription state on connect and disconnect
+Agent WebSocket connected
+Agent WebSocket disconnected: bye
+
+····stderr | services/agentStreaming/__tests__/AgentStreamingService.spec.ts > AgentStreamingService > keeps canonical error for ordinary INTER_AGENT_MESSAGE activity
+Unhandled message type: INTER_AGENT_MESSAGE
+
+stdout | services/agentStreaming/__tests__/AgentStreamingService.spec.ts > AgentStreamingService > does not convert transport errors into lifecycle errors
+Agent WebSocket disconnected: network reset
+
+stderr | services/agentStreaming/__tests__/AgentStreamingService.spec.ts > AgentStreamingService > does not convert transport errors into lifecycle errors
+Agent WebSocket error: Error: socket failed
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/services/agentStreaming/__tests__/AgentStreamingService.spec.ts:222:38
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:155:11
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:26
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1863:10)
+    at runTest (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1574:12)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at runSuite (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
+    at runSuite (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:1729:8)
+
+stdout | services/agentStreaming/__tests__/AgentStreamingService.spec.ts > AgentStreamingService > flushes the previous context before replacement and the current context on remote disconnect
+Agent WebSocket disconnected: remote closed
+
+······························stderr | composables/__tests__/useWorkspaceHistoryTreeState.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/teamTaskExecutionEventRouter.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/__tests__/useWorkspaceHistoryTreeState.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+······stderr | composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/__tests__/teamConversationTargetAddress.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/__tests__/teamActiveExecutionMembers.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/__tests__/teamDelegatedTaskEntries.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryTeamRows.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentStreaming/__tests__/teamTaskExecutionEventRouter.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+·stdout | composables/mobile/__tests__/useMobileFocusedRunIdentity.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/__tests__/teamConversationTargetAddress.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+········stdout | services/agentStreaming/__tests__/teamTaskTeamExecutionProjection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+·······stdout | composables/__tests__/useWorkspaceHistorySelectionActions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+··stdout | utils/__tests__/teamDelegatedTaskEntries.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+···stdout | stores/__tests__/runHistoryTeamRows.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/__tests__/teamActiveExecutionMembers.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+·······stderr | services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentContextsStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+··stderr | utils/__tests__/workspaceTeamExecutionDisplayRows.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runHydration/__tests__/runtimeStatusNormalization.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/__tests__/workspaceStatusDotPresentation.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runSubmission/__tests__/agentPrimaryAction.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/agentContextsStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+··········stderr | services/agentStreaming/handlers/__tests__/memberInputMessageHandler.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runSubmission/__tests__/localUserSubmission.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | utils/__tests__/workspaceTeamExecutionDisplayRows.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+··stdout | services/agentStreaming/__tests__/teamStreamMemberContextResolver.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runHydration/__tests__/runtimeStatusNormalization.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/__tests__/workspaceStatusDotPresentation.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+········stdout | services/runSubmission/__tests__/agentPrimaryAction.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+····stdout | services/agentStreaming/handlers/__tests__/memberInputMessageHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+·····stdout | services/runSubmission/__tests__/localUserSubmission.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+····stderr | services/runStatus/__tests__/agentRuntimeStatusState.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/runHistoryTeamMemberProjectionHydrator.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/runStatus/__tests__/agentRuntimeStatusState.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+·····stderr | types/agent/__tests__/AgentContext.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/runHistoryTeamMemberProjectionHydrator.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+·stdout | types/agent/__tests__/AgentContext.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+··
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  stores/__tests__/agentRunStore.spec.ts > agentRunStore > sendUserInputAndSubscribe should handle new agent flow
+TypeError: Cannot read properties of undefined (reading 'messages')
+ ❯ flattenConversation services/eventMonitor/recentEventMonitorWindow.ts:70:16
+     68| const flattenConversation = (conversation: Conversation): Conversation…
+     69|   const descriptors: ConversationDescriptor[] = [];
+     70|   conversation.messages.forEach((message, messageIndex) => {
+       |                ^
+     71|     const timestampMs = toRecentWindowTimestampMs(message.timestamp);
+     72|     if (message.type === 'user') {
+ ❯ buildRecentEventMonitorPresentation services/eventMonitor/recentEventMonitorWindow.ts:161:35
+ ❯ captureRecentEventMonitorPresentationWitness services/eventMonitor/recentEventMonitorMutationCommit.ts:23:5
+ ❯ beginRecentEventMonitorMutation services/eventMonitor/recentEventMonitorMutationCommit.ts:29:45
+ ❯ beginLocalUserSubmission services/runSubmission/localUserSubmission.ts:31:32
+ ❯ Proxy.sendUserInputAndSubscribe stores/agentRunStore.ts:122:31
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ stores/__tests__/agentRunStore.spec.ts:179:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  stores/__tests__/agentRunStore.spec.ts > agentRunStore > retains mixed unsupported metadata locally while sending only executable agent attachments
+TypeError: Cannot read properties of undefined (reading 'messages')
+ ❯ flattenConversation services/eventMonitor/recentEventMonitorWindow.ts:70:16
+     68| const flattenConversation = (conversation: Conversation): Conversation…
+     69|   const descriptors: ConversationDescriptor[] = [];
+     70|   conversation.messages.forEach((message, messageIndex) => {
+       |                ^
+     71|     const timestampMs = toRecentWindowTimestampMs(message.timestamp);
+     72|     if (message.type === 'user') {
+ ❯ buildRecentEventMonitorPresentation services/eventMonitor/recentEventMonitorWindow.ts:161:35
+ ❯ captureRecentEventMonitorPresentationWitness services/eventMonitor/recentEventMonitorMutationCommit.ts:23:5
+ ❯ beginRecentEventMonitorMutation services/eventMonitor/recentEventMonitorMutationCommit.ts:29:45
+ ❯ beginLocalUserSubmission services/runSubmission/localUserSubmission.ts:31:32
+ ❯ Proxy.sendUserInputAndSubscribe stores/agentRunStore.ts:122:31
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ stores/__tests__/agentRunStore.spec.ts:233:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+ FAIL  stores/__tests__/agentRunStore.spec.ts > agentRunStore > sendUserInputAndSubscribe omits stale Skill Improvement launch overrides when preparing a new run
+TypeError: Cannot read properties of undefined (reading 'messages')
+ ❯ flattenConversation services/eventMonitor/recentEventMonitorWindow.ts:70:16
+     68| const flattenConversation = (conversation: Conversation): Conversation…
+     69|   const descriptors: ConversationDescriptor[] = [];
+     70|   conversation.messages.forEach((message, messageIndex) => {
+       |                ^
+     71|     const timestampMs = toRecentWindowTimestampMs(message.timestamp);
+     72|     if (message.type === 'user') {
+ ❯ buildRecentEventMonitorPresentation services/eventMonitor/recentEventMonitorWindow.ts:161:35
+ ❯ captureRecentEventMonitorPresentationWitness services/eventMonitor/recentEventMonitorMutationCommit.ts:23:5
+ ❯ beginRecentEventMonitorMutation services/eventMonitor/recentEventMonitorMutationCommit.ts:29:45
+ ❯ beginLocalUserSubmission services/runSubmission/localUserSubmission.ts:31:32
+ ❯ Proxy.sendUserInputAndSubscribe stores/agentRunStore.ts:122:31
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ stores/__tests__/agentRunStore.spec.ts:253:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯
+
+ FAIL  stores/__tests__/agentRunStore.spec.ts > agentRunStore > acknowledges a new agent send locally before backend creation resolves
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ stores/__tests__/agentRunStore.spec.ts:268:62
+    266|         const sendPromise = store.sendUserInputAndSubscribe();
+    267| 
+    268|         expect(mockAgentContext.state.conversation.messages).toHaveLen…
+       |                                                              ^
+    269|         expect(mockAgentContext.state.conversation.messages[0]).toMatc…
+    270|           type: 'user',
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/9]⎯
+
+ FAIL  stores/__tests__/agentRunStore.spec.ts > agentRunStore > sendUserInputAndSubscribe should apply fallback model for new agent when missing
+TypeError: Cannot read properties of undefined (reading 'messages')
+ ❯ flattenConversation services/eventMonitor/recentEventMonitorWindow.ts:70:16
+     68| const flattenConversation = (conversation: Conversation): Conversation…
+     69|   const descriptors: ConversationDescriptor[] = [];
+     70|   conversation.messages.forEach((message, messageIndex) => {
+       |                ^
+     71|     const timestampMs = toRecentWindowTimestampMs(message.timestamp);
+     72|     if (message.type === 'user') {
+ ❯ buildRecentEventMonitorPresentation services/eventMonitor/recentEventMonitorWindow.ts:161:35
+ ❯ captureRecentEventMonitorPresentationWitness services/eventMonitor/recentEventMonitorMutationCommit.ts:23:5
+ ❯ beginRecentEventMonitorMutation services/eventMonitor/recentEventMonitorMutationCommit.ts:29:45
+ ❯ beginLocalUserSubmission services/runSubmission/localUserSubmission.ts:31:32
+ ❯ Proxy.sendUserInputAndSubscribe stores/agentRunStore.ts:122:31
+ ❯ stores/__tests__/agentRunStore.spec.ts:297:9
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/9]⎯
+
+ FAIL  stores/__tests__/agentRunStore.spec.ts > agentRunStore > sendUserInputAndSubscribe should send persisted inactive runs without frontend restore
+TypeError: Cannot read properties of undefined (reading 'messages')
+ ❯ flattenConversation services/eventMonitor/recentEventMonitorWindow.ts:70:16
+     68| const flattenConversation = (conversation: Conversation): Conversation…
+     69|   const descriptors: ConversationDescriptor[] = [];
+     70|   conversation.messages.forEach((message, messageIndex) => {
+       |                ^
+     71|     const timestampMs = toRecentWindowTimestampMs(message.timestamp);
+     72|     if (message.type === 'user') {
+ ❯ buildRecentEventMonitorPresentation services/eventMonitor/recentEventMonitorWindow.ts:161:35
+ ❯ captureRecentEventMonitorPresentationWitness services/eventMonitor/recentEventMonitorMutationCommit.ts:23:5
+ ❯ beginRecentEventMonitorMutation services/eventMonitor/recentEventMonitorMutationCommit.ts:29:45
+ ❯ beginLocalUserSubmission services/runSubmission/localUserSubmission.ts:31:32
+ ❯ Proxy.sendUserInputAndSubscribe stores/agentRunStore.ts:122:31
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ stores/__tests__/agentRunStore.spec.ts:332:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/9]⎯
+
+ FAIL  stores/__tests__/agentRunStore.spec.ts > agentRunStore > terminateRun should not teardown local runtime when persisted termination fails
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ stores/__tests__/agentRunStore.spec.ts:375:5
+    373|     });
+    374| 
+    375|     it('terminateRun should not teardown local runtime when persisted …
+       |     ^
+    376|         const store = useAgentRunStore();
+    377|         mockAgentContext.isSubscribed = true;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/9]⎯
+
+ FAIL  stores/__tests__/agentRunStore.spec.ts > agentRunStore > terminateRun should teardown local runtime and mark history inactive on success
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ stores/__tests__/agentRunStore.spec.ts:415:24
+    413|         const result = await store.terminateRun('run-1');
+    414| 
+    415|         expect(result).toBe(true);
+       |                        ^
+    416|         expect(mockDisconnect).toHaveBeenCalled();
+    417|         expect(runHistoryStoreMock.markRunAsInactive).toHaveBeenCalled…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/9]⎯
+
+ FAIL  stores/__tests__/agentRunStore.spec.ts > agentRunStore > closeAgent should keep context when backend termination fails
+AssertionError: expected "spy" to not be called at all, but actually been called 1 times
+
+Received: 
+
+  1st spy call:
+
+    Array [
+      "run-1",
+    ]
+
+
+Number of calls: 1
+
+ ❯ stores/__tests__/agentRunStore.spec.ts:449:49
+    447|         await store.closeAgent('run-1', { terminate: true });
+    448| 
+    449|         expect(mockContextsStore.removeRun).not.toHaveBeenCalled();
+       |                                                 ^
+    450|     });
+    451| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/9]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 1 unhandled error during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: Cannot read properties of undefined (reading 'messages')
+ ❯ flattenConversation services/eventMonitor/recentEventMonitorWindow.ts:70:16
+     68| const flattenConversation = (conversation: Conversation): Conversation…
+     69|   const descriptors: ConversationDescriptor[] = [];
+     70|   conversation.messages.forEach((message, messageIndex) => {
+       |                ^
+     71|     const timestampMs = toRecentWindowTimestampMs(message.timestamp);
+     72|     if (message.type === 'user') {
+ ❯ buildRecentEventMonitorPresentation services/eventMonitor/recentEventMonitorWindow.ts:161:35
+ ❯ captureRecentEventMonitorPresentationWitness services/eventMonitor/recentEventMonitorMutationCommit.ts:23:5
+ ❯ beginRecentEventMonitorMutation services/eventMonitor/recentEventMonitorMutationCommit.ts:29:45
+ ❯ beginLocalUserSubmission services/runSubmission/localUserSubmission.ts:31:32
+ ❯ Proxy.sendUserInputAndSubscribe stores/agentRunStore.ts:122:31
+ ❯ Proxy.wrappedAction ../node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26
+ ❯ stores/__tests__/agentRunStore.spec.ts:266:35
+ ❯ ../node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:155:11
+ ❯ ../node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:26
+
+This error originated in "stores/__tests__/agentRunStore.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "terminateRun should not teardown local runtime when persisted termination fails". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  1 failed | 45 passed (46)
+      Tests  9 failed | 344 passed (353)
+     Errors  1 error
+   Start at  11:48:17
+   Duration  18.59s (transform 4.67s, setup 116.97s, collect 6.74s, tests 6.22s, environment 11.91s, prepare 7.17s)
+
+ ELIFECYCLE  Command failed with exit code 1.

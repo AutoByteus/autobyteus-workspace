@@ -6,11 +6,14 @@ import { useAgentTeamContextsStore } from './agentTeamContextsStore';
 import { useAgentRunStore } from './agentRunStore';
 import { useAgentTeamRunStore } from './agentTeamRunStore';
 import { useRunHistoryStore } from './runHistoryStore';
+import { useContextFileUploadStore } from './contextFileUploadStore';
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AgentRunConfig } from '~/types/agent/AgentRunConfig';
 import type { ContextFilePath } from '~/types/conversation';
 import type { ToolApprovalTarget } from '~/types/segments';
 import { resolveTeamConversationTargetAddress } from '~/utils/teamConversationTargetAddress';
+import { AgentStatus } from '~/types/agent/AgentStatus';
+import { resolveAgentPrimaryAction } from '~/services/runSubmission/agentPrimaryAction';
 
 /**
  * @store useActiveContextStore
@@ -24,6 +27,7 @@ export const useActiveContextStore = defineStore('activeContext', () => {
   const agentRunStore = useAgentRunStore();
   const agentTeamRunStore = useAgentTeamRunStore();
   const runHistoryStore = useRunHistoryStore();
+  const contextFileUploadStore = useContextFileUploadStore();
 
   const activeAgentContext = computed<AgentContext | null>(() => {
     if (selectionStore.selectedType === 'agent') {
@@ -43,8 +47,10 @@ export const useActiveContextStore = defineStore('activeContext', () => {
     return null;
   });
 
-  const isSending = computed<boolean>(() => activeAgentContext.value?.isSending ?? false);
-  const canInterrupt = computed<boolean>(() => activeAgentContext.value?.state.canInterrupt ?? false);
+  const submissionPending = computed<boolean>(() => activeAgentContext.value?.submissionPending ?? false);
+  const currentStatus = computed<AgentStatus>(
+    () => activeAgentContext.value?.state.currentStatus ?? AgentStatus.Offline,
+  );
   const currentRequirement = computed<string>(() => activeAgentContext.value?.requirement ?? '');
   const currentContextPaths = computed<ContextFilePath[]>(() => activeAgentContext.value?.contextFilePaths ?? []);
   const activeConfig = computed<AgentRunConfig | null>(() => activeAgentContext.value?.config ?? null);
@@ -160,8 +166,15 @@ export const useActiveContextStore = defineStore('activeContext', () => {
     const context = activeAgentContext.value;
     _assertContext(context);
 
-    if (!context.requirement.trim()) {
-      console.warn('Send action aborted: Requirement is empty.');
+    const action = resolveAgentPrimaryAction({
+      hasContext: true,
+      status: context.state.currentStatus,
+      submissionPending: context.submissionPending,
+      isUploading: contextFileUploadStore.isUploading,
+      hasDraft: Boolean(context.requirement.trim()),
+    });
+    if (action.kind !== 'send') {
+      console.warn(`Send action aborted: Primary action is '${action.kind}'.`);
       return;
     }
 
@@ -182,6 +195,18 @@ export const useActiveContextStore = defineStore('activeContext', () => {
   const interruptGeneration = () => {
     const context = activeAgentContext.value;
     _assertContext(context);
+
+    const action = resolveAgentPrimaryAction({
+      hasContext: true,
+      status: context.state.currentStatus,
+      submissionPending: context.submissionPending,
+      isUploading: contextFileUploadStore.isUploading,
+      hasDraft: Boolean(context.requirement.trim()),
+    });
+    if (action.kind !== 'interrupt') {
+      console.warn(`Interrupt action aborted: Primary action is '${action.kind}'.`);
+      return;
+    }
 
     if (selectionStore.selectedType === 'agent') {
       return agentRunStore.interruptGeneration(context.state.runId);
@@ -212,8 +237,8 @@ export const useActiveContextStore = defineStore('activeContext', () => {
 
   return {
     activeAgentContext,
-    isSending,
-    canInterrupt,
+    submissionPending,
+    currentStatus,
     currentRequirement,
     currentContextPaths,
     activeConfig,

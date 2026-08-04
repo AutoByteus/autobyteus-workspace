@@ -1,7 +1,6 @@
 import type { TeamRunConfig } from '~/types/agent/TeamRunConfig';
 import type { AgentContext } from './AgentContext';
 import type { AgentStatus } from '~/types/agent/AgentStatus';
-import type { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { TeamRunMetadataAgentMember } from '~/stores/runHistoryTypes';
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
 import type {
@@ -57,8 +56,6 @@ export interface TeamMemberNodeBase {
   structuralSourcePath?: string[] | null;
   /** Frontend-owned canonical conversation path for runtime projections. Not a backend route string. */
   conversationTargetSegments?: ConversationTargetSegment[];
-  /** Backend-owned canonical status for structural/non-leaf members. */
-  currentStatus?: AgentStatus | null;
   role?: string | null;
   description?: string | null;
 }
@@ -66,6 +63,7 @@ export interface TeamMemberNodeBase {
 export interface AgentTeamMemberNode extends TeamMemberNodeBase {
   memberKind: 'agent';
   agentDefinitionId: string;
+  currentStatus?: AgentStatus | null;
 }
 
 export interface SubTeamMemberNode extends TeamMemberNodeBase {
@@ -92,7 +90,7 @@ export interface HistoricalTeamHydrationState {
  * @interface AgentTeamContext
  * @description Represents the complete state of a single, running agent team run.
  * It encapsulates the run configuration, the state of all member agents, the overall
- * team status, and the current UI focus.
+ * team liveness, and the current UI focus.
  */
 export interface AgentTeamContext {
   teamRunId: string;
@@ -103,7 +101,7 @@ export interface AgentTeamContext {
   coordinatorMemberRouteKey?: string | null;
   historicalHydration?: HistoricalTeamHydrationState | null;
   focusedMemberRouteKey: string;
-  currentStatus: AgentTeamStatus;
+  isActive: boolean;
   isSubscribed: boolean;
   unsubscribe?: () => void;
 }

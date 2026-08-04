@@ -1,0 +1,2 @@
+SR008 browser attempt 3 classification: Local Fix / API-E2E fixture duplication.
+The product composable contained exactly one toast and its message was correct. The fixture had explicitly mounted ToastContainer even though app.vue already owns the global container, so the DOM intentionally rendered the one toast twice. The fixture-only duplicate container was removed; product source was unchanged.

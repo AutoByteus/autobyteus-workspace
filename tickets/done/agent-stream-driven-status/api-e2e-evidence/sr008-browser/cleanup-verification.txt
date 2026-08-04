@@ -1,0 +1,6 @@
+ws_port=63568
+nuxt_port=63569
+nuxt_pid=28449
+owned_nuxt_process=not_running
+ws_port_listener=none
+nuxt_port_listener=none

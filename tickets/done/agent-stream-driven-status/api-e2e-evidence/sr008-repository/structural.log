@@ -1,0 +1,58 @@
+$ git diff --check
+
+$ assert no uncommitted production source change
+Pass: API/E2E changes contain no uncommitted production source.
+
+$ inspect changed current interrupt request fixtures
+Pass: changed provider-origin runtime journeys add current command IDs (8 added command_id lines); current real-socket tests assert exact IDs/targets/results.
+
+$ assert strict Codex start/steer ownership and no fallback indicators
+57:  lastTerminalTurnId: string | null;
+70:    lastTerminalTurnId?: string | null;
+81:    this.lastTerminalTurnId = input.lastTerminalTurnId ?? null;
+145:    this.lastTerminalTurnId = null;
+154:    this.lastTerminalTurnId = completedTurnId;
+164:        this.lastTerminalTurnId = this.activeTurnId;
+224:    const payload = await this.client.request<unknown>("turn/start", {
+238:    if (this.activeTurnId === null && this.lastTerminalTurnId !== turnId) {
+243:        `Codex turn/start returned '${turnId}' while newer active turn '${this.activeTurnId}' is current.`,
+267:      payload = await this.client.request<unknown>("turn/steer", {
+276:        `Codex turn/steer rejected input for turn '${expectedTurnId}': ${detail}`,
+285:        `Codex turn/steer returned '${turnId}' for expected turn '${expectedTurnId}'.`,
+384:    this.lastTerminalTurnId = turnId;
+393:      this.lastTerminalTurnId = this.activeTurnId;
+Pass: strict method owners/terminal guard are present; CRR-009 and focused/live tests find no steer-to-start fallback.
+
+$ browser cleanup and result evidence
+{
+  "scenarios": [
+    [
+      "SR008-BR-001",
+      "Pass"
+    ],
+    [
+      "SR008-BR-002",
+      "Pass"
+    ],
+    [
+      "SR008-BR-003",
+      "Pass"
+    ],
+    [
+      "SR008-BR-004",
+      "Pass"
+    ]
+  ],
+  "failures": [],
+  "pageErrors": 0,
+  "consoleErrors": 0,
+  "cleanup": {
+    "nuxt": {
+      "status": "terminated",
+      "pid": 28449,
+      "exitCode": null,
+      "signalCode": "SIGTERM"
+    },
+    "fixtureRemoved": true
+  }
+}

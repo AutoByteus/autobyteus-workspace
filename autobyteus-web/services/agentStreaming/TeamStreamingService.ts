@@ -16,10 +16,13 @@ import {
   type TeamClientMessage,
   type InterruptGenerationPayload,
   type ConversationTargetAddressPayload,
+  type InterruptGenerationCommandAckPayload,
+  type InterruptCommandTransportFailure,
+  type PendingInterruptCommand,
 } from './protocol';
 import {
   handleTeamCommunicationMessage,
-  handleTeamStatus,
+  handleTeamRunLifecycle,
 } from './handlers';
 import {
   extractTaskAgentIdentity,
@@ -32,7 +35,6 @@ import { removeTaskTeamExecutionProjection } from './teamTaskTeamExecutionProjec
 import { dispatchGenericTeamMemberMessage } from './teamStreamGenericMessageDispatcher';
 import { getActiveRemoteAccessCredential } from '~/utils/remoteAccess/authorizedTransport';
 import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAuth';
-import { normalizeAgentRuntimeStatus } from '~/services/runHydration/runtimeStatusNormalization';
 import { getApolloClient } from '~/utils/apolloClient';
 import { scheduleTaskDelegationRecordsRefresh } from '~/services/runHydration/taskDelegationHydrationService';
 import type {
@@ -41,6 +43,13 @@ import type {
 } from '~/types/agent/ConversationTargetAddress';
 import { StreamContentPresentationScheduler } from './presentation/StreamContentPresentationScheduler';
 import { projectStreamContentBatch } from './presentation/streamContentBatchProjector';
+import { shouldFlushPendingContentBefore } from './presentation/streamContentPresentationFlushPolicy';
+import {
+  drainPendingInterruptTransportFailures,
+  interruptCommandTargetsEqual,
+  tryAdmitInterruptCommand,
+} from './interruptCommandAdmission';
+import { TeamToolApprovalTracker } from './TeamToolApprovalTracker';
 
 const shouldLogStreaming = (): boolean => {
   if (typeof window === 'undefined') return false;
@@ -61,6 +70,8 @@ const summarizeDelta = (delta: string, maxLen = 120): string => {
 
 export interface TeamStreamingServiceOptions {
   wsClient?: IWebSocketClient;
+  onInterruptCommandResult?: (ack: InterruptGenerationCommandAckPayload) => void;
+  onInterruptCommandTransportFailure?: (failure: InterruptCommandTransportFailure) => void;
 }
 
 export interface TeamInterruptGenerationTarget {
@@ -95,9 +106,12 @@ export class TeamStreamingService {
   private wsClient: IWebSocketClient;
   private teamContext: AgentTeamContext | null = null;
   private wsEndpoint: string;
+  private teamRunId: string | null = null;
   private readonly contentPresentationScheduler: StreamContentPresentationScheduler;
-  private readonly approvalTokenByInvocationId = new Map<string, unknown>();
-  private readonly approvalTargetByInvocationId = new Map<string, ToolApprovalTarget>();
+  private readonly pendingInterruptCommands = new Map<string, PendingInterruptCommand>();
+  private readonly onInterruptCommandResult: (ack: InterruptGenerationCommandAckPayload) => void;
+  private readonly onInterruptCommandTransportFailure: (failure: InterruptCommandTransportFailure) => void;
+  private readonly approvalTracker = new TeamToolApprovalTracker();
 
   /**
    * Create a TeamStreamingService.
@@ -108,6 +122,9 @@ export class TeamStreamingService {
   constructor(wsEndpoint: string, options: TeamStreamingServiceOptions = {}) {
     this.wsClient = options.wsClient || new WebSocketClient();
     this.wsEndpoint = wsEndpoint;
+    this.onInterruptCommandResult = options.onInterruptCommandResult ?? (() => undefined);
+    this.onInterruptCommandTransportFailure = options.onInterruptCommandTransportFailure
+      ?? (() => undefined);
     this.contentPresentationScheduler = new StreamContentPresentationScheduler(
       projectStreamContentBatch,
     );
@@ -127,6 +144,7 @@ export class TeamStreamingService {
    */
   connect(teamRunId: string, teamContext: AgentTeamContext): void {
     this.attachContext(teamContext);
+    this.teamRunId = teamRunId.trim();
 
     this.wsClient.on('onMessage', this.handleMessage);
     this.wsClient.on('onConnect', this.handleConnect);
@@ -140,6 +158,7 @@ export class TeamStreamingService {
   }
 
   disconnect(): void {
+    this.drainPendingInterruptCommands('Interrupt was cancelled because the stream disconnected.');
     this.contentPresentationScheduler.flush();
     this.wsClient.off('onMessage', this.handleMessage);
     this.wsClient.off('onConnect', this.handleConnect);
@@ -148,8 +167,8 @@ export class TeamStreamingService {
 
     this.wsClient.disconnect();
     this.teamContext = null;
-    this.approvalTokenByInvocationId.clear();
-    this.approvalTargetByInvocationId.clear();
+    this.teamRunId = null;
+    this.approvalTracker.clear();
   }
 
   sendMessage(
@@ -174,49 +193,58 @@ export class TeamStreamingService {
   }
 
   approveTool(invocationId: string, target?: ToolApprovalTarget | null, reason?: string): void {
-    const approvalToken = this.approvalTokenByInvocationId.get(invocationId);
-    const approvalTarget = this.resolveApprovalTarget(invocationId, target);
+    const approvalToken = this.approvalTracker.getToken(invocationId);
+    const approvalTarget = this.approvalTracker.resolveTarget(invocationId, target);
     const message: TeamClientMessage = {
       type: 'APPROVE_TOOL',
       payload: {
         invocation_id: invocationId,
-        ...this.toToolActionSelectorPayload(approvalTarget),
+        ...this.approvalTracker.toSelectorPayload(approvalTarget),
         reason,
         approval_token: approvalToken as any,
       },
     };
     this.wsClient.send(serializeClientMessage(message));
-    this.approvalTokenByInvocationId.delete(invocationId);
-    this.approvalTargetByInvocationId.delete(invocationId);
+    this.approvalTracker.complete(invocationId);
   }
 
   denyTool(invocationId: string, target?: ToolApprovalTarget | null, reason?: string): void {
-    const approvalToken = this.approvalTokenByInvocationId.get(invocationId);
-    const approvalTarget = this.resolveApprovalTarget(invocationId, target);
+    const approvalToken = this.approvalTracker.getToken(invocationId);
+    const approvalTarget = this.approvalTracker.resolveTarget(invocationId, target);
     const message: TeamClientMessage = {
       type: 'DENY_TOOL',
       payload: {
         invocation_id: invocationId,
-        ...this.toToolActionSelectorPayload(approvalTarget),
+        ...this.approvalTracker.toSelectorPayload(approvalTarget),
         reason,
         approval_token: approvalToken as any,
       },
     };
     this.wsClient.send(serializeClientMessage(message));
-    this.approvalTokenByInvocationId.delete(invocationId);
-    this.approvalTargetByInvocationId.delete(invocationId);
+    this.approvalTracker.complete(invocationId);
   }
 
-  interruptGeneration(target: TeamInterruptGenerationTarget): void {
+  interruptGeneration(commandId: string, target: TeamInterruptGenerationTarget): boolean {
+    const normalizedCommandId = commandId.trim();
     const targetMemberRouteKey = target.targetMemberRouteKey.trim();
     if (!targetMemberRouteKey) {
       throw new Error('Cannot interrupt generation: target member route key is required.');
     }
 
+    const targetMemberRunId = target.targetMemberRunId?.trim() || null;
+    const entry: PendingInterruptCommand = {
+      commandId: normalizedCommandId,
+      target: {
+        target_kind: 'team_member',
+        team_run_id: this.teamRunId ?? '',
+        member_route_key: targetMemberRouteKey,
+        member_run_id: targetMemberRunId,
+      },
+    };
     const payload: InterruptGenerationPayload = {
+      command_id: normalizedCommandId,
       target_member_route_key: targetMemberRouteKey,
     };
-    const targetMemberRunId = target.targetMemberRunId?.trim();
     if (targetMemberRunId) {
       payload.target_member_run_id = targetMemberRunId;
     }
@@ -225,7 +253,13 @@ export class TeamStreamingService {
       type: 'INTERRUPT_GENERATION',
       payload,
     };
-    this.wsClient.send(serializeClientMessage(message));
+    return tryAdmitInterruptCommand({
+      pending: this.pendingInterruptCommands,
+      entry,
+      getConnectionState: () => this.wsClient.state,
+      send: () => this.wsClient.send(serializeClientMessage(message)),
+      onTransportFailure: this.onInterruptCommandTransportFailure,
+    });
   }
 
   private handleMessage = (raw: string): void => {
@@ -233,13 +267,23 @@ export class TeamStreamingService {
 
     try {
       const message = parseServerMessage(raw);
+      if (
+        message.type === 'AGENT_COMMAND_ACK'
+        && message.payload.command_type === 'INTERRUPT_GENERATION'
+      ) {
+        this.handleInterruptCommandAck(message.payload);
+        return;
+      }
       const receivedAt = message.type === 'SEGMENT_CONTENT'
         ? new Date().toISOString()
         : null;
-      if (message.type !== 'SEGMENT_CONTENT') {
+      if (
+        message.type !== 'SEGMENT_CONTENT'
+        && shouldFlushPendingContentBefore(message.type)
+      ) {
         this.contentPresentationScheduler.flush();
       }
-      this.trackApprovalRequest(message);
+      this.approvalTracker.track(message);
       this.logMessage(message);
       this.dispatchMessage(message, this.teamContext, receivedAt);
     } catch (e) {
@@ -257,6 +301,9 @@ export class TeamStreamingService {
   private handleDisconnect = (reason?: string): void => {
     console.log('Team WebSocket disconnected:', reason);
     this.contentPresentationScheduler.flush();
+    this.drainPendingInterruptCommands(
+      reason || 'Interrupt result was lost because the stream disconnected.',
+    );
     if (this.teamContext) {
       this.teamContext.isSubscribed = false;
     }
@@ -265,6 +312,28 @@ export class TeamStreamingService {
   private handleError = (error: Error): void => {
     console.error('Team WebSocket error:', error);
   };
+
+  private handleInterruptCommandAck(ack: InterruptGenerationCommandAckPayload): void {
+    const pending = this.pendingInterruptCommands.get(ack.command_id);
+    if (!pending || !interruptCommandTargetsEqual(pending.target, ack.target)) {
+      console.warn('Ignoring unmatched team interrupt command acknowledgement.', ack);
+      return;
+    }
+    this.pendingInterruptCommands.delete(ack.command_id);
+    this.onInterruptCommandResult(ack);
+  }
+
+  private drainPendingInterruptCommands(message: string): void {
+    drainPendingInterruptTransportFailures({
+      pending: this.pendingInterruptCommands,
+      reason: {
+        code: 'INTERRUPT_TRANSPORT_DISCONNECTED',
+        connectionState: this.wsClient.state,
+        message,
+      },
+      onTransportFailure: this.onInterruptCommandTransportFailure,
+    });
+  }
 
   private logMessage(message: ServerMessage): void {
     if (!shouldLogStreaming()) return;
@@ -295,132 +364,6 @@ export class TeamStreamingService {
         console.log('[stream][team][message]', { type: message.type, payload: message.payload });
         break;
     }
-  }
-
-  private trackApprovalRequest(message: ServerMessage): void {
-    if (message.type !== 'TOOL_APPROVAL_REQUESTED') return;
-    const payload = message.payload as {
-      invocation_id?: string;
-      approval_token?: unknown;
-      member_route_key?: string;
-      member_path?: string[];
-      source_route_key?: string;
-      source_path?: string[];
-      task_agent_run_id?: string;
-      taskAgentRunId?: string;
-      task_team_run_id?: string;
-      taskTeamRunId?: string;
-      team_route_key?: string;
-      teamRouteKey?: string;
-      team_path?: string[];
-      teamPath?: string[];
-      task_team_relative_member_route_key?: string;
-      taskTeamRelativeMemberRouteKey?: string;
-      task_team_relative_member_path?: string[];
-      taskTeamRelativeMemberPath?: string[];
-    };
-    if (!payload?.invocation_id) return;
-    if (payload.approval_token) {
-      this.approvalTokenByInvocationId.set(payload.invocation_id, payload.approval_token);
-    }
-
-    const approvalTarget = this.normalizeApprovalTarget({
-      memberRouteKey: payload.member_route_key,
-      memberPath: payload.member_path,
-      sourceRouteKey: payload.source_route_key,
-      sourcePath: payload.source_path,
-      taskAgentRunId: payload.task_agent_run_id ?? payload.taskAgentRunId,
-      taskTeamRunId: payload.task_team_run_id ?? payload.taskTeamRunId,
-      teamRouteKey: payload.team_route_key ?? payload.teamRouteKey,
-      teamPath: payload.team_path ?? payload.teamPath,
-      taskTeamRelativeMemberRouteKey: payload.task_team_relative_member_route_key ?? payload.taskTeamRelativeMemberRouteKey,
-      taskTeamRelativeMemberPath: payload.task_team_relative_member_path ?? payload.taskTeamRelativeMemberPath,
-    });
-    if (approvalTarget) {
-      this.approvalTargetByInvocationId.set(payload.invocation_id, approvalTarget);
-    }
-  }
-
-  private resolveApprovalTarget(
-    invocationId: string,
-    target?: ToolApprovalTarget | null,
-  ): ToolApprovalTarget | null {
-    return this.normalizeApprovalTarget(target ?? null)
-      ?? this.approvalTargetByInvocationId.get(invocationId)
-      ?? null;
-  }
-
-  private normalizeApprovalTarget(target: ToolApprovalTarget | null): ToolApprovalTarget | null {
-    if (!target) {
-      return null;
-    }
-    const memberPath = Array.isArray(target.memberPath)
-      ? target.memberPath.map((part) => String(part).trim()).filter(Boolean)
-      : null;
-    const sourcePath = Array.isArray(target.sourcePath)
-      ? target.sourcePath.map((part) => String(part).trim()).filter(Boolean)
-      : null;
-    const memberRouteKey = target.memberRouteKey?.trim() || memberPath?.join('/') || null;
-    const sourceRouteKey = target.sourceRouteKey?.trim() || sourcePath?.join('/') || null;
-    const taskAgentRunId = target.taskAgentRunId?.trim() || null;
-    const taskTeamRunId = target.taskTeamRunId?.trim() || null;
-    const teamPath = Array.isArray(target.teamPath)
-      ? target.teamPath.map((part) => String(part).trim()).filter(Boolean)
-      : null;
-    const taskTeamRelativeMemberPath = Array.isArray(target.taskTeamRelativeMemberPath)
-      ? target.taskTeamRelativeMemberPath.map((part) => String(part).trim()).filter(Boolean)
-      : null;
-    const teamRouteKey = target.teamRouteKey?.trim() || teamPath?.join('/') || null;
-    const taskTeamRelativeMemberRouteKey =
-      target.taskTeamRelativeMemberRouteKey?.trim() ||
-      taskTeamRelativeMemberPath?.join('/') ||
-      null;
-
-    if (
-      !memberRouteKey &&
-      !sourceRouteKey &&
-      !memberPath?.length &&
-      !sourcePath?.length &&
-      !taskAgentRunId &&
-      !taskTeamRunId &&
-      !teamRouteKey &&
-      !teamPath?.length &&
-      !taskTeamRelativeMemberRouteKey &&
-      !taskTeamRelativeMemberPath?.length
-    ) {
-      return null;
-    }
-
-    return {
-      memberRouteKey,
-      memberPath: memberPath?.length ? memberPath : null,
-      sourceRouteKey,
-      sourcePath: sourcePath?.length ? sourcePath : null,
-      taskAgentRunId,
-      taskTeamRunId,
-      teamRouteKey,
-      teamPath: teamPath?.length ? teamPath : null,
-      taskTeamRelativeMemberRouteKey,
-      taskTeamRelativeMemberPath: taskTeamRelativeMemberPath?.length ? taskTeamRelativeMemberPath : null,
-    };
-  }
-
-  private toToolActionSelectorPayload(target: ToolApprovalTarget | null): Partial<NonNullable<Extract<TeamClientMessage, { type: 'APPROVE_TOOL' }>['payload']>> {
-    if (!target) {
-      return {};
-    }
-    return {
-      member_route_key: target.memberRouteKey || undefined,
-      member_path: target.memberPath || undefined,
-      source_route_key: target.sourceRouteKey || undefined,
-      source_path: target.sourcePath || undefined,
-      task_agent_run_id: target.taskAgentRunId || undefined,
-      task_team_run_id: target.taskTeamRunId || undefined,
-      team_route_key: target.teamRouteKey || undefined,
-      team_path: target.teamPath || undefined,
-      task_team_relative_member_route_key: target.taskTeamRelativeMemberRouteKey || undefined,
-      task_team_relative_member_path: target.taskTeamRelativeMemberPath || undefined,
-    };
   }
 
   private scheduleTaskTeamCleanup(teamContext: AgentTeamContext, taskTeamRunId?: string | null): void {
@@ -457,17 +400,8 @@ export class TeamStreamingService {
     receivedAt: string | null = null,
   ): void {
     this.refreshTaskDelegationRecords(message, teamContext);
-    if (message.type === 'TEAM_STATUS') {
-      const projectionResult = handleTaskExecutionProjectionMessage(teamContext, message);
-      if (projectionResult.outcome === 'drop') {
-        console.warn(projectionResult.reason);
-        return;
-      }
-      if (projectionResult.outcome === 'handled') {
-        this.scheduleTaskTeamCleanup(teamContext, projectionResult.cleanupTaskTeamRunId);
-        return;
-      }
-      handleTeamStatus(message.payload, teamContext);
+    if (message.type === 'TEAM_RUN_LIFECYCLE') {
+      handleTeamRunLifecycle(message.payload, teamContext);
       return;
     }
 
@@ -498,15 +432,6 @@ export class TeamStreamingService {
       : resolveTeamStreamMemberContext(teamContext, message);
 
     if (!memberResolution) {
-      if (message.type === 'AGENT_STATUS') {
-        const payload = message.payload;
-        const routeKey = payload.member_route_key || payload.source_route_key || payload.member_path?.join('/') || payload.source_path?.join('/') || '';
-        const memberNode = routeKey ? teamContext.memberNodesByRouteKey.get(routeKey) : null;
-        if (memberNode?.memberKind === 'agent_team') {
-          memberNode.currentStatus = normalizeAgentRuntimeStatus(payload.status);
-          return;
-        }
-      }
       console.warn('No member context found for message, skipping');
       return;
     }

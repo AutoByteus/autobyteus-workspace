@@ -4,18 +4,13 @@ import { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
 import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
-import {
-  TeamRunEventSourceType,
-  type TeamRunEvent,
-} from "../../../src/agent-team-execution/domain/team-run-event.js";
-
 const createBackend = () => ({
   runId: "team-run-1",
   teamBackendKind: TeamBackendKind.MIXED,
   getRuntimeContext: () => null,
   isActive: () => true,
-  getStatusSnapshot: () => ({ status: "idle" }),
-  getMemberStatusSnapshots: () => [],
+  getLeafAgentStatusSnapshots: vi.fn(() => []),
+  hasOpenExecutionWork: vi.fn(() => true),
   subscribeToEvents: vi.fn().mockImplementation(() => () => undefined),
   postMessage: vi.fn().mockResolvedValue({ accepted: true }),
   postMessageToConversationTarget: vi.fn().mockResolvedValue({ accepted: true }),
@@ -180,17 +175,23 @@ describe("TeamRun", () => {
     expect(backend.interruptMember).not.toHaveBeenCalled();
   });
 
-  it("does not reintroduce delayed aggregate initializing after a backend command completes", async () => {
-    let listener: ((event: TeamRunEvent) => void) | null = null;
-    const observedEvents: TeamRunEvent[] = [];
-    const backend = {
-      ...createBackend(),
-      getStatusSnapshot: () => ({ status: "idle" as const }),
-      subscribeToEvents: vi.fn().mockImplementation((next: (event: TeamRunEvent) => void) => {
-        listener = next;
-        return () => { listener = null; };
-      }),
-    };
+  it("delegates leaf status snapshots and private open-work semantics to the backend", () => {
+    const snapshots = [{
+      scopeKind: "ordinary_member" as const,
+      teamRunId: "team-run-1",
+      payload: {
+        status: "running" as const,
+        agent_id: "worker-run-1",
+        agent_name: "worker",
+        member_route_key: "worker",
+        member_path: ["worker"],
+        source_route_key: "worker",
+        source_path: ["worker"],
+      },
+    }];
+    const backend = createBackend();
+    backend.getLeafAgentStatusSnapshots.mockReturnValue(snapshots);
+    backend.hasOpenExecutionWork.mockReturnValue(false);
     const run = new TeamRun({
       context: new TeamRunContext({
         runId: "team-run-1",
@@ -202,19 +203,9 @@ describe("TeamRun", () => {
       backend: backend as never,
     });
 
-    run.subscribeToEvents((event) => observedEvents.push(event));
-    await run.postMessage(new AgentInputUserMessage("continue"));
-
-    expect(observedEvents).toEqual([]);
-    expect(run.getStatusSnapshot()).toEqual({ status: "idle" });
-
-    listener?.({
-      eventSourceType: TeamRunEventSourceType.TEAM,
-      teamRunId: "team-run-1",
-      sourcePath: [],
-      data: { status: "running" },
-    });
-
-    expect(run.getStatusSnapshot()).toEqual({ status: "running", source_path: [] });
+    expect(run.getLeafAgentStatusSnapshots()).toBe(snapshots);
+    expect(run.hasOpenExecutionWork()).toBe(false);
+    expect(backend.getLeafAgentStatusSnapshots).toHaveBeenCalledTimes(1);
+    expect(backend.hasOpenExecutionWork).toHaveBeenCalledTimes(1);
   });
 });

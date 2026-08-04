@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest';
 import { nextTick, reactive } from 'vue';
 import { useWorkspaceHistoryTreeState } from '../useWorkspaceHistoryTreeState';
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 
 const flushReactiveUpdates = async () => {
   await nextTick();
@@ -47,7 +46,6 @@ const buildTeamNode = (teamRunId = 'team-1') => ({
   lastActivityAt: '2026-01-01T01:00:00.000Z',
   lastKnownStatus: 'IDLE',
   isActive: false,
-  currentStatus: AgentTeamStatus.Idle,
   deleteLifecycle: 'READY',
   focusedMemberRouteKey: 'solution_designer',
   members: [],

@@ -23,14 +23,12 @@ const buildProjection = (
 ): AgentRunStatusProjection => ({
   runId: overrides.runId ?? "run-1",
   status: "offline",
-  canInterrupt: false,
   isActive: false,
   shouldConnectStream: false,
   lastKnownStatus: "IDLE",
   statusSource: "HISTORICAL_METADATA",
   statusPayload: {
     status: "offline",
-    can_interrupt: false,
     agent_id: overrides.runId ?? "run-1",
   },
   command: null,

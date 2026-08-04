@@ -1,0 +1,13 @@
+components/workspace/common/__tests__/TeamActivityDot.spec.ts
+components/workspace/history/__tests__/workspaceHistoryTeamDefinitionGroups.spec.ts
+components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+components/workspace/running/__tests__/RunningTeamGroup.spec.ts
+components/workspace/running/__tests__/RunningTeamRow.spec.ts
+components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts
+components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts
+components/workspace/team/__tests__/TeamFocusSendWorkflow.spec.ts
+services/agentStreaming/__tests__/TeamStreamingService.spec.ts
+services/runRecovery/__tests__/activeRunRecoveryCoordinator.spec.ts
+stores/__tests__/agentTeamRunStore.spec.ts
+stores/__tests__/runHistoryTeamRows.spec.ts
+utils/__tests__/workspaceStatusDotPresentation.spec.ts

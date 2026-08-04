@@ -118,7 +118,6 @@ describe("Workspace run history GraphQL e2e", () => {
                 createdAt: "2026-04-12T01:05:00.000Z",
                 archivedAt: null,
                 terminatedAt: null,
-                status: "running",
                 isActive: true,
                 memberTree: [],
                 members: [
@@ -170,7 +169,6 @@ describe("Workspace run history GraphQL e2e", () => {
               createdAt
               archivedAt
               terminatedAt
-              status
               isActive
               memberTree
               members {
@@ -231,7 +229,6 @@ describe("Workspace run history GraphQL e2e", () => {
                 createdAt: "2026-04-12T01:05:00.000Z",
                 archivedAt: null,
                 terminatedAt: null,
-                status: "running",
                 isActive: true,
                 memberTree: [],
                 members: [
@@ -441,6 +438,7 @@ describe("Workspace run history GraphQL e2e", () => {
           teamDefinitions {
             runs {
               teamRunId
+              status
               lastActivityAt
               lastKnownStatus
               deleteLifecycle
@@ -455,6 +453,7 @@ describe("Workspace run history GraphQL e2e", () => {
     );
     expect(removedTeamMessages).toEqual(
       expect.arrayContaining([
+        expect.stringContaining('Cannot query field "status"'),
         expect.stringContaining('Cannot query field "lastActivityAt"'),
         expect.stringContaining('Cannot query field "lastKnownStatus"'),
         expect.stringContaining('Cannot query field "deleteLifecycle"'),
@@ -481,7 +480,6 @@ describe("Workspace run history GraphQL e2e", () => {
                 createdAt: "2026-04-12T01:05:00.000Z",
                 archivedAt: null,
                 terminatedAt: null,
-                status: "running",
                 isActive: true,
                 memberTree: [],
                 members: [],
@@ -497,7 +495,7 @@ describe("Workspace run history GraphQL e2e", () => {
         teamDefinitions: Array<{
           runs: Array<{
             createdAt: string;
-            status: string;
+            isActive: boolean;
           }>;
         }>;
       }>;
@@ -508,7 +506,7 @@ describe("Workspace run history GraphQL e2e", () => {
             runs {
               teamRunId
               createdAt
-              status
+              isActive
             }
           }
         }
@@ -518,7 +516,7 @@ describe("Workspace run history GraphQL e2e", () => {
     expect(teamFieldResult.listWorkspaceRunHistory[0]?.teamDefinitions[0]?.runs[0]).toEqual(
       expect.objectContaining({
         createdAt: "2026-04-12T01:05:00.000Z",
-        status: "running",
+        isActive: true,
       }),
     );
   });

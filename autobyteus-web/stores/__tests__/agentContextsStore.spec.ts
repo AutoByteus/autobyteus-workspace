@@ -215,7 +215,6 @@ describe('agentContextsStore', () => {
             });
             const existing = store.runs.get(runId)!;
             existing.isSubscribed = true;
-            existing.state.canInterrupt = true;
 
             store.upsertProjectionContext({
                 runId,
@@ -225,7 +224,6 @@ describe('agentContextsStore', () => {
             });
 
             expect(existing.state.currentStatus).toBe(AgentStatus.Offline);
-            expect(existing.state.canInterrupt).toBe(false);
             expect(existing.state.conversation).toEqual(historicalConversation);
         });
     });

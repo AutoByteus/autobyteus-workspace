@@ -10,7 +10,6 @@ import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig';
 import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig';
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import { buildEditableAgentRunSeed } from '~/composables/useDefinitionLaunchDefaults';
 import type {
   RunEditableFieldFlags,
@@ -313,7 +312,6 @@ export const useRunHistoryStore = defineStore('runHistory', {
               : {
                   ...team,
                   isActive: true,
-                  status: AgentTeamStatus.Running,
                 }),
         })),
       }));
@@ -338,7 +336,6 @@ export const useRunHistoryStore = defineStore('runHistory', {
               : {
                   ...team,
                   isActive: false,
-                  status: team.status === AgentTeamStatus.Error ? AgentTeamStatus.Error : AgentTeamStatus.Offline,
                   members: team.members.map((member) => ({
                     ...member,
                     status: AgentStatus.Offline,
@@ -379,11 +376,6 @@ export const useRunHistoryStore = defineStore('runHistory', {
             return {
               ...team,
               isActive,
-              status: isActive
-                ? AgentTeamStatus.Running
-                : team.status === AgentTeamStatus.Error
-                  ? AgentTeamStatus.Error
-                  : AgentTeamStatus.Offline,
               members: team.members.map((member) => ({
                 ...member,
                 status: isActive ? member.status : AgentStatus.Offline,

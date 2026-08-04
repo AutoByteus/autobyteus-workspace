@@ -840,7 +840,7 @@ describe("CodexThread turn payload", () => {
       const { thread, client } = createThread(false, { reasoningEffort });
       thread.markStartupReady();
 
-      await thread.sendTurn(new AgentInputUserMessage("hello reasoning codex"));
+      await thread.submitInput(new AgentInputUserMessage("hello reasoning codex"));
 
       expect(client.request).toHaveBeenCalledWith(
         "turn/start",
@@ -855,7 +855,7 @@ describe("CodexThread turn payload", () => {
     const { thread, client } = createThread(false, { reasoningEffort: null });
     thread.markStartupReady();
 
-    await thread.sendTurn(new AgentInputUserMessage("hello default codex"));
+    await thread.submitInput(new AgentInputUserMessage("hello default codex"));
 
     expect(client.request).toHaveBeenCalledWith(
       "turn/start",
@@ -869,7 +869,7 @@ describe("CodexThread turn payload", () => {
     const { thread, client } = createThread(false, { serviceTier: "fast" });
     thread.markStartupReady();
 
-    await thread.sendTurn(new AgentInputUserMessage("hello fast codex"));
+    await thread.submitInput(new AgentInputUserMessage("hello fast codex"));
 
     expect(client.request).toHaveBeenCalledWith(
       "turn/start",
@@ -884,6 +884,146 @@ describe("CodexThread turn payload", () => {
         ]),
       }),
     );
+  });
+});
+
+describe("CodexThread input submission policy", () => {
+  it("starts only while idle and returns the strict nested turn identity", async () => {
+    const { thread, client } = createThread(false);
+    thread.markStartupReady();
+
+    await expect(thread.submitInput(new AgentInputUserMessage("start work"))).resolves.toEqual({
+      kind: "started",
+      turnId: "turn-1",
+    });
+    expect(client.request).toHaveBeenCalledTimes(1);
+    expect(client.request).toHaveBeenCalledWith("turn/start", expect.any(Object));
+    expect(thread.activeTurnId).toBe("turn-1");
+  });
+
+  it("rejects malformed start responses without installing anonymous running state", async () => {
+    const { thread, client } = createThread(false);
+    thread.markStartupReady();
+    client.request.mockResolvedValueOnce({ turn: {} });
+
+    await expect(thread.submitInput(new AgentInputUserMessage("bad response"))).rejects.toMatchObject({
+      code: "CODEX_TURN_START_RESPONSE_INVALID",
+    });
+    expect(thread.activeTurnId).toBeNull();
+    expect(thread.currentStatus).toBe("IDLE");
+  });
+
+  it("steers the exact active turn without lifecycle replacement and settles canonically", async () => {
+    const { thread, client } = createThread(false);
+    thread.markStartupReady();
+    thread.markTurnStarted("turn-A");
+    client.request.mockResolvedValueOnce({ turnId: "turn-A" });
+
+    await expect(thread.submitInput(new AgentInputUserMessage("continue A"))).resolves.toEqual({
+      kind: "steered",
+      turnId: "turn-A",
+    });
+    expect(client.request).toHaveBeenCalledWith("turn/steer", {
+      threadId: thread.threadId,
+      expectedTurnId: "turn-A",
+      input: expect.arrayContaining([expect.objectContaining({ type: "text", text: "continue A" })]),
+    });
+    expect(client.request).not.toHaveBeenCalledWith("turn/start", expect.anything());
+    expect(thread.activeTurnId).toBe("turn-A");
+
+    thread.handleAppServerNotification(CodexThreadEventName.TURN_COMPLETED, {
+      turn: { id: "turn-A" },
+    });
+    expect(thread.getStatusSnapshotSource()).toEqual({ currentStatus: "IDLE", activeTurnId: null });
+  });
+
+  it("serializes concurrent idle submissions so the second observes the first active turn", async () => {
+    const { thread, client } = createThread(false);
+    thread.markStartupReady();
+    let resolveStart!: (value: unknown) => void;
+    client.request.mockImplementation((method: string) => {
+      if (method === "turn/start") {
+        return new Promise((resolve) => { resolveStart = resolve; });
+      }
+      return Promise.resolve({ turnId: "turn-A" });
+    });
+
+    const first = thread.submitInput(new AgentInputUserMessage("first"));
+    const second = thread.submitInput(new AgentInputUserMessage("second"));
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(client.request).toHaveBeenCalledTimes(1);
+    resolveStart({ turn: { id: "turn-A" } });
+
+    await expect(first).resolves.toEqual({ kind: "started", turnId: "turn-A" });
+    await expect(second).resolves.toEqual({ kind: "steered", turnId: "turn-A" });
+    expect(client.request.mock.calls.map(([method]) => method)).toEqual(["turn/start", "turn/steer"]);
+  });
+
+  it("preserves active identity on steer rejection and mismatch without start fallback", async () => {
+    const { thread, client } = createThread(false);
+    thread.markStartupReady();
+    thread.markTurnStarted("turn-A");
+    client.request.mockRejectedValueOnce(new Error("turn is not steerable"));
+    await expect(thread.submitInput(new AgentInputUserMessage("rejected"))).rejects.toMatchObject({
+      code: "CODEX_TURN_STEER_REJECTED",
+    });
+    client.request.mockResolvedValueOnce({ turnId: "turn-B" });
+    await expect(thread.submitInput(new AgentInputUserMessage("mismatch"))).rejects.toMatchObject({
+      code: "CODEX_TURN_STEER_ID_MISMATCH",
+    });
+    expect(thread.activeTurnId).toBe("turn-A");
+    expect(client.request.mock.calls.every(([method]) => method === "turn/steer")).toBe(true);
+  });
+
+  it("rejects a steer response without its method-specific top-level turnId", async () => {
+    const { thread, client } = createThread(false);
+    thread.markStartupReady();
+    thread.markTurnStarted("turn-A");
+    client.request.mockResolvedValueOnce({ turn: { id: "turn-A" } });
+
+    await expect(thread.submitInput(new AgentInputUserMessage("malformed steer"))).rejects.toMatchObject({
+      code: "CODEX_TURN_STEER_RESPONSE_INVALID",
+    });
+    expect(thread.activeTurnId).toBe("turn-A");
+    expect(client.request).toHaveBeenCalledTimes(1);
+    expect(client.request).toHaveBeenCalledWith("turn/steer", expect.any(Object));
+  });
+
+  it("does not reopen a start response after its terminal notification wins the race", async () => {
+    const { thread, client } = createThread(false);
+    thread.markStartupReady();
+    client.request.mockImplementationOnce(async () => {
+      thread.handleAppServerNotification(CodexThreadEventName.TURN_STARTED, {
+        turn: { id: "turn-race" },
+      });
+      thread.handleAppServerNotification(CodexThreadEventName.TURN_COMPLETED, {
+        turn: { id: "turn-race" },
+      });
+      return { turn: { id: "turn-race" } };
+    });
+
+    await expect(thread.submitInput(new AgentInputUserMessage("race"))).resolves.toEqual({
+      kind: "started", turnId: "turn-race",
+    });
+    expect(thread.activeTurnId).toBeNull();
+    expect(thread.currentStatus).toBe("IDLE");
+    expect(thread.lastTerminalTurnId).toBe("turn-race");
+  });
+
+  it("preserves a newer notification identity when an older start response arrives", async () => {
+    const { thread, client } = createThread(false);
+    thread.markStartupReady();
+    client.request.mockImplementationOnce(async () => {
+      thread.markTurnStarted("turn-newer");
+      return { turn: { id: "turn-start-response" } };
+    });
+
+    await expect(thread.submitInput(new AgentInputUserMessage("identity race"))).rejects.toMatchObject({
+      code: "CODEX_TURN_START_IDENTITY_CONFLICT",
+    });
+    expect(thread.activeTurnId).toBe("turn-newer");
+    expect(thread.currentStatus).toBe("RUNNING");
   });
 });
 

@@ -192,7 +192,6 @@ export const useAgentContextsStore = defineStore('agentContexts', {
         existing.state.hasEarlierActiveTraceEvents = options.hasEarlierActiveTraceEvents === true;
         const shouldPreserveSubscribedLiveStatus = existing.isSubscribed && nextStatus === AgentStatus.Running;
         applyMemberOrHistoryStatusSnapshot(existing, nextStatus, {
-          preserveLiveInterrupt: shouldPreserveSubscribedLiveStatus,
           preserveCurrentStatus: shouldPreserveSubscribedLiveStatus,
         });
         return;

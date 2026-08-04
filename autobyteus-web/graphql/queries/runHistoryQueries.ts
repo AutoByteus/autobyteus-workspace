@@ -33,7 +33,6 @@ export const ListWorkspaceRunHistory = gql`
           createdAt
           archivedAt
           terminatedAt
-          status
           isActive
           memberTree
           members {
@@ -84,7 +83,6 @@ export const GetWorkspaceRunHistory = gql`
           createdAt
           archivedAt
           terminatedAt
-          status
           isActive
           memberTree
           members {

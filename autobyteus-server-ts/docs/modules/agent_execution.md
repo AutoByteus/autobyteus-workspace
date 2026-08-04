@@ -133,6 +133,28 @@ authority once an `AgentRun` exists. Its runtime events are the source that
 replaces command overlays and drives later `running`, `idle`, `offline`, and
 `error` projections.
 
+## Active Input And Interrupt Command Results
+
+Provider input policy remains inside its runtime adapter. In particular,
+`CodexThread.submitInput(...)` serializes submissions: idle sends
+`turn/start`, while identified active turn A sends only
+`turn/steer(expectedTurnId=A)`. A successful steer preserves A without a new
+turn-start transition; a rejected or mismatched steer returns a structured
+failure and never falls back to start. Start/terminal and steer/terminal races
+are reconciled so a late request response cannot reinstall a turn already
+retired by provider lifecycle evidence.
+
+`INTERRUPT_GENERATION` is command-correlated control traffic. Standalone and
+exact team-member requests carry a fresh client `command_id`; the originating
+WebSocket receives one discriminated `AGENT_COMMAND_ACK` with `accepted`,
+`rejected`, or `failed`, the same command id, and the exact standalone-run or
+team-member target. Missing/inactive targets and provider rejection are result
+arms rather than fabricated lifecycle events. Accepted means only that the
+runtime accepted the interrupt request: later `TURN_INTERRUPTED`/terminal
+`AGENT_STATUS` remains responsible for clearing running/Stop state. A closed
+socket cannot receive a server result, so client disconnect completion is a
+separate local transport failure, not a synthetic acknowledgement.
+
 ## Canonical Turn Lifecycle And Failure Authority
 
 Runtime lifecycle projection is boundary-owned. A live run is `running` only

@@ -301,8 +301,8 @@ describe("RunFileChangeProjectionService", () => {
         isActive: () => true,
         getRuntimeContext: () => null,
         subscribeToEvents: () => () => undefined,
-        getStatusSnapshot: () => ({ status: "idle" }),
-        getMemberStatusSnapshots: () => [],
+        getLeafAgentStatusSnapshots: () => [],
+        hasOpenExecutionWork: () => false,
         postMessage: vi.fn(),
         deliverInterAgentMessage: vi.fn(),
         approveToolInvocation: vi.fn(),
@@ -569,8 +569,8 @@ describe("RunFileChangeProjectionService", () => {
           listeners.add(listener);
           return () => listeners.delete(listener);
         },
-        getStatusSnapshot: () => ({ status: "idle" }),
-        getMemberStatusSnapshots: () => [],
+        getLeafAgentStatusSnapshots: () => [],
+        hasOpenExecutionWork: () => false,
         postMessage: vi.fn(),
         deliverInterAgentMessage: vi.fn(),
         approveToolInvocation: vi.fn(),

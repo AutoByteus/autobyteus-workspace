@@ -82,7 +82,7 @@ describe("MixedAgentMemberHandle termination", () => {
       runId: "worker-run-1",
       isActive: () => true,
       getPlatformAgentRunId: () => "platform-worker-run-1",
-      getStatusSnapshot: () => ({ status: "running", can_interrupt: true }),
+      getStatusSnapshot: () => ({ status: "running" }),
       subscribeToEvents: vi.fn(() => () => undefined),
       terminate: vi.fn(async () => ({
         accepted: false,

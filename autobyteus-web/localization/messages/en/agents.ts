@@ -92,6 +92,8 @@ const messages = {
   'agents.components.agents.GroupableTagInput.loading': 'Loading...',
   'agents.components.agents.GroupableTagInput.add': 'Add',
   'agents.components.agents.GroupableTagInput.remove': 'Remove',
+  'agents.store.interrupt.failed': 'Could not stop {{target}}: {{detail}}',
+  'agents.store.interrupt.transportFailed': 'Could not send Stop to {{target}}: {{detail}}',
 } satisfies TranslationCatalog;
 
 export default messages;

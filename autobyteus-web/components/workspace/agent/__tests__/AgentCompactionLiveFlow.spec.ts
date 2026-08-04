@@ -29,7 +29,7 @@ const createContext = (runId: string, conversation: Conversation) => ({
     compactionStatus: null,
   },
   conversation,
-  isSending: false,
+  submissionPending: false,
   config: {},
 });
 

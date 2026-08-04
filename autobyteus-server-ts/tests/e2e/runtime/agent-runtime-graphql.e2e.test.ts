@@ -883,7 +883,21 @@ const defineRuntimeSuite = (input: {
           const invocationId = resolveInvocationId(approvalRequested.payload);
           expect(invocationId).toBeTruthy();
 
-          socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION" }));
+          const interruptCommandId = "client_interrupt_autobyteus_runtime";
+          socket.send(JSON.stringify({
+            type: "INTERRUPT_GENERATION",
+            payload: { command_id: interruptCommandId },
+          }));
+
+          await waitForMessageAfter(
+            messages,
+            interruptStartIndex,
+            (message) =>
+              message.type === "AGENT_COMMAND_ACK" &&
+              message.payload.command_id === interruptCommandId &&
+              message.payload.state === "accepted",
+            "AutoByteus accepted interrupt command acknowledgement",
+          );
 
           await waitForMessageAfter(
             messages,

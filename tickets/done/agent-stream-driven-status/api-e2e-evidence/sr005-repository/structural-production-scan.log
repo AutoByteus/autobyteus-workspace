@@ -1,0 +1,36 @@
+## Corrected production-only obsolete contract scan
+Scope: server src plus frontend components/composables/graphql/services/stores/types/utils/generated; docs, tickets, and all tests excluded.
+
+### can_interrupt/canInterrupt (expected no matches)
+
+### forbidden team aggregate symbols (expected no matches)
+
+### root team context/store status carrier check (expected no currentStatus/status field on AgentTeamContext/store)
+autobyteus-web/types/agent/AgentTeamContext.ts:66:  currentStatus?: AgentStatus | null;
+
+Interpretation: this sole match belongs to `AgentTeamMemberNode` (`memberKind: 'agent'`), not the root `AgentTeamContext`; member-agent `AGENT_STATUS` is intentionally preserved. The root context carrier is `isActive: boolean`.
+
+### approved binary lifecycle transport references
+autobyteus-web/services/agentStreaming/TeamStreamingService.ts:463:    if (message.type === 'TEAM_RUN_LIFECYCLE') {
+autobyteus-web/stores/agentTeamRunStore.ts:190:        (teamContext && !teamContext.isActive)
+autobyteus-web/stores/agentTeamRunStore.ts:206:          teamContext.isActive = false;
+autobyteus-web/stores/agentTeamRunStore.ts:268:      teamContext.isActive = false;
+autobyteus-web/stores/agentTeamRunStore.ts:394:        } else if (teamResumeConfig && !teamResumeConfig.isActive) {
+autobyteus-web/stores/agentTeamRunStore.ts:424:        finalTeamContext.isActive = true;
+autobyteus-server-ts/src/services/agent-streaming/models.ts:34:  TEAM_RUN_LIFECYCLE = "TEAM_RUN_LIFECYCLE",
+autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts:138:    if (!activeRun.isActive()) {
+autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts:159:  getLifecycleSnapshot(teamRunId: string): TeamRunLifecycleSnapshot {
+autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts:163:      isActive: this.getActiveRun(normalizedTeamRunId) !== null,
+autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts:167:  subscribeToLifecycle(
+autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts:188:    if (!run.isActive()) {
+autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts:239:    const isActive = input.nextRun !== null;
+autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts:240:    if (wasActive !== isActive) {
+autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts:241:      this.notifyLifecycle({ teamRunId: input.teamRunId, isActive });
+autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts:94:      "getLifecycleSnapshot" | "subscribeToLifecycle"
+autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts:218:    const lifecycleSnapshot = this.teamRunManager.getLifecycleSnapshot(teamRun.runId);
+autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts:291:      unsubscribeLifecycle = this.teamRunManager.subscribeToLifecycle(
+autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts:295:            connection.send(new ServerMessage(ServerMessageType.TEAM_RUN_LIFECYCLE, {
+autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts:297:              is_active: snapshot.isActive,
+
+### git diff --check
+exit=0

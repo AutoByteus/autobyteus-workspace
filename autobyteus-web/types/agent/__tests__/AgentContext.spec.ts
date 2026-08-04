@@ -34,7 +34,7 @@ describe('AgentContext', () => {
         expect(context.state).toBe(mockState);
         expect(context.requirement).toBe('');
         expect(context.contextFilePaths).toEqual([]);
-        expect(context.isSending).toBe(false);
+        expect(context.submissionPending).toBe(false);
         expect(context.isSubscribed).toBe(false);
     });
 

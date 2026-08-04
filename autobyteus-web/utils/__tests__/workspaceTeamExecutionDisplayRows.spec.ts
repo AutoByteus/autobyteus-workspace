@@ -39,7 +39,6 @@ describe('workspaceTeamExecutionDisplayRows', () => {
       lastActivityAt: '2026-06-30T00:00:00.000Z',
       lastKnownStatus: 'ACTIVE',
       isActive: true,
-      currentStatus: 'running',
       deleteLifecycle: 'READY',
       focusedMemberRouteKey: 'worker',
       members: [],
@@ -89,7 +88,6 @@ describe('workspaceTeamExecutionDisplayRows', () => {
       taskTeamRunId: 'task-team-run-1',
       taskId: 'task_0002',
       taskDescription: 'Team task details stay on the right.',
-      currentStatus: AgentStatus.Running,
     };
     const teamContext = {
       teamRunId: 'team-run-1',

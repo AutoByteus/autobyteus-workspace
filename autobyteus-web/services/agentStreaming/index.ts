@@ -24,6 +24,8 @@ export type {
   SegmentStartPayload,
   SegmentContentPayload,
   SegmentEndPayload,
+  InterruptGenerationCommandAckPayload,
+  InterruptCommandTransportFailure,
 } from './protocol';
 
 // Re-export for advanced usage

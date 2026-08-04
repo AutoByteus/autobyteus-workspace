@@ -14,7 +14,7 @@ export class AgentContext {
   // UI-specific and session state, now co-located with the agent run.
   public requirement: string;
   public contextFilePaths: ContextFilePath[];
-  public isSending: boolean;
+  public submissionPending: boolean;
   public isSubscribed: boolean;
   public unsubscribe?: () => void;
 
@@ -25,7 +25,7 @@ export class AgentContext {
     // Initialize session state
     this.requirement = '';
     this.contextFilePaths = [];
-    this.isSending = false;
+    this.submissionPending = false;
     this.isSubscribed = false;
     this.unsubscribe = undefined;
   }

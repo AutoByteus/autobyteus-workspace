@@ -28,7 +28,6 @@ const metadata: AgentRunMetadata = {
 const createFakeRun = (options: {
   status?: "initializing" | "running" | "idle" | "error";
   statusAfterPostBegins?: "initializing" | "running" | "idle" | "error";
-  canInterrupt?: boolean;
   accepted?: boolean;
   rejectMessage?: string;
   resultTurnId?: string | null;
@@ -39,9 +38,16 @@ const createFakeRun = (options: {
     runId: "run-1",
     postUserMessage: vi.fn(async () => {
       status = options.statusAfterPostBegins ?? status;
+      const accepted = options.accepted ?? true;
+      const turnId = accepted
+        ? options.resultTurnId === undefined ? "turn-1" : options.resultTurnId
+        : null;
+      if (accepted && turnId) {
+        status = "running";
+      }
       return {
-        accepted: options.accepted ?? true,
-        turnId: options.accepted === false ? null : options.resultTurnId === undefined ? "turn-1" : options.resultTurnId,
+        accepted,
+        turnId,
         message: options.rejectMessage,
       };
     }),
@@ -51,7 +57,6 @@ const createFakeRun = (options: {
     }),
     getStatusSnapshot: () => ({
       status,
-      can_interrupt: status === "running" && options.canInterrupt === true,
       agent_id: "run-1",
     }),
     emitStatus(nextStatus: "initializing" | "running" | "idle" | "error") {
@@ -59,7 +64,7 @@ const createFakeRun = (options: {
       const event: AgentRunEvent = {
         eventType: AgentRunEventType.AGENT_STATUS,
         runId: "run-1",
-        payload: { status: nextStatus, can_interrupt: false, agent_id: "run-1" },
+        payload: { status: nextStatus, agent_id: "run-1" },
         statusHint: nextStatus === "running" ? "ACTIVE" : nextStatus === "error" ? "ERROR" : "IDLE",
       };
       listeners.forEach((listener) => listener(event));
@@ -148,7 +153,7 @@ const buildCoordinator = (options: {
 };
 
 describe("AgentRunCommandCoordinator", () => {
-  it("keeps inactive-restore accepted-result running status aligned with the following ACK", async () => {
+  it("uses the AgentRun-owned accepted turn status without a synthetic replacement event", async () => {
     const fakeRun = createFakeRun({ status: "initializing" });
     let resolveRestore!: (value: { run: ReturnType<typeof createFakeRun> }) => void;
     const restorePromise = new Promise<{ run: ReturnType<typeof createFakeRun> }>((resolve) => {
@@ -166,7 +171,7 @@ describe("AgentRunCommandCoordinator", () => {
     await Promise.resolve();
     expect(published.map((raw) => JSON.parse(raw))).toContainEqual({
       type: "AGENT_STATUS",
-      payload: { status: "initializing", can_interrupt: false, agent_id: "run-1" },
+      payload: { status: "initializing", agent_id: "run-1" },
     });
     expect(agentRunService.restoreAgentRun).toHaveBeenCalledWith("run-1");
 
@@ -178,12 +183,12 @@ describe("AgentRunCommandCoordinator", () => {
       accepted: true,
       duplicate: false,
       message_id: "msg-1",
-      status: { status: "running", can_interrupt: false, agent_id: "run-1" },
+      status: { status: "running", agent_id: "run-1" },
     });
     expect([
       ...publishedStatusPayloads(published).map((payload) => payload.status),
       result.ack.status?.status,
-    ]).toEqual(["initializing", "running", "running"]);
+    ]).toEqual(["initializing", "running"]);
     expect(fakeRun.postUserMessage).toHaveBeenCalledOnce();
     expect(fakeRun.postUserMessage.mock.calls[0][0].metadata).toMatchObject({
       message_id: "msg-1",
@@ -192,7 +197,7 @@ describe("AgentRunCommandCoordinator", () => {
   });
 
   it("does not downgrade an already-running active runtime to initializing", async () => {
-    const fakeRun = createFakeRun({ status: "running", canInterrupt: true });
+    const fakeRun = createFakeRun({ status: "running" });
     const { coordinator, overlayStore, published, agentRunService } = buildCoordinator({
       restorePromise: Promise.resolve({ run: fakeRun }),
       activeRun: fakeRun,
@@ -209,16 +214,16 @@ describe("AgentRunCommandCoordinator", () => {
     expect(overlayStore.getOverlay("run-1")).toBeNull();
     expect(published.map((raw) => JSON.parse(raw))).not.toContainEqual({
       type: "AGENT_STATUS",
-      payload: { status: "initializing", can_interrupt: false, agent_id: "run-1" },
+      payload: { status: "initializing", agent_id: "run-1" },
     });
     expect(result.ack).toMatchObject({
       state: "accepted",
       accepted: true,
-      status: { status: "running", can_interrupt: true, agent_id: "run-1" },
+      status: { status: "running", agent_id: "run-1" },
     });
   });
 
-  it("keeps active-idle accepted-result running status aligned with the following ACK", async () => {
+  it("does not replace an active run status from accepted command metadata", async () => {
     const fakeRun = createFakeRun({
       status: "idle",
       statusAfterPostBegins: "initializing",
@@ -238,10 +243,9 @@ describe("AgentRunCommandCoordinator", () => {
     expect([
       ...publishedStatusPayloads(published).map((payload) => payload.status),
       result.ack.status?.status,
-    ]).toEqual(["running", "running"]);
+    ]).toEqual(["running"]);
     expect(result.ack.status).toEqual({
       status: "running",
-      can_interrupt: false,
       agent_id: "run-1",
     });
   });
@@ -249,7 +253,6 @@ describe("AgentRunCommandCoordinator", () => {
   it("keeps active-runtime command rejection ACK status consistent without publishing lifecycle error", async () => {
     const fakeRun = createFakeRun({
       status: "running",
-      canInterrupt: true,
       accepted: false,
       rejectMessage: "runtime busy",
     });
@@ -268,14 +271,14 @@ describe("AgentRunCommandCoordinator", () => {
     expect(overlayStore.getOverlay("run-1")).toBeNull();
     expect(published.map((raw) => JSON.parse(raw))).not.toContainEqual({
       type: "AGENT_STATUS",
-      payload: { status: "error", can_interrupt: false, agent_id: "run-1" },
+      payload: { status: "error", agent_id: "run-1" },
     });
     expect(result.ack).toMatchObject({
       state: "failed",
       accepted: false,
       code: "RUNTIME_REJECTED",
       message: "runtime busy",
-      status: { status: "running", can_interrupt: true, agent_id: "run-1" },
+      status: { status: "running", agent_id: "run-1" },
     });
   });
 
@@ -314,7 +317,7 @@ describe("AgentRunCommandCoordinator", () => {
     expect(fakeRun.postUserMessage).toHaveBeenCalledTimes(1);
   });
 
-  it("clears command overlay when live runtime status arrives", async () => {
+  it("clears the pre-runtime command overlay as soon as the AgentRun binds", async () => {
     const fakeRun = createFakeRun({ resultTurnId: null });
     const { coordinator, overlayStore } = buildCoordinator({
       restorePromise: Promise.resolve({ run: fakeRun }),
@@ -326,7 +329,7 @@ describe("AgentRunCommandCoordinator", () => {
       dedupeKey: "dedupe-1",
       message: new AgentInputUserMessage("hello"),
     });
-    expect(overlayStore.getOverlay("run-1")).not.toBeNull();
+    expect(overlayStore.getOverlay("run-1")).toBeNull();
 
     fakeRun.emitStatus("running");
     expect(overlayStore.getOverlay("run-1")).toBeNull();
@@ -507,7 +510,7 @@ describe("AgentRunCommandCoordinator", () => {
   });
 
   it("keeps restored running snapshot internal until command-correlated execution event", async () => {
-    const fakeRun = createFakeRun({ status: "running", canInterrupt: true });
+    const fakeRun = createFakeRun({ status: "running" });
     let resolveRestore!: (value: { run: ReturnType<typeof createFakeRun> }) => void;
     let resolvePost!: (value: { accepted: true; turnId: string }) => void;
     const restorePromise = new Promise<{ run: ReturnType<typeof createFakeRun> }>((resolve) => {
@@ -536,14 +539,14 @@ describe("AgentRunCommandCoordinator", () => {
     await flushAsync();
 
     expect(fakeRun.postUserMessage).toHaveBeenCalledOnce();
-    expect(overlayStore.getOverlay("run-1")?.status).toBe("initializing");
+    expect(overlayStore.getOverlay("run-1")).toBeNull();
     expect(publishedStatusPayloads(published).map((payload) => payload.status)).toEqual([
       "initializing",
     ]);
 
     fakeRun.emitTurnStarted("turn-1");
 
-    expect(overlayStore.getOverlay("run-1")?.status).toBe("initializing");
+    expect(overlayStore.getOverlay("run-1")).toBeNull();
     expect(publishedStatusPayloads(published).map((payload) => payload.status)).toEqual([
       "initializing",
     ]);
@@ -551,9 +554,8 @@ describe("AgentRunCommandCoordinator", () => {
     resolvePost({ accepted: true, turnId: "turn-1" });
     const result = await pending;
     expect(overlayStore.getOverlay("run-1")).toBeNull();
-    expect(publishedStatusPayloads(published)).toMatchObject([
-      { status: "initializing", can_interrupt: false, agent_id: "run-1" },
-      { status: "running", can_interrupt: true, agent_id: "run-1" },
+    expect(publishedStatusPayloads(published)).toEqual([
+      { status: "initializing", agent_id: "run-1" },
     ]);
     expect(result.ack).toMatchObject({
       state: "accepted",

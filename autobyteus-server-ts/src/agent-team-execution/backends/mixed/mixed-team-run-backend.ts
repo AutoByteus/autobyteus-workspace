@@ -58,12 +58,12 @@ export class MixedTeamRunBackend implements TeamRunBackend {
     return this.context.runtimeContext ?? null;
   }
 
-  getStatusSnapshot() {
-    return this.teamManager.getStatusSnapshot();
+  getLeafAgentStatusSnapshots() {
+    return this.teamManager.getLeafAgentStatusSnapshots();
   }
 
-  getMemberStatusSnapshots() {
-    return this.teamManager.getMemberStatusSnapshots();
+  hasOpenExecutionWork(): boolean {
+    return this.teamManager.hasOpenExecutionWork();
   }
 
   async postMessage(

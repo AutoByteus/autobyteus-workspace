@@ -16,10 +16,14 @@
         >
           <span class="i-heroicons-chevron-right-20-solid w-3 h-3"></span>
         </span>
-        
-        <!-- Status Dot -->
-        <span class="status-indicator h-2 w-2 rounded-full flex-shrink-0" :class="statusColor"></span>
-        
+
+        <TeamActivityDot
+          :is-active="teamRun.isActive"
+          :label="$t(teamRun.isActive
+            ? 'workspace.components.workspace.running.RunningTeamRow.active_team_run'
+            : 'workspace.components.workspace.running.RunningTeamRow.inactive_team_run')"
+        />
+
         <!-- ID -->
         <span class="text-sm text-gray-700 truncate">
           {{ formatId(teamRun.teamRunId) }}
@@ -45,7 +49,7 @@
         :member-name="member.node.displayName || member.node.memberName"
         :member-route-key="member.node.memberRouteKey"
         :member-context="member.context"
-        :member-status="member.node.currentStatus"
+        :member-status="member.node.memberKind === 'agent' ? member.node.currentStatus : null"
         :style="{ marginLeft: `${member.depth * 12}px` }"
         :is-focused="activeExecutionFocusedMemberRouteKey === member.node.memberRouteKey"
         :is-coordinator="member.node.memberRouteKey === coordinatorRouteKey"
@@ -58,8 +62,8 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
+import TeamActivityDot from '~/components/workspace/common/TeamActivityDot.vue';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
-import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import TeamMemberRow from './TeamMemberRow.vue';
 import {
   flattenActiveExecutionMemberNodesForDisplay,
@@ -118,14 +122,4 @@ const formatId = (id: string) => {
   return id.substring(0, 8); 
 };
 
-const statusColor = computed(() => {
-  switch (props.teamRun.currentStatus) {
-    case AgentTeamStatus.Offline: return 'bg-gray-300';
-    case AgentTeamStatus.Initializing: return 'bg-amber-400 animate-pulse';
-    case AgentTeamStatus.Idle: return 'bg-green-400';
-    case AgentTeamStatus.Running: return 'bg-blue-400 animate-pulse';
-    case AgentTeamStatus.Error: return 'bg-red-500';
-    default: return 'bg-gray-300';
-  }
-});
 </script>

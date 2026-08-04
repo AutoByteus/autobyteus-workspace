@@ -1,4 +1,3 @@
-import { normalizeAgentApiStatus } from "../../agent-execution/domain/agent-status-payload.js";
 import type { TeamRun } from "../domain/team-run.js";
 import type { TeamRunEventUnsubscribe } from "../domain/team-run-event.js";
 import type { TaskTeamInstanceIdentity } from "../domain/task-team-instance.js";
@@ -82,8 +81,7 @@ export class TaskTeamSettlementCoordinator {
     const childService = this.dependencies.runRegistry.getExisting(childRun.runId);
     if (childService?.hasOpenWork()) return true;
     if (getTaskAgentDirectory(childRun.runId).listActiveEntries().length > 0) return true;
-    const status = normalizeAgentApiStatus(childRun.getStatusSnapshot().status);
-    return status !== "idle" && status !== "offline";
+    return childRun.hasOpenExecutionWork();
   }
 
   private subscribeToChildEvents(taskTeamRunId: string): void {

@@ -108,16 +108,47 @@ names exist.
 - Team events carry canonical `sourcePath`. Any display aliases are derived
   transport metadata only and are not accepted as command target inputs.
 
+## Root Team Lifecycle Authority
+
+`AgentTeamRunManager` is the only public owner of root team liveness. Its active
+run registry projects `TeamRunLifecycleSnapshot { teamRunId, isActive }` and
+notifies listeners only when the boolean state changes. Active-to-active
+replacement does not publish false/true flicker, stale-backend cleanup cannot
+deactivate a replacement, rejected termination leaves the run active, and
+accepted termination publishes inactive after unregistering the exact run.
+
+The team WebSocket publishes this fact as
+`TEAM_RUN_LIFECYCLE { team_run_id, is_active }`. Connection subscription state,
+leaf-agent lifecycle, task execution state, failure observation, and open-work
+settlement are separate facts and must not be used to synthesize root liveness.
+The stream handler binds event and lifecycle listeners before taking a fresh
+snapshot, then sends leaf `AGENT_STATUS` snapshots and the root lifecycle
+snapshot so reconnect cannot miss a transition.
+
 ## Command-Start Status
 
 Team message commands publish backend-owned `initializing` as soon as a concrete target is resolved and before slow member startup, child-team restore, provider session/thread startup, or first-turn send work is awaited.
 
 - Mixed leaf-agent handles publish member-scoped `AGENT_STATUS` before creating or restoring their child `AgentRun`.
-- Mixed subteam handles publish represented-team/source-path `TEAM_STATUS` before creating or restoring their child `TeamRun`; the parent member-row snapshot projects that represented team status for display without inventing a leaf-agent identity.
+- Subteam and task-team containers do not publish a represented-team or root
+  five-state status. Commands routed through a subteam obtain visible lifecycle
+  from the exact leaf agent that accepts the command; root activity remains the
+  manager-owned binary lifecycle described above.
 
-`TeamCommandStatusOverlayStore` is the shared owner for pending command-start overlays. Each handle owns its own store instance; it is not a global status authority. The store gates `initializing` publication to current effective `offline`/`idle`, stores pending member route-key overlays and team `sourcePath` overlays, applies them to snapshots and aggregate inputs, replaces pending startup with `error` on command failure, clears overlays when matching runtime `AGENT_STATUS` or team `TEAM_STATUS` replacement events arrive, and clears all pending state on termination/disposal. Command owners still own target resolution, lazy runtime creation/restoration, child-team creation, provider send sequencing, and failure handling.
+`MemberCommandStatusOverlayStore` is the shared owner for pending command-start
+overlays. Each executable-member handle owns its own store instance; it is not a
+root or aggregate status authority. The store gates `initializing` publication
+to current effective `offline`/`idle`, keys pending state by logical member or
+concrete task-agent execution, applies it only to leaf snapshots, replaces
+pending startup with member-scoped `error` on command failure, and clears it
+when a matching runtime `AGENT_STATUS` arrives or the handle is disposed.
+Command owners still own target resolution, lazy runtime creation/restoration,
+child-team creation, provider send sequencing, and failure handling.
 
-Pending command-start overlays are reflected in member/represented-team status snapshots and aggregate team status while the command is still in startup. Runtime status events, command rejection, thrown failures, termination, or disposal must replace or clear those overlays so clients cannot remain indefinitely in `initializing`.
+Pending command-start overlays are reflected only in the affected leaf-agent
+snapshot while startup is in flight. Runtime status events, command rejection,
+thrown failures, termination, or disposal must replace or clear those overlays
+so clients cannot remain indefinitely in `initializing`.
 
 ## Server-Owned Task Delegation Lifecycle
 
@@ -225,9 +256,9 @@ The happy path is push-based:
    `TeamRun.settleTaskAgentInstance(routeKey, taskAgentRunId, reason)` with a
    stale-route guard.
 10. Task-team settlement watches the known child team run until the child has no
-    open task-delegation ledger work, no active task-agent instances, and an
-    idle/offline aggregate status. Review acceptance and child status events are
-    only settlement wakeups: one coordinator-owned lifecycle transition may be
+    open task-delegation ledger work, no active task-agent instances, and no
+    private execution work reported by `TeamRun.hasOpenExecutionWork()`. Review
+    acceptance and child events are only settlement wakeups: one coordinator-owned lifecycle transition may be
     `settling` for a given `taskTeamRunId` at a time, so duplicate wakeups must
     not start duplicate destructive close sequences. Settlement then calls
     `TeamRun.settleTaskTeamInstance(logicalTeamRouteKey, taskTeamRunId,
@@ -235,9 +266,8 @@ The happy path is push-based:
     team's lifecycle owner; already-stopping/offline child state converges as the
     desired inactive outcome, while real active termination failures remain
     rejected and keep the active binding visible for retry/diagnostics. After
-    accepted termination, the task-team root publishes or bridges a scoped root
-    `TEAM_STATUS` with `status: "offline"` before disposal, the coordinator
-    detaches the task-team run from the delegation run registry, and
+    accepted termination, the coordinator detaches the task-team run from the
+    delegation run registry and
     `TaskTeamActiveRunDirectory` is unbound so future status snapshots and
     reconnect/reload paths do not rehydrate the completed transient row. Future
     delegations to the same logical team remain topology-based and allocate fresh
@@ -455,6 +485,12 @@ RUN_MIXED_TASK_DELEGATION_E2E=1 RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 \
 - Runtime AgentRun backends convert provider-native events below the agent-run
   boundary. Mixed member handles then enrich emitted events with
   team/member/task-agent provenance and forward them through the team stream.
+- Task-team execution identity is carried outward as a tight
+  `TaskTeamStreamScope`, not by reusing operational `TaskTeamInstanceIdentity`.
+  Each ordinary nesting boundary prefixes source, member, and logical-team paths
+  in the same parent frame and rebuilds their route keys. The transport mapper
+  only validates and flattens that coordinate-consistent scope; it does not add
+  prefixes, fall back to the root, or guess a leaf identity.
 - This keeps provider conversion runtime-local while letting the mixed team
   boundary supply the context required by `FILE_CHANGE` derivation and
   `TEAM_COMMUNICATION_MESSAGE` projection.

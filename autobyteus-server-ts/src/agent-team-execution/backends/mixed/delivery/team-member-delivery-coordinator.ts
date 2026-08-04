@@ -28,7 +28,7 @@ import {
 import type { MixedTeamRunContext, MixedTeamMemberContext } from "../mixed-team-run-context.js";
 import type { PersistentMemberRegistryAccess } from "../members/mixed-persistent-member-registry.js";
 import type { TaskAgentInstanceDeliveryAccess } from "../members/mixed-task-agent-instance-registry.js";
-import type { MixedTeamEventPublish, MixedTeamStatusChange } from "../members/mixed-team-member-handle.js";
+import type { MixedTeamEventPublish } from "../members/mixed-team-member-handle.js";
 import {
   TeamMessageRecipientResolver,
   type ResolvedTeamMessageRecipient,
@@ -48,7 +48,6 @@ export class TeamMemberDeliveryCoordinator {
     memberRegistry: PersistentMemberRegistryAccess;
     taskAgentDelivery: TaskAgentInstanceDeliveryAccess;
     publish: MixedTeamEventPublish;
-    notifyStatusChange: MixedTeamStatusChange;
   }) {
     this.resolver = new TeamMessageRecipientResolver({
       teamContext: options.teamContext,
@@ -88,7 +87,6 @@ export class TeamMemberDeliveryCoordinator {
             tracedRequest,
             () => this.publishCommunicationPayload(tracedRequest, communicationPayload),
           );
-    this.options.notifyStatusChange();
     return {
       ...result,
       memberRunId: tracedRequest.recipient.participant.memberRunId,

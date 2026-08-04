@@ -16,7 +16,7 @@ const buildContext = (contextFilePaths: any[], identity = 'msg-1') => ({
       },
     ],
   },
-  isSending: false,
+  submissionPending: false,
 }) as any;
 
 const unsupportedImage = () => hydrateContextAttachment({
@@ -44,7 +44,7 @@ describe('handleMemberInputMessage', () => {
     expect(context.conversation.messages).toHaveLength(1);
     expect(context.conversation.messages[0].contextFilePaths).toEqual([unsupported]);
     expect(context.conversation.messages[0].timestamp.toISOString()).toBe('2026-06-11T12:00:01.000Z');
-    expect(context.isSending).toBe(true);
+    expect(context.submissionPending).toBe(false);
   });
 
   it('refreshes incoming executable attachments and retains one existing unsupported item for mixed echoes', () => {
@@ -91,7 +91,7 @@ describe('handleMemberInputMessage', () => {
   });
 
   it('hydrates historical unsupported locator types from incoming member projections', () => {
-    const context = { conversation: { messages: [] }, isSending: false } as any;
+    const context = { conversation: { messages: [] }, submissionPending: false } as any;
 
     handleMemberInputMessage(
       {

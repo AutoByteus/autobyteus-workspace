@@ -23,25 +23,27 @@ class FakeRuntimeRun {
   readonly approvals: Array<{ invocationId: string; approved: boolean; reason: string | null }> = [];
   interruptCalls = 0;
   private readonly listeners = new Set<(event: AgentRunEvent) => void>();
-  private snapshot: { status: "offline" | "initializing" | "idle" | "running" | "error"; can_interrupt: boolean; agent_id: string };
+  private snapshot: { status: "offline" | "initializing" | "idle" | "running" | "error"; agent_id: string };
 
   constructor(
     readonly runId: string,
     options: {
       initialStatus?: "offline" | "initializing" | "idle" | "running" | "error";
-      canInterrupt?: boolean;
       postUserMessage?: (message: AgentInputUserMessage) => Promise<{ accepted: boolean; turnId?: string | null; message?: string | null }>;
     } = {},
   ) {
     this.snapshot = {
       status: options.initialStatus ?? "running",
-      can_interrupt: options.canInterrupt ?? false,
       agent_id: runId,
     };
     if (options.postUserMessage) {
       this.postUserMessage = vi.fn(async (message: AgentInputUserMessage) => {
         this.messages.push(message);
-        return options.postUserMessage!(message);
+        const result = await options.postUserMessage!(message);
+        if (result.accepted) {
+          this.setStatus("running");
+        }
+        return result;
       });
     }
   }
@@ -54,10 +56,9 @@ class FakeRuntimeRun {
     return this.snapshot;
   }
 
-  setStatus(status: "offline" | "initializing" | "idle" | "running" | "error", canInterrupt = false): void {
+  setStatus(status: "offline" | "initializing" | "idle" | "running" | "error"): void {
     this.snapshot = {
       status,
-      can_interrupt: canInterrupt,
       agent_id: this.runId,
     };
   }
@@ -69,7 +70,7 @@ class FakeRuntimeRun {
 
   emit(event: AgentRunEvent): void {
     if (event.eventType === AgentRunEventType.AGENT_STATUS) {
-      const payload = event.payload as { status?: unknown; can_interrupt?: unknown };
+      const payload = event.payload as { status?: unknown };
       if (
         payload.status === "offline" ||
         payload.status === "initializing" ||
@@ -77,7 +78,7 @@ class FakeRuntimeRun {
         payload.status === "running" ||
         payload.status === "error"
       ) {
-        this.setStatus(payload.status, payload.can_interrupt === true);
+        this.setStatus(payload.status);
       }
     }
     for (const listener of this.listeners) {
@@ -87,6 +88,7 @@ class FakeRuntimeRun {
 
   postUserMessage = vi.fn(async (message: AgentInputUserMessage) => {
     this.messages.push(message);
+    this.setStatus("running");
     return { accepted: true, turnId: `turn-${this.messages.length}` };
   });
 
@@ -311,7 +313,7 @@ describe("Agent websocket backend-owned command lifecycle integration", () => {
       });
       expect(await waitForBufferedMessage(messages, 1)).toEqual({
         type: "AGENT_STATUS",
-        payload: { status: "offline", can_interrupt: false, agent_id: runId },
+        payload: { status: "offline", agent_id: runId },
       });
       expect(restoreAgentRun).not.toHaveBeenCalled();
 
@@ -323,7 +325,7 @@ describe("Agent websocket backend-owned command lifecycle integration", () => {
       );
       expect(initializing).toEqual({
         type: "AGENT_STATUS",
-        payload: { status: "initializing", can_interrupt: false, agent_id: runId },
+        payload: { status: "initializing", agent_id: runId },
       });
       expect(restoreAgentRun).toHaveBeenCalledWith(runId);
       expect(restoredRun.messages).toHaveLength(0);
@@ -342,7 +344,7 @@ describe("Agent websocket backend-owned command lifecycle integration", () => {
         state: "accepted",
         accepted: true,
         duplicate: false,
-        status: { status: "running", can_interrupt: false, agent_id: runId },
+        status: { status: "running", agent_id: runId },
       });
       expect(restoredRun.messages).toHaveLength(1);
       expect(restoredRun.messages[0].content).toBe("hello after restore");
@@ -359,7 +361,7 @@ describe("Agent websocket backend-owned command lifecycle integration", () => {
       restoredRun.emit({
         runId,
         eventType: AgentRunEventType.AGENT_STATUS,
-        payload: { status: "running", can_interrupt: true, agent_id: runId },
+        payload: { status: "running", agent_id: runId },
         statusHint: "ACTIVE",
       });
       const running = await waitForMessageMatching(
@@ -367,7 +369,7 @@ describe("Agent websocket backend-owned command lifecycle integration", () => {
         (message) => message.type === "AGENT_STATUS" && message.payload.status === "running",
         canonicalRunningStart,
       );
-      expect(running.payload).toMatchObject({ status: "running", can_interrupt: true, agent_id: runId });
+      expect(running.payload).toMatchObject({ status: "running", agent_id: runId });
       expect(harness.overlayStore.getOverlay(runId)).toBeNull();
     } finally {
       socket.close();
@@ -377,7 +379,7 @@ describe("Agent websocket backend-owned command lifecycle integration", () => {
 
   it("does not downgrade an already-running standalone send to initializing", async () => {
     const runId = "agent-e2e";
-    const activeRun = new FakeRuntimeRun(runId, { initialStatus: "running", canInterrupt: true });
+    const activeRun = new FakeRuntimeRun(runId, { initialStatus: "running" });
     const harness = await startAgentWsHarness({ runId, activeRun, metadata: buildMetadata(runId) });
     const socket = new WebSocket(`${harness.baseUrl}/ws/agent/${runId}`);
     const messages = captureMessages(socket);
@@ -386,7 +388,7 @@ describe("Agent websocket backend-owned command lifecycle integration", () => {
       await waitForBufferedMessage(messages, 0); // CONNECTED
       expect(await waitForBufferedMessage(messages, 1)).toEqual({
         type: "AGENT_STATUS",
-        payload: { status: "running", can_interrupt: true, agent_id: runId },
+        payload: { status: "running", agent_id: runId },
       });
 
       socket.send(JSON.stringify(createSendCommand("hello while running", "msg-running-1")));
@@ -398,11 +400,11 @@ describe("Agent websocket backend-owned command lifecycle integration", () => {
       expect(ack.payload).toMatchObject({
         state: "accepted",
         accepted: true,
-        status: { status: "running", can_interrupt: true, agent_id: runId },
+        status: { status: "running", agent_id: runId },
       });
       expect(messages.slice(2)).not.toContainEqual({
         type: "AGENT_STATUS",
-        payload: { status: "initializing", can_interrupt: false, agent_id: runId },
+        payload: { status: "initializing", agent_id: runId },
       });
       expect(activeRun.messages).toHaveLength(1);
       expect(harness.agentRunService.restoreAgentRun).not.toHaveBeenCalled();
@@ -435,7 +437,7 @@ describe("Agent websocket backend-owned command lifecycle integration", () => {
       await waitForBufferedMessage(messages, 0); // CONNECTED
       expect(await waitForBufferedMessage(messages, 1)).toEqual({
         type: "AGENT_STATUS",
-        payload: { status: "offline", can_interrupt: false, agent_id: runId },
+        payload: { status: "offline", agent_id: runId },
       });
       expect(activatePreparedRun).not.toHaveBeenCalled();
 
@@ -467,7 +469,6 @@ describe("Agent websocket backend-owned command lifecycle integration", () => {
     let resolvePost!: (value: { accepted: true; turnId: string }) => void;
     const activeRun = new FakeRuntimeRun(runId, {
       initialStatus: "running",
-      canInterrupt: true,
       postUserMessage: async () => new Promise((resolve) => {
         resolvePost = resolve;
       }),
@@ -556,7 +557,7 @@ describe("Agent websocket backend-owned command lifecycle integration", () => {
         (message) => message.type === "AGENT_STATUS" && message.payload.status === "error",
         2,
       );
-      expect(errorStatus.payload).toMatchObject({ status: "error", can_interrupt: false, agent_id: runId, error_message: "activation exploded" });
+      expect(errorStatus.payload).toMatchObject({ status: "error", agent_id: runId, error_message: "activation exploded" });
       const ack = await waitForMessageMatching(
         messages,
         (message) => message.type === "AGENT_COMMAND_ACK" && message.payload.message_id === "msg-fail-1",
@@ -568,8 +569,72 @@ describe("Agent websocket backend-owned command lifecycle integration", () => {
         duplicate: false,
         code: "ACTIVATION_FAILED",
         message: "activation exploded",
-        status: { status: "error", can_interrupt: false, agent_id: runId },
+        status: { status: "error", agent_id: runId },
       });
+    } finally {
+      socket.close();
+      await harness.app.close();
+    }
+  });
+
+  it("returns exact same-socket interrupt acknowledgements without publishing lifecycle state", async () => {
+    const runId = "agent-interrupt-ack";
+    const activeRun = new FakeRuntimeRun(runId, { initialStatus: "running" });
+    (activeRun.interrupt as ReturnType<typeof vi.fn>)
+      .mockResolvedValueOnce({ accepted: true })
+      .mockResolvedValueOnce({
+        accepted: false,
+        code: "NO_ACTIVE_TURN",
+        message: "The provider has no active turn to interrupt.",
+      });
+    const harness = await startAgentWsHarness({ runId, activeRun, metadata: buildMetadata(runId) });
+    const socket = new WebSocket(`${harness.baseUrl}/ws/agent/${runId}`);
+    const messages = captureMessages(socket);
+    try {
+      await waitForOpen(socket);
+      await waitForBufferedMessage(messages, 0);
+      await waitForBufferedMessage(messages, 1);
+
+      socket.send(JSON.stringify({
+        type: "INTERRUPT_GENERATION",
+        payload: { command_id: "client_interrupt_accept" },
+      }));
+      const accepted = await waitForMessageMatching(
+        messages,
+        (message) =>
+          message.type === "AGENT_COMMAND_ACK" &&
+          message.payload.command_id === "client_interrupt_accept",
+        2,
+      );
+      expect(accepted.payload).toEqual({
+        command_type: "INTERRUPT_GENERATION",
+        command_id: "client_interrupt_accept",
+        state: "accepted",
+        target: { target_kind: "standalone_run", run_id: runId },
+      });
+
+      socket.send(JSON.stringify({
+        type: "INTERRUPT_GENERATION",
+        payload: { command_id: "client_interrupt_provider_reject" },
+      }));
+      const failed = await waitForMessageMatching(
+        messages,
+        (message) =>
+          message.type === "AGENT_COMMAND_ACK" &&
+          message.payload.command_id === "client_interrupt_provider_reject",
+        3,
+      );
+      expect(failed.payload).toEqual({
+        command_type: "INTERRUPT_GENERATION",
+        command_id: "client_interrupt_provider_reject",
+        state: "failed",
+        code: "NO_ACTIVE_TURN",
+        message: "The provider has no active turn to interrupt.",
+        target: { target_kind: "standalone_run", run_id: runId },
+      });
+      expect(activeRun.interrupt).toHaveBeenCalledTimes(2);
+      expect(messages.slice(2).some((message) => message.type === "AGENT_STATUS")).toBe(false);
+      expect(activeRun.getStatusSnapshot()).toEqual({ status: "running", agent_id: runId });
     } finally {
       socket.close();
       await harness.app.close();
@@ -586,12 +651,29 @@ describe("Agent websocket backend-owned command lifecycle integration", () => {
       await waitForOpen(socket);
       await waitForBufferedMessage(messages, 0);
       await waitForBufferedMessage(messages, 1);
-      socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION" }));
-      await new Promise((resolve) => setTimeout(resolve, 80));
+      socket.send(JSON.stringify({
+        type: "INTERRUPT_GENERATION",
+        payload: { command_id: "client_interrupt_inactive" },
+      }));
+      const ack = await waitForMessageMatching(
+        messages,
+        (message) =>
+          message.type === "AGENT_COMMAND_ACK" &&
+          message.payload.command_id === "client_interrupt_inactive",
+        2,
+      );
 
       expect(harness.agentRunService.restoreAgentRun).not.toHaveBeenCalled();
       expect(harness.agentRunService.activatePreparedRun).not.toHaveBeenCalled();
-      expect(messages).toHaveLength(2);
+      expect(ack.payload).toEqual({
+        command_type: "INTERRUPT_GENERATION",
+        command_id: "client_interrupt_inactive",
+        state: "rejected",
+        code: "RUN_NOT_FOUND",
+        message: `Agent run '${runId}' is not active.`,
+        target: { target_kind: "standalone_run", run_id: runId },
+      });
+      expect(messages).toHaveLength(3);
     } finally {
       socket.close();
       await harness.app.close();

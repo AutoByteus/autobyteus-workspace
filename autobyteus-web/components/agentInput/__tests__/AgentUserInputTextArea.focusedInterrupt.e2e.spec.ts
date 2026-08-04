@@ -7,7 +7,6 @@ import { AgentContext } from '~/types/agent/AgentContext';
 import { AgentRunState } from '~/types/agent/AgentRunState';
 import type { AgentRunConfig } from '~/types/agent/AgentRunConfig';
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import { useActiveContextStore } from '~/stores/activeContextStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
@@ -124,7 +123,6 @@ const createAgentContext = (routeKey: string): AgentContext => {
   } as any;
   const context = new AgentContext(config, new AgentRunState(runId, conversation));
   context.state.currentStatus = AgentStatus.Running;
-  context.state.canInterrupt = true;
   return context;
 };
 
@@ -151,7 +149,7 @@ const buildTeamContext = (
     coordinatorMemberRouteKey: 'solution_designer',
     historicalHydration: null,
     focusedMemberRouteKey,
-    currentStatus: AgentTeamStatus.Running,
+    isActive: true,
     isSubscribed: true,
   };
 };
@@ -203,6 +201,7 @@ describe('focused team member interrupt UI-to-WebSocket e2e', () => {
     expect(JSON.parse(mockWsSend.mock.calls[0][0])).toEqual({
       type: 'INTERRUPT_GENERATION',
       payload: {
+        command_id: expect.stringMatching(/^client_interrupt_/),
         target_member_route_key: 'code_reviewer',
         target_member_run_id: 'team-1::code_reviewer',
       },

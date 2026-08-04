@@ -52,8 +52,12 @@ describe("AgentRunManager", () => {
         }),
       getPlatformAgentRunId: () => `platform-${options.runId}`,
       isActive: () => true,
-      getStatusSnapshot: () => ({ status: "running", can_interrupt: true }),
-      subscribeToEvents: () => () => undefined,
+      getLifecycleSnapshot: () => ({
+        availability: "active" as const,
+        phase: "running" as const,
+        currentTurn: { kind: "ANONYMOUS" as const },
+      }),
+      subscribeToSourceEventBatches: () => () => undefined,
       postUserMessage: vi.fn().mockResolvedValue({ accepted: true }),
       approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
       interrupt: vi.fn().mockResolvedValue({ accepted: true }),
@@ -282,7 +286,10 @@ describe("AgentRunManager", () => {
     expect(activeRun).not.toBeNull();
     expect(activeRun?.runId).toBe("run-native");
     expect(activeRun?.runtimeKind).toBe("codex_app_server");
-    expect(activeRun?.getStatusSnapshot()).toEqual({ status: "running", can_interrupt: true });
+    expect(activeRun?.getStatusSnapshot()).toEqual({
+      status: "running",
+      agent_id: "run-native",
+    });
 
     const postResult = await activeRun?.postUserMessage({ text: "hello" } as any);
     expect(postResult).toMatchObject({ accepted: true });

@@ -1,0 +1,1 @@
+pnpm test:nuxt components/workspace/common/__tests__/TeamActivityDot.spec.ts components/workspace/history/__tests__/workspaceHistoryTeamDefinitionGroups.spec.ts components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts components/workspace/running/__tests__/RunningTeamGroup.spec.ts components/workspace/running/__tests__/RunningTeamRow.spec.ts --run

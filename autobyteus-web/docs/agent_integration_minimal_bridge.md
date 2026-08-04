@@ -156,23 +156,39 @@ Agent teams use the same streaming protocol but connect to a different WebSocket
 - Opens `/ws/agent-team/<teamRunId>` stream
 
 3) **Team streaming service**
-- Routes incoming events to the correct member by `agent_name` or `agent_id`
-- Handles core events: `SEGMENT_*`, `TURN_*`, `AGENT_STATUS`, `ASSISTANT_COMPLETE`, `TEAM_STATUS`, `ERROR`
+- Routes incoming events to the exact member with path/route/run identity; name
+  alone is not sufficient for nested or task-scoped executions.
+- Handles core events: `SEGMENT_*`, `TURN_*`, `AGENT_STATUS`,
+  `AGENT_COMMAND_ACK`, `ASSISTANT_COMPLETE`, `TEAM_RUN_LIFECYCLE`, `ERROR`.
+- Sends every standalone or exact-member `INTERRUPT_GENERATION` with a fresh
+  client command id. Register the exact target before sending, match the
+  acknowledgement by command id plus target, and intercept a team interrupt
+  acknowledgement before generic member/task projection.
+- Treats interrupt `accepted` as admission only. `rejected`/`failed` server
+  results and local not-connected/send/disconnect completion produce one
+  target-aware error toast, but no interrupt result may synthesize status,
+  mutate transcript content, retry automatically, or fabricate a server
+  acknowledgement.
 - Treats member `AGENT_STATUS` as the source for each member's status and
-  `canInterrupt`; aggregate `TEAM_STATUS` has payload
-  `{ status: "offline" | "initializing" | "idle" | "running" | "error" }` only.
+  `canInterrupt`; root `TEAM_RUN_LIFECYCLE { team_run_id, is_active }` updates
+  only team liveness, while connection/subscription state remains separate.
 - Expects targeted/offline member sends to surface member-scoped
   `AGENT_STATUS initializing` before backend startup/send waits. True
-  no-target team commands may surface root `TEAM_STATUS initializing` without a
-  member event.
+  team containers do not synthesize a root five-state status.
 - Preserves a focused member's live `initializing/canInterrupt=false` startup
   state or `running/canInterrupt=true` interrupt affordance across
   refresh/reconcile until that member receives a terminal projection or a later
   live non-interruptible status.
-- Does not fan out aggregate team `running` or `initializing` to every member
-  during first load, refresh, or recovery. Missing member-scoped status means
+- Does not fan out root team activity to every member during first load,
+  refresh, or recovery. Missing member-scoped status means
   the member is unknown/offline and non-interruptible until a member
   `AGENT_STATUS` arrives.
+- Presents binary team activity without creating an aggregate team status:
+  each exact team-run row reads only that run's `isActive`, while a rendered
+  team-definition group may derive `runs.some(run => run.isActive)` solely as
+  an any-active display cue over its visible child runs. The group projection
+  is not persisted or transported and must ignore representative/member
+  status, subscription, and Stop/pending state.
 
 ### Minimal team file checklist
 
@@ -185,7 +201,6 @@ Agent teams use the same streaming protocol but connect to a different WebSocket
 - Team types
   - `types/agent/AgentTeamContext.ts`
   - `types/agent/TeamRunConfig.ts`
-  - `types/agent/AgentTeamStatus.ts`
 
 ### Team runtime config
 

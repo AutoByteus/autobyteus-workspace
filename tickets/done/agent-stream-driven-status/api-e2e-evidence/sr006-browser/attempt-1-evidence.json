@@ -1,0 +1,493 @@
+{
+  "startedAt": "2026-08-03T14:17:41.054Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "webDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web",
+  "fixturePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/fixtures/team-activity-presentation.page.vue",
+  "installedPagePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/pages/api-e2e-team-activity-presentation.vue",
+  "routePath": "/api-e2e-team-activity-presentation",
+  "scenarios": {
+    "SR006-BR-001": {
+      "description": "Mixed siblings render exact and any-child binary activity on both production surfaces",
+      "result": "Fail",
+      "startedAt": "2026-08-03T14:17:51.035Z",
+      "failure": {
+        "id": "SR006-BR-001",
+        "description": "Mixed siblings render exact and any-child binary activity on both production surfaces",
+        "message": "Dot computed color mismatch",
+        "details": {
+          "expected": "rgb(156, 163, 175)",
+          "details": {
+            "dataActive": "false",
+            "role": "img",
+            "ariaLabel": "Inactive team run",
+            "title": "Inactive team run",
+            "className": "h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5",
+            "backgroundColor": "rgb(153, 153, 153)",
+            "animationName": "none",
+            "animationDuration": "0s",
+            "display": "block",
+            "visibility": "visible",
+            "opacity": "1",
+            "width": 8,
+            "height": 8
+          }
+        },
+        "stack": "Error: Dot computed color mismatch\n    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/team-activity-presentation-probe.mjs:60:19)\n    at assertDot (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/team-activity-presentation-probe.mjs:179:3)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/team-activity-presentation-probe.mjs:299:27\n    at async runScenario (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/team-activity-presentation-probe.mjs:193:21)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/team-activity-presentation-probe.mjs:294:3"
+      }
+    }
+  },
+  "browserEvents": [
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/components/workspace/history/WorkspaceAgentRunsTreePanel.vue net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/composables/useRightPanel.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/composables/layout/useResponsiveElementRect.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@vue+devtools-api@6.6.4/node_modules/@vue/devtools-api/lib/esm/index.js?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/utils/layout/responsiveLayoutPolicy.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/compat/vue-demi.js?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/node_modules/.cache/vite/client/deps/chunk-H32GALKQ.js?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/node_modules/.cache/vite/client/deps/axios.js?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/unhead@2.1.4/node_modules/unhead/dist/shared/unhead.DQc16pHI.mjs?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/tslib@2.8.1/node_modules/tslib/tslib.es6.mjs?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/link/utils/index.js?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/app.vue net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/components/utils.js?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/utils/appUpdateErrorDisplay.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/hydrate.js?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/url.js?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/unhead@2.1.4/node_modules/unhead/dist/shared/unhead.CbpEuj3y.mjs?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/utils/mobileFeatureGates.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@vue+devtools-api@6.6.4/node_modules/@vue/devtools-api/lib/esm/api/util.js?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/route-announcer.js?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/utils/remoteAccess/mobileRuntime.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/unhead@2.1.4/node_modules/unhead/dist/shared/unhead.BFfcxOoW.mjs?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/id.js?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/types/serverStatus.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@vue+devtools-api@6.6.4/node_modules/@vue/devtools-api/lib/esm/api/context.js?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/unhead@2.1.4/node_modules/unhead/dist/shared/unhead.BYvz9V1x.mjs?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/components/nuxt-link.js?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/node_modules/.cache/vite/client/deps/uuid.js?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@vue+devtools-api@6.6.4/node_modules/@vue/devtools-api/lib/esm/api/api.js?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/cookie.js?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/state.js?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/unhead@2.1.4/node_modules/unhead/dist/shared/unhead.yem5I2v_.mjs?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/stores/applicationsCapabilityStore.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/unhead@2.1.4/node_modules/unhead/dist/shared/unhead.CApf5sj3.mjs?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/preview.js?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/stores/mobileNodeSessionStore.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/hookable@6.0.1/node_modules/hookable/dist/index.mjs?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/runtime-hook.js?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@vue+devtools-api@6.6.4/node_modules/@vue/devtools-api/lib/esm/api/app.js?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@vue+devtools-api@6.6.4/node_modules/@vue/devtools-api/lib/esm/api/component.js?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/utils/embeddedNodeBaseUrl.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/utils/serverConfig.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/devalue@5.6.3/node_modules/devalue/src/base64.js?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/core/ApolloClient.js?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/unhead@2.1.4/node_modules/unhead/dist/shared/unhead.eK9_7LaY.mjs?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/head/runtime/composables/v3.js?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/cache/index.js?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/error.vue net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@vue+devtools-api@6.6.4/node_modules/@vue/devtools-api/lib/esm/api/hooks.js?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/link/core/index.js?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/component.js?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/graphql-tag@2.12.6_graphql@16.12.0/node_modules/graphql-tag/lib/index.js?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/asyncData.js?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/klona@2.0.6/node_modules/klona/dist/index.mjs?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/devalue@5.6.3/node_modules/devalue/src/constants.js?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/display/fontSize/appFontSizePreferenceStorage.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@id/virtual:nuxt:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Fagent-stream-driven-status%2Fautobyteus-web%2F.nuxt%2Fapp.config.mjs net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/ssr.js?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/core/networkStatus.js?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/composables/useToasts.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/errors/index.js?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/index.js?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/link/http/index.js?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/core/ObservableQuery.js?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/fetch.js?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/dist/app/composables/once.js?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/unhead@2.1.4/node_modules/unhead/dist/shared/unhead.ckV6dpEQ.mjs?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/ts-invariant@0.10.3/node_modules/ts-invariant/lib/invariant.js?v=39cabbed net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:53268/_nuxt/utils/nodeEndpoints.ts net::ERR_ABORTED"
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:9/rest/health net::ERR_UNSAFE_PORT"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_UNSAFE_PORT"
+    }
+  ],
+  "failures": [
+    {
+      "id": "SR006-BR-001",
+      "description": "Mixed siblings render exact and any-child binary activity on both production surfaces",
+      "message": "Dot computed color mismatch",
+      "details": {
+        "expected": "rgb(156, 163, 175)",
+        "details": {
+          "dataActive": "false",
+          "role": "img",
+          "ariaLabel": "Inactive team run",
+          "title": "Inactive team run",
+          "className": "h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5",
+          "backgroundColor": "rgb(153, 153, 153)",
+          "animationName": "none",
+          "animationDuration": "0s",
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "width": 8,
+          "height": 8
+        }
+      },
+      "stack": "Error: Dot computed color mismatch\n    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/team-activity-presentation-probe.mjs:60:19)\n    at assertDot (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/team-activity-presentation-probe.mjs:179:3)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/team-activity-presentation-probe.mjs:299:27\n    at async runScenario (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/team-activity-presentation-probe.mjs:193:21)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/team-activity-presentation-probe.mjs:294:3"
+    }
+  ],
+  "cleanup": {
+    "browserContext": "closed",
+    "browser": "closed",
+    "nuxt": {
+      "status": "terminated",
+      "pid": 6876,
+      "exitCode": null,
+      "signalCode": null,
+      "finalExitCode": null,
+      "finalSignalCode": "SIGTERM"
+    },
+    "nuxtLog": "closed",
+    "installedFixture": "removed"
+  },
+  "port": 53268,
+  "baseUrl": "http://127.0.0.1:53268",
+  "result": "Fail",
+  "finishedAt": "2026-08-03T14:17:51.160Z",
+  "artifacts": {
+    "evidencePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-evidence/sr006-browser/evidence.json",
+    "nuxtLogPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-evidence/sr006-browser/nuxt.log",
+    "initialScreenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-evidence/sr006-browser/mixed-active-inactive.png",
+    "finalScreenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-evidence/sr006-browser/settled-zh-cn.png"
+  }
+}

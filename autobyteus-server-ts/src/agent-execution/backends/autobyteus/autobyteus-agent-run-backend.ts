@@ -4,10 +4,9 @@ import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-in
 import type { AgentOperationResult } from "../../domain/agent-operation-result.js";
 import type { AgentRunContext, RuntimeAgentRunContext } from "../../domain/agent-run-context.js";
 import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
-import type { AgentRunBackend, AgentRunEventListener } from "../agent-run-backend.js";
+import type { AgentRunBackend, AgentRunSourceEventBatchListener } from "../agent-run-backend.js";
 import { AutoByteusStreamEventConverter } from "./events/autobyteus-stream-event-converter.js";
-import { projectAutoByteusAgentStatus } from "./events/autobyteus-status-projector.js";
-import { dispatchProcessedAgentRunEvents } from "../../events/dispatch-processed-agent-run-events.js";
+import { projectAutoByteusAgentLifecycleSnapshot } from "./events/autobyteus-status-projector.js";
 
 export type AutoByteusAgentLike = {
   agentId: string;
@@ -68,7 +67,7 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
   readonly runtimeKind = RuntimeKind.AUTOBYTEUS;
   private readonly eventConverter: AutoByteusStreamEventConverter;
   private readonly context: AgentRunContext<RuntimeAgentRunContext>;
-  private readonly listeners = new Set<AgentRunEventListener>();
+  private readonly sourceListeners = new Set<AgentRunSourceEventBatchListener>();
   private stream: AgentEventStream | null = null;
   private isStreamClosed = true;
   private lifecycleState: "active" | "terminating" | "terminated" = "active";
@@ -81,7 +80,7 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
   ) {
     this.context = context;
     this.runId = agent.agentId;
-    this.eventConverter = new AutoByteusStreamEventConverter(this.runId, () => this.getStatusSnapshot());
+    this.eventConverter = new AutoByteusStreamEventConverter(this.runId);
   }
 
   getContext(): AgentRunContext<RuntimeAgentRunContext> {
@@ -96,21 +95,20 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
     return this.runId;
   }
 
-  getStatusSnapshot() {
-    return projectAutoByteusAgentStatus({
+  getLifecycleSnapshot() {
+    return projectAutoByteusAgentLifecycleSnapshot({
       currentStatus: this.agent.currentStatus,
       context: this.agent.context ?? null,
       isActive: this.isActive(),
-      agentId: this.runId,
     });
   }
 
-  subscribeToEvents(listener: AgentRunEventListener): () => void {
-    this.listeners.add(listener);
+  subscribeToSourceEventBatches(listener: AgentRunSourceEventBatchListener): () => void {
+    this.sourceListeners.add(listener);
     this.ensureSubscribed();
     return () => {
-      this.listeners.delete(listener);
-      if (this.listeners.size === 0) {
+      this.sourceListeners.delete(listener);
+      if (this.sourceListeners.size === 0) {
         this.closeStream();
       }
     };
@@ -221,11 +219,9 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
           if (!convertedEvent) {
             continue;
           }
-          await dispatchProcessedAgentRunEvents({
-            runContext: this.context,
-            listeners: this.listeners,
-            events: [convertedEvent],
-          });
+          for (const listener of this.sourceListeners) {
+            await listener([convertedEvent]);
+          }
         }
       } catch {
         // Ignore transport shutdown races; callers observe disconnection through inactivity.

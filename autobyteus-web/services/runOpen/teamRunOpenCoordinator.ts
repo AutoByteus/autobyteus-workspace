@@ -1,4 +1,3 @@
-import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type {
   TeamRunResumeConfigPayload,
 } from '~/stores/runHistoryTypes';
@@ -69,7 +68,7 @@ const mergeHydratedMembers = (
         options.preserveMemberStatus
           ? preserveCanonicalAgentStatus(existingMemberContext.state.currentStatus)
           : memberContext.state.currentStatus,
-        { preserveLiveInterrupt: false },
+        { preserveCurrentStatus: false },
       );
     }
 
@@ -148,9 +147,7 @@ export const openTeamRun = async (
     coordinatorMemberRouteKey: metadata.coordinatorMemberRouteKey,
     historicalHydration,
     focusedMemberRouteKey,
-    currentStatus: shouldTreatAsLive
-      ? AgentTeamStatus.Running
-      : AgentTeamStatus.Offline,
+    isActive: shouldTreatAsLive,
     isSubscribed: false,
   };
   (hydratedContext as any).members = members;
@@ -183,6 +180,7 @@ export const openTeamRun = async (
     existingTeamContext.memberTree = memberTree;
     existingTeamContext.memberNodesByRouteKey = indexTeamMemberNodesByRouteKey(memberTree);
     existingTeamContext.focusedMemberRouteKey = resolvedFocusedMemberRouteKey;
+    existingTeamContext.isActive = shouldTreatAsLive;
     (existingTeamContext as any).focusedMemberName = resolvedFocusedMemberRouteKey;
     const existingLeafAgentContextsByRouteKey = getLeafAgentContextsByRouteKey(existingTeamContext);
 
@@ -206,7 +204,6 @@ export const openTeamRun = async (
         preserveLiveRuntimeState: false,
         preserveMemberStatus: shouldTreatAsLive,
       });
-      existingTeamContext.currentStatus = hydratedContext.currentStatus;
       existingTeamContext.isSubscribed = false;
       existingTeamContext.unsubscribe = undefined;
     }

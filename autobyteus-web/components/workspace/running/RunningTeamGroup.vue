@@ -13,6 +13,13 @@
             >
                 <Icon icon="heroicons:chevron-down" class="w-3.5 h-3.5" />
             </span>
+            <TeamActivityDot
+                class="mr-1.5"
+                :is-active="hasActiveRuns"
+                :label="$t(hasActiveRuns
+                    ? 'workspace.components.workspace.running.RunningTeamGroup.active_team_runs'
+                    : 'workspace.components.workspace.running.RunningTeamGroup.no_active_team_runs')"
+            />
             <span class="font-medium">{{ definitionName }}</span>
             <span class="ml-1.5 text-xs text-gray-400">({{ runs.length }})</span>
         </div>
@@ -44,12 +51,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { Icon } from '@iconify/vue';
+import TeamActivityDot from '~/components/workspace/common/TeamActivityDot.vue';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import RunningTeamRow from './RunningTeamRow.vue';
 
-defineProps<{
+const props = defineProps<{
     definitionName: string;
     definitionId: string;
     runs: AgentTeamContext[];
@@ -65,6 +73,7 @@ defineEmits<{
 }>();
 
 const isExpanded = ref(true);
+const hasActiveRuns = computed(() => props.runs.some((run) => run.isActive));
 
 const toggleExpand = () => {
     isExpanded.value = !isExpanded.value;

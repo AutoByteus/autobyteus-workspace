@@ -1,0 +1,340 @@
+{
+  "generatedAt": "2026-08-03T19:26:43.326Z",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "frames": [
+    {
+      "direction": "connect",
+      "kind": "standalone",
+      "url": "/ws/agent/browser-agent-run"
+    },
+    {
+      "direction": "connect",
+      "kind": "team",
+      "url": "/ws/agent-team/browser-team-run"
+    },
+    {
+      "direction": "client-to-server",
+      "kind": "standalone",
+      "mode": "standalone-failed",
+      "message": {
+        "type": "INTERRUPT_GENERATION",
+        "payload": {
+          "command_id": "client_interrupt_ca470034-f6f4-4bf4-9e5a-5ff0ab507f37"
+        }
+      }
+    },
+    {
+      "direction": "server-to-client",
+      "kind": "standalone",
+      "mode": "standalone-failed",
+      "message": {
+        "type": "AGENT_COMMAND_ACK",
+        "payload": {
+          "command_type": "INTERRUPT_GENERATION",
+          "command_id": "client_interrupt_ca470034-f6f4-4bf4-9e5a-5ff0ab507f37",
+          "state": "failed",
+          "code": "NO_ACTIVE_TURN",
+          "message": "The provider has no active turn.",
+          "target": {
+            "target_kind": "standalone_run",
+            "run_id": "browser-agent-run"
+          }
+        }
+      }
+    },
+    {
+      "direction": "connect",
+      "kind": "standalone",
+      "url": "/ws/agent/browser-agent-run"
+    },
+    {
+      "direction": "connect",
+      "kind": "team",
+      "url": "/ws/agent-team/browser-team-run"
+    },
+    {
+      "direction": "client-to-server",
+      "kind": "standalone",
+      "mode": "standalone-accepted",
+      "message": {
+        "type": "INTERRUPT_GENERATION",
+        "payload": {
+          "command_id": "client_interrupt_2ad7d19d-e1a7-474a-a83a-160ff2df666b"
+        }
+      }
+    },
+    {
+      "direction": "server-to-client",
+      "kind": "standalone",
+      "mode": "standalone-accepted",
+      "message": {
+        "type": "AGENT_COMMAND_ACK",
+        "payload": {
+          "command_type": "INTERRUPT_GENERATION",
+          "command_id": "client_interrupt_2ad7d19d-e1a7-474a-a83a-160ff2df666b",
+          "state": "accepted",
+          "target": {
+            "target_kind": "standalone_run",
+            "run_id": "browser-agent-run"
+          }
+        }
+      }
+    },
+    {
+      "direction": "connect",
+      "kind": "standalone",
+      "url": "/ws/agent/browser-agent-run"
+    },
+    {
+      "direction": "connect",
+      "kind": "team",
+      "url": "/ws/agent-team/browser-team-run"
+    },
+    {
+      "direction": "client-to-server",
+      "kind": "standalone",
+      "mode": "pending-disconnect",
+      "message": {
+        "type": "INTERRUPT_GENERATION",
+        "payload": {
+          "command_id": "client_interrupt_4f0e2a8d-a0f5-4743-8b2e-a1d48398c612"
+        }
+      }
+    }
+  ],
+  "browserEvents": [
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "console:log",
+      "text": "Agent WebSocket connected"
+    },
+    {
+      "type": "console:log",
+      "text": "Team WebSocket connected"
+    },
+    {
+      "type": "console:warning",
+      "text": "No member context found for message, skipping"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22applicationsCapability%22%2C%22%7B%5Cn%20%20%5C%22availableLlmProvidersWithModels%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22agentDefinitions%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22agentTeamDefinitions%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspaces%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspaceInfos%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspacesWithMetadata%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D"
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "console:log",
+      "text": "Agent WebSocket connected"
+    },
+    {
+      "type": "console:log",
+      "text": "Team WebSocket connected"
+    },
+    {
+      "type": "console:warning",
+      "text": "No member context found for message, skipping"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22applicationsCapability%22%2C%22%7B%5Cn%20%20%5C%22availableLlmProvidersWithModels%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22agentDefinitions%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22agentTeamDefinitions%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspaces%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspaceInfos%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspacesWithMetadata%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D"
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "console:log",
+      "text": "Agent WebSocket connected"
+    },
+    {
+      "type": "console:log",
+      "text": "Team WebSocket connected"
+    },
+    {
+      "type": "console:warning",
+      "text": "No member context found for message, skipping"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22applicationsCapability%22%2C%22%7B%5Cn%20%20%5C%22availableLlmProvidersWithModels%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22agentDefinitions%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22agentTeamDefinitions%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspaces%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspaceInfos%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspacesWithMetadata%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D"
+    },
+    {
+      "type": "console:log",
+      "text": "Agent WebSocket disconnected: probe disconnect before ack"
+    }
+  ],
+  "scenarios": {
+    "SR008-BR-001": {
+      "result": "Pass",
+      "details": {
+        "before": {
+          "selectedType": "agent",
+          "standaloneStatus": "running",
+          "standaloneSubscribed": true,
+          "standaloneTranscriptCount": 0,
+          "teamIsActive": true,
+          "teamSubscribed": true,
+          "teamMemberStatus": "running",
+          "teamTranscriptCount": 0,
+          "toastCount": 0,
+          "toastMessages": []
+        },
+        "after": {
+          "selectedType": "agent",
+          "standaloneStatus": "running",
+          "standaloneSubscribed": true,
+          "standaloneTranscriptCount": 0,
+          "teamIsActive": true,
+          "teamSubscribed": true,
+          "teamMemberStatus": "running",
+          "teamTranscriptCount": 0,
+          "toastCount": 1,
+          "toastMessages": [
+            "Could not stop browser-agent-run: The provider has no active turn."
+          ]
+        },
+        "toasts": [
+          "Could not stop browser-agent-run: The provider has no active turn."
+        ]
+      }
+    },
+    "SR008-BR-002": {
+      "result": "Pass",
+      "details": {
+        "before": {
+          "selectedType": "agent",
+          "standaloneStatus": "running",
+          "standaloneSubscribed": true,
+          "standaloneTranscriptCount": 0,
+          "teamIsActive": true,
+          "teamSubscribed": true,
+          "teamMemberStatus": "running",
+          "teamTranscriptCount": 0,
+          "toastCount": 0,
+          "toastMessages": []
+        },
+        "beforeTerminal": {
+          "selectedType": "agent",
+          "standaloneStatus": "running",
+          "standaloneSubscribed": true,
+          "standaloneTranscriptCount": 0,
+          "teamIsActive": true,
+          "teamSubscribed": true,
+          "teamMemberStatus": "running",
+          "teamTranscriptCount": 0,
+          "toastCount": 0,
+          "toastMessages": []
+        },
+        "afterTerminal": {
+          "selectedType": "agent",
+          "standaloneStatus": "idle",
+          "standaloneSubscribed": true,
+          "standaloneTranscriptCount": 0,
+          "teamIsActive": true,
+          "teamSubscribed": true,
+          "teamMemberStatus": "running",
+          "teamTranscriptCount": 0,
+          "toastCount": 0,
+          "toastMessages": []
+        }
+      }
+    },
+    "SR008-BR-003": {
+      "result": "Fail",
+      "failure": {
+        "id": "SR008-BR-003",
+        "message": "The input did not match the regular expression /Could not send Stop.*disconnected/i. Input:\n\n'Could not send Stop to browser-agent-run: probe disconnect before ack'\n",
+        "stack": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /Could not send Stop.*disconnected/i. Input:\n\n'Could not send Stop to browser-agent-run: probe disconnect before ack'\n\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:314:14\n    at async runScenario (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:178:57)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:305:3"
+      }
+    }
+  },
+  "cleanup": {
+    "nuxt": {
+      "status": "terminated",
+      "pid": 24549,
+      "exitCode": null,
+      "signalCode": "SIGTERM"
+    },
+    "fixtureRemoved": true
+  },
+  "failures": [
+    {
+      "id": "SR008-BR-003",
+      "message": "The input did not match the regular expression /Could not send Stop.*disconnected/i. Input:\n\n'Could not send Stop to browser-agent-run: probe disconnect before ack'\n",
+      "stack": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /Could not send Stop.*disconnected/i. Input:\n\n'Could not send Stop to browser-agent-run: probe disconnect before ack'\n\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:314:14\n    at async runScenario (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:178:57)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:305:3"
+    },
+    {
+      "id": "probe",
+      "message": "The input did not match the regular expression /Could not send Stop.*disconnected/i. Input:\n\n'Could not send Stop to browser-agent-run: probe disconnect before ack'\n",
+      "stack": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /Could not send Stop.*disconnected/i. Input:\n\n'Could not send Stop to browser-agent-run: probe disconnect before ack'\n\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:314:14\n    at async runScenario (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:178:57)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:305:3"
+    }
+  ],
+  "wsPort": 63369,
+  "nuxtPort": 63370,
+  "completedAt": "2026-08-03T19:26:52.488Z"
+}

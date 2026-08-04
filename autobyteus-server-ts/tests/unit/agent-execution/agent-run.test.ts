@@ -2,8 +2,11 @@ import { describe, expect, it, vi } from "vitest";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
 import { AgentRun } from "../../../src/agent-execution/domain/agent-run.js";
-import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
-
+import {
+  AgentRunEventType,
+  type AgentRunEvent,
+} from "../../../src/agent-execution/domain/agent-run-event.js";
+import type { AgentRuntimeLifecycleSnapshot } from "../../../src/agent-execution/domain/agent-runtime-lifecycle-snapshot.js";
 
 const createDeferred = <T>() => {
   let resolve!: (value: T) => void;
@@ -15,199 +18,200 @@ const createDeferred = <T>() => {
   return { promise, resolve, reject };
 };
 
-describe("AgentRun", () => {
-  it("publishes backend-owned initializing status before a delayed accepted offline send resolves", async () => {
-    let listener: ((event: AgentRunEvent) => void) | null = null;
-    const observedEvents: AgentRunEvent[] = [];
-    const sendDeferred = createDeferred<{ accepted: true }>();
-    const backend = {
-      getPlatformAgentRunId: () => "platform-run-1",
-      isActive: () => true,
-      getStatusSnapshot: () => ({ status: "idle" as const, can_interrupt: false }),
-      subscribeToEvents: vi.fn().mockImplementation((next: (event: AgentRunEvent) => void) => {
-        listener = next;
+const createHarness = (options: {
+  runId?: string;
+  snapshot?: AgentRuntimeLifecycleSnapshot;
+  postUserMessage?: ReturnType<typeof vi.fn>;
+} = {}) => {
+  const runId = options.runId ?? "agent-run-1";
+  const context = new AgentRunContext({
+    runId,
+    config: new AgentRunConfig({
+      runtimeKind: "codex_app_server",
+      agentDefinitionId: "agent-def-1",
+      llmModelIdentifier: "gpt-5.3-codex",
+      autoExecuteTools: false,
+      workspaceId: null,
+      llmConfig: null,
+      skillAccessMode: null,
+    }),
+    runtimeContext: null,
+  });
+  let snapshot: AgentRuntimeLifecycleSnapshot = options.snapshot ?? {
+    availability: "active",
+    phase: "idle",
+    currentTurn: { kind: "NONE" },
+  };
+  let sourceListener:
+    | ((events: readonly AgentRunEvent[]) => void | Promise<void>)
+    | null = null;
+  const backend = {
+    runId,
+    runtimeKind: context.config.runtimeKind,
+    getContext: () => context,
+    getPlatformAgentRunId: () => "platform-run-1",
+    isActive: () => snapshot.availability === "active",
+    getLifecycleSnapshot: () => snapshot,
+    subscribeToSourceEventBatches: vi.fn().mockImplementation(
+      (next: (events: readonly AgentRunEvent[]) => void | Promise<void>) => {
+        sourceListener = next;
         return () => {
-          listener = null;
+          sourceListener = null;
         };
-      }),
+      },
+    ),
+    postUserMessage: options.postUserMessage ?? vi.fn().mockResolvedValue({ accepted: true }),
+    approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
+    interrupt: vi.fn().mockResolvedValue({ accepted: true }),
+    terminate: vi.fn().mockResolvedValue({ accepted: true }),
+  };
+  const run = new AgentRun({ context, backend: backend as never });
+  return {
+    backend,
+    run,
+    getSourceListener: () => sourceListener,
+    setSnapshot: (value: AgentRuntimeLifecycleSnapshot) => {
+      snapshot = value;
+    },
+  };
+};
+
+const event = (
+  runId: string,
+  eventType: AgentRunEventType,
+  payload: Record<string, unknown>,
+): AgentRunEvent => ({ eventType, runId, payload, statusHint: null });
+
+const observedStatuses = (events: AgentRunEvent[]) => events
+  .filter((item) => item.eventType === AgentRunEventType.AGENT_STATUS)
+  .map((item) => item.payload.status);
+
+describe("AgentRun", () => {
+  it("serializes delayed command facts and runtime turn evidence through one run-owned state", async () => {
+    const sendDeferred = createDeferred<{ accepted: true }>();
+    const harness = createHarness({
       postUserMessage: vi.fn().mockImplementation(() => sendDeferred.promise),
-      approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
-      interrupt: vi.fn().mockResolvedValue({ accepted: true }),
-      terminate: vi.fn().mockResolvedValue({ accepted: true }),
-    };
-    const run = new AgentRun({
-      context: new AgentRunContext({
-        runId: "agent-run-1",
-        config: new AgentRunConfig({
-          runtimeKind: "codex_app_server",
-          agentDefinitionId: "agent-def-1",
-          llmModelIdentifier: "gpt-5.3-codex",
-          autoExecuteTools: false,
-          workspaceId: null,
-          llmConfig: null,
-          skillAccessMode: null,
-        }),
-        runtimeContext: null,
-      }),
-      backend: backend as never,
+    });
+    const observedEvents: AgentRunEvent[] = [];
+    harness.run.subscribeToEvents((item) => observedEvents.push(item));
+
+    const postPromise = harness.run.postUserMessage({ text: "start" } as never);
+    await vi.waitFor(() => {
+      expect(harness.backend.postUserMessage).toHaveBeenCalledTimes(1);
     });
 
-    run.subscribeToEvents((event) => observedEvents.push(event));
-    const postPromise = run.postUserMessage({ text: "start" } as never);
-
-    expect(run.getStatusSnapshot()).toEqual({
+    expect(harness.run.getStatusSnapshot()).toEqual({
       status: "initializing",
-      can_interrupt: false,
       agent_id: "agent-run-1",
     });
-    expect(observedEvents).toContainEqual(expect.objectContaining({
-      eventType: AgentRunEventType.AGENT_STATUS,
-      payload: expect.objectContaining({ status: "initializing", can_interrupt: false }),
-    }));
-    expect(backend.postUserMessage).toHaveBeenCalledTimes(1);
+    expect(observedStatuses(observedEvents)).toEqual(["initializing"]);
 
     sendDeferred.resolve({ accepted: true });
     await postPromise;
+    expect(harness.run.getStatusSnapshot().status).toBe("initializing");
 
-    listener?.({
-      eventType: AgentRunEventType.AGENT_STATUS,
-      runId: "agent-run-1",
-      payload: { status: "running", can_interrupt: true },
-      statusHint: "ACTIVE",
+    harness.setSnapshot({
+      availability: "active",
+      phase: "running",
+      currentTurn: { kind: "IDENTIFIED", turnId: "turn-1" },
     });
+    await harness.getSourceListener()?.([
+      event(harness.run.runId, AgentRunEventType.TURN_STARTED, { turn_id: "turn-1" }),
+    ]);
 
-    expect(run.getStatusSnapshot()).toEqual({
+    expect(harness.run.getStatusSnapshot()).toEqual({
       status: "running",
-      can_interrupt: true,
       agent_id: "agent-run-1",
     });
+    expect(observedStatuses(observedEvents)).toEqual([
+      "initializing",
+      "initializing",
+      "running",
+    ]);
   });
 
-  it("restores the prior terminal status when an early command-start send is rejected", async () => {
-    const observedEvents: AgentRunEvent[] = [];
-    const backend = {
-      getPlatformAgentRunId: () => null,
-      isActive: () => true,
-      getStatusSnapshot: () => ({ status: "idle" as const, can_interrupt: false }),
-      subscribeToEvents: vi.fn().mockImplementation(() => () => undefined),
+  it("restores the prior status when command admission is rejected", async () => {
+    const harness = createHarness({
+      runId: "agent-run-rejected",
       postUserMessage: vi.fn().mockResolvedValue({ accepted: false, code: "REJECTED" }),
-      approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
-      interrupt: vi.fn().mockResolvedValue({ accepted: true }),
-      terminate: vi.fn().mockResolvedValue({ accepted: true }),
-    };
-    const run = new AgentRun({
-      context: new AgentRunContext({
-        runId: "agent-run-rejected",
-        config: new AgentRunConfig({
-          runtimeKind: "codex_app_server",
-          agentDefinitionId: "agent-def-1",
-          llmModelIdentifier: "gpt-5.3-codex",
-          autoExecuteTools: false,
-          workspaceId: null,
-          llmConfig: null,
-          skillAccessMode: null,
-        }),
-        runtimeContext: null,
-      }),
-      backend: backend as never,
     });
-
-    run.subscribeToEvents((event) => observedEvents.push(event));
-    await run.postUserMessage({ text: "start" } as never);
-
-    expect(observedEvents.map((event) => (event.payload as any).status)).toEqual([
-      "initializing",
-      "idle",
-    ]);
-    expect(run.getStatusSnapshot()).toEqual({ status: "idle", can_interrupt: false });
-  });
-
-  it("publishes error when a delayed command-start send throws", async () => {
     const observedEvents: AgentRunEvent[] = [];
-    const backend = {
-      getPlatformAgentRunId: () => null,
-      isActive: () => true,
-      getStatusSnapshot: () => ({ status: "offline" as const, can_interrupt: false }),
-      subscribeToEvents: vi.fn().mockImplementation(() => () => undefined),
-      postUserMessage: vi.fn().mockRejectedValue(new Error("startup failed")),
-      approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
-      interrupt: vi.fn().mockResolvedValue({ accepted: true }),
-      terminate: vi.fn().mockResolvedValue({ accepted: true }),
-    };
-    const run = new AgentRun({
-      context: new AgentRunContext({
-        runId: "agent-run-error",
-        config: new AgentRunConfig({
-          runtimeKind: "codex_app_server",
-          agentDefinitionId: "agent-def-1",
-          llmModelIdentifier: "gpt-5.3-codex",
-          autoExecuteTools: false,
-          workspaceId: null,
-          llmConfig: null,
-          skillAccessMode: null,
-        }),
-        runtimeContext: null,
-      }),
-      backend: backend as never,
+    harness.run.subscribeToEvents((item) => observedEvents.push(item));
+
+    await harness.run.postUserMessage({ text: "start" } as never);
+
+    expect(observedStatuses(observedEvents)).toEqual(["initializing", "idle"]);
+    expect(harness.run.getStatusSnapshot()).toEqual({
+      status: "idle",
+      agent_id: "agent-run-rejected",
     });
-
-    run.subscribeToEvents((event) => observedEvents.push(event));
-    await expect(run.postUserMessage({ text: "start" } as never)).rejects.toThrow("startup failed");
-
-    expect(observedEvents.map((event) => (event.payload as any).status)).toEqual([
-      "initializing",
-      "error",
-    ]);
-    expect(run.getStatusSnapshot()).toMatchObject({ status: "error", agent_id: "agent-run-error" });
   });
 
-  it("ignores non-status hints and error content when updating the canonical snapshot", () => {
-    let listener: ((event: AgentRunEvent) => void) | null = null;
-    const backend = {
-      getPlatformAgentRunId: () => null,
-      isActive: () => true,
-      getStatusSnapshot: () => ({ status: "idle" as const, can_interrupt: false }),
-      subscribeToEvents: vi.fn().mockImplementation((next: (event: AgentRunEvent) => void) => {
-        listener = next;
-        return () => { listener = null; };
-      }),
-      postUserMessage: vi.fn(),
-      approveToolInvocation: vi.fn(),
-      interrupt: vi.fn(),
-      terminate: vi.fn(),
-    };
-    const run = new AgentRun({
-      context: new AgentRunContext({
-        runId: "agent-run-hints",
-        config: new AgentRunConfig({
-          runtimeKind: "autobyteus",
-          agentDefinitionId: "agent-def-1",
-          llmModelIdentifier: "test-model",
-          autoExecuteTools: false,
-          workspaceId: null,
-          llmConfig: null,
-          skillAccessMode: null,
-        }),
-        runtimeContext: null,
-      }),
-      backend: backend as never,
+  it("keeps a command failure as terminal error across a fresh empty runtime read", async () => {
+    const harness = createHarness({
+      runId: "agent-run-error",
+      postUserMessage: vi.fn().mockRejectedValue(new Error("startup failed")),
     });
-    run.subscribeToEvents(() => undefined);
+    const observedEvents: AgentRunEvent[] = [];
+    harness.run.subscribeToEvents((item) => observedEvents.push(item));
 
-    listener?.({
-      eventType: AgentRunEventType.SEGMENT_CONTENT,
-      runId: run.runId,
-      payload: { turn_id: "turn-1", delta: "content" },
-      statusHint: "ACTIVE",
+    await expect(harness.run.postUserMessage({ text: "start" } as never))
+      .rejects.toThrow("startup failed");
+
+    expect(observedStatuses(observedEvents)).toEqual(["initializing", "error"]);
+    expect(harness.run.getStatusSnapshot()).toEqual({
+      status: "error",
+      agent_id: "agent-run-error",
     });
-    listener?.({
-      eventType: AgentRunEventType.ERROR,
-      runId: run.runId,
-      payload: { message: "diagnostic" },
+  });
+
+  it("publishes a status companion for local diagnostic events without making hints authoritative", async () => {
+    const harness = createHarness({ runId: "agent-run-hints" });
+    const observedEvents: AgentRunEvent[] = [];
+    harness.run.subscribeToEvents((item) => observedEvents.push(item));
+
+    await harness.run.publishEvent({
+      ...event(harness.run.runId, AgentRunEventType.ERROR, { message: "diagnostic" }),
       statusHint: "ERROR",
     });
 
-    expect(run.getStatusSnapshot()).toEqual({ status: "idle", can_interrupt: false });
+    expect(observedEvents.map((item) => item.eventType)).toEqual([
+      AgentRunEventType.ERROR,
+      AgentRunEventType.AGENT_STATUS,
+    ]);
+    expect(observedStatuses(observedEvents)).toEqual(["idle"]);
+    expect(harness.run.getStatusSnapshot().status).toBe("idle");
   });
 
+  it("preserves source callback order when two runtime batches arrive concurrently", async () => {
+    const harness = createHarness({ runId: "agent-run-ordering" });
+    const observedEvents: AgentRunEvent[] = [];
+    harness.run.subscribeToEvents((item) => observedEvents.push(item));
+    const sourceListener = harness.getSourceListener();
+    expect(sourceListener).not.toBeNull();
+
+    const started = sourceListener?.([
+      event(harness.run.runId, AgentRunEventType.TURN_STARTED, { turn_id: "turn-1" }),
+    ]);
+    const completed = sourceListener?.([
+      event(harness.run.runId, AgentRunEventType.TURN_COMPLETED, { turn_id: "turn-1" }),
+    ]);
+    await Promise.all([started, completed]);
+
+    expect(observedEvents.map((item) => item.eventType)).toEqual([
+      AgentRunEventType.AGENT_STATUS,
+      AgentRunEventType.TURN_STARTED,
+      AgentRunEventType.TURN_COMPLETED,
+      AgentRunEventType.AGENT_STATUS,
+    ]);
+    expect(observedStatuses(observedEvents)).toEqual(["running", "idle"]);
+  });
+
+  it("rejects local publication for a different run id", async () => {
+    const harness = createHarness();
+
+    await expect(harness.run.publishEvent(
+      event("another-run", AgentRunEventType.SEGMENT_CONTENT, { delta: "nope" }),
+    )).rejects.toThrow("another-run");
+  });
 });

@@ -1,0 +1,407 @@
+{
+  "startedAt": "2026-08-03T14:19:17.546Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "webDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web",
+  "fixturePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/fixtures/team-activity-presentation.page.vue",
+  "installedPagePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/pages/api-e2e-team-activity-presentation.vue",
+  "routePath": "/api-e2e-team-activity-presentation",
+  "scenarios": {
+    "SR006-BR-001": {
+      "description": "Mixed siblings render exact and any-child binary activity on both production surfaces",
+      "result": "Pass",
+      "startedAt": "2026-08-03T14:19:25.044Z",
+      "details": {
+        "historyGroup": {
+          "dataActive": "true",
+          "role": "img",
+          "ariaLabel": "Active team runs",
+          "title": "Active team runs",
+          "className": "h-2 w-2 flex-shrink-0 rounded-full bg-blue-500 mr-1.5",
+          "backgroundColor": "rgb(59, 130, 246)",
+          "animationName": "none",
+          "animationDuration": "0s",
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "width": 8,
+          "height": 8
+        },
+        "historyActiveRun": {
+          "dataActive": "true",
+          "role": "img",
+          "ariaLabel": "Active team run",
+          "title": "Active team run",
+          "className": "h-2 w-2 flex-shrink-0 rounded-full bg-blue-500 mr-1.5",
+          "backgroundColor": "rgb(59, 130, 246)",
+          "animationName": "none",
+          "animationDuration": "0s",
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "width": 8,
+          "height": 8
+        },
+        "historyInactiveRun": {
+          "dataActive": "false",
+          "role": "img",
+          "ariaLabel": "Inactive team run",
+          "title": "Inactive team run",
+          "className": "h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5",
+          "backgroundColor": "rgb(153, 153, 153)",
+          "animationName": "none",
+          "animationDuration": "0s",
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "width": 8,
+          "height": 8
+        },
+        "runningGroup": {
+          "dataActive": "true",
+          "role": "img",
+          "ariaLabel": "Active team runs",
+          "title": "Active team runs",
+          "className": "h-2 w-2 flex-shrink-0 rounded-full bg-blue-500 mr-1.5",
+          "backgroundColor": "rgb(59, 130, 246)",
+          "animationName": "none",
+          "animationDuration": "0s",
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "width": 8,
+          "height": 8
+        },
+        "runningActiveRun": {
+          "dataActive": "true",
+          "role": "img",
+          "ariaLabel": "Active team run",
+          "title": "Active team run",
+          "className": "h-2 w-2 flex-shrink-0 rounded-full bg-blue-500",
+          "backgroundColor": "rgb(59, 130, 246)",
+          "animationName": "none",
+          "animationDuration": "0s",
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "width": 8,
+          "height": 8
+        },
+        "runningInactiveRun": {
+          "dataActive": "false",
+          "role": "img",
+          "ariaLabel": "Inactive team run",
+          "title": "Inactive team run",
+          "className": "h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+          "backgroundColor": "rgb(153, 153, 153)",
+          "animationName": "none",
+          "animationDuration": "0s",
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "width": 8,
+          "height": 8
+        }
+      }
+    },
+    "SR006-BR-002": {
+      "description": "Collapsed parent activity and exact dots remain independent of member, representative, subscription, and Stop state",
+      "result": "Pass",
+      "startedAt": "2026-08-03T14:19:25.101Z",
+      "details": {
+        "collapsedBefore": {
+          "history": {
+            "dataActive": "true",
+            "role": "img",
+            "ariaLabel": "Active team runs",
+            "title": "Active team runs",
+            "className": "h-2 w-2 flex-shrink-0 rounded-full bg-blue-500 mr-1.5",
+            "backgroundColor": "rgb(59, 130, 246)",
+            "animationName": "none",
+            "animationDuration": "0s",
+            "display": "block",
+            "visibility": "visible",
+            "opacity": "1",
+            "width": 8,
+            "height": 8
+          },
+          "running": {
+            "dataActive": "true",
+            "role": "img",
+            "ariaLabel": "Active team runs",
+            "title": "Active team runs",
+            "className": "h-2 w-2 flex-shrink-0 rounded-full bg-blue-500 mr-1.5",
+            "backgroundColor": "rgb(59, 130, 246)",
+            "animationName": "none",
+            "animationDuration": "0s",
+            "display": "block",
+            "visibility": "visible",
+            "opacity": "1",
+            "width": 8,
+            "height": 8
+          }
+        },
+        "pending": {
+          "history": {
+            "dataActive": "true",
+            "role": "img",
+            "ariaLabel": "Active team runs",
+            "title": "Active team runs",
+            "className": "h-2 w-2 flex-shrink-0 rounded-full bg-blue-500 mr-1.5",
+            "backgroundColor": "rgb(59, 130, 246)",
+            "animationName": "none",
+            "animationDuration": "0s",
+            "display": "block",
+            "visibility": "visible",
+            "opacity": "1",
+            "width": 8,
+            "height": 8
+          },
+          "running": {
+            "dataActive": "true",
+            "role": "img",
+            "ariaLabel": "Active team runs",
+            "title": "Active team runs",
+            "className": "h-2 w-2 flex-shrink-0 rounded-full bg-blue-500 mr-1.5",
+            "backgroundColor": "rgb(59, 130, 246)",
+            "animationName": "none",
+            "animationDuration": "0s",
+            "display": "block",
+            "visibility": "visible",
+            "opacity": "1",
+            "width": 8,
+            "height": 8
+          }
+        },
+        "failed": {
+          "history": {
+            "dataActive": "true",
+            "role": "img",
+            "ariaLabel": "Active team runs",
+            "title": "Active team runs",
+            "className": "h-2 w-2 flex-shrink-0 rounded-full bg-blue-500 mr-1.5",
+            "backgroundColor": "rgb(59, 130, 246)",
+            "animationName": "none",
+            "animationDuration": "0s",
+            "display": "block",
+            "visibility": "visible",
+            "opacity": "1",
+            "width": 8,
+            "height": 8
+          },
+          "running": {
+            "dataActive": "true",
+            "role": "img",
+            "ariaLabel": "Active team runs",
+            "title": "Active team runs",
+            "className": "h-2 w-2 flex-shrink-0 rounded-full bg-blue-500 mr-1.5",
+            "backgroundColor": "rgb(59, 130, 246)",
+            "animationName": "none",
+            "animationDuration": "0s",
+            "display": "block",
+            "visibility": "visible",
+            "opacity": "1",
+            "width": 8,
+            "height": 8
+          }
+        },
+        "independentFacts": " member=running subscribed=true stopPending=false failures=1"
+      }
+    },
+    "SR006-BR-003": {
+      "description": "Final active-to-inactive transition updates collapsed parents and exact run rows",
+      "result": "Pass",
+      "startedAt": "2026-08-03T14:19:25.201Z",
+      "details": {
+        "collapsedSettled": {
+          "history": {
+            "dataActive": "false",
+            "role": "img",
+            "ariaLabel": "No active team runs",
+            "title": "No active team runs",
+            "className": "h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5",
+            "backgroundColor": "rgb(153, 153, 153)",
+            "animationName": "none",
+            "animationDuration": "0s",
+            "display": "block",
+            "visibility": "visible",
+            "opacity": "1",
+            "width": 8,
+            "height": 8
+          },
+          "running": {
+            "dataActive": "false",
+            "role": "img",
+            "ariaLabel": "No active team runs",
+            "title": "No active team runs",
+            "className": "h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5",
+            "backgroundColor": "rgb(153, 153, 153)",
+            "animationName": "none",
+            "animationDuration": "0s",
+            "display": "block",
+            "visibility": "visible",
+            "opacity": "1",
+            "width": 8,
+            "height": 8
+          }
+        },
+        "expandedSettled": {
+          "historyFormerActive": {
+            "dataActive": "false",
+            "role": "img",
+            "ariaLabel": "Inactive team run",
+            "title": "Inactive team run",
+            "className": "h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5",
+            "backgroundColor": "rgb(153, 153, 153)",
+            "animationName": "none",
+            "animationDuration": "0s",
+            "display": "block",
+            "visibility": "visible",
+            "opacity": "1",
+            "width": 8,
+            "height": 8
+          },
+          "historyInactive": {
+            "dataActive": "false",
+            "role": "img",
+            "ariaLabel": "Inactive team run",
+            "title": "Inactive team run",
+            "className": "h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5",
+            "backgroundColor": "rgb(153, 153, 153)",
+            "animationName": "none",
+            "animationDuration": "0s",
+            "display": "block",
+            "visibility": "visible",
+            "opacity": "1",
+            "width": 8,
+            "height": 8
+          },
+          "runningFormerActive": {
+            "dataActive": "false",
+            "role": "img",
+            "ariaLabel": "Inactive team run",
+            "title": "Inactive team run",
+            "className": "h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+            "backgroundColor": "rgb(153, 153, 153)",
+            "animationName": "none",
+            "animationDuration": "0s",
+            "display": "block",
+            "visibility": "visible",
+            "opacity": "1",
+            "width": 8,
+            "height": 8
+          },
+          "runningInactive": {
+            "dataActive": "false",
+            "role": "img",
+            "ariaLabel": "Inactive team run",
+            "title": "Inactive team run",
+            "className": "h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+            "backgroundColor": "rgb(153, 153, 153)",
+            "animationName": "none",
+            "animationDuration": "0s",
+            "display": "block",
+            "visibility": "visible",
+            "opacity": "1",
+            "width": 8,
+            "height": 8
+          }
+        }
+      }
+    },
+    "SR006-BR-004": {
+      "description": "English and Simplified Chinese catalogs provide the accessible binary meaning",
+      "result": "Pass",
+      "startedAt": "2026-08-03T14:19:25.292Z",
+      "details": {
+        "historyGroup": {
+          "dataActive": "false",
+          "role": "img",
+          "ariaLabel": "无活跃团队运行",
+          "title": "无活跃团队运行",
+          "className": "h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5",
+          "backgroundColor": "rgb(153, 153, 153)",
+          "animationName": "none",
+          "animationDuration": "0s",
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "width": 8,
+          "height": 8
+        },
+        "historyFormerActive": {
+          "dataActive": "false",
+          "role": "img",
+          "ariaLabel": "非活跃团队运行",
+          "title": "非活跃团队运行",
+          "className": "h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5",
+          "backgroundColor": "rgb(153, 153, 153)",
+          "animationName": "none",
+          "animationDuration": "0s",
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "width": 8,
+          "height": 8
+        },
+        "runningGroup": {
+          "dataActive": "false",
+          "role": "img",
+          "ariaLabel": "无活跃团队运行",
+          "title": "无活跃团队运行",
+          "className": "h-2 w-2 flex-shrink-0 rounded-full bg-gray-400 mr-1.5",
+          "backgroundColor": "rgb(153, 153, 153)",
+          "animationName": "none",
+          "animationDuration": "0s",
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "width": 8,
+          "height": 8
+        },
+        "runningFormerActive": {
+          "dataActive": "false",
+          "role": "img",
+          "ariaLabel": "非活跃团队运行",
+          "title": "非活跃团队运行",
+          "className": "h-2 w-2 flex-shrink-0 rounded-full bg-gray-400",
+          "backgroundColor": "rgb(153, 153, 153)",
+          "animationName": "none",
+          "animationDuration": "0s",
+          "display": "block",
+          "visibility": "visible",
+          "opacity": "1",
+          "width": 8,
+          "height": 8
+        }
+      }
+    }
+  },
+  "browserEvents": [],
+  "failures": [],
+  "cleanup": {
+    "browserContext": "closed",
+    "browser": "closed",
+    "nuxt": {
+      "status": "terminated",
+      "pid": 9377,
+      "exitCode": null,
+      "signalCode": null,
+      "finalExitCode": null,
+      "finalSignalCode": "SIGTERM"
+    },
+    "nuxtLog": "closed",
+    "installedFixture": "removed"
+  },
+  "port": 53358,
+  "baseUrl": "http://127.0.0.1:53358",
+  "result": "Pass",
+  "finishedAt": "2026-08-03T14:19:25.443Z",
+  "artifacts": {
+    "evidencePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-evidence/sr006-browser/evidence.json",
+    "nuxtLogPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-evidence/sr006-browser/nuxt.log",
+    "initialScreenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-evidence/sr006-browser/mixed-active-inactive.png",
+    "finalScreenshotPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/tickets/in-progress/agent-stream-driven-status/api-e2e-evidence/sr006-browser/settled-zh-cn.png"
+  }
+}

@@ -8,15 +8,10 @@
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import type { InterAgentMessageSegment } from '~/types/segments';
-import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
-import {
-  normalizeAgentRuntimeStatus,
-  normalizeTeamRuntimeStatus,
-} from '~/services/runHydration/runtimeStatusNormalization';
 import type { 
   InterAgentMessagePayload, 
   TeamCommunicationMessagePayload,
-  TeamStatusPayload,
+  TeamRunLifecyclePayload,
 } from '../protocol/messageTypes';
 import { findOrCreateAIMessage } from './segmentHandler';
 import { useTeamCommunicationStore } from '~/stores/teamCommunicationStore';
@@ -72,21 +67,15 @@ export function handleTeamCommunicationMessage(
   useTeamCommunicationStore().upsertFromBackendPayload(payload);
 }
 
-/**
- * Handle TEAM_STATUS event.
- */
-export function handleTeamStatus(
-  payload: TeamStatusPayload,
-  context: AgentTeamContext
+export function handleTeamRunLifecycle(
+  payload: TeamRunLifecyclePayload,
+  context: AgentTeamContext,
 ): void {
-  const sourceRouteKey = payload.source_route_key?.trim() || payload.source_path?.join('/') || '';
-  if (sourceRouteKey) {
-    const sourceNode = context.memberNodesByRouteKey.get(sourceRouteKey) || null;
-    if (sourceNode?.memberKind === 'agent_team') {
-      sourceNode.currentStatus = normalizeAgentRuntimeStatus(payload.status);
-    }
+  if (payload.team_run_id !== context.teamRunId) {
+    console.warn(
+      `Ignoring lifecycle for team '${payload.team_run_id}' on '${context.teamRunId}'.`,
+    );
     return;
   }
-
-  context.currentStatus = normalizeTeamRuntimeStatus(payload.status) as AgentTeamStatus;
+  context.isActive = payload.is_active;
 }

@@ -30,7 +30,6 @@ const buildMemberContext = (): AgentContext => {
     new AgentRunState('worker-run-1', conversation),
   );
   context.state.currentStatus = AgentStatus.Running;
-  context.state.canInterrupt = true;
   return context;
 };
 
@@ -80,6 +79,5 @@ describe('runHistoryTeamMemberProjectionHydrator', () => {
     expect(memberContext.state.runId).toBe('worker-run-1');
     expect(memberContext.state.conversation.id).toBe('team-run-1::worker');
     expect(memberContext.state.currentStatus).toBe(AgentStatus.Running);
-    expect(memberContext.state.canInterrupt).toBe(true);
   });
 });

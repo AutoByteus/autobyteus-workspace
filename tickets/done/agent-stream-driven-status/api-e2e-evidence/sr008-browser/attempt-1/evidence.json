@@ -1,0 +1,170 @@
+{
+  "generatedAt": "2026-08-03T19:22:48.672Z",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "frames": [
+    {
+      "direction": "connect",
+      "kind": "standalone",
+      "url": "/ws/agent/browser-agent-run"
+    },
+    {
+      "direction": "connect",
+      "kind": "team",
+      "url": "/ws/agent-team/browser-team-run"
+    },
+    {
+      "direction": "client-to-server",
+      "kind": "standalone",
+      "mode": "standalone-failed",
+      "message": {
+        "type": "INTERRUPT_GENERATION",
+        "payload": {
+          "command_id": "client_interrupt_02df520c-0214-4494-81f5-f1319bff11f2"
+        }
+      }
+    },
+    {
+      "direction": "server-to-client",
+      "kind": "standalone",
+      "mode": "standalone-failed",
+      "message": {
+        "type": "AGENT_COMMAND_ACK",
+        "payload": {
+          "command_type": "INTERRUPT_GENERATION",
+          "command_id": "client_interrupt_02df520c-0214-4494-81f5-f1319bff11f2",
+          "state": "failed",
+          "code": "NO_ACTIVE_TURN",
+          "message": "The provider has no active turn.",
+          "target": {
+            "target_kind": "standalone_run",
+            "run_id": "browser-agent-run"
+          }
+        }
+      }
+    }
+  ],
+  "browserEvents": [
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "console:log",
+      "text": "Agent WebSocket connected"
+    },
+    {
+      "type": "console:log",
+      "text": "Team WebSocket connected"
+    },
+    {
+      "type": "console:warning",
+      "text": "No member context found for message, skipping"
+    },
+    {
+      "type": "console:error",
+      "text": "Access to fetch at 'http://127.0.0.1:63045/graphql' from origin 'http://127.0.0.1:63046' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource."
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "console:error",
+      "text": "Access to fetch at 'http://127.0.0.1:63045/graphql' from origin 'http://127.0.0.1:63046' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource."
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to fetch all workspace metadata: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:63046/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/errors/index.js?v=19f315d4:59:28)\n    at http://127.0.0.1:63046/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/core/QueryManager.js?v=19f315d4:823:71\n    at both (http://127.0.0.1:63046/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=19f315d4:35:31)\n    at http://127.0.0.1:63046/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=19f315d4:24:72\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:63046/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=19f315d4:24:24)\n    at Object.error (http://127.0.0.1:63046/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=19f315d4:37:49)\n    at notifySubscription (http://127.0.0.1:63046/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=19f315d4:137:18)\n    at onNotify (http://127.0.0.1:63046/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=19f315d4:176:3)\n    at SubscriptionObserver.error (http://127.0.0.1:63046/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=19f315d4:229:5)"
+    },
+    {
+      "type": "console:error",
+      "text": "Access to fetch at 'http://127.0.0.1:63045/graphql' from origin 'http://127.0.0.1:63046' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource."
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to fetch agent definitions: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:63046/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/errors/index.js?v=19f315d4:59:28)\n    at http://127.0.0.1:63046/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/core/QueryManager.js?v=19f315d4:823:71\n    at both (http://127.0.0.1:63046/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=19f315d4:35:31)\n    at http://127.0.0.1:63046/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=19f315d4:24:72\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:63046/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=19f315d4:24:24)\n    at Object.error (http://127.0.0.1:63046/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=19f315d4:37:49)\n    at notifySubscription (http://127.0.0.1:63046/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=19f315d4:137:18)\n    at onNotify (http://127.0.0.1:63046/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=19f315d4:176:3)\n    at SubscriptionObserver.error (http://127.0.0.1:63046/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=19f315d4:229:5)"
+    },
+    {
+      "type": "console:error",
+      "text": "Access to fetch at 'http://127.0.0.1:63045/graphql' from origin 'http://127.0.0.1:63046' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource."
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "console:error",
+      "text": "Failed to fetch agent team definitions: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:63046/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/errors/index.js?v=19f315d4:59:28)\n    at http://127.0.0.1:63046/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/core/QueryManager.js?v=19f315d4:823:71\n    at both (http://127.0.0.1:63046/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=19f315d4:35:31)\n    at http://127.0.0.1:63046/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=19f315d4:24:72\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:63046/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=19f315d4:24:24)\n    at Object.error (http://127.0.0.1:63046/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.0.1_g_0d5b6d5e3456a68de3f99be644684151/node_modules/@apollo/client/utilities/observables/asyncMap.js?v=19f315d4:37:49)\n    at notifySubscription (http://127.0.0.1:63046/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=19f315d4:137:18)\n    at onNotify (http://127.0.0.1:63046/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=19f315d4:176:3)\n    at SubscriptionObserver.error (http://127.0.0.1:63046/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/node_modules/.pnpm/zen-observable-ts@1.2.5/node_modules/zen-observable-ts/module.js?v=19f315d4:229:5)"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Checking server health at /rest/health"
+    },
+    {
+      "type": "console:log",
+      "text": "Download the Apollo DevTools for a better development experience: %s https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm"
+    }
+  ],
+  "scenarios": {
+    "SR008-BR-001": {
+      "result": "Fail",
+      "failure": {
+        "id": "SR008-BR-001",
+        "message": "Timed out waiting for one standalone failure toast",
+        "stack": "Error: Timed out waiting for one standalone failure toast\n    at waitFor (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:53:9)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:250:7\n    at async runScenario (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:178:57)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:245:3"
+      }
+    }
+  },
+  "cleanup": {
+    "nuxt": {
+      "status": "terminated",
+      "pid": 10107,
+      "exitCode": null,
+      "signalCode": "SIGTERM"
+    },
+    "fixtureRemoved": true
+  },
+  "failures": [
+    {
+      "id": "SR008-BR-001",
+      "message": "Timed out waiting for one standalone failure toast",
+      "stack": "Error: Timed out waiting for one standalone failure toast\n    at waitFor (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:53:9)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:250:7\n    at async runScenario (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:178:57)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:245:3"
+    },
+    {
+      "id": "probe",
+      "message": "Timed out waiting for one standalone failure toast",
+      "stack": "Error: Timed out waiting for one standalone failure toast\n    at waitFor (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:53:9)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:250:7\n    at async runScenario (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:178:57)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:245:3"
+    }
+  ],
+  "wsPort": 63045,
+  "nuxtPort": 63046,
+  "completedAt": "2026-08-03T19:23:41.437Z"
+}
