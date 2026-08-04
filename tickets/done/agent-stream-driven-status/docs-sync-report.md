@@ -3,7 +3,7 @@
 ## Scope And Integrated-State Basis
 
 - Ticket: `agent-stream-driven-status`
-- Current delivery revision: `DR-006`
+- Documentation-sync basis: `DR-006`; terminal delivery revision: `DR-009`
 - Implementation source/test commit: `274086704a58fb837c61159bf2a3274cb56c176f`
 - Source review: `CRR-009 Pass`
 - API/E2E: `API-REV-005 Pass` at 97.1% confidence
@@ -83,4 +83,4 @@ Not used. `SR-008` has material durable documentation impact.
 - Result: `Pass`
 - User completion/verification: received on 2026-08-04.
 - Finalization-time target refresh: unchanged at `origin/personal` `2a7271c9d78b71b919f7dbfa3b8f97f61c3a2e2b`; no documentation rework or renewed verification is required.
-- Next action: finalize the archived ticket and publish the authorized patch release.
+- Terminal result: repository finalization, `v1.4.42` publication verification, and task-owned cleanup completed; no further documentation action is required.

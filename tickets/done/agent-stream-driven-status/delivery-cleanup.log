@@ -1,0 +1,27 @@
+===== AGENT STREAM-DRIVEN STATUS CLEANUP =====
+Timestamp: 2026-08-04T06:25:04+02:00
+Personal/release commit: 563a48443bd2f2140c294fcd14de9d8828560301
+Release tag commit: 563a48443bd2f2140c294fcd14de9d8828560301
+Ticket branch ancestry in personal: PASS
+Ticket worktree tracked status before removal: clean
+
+Command: git worktree remove /Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status
+Result: Git removed the worktree registration, then returned 255 because the filesystem directory was not empty.
+Follow-up classification: the remaining directory contained exactly one Finder metadata file, `.DS_Store`; no tracked, untracked, or ignored product/build artifact remained.
+Correction: removed `.DS_Store` and the empty directory explicitly.
+Ticket worktree path absent: PASS
+Ticket worktree registration absent: PASS
+
+Command: git branch -d codex/agent-stream-driven-status
+Result: PASS; local ticket branch deleted at 14f786efd572c885da9fea308ab5a1ac504288f8.
+Command: git push origin --delete codex/agent-stream-driven-status
+Result: PASS; remote ticket branch deleted.
+Command: git worktree prune
+Result: PASS.
+Local and remote ticket branch references absent: PASS
+
+Unrelated main-worktree untracked paths preserved untouched:
+- .article-work/
+- codex/
+
+Corrected cleanup verification: PASS
