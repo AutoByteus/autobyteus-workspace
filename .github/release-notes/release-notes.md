@@ -1,21 +1,16 @@
-# Native TODO Capability Removal
+## What's New
+- Active Codex conversations now accept follow-up input in the current turn instead of starting a competing turn.
+- Agent and team Stop requests now return visible, target-aware failure feedback when an interrupt cannot be completed.
+- Team run history and running-workspace groups now show clear binary active/inactive indicators for exact runs and grouped runs.
 
-## Removed
+## Improvements
+- Agent status now follows authoritative turn lifecycle events across normal completion, interruption, errors, and reconnects, reducing stale Running states.
+- Streaming presentation remains responsive during continuous output while preserving exact content and event ordering.
+- Nested team and delegated-task activity routes to the exact member execution, including reconnect and deep subteam paths.
+- Stop acceptance no longer changes the UI optimistically; the composer becomes ready only after the runtime confirms the turn has settled.
 
-- Removed the native `autobyteus-ts` personal TODO tools: `create_todo_list`, `add_todo`, `get_todo_list`, and `update_todo_status`.
-- Removed the transient native TODO model, runtime state, notifier/event, stream payload, and AutoByteus-native TODO mapping.
-
-## Preserved
-
-- File tools and skills remain the supported way for native agents to maintain workspace task files.
-- Server/Codex `TODO_LIST_UPDATE` progress, WebSocket mapping, web TODO handling, generic tools, and server task delegation remain supported.
-
-## Compatibility And Data
-
-- No persisted-data migration is required; the removed native TODO state was in-memory only.
-- Consumers importing the intentionally removed native TODO classes, barrels, event names, or stream types must migrate to file/skill-based task tracking.
-
-## Validation
-
-- Changed-boundary validation passed: native 7-file/32-test focus, native build, server 4-file/96-test focus, source-only server typecheck/build, preserved server E2E and task-delegation integration, built Codex-to-WebSocket TODO mapping, and web TODO handler/stream tests.
-- The server package typecheck and full native Vitest commands remain red due to confirmed unchanged repository configuration/environment origins; these are explicitly not clean-pass claims.
+## Fixes
+- Fixed active Codex follow-up input creating a phantom second turn and leaving the original run incorrectly marked Running.
+- Fixed missing or duplicate interrupt feedback during provider rejection, send failure, and WebSocket disconnect cases.
+- Fixed team lifecycle being inferred from member status, socket subscription, or Stop state instead of the concrete team run.
+- Fixed interrupted or delayed events reopening retired turns or settling a newer turn incorrectly.
