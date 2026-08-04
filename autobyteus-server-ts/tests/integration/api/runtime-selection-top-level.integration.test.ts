@@ -11,6 +11,7 @@ import { Query, Resolver, buildSchema } from "type-graphql";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { TeamMember, AgentTeamDefinition } from "../../../src/agent-team-definition/domain/models.js";
 import { AgentRun } from "../../../src/agent-execution/domain/agent-run.js";
+import type { AgentRunSourceEventBatchListener } from "../../../src/agent-execution/backends/agent-run-backend.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
 import { AgentRunMetadataService } from "../../../src/run-history/services/agent-run-metadata-service.js";
@@ -214,7 +215,7 @@ const buildAgentRun = (input: {
 }): AgentRun => {
   let active = true;
   let turnCounter = 0;
-  const listeners = new Set<(event: unknown) => void>();
+  const listeners = new Set<AgentRunSourceEventBatchListener>();
   const context = new AgentRunContext({
     runId: input.runId,
     config: input.config,
@@ -227,8 +228,12 @@ const buildAgentRun = (input: {
     getContext: () => context,
     isActive: () => active,
     getPlatformAgentRunId: () => input.platformAgentRunId,
-    getStatusSnapshot: () => ({ status: "idle", can_interrupt: false }),
-    subscribeToEvents: (listener: (event: unknown) => void) => {
+    getLifecycleSnapshot: () => ({
+      availability: active ? "active" as const : "offline" as const,
+      phase: "idle" as const,
+      currentTurn: { kind: "NONE" as const },
+    }),
+    subscribeToSourceEventBatches: (listener: AgentRunSourceEventBatchListener) => {
       listeners.add(listener);
       return () => {
         listeners.delete(listener);
@@ -393,8 +398,8 @@ const createAutoByteusTeamBackendFactory = () => {
         memberContexts,
       }),
       isActive: () => active,
-      getStatusSnapshot: () => ({ status: "idle" }),
-      getMemberStatusSnapshots: () => [],
+      getLeafAgentStatusSnapshots: () => [],
+      hasOpenExecutionWork: () => false,
       subscribeToEvents: (listener: (event: unknown) => void) => {
         listeners.add(listener);
         return () => {

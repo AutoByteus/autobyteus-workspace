@@ -233,12 +233,12 @@ class DeterministicTeamRunBackend implements TeamRunBackend {
     return this.active;
   }
 
-  getStatusSnapshot() {
-    return { status: this.active ? "running" as const : "idle" as const };
+  getLeafAgentStatusSnapshots() {
+    return [];
   }
 
-  getMemberStatusSnapshots() {
-    return [];
+  hasOpenExecutionWork(): boolean {
+    return this.active;
   }
 
   subscribeToEvents(listener: TeamRunEventListener): () => void {

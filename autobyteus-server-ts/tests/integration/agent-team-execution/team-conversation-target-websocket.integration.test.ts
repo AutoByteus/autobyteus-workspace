@@ -94,8 +94,8 @@ const buildTeamRun = (results: AgentOperationResult[] = []) => {
   const postMessageToConversationTarget = vi.fn(async () => queuedResults.shift() ?? { accepted: true });
   return {
     runId: "team-run-1",
-    getStatusSnapshot: vi.fn().mockReturnValue({ status: "running" }),
-    getMemberStatusSnapshots: vi.fn().mockReturnValue([]),
+    getLeafAgentStatusSnapshots: vi.fn().mockReturnValue([]),
+    hasOpenExecutionWork: vi.fn().mockReturnValue(true),
     subscribeToEvents: vi.fn((_listener: TeamRunEventListener) => () => undefined),
     postMessage: vi.fn().mockResolvedValue({ accepted: true }),
     postMessageToConversationTarget,

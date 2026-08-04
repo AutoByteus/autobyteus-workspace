@@ -9,6 +9,7 @@ The latest coverage investigation and execution coverage report are authoritativ
 | API-REV-001 | `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`; Round 1 | SR-005; ARCH-REV-004; IR-002; CRR-002 | N/A | Pass / 97.0% |
 | API-REV-002 | `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-test-review-report.md`; Round 2 | SR-005; ARCH-REV-004; IR-002; CRR-002; CRR-003 | Pass / 97.0% | Pass / 97.0% |
 | API-REV-003 | `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`; Round 3 | SR-006; ARCH-REV-005; IR-003; CRR-005 | Pass / 97.0% (API-REV-002; SR-005 only) | Pass / 97.0% |
+| API-REV-004 | `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`; Round 4 | SR-006; ARCH-REV-005; IR-004; CRR-007; DR-002 | Pass / 97.0% (API-REV-003; pre-merge only) | Pass / 97.0% |
 
 ## Revision Entries
 
@@ -79,3 +80,34 @@ None. API-REV-002 was a passing SR-005 reporting reissue and had no unresolved f
 - New or remaining failure IDs: `None` in the approved scope. `FULL-BASELINE-001` is retained transparently as unrelated repository-health evidence, not a ticket failure.
 - Recommended recipient: `code_reviewer` for proportional review of the three updated durable test files.
 - Remaining risk/untested scope: live Codex/Claude model processes remain capability-gated and are not counted as passed; deterministic provider boundaries pass. The broader whole-server baseline remains non-clean outside the SR-006 delta while the directly affected and deterministic E2E suites are clean.
+
+### API-REV-004 — Integrated merge-head collaboration and leaf-lifecycle coverage passes
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`; API/E2E round 4.
+- Triggering finding or scenario IDs: `CRR-007` Pass; `DR-002`; R-028–R-031; AC-023–AC-025; INTEGRATED-MSG-001, INTEGRATED-LIFECYCLE-001, INTEGRATED-RUN-MANAGER-001, ADDR-CTX-LIFECYCLE-001, ADDR-CTX-MEMORY-001, ADDR-CTX-RESTORE-001, INTEGRATED-BACKEND-001, INTEGRATED-WS-001, INTEGRATED-HISTORY-001, and INTEGRATED-EXTERNAL-001.
+- Related revision IDs: SR-006; ARCH-REV-005; IR-004; CRR-007; DR-002.
+- Why recorded: IR-004 integrated SR-006 with the latest base's leaf-Agent snapshot/open-work lifecycle at merge commit `ef32724ddb50db9858cb92ca1e61f3bac1eddbd1`. API-REV-003/CRR-006 predates that merge, so a fresh coverage investigation, validity pass, fixture maintenance, and integrated-state execution were required.
+- Coverage decisions or durable test paths changed: `0 added, 7 updated, 0 removed`. Updated paths:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/e2e/external-channel/external-channel-team-open-delivery.e2e.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/integration/agent-team-execution/mixed-team-run-backend.integration.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/integration/agent-team-execution/team-conversation-target-websocket.integration.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/integration/agent-team-execution/team-run-service.integration.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/integration/api/runtime-selection-top-level.integration.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/integration/run-history/memory-layout-and-projection.integration.test.ts`
+- Scenarios added/changed/removed/rechecked: no new file or scenario was needed. Seven useful scenarios were maintained at the current Agent lifecycle/source-batch/public-event and Team leaf/open-work interfaces; exact canonical contexts, root-private materialization, message/task operation mapping, restore, history, WebSocket, provider, external channel, termination, settlement, and no-aggregate-event scenarios were rechecked. The two merge-resolved tests were adjudicated `Still Valid` and executed without API/E2E edits.
+- Commands/environment/broader-validation delta: `.env.test`/Prisma/Vitest; final focused 20 files/132 tests; corrected affected 121 files/823 tests; deterministic E2E 51 passed/14 skipped files and 178 passed/50 skipped tests; production typecheck and full build/bootstrap passed. The current whole-server baseline is non-clean in 26 files/71 tests; every failed file is byte-identical to the integrated-base parent and has zero ticket/current-test-delta intersection.
+
+#### Prior Failure Resolution
+
+| Prior Scenario / Failure Reference | Previous Classification | Current Resolution | Evidence |
+| --- | --- | --- | --- |
+| `DR-002` integration re-entry blocker | `Local Fix` / source integration | Resolved upstream by IR-004 merge and CRR-007 Pass; this round supplies fresh integrated-state coverage rather than reusing API-REV-003. | `code-review-report.md`; `code-review-revision-record.md`; `ir004-focused-final.log`; `ir004-affected-broad-final.log` |
+| Round-4 fixture-validity discoveries | API/E2E-owned durable fixture maintenance | Resolved by seven narrow updates; final focused 20/132, affected 121/823, and deterministic E2E 178-pass collections are clean. | `ir004-focused-initial.log`; `ir004-focused-after-lifecycle-fix.log`; `ir004-focused-final.log`; `ir004-affected-broad-final.log`; `ir004-repository-e2e-final.log` |
+
+- Canonical artifacts updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-coverage-investigation.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md`; this record.
+- Prior result and confidence: `Pass / 97.0%` (API-REV-003; pre-merge only and not integrated-state proof).
+- Current result and confidence: `Pass / 97.0%`.
+- New or remaining failure IDs: `None` in the approved scope. `FULL-BASELINE-001` remains transparent inherited repository-health evidence, not a ticket failure.
+- Recommended recipient: `code_reviewer` for proportional review of the seven updated durable test files.
+- Remaining risk/untested scope: live Codex/Claude model processes remain capability-gated and are not counted as passed; deterministic provider boundaries pass. The full repository baseline remains non-clean outside the ticket/current durable-test delta while the directly affected and deterministic E2E suites are clean.

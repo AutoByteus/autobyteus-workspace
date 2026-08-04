@@ -14,7 +14,10 @@ import { CodexThreadEventConverter } from "../../../src/agent-execution/backends
 import { CodexThreadEventName } from "../../../src/agent-execution/backends/codex/events/codex-thread-event-name.js";
 import { ClaudeSessionEventConverter } from "../../../src/agent-execution/backends/claude/events/claude-session-event-converter.js";
 import { ClaudeSessionEventName } from "../../../src/agent-execution/backends/claude/events/claude-session-event-name.js";
-import type { AgentRunBackend } from "../../../src/agent-execution/backends/agent-run-backend.js";
+import type {
+  AgentRunBackend,
+  AgentRunSourceEventBatchListener,
+} from "../../../src/agent-execution/backends/agent-run-backend.js";
 import type { AgentRunBackendFactory } from "../../../src/agent-execution/backends/agent-run-backend-factory.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
 import { AgentRunMemoryRecorder } from "../../../src/agent-memory/services/agent-run-memory-recorder.js";
@@ -67,7 +70,7 @@ const createRuntimeBackendFactory = (runtimeKind: RuntimeKind) => {
   const factory: AgentRunBackendFactory = {
     createBackend: vi.fn(async (config: AgentRunConfig, preferredRunId?: string | null) => {
       const runId = preferredRunId ?? `run-${runtimeKind}-${createdBackends.length + 1}`;
-      const listeners = new Set<(event: unknown) => void>();
+      const listeners = new Set<AgentRunSourceEventBatchListener>();
       const backend: CapturedRuntimeBackend = {
         config,
         runId,
@@ -77,17 +80,23 @@ const createRuntimeBackendFactory = (runtimeKind: RuntimeKind) => {
             runId,
             config,
             runtimeContext: null,
-          }),
+        }),
         isActive: () => true,
         getPlatformAgentRunId: () => `platform-${runId}`,
-        getStatusSnapshot: () => ({ status: "idle", can_interrupt: false }),
-        subscribeToEvents: (listener) => {
+        getLifecycleSnapshot: () => ({
+          availability: "active",
+          phase: "idle",
+          currentTurn: { kind: "NONE" },
+        }),
+        subscribeToSourceEventBatches: (listener) => {
           listeners.add(listener);
           return () => listeners.delete(listener);
         },
         postUserMessage: vi.fn(async () => {
           for (const listener of listeners) {
-            listener(event(runId, AgentRunEventType.TURN_STARTED, { turnId: `turn-${runId}` }));
+            void listener([
+              event(runId, AgentRunEventType.TURN_STARTED, { turnId: `turn-${runId}` }),
+            ]);
           }
           return { accepted: true, turnId: null, platformAgentRunId: `platform-${runId}` };
         }),
@@ -96,7 +105,7 @@ const createRuntimeBackendFactory = (runtimeKind: RuntimeKind) => {
         terminate: vi.fn(async () => ({ accepted: true })),
         emit: (eventType, payload) => {
           for (const listener of listeners) {
-            listener(event(runId, eventType, payload));
+            void listener([event(runId, eventType, payload)]);
           }
         },
         listenerCount: () => listeners.size,
@@ -163,32 +172,34 @@ const createCodexMemoryHarness = async (preferredRunId: string) => {
   };
 };
 
-const emitAssistantTrace = (
-  run: { runId: string; emitLocalEvent: (event: AgentRunEvent) => void },
+const emitAssistantTrace = async (
+  run: { runId: string; publishEvent: (event: AgentRunEvent) => Promise<void> },
   turnId: string,
   id: string,
   delta: string,
   timestamp: number,
 ) => {
-  run.emitLocalEvent(event(run.runId, AgentRunEventType.SEGMENT_CONTENT, {
+  await run.publishEvent(event(run.runId, AgentRunEventType.SEGMENT_CONTENT, {
     id,
     turn_id: turnId,
     segment_type: "text",
     delta,
     timestamp,
   }));
-  run.emitLocalEvent(event(run.runId, AgentRunEventType.SEGMENT_END, {
+  await run.publishEvent(event(run.runId, AgentRunEventType.SEGMENT_END, {
     id,
     turn_id: turnId,
     segment_type: "text",
   }));
 };
 
-const emitConverted = (
-  run: { emitLocalEvent: (event: AgentRunEvent) => void },
+const emitConverted = async (
+  run: { publishEvent: (event: AgentRunEvent) => Promise<void> },
   converted: AgentRunEvent[],
 ) => {
-  converted.forEach((convertedEvent) => run.emitLocalEvent(convertedEvent));
+  for (const convertedEvent of converted) {
+    await run.publishEvent(convertedEvent);
+  }
 };
 
 afterEach(async () => {
@@ -476,34 +487,34 @@ describe("cross-runtime memory persistence integration", () => {
 
       expect(createdBackends[0]?.listenerCount()).toBe(1);
       await run.postUserMessage(new AgentInputUserMessage(`hello from ${runtimeKind}`));
-      run.emitLocalEvent(event(run.runId, AgentRunEventType.SEGMENT_CONTENT, {
+      await run.publishEvent(event(run.runId, AgentRunEventType.SEGMENT_CONTENT, {
         id: "reasoning-1",
         segment_type: "reasoning",
         delta: "considering ",
       }));
-      run.emitLocalEvent(event(run.runId, AgentRunEventType.SEGMENT_END, { id: "reasoning-1" }));
-      run.emitLocalEvent(event(run.runId, AgentRunEventType.TOOL_APPROVAL_REQUESTED, {
+      await run.publishEvent(event(run.runId, AgentRunEventType.SEGMENT_END, { id: "reasoning-1" }));
+      await run.publishEvent(event(run.runId, AgentRunEventType.TOOL_APPROVAL_REQUESTED, {
         invocation_id: "tool-1",
         tool_name: "run_bash",
         arguments: { command: "pwd" },
       }));
-      run.emitLocalEvent(event(run.runId, AgentRunEventType.TOOL_EXECUTION_STARTED, {
+      await run.publishEvent(event(run.runId, AgentRunEventType.TOOL_EXECUTION_STARTED, {
         invocation_id: "tool-1",
         tool_name: "run_bash",
         arguments: { command: "pwd" },
       }));
-      run.emitLocalEvent(event(run.runId, AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+      await run.publishEvent(event(run.runId, AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
         invocation_id: "tool-1",
         tool_name: "run_bash",
         result: { stdout: memoryDir },
       }));
-      run.emitLocalEvent(event(run.runId, AgentRunEventType.SEGMENT_CONTENT, {
+      await run.publishEvent(event(run.runId, AgentRunEventType.SEGMENT_CONTENT, {
         id: "text-1",
         segment_type: "text",
         delta: "done",
       }));
-      run.emitLocalEvent(event(run.runId, AgentRunEventType.SEGMENT_END, { id: "text-1" }));
-      run.emitLocalEvent(event(run.runId, AgentRunEventType.COMPACTION_STATUS, {
+      await run.publishEvent(event(run.runId, AgentRunEventType.SEGMENT_END, { id: "text-1" }));
+      await run.publishEvent(event(run.runId, AgentRunEventType.COMPACTION_STATUS, {
         status: "compacting",
         compact_boundary: "provider-owned",
       }));
@@ -557,12 +568,12 @@ describe("cross-runtime memory persistence integration", () => {
     );
 
     await run.postUserMessage(new AgentInputUserMessage("native should remain native-owned"));
-    run.emitLocalEvent(event(run.runId, AgentRunEventType.SEGMENT_CONTENT, {
+    await run.publishEvent(event(run.runId, AgentRunEventType.SEGMENT_CONTENT, {
       id: "text-1",
       segment_type: "text",
       delta: "native output",
     }));
-    run.emitLocalEvent(event(run.runId, AgentRunEventType.SEGMENT_END, { id: "text-1" }));
+    await run.publishEvent(event(run.runId, AgentRunEventType.SEGMENT_END, { id: "text-1" }));
     await recorder.waitForIdle(run.runId);
 
     await expect(fs.access(path.join(memoryDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME))).rejects.toThrow();
@@ -596,14 +607,14 @@ describe("cross-runtime memory persistence integration", () => {
     const converter = new CodexThreadEventConverter(run.runId);
     const turnId = `turn-${run.runId}`;
 
-    run.emitLocalEvent(event(run.runId, AgentRunEventType.TURN_STARTED, { turnId }));
-    run.emitLocalEvent(event(run.runId, AgentRunEventType.SEGMENT_CONTENT, {
+    await run.publishEvent(event(run.runId, AgentRunEventType.TURN_STARTED, { turnId }));
+    await run.publishEvent(event(run.runId, AgentRunEventType.SEGMENT_CONTENT, {
       id: "codex-before-boundary",
       segment_type: "text",
       delta: "before codex compaction",
       timestamp: 1,
     }));
-    run.emitLocalEvent(event(run.runId, AgentRunEventType.SEGMENT_END, {
+    await run.publishEvent(event(run.runId, AgentRunEventType.SEGMENT_END, {
       id: "codex-before-boundary",
       segment_type: "text",
     }));
@@ -618,7 +629,9 @@ describe("cross-runtime memory persistence integration", () => {
       },
     });
     expect(compactedEvents).toHaveLength(1);
-    compactedEvents.forEach((converted) => run.emitLocalEvent(converted));
+    for (const converted of compactedEvents) {
+      await run.publishEvent(converted);
+    }
     expect(converter.convert({
       method: CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED,
       params: {
@@ -670,8 +683,8 @@ describe("cross-runtime memory persistence integration", () => {
     );
     const rawPath = path.join(memoryDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME);
 
-    run.emitLocalEvent(event(run.runId, AgentRunEventType.TURN_STARTED, { turnId }));
-    emitConverted(run, converter.convert({
+    await run.publishEvent(event(run.runId, AgentRunEventType.TURN_STARTED, { turnId }));
+    await emitConverted(run, converter.convert({
       method: CodexThreadEventName.ITEM_STARTED,
       params: {
         item: {
@@ -687,7 +700,7 @@ describe("cross-runtime memory persistence integration", () => {
 
     await expect(fs.access(rawPath)).rejects.toThrow();
 
-    emitConverted(run, converter.convert({
+    await emitConverted(run, converter.convert({
       method: CodexThreadEventName.ITEM_COMPLETED,
       params: {
         item: {
@@ -763,8 +776,8 @@ describe("cross-runtime memory persistence integration", () => {
       url: "https://example.com/claude",
     };
 
-    run.emitLocalEvent(event(run.runId, AgentRunEventType.TURN_STARTED, { turnId }));
-    emitConverted(run, converter.convert({
+    await run.publishEvent(event(run.runId, AgentRunEventType.TURN_STARTED, { turnId }));
+    await emitConverted(run, converter.convert({
       method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_STARTED,
       params: {
         invocation_id: "claude-write-1",
@@ -785,7 +798,7 @@ describe("cross-runtime memory persistence integration", () => {
       tool_args: toolArgs,
     });
 
-    emitConverted(run, converter.convert({
+    await emitConverted(run, converter.convert({
       method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_COMPLETED,
       params: {
         invocation_id: "claude-write-1",
@@ -826,9 +839,9 @@ describe("cross-runtime memory persistence integration", () => {
       "codex-context-compaction-start-memory-run",
     );
 
-    run.emitLocalEvent(event(run.runId, AgentRunEventType.TURN_STARTED, { turnId }));
-    emitAssistantTrace(run, turnId, "codex-before-start", "before codex compaction start", 1);
-    emitConverted(run, converter.convert({
+    await run.publishEvent(event(run.runId, AgentRunEventType.TURN_STARTED, { turnId }));
+    await emitAssistantTrace(run, turnId, "codex-before-start", "before codex compaction start", 1);
+    await emitConverted(run, converter.convert({
       method: CodexThreadEventName.ITEM_STARTED,
       params: {
         item: {
@@ -862,8 +875,8 @@ describe("cross-runtime memory persistence integration", () => {
       "codex-context-compaction-completed-memory-run",
     );
 
-    run.emitLocalEvent(event(run.runId, AgentRunEventType.TURN_STARTED, { turnId }));
-    emitAssistantTrace(run, turnId, "codex-before-context-boundary", "before context boundary", 1);
+    await run.publishEvent(event(run.runId, AgentRunEventType.TURN_STARTED, { turnId }));
+    await emitAssistantTrace(run, turnId, "codex-before-context-boundary", "before context boundary", 1);
     const completedEvents = converter.convert({
       method: CodexThreadEventName.ITEM_COMPLETED,
       params: {
@@ -877,7 +890,7 @@ describe("cross-runtime memory persistence integration", () => {
       },
     });
     expect(completedEvents).toHaveLength(1);
-    emitConverted(run, completedEvents);
+    await emitConverted(run, completedEvents);
     await recorder.waitForIdle(run.runId);
 
     const store = new RunMemoryFileStore(memoryDir);
@@ -910,8 +923,8 @@ describe("cross-runtime memory persistence integration", () => {
       "codex-raw-context-compaction-memory-run",
     );
 
-    run.emitLocalEvent(event(run.runId, AgentRunEventType.TURN_STARTED, { turnId }));
-    emitAssistantTrace(run, turnId, "codex-before-raw-boundary", "before raw context boundary", 1);
+    await run.publishEvent(event(run.runId, AgentRunEventType.TURN_STARTED, { turnId }));
+    await emitAssistantTrace(run, turnId, "codex-before-raw-boundary", "before raw context boundary", 1);
     const rawCompletedEvents = converter.convert({
       method: CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED,
       params: {
@@ -926,7 +939,7 @@ describe("cross-runtime memory persistence integration", () => {
       },
     });
     expect(rawCompletedEvents).toHaveLength(1);
-    emitConverted(run, rawCompletedEvents);
+    await emitConverted(run, rawCompletedEvents);
     await recorder.waitForIdle(run.runId);
 
     const store = new RunMemoryFileStore(memoryDir);
@@ -956,8 +969,8 @@ describe("cross-runtime memory persistence integration", () => {
       "codex-context-compaction-duplicate-memory-run",
     );
 
-    run.emitLocalEvent(event(run.runId, AgentRunEventType.TURN_STARTED, { turnId }));
-    emitAssistantTrace(run, turnId, "codex-before-duplicate-boundary", "before duplicate boundary", 1);
+    await run.publishEvent(event(run.runId, AgentRunEventType.TURN_STARTED, { turnId }));
+    await emitAssistantTrace(run, turnId, "codex-before-duplicate-boundary", "before duplicate boundary", 1);
     const itemCompleted = converter.convert({
       method: CodexThreadEventName.ITEM_COMPLETED,
       params: {
@@ -971,7 +984,7 @@ describe("cross-runtime memory persistence integration", () => {
       },
     });
     expect(itemCompleted).toHaveLength(1);
-    emitConverted(run, itemCompleted);
+    await emitConverted(run, itemCompleted);
     expect(converter.convert({
       method: CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED,
       params: {
@@ -1005,9 +1018,9 @@ describe("cross-runtime memory persistence integration", () => {
       "codex-context-compaction-distinct-memory-run",
     );
 
-    run.emitLocalEvent(event(run.runId, AgentRunEventType.TURN_STARTED, { turnId }));
-    emitAssistantTrace(run, turnId, "codex-before-first-boundary", "before first boundary", 1);
-    emitConverted(run, converter.convert({
+    await run.publishEvent(event(run.runId, AgentRunEventType.TURN_STARTED, { turnId }));
+    await emitAssistantTrace(run, turnId, "codex-before-first-boundary", "before first boundary", 1);
+    await emitConverted(run, converter.convert({
       method: CodexThreadEventName.ITEM_COMPLETED,
       params: {
         item: {
@@ -1019,7 +1032,7 @@ describe("cross-runtime memory persistence integration", () => {
         timestamp: 2,
       },
     }));
-    emitAssistantTrace(run, turnId, "codex-before-second-boundary", "before second boundary", 3);
+    await emitAssistantTrace(run, turnId, "codex-before-second-boundary", "before second boundary", 3);
     const secondCompleted = converter.convert({
       method: CodexThreadEventName.RAW_RESPONSE_ITEM_COMPLETED,
       params: {
@@ -1034,7 +1047,7 @@ describe("cross-runtime memory persistence integration", () => {
       },
     });
     expect(secondCompleted).toHaveLength(1);
-    emitConverted(run, secondCompleted);
+    await emitConverted(run, secondCompleted);
     await recorder.waitForIdle(run.runId);
 
     const store = new RunMemoryFileStore(memoryDir);
@@ -1071,8 +1084,8 @@ describe("cross-runtime memory persistence integration", () => {
       "codex-compaction-trigger-memory-run",
     );
 
-    run.emitLocalEvent(event(run.runId, AgentRunEventType.TURN_STARTED, { turnId }));
-    emitAssistantTrace(run, turnId, "codex-before-trigger", "before trigger", 1);
+    await run.publishEvent(event(run.runId, AgentRunEventType.TURN_STARTED, { turnId }));
+    await emitAssistantTrace(run, turnId, "codex-before-trigger", "before trigger", 1);
     expect(converter.convert({
       method: CodexThreadEventName.ITEM_STARTED,
       params: {
@@ -1141,18 +1154,18 @@ describe("cross-runtime memory persistence integration", () => {
     const converter = new ClaudeSessionEventConverter(run.runId);
     const turnId = `turn-${run.runId}`;
 
-    run.emitLocalEvent(event(run.runId, AgentRunEventType.TURN_STARTED, { turnId }));
-    run.emitLocalEvent(event(run.runId, AgentRunEventType.SEGMENT_CONTENT, {
+    await run.publishEvent(event(run.runId, AgentRunEventType.TURN_STARTED, { turnId }));
+    await run.publishEvent(event(run.runId, AgentRunEventType.SEGMENT_CONTENT, {
       id: "claude-before-status",
       segment_type: "text",
       delta: "before claude status",
       timestamp: 1,
     }));
-    run.emitLocalEvent(event(run.runId, AgentRunEventType.SEGMENT_END, {
+    await run.publishEvent(event(run.runId, AgentRunEventType.SEGMENT_END, {
       id: "claude-before-status",
       segment_type: "text",
     }));
-    converter.convert({
+    for (const converted of converter.convert({
       method: ClaudeSessionEventName.STATUS_COMPACTING,
       params: {
         session_id: "session-1",
@@ -1161,7 +1174,9 @@ describe("cross-runtime memory persistence integration", () => {
         timestamp: 2,
         input_tokens: 50000,
       },
-    }).forEach((converted) => run.emitLocalEvent(converted));
+    })) {
+      await run.publishEvent(converted);
+    }
     await recorder.waitForIdle(run.runId);
 
     let store = new RunMemoryFileStore(memoryDir);
@@ -1177,17 +1192,17 @@ describe("cross-runtime memory persistence integration", () => {
       semantic_compaction: false,
     });
 
-    run.emitLocalEvent(event(run.runId, AgentRunEventType.SEGMENT_CONTENT, {
+    await run.publishEvent(event(run.runId, AgentRunEventType.SEGMENT_CONTENT, {
       id: "claude-before-boundary",
       segment_type: "text",
       delta: "before claude boundary",
       timestamp: 3,
     }));
-    run.emitLocalEvent(event(run.runId, AgentRunEventType.SEGMENT_END, {
+    await run.publishEvent(event(run.runId, AgentRunEventType.SEGMENT_END, {
       id: "claude-before-boundary",
       segment_type: "text",
     }));
-    converter.convert({
+    for (const converted of converter.convert({
       method: ClaudeSessionEventName.COMPACT_BOUNDARY,
       params: {
         session_id: "session-1",
@@ -1196,7 +1211,9 @@ describe("cross-runtime memory persistence integration", () => {
         timestamp: 4,
         pre_tokens: 75000,
       },
-    }).forEach((converted) => run.emitLocalEvent(converted));
+    })) {
+      await run.publishEvent(converted);
+    }
     await recorder.waitForIdle(run.runId);
 
     store = new RunMemoryFileStore(memoryDir);
@@ -1269,18 +1286,18 @@ describe("cross-runtime memory persistence integration", () => {
       AgentRunEventType.TOOL_EXECUTION_STARTED,
       AgentRunEventType.TOOL_APPROVAL_REQUESTED,
     ]) {
-      run.emitLocalEvent(event(run.runId, eventType, {
+      await run.publishEvent(event(run.runId, eventType, {
         invocation_id: "denied-tool-1",
         tool_name: "run_bash",
         arguments: { command: "rm -rf /" },
       }));
     }
-    run.emitLocalEvent(event(run.runId, AgentRunEventType.TOOL_DENIED, {
+    await run.publishEvent(event(run.runId, AgentRunEventType.TOOL_DENIED, {
       invocation_id: "denied-tool-1",
       tool_name: "run_bash",
       reason: "policy denied",
     }));
-    run.emitLocalEvent(event(run.runId, AgentRunEventType.TOOL_DENIED, {
+    await run.publishEvent(event(run.runId, AgentRunEventType.TOOL_DENIED, {
       invocation_id: "denied-tool-1",
       tool_name: "run_bash",
       reason: "duplicate denial should be ignored",

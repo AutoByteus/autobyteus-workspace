@@ -10,6 +10,8 @@
 | `CRR-004` | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-test-review-report.md` | API-REV-002 bounded reporting-resolution verification | `Fail — Local Fix` | `Pass` | `TR-F-001` |
 | `CRR-005` | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md` | IR-003 / SR-006 canonical-address-only source review | `Pass — SR-005 source/test checkpoint` | `Pass` | `None` |
 | `CRR-006` | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-test-review-report.md` | API-REV-003 proportional review of three SR-006 durable test updates | `N/A — CRR-005 source Pass` | `Pass` | `None` |
+| `CRR-007` | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md` | IR-004 integrated latest-base conflict-resolution source review | `Pass — CRR-005 / API-REV-003 / CRR-006 checkpoint; DR-002 blocked refresh` | `Pass` | `None` |
+| `CRR-008` | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-test-review-report.md` | API-REV-004 proportional review of seven integrated durable fixture updates | `N/A — CRR-007 source Pass` | `Pass` | `None` |
 
 ## Revision Entries
 
@@ -155,3 +157,49 @@ None. `TR-F-001` was already resolved by `CRR-004`; API-REV-003 records the corr
 - Material score or classification changes: No implementation scorecard was reopened. Proportional durable test-code result is `Pass`.
 - Recommended recipient: `delivery_engineer`
 - Remaining risks or uncertainty: Live Codex/Claude model processes remain capability-gated and are not counted as passes. The independent whole-server baseline has 24 unrelated failing files / 57 failing tests with zero intersection with SR-006 or the current three-file test delta; directly affected and deterministic E2E suites are clean.
+
+### CRR-007 — IR-004 integrated latest-base conflict resolution passes source review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `4`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/implementation-handoff.md`; `IR-004`; delivery integration blocker `DR-002`; no product scenario or new finding ID.
+- Relevant solution revision IDs: `SR-006`
+- Relevant architecture-review revision IDs: `ARCH-REV-005`
+- Relevant implementation revision IDs: `IR-003`, `IR-004`
+- Relevant API/E2E revision IDs: `API-REV-003` as the pre-merge checkpoint only
+- Relevant delivery revision IDs: `DR-002`
+- Prior authoritative result: `CRR-005` source Pass (`9.4/10`), followed by `API-REV-003` / `CRR-006` Pass; delivery then blocked at `DR-002` on five latest-base merge conflicts.
+- Current authoritative result: `Pass` (`9.4/10`)
+- What changed in the review result and why: Merge commit `ef32724d...` preserves SR-006 root-private canonical placement/delivery and child collaboration boundaries while adopting the latest base leaf-Agent snapshot/open-work lifecycle and removal of aggregate Team status events. The two obsolete aggregate owners were deleted rather than retained as compatibility paths. Source tracing, merge/remerge inspection, static authority and conflict audits, typecheck, full build/bootstrap, and reviewer-focused 8-file/45-test execution passed.
+
+#### Prior Finding Resolution
+
+None. `CR-F-001`, `CR-F-002`, and `TR-F-001` remain resolved; `DR-002` was a merge-conflict gate rather than a prior code-review finding.
+
+- New or remaining finding IDs: `None`
+- Material score or classification changes: No classification change. The integrated implementation remains a clean `Pass`; every score category is at or above `9.0`.
+- Recommended recipient: `api_e2e_engineer`
+- Remaining risks or uncertainty: API-REV-003 predates the merge. API/E2E must open a new integrated coverage investigation over the two conflict-resolved durable tests plus the three API-REV-003 maintained files, execute affected and proportionate broader coverage, and return any durable coverage delta through proportional code review. The prior whole-server baseline remains non-clean, live Codex/Claude model processes remain capability-gated, `MixedTeamManager` is 499 effective non-empty lines, and delivery's protected stash/artifacts still require later integrated reconciliation.
+
+### CRR-008 — API-REV-004 integrated durable fixture updates pass proportional review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-test-review-report.md`
+- Review entry point and round: `Successful API/E2E Test-Code Review`, round `4`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/api-e2e-execution-coverage-report.md`; `API-REV-004` Pass; `INTEGRATED-API-CTX-001`, `INTEGRATED-MEMORY-CTX-001`, `INTEGRATED-BACKEND-001`, `INTEGRATED-RUN-SERVICE-001`, `INTEGRATED-WS-001`, `INTEGRATED-HISTORY-001`, and `INTEGRATED-EXTERNAL-001`; no finding ID.
+- Relevant solution revision IDs: `SR-006`
+- Relevant architecture-review revision IDs: `ARCH-REV-005`
+- Relevant implementation revision IDs: `IR-004`
+- Relevant API/E2E revision IDs: `API-REV-004`
+- Relevant delivery revision IDs: `DR-002`
+- Prior authoritative result: `N/A — first proportional test review for the integrated IR-004 durable delta; CRR-007 source review remains Pass at 9.4/10`
+- Current authoritative result: `Pass`
+- What changed in the review result and why: Seven useful existing scenarios now use the current Agent lifecycle/source-event-batch/public-event and Team leaf-snapshot/open-work fixture contracts. Observable memory, exact collaboration context, backend delegation, WebSocket, TeamRun service, API/restore, history, and external-channel assertions remain intact. The edits stay in their existing coherent harnesses, await event publication where applicable, add no disabled or compatibility-only coverage, and agree exactly with the API-REV-004 investigation/delta and clean final focused/affected/E2E evidence.
+
+#### Prior Finding Resolution
+
+None. `TR-F-001` remains resolved. The API-REV-004 initial focused failures were within-round fixture-validity discoveries, not prior code-review findings; the final seven-file state resolves them.
+
+- New or remaining finding IDs: `None`
+- Material score or classification changes: No implementation scorecard was reopened. Proportional durable test-code result is `Pass`.
+- Recommended recipient: `delivery_engineer`
+- Remaining risks or uncertainty: Live Codex/Claude model processes remain capability-gated and are not counted as passes. The whole-server baseline remains non-clean only in inherited files proven byte-identical to the integrated base and disjoint from the ticket/seven-file delta. Delivery must preserve and reconcile its protected stash/backup and delivery-owned artifacts against the integrated CRR-007 / API-REV-004 / CRR-008 state.

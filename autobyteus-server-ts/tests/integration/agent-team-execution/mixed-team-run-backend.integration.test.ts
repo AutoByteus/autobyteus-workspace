@@ -83,8 +83,8 @@ const createManager = () => {
 
   return {
     hasActiveMembers: vi.fn(() => active),
-    getStatusSnapshot: vi.fn(() => ({ status: "idle" })),
-    getMemberStatusSnapshots: vi.fn(() => []),
+    getLeafAgentStatusSnapshots: vi.fn(() => []),
+    hasOpenExecutionWork: vi.fn(() => false),
     postMessage: vi.fn().mockResolvedValue({ accepted: true }),
     deliverInterAgentMessage: vi.fn().mockResolvedValue({ accepted: true }),
     approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
@@ -120,7 +120,8 @@ describe("MixedTeamRunBackend integration", () => {
     expect(backend.runId).toBe("team-mixed-1");
     expect(backend.teamBackendKind).toBe(TeamBackendKind.MIXED);
     expect(backend.isActive()).toBe(true);
-    expect(backend.getStatusSnapshot()).toEqual({ status: "idle" });
+    expect(backend.getLeafAgentStatusSnapshots()).toEqual([]);
+    expect(backend.hasOpenExecutionWork()).toBe(false);
     expect(backend.getRuntimeContext()).toBe(context.runtimeContext);
 
     const userMessage = new AgentInputUserMessage("coordinate the mixed task");
@@ -245,7 +246,8 @@ describe("MixedTeamRunBackend integration", () => {
       code: "RUN_NOT_FOUND",
     });
     await expect(backend.terminate()).resolves.toEqual({ accepted: true });
-    expect(backend.getStatusSnapshot()).toEqual({ status: "idle" });
+    expect(backend.getLeafAgentStatusSnapshots()).toEqual([]);
+    expect(backend.hasOpenExecutionWork()).toBe(false);
   });
 
   it("forwards team events from the manager subscription", () => {
