@@ -188,9 +188,36 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
   await getSecretVaultRuntime().initialize(databaseLocation);
 
   try {
-    await getAppDataMigrationRunner().runPending();
+    const statuses = await getAppDataMigrationRunner().runPending();
+    const blockingStatuses = statuses.filter(
+      (status) => status.requiredOnStartup !== false && status.status !== "SUCCEEDED",
+    );
+    if (blockingStatuses.length > 0) {
+      logger.error(
+        `Required app data migrations did not complete successfully; startup halted: ${JSON.stringify(
+          blockingStatuses.map((status) => ({
+            migrationId: status.migrationId,
+            displayName: status.displayName ?? null,
+            requiredOnStartup: status.requiredOnStartup ?? true,
+            status: status.status,
+            attempts: status.attempts ?? null,
+            failedCount: status.summary?.failedCount ?? null,
+            errorMessage: status.errorMessage ?? null,
+            logPath: status.logPath ?? null,
+          })),
+        )}`,
+      );
+      return;
+    }
   } catch (error) {
-    logger.error(`Failed to run app data migrations: ${String(error)}`);
+    logger.error(
+      `Failed to run app data migrations; startup halted: ${JSON.stringify({
+        migrationId: null,
+        status: "RUNNER_EXCEPTION",
+        errorMessage: error instanceof Error ? error.message : String(error),
+      })}`,
+    );
+    return;
   }
 
   try {
