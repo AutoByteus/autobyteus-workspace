@@ -18,6 +18,7 @@ import {
 import { SERVER_ROUTE_PARAM_MAX_LENGTH } from "./api/fastify-runtime-config.js";
 import { runMigrations } from "./startup/migrations.js";
 import { getAppDataMigrationRunner } from "./app-data-migrations/app-data-migration-runner.js";
+import { TEAM_CANONICAL_IDENTITY_MIGRATION_ID } from "./app-data-migrations/migrations/team-canonical-identity-migration.js";
 import { scheduleBackgroundTasks } from "./startup/background-runner.js";
 import { bootstrapBuiltInAgents } from "./built-in-agents/built-in-agent-bootstrapper.js";
 import { registerRestRoutes } from "./api/rest/index.js";
@@ -189,30 +190,27 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
 
   try {
     const statuses = await getAppDataMigrationRunner().runPending();
-    const blockingStatuses = statuses.filter(
-      (status) => status.requiredOnStartup !== false && status.status !== "SUCCEEDED",
+    const canonicalStatus = statuses.find(
+      (status) => status.migrationId === TEAM_CANONICAL_IDENTITY_MIGRATION_ID,
     );
-    if (blockingStatuses.length > 0) {
+    if (canonicalStatus?.status !== "SUCCEEDED") {
       logger.error(
-        `Required app data migrations did not complete successfully; startup halted: ${JSON.stringify(
-          blockingStatuses.map((status) => ({
-            migrationId: status.migrationId,
-            displayName: status.displayName ?? null,
-            requiredOnStartup: status.requiredOnStartup ?? true,
-            status: status.status,
-            attempts: status.attempts ?? null,
-            failedCount: status.summary?.failedCount ?? null,
-            errorMessage: status.errorMessage ?? null,
-            logPath: status.logPath ?? null,
-          })),
-        )}`,
+        `Canonical identity migration did not complete successfully; startup halted: ${JSON.stringify({
+          migrationId: TEAM_CANONICAL_IDENTITY_MIGRATION_ID,
+          displayName: canonicalStatus?.displayName ?? null,
+          status: canonicalStatus?.status ?? "MISSING",
+          attempts: canonicalStatus?.attempts ?? null,
+          failedCount: canonicalStatus?.summary?.failedCount ?? null,
+          errorMessage: canonicalStatus?.errorMessage ?? null,
+          logPath: canonicalStatus?.logPath ?? null,
+        })}`,
       );
       return;
     }
   } catch (error) {
     logger.error(
       `Failed to run app data migrations; startup halted: ${JSON.stringify({
-        migrationId: null,
+        migrationId: TEAM_CANONICAL_IDENTITY_MIGRATION_ID,
         status: "RUNNER_EXCEPTION",
         errorMessage: error instanceof Error ? error.message : String(error),
       })}`,
