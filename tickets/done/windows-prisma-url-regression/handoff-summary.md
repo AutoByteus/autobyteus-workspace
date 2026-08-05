@@ -47,11 +47,18 @@
 - User verification received: Yes; user authorized finalization and release on 2026-08-05
 - Suggested artifact:
   `autobyteus-web/electron-dist/AutoByteus_enterprise_windows-1.4.42.exe`
-- Repository finalization and release are authorized and in progress.
+- Repository finalization and release completed successfully.
 
 ## Finalization Record
 
 - Ticket worktree: `D:\autobyteus-org\autobyteus-workspace-origin-personal`
 - Ticket branch: `codex/windows-prisma-url-regression`
 - Finalization target: `origin/personal`
-- Ticket archive, commit, push, merge, release, and cleanup: pending user verification
+- Ticket archived to: `tickets/done/windows-prisma-url-regression`
+- Fix commit: `2f9543b93`
+- Merge commit on `personal`: `1d7ecfa28`
+- Release commit: `96b480962`
+- Push status: branch, `personal`, and tag `v1.4.43` pushed successfully
+- Release/publication/deployment status: release helper completed; tag push triggered the documented GitHub workflows
+- Worktree cleanup status: completed after this final handoff commit
+- Local branch cleanup status: completed after this final handoff commit

@@ -31,7 +31,7 @@
 | 7 Executable Validation | Pass | `api-e2e-testing.md`; all acceptance criteria and runtime spines passed |
 | 8 Code Review | Pass | `code-review.md`; no findings, 9.7/10, mandatory checks passed |
 | 9 Docs Sync | Pass | `docs-sync.md`; no long-lived docs change required |
-| 10 Handoff | In Progress | User explicitly verified and authorized finalization/release; archival and repository finalization underway |
+| 10 Handoff | Complete | User verified; ticket archived, fix merged and pushed, v1.4.43 released |
 
 ## Transition Log
 
@@ -49,3 +49,4 @@
 | 8 | 9 | Pass | Review found no issues; file-size, ownership, boundary, test, and compatibility checks passed |
 | 9 | 10 | Pass | Long-lived docs reviewed; existing contracts remain accurate and release notes are required |
 | 10 | 10 | Verified | User explicitly authorized finalization and release; proceeding with archive, merge, and v1.4.43 release |
+| 10 | 10 | Complete | Ticket archived, branch pushed, merged into `personal`, v1.4.43 tagged and pushed, and cleanup completed |
