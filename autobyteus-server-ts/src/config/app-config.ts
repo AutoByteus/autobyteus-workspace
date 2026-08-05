@@ -11,7 +11,10 @@ import {
   resolveConfiguredDirectoryPath,
 } from "./config-value-parsers.js";
 import { LOCAL_IMPORT_CREDENTIAL_ALIAS_NAMES } from "../secret-management/provisioning/local-import-credential-alias-registry.js";
-import { ApplicationDatabaseLocation } from "./application-database-location.js";
+import {
+  ApplicationDatabaseLocation,
+  toPrismaSqliteUrl,
+} from "./application-database-location.js";
 import { assignmentName, linesWithEndings, splitLineEnding } from "./environment-assignment-lines.js";
 
 const forbiddenGenericSettingNames = new Set<string>([
@@ -194,12 +197,8 @@ export class AppConfig {
       return;
     }
     const dbPath = this.getSqlitePath();
-    const expectedUrl = this.toPrismaSqliteUrl(dbPath);
+    const expectedUrl = toPrismaSqliteUrl(dbPath);
     this.setOperationalDatabaseLocation(expectedUrl);
-  }
-
-  private toPrismaSqliteUrl(filePath: string): string {
-    return `file:${filePath.replace(/\\/g, "/")}`;
   }
 
   private setOperationalDatabaseLocation(databaseUrl: string): void {
