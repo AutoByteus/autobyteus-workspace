@@ -13,6 +13,7 @@ export class TaskDelegationTargetMapper {
     callerAddressing: MemberLogicalAddressContext,
     currentTeam: TeamRunContext<unknown>,
     caller: TaskDelegationCallerIdentity,
+    activeTaskAgentRunId: string | null = null,
   ): TaskDelegationTarget {
     const callerTeamAddress = getParentAgentTeamAddress(callerAddressing.memberAddress);
     const targetTeamAddress = getParentAgentTeamAddress(recipient.address);
@@ -24,7 +25,19 @@ export class TaskDelegationTargetMapper {
       );
     }
     const callerNode = currentTeam.index.getAgent(callerAddressing.memberAddress);
-    if (!callerNode || callerNode.agentRunId !== caller.agentRunId) {
+    const taskAgentRunId = caller.taskAgentInstance?.taskAgentRunId ?? null;
+    const executionAddressMatches =
+      callerAddressing.rootTeamRunId === currentTeam.config.rootTeam.teamRunId &&
+      caller.executionAddress.rootTeamRunId === currentTeam.config.rootTeam.teamRunId &&
+      caller.executionAddress.memberAddress === callerAddressing.memberAddress;
+    const runtimeIdentityMatches = activeTaskAgentRunId
+      ? taskAgentRunId === activeTaskAgentRunId &&
+        caller.agentRunId === activeTaskAgentRunId &&
+        caller.executionAddress.taskAgentRunId === taskAgentRunId
+      : taskAgentRunId === null &&
+        caller.executionAddress.taskAgentRunId === null &&
+        callerNode?.agentRunId === caller.agentRunId;
+    if (!callerNode || !executionAddressMatches || !runtimeIdentityMatches) {
       throw new TaskDelegationError(
         "DELEGATOR_NOT_AUTHORIZED",
         "Caller runtime identity does not match the current AgentTeam execution.",
