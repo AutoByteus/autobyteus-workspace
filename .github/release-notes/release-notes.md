@@ -1,2 +1,7 @@
+## Improvements
+- Improved `edit_file` context-mismatch feedback with precise hunk details and safe reread-and-retry guidance.
+
 ## Fixes
-- Fixed a Windows desktop startup failure caused by the embedded server being unable to open its SQLite database.
+- Fixed unterminated final patch records so added text cannot join untouched file content.
+- Preserved explicit no-final-newline edits through the standard `\ No newline at end of file` marker.
+- Kept failed multi-hunk edits atomic so diagnostic candidates are never applied and no partial write occurs.
