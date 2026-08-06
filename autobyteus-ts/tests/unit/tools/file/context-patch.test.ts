@@ -39,6 +39,22 @@ describe('applyContextPatch', () => {
     )).toBe('alpha\ninserted\nomega\n');
   });
 
+  it('completes an unterminated final addition before untouched LF content', () => {
+    expect(applyContextPatch(
+      'Visualization load behavior\nExisting validation guidance\n',
+      '@@\n Visualization load behavior\n+New loading-state guidance'
+    )).toBe(
+      'Visualization load behavior\nNew loading-state guidance\nExisting validation guidance\n'
+    );
+  });
+
+  it('completes an unterminated final addition with the patch CRLF style', () => {
+    expect(applyContextPatch(
+      'anchor\r\nfollowing\r\n',
+      '@@\r\n anchor\r\n+inserted'
+    )).toBe('anchor\r\ninserted\r\nfollowing\r\n');
+  });
+
   it('supports one whitespace-tolerant matching strategy while preserving actual context', () => {
     const original = 'def foo():\n    return True\n';
     const patch = '@@\n def foo():\n-  return True\n+  return False\n';
@@ -300,9 +316,9 @@ describe('applyContextPatch', () => {
       .toBe('line1\nLINE2\n');
   });
 
-  it('preserves a missing final newline from a patch without a final line ending', () => {
+  it('terminates changed EOF content when the outer patch has no final line ending', () => {
     expect(applyContextPatch('line1\nline2', '@@\n line1\n-line2\n+LINE2'))
-      .toBe('line1\nLINE2');
+      .toBe('line1\nLINE2\n');
   });
 
   it('accepts exact standard no-newline markers after removal and addition lines', () => {
@@ -315,6 +331,13 @@ describe('applyContextPatch', () => {
     ].join('\n');
 
     expect(applyContextPatch('old', patch)).toBe('new');
+  });
+
+  it('preserves an untouched EOF line without a terminator when editing earlier content', () => {
+    expect(applyContextPatch(
+      'alpha\nbeta\nomega',
+      '@@\n-alpha\n+ALPHA\n beta'
+    )).toBe('ALPHA\nbeta\nomega');
   });
 
   it('applies a late unique edit in a 250,000-line file without a spread overflow', () => {

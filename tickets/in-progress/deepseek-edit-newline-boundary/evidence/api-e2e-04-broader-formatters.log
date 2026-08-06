@@ -1,0 +1,40 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-edit-newline-boundary/autobyteus-ts
+
+ ✓ tests/unit/tools/usage/formatters/openai-json-example-formatter.test.ts (2 tests) 4ms
+ ✓ tests/unit/tools/usage/formatters/edit-file-xml-formatter.test.ts (4 tests) 4ms
+ ✓ tests/unit/tools/usage/formatters/default-json-example-formatter.test.ts (2 tests) 3ms
+ ✓ tests/unit/tools/usage/formatters/default-xml-example-formatter.test.ts (4 tests) 4ms
+ ✓ tests/unit/tools/usage/formatters/default-json-schema-formatter.test.ts (1 test) 5ms
+ ✓ tests/unit/tools/usage/formatters/gemini-json-example-formatter.test.ts (2 tests) 4ms
+ ✓ tests/unit/tools/usage/formatters/default-xml-schema-formatter.test.ts (6 tests) 6ms
+ ✓ tests/unit/tools/usage/formatters/google-json-example-formatter.test.ts (2 tests) 5ms
+ ✓ tests/unit/tools/usage/formatters/openai-json-schema-formatter.test.ts (1 test) 3ms
+ ✓ tests/unit/tools/usage/formatters/write-file-xml-formatter.test.ts (4 tests) 3ms
+ ✓ tests/unit/tools/usage/formatters/mistral-json-schema-formatter.test.ts (1 test) 3ms
+ ✓ tests/unit/tools/usage/formatters/gemini-json-schema-formatter.test.ts (1 test) 2ms
+ ✓ tests/unit/tools/usage/formatters/anthropic-json-schema-formatter.test.ts (1 test) 3ms
+ ✓ tests/unit/tools/usage/formatters/run-bash-xml-formatter.test.ts (2 tests) 4ms
+ ✓ tests/integration/tools/usage/formatters/run-bash-xml-formatter.test.ts (1 test) 2ms
+ ✓ tests/unit/tools/usage/formatters/google-json-schema-formatter.test.ts (1 test) 6ms
+ ✓ tests/unit/tools/usage/formatters/anthropic-json-example-formatter.test.ts (1 test) 3ms
+ ✓ tests/integration/tools/usage/formatters/default-xml-example-formatter.test.ts (1 test) 2ms
+ ✓ tests/integration/tools/usage/formatters/gemini-json-example-formatter.test.ts (1 test) 3ms
+ ✓ tests/integration/tools/usage/formatters/google-json-example-formatter.test.ts (1 test) 2ms
+ ✓ tests/integration/tools/usage/formatters/default-xml-schema-formatter.test.ts (1 test) 1ms
+ ✓ tests/integration/tools/usage/formatters/openai-json-schema-formatter.test.ts (1 test) 2ms
+ ✓ tests/integration/tools/usage/formatters/openai-json-example-formatter.test.ts (1 test) 2ms
+ ✓ tests/integration/tools/usage/formatters/mistral-json-schema-formatter.test.ts (1 test) 2ms
+ ✓ tests/integration/tools/usage/formatters/anthropic-json-example-formatter.test.ts (1 test) 3ms
+ ✓ tests/integration/tools/usage/formatters/default-json-schema-formatter.test.ts (1 test) 5ms
+ ✓ tests/integration/tools/usage/formatters/anthropic-json-schema-formatter.test.ts (1 test) 3ms
+ ✓ tests/integration/tools/usage/formatters/gemini-json-schema-formatter.test.ts (1 test) 2ms
+ ✓ tests/integration/tools/usage/formatters/google-json-schema-formatter.test.ts (1 test) 2ms
+ ✓ tests/integration/tools/usage/formatters/default-json-example-formatter.test.ts (1 test) 1ms
+ ✓ tests/integration/tools/usage/formatters/write-file-xml-formatter.test.ts (1 test) 1ms
+ ✓ tests/integration/tools/usage/formatters/edit-file-xml-formatter.test.ts (1 test) 1ms
+
+ Test Files  32 passed (32)
+      Tests  51 passed (51)
+   Start at  20:12:46
+   Duration  999ms (transform 1.36s, setup 300ms, import 2.29s, tests 96ms, environment 2ms)

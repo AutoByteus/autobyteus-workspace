@@ -1,0 +1,56 @@
+$ git diff --check
+$ git diff --cached --check
+$ git diff --name-only --diff-filter=U
+$ find autobyteus-ts -maxdepth 1 -type d matching test temp prefixes
+$ shasum -a 256 -c api-e2e-evidence-sha256.txt
+api-e2e-01-focused-file.log: OK
+api-e2e-02-contract-transport.log: OK
+api-e2e-03-broader-file-tools.log: OK
+api-e2e-04-broader-formatters.log: OK
+api-e2e-05-build.log: OK
+api-e2e-06-diff-check.log: OK
+api-e2e-07-cleanup.log: OK
+api-e2e-08-repository-state.log: OK
+$ git status --short --branch
+## codex/edit-file-actionable-context-errors...origin/personal [ahead 1]
+M  autobyteus-ts/docs/tool_schema_and_configuration.md
+M  autobyteus-ts/src/tools/file/context-patch.ts
+M  autobyteus-ts/src/tools/file/edit-file-contract.ts
+M  autobyteus-ts/src/tools/usage/formatters/edit-file-xml-example-formatter.ts
+M  autobyteus-ts/tests/unit/tools/file/context-patch.test.ts
+M  autobyteus-ts/tests/unit/tools/file/edit-file.test.ts
+M  autobyteus-ts/tests/unit/tools/usage/formatters/edit-file-xml-formatter.test.ts
+A  tickets/in-progress/deepseek-edit-newline-boundary/api-e2e-coverage-investigation.md
+A  tickets/in-progress/deepseek-edit-newline-boundary/api-e2e-execution-coverage-report.md
+A  tickets/in-progress/deepseek-edit-newline-boundary/api-e2e-revision-record.md
+A  tickets/in-progress/deepseek-edit-newline-boundary/api-e2e-test-review-report.md
+A  tickets/in-progress/deepseek-edit-newline-boundary/architecture-review-revision-record.md
+A  tickets/in-progress/deepseek-edit-newline-boundary/code-review-report.md
+A  tickets/in-progress/deepseek-edit-newline-boundary/code-review-revision-record.md
+A  tickets/in-progress/deepseek-edit-newline-boundary/delivery-integrated-state-refresh.log
+A  tickets/in-progress/deepseek-edit-newline-boundary/delivery-revision-record.md
+A  tickets/in-progress/deepseek-edit-newline-boundary/design-review-report.md
+A  tickets/in-progress/deepseek-edit-newline-boundary/design-spec.md
+A  tickets/in-progress/deepseek-edit-newline-boundary/docs-sync-report.md
+A  tickets/in-progress/deepseek-edit-newline-boundary/docs-sync-validation.log
+A  tickets/in-progress/deepseek-edit-newline-boundary/electron-build-macos-arm64.log
+A  tickets/in-progress/deepseek-edit-newline-boundary/electron-build-verification-macos-arm64.log
+A  tickets/in-progress/deepseek-edit-newline-boundary/evidence/api-e2e-01-focused-file.log
+A  tickets/in-progress/deepseek-edit-newline-boundary/evidence/api-e2e-02-contract-transport.log
+A  tickets/in-progress/deepseek-edit-newline-boundary/evidence/api-e2e-03-broader-file-tools.log
+A  tickets/in-progress/deepseek-edit-newline-boundary/evidence/api-e2e-04-broader-formatters.log
+A  tickets/in-progress/deepseek-edit-newline-boundary/evidence/api-e2e-05-build.log
+A  tickets/in-progress/deepseek-edit-newline-boundary/evidence/api-e2e-06-diff-check.log
+A  tickets/in-progress/deepseek-edit-newline-boundary/evidence/api-e2e-07-cleanup.log
+A  tickets/in-progress/deepseek-edit-newline-boundary/evidence/api-e2e-08-repository-state.log
+A  tickets/in-progress/deepseek-edit-newline-boundary/evidence/api-e2e-evidence-sha256.txt
+A  tickets/in-progress/deepseek-edit-newline-boundary/handoff-summary.md
+A  tickets/in-progress/deepseek-edit-newline-boundary/implementation-handoff.md
+A  tickets/in-progress/deepseek-edit-newline-boundary/implementation-revision-record.md
+A  tickets/in-progress/deepseek-edit-newline-boundary/investigation-notes.md
+A  tickets/in-progress/deepseek-edit-newline-boundary/live-electron-verification-report.md
+A  tickets/in-progress/deepseek-edit-newline-boundary/release-deployment-report.md
+A  tickets/in-progress/deepseek-edit-newline-boundary/requirements.md
+A  tickets/in-progress/deepseek-edit-newline-boundary/solution-revision-record.md
+A  tickets/in-progress/deepseek-edit-newline-boundary/trace-and-probe-evidence.md
+?? tickets/in-progress/edit-file-actionable-context-errors/delivery-integration-evidence/

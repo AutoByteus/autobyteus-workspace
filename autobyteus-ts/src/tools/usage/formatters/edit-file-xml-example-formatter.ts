@@ -23,7 +23,24 @@ __END_PATCH__
     </arguments>
 </tool>
 
-### Example 2: Add new lines to a configuration file
+### Example 2: Replace a final line and intentionally omit its line terminator
+
+<tool name="edit_file">
+    <arguments>
+        <arg name="path">/path/to/version.txt</arg>
+        <arg name="patch">
+__START_PATCH__
+@@
+-version=old
+\\ No newline at end of file
++version=new
+\\ No newline at end of file
+__END_PATCH__
+        </arg>
+    </arguments>
+</tool>
+
+### Example 3: Add new lines to a configuration file
 
 <tool name="edit_file">
     <arguments>

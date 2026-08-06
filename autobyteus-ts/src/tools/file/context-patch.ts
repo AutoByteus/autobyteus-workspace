@@ -85,6 +85,13 @@ function removeLineEnding(line: string): string {
   return line.replace(/\r?\n$/, '');
 }
 
+function completePatchDocument(patch: string): string {
+  if (patch.endsWith('\n')) {
+    return patch;
+  }
+  return patch + (patch.includes('\r\n') ? '\r\n' : '\n');
+}
+
 function isUnprefixedHunkHeader(line: string): boolean {
   const token = stripLineEnding(line);
   return token === '@@' || NUMERIC_HUNK_HEADER_RE.test(token);
@@ -105,7 +112,7 @@ function scanRawHunks(patch: string): string[][] {
     throwDocumentFailure('Patch content is empty; nothing to apply.');
   }
 
-  const patchLines = splitLinesKeepEnds(patch);
+  const patchLines = splitLinesKeepEnds(completePatchDocument(patch));
   const rawHunks: string[][] = [];
   let lineIndex = 0;
 

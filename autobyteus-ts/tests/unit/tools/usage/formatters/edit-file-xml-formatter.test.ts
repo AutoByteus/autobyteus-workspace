@@ -39,6 +39,10 @@ describe('EditFileXmlFormatter', () => {
     expect(schema).toContain('do not reconstruct them from memory');
     expect(schema).toContain('After an intervening edit or a context-match failure');
     expect(schema).toContain('bare `@@` line');
+    expect(schema).toContain('complete logical line');
+    expect(schema).toContain('transport framing, not target-file semantics');
+    expect(schema).toContain('\\ No newline at end of file');
+    expect(schema).toContain('sole opt-out');
     expect(schema).toContain('Copy unchanged and removal lines exactly');
     expect(schema).toContain('`diff --git`, `---`, or `+++`');
     expect(schema).toContain('numeric hunk coordinates');
@@ -73,5 +77,7 @@ describe('EditFileXmlFormatter', () => {
     expect(example).toContain('__END_PATCH__');
     expect(example).toContain('<arg name="path">/path/to/utils.py</arg>');
     expect(example).toContain('<arg name="path">/path/to/config/settings.yaml</arg>');
+    expect(example).toContain('<arg name="path">/path/to/version.txt</arg>');
+    expect(example).toContain('\\ No newline at end of file');
   });
 });
