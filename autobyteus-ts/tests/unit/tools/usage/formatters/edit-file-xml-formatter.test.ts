@@ -19,7 +19,7 @@ describe('EditFileXmlFormatter', () => {
   it('schema uses standard XML structure', () => {
     const formatter = new EditFileXmlSchemaFormatter();
     const schema = formatter.provide(toolDef);
-    expect(schema).toContain('<tool name="edit_file">');
+    expect(schema).toContain('<tool name="edit_file"');
     expect(schema).toContain('</tool>');
     expect(schema).toContain('<arguments>');
   });
@@ -34,8 +34,32 @@ describe('EditFileXmlFormatter', () => {
     expect(schema).toContain('name="base_dir"');
     expect(schema).toContain('prior shell cd state');
     expect(schema).toContain('context-located patch');
-    expect(schema).toContain('bare @@ line');
+    expect(schema).toContain('simplified unified-diff-style format');
+    expect(schema).toContain('read the current relevant file region unless it was just read');
+    expect(schema).toContain('do not reconstruct them from memory');
+    expect(schema).toContain('After an intervening edit or a context-match failure');
+    expect(schema).toContain('bare `@@` line');
+    expect(schema).toContain('complete logical line');
+    expect(schema).toContain('transport framing, not target-file semantics');
+    expect(schema).toContain('\\ No newline at end of file');
+    expect(schema).toContain('sole opt-out');
+    expect(schema).toContain('Copy unchanged and removal lines exactly');
+    expect(schema).toContain('`diff --git`, `---`, or `+++`');
+    expect(schema).toContain('numeric hunk coordinates');
+    expect(schema).toContain('`*** Begin Patch` and `*** End Patch`');
     expect(schema).not.toContain('@@ -10,7 +10,8 @@');
+  });
+
+  it('places the canonical bare-hunk example in patch-field guidance before sentinels', () => {
+    const formatter = new EditFileXmlSchemaFormatter();
+    const schema = formatter.provide(toolDef);
+    const example = "Example patch:\n@@\n-const mode = 'old'\n+const mode = 'new'\n const keep = true";
+
+    expect(schema).toContain(example);
+    expect(schema.indexOf(example)).toBeLessThan(schema.indexOf('IMPORTANT: To ensure reliable streaming'));
+    expect(schema.split('\n')).toContain(' const keep = true');
+    expect(schema.slice(schema.indexOf('Example patch:'), schema.indexOf('IMPORTANT:')))
+      .not.toMatch(/diff --git|---|\+\+\+|@@ -|\*\*\* Begin Patch|__START_PATCH__/);
   });
 
   it('example uses standard XML structure', () => {
@@ -53,5 +77,7 @@ describe('EditFileXmlFormatter', () => {
     expect(example).toContain('__END_PATCH__');
     expect(example).toContain('<arg name="path">/path/to/utils.py</arg>');
     expect(example).toContain('<arg name="path">/path/to/config/settings.yaml</arg>');
+    expect(example).toContain('<arg name="path">/path/to/version.txt</arg>');
+    expect(example).toContain('\\ No newline at end of file');
   });
 });

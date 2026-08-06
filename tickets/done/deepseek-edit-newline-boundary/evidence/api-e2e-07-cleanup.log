@@ -1,0 +1,5 @@
+Pre-execution tmp-* baseline: 50 directories.
+API/E2E-created tmp-* directories identified by absolute-path set difference: 43.
+Cleanup method: validated each owned path was an immediate child of autobyteus-ts with a tmp- prefix, then removed it using Python shutil.rmtree.
+Post-cleanup remaining tmp-* directories: 50.
+Pre-existing tmp-* path set preserved exactly: PASS.

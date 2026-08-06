@@ -1,0 +1,21 @@
+$ git diff --check
+$ git diff origin/personal --check
+$ git diff --name-only --diff-filter=U
+$ find autobyteus-ts -maxdepth 1 -type d matching test temp prefixes
+$ shasum -a 256 -c predecessor api-e2e-evidence-sha256.txt
+api-e2e-01-focused-file.log: OK
+api-e2e-02-contract-transport.log: OK
+api-e2e-03-broader-file-tools.log: OK
+api-e2e-04-broader-formatters.log: OK
+api-e2e-05-build.log: OK
+api-e2e-06-diff-check.log: OK
+api-e2e-07-cleanup.log: OK
+api-e2e-08-repository-state.log: OK
+$ git status --short --branch
+## codex/edit-file-actionable-context-errors...origin/personal [ahead 4]
+ M tickets/in-progress/edit-file-actionable-context-errors/api-e2e-evidence/01-focused-tests.log
+ M tickets/in-progress/edit-file-actionable-context-errors/api-e2e-evidence/02-file-tool-suites.log
+ M tickets/in-progress/edit-file-actionable-context-errors/api-e2e-evidence/03-formatter-agent-loop-suites.log
+ M tickets/in-progress/edit-file-actionable-context-errors/api-e2e-evidence/08-live-deepseek-agent.log
+ M tickets/in-progress/edit-file-actionable-context-errors/delivery-integration-evidence/04-hygiene-and-state.log
+ M tickets/in-progress/edit-file-actionable-context-errors/semantic-predecessor-reconciliation.md

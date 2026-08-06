@@ -1,0 +1,31 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-edit-newline-boundary/autobyteus-ts
+
+ ✓ tests/unit/llm/converters/openai-tool-call-converter.test.ts (2 tests) 2ms
+ ✓ tests/unit/agent/streaming/api-tool-call/file-content-streamer.test.ts (3 tests) 2ms
+ ✓ tests/unit/tools/usage/formatters/edit-file-xml-formatter.test.ts (4 tests) 2ms
+stdout | tests/unit/agent/streaming/handlers/api-tool-call-streaming-response-handler.test.ts > ApiToolCallStreamingResponseHandler basics > finalize creates invocations from accumulated args
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/unit/agent/streaming/handlers/api-tool-call-streaming-response-handler.test.ts > ApiToolCallStreamingResponseHandler basics > carries provider-native context from deltas to tool invocations
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/unit/agent/streaming/handlers/api-tool-call-streaming-response-handler.test.ts > ApiToolCallStreamingResponseHandler parallel tool calls > tracks multiple tool calls by index
+ApiToolCallStreamingResponseHandler finalized 2 tool invocations.
+
+stdout | tests/unit/agent/streaming/handlers/api-tool-call-streaming-response-handler.test.ts > ApiToolCallStreamingResponseHandler parallel tool calls > keeps multiple Gemini functionCall parts as distinct invocations
+ApiToolCallStreamingResponseHandler finalized 2 tool invocations.
+
+stdout | tests/unit/agent/streaming/handlers/api-tool-call-streaming-response-handler.test.ts > ApiToolCallStreamingResponseHandler file streaming > decodes escaped content
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+
+stdout | tests/unit/agent/streaming/handlers/api-tool-call-streaming-response-handler.test.ts > ApiToolCallStreamingResponseHandler callbacks > invokes onToolInvocation callback
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+
+ ✓ tests/unit/agent/streaming/handlers/api-tool-call-streaming-response-handler.test.ts (16 tests) 8ms
+ ✓ tests/unit/agent/streaming/parser/states/xml-edit-file-tool-parsing-state.test.ts (10 tests) 5ms
+
+ Test Files  5 passed (5)
+      Tests  35 passed (35)
+   Start at  20:12:35
+   Duration  327ms (transform 550ms, setup 110ms, import 563ms, tests 20ms, environment 0ms)

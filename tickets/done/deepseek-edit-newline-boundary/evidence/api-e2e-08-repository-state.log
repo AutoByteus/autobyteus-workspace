@@ -1,0 +1,24 @@
+=== git status --short --branch ===
+## codex/deepseek-edit-newline-boundary...origin/personal
+ M autobyteus-ts/docs/tool_schema_and_configuration.md
+ M autobyteus-ts/src/tools/file/context-patch.ts
+ M autobyteus-ts/src/tools/file/edit-file.ts
+ M autobyteus-ts/src/tools/usage/formatters/edit-file-xml-example-formatter.ts
+ M autobyteus-ts/src/tools/usage/formatters/edit-file-xml-schema-formatter.ts
+ M autobyteus-ts/tests/unit/tools/file/context-patch.test.ts
+ M autobyteus-ts/tests/unit/tools/file/edit-file.test.ts
+ M autobyteus-ts/tests/unit/tools/usage/formatters/edit-file-xml-formatter.test.ts
+?? tickets/in-progress/deepseek-edit-newline-boundary/
+
+=== tracked diff name-status ===
+M	autobyteus-ts/docs/tool_schema_and_configuration.md
+M	autobyteus-ts/src/tools/file/context-patch.ts
+M	autobyteus-ts/src/tools/file/edit-file.ts
+M	autobyteus-ts/src/tools/usage/formatters/edit-file-xml-example-formatter.ts
+M	autobyteus-ts/src/tools/usage/formatters/edit-file-xml-schema-formatter.ts
+M	autobyteus-ts/tests/unit/tools/file/context-patch.test.ts
+M	autobyteus-ts/tests/unit/tools/file/edit-file.test.ts
+M	autobyteus-ts/tests/unit/tools/usage/formatters/edit-file-xml-formatter.test.ts
+
+=== API/E2E durable coverage change decision ===
+No source or repository-resident test file was edited during API/E2E round 1.

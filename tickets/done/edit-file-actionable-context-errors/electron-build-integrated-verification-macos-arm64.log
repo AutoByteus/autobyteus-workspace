@@ -1,0 +1,92 @@
+# Integrated Local Electron Build Verification — macOS ARM64
+
+timestamp=2026-08-06T09:54:50+0200
+reviewed_integrated_source_head=1816b29ec4f87398b1bfb812cd43ea342d95cd7f
+packaging_checkpoint_head=ff8813cb928aa2412931b27a28de02edb6d238f3
+app=autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+dmg=autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.43.dmg
+zip=autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.43.zip
+
+$ test required artifacts
+PASS: app, DMG, ZIP, blockmaps, and updater metadata exist.
+
+$ file app executable
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+PASS: packaged Electron executable is ARM64.
+
+$ read bundle metadata
+com.autobyteus.app
+1.4.43
+PASS: bundle identity/version match the local personal build.
+
+$ verify packaged combined edit_file implementation
+39:function completePatchDocument(patch) {
+59:    const patchLines = splitLinesKeepEnds(completePatchDocument(patch));
+48:            return `${ensureSentence(failure.reason)} No file changes were written.`;
+51:                `${ensureSentence(failure.reason)} No file changes were written.`);
+53:            return (`Could not apply context hunk ${failure.hunkIndex} of ${failure.hunkCount} after exact and ` +
+57:                'exact unchanged/removal context. No file changes were written.');
+59:            const heading = `Could not apply context hunk ${failure.hunkIndex} of ${failure.hunkCount} after exact and ` +
+64:                    'unchanged/removal context. No file changes were written.');
+70:                    'exact unchanged/removal context. No file changes were written.');
+79:                `Read target lines ${startLine}-${endLine} and retry with exact unchanged/removal context. ` +
+80:                'No file changes were written.');
+PASS: packaged backend contains newline completion and actionable diagnostic owners.
+
+$ verify staged packaged terminal runtime
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/edit-file-actionable-context-errors/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/edit-file-actionable-context-errors/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/edit-file-actionable-context-errors/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+
+$ verify final packaged terminal runtime
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/edit-file-actionable-context-errors/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/edit-file-actionable-context-errors/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/edit-file-actionable-context-errors/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+
+$ verify packaged terminal spawn through Electron Node runtime
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/edit-file-actionable-context-errors/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/edit-file-actionable-context-errors/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/edit-file-actionable-context-errors/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+
+$ hdiutil verify DMG
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $75B533E6
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $CB94D3D7
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $1CEA3673
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $6187947D
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $1CEA3673
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $8764F22F
+Die überprüfte CRC32-Prüfsumme ist $633A9A96
+hdiutil: verify: checksum of "autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.43.dmg" is VALID
+
+$ unzip -tq ZIP
+No errors detected in compressed data of autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.43.zip.
+PASS: ZIP integrity verified.
+
+$ SHA-256
+75a5c5fd1049aed50722815216f5ed24b00e5bd6fab94da074c8754808d0afe5  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.43.dmg
+4ebf58c354f930918d37135e5668e161b6e686bd000f1b724d77d2f51cefe60c  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.43.zip
+e82401cd0d48b864148c8c0663cd4eff8f2c15327ded090905b5087508235333  autobyteus-web/electron-dist/latest-mac.yml
+
+$ signing status (expected unsigned local verification build)
+Executable=/Users/normy/autobyteus_org/autobyteus-worktrees/edit-file-actionable-context-errors/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+Identifier=Electron
+Format=app bundle with Mach-O thin (arm64)
+CodeDirectory v=20400 size=392 flags=0x20002(adhoc,linker-signed) hashes=9+0 location=embedded
+Signature=adhoc
+Info.plist=not bound
+TeamIdentifier=not set
+Sealed Resources=none
+Internal requirements=none
+
+result=pass
