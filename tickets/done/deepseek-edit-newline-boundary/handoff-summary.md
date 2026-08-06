@@ -3,11 +3,11 @@
 ## Ticket And Current State
 
 - Ticket: `deepseek-edit-newline-boundary`
-- Ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-edit-newline-boundary/tickets/in-progress/deepseek-edit-newline-boundary`
+- Ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-edit-newline-boundary/tickets/done/deepseek-edit-newline-boundary`
 - Ticket branch: `codex/deepseek-edit-newline-boundary`
 - Recorded base/finalization target: `origin/personal` / local `personal`
-- Current delivery revision: `DR-003`
-- Current delivery state: `Pass` — latest-base refresh, docs sync, local Electron packaging, and a live user-run DeepSeek verification all passed. Repository finalization and any release/deployment remain intentionally held until explicitly authorized.
+- Current delivery revision: `DR-004`
+- Current delivery state: `Pass` — this predecessor is semantically integrated into `edit-file-actionable-context-errors`; the user accepted the combined Electron build and authorized finalization plus stable patch release `v1.4.44`.
 
 ## Integrated-State Refresh
 
@@ -17,7 +17,7 @@
 - Safety checkpoint: Not needed. Because the fetched base was already the ticket branch `HEAD`, no merge/rebase operation could disturb the reviewed working-tree candidate.
 - Integration method/result: `Already current` / `Completed`.
 - Additional executable rerun: Not required because no new base commit was integrated and API/E2E had already validated this exact eight-path candidate on the same base. Delivery-owned documentation validation and `git diff --check` passed.
-- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-edit-newline-boundary/tickets/in-progress/deepseek-edit-newline-boundary/delivery-integrated-state-refresh.log` and `/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-edit-newline-boundary/tickets/in-progress/deepseek-edit-newline-boundary/docs-sync-validation.log`.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-edit-newline-boundary/tickets/done/deepseek-edit-newline-boundary/delivery-integrated-state-refresh.log` and `/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-edit-newline-boundary/tickets/done/deepseek-edit-newline-boundary/docs-sync-validation.log`.
 
 ## Delivered Behavior
 
@@ -34,7 +34,7 @@
 - Result: `Updated — Pass`.
 - Canonical document updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-edit-newline-boundary/autobyteus-ts/docs/tool_schema_and_configuration.md`.
 - `streaming_parser_design.md` and `api_tool_call_file_streaming_design.md` were reviewed and require no change because they already preserve the transport/semantic ownership boundary and make no stale target-newline claim.
-- Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-edit-newline-boundary/tickets/in-progress/deepseek-edit-newline-boundary/docs-sync-report.md`.
+- Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-edit-newline-boundary/tickets/done/deepseek-edit-newline-boundary/docs-sync-report.md`.
 
 ## Review And Validation Authority
 
@@ -59,8 +59,8 @@
 - SHA-256 DMG: `0bde815b3bde7a3f2bcbd86a1665b3a6a6768e97236151d7182071cba9a6a7cb`
 - SHA-256 ZIP: `b8cdf6fc5182223da64523543186d6ce42cc1154a365a868e674b71e54777781`
 - Signing note: This is a local, non-notarized verification build. Apple signing credentials were disabled; the executable carries only an ad-hoc/linker signature, not an Apple Developer ID distribution signature.
-- Build evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-edit-newline-boundary/tickets/in-progress/deepseek-edit-newline-boundary/electron-build-macos-arm64.log`.
-- Verification evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-edit-newline-boundary/tickets/in-progress/deepseek-edit-newline-boundary/electron-build-verification-macos-arm64.log`.
+- Build evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-edit-newline-boundary/tickets/done/deepseek-edit-newline-boundary/electron-build-macos-arm64.log`.
+- Verification evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-edit-newline-boundary/tickets/done/deepseek-edit-newline-boundary/electron-build-verification-macos-arm64.log`.
 
 ## Live Packaged Electron Verification
 
@@ -71,7 +71,7 @@
 - No joined-token signature was found in the edited source directories.
 - The agent's post-edit npm production build passed and its final trace response reports completion.
 - Result: `Pass` — live packaged-runtime proof closes the practical integration-granularity gap for the original provider/model and patch shape.
-- Sanitized report: `/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-edit-newline-boundary/tickets/in-progress/deepseek-edit-newline-boundary/live-electron-verification-report.md`.
+- Sanitized report: `/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-edit-newline-boundary/tickets/done/deepseek-edit-newline-boundary/live-electron-verification-report.md`.
 
 ## Persisted Data And Migration
 
@@ -84,13 +84,15 @@
 - Pathological mixed-EOL behavior outside the single synthesized final record remains outside scope.
 - The prior negligible transport-to-disk integration-granularity gap is closed for the original DeepSeek/packaged-Electron path by the live run. No broader claim is made for pathological mixed-EOL inputs outside scope.
 
-## User Verification Hold
+## Combined Finalization Authorization
 
-- Explicit user completion/verification received: `No`.
-- Ticket remains under `tickets/in-progress/deepseek-edit-newline-boundary`.
-- No ticket commit, branch push, target merge, target push, tag, release, deployment, branch cleanup, or worktree cleanup has been performed.
-- Required next action: the live test passed; the user should now either report any remaining concern or explicitly authorize repository finalization. If release or deployment is desired, that scope should be stated with the authorization.
+- Explicit completion/finalization authorization received: `Yes` through the accepted combined successor package.
+- Successor ticket: `tickets/done/edit-file-actionable-context-errors`.
+- Ticket archive path: `tickets/done/deepseek-edit-newline-boundary`.
+- Release scope: stable patch `v1.4.44`, owned by the combined successor release notes and finalization record.
+- Post-acceptance base refresh added no commit to the accepted state.
+- Required next action: combined repository finalization, release workflow verification, and safe cleanup.
 
 ## Current Status
 
-`DR-003 Pass — live packaged Electron behavior is verified; repository finalization is intentionally held pending explicit user authorization.`
+`DR-004 Pass — predecessor behavior is accepted in the combined package, archived, and authorized for v1.4.44 finalization/release.`
