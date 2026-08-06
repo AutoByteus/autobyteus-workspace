@@ -98,4 +98,3 @@ compaction_budget_skipped_no_usage {
       Tests  70 passed (70)
    Start at  09:03:05
    Duration  1.47s (transform 2.58s, setup 265ms, import 3.81s, tests 129ms, environment 3ms)
-
