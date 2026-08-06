@@ -1,0 +1,85 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/edit-file-actionable-context-errors/autobyteus-ts
+
+ ✓ tests/unit/tools/file/edit-file-patch-diagnostic.test.ts (9 tests) 5ms
+ ✓ tests/unit/tools/usage/formatters/edit-file-xml-formatter.test.ts (5 tests) 3ms
+ ✓ tests/unit/tools/file/context-patch.test.ts (40 tests) 82ms
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > registers definition with expected schema
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > applies a context-located patch in an existing file
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/agent/loop/tool-phase-edit-file-error.test.ts > ToolPhase edit_file failure envelope > preserves the existing outer prefix around the actionable inner diagnostic
+Successfully registered tool definition: 'edit_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > rejects git file headers because path is supplied separately
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > raises a concise unique-candidate PatchApplicationError without writing
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+ ✓ tests/unit/agent/loop/tool-phase-edit-file-error.test.ts (1 test) 7ms
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > reports the exact concise retained four-hunk failure and writes nothing
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > reports zero diagnostic candidates without exposing patch or file content
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > reports multiple diagnostic candidates without selecting or exposing one
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > rejects ambiguous context without writing the file
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > reports hunk identity for invalid hunk bodies without writing
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > does not write a partially applied multi-hunk patch
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > does not split prefixed delimiter context into noncontiguous hunks or write
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > retries with whitespace tolerance
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > uses the unique exact match before considering whitespace-tolerant candidates
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > raises error when file is missing
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > resolves relative paths from an explicit absolute base directory
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > rejects relative paths without an explicit base directory
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/edit-file.test.ts > edit_file tool > read then patch flow
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'read_file'
+
+ ✓ tests/unit/tools/file/edit-file.test.ts (17 tests) 62ms
+
+ Test Files  5 passed (5)
+      Tests  72 passed (72)
+   Start at  09:02:26
+   Duration  348ms (transform 508ms, setup 101ms, import 525ms, tests 158ms, environment 0ms)
+

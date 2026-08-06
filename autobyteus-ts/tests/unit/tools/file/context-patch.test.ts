@@ -1,8 +1,19 @@
 import { describe, expect, it } from 'vitest';
 import {
   applyContextPatch,
+  type ContextPatchFailure,
   PatchApplicationError,
 } from '../../../../src/tools/file/context-patch.js';
+
+function captureFailure(run: () => unknown): ContextPatchFailure {
+  try {
+    run();
+  } catch (error) {
+    expect(error).toBeInstanceOf(PatchApplicationError);
+    return (error as PatchApplicationError).failure;
+  }
+  throw new Error('Expected applyContextPatch to fail.');
+}
 
 describe('applyContextPatch', () => {
   it('applies a uniquely located replacement with the canonical bare header', () => {
@@ -93,6 +104,100 @@ describe('applyContextPatch', () => {
     );
   });
 
+  it('reports a unique one-line-difference candidate without retaining matching context', () => {
+    const failure = captureFailure(() => applyContextPatch(
+      'before\nactual value\nstable anchor\nafter\n',
+      '@@\n-expected value\n stable anchor\n+replacement\n',
+      { ignoreWhitespace: true }
+    ));
+
+    expect(failure).toEqual({
+      kind: 'missing_context',
+      hunkIndex: 1,
+      hunkCount: 1,
+      candidateResult: {
+        kind: 'unique',
+        startIndex: 1,
+        lineCount: 2,
+        mismatchIndex: 0,
+        expectedLine: 'expected value\n',
+        actualLine: 'actual value\n'
+      }
+    });
+  });
+
+  it('reports zero candidates without retaining submitted or target content', () => {
+    const failure = captureFailure(() => applyContextPatch(
+      'alpha\nbeta\ngamma\n',
+      '@@\n-missing one\n missing two\n+replacement\n',
+      { ignoreWhitespace: true }
+    ));
+
+    expect(failure).toEqual({
+      kind: 'missing_context',
+      hunkIndex: 1,
+      hunkCount: 1,
+      candidateResult: { kind: 'zero' }
+    });
+  });
+
+  it('does not create a diagnostic candidate for a one-line anchor', () => {
+    const failure = captureFailure(() => applyContextPatch(
+      'actual value\n',
+      '@@\n-expected value\n+replacement\n',
+      { ignoreWhitespace: true }
+    ));
+
+    expect(failure).toEqual({
+      kind: 'missing_context',
+      hunkIndex: 1,
+      hunkCount: 1,
+      candidateResult: { kind: 'zero' }
+    });
+  });
+
+  it('transitions irreversibly to a content-free multiple candidate result', () => {
+    const failure = captureFailure(() => applyContextPatch(
+      'actual one\nstable anchor\nseparator\nactual two\nstable anchor\n',
+      '@@\n-expected value\n stable anchor\n+replacement\n',
+      { ignoreWhitespace: true }
+    ));
+
+    expect(failure).toEqual({
+      kind: 'missing_context',
+      hunkIndex: 1,
+      hunkCount: 1,
+      candidateResult: { kind: 'multiple' }
+    });
+  });
+
+  it('keeps scanning after multiple diagnostic candidates and applies a later full match', () => {
+    expect(applyContextPatch(
+      'actual one\nstable anchor\nseparator one\n' +
+      'actual two\nstable anchor\nseparator two\nexpected value\nstable anchor\n',
+      '@@\n-expected value\n stable anchor\n+replacement\n',
+      { ignoreWhitespace: true }
+    )).toBe(
+      'actual one\nstable anchor\nseparator one\n' +
+      'actual two\nstable anchor\nseparator two\nstable anchor\nreplacement\n'
+    );
+  });
+
+  it('identifies a missing later hunk using the complete hunk count', () => {
+    const failure = captureFailure(() => applyContextPatch(
+      'first: old\nbetween\nlast: old\n',
+      '@@\n-first: old\n+first: new\n@@\n-missing one\n missing two\n+replacement\n',
+      { ignoreWhitespace: true }
+    ));
+
+    expect(failure).toEqual({
+      kind: 'missing_context',
+      hunkIndex: 2,
+      hunkCount: 2,
+      candidateResult: { kind: 'zero' }
+    });
+  });
+
   it.each([
     ['', /empty/i],
     ['@@\n alpha\n', /no addition or removal/i],
@@ -103,10 +208,63 @@ describe('applyContextPatch', () => {
   });
 
   it('rejects an ambiguous bare hunk instead of selecting an occurrence', () => {
-    expect(() => applyContextPatch(
+    const failure = captureFailure(() => applyContextPatch(
       'status: draft\nseparator\nstatus: draft\n',
-      '@@\n-status: draft\n+status: ready\n'
-    )).toThrow(/ambiguous/i);
+      '@@\n-status: draft\n+status: ready\n',
+      { ignoreWhitespace: true }
+    ));
+
+    expect(failure).toEqual({
+      kind: 'ambiguous_context',
+      hunkIndex: 1,
+      hunkCount: 1,
+      matchCount: 2
+    });
+  });
+
+  it('identifies invalid hunk bodies after establishing the total hunk count', () => {
+    const failure = captureFailure(() => applyContextPatch(
+      'one\ntwo\nthree\n',
+      '@@\n-one\n+ONE\n@@\n two\n@@\n-three\n+THREE\n'
+    ));
+
+    expect(failure).toEqual({
+      kind: 'invalid_hunk',
+      hunkIndex: 2,
+      hunkCount: 3,
+      reason: 'contains no addition or removal.'
+    });
+    expect(() => applyContextPatch(
+      'one\ntwo\nthree\n',
+      '@@\n-one\n+ONE\n@@\n two\n@@\n-three\n+THREE\n'
+    )).toThrow('Invalid context hunk 2 of 3: contains no addition or removal.');
+  });
+
+  it('keeps unsupported document headers document-level', () => {
+    const failure = captureFailure(() => applyContextPatch(
+      'old\n',
+      'diff --git a/file b/file\n@@\n-old\n+new\n'
+    ));
+
+    expect(failure).toEqual({
+      kind: 'document',
+      reason:
+        'Unsupported patch header. Use a bare @@ header without file headers, line numbers, labels, or Begin/End metadata.'
+    });
+  });
+
+  it('identifies a hunk that lacks a safe location anchor', () => {
+    const failure = captureFailure(() => applyContextPatch(
+      'old\n',
+      '@@\n+new\n'
+    ));
+
+    expect(failure).toEqual({
+      kind: 'invalid_hunk',
+      hunkIndex: 1,
+      hunkCount: 1,
+      reason: 'requires at least one unchanged or removal line as a safe location anchor.'
+    });
   });
 
   it.each([

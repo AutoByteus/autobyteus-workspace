@@ -1,0 +1,101 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/edit-file-actionable-context-errors/autobyteus-ts
+
+ ✓ tests/unit/agent/loop/turn-tool-input-port.test.ts (6 tests) 4ms
+ ✓ tests/unit/tools/usage/formatters/edit-file-xml-formatter.test.ts (5 tests) 3ms
+ ✓ tests/unit/tools/usage/formatters/gemini-json-example-formatter.test.ts (2 tests) 3ms
+ ✓ tests/unit/tools/usage/formatters/default-xml-example-formatter.test.ts (4 tests) 3ms
+ ✓ tests/unit/tools/usage/formatters/default-json-schema-formatter.test.ts (1 test) 3ms
+ ✓ tests/unit/tools/usage/formatters/default-xml-schema-formatter.test.ts (6 tests) 3ms
+ ✓ tests/unit/tools/usage/formatters/google-json-example-formatter.test.ts (2 tests) 3ms
+ ✓ tests/unit/tools/usage/formatters/default-json-example-formatter.test.ts (2 tests) 3ms
+ ✓ tests/unit/tools/usage/formatters/openai-json-example-formatter.test.ts (2 tests) 3ms
+ ✓ tests/unit/tools/usage/formatters/openai-json-schema-formatter.test.ts (1 test) 3ms
+ ✓ tests/unit/tools/usage/formatters/mistral-json-schema-formatter.test.ts (1 test) 2ms
+ ✓ tests/unit/tools/usage/formatters/write-file-xml-formatter.test.ts (4 tests) 4ms
+stdout | tests/unit/agent/loop/agent-turn-runner.test.ts > AgentTurnRunner interruption fences > does not publish final LLM completion after an interrupt accepted at the post-LLM seam
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+
+stdout | tests/unit/agent/loop/agent-turn-runner.test.ts > AgentTurnRunner interruption fences > uses ToolContinuationReadyEvent instead of synthetic LLMUserMessageReadyEvent for native tool-history continuations
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+
+stdout | tests/unit/agent/loop/agent-turn-runner.test.ts > AgentTurnRunner interruption fences > does not process tool results or publish terminal tool success after an interrupt accepted at the post-tool seam
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+
+ ✓ tests/unit/agent/loop/agent-turn-runner.test.ts (3 tests) 8ms
+ ✓ tests/unit/agent/loop/tool-result-continuation-builder.test.ts (4 tests) 5ms
+ ✓ tests/unit/tools/usage/formatters/anthropic-json-schema-formatter.test.ts (1 test) 2ms
+ ✓ tests/unit/tools/usage/formatters/run-bash-xml-formatter.test.ts (2 tests) 2ms
+ ✓ tests/unit/tools/usage/formatters/google-json-schema-formatter.test.ts (1 test) 2ms
+ ✓ tests/unit/tools/usage/formatters/gemini-json-schema-formatter.test.ts (1 test) 2ms
+ ✓ tests/unit/tools/usage/formatters/anthropic-json-example-formatter.test.ts (1 test) 2ms
+ ✓ tests/integration/tools/usage/formatters/default-xml-example-formatter.test.ts (1 test) 2ms
+ ✓ tests/integration/tools/usage/formatters/run-bash-xml-formatter.test.ts (1 test) 2ms
+ ✓ tests/integration/tools/usage/formatters/google-json-example-formatter.test.ts (1 test) 2ms
+ ✓ tests/integration/tools/usage/formatters/gemini-json-example-formatter.test.ts (1 test) 2ms
+ ✓ tests/integration/tools/usage/formatters/default-xml-schema-formatter.test.ts (1 test) 1ms
+stdout | tests/unit/agent/loop/tool-phase-edit-file-error.test.ts > ToolPhase edit_file failure envelope > preserves the existing outer prefix around the actionable inner diagnostic
+Successfully registered tool definition: 'edit_file'
+
+ ✓ tests/integration/tools/usage/formatters/openai-json-example-formatter.test.ts (1 test) 2ms
+ ✓ tests/unit/agent/loop/tool-phase-edit-file-error.test.ts (1 test) 15ms
+ ✓ tests/integration/tools/usage/formatters/openai-json-schema-formatter.test.ts (1 test) 3ms
+ ✓ tests/integration/tools/usage/formatters/mistral-json-schema-formatter.test.ts (1 test) 2ms
+ ✓ tests/integration/tools/usage/formatters/anthropic-json-example-formatter.test.ts (1 test) 1ms
+ ✓ tests/integration/tools/usage/formatters/anthropic-json-schema-formatter.test.ts (1 test) 2ms
+ ✓ tests/integration/tools/usage/formatters/gemini-json-schema-formatter.test.ts (1 test) 2ms
+ ✓ tests/integration/tools/usage/formatters/default-json-schema-formatter.test.ts (1 test) 2ms
+ ✓ tests/integration/tools/usage/formatters/google-json-schema-formatter.test.ts (1 test) 2ms
+ ✓ tests/integration/tools/usage/formatters/default-json-example-formatter.test.ts (1 test) 1ms
+ ✓ tests/integration/tools/usage/formatters/write-file-xml-formatter.test.ts (1 test) 1ms
+ ✓ tests/integration/tools/usage/formatters/edit-file-xml-formatter.test.ts (1 test) 1ms
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase successful retained-outcome recovery settlement > captures once and releases once after real Tool-invocation ingestion without restoring retained context
+Successfully registered tool definition: 'request_recovery_test_tool'
+AgentRuntimeState initialized for agent_id 'agent_tool_recovery'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentConfig created for name='agent', role='role'. Tool call format: api_tool_call
+AgentContext composed for agent_id 'agent_tool_recovery'. Config and State linked.
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase successful retained-outcome recovery settlement > captures once and releases once after real Tool-invocation ingestion without restoring retained context
+ApiToolCallStreamingResponseHandler finalized 1 tool invocations.
+compaction_budget_skipped_no_usage {
+  agent_id: 'agent_tool_recovery',
+  turn_id: 'turn_tool_recovery',
+  reason: 'missing_usage'
+}
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase successful retained-outcome recovery settlement > captures once and releases once on retained partial interruption without restoring or settling twice
+AgentRuntimeState initialized for agent_id 'agent_interruption_recovery'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentConfig created for name='agent', role='role'. Tool call format: api_tool_call
+AgentContext composed for agent_id 'agent_interruption_recovery'. Config and State linked.
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase incomplete native tool-call resume recovery > kicks off LLM execution after one additional user prompt with provider-safe rendered history
+AgentRuntimeState initialized for agent_id 'agent_resume_repair'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentConfig created for name='agent', role='role'. Tool call format: api_tool_call
+AgentContext composed for agent_id 'agent_resume_repair'. Config and State linked.
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase incomplete native tool-call resume recovery > kicks off LLM execution after one additional user prompt with provider-safe rendered history
+compaction_budget_skipped_no_usage {
+  agent_id: 'agent_resume_repair',
+  turn_id: 'turn_after_restart',
+  reason: 'missing_usage'
+}
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase unknown-capability provider recovery > rolls back one failed image request and accepts the next text-only turn without retrying
+AgentRuntimeState initialized for agent_id 'agent_provider_recovery'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentConfig created for name='agent', role='role'. Tool call format: api_tool_call
+AgentContext composed for agent_id 'agent_provider_recovery'. Config and State linked.
+
+stdout | tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts > LlmPhase unknown-capability provider recovery > rolls back one failed image request and accepts the next text-only turn without retrying
+compaction_budget_skipped_no_usage {
+  agent_id: 'agent_provider_recovery',
+  turn_id: 'turn_provider_recovery',
+  reason: 'missing_usage'
+}
+
+ ✓ tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts (4 tests) 24ms
+
+ Test Files  37 passed (37)
+      Tests  70 passed (70)
+   Start at  09:03:05
+   Duration  1.47s (transform 2.58s, setup 265ms, import 3.81s, tests 129ms, environment 3ms)
+

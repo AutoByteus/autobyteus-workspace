@@ -1,14 +1,68 @@
+export type DiagnosticCandidateResult =
+  | { kind: 'zero' }
+  | {
+      kind: 'unique';
+      startIndex: number;
+      lineCount: number;
+      mismatchIndex: number;
+      expectedLine: string;
+      actualLine: string;
+    }
+  | { kind: 'multiple' };
+
+export type ContextPatchFailure =
+  | { kind: 'document'; reason: string }
+  | { kind: 'invalid_hunk'; hunkIndex: number; hunkCount: number; reason: string }
+  | {
+      kind: 'missing_context';
+      hunkIndex: number;
+      hunkCount: number;
+      candidateResult: DiagnosticCandidateResult;
+    }
+  | {
+      kind: 'ambiguous_context';
+      hunkIndex: number;
+      hunkCount: number;
+      matchCount: number;
+    };
+
+type FailureMessageFormatter = (failure: ContextPatchFailure) => string;
+
+function formatAttemptFailure(failure: ContextPatchFailure): string {
+  switch (failure.kind) {
+    case 'document':
+      return failure.reason;
+    case 'invalid_hunk':
+      return `Invalid context hunk ${failure.hunkIndex} of ${failure.hunkCount}: ${failure.reason}`;
+    case 'missing_context':
+      return `Could not find context hunk ${failure.hunkIndex} of ${failure.hunkCount} in the eligible target region.`;
+    case 'ambiguous_context':
+      return (
+        `Context hunk ${failure.hunkIndex} of ${failure.hunkCount} is ambiguous: matched ` +
+        `${failure.matchCount} eligible locations. Include more unique context.`
+      );
+  }
+}
+
 export class PatchApplicationError extends Error {
-  constructor(message: string) {
-    super(message);
+  readonly failure: ContextPatchFailure;
+
+  constructor(failure: ContextPatchFailure, formatter: FailureMessageFormatter = formatAttemptFailure) {
+    super(formatter(failure));
     this.name = 'PatchApplicationError';
+    this.failure = failure;
   }
 }
 
 export type ContextPatchOptions = { ignoreWhitespace?: boolean };
 
 type ParsedHunkLine = { prefix: ' ' | '-' | '+'; content: string };
-type ParsedHunk = { lines: ParsedHunkLine[]; expectedOriginal: string[] };
+type ParsedHunk = {
+  hunkIndex: number;
+  hunkCount: number;
+  lines: ParsedHunkLine[];
+  expectedOriginal: string[];
+};
 
 // Numeric decoration is tolerated as model-output noise. The expression has
 // no capture groups because coordinates never participate in patch semantics.
@@ -36,7 +90,53 @@ function isUnprefixedHunkHeader(line: string): boolean {
   return token === '@@' || NUMERIC_HUNK_HEADER_RE.test(token);
 }
 
-function parseHunkBody(bodyLines: string[]): ParsedHunk {
+function throwDocumentFailure(reason: string): never {
+  throw new PatchApplicationError({ kind: 'document', reason });
+}
+
+function throwInvalidHunk(
+  hunkIndex: number, hunkCount: number, reason: string
+): never {
+  throw new PatchApplicationError({ kind: 'invalid_hunk', hunkIndex, hunkCount, reason });
+}
+
+function scanRawHunks(patch: string): string[][] {
+  if (!patch || patch.trim().length === 0) {
+    throwDocumentFailure('Patch content is empty; nothing to apply.');
+  }
+
+  const patchLines = splitLinesKeepEnds(patch);
+  const rawHunks: string[][] = [];
+  let lineIndex = 0;
+
+  while (lineIndex < patchLines.length) {
+    const headerLine = patchLines[lineIndex];
+    if (!isUnprefixedHunkHeader(headerLine)) {
+      const unsupportedHeader = headerLine.trimStart().startsWith('@@') ||
+        ['diff --git ', '---', '+++', '*** '].some((prefix) => headerLine.startsWith(prefix));
+      if (unsupportedHeader) {
+        throwDocumentFailure(
+          'Unsupported patch header. Use a bare @@ header without file headers, line numbers, labels, or Begin/End metadata.'
+        );
+      }
+      throwDocumentFailure(
+        `Unexpected content outside of a bare @@ hunk header: '${stripLineEnding(headerLine)}'.`
+      );
+    }
+
+    lineIndex += 1;
+    const bodyLines: string[] = [];
+    while (lineIndex < patchLines.length && !isUnprefixedHunkHeader(patchLines[lineIndex])) {
+      bodyLines.push(patchLines[lineIndex]);
+      lineIndex += 1;
+    }
+    rawHunks.push(bodyLines);
+  }
+
+  return rawHunks;
+}
+
+function parseHunkBody(bodyLines: string[], hunkIndex: number, hunkCount: number): ParsedHunk {
   const lines: ParsedHunkLine[] = [];
   let hasChange = false;
 
@@ -47,7 +147,9 @@ function parseHunkBody(bodyLines: string[]): ParsedHunk {
     if (markerText === NO_NEWLINE_MARKER) {
       const previous = lines.at(-1);
       if (!previous || stripLineEnding(bodyLines[index - 1]) === NO_NEWLINE_MARKER) {
-        throw new PatchApplicationError(
+        throwInvalidHunk(
+          hunkIndex,
+          hunkCount,
           'The no-newline marker must immediately follow a context, removal, or addition line.'
         );
       }
@@ -58,11 +160,15 @@ function parseHunkBody(bodyLines: string[]): ParsedHunk {
     const prefix = line[0];
     if (prefix !== ' ' && prefix !== '-' && prefix !== '+') {
       if (line.startsWith('\\')) {
-        throw new PatchApplicationError(
+        throwInvalidHunk(
+          hunkIndex,
+          hunkCount,
           `Unsupported context-patch marker: '${stripLineEnding(line)}'.`
         );
       }
-      throw new PatchApplicationError(
+      throwInvalidHunk(
+        hunkIndex,
+        hunkCount,
         `Unsupported context-patch line: '${stripLineEnding(line)}'. ` +
         'Prefix every hunk line with one space, -, or +.'
       );
@@ -75,7 +181,7 @@ function parseHunkBody(bodyLines: string[]): ParsedHunk {
   }
 
   if (!hasChange) {
-    throw new PatchApplicationError('Context hunk contains no addition or removal.');
+    throwInvalidHunk(hunkIndex, hunkCount, 'contains no addition or removal.');
   }
 
   const expectedOriginal = lines
@@ -83,48 +189,21 @@ function parseHunkBody(bodyLines: string[]): ParsedHunk {
     .map((line) => line.content);
 
   if (expectedOriginal.length === 0) {
-    throw new PatchApplicationError(
-      'Context hunk requires at least one unchanged or removal line as a safe location anchor.'
+    throwInvalidHunk(
+      hunkIndex,
+      hunkCount,
+      'requires at least one unchanged or removal line as a safe location anchor.'
     );
   }
 
-  return { lines, expectedOriginal };
+  return { hunkIndex, hunkCount, lines, expectedOriginal };
 }
 
 function parsePatch(patch: string): ParsedHunk[] {
-  if (!patch || patch.trim().length === 0) {
-    throw new PatchApplicationError('Patch content is empty; nothing to apply.');
-  }
-
-  const patchLines = splitLinesKeepEnds(patch);
-  const hunks: ParsedHunk[] = [];
-  let lineIndex = 0;
-
-  while (lineIndex < patchLines.length) {
-    const headerLine = patchLines[lineIndex];
-    if (!isUnprefixedHunkHeader(headerLine)) {
-      const unsupportedHeader = headerLine.trimStart().startsWith('@@') ||
-        ['diff --git ', '---', '+++', '*** '].some((prefix) => headerLine.startsWith(prefix));
-      if (unsupportedHeader) {
-        throw new PatchApplicationError(
-          'Unsupported patch header. Use a bare @@ header without file headers, line numbers, labels, or Begin/End metadata.'
-        );
-      }
-      throw new PatchApplicationError(
-        `Unexpected content outside of a bare @@ hunk header: '${stripLineEnding(headerLine)}'.`
-      );
-    }
-
-    lineIndex += 1;
-    const bodyLines: string[] = [];
-    while (lineIndex < patchLines.length && !isUnprefixedHunkHeader(patchLines[lineIndex])) {
-      bodyLines.push(patchLines[lineIndex]);
-      lineIndex += 1;
-    }
-    hunks.push(parseHunkBody(bodyLines));
-  }
-
-  return hunks;
+  const rawHunks = scanRawHunks(patch);
+  return rawHunks.map((bodyLines, index) =>
+    parseHunkBody(bodyLines, index + 1, rawHunks.length)
+  );
 }
 
 function linesMatch(
@@ -139,42 +218,97 @@ function linesMatch(
   return allowEofNewlineMismatch && removeLineEnding(actual) === removeLineEnding(expected);
 }
 
+function recordDiagnosticCandidate(
+  current: DiagnosticCandidateResult,
+  startIndex: number,
+  expectedOriginal: string[],
+  originalLines: string[],
+  mismatchIndex: number
+): DiagnosticCandidateResult {
+  if (current.kind === 'multiple') {
+    return current;
+  }
+  if (current.kind === 'unique') {
+    // The second qualifying window irreversibly discards candidate content.
+    return { kind: 'multiple' };
+  }
+  return {
+    kind: 'unique',
+    startIndex,
+    lineCount: expectedOriginal.length,
+    mismatchIndex,
+    expectedLine: expectedOriginal[mismatchIndex],
+    actualLine: originalLines[startIndex + mismatchIndex]
+  };
+}
+
 function findUniqueMatch(
-  originalLines: string[], expectedOriginal: string[], eligibleStart: number, ignoreWhitespace: boolean
+  originalLines: string[], hunk: ParsedHunk, eligibleStart: number, ignoreWhitespace: boolean
 ): number {
   let foundIndex = -1;
+  let matchCount = 0;
+  let candidateResult: DiagnosticCandidateResult = { kind: 'zero' };
+  const candidateDiagnosticsEnabled = hunk.expectedOriginal.length >= 2;
 
   for (
     let candidateIndex = eligibleStart;
-    candidateIndex + expectedOriginal.length <= originalLines.length;
+    candidateIndex + hunk.expectedOriginal.length <= originalLines.length;
     candidateIndex += 1
   ) {
-    let matches = true;
-    for (let expectedIndex = 0; expectedIndex < expectedOriginal.length; expectedIndex += 1) {
-      const isEofLine = candidateIndex + expectedOriginal.length === originalLines.length &&
-        expectedIndex === expectedOriginal.length - 1;
-      if (!linesMatch(
-        originalLines[candidateIndex + expectedIndex], expectedOriginal[expectedIndex],
-        ignoreWhitespace, isEofLine
-      )) {
-        matches = false;
-        break;
+    let fullMatch = true;
+    let diagnosticMismatchCount = 0;
+    let diagnosticMismatchIndex = -1;
+
+    for (let expectedIndex = 0; expectedIndex < hunk.expectedOriginal.length; expectedIndex += 1) {
+      const isEofLine = candidateIndex + hunk.expectedOriginal.length === originalLines.length &&
+        expectedIndex === hunk.expectedOriginal.length - 1;
+      const actualLine = originalLines[candidateIndex + expectedIndex];
+      const expectedLine = hunk.expectedOriginal[expectedIndex];
+
+      if (!linesMatch(actualLine, expectedLine, ignoreWhitespace, isEofLine)) {
+        fullMatch = false;
+      }
+      if (
+        candidateDiagnosticsEnabled &&
+        diagnosticMismatchCount < 2 &&
+        !linesMatch(actualLine, expectedLine, true, isEofLine)
+      ) {
+        diagnosticMismatchCount += 1;
+        diagnosticMismatchIndex = expectedIndex;
       }
     }
 
-    if (!matches) {
-      continue;
-    }
-    if (foundIndex !== -1) {
-      throw new PatchApplicationError(
-        'Context hunk is ambiguous: matched multiple eligible locations. Include more unchanged context.'
+    if (fullMatch) {
+      matchCount += 1;
+      foundIndex = candidateIndex;
+    } else if (candidateDiagnosticsEnabled && diagnosticMismatchCount === 1) {
+      candidateResult = recordDiagnosticCandidate(
+        candidateResult,
+        candidateIndex,
+        hunk.expectedOriginal,
+        originalLines,
+        diagnosticMismatchIndex
       );
     }
-    foundIndex = candidateIndex;
   }
 
-  if (foundIndex === -1) {
-    throw new PatchApplicationError('Could not find the context hunk in the eligible target region.');
+  // Full-match uniqueness remains authoritative after the complete scan;
+  // diagnostic candidates never supply an application index.
+  if (matchCount > 1) {
+    throw new PatchApplicationError({
+      kind: 'ambiguous_context',
+      hunkIndex: hunk.hunkIndex,
+      hunkCount: hunk.hunkCount,
+      matchCount
+    });
+  }
+  if (matchCount === 0) {
+    throw new PatchApplicationError({
+      kind: 'missing_context',
+      hunkIndex: hunk.hunkIndex,
+      hunkCount: hunk.hunkCount,
+      candidateResult
+    });
   }
   return foundIndex;
 }
@@ -195,9 +329,7 @@ export function applyContextPatch(
   let originalCursor = 0;
 
   for (const hunk of hunks) {
-    const matchIndex = findUniqueMatch(
-      originalLines, hunk.expectedOriginal, originalCursor, ignoreWhitespace
-    );
+    const matchIndex = findUniqueMatch(originalLines, hunk, originalCursor, ignoreWhitespace);
     appendLineRange(outputLines, originalLines, originalCursor, matchIndex);
 
     let matchedOffset = 0;
