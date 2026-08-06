@@ -426,16 +426,14 @@ describe('AgentStreamingService', () => {
         (service as any).dispatchMessage(start, mockAgentContext);
         expect(mockAgentContext.state.eventMonitorPresentationRevision).toBe(1);
 
-        (service as any).contentPresentationScheduler.enqueue(mockAgentContext, {
+        (service as any).dispatchMessage({
+            type: 'SEGMENT_CONTENT',
             payload: { id: 'segment-1', turn_id: 'turn-1', segment_type: 'text', delta: 'hello' },
-            receivedAt: '2026-08-01T10:00:00.000Z',
-        });
-        (service as any).contentPresentationScheduler.flush();
+        }, mockAgentContext);
         expect(mockAgentContext.state.eventMonitorPresentationRevision).toBe(2);
     });
 
-    it('batches companion-interleaved standalone content and flushes before segment end', () => {
-        vi.useFakeTimers();
+    it('projects each server-shaped standalone content message immediately', () => {
         const callbacks = new Map<string, (payload?: any) => void>();
         const wsClient = {
             state: 'disconnected', connect: vi.fn(), disconnect: vi.fn(), send: vi.fn(), off: vi.fn(),
@@ -464,17 +462,15 @@ describe('AgentStreamingService', () => {
             type: 'AGENT_STATUS',
             payload: { status: 'running', agent_id: 'test-agent-id' },
         }));
-        expect(mockConversation.messages[0].segments[0].content).toBe('');
+        expect(mockConversation.messages[0].segments[0].content).toBe('hello');
         onMessage(JSON.stringify({
             type: 'SEGMENT_CONTENT',
             payload: { id: 'segment-1', turn_id: 'turn-1', segment_type: 'text', delta: ' world' },
         }));
 
-        expect(mockConversation.messages[0].segments[0].content).toBe('');
-        vi.advanceTimersByTime(100);
         expect(mockConversation.messages[0].segments[0].content).toBe('hello world');
         expect(mockConversation.updatedAt).toBe('2026-08-01T10:00:00.050Z');
-        expect(mockAgentContext.state.eventMonitorPresentationRevision).toBe(2);
+        expect(mockAgentContext.state.eventMonitorPresentationRevision).toBe(3);
 
         vi.setSystemTime(new Date('2026-08-01T10:00:00.100Z'));
         onMessage(JSON.stringify({
@@ -485,23 +481,22 @@ describe('AgentStreamingService', () => {
             type: 'AGENT_STATUS',
             payload: { status: 'running', agent_id: 'test-agent-id' },
         }));
-        expect(mockConversation.messages[0].segments[0].content).toBe('hello world');
+        expect(mockConversation.messages[0].segments[0].content).toBe('hello world!');
         onMessage(JSON.stringify({
             type: 'SEGMENT_END',
             payload: { id: 'segment-1', turn_id: 'turn-1', segment_type: 'text' },
         }));
         expect(mockConversation.messages[0].segments[0].content).toBe('hello world!');
         expect(mockConversation.messages[0].segments[0]._streamSegmentIdentity.presentationComplete).toBe(true);
-        vi.useRealTimers();
     });
 
-    it('flushes pending standalone content before explicit disconnect detaches context', () => {
+    it('preserves already projected standalone content when disconnect detaches context', () => {
         const scheduledService = new AgentStreamingService('ws://localhost:8000/ws/agent');
         scheduledService.attachContext(mockAgentContext);
-        (scheduledService as any).contentPresentationScheduler.enqueue(mockAgentContext, {
+        (scheduledService as any).dispatchMessage({
+            type: 'SEGMENT_CONTENT',
             payload: { id: 'segment-1', turn_id: 'turn-1', segment_type: 'text', delta: 'final bytes' },
-            receivedAt: '2026-08-01T10:00:00.000Z',
-        });
+        }, mockAgentContext);
 
         scheduledService.disconnect();
 
@@ -509,7 +504,7 @@ describe('AgentStreamingService', () => {
         expect((scheduledService as any).context).toBe(null);
     });
 
-    it('flushes the previous context before replacement and the current context on remote disconnect', () => {
+    it('keeps immediately projected content on each context across replacement and remote disconnect', () => {
         const callbacks = new Map<string, (payload?: any) => void>();
         const wsClient = {
             state: 'disconnected', connect: vi.fn(), disconnect: vi.fn(), send: vi.fn(), off: vi.fn(),
@@ -517,10 +512,10 @@ describe('AgentStreamingService', () => {
         } as any;
         const scheduledService = new AgentStreamingService('ws://localhost:8000/ws/agent', { wsClient });
         scheduledService.connect('test-agent-id', mockAgentContext);
-        (scheduledService as any).contentPresentationScheduler.enqueue(mockAgentContext, {
+        (scheduledService as any).dispatchMessage({
+            type: 'SEGMENT_CONTENT',
             payload: { id: 'old-segment', turn_id: 'turn-old', segment_type: 'text', delta: 'old bytes' },
-            receivedAt: '2026-08-01T10:00:00.000Z',
-        });
+        }, mockAgentContext);
 
         const replacementConversation: any = { messages: [], updatedAt: '' };
         const replacementContext = {
@@ -538,10 +533,10 @@ describe('AgentStreamingService', () => {
         expect(mockConversation.messages[0].segments[0].content).toBe('old bytes');
         expect(mockAgentContext.state.eventMonitorPresentationRevision).toBe(1);
 
-        (scheduledService as any).contentPresentationScheduler.enqueue(replacementContext, {
+        (scheduledService as any).dispatchMessage({
+            type: 'SEGMENT_CONTENT',
             payload: { id: 'new-segment', turn_id: 'turn-new', segment_type: 'text', delta: 'new bytes' },
-            receivedAt: '2026-08-01T10:00:00.100Z',
-        });
+        }, replacementContext);
         callbacks.get('onDisconnect')?.('remote closed');
 
         expect(replacementConversation.messages[0].segments[0].content).toBe('new bytes');

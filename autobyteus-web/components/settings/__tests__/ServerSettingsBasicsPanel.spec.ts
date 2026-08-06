@@ -30,6 +30,7 @@ const mountComponent = () => mount(ServerSettingsBasicsPanel, {
       MediaDefaultModelsCard: { template: '<div data-testid="media-default-models-card-stub">Media Models</div>' },
       CodexFullAccessCard: { template: '<div data-testid="codex-full-access-card-stub">Codex Full Access</div>' },
       StreamingParserCard: { template: '<div data-testid="streaming-parser-card-stub">Streaming Parser</div>' },
+      LiveResponseStreamingCard: { template: '<div data-testid="live-response-streaming-card-stub">Live response</div>' },
       FeaturedCatalogItemsCard: { template: '<div data-testid="featured-catalog-items-card-stub">Featured Catalog</div>' },
       WebSearchConfigurationCard: webSearchStub,
       CompactionConfigCard: { template: '<div data-testid="compaction-config-card-stub">Compaction</div>' },
@@ -71,6 +72,7 @@ const mountComponentWithRealStreamingParser = async (settings: ServerSetting[]) 
         MediaDefaultModelsCard: { template: '<div data-testid="media-default-models-card-stub">Media Models</div>' },
         CodexFullAccessCard: { template: '<div data-testid="codex-full-access-card-stub">Codex Full Access</div>' },
         FeaturedCatalogItemsCard: { template: '<div data-testid="featured-catalog-items-card-stub">Featured Catalog</div>' },
+        LiveResponseStreamingCard: { template: '<div data-testid="live-response-streaming-card-stub">Live response</div>' },
         WebSearchConfigurationCard: webSearchStub,
         CompactionConfigCard: { template: '<div data-testid="compaction-config-card-stub">Compaction</div>' },
       },
@@ -94,6 +96,7 @@ describe('ServerSettingsBasicsPanel', () => {
     expect(wrapper.find('[data-testid="media-default-models-card-stub"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="codex-full-access-card-stub"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="streaming-parser-card-stub"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="live-response-streaming-card-stub"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="featured-catalog-items-card-stub"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="web-search-configuration-card-stub"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="compaction-config-card-stub"]').exists()).toBe(true)

@@ -16,9 +16,13 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  /** DateTime scalar supporting ISO strings and date-only YYYY-MM-DD values */
   DateTime: { input: any; output: any; }
+  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: { input: any; output: any; }
+  /** The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSONObject: { input: any; output: any; }
+  /** The `SafeInt` scalar type represents non-fractional signed whole numeric values that are considered safe as defined by the ECMAScript specification. */
   SafeInt: { input: number; output: number; }
 };
 
@@ -1684,6 +1688,7 @@ export type Query = {
   getAgentRunSkillImprovementEligibility: GraphqlSkillImprovementEligibility;
   getAgentRunTokenUsageSummary: TokenUsageRunSummaryGraphql;
   getAppDataMigrations: Array<AppDataMigrationRecordObject>;
+  getEffectiveStreamingContentFlushIntervalMs: Scalars['Int']['output'];
   getEffectiveWorkingContextCompactionStrategyId: Scalars['String']['output'];
   getGeminiSetupConfig: GeminiSetupStateObject;
   getMemoryHubConnectionInfo: MemoryHubConnectionInfoGql;
@@ -3621,7 +3626,7 @@ export type GetRuntimeAvailabilitiesQuery = { __typename?: 'Query', runtimeAvail
 export type GetServerSettingsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetServerSettingsQuery = { __typename?: 'Query', getEffectiveWorkingContextCompactionStrategyId: string, getServerSettings: Array<{ __typename: 'ServerSetting', key: string, value: string, description: string, isEditable: boolean, isDeletable: boolean }> };
+export type GetServerSettingsQuery = { __typename?: 'Query', getEffectiveWorkingContextCompactionStrategyId: string, getEffectiveStreamingContentFlushIntervalMs: number, getServerSettings: Array<{ __typename: 'ServerSetting', key: string, value: string, description: string, isEditable: boolean, isDeletable: boolean }> };
 
 export type GetSearchConfigQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -8701,6 +8706,7 @@ export const GetServerSettingsDocument = gql`
     isDeletable
   }
   getEffectiveWorkingContextCompactionStrategyId
+  getEffectiveStreamingContentFlushIntervalMs
 }
     `;
 

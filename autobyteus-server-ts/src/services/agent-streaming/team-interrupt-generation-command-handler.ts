@@ -13,13 +13,12 @@ import {
   buildInterruptGenerationCommandAck,
   normalizeInterruptCommandId,
 } from "./interrupt-generation-command-ack.js";
-
-type CommandConnection = { send: (data: string) => void };
+import type { AgentStreamServerMessageSink } from "./websocket-egress/agent-stream-websocket-egress.js";
 
 export const handleTeamInterruptGenerationCommand = async (input: {
   teamRunId: string;
   payload: Record<string, unknown>;
-  connection: CommandConnection | null;
+  sink: AgentStreamServerMessageSink | null;
   activeRun: TeamRun | null;
 }): Promise<void> => {
   const selector = resolveInterruptGenerationTargetSelector(input.payload);
@@ -33,7 +32,7 @@ export const handleTeamInterruptGenerationCommand = async (input: {
   };
   const commandId = normalizeInterruptCommandId(input.payload.command_id);
   const sendAck = (ack: ReturnType<typeof buildInterruptGenerationCommandAck>) => {
-    input.connection?.send(new ServerMessage(ServerMessageType.AGENT_COMMAND_ACK, ack).toJson());
+    input.sink?.send(new ServerMessage(ServerMessageType.AGENT_COMMAND_ACK, ack));
   };
   if (!commandId) {
     sendAck(buildInterruptGenerationCommandAck({ commandId, target }));
@@ -46,10 +45,10 @@ export const handleTeamInterruptGenerationCommand = async (input: {
       ? INTERRUPT_GENERATION_MISSING_TARGET_MESSAGE
       : null;
   if (invalidTargetMessage) {
-    input.connection?.send(createErrorMessage(
+    input.sink?.send(createErrorMessage(
       TEAM_COMMAND_INVALID_TARGET_CODE,
       invalidTargetMessage,
-    ).toJson());
+    ));
     sendAck(buildInterruptGenerationCommandAck({
       commandId,
       target,
@@ -73,10 +72,10 @@ export const handleTeamInterruptGenerationCommand = async (input: {
     const result = await input.activeRun.interruptMember(memberRouteKey, memberRunId);
     sendAck(buildInterruptGenerationCommandAck({ commandId, target, result }));
     if (!result.accepted && typeof result.code === "string" && result.code.startsWith("TARGET_MEMBER_")) {
-      input.connection?.send(createErrorMessage(
+      input.sink?.send(createErrorMessage(
         TEAM_COMMAND_INVALID_TARGET_CODE,
         result.message ?? INTERRUPT_GENERATION_INVALID_TARGET_MESSAGE,
-      ).toJson());
+      ));
     }
   } catch (executionError) {
     sendAck(buildInterruptGenerationCommandAck({ commandId, target, executionError }));

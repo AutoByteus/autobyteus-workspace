@@ -35,6 +35,10 @@ import {
 import { convertTeamRunEventToServerMessage } from "./team-run-event-websocket-message-mapper.js";
 import { handleTeamToolApprovalCommand } from "./team-tool-approval-command-handler.js";
 import { handleTeamInterruptGenerationCommand } from "./team-interrupt-generation-command-handler.js";
+import {
+  AgentStreamWebSocketEgress,
+  type AgentStreamServerMessageSink,
+} from "./websocket-egress/agent-stream-websocket-egress.js";
 
 export type WebSocketConnection = {
   send: (data: string) => void;
@@ -69,6 +73,7 @@ export class AgentTeamStreamHandler {
   private readonly eventUnsubscribers = new Map<string, () => void>();
   private readonly lifecycleUnsubscribers = new Map<string, () => void>();
   private readonly sessionConnections = new Map<string, WebSocketConnection>();
+  private readonly sessionEgresses = new Map<string, AgentStreamWebSocketEgress>();
   private readonly subscribedRunsBySessionId = new Map<string, TeamRun>();
   private readonly pendingMetadataRefreshTimers = new Map<string, NodeJS.Timeout>();
 
@@ -109,15 +114,24 @@ export class AgentTeamStreamHandler {
       return null;
     }
 
+    const egress = new AgentStreamWebSocketEgress({
+      sendRaw: (payload) => connection.send(payload),
+      onSendError: (error) => logger.error(
+        `Team WebSocket egress failed: session=${sessionId}, run=${teamRunId}: ${String(error)}`,
+      ),
+    });
     this.sessionConnections.set(sessionId, connection);
-    if (!this.bindSessionToTeamRun(sessionId, teamRun, connection)) {
+    this.sessionEgresses.set(sessionId, egress);
+    if (!this.bindSessionToTeamRun(sessionId, teamRun, egress)) {
       const errorMsg = createErrorMessage(
         "TEAM_STREAM_UNAVAILABLE",
         `Team run '${teamRunId}' stream not available`,
       );
-      connection.send(errorMsg.toJson());
+      egress.send(errorMsg);
+      egress.dispose();
       connection.close(1011);
       this.sessionConnections.delete(sessionId);
+      this.sessionEgresses.delete(sessionId);
       this.sessionManager.closeSession(sessionId);
       return null;
     }
@@ -128,9 +142,9 @@ export class AgentTeamStreamHandler {
       team_id: teamRunId,
       session_id: sessionId,
     });
-    this.broadcaster.registerConnection(sessionId, teamRunId, connection);
-    connection.send(connectedMsg.toJson());
-    this.sendInitialStatusSnapshot(connection, teamRun);
+    this.broadcaster.registerConnection(sessionId, teamRunId, egress);
+    egress.send(connectedMsg);
+    this.sendInitialStatusSnapshot(egress, teamRun);
 
     logger.info(`Agent Team WebSocket connected: session=${sessionId}, run=${teamRunId}`);
     return sessionId;
@@ -149,19 +163,19 @@ export class AgentTeamStreamHandler {
       const payload = data.payload ?? {};
       const teamRunId = session.runId;
 
-      const connection = this.sessionConnections.get(sessionId);
+      const egress = this.sessionEgresses.get(sessionId);
 
       if (msgType === ClientMessageType.SEND_MESSAGE) {
         const teamRun = await this.resolveSessionTeamRun(sessionId, teamRunId);
         if (!teamRun) {
           return;
         }
-        await this.handleSendMessage(teamRun, payload, connection ?? null);
+        await this.handleSendMessage(teamRun, payload, egress ?? null);
         return;
       }
 
       if (msgType === ClientMessageType.INTERRUPT_GENERATION) {
-        await this.handleInterruptGeneration(teamRunId, payload, connection ?? null);
+        await this.handleInterruptGeneration(teamRunId, payload, egress ?? null);
         return;
       }
 
@@ -171,9 +185,9 @@ export class AgentTeamStreamHandler {
       }
 
       if (msgType === ClientMessageType.APPROVE_TOOL) {
-        await this.handleToolApproval(teamRunId, payload, true, connection ?? null);
+        await this.handleToolApproval(teamRunId, payload, true, egress ?? null);
       } else if (msgType === ClientMessageType.DENY_TOOL) {
-        await this.handleToolApproval(teamRunId, payload, false, connection ?? null);
+        await this.handleToolApproval(teamRunId, payload, false, egress ?? null);
       } else {
         logger.warn(`Unknown message type: ${String(msgType)}`);
       }
@@ -187,6 +201,8 @@ export class AgentTeamStreamHandler {
     const task = this.activeTasks.get(sessionId);
     this.activeTasks.delete(sessionId);
     this.sessionConnections.delete(sessionId);
+    this.sessionEgresses.get(sessionId)?.dispose();
+    this.sessionEgresses.delete(sessionId);
     this.subscribedRunsBySessionId.delete(sessionId);
 
     this.unsubscribeSession(sessionId);
@@ -205,7 +221,7 @@ export class AgentTeamStreamHandler {
   }
 
   private sendInitialStatusSnapshot(
-    connection: WebSocketConnection,
+    sink: AgentStreamServerMessageSink,
     teamRun: TeamRun,
   ): void {
     const lifecycleSnapshot = this.teamRunManager.getLifecycleSnapshot(teamRun.runId);
@@ -213,17 +229,17 @@ export class AgentTeamStreamHandler {
       teamRun,
       lifecycleSnapshot,
     )) {
-      connection.send(message.toJson());
+      sink.send(message);
     }
   }
 
   private ensureActiveSessionSubscription(sessionId: string, teamRunId: string): boolean {
-    const connection = this.sessionConnections.get(sessionId);
-    if (!connection) {
+    const egress = this.sessionEgresses.get(sessionId);
+    if (!egress) {
       return false;
     }
     const teamRun = this.getTeamRun(teamRunId);
-    return !!teamRun && this.bindSessionToTeamRun(sessionId, teamRun, connection);
+    return !!teamRun && this.bindSessionToTeamRun(sessionId, teamRun, egress);
   }
 
   private async resolveSessionTeamRun(
@@ -231,23 +247,24 @@ export class AgentTeamStreamHandler {
     teamRunId: string,
   ): Promise<TeamRun | null> {
     const connection = this.sessionConnections.get(sessionId);
-    if (!connection) {
+    const egress = this.sessionEgresses.get(sessionId);
+    if (!connection || !egress) {
       return null;
     }
 
     const teamRun = await this.resolveTeamRun(teamRunId);
     if (!teamRun) {
       logger.warn(`Team websocket session '${sessionId}' could not resolve run '${teamRunId}'.`);
-      this.closeWithTeamNotFound(connection, teamRunId);
+      this.closeWithTeamNotFound(connection, teamRunId, egress);
       return null;
     }
 
-    if (!this.bindSessionToTeamRun(sessionId, teamRun, connection)) {
+    if (!this.bindSessionToTeamRun(sessionId, teamRun, egress)) {
       const errorMsg = createErrorMessage(
         "TEAM_STREAM_UNAVAILABLE",
         `Team run '${teamRunId}' stream not available`,
       );
-      connection.send(errorMsg.toJson());
+      egress.send(errorMsg);
       connection.close(1011);
       return null;
     }
@@ -258,18 +275,21 @@ export class AgentTeamStreamHandler {
   private bindSessionToTeamRun(
     sessionId: string,
     teamRun: TeamRun,
-    connection: WebSocketConnection,
+    egress: AgentStreamWebSocketEgress,
   ): boolean {
     const subscribedRun = this.subscribedRunsBySessionId.get(sessionId);
     if (subscribedRun === teamRun) {
       return true;
     }
 
+    if (subscribedRun) {
+      egress.flush();
+    }
     this.unsubscribeSession(sessionId);
 
     const unsubscribeEvents = teamRun.subscribeToEvents((event) => {
       try {
-        connection.send(this.convertTeamEvent(event).toJson());
+        egress.send(this.convertTeamEvent(event));
       } catch (error) {
         logger.error(`Error sending team event to WebSocket: ${String(error)}`);
       }
@@ -285,10 +305,10 @@ export class AgentTeamStreamHandler {
         teamRun.runId,
         (snapshot) => {
           try {
-            connection.send(new ServerMessage(ServerMessageType.TEAM_RUN_LIFECYCLE, {
+            egress.send(new ServerMessage(ServerMessageType.TEAM_RUN_LIFECYCLE, {
               team_run_id: snapshot.teamRunId,
               is_active: snapshot.isActive,
-            }).toJson());
+            }));
           } catch (error) {
             logger.error(`Error sending team lifecycle to WebSocket: ${String(error)}`);
           }
@@ -319,14 +339,14 @@ export class AgentTeamStreamHandler {
   private async handleSendMessage(
     teamRun: TeamRun,
     payload: Record<string, unknown>,
-    connection: WebSocketConnection | null,
+    sink: AgentStreamServerMessageSink | null,
   ): Promise<void> {
     const teamRunId = teamRun.runId;
     const content = typeof payload.content === "string" ? payload.content : "";
     const targetAddress = resolveSendMessageConversationTargetAddress(payload, teamRunId);
     if (!targetAddress.ok) {
       logger.warn(`SEND_MESSAGE rejected for team run ${teamRunId}: ${targetAddress.message}`);
-      this.sendInvalidTarget(connection, targetAddress.message);
+      this.sendInvalidTarget(sink, targetAddress.message);
       return;
     }
 
@@ -366,7 +386,7 @@ export class AgentTeamStreamHandler {
         `SEND_MESSAGE rejected for team run ${teamRunId}: [${result.code ?? "UNKNOWN"}] ${result.message ?? "no message"}`,
       );
       if (this.isInvalidTargetResult(result.code)) {
-        this.sendInvalidTarget(connection, result.message ?? "SEND_MESSAGE target is invalid.");
+        this.sendInvalidTarget(sink, result.message ?? "SEND_MESSAGE target is invalid.");
       }
       return;
     }
@@ -378,12 +398,12 @@ export class AgentTeamStreamHandler {
   private async handleInterruptGeneration(
     teamRunId: string,
     payload: Record<string, unknown>,
-    connection: WebSocketConnection | null,
+    sink: AgentStreamServerMessageSink | null,
   ): Promise<void> {
     await handleTeamInterruptGenerationCommand({
       teamRunId,
       payload,
-      connection,
+      sink,
       activeRun: this.resolveCommandRun(teamRunId),
     });
   }
@@ -392,13 +412,13 @@ export class AgentTeamStreamHandler {
     teamRunId: string,
     payload: Record<string, unknown>,
     approved: boolean,
-    connection: WebSocketConnection | null,
+    sink: AgentStreamServerMessageSink | null,
   ): Promise<void> {
     await handleTeamToolApprovalCommand({
       teamRunId,
       payload,
       approved,
-      connection,
+      sink,
       activeRun: this.resolveCommandRun(teamRunId),
     });
   }
@@ -417,19 +437,25 @@ export class AgentTeamStreamHandler {
     return this.teamRunService.resolveTeamRun(teamRunId);
   }
 
-  private closeWithTeamNotFound(connection: WebSocketConnection, teamRunId: string): void {
+  private closeWithTeamNotFound(
+    connection: WebSocketConnection,
+    teamRunId: string,
+    sink?: AgentStreamServerMessageSink,
+  ): void {
     const errorMsg = createErrorMessage("TEAM_NOT_FOUND", `Team run '${teamRunId}' not found`);
-    connection.send(errorMsg.toJson());
+    if (sink) {
+      sink.send(errorMsg);
+    } else {
+      connection.send(errorMsg.toJson());
+    }
     connection.close(4004);
   }
 
   private sendInvalidTarget(
-    connection: WebSocketConnection | null,
+    sink: AgentStreamServerMessageSink | null,
     message: string,
   ): void {
-    connection?.send(
-      createErrorMessage(TEAM_COMMAND_INVALID_TARGET_CODE, message).toJson(),
-    );
+    sink?.send(createErrorMessage(TEAM_COMMAND_INVALID_TARGET_CODE, message));
   }
 
   private isInvalidTargetResult(code: string | null | undefined): boolean {

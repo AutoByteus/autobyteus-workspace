@@ -1,12 +1,9 @@
 import { ServerMessage } from "./models.js";
-
-export type AgentStreamBroadcastConnection = {
-  send: (data: string) => void;
-};
+import type { AgentStreamServerMessageSink } from "./websocket-egress/agent-stream-websocket-egress.js";
 
 type RegisteredConnection = {
   runId: string;
-  connection: AgentStreamBroadcastConnection;
+  sink: AgentStreamServerMessageSink;
 };
 
 const logger = {
@@ -19,11 +16,11 @@ export class AgentStreamBroadcaster {
   registerConnection(
     sessionId: string,
     runId: string,
-    connection: AgentStreamBroadcastConnection,
+    sink: AgentStreamServerMessageSink,
   ): void {
     this.connectionsBySessionId.set(sessionId, {
       runId,
-      connection,
+      sink,
     });
   }
 
@@ -32,7 +29,6 @@ export class AgentStreamBroadcaster {
   }
 
   publishToRun(runId: string, message: ServerMessage): number {
-    const payload = message.toJson();
     let delivered = 0;
 
     for (const [sessionId, registered] of this.connectionsBySessionId.entries()) {
@@ -40,7 +36,7 @@ export class AgentStreamBroadcaster {
         continue;
       }
       try {
-        registered.connection.send(payload);
+        registered.sink.send(message);
         delivered += 1;
       } catch (error) {
         this.connectionsBySessionId.delete(sessionId);

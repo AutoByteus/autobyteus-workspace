@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { AgentRunEventType } from "../../../../src/agent-execution/domain/agent-run-event.js";
 import { AgentRun } from "../../../../src/agent-execution/domain/agent-run.js";
 import { AgentRunConfig } from "../../../../src/agent-execution/domain/agent-run-config.js";
@@ -35,6 +35,7 @@ const createStatusProjectionService = (projection = buildProjection()) => ({
 });
 
 describe("AgentStreamHandler", () => {
+  afterEach(() => vi.useRealTimers());
   const createActiveRun = (overrides: Record<string, unknown> = {}) => ({
     runId: "agent-123",
     runtimeKind: "autobyteus",
@@ -213,6 +214,7 @@ describe("AgentStreamHandler", () => {
   });
 
   it("maps Codex AgentRunEvents directly to websocket messages for single-agent runs", async () => {
+    vi.useFakeTimers();
     const unsubscribe = vi.fn();
     const activeRun = createActiveRun({
       runtimeKind: "codex_app_server",
@@ -247,6 +249,7 @@ describe("AgentStreamHandler", () => {
 
     await handler.connect(connection, "runtime-run-2");
     await flush();
+    vi.advanceTimersByTime(500);
 
     const messages = connection.send.mock.calls.map(([raw]) => JSON.parse(raw));
     expect(messages).toContainEqual(expect.objectContaining({
