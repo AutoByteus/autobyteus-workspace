@@ -67,6 +67,15 @@ unified diffs. The model-facing canonical format is:
 
 - Every hunk starts with a bare `@@` line. Each hunk body line starts with one
   space for unchanged context, `-` for a removal, or `+` for an addition.
+- Every prefixed hunk body record is one complete logical line even when the
+  outer patch string has no final line ending. The parser completes that record
+  with `CRLF` when the patch contains `CRLF`, and with `LF` otherwise; already
+  terminated patch documents are unchanged.
+- Outer patch-string termination is transport framing, not target-file
+  semantics. To make changed target content end without a line terminator,
+  immediately follow that content record with the exact
+  `\ No newline at end of file` marker. This marker is the sole opt-out from a
+  changed record's normal line terminator.
 - Unchanged and removal lines form the location anchor. Addition-only hunks are
   rejected because they do not identify a safe location.
 - Each hunk must match exactly one eligible location after the preceding hunk.

@@ -35,6 +35,8 @@ describe('EditFileXmlFormatter', () => {
     expect(schema).toContain('prior shell cd state');
     expect(schema).toContain('context-located patch');
     expect(schema).toContain('bare @@ line');
+    expect(schema).toContain('complete logical line');
+    expect(schema).toContain('\\ No newline at end of file');
     expect(schema).not.toContain('@@ -10,7 +10,8 @@');
   });
 
@@ -53,5 +55,7 @@ describe('EditFileXmlFormatter', () => {
     expect(example).toContain('__END_PATCH__');
     expect(example).toContain('<arg name="path">/path/to/utils.py</arg>');
     expect(example).toContain('<arg name="path">/path/to/config/settings.yaml</arg>');
+    expect(example).toContain('<arg name="path">/path/to/version.txt</arg>');
+    expect(example).toContain('\\ No newline at end of file');
   });
 });

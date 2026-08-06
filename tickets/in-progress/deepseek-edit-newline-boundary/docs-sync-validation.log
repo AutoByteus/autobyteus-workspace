@@ -1,0 +1,42 @@
+# Documentation Sync Validation Evidence
+
+timestamp=2026-08-05T20:24:28+0200
+
+$ rg -n -F logical-record contract
+70:- Every prefixed hunk body record is one complete logical line even when the
+
+$ rg -n -F transport-framing contract
+74:- Outer patch-string termination is transport framing, not target-file
+
+$ rg -n -F explicit marker contract
+77:  `\ No newline at end of file` marker. This marker is the sole opt-out from a
+
+$ rg -n LF/CRLF completion and terminated-document preservation
+72:  with `CRLF` when the patch contains `CRLF`, and with `LF` otherwise; already
+
+$ rg -n streaming transport owner boundary
+213:For `edit_file`, the streaming parser owns transport framing only: it removes
+215:`context-patch.ts` owner validates the bare-`@@` context grammar, unique-match
+
+$ rg -n API patch-string extraction boundary
+87:- `content` (string) for `write_file` OR `patch` (string) for `edit_file`
+
+$ rg -n native/XML model-facing contract alignment
+autobyteus-ts/src/tools/usage/formatters/edit-file-xml-schema-formatter.ts:10:        <arg name="patch" type="string" description="A context-located patch. Start every hunk with a bare @@ line. Prefix unchanged context with one space, removals with -, and additions with +. Every prefixed hunk body record is a complete logical line even if the patch argument has no final line ending. To make changed content end without a line terminator, immediately follow that line with the exact marker &quot;\\ No newline at end of file&quot;. Do not include line numbers, file headers, or Begin/End Patch metadata. Include enough unchanged/removal lines to identify exactly one location." required="true">
+autobyteus-ts/src/tools/file/edit-file.ts:20:    'A context-located patch. Start every hunk with a bare @@ line. Prefix unchanged context with one space, removals with -, and additions with +. Every prefixed hunk body record is a complete logical line even if the patch argument has no final line ending. To make changed content end without a line terminator, immediately follow that line with the exact marker "\\ No newline at end of file". Do not include line numbers, file headers, or Begin/End Patch metadata. Include enough unchanged/removal lines to identify exactly one location.',
+26:### Example 2: Replace a final line and intentionally omit its line terminator
+
+$ git diff --check
+PASS: tracked implementation and durable-doc diff has no whitespace errors.
+
+$ delivery artifact trailing-whitespace scan
+PASS: no trailing whitespace found in delivery artifacts.
+
+$ shasum -a 256 delivery docs and reports
+e14fa96a6590c4663351227a9bb1da55b8b649d8d28ea2eb4682a79fa5b26996  autobyteus-ts/docs/tool_schema_and_configuration.md
+a10077e2826cb5e054e88d596cc9e18950091cb73790dc1ccf43d3e0deb85251  tickets/in-progress/deepseek-edit-newline-boundary/docs-sync-report.md
+b17b88401b581ceb0b8b494f60da07e0c174990b21cbfead427c5670144e7720  tickets/in-progress/deepseek-edit-newline-boundary/handoff-summary.md
+e9958bc09ad8d25d7e9bc8682127a52914e5b235a03ca60d7b952951de88cad9  tickets/in-progress/deepseek-edit-newline-boundary/release-deployment-report.md
+f9bca7eef643b87f2d6bd4bf4989f93a283742935ff3f08d2686f85b899ed365  tickets/in-progress/deepseek-edit-newline-boundary/delivery-revision-record.md
+
+result=pass

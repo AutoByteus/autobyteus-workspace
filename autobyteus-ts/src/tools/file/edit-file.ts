@@ -17,7 +17,7 @@ argumentSchema.addParameter(new ParameterDefinition({
   name: 'patch',
   type: ParameterType.STRING,
   description:
-    'A context-located patch. Start every hunk with a bare @@ line. Prefix unchanged context with one space, removals with -, and additions with +. Do not include line numbers, file headers, or Begin/End Patch metadata. Include enough unchanged/removal lines to identify exactly one location.',
+    'A context-located patch. Start every hunk with a bare @@ line. Prefix unchanged context with one space, removals with -, and additions with +. Every prefixed hunk body record is a complete logical line even if the patch argument has no final line ending. To make changed content end without a line terminator, immediately follow that line with the exact marker "\\ No newline at end of file". Do not include line numbers, file headers, or Begin/End Patch metadata. Include enough unchanged/removal lines to identify exactly one location.',
   required: true
 }));
 

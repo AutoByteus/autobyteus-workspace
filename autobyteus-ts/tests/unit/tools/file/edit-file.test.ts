@@ -44,6 +44,8 @@ describe('edit_file tool', () => {
     expect(patchParam?.type).toBe(ParameterType.STRING);
     expect(patchParam?.required).toBe(true);
     expect(patchParam?.description).toContain('bare @@ line');
+    expect(patchParam?.description).toContain('complete logical line');
+    expect(patchParam?.description).toContain('\\ No newline at end of file');
     expect(patchParam?.description).toContain('Do not include line numbers');
   });
 
@@ -65,6 +67,29 @@ describe('edit_file tool', () => {
     expect(result).toBe(`File edited successfully at ${filePath}`);
     const content = await fs.readFile(filePath, 'utf-8');
     expect(content).toBe('line1\nline2 updated\nline3\n');
+  });
+
+  it('keeps an unterminated final addition separate from untouched file content', async () => {
+    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-edit-file-'));
+    const filePath = path.join(tmpDir, 'observed_boundary.txt');
+    await fs.writeFile(
+      filePath,
+      '- Visualization load behavior\n- Existing validation guidance\n',
+      'utf-8'
+    );
+
+    const tool = getPatchTool();
+    const context: MockContext = { agentId: 'agent', workspaceRootPath: tmpDir };
+    await tool.execute(context, {
+      path: filePath,
+      patch: '@@\n - Visualization load behavior\n+- New loading-state guidance'
+    });
+
+    expect(await fs.readFile(filePath, 'utf-8')).toBe(
+      '- Visualization load behavior\n' +
+      '- New loading-state guidance\n' +
+      '- Existing validation guidance\n'
+    );
   });
 
   it('rejects git file headers because path is supplied separately', async () => {
