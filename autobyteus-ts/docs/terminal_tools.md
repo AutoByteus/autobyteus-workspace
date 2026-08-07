@@ -42,12 +42,12 @@ const result = await runBash(context, "npm install", "apps/web", 120);
 
 ```ts
 {
-  stdout: string;
-  stderr: string;
+  stdout?: string;
+  stderr?: string;
   exitCode: number | null;
-  timedOut: boolean;
+  timedOut?: boolean;
   effectiveCwd: string;
-  backgroundProcesses: Array<{
+  backgroundProcesses?: Array<{
     pid: number;
     status: "running" | "exited" | "stopped";
     command: string;
@@ -56,6 +56,8 @@ const result = await runBash(context, "npm install", "apps/web", 120);
   }>;
 }
 ```
+
+*Note: Empty or default values for `stdout`, `stderr`, `timedOut`, and `backgroundProcesses` are omitted from the JSON payload to reduce LLM context token usage.*
 
 **Key behavior:**
 
