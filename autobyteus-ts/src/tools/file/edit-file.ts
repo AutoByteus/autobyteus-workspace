@@ -7,17 +7,18 @@ import { ParameterSchema, ParameterDefinition, ParameterType } from '../../utils
 import { applyContextPatch, PatchApplicationError } from './context-patch.js';
 import { addFileToolPathParameters } from './file-tool-schema.js';
 import { resolveFileToolPath } from './workspace-path-utils.js';
-
-const DESCRIPTION =
-  'Applies a context-located patch to one file without overwriting unrelated content. File paths use trusted-local semantics: absolute paths are used directly; relative paths require an explicit absolute base_dir and are never resolved from workspace, process, or shell cd state. Use this for surgical edits; use write_file only for a deliberate whole-file rewrite.';
+import {
+  EDIT_FILE_DESCRIPTION,
+  EDIT_FILE_PATCH_FIELD_GUIDANCE
+} from './edit-file-contract.js';
+import { formatEditFilePatchFailure } from './edit-file-patch-diagnostic.js';
 
 const argumentSchema = new ParameterSchema();
 addFileToolPathParameters(argumentSchema);
 argumentSchema.addParameter(new ParameterDefinition({
   name: 'patch',
   type: ParameterType.STRING,
-  description:
-    'A context-located patch. Start every hunk with a bare @@ line. Prefix unchanged context with one space, removals with -, and additions with +. Do not include line numbers, file headers, or Begin/End Patch metadata. Include enough unchanged/removal lines to identify exactly one location.',
+  description: EDIT_FILE_PATCH_FIELD_GUIDANCE,
   required: true
 }));
 
@@ -58,10 +59,10 @@ export async function editFile(
     }
 
     if (patchedContent === null) {
-      const patchFailure = patchError ?? new PatchApplicationError('Patch could not be applied.');
-      throw new PatchApplicationError(
-        `${patchFailure.message} Read the file again and retry with a canonical bare @@ patch and more unique unchanged/removal context.`
-      );
+      if (!patchError) {
+        throw new Error('Context patch retry loop ended without a result or failure.');
+      }
+      throw new PatchApplicationError(patchError.failure, formatEditFilePatchFailure);
     }
 
     await fs.writeFile(finalPath, patchedContent, 'utf-8');
@@ -82,7 +83,7 @@ export function registerEditFileTool(): BaseTool {
   if (!defaultToolRegistry.getToolDefinition(TOOL_NAME)) {
     cachedTool = tool({
       name: TOOL_NAME,
-      description: DESCRIPTION,
+      description: EDIT_FILE_DESCRIPTION,
       argumentSchema,
       category: ToolCategory.FILE_SYSTEM,
       paramNames: ['context', 'path', 'base_dir', 'patch']
