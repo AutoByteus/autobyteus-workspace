@@ -2,15 +2,15 @@
 
 ## Release / Publication / Deployment Scope
 
-Repository delivery to the recorded `personal` target is planned only after explicit user verification. No standalone version bump, tag, release publication, or deployment scope is defined for this ticket. A local unsigned personal macOS ARM64 package was built solely to enable that verification.
+The user verified the local package and authorized repository finalization plus a new stable release. Delivery will finalize to `personal`, then publish patch `v1.4.45` through the documented release helper and verify the tag-triggered release workflows and outputs. The local unsigned personal macOS ARM64 package was the acceptance candidate; it remains separate from signed release artifacts.
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/tickets/in-progress/restore-focused-progressive-markdown/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/tickets/done/restore-focused-progressive-markdown/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/tickets/in-progress/restore-focused-progressive-markdown/delivery-revision-record.md`
-- Current delivery revision ID: `DR-002`
-- Notes: Integrated and documentation-synchronized candidate plus a verified local Electron test package are ready for explicit user verification; finalization is held.
+- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/tickets/done/restore-focused-progressive-markdown/delivery-revision-record.md`
+- Current delivery revision ID: `DR-003`
+- Notes: User verification and release authorization received; mandatory second target refresh passed unchanged; repository finalization is in progress.
 
 ## Initial Delivery Integration Refresh
 
@@ -30,53 +30,56 @@ Repository delivery to the recorded `personal` target is planned only after expl
 
 ## User Verification
 
-- Initial explicit user completion/verification received: `No`
-- Initial verification / acceptance reference: Pending user response to `handoff-summary.md`
+- Initial explicit user completion/verification received: `Yes`
+- Initial verification / acceptance reference: User message on 2026-08-08 — “the task is done. lets finalize and release a new version”.
 - Renewed verification required after later re-integration: `No` at present
 - Renewed verification received: `Not needed`
-- Renewed verification / acceptance reference: N/A
+- Renewed verification / acceptance reference: Post-verification fetch found `origin/personal` unchanged at `9ce41640960fc3e2a7b85b85608a4f081fe52df2`; no re-integration occurred.
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/tickets/in-progress/restore-focused-progressive-markdown/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/tickets/done/restore-focused-progressive-markdown/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated: `autobyteus-web/docs/content_rendering.md`; `autobyteus-web/docs/agent_execution_architecture.md`
 - No-impact rationale (if applicable): N/A
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/<ticket-name>`: `No`
-- Archived ticket path: Pending explicit user verification; intended path is `tickets/done/restore-focused-progressive-markdown`
+- Ticket moved to `tickets/done/<ticket-name>`: `Yes`
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/tickets/done/restore-focused-progressive-markdown`
 
 ## Version / Tag / Release Commit
 
-No version, tag, or release commit is planned unless the user separately expands scope. The verification package retains version `1.4.44` and is intentionally unsigned/not notarized.
+- Prior/latest published stable version: `1.4.44` / `v1.4.44`.
+- Planned new stable version: `1.4.45` / `v1.4.45`.
+- Planned release method: repository `pnpm release` helper with archived ticket release notes, synchronized web/gateway versions, managed messaging release manifest, curated notes, annotated tag, and explicit target/tag pushes.
+- Current state: release notes prepared; release commit/tag not yet created.
 
 ## Repository Finalization
 
 - Bootstrap context source: `requirements.md` — refreshed `origin/personal` / `personal`
 - Ticket branch: `codex/restore-focused-progressive-markdown`
-- Ticket branch commit result: Local reviewed-package checkpoint and integration merge completed; final delivery commit pending verification
+- Ticket branch commit result: Local reviewed-package/verification checkpoint completed; archived final delivery commit pending
 - Ticket branch push result: Pending explicit verification
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after verification / acceptance: N/A — verification not yet received
-- Delivery-owned edits protected before re-integration: `Not needed` for finalization yet
-- Re-integration before final merge result: `Not needed` yet; mandatory second refresh remains pending
+- Target advanced after verification / acceptance: `No` — second fetch confirmed the same `9ce41640960fc3e2a7b85b85608a4f081fe52df2` target.
+- Delivery-owned edits protected before re-integration: `Completed` — checkpoint `596296147c6e9d50fc7a0a293004a42665ecc693`
+- Re-integration before final merge result: `Not needed` — target unchanged
 - Target branch update result: Pending
 - Merge into target result: Pending
 - Push target branch result: Pending
 - Repository finalization status: `Blocked`
-- Blocker (if applicable): Intentional user-verification hold, not a product defect.
+- Blocker (if applicable): No defect blocker; archival/commit/push/merge sequence is currently in progress.
 
 ## Release / Publication / Deployment
 
-- Applicable: `No`
-- Method: `Other` — not applicable
-- Method reference / command: N/A
-- Release/publication/deployment result: `Not required`
-- Release notes handoff result: `Not required`
-- Blocker (if applicable): None
+- Applicable: `Yes`
+- Method: `Release Script`
+- Method reference / command: planned `pnpm release 1.4.45 -- --release-notes tickets/done/restore-focused-progressive-markdown/release-notes.md` using a clean finalization checkout; explicit branch/tag pushes may be used to protect unrelated main-checkout changes.
+- Release/publication/deployment result: `Blocked` — pending repository finalization and workflow execution
+- Release notes handoff result: `Blocked` — prepared at `release-notes.md`, not yet consumed
+- Blocker (if applicable): Ordered execution only; no technical defect blocker.
 
 Local verification build (not a release/publication):
 
@@ -99,13 +102,13 @@ Local verification build (not a release/publication):
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification / acceptance: `No — not required for the defined no-release scope`
-- Archived release notes artifact used for release/publication: `Not required`
-- Release notes status: `Not required`
+- Release notes artifact created before verification / acceptance: `No — release scope was added by the user's verification/finalization message; notes were created immediately afterward and before repository release work.`
+- Archived release notes artifact used for release/publication: Pending
+- Release notes status: `Updated`
 
 ## Deployment Steps
 
-None.
+Tag-triggered workflows are expected to build/publish desktop, Android, iOS/TestFlight where configured, messaging gateway, and multi-architecture server Docker outputs according to the repository release contract. Delivery will monitor and record exact results.
 
 ## Environment Or Persisted-Data Transition Notes
 
@@ -129,4 +132,4 @@ Before finalization, rollback is simply to withhold verification and leave `pers
 
 ## Final Status
 
-**Pass — integrated candidate and verified local Electron package are ready for explicit user verification. Repository finalization is intentionally held.**
+**In progress — user verification received, target unchanged, repository finalization and stable `v1.4.45` release authorized.**

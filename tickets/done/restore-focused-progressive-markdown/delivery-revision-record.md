@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- |
 | DR-001 | `CRR-002` cumulative handoff after `API-REV-001` | N/A | Latest base integrated; docs synchronized; ready for user verification; finalization held | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-integration-evidence.log` |
 | DR-002 | User request to read build guidance and prepare Electron for testing | DR-001 — ready / held | Unsigned personal macOS ARM64 test package built and verified; finalization remains held | `handoff-summary.md`, `release-deployment-report.md`, Electron build/verification logs |
+| DR-003 | Explicit user verification plus request to finalize and release a new version | DR-002 — package ready / held | Verified target unchanged; finalization and stable `v1.4.45` release authorized and in progress | `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md` |
 
 ## Revision Entries
 
@@ -13,12 +14,12 @@
 
 - Date: 2026-08-08
 - Delivery round and trigger: Initial delivery round, triggered by the code reviewer's `CRR-002` cumulative handoff after `CRR-001` source Pass and `API-REV-001` Pass.
-- Triggering upstream report, verification, or evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/tickets/in-progress/restore-focused-progressive-markdown/api-e2e-test-review-report.md`, with the full cumulative package through `api-e2e-execution-coverage-report.md` and `code-review-revision-record.md`.
+- Triggering upstream report, verification, or evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/tickets/done/restore-focused-progressive-markdown/api-e2e-test-review-report.md`, with the full cumulative package through `api-e2e-execution-coverage-report.md` and `code-review-revision-record.md`.
 - Prior authoritative result (`N/A` for `DR-001`): `N/A`
 - Current authoritative result: The latest tracked remote base is integrated and verified; both required durable docs are synchronized; the candidate is ready for explicit user verification; repository finalization is held.
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/tickets/in-progress/restore-focused-progressive-markdown/docs-sync-report.md`
-- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/tickets/in-progress/restore-focused-progressive-markdown/handoff-summary.md`
-- Release/publication/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/tickets/in-progress/restore-focused-progressive-markdown/release-deployment-report.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/tickets/done/restore-focused-progressive-markdown/docs-sync-report.md`
+- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/tickets/done/restore-focused-progressive-markdown/handoff-summary.md`
+- Release/publication/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/tickets/done/restore-focused-progressive-markdown/release-deployment-report.md`
 - Integration and post-integration verification:
   - Fetched `origin/personal`, which advanced seven commits from bootstrap `647b1119a9dc3ba2ba301243e1b5e752943454db` to `9ce41640960fc3e2a7b85b85608a4f081fe52df2`.
   - Protected the reviewed package in local checkpoint `7a5675ef2ac33f6e40bb47ea89f221c12959ead2`.
@@ -51,3 +52,19 @@
 - Why this delivery revision was recorded: The completed local package is a distinct verification-enablement result and must not be inferred from a missing delivery record.
 - Next recipient/action: User quits the older running AutoByteus instance that owns port `29695`, launches this package, tests progressive rich Markdown, and explicitly approves finalization if accepted.
 - Remaining blockers, rollback concerns, or untested scope: The package is intentionally unsigned/not notarized. Existing nonfatal Browserslist, chunk-size, deprecated-subdependency, Nuxt peer-range, and module-type warnings remain. The user's older AutoByteus process was preserved and must be quit before launching this package.
+
+### DR-003 — User verified; finalization and stable release authorized
+
+- Date: 2026-08-08
+- Delivery round and trigger: User message: “the task is done. lets finalize and release a new version”.
+- Triggering upstream report, verification, or evidence: User acceptance of the DR-002 Electron candidate; post-verification remote refresh at 2026-08-08T19:08:56Z.
+- Prior authoritative result: `DR-002` — unsigned personal macOS ARM64 verification package built and verified; finalization held.
+- Current authoritative result: User verification accepted. `origin/personal` remained unchanged at `9ce41640960fc3e2a7b85b85608a4f081fe52df2`, equal to the already integrated base, so no re-integration, executable rerun, or renewed verification is required. Repository finalization and stable patch `v1.4.45` are authorized and in progress.
+- Protected state: Delivery-owned edits and verification evidence were checkpointed at `596296147c6e9d50fc7a0a293004a42665ecc693` before the mandatory second target refresh.
+- Release decision: Current web/gateway version and latest stable tag are `1.4.44` / `v1.4.44`; the next available stable patch is `1.4.45` / `v1.4.45`. The tag is absent locally and remotely.
+- Release notes: Prepared `release-notes.md` with user-facing progressive rich rendering improvements/fix before any release commit/tag action.
+- Canonical artifacts updated: `handoff-summary.md`, `release-deployment-report.md`, `delivery-revision-record.md`, `release-notes.md`.
+- User verification/finalization state: Verification and finalization authorization received; ticket archived at `tickets/done/restore-focused-progressive-markdown`; final ticket commit/push and repository/release operations underway.
+- Why this delivery revision was recorded: Preserve the explicit acceptance boundary, mandatory second-refresh result, release scope expansion, selected next patch version, and ordered transition into irreversible repository/release work.
+- Next recipient/action: Delivery archives and commits/pushes the ticket, merges/pushes `personal`, creates and pushes `v1.4.45`, verifies all release workflows/publication outputs, then performs only safe cleanup.
+- Remaining blockers, rollback concerns, or untested scope: No product blocker. Release success depends on remote workflow and publishing infrastructure. Existing bounded product limitations remain unchanged; a user-running worktree app may require worktree cleanup deferral.

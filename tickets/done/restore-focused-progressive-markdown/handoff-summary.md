@@ -2,10 +2,10 @@
 
 ## Status
 
-- Delivery state: **Ready for explicit user verification**.
-- Repository finalization: **Held by policy until the user verifies/completes the candidate**.
-- Release/publication/deployment: Not in scope; no version bump, tag, release publication, or deployment action has been performed. A local unsigned verification package is available below.
-- Ticket state: remains `tickets/in-progress/restore-focused-progressive-markdown`.
+- Delivery state: **User verified; finalization and stable patch release authorized**.
+- Repository finalization: **In progress** after the mandatory second target refresh.
+- Release/publication/deployment: User authorized a new stable version. The planned next patch is `v1.4.45`; no tag or publication has occurred yet. The local unsigned verification package remains available below.
+- Ticket state: archived at `tickets/done/restore-focused-progressive-markdown`; final ticket commit/push and target merge are in progress.
 
 ## Delivered Behavior
 
@@ -37,13 +37,13 @@
 - Integrated candidate: `af5f8aa29cae32f5c6a26716e20182cd6e4ad910`.
 - Result: Pass; no conflicts and no changed-path overlap with the seven newly integrated base commits.
 - Post-integration check: focused presenters/rich renderer passed 4 files / 30 tests; `git diff --check` and obsolete production-symbol checks passed.
-- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/tickets/in-progress/restore-focused-progressive-markdown/delivery-integration-evidence.log`.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/tickets/done/restore-focused-progressive-markdown/delivery-integration-evidence.log`.
 
 ## Documentation Synchronized
 
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/autobyteus-web/docs/content_rendering.md`
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/autobyteus-web/docs/agent_execution_architecture.md`
-- Docs report: `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/tickets/in-progress/restore-focused-progressive-markdown/docs-sync-report.md`
+- Docs report: `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/tickets/done/restore-focused-progressive-markdown/docs-sync-report.md`
 
 ## Personal macOS ARM64 Electron Verification Package
 
@@ -61,8 +61,8 @@
   - SHA-256: `d58d95ce62de26aa3fe110efdadc0ff6f7a52593443b4c4caca9238db4f2a156`
 - Direct app: `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
 - Verification: DMG checksum valid, ZIP integrity valid, staged/final packaged terminal helpers valid, real packaged `node-pty` spawn probe passed, bundle version is `1.4.44`, and the main executable is Mach-O ARM64.
-- Build evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/tickets/in-progress/restore-focused-progressive-markdown/electron-build-macos-arm64-personal.log`
-- Verification evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/tickets/in-progress/restore-focused-progressive-markdown/electron-build-macos-arm64-personal-verification.log`
+- Build evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/tickets/done/restore-focused-progressive-markdown/electron-build-macos-arm64-personal.log`
+- Verification evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/tickets/done/restore-focused-progressive-markdown/electron-build-macos-arm64-personal-verification.log`
 - Package policy: intentionally unsigned/not notarized local test output, not a release artifact.
 
 ## Suggested User Verification
@@ -71,6 +71,8 @@
 2. In a focused team-member response that emits reasoning, expand **Thinking** and confirm rich content updates while the disclosure remains collapsed by default on a fresh segment.
 3. Optionally repeat the selected conversation journey on `/mobile`; confirm rich updates, completion, and scrolling/wrapping remain usable.
 4. If the candidate is accepted, reply explicitly with verification/finalization approval. Delivery will refresh `origin/personal` again before archiving, committing/pushing the ticket, and merging/pushing `personal`.
+
+User verification was received on 2026-08-08: “the task is done. lets finalize and release a new version”. The post-verification refresh fetched `origin/personal` and confirmed it unchanged at `9ce41640960fc3e2a7b85b85608a4f081fe52df2`; the verified candidate remains four commits ahead / zero behind. No re-integration or renewed verification is required.
 
 An older AutoByteus instance is currently running from the completed runtime-streaming worktree and owns embedded port `29695`. Delivery did not stop or mutate that user process. Quit it before launching this package; otherwise macOS may focus the old instance or the new embedded server may fail to bind. After quitting it, launch the direct app with:
 
@@ -88,6 +90,11 @@ If macOS blocks the unsigned app, right-click it in Finder and choose **Open**.
 - A very large or feature-heavy accumulated Markdown revision can still be expensive at the configured cadence.
 - Renderer-wide background/unfocused contention remains explicitly out of scope and is not claimed fixed.
 
-## Finalization Hold
+## Finalization And Release Authorization
 
-No ticket archival, ticket-branch push, merge to `personal`, target push, release, deployment, or topic cleanup will occur until explicit user verification is received. If `origin/personal` advances before finalization, delivery will refresh and recheck the candidate and request renewed verification if the user-facing state materially changes.
+- User verification: received.
+- Mandatory post-verification target refresh: passed; `origin/personal` unchanged at `9ce41640960fc3e2a7b85b85608a4f081fe52df2`.
+- Planned repository sequence: archive ticket, commit/push ticket branch, merge/push to `personal`, and verify target ancestry.
+- Planned release: stable `v1.4.45` through the documented release helper with the archived `release-notes.md`, followed by workflow/publication verification.
+- Release notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/tickets/done/restore-focused-progressive-markdown/release-notes.md`
+- Cleanup remains last and will not remove a worktree containing a user-running AutoByteus app.
