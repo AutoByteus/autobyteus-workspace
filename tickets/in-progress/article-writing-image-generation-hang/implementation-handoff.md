@@ -35,6 +35,7 @@ Implementation local fixes for `CRR-001` are complete and are routed back to `co
 - Passed: `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/loop/agent-turn-runner.test.ts tests/unit/agent/status/status-deriver.test.ts --run` (8 tests).
 - Core build typecheck passed.
 - Server build typecheck is blocked by unrelated missing generated Prisma exports; no changed media-path diagnostics were reported.
+- Media service unit test was attempted but is blocked during module import by the same unrelated Prisma CommonJS named-export mismatch; no test cases executed.
 - Existing memory tests containing the old marker-only/omitted-result-arguments expectations are stale relative to `ARCH-REV-006`; API/E2E should update coverage per its investigation before execution.
 
 ## CRR-001 Local-Fix Resolution
@@ -45,7 +46,7 @@ Implementation local fixes for `CRR-001` are complete and are routed back to `co
 - **CR-004:** Same-output lease replacement and publication are serialized by a per-path lock, with lease checks before and after staging rename; the publication timer is stopped only while the serialized rename is in progress.
 - **Cleanup:** Removed the unused repair-boundary `ingestToolResults` declaration and unused correlation/raw-interaction scaffolding.
 
-Focused local-fix checks: `git diff --check` passed; `pnpm -C autobyteus-ts exec tsc -p tsconfig.build.json --noEmit` passed. The server typecheck remains subject to the previously reported unrelated generated Prisma-client errors.
+Focused local-fix checks: `git diff --check` passed; `pnpm -C autobyteus-ts exec tsc -p tsconfig.build.json --noEmit` passed. The server typecheck and media service unit test remain subject to the previously reported unrelated generated Prisma-client/CommonJS errors.
 
 ## Review Risks
 
