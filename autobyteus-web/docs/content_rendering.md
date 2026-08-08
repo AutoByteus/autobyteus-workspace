@@ -212,6 +212,15 @@ does not show that the frontend dropped reasoning. When reasoning is emitted,
 standalone and team-member streams route it through the same completion-aware
 `ThinkSegment.vue` presentation boundary.
 
+For native AutoByteus runs, a non-empty completed reasoning value is persisted
+as its own replay-authoritative `reasoning` raw trace before the ordinary
+assistant trace, with the same turn/source identity. Standalone and team
+GraphQL history projection can therefore recreate the completed Thinking
+segment after run reopen, hard reload, or member reselection. Raw traces written
+before this persistence contract was introduced are not backfilled or
+heuristically reconstructed, so an older affected turn can remain without a
+historical Thinking disclosure.
+
 The server WebSocket egress already shapes `SEGMENT_CONTENT` cadence. Frontend
 streaming services apply each shaped message immediately and do not add a
 presentation scheduler or timer. See

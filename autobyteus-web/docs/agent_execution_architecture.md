@@ -340,6 +340,17 @@ Archived segments and manifests remain unchanged and directly usable by their
 own storage lifecycle. The Event Monitor never pages into those archives; its
 explicit earlier-browsing path is bounded to the current active trace.
 
+Native AutoByteus memory ingestion persists every non-empty completed reasoning
+value as a distinct replay-authoritative `reasoning` raw trace immediately
+before its ordinary assistant trace. The pair shares turn, source-event, and
+timestamp identity while retaining unique trace IDs and monotonic sequence
+order; working-context provenance references both. The existing standalone and
+team replay transformers therefore hydrate reasoning and assistant rows in
+order, allowing Thinking to survive history reopen, hard reload, and member
+reselection. Pre-contract raw traces that omitted reasoning remain readable but
+incomplete; the product does not rewrite them, infer reasoning from ordinary
+assistant narration, or fall back to working-context snapshots.
+
 ### Run Reopen Projection Hydration
 
 Run-history reopen consumes a backend replay bundle with sibling

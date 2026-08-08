@@ -2,15 +2,15 @@
 
 ## Delivery State
 
-**User finalization is authorized, but delivery remains technically blocked.** `IR-004` has corrected the `CR-003` native reasoning writer and `CRR-007` passes its source review. The canonical API/E2E result is still `API-REV-004` Fail while API-REV-005 completes the required native/GraphQL/browser hydration revalidation. API/E2E has also changed two durable server coverage paths, so a successful result must return through proportional code review before delivery. The user requested no release or version bump; once the gates pass, delivery must finalize into the main repository `personal` branch and then build the latest personal Electron package from that finalized main checkout.
+**Ready for user-authorized repository finalization.** `IR-004` corrects the `CR-003` native reasoning writer, `CRR-007` passes source review, `API-REV-005` passes native/GraphQL/real-browser reload hydration at 98.6%, and `CRR-008` passes both durable coverage edits with no findings. A final fetch at `2026-08-08T16:38:11Z` confirmed `origin/personal` unchanged, and delivery-focused reruns pass 27 native-memory tests plus 30 server hydration/projection tests. The user requested no release or version bump; finalize into the main repository `personal` branch, then build the latest personal Electron package from that finalized checkout.
 
-## Superseded Integrated Candidate Baseline
+## Final Integrated Candidate
 
 - Ticket branch: `codex/runtime-streaming-performance-followup`
 - Dedicated worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup`
 - Production implementation revision: `d691736dc66a3d4323d44367d837d57405bf20b8` (`IR-004`)
 - Reviewed API/E2E checkpoint: `efd1d200dc1ebb7b9a334be09aff9e40eef43ff7`
-- Latest tracked base checked: `origin/personal @ edf2d428b007eb4f8445da3e1e3e60076b8eec46`
+- Latest tracked base checked: `origin/personal @ edf2d428b007eb4f8445da3e1e3e60076b8eec46` at `2026-08-08T16:38:11Z` (unchanged; ticket 7 ahead / 0 behind before final delivery edits)
 - Integration method: `git merge --no-edit origin/personal`
 - Integrated candidate revision before delivery-owned docs: `287d2fa12c319a885e11d413e1fb11a289ae38ae`
 - Expected finalization target after user acceptance: `origin/personal` / local `personal`
@@ -37,7 +37,9 @@ The delivery fetch found eight new base commits relative to the prior implementa
 - `API-REV-004`: **Fail** at 86.4% confidence for native reasoning persistence and supported reload/member-reselection/history hydration, superseding the live-only Round 3 conclusion.
 - `CRR-006`: **Fail — Local Fix**, finding `CR-003`, routed to `implementation_engineer`.
 - `IR-004`: source correction committed at `d691736dc66a3d4323d44367d837d57405bf20b8`.
-- `CRR-007`: **Pass** at 95.8/100 for the corrected production source; API/E2E revalidation remains mandatory.
+- `CRR-007`: **Pass** at 95.8/100 for the corrected production source; its required API/E2E revalidation is satisfied by API-REV-005.
+- `API-REV-005`: **Pass** at 98.6%; corrected future-write raw traces/provenance, standalone/team GraphQL hydration, and real DeepSeek hard-reload/history/member-reselection retention all pass.
+- `CRR-008`: **Pass**, no findings across both API/E2E durable server coverage changes.
 - Retained boundary evidence: `API-REV-002` performance/transport/Settings passes and `API-REV-003` live-only provider-to-DOM passes remain valid only for what they exercised; they do not prove hydrated/reloaded Thinking.
 - `CRR-005`: proportional review of all five durable coverage/test-support changes Pass, no findings.
 - Realistic Chrome production-path run: 600.999 active seconds; exact 120,220-character SHA equality; 95.712% client-content-frame reduction; 24,049 separate routine statuses; renderer/backend/interaction metrics within approved limits; two-node Settings behavior passed.
@@ -46,9 +48,11 @@ The delivery fetch found eight new base commits relative to the prior implementa
 - Round 3 did not reproduce a live frontend/team Thinking regression when reasoning was emitted and, at that time, intentionally did not inspect the user's Bible Study Group. Round 4 later performed authorized read-only persistence/projection inspection and found the hydration defect described below.
 - Round 3 changed no production or durable repository coverage code, so `CRR-005` remains valid and no additional code-review loop is required.
 - Post-integration check: `(cd autobyteus-server-ts && pnpm exec vitest run tests/unit/services/agent-streaming/agent-stream-websocket-egress.test.ts --no-watch)` — Pass, 1 file / 26 tests.
-- Integration evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/delivery-integration-evidence.log`
-- Round 3 structured evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/real-agent-team-thinking-browser-summary.json`
-- Round 3 corrected control screenshots: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/real-classroom-simulation-thinking-collapsed.png`; `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/real-classroom-simulation-thinking-expanded.png`
+- Finalization check: native MemoryManager focused set — Pass, 3 files / 27 tests; server GraphQL/cross-runtime hydration set — Pass, 3 files / 30 tests.
+- Finalization evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/delivery-finalization-verification.log`
+- Integration evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/delivery-integration-evidence.log`
+- Round 3 structured evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/api-e2e-execution-evidence/real-agent-team-thinking-browser-summary.json`
+- Round 3 corrected control screenshots: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/api-e2e-execution-evidence/real-classroom-simulation-thinking-collapsed.png`; `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/api-e2e-execution-evidence/real-classroom-simulation-thinking-expanded.png`
 
 ## Superseded Electron Test Build
 
@@ -56,7 +60,7 @@ The delivery fetch found eight new base commits relative to the prior implementa
 `CR-003` native reasoning raw-trace fix and can lose a previously live Thinking
 disclosure after reload, member reselection, or history hydration. Its packaging
 checks remain valid, but delivery will provide a replacement build only after
-the implementation/review/API-E2E loop passes.
+repository finalization from the main `personal` checkout.
 
 The README-prescribed macOS package path was run with the explicit `personal`
 flavor required by the `personal` finalization target:
@@ -71,21 +75,22 @@ NO_TIMESTAMP=1 APPLE_TEAM_ID= AUTOBYTEUS_BUILD_FLAVOR=personal pnpm build:electr
 - ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.44.zip` (`398,080,856` bytes; SHA-256 `78b8626a32e47c24900305134e8f0ba43d23ff73edb28b4f470b2623655c48b6`).
 - Unpacked app: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`.
 - Package validation: DMG valid; packaged `node-pty` helpers/architecture and real spawn probe pass; app executable is Mach-O ARM64.
-- Build evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/electron-build-macos-arm64-personal.log`.
+- Build evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/electron-build-macos-arm64-personal.log`.
 
 The package remains on disk only to preserve build evidence and possible
 non-acceptance diagnostics. Do not launch it as the delivery acceptance
-candidate; a replacement path will be supplied after `CR-003` passes.
+candidate; a replacement path will be supplied after finalization.
 
 ## Documentation And Delivery Artifacts
 
-- Authoritative API/E2E report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-coverage-report.md` (`API-REV-004`, Fail, 86.4%)
-- Authoritative code review: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/code-review-report.md` (`CRR-006`, Fail — Local Fix, `CR-003`)
-- API/E2E revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/api-e2e-revision-record.md`
-- Docs sync: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/docs-sync-report.md`
-- Delivery/release report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/release-deployment-report.md`
-- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/delivery-revision-record.md` (`DR-005` current)
-- Release notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/release-notes.md`
+- Authoritative API/E2E report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/api-e2e-execution-coverage-report.md` (`API-REV-005`, Pass, 98.6%)
+- Authoritative source review: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/code-review-report.md` (`CRR-007`, Pass)
+- Authoritative durable test review: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/api-e2e-test-review-report.md` (`CRR-008`, Pass)
+- API/E2E revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/api-e2e-revision-record.md`
+- Docs sync: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/docs-sync-report.md`
+- Delivery/release report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/release-deployment-report.md`
+- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/delivery-revision-record.md` (`DR-006` current)
+- Release notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/release-notes.md`
 - Long-lived docs updated:
   - `autobyteus-web/docs/agent_execution_architecture.md`
   - `autobyteus-server-ts/docs/modules/agent_streaming.md`
@@ -106,22 +111,7 @@ candidate; a replacement path will be supplied after `CR-003` passes.
 ## Required Next Action
 
 The user has authorized finalization and explicitly declined a release/version
-bump. Before acting on that authorization:
-
-1. API/E2E must publish a passing API-REV-005 and clean its owned resources.
-2. The two repository-resident durable coverage edits must pass proportional
-   `code_reviewer` review.
-3. Delivery must refresh the ticket branch against the latest
-   `origin/personal`, rerun the required integrated checks, and recheck docs.
-4. Delivery may then archive/commit/push the ticket branch, update/merge/push
-   the main repository `personal` branch, and verify that checkout is current.
-5. Only after finalization, build the latest personal Electron package from the
-   main repository `personal` checkout. Do not tag, publish, or bump a version.
-
-Until those technical gates close:
-
-- do not move the ticket to `tickets/done`;
-- do not treat the existing Electron package as an acceptance candidate;
-- do not commit/push the delivery-owned handoff state for finalization;
-- do not push the ticket branch or merge/push `personal`;
-- do not tag, publish, release, deploy, or remove the ticket worktree/branch.
+bump. Move the ticket to `tickets/done`, commit and push the ticket branch,
+merge/push it into `personal`, make the main repository `personal` checkout
+current, and only then build the latest personal Electron package from that
+main checkout. Do not tag, publish, release, or change the version.
