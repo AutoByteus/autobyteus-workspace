@@ -255,11 +255,13 @@ export class AutobyteusClient {
     inputImageUrls?: string[] | null,
     maskUrl?: string | null,
     generationConfig?: Record<string, unknown> | null,
-    sessionId?: string | null
+    sessionId?: string | null,
+    options: AutobyteusRequestOptions = {}
   ): Promise<JsonRecord> {
     try {
-      const normalizedInputImageUrls = await this.normalizeMediaSources(inputImageUrls, 'image', null);
-      const normalizedMaskUrl = await this.normalizeSingleMediaSource(maskUrl, 'image', null);
+      const signal = options.signal ?? null;
+      const normalizedInputImageUrls = await this.normalizeMediaSources(inputImageUrls, 'image', signal);
+      const normalizedMaskUrl = await this.normalizeSingleMediaSource(maskUrl, 'image', signal);
       const payload = {
         model_name: modelName,
         prompt,
@@ -268,7 +270,9 @@ export class AutobyteusClient {
         generation_config: generationConfig ?? {},
         session_id: sessionId ?? null
       };
-      const response = await this.asyncClient.post(joinAutobyteusUrl(this.serverUrl, '/generate-image'), payload);
+      const response = await this.asyncClient.post(joinAutobyteusUrl(this.serverUrl, '/generate-image'), payload, {
+        signal: options.signal ?? undefined
+      });
       return response.data;
     } catch (error) {
       throw this.handleAxiosError(error, 'Error generating image');

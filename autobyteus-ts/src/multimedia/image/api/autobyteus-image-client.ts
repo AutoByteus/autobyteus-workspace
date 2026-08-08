@@ -66,7 +66,8 @@ export class AutobyteusImageClient extends BaseImageClient {
       inputImageUrls ?? [],
       maskUrl,
       generationConfig ?? null,
-      this.sessionId
+      this.sessionId,
+      { signal: operationOptions?.signal ?? undefined }
     );
 
     const imageUrls = Array.isArray(responseData?.image_urls)

@@ -289,7 +289,7 @@ export class AgentWorker {
   private async observeTurnSettlement(turn: NonNullable<AgentContext['state']['activeTurn']>): Promise<void> {
     try {
       const outcome = await turn.waitForSettlement();
-      if (outcome.kind === 'completed' || outcome.kind === 'recovered' || outcome.kind === 'failed') {
+      if (outcome.kind === 'completed' || outcome.kind === 'recovered') {
         await this.applyStatusEvent(new AgentIdleEvent(outcome.turnId));
       }
     } catch (error) {

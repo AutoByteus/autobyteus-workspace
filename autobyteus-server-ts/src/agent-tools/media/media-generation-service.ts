@@ -19,6 +19,7 @@ import { getMediaModelResolver, type MediaModelResolver } from "./media-tool-mod
 import { getMediaPathResolver, type MediaPathResolver } from "./media-tool-path-resolver.js";
 import { createGeminiRuntimeResolver } from '../../llm-management/services/gemini-runtime-resolver-adapter.js';
 import { createMediaProviderApiKeyResolver } from "../../secret-management/resolution/secret-management-provider-api-key-resolver.js";
+import { getServerSettingsService } from '../../services/server-settings-service.js';
 import { MediaOperationLease } from './media-operation-lease.js';
 
 type ImageClientLike = {
@@ -67,6 +68,7 @@ export class MediaGenerationService {
   private readonly getServerTimeout: () => string | number | null | undefined;
   private readonly onConfigurationDiagnostic: (message: string) => void;
   private readonly currentLeaseByFinalPath = new Map<string, MediaOperationLease>();
+  private readonly publicationLocks = new Map<string, Promise<void>>();
 
   constructor(dependencies: MediaGenerationServiceDependencies = {}) {
     this.modelResolver = dependencies.modelResolver ?? getMediaModelResolver();
@@ -74,7 +76,9 @@ export class MediaGenerationService {
     this.createImageClient = dependencies.createImageClient ?? ((modelIdentifier) => Promise.resolve(ImageClientFactory.createImageClient(modelIdentifier, undefined, createMediaProviderApiKeyResolver("image"), ImageClientFactory.requiresGeminiRuntimeResolver(modelIdentifier) ? createGeminiRuntimeResolver() : undefined)));
     this.createAudioClient = dependencies.createAudioClient ?? ((modelIdentifier) => Promise.resolve(AudioClientFactory.createAudioClient(modelIdentifier, undefined, createMediaProviderApiKeyResolver("audio"), AudioClientFactory.requiresGeminiRuntimeResolver(modelIdentifier) ? createGeminiRuntimeResolver() : undefined)));
     this.createVideoClient = dependencies.createVideoClient ?? ((modelIdentifier) => Promise.resolve(VideoClientFactory.createVideoClient(modelIdentifier, undefined, createMediaProviderApiKeyResolver("video"), VideoClientFactory.requiresGeminiRuntimeResolver(modelIdentifier) ? createGeminiRuntimeResolver() : undefined)));
-    this.getServerTimeout = dependencies.getServerTimeout ?? (() => process.env[MEDIA_OPERATION_TIMEOUT_SETTING]);
+    this.getServerTimeout = dependencies.getServerTimeout ?? (() =>
+      getServerSettingsService().getSettingValue(MEDIA_OPERATION_TIMEOUT_SETTING)
+    );
     this.onConfigurationDiagnostic = dependencies.onConfigurationDiagnostic ?? ((message) => console.warn(`[MEDIA_CONFIG] ${message}`));
   }
 
@@ -152,9 +156,11 @@ export class MediaGenerationService {
   private async runBoundedMediaOperation<T>(options: MediaOperationOptions, outputPath: string, timeoutMs: number, operation: (lease: MediaOperationLease, options: MediaOperationOptions) => Promise<T>): Promise<T> {
     const deadlineAt = Date.now() + timeoutMs;
     const lease = new MediaOperationLease(options.turnId ?? null, options.invocationId ?? null, outputPath, deadlineAt);
-    const previous = this.currentLeaseByFinalPath.get(outputPath);
-    previous?.revoke();
-    this.currentLeaseByFinalPath.set(outputPath, lease);
+    await this.withPublicationLock(outputPath, () => {
+      const previous = this.currentLeaseByFinalPath.get(outputPath);
+      previous?.revoke();
+      this.currentLeaseByFinalPath.set(outputPath, lease);
+    });
     const child = withChildAbortSignal(options.signal);
     const operationOptions = { ...options, signal: child.signal, deadlineAt };
     let timer: ReturnType<typeof setTimeout> | null = null;
@@ -169,10 +175,21 @@ export class MediaGenerationService {
       const task = operation(lease, operationOptions);
       task.catch(() => undefined);
       const result = await Promise.race([task, timeout, cancellation]);
-      if (!lease.canPublish(this.currentLeaseByFinalPath.get(outputPath))) throw new Error('Media operation completed after its publication lease was revoked.');
-      await fsRename(lease.stagingPath, outputPath);
-      lease.state = 'published';
-      return result;
+      return await this.withPublicationLock(outputPath, async () => {
+        if (!lease.canPublish(this.currentLeaseByFinalPath.get(outputPath))) {
+          throw new Error('Media operation completed after its publication lease was revoked.');
+        }
+        if (timer) {
+          clearTimeout(timer);
+          timer = null;
+        }
+        await fsRename(lease.stagingPath, outputPath);
+        if (!lease.canPublish(this.currentLeaseByFinalPath.get(outputPath))) {
+          throw new Error('Media operation publication lease was revoked during publication.');
+        }
+        lease.state = 'published';
+        return result;
+      });
     } finally {
       if (timer) clearTimeout(timer);
       lease.revoke();
@@ -186,6 +203,24 @@ export class MediaGenerationService {
     const child = withChildAbortSignal(options.signal);
     try { return await operation({ ...options, signal: child.signal }); }
     finally { child.dispose(); }
+  }
+
+  private async withPublicationLock<T>(finalPath: string, action: () => Promise<T> | T): Promise<T> {
+    const previous = this.publicationLocks.get(finalPath) ?? Promise.resolve();
+    let release!: () => void;
+    const current = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    this.publicationLocks.set(finalPath, current);
+    await previous;
+    try {
+      return await action();
+    } finally {
+      release();
+      if (this.publicationLocks.get(finalPath) === current) {
+        this.publicationLocks.delete(finalPath);
+      }
+    }
   }
 
   private async cleanupLease(lease: MediaOperationLease): Promise<void> {

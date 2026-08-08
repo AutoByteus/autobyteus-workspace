@@ -118,7 +118,8 @@ export class OpenAIImageClient extends BaseImageClient {
 
       const client = await this.getClient();
       const response = await client.images.generate(
-        request as unknown as OpenAI.Images.ImageGenerateParams
+        request as unknown as OpenAI.Images.ImageGenerateParams,
+        { signal: operationOptions?.signal ?? undefined }
       ) as OpenAI.Images.ImagesResponse;
       const outputFormat = typeof finalConfig.output_format === 'string' ? finalConfig.output_format : 'png';
       const mimeType = mimeTypeFromFormat(outputFormat);
@@ -216,7 +217,8 @@ export class OpenAIImageClient extends BaseImageClient {
 
       const client = await this.getClient();
       const response = await client.images.edit(
-        request as unknown as OpenAI.Images.ImageEditParams
+        request as unknown as OpenAI.Images.ImageEditParams,
+        { signal: operationOptions?.signal ?? undefined }
       ) as OpenAI.Images.ImagesResponse;
       const outputFormat = typeof finalConfig.output_format === 'string' ? finalConfig.output_format : 'png';
       const mimeType = mimeTypeFromFormat(outputFormat);

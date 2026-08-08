@@ -1,4 +1,3 @@
-import type { ToolResultEvent } from '../agent/events/agent-events.js';
 import { Message } from '../llm/utils/messages.js';
 import { WorkingContext } from './working-context.js';
 import { RawTraceItem, type RawTraceItemOptions } from './models/raw-trace-item.js';
@@ -31,11 +30,6 @@ type MemoryManagerToolProtocolSafetyBoundary = {
   listRawTraceCorpusOrdered(limit?: number): RawTraceItem[];
   appendRawTrace(input: AppendRawTraceLikeInput): RawTraceItem;
   persistWorkingContextSnapshot(): void;
-  ingestToolResults(events: ToolResultEvent[], turnId?: string, options?: {
-    source?: string;
-    appendToWorkingContext?: boolean;
-    correlationIdByInvocationId?: ReadonlyMap<string, string>;
-  }): void;
 };
 
 const DEFAULT_RECOVERY_SOURCE_EVENT = 'WorkingContextToolProtocolRecovery';
@@ -68,14 +62,7 @@ export function ensureMemoryManagerWorkingContextToolProtocolSafe(
   // projection and may be rebuilt from these facts after a crash.
   const syntheticRepairs = result.repairs.filter((repair) => repair.source === 'synthetic_interrupted');
   if (syntheticRepairs.length) {
-    const correlationIdByInvocationId = new Map<string, string>();
     const sourceEvent = input.recoverySourceEvent ?? DEFAULT_RECOVERY_SOURCE_EVENT;
-    const rawInteractionByKey = new Map(
-      buildToolInteractions(rawTraces).filter((interaction) => interaction.turnId).map((interaction) => [
-        toolCallIdentityKey({ turnId: interaction.turnId!, toolCallId: interaction.toolCallId }),
-        interaction,
-      ]),
-    );
     for (const repair of syntheticRepairs) {
       const identity = createToolCallIdentity(repair.turnId ?? input.scope?.id, repair.toolCallId);
       if (!identity) continue;
