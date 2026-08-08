@@ -1,0 +1,8 @@
+API/E2E cleanup — 2026-08-08T20:27:30+02:00
+- Revoked API/E2E-owned mobile device device_c79924d2745180d39ad12d1b66cd0d73: HTTP 200; revokedAt 2026-08-08T18:27:19.260Z.
+- Removed local browser mobile-session storage key before closing the owned browser tab.
+- Closed browser tab 9a5e54.
+- Stopped API/E2E-owned Nuxt frontend session on 127.0.0.1:3107; verification: port 3107 not listening.
+- Removed /tmp/restore_mobile_pairing.json; verification: absent.
+- Preserved user-owned embedded backend PID 25606 on 127.0.0.1:29695; verification: still listening.
+- Retained the completed standalone validation run and the existing Classroom Simulation Team run as projection/browser evidence; no unrelated user data, definitions, or the active Bible team were changed.
