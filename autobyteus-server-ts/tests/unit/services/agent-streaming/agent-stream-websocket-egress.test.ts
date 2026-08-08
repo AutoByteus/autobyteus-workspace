@@ -52,24 +52,30 @@ describe("AgentStreamWebSocketEgress", () => {
 
     egress.send(first);
     egress.send(second);
+    egress.send(new ServerMessage(ServerMessageType.AGENT_STATUS, { status: "running" }));
     egress.send(content("b1", "B"));
     egress.send(content("a3", "A", { nested: { route: "root" } }));
     egress.flush();
 
     expect(first.payload.delta).toBe("a1");
     expect(second.payload.delta).toBe("a2");
-    expect(parseSent(sendRaw).map(({ payload }) => [payload.id, payload.delta])).toEqual([
+    const sent = parseSent(sendRaw);
+    expect(sent.filter(({ type }) => type === ServerMessageType.AGENT_STATUS)).toHaveLength(1);
+    expect(sent
+      .filter(({ type }) => type === ServerMessageType.SEGMENT_CONTENT)
+      .map(({ payload }) => [payload.id, payload.delta])).toEqual([
       ["A", "a1a2"],
       ["B", "b1"],
       ["A", "a3"],
     ]);
   });
 
-  it("lets safe companions pass without draining while sealing the content tail", () => {
+  it("keeps same-identity content mergeable across running without moving the original timer", () => {
     vi.useFakeTimers();
     const sendRaw = vi.fn();
     const egress = new AgentStreamWebSocketEgress({ sendRaw, readIntervalMs: () => 500 });
 
+    egress.send(new ServerMessage(ServerMessageType.AGENT_STATUS, { status: "running" }));
     egress.send(content("a1"));
     vi.advanceTimersByTime(200);
     egress.send(new ServerMessage(ServerMessageType.AGENT_STATUS, { status: "running" }));
@@ -77,13 +83,16 @@ describe("AgentStreamWebSocketEgress", () => {
 
     expect(parseSent(sendRaw)).toEqual([
       { type: ServerMessageType.AGENT_STATUS, payload: { status: "running" } },
+      { type: ServerMessageType.AGENT_STATUS, payload: { status: "running" } },
     ]);
-    vi.advanceTimersByTime(300);
+    vi.advanceTimersByTime(299);
+    expect(sendRaw).toHaveBeenCalledTimes(2);
+    vi.advanceTimersByTime(1);
     expect(parseSent(sendRaw).map(({ type, payload }) => [type, payload.delta ?? payload.status]))
       .toEqual([
         [ServerMessageType.AGENT_STATUS, "running"],
-        [ServerMessageType.SEGMENT_CONTENT, "a1"],
-        [ServerMessageType.SEGMENT_CONTENT, "a2"],
+        [ServerMessageType.AGENT_STATUS, "running"],
+        [ServerMessageType.SEGMENT_CONTENT, "a1a2"],
       ]);
   });
 
@@ -93,26 +102,38 @@ describe("AgentStreamWebSocketEgress", () => {
     new ServerMessage(ServerMessageType.TOKEN_USAGE_UPDATED, { input_tokens: 1 }),
     new ServerMessage(ServerMessageType.AGENT_STATUS, { status: "initializing" }),
     new ServerMessage(ServerMessageType.AGENT_STATUS, { status: "running" }),
-  ])("keeps pending content queued across safe companion $type", (companion) => {
+  ])("sends declared companion $type without changing pending tail or timer", (companion) => {
+    vi.useFakeTimers();
     const sendRaw = vi.fn();
     const egress = new AgentStreamWebSocketEgress({ sendRaw, readIntervalMs: () => 500 });
 
-    egress.send(content("pending"));
+    egress.send(content("a1"));
+    vi.advanceTimersByTime(200);
     egress.send(companion);
+    egress.send(content("a2"));
 
     expect(parseSent(sendRaw).map(({ type }) => type)).toEqual([companion.type]);
-    egress.flush();
-    expect(parseSent(sendRaw).map(({ type }) => type)).toEqual([
-      companion.type,
-      ServerMessageType.SEGMENT_CONTENT,
+    vi.advanceTimersByTime(299);
+    expect(sendRaw).toHaveBeenCalledTimes(1);
+    vi.advanceTimersByTime(1);
+    expect(parseSent(sendRaw).map(({ type, payload }) => [type, payload.delta])).toEqual([
+      [companion.type, undefined],
+      [ServerMessageType.SEGMENT_CONTENT, "a1a2"],
     ]);
   });
 
   it.each([
     new ServerMessage(ServerMessageType.SEGMENT_END, { id: "segment-a" }),
+    new ServerMessage(ServerMessageType.TURN_COMPLETED, { turn_id: "turn-1" }),
+    new ServerMessage(ServerMessageType.TURN_INTERRUPTED, { turn_id: "turn-1" }),
+    new ServerMessage(ServerMessageType.ASSISTANT_COMPLETE, { turn_id: "turn-1" }),
     new ServerMessage(ServerMessageType.AGENT_STATUS, { status: "idle" }),
+    new ServerMessage(ServerMessageType.AGENT_STATUS, { status: "offline" }),
+    new ServerMessage(ServerMessageType.AGENT_STATUS, { status: "error" }),
     new ServerMessage(ServerMessageType.ERROR, { code: "FAILED" }),
     new ServerMessage(ServerMessageType.TOOL_EXECUTION_STARTED, { invocation_id: "tool-1" }),
+    new ServerMessage(ServerMessageType.TOOL_EXECUTION_INTERRUPTED, { invocation_id: "tool-1" }),
+    new ServerMessage(ServerMessageType.TEAM_RUN_LIFECYCLE, { state: "completed" }),
   ])("flushes content before dependent boundary $type", (boundary) => {
     const sendRaw = vi.fn();
     const egress = new AgentStreamWebSocketEgress({ sendRaw, readIntervalMs: () => 500 });

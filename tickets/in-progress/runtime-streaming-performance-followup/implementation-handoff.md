@@ -9,21 +9,23 @@
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/solution-revision-record.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/design-review-report.md`
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence, when applicable: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/code-review-report.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/code-review-revision-record.md` (`CRR-001`, finding `CR-001`)
+- API/E2E coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/api-e2e-coverage-investigation.md`
+- API/E2E execution report and revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-coverage-report.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/api-e2e-revision-record.md` (`API-REV-001`, retained scenario `WS-EGRESS-001`)
+- Triggering rework report, revision record, or evidence, when applicable: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/code-review-report.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/code-review-revision-record.md` (`CRR-003`, finding `CR-002`, premise `CR-PREM-001`); `SR-002` / `ARCH-REV-002` approved bounded rework
 
 ## Current Implementation Summary
 
-Implemented the approved runtime-streaming performance refactor as a clean ownership transfer: a per-session server egress now owns WebSocket content cadence and ordering; every post-session semantic server message path uses that sink; the frontend scheduler/projector implementation is deleted; shaped content projects immediately through existing transactions; active text/reasoning uses escaped plain rendering until existing completion state selects the rich renderer; and the bound-node settings surface owns a validated, live 500 ms default interval. IR-002 resolves CR-001 by aligning the retained Compaction failure journey with the extended `GetServerSettings` response and stubbing the unrelated live-response card; no production source or approved behavior changed.
+Implemented the approved runtime-streaming performance refactor as a clean ownership transfer: a per-session server egress now owns WebSocket content cadence and ordering; every post-session semantic server message path uses that sink; the frontend scheduler/projector implementation is deleted; shaped content projects immediately through existing transactions; active text/reasoning uses escaped plain rendering until existing completion state selects the rich renderer; and the bound-node settings surface owns a validated, live 500 ms default interval. IR-003 applies the SR-002 / ARCH-REV-002 design-impact correction: declared initializing/running status and safe companions send immediately without mutating the pending content lane or its timer, while mergeability derives from the actual tail and dependent/terminal/unclassified messages still flush first.
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/implementation-revision-record.md`
-- Current implementation revision ID: `IR-002`
-- Related solution revision IDs: `SR-001`
-- Related architecture-review revision IDs: `ARCH-REV-001`
-- Related code-review revision IDs: `CRR-001`
-- Related API/E2E revision IDs: `N/A`
+- Current implementation revision ID: `IR-003`
+- Related solution revision IDs: `SR-001`, `SR-002`
+- Related architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`
+- Related code-review revision IDs: `CRR-001`, `CRR-002`, `CRR-003`
+- Related API/E2E revision IDs: `API-REV-001`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `CR-001`
+- Triggering finding IDs: `CR-002`, `CR-PREM-001`, `WS-EGRESS-001`
 
 ## Reviewed Behavior Implementation Trace
 
@@ -31,7 +33,7 @@ Implemented the approved runtime-streaming performance refactor as a clean owner
 | --- | --- | --- | --- |
 | BEH-001 | Keep sustained standalone/team streaming responsive without changing final state or lifecycle meaning. | Canonical run events -> existing mappers -> `AgentStreamWebSocketEgress` -> immediate frontend dispatcher -> completion-aware renderer. | Implemented; realistic sustained-performance proof remains downstream. |
 | BEH-002 | Use one configurable, fixed, non-sliding server window and no frontend timer. | `websocket-egress/agent-stream-websocket-egress.ts`; deleted complete web `services/agentStreaming/presentation/` implementation; agent/team services now dispatch content normally. | Implemented with 100/500/1,000/2,000 fake-timer coverage. |
-| BEH-003 | Coalesce only consecutive equal non-delta content, preserve ordering/boundaries, and leave canonical events unchanged. | `stream-content-coalescing.ts`, `agent-stream-websocket-egress-policy.ts`, handlers/broadcasters/command helpers. | Implemented; immutable inputs, A/B/A groups, dependent flush, safe-companion seal, invalid delta, unknown/default flush covered. |
+| BEH-003 | Coalesce equal non-delta content that remains adjacent in the content-order lane, preserve ordering/boundaries, and leave canonical events/status frames unchanged. | `stream-content-coalescing.ts`, `agent-stream-websocket-egress-policy.ts`, `agent-stream-websocket-egress.ts`, handlers/broadcasters/command helpers. | IR-003 removes the invalid companion seal: declared companions remain immediate and undeduplicated without changing the actual pending tail or original timer; A/B/A groups, dependent flush, immutable input, invalid delta, and conservative default flush remain covered. |
 | BEH-004 | Share one provider-independent transport policy across standalone/team streams. | Both `AgentStreamHandler` and `AgentTeamStreamHandler` construct the same egress; broadcaster registrations and team command helpers accept only `AgentStreamServerMessageSink`. | Implemented without provider/runtime branches or alternate wire format. |
 | BEH-005 | Render incomplete identified text/reasoning safely and cheaply, then rich-render at segment or message completion; historical content remains rich. | `AIMessage.vue`, `TextSegment.vue`, `ThinkSegment.vue`, new `LiveTextRenderer.vue`, `agentStatusHandler.ts`, existing segment identity/completion helpers. | Implemented; active Vue text is escaped/pre-wrapped and MarkdownRenderer is not mounted until completion. Idle/offline/error, assistant/turn completion, interruption, compaction, and direct error paths reuse common completion mutation. |
 | BEH-006 | Expose/persist/reset a bound-node 100–2,000 ms interval, default 500, live on the next newly opened window. | Typed server setting/resolver, settings service, GraphQL query/codegen, Pinia bound-node state, `LiveResponseStreamingCard.vue`, EN/ZH localization. | Implemented; server is authoritative, invalid direct input resolves to 500, invalid saved input is rejected, and egress reads only when opening a new window. |
@@ -47,6 +49,7 @@ Implemented the approved runtime-streaming performance refactor as a clean owner
 - Bound-node setting UI/API: `LiveResponseStreamingCard.vue`, `ServerSettingsBasicsPanel.vue`, `stores/serverSettings.ts`, GraphQL query/generated types, localization
 - Focused unit/component coverage: new egress/config/live renderer/text/settings tests and rewritten obsolete scheduler expectations
 - IR-002 retained-test correction: `autobyteus-web/components/settings/__tests__/ServerSettingsCompactionFailure.spec.ts`
+- IR-003 content-lane correction: server egress policy/owner plus `tests/unit/services/agent-streaming/agent-stream-websocket-egress.test.ts`
 
 ## Important Assumptions
 
@@ -59,7 +62,7 @@ Implemented the approved runtime-streaming performance refactor as a clean owner
 
 - The required realistic 10-minute performance/equality proof is not an implementation-scoped unit/build check and remains owned by API/E2E.
 - Abrupt reconnect can discard a pending window because replay is explicitly out of scope.
-- Alternating identities and safe companions can legitimately produce multiple ordered content frames at a flush.
+- Alternating content identities can legitimately produce multiple ordered content frames at a flush; declared safe companions remain separate immediate frames and therefore still contribute to total WebSocket/store-dispatch volume.
 - Unknown future non-content message types conservatively flush, which favors correctness over maximum coalescing.
 - Active plain text intentionally exposes Markdown source syntax until completion.
 - Repository-wide Nuxt typecheck has substantial unrelated baseline failures; production build and all focused changed-path tests pass, and the rerun reported no diagnostic directly against a changed implementation/test file.
@@ -68,11 +71,11 @@ Implemented the approved runtime-streaming performance refactor as a clean owner
 ## Task Design Health Assessment Implementation Check
 
 - Reviewed change posture: `Performance` plus bounded `Behavior Change` and `Refactor`
-- Reviewed root-cause classification: `Boundary Or Ownership Issue`, `Duplicated Policy Or Coordination`, and bounded `Local Implementation Defect`
+- Reviewed root-cause classification: `Boundary Or Ownership Issue`, `Duplicated Policy Or Coordination`, bounded `Local Implementation Defect`, and SR-002 `Missing Invariant`
 - Reviewed refactor decision (`Refactor Needed Now`/`No Refactor Needed`/`Deferred`): `Refactor Needed Now`
 - Implementation matched the reviewed assessment (`Yes`/`No`): `Yes`
-- If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `N/A`
-- Evidence / notes: One semantic egress boundary now encloses all post-session message sends; duplicate web cadence and batch projection are removed; render lifecycle reuses existing identity state. No design premise failed during implementation.
+- If challenged, routed as `Design Impact` (`Yes`/`No`/`N/A`): `Yes — CRR-003 / CR-002 was routed through SR-002 and ARCH-REV-002 before IR-003`
+- Evidence / notes: The egress owner remains correct, but retained `WS-EGRESS-001` established that SR-001's seal invariant conflicted with the reachable default lifecycle-finalizer topology. IR-003 implements only the architecture-reviewed content-order-lane correction inside that owner; no handler/finalizer/protocol/frontend exception was added.
 
 ## Legacy / Compatibility Removal Check
 
@@ -110,6 +113,9 @@ Implemented the approved runtime-streaming performance refactor as a clean owner
 - `autobyteus-web`: focused 12-suite Nuxt Vitest run covering standalone/team immediate dispatch, recent Event Monitor production dispatch, generic team dispatch, completion handlers, AI/text/reasoning/live renderers, settings card/panel/store — pass (138 tests).
 - `autobyteus-web` IR-002 exact CR-001 reproduction command: `pnpm test:nuxt --run components/settings/__tests__/ServerSettingsCompactionFailure.spec.ts` — pass (1 file / 2 tests).
 - `autobyteus-web` IR-002 affected focused run: the prior 12 focused streaming/renderer/Settings suites plus the retained Compaction failure journey — pass (13 files / 140 tests).
+- `autobyteus-server-ts` IR-003 focused egress suite: `pnpm exec vitest run tests/unit/services/agent-streaming/agent-stream-websocket-egress.test.ts` — pass (1 file / 26 tests).
+- `autobyteus-server-ts` IR-003 focused six-suite server run for config, egress, settings service, broadcaster, standalone handler, and team handler — pass (6 files / 141 tests).
+- `autobyteus-server-ts` IR-003 build-tsconfig check: `pnpm exec tsc -p tsconfig.build.json --noEmit` — pass.
 - `autobyteus-web`: `BACKEND_GRAPHQL_BASE_URL=/tmp/autobyteus-runtime-streaming-schema.graphql pnpm codegen` — pass.
 - `autobyteus-web`: `pnpm guard:web-boundary`, `pnpm guard:localization-boundary`, `pnpm audit:localization-literals` — pass.
 - `autobyteus-web`: `pnpm build` — pass; 15 static routes prerendered.
@@ -126,11 +132,12 @@ Implemented the approved runtime-streaming performance refactor as a clean owner
 - Visual or interaction issues found and corrected: Reset was initially disabled for a dirty draft when the effective value was already 500; unavailable state was initially hidden by empty-draft validation; nullable effective interpolation raised a local type diagnostic. All three were corrected and retested.
 - Supporting evidence and remaining unverified states or limitations: Chrome inspection confirmed active output preserved exact whitespace, mounted zero rich headings and zero injected image elements; completion removed all live renderers, mounted rich headings, and stripped the authored `onerror` attribute. Settings controls aligned with adjacent cards at both viewports. Independent realistic long-run rendering/performance remains downstream.
 - IR-002 rendered-result impact: `None`; this round changed only a retained test fixture and component stub, so the prior rendered inspection remains authoritative.
+- IR-003 rendered-result impact: `None`; this bounded server egress policy correction changes neither frontend source nor approved presentation, so the prior rendered inspection remains authoritative.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
 1. Run realistic standalone and team streams for at least 10 minutes at 500 and 1,000 ms across supported runtime kinds; capture server frame rate, browser mutation/render rate, responsiveness, and exact final segment/lifecycle equality.
-2. Exercise `A:a1, A:a2, B:b1, A:a3`, plus running/token/ack companions and segment-end/error/idle boundaries on a real WebSocket; verify ordered groups and content-before-dependent boundaries.
+2. Re-run retained `WS-EGRESS-001` unchanged first. Then exercise `A:a1, running, A:a2` and `A:a1, running, B:b1, A:a2`, plus token/ack companions and segment-end/error/idle boundaries; verify immediate separate companions, one same-identity aggregate, ordered different-identity groups, and content-before-dependent boundaries.
 3. Change the interval during a pending window; verify that window keeps its original delay and the next newly opened window uses the saved value without loss/duplication.
 4. Verify API rejection for decimals/out-of-range values, effective fallback for absent/invalid direct environment input, reset to 500, and selected-node isolation after rebinding.
 5. In a real browser stream, keep large text/reasoning active, verify literal safe presentation and responsiveness, then verify a single transition to final Markdown features including code, math, Mermaid, links, images, file actions, and sanitization.
@@ -139,4 +146,4 @@ Implemented the approved runtime-streaming performance refactor as a clean owner
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Yes. `api_e2e_engineer` must first produce the required coverage investigation artifact, then own durable API/E2E coverage decisions, realistic environment setup, sustained performance/equality execution, browser evidence, and final residual-risk classification. The implementation checks above are not API/E2E sign-off.
+Yes. `api_e2e_engineer` has already produced the required coverage investigation, durable coverage, API-REV-001 execution evidence, and the valid retained `WS-EGRESS-001` failure. Those uncommitted coverage/evidence artifacts were preserved unchanged during IR-003. After complete source review passes, API/E2E must resume by running unchanged `WS-EGRESS-001` first and appending `API-REV-002`, then continue broader realistic performance/equality and browser validation. The implementation checks above are not API/E2E sign-off.

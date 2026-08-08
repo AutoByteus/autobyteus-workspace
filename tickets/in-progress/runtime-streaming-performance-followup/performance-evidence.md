@@ -2,9 +2,9 @@
 
 ## Status And Purpose
 
-- Status: `Current investigation evidence`
+- Status: `Current investigation plus API-REV-001 / CRR-003 failure-origin evidence`
 - Approval applicability: `N/A — evidence only; this file does not independently define intended behavior.`
-- Purpose: Retain the current-process observation, prior representative event shape, current code-path findings, and a focused accumulated-Markdown scaling probe that constrain the follow-up requirements and design.
+- Purpose: Retain the current-process observation, prior representative event shape, initial code-path findings, focused accumulated-Markdown scaling probe, and production-grounded candidate failure that constrain the follow-up requirements and revised design.
 
 ## Evidence Boundaries
 
@@ -12,6 +12,7 @@
 - The 30-s sample was not synchronized to a known active generation interval. It establishes real current burst behavior and backend health, not a complete reproduction.
 - The Markdown probe uses the same MarkdownIt, Prism, DOMPurify, and JSDOM package versions available in the workspace but is a synthetic Node/JSDOM probe. It excludes Vue reconciliation, live DOM replacement, file-action scanning, KaTeX, Mermaid, image binding, and scroll work, so it is a conservative scaling indicator rather than final acceptance evidence.
 - Historical v1.4.37 evidence remains authoritative for that run; the user's current report establishes that it was not sufficient for the current workload.
+- The 2026-08-08 `WS-EGRESS-001` integration uses a deterministic backend only above the canonical boundary. From `AgentRun` through the default event pipeline, mapper, egress, Fastify route, and real WebSocket, it exercises production code and was independently accepted by CRR-003 as a Reachable product path rather than a synthetic premise.
 
 ## Installed v1.4.43 Observation — 2026-08-06
 
@@ -60,7 +61,7 @@ For one continuously active identity, a 500 ms upstream non-sliding cadence caps
 
 Moving the primary cadence boundary upstream can eliminate most browser WebSocket callbacks, JSON parsing, routing, and client enqueue work. The difference between 500 ms and 1,000 ms is only about 3.2 percentage points of raw-message reduction for this shape, while 1,000 ms doubles perceived live-progress latency. This favors 500 ms when combined with a cheaper in-progress renderer rather than relying on 1,000 ms alone.
 
-## Current Code-Path Findings
+## Initial Code-Path Findings — 2026-08-06 Baseline
 
 ### Frontend cadence owner
 
@@ -117,6 +118,39 @@ Findings:
 - Per-connection buffering introduces timer/disposal and unsent-on-disconnect responsibilities, but those are bounded transport-lifecycle concerns. This is a smaller semantic blast radius than throttling all `AgentRun` consumers. Current reconnect has no event replay either way, so the design must preserve established hydration/recovery behavior without claiming a new replay guarantee.
 - “WebSocket batching” need not imply a new protocol envelope: concatenating ordered `SEGMENT_CONTENT.delta` values for the same exact stream identity into one existing server message provides the primary callback/parse reduction. A multi-message envelope should be introduced only if simultaneous-identity evidence demonstrates additional benefit worth the compatibility cost.
 
+## Implemented-Candidate Failure — 2026-08-08
+
+Sources:
+
+- `autobyteus-server-ts/src/agent-execution/events/default-agent-run-event-pipeline.ts`
+- `autobyteus-server-ts/src/agent-execution/events/processors/lifecycle-status/lifecycle-status-event-transformer.ts`
+- `autobyteus-server-ts/src/services/agent-streaming/websocket-egress/agent-stream-websocket-egress-policy.ts`
+- `autobyteus-server-ts/src/services/agent-streaming/websocket-egress/agent-stream-websocket-egress.ts`
+- `autobyteus-server-ts/tests/integration/agent/agent-status-websocket.integration.test.ts`, retained scenario `WS-EGRESS-001`
+- `api-e2e-execution-evidence/ws-default-window-rate-failure.log`
+- `api-e2e-execution-evidence/ws-default-window-rate-failure-summary.json`
+- `code-review-report.md`, `CR-002` / `CR-PREM-001`
+
+Exact retained command:
+
+```bash
+cd autobyteus-server-ts
+pnpm exec vitest run tests/integration/agent/agent-status-websocket.integration.test.ts \
+  -t "coalesces a representative fine-grained canonical stream" --no-watch
+```
+
+Observed result: `1 failed / 6 skipped`. Thirty same-identity source `SEGMENT_CONTENT` events remained present at the internal canonical subscriber, the 500 ms delay applied, but the client received thirty content frames rather than one exact aggregate.
+
+Production trace:
+
+`Workspace SEND_MESSAGE -> AgentRun.postUserMessage -> source content batch -> default pipeline -> LifecycleStatusEventTransformer emits [AGENT_STATUS running, SEGMENT_CONTENT] per delta -> handler mapper -> AgentStreamWebSocketEgress`.
+
+The implemented `SEAL_THEN_SEND` action sends each `running` status immediately and sets `appendToTailAllowed=false`. Every following content event therefore creates a new queued group. The timer delays those groups but serializes all thirty separately.
+
+### Implication
+
+The egress boundary, interval, and existing-message aggregation protocol remain appropriate. The invalid part is the blanket merge-barrier rule. The supported canonical topology makes routine `running` status a high-frequency, order-independent companion—not a content-order boundary. The corrected action must send such companions without flushing **and without changing the pending queue or timer**. The seal-only `appendToTailAllowed` flag becomes redundant and should be removed; the actual pending tail plus content equality owns merge eligibility. The status messages themselves remain observable; dependent/unknown messages still flush. This permits `running, A:a1, running, A:a2` to emit both status frames immediately and later one `A:a1a2` content frame, satisfying AC-003 without changing internal lifecycle publication or the wire schema.
+
 ### Existing settings path supports a persisted live cadence
 
 Sources:
@@ -163,7 +197,7 @@ Therefore a larger timer is necessary but not sufficient. The design must preven
 ## Evidence-Backed Recommendation
 
 1. Use a **500 ms** normal, non-sliding content cadence in a shared server WebSocket-egress component used by standalone and team streaming. `1,000 ms` is one second, but it offers only a small additional raw-message reduction in the observed event shape while doubling visible progress latency.
-2. Flush buffered content before dependent semantic/lifecycle boundaries; allow only explicitly classified control companions such as canonical status updates to pass without forcing content presentation.
+2. Flush buffered content before dependent semantic/lifecycle boundaries. Explicitly classified order-independent companions such as canonical non-terminal status updates pass immediately while leaving pending content queue and timer untouched; preserving a companion is not the same as making it a content merge barrier.
 3. Leave internal `AgentRun`/`TeamRun` publication unthrottled. Coalesce after mapping and before `connection.send(...)`, retaining the existing `SEGMENT_CONTENT` payload shape unless evidence requires a batch envelope.
 4. Remove the frontend's independent 100 ms content timer after server WebSocket egress becomes the authoritative client-delivery cadence owner; apply each already-shaped content event immediately so delays do not stack.
 5. Render active text/reasoning segments through a cheap escaped/pre-wrapped live-text path. Switch to the existing full Markdown renderer once the segment/message becomes complete.
@@ -177,4 +211,5 @@ Therefore a larger timer is necessary but not sufficient. The design must preven
 - Current WebSocket event/message distribution during the user's worst interval.
 - Real before/after interaction latency, renderer long tasks/CPU, backend event-loop delay, and rich-render invocation count on the candidate implementation.
 - Perceived UX acceptability of live escaped text changing to rich Markdown at segment completion.
-- User approval of the proposed 100–2,000 ms manual range and live-application behavior.
+- Total client message/store-commit volume after content correction, because routine status frames intentionally remain client-visible even though they no longer fragment content aggregates.
+- API-REV-002 rerun of retained `WS-EGRESS-001`, followed by the deferred broader browser/runtime evidence.

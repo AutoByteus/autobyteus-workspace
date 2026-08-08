@@ -20,7 +20,6 @@ export type AgentStreamWebSocketEgressOptions = {
 export class AgentStreamWebSocketEgress implements AgentStreamServerMessageSink {
   private pendingContent: ServerMessage[] = [];
   private flushTimer: ReturnType<typeof setTimeout> | null = null;
-  private appendToTailAllowed = false;
   private disposed = false;
   private readonly readIntervalMs: () => number;
   private readonly onSendError: (error: unknown) => void;
@@ -40,8 +39,7 @@ export class AgentStreamWebSocketEgress implements AgentStreamServerMessageSink 
       this.enqueueContent(message);
       return;
     }
-    if (action === "SEAL_THEN_SEND") {
-      this.appendToTailAllowed = false;
+    if (action === "SEND_WITHOUT_FLUSH") {
       this.sendRaw(message);
       return;
     }
@@ -53,13 +51,11 @@ export class AgentStreamWebSocketEgress implements AgentStreamServerMessageSink 
   flush(): void {
     this.cancelTimer();
     if (this.pendingContent.length === 0) {
-      this.appendToTailAllowed = false;
       return;
     }
 
     const snapshot = this.pendingContent;
     this.pendingContent = [];
-    this.appendToTailAllowed = false;
     for (const message of snapshot) {
       this.sendRaw(message);
     }
@@ -72,17 +68,15 @@ export class AgentStreamWebSocketEgress implements AgentStreamServerMessageSink 
     this.disposed = true;
     this.cancelTimer();
     this.pendingContent = [];
-    this.appendToTailAllowed = false;
   }
 
   private enqueueContent(message: ServerMessage): void {
     const tail = this.pendingContent[this.pendingContent.length - 1];
-    if (tail && this.appendToTailAllowed && canAppendStreamContent(tail, message)) {
+    if (tail && canAppendStreamContent(tail, message)) {
       appendStreamContent(tail, message);
     } else {
       this.pendingContent.push(cloneStreamContentMessage(message));
     }
-    this.appendToTailAllowed = true;
 
     if (this.flushTimer === null) {
       this.flushTimer = setTimeout(() => {

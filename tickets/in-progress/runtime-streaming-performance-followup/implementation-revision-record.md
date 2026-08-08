@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | `architecture_reviewer` / `design-review-report.md` / initial implementation round | `N/A` | `Initial Baseline` | `SR-001`, `ARCH-REV-001`; `CRR N/A`, `API-REV N/A`, `DR N/A` | Reviewed design implemented; local implementation checks pass subject to recorded baseline typecheck limitation and downstream realistic coverage |
 | IR-002 | `code_reviewer` / `code-review-report.md` / implementation review Round 1 | `CR-001` | `Local Fix` | `SR-001`, `ARCH-REV-001`, `CRR-001`; `API-REV N/A`, `DR N/A` | Retained Compaction failure fixture aligned with the extended Settings query and isolated from the live-response card; exact and affected focused web tests pass |
+| IR-003 | `architecture_reviewer` / `design-review-report.md` / architecture Round 2 after CRR-003 reroute | `CR-002`, `CR-PREM-001`, `WS-EGRESS-001` | `Design Impact Rework` | `SR-002`, `ARCH-REV-002`, `CRR-003`, `API-REV-001`; `DR N/A` | Order-independent companions now send without mutating the pending content lane or timer; focused server checks pass and retained API/E2E coverage/evidence remains unchanged |
 
 ## Revision Entries
 
@@ -50,3 +51,23 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: Exact formerly failing suite passes (1 file / 2 tests); prior focused streaming/renderer/Settings set plus the retained journey passes (13 files / 140 tests); `git diff --check` passes.
 - Next recipient or routing: `code_reviewer`
 - Remaining limitations or risks: No new limitation. IR-001's downstream realistic performance/equality, API/bound-node, browser/runtime, abrupt-reconnect, ordered-multi-frame, conservative-unknown-flush, active-source-presentation, baseline typecheck, and delivery-doc risks remain unchanged.
+
+### IR-003 — Make routine lifecycle companions transparent to content grouping
+
+- Triggering role, report path, and round: `architecture_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/design-review-report.md`; Architecture Review Round 2 (`ARCH-REV-002`) after the `CRR-003` design-impact reroute.
+- Triggering finding IDs: `CR-002`, `CR-PREM-001`, retained scenario `WS-EGRESS-001`
+- Classification: `Design Impact Rework`
+- Prior authoritative result: `CRR-003` classified the API-REV-001 failure as Design Impact after the retained real-WebSocket path showed that SR-001's seal action turned 30 same-identity events into 30 delayed content frames. SR-002 / ARCH-REV-002 then approved the bounded owner-local correction.
+- Current authoritative result: Production egress now implements SR-002's state-preserving `SEND_WITHOUT_FLUSH` companion action and actual-tail merge rule; focused implementation checks pass and the cumulative package is ready for complete default-pipeline source re-review.
+- Related solution revision IDs: `SR-002`
+- Related architecture-review revision IDs: `ARCH-REV-002`
+- Related code-review revision IDs: `CRR-003`
+- Related API/E2E revision IDs: `API-REV-001`
+- Related delivery revision IDs: `N/A`
+- Why this implementation revision is recorded: Correct the reachable missing invariant without changing lifecycle publication, handler routing, wire schema, frontend cadence/presentation, or any unaffected SR-001 owner.
+- Approved behavior or requirement IDs affected: `BEH-003`, `FR-003`, `FR-004`, `AC-003`, `AC-004`.
+- Implementation delta: Renamed `SEAL_THEN_SEND` to `SEND_WITHOUT_FLUSH`; removed `appendToTailAllowed`; companion sends now leave `pendingContent` and `flushTimer` untouched; content appendability derives only from the actual tail plus `canAppendStreamContent`. Focused fake-timer coverage now proves repeated visible `running` frames with one exact same-identity aggregate on the original window, all declared companions preserving tail/timer, A/B/A ordering across a companion, and terminal/dependent/default-flush controls.
+- Changed files or areas: `autobyteus-server-ts/src/services/agent-streaming/websocket-egress/agent-stream-websocket-egress-policy.ts`; `autobyteus-server-ts/src/services/agent-streaming/websocket-egress/agent-stream-websocket-egress.ts`; `autobyteus-server-ts/tests/unit/services/agent-streaming/agent-stream-websocket-egress.test.ts`; canonical implementation handoff/revision artifacts. No handler, lifecycle transformer, protocol, frontend, or API/E2E coverage/evidence file was changed by IR-003.
+- Local validation and result: focused egress suite passes (1 file / 26 tests); focused six-suite server run passes (6 files / 141 tests); build-tsconfig no-emit check passes; `git diff --check` passes.
+- Next recipient or routing: `code_reviewer`
+- Remaining limitations or risks: Retained `WS-EGRESS-001` and broader realistic API/E2E/browser evidence remain downstream and must not be claimed from unit checks. Routine statuses remain immediate/undeduplicated total-volume contributors; abrupt reconnect, alternating-identity multi-frame flushes, conservative unknown-message flush, active Markdown-source presentation, broad baseline typecheck limitations, and delivery-owned documentation sync remain unchanged.

@@ -1,8 +1,10 @@
 # Design Spec — Runtime Streaming Performance Follow-up
 
+Current solution revision: `SR-002`. The user confirmed the corrected immediate-status/content-grouping behavior on 2026-08-08 and authorized architecture re-review.
+
 ## Current-State Read
 
-The supported production path is:
+The initial supported production path at SR-001 was:
 
 `runtime adapter -> AgentRun / TeamRun canonical events -> server agent/team WebSocket handler -> one JSON message per event -> frontend AgentStreamingService / TeamStreamingService -> 100 ms presentation scheduler -> segment projection -> rich Markdown renderer`.
 
@@ -17,19 +19,36 @@ The existing server-settings path provides validated predefined settings, bound-
 
 The target must preserve the existing single-message WebSocket schema, exact content, ordered semantic boundaries, reconnect/hydration behavior, raw traces, and run data. Current abrupt disconnect behavior has no event replay; this task must not claim to add it.
 
+Implementation rounds `IR-001` and `IR-002` now establish most of the SR-001 target on the task branch: server egress/settings, immediate frontend projection, the active/final renderer split, and removal of the frontend scheduler. API-REV-001 then exposed a missed current-production interaction. The actual standalone content path includes the default lifecycle finalizer:
+
+`Workspace SEND_MESSAGE -> AgentRun.postUserMessage -> runtime source events -> default AgentRun pipeline -> LifecycleStatusEventTransformer emits [AGENT_STATUS running, non-terminal event] -> message mapper -> AgentStreamWebSocketEgress -> WebSocket`.
+
+The implemented `SEAL_THEN_SEND` action sends each routine `running` status but also sets `appendToTailAllowed=false`. Retained `WS-EGRESS-001` therefore observed 30 fine-grained internal content events and 30 delayed client content frames in one 500 ms window. CRR-003 classifies this as reachable Design Impact (`CR-002`, `CR-PREM-001`), not a fixture or local test problem.
+
 ## Intended Change
 
-Replace frontend-owned timed content presentation with configurable server-side WebSocket egress coalescing and a completion-aware frontend rendering split:
+Retain the SR-001 configurable server-side WebSocket egress and completion-aware frontend rendering target, while correcting its companion policy against the post-finalizer production topology:
 
 - Add one per-WebSocket-session `AgentStreamWebSocketEgress` owner shared by standalone and team streaming.
 - Route every post-session outbound `ServerMessage` through that owner so no semantic event can bypass pending content.
-- Coalesce only consecutive `SEGMENT_CONTENT` messages with equal non-`delta` payload identity, preserving ordered aggregate groups and never mutating the input message.
+- Coalesce `SEGMENT_CONTENT` messages with equal non-`delta` payload identity while they remain adjacent in the content-order lane, preserving ordered aggregate groups and never mutating the input message.
 - Use one non-sliding configured interval, default 500 ms and validated from 100 through 2,000 ms.
-- Flush before dependent/terminal messages; allow only explicitly classified control/telemetry companions to pass without collapsing the cadence, and seal the current aggregate tail whenever such a companion passes.
+- Flush before dependent/terminal messages. Explicitly classified order-independent control/telemetry companions pass immediately **without changing** pending content or timer state.
 - Keep `AgentRun`/`TeamRun`, raw traces, persistence, and the WebSocket payload schema unchanged.
 - Delete the frontend 100 ms scheduler and dispatch each server-shaped content message immediately through the existing single-mutation projection path.
 - Render incomplete text/reasoning as safe Vue text with preserved whitespace; mount the existing rich `MarkdownRenderer` only when the stream segment or containing message is complete.
 - Add a bound-node **Live response update interval (ms)** Settings card with save, validation, and reset-to-500 behavior.
+
+## SR-002 Design-Impact Correction
+
+- Keep `AgentStreamWebSocketEgress` as the authoritative per-session owner and keep the existing single-message protocol. The boundary and protocol choice were not invalidated.
+- Replace policy action `SEAL_THEN_SEND` with `SEND_WITHOUT_FLUSH`.
+- `SEND_WITHOUT_FLUSH` sends the companion immediately and performs no mutation of `pendingContent` or `flushTimer`.
+- Remove `appendToTailAllowed`. It exists only to implement the invalid seal rule. Appendability is derived from the actual pending tail plus `canAppendStreamContent`; after a flush there is no tail, and a different content identity naturally creates a new group.
+- Keep `AGENT_STATUS initializing/running`, `AGENT_COMMAND_ACK`, `CONNECTED`, and `TOKEN_USAGE_UPDATED` in that narrow order-independent class. They remain client-visible and are not deduplicated or coalesced by the content owner.
+- Keep terminal `AGENT_STATUS idle/offline/error` and every dependent or unclassified message as `FLUSH_THEN_SEND`.
+- A different content identity still creates a new ordered aggregate group. Thus `A:a1, running, A:a2` becomes immediate `running` plus one delayed `A:a1a2`, while `A:a1, running, B:b1, A:a2` remains immediate `running` plus delayed ordered groups `[A:a1, B:b1, A:a2]`.
+- Preserve the retained red `WS-EGRESS-001` regression unchanged. After implementation and source review, API/E2E must execute it first and append `API-REV-002` before broader browser/runtime execution.
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
@@ -37,7 +56,7 @@ Replace frontend-owned timed content presentation with configurable server-side 
 | --- | --- | --- | --- | --- | --- | --- |
 | BEH-001 | User | FR-001, FR-004, FR-006 / AC-001, AC-004, AC-006 | Run an agent/team while interacting with the workspace. | Renderer bursts and current topology in investigation BEH-001 and performance evidence. | Sustained streaming remains responsive while exact final state and lifecycle correctness remain intact. | Runtime -> internal run event -> mapped server message -> egress -> immediate frontend projection -> active/final renderer. DS-001, DS-003, DS-005. |
 | BEH-002 | System | FR-002, FR-004, FR-008 / AC-002, AC-004, AC-008 | Continuous or bursty `SEGMENT_CONTENT`. | Current frontend fixed 100 ms scheduler; every raw message still crosses renderer. | One configured non-sliding server egress window, 500 ms default; no second frontend timer. | Mapped content -> egress local cadence -> WebSocket -> immediate projection. DS-001, DS-004. |
-| BEH-003 | System | FR-003, FR-004, FR-005, FR-008 / AC-003, AC-004, AC-005, AC-008 | Fine-grained standalone/team internal stream events. | Server handlers send each event immediately; internal consumers need unchanged canonical streams. | Consecutive same-identity UI messages coalesce only at WebSocket egress; internal events stay unthrottled. | AgentRun/TeamRun -> mapper -> egress ordered groups -> socket. DS-001, DS-003, DS-004. |
+| BEH-003 | System | FR-003, FR-004, FR-005, FR-008 / AC-003, AC-004, AC-005, AC-008 | Fine-grained standalone/team internal stream events. | The default finalizer emits `running` before each non-terminal content event. SR-001's seal action produced 30 delayed frames from 30 same-identity deltas in retained `WS-EGRESS-001`. | Same-identity content coalesces across policy-declared order-independent companions; those companions remain visible, dependent boundaries flush, and internal events stay unthrottled. | AgentRun/TeamRun -> lifecycle finalizer -> mapper -> egress content-order groups/control pass-through -> socket. DS-001, DS-003, DS-004. |
 | BEH-004 | User | FR-001, FR-005, FR-006 / AC-001, AC-005, AC-006 | Standalone/team, AutoByteus/Codex, visible/background, lifecycle variations. | Shared event model with runtime-specific upstream adapters and common UI projection. | One runtime-independent transport policy covers standalone/team without provider branches. | All runtime variants converge before egress and share the same egress boundary. DS-001. |
 | BEH-005 | User | FR-007 / AC-007 | Observe incomplete and completed text/reasoning. | Full accumulated Markdown work occurs for every presented active revision. | Safe live text during streaming; existing rich Markdown once completion is known. | Segment content -> immediate state -> live text; segment/message completion -> MarkdownRenderer. DS-005. |
 | BEH-006 | User | FR-008 / AC-008 | Read/change/reset interval in Settings for bound server. | Generic persisted settings exist; no cadence setting/card exists. | Effective 500 default, 100–2,000 validation, persistence, reset, bound-node isolation, and live effect on newly scheduled windows. | Settings card -> store/GraphQL -> server setting -> AppConfig -> next egress window. DS-002, DS-004. |
@@ -46,17 +65,17 @@ Replace frontend-owned timed content presentation with configurable server-side 
 
 | Artifact Path | Purpose | Related Requirement / Acceptance-Criteria IDs (When Applicable) | Relationship To This Design | Status / Approval Applicability |
 | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/performance-evidence.md` | Current process observations, event shape, code/settings path, and Markdown scaling evidence. | FR-001, FR-002, FR-003, FR-006, FR-007, FR-008 / AC-001, AC-002, AC-003, AC-006, AC-007, AC-008 | Constrains cadence default, ownership boundary, renderer split, metrics, and settings reuse. | `Current`; approval `N/A — evidence only`. |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/performance-evidence.md` | Current process observations, event shape, code/settings path, Markdown scaling, and API-REV-001 / CRR-003 failure-origin evidence. | FR-001, FR-002, FR-003, FR-006, FR-007, FR-008 / AC-001, AC-002, AC-003, AC-006, AC-007, AC-008 | Constrains cadence default, ownership boundary, renderer split, metrics, settings reuse, and the corrected order-independent companion invariant. | `Current — updated for SR-002`; approval `N/A — evidence only`. |
 
 ## Task Design Health Assessment (Mandatory)
 
 - Change posture: `Performance` plus bounded `Behavior Change` and `Refactor`.
 - Current design issue found: `Yes`.
-- Root cause classification: `Boundary Or Ownership Issue`, `Duplicated Policy Or Coordination`, and bounded `Local Implementation Defect`.
+- Root cause classification: initial `Boundary Or Ownership Issue`, `Duplicated Policy Or Coordination`, and bounded `Local Implementation Defect`; SR-002 adds a `Missing Invariant` between the canonical lifecycle finalizer and egress-owned message policy.
 - Refactor needed now: `Yes`.
-- Evidence: timed policy currently begins only after every content message reaches the renderer; server messages can be sent through handlers, broadcasters, and command helpers; active text uses the completed rich renderer; the measured full render grows to about 177 ms at 120k characters and about 399 ms at 240k characters.
-- Design response: introduce one authoritative session egress boundary; remove all frontend cadence ownership; preserve internal events; split active and completed rendering; reuse typed settings persistence.
-- Refactor rationale: adding another server timer while retaining direct-send bypasses or the frontend timer would duplicate policy, allow boundary reordering, and stack latency. A clean-cut owner plus deletion is required.
+- Evidence: initial evidence remains valid. In addition, CRR-003 traced a supported Workspace message through `LifecycleStatusEventTransformer`, which emits `running` before every non-terminal content event. The implemented seal action then prevented all same-identity aggregation despite a working 500 ms timer.
+- Design response: retain the authoritative session egress, frontend timer removal, internal-event preservation, active/completed renderer split, and typed settings reuse. Correct only the flawed companion invariant: an order-independent pass-through cannot mutate the content-order lane.
+- Refactor rationale: the owner remains correct, so moving policy into the canonical pipeline or handlers would recreate duplicated coordination. The proportionate rework is one policy action and one egress branch inside the existing owner, with focused unit coverage and the retained full-path regression.
 - Intentional deferrals and residual risk: no reconnect replay, adaptive cadence, wire batch envelope, incremental Markdown AST, generalized WebSocket backpressure, or per-run central broadcast coalescing. Per-session coalescing repeats small string work when multiple clients watch the same run, but correctly aligns buffer lifecycle with each connection and retains one shared policy implementation.
 
 ## Terminology
@@ -64,7 +83,8 @@ Replace frontend-owned timed content presentation with configurable server-side 
 - **Outbound stream shaping:** deterministic reduction of UI-facing event frequency without slowing the runtime producer. It is not consumer-saturation backpressure.
 - **WebSocket egress:** the application-level owner after `ServerMessage` mapping and before JSON serialization/socket send.
 - **Ordered aggregate group:** one pending client-facing `SEGMENT_CONTENT` created from consecutive same-identity messages. Groups retain their original interleaving.
-- **Control companion:** a message that may be sent immediately without requiring pending content to become visible first, such as a non-terminal running/initializing status or command acknowledgement.
+- **Content-order lane:** the ordered sequence of coalescible content messages after explicitly order-independent companions are ignored for content grouping. Different content identities and dependent boundaries remain ordering-significant.
+- **Order-independent control companion:** a message that may be sent immediately without requiring pending content to become visible first and without changing pending content state, such as a non-terminal running/initializing status or command acknowledgement. It remains observable on the wire.
 - **Dependent boundary:** a message whose meaning or presentation requires all earlier content to be sent first, such as segment end, terminal status, tool/lifecycle transition, error, completion, or interruption.
 
 ## Design Reading Order
@@ -107,7 +127,7 @@ N/A — no migration is required.
 
 ### DS-001 — Runtime content delivery
 
-`Runtime backend -> AgentRun / TeamRun canonical publication -> agent/team message mapper -> AgentStreamWebSocketEgress -> WebSocket transport -> AgentStreamingService / TeamStreamingService -> segment projection -> live-text or final-Markdown presentation`
+`Runtime backend -> AgentRun / TeamRun canonical publication -> LifecycleStatusEventTransformer / team event bridge -> agent/team message mapper -> AgentStreamWebSocketEgress -> WebSocket transport -> AgentStreamingService / TeamStreamingService -> segment projection -> live-text or final-Markdown presentation`
 
 ### DS-002 — Cadence setting
 
@@ -117,16 +137,17 @@ N/A — no migration is required.
 
 | Spine ID | Short Narrative | Main Domain Subject Nodes | Governing Owner | Key Off-Spine Concerns |
 | --- | --- | --- | --- | --- |
-| DS-001 | Fine-grained internal events remain unchanged. A mapped client message enters the session egress; content waits for its configured window while boundaries/control messages follow policy. The browser receives fewer larger deltas and projects each once. | Canonical run event, server message, session egress, frontend segment, presentation | Egress governs client delivery; existing owners govern internal event and UI state. | Mapping, identity comparison, settings resolution, performance evidence. |
+| DS-001 | Fine-grained internal events remain unchanged. The default lifecycle finalizer may add a routine status before each content event. Mapped messages enter the session egress; content waits in its configured content-order window while boundaries/control companions follow policy. The browser receives fewer larger content deltas and projects each once. | Canonical run event, lifecycle status companion, server message, session egress, frontend segment, presentation | Egress governs client delivery; existing owners govern internal event and UI state. | Lifecycle finalization, mapping, identity comparison, settings resolution, performance evidence. |
 | DS-002 | The user edits an effective millisecond value for the bound node. Server validation persists the canonical string and subsequent egress windows read the new effective value without socket/server restart. | Settings draft, persisted setting, effective interval | ServerSettingsService for mutation; typed resolver for runtime interpretation. | GraphQL codegen, localization, bound-node revision protection. |
-| DS-003 | Every non-content message is classified. Dependent/terminal messages synchronously flush pending ordered groups before themselves; safe companions seal the aggregate tail and send without flushing. | Server message, pending content, socket order | AgentStreamWebSocketEgress | Status/lifecycle policy. |
-| DS-004 | First content opens a non-sliding window using the current interval. Consecutive messages with equal non-delta payloads append only while the last cloned group remains open; different identities or intervening non-content messages create/seal ordered groups. Timer or explicit boundary snapshots and clears state before sends. | Pending group list, append eligibility, timer, effective interval | AgentStreamWebSocketEgress | Pure coalescing equality, error callback, fake timers. |
+| DS-003 | Every non-content message is classified. Dependent/terminal messages synchronously flush pending ordered groups before themselves; order-independent companions send immediately while leaving the pending content lane untouched. | Server message, pending content, socket order | AgentStreamWebSocketEgress | Status/lifecycle policy. |
+| DS-004 | First content opens a non-sliding window using the current interval. Equal non-delta payloads append when the actual pending tail matches; a different content identity creates a new group. Order-independent companions do not alter the queue. Timer or explicit boundary snapshots and clears state before sends. | Pending group list, timer, effective interval | AgentStreamWebSocketEgress | Pure coalescing equality, error callback, fake timers. |
 | DS-005 | Each shaped content message is immediately applied once. Streamed text/reasoning without completion identity uses escaped Vue text; segment end or message completion flips it to existing rich Markdown. Historical segments lacking stream identity are treated as complete. | Segment content, presentation-complete state, live/final component | AIMessage component selection; handlers own completion mutation. | Whitespace styling, file actions only in final Markdown, browser quality validation. |
 
 ## Spine Actors / Main-Line Nodes
 
 - Runtime backend: emits provider/runtime-specific fine-grained source events; unchanged.
 - `AgentRun` / `TeamRun`: owns canonical internal event lifecycle and subscribers; unchanged.
+- `LifecycleStatusEventTransformer`: existing canonical finalizer that emits a status companion around each event; unchanged, but explicitly present on DS-001 because its output topology constrains egress policy.
 - Existing message mappers: produce canonical client-facing `ServerMessage`; unchanged schema.
 - `AgentStreamWebSocketEgress`: authoritative per-session outbound message owner.
 - Existing WebSocket connection: raw frame transport only.
@@ -136,7 +157,7 @@ N/A — no migration is required.
 
 ## Ownership Map
 
-- **AgentStreamWebSocketEgress** owns pending content state, input-message cloning, consecutive equality/coalescing, ordered groups, one non-sliding timer, message classification, flush-before-boundary sequencing, serialization, raw send invocation, and disposal.
+- **AgentStreamWebSocketEgress** owns pending content state, input-message cloning, content-lane equality/coalescing, ordered groups, one non-sliding timer, message classification, state-preserving companion pass-through, flush-before-boundary sequencing, serialization, raw send invocation, and disposal.
 - **AgentStreamHandler / AgentTeamStreamHandler** remain thin session and command orchestrators. They map events and call the egress; they do not own cadence or directly serialize post-session messages.
 - **Agent/TeamStreamBroadcaster** retains run/team fan-out selection but stores a `ServerMessage` sink rather than a raw-string socket, so broadcast messages cannot bypass the egress.
 - **Typed interval resolver** owns key/default/range parsing and fallback. The generic settings service owns mutation/persistence metadata, not runtime timer state.
@@ -167,9 +188,9 @@ N/A — no migration is required.
 
 ### DS-003 — Boundary/control delivery
 
-`Mapped non-content ServerMessage -> egress policy -> (dependent: flush ordered content groups -> send message) OR (safe companion: seal pending aggregate tail -> send message immediately without draining timer/queue) -> frontend dispatch`
+`Mapped non-content ServerMessage -> egress policy -> (dependent: flush ordered content groups -> send message) OR (order-independent companion: send message immediately without mutating pending content/timer/append state) -> frontend dispatch`
 
-Terminal `AGENT_STATUS` values `idle`, `offline`, and `error` are dependent boundaries. `initializing` and `running` are control companions. `AGENT_COMMAND_ACK`, initial `CONNECTED`, and token-usage telemetry are companions. The default for unclassified non-content types is **flush before send**, preventing new semantic message types from silently bypassing content.
+Terminal `AGENT_STATUS` values `idle`, `offline`, and `error` are dependent boundaries. `initializing` and `running` are order-independent control companions. `AGENT_COMMAND_ACK`, initial `CONNECTED`, and token-usage telemetry are also order-independent companions. All remain client-visible. The default for unclassified non-content types is **flush before send**, preventing new semantic message types from silently bypassing content.
 
 ### DS-005 — Frontend active/final presentation
 
@@ -183,7 +204,7 @@ Historical/hydrated segments have no live stream identity and therefore resolve 
 
 Parent owner: `AgentStreamWebSocketEgress`.
 
-`send(content) -> clone payload -> if append-eligible compare non-delta payload with last group -> append or add ordered group -> start timer only if absent -> intervening non-content seals append eligibility -> timer/explicit flush snapshots and clears queue/timer -> serialize/send groups in order -> future enqueue reads current setting for a new window`.
+`send(content) -> clone payload -> compare non-delta payload with actual last pending content group -> append or add ordered group -> start timer only if absent -> order-independent companions pass with no state mutation -> timer/explicit dependent flush snapshots and clears queue/timer -> serialize/send groups in order -> future enqueue reads current setting for a new window`.
 
 Key invariants:
 
@@ -191,7 +212,8 @@ Key invariants:
 - Input `ServerMessage` instances are never mutated because broadcasters may share one message across sinks.
 - Coalescing compares the complete non-`delta` content payload rather than maintaining a second partial identity model. If any routing/metadata field differs, create a new ordered group.
 - `A, B, A` remains three ordered groups; it is never rewritten as `AA, B`.
-- Every non-content message is a merge barrier. `send-without-flush` keeps the current queue/timer but seals its tail, so `A:a1, running, A:a2` cannot become one `A:a1a2` aggregate.
+- An explicitly order-independent companion is transparent only to content grouping: `A:a1, running, A:a2` sends `running` immediately and later one `A:a1a2`. The companion is not dropped or delayed.
+- A dependent or unknown non-content message is not transparent: it flushes all earlier groups and therefore starts a new content window/lane afterward.
 - Snapshot/clear happens before raw sends so re-entrant sends cannot corrupt the active snapshot.
 - `dispose()` cancels the timer and clears unsendable pending connection state. A boundary-triggered close while the socket is still writable calls `send(error/terminal)` through egress first, which flushes.
 - The interval is read only when opening a new window. A saved setting therefore affects the next newly scheduled window and does not reschedule or lose an already pending window.
@@ -200,7 +222,7 @@ Key invariants:
 
 | Off-Spine Concern | Related Spine ID(s) | Serves Which Owner | Responsibility | Why It Exists | Risk If Misplaced On Main Line |
 | --- | --- | --- | --- | --- | --- |
-| Message classification policy | DS-003, DS-004 | AgentStreamWebSocketEgress | Classify coalesce / flush-then-send / seal-then-send-without-flush. | Keeps lifecycle knowledge explicit and testable. | Inline duplicated switches in two handlers drift. |
+| Message classification policy | DS-003, DS-004 | AgentStreamWebSocketEgress | Classify `COALESCE` / `FLUSH_THEN_SEND` / `SEND_WITHOUT_FLUSH`; the last action is state-preserving. | Keeps lifecycle knowledge explicit and testable against post-finalizer topology. | Inline duplicated switches in two handlers drift; blanket non-content sealing defeats cadence. |
 | Non-delta payload comparison | DS-004 | AgentStreamWebSocketEgress | Decide whether consecutive content can combine without a parallel identity schema. | Exact routing safety and future protocol conservatism. | Handler-specific keys omit nested team identity. |
 | Effective interval resolver | DS-002, DS-004 | Egress and ServerSettingsService | Default, parse, range, invalid fallback. | One runtime interpretation. | Scattered `process.env` reads or client-only validation diverge. |
 | Broadcaster fan-out | DS-001, DS-003 | Existing broadcasters | Select sinks for run/team and send `ServerMessage`. | External messages/status share session ordering. | Raw-string send bypasses egress. |
@@ -243,6 +265,7 @@ Allowed:
 Forbidden:
 
 - Egress -> runtime adapter, AgentRun internal processors, persistence, frontend types, or settings UI.
+- `SEND_WITHOUT_FLUSH` -> any write to pending content or timer state.
 - Runtime/provider-specific cadence branches.
 - Post-session handler/broadcaster/helper -> raw `connection.send` for `ServerMessage`.
 - Frontend service/component -> cadence timer, pending content queue, or server environment parsing.
@@ -336,7 +359,7 @@ Forbidden:
 | File | Owning Subsystem / Capability Area | Owner / Boundary | Concrete Concern | Why This Is One File | Reuses Shared Structure? |
 | --- | --- | --- | --- | --- | --- |
 | `autobyteus-server-ts/src/services/agent-streaming/websocket-egress/agent-stream-websocket-egress.ts` | Server agent streaming | Authoritative egress | Sink interface/class, queue/timer, flush/dispose, raw send | Governing session owner | Yes |
-| `.../websocket-egress/agent-stream-websocket-egress-policy.ts` | Server agent streaming | Policy concern | Three-way message classification including terminal status and the safe-companion merge barrier | Pure stable policy | ServerMessage |
+| `.../websocket-egress/agent-stream-websocket-egress-policy.ts` | Server agent streaming | Policy concern | Three-way message classification including dependent status and state-preserving order-independent companions | Pure stable policy | ServerMessage |
 | `.../websocket-egress/stream-content-coalescing.ts` | Server agent streaming | Coalescing concern | Immutable clone, complete non-delta equality, ordered append | Pure reusable mechanism | ServerMessage |
 | `autobyteus-server-ts/src/config/streaming-content-flush-interval-setting.ts` | Server config | Setting resolver | Key/default/min/max, persistence normalization, effective read | One typed setting | AppConfig |
 | Existing server handlers/broadcasters/command helpers | Server agent streaming | Thin callers | Route all post-session ServerMessages to sink | Existing responsibilities remain coherent | Sink interface |
@@ -353,6 +376,7 @@ Forbidden:
 - **Application-level egress owner:** one session writer governs sequencing before physical transport.
 - **Fixed non-sliding window:** first content schedules one timer; later content does not extend it.
 - **Default-flush policy:** unknown future non-content messages flush, while explicitly safe companions opt out.
+- **State-preserving pass-through:** an explicitly order-independent companion is sent immediately and cannot mutate the content-order lane.
 - **Immutable input / owned pending clone:** prevents cross-session mutation when broadcasters fan out one message.
 - **Completion-aware renderer selection:** cheap active renderer and existing rich terminal renderer have separate lifecycles.
 - **Typed setting resolver:** persistence mutation and runtime interpretation share constants/normalization.
@@ -367,6 +391,10 @@ Forbidden:
 | Modify | Server handlers, broadcasters, and command helpers | Replace post-session raw sends with the semantic egress sink. |
 | Modify | Frontend standalone/team dispatchers and conversation lifecycle/render selection | Immediately project shaped content and switch to rich output at completion. |
 | Remove | Entire frontend `services/agentStreaming/presentation/` scheduler/projector implementation and ownership-specific tests | Eliminate duplicated cadence policy and stacked latency. |
+| Modify (SR-002) | `agent-stream-websocket-egress-policy.ts` | Rename `SEAL_THEN_SEND` to `SEND_WITHOUT_FLUSH` so the action states its actual invariant. |
+| Modify (SR-002) | `agent-stream-websocket-egress.ts` | Remove obsolete `appendToTailAllowed`; derive appendability from the actual tail; send order-independent companions without changing queue or timer. |
+| Modify (SR-002) | Focused egress unit coverage | Replace the seal expectation with same-identity aggregation across `running` and cover different-identity plus dependent-boundary controls. |
+| Preserve (SR-002) | Retained `WS-EGRESS-001` integration and API-REV-001 evidence | Keep the production-grounded regression unchanged for the first API-REV-002 execution. |
 
 ## Target Subsystem / Folder / File Mapping
 
@@ -405,7 +433,8 @@ Forbidden:
 | --- | --- | --- | --- |
 | Egress placement | `map(event) -> egress.send(message) -> socket.send(json)` | `AgentRun timer -> handler timer -> frontend timer` | Shows single cadence authority and preserved internal events. |
 | Consecutive ordering | `A:a1, A:a2, B:b1, A:a3 -> [A:a1a2, B:b1, A:a3]` | `[A:a1a2a3, B:b1]` | Prevents cross-identity reordering. |
-| Boundary policy | `content -> idle/error/SEGMENT_END` flushes content first; `content -> running/token usage` seals the aggregate tail and may send the companion without draining the window | Every status flushes and collapses the window, no status ever flushes, or content merges across the companion | Makes causality and merge barriers explicit. |
+| Boundary policy | `A:a1 -> running -> A:a2` sends `running` immediately and later `A:a1a2`; `content -> idle/error/SEGMENT_END` flushes content first | Every status flushes, routine status seals the tail, routine status is dropped, or terminal status bypasses pending content | Separates status visibility from content-order significance. |
+| Production status topology | Thirty `[running, same-identity content]` pairs in one 500 ms window retain all status frames and emit one exact content aggregate | Unit-only adjacent content that ignores the default lifecycle finalizer | Makes AC-003 verifiable on the supported path that invalidated SR-001. |
 | Renderer lifecycle | `presentationComplete=false -> LiveTextRenderer`; `true/missing identity -> MarkdownRenderer` | Markdown parsing on every delta or permanent plain final output | Preserves both performance and final features. |
 | Setting application | Pending 500 ms window remains intact; saving 1000 affects the next newly opened window | Cancel/reschedule pending timer and risk loss/duplication | Defines live update safely. |
 | Authoritative send boundary | Broadcaster stores `AgentStreamServerMessageSink` | Broadcaster retains raw socket and bypasses egress | Protects ordering across secondary send paths. |
@@ -429,18 +458,16 @@ Settings is an orthogonal control path: `Settings UI -> GraphQL/service persiste
 
 ## Change / Refactor Sequence
 
-1. Add the typed interval setting constants, persistence normalizer, effective resolver, server setting metadata, and effective GraphQL query; add server unit/API coverage.
-2. Add pure content coalescing and message classification policy with focused tests.
-3. Add `AgentStreamWebSocketEgress` with fake-timer coverage for 100/500/1000/2000, fixed-window behavior, immutable inputs, `A/B/A` ordering, safe-companion merge barriers, dependent boundaries, settings changes, send failures, flush, and dispose.
-4. Refactor standalone handler to create one egress per session and route mapped events, initial/status/ack/error messages, broadcaster registration, and helper messages through the sink.
-5. Refactor team handler and team command helpers/lifecycle callbacks the same way. Change broadcasters to store `ServerMessage` sinks, not raw connections. Confirm no post-session `connection.send(message.toJson())` remains.
-6. Add Settings store/query state and `LiveResponseStreamingCard`; wire the Basics panel, English/Chinese localization, reset, validation, error/loading/disabled and node-rebinding behavior; regenerate GraphQL types through the repository codegen path.
-7. Refactor frontend standalone/team services to normal immediate `SEGMENT_CONTENT` dispatch. Add content to the existing dispatch switches so each shaped message produces one mutation commit.
-8. Add `LiveTextRenderer`, pass completion state through `AIMessage` to `TextSegment`/`ThinkSegment`, and terminalize open stream presentation identity from existing message completion handlers.
-9. Delete the entire frontend presentation scheduler folder and scheduler-specific tests/imports/fields/flush calls. Rewrite affected service/production-dispatch tests for immediate projection.
-10. Run implementation-scoped typechecks/focused unit suites. Downstream API/E2E owns coverage investigation and realistic before/after performance evidence, including event rates, queue age, exact equality, renderer behavior, settings live effect, and persistence/trace verification.
+IR-001/IR-002 already delivered the SR-001 structural target and the frontend legacy removal. SR-002 is a bounded correction inside that reviewed owner:
 
-No long-lived temporary seam or compatibility path is permitted after step 9.
+1. In `agent-stream-websocket-egress-policy.ts`, replace `SEAL_THEN_SEND` with `SEND_WITHOUT_FLUSH`; retain the same narrow companion type/status membership and correctness-safe default flush.
+2. In `agent-stream-websocket-egress.ts`, remove `appendToTailAllowed`, derive appendability only from the actual pending tail and `canAppendStreamContent`, and make the `SEND_WITHOUT_FLUSH` branch call raw send and return without writing `pendingContent` or `flushTimer`. Do not move filtering into handlers or the lifecycle finalizer.
+3. Rewrite focused fake-timer unit coverage to prove `A:a1, running, A:a2 -> running immediately, A:a1a2 at the original window`; prove all declared companions preserve timer/tail; preserve `A/B/A`, dependent flush, immutable input, setting-change, error, and dispose controls.
+4. Run implementation-scoped server unit/type checks and record the correction as the next implementation revision. Do not modify, weaken, or remove the retained API/E2E regression/evidence.
+5. Route the implementation through source review. Code review must trace the complete default-pipeline path rather than only the egress unit path.
+6. API/E2E must begin by executing retained `WS-EGRESS-001` unchanged and append `API-REV-002`. Only after it passes should the broader team/runtime/browser/performance plan resume.
+
+No compatibility flag, handler-local exception, lifecycle-transformer change, status suppression, or alternate protocol path is permitted.
 
 ## Key Tradeoffs
 
@@ -451,6 +478,7 @@ No long-lived temporary seam or compatibility path is permitted after step 9.
 - **Plain active text vs incremental Markdown:** plain text is bounded and safe with existing lifecycle state. Incremental AST/DOM reconciliation is substantially larger and riskier.
 - **Live setting effect at next window vs timer reschedule:** next-window application avoids losing/duplicating pending content and remains understandable.
 - **Validation evidence vs permanent telemetry:** focused instrumentation proves the change without adding unconditional hot-path logging or a new metrics product.
+- **Status visibility vs content grouping:** routine status frames remain immediate and client-visible to preserve the established lifecycle protocol, but they are declared order-independent for content grouping. This fixes content frame rate without introducing status deduplication in this round.
 
 ## Risks
 
@@ -461,6 +489,7 @@ No long-lived temporary seam or compatibility path is permitted after step 9.
 - If message completion can occur without `SEGMENT_END`, failure to mark stream identity complete would leave plain rendering. The completion fallback is required and must have focused coverage.
 - Generic raw-setting updates from an externally edited invalid `.env` can expose the raw invalid value in advanced settings; the effective query/card/runtime must consistently show/use 500 until the user saves a valid value.
 - Existing server tests with immediate-send assumptions and frontend tests with fake 100 ms timers will require deliberate ownership-aware updates, not mechanical expectation deletion.
+- Routine status frames remain client-visible, so total WebSocket/store-dispatch volume will exceed content-frame volume. Final performance evidence must measure both; status deduplication is not silently added under this content policy.
 
 ## Guidance For Implementation
 
@@ -469,11 +498,13 @@ No long-lived temporary seam or compatibility path is permitted after step 9.
 - Clone a content message and payload when opening an aggregate group. Never mutate an event-mapper or broadcaster-owned message.
 - Derive merge equality from all payload fields except `delta`; use a stable comparison appropriate for the already-serialized plain payload and preserve arrays in order. Treat invalid/missing/non-string delta conservatively and do not fabricate content.
 - Clear timer/queue state before invoking raw sends. Define one failure callback/log path for timer-triggered send exceptions and ensure dispose is idempotent.
-- Make policy exhaustive with a correctness-safe default. Explicitly test terminal `idle/offline/error`, non-terminal `initializing/running`, command acknowledgements, token usage, segment/tool/error/completion/interruption, and team lifecycle. Prove that every send-without-flush companion seals the current aggregate tail without resetting its timer.
+- Make policy exhaustive with a correctness-safe default. Explicitly test terminal `idle/offline/error`, non-terminal `initializing/running`, command acknowledgements, token usage, segment/tool/error/completion/interruption, and team lifecycle. Prove that every `SEND_WITHOUT_FLUSH` companion leaves queue and timer unchanged and remains client-visible.
 - Keep raw socket access private to handler connection lifecycle. Search for and eliminate post-session `.send(...toJson())` bypasses in agent-streaming files.
 - The setting normalizer must reject decimals, whitespace-only strings, scientific notation, and out-of-range values; canonical valid persistence is a base-10 integer string. Runtime invalid input falls back to 500 and may log one bounded warning at resolution/initialization, never per delta.
 - The Settings card must use the bound-node store revision patterns already used by other cards. Show 500 even when the key is absent; save/reset through the existing mutation; disable while unreadable/saving; expose accessible label/help/error text.
 - Immediate frontend content dispatch must still use `beginRecentEventMonitorMutation` / `commitRecentEventMonitorMutation` once per shaped message. Do not create a component-local or microtask cadence substitute.
 - `LiveTextRenderer` must use normal Vue text interpolation/text content, `white-space: pre-wrap`, safe wrapping, and no `v-html`. File actions and external links intentionally become active only in final Markdown.
 - Treat missing stream identity as completed/historical. Reuse `presentationComplete`; do not add overlapping `isStreaming` flags to persisted or shared segment models.
+- Do not change `LifecycleStatusEventTransformer` or suppress routine status in handlers to make the regression pass; canonical lifecycle semantics and the existing status-only wire projection remain authoritative.
+- Preserve the exact API-REV-001 `WS-EGRESS-001` regression. After source review, API/E2E runs it first and records API-REV-002 before broader execution.
 - Implementation-scoped checks should cover server/web typechecks and focused unit/component suites. Do not claim the performance acceptance criteria until downstream realistic API/E2E execution records the required evidence.
