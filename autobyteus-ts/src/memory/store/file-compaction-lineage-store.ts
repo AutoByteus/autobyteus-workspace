@@ -10,7 +10,6 @@ import {
   type CompactionLineageScope,
 } from '../lineage/compaction-lineage-scope.js';
 import type { CompactionLineageStore } from '../lineage/compaction-lineage-store.js';
-import type { MemoryArtifactRef } from '../lineage/memory-origin-resolution.js';
 import { COMPACTION_LINEAGE_FILE_NAME } from './memory-file-names.js';
 
 const readJsonl = (filePath: string): unknown[] => {
@@ -76,22 +75,6 @@ export class FileCompactionLineageStore implements CompactionLineageStore {
 
   readHead(): CompactionLineageRecord | null {
     return this.list().at(-1) ?? null;
-  }
-
-  getByCompactionId(compactionId: string): CompactionLineageRecord | null {
-    const normalized = compactionId.trim();
-    return this.list().find((record) => record.compactionId === normalized) ?? null;
-  }
-
-  findProducingRecord(artifact: MemoryArtifactRef): CompactionLineageRecord | null {
-    const id = artifact.id.trim();
-    if (!id) throw new Error('Memory artifact ID must be non-empty.');
-    const matches = this.list().filter((record) =>
-      (artifact.kind === 'episode' ? record.episodeIds : record.semanticIds).includes(id));
-    if (matches.length > 1) {
-      throw new Error(`${artifact.kind} '${id}' is listed by multiple compaction records.`);
-    }
-    return matches[0] ?? null;
   }
 
   private assertScope(scope: CompactionLineageScope): void {

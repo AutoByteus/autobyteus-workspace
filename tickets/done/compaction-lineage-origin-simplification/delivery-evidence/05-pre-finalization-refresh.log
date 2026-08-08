@@ -1,0 +1,12 @@
+Pre-finalization remote refresh - compaction-lineage-origin-simplification
+checked_at_utc=2026-08-08T18:26:30Z
+user_verification=verified. now finalize this ticket
+command=git fetch origin --prune
+ticket_head=bc6e09abcbb36086ec73089ac7e799813deab7c5
+origin_personal=647b1119a9dc3ba2ba301243e1b5e752943454db
+merge_base=647b1119a9dc3ba2ba301243e1b5e752943454db
+origin_personal_vs_ticket_head=0	3
+origin_personal_latest=647b1119a9dc3ba2ba301243e1b5e752943454db 2026-08-08T18:52:42+02:00 docs(delivery): record finalized personal Electron build
+target_advanced_since_verified_handoff=NO
+renewed_verification_required=NO
+result=PASS

@@ -59,15 +59,6 @@ export type RawTraceArchiveWriteResult = {
   created: boolean;
 };
 
-export type CompletedRawTraceArchiveDescriptor = {
-  fileName: string;
-  recordCount: number;
-  firstTraceId: string | null;
-  lastTraceId: string | null;
-  firstObservedAt: number | null;
-  lastObservedAt: number | null;
-};
-
 export class RawTraceArchiveManager {
   constructor(private readonly runDir: string) {}
 

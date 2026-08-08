@@ -29,7 +29,6 @@ const lineageRecord = (): CompactionLineageRecord => ({
   scope,
   compactionId: 'c1',
   previousCompactionId: null,
-  rawTraceArchiveFile: 'raw_traces_000001.jsonl',
   episodeIds: ['e1'],
   semanticIds: [],
   derivedAt: '2026-07-30T00:00:00.000Z',

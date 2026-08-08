@@ -100,7 +100,7 @@ export class AcceptedCompactionBuilder {
       selectedNewRawTraceIds: selected,
       episodicItems,
       semanticItems,
-      lineageDraft: {
+      lineageRecord: {
         schemaVersion: 1,
         scope: this.scope,
         compactionId,

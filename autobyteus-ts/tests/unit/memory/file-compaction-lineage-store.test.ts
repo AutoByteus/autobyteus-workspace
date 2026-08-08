@@ -27,7 +27,6 @@ const record = (
   scope,
   compactionId: `c-${index}`,
   previousCompactionId,
-  rawTraceArchiveFile: `raw_traces_archive/raw_traces_${String(index).padStart(6, '0')}.jsonl`,
   episodeIds: [`episode-${index}`],
   semanticIds: [`semantic-${index}`],
   derivedAt: '2026-07-30T12:00:00.000Z',
@@ -55,19 +54,19 @@ describe('FileCompactionLineageStore', () => {
     fs.rmSync(dir, { recursive: true, force: true });
   });
 
-  it('appends a linear immutable chain and resolves typed producing records', () => {
+  it('appends a linear immutable chain in the contracted current shape', () => {
     expect(store.readHead()).toBeNull();
     store.appendNext(null, record(1, null));
     store.appendNext('c-1', record(2, 'c-1'));
 
     expect(store.list().map(({ compactionId }) => compactionId)).toEqual(['c-1', 'c-2']);
     expect(store.readHead()?.compactionId).toBe('c-2');
-    expect(store.getByCompactionId('c-1')?.previousCompactionId).toBeNull();
-    expect(store.findProducingRecord({ kind: 'episode', id: 'episode-2' })?.compactionId)
-      .toBe('c-2');
-    expect(store.findProducingRecord({ kind: 'semantic', id: 'semantic-1' })?.compactionId)
-      .toBe('c-1');
-    expect(store.findProducingRecord({ kind: 'episode', id: 'missing' })).toBeNull();
+    const persisted = fs.readFileSync(path.join(dir, 'compaction_lineage.jsonl'), 'utf-8')
+      .trim()
+      .split('\n')
+      .map((line) => JSON.parse(line) as Record<string, unknown>);
+    expect(persisted).toHaveLength(2);
+    expect(persisted.every((row) => !Object.hasOwn(row, 'rawTraceArchiveFile'))).toBe(true);
   });
 
   it.each([
@@ -77,9 +76,6 @@ describe('FileCompactionLineageStore', () => {
     ['scope mismatch', () => store.appendNext('c-1', record(2, 'c-1', {
       scope: { targetKind: 'agent_run', runId: 'other', memberId: null },
     }))],
-    ['unsafe archive path', () => store.appendNext('c-1', record(2, 'c-1', {
-      rawTraceArchiveFile: '../escape.jsonl',
-    }))],
   ])('rejects %s without changing the append-only file', (_label, operation) => {
     store.appendNext(null, record(1, null));
     const file = path.join(dir, 'compaction_lineage.jsonl');
@@ -88,6 +84,20 @@ describe('FileCompactionLineageStore', () => {
     expect(operation).toThrow();
     expect(fs.readFileSync(file, 'utf-8')).toBe(before);
     expect(store.readHead()?.compactionId).toBe('c-1');
+  });
+
+  it('directly reads an old schema-version-1 JSON superset without rewriting it', () => {
+    const oldRow = {
+      ...record(1, null),
+      rawTraceArchiveFile: 'raw_traces_archive/raw_traces_000001.jsonl',
+    };
+    const file = path.join(dir, 'compaction_lineage.jsonl');
+    const persisted = `${JSON.stringify(oldRow)}\n`;
+    fs.writeFileSync(file, persisted, 'utf-8');
+
+    expect(store.readHead()).toEqual(record(1, null));
+    expect(store.readHead()).not.toHaveProperty('rawTraceArchiveFile');
+    expect(fs.readFileSync(file, 'utf-8')).toBe(persisted);
   });
 
   it('preserves a mixed audit 1 -> 2 chain and projects the exact natural-count head', () => {

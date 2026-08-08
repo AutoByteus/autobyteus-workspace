@@ -21,17 +21,14 @@ export class AcceptedCompactionCommitter {
     accepted: AcceptedWorkingContextCompaction,
     hooks: AcceptedCompactionCommitHooks,
   ): void {
-    const archive = this.store.archiveExactRawTraces(
-      accepted.selectedNewRawTraceIds,
-      accepted.compactionId,
-    );
+    this.store.archiveExactRawTraces(accepted.selectedNewRawTraceIds);
     this.store.add([...accepted.episodicItems, ...accepted.semanticItems]);
     this.store.findEpisodicItemsByIds(accepted.episodicItems.map(({ id }) => id));
     this.store.findSemanticItemsByIds(accepted.semanticItems.map(({ id }) => id));
-    this.lineageStore.appendNext(accepted.expectedPreviousCompactionId, {
-      ...accepted.lineageDraft,
-      rawTraceArchiveFile: archive.fileName,
-    });
+    this.lineageStore.appendNext(
+      accepted.expectedPreviousCompactionId,
+      accepted.lineageRecord,
+    );
     hooks.installFinalizedContext(accepted.finalizedContext);
     if (this.snapshotStore) {
       this.snapshotStore.write(this.agentId, WorkingContextSnapshotSerializer.serialize(

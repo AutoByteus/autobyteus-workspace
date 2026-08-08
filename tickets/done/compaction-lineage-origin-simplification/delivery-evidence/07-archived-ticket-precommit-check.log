@@ -1,0 +1,17 @@
+Archived ticket pre-commit validation - compaction-lineage-origin-simplification
+checked_at_utc=2026-08-08T18:29:20Z
+check=staged source/docs/delivery diff whitespace (historical raw API evidence excluded)
+staged_diff_check=PASS
+check=repository artifact hygiene
+Repository artifact hygiene check passed.
+Tracked files scanned: 18782
+Path-length threshold: 200
+Longest tracked path: 197 chars: tickets/done/agent-catalog-origin-grouping/validation-artifacts/round3/ui-application-package/applications/research-workspace/agent-teams/literature-review/agents/source-collector/agent-config.json
+artifact_hygiene=PASS
+check=archived ticket and DR-002 shape
+8:| DR-002 | Explicit user verification and finalization request | DR-001 — ready / held | Verified state unchanged; ticket archived; finalization in progress | `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/05-06` |
+27:### DR-002 — User verified; finalization authorized and archived
+archived_ticket_shape=PASS
+check=personal checkout clean
+personal_checkout_clean=PASS
+result=PASS

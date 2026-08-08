@@ -68,10 +68,7 @@ export type {
   WorkingContextMessageProvenance,
 } from './working-context-provenance.js';
 export { WorkingContextFinalizer } from './working-context-finalizer.js';
-export { CompactionLineageResolver } from './lineage/compaction-lineage-resolver.js';
 export type { CompactionLineageScope } from './lineage/compaction-lineage-scope.js';
 export type { CompactionLineageRecord } from './lineage/compaction-lineage-record.js';
-export { MemoryOriginIntegrityError } from './lineage/memory-origin-resolution.js';
-export type { MemoryOriginResolution, MemoryArtifactRef } from './lineage/memory-origin-resolution.js';
 export { CondensedToolCallRenderer } from './presentation/condensed-tool-call-renderer.js';
 export { ReadableValueRenderer } from './presentation/readable-value-renderer.js';
