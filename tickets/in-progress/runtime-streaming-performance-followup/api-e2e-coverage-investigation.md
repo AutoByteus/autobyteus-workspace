@@ -10,16 +10,58 @@
 - Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/design-review-report.md`
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/architecture-review-revision-record.md` (`ARCH-REV-001`)
 - Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/implementation-handoff.md`
-- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/implementation-revision-record.md` (`IR-001`, `IR-002`, `IR-003`)
+- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/implementation-revision-record.md` (`IR-001` through `IR-004`)
 - Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/code-review-report.md`
-- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/code-review-revision-record.md` (`CRR-001` through `CRR-004`)
+- Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/code-review-revision-record.md` (`CRR-001` through `CRR-007`)
 - Delivery Revision Record: `N/A`
 - API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-002`
-- Current Investigation Round: `2`
-- Trigger: `CRR-004` pass after IR-003 resolved API-REV-001's WS-EGRESS-001 implementation failure.
-- Prior Investigation Reviewed: `Round 1 / API-REV-001 Fail at 77.1%.`
-- Latest Authoritative Investigation: `Round 2 — prior failure resolved; affected repository coverage is green; browser/runtime and real-provider validation were required and completed.`
+- Current API/E2E Revision ID: `API-REV-005`
+- Current Investigation Round: `5`
+- Trigger: `CRR-007` source-review Pass for `IR-004` (`d691736dc66a3d4323d44367d837d57405bf20b8`) after `BIBLE-THINK-HYDRATE-001`.
+- Prior Investigation Reviewed: `Round 4 / API-REV-004 Fail at 86.4%.`
+- Latest Authoritative Investigation: `Round 5 / API-REV-005 Pass at 98.6%; IR-004 corrects future-write native reasoning persistence and standalone/team/browser hydration.`
+
+### Round 5 re-entry — IR-004 native reasoning persistence correction
+
+- Trigger: `code_reviewer` reports `CRR-007` Pass with no open source findings. IR-004 now writes every non-empty native `CompleteResponse.reasoning` exactly once as an ordered `reasoning` raw trace before the related assistant/tool boundary and includes every response/tool trace ID in working-context provenance.
+- Prior failure recheck: `BIBLE-THINK-HYDRATE-001` remains the first required proof. Existing pre-IR-004 Bible/Classroom raw traces are intentionally incomplete under the approved no-migration decision and cannot demonstrate the correction; create only new isolated post-IR-004 runs/evidence.
+- Existing durable native coverage decision: `autobyteus-ts/tests/unit/memory/memory-manager-reasoning-persistence.test.ts` and the updated working-context persistence test are `Still Valid — run unchanged`. Together they cover reasoning-only, reasoning+assistant, reasoning+tool ordering/identity/sequence/provenance and snapshot reload.
+- Existing GraphQL coverage decision: external-runtime Codex reasoning persistence/reload scenarios in `autobyteus-server-ts/tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts` are `Still Valid` for the downstream replay contract but do not invoke native `MemoryManager`. Current recent standalone/team projection tests use synthetic raw rows and contain no native reasoning producer. Decision: `Add Durable Coverage` that writes through the corrected native `MemoryManager`, then proves both `getRunProjection` and `getTeamMemberRunProjection` return ordered `kind: reasoning` rows and their event-monitor pages return Thinking visuals.
+- Browser gap: API-REV-003 proves the live socket/render path only. Decision: `Required` isolated current-source backend/frontend journey using a new post-fix reasoning-capable team run. Prove Thinking live, force a real page reload, reselect a different member and the original member, and verify the same non-empty Thinking disclosure is reconstructed from GraphQL history rather than preserved only in client memory.
+- Environment rule: do not modify or restart the user-owned packaged server on 29695 or frontend on 3000. Use API/E2E-owned free loopback ports and isolated server data. Import authorized provider credentials value-safely from `/Users/normy/.autobyteus/server-data/.env` only into the isolated test node if the real journey requires them; never print values. Stop only owned processes and remove only owned runtime data.
+- External-service rule: the two prior LM Studio timeouts are `Non-Green Environmental Attempts`; they are not proof and will not be cited as passes.
+- Round 5 durable removal decision: `None`.
+
+### Round 3 re-entry — user-reported missing real Daily Assistant thinking segment
+
+- Trigger: the user reports that the actual conversation frontend no longer shows any thinking segment and supplied a current desktop screenshot. They explicitly requested an isolated current frontend connected to the already-running server and a real Daily Assistant turn exercised through the browser tool.
+- Coverage validity correction: Round 2 BROWSER-RENDER-001 remains valid for the production `ThinkSegment` component's active/final presentation mechanics, but it used a deterministic fixture that directly supplied a reasoning segment. It did **not** prove that a real Daily Assistant/provider turn on the current server emits, transports, stores, and renders a reasoning segment. The prior final report's broad AC-007 confidence is therefore reopened for this real journey.
+- Current server authority: the running packaged server is the user-owned AutoByteus process on `127.0.0.1:29695`, using `/Users/normy/.autobyteus/server-data`; `/rest/health` and GraphQL both return 200. Port 8000 is an unrelated Python `http.server` and must not be used or stopped. Port 3000 is an unrelated existing built frontend and must not be stopped.
+- New executable scenario `BROWSER-DAILY-THINK-001`: start only an API/E2E-owned Nuxt frontend on a free loopback port, bind every REST/GraphQL/agent/team WS endpoint to server 29695, open it through `open_tab`, create/select a Daily Assistant run through the actual UI, send a concise prompt that asks the model to reason before answering, and inspect live plus completed DOM, production store state, console, and WebSocket-visible evidence for a non-empty reasoning/think segment.
+- Expected: the server emits reasoning `SEGMENT_START`/`SEGMENT_CONTENT` (or an equivalent current projection), the frontend retains a `ThinkSegment`, and the conversation shows a Thinking disclosure during or after completion. If the server/provider produces no reasoning event, classify the first missing boundary from transport evidence rather than blaming the Vue component. If reasoning exists in state/transport but no disclosure mounts, classify as frontend implementation failure.
+- Data/process safety: do not stop or reconfigure the packaged server or existing frontend; create the smallest user-authorized test run; stop only the newly owned Nuxt process. Do not print credential values or unrelated conversation contents in the durable report.
+
+#### Round 3 scope expansion — user-reported team conversations and Nested Classroom control
+
+- New trigger: after the standalone Daily Assistant control exposed a real non-empty Thinking disclosure, the user clarified that the missing disclosure is observed in an active Bible Study Group member conversation and explicitly requested the Nested Classroom Test Team as the reproducible team control.
+- Coverage correction: `BROWSER-DAILY-THINK-001` proves the standalone agent/provider-to-DOM path only. It does not prove `TeamStreamingService`, team-member identity resolution, or the member conversation renderer used by agent-team workspaces.
+- New executable scenario `BROWSER-TEAM-THINK-001`: use the same isolated Nuxt frontend and current packaged server, create a Nested Classroom Test Team run through the actual UI, post one small classroom task that elicits a member response, capture the team WebSocket segment sequence, and inspect the selected member conversation during and after completion for a non-empty Thinking disclosure. Prefer an existing team/default model configuration; if the UI requires an explicit model, record the exact selected model rather than silently substituting one.
+- Expected boundary evidence: a reasoning segment for a concrete member run is visible on `/ws/agent-team/...`, is resolved to the correct member conversation by the production team streaming service, and mounts `.think-toggle-button` plus non-empty expandable content. If standalone passes but team transport has reasoning and the member DOM does not, classify as a frontend team projection/rendering failure. If team transport never carries reasoning, classify the first missing server/provider/team-egress boundary and do not blame `ThinkSegment`.
+- Scope safety: create only the minimal requested Nested Classroom run and prompt; do not inspect or mutate the user's Bible Study Group history. Existing user-owned server, desktop frontend, and ports remain untouched.
+
+#### Round 3 control correction — Classroom Simulation Team
+
+- User correction: the intended safe control is `Classroom Simulation Team`, not `Nested Classroom Test Team`.
+- New executable scenario `BROWSER-CLASSROOM-THINK-001`: repeat the actual team-run UI journey with Classroom Simulation Team, use the same reasoning-capable model selected through the UI, send one direct and non-destructive classroom question to the selected `professor` member, and correlate team WebSocket member identity/reasoning events with the live and completed Thinking disclosure.
+- Decision rule: the Nested Classroom result is retained as supplemental evidence because it was a completed user-requested control at the time, but it does not substitute for this corrected Classroom Simulation Team scenario. The authoritative Round 3 conclusion must include `BROWSER-CLASSROOM-THINK-001`.
+
+#### Round 4 re-entry — inspect the user's active Bible Study Group run
+
+- Trigger: the user now explicitly authorizes inspection of the currently running Bible Study Group and reports that `study_leader` appears to place thought-like narration into ordinary content rather than a Thinking disclosure.
+- Coverage correction: the Round 3 reasoning-capable controls prove the shared frontend can render correctly typed reasoning; they do not explain the active Bible run's exact provider/model, server event classification, persisted projection, or DOM segment types.
+- New scenario `BROWSER-BIBLE-LIVE-001`: perform a read-only investigation of the current Bible Study Group run. Resolve the active team run and `study_leader` model/runtime from safe GraphQL or repository metadata; connect an API/E2E-owned current frontend to the packaged server; select the existing run without posting or interrupting; inspect its production DOM/store projection and, while it remains active, capture only Bible-team WebSocket segment type/id/member-route metadata and bounded non-sensitive previews sufficient to distinguish `reasoning` from `text`.
+- Decision rule: if the server sends `segment_type: reasoning` but the store/DOM shows ordinary text, classify a frontend team projection/rendering failure. If the server sends the thought-like material under a `text` segment, classify the first upstream provider/normalization boundary; the frontend must not heuristically relabel ordinary model content. If the model emits no reasoning segment at all, record model/output dependence rather than a renderer failure.
+- Safety: do not send a message, interrupt, approve, archive, delete, edit configuration, or inspect unrelated team histories. Preserve only safe metadata, counts, hashes/lengths, and the minimum bounded preview needed to identify the reported boundary.
 
 ## Current Requirement And Design Basis
 
@@ -57,7 +99,7 @@ Critical direct proof remains AC-001 through AC-008: real socket semantics, exac
 
 ## Project Execution Discovery
 
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup`; branch `codex/runtime-streaming-performance-followup`; implementation `75b9be359`.
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup`; branch `codex/runtime-streaming-performance-followup`; implementation `d691736dc66a3d4323d44367d837d57405bf20b8`.
 - Stack: pnpm monorepo, TypeScript/Fastify/Mercurius/WebSocket, Nuxt/Vue/Pinia, Vitest, Playwright Core/Chrome, Electron wrapper.
 - User-owned ports 3000, 8000, and 29695 were not stopped or reused; all broader validation used free loopback ports and owned data roots.
 - User explicitly authorized `/Users/normy/.autobyteus/server-data/.env` for supplementary real-provider tests. Secret values were never printed or copied to ticket artifacts. The importer and live-E2E runner's value-safe evidence scanner were used.
@@ -98,6 +140,10 @@ Critical direct proof remains AC-001 through AC-008: real socket semantics, exac
 | `tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts` | Still Valid | Preflight and DeepSeek/OpenAI real agent-flow passed after harness repair. |
 | `test-support/live-e2e/live-e2e-harness.ts` | Needs Update -> Updated | Compare normalized DB paths; wrap raw backend in production `AgentRun` facade. |
 | Historical v1.4.37 evidence | Out Of Scope as current proof | Comparator only; not counted toward pass. |
+| `autobyteus-ts/tests/unit/memory/memory-manager-reasoning-persistence.test.ts` and working-context snapshot persistence | Still Valid | IR-004 producer/order/provenance coverage rerun unchanged: 3 files / 27 tests passed. |
+| `autobyteus-server-ts/tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts` | Needs Update -> Updated | Native `MemoryManager` now feeds standalone/team GraphQL projection and event-monitor Thinking assertions; full file passed 7/7. |
+| `autobyteus-server-ts/tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts` | Needs Update -> Updated | Retained fixture was stale after tracked-base lifecycle API change; updated to canonical batched source subscription, lifecycle snapshot, and awaited `publishEvent`; 16/16 passed. |
+| Five frontend hydration/render suites | Still Valid | Run projection, historical team lazy hydration, AI message, ThinkSegment, and feed: 34/34 passed. |
 
 ## Stale Or Obsolete Coverage Decisions
 
@@ -113,6 +159,8 @@ Critical direct proof remains AC-001 through AC-008: real socket semantics, exac
 | WS-EGRESS-001/002; WS-STATUS-001 | `agent-status-websocket.integration.test.ts` | Real default aggregation, next-window setting, status/terminal order / AC-002–AC-005/008 | Pass |
 | WS-EGRESS-003 | `agent-team-websocket.integration.test.ts` | Team A/B/A exact identity/order / AC-004/005 | Pass |
 | LIVE-E2E-HARNESS-001 | `live-e2e-harness.test.ts`; `test-support/live-e2e/live-e2e-harness.ts` | Normalized one-DB identity and production AgentRun adapter | Pass |
+| NATIVE-REASONING-GQL-001 | `autobyteus-server-ts/tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts` | Corrected native producer -> standalone/team GraphQL conversations and event-monitor Thinking visuals / FR-005, AC-005/007 | Pass |
+| CROSS-RUNTIME-FIXTURE-001 | `autobyteus-server-ts/tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts` | Bring retained executable fixture onto current lifecycle/batch/publish API without changing assertions | Pass |
 
 Durable coverage removed: `None`.
 
@@ -120,72 +168,86 @@ Durable coverage removed: `None`.
 
 | Order | Command / Scope | Result | Evidence |
 | --- | --- | --- | --- |
-| 1 | Exact unchanged WS-EGRESS-001 command first | Pass, 1 passed / 6 skipped | `ws-default-window-rate-api-rev-002.log` |
-| 2 | Combined status/team/settings, then corrected stale expectations and rerun | Pass, 3 files / 28 tests | `api-rev-002-combined-server-coverage-rerun.log` |
-| 3 | Status runtime matrix | Pass, 3 passed / 4 skipped | `ws-status-runtime-matrix-api-rev-002.log` |
-| 4 | Six affected server unit suites | Pass, 6 files / 141 tests | `api-rev-002-server-unit-regression.log` |
-| 5 | 13 affected web suites | Pass, 13 files / 140 tests | `api-rev-002-web-13-file-regression.log` |
-| 6 | Server build-tsconfig, server build, web guards, web production build | Pass; web generated 15 routes | `api-rev-002-server-build-typecheck.log`, `api-rev-002-server-build.log`, `api-rev-002-web-guards.log`, `api-rev-002-web-build.log` |
-| 7 | Focused live-E2E harness unit after two infrastructure fixes | Pass, 1 file / 17 tests | `real-provider-harness-unit-rerun.log` |
+| 1 | `pnpm exec vitest run tests/unit/memory/memory-manager-reasoning-persistence.test.ts tests/unit/memory/memory-manager-working-context-snapshot-persistence.test.ts tests/unit/memory/memory-manager.test.ts --no-watch` | Pass, 3 files / 27 tests | `api-rev-005-native-memory-focused.log` |
+| 2 | Focused new native reasoning GraphQL test | Initial API/E2E fixture path error; corrected `FileMemoryStore` root and rerun Pass, 1 passed / 6 skipped | `api-rev-005-native-reasoning-graphql-focused.log`; `...-rerun.log` |
+| 3 | Full recent-run projection GraphQL file | Pass, 1 file / 7 tests | `api-rev-005-recent-projection-full.log` |
+| 4 | Cross-runtime persistence regression | Retained test fixture first lacked current lifecycle snapshot, then still used removed `emitLocalEvent`; API/E2E corrected the fixture and final rerun passed 16/16 | `api-rev-005-server-reasoning-regression.log`; `api-rev-005-cross-runtime-memory-rerun.log`; `...-rerun-2.log` |
+| 5 | Combined recent projection + tool-call projection + cross-runtime persistence | Pass, 3 files / 30 tests | `api-rev-005-server-hydration-combined.log` |
+| 6 | Frontend run hydration, historical team lazy hydration, AIMessage, ThinkSegment, and AgentConversationFeed | Pass, 5 files / 34 tests | `api-rev-005-frontend-thinking-hydration.log` |
+| 7 | `autobyteus-ts` build/runtime-dependency verification | Pass | `api-rev-005-autobyteus-ts-build.log` |
+| 8 | Server build-tsconfig typecheck and full sanitized build/bootstrap smoke | Pass | `api-rev-005-server-build-typecheck.log`; `api-rev-005-server-build.log` |
+| 9 | `git diff --check` | Pass | `api-rev-005-diff-check-and-status.log` |
+
+The failed attempts above were API/E2E-owned fixture/setup corrections, not product failures. Their exact corrected commands are represented by the final green reruns.
 
 ## Post-Repository Confidence Scorecard
 
-| Category | Score | Support | Remaining Gap Before Broader Validation |
+| Confidence Category | Score | Evidence | Remaining Uncertainty / Additional Validation |
 | --- | ---: | --- | --- |
-| Requirement/AC proof | 90% | Direct API/WS semantics and broad affected regression | Long performance and real DOM pending |
-| Changed-boundary directness | 95% | Production lifecycle/mapper/handler/egress and real sockets | Browser half pending |
-| Cross-boundary realism/mock gap | 90% | Real API and sockets | Performance source deterministic; no real provider yet |
-| Environment/config/identity fidelity | 90% | Isolated settings/real sockets/runtime matrix | Two-node browser binding pending |
-| Failure/edge/lifecycle/recovery | 95% | Boundary, terminal, error, interval, A/B/A, reconnect suites | Sustained teardown pending |
-| User/browser/desktop confidence | 75% | Component suites/build only | Independent Chrome required |
-| Durable regression quality | 95% | Stable requirement-linked API/WS tests | Proportional review pending |
+| Requirement and acceptance-criteria proof | 96% | Native exact-once/order/provenance units and standalone/team GraphQL/event-monitor assertions pass; retained performance/transport/Settings evidence remains green. | Real UI reload/reselection still required. |
+| Changed-boundary execution directness | 99% | Durable tests invoke corrected native `MemoryManager`, real file store, server projection, and event-monitor transformer. | Browser rendering is the remaining boundary. |
+| Cross-boundary integration realism and mock gap | 97% | Real file-backed native producer feeds actual GraphQL resolvers for standalone and team members. | Repository tests do not invoke a real provider/browser. |
+| Environment/configuration/identity/fixture fidelity | 95% | Isolated real file/database roots and current source builds; fixture corrections rerun green. | Real provider and team member identity should be confirmed. |
+| Failure/edge/lifecycle/recovery evidence | 95% | Reasoning-only, content, tool ordering, snapshots, cross-runtime replay, and event-monitor coverage pass. | Full browser reload recovery remains. |
+| User-surface/browser/desktop-shell confidence | 90% | Existing frontend hydration/render suites pass. | Browser reload/history/member-reselection is material and required; shell is unchanged. |
+| Durable regression coverage quality and relevance | 98% | New native standalone/team GraphQL regression plus IR-004 producer coverage directly guards the discovered failure. | Proportional test-code review remains. |
 
-- Overall post-repository confidence: `90.0%` (`630 / 7`).
-- Critical acceptance criteria all directly proven at this point: `No — AC-001, AC-006, AC-007 browser, and AC-008 bound-node browser remained.`
-- Applicable category below 90%: `Yes — user/browser 75%.`
-- Clean 95% target met: `No`.
+- Overall post-repository confidence: `95.7%` (`670 / 7`).
+- Every critical acceptance criterion directly proven at repository scope: `No — real browser reload/member-reselection remained pending at this gate.`
+- Applicable category below 90%: `No`.
+- Default clean-confidence target met: `Yes`, but browser validation remained required by the material user-surface gap.
+- Material residual risk: live native provider reasoning could still fail to persist or hydrate in the actual team UI despite repository coverage.
 
 ## Broader Validation Decision
 
 - Decision: `Required`.
-- Selected modes: `Browser + Live API + real WebSocket/Lifecycle + supplemental real-provider agent-flow`.
-- Gap: host performance, exact 120k equality, live/final DOM, two-node Settings behavior, and external-provider runtime realism.
-- Expected confidence: `>=95%` if all critical thresholds pass.
-- Browser rationale: changed Electron behavior is web-equivalent; Chrome exercises the relevant production Nuxt/service/render boundary without disrupting the user's desktop app. Electron-only shell execution adds no material evidence.
+- Selected execution mode: `Browser + real provider + current-source isolated backend/frontend`.
+- Gap addressed: corrected future-write native reasoning must survive actual completion, hard reload, historical team-run reopen, member switch, and original-member reselection.
+- Expected final confidence: `>=98%` if the raw-trace, GraphQL, and DOM observations agree.
+- Browser rationale: the original defect was user-visible only after hydration; component tests alone cannot close that gap.
+- Desktop decision: browser is the supported web-equivalent renderer path. No Electron preload/IPC/window/package behavior changed, so launching the user desktop application is unnecessary and potentially disruptive.
 
 ## Live Environment And Fixture Plan / Outcome
 
-- Deterministic source: 601,000 ms at about 40 content events/s through production AgentRun/default lifecycle/handler/egress and real WS; 120,220 expected characters and SHA-256 exact comparison.
-- Browser: production WebSocketClient, AgentStreamingService, live/final text and reasoning renderers, Settings store/card, file/reference/member/panel interactions; Chrome on free loopback Nuxt port.
-- Settings: two distinct built server nodes and roots; query/save/rebind/reset with direct file inspection.
-- Real providers: value-safe import into isolated test DB; preflight; `deepseek.agent-flow` and `openai.agent-flow`; captured evidence scanner.
-- Evidence: structured summaries, logs, live/final screenshots, process/cleanup records under `api-e2e-execution-evidence/`.
-- Cleanup: all browser/harness/node/provider processes stopped; temporary page and data roots removed; imported test DB/key removed; user source and ports untouched.
+- Current-source backend: built commit `d691736dc66a3d4323d44367d837d57405bf20b8`, isolated on `127.0.0.1:29741` with an API/E2E-owned temporary data root.
+- Current-source frontend: Nuxt development frontend on `127.0.0.1:62741`, with every REST/GraphQL/agent/team WebSocket endpoint bound to the isolated backend.
+- Credentials: user-authorized `/Users/normy/.autobyteus/server-data/.env` imported through the project secret importer into only the isolated database; values never entered evidence.
+- Fixture: API/E2E-created two-member `API REV 005 Classroom Team`; `professor` and `student` use native AutoByteus runtime; real DeepSeek `deepseek-v4-flash` selected through the actual Run Team UI.
+- Journey: send one request to `professor`; observe live Thinking/final response; switch `professor -> student -> professor`; hard reload `/workspace`; reopen `Temp Workspace -> team definition -> historical run`; expand Thinking; repeat `student -> professor` reselection.
+- Outcome: Pass. New raw traces are ordered `user(1), reasoning(2), assistant(3)`; reasoning and assistant share turn/timestamp/source identity; the snapshot provenance lists both response trace IDs; team GraphQL reasoning and assistant content exactly equal raw traces; browser shows one Thinking disclosure with 601 rendered reasoning characters and the separate final answer before and after reload/reselection.
+- Evidence: `api-rev-005-native-reasoning-browser-reload-summary.json`, `api-rev-005-live-team-projection.json`, current-source backend/frontend logs, and screenshots.
+- Safety: user server 29695 and frontend 3000 were observed but never stopped or used as test data. All owned processes, browser tab, ports 29741/62741, and isolated data were cleaned.
 
 ## Temporary Executable Validation
 
-| Scenario | Method | Why Temporary |
-| --- | --- | --- |
-| PERF-001 / PERF-EXACT-001 / PERF-INTERACT-001 | 601-second Chrome + production-path deterministic harness | Slow and hardware-sensitive; retained as ticket evidence, not CI. |
-| BROWSER-RENDER-001 / BROWSER-SET-001 | Temporary Nuxt route, production components/services, two isolated servers | Multi-process evidence fixture is ticket-specific. |
+| Scenario ID | Method | Behavior Proven | Why Not Durable |
+| --- | --- | --- | --- |
+| BROWSER-NATIVE-REASONING-RELOAD-001 | Actual current UI + real DeepSeek + isolated team run + hard reload/history reopen/member reselection | Corrected future-write native reasoning persists and hydrates as Thinking across the exact user-visible recovery path | Provider credentials and interactive browser state make this a ticket-specific live proof; durable native/API/frontend boundaries are already repository-covered. |
 
 ## Not Tested / Residual Scope
 
-| Boundary | Reason | Risk / Follow-up |
-| --- | --- | --- |
-| Electron preload/IPC/window/package | No shell source changed; browser is the applicable renderer boundary | Negligible; do not claim shell execution. |
-| Pending content replay after physical socket loss | Approved no-replay limitation | Preserve limitation; reconnect correctness remains covered. |
-| Provider-generated 10-minute 40/s load | Provider output is nondeterministic and costly; unsuitable for exact equality/rate proof | DeepSeek/OpenAI real agent turns supplement, not replace, deterministic proof. |
+| Behavior | Decision / Risk |
+| --- | --- |
+| Existing pre-IR-004 Bible/Classroom turns | Not rewritten or backfilled by the approved no-migration decision. Their missing raw reasoning cannot be reconstructed. This is intentional and does not affect corrected future writes. |
+| Electron-only shell behavior | Not executed; no shell boundary changed. Browser proves the web-equivalent renderer path. |
+| Providers/models that emit no reasoning | A Thinking disclosure remains conditional on non-empty reasoning output; not a defect. |
+| Two prior LM Studio timeout attempts | Non-green environmental attempts; excluded from successful proof. |
 
 ## Ambiguities Or Reroute Triggers
 
-No requirement/design ambiguity remains. The two live-E2E failures were API/E2E-owned test-infrastructure defects (URL serialization comparison and raw-backend/facade mismatch), corrected with durable unit coverage and successful live reruns. No production implementation source was changed by API/E2E.
+| Issue | Classification | Resolution |
+| --- | --- | --- |
+| Focused GraphQL fixture initially wrote under an extra `agents/` segment | Local Fix / API-E2E | Corrected store root; focused and full reruns pass. |
+| Retained cross-runtime fixture used superseded lifecycle/event APIs | Local Fix / API-E2E | Updated only test infrastructure to current canonical API; 16/16 and combined 30/30 pass. |
+| Product failure after IR-004 | None | Not reproduced; exact native persistence, API hydration, and browser recovery pass. |
 
 ## Investigation Decision
 
-- Proceed To API/E2E Execution: `Yes — completed.`
-- Repository-resident durable coverage changed: `Yes — five paths updated; none removed.`
-- Post-repository confidence: `90.0%`.
-- Broader validation: `Required and completed.`
-- Reroute before execution: `No after local test-infrastructure corrections.`
-- Final routing: successful round must return through `code_reviewer` for proportional review of durable coverage changes.
+- Proceed To API/E2E Execution: `Completed`.
+- Repository-resident durable coverage added/updated/removed: `Yes — two server test files updated; none removed.`
+- Post-repository confidence: `95.7%`.
+- Broader validation: `Required and completed — Pass`.
+- Final confidence: `98.6%`.
+- Reroute required before validation: `No`.
+- Required next recipient: `code_reviewer` for proportional review of the two Round 5 durable test-file changes, then `delivery_engineer` if review passes.
+- Latest authoritative result: `API-REV-005 Pass`.
