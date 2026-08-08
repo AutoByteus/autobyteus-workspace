@@ -9,21 +9,21 @@
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/solution-revision-record.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/design-review-report.md`
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence, when applicable: `N/A — initial implementation after ARCH-REV-001 pass`
+- Triggering rework report, revision record, or evidence, when applicable: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/code-review-report.md`; `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/code-review-revision-record.md` (`CRR-001`, finding `CR-001`)
 
 ## Current Implementation Summary
 
-Implemented the approved runtime-streaming performance refactor as a clean ownership transfer: a per-session server egress now owns WebSocket content cadence and ordering; every post-session semantic server message path uses that sink; the frontend scheduler/projector implementation is deleted; shaped content projects immediately through existing transactions; active text/reasoning uses escaped plain rendering until existing completion state selects the rich renderer; and the bound-node settings surface owns a validated, live 500 ms default interval.
+Implemented the approved runtime-streaming performance refactor as a clean ownership transfer: a per-session server egress now owns WebSocket content cadence and ordering; every post-session semantic server message path uses that sink; the frontend scheduler/projector implementation is deleted; shaped content projects immediately through existing transactions; active text/reasoning uses escaped plain rendering until existing completion state selects the rich renderer; and the bound-node settings surface owns a validated, live 500 ms default interval. IR-002 resolves CR-001 by aligning the retained Compaction failure journey with the extended `GetServerSettings` response and stubbing the unrelated live-response card; no production source or approved behavior changed.
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-001`
 - Related architecture-review revision IDs: `ARCH-REV-001`
-- Related code-review revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001`
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Triggering finding IDs: `CR-001`
 
 ## Reviewed Behavior Implementation Trace
 
@@ -46,6 +46,7 @@ Implemented the approved runtime-streaming performance refactor as a clean owner
 - Live/final presentation: `AIMessage.vue`, `TextSegment.vue`, `ThinkSegment.vue`, `renderer/LiveTextRenderer.vue`, `agentStatusHandler.ts`
 - Bound-node setting UI/API: `LiveResponseStreamingCard.vue`, `ServerSettingsBasicsPanel.vue`, `stores/serverSettings.ts`, GraphQL query/generated types, localization
 - Focused unit/component coverage: new egress/config/live renderer/text/settings tests and rewritten obsolete scheduler expectations
+- IR-002 retained-test correction: `autobyteus-web/components/settings/__tests__/ServerSettingsCompactionFailure.spec.ts`
 
 ## Important Assumptions
 
@@ -107,6 +108,8 @@ Implemented the approved runtime-streaming performance refactor as a clean owner
 - `autobyteus-server-ts`: focused six-suite Vitest run for config, egress, settings service, broadcaster, standalone handler, and team handler — pass (134 tests).
 - `autobyteus-server-ts`: repository `pnpm typecheck` — not a usable green check because the baseline `tsconfig.json` includes tests outside its configured `rootDir`; the build tsconfig check above passes.
 - `autobyteus-web`: focused 12-suite Nuxt Vitest run covering standalone/team immediate dispatch, recent Event Monitor production dispatch, generic team dispatch, completion handlers, AI/text/reasoning/live renderers, settings card/panel/store — pass (138 tests).
+- `autobyteus-web` IR-002 exact CR-001 reproduction command: `pnpm test:nuxt --run components/settings/__tests__/ServerSettingsCompactionFailure.spec.ts` — pass (1 file / 2 tests).
+- `autobyteus-web` IR-002 affected focused run: the prior 12 focused streaming/renderer/Settings suites plus the retained Compaction failure journey — pass (13 files / 140 tests).
 - `autobyteus-web`: `BACKEND_GRAPHQL_BASE_URL=/tmp/autobyteus-runtime-streaming-schema.graphql pnpm codegen` — pass.
 - `autobyteus-web`: `pnpm guard:web-boundary`, `pnpm guard:localization-boundary`, `pnpm audit:localization-literals` — pass.
 - `autobyteus-web`: `pnpm build` — pass; 15 static routes prerendered.
@@ -122,6 +125,7 @@ Implemented the approved runtime-streaming performance refactor as a clean owner
 - States, layouts, viewports, and interactions inspected: effective 500 default; clean disabled Save/Reset; invalid decimal and range feedback; keyboard-focused Enter save to 1,000; effective state refresh; reset to 500; unavailable state in component tests; desktop 1440x1000; mobile 390x844 with no horizontal overflow; active literal HTML/Markdown and expanded reasoning; completed rich headings and sanitization.
 - Visual or interaction issues found and corrected: Reset was initially disabled for a dirty draft when the effective value was already 500; unavailable state was initially hidden by empty-draft validation; nullable effective interpolation raised a local type diagnostic. All three were corrected and retested.
 - Supporting evidence and remaining unverified states or limitations: Chrome inspection confirmed active output preserved exact whitespace, mounted zero rich headings and zero injected image elements; completion removed all live renderers, mounted rich headings, and stripped the authored `onerror` attribute. Settings controls aligned with adjacent cards at both viewports. Independent realistic long-run rendering/performance remains downstream.
+- IR-002 rendered-result impact: `None`; this round changed only a retained test fixture and component stub, so the prior rendered inspection remains authoritative.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
