@@ -3,9 +3,10 @@
 ## Delivery State
 
 - Ticket: `compaction-lineage-origin-simplification`
-- Result: `User verified; repository finalization in progress`
-- Current delivery revision: `DR-002`
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-lineage-origin-simplification`
+- Result: `Complete — repository finalized on personal`
+- Current delivery revision: `DR-003`
+- Finalized main checkout: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
+- Ticket worktree pending post-push cleanup: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-lineage-origin-simplification`
 - Ticket branch: `codex/compaction-lineage-origin-simplification`
 - Finalization target: `origin/personal` / local `personal`
 - Reviewed production source commit: `9bcac525850d8e65d1ac4c792401b77c7ee0d396`
@@ -16,7 +17,9 @@
 - User verification: Received on 2026-08-08 — `verified. now finalize this ticket`.
 - Pre-finalization refresh: `origin/personal` remained unchanged at `647b1119a9dc3ba2ba301243e1b5e752943454db`; renewed verification is not required.
 - Target-checkout cleanup: Completed under the user's earlier explicit discard authorization; tracked and untracked personal-checkout changes were removed and the checkout is clean.
-- Finalization state: Ticket archived under `tickets/done/`; ticket commit/push and target merge/push are in progress. No version bump, tag, release, publication, or deployment is in scope.
+- Archived ticket commit: `d671b6961374c760bb4416287061843fa4a46f6f` — pushed to `origin/codex/compaction-lineage-origin-simplification`.
+- Finalization merge: `aad840d57387aabece1504e8563c8d7d05a0fbd8` (`Merge compaction-lineage-origin-simplification`).
+- Finalization state: Ticket archived and merged into `personal`; final records are being pushed with the merged branch. No version bump, tag, release, publication, or deployment is in scope.
 
 ## Delivered Behavior
 
@@ -39,6 +42,7 @@
 - Broad non-live memory regression: 37 files / 174 tests passed.
 - Core build, server build, static removal inspection, changed-test TypeScript, and diff checks passed.
 - Two opportunistic LM Studio live-inference tests timed out after successful local service discovery. They do not exercise the changed storage/lineage boundary; the deterministic affected coverage passed.
+- Post-merge finalization verification: the three changed-owner durable suites passed on `personal` — 3 files / 22 tests. Removed production/test contracts, durable docs, design mirror, and repository artifact hygiene checks also passed.
 
 ## Documentation Synchronized
 
@@ -47,7 +51,7 @@
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-lineage-origin-simplification/autobyteus-server-ts/docs/modules/agent_memory.md`
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-lineage-origin-simplification/autobyteus-server-ts/docs/ARCHITECTURE.md`
 
-Authoritative docs-sync details: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-lineage-origin-simplification/tickets/done/compaction-lineage-origin-simplification/docs-sync-report.md`.
+Authoritative docs-sync details: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/compaction-lineage-origin-simplification/docs-sync-report.md`.
 
 ## Persisted-Data Decision
 
@@ -65,4 +69,4 @@ Authoritative docs-sync details: `/Users/normy/autobyteus_org/autobyteus-worktre
 
 ## User Verification And Finalization Authorization
 
-The user explicitly verified this handoff and requested finalization. The required second remote refresh found no target advance, the ticket was archived, and delivery is completing the prescribed commit/push/merge/cleanup sequence. No renewed verification is needed because the verified implementation and documentation state did not change.
+The user explicitly verified this handoff and requested finalization. The required second remote refresh found no target advance, the ticket was archived and pushed, and merge `aad840d57387aabece1504e8563c8d7d05a0fbd8` finalized the implementation on `personal`. No renewed verification was needed because the verified implementation and documentation state did not change. Post-merge checks passed; only safe topic-worktree/branch cleanup remains.
