@@ -38,9 +38,10 @@ The architecture relies on a **Factory Pattern** combined with a **Registry** to
     states (`supported`, `unsupported`, or `unknown`). Built-in definitions
     carry verified states; discovered and unverified models default to unknown.
   - **Resolved metadata:** Numeric context/input/output limits retain per-field
-    provenance (`live`, `static_definition`, or `unknown`) through
-    `resolvedModelMetadata`. `activeContextTokens` remains runtime state and is
-    never taken from static catalog metadata.
+    provenance (`live`, `inferred_builtin`, `static_definition`, or `unknown`)
+    through `resolvedModelMetadata`.
+    `activeContextTokens` remains runtime state and is never taken from static
+    catalog metadata.
   - **Factory Method:** `LLMFactory.createLLM(...)` instantiates the concrete `BaseLLM` for this model.
 
 - **`LLMFactory` (Singleton):**
@@ -254,7 +255,8 @@ business accounting.
 src/llm/
 ├── api/                                # Concrete BaseLLM implementations
 ├── extensions/                         # Optional explicit lifecycle extensions
-├── metadata/                           # Live model metadata resolvers
+├── metadata/                           # Model metadata resolution
+│   └── openai-compatible-endpoint-model-metadata.ts
 ├── transport/                          # Shared transport helpers
 ├── utils/                              # Config, message/usage observation types, pricing models
 ├── base.ts                             # Abstract base class
@@ -461,6 +463,15 @@ current static Anthropic catalog count until
 `src/llm/supported-model-definitions.ts` is updated.
 
 - Each saved provider is probed independently through its `/models` endpoint.
+- Discovery keeps only normalized model identity plus recognized positive
+  integer metadata aliases; credentials and raw provider payloads do not enter
+  model or persisted-provider projections.
+- Each custom model resolves numeric limits independently with this precedence:
+  endpoint-advertised value (`live`), an exact `SupportedModelDefinition.value`
+  fallback (`inferred_builtin`), then `unknown`. Resolution does not receive or
+  inspect the custom endpoint URL. Suffix stripping, family matching,
+  display-name matching, case folding, wire aliases, and other fuzzy inference
+  are forbidden.
 - Successful providers contribute fresh `OPENAI_COMPATIBLE` runtime models.
 - The synced model set is authoritative to the current saved-provider list, so
   deleting a saved custom provider removes that provider's models from the next

@@ -1,27 +1,37 @@
 import { describe, expect, it } from 'vitest';
 import {
   buildBuiltInFallbackIndex,
-  canonicalizeOpenAICompatibleEndpointIdentity,
   OpenAICompatibleEndpointModelMetadataResolver,
-  OPENAI_COMPATIBLE_ENDPOINT_MODEL_PROFILES,
 } from '../../../../src/llm/metadata/openai-compatible-endpoint-model-metadata.js';
-import type { EndpointModelProfile } from '../../../../src/llm/metadata/openai-compatible-endpoint-model-metadata.js';
 import type { SupportedModelDefinition } from '../../../../src/llm/supported-model-definition.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
 
-const staticMetadata = (context: number | null, input: number | null, output: number | null, sourceUrl: string) => ({
+const staticMetadata = (
+  context: number | null,
+  input: number | null,
+  output: number | null,
+  sourceUrl: string,
+) => ({
   maxContextTokens: context,
   maxInputTokens: input,
   maxOutputTokens: output,
-  multimodalCapabilities: { image: 'unsupported', audio: 'unsupported', video: 'unsupported' } as const,
-  provenance: { sourceUrl, verifiedAt: '2026-08-03' },
+  multimodalCapabilities: {
+    image: 'unsupported', audio: 'unsupported', video: 'unsupported',
+  } as const,
+  provenance: { sourceUrl, verifiedAt: '2026-08-06' },
 });
 
 const definition = (
   provider: LLMProvider,
   value: string,
   metadata: ReturnType<typeof staticMetadata>,
-) => ({ provider, value, name: value, canonicalName: value, staticMetadata: metadata } as SupportedModelDefinition);
+) => ({
+  provider,
+  value,
+  name: value,
+  canonicalName: value,
+  staticMetadata: metadata,
+} as SupportedModelDefinition);
 
 const discovered = (value: string, metadata: Record<string, unknown> = {}) => ({
   id: value,
@@ -32,64 +42,59 @@ const discovered = (value: string, metadata: Record<string, unknown> = {}) => ({
 });
 
 describe('OpenAI-compatible endpoint metadata resolver', () => {
-  it('matches the exact Alibaba Token Plan profile and leaves undocumented fields unknown', () => {
-    const resolver = new OpenAICompatibleEndpointModelMetadataResolver();
+  it('uses advertised values before exact built-in metadata independently per field', () => {
+    const definitions = [
+      definition(
+        LLMProvider.QWEN,
+        'exact-model',
+        staticMetadata(1_000_000, 900_000, 128_000, 'https://catalog.example/exact'),
+      ),
+    ];
+    const resolver = new OpenAICompatibleEndpointModelMetadataResolver(
+      buildBuiltInFallbackIndex(definitions),
+    );
+
     const metadata = resolver.resolve({
-      endpointBaseUrl: 'HTTPS://TOKEN-PLAN.AP-SOUTHEAST-1.MAAS.ALIYUNCS.COM/compatible-mode/./v1/',
-      discoveredModel: discovered('qwen3.8-max-preview'),
+      discoveredModel: discovered('exact-model', { maxContextTokens: 2_000_000 }),
     });
 
     expect(metadata.maxContextTokens).toEqual({
-      value: 1_000_000,
-      source: expect.objectContaining({
-        kind: 'endpoint_profile',
-        profileId: OPENAI_COMPATIBLE_ENDPOINT_MODEL_PROFILES[0]?.profileId,
-      }),
+      value: 2_000_000,
+      source: { kind: 'live' },
     });
-    expect(metadata.maxInputTokens.source).toEqual({ kind: 'unknown' });
-    expect(metadata.maxOutputTokens.source).toEqual({ kind: 'unknown' });
+    expect(metadata.maxInputTokens).toMatchObject({
+      value: 900_000,
+      source: {
+        kind: 'inferred_builtin', provider: LLMProvider.QWEN, value: 'exact-model',
+      },
+    });
+    expect(metadata.maxOutputTokens).toMatchObject({
+      value: 128_000,
+      source: { kind: 'inferred_builtin', provider: LLMProvider.QWEN },
+    });
   });
 
-  it('uses advertised values first, then rejects endpoint near-matches before exact-value fallback', () => {
-    const resolver = new OpenAICompatibleEndpointModelMetadataResolver();
-    const advertised = resolver.resolve({
-      endpointBaseUrl: 'https://token-plan.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1',
-      discoveredModel: discovered('qwen3.8-max-preview', { maxContextTokens: 2_000_000 }),
-    });
-    expect(advertised.maxContextTokens).toMatchObject({ value: 2_000_000, source: { kind: 'live' } });
-
-    const nearMatch = resolver.resolve({
-      endpointBaseUrl: 'https://token-plan.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v2',
-      discoveredModel: discovered('qwen3.7-max'),
-    });
-    expect(nearMatch.maxContextTokens).toMatchObject({ value: 262_144, source: { kind: 'inferred_builtin', provider: LLMProvider.QWEN, value: 'qwen3.7-max' } });
-
-    const exactPlan = resolver.resolve({
-      endpointBaseUrl: 'https://token-plan.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1',
-      discoveredModel: discovered('qwen3.7-max'),
-    });
-    expect(exactPlan.maxContextTokens).toMatchObject({ value: 1_000_000, source: { kind: 'endpoint_profile' } });
-  });
-
-  it('selects the lowest valid duplicate built-in field and carries the selected provenance', () => {
+  it('selects the lowest valid duplicate built-in field and selected provenance deterministically', () => {
     const definitions = [
       definition(LLMProvider.OPENAI, 'duplicate-model', staticMetadata(900, 800, null, 'https://z.example')),
       definition(LLMProvider.ANTHROPIC, 'duplicate-model', staticMetadata(700, 800, 500, 'https://a.example')),
       definition(LLMProvider.GEMINI, 'duplicate-model', staticMetadata(700, null, 400, 'https://b.example')),
     ];
     const resolver = new OpenAICompatibleEndpointModelMetadataResolver(
-      [],
-      definitions,
       buildBuiltInFallbackIndex(definitions),
     );
     const metadata = resolver.resolve({
-      endpointBaseUrl: 'https://unrecognized.example/v1',
       discoveredModel: discovered('duplicate-model'),
     });
 
     expect(metadata.maxContextTokens).toMatchObject({
       value: 700,
-      source: { kind: 'inferred_builtin', provider: LLMProvider.ANTHROPIC, value: 'duplicate-model', provenance: { sourceUrl: 'https://a.example' } },
+      source: {
+        kind: 'inferred_builtin',
+        provider: LLMProvider.ANTHROPIC,
+        value: 'duplicate-model',
+        provenance: { sourceUrl: 'https://a.example' },
+      },
     });
     expect(metadata.maxInputTokens).toMatchObject({
       value: 800,
@@ -101,114 +106,37 @@ describe('OpenAI-compatible endpoint metadata resolver', () => {
     });
   });
 
-  it('canonicalizes default ports, one host dot, dot segments, and trailing path slashes', () => {
-    expect(canonicalizeOpenAICompatibleEndpointIdentity(
-      'HTTPS://Example.TEST.:443/a/../v1///?plan=token#ignored',
-    )).toEqual({ protocol: 'https', hostname: 'example.test', port: null, basePath: '/v1' });
-    expect(canonicalizeOpenAICompatibleEndpointIdentity('http://example.test:8080')).toEqual({
-      protocol: 'http', hostname: 'example.test', port: 8080, basePath: '',
-    });
-  });
-
-  it('resolves exact built-in profile references as endpoint-profile provenance', () => {
+  it('uses exact values only and leaves unknown or suffixed near-matches unknown', () => {
     const definitions = [
-      definition(LLMProvider.OPENAI, 'referenced-model', staticMetadata(1234, 1200, 256, 'https://builtin.example')),
+      definition(LLMProvider.QWEN, 'deepseek-v4-pro', staticMetadata(1_000_000, null, null, 'https://catalog.example/deepseek')),
     ];
-    const profiles: readonly EndpointModelProfile[] = [{
-      protocol: 'https',
-      hostname: 'profile.example',
-      port: null,
-      basePath: '/v1',
-      profileId: 'profile-reference',
-      modelValue: 'custom-model',
-      provenance: { sourceUrl: 'https://profile.example/source', verifiedAt: '2026-08-03' },
-      reference: { provider: LLMProvider.OPENAI, value: 'referenced-model' },
-    }];
     const resolver = new OpenAICompatibleEndpointModelMetadataResolver(
-      profiles,
-      definitions,
       buildBuiltInFallbackIndex(definitions),
     );
 
     expect(resolver.resolve({
-      endpointBaseUrl: 'https://profile.example/v1',
-      discoveredModel: discovered('custom-model'),
-    }).maxContextTokens).toEqual({
-      value: 1234,
-      source: {
-        kind: 'endpoint_profile',
-        profileId: 'profile-reference',
-        provenance: { sourceUrl: 'https://profile.example/source', verifiedAt: '2026-08-03' },
-        reference: { provider: LLMProvider.OPENAI, value: 'referenced-model' },
-      },
+      discoveredModel: discovered('deepseek-v4-pro'),
+    }).maxContextTokens).toMatchObject({
+      value: 1_000_000,
+      source: { kind: 'inferred_builtin', value: 'deepseek-v4-pro' },
     });
+    expect(resolver.resolve({
+      discoveredModel: discovered('deepseek-v4-pro-0713'),
+    }).maxContextTokens).toEqual({ value: null, source: { kind: 'unknown' } });
+    expect(resolver.resolve({
+      discoveredModel: discovered('DeepSeek-V4-Pro'),
+    }).maxContextTokens).toEqual({ value: null, source: { kind: 'unknown' } });
   });
 
-  it('maps the Alibaba DeepSeek wire alias only through its exact endpoint profile', () => {
-    const resolver = new OpenAICompatibleEndpointModelMetadataResolver();
+  it('indexes non-empty definition values without transforming whitespace, case, or prefixes', () => {
+    const definitions = [
+      definition(LLMProvider.QWEN, '  glm-5.2  ', staticMetadata(198_000, null, null, 'https://catalog.example/glm')),
+      definition(LLMProvider.QWEN, '   ', staticMetadata(123, null, null, 'https://catalog.example/blank')),
+    ];
+    const index = buildBuiltInFallbackIndex(definitions);
 
-    const exactAlias = resolver.resolve({
-      endpointBaseUrl: 'https://token-plan.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1',
-      discoveredModel: discovered('deepseek-v4-flash-0731'),
-    });
-    expect(exactAlias.maxContextTokens).toMatchObject({
-      value: 1_000_000,
-      source: {
-        kind: 'endpoint_profile',
-        profileId: 'alibaba-token-plan-deepseek-wire-alias-2026-08-03',
-        reference: { provider: LLMProvider.DEEPSEEK, value: 'deepseek-v4-flash' },
-      },
-    });
-    expect(exactAlias.maxOutputTokens).toMatchObject({
-      value: 384_000,
-      source: {
-        kind: 'endpoint_profile',
-        reference: { provider: LLMProvider.DEEPSEEK, value: 'deepseek-v4-flash' },
-      },
-    });
-
-    const differentEndpoint = resolver.resolve({
-      endpointBaseUrl: 'https://dashscope-intl.aliyuncs.com/compatible-mode/v1',
-      discoveredModel: discovered('deepseek-v4-flash-0731'),
-    });
-    expect(differentEndpoint.maxContextTokens).toEqual({ value: null, source: { kind: 'unknown' } });
-    expect(differentEndpoint.maxOutputTokens).toEqual({ value: null, source: { kind: 'unknown' } });
-
-    const canonicalValue = resolver.resolve({
-      endpointBaseUrl: 'https://token-plan.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1',
-      discoveredModel: discovered('deepseek-v4-flash'),
-    });
-    expect(canonicalValue.maxContextTokens).toMatchObject({
-      value: 1_000_000,
-      source: { kind: 'inferred_builtin', provider: LLMProvider.DEEPSEEK, value: 'deepseek-v4-flash' },
-    });
-  });
-
-  it('does not profile-match query or fragment variants', () => {
-    const resolver = new OpenAICompatibleEndpointModelMetadataResolver();
-    const endpoint = 'https://token-plan.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1';
-
-    const queryVariant = resolver.resolve({
-      endpointBaseUrl: `${endpoint}?plan=other`,
-      discoveredModel: discovered('deepseek-v4-flash-0731', { maxContextTokens: 123_456 }),
-    });
-    expect(queryVariant.maxContextTokens).toEqual({ value: 123_456, source: { kind: 'live' } });
-    expect(queryVariant.maxOutputTokens).toEqual({ value: null, source: { kind: 'unknown' } });
-
-    const fragmentVariant = resolver.resolve({
-      endpointBaseUrl: `${endpoint}#other`,
-      discoveredModel: discovered('deepseek-v4-flash-0731'),
-    });
-    expect(fragmentVariant.maxContextTokens).toEqual({ value: null, source: { kind: 'unknown' } });
-    expect(fragmentVariant.maxOutputTokens).toEqual({ value: null, source: { kind: 'unknown' } });
-
-    const exactFallbackAfterQueryMiss = resolver.resolve({
-      endpointBaseUrl: `${endpoint}?plan=other`,
-      discoveredModel: discovered('deepseek-v4-flash'),
-    });
-    expect(exactFallbackAfterQueryMiss.maxContextTokens).toMatchObject({
-      value: 1_000_000,
-      source: { kind: 'inferred_builtin', provider: LLMProvider.DEEPSEEK, value: 'deepseek-v4-flash' },
-    });
+    expect(index.has('glm-5.2')).toBe(false);
+    expect(index.has('  glm-5.2  ')).toBe(true);
+    expect(index.has('')).toBe(false);
   });
 });

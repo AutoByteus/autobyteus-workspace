@@ -144,16 +144,17 @@ describe('ModelMetadataProvisioningService', () => {
     expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 
-  it('preserves non-secret custom endpoint source and per-field values through enrichment', async () => {
+  it('preserves inferred custom endpoint source and per-field values through enrichment', async () => {
     const resolvedModelMetadata: ResolvedModelMetadata = {
       maxContextTokens: {
         value: 1_000_000,
         source: {
-          kind: 'endpoint_profile',
-          profileId: 'alibaba-token-plan-qwencloud-2026-07-30',
+          kind: 'inferred_builtin',
+          provider: LLMProvider.QWEN,
+          value: 'qwen3.8-max',
           provenance: {
             sourceUrl: 'https://docs.qwencloud.com/developer-guides/getting-started/text-generation-models',
-            verifiedAt: '2026-07-30',
+            verifiedAt: '2026-08-06',
           },
         },
       },
@@ -161,7 +162,7 @@ describe('ModelMetadataProvisioningService', () => {
       maxOutputTokens: { value: null, source: { kind: 'unknown' } },
     };
 
-    const customModel = model(LLMProvider.OPENAI_COMPATIBLE, 'qwen3.8-max-preview', resolvedModelMetadata);
+    const customModel = model(LLMProvider.OPENAI_COMPATIBLE, 'qwen3.8-max', resolvedModelMetadata);
     customModel.max_context_tokens = 1_000_000;
     customModel.max_input_tokens = null;
     customModel.max_output_tokens = null;

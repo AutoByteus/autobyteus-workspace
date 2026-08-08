@@ -57,6 +57,25 @@ export interface CustomLlmProviderProbeResult {
   discoveredModels: CustomLlmProviderProbeModel[]
 }
 
+export type QwenEndpointSource = 'DEFAULT' | 'CONFIGURED'
+
+export interface QwenSetupStatus {
+  effectiveBaseUrl: string
+  endpointSource: QwenEndpointSource
+  apiKeyConfigured: boolean
+}
+
+export interface QwenConfigurationInput {
+  baseUrl: string
+  apiKey: string
+}
+
+export const defaultQwenSetupStatus = (): QwenSetupStatus => ({
+  effectiveBaseUrl: '',
+  endpointSource: 'DEFAULT',
+  apiKeyConfigured: false,
+})
+
 export type GeminiConfigurationOption = 'AI_STUDIO' | 'VERTEX_EXPRESS' | 'VERTEX_PROJECT'
 
 export interface GeminiSetupConfigState {

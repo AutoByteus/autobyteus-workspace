@@ -6,6 +6,8 @@
 | --- | --- | --- | --- | --- |
 | API-REV-001 | `api_e2e_engineer`; first completed coverage/execution round | `SR-005`–`SR-008`, `ARCH-REV-002`–`ARCH-REV-003`, `IR-001`–`IR-003`, `CRR-001`–`CRR-002` | N/A | `Pass` / `95.3%` |
 | API-REV-002 | `code_reviewer` CRR-003 `TR-001`; rerun round `2` | `API-REV-001`, `CRR-003`, `IR-003`, `CRR-002` | `Pass` / `95.3%` | `Pass` / `95.3%` |
+| API-REV-003 | `code_reviewer` CRR-007; current exact-only/Qwen round `3` | `SR-010`–`SR-011`, `ARCH-REV-005`, `IR-006`, `CRR-007` | `Pass` / `95.3%` (historical contract, superseded) | `Pass` / `96.4%` |
+| API-REV-004 | `code_reviewer` CRR-008 `TR-002`/`TR-003`; corrective round `4` | `API-REV-003`, `CRR-008`, `IR-006`, `CRR-007` | `Pass` / `96.4%` execution; proportional review `Fail` | `Pass` / `96.4%`, pending re-review |
 
 ## Revision Entries
 
@@ -58,3 +60,62 @@ None. `API-REV-001` is the initial baseline; the prior source-review `CR-001` wa
 - New or remaining failure IDs: `None`; implementation source remains CRR-002 `Pass`, with no implementation reroute required.
 - Recommended recipient: `code_reviewer` for proportional CRR-004 review of the updated durable test; delivery remains blocked until that review passes.
 - Remaining risks, blocked evidence, or untested scope: Source-dated Alibaba profile freshness, real vendor API enforcement/payload variation, and full browser/Electron/distributed-worker execution remain outside the approved safe scope.
+
+
+### API-REV-003 — Current exact-only metadata and native Qwen lifecycle/browser baseline
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-report.md` CRR-007; execution round `3` recorded in the canonical coverage investigation and execution report.
+- Triggering finding or scenario IDs: Current `SR-010`/`SR-011` product contract; `CUS-E2E-001`, `QW-E2E-001`–`QW-E2E-004`, `QW-BRW-001`–`QW-BRW-003`, and `HIST-001`.
+- Related solution, architecture-review, implementation, code-review, or delivery revision IDs: `SR-010`–`SR-011`; `ARCH-REV-005`; `IR-006`; `CRR-007`. Prior delivery and endpoint-profile API/E2E results are superseded for current-result purposes.
+- Why this revision was recorded: The approved design removed endpoint profiles/aliases and added a native Qwen configuration pair, exact catalog values, strict cross-store compensation, restart durability, and reviewed Settings recovery behavior. The historical round-1/2 result could not be inferred to validate this materially different contract.
+- Coverage decisions or durable test paths changed:
+  - Added `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-server-ts/tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts` for real probe, GraphQL save/error boundaries, vault/`.env`, configured and representative key-only restarts, exact catalog, fresh-process Qwen requests, and secret hygiene.
+  - Updated `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-server-ts/tests/e2e/llm-management/custom-provider-model-metadata-graphql.e2e.test.ts` to prove advertised precedence and exact-only Qwen-owned duplicate candidate behavior with suffixed/unknown near misses.
+  - Removed no durable coverage. Classified every historical `qwen3.8-max-preview` token-usage fixture as `Still Valid` opaque custom-provider ledger history, not native support or compatibility behavior.
+- Scenarios added, changed, removed, or rechecked: Added `QW-E2E-001`–`004` and `QW-BRW-001`–`003`; updated `CUS-E2E-001`; rechecked `HIST-001` and 154 focused core/server/web tests; removed none.
+- Commands, environment, fixture, or broader-validation delta: Built the current server/shared packages, ran 37 core + 76 server + 41 web focused tests, ran the two changed GraphQL E2E files (4 tests), ran web boundary/localization guards, and executed headless Chrome 151 through owned Nuxt/built-server/loopback-provider processes. The browser forced exactly one post-save provider-settings rejection and proved committed-state authority plus global and selected-provider reload recovery.
+
+#### Prior Failure Resolution
+
+None. `API-REV-002` had no unresolved failure. The older endpoint-profile result is superseded by an approved product-contract revision, not reclassified as a failure. Two local lifecycle-harness defects found during this round were corrected before the authoritative rerun; the final combined E2E command passed.
+
+- Canonical artifacts and sections updated:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-execution-coverage-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-revision-record.md`
+- Prior result and confidence: `Pass`, `95.3%`, for the historical endpoint-profile contract; explicitly superseded and not reused as current proof.
+- Current result and confidence: `Pass`, `96.4%`; every applicable category is at least 95%, the default clean target is met, and every critical current acceptance criterion has direct complementary evidence.
+- New or remaining failure IDs: `None`.
+- Recommended recipient: `code_reviewer` for proportional review of the two changed durable E2E paths; delivery waits until that review passes.
+- Remaining risks, blocked evidence, or untested scope: Real Alibaba availability, credentials, quota/region enforcement, TLS, and undocumented payload variation were not exercised; the approved OpenAI-compatible boundary was deterministically emulated. Electron shell and distributed-worker execution are inapplicable to the changed boundary.
+
+
+### API-REV-004 — Resolve persisted-route and provider-scoped cleanup proof defects
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-test-review-report.md` CRR-008; corrective execution round `4`.
+- Triggering finding or scenario IDs: `TR-002` / `QW-E2E-003`; `TR-003` / `CUS-E2E-001` cleanup.
+- Related solution, architecture-review, implementation, code-review, or delivery revision IDs: `SR-010`–`SR-011`; `ARCH-REV-005`; `IR-006`; `CRR-007`–`CRR-008`; `API-REV-003`. Delivery remains blocked pending re-review.
+- Why this revision was recorded: CRR-008 correctly found that the request child received the expected URL directly and that cleanup globally forbade approved duplicate values. Both were bounded durable-test proof defects; no production defect or failed runtime execution was inferred.
+- Coverage decisions or durable test paths changed:
+  - Updated `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-server-ts/tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts` to remove `qwenBaseUrl` from the fresh-child input and remove the explicit `QWEN_BASE_URL` sanitized-environment assignment. AppConfig must now load the GraphQL-persisted owned `.env` before all three captured requests.
+  - Updated `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-server-ts/tests/e2e/llm-management/custom-provider-model-metadata-graphql.e2e.test.ts` to query model `providerId` after deletion and assert that neither a provider group nor any remaining model is owned by `deletedProviderId`; removed global shared-wire-value absence.
+  - Added or removed no durable test file and changed no production source.
+- Scenarios added, changed, removed, or rechecked: Corrected and rechecked `QW-E2E-003` and the cleanup portion of `CUS-E2E-001`; all other API-REV-003 scenarios remain valid and unchanged.
+- Commands, environment, fixture, or broader-validation delta: Reran the two affected GraphQL E2E files together in the normal isolated Vitest environment. The command passed 2 files / 4 tests in 17.58 seconds. `git diff --check`, an explicit-child-override absence check, owner-scoped cleanup source check, and owned-runtime cleanup check passed. No browser rerun was required because production/browser behavior did not change.
+
+#### Prior Failure Resolution
+
+| Prior Scenario / Failure Reference | Previous Classification | Current Resolution | Evidence |
+| --- | --- | --- | --- |
+| `TR-002` / `QW-E2E-003` | `Local Fix`; blocking proportional review | `Resolved` | Fresh child environment contains no `QWEN_BASE_URL`; normal AppConfig startup loads the owned persisted `.env`; the three exact loopback requests still pass. `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/probes/api-e2e/server-e2e-api-rev-004.log` |
+| `TR-003` / `CUS-E2E-001` cleanup | `Local Fix`; blocking proportional review | `Resolved` | Post-delete catalog asserts no provider/model owner equals `deletedProviderId` and retains config absence without forbidding native/shared wire values. Same affected E2E log passed. |
+
+- Canonical artifacts and sections updated:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-execution-coverage-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-revision-record.md`
+- Prior result and confidence: API-REV-003 execution `Pass`, `96.4%`; CRR-008 proportional review `Fail` on `TR-002`/`TR-003`.
+- Current result and confidence: `Pass`, `96.4%`; numeric confidence is unchanged, but its direct persisted-route and cleanup assertions are now valid. Proportional re-review remains required.
+- New or remaining failure IDs: `None` in API/E2E execution; `TR-002`/`TR-003` await reviewer closure.
+- Recommended recipient: `code_reviewer` for proportional re-review; then `delivery_engineer` only after a pass.
+- Remaining risks, blocked evidence, or untested scope: Same bounded vendor residual risk as API-REV-003. No additional browser, Electron-shell, worker, or cross-platform execution was needed for test-only corrections.

@@ -12,12 +12,6 @@ export enum ModelMetadataProvenance {
 export type ResolvedMetadataSource =
   | { kind: 'live' }
   | {
-      kind: 'endpoint_profile';
-      profileId: string;
-      provenance: StaticModelMetadata['provenance'];
-      reference?: { provider: LLMProvider; value: string };
-    }
-  | {
       kind: 'inferred_builtin';
       provider: LLMProvider;
       value: string;

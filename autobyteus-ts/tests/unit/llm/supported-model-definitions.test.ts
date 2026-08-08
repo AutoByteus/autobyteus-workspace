@@ -307,6 +307,52 @@ describe('supportedModelDefinitions', () => {
     });
   });
 
+  it('defines the exact Qwen-served target values with unique cross-provider identifiers', () => {
+    const qwenDefinitions = supportedModelDefinitions.filter(
+      (definition) => definition.provider === LLMProvider.QWEN,
+    );
+    const byValue = new Map(qwenDefinitions.map((definition) => [definition.value, definition]));
+
+    expect(byValue.get('qwen3.8-max')).toMatchObject({
+      name: 'qwen3.8-max',
+      value: 'qwen3.8-max',
+      canonicalName: 'qwen3.8-max',
+      staticMetadata: {
+        maxContextTokens: 1_000_000,
+        maxInputTokens: null,
+        maxOutputTokens: null,
+      },
+    });
+    expect(byValue.get('deepseek-v4-pro')).toMatchObject({
+      value: 'deepseek-v4-pro',
+      modelIdentifierOverride: 'qwen:deepseek-v4-pro',
+      staticMetadata: { maxContextTokens: 1_000_000 },
+    });
+    expect(byValue.get('glm-5.2')).toMatchObject({
+      value: 'glm-5.2',
+      modelIdentifierOverride: 'qwen:glm-5.2',
+      staticMetadata: { maxContextTokens: 198_000 },
+    });
+    expect(qwenDefinitions.some((definition) => definition.value === 'qwen3.8-max-preview'))
+      .toBe(false);
+
+    const qwenDeepSeek = new LLMModel(byValue.get('deepseek-v4-pro')!);
+    const directDeepSeek = new LLMModel(supportedModelDefinitions.find(
+      (definition) => definition.provider === LLMProvider.DEEPSEEK
+        && definition.value === 'deepseek-v4-pro',
+    )!);
+    const qwenGlm = new LLMModel(byValue.get('glm-5.2')!);
+    const directGlm = new LLMModel(supportedModelDefinitions.find(
+      (definition) => definition.provider === LLMProvider.GLM
+        && definition.value === 'glm-5.2',
+    )!);
+
+    expect(qwenDeepSeek.value).toBe(directDeepSeek.value);
+    expect(qwenDeepSeek.modelIdentifier).not.toBe(directDeepSeek.modelIdentifier);
+    expect(qwenGlm.value).toBe(directGlm.value);
+    expect(qwenGlm.modelIdentifier).not.toBe(directGlm.modelIdentifier);
+  });
+
   it('removes MiniMax M2.7 and keeps built-in capability metadata on definitions', () => {
     const names = new Set(supportedModelDefinitions.map((model) => model.name));
     const values = new Set(supportedModelDefinitions.map((model) => model.value));

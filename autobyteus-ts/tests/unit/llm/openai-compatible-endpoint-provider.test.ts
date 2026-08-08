@@ -54,35 +54,34 @@ describe('OpenAICompatibleEndpointModelProvider', () => {
     ]);
   });
 
-  it('constructs custom models with resolved endpoint metadata before registry use', async () => {
+  it('constructs custom models with exact built-in metadata independent of endpoint URL', async () => {
     const provider = new OpenAICompatibleEndpointModelProvider();
     const report = await provider.reloadSavedEndpoints([{
-      endpoint: {
-        ...endpointA,
-        baseUrl: 'https://token-plan.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1',
-      },
-      discoveredModels: [discovered('qwen3.8-max-preview')],
+      endpoint: endpointA,
+      discoveredModels: [discovered('glm-5.2')],
     }]);
 
     expect(report.models[0]).toMatchObject({
-      maxContextTokens: 1_000_000,
-      maxInputTokens: null,
-      maxOutputTokens: null,
+      maxContextTokens: 198_000,
+      maxInputTokens: 1_000_000,
+      maxOutputTokens: 128_000,
       resolvedModelMetadata: {
         maxContextTokens: {
-          value: 1_000_000,
-          source: { kind: 'endpoint_profile' },
+          value: 198_000,
+          source: {
+            kind: 'inferred_builtin', provider: LLMProvider.QWEN, value: 'glm-5.2',
+          },
         },
       },
     });
 
     const info = report.models[0]?.toModelInfo();
     expect(info).toMatchObject({
-      max_context_tokens: 1_000_000,
+      max_context_tokens: 198_000,
       resolved_model_metadata: {
         maxContextTokens: {
-          value: 1_000_000,
-          source: { kind: 'endpoint_profile' },
+          value: 198_000,
+          source: { kind: 'inferred_builtin' },
         },
       },
     });
@@ -93,7 +92,7 @@ describe('OpenAICompatibleEndpointModelProvider', () => {
       new CompactionPolicy(),
     );
     expect(budget).toMatchObject({
-      effectiveContextCapacity: 1_000_000,
+      effectiveContextCapacity: 198_000,
       inputBudget: expect.any(Number),
       triggerThresholdTokens: expect.any(Number),
       overrideActive: false,

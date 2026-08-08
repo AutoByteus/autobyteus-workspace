@@ -134,3 +134,13 @@ export const GET_GEMINI_SETUP_CONFIG = gql`
     }
   }
 `
+
+export const GET_QWEN_SETUP_STATUS = gql`
+  query GetQwenSetupStatus {
+    qwenSetupStatus {
+      effectiveBaseUrl
+      endpointSource
+      apiKeyConfigured
+    }
+  }
+`

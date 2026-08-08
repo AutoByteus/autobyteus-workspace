@@ -5,126 +5,128 @@
 - Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/requirements.md`
 - Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/investigation-notes.md`
 - Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/design-spec.md`
-- Supplemental task artifacts: `None`
+- Supplemental task artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/qwen-native-provider-setup-ui-spec.md`
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/solution-revision-record.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/design-review-report.md`
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/architecture-review-revision-record.md`
-- Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-report.md`
-- Code review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-revision-record.md`
-- Triggering rework report, revision record, or evidence, when applicable: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/implementation-revision-record.md`
+- Triggering code review: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-report.md`
+- Code-review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-revision-record.md`
+- Triggering rework evidence: `CRR-006` / `CR-003`; `CR-002` is resolved, and code review otherwise passed the exact-only metadata, native Qwen runtime/catalog, durable pair command, sanitized errors, and setup projection. Earlier downstream evidence remains obsolete for `SR-010`/`SR-011`.
 
 ## Current Implementation Summary
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/implementation-revision-record.md`
-- Current implementation revision ID: `IR-003`
-- Related solution revision IDs: `SR-005`, `SR-006`, `SR-007`, `SR-008`
-- Related architecture-review revision IDs: `ARCH-REV-002`, `ARCH-REV-003`
-- Related code-review revision IDs: `CRR-001` (`CR-001` fixed; source re-review pending)
-- Related API/E2E revision IDs: `N/A`
-- Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `CR-001`
+- Current implementation revision ID: `IR-006`
+- Related solution revision IDs: `SR-010`, `SR-011`
+- Related architecture-review revision IDs: `ARCH-REV-004`, `ARCH-REV-005`
+- Related code-review revision IDs: `CRR-005`, `CRR-006`
+- Related API/E2E revision IDs: `N/A` — all prior execution evidence predates the material replacement.
+- Related delivery revision IDs: `N/A` — prior delivery evidence is obsolete for this implementation.
+- Triggering finding IDs: `CR-003` (`CR-002` remains resolved)
 
-The implementation now carries custom endpoint model limits from one existing `/models` response through normalized rows, exact endpoint/profile and fallback resolution, custom `LLMModel` construction, `ModelInfo`, server enrichment, and the existing runtime token-budget path. It also implements the newly approved exact Alibaba wire-alias profile for `deepseek-v4-flash-0731` -> `{ provider: DEEPSEEK, value: deepseek-v4-flash }`, refuses profile matching for non-empty query/hash URL variants, and preserves the truthful unknown-capacity state instead of suppressing the token context section.
+The current implementation cleanly removes the rejected custom endpoint-profile/URL/alias policy, retains only advertised metadata followed by exact built-in `value` fallback, adds native Qwen endpoint resolution and the three required Qwen-served model definitions, and adds one authoritative Qwen URL/key setup journey. The Qwen command probes first, retains the prior `SecretValue` only within command scope, saves the new key, atomically and synchronously commits `QWEN_BASE_URL`, compensates the key on URL failure, and exposes only the two approved sanitized failure codes. Query and successful mutation return the same Qwen-only `{ effectiveBaseUrl, endpointSource, apiKeyConfigured }` projection; the UI renders `DEFAULT|CONFIGURED` directly and contains no default-URL comparison. `IR-005` makes that committed mutation status final for the save lifecycle. `IR-006` completes the advertised recovery contract: Reload Models unconditionally reissues both the model catalog and provider-settings refresh, even after a failed provider-settings request cleared its fetched flag.
 
 ## Reviewed Behavior Implementation Trace
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
-| BEH-001 | Preserve valid discovered IDs while retaining recognized optional numeric metadata; malformed optional fields remain non-fatal. | `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-ts/src/llm/openai-compatible-endpoint-discovery.ts` (`normalizeOpenAICompatibleEndpointDiscoveredModels`, `probeEndpoint`) | Fixed alias allowlists, strict JSON-number validation, first-valid alias precedence, payload-order duplicate row merge, and existing timeout/credential/status behavior preserved. |
-| BEH-002 | Resolve custom model limits from exact endpoint/profile facts, then exact built-in identity fallback, while retaining source truth. | `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-ts/src/llm/metadata/openai-compatible-endpoint-model-metadata.ts`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-ts/src/llm/openai-compatible-endpoint-provider.ts`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-ts/src/llm/openai-compatible-endpoint-model.ts` | Exact canonical endpoint tuple plus model value gates profiles. The Alibaba Token Plan profiles supply documented Qwen plan facts and the explicit DeepSeek wire-alias reference; exact built-in fallback is per-field, lowest-valid, and marked inferred. |
-| BEH-003 | Make known custom capacity available to existing token budget/compaction code without provider-specific runtime branches. | `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-ts/src/llm/openai-compatible-endpoint-model.ts`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-ts/src/llm/models.ts` | Resolved numeric fields are populated before registry/runtime construction; `activeContextTokens`, token-budget precedence, compaction ratio, safety margin, and compaction implementation are unchanged. |
-| BEH-004 | Keep profile resolution bounded and exact; unknown models remain unknown rather than receiving a guessed default. | `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-ts/src/llm/metadata/openai-compatible-endpoint-model-metadata.ts` | No extra network request, documentation scraping, query-dependent identity, family/substring match, or global guessed default was added. Non-empty query/hash variants are explicitly non-profile-addressable and fall through to advertised/exact-value fallback/unknown. |
-| BEH-005 | Show latest prompt usage with an explicit unavailable-limit state and no fake denominator. | `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/components/workspace/usage/TokenUsageMeterPanel.vue`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/localization/messages/en/shell.ts`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/localization/messages/zh-CN/shell.ts` | Known capacity keeps the existing percentage/progress display; unknown capacity shows prompt count plus localized `context limit unavailable`. |
-| REQ-012 / AC-014 | Allow a differing provider wire ID to inherit built-in metadata only through an exact endpoint-scoped profile reference. | `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-ts/src/llm/metadata/openai-compatible-endpoint-model-metadata.ts`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-ts/tests/unit/llm/metadata/openai-compatible-endpoint-model-metadata.test.ts` | Alibaba `deepseek-v4-flash-0731` matches only the exact Token Plan endpoint profile and resolves through canonical DeepSeek `{provider, value}` provenance. The same wire ID on another endpoint remains unknown; no suffix, fuzzy, family, or cross-endpoint aliasing was added. |
-| REQ-006 / REQ-009 / AC-011 | Preserve the five-kind per-field source and non-secret provenance across model and server boundaries. | `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-ts/src/llm/metadata/model-metadata-resolver.ts`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-ts/src/llm/models.ts`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-server-ts/src/llm-management/services/model-metadata-provisioning-service.ts` | `ResolvedMetadataSource` distinguishes `live`, `endpoint_profile`, `inferred_builtin`, `static_definition`, and `unknown`; server returns the merged source-bearing resolution and coarse GraphQL provenance remains truthful. |
+| `BEH-001` | Preserve advertised optional numeric metadata and discovery resilience. | `autobyteus-ts/src/llm/openai-compatible-endpoint-discovery.ts` -> `openai-compatible-endpoint-provider.ts` -> exact resolver. | Existing normalization, duplicate handling, timeouts, authentication, and last-known-good behavior remain unchanged; advertised positive integers still win per field. |
+| `BEH-002` | Delete endpoint/region/plan profiles and aliases; use exact built-in `value` fallback only. | `autobyteus-ts/src/llm/metadata/openai-compatible-endpoint-model-metadata.ts`; `model-metadata-resolver.ts`; `openai-compatible-endpoint-provider.ts`. | Resolver input is only the discovered model. The index preserves every exact definition candidate, selects the lowest valid value independently per field with deterministic provenance, and returns unknown for case/suffix/other near matches. `endpoint_profile`, URL canonicalization, profile tables, references, and alias machinery are gone. |
+| `BEH-003` | Preserve resolved metadata through runtime, catalog, compaction, and known/unknown token presentation. | Core `LLMModel`/`ModelInfo` path retained; `autobyteus-server-ts/src/llm-management/services/model-metadata-provisioning-service.ts` uses the reduced source union; existing token-budget/Token Meter owners remain unchanged. | `live`, `inferred_builtin`, `static_definition`, and `unknown` remain truthful. Focused token-budget/compaction and known/unknown Token Meter regressions pass. |
+| `BEH-004` | Configure the native Qwen endpoint and key as one durable pair with bounded compensation. | `autobyteus-server-ts/src/llm-management/llm-providers/services/llm-provider-service.ts` -> secret vault + `AppConfig.setDurably`; GraphQL Qwen command/status -> web store/runtime. | Sequence is normalize -> probe -> prior status/secret snapshot -> new-key save -> strict URL commit -> shared status. URL failure restores the prior secret or removes a newly created one. Successful compensation returns `QWEN_CONFIGURATION_SAVE_FAILED_PREVIOUS_RESTORED`; compensation failure returns `QWEN_CONFIGURATION_REPAIR_REQUIRED`. The browser treats the returned status as committed success before separately refreshing provider views. Generic key-only Qwen saves are rejected. |
+| `BEH-005` | Add exact Qwen-served values and remove preview compatibility. | `autobyteus-ts/src/llm/qwen-supported-model-definitions.ts`; `supported-model-definitions.ts`. | Adds `qwen3.8-max` (1M), `deepseek-v4-pro` (1M), and `glm-5.2` (198k), with null input/output limits and source-dated provenance. Cross-provider collisions use only `qwen:deepseek-v4-pro` and `qwen:glm-5.2` identifier overrides; exact wire values remain unchanged. No preview alias exists. |
+| `BEH-006` | Preserve key-only installations on the historical default while distinguishing absent from explicitly configured state. | `autobyteus-ts/src/llm/qwen-provider-config.ts`; `QwenLLM`; server `getQwenSetupStatus`; GraphQL `QwenSetupStatus`; frontend store/form/reload actions. | Blank/absent `QWEN_BASE_URL` resolves to the historical default. `endpointSource` derives from normalized setting presence, so an explicitly configured URL equal to the default remains `CONFIGURED`. The browser does not embed or compare the default. If the post-save provider-settings refresh fails, Reload Models retries both provider settings and catalog and reports success only after both recover. |
 
 ## Key Files Or Areas
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-ts/src/llm/openai-compatible-endpoint-discovery.ts`: fixed advertised alias normalization and duplicate precedence.
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-ts/src/llm/metadata/openai-compatible-endpoint-model-metadata.ts`: canonical endpoint identity, explicit query/hash addressability guard, exact profiles including the Alibaba DeepSeek wire alias, fallback index, profile references, per-field precedence, and source provenance.
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-ts/src/llm/metadata/model-metadata-resolver.ts`: shared five-kind source union and ordinary built-in live/static/unknown resolution.
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-ts/src/llm/openai-compatible-endpoint-provider.ts` and `openai-compatible-endpoint-model.ts`: fresh custom model resolution and canonical field mapping.
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-ts/src/llm/models.ts`: mandatory non-secret `ModelInfo.resolved_model_metadata` projection.
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-server-ts/src/llm-management/services/model-metadata-provisioning-service.ts`: source-preserving server merge and coarse provenance mapping.
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/components/workspace/usage/TokenUsageMeterPanel.vue`: known/unknown context presentation.
+- `autobyteus-ts/src/llm/metadata/openai-compatible-endpoint-model-metadata.ts`: exact-only per-field custom metadata fallback.
+- `autobyteus-ts/src/llm/qwen-provider-config.ts` and `api/qwen-llm.ts`: single configured/default endpoint owner used at Qwen client construction.
+- `autobyteus-ts/src/llm/qwen-supported-model-definitions.ts`: cohesive Qwen catalog definitions, extracted so changed implementation sources remain below 500 effective lines.
+- `autobyteus-server-ts/src/config/environment-assignment-file.ts` and `app-config.ts`: shared assignment serialization plus strict same-directory temporary write, fsync, atomic rename, cleanup, and post-commit runtime update.
+- `autobyteus-server-ts/src/llm-management/llm-providers/services/llm-provider-service.ts`: authoritative Qwen status and pair command.
+- `autobyteus-server-ts/src/api/graphql/types/llm-provider.ts`: exact `QwenSetupStatus`, `QwenConfigurationInput`, query/mutation, and failure-code allowlist.
+- `autobyteus-web/components/settings/providerApiKey/QwenSetupForm.vue`, section runtime, Pinia store, GraphQL operations/generated types, and locales: server-owned status rendering and save journey.
+- `autobyteus-web/components/settings/providerApiKey/useProviderApiKeySectionRuntime.ts` and `stores/llmProviderConfig.ts`: committed save outcome and post-commit provider-view refresh are separate lifecycle stages; refresh failure is a warning, not a mutation failure; global and provider-specific Reload Models actions refresh both the catalog and Settings provider groups without relying on stale cache flags.
+- `autobyteus-web/components/settings/providerApiKey/ProviderModelBrowser.vue` and `ProviderAPIKeyManager.vue`: narrow-screen stacking/padding polish plus a visually distinct amber post-commit warning.
 
 ## Important Assumptions
 
-- Profile facts are deliberately source-dated and limited to exact endpoint tuples; they are not a universal provider catalog.
-- `SupportedModelDefinition.value` is the provider-wire identity for the separate exact fallback index. No `name`, `canonicalName`, display, case-folded, family, substring, or nearest match is consulted.
-- Existing custom-provider records remain directly usable because resolved metadata is derived at discovery/model construction and is not persisted.
-- The existing token-budget and compaction implementation is the authoritative runtime owner once canonical model fields are populated.
+- One native Qwen endpoint is active per installation, as approved.
+- `QWEN_BASE_URL` remains non-secret AppConfig state; `provider.qwen.api-key` remains secret-vault state.
+- Newly constructed Qwen runtimes are the activation boundary; in-flight clients are intentionally not mutated.
+- The existing secret-vault single-secret write is the authoritative key persistence operation. The Qwen service adds only command-local compensation and no generalized transaction abstraction.
+- Existing Qwen keys require no migration; absence of the new setting has an explicit default interpretation.
 
 ## Known Risks
 
-- Vendor profile documentation can change; profile updates require deliberate source/date review.
-- Exact built-in fallback is best effort and can differ from a custom plan. Endpoint-advertised and exact endpoint-profile fields remain higher precedence.
-- A repository-wide web TypeScript check is not clean on this base: it reports broad pre-existing missing Vue/generated Nuxt declarations and unrelated type errors. The affected component test and localization guards pass.
-- API/E2E, realistic synthetic endpoint, runtime compaction, catalog GraphQL, stale reload, secret-hygiene, and browser-level evidence remain downstream; source re-review is required before API/E2E starts.
+- API/E2E still needs to validate a real synthetic `/models` probe, actual persisted URL/key failure injection across the GraphQL boundary, restart behavior, and a Qwen request targeting the configured URL. These are not claimed by implementation-local checks.
+- Existing integration/E2E token-usage fixtures still contain `qwen3.8-max-preview` as an arbitrary historical custom-model string. The required downstream coverage investigation must decide whether those fixtures remain valid or should be updated/removed; they are not native Qwen definitions or compatibility aliases.
+- Repository-wide server and web typecheck commands are not clean on this base for unrelated configuration/baseline reasons noted below. Production builds compile successfully.
+- Vendor context metadata remains time-sensitive and should be revisited when Alibaba publishes definitive production `qwen3.8-max` material.
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: `Bug Fix / Behavior Change`
-- Reviewed root-cause classification: `Boundary Or Ownership Issue` plus `Missing Invariant`
-- Reviewed refactor decision: `No Refactor Needed` beyond the targeted endpoint metadata boundary extension
+- Reviewed change posture: `Behavior Change / Refactor`
+- Reviewed root-cause classification: `Boundary Or Ownership Issue` plus `Duplicated Policy Or Coordination`
+- Reviewed refactor decision: `Refactor Needed Now`
 - Implementation matched the reviewed assessment: `Yes`
 - If challenged, routed as `Design Impact`: `N/A`
-- Evidence / notes: Existing discovery, custom model lifecycle, built-in metadata owner, server provisioning owner, runtime budget owner, and token-meter owner were extended in place. No broad refactor, duplicate catalog, provider-specific runtime branch, or server null-clearing redesign was introduced.
+- Evidence / notes: Alibaba route policy was removed from the generic custom resolver. Qwen runtime endpoint ownership now lives in one core resolver, pair sequencing in `LlmProviderService`, strict non-secret persistence in `AppConfig`, and user-visible state in a Qwen-only projection/form. No caller above these boundaries coordinates their internals directly.
 
 ## Legacy / Compatibility Removal Check
 
 - Backward-compatibility mechanisms introduced: `None`
 - Legacy old-behavior retained in scope: `No`
-- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes` — no superseded custom metadata path existed; identifier-only row projection was replaced in place.
-- Shared structures remain tight: `Yes`
-- Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`
-- Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`
-- Notes: The pure resolver is 258 effective non-empty lines and remains a single owned metadata policy boundary; no changed source file exceeds 500 effective non-empty lines.
+- Dead/obsolete code, obsolete files, unused helpers/tests/flags/adapters, and dormant replaced paths removed in scope: `Yes` — endpoint profiles, URL/region/plan identity, `endpoint_profile`, reference/alias handling, and the preview definition path were removed rather than preserved.
+- Shared structures remain tight: `Yes` — only Qwen receives its three-field setup projection; no general offering/producer/deployment/route fields or generalized transaction were added.
+- Canonical shared design guidance was reapplied: `Yes`
+- Changed source implementation files stayed within proactive size-pressure guardrails: `Yes` — `supported-model-definitions.ts` was split by extracting the cohesive Qwen definition owner; the largest changed effective counts are `AppConfig` 496, supported definitions 479, provider service 474, GraphQL resolver 417, and frontend runtime 401.
+- Notes: `environment-assignment-file.ts` owns the reusable file serialization/replacement concern; `AppConfig` remains the authoritative setting boundary.
 
 ## Persisted Data Transition Check (When Applicable)
 
-- Approved decision: `Not Affected`
-- Design-spec decision reference: `design-spec.md`, “Persisted Data / State Transition Decision”
+- Approved decision: `Directly Usable — No Migration`
+- Design-spec decision reference: “Persisted Data / State Transition Decision” and the Qwen configuration contract.
 - Implementation follows the approved decision without an unapproved migration or version-specific runtime fallback: `Yes`
-- Direct-use evidence or discard/rebuild result, when applicable: Custom-provider records continue to store only provider identity/name/type/base URL and separate secret references; resolved metadata is recomputed from discovery/profile/fallback inputs.
-- Migration implementation and focused checks, only when `Migration Required`: `N/A`
+- Direct-use evidence: Existing `provider.qwen.api-key` lookup is unchanged. Missing/blank `QWEN_BASE_URL` is handled by the normal core resolver as `DEFAULT`; no stored record shape changes.
+- Migration implementation: `N/A`
 - Deviation from the reviewed transition decision: `None`
 
 ## Environment Or Dependency Notes
 
-- Validation used the repository's existing TypeScript, Vitest, Nuxt, and localization tooling. Temporary dependency symlinks and generated Nuxt output were removed from the task worktree after checks.
-- The source build check for `autobyteus-server-ts` used the current task-worktree `autobyteus-ts` declarations so the cross-package `ModelInfo` contract was checked against this implementation.
+- GraphQL types were regenerated from a locally built server schema; the schema exposes exact `QwenConfigurationInput`, `QwenSetupStatus`, and `QwenEndpointSource` names.
+- Browser self-validation used the repository Nuxt development renderer, a locally built server with isolated temporary app data/SQLite storage, and local Playwright/Chrome. Mutation outcomes were intercepted with sanitized GraphQL fixtures so no real provider credential or configuration was written.
+- No new package dependency was added.
 
 ## Local Implementation Checks Run
 
-- `autobyteus-ts`: `tsc -p tsconfig.build.json --noEmit` — passed.
-- `autobyteus-ts` focused unit tests — 25 tests passed across discovery, metadata resolver (including the exact Alibaba DeepSeek wire-alias, cross-endpoint unknown, and query/fragment non-profile-addressable cases), ordinary metadata resolver, custom endpoint provider, and model projection suites.
-- `autobyteus-server-ts`: `tsc -p tsconfig.build.json --noEmit` — passed.
-- `autobyteus-server-ts/tests/unit/llm-management/model-metadata-provisioning-service.test.ts` — 9 tests passed, including source/value preservation.
-- `autobyteus-web`: `nuxt prepare` — passed; `TokenUsageMeterPanel.spec.ts` — 9 tests passed, including unknown-capacity rendering; `guard-localization-boundary`, `audit-localization-literals`, and `guard-web-boundary` — passed.
-- `git diff --check` — passed.
-- A repository-wide `autobyteus-web` `tsc -p tsconfig.json --noEmit` was attempted but is not a clean implementation check on this base because it reports broad pre-existing missing generated Nuxt/Vue declarations and unrelated type errors; it is not claimed as passed.
+- `autobyteus-ts`: focused metadata/Qwen/catalog/provider unit tests — `25 passed`; token-budget/compaction preservation tests — `8 passed`; `pnpm build` — passed.
+- `autobyteus-server-ts`: focused AppConfig/Qwen service/GraphQL/provisioning unit tests — `63 passed`; `pnpm build` — passed, including shared-package build, Prisma generation, TypeScript build, and sanitized built-module/bootstrap smoke.
+- `autobyteus-web`: current Qwen form/manager/runtime/Apollo-contract plus provider-store tests — `5 files / 32 tests passed`, including the full successful-mutation -> failed provider-settings refresh -> actual Reload Models -> recovered provider settings/catalog/view regression; Token Meter preservation tests from IR-004 — `9 passed`; web boundary, localization boundary, and localization literal audit — passed; GraphQL code generation from IR-004 — passed; current production `pnpm build` — passed.
+- `git diff --check` — passed; forbidden endpoint-profile/alias identifiers are absent from changed production paths.
+- `autobyteus-server-ts pnpm typecheck` — attempted, not passed: the repository `tsconfig.json` includes `tests` while `rootDir` is `src`, producing broad pre-existing `TS6059` errors. The production build/typecheck path passes.
+- `autobyteus-web NODE_OPTIONS=--max-old-space-size=8192 pnpm exec nuxi typecheck` — attempted, not passed: it reports thousands of broad pre-existing generated/Electron/resource/test type errors and missing optional Apollo declaration packages; no changed Qwen component/store/runtime file was named. The focused suites and production build pass.
 
 ## Frontend Rendered-Result Check (When Applicable)
 
-- Affected surfaces / journeys: workspace Token Meter, known-capacity context progress state, and usage-known/context-capacity-unknown state.
-- Approved UI/UX, interaction, requirement, or design references: `BEH-005`, `REQ-007`, `AC-005`, `AC-006`, and the unknown-capacity guidance in `design-spec.md`.
-- Existing design system, shared components, and adjacent product surfaces reviewed: Existing `TokenUsageMeterPanel.vue` card, Tailwind classes, existing token formatter, and existing English/Chinese shell catalogs.
-- Project development / preview instructions and rendered surface used: `nuxt prepare` plus the repository-supported Vitest Vue renderer for `TokenUsageMeterPanel.spec.ts`.
-- States, layouts, viewports, and interactions inspected: Existing known-capacity meter remains covered; unknown-capacity state was mounted with `latestPromptTokens=67,772`, null capacity/percentage, and the calculation-details control remained part of the normal panel.
-- Visual or interaction issues found and corrected: Replaced silent omission with an inline unavailable-limit message while omitting the progress bar and denominator; preserved known-capacity layout and card hierarchy.
-- Supporting evidence and remaining unverified states or limitations: 9 component tests passed. A full browser preview and responsive desktop inspection were not run because this backend/metadata task has no active preview session; browser-level validation remains downstream.
+- Affected surfaces / journeys: Settings > API Keys > Qwen; default/key-only state, validation, show/hide, previous-restored failure, repair-required failure, successful configured state, and responsive reachability.
+- Approved references: `qwen-native-provider-setup-ui-spec.md`, `REQ-005`, `REQ-006`, `REQ-008`, `REQ-010`–`REQ-012`, and `AC-007`, `AC-008`, `AC-011`–`AC-014`.
+- Existing design system / adjacent surfaces reviewed: `ProviderAPIKeyManager`, `ProviderModelBrowser`, generic key editor, Gemini setup form, existing Tailwind/card/badge/notification language, and localization structure.
+- Rendered surface used: repository Nuxt dev renderer at `/settings` with the locally built server schema/catalog/status and Chrome via Playwright.
+- States and interactions inspected: 1440x1000 desktop and 390x844 narrow viewport; server-supplied default endpoint badge; masked key and keyboard-focusable visibility control; invalid absolute URL message and disabled save; duplicate-submit disabled state; previous-restored message with inputs preserved; repair-required message without prior-active claim; successful configured badge with key cleared and effective URL retained; post-commit provider-settings rejection with the key still cleared, configured status retained, no save-error panel, amber warning, and visible Reload Models retry; actual top-level retry issuing both GraphQL refreshes, restoring the configured Qwen provider row and model, and showing success; zero horizontal overflow; narrow layout stacked with the form reachable by vertical scroll.
+- Visual/interaction fixes made during inspection: added blur-triggered inline validation, changed the visibility icon to statically discoverable icon classes, stacked the provider browser/narrowed manager padding for small screens, and added an amber warning treatment for the separate post-commit refresh failure.
+- Supporting evidence: `/tmp/qwen-settings-selected.png`, `/tmp/qwen-settings-repair.png`, `/tmp/qwen-settings-success.png`, `/tmp/qwen-settings-mobile-form.png`, `/tmp/qwen-settings-postcommit-refresh-warning-ir006.png`, and `/tmp/qwen-settings-refresh-retry-recovered.png` from the local implementation sessions. These temporary screenshots support self-validation only and are not durable API/E2E sign-off.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
-- Verify every fixed advertised alias and invalid type, including nested/unrelated aliases, duplicate rows, and independent per-field fall-through.
-- Verify exact Alibaba Token Plan `qwen3.8-max-preview` and `qwen3.7-max` profile values, exact `deepseek-v4-flash-0731` wire-alias reference, exact canonical protocol/host/port/path matches, and host/path/protocol/port/query near-misses. Query-only and fragment-bearing URLs must miss profiles.
-- Verify exact built-in fallback from any provider, duplicate exact-value candidates, lowest-valid per-field selection, deterministic tie provenance, unmatched unknown behavior, and that the DeepSeek wire ID remains unknown without the exact alias profile.
-- Verify `LLMModel.toModelInfo()` and server `EnrichedModelInfo` retain every source/provenance kind and map GraphQL coarse provenance truthfully.
-- Verify fresh model construction, stale last-known-good preservation, existing token-budget/compaction thresholds, explicit override behavior, discovery failure resilience, and secret/raw-payload hygiene.
-- Verify known and unknown token-meter states in browser-equivalent rendering and supported locales.
+- Exact resolver: advertised-over-fallback precedence, duplicate exact candidates with independent lowest-valid fields/provenance, case/suffix near matches unknown, and no endpoint URL influence.
+- Catalog/runtime: exact Qwen values and identifier uniqueness; preview absent; default versus configured Qwen client construction; configured call uses the Qwen secret and saved URL.
+- Strict AppConfig: existing mode/line endings, exclusive sibling temp, full write/fsync/rename, pre-rename cleanup, no runtime mutation on failure, and sensitive/pre-initialize guards.
+- Pair command: probe failure and key-write failure leave URL untouched; prior-key restoration; no-prior-key removal; repair-required double failure; no causes/secrets/raw payloads in GraphQL/logs.
+- Setup projection/UI: explicitly configured default-equal URL remains `CONFIGURED`; query and successful mutation are identical projections; only approved failure codes receive specialized UI claims; a rejected post-commit provider-data refresh must preserve successful form reset and show only the retry warning; both visible Reload Models paths must reissue provider settings plus catalog refresh before reporting recovery success.
+- Coverage inventory: review historical preview-string integration/E2E fixtures rather than treating prior SR-009 execution evidence as current.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-`api_e2e_engineer` must first produce the required coverage investigation artifact. API/E2E and broader executable validation have not been run or signed off in this implementation handoff. Source review must pass before that downstream work proceeds; any repository-resident durable coverage added, updated, or removed later must return through `code_reviewer` before delivery.
+`api_e2e_engineer` must first produce the mandatory coverage investigation artifact against this current implementation. API/E2E, broader executable checks, and independent browser/system evidence have not been signed off here. Any repository-resident durable coverage added, updated, or removed downstream must return through `code_reviewer` before delivery.

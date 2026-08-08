@@ -25,7 +25,8 @@ under the same provider-centered model contract.
   - optional `host_url` and `config_schema`
   - `multimodalCapabilities` with explicit `supported`, `unsupported`, or
     `unknown` states for image, audio, and video input
-  - `resolvedModelMetadata` with per-field numeric provenance
+  - `resolvedModelMetadata` with per-field numeric provenance (`live`,
+    `inferred_builtin`, `static_definition`, or `unknown`)
 - **`LLMFactory`** (`src/llm/llm-factory.ts`): registry, discovery, reload
   logic, and custom OpenAI-compatible provider sync.
 
@@ -96,6 +97,15 @@ Two OpenAI-style paths coexist:
 
 Custom providers keep `provider_type = OPENAI_COMPATIBLE` while each saved
 provider gets its own `provider_id` and `provider_name`.
+
+Custom `/models` discovery extracts normalized IDs and a bounded allowlist of
+positive integer context/input/output aliases. Model metadata is resolved per
+field in this order: endpoint-advertised value (`live`), exact
+`SupportedModelDefinition.value` as an explicitly inferred fallback
+(`inferred_builtin`), then `unknown`. The resolver never receives the custom
+endpoint URL and does not use wire aliases, suffix, family, case-insensitive,
+display-name, or nearest-model matching. API keys and raw discovery payloads
+remain outside model info and persisted custom-provider metadata.
 
 ### 3.3 Factory Config Composition
 
@@ -187,9 +197,11 @@ definition's colocated `staticMetadata`, then registers the resulting
 `LLMModel` objects. Static metadata is defined by
 `src/llm/supported-model-static-metadata.ts` and includes numeric limits,
 multimodal capabilities, source URL, and verification date. The resolver keeps
-field-level provenance (`live`, `static_definition`, or `unknown`); it does not
-resolve `activeContextTokens`, which remains dynamic runtime state. There is no
-second `curated-model-metadata.ts` authority.
+field-level provenance (`live`, `static_definition`, or `unknown`) for built-in
+definitions; custom endpoint models additionally use `inferred_builtin`.
+Neither resolver resolves `activeContextTokens`,
+which remains dynamic runtime state. There is no second
+`curated-model-metadata.ts` authority.
 
 ### 6.1 Media input and failed-request recovery
 
@@ -288,6 +300,10 @@ models, see `docs/provider_model_catalogs.md`.
 - Custom-provider sync probes each saved provider independently, returns
   per-provider status, and preserves last-known-good models for providers that
   fail after a previously successful load (`STALE_ERROR`).
+
+The exact-value custom metadata resolver is owned by
+`src/llm/metadata/openai-compatible-endpoint-model-metadata.ts`. Provider route
+and plan facts do not belong in custom metadata resolution.
 
 This prevents one broken custom endpoint from wiping healthy custom providers.
 

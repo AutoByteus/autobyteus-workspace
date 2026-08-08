@@ -37,6 +37,19 @@ export type CustomLlmProviderDraftInput = {
   apiKey: string;
 };
 
+export type QwenEndpointSource = 'DEFAULT' | 'CONFIGURED';
+
+export type QwenSetupStatus = {
+  effectiveBaseUrl: string;
+  endpointSource: QwenEndpointSource;
+  apiKeyConfigured: boolean;
+};
+
+export type QwenConfigurationInput = {
+  baseUrl: string;
+  apiKey: string;
+};
+
 export type CustomLlmProviderProbeModel = {
   id: string;
   name: string;

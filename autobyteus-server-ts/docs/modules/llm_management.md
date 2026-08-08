@@ -121,6 +121,14 @@ Runtime-specific catalogs should preserve it when their authoritative discovery
 source provides it, while callers must continue to support name-only rows.
 `modelIdentifier` remains the executable and persisted selection value.
 
+For custom OpenAI-compatible models, the numeric context/input/output fields
+and their non-secret resolution state are carried from `autobyteus-ts` model
+metadata. Endpoint-advertised values are `LIVE`; exact built-in-value fallbacks
+are exposed as the coarse `CURATED_FALLBACK` provenance; unmatched fields
+remain nullable and `CURATED_ONLY`. The GraphQL contract intentionally does not
+expose raw `/models` payloads or API keys. Custom resolution never inspects the
+endpoint URL and does not perform alias, suffix, family, or fuzzy matching.
+
 ### Claude Agent SDK Model Descriptions
 
 The Claude Agent SDK catalog reads the live `supportedModels()` response and

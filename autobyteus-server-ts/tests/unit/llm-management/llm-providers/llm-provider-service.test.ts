@@ -1,6 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { LLMProvider } from 'autobyteus-ts/llm/providers.js';
-import { LlmProviderService } from '../../../../src/llm-management/llm-providers/services/llm-provider-service.js';
+import { DEFAULT_QWEN_BASE_URL, SecretValue } from 'autobyteus-ts';
+import {
+  LlmProviderService,
+  QWEN_CONFIGURATION_REPAIR_REQUIRED,
+  QWEN_CONFIGURATION_SAVE_FAILED_PREVIOUS_RESTORED,
+} from '../../../../src/llm-management/llm-providers/services/llm-provider-service.js';
 
 describe('LlmProviderService', () => {
   const builtInCatalog = {
@@ -32,6 +37,7 @@ describe('LlmProviderService', () => {
     saveForConsumer: vi.fn(),
     removeForConsumer: vi.fn(),
     getStatusForConsumer: vi.fn(),
+    resolveForUse: vi.fn(),
   };
   const secretVaultRuntime = {
     requireService: vi.fn(() => secretManagement),
@@ -41,6 +47,14 @@ describe('LlmProviderService', () => {
     getSetupStatus: vi.fn(),
     saveOptionConfiguration: vi.fn(),
     activateOption: vi.fn(),
+  };
+  let configuredQwenBaseUrl: string | undefined;
+  const appConfig = {
+    get: vi.fn(() => configuredQwenBaseUrl),
+    setDurably: vi.fn((_key: string, value: string) => {
+      configuredQwenBaseUrl = value;
+      return { persisted: true as const };
+    }),
   };
 
   const openAiProvider = {
@@ -72,10 +86,17 @@ describe('LlmProviderService', () => {
     discovery as any,
     secretVaultRuntime as any,
     geminiConfigurationService as any,
+    appConfig as any,
   );
 
   beforeEach(() => {
     vi.clearAllMocks();
+    configuredQwenBaseUrl = undefined;
+    appConfig.get.mockImplementation(() => configuredQwenBaseUrl);
+    appConfig.setDurably.mockImplementation((_key: string, value: string) => {
+      configuredQwenBaseUrl = value;
+      return { persisted: true as const };
+    });
     builtInCatalog.listProviders.mockReturnValue([openAiProvider, geminiProvider]);
     builtInCatalog.isBuiltInProviderId.mockImplementation(
       (providerId: string) => ['OPENAI', 'GEMINI', 'AUTOBYTEUS'].includes(providerId),
@@ -101,6 +122,7 @@ describe('LlmProviderService', () => {
     secretManagement.removeForConsumer.mockResolvedValue(undefined);
     secretVaultRuntime.getHealth.mockResolvedValue({ state: 'READY', instructionCode: null });
     secretManagement.getStatusForConsumer.mockResolvedValue('MISSING');
+    secretManagement.resolveForUse.mockResolvedValue(SecretValue.fromString('previous-key'));
     geminiConfigurationService.getSetupStatus.mockResolvedValue({
       activeMode: null,
       selection: { kind: 'unconfigured' },
@@ -321,6 +343,123 @@ describe('LlmProviderService', () => {
     await createService().setProviderApiKey('AUTOBYTEUS', 'synthetic-key');
     expect(modelCatalogService.invalidateAutobyteusRemoteDiscoveryAfterCredentialReplacement)
       .toHaveBeenCalledOnce();
+  });
+
+  it('rejects the obsolete key-only Qwen save path', async () => {
+    builtInCatalog.isBuiltInProviderId.mockReturnValue(true);
+    await expect(createService().setProviderApiKey('QWEN', 'synthetic-key'))
+      .rejects.toThrow('saveQwenConfiguration');
+    expect(secretManagement.saveForConsumer).not.toHaveBeenCalled();
+  });
+
+  it('projects Qwen default/configured source from setting presence rather than URL equality', async () => {
+    secretManagement.getStatusForConsumer.mockResolvedValue('CONFIGURED');
+    const service = createService();
+
+    await expect(service.getQwenSetupStatus()).resolves.toEqual({
+      effectiveBaseUrl: DEFAULT_QWEN_BASE_URL,
+      endpointSource: 'DEFAULT',
+      apiKeyConfigured: true,
+    });
+
+    configuredQwenBaseUrl = `  ${DEFAULT_QWEN_BASE_URL}  `;
+    await expect(service.getQwenSetupStatus()).resolves.toEqual({
+      effectiveBaseUrl: DEFAULT_QWEN_BASE_URL,
+      endpointSource: 'CONFIGURED',
+      apiKeyConfigured: true,
+    });
+  });
+
+  it('probes, snapshots, saves the key, durably commits the URL, then returns configured status', async () => {
+    secretManagement.getStatusForConsumer.mockResolvedValue('CONFIGURED');
+
+    const result = await createService().saveQwenConfiguration({
+      baseUrl: ' https://regional.example.com/compatible-mode/v1/ ',
+      apiKey: ' new-key ',
+    });
+
+    expect(result).toEqual({
+      effectiveBaseUrl: 'https://regional.example.com/compatible-mode/v1',
+      endpointSource: 'CONFIGURED',
+      apiKeyConfigured: true,
+    });
+    expect(discovery.probeEndpoint).toHaveBeenCalledWith({
+      baseUrl: 'https://regional.example.com/compatible-mode/v1',
+      apiKey: 'new-key',
+    });
+    expect(secretManagement.resolveForUse).toHaveBeenCalledWith({
+      kind: 'llm', providerId: 'QWEN', credentialSlot: 'apiKey',
+    });
+    expect(secretManagement.saveForConsumer).toHaveBeenCalledWith({
+      consumer: { kind: 'llm', providerId: 'QWEN', credentialSlot: 'apiKey' },
+      value: expect.any(SecretValue),
+    });
+    expect(appConfig.setDurably).toHaveBeenCalledWith(
+      'QWEN_BASE_URL',
+      'https://regional.example.com/compatible-mode/v1',
+    );
+    expect(discovery.probeEndpoint.mock.invocationCallOrder[0])
+      .toBeLessThan(secretManagement.getStatusForConsumer.mock.invocationCallOrder[0]!);
+    expect(secretManagement.saveForConsumer.mock.invocationCallOrder[0])
+      .toBeLessThan(appConfig.setDurably.mock.invocationCallOrder[0]!);
+  });
+
+  it('writes nothing when Qwen probe fails and does not touch the URL when the new key fails', async () => {
+    discovery.probeEndpoint.mockRejectedValueOnce(new Error('Model discovery failed with status 401.'));
+    await expect(createService().saveQwenConfiguration({
+      baseUrl: 'https://regional.example.com/v1', apiKey: 'bad-key',
+    })).rejects.toThrow('status 401');
+    expect(secretManagement.getStatusForConsumer).not.toHaveBeenCalled();
+    expect(secretManagement.saveForConsumer).not.toHaveBeenCalled();
+    expect(appConfig.setDurably).not.toHaveBeenCalled();
+
+    discovery.probeEndpoint.mockResolvedValueOnce([]);
+    secretManagement.saveForConsumer.mockRejectedValueOnce(new Error('synthetic vault failure'));
+    await expect(createService().saveQwenConfiguration({
+      baseUrl: 'https://regional.example.com/v1', apiKey: 'new-key',
+    })).rejects.toThrow('previous configuration is still active');
+    expect(appConfig.setDurably).not.toHaveBeenCalled();
+  });
+
+  it('restores the previous key when durable URL persistence fails', async () => {
+    secretManagement.getStatusForConsumer.mockResolvedValue('CONFIGURED');
+    appConfig.setDurably.mockImplementationOnce(() => {
+      throw new Error('synthetic durable failure');
+    });
+
+    await expect(createService().saveQwenConfiguration({
+      baseUrl: 'https://regional.example.com/v1', apiKey: 'new-key',
+    })).rejects.toMatchObject({
+      code: QWEN_CONFIGURATION_SAVE_FAILED_PREVIOUS_RESTORED,
+    });
+
+    expect(secretManagement.saveForConsumer).toHaveBeenCalledTimes(2);
+    const restored = secretManagement.saveForConsumer.mock.calls[1]?.[0].value as SecretValue;
+    expect(restored.revealToTrustedConsumer()).toBe('previous-key');
+    expect(secretManagement.removeForConsumer).not.toHaveBeenCalled();
+    expect(configuredQwenBaseUrl).toBeUndefined();
+  });
+
+  it('removes a newly created key when no previous key existed and reports repair-required on compensation failure', async () => {
+    appConfig.setDurably.mockImplementation(() => {
+      throw new Error('synthetic durable failure');
+    });
+
+    await expect(createService().saveQwenConfiguration({
+      baseUrl: 'https://regional.example.com/v1', apiKey: 'new-key',
+    })).rejects.toMatchObject({
+      code: QWEN_CONFIGURATION_SAVE_FAILED_PREVIOUS_RESTORED,
+    });
+    expect(secretManagement.removeForConsumer).toHaveBeenCalledWith({
+      kind: 'llm', providerId: 'QWEN', credentialSlot: 'apiKey',
+    });
+
+    secretManagement.removeForConsumer.mockRejectedValueOnce(
+      new Error('synthetic compensation failure'),
+    );
+    await expect(createService().saveQwenConfiguration({
+      baseUrl: 'https://regional.example.com/v1', apiKey: 'another-key',
+    })).rejects.toMatchObject({ code: QWEN_CONFIGURATION_REPAIR_REQUIRED });
   });
 
   it('returns the actual Gemini state and invalidates optional metadata after commands', async () => {

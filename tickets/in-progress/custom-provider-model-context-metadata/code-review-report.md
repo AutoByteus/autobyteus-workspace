@@ -6,187 +6,203 @@
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/requirements.md`
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/investigation-notes.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/design-spec.md`
-- Supplemental Task Artifacts Reviewed As Context: `None`
+- Supplemental Task Artifacts Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/qwen-native-provider-setup-ui-spec.md`
 - Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/solution-revision-record.md`
-- Relevant Solution Revision IDs: `SR-005`–`SR-008`
+- Relevant Solution Revision IDs: `SR-010`, `SR-011`; earlier revisions are historical context
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/design-review-report.md`
-- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/architecture-review-revision-record.md`
-- Relevant Architecture Review Revision IDs: `ARCH-REV-002`, `ARCH-REV-003`
+- Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/architecture-review-revision-record.md`
+- Relevant Architecture Review Revision IDs: `ARCH-REV-004`, `ARCH-REV-005`
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/implementation-revision-record.md`
-- Relevant Implementation Revision IDs: `IR-001`–`IR-003`
+- Relevant Implementation Revision IDs: `IR-004`–`IR-006`; `IR-001`–`IR-003` are superseded
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-002`
-- Current Review Round: `2`
-- Trigger: IR-003 rework at commit `e66b13c19` after CRR-001 finding `CR-001`
-- Prior Review Round Reviewed: `CRR-001` — `Fail`, `CR-001`
-- Latest Authoritative Round: `ARCH-REV-003`
-- Coverage Investigation Reviewed: `N/A` — API/E2E has not started
-- Execution Coverage Report Reviewed: `N/A` — API/E2E has not started
-- API/E2E Revision Record Reviewed: `N/A`
-- Relevant API/E2E Revision IDs: `N/A`
-- Delivery Revision Record Reviewed: `N/A`
-- Relevant Delivery Revision IDs: `N/A`
+- Current Code Review Revision ID: `CRR-007`
+- Current Review Round: `5`
+- Trigger: `implementation_engineer` handoff of `IR-006` after `CRR-006` / `CR-003`
+- Prior Review Round Reviewed: `CRR-006`
+- Latest Authoritative Round: `CRR-007`
+- Coverage Investigation / Execution Coverage / API-E2E Revision Record: N/A; current API/E2E investigation has not started
+- Relevant API/E2E Revision IDs: N/A; prior API/E2E evidence is superseded
+- Delivery Revision Record / IDs: N/A; prior delivery evidence is superseded
+- Failing Scenario IDs / Commands / Evidence Paths: N/A
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: Full implementation range `d5618bffd..e66b13c19`, with focused re-review of `b8f1dce50..e66b13c19` and the CR-001 resolution.
-- Files / areas reviewed: Endpoint metadata parser/resolver and regressions; prior discovery normalization, exact profile/reference/fallback resolution, custom model construction and reload behavior, `ModelInfo`/server propagation, GraphQL projection, token-budget/UI path, localization, and the cumulative implementation artifacts.
-- Explicit exclusions: API/E2E coverage investigation and execution, browser-level validation, delivery documentation sync, and the repository-wide web TypeScript check already documented as pre-existing/non-clean in IR-003.
+- Changed implementation and behavior reviewed: `IR-006` strengthening of global/provider-specific model reload so both catalog and canonical provider settings refresh unconditionally after the reload mutation; AutoByteus key-save deduplication; full post-Qwen-save failure/retry regression. Unaffected `IR-004`/`IR-005` findings and checks were retained after bounded revalidation.
+- Files / areas reviewed: `autobyteus-web/stores/llmProviderConfig.ts`; production callers in `useProviderApiKeySectionRuntime.ts`; `providerSettingsApolloContract.spec.ts`; `llmProviderConfigStore.test.ts`; current cumulative artifacts and prior `CR-002`/`CR-003` evidence.
+- Explicit exclusions: superseded endpoint-profile API/E2E/delivery results; documented repository-wide typecheck baselines; vendor-fact freshness beyond approved source-dated values; downstream API/E2E/system/browser sign-off.
+- Independent checks: focused web Vitest `5 files / 32 tests` passed; `git diff --check` passed. Prior independently verified core `25/25` and server `63/63` results remain applicable to unaffected source.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: `Confirmed` for advertised -> exact endpoint profile/reference -> exact built-in inferred fallback -> unknown precedence, five-kind source propagation, the endpoint-scoped Alibaba wire alias, stale/error preservation, runtime reuse, and truthful unknown-capacity UI.
-- Design-spec behavior map verified against the implementation: `Confirmed`. The IR-003 parser retains canonical protocol/hostname/port/base-path identity plus an internal profile-addressability bit; resolver profile lookup is gated on no non-empty URL search/hash, while live and exact fallback behavior remains unchanged.
-- Design review report and round confirmed: `Confirmed` through `ARCH-REV-003`; prior architecture findings remain resolved and the implementation handoff explicitly records the IR-003 guard and tests.
+- Approved requirements basis understood: `SR-010` removes endpoint/profile/alias policy and moves Alibaba routing/model facts to native Qwen. `SR-011` requires a truthful durable pair commit and server-owned `DEFAULT|CONFIGURED` status. `UXJ-001` requires successful save to clear plaintext and refresh provider settings/models.
+- Design-spec behavior map verified against the implementation: Confirmed across `DS-001`–`DS-004` and `LS-001`. `IR-005` preserves authoritative save success; `IR-006` completes the exposed recovery path through both required provider-data owners.
+- Design review report and round confirmed: `ARCH-REV-005` `Pass`; `PREM-QWEN-001` remains applicable and proportionately implemented.
 - Behavior-basis status: `Confirmed`
-- Changed or newly discovered behavior, if any: No new behavior. CR-001's previously identified query/fragment profile-match defect is resolved by the approved non-profile-addressable rule.
-- Remaining material ambiguity, if any: None for source review. API/E2E and realistic runtime evidence remain downstream validation, not an implementation-source ambiguity.
+- Changed or newly discovered behavior, if any: None.
+- Remaining material ambiguity, if any: None.
 
-| Behavior ID | Current Status (`Confirmed`/`Contradicted`/`Unclear`/`Newly Discovered`) | Current Implementation Path And Lifecycle Evidence | Contradicting Or Newly Discovered Supported Behavior Evidence (Only When Applicable) |
+| Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Evidence |
 | --- | --- | --- | --- |
-| `BEH-001` | `Confirmed` | Discovery normalization retains recognized optional numeric fields, fixed alias precedence, duplicate-row merging, and existing discovery error behavior in `autobyteus-ts/src/llm/openai-compatible-endpoint-discovery.ts`; downstream consumers receive normalized rows. | None. |
-| `BEH-002` | `Confirmed` | `OpenAICompatibleEndpointModelProvider` passes each saved endpoint URL and discovered row to the pure resolver; `openai-compatible-endpoint-model-metadata.ts:283-297` applies advertised, exact profile/reference, per-field fallback, and unknown precedence. | None. |
-| `BEH-003` | `Confirmed` | Resolved numeric fields are supplied during fresh custom model construction, mapped into `LLMModel`, and consumed by the existing token-budget/compaction path without provider-specific runtime branches. | None. |
-| `BEH-004` | `Confirmed` | `openai-compatible-endpoint-model-metadata.ts:139-170` parses the URL while retaining `profileAddressable`; `:283-289` refuses profiles for non-empty search/hash, and `:290-297` preserves advertised/fallback/unknown resolution. | None. |
-| `BEH-005` | `Confirmed` | `TokenUsageMeterPanel.vue` keeps the known-capacity meter and renders an explicit unavailable-limit state when capacity is unknown; localized guards/component tests are recorded in IR-003. | None. |
-| `REQ-012` / `AC-014` | `Confirmed` | The exact Alibaba profile maps `deepseek-v4-flash-0731` only at the exact Token Plan tuple to `{provider: DEEPSEEK, value: deepseek-v4-flash}`; a different endpoint remains unknown. | None. |
+| `BEH-001` | Confirmed | Custom Settings/reload -> shared discovery -> advertised fields -> custom model remains intact. | N/A |
+| `BEH-002` | Confirmed | Resolver receives only the discovered row, indexes exact values, and selects the lowest valid candidate per field. | N/A |
+| `BEH-003` | Confirmed | Reduced source union continues through model/server/token paths; focused preservation tests pass. | N/A |
+| `BEH-004` | Confirmed | Server sequencing/compensation are correct; returned mutation status ends the browser save, clears plaintext, and remains successful across subordinate refresh rejection. | N/A |
+| `BEH-005` | Confirmed | Exact Qwen values/unique overrides are present; `QwenLLM` resolves endpoint at construction. | N/A |
+| `BEH-006` | Confirmed | Server derives source by setting presence; browser renders the enum; post-save failure warns truthfully; both visible reload paths now reissue catalog and canonical provider-settings queries before success. | N/A |
 
 ## Structural / Design Checks
 
-| Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
+| Check | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved by the implementation | Pass | IR-003 handoff preserves the reviewed boundary/ownership assessment and limits the rework to the endpoint metadata boundary. | None. |
-| Implementation matches approved behavior-defining supplemental artifacts | Pass | Requirements `REQ-011`/`AC-013` and design-spec canonicalization require query/hash variants to be non-profile-addressable; parser and resolver lines `139-170`, `283-289` implement that rule. | None. |
-| Data-flow spine inventory clarity and preservation under shared principles | Pass | Discovery -> resolver -> custom model -> `ModelInfo` -> server -> runtime/UI remains intact; the fix changes only profile eligibility. | None. |
-| Ownership boundary preservation and clarity | Pass | URL/profile policy remains owned by the pure endpoint metadata resolver; callers do not duplicate matching or fallback policy. | None. |
-| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Provenance, server coarse mapping, stale reload, and UI unknown state remain in their existing owners. | None. |
-| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | The internal parser is a minimal extension of the existing endpoint identity policy; no new URL or runtime subsystem was introduced. | None. |
-| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | `ParsedEndpointIdentity`, profile records, fallback candidates, and source-bearing fields remain centralized in the metadata owner. | None. |
-| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | The internal parsed result composes the existing canonical tuple with one addressability flag; it does not add a parallel public identity shape. | None. |
-| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | Only the resolver decides profile eligibility, exact profile/reference resolution, fallback selection, and source precedence. | None. |
-| Empty indirection check (no pass-through-only boundary) | Pass | The resolver performs the complete canonicalization, exact matching, source resolution, and per-field precedence policy. | None. |
-| Scope-appropriate separation of concerns and file responsibility clarity | Pass | The 268-effective-line resolver remains one cohesive pure endpoint metadata policy; server and UI changes remain localized. | None. |
-| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | Discovery/resolver remain independent of server/UI; server consumes `ModelInfo`; runtime/UI do not infer provider limits. | None. |
-| Authoritative Boundary Rule check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | Custom model construction invokes the resolver and does not inspect profiles/definitions; server consumes the model projection rather than querying endpoints. | None. |
-| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | `autobyteus-ts/src/llm/metadata/openai-compatible-endpoint-model-metadata.ts` is the established pure endpoint metadata owner. | None. |
-| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | The addressability guard is local to the existing metadata file; no artificial split or patch-only helper file was added. | None. |
-| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Pass | Public canonicalization remains a tuple projection for existing callers, while the private parser supplies the resolver's explicit addressability decision. | None. |
-| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | `parseOpenAICompatibleEndpointIdentity`, `ParsedEndpointIdentity`, and `profileAddressable` accurately name the internal distinction without changing the public tuple API. | None. |
-| No unjustified duplication of code / repeated structures in changed scope | Pass | The fix reuses one parser for both public canonicalization and resolver matching; no duplicate identity logic was added. | None. |
-| Patch-on-patch complexity control | Pass | IR-003 is a bounded 24-addition/7-deletion source correction with focused regressions and no unrelated refactor. | None. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | The old resolver path was replaced by the guarded path; no dormant alias or compatibility branch remains. | None. |
-| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Resolver tests cover exact profile matching, query-only live precedence, query/fragment profile misses, exact fallback after a miss, unknown differing wire ID, and canonical fallback separation. | None. |
-| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | The metadata suite reuses `discovered`, `definition`, and `staticMetadata` builders; new cases stay in the resolver behavior suite. | None. |
-| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | The former query-bearing exact-profile fixture was corrected to a true addressable URL; variants now have dedicated assertions rather than preserving a misleading test. | None. |
-| API/E2E readiness for the next workflow stage | Pass | Source review is clean and IR-003 records focused implementation checks; the handoff explicitly defers required coverage investigation and execution to `api_e2e_engineer`. | Begin the required coverage investigation before executable coverage execution or durable coverage edits. |
+| Task design health assessment is present, evidence-backed, and preserved | Pass | Generic route policy was removed; native Qwen/AppConfig/provider/form ownership remains explicit. | None. |
+| Implementation matches approved supplemental artifacts | Pass | Form states, durable save, plaintext clearing, status rendering, provider/model refresh, and recovery match `UXJ-001`. | None. |
+| Data-flow spine inventory clarity and preservation | Pass | `DS-001` now traces through committed save, subordinate refresh, truthful warning, supported retry, both refresh owners, and recovered view. Other spines remain unchanged. | None. |
+| Ownership boundary preservation and clarity | Pass | Service, AppConfig, vault, Qwen resolver, metadata resolver, store, and form authority are coherent. | None. |
+| Off-spine concern clarity | Pass | Persistence, discovery, transport, view refresh, and presentation attach to clear owners. | None. |
+| Existing capability/subsystem reuse | Pass | Reuses discovery, vault, AppConfig, model definitions, token, Settings, and existing reload owners. | None. |
+| Reusable owned structures | Pass | Qwen URL policy and environment-file serialization have proper shared owners. | None. |
+| Shared-structure/data-model tightness | Pass | Narrow Qwen input/status and four-kind metadata source; no generalized route or recovery schema. | None. |
+| Repeated coordination ownership | Pass | Pair sequencing is centralized in `LlmProviderService`; provider refresh/reload sequencing is centralized in the Pinia store. | None. |
+| Empty indirection | Pass | Save, post-save refresh, and reload actions each own distinct lifecycle/coordination. | None. |
+| Separation of concerns and file responsibility | Pass | Save and refresh lifecycles remain separated; recovery is strengthened in the existing reload owner. | None. |
+| Ownership-driven dependency | Pass | UI -> store -> GraphQL -> service -> persistence and factory -> adapter -> resolver remain directional. | None. |
+| Authoritative Boundary Rule | Pass | No caller bypasses provider/AppConfig/vault authoritative boundaries. | None. |
+| File placement | Pass | New and changed files match Qwen, config, provider, transport, and Settings owners. | None. |
+| Flat-vs-over-split layout judgment | Pass | Cohesive extractions remain proportionate. | None. |
+| Interface/API/query/command/service boundary clarity | Pass | Save returns authoritative mutation status; post-save refresh is subordinate; reload promises success only after both required client refreshes. | None. |
+| Naming quality and responsibility alignment | Pass | Save, refresh, reload, status, endpoint-source, and exact-fallback names match behavior. | None. |
+| No unjustified duplication | Pass | AutoByteus key save now relies on strengthened reload instead of repeating the provider-settings query. | None. |
+| Patch-on-patch complexity control | Pass | `IR-006` changes existing coordination only and adds no transaction/recovery framework. | None. |
+| Dead/obsolete cleanup completeness | Pass | Production profile/alias/reference/`endpoint_profile`/preview paths remain absent. | None. |
+| Relevant tests are clear and requirement-aligned | Pass | The actual Pinia/runtime/Apollo regression covers initial view -> committed pair -> settings-query failure/cleared state -> real reload mutation/action -> both queries -> recovered provider/model/success. | None. |
+| Fixtures/helpers are reusable and structure coherent | Pass | Existing Pinia/Apollo/runtime builders and document identity are reused. | None. |
+| No stale/duplicated/compatibility-only tests retained | Pass | Profile tests were replaced; historical preview fixture strings remain a downstream validity decision. | None. |
+| API/E2E readiness | Pass | Source findings are resolved; focused checks and complete recovery regression make the package ready for mandatory coverage investigation and broader execution. | Proceed to `api_e2e_engineer`. |
 
-## Source File Size And Structure Audit (If Applicable)
+## Source File Size And Structure Audit
 
-| Source File | Effective Non-Empty Lines | `>500` Hard-Limit Check | `>220` Delta Check | SoC / Ownership Check | Placement Check | Preliminary Classification | Required Action |
+Tests, generated GraphQL, localization resources, and documentation are excluded from source-size thresholds.
+
+| Source File | Effective Non-Empty Lines | `>500` | `>220` Delta Check | SoC / Ownership | Placement | Classification | Required Action |
 | --- | ---: | --- | --- | --- | --- | --- | --- |
-| `autobyteus-ts/src/llm/metadata/openai-compatible-endpoint-model-metadata.ts` | 268 | Pass | Pass — IR-003 is 24 additions/7 deletions; the 268-line file remains one cohesive pure policy boundary | Pass | Pass | Pass | None. |
-| `autobyteus-ts/src/llm/openai-compatible-endpoint-discovery.ts` | 208 | Pass | Pass — existing normalization remains cohesive | Pass | Pass | Pass | None. |
-| `autobyteus-ts/src/llm/metadata/model-metadata-resolver.ts` | 183 | Pass | Pass — shared source union remains focused | Pass | Pass | Pass | None. |
-| `autobyteus-server-ts/src/llm-management/services/model-metadata-provisioning-service.ts` | 206 | Pass | Pass — server merge/projection remains localized | Pass | Pass | Pass | None. |
-| `autobyteus-ts/src/llm/models.ts` | 158 | Pass | Pass — non-secret projection remains localized | Pass | Pass | Pass | None. |
-| `autobyteus-web/components/workspace/usage/TokenUsageMeterPanel.vue` | 387 | Pass | Pass — UI state change remains localized to the existing panel | Pass | Pass | Pass | None. |
-| `autobyteus-server-ts/src/agent-execution/backends/codex/codex-app-server-model-normalizer.ts` | 135 | Pass | Pass — projection update remains small and owner-local | Pass | Pass | Pass | None. |
-| `autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-model-normalizer.ts` | 175 | Pass | Pass — projection update remains small and owner-local | Pass | Pass | Pass | None. |
-| `autobyteus-ts/src/llm/openai-compatible-endpoint-model.ts` | 46 | Pass | Pass — constructor mapping remains focused | Pass | Pass | Pass | None. |
-| `autobyteus-ts/src/llm/openai-compatible-endpoint-provider.ts` | 119 | Pass | Pass — lifecycle integration remains focused | Pass | Pass | Pass | None. |
-| `autobyteus-ts/src/llm/index.ts` | 16 | Pass | Pass — export-only change | Pass | Pass | Pass | None. |
-| `autobyteus-web/localization/messages/en/shell.ts` | 156 | Pass | Pass — one localized message addition | Pass | Pass | Pass | None. |
-| `autobyteus-web/localization/messages/zh-CN/shell.ts` | 140 | Pass | Pass — one localized message addition | Pass | Pass | Pass | None. |
-
-Unit/component test files are intentionally excluded from the implementation-source size thresholds; their structure was reviewed proportionately above.
+| `autobyteus-server-ts/src/config/app-config.ts` | 496 | Pass | Triggered; helper extracted | Pass | Pass | Accept | Monitor only. |
+| `autobyteus-ts/src/llm/supported-model-definitions.ts` | 479 | Pass | Triggered; Qwen definitions extracted | Pass | Pass | Accept | None. |
+| `autobyteus-server-ts/src/llm-management/llm-providers/services/llm-provider-service.ts` | 474 | Pass | Triggered; cohesive command/status | Pass | Pass | Accept | None. |
+| `autobyteus-server-ts/src/api/graphql/types/llm-provider.ts` | 417 | Pass | Triggered; existing transport owner | Pass | Pass | Accept | None. |
+| `autobyteus-web/components/settings/providerApiKey/useProviderApiKeySectionRuntime.ts` | 401 | Pass | Triggered; existing UI owner | Pass | Pass | Accept | Avoid unrelated growth. |
+| `autobyteus-web/stores/llmProviderConfig.ts` | 394 | Pass | Triggered; existing provider state/API owner | Pass | Pass | Accept | Avoid unrelated growth. |
+| `autobyteus-web/components/settings/providerApiKey/QwenSetupForm.vue` | 216 | Pass | N/A | Pass | Pass | Accept | None. |
+| `autobyteus-server-ts/src/llm-management/services/model-metadata-provisioning-service.ts` | 204 | Pass | N/A | Pass | Pass | Accept | None. |
+| `autobyteus-web/components/settings/providerApiKey/ProviderModelBrowser.vue` | 201 | Pass | N/A | Pass | Pass | Accept | None. |
+| `autobyteus-web/components/settings/ProviderAPIKeyManager.vue` | 187 | Pass | N/A | Pass | Pass | Accept | None. |
+| `autobyteus-ts/src/llm/metadata/model-metadata-resolver.ts` | 177 | Pass | N/A | Pass | Pass | Accept | None. |
+| `autobyteus-web/graphql/queries/llm_provider_queries.ts` | 142 | Pass | N/A | Pass | Pass | Accept | None. |
+| `autobyteus-ts/src/llm/metadata/openai-compatible-endpoint-model-metadata.ts` | 122 | Pass | N/A | Pass | Pass | Accept | None. |
+| `autobyteus-ts/src/llm/openai-compatible-endpoint-provider.ts` | 118 | Pass | N/A | Pass | Pass | Accept | None. |
+| `autobyteus-web/stores/llmProviderConfigSupport.ts` | 103 | Pass | N/A | Pass | Pass | Accept | None. |
+| `autobyteus-web/graphql/mutations/llm_provider_mutations.ts` | 90 | Pass | N/A | Pass | Pass | Accept | None. |
+| `autobyteus-server-ts/src/config/environment-assignment-file.ts` | 85 | Pass | N/A | Pass | Pass | Accept | None. |
+| `autobyteus-server-ts/src/llm-management/llm-providers/domain/models.ts` | 68 | Pass | N/A | Pass | Pass | Accept | None. |
+| `autobyteus-ts/src/llm/qwen-supported-model-definitions.ts` | 66 | Pass | N/A | Pass | Pass | Accept | None. |
+| `autobyteus-ts/src/llm/index.ts` | 17 | Pass | N/A | Pass | Pass | Accept | None. |
+| `autobyteus-ts/src/llm/qwen-provider-config.ts` | 11 | Pass | N/A | Pass | Pass | Accept | None. |
+| `autobyteus-ts/src/llm/api/qwen-llm.ts` | 11 | Pass | N/A | Pass | Pass | Accept | None. |
+| `autobyteus-server-ts/src/config/index.ts` | 6 | Pass | N/A | Pass | Pass | Accept | None. |
 
 ## Legacy / Backward-Compatibility Verdict
 
-| Check | Result (`Pass`/`Fail`) | Notes |
+| Check | Result | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | No dual DTO, version branch, generic alias fallback, or compatibility wrapper was added. |
-| No legacy old-behavior retention in changed scope | Pass | Identifier-only discovery was replaced in place and obsolete global aliasing was not introduced. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | No redundant metadata catalog or old endpoint-path machinery remains in the changed scope. |
-| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | Derived metadata is not persisted; existing version-2 custom-provider records remain directly usable. |
-| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | The normal reader remains version-agnostic and no migration/fallback branch was added. |
-| Approved transition mechanics match the reviewed design, including migration safety only when required | Pass | The approved persisted-data decision is `Not Affected` and implementation follows it. |
+| No backward-compatibility mechanisms | Pass | Absent `QWEN_BASE_URL` is current default semantics, not a version branch. |
+| No legacy old-behavior retention | Pass | Profiles, aliases, URL identity, and preview definition are removed. |
+| Dead/obsolete cleanup completeness | Pass | Production searches found no obsolete identifiers. |
+| Persisted-data transition decision followed | Pass | Existing key is directly usable; URL is optional. |
+| No version-specific dual reads/writes or fallback | Pass | One current configured/default runtime path exists. |
+| Transition mechanics match reviewed design | Pass | Temp write/fsync/rename precedes runtime publication; compensation is command-local. |
 
-## Dead / Obsolete / Legacy Items Requiring Removal (Mandatory If Any Exist)
+## Dead / Obsolete / Legacy Items Requiring Removal
 
-None.
+None in implementation source. Historical `qwen3.8-max-preview` token-usage fixture strings are not native definitions or compatibility aliases; API/E2E must classify their continuing validity.
 
 ## Docs-Impact Verdict
 
-- Docs impact: `No`
-- Why: The endpoint addressability guard completes the already-recorded source-local metadata contract; no user-facing documentation or operational runbook is changed by this source re-review.
-- Files or areas likely affected: None beyond the existing ticket artifacts.
+- Docs impact: `Yes`
+- Why: Metadata precedence/source meanings, native Qwen setup/models, configured/default behavior, and post-save provider refresh are durable concepts.
+- Files or areas likely affected: changed core/server/web provider, model-catalog, token, and Settings docs; delivery must revalidate against the integrated base after API/E2E.
 
-## Material Premise Validation (Only When Needed)
+## Material Premise Validation
 
 ### Upstream Design-Review Material-Premise Decisions
 
-| Premise ID | Current Status (`Confirmed`/`Reclassified`/`No Longer Relevant`) | Changed Evidence / Reason (Required For `Reclassified` Or `No Longer Relevant`) |
+| Premise ID | Current Status | Changed Evidence / Reason |
 | --- | --- | --- |
-| `MP-001` | `Confirmed` | The supported custom-provider URL input and query/fragment non-profile-addressable contract remain applicable. IR-003 removes the prior profile-application consequence; no premise reclassification is needed. |
+| `PREM-QWEN-001` | Confirmed | `setDurably` and command-local compensation implement the approved reachable URL-write failure response. |
 
-### MP-001 — Query/fragment-bearing custom endpoint can reach the resolver's profile-eligibility boundary
+### `PREM-QWEN-002` — A post-commit refresh failure is reported as a Qwen save failure
 
-- Origin: `New` at `CRR-001`; retained unchanged for this re-review.
-- Related approved requirement or established contract: `REQ-011`, `AC-013`; design-spec canonical endpoint identity section; preserved custom-provider base URL contract.
-- Relevant behavior ID(s): `BEH-004`, `BEH-001`
-- Initiating basis kind: `User` plus `Contract`
-- Independent product-supported initiating trigger or applicable governing contract: The Settings custom-provider form accepts a user-entered base URL; server normalization accepts an absolute `http`/`https` URL, and the persisted custom-provider schema requires only a non-empty string. The reviewed contract explicitly governs query-dependent plan URLs as non-profile-addressable.
-- Support evidence: Exposed custom-provider settings input -> `probeCustomProvider`/`createCustomProvider` -> `normalizeDraftInput` at `autobyteus-server-ts/src/llm-management/llm-providers/services/llm-provider-service.ts:193-210,399-409`; URL normalization accepts search/hash at `autobyteus-ts/src/llm/openai-compatible-endpoint-discovery.ts:34-49`; the saved endpoint URL is passed to the resolver during custom model construction.
-- Forward current or approved target production caller/event path that exercises the initiating basis and reaches the claimed state: A user saves/probes a query- or fragment-bearing endpoint -> discovery/model synchronization supplies a discovered row -> `OpenAICompatibleEndpointModelProvider.createModelsForEndpoint` passes the saved `endpoint.baseUrl` to `OpenAICompatibleEndpointModelMetadataResolver.resolve`. The current resolver parses the URL and deliberately stops before profile matching when search/hash is non-empty.
-- Lifecycle preconditions and material consequence at the claimed point: A returned model row is available and the URL may distinguish a plan. Before IR-003, the tuple-only comparison could apply the query-free profile; now that consequence is prevented and resolution proceeds to live/exact fallback/unknown.
+- Origin: `New at CRR-005`
+- Related approved requirement or established contract: `BEH-004`; `REQ-005`, `REQ-011`; `AC-007`; `UXJ-001`.
+- Relevant behavior ID(s): `BEH-004`, `BEH-006`
+- Independent supported trigger and path: Settings > API Keys > Qwen -> Save configuration -> committed mutation -> subordinate provider-data refresh rejection.
 - Reachability: `Reachable`
-- Review consequence / proportionate response: The premise justified CR-001 in CRR-001. The current implementation satisfies it; no finding or score deduction remains.
+- Current consequence / response: `IR-005` resolves the defect: the committed status remains authoritative, plaintext clears, and rejection produces only a warning. Preserve this separation.
 
-## Review Scorecard (Mandatory)
+### `PREM-QWEN-003` — The advertised Reload Models recovery skips provider settings after that refresh fails
 
-- Overall score (`/10`): `9.45`
-- Overall score (`/100`): `94.5`
-- Score calculation note: Simple average of the ten category scores below; every category meets the clean-pass threshold. The review decision is independently based on the confirmed behavior basis, resolved prior finding, structural checks, and no remaining source findings.
+- Origin: `New at CRR-006`
+- Related approved requirement or established contract: `BEH-006`; `UXJ-001` step 8; successful-save provider settings/model refresh contract; the warning's explicit Reload Models recovery instruction.
+- Relevant behavior ID(s): `BEH-004`, `BEH-006`
+- Independent product-supported initiating trigger or applicable governing contract: On Settings > API Keys > Qwen, the user saves a valid pair; a supported provider-query rejection produces the warning; the user invokes the visible top-level Reload Models action named by that warning.
+- Forward production path: `Qwen save -> committed status -> provider-settings refresh rejection/cleared flag -> warning -> Reload Models -> reload mutation -> Promise.all(catalog network refresh, canonical provider-settings network refresh) -> both state owners recovered -> success notification`.
+- Lifecycle preconditions and material consequence: The original defect skipped provider settings after its failure cleared `hasFetchedProviderSettings`. `IR-006` removes that gate from both supported Settings reload paths and their callers are confined to Settings/AutoByteus key-save production paths. Success now follows both refreshes; either new failure rejects and reports reload failure.
+- Reachability: `Reachable`
+- Review consequence / proportionate response: `CR-003` is resolved by a bounded change in the existing reload owner and a full production-path regression. No generalized recovery machinery was added.
 
-| Priority | Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+## Review Scorecard
+
+- Overall score (`/10`): `9.37`
+- Overall score (`/100`): `93.7`
+- Score calculation note: Simple average. Every category meets the clean-pass threshold; the decision also depends on confirmed behavior, resolved findings, and passed mandatory checks.
+
+| Priority | Category | Score | Why This Score | Weakness | Improvement |
 | --- | --- | ---: | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | 9.5 | The implementation preserves discovery -> resolver -> model -> server -> runtime/UI and makes profile addressability explicit at the resolver boundary. | Broader runtime and API/E2E evidence is still downstream, not a source defect. | Confirm the complete spine with the required downstream coverage investigation and execution. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | 9.5 | URL/profile/fallback policy remains centralized and callers consume resolved metadata. | No material source weakness; downstream ownership evidence is pending. | Preserve the resolver as the sole profile/fallback owner during downstream coverage work. |
-| `3` | `API / Interface / Query / Command Clarity` | 9.5 | The private parsed result explicitly separates canonical identity from profile addressability, while the public canonicalizer remains compatible. | The public tuple helper alone does not communicate addressability, but no caller uses it for profile matching; the resolver owns the safe contract. | Keep profile matching behind the resolver rather than exposing a second matching API. |
-| `4` | `Separation of Concerns and File Placement` | 9.5 | The fix is local to the pure endpoint metadata file and does not move policy into discovery, server, or UI. | None material. | None beyond normal future maintenance. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.5 | One internal parser composes the existing identity tuple with one boolean; no parallel public DTO or duplicated policy was added. | None material. | None. |
-| `6` | `Naming Quality and Local Readability` | 9.5 | `parseOpenAICompatibleEndpointIdentity`, `ParsedEndpointIdentity`, and `profileAddressable` make the corrected distinction readable. | None material. | None. |
-| `7` | `API/E2E Readiness` | 9.0 | The source package and focused regressions are ready for the next stage, with explicit downstream scenarios and no premature API/E2E claims. | API/E2E coverage investigation, realistic endpoint, runtime, catalog, stale, and browser evidence do not yet exist. | `api_e2e_engineer` must investigate existing coverage before adding or executing durable coverage. |
-| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.5 | Exact profile, live, fallback, unknown, alias, stale, and UI behaviors are preserved; the reachable query/fragment misapplication is now blocked. | Runtime compaction and real catalog execution remain unverified downstream. | Validate runtime thresholds and source propagation through API/E2E coverage. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | 9.5 | No compatibility machinery, duplicate catalog, or version-specific data path was introduced. | None material. | None. |
-| `10` | `Cleanup Completeness` | 9.5 | The old unguarded profile lookup was replaced, tests were corrected/extended, and no dormant alias machinery remains. | None material. | None. |
+| `1` | Data-Flow Spine Inventory and Clarity | 9.4 | Exact metadata and Qwen save/runtime/recovery spines are complete from supported trigger to meaningful outcome. | Broader runtime execution remains downstream. | Confirm with API/E2E. |
+| `2` | Ownership Clarity and Boundary Encapsulation | 9.4 | Server/config/vault/Qwen/store/form owners are explicit with no mixed-level dependency. | No material source weakness. | Preserve current boundaries. |
+| `3` | API / Interface / Query / Command Clarity | 9.4 | Qwen command/status are narrow; web save, refresh, and reload semantics are truthful and distinct. | No material source weakness. | Preserve result semantics. |
+| `4` | Separation of Concerns and File Placement | 9.2 | Cohesive extractions and existing-owner fixes avoid fragmentation. | Several established owners remain near 500 lines. | Avoid unrelated growth. |
+| `5` | Shared-Structure / Data-Model Tightness and Reusable Structures | 9.4 | Minimal Qwen types and reduced metadata source union avoid generalized schema. | None material. | None. |
+| `6` | Naming Quality and Local Readability | 9.4 | Durable write, endpoint source, exact fallback, save, refresh, and reload names match behavior. | None material. | None. |
+| `7` | API/E2E Readiness | 9.1 | Focused checks and full recovery regression pass with no open source finding. | Mandatory independent coverage investigation/system execution has not started. | Proceed downstream. |
+| `8` | Runtime Correctness And Behavioral Fidelity | 9.4 | Metadata, endpoint, catalog, durability, compensation, status, save truthfulness, and retry recovery match approved behavior. | Real restart/vendor/runtime evidence remains downstream. | Execute planned API/E2E scenarios. |
+| `9` | No Backward-Compatibility / No Legacy Retention | 9.6 | Obsolete production paths are removed without migration or compatibility machinery. | Historical preview-fixture validity remains downstream. | Classify during coverage investigation. |
+| `10` | Cleanup Completeness | 9.4 | Obsolete policy is removed and the AutoByteus duplicate refresh was eliminated. | Prior downstream ticket evidence is historical. | Regenerate current downstream evidence. |
 
 ## Findings
 
-None. Prior finding `CR-001` is resolved by IR-003 and verified in the current source and focused regression suite.
+None. `CR-002` was resolved by `IR-005`; `CR-003` is resolved by `IR-006` and verified in the current source and focused regression suite.
 
 ## Classification
 
-`N/A` — the implementation review passes; no current failure classification applies.
+N/A — implementation review passes.
 
 ## Recommended Recipient
 
-`api_e2e_engineer` for the required coverage investigation and subsequent executable validation.
+`api_e2e_engineer` for the mandatory coverage investigation and current API/E2E/broader executable validation.
 
 ## Residual Risks
 
-- Profile facts are source-dated and can become stale; the DeepSeek alias and Alibaba plan facts require deliberate source/date revalidation when vendor behavior changes.
-- Exact built-in fallback is explicitly inferred and can differ from a plan-specific limit; endpoint-advertised and exact endpoint-profile values must continue to take precedence, and unmatched wire IDs must remain unknown.
-- Reviewer reruns of `tsc` and focused Vitest were unavailable because IR-003 removed temporary dependency symlinks and this worktree has no local `node_modules/.bin/tsc` or `vitest`; IR-003 records the implementation checks as passed and reviewer `git diff --check` over `d5618bffd..e66b13c19` passed.
-- API/E2E coverage investigation, execution, realistic synthetic endpoint evidence, runtime compaction evidence, GraphQL catalog evidence, stale reload evidence, secret-hygiene evidence, and browser-level validation remain downstream.
+- API/E2E must validate restart durability, real probe/request routing, GraphQL fault paths, browser behavior, and preview-fixture validity.
+- Vendor context facts remain source-dated.
+- Repository-wide server/web typecheck baselines remain as documented; focused tests/builds are green.
+- The branch remains behind its tracked base; delivery owns later integration refresh.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
 - Review Entry Point: `Implementation Review`
-- Material-Premise Gate (`Pass`/`Fail`/`Blocked`): `Pass` — MP-001 remains a supported user/contract path and is now safely handled by the explicit addressability guard.
-- Score Summary: `9.45/10` (`94.5/100`); all ten categories meet the clean-pass threshold.
-- Failure Origin (when applicable): `N/A`; CR-001 was an implementation-owned prior finding and is resolved.
-- Recommended Recipient (when applicable): `api_e2e_engineer`
-- Notes: Source review is complete at commit `e66b13c19`. API/E2E has not started; the next specialist must first produce the required coverage investigation artifact. Any durable repository coverage added, updated, or removed later must return through code review before delivery.
+- Material-Premise Gate: `Pass` — `PREM-QWEN-001` remains confirmed; `PREM-QWEN-002` and `PREM-QWEN-003` remain reachable and their defects are resolved proportionately.
+- Score Summary: `9.37/10` (`93.7/100`); every category is at least `9.0`.
+- Failure Origin: N/A.
+- Recommended Recipient: `api_e2e_engineer`
+- Notes: Exact-only metadata, native Qwen runtime/catalog, strict persistence, compensation, sanitized errors, server-owned status, authoritative committed-save handling, and complete visible retry recovery pass source review. API/E2E must begin with the required coverage investigation against this current package.

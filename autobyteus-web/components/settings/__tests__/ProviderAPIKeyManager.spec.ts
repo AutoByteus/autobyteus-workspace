@@ -33,6 +33,11 @@ const createRuntime = (overrides: Record<string, any> = {}) => ({
     activeMode: null, aiStudioConfigured: false,
     vertexExpressConfigured: false, vertexProject: null,
   }),
+  qwenSetup: ref({
+    effectiveBaseUrl: 'https://default.example/v1', endpointSource: 'DEFAULT',
+    apiKeyConfigured: false,
+  }),
+  qwenFormResetVersion: ref(0), qwenSaveErrorMessage: ref(null), qwenSaveErrorCode: ref(null),
   allProvidersWithModels: ref([provider()]),
   selectedProviderId: ref('OPENAI'),
   selectedProviderSummary: ref(provider()),
@@ -50,6 +55,7 @@ const createRuntime = (overrides: Record<string, any> = {}) => ({
   reloadSelectedProvider: vi.fn(), saveGeminiConfigurationOption: vi.fn(),
   saveAndActivateGeminiConfigurationOption: vi.fn(), activateGeminiConfigurationOption: vi.fn(),
   saveProviderApiKey: vi.fn(), updateCustomProviderDraft: vi.fn(),
+  saveQwenConfiguration: vi.fn(), clearQwenSaveError: vi.fn(),
   probeCustomProviderDraft: vi.fn(), saveCustomProviderDraft: vi.fn(), deleteCustomProvider: vi.fn(),
   ...overrides,
 })
@@ -64,6 +70,12 @@ const mountComponent = async (overrides: Record<string, any> = {}) => {
           name: 'GeminiSetupForm', props: ['geminiSetup', 'saving', 'activating'],
           emits: ['save', 'save-and-activate', 'activate'],
           template: '<button data-testid="gemini-form" @click="$emit(\'save\', { option: \'AI_STUDIO\', apiKey: \'synthetic-key\' })">Gemini</button>',
+        },
+        QwenSetupForm: {
+          name: 'QwenSetupForm',
+          props: ['setup', 'saving', 'resetVersion', 'errorMessage', 'errorCode'],
+          emits: ['save', 'clear-error'],
+          template: '<button data-testid="qwen-form" @click="$emit(\'save\', { baseUrl: \'https://qwen.example/v1\', apiKey: \'synthetic-key\' })">Qwen</button>',
         },
         ProviderApiKeyEditor: {
           name: 'ProviderApiKeyEditor', props: ['configured', 'saving', 'resetVersion'],
@@ -130,5 +142,28 @@ describe('ProviderAPIKeyManager', () => {
     expect(runtimeState.value.saveGeminiConfigurationOption).toHaveBeenCalledWith({
       option: 'AI_STUDIO', apiKey: 'synthetic-key',
     })
+  })
+
+  it('renders the dedicated Qwen pair form instead of the generic key editor', async () => {
+    const qwen = provider({ id: 'QWEN', name: 'Qwen', label: 'Qwen', providerType: 'QWEN' })
+    const wrapper = await mountComponent({
+      selectedProviderId: ref('QWEN'), selectedProviderSummary: ref(qwen),
+      selectedProviderLabel: ref('Qwen'),
+    })
+    expect(wrapper.find('[data-testid="api-key-editor"]').exists()).toBe(false)
+    await wrapper.get('[data-testid="qwen-form"]').trigger('click')
+    expect(runtimeState.value.saveQwenConfiguration).toHaveBeenCalledWith({
+      baseUrl: 'https://qwen.example/v1', apiKey: 'synthetic-key',
+    })
+  })
+
+  it('renders post-commit refresh warnings distinctly from save failures', async () => {
+    const wrapper = await mountComponent({
+      notification: ref({ message: 'Qwen saved; refresh failed', type: 'warning' }),
+    })
+    const notification = wrapper.get('.fixed.bottom-4.right-4')
+    expect(notification.text()).toBe('Qwen saved; refresh failed')
+    expect(notification.classes()).toContain('bg-amber-100')
+    expect(notification.classes()).not.toContain('bg-red-100')
   })
 })

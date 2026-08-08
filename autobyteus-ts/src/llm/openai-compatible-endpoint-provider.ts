@@ -121,7 +121,6 @@ export class OpenAICompatibleEndpointModelProvider {
             endpoint,
             discoveredModel,
             resolvedModelMetadata: resolveOpenAICompatibleEndpointModelMetadata({
-              endpointBaseUrl: endpoint.baseUrl,
               discoveredModel,
             }),
           }),

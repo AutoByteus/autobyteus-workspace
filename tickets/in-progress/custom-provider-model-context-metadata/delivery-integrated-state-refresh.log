@@ -1,0 +1,50 @@
+Delivery integrated-state refresh
+Timestamp: 2026-08-03T07:24:04Z
+Ticket branch: codex/custom-provider-model-context-metadata
+Recorded base: origin/personal
+Fetch: git fetch origin personal --prune
+Tracked remote base after fetch: ba6ebc2a2fbf56f17ee6bbb965f3f153307db3d2
+Pre-refresh reviewed candidate checkpoint: e86bf82e7
+Integration: git merge --no-edit origin/personal
+Integrated HEAD: 36ebd83fb87df7608cbdbbd8de26750d4ee49ed9
+Merge parents: e86bf82e7c67ab069608ef515e96e8f164891aff ba6ebc2a2fbf56f17ee6bbb965f3f153307db3d2
+
+Status after merge:
+## codex/custom-provider-model-context-metadata...origin/personal [ahead 5]
+?? tickets/in-progress/custom-provider-model-context-metadata/delivery-integrated-state-refresh.log
+
+Ticket commits retained in integrated history:
+e86bf82e7 chore(delivery): checkpoint reviewed custom provider metadata
+e66b13c19 Guard endpoint profiles against URL variants
+b8f1dce50 Add endpoint-scoped DeepSeek wire alias
+d2b6ecbea Add custom provider model context metadata
+
+Post-integration executable check
+Command: corepack pnpm -C autobyteus-ts exec vitest run tests/unit/llm/openai-compatible-endpoint-discovery.test.ts tests/unit/llm/openai-compatible-endpoint-provider.test.ts tests/unit/llm/models.test.ts --no-watch
+2026-08-03T07:24:14Z
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-ts
+
+ ✓ tests/unit/llm/openai-compatible-endpoint-discovery.test.ts (6 tests) 16ms
+ ✓ tests/unit/llm/models.test.ts (4 tests) 4ms
+stdout | tests/unit/llm/openai-compatible-endpoint-provider.test.ts > LLMFactory custom provider sync > registers discovered models and instantiates with separately supplied authentication
+Discovering Ollama models from host: http://127.0.0.1:11434
+
+stderr | tests/unit/llm/openai-compatible-endpoint-provider.test.ts > LLMFactory custom provider sync > registers discovered models and instantiates with separately supplied authentication
+Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
+
+stdout | tests/unit/llm/openai-compatible-endpoint-provider.test.ts > LLMFactory custom provider sync > registers discovered models and instantiates with separately supplied authentication
+Discovering LM Studio models from host: http://127.0.0.1:1234
+
+stderr | tests/unit/llm/openai-compatible-endpoint-provider.test.ts > LLMFactory custom provider sync > registers discovered models and instantiates with separately supplied authentication
+Could not connect to LM Studio at http://127.0.0.1:1234. Ensure the server is running. fetch failed
+
+ ✓ tests/unit/llm/openai-compatible-endpoint-provider.test.ts (6 tests) 20ms
+
+ Test Files  3 passed (3)
+      Tests  16 passed (16)
+   Start at  09:24:14
+   Duration  901ms (transform 427ms, setup 54ms, import 1.09s, tests 40ms, environment 0ms)
+
+Post-integration executable check exit: 0
+Completed: 2026-08-03T07:24:15Z

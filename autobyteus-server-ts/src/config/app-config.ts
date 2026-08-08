@@ -12,7 +12,11 @@ import {
 } from "./config-value-parsers.js";
 import { LOCAL_IMPORT_CREDENTIAL_ALIAS_NAMES } from "../secret-management/provisioning/local-import-credential-alias-registry.js";
 import { ApplicationDatabaseLocation } from "./application-database-location.js";
-import { assignmentName, linesWithEndings, splitLineEnding } from "./environment-assignment-lines.js";
+import {
+  removeEnvironmentAssignmentFromFile,
+  replaceEnvironmentAssignmentFileDurably,
+  updateEnvironmentAssignmentFile,
+} from "./environment-assignment-file.js";
 
 const forbiddenGenericSettingNames = new Set<string>([
   ...LOCAL_IMPORT_CREDENTIAL_ALIAS_NAMES,
@@ -42,6 +46,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export type AppConfigOptions = { appDataDir?: string | null };
+export type DurableAppConfigWriteResult = { persisted: true };
 
 export class AppConfig {
   private isWindows: boolean;
@@ -500,15 +505,13 @@ export class AppConfig {
   }
 
   set(key: string, value: string): void {
-    if (forbiddenGenericSettingNames.has(key)) {
-      throw new AppConfigError("Sensitive values must be written through a subject-specific secret service.");
-    }
+    this.assertGenericSettingAllowed(key, "written");
     this.configData[key] = value;
     process.env[key] = value;
 
     if (this.configFile) {
       try {
-        this.updateEnvFile(this.configFile, key, value);
+        updateEnvironmentAssignmentFile(this.configFile, key, value);
       } catch (error) {
         console.info(
           `Could not update config file ${this.configFile}: ${String(error)}. ` +
@@ -518,16 +521,33 @@ export class AppConfig {
     }
   }
 
-  delete(key: string): void {
-    if (forbiddenGenericSettingNames.has(key)) {
-      throw new AppConfigError("Sensitive values must be removed through a subject-specific secret service.");
+  setDurably(key: string, value: string): DurableAppConfigWriteResult {
+    this.assertGenericSettingAllowed(key, "written");
+    if (!this.initialized || !this.configFile) {
+      throw new AppConfigError(
+        "Durable application configuration cannot be written before AppConfig is initialized.",
+      );
     }
+
+    try {
+      replaceEnvironmentAssignmentFileDurably(this.configFile, key, value);
+    } catch {
+      throw new AppConfigError("Unable to durably update application configuration.");
+    }
+
+    this.configData[key] = value;
+    process.env[key] = value;
+    return { persisted: true };
+  }
+
+  delete(key: string): void {
+    this.assertGenericSettingAllowed(key, "removed");
     delete this.configData[key];
     delete process.env[key];
 
     if (this.configFile) {
       try {
-        this.removeKeyFromEnvFile(this.configFile, key);
+        removeEnvironmentAssignmentFromFile(this.configFile, key);
       } catch (error) {
         console.info(
           `Could not update config file ${this.configFile}: ${String(error)}. ` +
@@ -546,32 +566,11 @@ export class AppConfig {
     process.env[key] = value;
   }
 
-  private updateEnvFile(configFile: string, key: string, value: string): void {
-    const content = fs.readFileSync(configFile, "utf-8");
-    let found = false;
-    const updated = linesWithEndings(content).map((line) => {
-      const { body, ending } = splitLineEnding(line);
-      if (assignmentName(body) === key) {
-        found = true;
-        return `${key}=${value}${ending}`;
-      }
-      return line;
-    }).join("");
-
-    const preferredEnding = content.includes("\r\n") ? "\r\n" : "\n";
-    const withNewValue = found
-      ? updated
-      : `${content}${content.length > 0 && !/[\r\n]$/.test(content) ? preferredEnding : ""}${key}=${value}`;
-
-    fs.writeFileSync(configFile, withNewValue);
-  }
-
-  private removeKeyFromEnvFile(configFile: string, key: string): void {
-    const content = fs.readFileSync(configFile, "utf-8");
-    const filtered = linesWithEndings(content).filter((line) => {
-      const { body } = splitLineEnding(line);
-      return assignmentName(body) !== key;
-    }).join("");
-    fs.writeFileSync(configFile, filtered);
+  private assertGenericSettingAllowed(key: string, operation: "written" | "removed"): void {
+    if (forbiddenGenericSettingNames.has(key)) {
+      throw new AppConfigError(
+        `Sensitive values must be ${operation} through a subject-specific secret service.`,
+      );
+    }
   }
 }

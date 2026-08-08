@@ -149,13 +149,15 @@ describe('custom provider metadata GraphQL E2E', () => {
     const syntheticPayload = {
       data: [
         {
-          id: 'synthetic-live-model',
+          id: 'qwen3.8-max',
           context_window: 654321,
           max_input_tokens: 600000,
           max_output_tokens: 8192,
           private_provider_payload: 'must-not-cross-server-boundary',
         },
-        { id: 'gpt-5.5' },
+        { id: 'deepseek-v4-pro' },
+        { id: 'glm-5.2' },
+        { id: 'deepseek-v4-pro-0713' },
         { id: 'synthetic-unknown-model' },
       ],
     };
@@ -194,9 +196,9 @@ describe('custom provider metadata GraphQL E2E', () => {
       baseUrl: 'https://gateway.example.test/v1',
       status: 'READY',
     });
-    expect(provider.models).toHaveLength(3);
+    expect(provider.models).toHaveLength(5);
 
-    const live = provider.models.find((model) => model.value === 'synthetic-live-model');
+    const live = provider.models.find((model) => model.value === 'qwen3.8-max');
     expect(live).toMatchObject({
       providerId: createdProviderId,
       providerType: LLMProvider.OPENAI_COMPATIBLE,
@@ -206,14 +208,28 @@ describe('custom provider metadata GraphQL E2E', () => {
       metadataProvenance: 'LIVE',
     });
 
-    const inferred = provider.models.find((model) => model.value === 'gpt-5.5');
-    expect(inferred).toMatchObject({
-      maxContextTokens: expect.any(Number),
+    const inferredDeepSeek = provider.models.find((model) => model.value === 'deepseek-v4-pro');
+    expect(inferredDeepSeek).toMatchObject({
+      maxContextTokens: 1_000_000,
+      metadataProvenance: 'CURATED_FALLBACK',
+    });
+
+    const inferredGlm = provider.models.find((model) => model.value === 'glm-5.2');
+    expect(inferredGlm).toMatchObject({
+      maxContextTokens: 198_000,
       metadataProvenance: 'CURATED_FALLBACK',
     });
 
     const unknown = provider.models.find((model) => model.value === 'synthetic-unknown-model');
     expect(unknown).toMatchObject({
+      maxContextTokens: null,
+      maxInputTokens: null,
+      maxOutputTokens: null,
+      metadataProvenance: 'CURATED_ONLY',
+    });
+
+    const nearMatch = provider.models.find((model) => model.value === 'deepseek-v4-pro-0713');
+    expect(nearMatch).toMatchObject({
       maxContextTokens: null,
       maxInputTokens: null,
       maxOutputTokens: null,
@@ -241,13 +257,15 @@ describe('custom provider metadata GraphQL E2E', () => {
       endpointId: createdProviderId,
       status: 'STALE_ERROR',
       preservedPreviousModels: true,
-      modelCount: 3,
+      modelCount: 5,
     })]);
 
     const provider = await customProvider();
     expect(provider.models.map((model) => model.value)).toEqual([
-      'gpt-5.5',
-      'synthetic-live-model',
+      'deepseek-v4-pro',
+      'deepseek-v4-pro-0713',
+      'glm-5.2',
+      'qwen3.8-max',
       'synthetic-unknown-model',
     ]);
   });
@@ -265,26 +283,22 @@ describe('custom provider metadata GraphQL E2E', () => {
     const afterDelete = await execute<{
       availableLlmProvidersWithModels: Array<{
         provider: { id: string };
-        models: Array<{ value: string }>;
+        models: Array<{ providerId: string }>;
       }>;
     }>(`
       query CustomProviderCatalogAfterDelete {
         availableLlmProvidersWithModels(runtimeKind: "autobyteus") {
           provider { id }
-          models { value }
+          models { providerId }
         }
       }
     `);
     expect(afterDelete.availableLlmProvidersWithModels).not.toEqual(expect.arrayContaining([
       expect.objectContaining({ provider: { id: deletedProviderId } }),
     ]));
-    const remainingModelValues = afterDelete.availableLlmProvidersWithModels
-      .flatMap(({ models }) => models.map(({ value }) => value));
-    expect(remainingModelValues).not.toEqual(expect.arrayContaining([
-      'gpt-5.5',
-      'synthetic-live-model',
-      'synthetic-unknown-model',
-    ]));
+    const remainingModelProviderIds = afterDelete.availableLlmProvidersWithModels
+      .flatMap(({ models }) => models.map(({ providerId }) => providerId));
+    expect(remainingModelProviderIds).not.toContain(deletedProviderId);
 
     const providerConfig = await readFile(
       path.join(tempDirectory, 'llm', 'custom-llm-providers.json'),

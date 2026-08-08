@@ -27,7 +27,6 @@ export type EnrichedModelInfo = ModelInfo & {
 
 const sourceProvenance = (source: ResolvedMetadataSource): StaticModelMetadata['provenance'] => {
   switch (source.kind) {
-    case 'endpoint_profile':
     case 'inferred_builtin':
     case 'static_definition':
       return source.provenance;
@@ -65,7 +64,6 @@ const preserveCustomResolvedField = (
 ): field is ResolvedMetadataField<number> => {
   if (!field || !validValue(field.value)) return false;
   return field.source.kind === 'live'
-    || field.source.kind === 'endpoint_profile'
     || field.source.kind === 'inferred_builtin';
 };
 
@@ -89,7 +87,7 @@ const coarseProvenanceFor = (
 ): ModelMetadataProvenanceValue => {
   const fields = [metadata.maxContextTokens, metadata.maxInputTokens, metadata.maxOutputTokens];
   if (fields.some((field) => field.source.kind === 'live')) return 'LIVE';
-  if (fields.some((field) => field.source.kind === 'endpoint_profile' || field.source.kind === 'inferred_builtin')) {
+  if (fields.some((field) => field.source.kind === 'inferred_builtin')) {
     return 'CURATED_FALLBACK';
   }
   return fallback;
