@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   supportedModelDefinitions,
 } from 'autobyteus-ts/llm/supported-model-definitions.js';
@@ -9,8 +9,10 @@ import { AudioClientFactory } from 'autobyteus-ts/multimedia/audio/audio-client-
 import { ImageClientFactory } from 'autobyteus-ts/multimedia/image/image-client-factory.js';
 import {
   classifyAutoByteusDiscoveryUnavailable,
+  databaseTargetsMatch,
   runLiveE2eAgentFlow,
   withoutAmbientTestDatabaseUrls,
+  wrapProductAgentBackendForLiveE2e,
 } from '../../../../test-support/live-e2e/live-e2e-harness.js';
 import {
   liveE2eScenarios,
@@ -23,10 +25,14 @@ import {
   readTrackedTestEnvironment,
   removeOwnedTestRuntime,
   resolveTestDatabaseLocation,
+  serverRoot,
   testDatabaseRoot,
   testRuntimeRoot,
   trackedTestEnvironmentPath,
 } from '../../../../test-support/live-e2e/test-runtime-bootstrap.mjs';
+import { ApplicationDatabaseLocation } from '../../../src/config/application-database-location.js';
+import { AgentRunConfig } from '../../../src/agent-execution/domain/agent-run-config.js';
+import { AgentRunContext } from '../../../src/agent-execution/domain/agent-run-context.js';
 import {
   LiveE2eEvidenceScanner,
   runCapturedLiveE2eProcess,
@@ -58,6 +64,75 @@ describe('one-database live E2E runtime and evidence boundary', () => {
       /(?:API_KEY|TOKEN|PASSWORD|SECRET_VALUE|GEMINI_SETUP_MODE|VERTEX_AI_PROJECT)/,
     );
     expect(fs.lstatSync(trackedTestEnvironmentPath).isSymbolicLink()).toBe(false);
+  });
+
+  it('matches one database target by normalized path rather than file URL spelling', () => {
+    const tracked = readTrackedTestEnvironment().database;
+    const application = ApplicationDatabaseLocation.fromConfiguredFileUrl(
+      tracked.databaseUrl,
+      serverRoot,
+    );
+
+    expect(application.databaseUrl).not.toBe(tracked.databaseUrl);
+    expect(databaseTargetsMatch(application, tracked)).toBe(true);
+  });
+
+  it('adapts the raw product backend through the canonical AgentRun event facade', async () => {
+    const runId = 'live-e2e-adapter-run';
+    const context = new AgentRunContext({
+      runId,
+      config: new AgentRunConfig({
+        runtimeKind: 'autobyteus',
+        agentDefinitionId: 'live-e2e-agent-flow',
+        llmModelIdentifier: 'deepseek-v4-flash',
+        autoExecuteTools: false,
+        workspaceId: null,
+        llmConfig: null,
+        skillAccessMode: null,
+      }),
+      runtimeContext: null,
+    });
+    let sourceListener: ((events: readonly unknown[]) => void | Promise<void>) | null = null;
+    const terminate = vi.fn().mockResolvedValue({ accepted: true });
+    const rawBackend = {
+      runId,
+      runtimeKind: context.config.runtimeKind,
+      getContext: () => context,
+      isActive: () => true,
+      getPlatformAgentRunId: () => runId,
+      getLifecycleSnapshot: () => ({
+        availability: 'active',
+        phase: 'idle',
+        currentTurn: { kind: 'NONE' },
+      }),
+      subscribeToSourceEventBatches: (listener: typeof sourceListener) => {
+        sourceListener = listener;
+        return () => {
+          sourceListener = null;
+        };
+      },
+      postUserMessage: async () => {
+        await sourceListener?.([{
+          eventType: AgentRunEventType.ASSISTANT_COMPLETE,
+          runId,
+          payload: { content: 'pong' },
+          statusHint: 'IDLE',
+        }]);
+        return { accepted: true } as const;
+      },
+      approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
+      interrupt: vi.fn().mockResolvedValue({ accepted: true }),
+      terminate,
+    };
+    const run = wrapProductAgentBackendForLiveE2e(rawBackend as never);
+    const observed: AgentRunEventType[] = [];
+    run.subscribeToEvents((event) => observed.push(event.eventType));
+
+    await expect(run.postUserMessage({ text: 'ping' } as never)).resolves.toEqual({ accepted: true });
+    expect(observed).toContain(AgentRunEventType.AGENT_STATUS);
+    expect(observed).toContain(AgentRunEventType.ASSISTANT_COMPLETE);
+    await expect(run.terminate()).resolves.toEqual({ accepted: true });
+    expect(terminate).toHaveBeenCalledTimes(1);
   });
 
   it('accepts only the fixed launch schema and rejects unknown, duplicate, dynamic, or unsafe values', () => {

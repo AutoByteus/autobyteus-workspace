@@ -9,6 +9,8 @@ The latest `code-review-report.md` or `api-e2e-test-review-report.md` remains au
 | CRR-001 | `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/code-review-report.md` | Implementation Review Round 1 / `IR-001` initial implementation | N/A | Fail — Local Fix | CR-001 |
 | CRR-002 | `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/code-review-report.md` | Implementation Review Round 2 / `IR-002` fix for `CR-001` | Fail — Local Fix | Pass | CR-001 resolved |
 | CRR-003 | `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/code-review-report.md` | API/E2E Failure-Origin Review Round 3 / `API-REV-001`, `WS-EGRESS-001` | Pass | Fail — Design Impact | CR-002 |
+| CRR-004 | `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/code-review-report.md` | Implementation Review Round 4 / `IR-003` design-impact rework | Fail — Design Impact | Pass | CR-002 resolved |
+| CRR-005 | `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/api-e2e-test-review-report.md` | API/E2E Test Review Round 1 / `API-REV-002` successful execution | CRR-004 Pass / API-REV-002 Pass | Pass — Proportional Test Review | None |
 
 ## Revision Entries
 
@@ -84,3 +86,55 @@ None.
 - Material score or classification changes: latest advancement result changed from `Pass` to `Fail — Design Impact`. The implementation-review score is not recomputed for this focused failure-origin round and no longer supports advancement while CR-002 is open.
 - Recommended recipient: `solution_designer`
 - Remaining risks or uncertainty: the intended AC-003 outcome is clear, but the solution design must reconcile per-event routine status, lifecycle preservation, content ordering/protocol shape, and the configured rate guarantee before implementation. Broader 10-minute/browser/exact-equality evidence remains correctly deferred.
+
+### CRR-004 — Corrected content-order lane passes full source re-review
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/code-review-report.md`
+- Review entry point and round: `Implementation Review`, Round 4
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/implementation-handoff.md`; `CR-002`, `CR-PREM-001`, retained `WS-EGRESS-001`
+- Relevant solution revision IDs: `SR-001`, `SR-002`
+- Relevant architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`
+- Relevant implementation revision IDs: `IR-001`, `IR-002`, `IR-003`
+- Relevant API/E2E revision IDs: `API-REV-001`
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: `Fail — Design Impact to solution_designer` (`CRR-003`)
+- Current authoritative result: `Pass — advance to api_e2e_engineer`
+- What changed in the review result and why: SR-002/ARCH-REV-002 corrected the companion invariant, and IR-003 implements it inside the existing egress owner. Declared routine companions remain immediate and visible without mutating pending content or the original timer; mergeability derives from the actual pending tail; different identities and dependent/default boundaries retain reviewed ordering. The complete Workspace/default-finalizer path now aligns in source, and focused implementation checks pass.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-001 | Resolved | Remains Resolved | `IR-002`, `CRR-002`, `CRR-004` | IR-003 changes only server egress policy/state and its focused unit test; the retained Settings correction is unaffected. |
+| CR-002 | Open — Design Impact | Resolved at source-review scope | `CRR-003`, `CR-PREM-001`, `SR-002`, `ARCH-PREM-001`, `ARCH-REV-002`, `IR-003`, `CRR-004` | Commit `75b9be359` replaces `SEAL_THEN_SEND` with state-preserving `SEND_WITHOUT_FLUSH`, removes `appendToTailAllowed`, and uses actual-tail equality. Complete default-pipeline source trace aligns; 6 focused server files / 141 tests and build-tsconfig pass; patch checks pass. Unchanged WS-EGRESS-001 remains the first API-REV-002 execution. |
+
+- New or remaining finding IDs: `None`
+- Material score or classification changes: latest result changed from `Fail — Design Impact` to `Pass`; full implementation-review score is `9.56/10` (`95.6/100`) with API/E2E Readiness `9.3`.
+- Recommended recipient: `api_e2e_engineer`
+- Remaining risks or uncertainty: unchanged WS-EGRESS-001, total routine-status volume, and the broader realistic performance/equality/browser plan remain downstream. Existing reconnect, ordered multi-frame, conservative unknown-flush, active-source presentation, broad baseline typecheck, and delivery-doc risks remain unchanged.
+
+### CRR-005 — Durable API/E2E coverage passes proportional review
+
+- Canonical review report created: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/api-e2e-test-review-report.md`
+- Review entry point and round: `Successful API/E2E Test-Code Review`, Round 1
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-coverage-report.md`; `API-REV-002`, `API-SET-001`, `WS-EGRESS-001`, `WS-EGRESS-002`, `WS-EGRESS-003`, `WS-STATUS-001`, `LIVE-E2E-HARNESS-001`
+- Relevant solution revision IDs: `SR-001`, `SR-002`
+- Relevant architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`
+- Relevant implementation revision IDs: `IR-001`, `IR-002`, `IR-003`
+- Relevant API/E2E revision IDs: `API-REV-001`, `API-REV-002`
+- Relevant delivery revision IDs: `N/A`
+- Prior authoritative result: `CRR-004 Pass — advance to api_e2e_engineer`; `API-REV-002 Pass at 97.6% confidence`
+- Current authoritative result: `Pass — advance to delivery_engineer`
+- What changed in the review result and why: The five repository-resident durable coverage/test-support paths added or updated during API/E2E are coherent, requirement-aligned, appropriately isolated, and supported by successful execution evidence. The retained critical WebSocket regression passes unchanged after IR-003; the runtime matrix now matches the approved aggregate; Settings and team contracts are proved; and the normalized-database/canonical-AgentRun harness corrections remain bounded to test infrastructure. No production source or approved behavior changed during API/E2E.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-001 | Resolved | Remains Resolved | `IR-002`, `CRR-002`, `API-REV-002`, `CRR-005` | The affected 13-file web regression passes 140 tests and no Settings fixture recurrence is reported. |
+| CR-002 | Resolved at source-review scope | Confirmed Resolved by API/E2E | `CRR-003`, `SR-002`, `ARCH-REV-002`, `IR-003`, `CRR-004`, `API-REV-002`, `CRR-005` | The exact unchanged WS-EGRESS-001 command passes first. The realistic 600.999-second run preserves 120,220 exact characters while reducing client content frames by 95.712% and keeping 24,049 routine status frames separate and visible. |
+
+- New or remaining finding IDs: `None`
+- Material score or classification changes: `N/A — proportional successful-test review is not source-scored`; result is `Pass`.
+- Recommended recipient: `delivery_engineer`
+- Remaining risks or uncertainty: Chrome validates the changed web-equivalent renderer rather than unchanged Electron-shell code; physical socket-loss replay remains intentionally unsupported; real-provider controls supplement rather than replace deterministic cadence/equality proof. The fixture-local unproxied Nuxt `/rest/health` request is non-blocking because direct backend health and all task assertions passed.

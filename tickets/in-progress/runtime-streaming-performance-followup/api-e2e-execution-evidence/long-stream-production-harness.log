@@ -1,0 +1,25 @@
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+(node:83647) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"type":"HARNESS_READY","address":"http://127.0.0.1:62075","runId":"api-e2e-long-stream","expectedContentEvents":24044,"expectedCharacters":120220,"expectedSha256":"4e5d7aef6b1ca3635dfedd272ebc526de31bc7f66179c7951fa63ab587756807"}
+Agent websocket attached for run api-e2e-long-stream
+Created agent session 82067963-6c9d-488c-9f0d-37e7426e7a48 for run api-e2e-long-stream
+Agent WebSocket connected: session=82067963-6c9d-488c-9f0d-37e7426e7a48, run=api-e2e-long-stream
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-server-ts
+Closed agent session 82067963-6c9d-488c-9f0d-37e7426e7a48
+Agent WebSocket disconnected: 82067963-6c9d-488c-9f0d-37e7426e7a48
+{"type":"HARNESS_SHUTDOWN","signal":"SIGTERM"}

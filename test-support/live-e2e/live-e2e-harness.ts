@@ -44,6 +44,7 @@ import { AgentDefinitionService } from '../../autobyteus-server-ts/src/agent-def
 import { MEMORY_COMPACTOR_AGENT_DEFINITION_ID } from '../../autobyteus-server-ts/src/built-in-agents/built-in-agent-registry.js';
 import { AutoByteusAgentRunBackendFactory } from '../../autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.js';
 import type { AgentRunBackend } from '../../autobyteus-server-ts/src/agent-execution/backends/agent-run-backend.js';
+import { AgentRun } from '../../autobyteus-server-ts/src/agent-execution/domain/agent-run.js';
 import { AgentRunConfig } from '../../autobyteus-server-ts/src/agent-execution/domain/agent-run-config.js';
 import {
   AgentRunEventType,
@@ -72,13 +73,20 @@ export type LiveE2ePreflight = {
 };
 
 export type LiveE2eAgentBackend = Pick<
-  AgentRunBackend,
+  AgentRun,
   'subscribeToEvents' | 'postUserMessage' | 'terminate'
 >;
 
 type LiveE2eAgentBackendFactory = {
   createBackend(config: AgentRunConfig, agentRunId: string): Promise<LiveE2eAgentBackend>;
 };
+
+export const wrapProductAgentBackendForLiveE2e = (
+  backend: AgentRunBackend,
+): LiveE2eAgentBackend => new AgentRun({
+  context: backend.getContext(),
+  backend,
+});
 
 export type LiveE2eAgentFlowResult = {
   scenarioId: string;
@@ -365,6 +373,11 @@ export const withoutAmbientTestDatabaseUrls = async <T>(
   }
 };
 
+export const databaseTargetsMatch = (
+  left: Readonly<{ databasePath: string }>,
+  right: Readonly<{ databasePath: string }>,
+): boolean => path.resolve(left.databasePath) === path.resolve(right.databasePath);
+
 const preflightFromStatus = (
   scenarioId: string,
   requiredSecretId: string,
@@ -456,13 +469,18 @@ export class LiveE2eScenarioExecution {
       getWorkspaceById: () => undefined,
       getOrCreateTempWorkspace: async () => workspace,
     } as unknown as WorkspaceManager;
-    const backendFactory = new AutoByteusAgentRunBackendFactory({
+    const productBackendFactory = new AutoByteusAgentRunBackendFactory({
       agentDefinitionService: definitionService,
       createLLM: (modelIdentifier, configInput) =>
         LLMFactory.createLLM(modelIdentifier, configInput, this.llmResolver),
       workspaceManager,
       compactionAgentRunnerFactory: () => null,
     });
+    const backendFactory: LiveE2eAgentBackendFactory = {
+      createBackend: async (config, runId) => wrapProductAgentBackendForLiveE2e(
+        await productBackendFactory.createBackend(config, runId),
+      ),
+    };
 
     try {
       return await runLiveE2eAgentFlow({
@@ -555,7 +573,7 @@ export class LiveE2eScenarioExecution {
       : {};
     let primaryLlm: BaseLLM | null = null;
     let invocationCapture: InvocationCaptureExtension | null = null;
-    const backendFactory = new AutoByteusAgentRunBackendFactory({
+    const productBackendFactory = new AutoByteusAgentRunBackendFactory({
       agentDefinitionService: definitionService,
       createLLM: async (modelIdentifier, configInput) => {
         const llm = await LLMFactory.createLLM(modelIdentifier, configInput, this.llmResolver);
@@ -566,6 +584,11 @@ export class LiveE2eScenarioExecution {
       },
       workspaceManager,
     });
+    const backendFactory: LiveE2eAgentBackendFactory = {
+      createBackend: async (config, id) => wrapProductAgentBackendForLiveE2e(
+        await productBackendFactory.createBackend(config, id),
+      ),
+    };
     const runId = `live_e2e_compaction_agent_${randomUUID().replace(/-/g, '')}`;
     let backend: LiveE2eAgentBackend | null = null;
     let unsubscribe = (): void => {};
@@ -975,10 +998,10 @@ export class LiveE2eHarness {
       appConfigProvider.resetForTests();
       const config = appConfigProvider.initialize({ appDataDir: runtimeRoot });
       config.initialize();
-      if (
-        config.getOperationalDatabaseLocation().databaseUrl
-        !== tracked.database.databaseUrl
-      ) {
+      if (!databaseTargetsMatch(
+        config.getOperationalDatabaseLocation(),
+        tracked.database,
+      )) {
         throw new Error('LIVE_E2E_DATABASE_TARGET_MISMATCH');
       }
       const selectedRuntime = getSecretVaultRuntime();
