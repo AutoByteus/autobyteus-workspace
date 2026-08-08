@@ -1,39 +1,59 @@
 Delivery integrated-state refresh — DR-004
-Refresh started: 2026-08-08T18:26:48Z
 Ticket branch: codex/custom-provider-model-context-metadata
 Recorded base/finalization target: origin/personal
+
+Initial fresh refresh
+Started: 2026-08-08T18:26:48Z
 Pre-fetch HEAD: 9817d3b1fdcbfec4c5249eb782ae2d9acfb25688
 Pre-fetch HEAD parents: 49736ac6b73436b1643ed7959391bd3e934ae164 647b1119a9dc3ba2ba301243e1b5e752943454db
 Pre-fetch origin/personal: 647b1119a9dc3ba2ba301243e1b5e752943454db
-Pre-fetch divergence (ticket...origin/personal): ahead 7, behind 0
+Command: git fetch origin personal --prune
+Result: exit 0; tracked base initially remained 647b1119a9dc3ba2ba301243e1b5e752943454db
+Initial divergence: ahead 7, behind 0
+Initial integration decision: Already current; IR-007 had integrated the exact fetched base as HEAD^2.
 
-Fresh tracked-base refresh
+Late tracked-base drift detected before handoff
+Detected during final integrated-state audit; delivery did not hand off the stale state.
+Explicit refetch: 2026-08-08T18:33:55Z
 Command: git fetch origin personal --prune
 Result: exit 0
-Post-fetch origin/personal: 647b1119a9dc3ba2ba301243e1b5e752943454db
-Post-fetch divergence (ticket...origin/personal): ahead 7, behind 0
-Ancestor check: git merge-base --is-ancestor origin/personal HEAD
-Ancestor result: exit 0 / yes
+Updated origin/personal: 9ce41640960fc3e2a7b85b85608a4f081fe52df2
+Divergence before late integration: ahead 7, behind 7
+New base scope: seven commits for compaction-lineage origin simplification/finalization. Changed production/test/docs paths were confined to memory/compaction/lineage boundaries plus that ticket's archived artifacts; no Qwen, LLM metadata, AppConfig, provider Settings, GraphQL LLM, or Token Meter path changed.
 
-Integration decision
-Local checkpoint: Not needed. IR-007 had already integrated the exact current tracked base as HEAD^2, and the fresh fetch found no newer base commit.
-Integration method: Already current
-New merge/rebase: Not performed
-Integrated HEAD retained: 9817d3b1fdcbfec4c5249eb782ae2d9acfb25688
+Delivery-safety checkpoint
+Pre-checkpoint tracked diff check: passed
+Staging method: each tracked/untracked path added explicitly; git add . and git add -A were not used.
+Verbatim whitespace-bearing API-REV-005 logs were intentionally left outside the checkpoint rather than rewritten.
+Cached diff check: passed after retaining those logs verbatim outside the checkpoint.
+Checkpoint commit: 694fe3ffb75d42b41a25462346ec9e492b1d3a45
+Checkpoint subject: chore(delivery): checkpoint integrated Qwen handoff artifacts
 
-Post-integration executable check decision
-No additional executable rerun was required by delivery because no base commit was newly integrated. API-REV-005 independently validated the exact retained HEAD and exact current base after CRR-010, including focused/core/web tests, production builds, live GraphQL E2E, browser validation, merge identity, integrity, and cleanup checks. API-REV-004 was not inferred forward.
+Late integration
+Command: git merge --no-edit origin/personal
+Result: exit 0; no conflict
+Integrated HEAD: 894f01ac43b8ace816ca6f78da180507647cc59d
+Merge parents: 694fe3ffb75d42b41a25462346ec9e492b1d3a45 9ce41640960fc3e2a7b85b85608a4f081fe52df2
+Post-merge divergence: ahead 9, behind 0
 
-Docs-sync validation
-Timestamp: 2026-08-08T18:30:25Z
-Command: git diff --check
-Result: exit 0
-Long-lived docs reviewed: seven
-Delivery-owned long-lived docs expanded on integrated state:
-- autobyteus-server-ts/docs/modules/llm_management.md
-- autobyteus-ts/docs/llm_module_design_nodejs.md
-- autobyteus-web/docs/settings.md
-Source/test working-tree modification audit after docs sync: empty
+Required post-integration executable check
+Timestamp: 2026-08-08T18:34:58Z
+Command: corepack pnpm -C autobyteus-ts exec vitest run tests/unit/llm/qwen-provider-config.test.ts tests/unit/llm/supported-model-definitions.test.ts tests/unit/llm/metadata/openai-compatible-endpoint-model-metadata.test.ts tests/unit/llm/openai-compatible-endpoint-provider.test.ts --no-watch
+Result: exit 0; 4 files / 25 tests passed
+Expected local discovery note: unavailable Ollama warning; LM Studio discovery completed. No test failed.
+Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/probes/delivery/post-integration-core-dr-004.log
+
+Docs impact after late integration
+The new base touched memory-lineage documentation only and did not overlap the seven ticket-owned LLM/server/web docs. The previously completed docs sync remains accurate against integrated HEAD. Delivery artifacts were then refreshed to record the final base and smoke evidence.
+
+Final pre-handoff ref confirmation
+Timestamp: 2026-08-08T18:37:32Z
+Command: git fetch origin personal --prune
+Result: exit 0; origin/personal remained 9ce41640960fc3e2a7b85b85608a4f081fe52df2
+Final divergence: ahead 9, behind 0
+Ancestor check: passed
+Tracked diff check: passed
+Source/test working-tree diff after delivery edits: empty
 
 Delivery result
-Pass. The ticket branch remains current with the latest tracked base; API-REV-005 authorizes the integrated source at 96.4% confidence; durable docs are synchronized; the handoff is ready for explicit user verification. Ticket archival, push, final target merge, release/deployment, and cleanup remain on hold until that explicit user signal.
+Pass. Latest tracked base 9ce41640960fc3e2a7b85b85608a4f081fe52df2 is integrated, the relevant post-integration Qwen/metadata smoke passed, durable docs are synchronized, and the handoff is ready for explicit user verification. Ticket archival, push, final target merge, release/deployment, and cleanup remain on hold until that explicit user signal.

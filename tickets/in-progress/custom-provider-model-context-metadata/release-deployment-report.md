@@ -15,15 +15,15 @@ Integrated-state delivery preparation for `custom-provider-model-context-metadat
 ## Initial Delivery Integration Refresh
 
 - Bootstrap base reference: `personal`, tracked as `origin/personal`
-- Latest tracked remote base reference checked: `origin/personal@647b1119a9dc3ba2ba301243e1b5e752943454db`
-- Base advanced since bootstrap or previous refresh: `No` since DR-003; the tracked ref was unchanged.
-- New base commits integrated into the ticket branch: `No` during DR-004; IR-007 already integrated the exact base as `HEAD^2`.
-- Local checkpoint commit result: `Not needed`
-- Integration method: `Already current`
+- Latest tracked remote base reference checked: `origin/personal@9ce41640960fc3e2a7b85b85608a4f081fe52df2`
+- Base advanced since bootstrap or previous refresh: `Yes` — the initial DR-004 fetch was current, then the pre-handoff audit detected seven newly tracked compaction-lineage commits.
+- New base commits integrated into the ticket branch: `Yes`
+- Local checkpoint commit result: `Completed` — `694fe3ffb75d42b41a25462346ec9e492b1d3a45`
+- Integration method: `Merge`
 - Integration result: `Completed`
-- Post-integration executable checks rerun: `No`
+- Post-integration executable checks rerun: `Yes`
 - Post-integration verification result: `Passed`
-- No-rerun rationale: The fresh fetch found no new base commit. `API-REV-005` independently validated exact `HEAD=9817d3b1fdcbfec4c5249eb782ae2d9acfb25688` and exact base `647b1119a9dc3ba2ba301243e1b5e752943454db` after `CRR-010`, including focused tests, builds, live GraphQL E2E, browser validation, integrity, merge identity, and cleanup.
+- No-rerun rationale: N/A. Delivery reran the relevant core exact-metadata/Qwen selection after integrating the late base advance; 4 files / 25 tests passed.
 - Delivery edits started only after integrated state was current: `Yes`
 - Handoff state current with latest tracked remote base: `Yes`
 - Blocker (if applicable): N/A
@@ -56,13 +56,13 @@ Not started; no version bump, release commit, or tag is authorized before user v
 
 - Bootstrap context source: `investigation-notes.md` Environment Discovery / Bootstrap Context
 - Ticket branch: `codex/custom-provider-model-context-metadata`
-- Ticket branch commit result: Not started; only historical delivery-safety and integration commits exist.
+- Ticket branch commit result: Repository-finalization commit not started; delivery-safety checkpoint `694fe3ffb75d42b41a25462346ec9e492b1d3a45` and late integration merge `894f01ac43b8ace816ca6f78da180507647cc59d` are local only.
 - Ticket branch push result: Not started.
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after verification / acceptance: N/A; verification is pending.
-- Delivery-owned edits protected before re-integration: `Not needed`
-- Re-integration before final merge result: `Not needed`
+- Delivery-owned edits protected before re-integration: `Completed` — checkpoint `694fe3ffb75d42b41a25462346ec9e492b1d3a45`
+- Re-integration before final merge result: `Completed` for the pre-verification handoff; a new refresh remains mandatory after user acceptance.
 - Target branch update result: Not started.
 - Merge into target result: Not started.
 - Push target branch result: Not started.
@@ -112,18 +112,21 @@ None.
 
 ## Verification Checks
 
-- `git fetch origin personal --prune`: passed; tracked ref unchanged at `647b1119a9dc3ba2ba301243e1b5e752943454db`.
+- Initial and late `git fetch origin personal --prune`: passed; final tracked ref `9ce41640960fc3e2a7b85b85608a4f081fe52df2`.
+- Final pre-handoff refetch at 2026-08-08T18:37:32Z: passed; tracked ref unchanged.
 - `git merge-base --is-ancestor origin/personal HEAD`: passed.
-- Fresh divergence: ahead 7 / behind 0.
+- Late base merge: passed without conflict; integrated HEAD `894f01ac43b8ace816ca6f78da180507647cc59d`.
+- Fresh divergence: ahead 9 / behind 0.
+- Post-integration core exact-metadata/Qwen check: passed, 4 files / 25 tests.
 - `git diff --check` after docs sync: passed.
 - Source/test working-tree modification audit after docs sync: empty.
 - `CRR-010`: integrated source Pass, 9.40/10.
-- `API-REV-005`: independently re-established integrated Pass at 96.4%; all reported focused/build/live/browser/integrity/cleanup checks passed.
+- `API-REV-005`: independently re-established ticket behavior at 96.4%; all reported focused/build/live/browser/integrity/cleanup checks passed before delivery integrated the unrelated memory-lineage base advance.
 
 ## Rollback Criteria
 
-Before verification, stop without archival, push, target merge, release, deployment, or cleanup. The integrated source is identified by merge commit `9817d3b1fdcbfec4c5249eb782ae2d9acfb25688`, with protected candidate parent `49736ac6b73436b1643ed7959391bd3e934ae164` and base parent `647b1119a9dc3ba2ba301243e1b5e752943454db`.
+Before verification, stop without archival, push, target merge, release, deployment, or cleanup. The current handoff state is merge commit `894f01ac43b8ace816ca6f78da180507647cc59d`, with protected delivery parent `694fe3ffb75d42b41a25462346ec9e492b1d3a45` and current base parent `9ce41640960fc3e2a7b85b85608a4f081fe52df2`. The API-REV-005-authorized ticket merge remains in its history at `9817d3b1fdcbfec4c5249eb782ae2d9acfb25688`.
 
 ## Final Status
 
-`Pass — fresh tracked-base check confirms the API-REV-005-authorized integrated branch is current, docs sync is complete, and the handoff is ready for explicit user verification; repository finalization remains held.`
+`Pass — the late tracked-base advance was protected, merged without conflict, and smoke-verified; docs sync is current and the handoff is ready for explicit user verification; repository finalization remains held.`
