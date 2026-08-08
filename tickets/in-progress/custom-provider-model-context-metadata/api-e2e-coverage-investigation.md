@@ -13,14 +13,36 @@
 - Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/implementation-revision-record.md`
 - Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-report.md`
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-revision-record.md`
-- Delivery Revision Record (delivery re-entry only): `N/A` — prior delivery rounds predate and are superseded by `SR-010`/`SR-011`.
-- Relevant Delivery Revision IDs: `N/A`
+- Delivery Revision Record (delivery re-entry only): `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/delivery-revision-record.md`
+- Relevant Delivery Revision IDs: `DR-003`
 - API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-004`
-- Current Investigation Round: `4`
-- Trigger: `code_reviewer` `CRR-008` proportional durable-test review `Fail — Local Fix` with `TR-002` and `TR-003`; `CRR-007` implementation source remains `Pass`.
-- Prior Investigation Reviewed: `Yes` — round 3/API-REV-003 current-contract decisions and evidence were rechecked against both reviewer findings. Historical `API-REV-001`/`002` remain superseded endpoint-profile history.
-- Latest Authoritative Investigation: `This file — round 4 corrective plan and completed rerun are the current truth.`
+- Current API/E2E Revision ID: `API-REV-005`
+- Current Investigation Round: `5`
+- Trigger: `code_reviewer` integrated-source `CRR-010` `Pass` after `IR-007` resolved delivery blocker `DR-003` by merging protected checkpoint `49736ac6b73436b1643ed7959391bd3e934ae164` with `origin/personal@647b1119a9dc3ba2ba301243e1b5e752943454db` as merge commit `9817d3b1fdcbfec4c5249eb782ae2d9acfb25688`.
+- Prior Investigation Reviewed: `Yes` — API-REV-004/CRR-009 remain useful pre-integration evidence but do not authorize the merge. Every current durable scenario was rechecked for validity against IR-007/CRR-010 and the integrated source before execution.
+- Latest Authoritative Investigation: `This file — round 5 integrated-state investigation and completed execution are current.`
+
+## CRR-010 Integrated-State Coverage Re-investigation
+
+The merge conflict was confined to the production/test AppConfig boundary, but that boundary owns both the runtime database URL and the durable `QWEN_BASE_URL` file commit used by the Qwen lifecycle. Therefore pre-integration unit/API/browser passes were treated as scenario-design evidence only. The integrated built-server lifecycle and browser-equivalent journey executed again against `HEAD=9817d3b1fdcbfec4c5249eb782ae2d9acfb25688` before delivery resumes.
+
+| Surface / Scenario | Current Coverage Decision | Integrated-State Rationale | Completion Evidence |
+| --- | --- | --- | --- |
+| AppConfig durable assignment plus Prisma SQLite URL ownership | `Still Valid — Passed` | The merged source deliberately composes latest-base `toPrismaSqliteUrl` behavior with SR-011 strict same-directory temporary write, fsync, atomic rename, failure cleanup/sanitization, and post-commit publication. Existing focused tests cover both sides without a new contract. | Five files passed with `73 passed / 1 intentional Windows-only skip`; integrated server/shared build and sanitized bootstrap passed. |
+| `QW-E2E-001` configured/default restart state | `Still Valid — Passed` | The existing durable test starts built servers over an owned real runtime/vault/database, proves configured restart, then removes only the optional URL assignment and proves key-only/default restart. This directly crosses the resolved AppConfig conflict. | The integrated Qwen lifecycle E2E passed after a fresh build. |
+| `QW-E2E-003` restart-backed fresh-process routing | `Still Valid — Passed` | CRR-009 verified that the child receives no explicit `QWEN_BASE_URL`. Normal AppConfig startup loads the GraphQL-persisted owned `.env`, and three exact requests assert the stored key, path, and model values. No test edit was required. | All three fresh-process loopback requests passed; integrity recheck confirms no explicit child endpoint override. |
+| `QW-E2E-004` compensation and sanitized failure boundary | `Still Valid — Passed` | The durable test obstructs the real environment commit, checks previous-restored and repair-required GraphQL mappings, and scans owned outputs/files for generated canaries. This is the critical post-merge failure boundary. | The complete lifecycle test passed, including compensation, sanitized GraphQL responses, and secret scans. |
+| `QW-E2E-002` exact native catalog plus `CUS-E2E-001` exact fallback/cleanup | `Still Valid — Passed` | The merge does not revise model requirements or provider ownership. Exact native identifiers/contexts, preview absence, duplicate wire-value ownership, advertised precedence, exact fallback, near-match unknowns, and provider-scoped cleanup remain approved. | Both GraphQL E2E files passed together: `2 files / 4 tests`. |
+| Current Qwen Settings durable web coverage | `Still Valid — Passed` | The merge imports broad current-base web changes but does not conflict in the Qwen Settings owners. The five focused files still directly exercise form, manager, runtime, Apollo, and Pinia recovery semantics. | Five focused Nuxt/Vitest files passed `32/32`; web boundary/localization guards passed. |
+| `QW-BRW-001`–`003` Settings save/recovery browser journey | `Repeated — Passed` | The live backend contains the conflict-resolved AppConfig, so the integrated merge needed a fresh browser run. | Owned Nuxt + built server + loopback provider + Chrome passed. The run forced one post-save settings rejection, held one required query in each reload path to prove success waited, recovered configured Qwen/exact models, and passed 390px overflow checks. |
+| Historical `qwen3.8-max-preview` ledger fixtures | `Still Valid — Passed` | Merge changes do not turn these opaque custom-provider snapshots into native support, an alias, or compatibility behavior. | Inventory/source assertions remain unchanged; native/browser preview absence passed. |
+
+- Durable repository coverage added, updated, or removed in API-REV-005: `No`. Current coverage remained valid and sufficiently direct; this round re-executed it against integrated state.
+- Repository result: `Pass` — core `4 files / 25 tests`; server conflict-focused `5 files / 73 passed / 1 intentional skip`; web `5 files / 32 tests`; integrated server build; GraphQL E2E `2 files / 4 tests`; three web guards.
+- Broader validation decision: `Required and completed — Pass` because the merge changes the backend AppConfig boundary reached by the browser save and the prior browser run did not execute merge commit `9817d3b1f`.
+- Environment and safety plan: use generated canaries, unique SQLite/app-data targets, reserved loopback ports, an owned local OpenAI-compatible provider, and only owned server/Nuxt/Chrome processes. Do not use vendor credentials, stop unowned processes, or mutate shared/user state.
+- Result/confidence after execution: `Pass / 96.4%`. The same numeric score is independently re-established for integrated HEAD; API-REV-004 was not inferred forward.
+- Integrated execution evidence root: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/probes/api-e2e/` (`*-api-rev-005.*`).
 
 ## CRR-008 Corrective Coverage Re-investigation
 
@@ -44,7 +66,7 @@ The review findings are valid bounded test-proof defects and require no requirem
 
 ## Current Requirement And Design Basis
 
-The current reviewed package is `SR-010`/`SR-011`, `ARCH-REV-005`, `IR-006`, and `CRR-007`. It replaces the previously delivered endpoint-profile design. The behavior to prove is:
+The current reviewed package is `SR-010`/`SR-011`, `ARCH-REV-005`, integrated implementation `IR-007`, and integrated source review `CRR-010`. It replaces the previously delivered endpoint-profile design and supersedes pre-integration authorization from IR-006/CRR-007/API-REV-004. The behavior to prove is:
 
 1. Custom OpenAI-compatible discovery preserves valid advertised positive-integer metadata, otherwise fills each field only from an exact `SupportedModelDefinition.value` candidate, and otherwise leaves the field unknown. Endpoint URLs, profiles, aliases, suffixes, case folding, and family matching must not influence this decision (`REQ-001`–`REQ-004`, `REQ-009`; `AC-001`–`AC-006`).
 2. Native Qwen exposes exact wire values `qwen3.8-max`, `deepseek-v4-pro`, and `glm-5.2`, with unique Qwen identifiers for the cross-provider duplicate values and Alibaba-route contexts `1,000,000`, `1,000,000`, and `198,000`. The preview value must not exist as a native definition/profile/alias (`REQ-007`; `AC-009`, `AC-010`).
@@ -149,7 +171,7 @@ The implementation handoff's legacy check is clean. Its persisted-data decision 
 
 ## Stale Or Obsolete Coverage Decisions
 
-No current repository test asserts endpoint profiles, endpoint aliases, or native preview support. The old `API-REV-001`/`API-REV-002` narrative and result are superseded but remain immutable revision history; the canonical reports will be replaced with round-3 current truth.
+No current repository test asserts endpoint profiles, endpoint aliases, or native preview support. The old `API-REV-001`/`API-REV-002` narrative and result are superseded but remain immutable revision history; the canonical reports were replaced beginning with round 3 and now record integrated round 5.
 
 | Path / Scenario | Obsolete Assertion | Why It Is Obsolete | Upstream Evidence | Replacement Coverage | No-Replacement Rationale |
 | --- | --- | --- | --- | --- | --- |
@@ -263,13 +285,15 @@ Execution note: the first local lifecycle-E2E iteration exposed two fixture/harn
 
 ## Investigation Decision
 
-- Proceed To API/E2E Corrective Execution: `Completed`
-- Repository-Resident Durable Coverage Added / Updated / Removed Across Current Contract: `Yes` — one Qwen lifecycle GraphQL E2E remains added, the custom metadata GraphQL E2E remains updated, and both received bounded API-REV-004 corrections; removed none.
+- Proceed To Integrated-State API/E2E Execution: `Completed — Pass`
+- Repository-Resident Durable Coverage Added / Updated / Removed In API-REV-005: `No` — the previously reviewed Qwen lifecycle and custom metadata E2E files remain unchanged at merge commit `9817d3b1f`.
 - Round-3 post-repository confidence: `94.9%`
 - Round-3 broader validation decision: `Required and completed — browser-equivalent Settings run passed`
 - Round-4 broader validation decision: `Not Required — only durable test proof changed; passing production/browser evidence remains applicable`
+- Round-5 broader validation decision: `Required and completed — integrated browser-equivalent Settings recovery passed`
 - Current final confidence: `96.4%`
 - `TR-002` / `TR-003`: `Resolved in API-REV-004 affected rerun`
-- Reroute Required Before Or During Corrective Execution: `No production/design reroute`; proportional re-review is required.
-- Recommended Recipient: `code_reviewer` for proportional re-review of the two corrected durable test paths before delivery.
-- Notes: Historical preview strings remain valid only as opaque persisted custom-model identities, not native support or compatibility behavior. Corrective E2E and integrity checks passed; no product failure ID is open. Delivery remains blocked only on proportional test re-review.
+- Integrated source and prior proportional review: `CRR-010 Pass`; `CRR-009 Pass` remains the review of the unchanged durable test code.
+- Reroute Required: `No` — no product, requirement, design, environment, or test-code failure was found.
+- Recommended Recipient: `delivery_engineer` to restart delivery from a fresh tracked-base refresh against the API-REV-005-authorized integrated state.
+- Notes: Historical preview strings remain valid only as opaque persisted custom-model identities, not native support or compatibility behavior. Integrated repository, lifecycle/API, browser, integrity, and cleanup checks passed. The bounded real-Alibaba residual risk remains explicit.

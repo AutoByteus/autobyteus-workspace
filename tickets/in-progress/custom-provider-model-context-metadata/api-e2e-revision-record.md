@@ -8,6 +8,7 @@
 | API-REV-002 | `code_reviewer` CRR-003 `TR-001`; rerun round `2` | `API-REV-001`, `CRR-003`, `IR-003`, `CRR-002` | `Pass` / `95.3%` | `Pass` / `95.3%` |
 | API-REV-003 | `code_reviewer` CRR-007; current exact-only/Qwen round `3` | `SR-010`–`SR-011`, `ARCH-REV-005`, `IR-006`, `CRR-007` | `Pass` / `95.3%` (historical contract, superseded) | `Pass` / `96.4%` |
 | API-REV-004 | `code_reviewer` CRR-008 `TR-002`/`TR-003`; corrective round `4` | `API-REV-003`, `CRR-008`, `IR-006`, `CRR-007` | `Pass` / `96.4%` execution; proportional review `Fail` | `Pass` / `96.4%`, pending re-review |
+| API-REV-005 | `code_reviewer` CRR-010; integrated-state round `5` after IR-007/DR-003 | `API-REV-004`, `CRR-009`, `DR-003`, `IR-007`, `CRR-010` | Pre-integration `Pass` / `96.4%`; merge not authorized | Integrated `Pass` / `96.4%` |
 
 ## Revision Entries
 
@@ -119,3 +120,40 @@ None. `API-REV-002` had no unresolved failure. The older endpoint-profile result
 - New or remaining failure IDs: `None` in API/E2E execution; `TR-002`/`TR-003` await reviewer closure.
 - Recommended recipient: `code_reviewer` for proportional re-review; then `delivery_engineer` only after a pass.
 - Remaining risks, blocked evidence, or untested scope: Same bounded vendor residual risk as API-REV-003. No additional browser, Electron-shell, worker, or cross-platform execution was needed for test-only corrections.
+
+### API-REV-005 — Integrated AppConfig/Qwen lifecycle and Settings recovery authorization
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-report.md` (`CRR-010`); integrated execution round `5`.
+- Triggering finding or scenario IDs: delivery integration blocker `DR-003`, resolved implementation `IR-007`; revalidation of AppConfig/SQLite integration, `QW-E2E-001`–`004`, `CUS-E2E-001`, `QW-BRW-001`–`003`, and `HIST-001`.
+- Related solution, architecture-review, implementation, code-review, API/E2E, and delivery revisions: `SR-010`–`SR-011`; `ARCH-REV-004`–`ARCH-REV-005`; `IR-007`; `CRR-009`–`CRR-010`; `API-REV-004`; `DR-003`.
+- Integrated state: merge commit `9817d3b1fdcbfec4c5249eb782ae2d9acfb25688`, whose second parent is the recorded `origin/personal@647b1119a9dc3ba2ba301243e1b5e752943454db`.
+- Why this revision was recorded: API-REV-004/CRR-009 passed the protected pre-integration checkpoint but did not authorize a later conflict resolution. The merged AppConfig path owns both Windows-safe Prisma SQLite URL initialization and the strict durable `QWEN_BASE_URL` commit used by Qwen restart/routing. Fresh integrated repository, lifecycle/API, and browser execution was therefore mandatory.
+- Coverage investigation decision: all current durable scenarios remain `Still Valid`; none needed update, replacement, addition, or removal. Historical `qwen3.8-max-preview` ledger fixtures remain valid opaque custom-provider snapshots and not native/alias/compatibility behavior.
+- Durable coverage delta: `None`. The Qwen lifecycle GraphQL E2E and custom-provider metadata GraphQL E2E are byte-unchanged from the CRR-009-reviewed checkpoint.
+- Repository execution:
+  - core exact metadata/Qwen: `4 files / 25 tests passed`;
+  - merged server conflict/Qwen boundary: `5 files / 73 passed / 1 intentional Windows-only skip`;
+  - current Qwen Settings: `5 files / 32 tests passed`;
+  - integrated server/shared build, Prisma generation, built-in-agent bootstrap, and sanitized no-DATABASE_URL smoke: `Pass`;
+  - live GraphQL lifecycle/custom-provider E2E: `2 files / 4 tests passed`;
+  - web boundary, localization boundary, and localization literal audit: `Pass`.
+- Broader validation: `Required and completed — Pass`. Headless Chrome ran through owned Nuxt and the integrated built backend. It saved through the real loopback probe, forced exactly one post-save provider-settings rejection, proved committed configured state and truthful warning, held global provider-settings and selected-provider catalog refreshes to prove neither success notification appeared early, recovered configured Qwen plus exact identifiers, preserved preview absence, and passed a 390px overflow check.
+- Cleanup/security: unique app-data/database/key state removed; owned server/Nuxt/provider/Chrome processes stopped; temporary harness removed; generated secret absent from retained browser evidence and owned logs/runtime files; unowned state untouched.
+
+#### Prior Failure / Authorization Resolution
+
+| Prior Reference | Prior State | API-REV-005 Resolution | Evidence |
+| --- | --- | --- | --- |
+| `DR-003` | Delivery blocked; AppConfig production/test conflicts aborted | `Resolved upstream by IR-007/CRR-010 and executable authorization restored` | Integrated focused/build/lifecycle/browser checks all pass at merge HEAD |
+| `API-REV-004` / `CRR-009` | Pass on pre-integration checkpoint only | `Not inferred; independently re-established` | API-REV-005 logs/evidence under `tickets/in-progress/custom-provider-model-context-metadata/probes/api-e2e/` |
+
+- Canonical artifacts updated:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-execution-coverage-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-revision-record.md`
+- Prior result and confidence: pre-integration API-REV-004 `Pass / 96.4%`, explicitly insufficient to authorize the merge.
+- Current result and confidence: integrated API-REV-005 `Pass / 96.4%`; all applicable categories are at least 95%, every critical current acceptance criterion has direct complementary evidence, and broader validation passed.
+- New or remaining failure IDs: `None`.
+- Proportional durable-test review required: `No`; no durable repository coverage changed in API-REV-005, and CRR-009 already passed the unchanged test code.
+- Recommended recipient: `delivery_engineer` to restart delivery from a fresh tracked-base refresh.
+- Remaining risks: real Alibaba availability, credentials, quota, region policy, TLS behavior, undocumented payload variation, and future drift in source-dated vendor facts were not exercised. The loopback provider proves the approved OpenAI-compatible contract only.

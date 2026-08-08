@@ -14,79 +14,86 @@
 - Relevant Architecture Review Revision IDs: `ARCH-REV-004`, `ARCH-REV-005`
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/implementation-revision-record.md`
-- Relevant Implementation Revision IDs: `IR-004`–`IR-006`; `IR-001`–`IR-003` are superseded
+- Relevant Implementation Revision IDs: `IR-004`–`IR-007`; `IR-007` is current and `IR-001`–`IR-003` are superseded
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-007`
-- Current Review Round: `5`
-- Trigger: `implementation_engineer` handoff of `IR-006` after `CRR-006` / `CR-003`
-- Prior Review Round Reviewed: `CRR-006`
-- Latest Authoritative Round: `CRR-007`
-- Coverage Investigation / Execution Coverage / API-E2E Revision Record: N/A; current API/E2E investigation has not started
-- Relevant API/E2E Revision IDs: N/A; prior API/E2E evidence is superseded
-- Delivery Revision Record / IDs: N/A; prior delivery evidence is superseded
-- Failing Scenario IDs / Commands / Evidence Paths: N/A
+- Current Code Review Revision ID: `CRR-010`
+- Current Review Round: `6`
+- Trigger: `implementation_engineer` handoff of `IR-007` after delivery-stage latest-base blocker `DR-003`
+- Prior Review Round Reviewed: `CRR-007` source Pass and `CRR-009` proportional durable-test Pass, both on pre-integration checkpoint `49736ac6b73436b1643ed7959391bd3e934ae164`
+- Latest Authoritative Round: `CRR-010`
+- Coverage Investigation Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-coverage-investigation.md` as pre-integration context only
+- Execution Coverage Report Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-execution-coverage-report.md` as pre-integration context only
+- API/E2E Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-revision-record.md`
+- Relevant API/E2E Revision IDs: `API-REV-004` is pre-integration evidence and does not authorize merge commit `9817d3b1fdcbfec4c5249eb782ae2d9acfb25688`
+- Delivery Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/delivery-revision-record.md`
+- Relevant Delivery Revision IDs: `DR-003`
+- Failing Scenario IDs / Exact Failing Commands / Failure Evidence Paths: N/A; this is a delivery re-entry source review, not a failure-origin review
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: `IR-006` strengthening of global/provider-specific model reload so both catalog and canonical provider settings refresh unconditionally after the reload mutation; AutoByteus key-save deduplication; full post-Qwen-save failure/retry regression. Unaffected `IR-004`/`IR-005` findings and checks were retained after bounded revalidation.
-- Files / areas reviewed: `autobyteus-web/stores/llmProviderConfig.ts`; production callers in `useProviderApiKeySectionRuntime.ts`; `providerSettingsApolloContract.spec.ts`; `llmProviderConfigStore.test.ts`; current cumulative artifacts and prior `CR-002`/`CR-003` evidence.
-- Explicit exclusions: superseded endpoint-profile API/E2E/delivery results; documented repository-wide typecheck baselines; vendor-fact freshness beyond approved source-dated values; downstream API/E2E/system/browser sign-off.
-- Independent checks: focused web Vitest `5 files / 32 tests` passed; `git diff --check` passed. Prior independently verified core `25/25` and server `63/63` results remain applicable to unaffected source.
+- Changed implementation and behavior reviewed: integration of `origin/personal@647b1119a9dc3ba2ba301243e1b5e752943454db` into protected checkpoint `49736ac6b73436b1643ed7959391bd3e934ae164`, with focused review of the two conflict resolutions. The merged result preserves the base-owned Windows-safe Prisma SQLite URL path and the ticket-owned strict `AppConfig.setDurably` path together.
+- Files / areas reviewed: `autobyteus-server-ts/src/config/app-config.ts`; `application-database-location.ts`; `environment-assignment-file.ts`; `environment-assignment-lines.ts`; `tests/unit/config/app-config.test.ts`; `application-database-location.test.ts`; the production Qwen command/GraphQL callers; current cumulative artifacts; merge parents and combined diff.
+- Explicit exclusions: unrelated changes already owned by the recorded base across its intervening commits; real Alibaba availability/credentials/quota/region/TLS/payload behavior; downstream integrated-state API/E2E/browser sign-off; historical delivery readiness artifacts that `DR-003` explicitly marks blocked/stale.
+- Independent checks: the conflict-focused server command passed `5 files / 73 tests`, with one intentional Windows-only skip; the conflict-resolved-path `git diff --check` passed; no unmerged path or conflict marker exists; `HEAD^2` equals recorded `origin/personal`; divergence is ahead `7`, behind `0`; `app-config.ts` is 496 effective non-empty lines.
+- Retained unaffected evidence: IR-007 reports core exact-metadata/Qwen `4 files / 25 tests`, server production build, web Qwen `5 files / 32 tests`, three web guards/audits, web production build with 15 prerendered routes, and current worktree checks all passing. Pre-integration API/E2E evidence remains useful context but must be reassessed downstream against the merge.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: `SR-010` removes endpoint/profile/alias policy and moves Alibaba routing/model facts to native Qwen. `SR-011` requires a truthful durable pair commit and server-owned `DEFAULT|CONFIGURED` status. `UXJ-001` requires successful save to clear plaintext and refresh provider settings/models.
-- Design-spec behavior map verified against the implementation: Confirmed across `DS-001`–`DS-004` and `LS-001`. `IR-005` preserves authoritative save success; `IR-006` completes the exposed recovery path through both required provider-data owners.
+- Approved requirements basis understood: `SR-010` requires exact-only custom metadata plus native Qwen; `SR-011` requires a truthful, restart-durable Qwen key/URL pair with one strict atomic AppConfig setting commit, bounded previous-secret compensation, and server-owned `DEFAULT|CONFIGURED` status.
+- Design-spec behavior map verified against the implementation: Confirmed across `DS-001`–`DS-004` and `LS-001`. The integration affects the AppConfig node in `DS-001` and preserves its strict commit point while adopting the current base database-location owner.
 - Design review report and round confirmed: `ARCH-REV-005` `Pass`; `PREM-QWEN-001` remains applicable and proportionately implemented.
 - Behavior-basis status: `Confirmed`
-- Changed or newly discovered behavior, if any: None.
+- Changed or newly discovered behavior, if any: None. The base's database URL formatting is relevant preserved existing behavior, not a new ticket behavior.
 - Remaining material ambiguity, if any: None.
 
 | Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Evidence |
 | --- | --- | --- | --- |
-| `BEH-001` | Confirmed | Custom Settings/reload -> shared discovery -> advertised fields -> custom model remains intact. | N/A |
-| `BEH-002` | Confirmed | Resolver receives only the discovered row, indexes exact values, and selects the lowest valid candidate per field. | N/A |
-| `BEH-003` | Confirmed | Reduced source union continues through model/server/token paths; focused preservation tests pass. | N/A |
-| `BEH-004` | Confirmed | Server sequencing/compensation are correct; returned mutation status ends the browser save, clears plaintext, and remains successful across subordinate refresh rejection. | N/A |
-| `BEH-005` | Confirmed | Exact Qwen values/unique overrides are present; `QwenLLM` resolves endpoint at construction. | N/A |
-| `BEH-006` | Confirmed | Server derives source by setting presence; browser renders the enum; post-save failure warns truthfully; both visible reload paths now reissue catalog and canonical provider-settings queries before success. | N/A |
+| `BEH-001` | Confirmed | Custom Settings/reload -> shared discovery -> advertised metadata -> custom model remains unchanged by IR-007. | N/A |
+| `BEH-002` | Confirmed | Resolver still accepts only the discovered row, performs exact built-in-value fallback, and otherwise returns unknown. | N/A |
+| `BEH-003` | Confirmed | Reduced source union and runtime/catalog/token propagation are unchanged; current focused core/server evidence passes. | N/A |
+| `BEH-004` | Confirmed | Settings -> GraphQL -> `LlmProviderService` -> probe/snapshot/key save -> `AppConfig.setDurably` -> status or compensation remains intact. `setDurably` still replaces the file before publishing runtime state. | N/A |
+| `BEH-005` | Confirmed | Exact Qwen values and collision-only identifier overrides remain unchanged; endpoint resolution still occurs at Qwen client construction. | N/A |
+| `BEH-006` | Confirmed | Source remains presence-derived; committed-save truthfulness and both supported provider-data recovery paths are unchanged. | N/A |
 
 ## Structural / Design Checks
 
 | Check | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved | Pass | Generic route policy was removed; native Qwen/AppConfig/provider/form ownership remains explicit. | None. |
-| Implementation matches approved supplemental artifacts | Pass | Form states, durable save, plaintext clearing, status rendering, provider/model refresh, and recovery match `UXJ-001`. | None. |
-| Data-flow spine inventory clarity and preservation | Pass | `DS-001` now traces through committed save, subordinate refresh, truthful warning, supported retry, both refresh owners, and recovered view. Other spines remain unchanged. | None. |
-| Ownership boundary preservation and clarity | Pass | Service, AppConfig, vault, Qwen resolver, metadata resolver, store, and form authority are coherent. | None. |
-| Off-spine concern clarity | Pass | Persistence, discovery, transport, view refresh, and presentation attach to clear owners. | None. |
-| Existing capability/subsystem reuse | Pass | Reuses discovery, vault, AppConfig, model definitions, token, Settings, and existing reload owners. | None. |
-| Reusable owned structures | Pass | Qwen URL policy and environment-file serialization have proper shared owners. | None. |
-| Shared-structure/data-model tightness | Pass | Narrow Qwen input/status and four-kind metadata source; no generalized route or recovery schema. | None. |
-| Repeated coordination ownership | Pass | Pair sequencing is centralized in `LlmProviderService`; provider refresh/reload sequencing is centralized in the Pinia store. | None. |
-| Empty indirection | Pass | Save, post-save refresh, and reload actions each own distinct lifecycle/coordination. | None. |
-| Separation of concerns and file responsibility | Pass | Save and refresh lifecycles remain separated; recovery is strengthened in the existing reload owner. | None. |
-| Ownership-driven dependency | Pass | UI -> store -> GraphQL -> service -> persistence and factory -> adapter -> resolver remain directional. | None. |
-| Authoritative Boundary Rule | Pass | No caller bypasses provider/AppConfig/vault authoritative boundaries. | None. |
-| File placement | Pass | New and changed files match Qwen, config, provider, transport, and Settings owners. | None. |
-| Flat-vs-over-split layout judgment | Pass | Cohesive extractions remain proportionate. | None. |
-| Interface/API/query/command/service boundary clarity | Pass | Save returns authoritative mutation status; post-save refresh is subordinate; reload promises success only after both required client refreshes. | None. |
-| Naming quality and responsibility alignment | Pass | Save, refresh, reload, status, endpoint-source, and exact-fallback names match behavior. | None. |
-| No unjustified duplication | Pass | AutoByteus key save now relies on strengthened reload instead of repeating the provider-settings query. | None. |
-| Patch-on-patch complexity control | Pass | `IR-006` changes existing coordination only and adds no transaction/recovery framework. | None. |
-| Dead/obsolete cleanup completeness | Pass | Production profile/alias/reference/`endpoint_profile`/preview paths remain absent. | None. |
-| Relevant tests are clear and requirement-aligned | Pass | The actual Pinia/runtime/Apollo regression covers initial view -> committed pair -> settings-query failure/cleared state -> real reload mutation/action -> both queries -> recovered provider/model/success. | None. |
-| Fixtures/helpers are reusable and structure coherent | Pass | Existing Pinia/Apollo/runtime builders and document identity are reused. | None. |
-| No stale/duplicated/compatibility-only tests retained | Pass | Profile tests were replaced; historical preview fixture strings remain a downstream validity decision. | None. |
-| API/E2E readiness | Pass | Source findings are resolved; focused checks and complete recovery regression make the package ready for mandatory coverage investigation and broader execution. | Proceed to `api_e2e_engineer`. |
+| Task design health assessment is present, evidence-backed, and preserved | Pass | The merge composes existing database-location, environment-assignment, AppConfig, and provider-command owners rather than duplicating policy. | None. |
+| Implementation matches approved behavior-defining supplemental artifacts | Pass | Qwen form/status/save/recovery behavior is unchanged; the merged server persistence node still satisfies the approved durable-save states. | None. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | `DS-001` remains complete from Settings through the authoritative command, vault and AppConfig commit to truthful result; all other spines are unaffected. | None. |
+| Ownership boundary preservation and clarity | Pass | `ApplicationDatabaseLocation` owns SQLite URL conversion; environment-assignment files own serialization/replacement; AppConfig owns setting publication; `LlmProviderService` owns pair sequencing. | None. |
+| Off-spine concern clarity | Pass | File durability and database URL formatting remain bounded concerns serving AppConfig rather than competing orchestration paths. | None. |
+| Existing capability/subsystem reuse check | Pass | Current code imports `toPrismaSqliteUrl` and the environment-assignment file owner; it adds neither an inline converter nor another serializer. | None. |
+| Reusable owned structures check | Pass | Shared assignment parsing remains in `environment-assignment-lines.ts`; both ordinary and durable writes use the same serializer owner. | None. |
+| Shared-structure/data-model tightness check | Pass | The merge adds no generalized transaction, recovery, offering, producer, route, or compatibility shape. | None. |
+| Repeated coordination ownership check | Pass | Qwen pair policy remains solely in `LlmProviderService`; AppConfig exposes one strict setting boundary without Qwen knowledge. | None. |
+| Empty indirection check | Pass | The extracted URL and environment-file functions perform concrete conversion/serialization/durability work. | None. |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | Conflict resolution chooses both applicable owners instead of absorbing either concern into AppConfig. | None. |
+| Ownership-driven dependency check | Pass | Dependencies point provider command -> AppConfig -> environment-file owner and AppConfig -> database-location owner, with no cycle or shortcut. | None. |
+| Authoritative Boundary Rule check | Pass | The Qwen command calls `AppConfig.setDurably` and does not reach the file helper; AppConfig callers do not combine the outer boundary with its internals. | None. |
+| File placement check | Pass | Database conversion and environment replacement remain under server config; Qwen coordination remains under provider service. | None. |
+| Flat-vs-over-split layout judgment | Pass | Two small config concerns plus the established AppConfig owner are readable and proportionate. | None. |
+| Interface/API/query/command/service-method boundary clarity | Pass | `setDurably(key,value): {persisted:true}` remains one-setting and synchronous; GraphQL/service interfaces remain Qwen-specific and truthful. | None. |
+| Naming quality and naming-to-responsibility alignment check | Pass | `toPrismaSqliteUrl`, `replaceEnvironmentAssignmentFileDurably`, and `setDurably` state their distinct responsibilities directly. | None. |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | Base inline assignment handling was not retained beside the extracted ticket owner, and the old path-to-file-URL expression was replaced by the base converter. | None. |
+| Patch-on-patch complexity control | Pass | The combined diff is a direct owner reconciliation with no compatibility branch or secondary commit path. | None. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | No superseded converter/serializer or conflict residue remains; earlier profile/alias/reference/preview production machinery remains absent. | None. |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | The combined AppConfig suite retains base database URL/import cases and ticket durable success, pre-commit failure, cleanup, initialization and sensitive-key cases. | None. |
+| Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | Existing temporary app-data setup and shared `toPrismaSqliteUrl` expectation owner are reused. | None. |
+| No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | Tests assert current database and durable-setting contracts; no duplicated path-to-file URL expectation remains. | None. |
+| API/E2E readiness for the next workflow stage | Pass | Integrated source and focused conflict coverage pass with no open finding; current coverage applicability/execution remains a mandatory downstream gate. | Proceed to `api_e2e_engineer`. |
 
 ## Source File Size And Structure Audit
 
-Tests, generated GraphQL, localization resources, and documentation are excluded from source-size thresholds.
+Tests, generated GraphQL, localization resources, and documentation are excluded from source-size thresholds. Unaffected ticket files retain their prior structural assessment; current counts were rechecked after integration.
 
 | Source File | Effective Non-Empty Lines | `>500` | `>220` Delta Check | SoC / Ownership | Placement | Classification | Required Action |
 | --- | ---: | --- | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/src/config/app-config.ts` | 496 | Pass | Triggered; helper extracted | Pass | Pass | Accept | Monitor only. |
+| `autobyteus-server-ts/src/config/app-config.ts` | 496 | Pass | Triggered; both reusable concerns are external owners | Pass | Pass | Accept | Avoid unrelated growth. |
+| `autobyteus-server-ts/src/config/application-database-location.ts` | 65 | Pass | N/A | Pass | Pass | Accept | None. |
+| `autobyteus-server-ts/src/config/environment-assignment-file.ts` | 85 | Pass | N/A | Pass | Pass | Accept | None. |
+| `autobyteus-server-ts/src/config/environment-assignment-lines.ts` | 14 | Pass | N/A | Pass | Pass | Accept | None. |
 | `autobyteus-ts/src/llm/supported-model-definitions.ts` | 479 | Pass | Triggered; Qwen definitions extracted | Pass | Pass | Accept | None. |
 | `autobyteus-server-ts/src/llm-management/llm-providers/services/llm-provider-service.ts` | 474 | Pass | Triggered; cohesive command/status | Pass | Pass | Accept | None. |
 | `autobyteus-server-ts/src/api/graphql/types/llm-provider.ts` | 417 | Pass | Triggered; existing transport owner | Pass | Pass | Accept | None. |
@@ -102,7 +109,6 @@ Tests, generated GraphQL, localization resources, and documentation are excluded
 | `autobyteus-ts/src/llm/openai-compatible-endpoint-provider.ts` | 118 | Pass | N/A | Pass | Pass | Accept | None. |
 | `autobyteus-web/stores/llmProviderConfigSupport.ts` | 103 | Pass | N/A | Pass | Pass | Accept | None. |
 | `autobyteus-web/graphql/mutations/llm_provider_mutations.ts` | 90 | Pass | N/A | Pass | Pass | Accept | None. |
-| `autobyteus-server-ts/src/config/environment-assignment-file.ts` | 85 | Pass | N/A | Pass | Pass | Accept | None. |
 | `autobyteus-server-ts/src/llm-management/llm-providers/domain/models.ts` | 68 | Pass | N/A | Pass | Pass | Accept | None. |
 | `autobyteus-ts/src/llm/qwen-supported-model-definitions.ts` | 66 | Pass | N/A | Pass | Pass | Accept | None. |
 | `autobyteus-ts/src/llm/index.ts` | 17 | Pass | N/A | Pass | Pass | Accept | None. |
@@ -114,22 +120,22 @@ Tests, generated GraphQL, localization resources, and documentation are excluded
 
 | Check | Result | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms | Pass | Absent `QWEN_BASE_URL` is current default semantics, not a version branch. |
-| No legacy old-behavior retention | Pass | Profiles, aliases, URL identity, and preview definition are removed. |
-| Dead/obsolete cleanup completeness | Pass | Production searches found no obsolete identifiers. |
-| Persisted-data transition decision followed | Pass | Existing key is directly usable; URL is optional. |
-| No version-specific dual reads/writes or fallback | Pass | One current configured/default runtime path exists. |
-| Transition mechanics match reviewed design | Pass | Temp write/fsync/rename precedes runtime publication; compensation is command-local. |
+| No backward-compatibility mechanisms in changed scope | Pass | Absent `QWEN_BASE_URL` remains current default semantics, not a version branch; latest-base path handling is current database behavior. |
+| No legacy old-behavior retention in changed scope | Pass | Profiles, aliases, URL identity, and preview definition remain removed. |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | No duplicate database converter, inline assignment serializer, or merge residue remains. |
+| Approved persisted-data transition decision is followed without unnecessary migration work | Pass | Existing key and SQLite URLs are directly usable; optional Qwen URL still has defined default semantics. |
+| No version-specific dual reads/writes or request-time old-shape fallback exists | Pass | One current AppConfig/database path and one current Qwen configured/default path exist. |
+| Approved transition mechanics match the reviewed design | Pass | Same-directory temp write/fsync/rename precedes runtime publication; key compensation remains command-local. |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal
 
-None in implementation source. Historical `qwen3.8-max-preview` token-usage fixture strings are not native definitions or compatibility aliases; API/E2E must classify their continuing validity.
+None in implementation source. Historical `qwen3.8-max-preview` token-ledger fixture strings remain classified by current API/E2E artifacts as opaque custom-provider identity/display data rather than native compatibility machinery.
 
 ## Docs-Impact Verdict
 
 - Docs impact: `Yes`
-- Why: Metadata precedence/source meanings, native Qwen setup/models, configured/default behavior, and post-save provider refresh are durable concepts.
-- Files or areas likely affected: changed core/server/web provider, model-catalog, token, and Settings docs; delivery must revalidate against the integrated base after API/E2E.
+- Why: Metadata precedence/source meanings, native Qwen setup/models, configured/default behavior, and strict persistence are durable concepts.
+- Files or areas likely affected: current long-lived provider/model/Settings documentation. Existing delivery docs are not current against the integrated state; delivery must re-evaluate them only after integrated API/E2E gates pass.
 
 ## Material Premise Validation
 
@@ -137,50 +143,32 @@ None in implementation source. Historical `qwen3.8-max-preview` token-usage fixt
 
 | Premise ID | Current Status | Changed Evidence / Reason |
 | --- | --- | --- |
-| `PREM-QWEN-001` | Confirmed | `setDurably` and command-local compensation implement the approved reachable URL-write failure response. |
+| `PREM-QWEN-001` | Confirmed | The integrated `setDurably` still implements the approved response to a reachable pre-commit URL-write failure; database URL integration does not alter that lifecycle. |
 
-### `PREM-QWEN-002` — A post-commit refresh failure is reported as a Qwen save failure
-
-- Origin: `New at CRR-005`
-- Related approved requirement or established contract: `BEH-004`; `REQ-005`, `REQ-011`; `AC-007`; `UXJ-001`.
-- Relevant behavior ID(s): `BEH-004`, `BEH-006`
-- Independent supported trigger and path: Settings > API Keys > Qwen -> Save configuration -> committed mutation -> subordinate provider-data refresh rejection.
-- Reachability: `Reachable`
-- Current consequence / response: `IR-005` resolves the defect: the committed status remains authoritative, plaintext clears, and rejection produces only a warning. Preserve this separation.
-
-### `PREM-QWEN-003` — The advertised Reload Models recovery skips provider settings after that refresh fails
-
-- Origin: `New at CRR-006`
-- Related approved requirement or established contract: `BEH-006`; `UXJ-001` step 8; successful-save provider settings/model refresh contract; the warning's explicit Reload Models recovery instruction.
-- Relevant behavior ID(s): `BEH-004`, `BEH-006`
-- Independent product-supported initiating trigger or applicable governing contract: On Settings > API Keys > Qwen, the user saves a valid pair; a supported provider-query rejection produces the warning; the user invokes the visible top-level Reload Models action named by that warning.
-- Forward production path: `Qwen save -> committed status -> provider-settings refresh rejection/cleared flag -> warning -> Reload Models -> reload mutation -> Promise.all(catalog network refresh, canonical provider-settings network refresh) -> both state owners recovered -> success notification`.
-- Lifecycle preconditions and material consequence: The original defect skipped provider settings after its failure cleared `hasFetchedProviderSettings`. `IR-006` removes that gate from both supported Settings reload paths and their callers are confined to Settings/AutoByteus key-save production paths. Success now follows both refreshes; either new failure rejects and reports reload failure.
-- Reachability: `Reachable`
-- Review consequence / proportionate response: `CR-003` is resolved by a bounded change in the existing reload owner and a full production-path regression. No generalized recovery machinery was added.
+No new or reclassified material premise is needed. `PREM-QWEN-002` and `PREM-QWEN-003` remain reachable and resolved exactly as recorded at CRR-005–CRR-007; IR-007 does not touch their frontend recovery paths.
 
 ## Review Scorecard
 
-- Overall score (`/10`): `9.37`
-- Overall score (`/100`): `93.7`
-- Score calculation note: Simple average. Every category meets the clean-pass threshold; the decision also depends on confirmed behavior, resolved findings, and passed mandatory checks.
+- Overall score (`/10`): `9.40`
+- Overall score (`/100`): `94.0`
+- Score calculation note: Simple average. Every category meets the clean-pass threshold; the decision also depends on confirmed behavior, preserved integration contracts, passed mandatory checks, and no open findings.
 
-| Priority | Category | Score | Why This Score | Weakness | Improvement |
+| Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | ---: | --- | --- | --- |
-| `1` | Data-Flow Spine Inventory and Clarity | 9.4 | Exact metadata and Qwen save/runtime/recovery spines are complete from supported trigger to meaningful outcome. | Broader runtime execution remains downstream. | Confirm with API/E2E. |
-| `2` | Ownership Clarity and Boundary Encapsulation | 9.4 | Server/config/vault/Qwen/store/form owners are explicit with no mixed-level dependency. | No material source weakness. | Preserve current boundaries. |
-| `3` | API / Interface / Query / Command Clarity | 9.4 | Qwen command/status are narrow; web save, refresh, and reload semantics are truthful and distinct. | No material source weakness. | Preserve result semantics. |
-| `4` | Separation of Concerns and File Placement | 9.2 | Cohesive extractions and existing-owner fixes avoid fragmentation. | Several established owners remain near 500 lines. | Avoid unrelated growth. |
-| `5` | Shared-Structure / Data-Model Tightness and Reusable Structures | 9.4 | Minimal Qwen types and reduced metadata source union avoid generalized schema. | None material. | None. |
-| `6` | Naming Quality and Local Readability | 9.4 | Durable write, endpoint source, exact fallback, save, refresh, and reload names match behavior. | None material. | None. |
-| `7` | API/E2E Readiness | 9.1 | Focused checks and full recovery regression pass with no open source finding. | Mandatory independent coverage investigation/system execution has not started. | Proceed downstream. |
-| `8` | Runtime Correctness And Behavioral Fidelity | 9.4 | Metadata, endpoint, catalog, durability, compensation, status, save truthfulness, and retry recovery match approved behavior. | Real restart/vendor/runtime evidence remains downstream. | Execute planned API/E2E scenarios. |
-| `9` | No Backward-Compatibility / No Legacy Retention | 9.6 | Obsolete production paths are removed without migration or compatibility machinery. | Historical preview-fixture validity remains downstream. | Classify during coverage investigation. |
-| `10` | Cleanup Completeness | 9.4 | Obsolete policy is removed and the AutoByteus duplicate refresh was eliminated. | Prior downstream ticket evidence is historical. | Regenerate current downstream evidence. |
+| `1` | Data-Flow Spine Inventory and Clarity | 9.4 | Exact metadata and Qwen save/runtime/recovery spines remain complete; the integrated AppConfig commit node is explicit. | Integrated broader execution remains downstream. | Revalidate applicable API/E2E spines. |
+| `2` | Ownership Clarity and Boundary Encapsulation | 9.5 | Database URL conversion, assignment replacement, setting publication, and Qwen pair sequencing have distinct owners with no mixed-level dependency. | No material source weakness. | Preserve these boundaries. |
+| `3` | API / Interface / Query / Command Clarity | 9.4 | The one-setting durable result, Qwen command/status, and frontend save/reload semantics remain narrow and truthful. | No material source weakness. | Preserve result semantics. |
+| `4` | Separation of Concerns and File Placement | 9.3 | Conflict resolution reuses two dedicated config concerns rather than expanding AppConfig responsibilities. | Several established owners remain near 500 lines. | Avoid unrelated growth. |
+| `5` | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.5 | Shared parsing/conversion owners are reused; no generalized transaction or route schema exists. | None material. | None. |
+| `6` | Naming Quality and Local Readability | 9.4 | Durable replacement, Prisma URL conversion, endpoint source, save, refresh, and reload names match behavior. | None material. | None. |
+| `7` | API/E2E Readiness | 9.1 | Integrated source and conflict-focused checks pass with no open source finding. | Pre-integration API-REV-004/CRR-009 do not authorize the merge. | Revisit coverage applicability and execute integrated checks. |
+| `8` | Runtime Correctness And Behavioral Fidelity | 9.4 | Both sides of the conflict are preserved, including post-commit-only publication and Windows-safe Prisma URL formatting. | Real restart/vendor/browser evidence for the merge remains downstream. | Execute applicable integrated API/E2E scenarios. |
+| `9` | No Backward-Compatibility / No Legacy Retention | 9.6 | Obsolete production policy remains removed without migration or compatibility machinery. | None material. | Preserve the clean current path. |
+| `10` | Cleanup Completeness | 9.4 | No conflict markers, unmerged paths, duplicate converters/serializers, or obsolete production paths remain. | Delivery artifacts correctly remain blocked/stale until downstream validation. | Refresh them only in delivery. |
 
 ## Findings
 
-None. `CR-002` was resolved by `IR-005`; `CR-003` is resolved by `IR-006` and verified in the current source and focused regression suite.
+None. `CR-002` and `CR-003` remain resolved. `DR-003` was an integration blocker rather than a source finding; IR-007 resolves it by preserving both governing contracts, and the current source/diff/focused execution show no new defect.
 
 ## Classification
 
@@ -188,21 +176,21 @@ N/A — implementation review passes.
 
 ## Recommended Recipient
 
-`api_e2e_engineer` for the mandatory coverage investigation and current API/E2E/broader executable validation.
+`api_e2e_engineer` to revisit the current coverage investigation and run the applicable integrated-state API/E2E/broader executable checks before delivery resumes.
 
 ## Residual Risks
 
-- API/E2E must validate restart durability, real probe/request routing, GraphQL fault paths, browser behavior, and preview-fixture validity.
+- `API-REV-004` and `CRR-009` cover the pre-integration checkpoint, not merge commit `9817d3b1fdcbfec4c5249eb782ae2d9acfb25688`; coverage applicability and execution must be refreshed downstream.
+- Real Alibaba availability, credentials, quota, region policy, TLS behavior, and undocumented payload variation were not exercised.
 - Vendor context facts remain source-dated.
-- Repository-wide server/web typecheck baselines remain as documented; focused tests/builds are green.
-- The branch remains behind its tracked base; delivery owns later integration refresh.
+- Repository-wide server/web typecheck baselines remain as documented; current focused tests and production builds are green.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
 - Review Entry Point: `Implementation Review`
-- Material-Premise Gate: `Pass` — `PREM-QWEN-001` remains confirmed; `PREM-QWEN-002` and `PREM-QWEN-003` remain reachable and their defects are resolved proportionately.
-- Score Summary: `9.37/10` (`93.7/100`); every category is at least `9.0`.
+- Material-Premise Gate: `Pass` — `PREM-QWEN-001` remains confirmed; no new or reclassified premise is needed.
+- Score Summary: `9.40/10` (`94.0/100`); every category is at least `9.0`.
 - Failure Origin: N/A.
 - Recommended Recipient: `api_e2e_engineer`
-- Notes: Exact-only metadata, native Qwen runtime/catalog, strict persistence, compensation, sanitized errors, server-owned status, authoritative committed-save handling, and complete visible retry recovery pass source review. API/E2E must begin with the required coverage investigation against this current package.
+- Notes: Merge commit `9817d3b1fdcbfec4c5249eb782ae2d9acfb25688` passes integrated source review. It retains latest-base Prisma SQLite URL ownership and SR-011 strict AppConfig durability without duplicate policy or recovery machinery. Delivery remains blocked pending applicable integrated-state API/E2E validation and any required subsequent durable-test review.

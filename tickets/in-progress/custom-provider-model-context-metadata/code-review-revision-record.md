@@ -13,6 +13,7 @@
 | CRR-007 | `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-report.md` | Source re-review of IR-006 after CRR-006 | `Fail` | `Pass` | `CR-003` resolved |
 | CRR-008 | `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-test-review-report.md` | Proportional current-contract durable-test review after API-REV-003 | `Pass` (API/E2E execution) | `Fail` (test review) | `TR-002`, `TR-003` |
 | CRR-009 | `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-test-review-report.md` | Proportional re-review after API-REV-004 | `Fail` (CRR-008 test review) | `Pass` (test review) | `TR-002`, `TR-003` resolved |
+| CRR-010 | `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-report.md` | Integrated source re-review of IR-007 after DR-003 latest-base conflict | `Pass` on pre-integration source/test state; delivery blocked | `Pass` (integrated source) | None |
 
 ## Revision Entries
 
@@ -251,3 +252,27 @@ None. `TR-001` was resolved at `CRR-004` on the superseded endpoint-profile cove
 - Material score or classification changes: Proportional test review `Fail — Local Fix` -> `Pass`; implementation source remains `CRR-007` `Pass`; API/E2E confidence remains `96.4%`.
 - Recommended recipient: `delivery_engineer`
 - Remaining risks or uncertainty: Real Alibaba availability, credentials, quota/region/TLS, and undocumented vendor payload variation remain the bounded external residual risk. No test-review blocker remains.
+
+
+### CRR-010 — Integrated source re-review: AppConfig contracts coexist on latest base
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `6`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/implementation-handoff.md`; `IR-007`; delivery blocker `DR-003`; no new `CR-*` finding
+- Relevant solution revision IDs: `SR-010`, `SR-011`
+- Relevant architecture-review revision IDs: `ARCH-REV-004`, `ARCH-REV-005`
+- Relevant implementation revision IDs: `IR-004`–`IR-007`
+- Relevant API/E2E revision IDs: `API-REV-003`, `API-REV-004` as pre-integration context only
+- Relevant delivery revision IDs: `DR-003`
+- Prior authoritative result: `CRR-007` source review and `CRR-009` durable-test review passed checkpoint `49736ac6b73436b1643ed7959391bd3e934ae164`; delivery then blocked because latest-base integration conflicted in AppConfig production/test paths. Those passes did not authorize an unresolved or subsequently merged state.
+- Current authoritative result: `Pass` — merge commit `9817d3b1fdcbfec4c5249eb782ae2d9acfb25688` preserves both current-base `toPrismaSqliteUrl` ownership/Windows-safe Prisma URL behavior and SR-011 strict AppConfig durability. The combined test file preserves both contracts, and no duplicate converter, serializer, compatibility path, generalized transaction, or merge residue remains.
+- What changed in the review result and why: Completed a fresh integrated-source review of both conflict paths, their supporting owners, production caller, merge topology, current artifacts, and retained behavior map. Independent execution passed the five conflict-focused server files with `73 passed / 1 skipped`; path-scoped whitespace/integrity checks passed; the branch is ahead `7`, behind `0` relative to the exact recorded base.
+
+#### Prior Finding Resolution
+
+None. `CR-002` and `CR-003` were already resolved before the integration. `DR-003` was a delivery integration blocker, not a source finding; IR-007 resolves it and this review verifies the resulting source.
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: Integrated source remains `Pass`; source score changes from pre-integration `9.37/10` to current `9.40/10`. Every category remains at least `9.0`; the small increase reflects reuse of the current base's dedicated database URL owner without duplication.
+- Recommended recipient: `api_e2e_engineer` for applicable integrated-state coverage investigation/execution before delivery resumes.
+- Remaining risks or uncertainty: `API-REV-004` and `CRR-009` validated the pre-integration checkpoint, not the merge. Real Alibaba availability, credentials, quota/region/TLS, and undocumented payload variation remain the bounded external residual risk. Vendor facts remain source-dated.

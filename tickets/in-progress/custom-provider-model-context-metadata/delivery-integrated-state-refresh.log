@@ -1,50 +1,39 @@
-Delivery integrated-state refresh
-Timestamp: 2026-08-03T07:24:04Z
+Delivery integrated-state refresh — DR-004
+Refresh started: 2026-08-08T18:26:48Z
 Ticket branch: codex/custom-provider-model-context-metadata
-Recorded base: origin/personal
-Fetch: git fetch origin personal --prune
-Tracked remote base after fetch: ba6ebc2a2fbf56f17ee6bbb965f3f153307db3d2
-Pre-refresh reviewed candidate checkpoint: e86bf82e7
-Integration: git merge --no-edit origin/personal
-Integrated HEAD: 36ebd83fb87df7608cbdbbd8de26750d4ee49ed9
-Merge parents: e86bf82e7c67ab069608ef515e96e8f164891aff ba6ebc2a2fbf56f17ee6bbb965f3f153307db3d2
+Recorded base/finalization target: origin/personal
+Pre-fetch HEAD: 9817d3b1fdcbfec4c5249eb782ae2d9acfb25688
+Pre-fetch HEAD parents: 49736ac6b73436b1643ed7959391bd3e934ae164 647b1119a9dc3ba2ba301243e1b5e752943454db
+Pre-fetch origin/personal: 647b1119a9dc3ba2ba301243e1b5e752943454db
+Pre-fetch divergence (ticket...origin/personal): ahead 7, behind 0
 
-Status after merge:
-## codex/custom-provider-model-context-metadata...origin/personal [ahead 5]
-?? tickets/in-progress/custom-provider-model-context-metadata/delivery-integrated-state-refresh.log
+Fresh tracked-base refresh
+Command: git fetch origin personal --prune
+Result: exit 0
+Post-fetch origin/personal: 647b1119a9dc3ba2ba301243e1b5e752943454db
+Post-fetch divergence (ticket...origin/personal): ahead 7, behind 0
+Ancestor check: git merge-base --is-ancestor origin/personal HEAD
+Ancestor result: exit 0 / yes
 
-Ticket commits retained in integrated history:
-e86bf82e7 chore(delivery): checkpoint reviewed custom provider metadata
-e66b13c19 Guard endpoint profiles against URL variants
-b8f1dce50 Add endpoint-scoped DeepSeek wire alias
-d2b6ecbea Add custom provider model context metadata
+Integration decision
+Local checkpoint: Not needed. IR-007 had already integrated the exact current tracked base as HEAD^2, and the fresh fetch found no newer base commit.
+Integration method: Already current
+New merge/rebase: Not performed
+Integrated HEAD retained: 9817d3b1fdcbfec4c5249eb782ae2d9acfb25688
 
-Post-integration executable check
-Command: corepack pnpm -C autobyteus-ts exec vitest run tests/unit/llm/openai-compatible-endpoint-discovery.test.ts tests/unit/llm/openai-compatible-endpoint-provider.test.ts tests/unit/llm/models.test.ts --no-watch
-2026-08-03T07:24:14Z
+Post-integration executable check decision
+No additional executable rerun was required by delivery because no base commit was newly integrated. API-REV-005 independently validated the exact retained HEAD and exact current base after CRR-010, including focused/core/web tests, production builds, live GraphQL E2E, browser validation, merge identity, integrity, and cleanup checks. API-REV-004 was not inferred forward.
 
- RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-ts
+Docs-sync validation
+Timestamp: 2026-08-08T18:30:25Z
+Command: git diff --check
+Result: exit 0
+Long-lived docs reviewed: seven
+Delivery-owned long-lived docs expanded on integrated state:
+- autobyteus-server-ts/docs/modules/llm_management.md
+- autobyteus-ts/docs/llm_module_design_nodejs.md
+- autobyteus-web/docs/settings.md
+Source/test working-tree modification audit after docs sync: empty
 
- ✓ tests/unit/llm/openai-compatible-endpoint-discovery.test.ts (6 tests) 16ms
- ✓ tests/unit/llm/models.test.ts (4 tests) 4ms
-stdout | tests/unit/llm/openai-compatible-endpoint-provider.test.ts > LLMFactory custom provider sync > registers discovered models and instantiates with separately supplied authentication
-Discovering Ollama models from host: http://127.0.0.1:11434
-
-stderr | tests/unit/llm/openai-compatible-endpoint-provider.test.ts > LLMFactory custom provider sync > registers discovered models and instantiates with separately supplied authentication
-Could not connect to Ollama server at http://127.0.0.1:11434. Ensure it's running. fetch failed
-
-stdout | tests/unit/llm/openai-compatible-endpoint-provider.test.ts > LLMFactory custom provider sync > registers discovered models and instantiates with separately supplied authentication
-Discovering LM Studio models from host: http://127.0.0.1:1234
-
-stderr | tests/unit/llm/openai-compatible-endpoint-provider.test.ts > LLMFactory custom provider sync > registers discovered models and instantiates with separately supplied authentication
-Could not connect to LM Studio at http://127.0.0.1:1234. Ensure the server is running. fetch failed
-
- ✓ tests/unit/llm/openai-compatible-endpoint-provider.test.ts (6 tests) 20ms
-
- Test Files  3 passed (3)
-      Tests  16 passed (16)
-   Start at  09:24:14
-   Duration  901ms (transform 427ms, setup 54ms, import 1.09s, tests 40ms, environment 0ms)
-
-Post-integration executable check exit: 0
-Completed: 2026-08-03T07:24:15Z
+Delivery result
+Pass. The ticket branch remains current with the latest tracked base; API-REV-005 authorizes the integrated source at 96.4% confidence; durable docs are synchronized; the handoff is ready for explicit user verification. Ticket archival, push, final target merge, release/deployment, and cleanup remain on hold until that explicit user signal.

@@ -1,72 +1,129 @@
 # Delivery / Release / Deployment Report
 
-## Scope
+## Release / Publication / Deployment Scope
 
-This is the initial delivery-stage result for `custom-provider-model-context-metadata`. The reviewed implementation is integrated with the latest tracked `origin/personal`, durable documentation is synchronized, and the handoff is ready for explicit user verification. No release, publication, deployment, ticket archival, or repository finalization is authorized yet.
+Integrated-state delivery preparation for `custom-provider-model-context-metadata`. The ticket is current with the latest tracked `origin/personal`, documentation is synchronized, and the handoff is ready for explicit user verification. Repository finalization and any conditional release/publication remain held.
+
+## Handoff Summary
+
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/handoff-summary.md`
+- Handoff summary status: `Updated`
+- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/delivery-revision-record.md`
+- Current delivery revision ID: `DR-004`
+- Notes: The earlier endpoint-profile delivery and v1.4.40 Electron evidence are superseded.
 
 ## Initial Delivery Integration Refresh
 
-- Bootstrap / recorded base: `origin/personal`
-- Latest tracked base after `git fetch origin personal --prune`: `ba6ebc2a2fbf56f17ee6bbb965f3f153307db3d2`
-- Base advanced beyond the previously reviewed base: `Yes` — the branch was 47 commits behind before refresh.
-- Local checkpoint before integration: `Completed` — `e86bf82e7`.
-- Integration method: `git merge --no-edit origin/personal`
-- Integration result: `Completed` — merge commit `36ebd83fb87df7608cbdbbd8de26750d4ee49ed9`.
-- Post-integration executable check: `Passed` — 3 TypeScript LLM test files / 16 tests.
-- Post-integration check log: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/delivery-integrated-state-refresh.log`
-- Delivery edits started only after integration: `Yes`.
-- Blocker: `N/A`.
+- Bootstrap base reference: `personal`, tracked as `origin/personal`
+- Latest tracked remote base reference checked: `origin/personal@647b1119a9dc3ba2ba301243e1b5e752943454db`
+- Base advanced since bootstrap or previous refresh: `No` since DR-003; the tracked ref was unchanged.
+- New base commits integrated into the ticket branch: `No` during DR-004; IR-007 already integrated the exact base as `HEAD^2`.
+- Local checkpoint commit result: `Not needed`
+- Integration method: `Already current`
+- Integration result: `Completed`
+- Post-integration executable checks rerun: `No`
+- Post-integration verification result: `Passed`
+- No-rerun rationale: The fresh fetch found no new base commit. `API-REV-005` independently validated exact `HEAD=9817d3b1fdcbfec4c5249eb782ae2d9acfb25688` and exact base `647b1119a9dc3ba2ba301243e1b5e752943454db` after `CRR-010`, including focused tests, builds, live GraphQL E2E, browser validation, integrity, merge identity, and cleanup.
+- Delivery edits started only after integrated state was current: `Yes`
+- Handoff state current with latest tracked remote base: `Yes`
+- Blocker (if applicable): N/A
+
+## User Verification
+
+- Initial explicit user completion/verification received: `No`
+- Initial verification / acceptance reference: N/A
+- Renewed verification required after later re-integration: `No`
+- Renewed verification received: `Not needed`
+- Renewed verification / acceptance reference: N/A
 
 ## Docs Sync Result
 
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/docs-sync-report.md`
-- Result: `Updated / Pass`.
-- Long-lived docs updated: TypeScript LLM module design, Node.js LLM design, provider catalog ownership, server LLM management, server token usage, web Settings, and web execution architecture.
-- Rationale: The final implementation changes custom model metadata precedence/provenance and the unknown-context Token Meter state; prior docs were materially stale.
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/docs-sync-report.md`
+- Docs sync result: `Updated`
+- Docs updated: Seven long-lived docs carry final feature behavior; delivery expanded server LLM management, Node.js LLM design, and web Settings for native Qwen configuration/persistence/recovery.
+- No-impact rationale (if applicable): N/A
 
-## User Verification / Finalization Hold
+## Ticket State Transition
 
-- Explicit user completion or verification received: `No`.
-- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/handoff-summary.md`
-- Current result: `Pass — local Electron artifact ready for user testing; finalization held`.
-- Ticket archive transition: Not performed.
-- Ticket branch commit/push: Not performed by delivery after the checkpoint.
-- Merge into `personal`: Not performed.
-- Release/tag/publication: Not performed.
-- Deployment: Not applicable at this stage.
-- Worktree/branch cleanup: Not performed.
+- Ticket moved to `tickets/done/<ticket-name>`: `No`
+- Archived ticket path: N/A
 
-## DR-002 Local Electron Verification Build
+## Version / Tag / Release Commit
 
-- Trigger: User requested README-guided Electron packaging for hands-on testing.
-- Documentation read: root `README.md`, `autobyteus-web/README.md`, `autobyteus-web/AGENTS.md`, and `autobyteus-web/docs/electron_packaging.md`.
-- Build command: `NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* corepack pnpm -C autobyteus-web build:electron:mac`.
-- Result: `Completed` — exit `0`, macOS arm64, Electron `42.4.1`, package version `1.4.40`.
-- Build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/electron-build-mac-report.md`.
-- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/electron-build-mac.log`.
-- Artifact verification: `hdiutil verify` passed; `unzip -t` passed; packaged Darwin arm64 `node-pty` helper and real spawn probe passed.
-- User-test artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.40.dmg`.
-- Local build posture: unsigned/unnotarized; no app launch or user-data mutation performed by delivery.
+Not started; no version bump, release commit, or tag is authorized before user verification and repository finalization.
+
+## Repository Finalization
+
+- Bootstrap context source: `investigation-notes.md` Environment Discovery / Bootstrap Context
+- Ticket branch: `codex/custom-provider-model-context-metadata`
+- Ticket branch commit result: Not started; only historical delivery-safety and integration commits exist.
+- Ticket branch push result: Not started.
+- Finalization target remote: `origin`
+- Finalization target branch: `personal`
+- Target advanced after verification / acceptance: N/A; verification is pending.
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: Not started.
+- Merge into target result: Not started.
+- Push target branch result: Not started.
+- Repository finalization status: `Blocked`
+- Blocker (if applicable): Required explicit user verification/acceptance has not yet been received.
 
 ## Release / Publication / Deployment
 
-- Applicable now: `No` — no explicit release or deployment request has been received.
-- Release notes: Not created; no release is in scope before user authorization.
-- Version/tag changes: None.
-- Deployment steps: None.
-- Rollback posture: Before user verification, stop without archive/push/merge. The reviewed candidate is recoverable from checkpoint `e86bf82e7` and integrated merge `36ebd83fb87df7608cbdbbd8de26750d4ee49ed9`.
+- Applicable: `No`
+- Method: N/A
+- Method reference / command: N/A
+- Release/publication/deployment result: `Not required`
+- Release notes handoff result: `Not required`
+- Blocker (if applicable): No release or deployment scope has been authorized.
+
+## Post-Finalization Cleanup
+
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata`
+- Worktree cleanup result: `Not required`
+- Worktree prune result: `Not required`
+- Local ticket branch cleanup result: `Not required`
+- Remote branch cleanup result: `Not required`
+- Blocker (if applicable): Cleanup is intentionally deferred until safe repository finalization.
+
+## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
+
+- Classification: N/A
+- Recommended recipient: N/A
+- Why final handoff could not complete: N/A
+
+## Release Notes Summary
+
+- Release notes artifact created before verification / acceptance: No
+- Archived release notes artifact used for release/publication: No
+- Release notes status: `Not required`
+
+## Deployment Steps
+
+None.
+
+## Environment Or Persisted-Data Transition Notes
+
+- Approved persisted-data decision: No schema migration. Native Qwen uses the existing encrypted provider vault for its key and the existing AppConfig-owned environment file for `QWEN_BASE_URL`.
+- Delivery action required: `None`
+- Result and evidence: Integrated restart-backed E2E loaded the persisted URL through normal fresh-process AppConfig initialization and exercised all three exact Qwen requests. No migration or destructive data action was performed.
+- Migration completion, validation, recovery, and rollout evidence, only when `Migration Required`: N/A
 
 ## Verification Checks
 
-- `git fetch origin personal --prune`: passed; tracked base is `ba6ebc2a2fbf56f17ee6bbb965f3f153307db3d2`.
-- `corepack pnpm -C autobyteus-ts exec vitest run tests/unit/llm/openai-compatible-endpoint-discovery.test.ts tests/unit/llm/openai-compatible-endpoint-provider.test.ts tests/unit/llm/models.test.ts --no-watch`: passed; 3 files / 16 tests.
-- `git diff --check`: passed after docs and delivery-artifact edits.
-- Upstream API/E2E evidence: custom GraphQL E2E 3/3, focused server typecheck passed, and full reported confidence 95.3%; see the cumulative API/E2E artifacts.
+- `git fetch origin personal --prune`: passed; tracked ref unchanged at `647b1119a9dc3ba2ba301243e1b5e752943454db`.
+- `git merge-base --is-ancestor origin/personal HEAD`: passed.
+- Fresh divergence: ahead 7 / behind 0.
+- `git diff --check` after docs sync: passed.
+- Source/test working-tree modification audit after docs sync: empty.
+- `CRR-010`: integrated source Pass, 9.40/10.
+- `API-REV-005`: independently re-established integrated Pass at 96.4%; all reported focused/build/live/browser/integrity/cleanup checks passed.
 
-## Escalation / Reroute
+## Rollback Criteria
 
-N/A — no delivery-local blocker. If user verification identifies a source defect, route to `implementation_engineer`; if it exposes a design or requirement gap, route to `solution_designer`.
+Before verification, stop without archival, push, target merge, release, deployment, or cleanup. The integrated source is identified by merge commit `9817d3b1fdcbfec4c5249eb782ae2d9acfb25688`, with protected candidate parent `49736ac6b73436b1643ed7959391bd3e934ae164` and base parent `647b1119a9dc3ba2ba301243e1b5e752943454db`.
 
 ## Final Status
 
-`Pass — integrated handoff and local Electron artifact ready for explicit user verification; repository finalization, release, deployment, and cleanup are held.`
+`Pass — fresh tracked-base check confirms the API-REV-005-authorized integrated branch is current, docs sync is complete, and the handoff is ready for explicit user verification; repository finalization remains held.`

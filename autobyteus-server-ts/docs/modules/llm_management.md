@@ -4,7 +4,8 @@
 
 Provider lifecycle, model-catalog reads, provider-targeted reload, centralized
 provider credential writes/status, and custom OpenAI-compatible provider
-metadata persistence/sync for the TypeScript server.
+metadata persistence/sync for the TypeScript server. This module also owns the
+native Qwen Base URL/API-key setup command and its value-free status projection.
 
 ## TS Source
 
@@ -21,6 +22,7 @@ metadata persistence/sync for the TypeScript server.
   (`src/llm-management/llm-providers/services/llm-provider-service.ts`)
   - provider-centered public read model
   - fixed-provider API-key writes
+  - native Qwen endpoint/key probe, durable pair save, and setup status
   - custom-provider probe + create + delete
   - authoritative normalized provider-name uniqueness checks
 - **`SecretManagementService`**
@@ -86,12 +88,19 @@ defaults, history, workspace, and other non-Settings consumers:
 - `availableImageProvidersWithModels(runtimeKind?)`
 - `availableVideoProvidersWithModels(runtimeKind?)`
 - `getGeminiSetupConfig()`
+- `qwenSetupStatus()`
 
 They are not API-key Settings credential authorities.
+
+`qwenSetupStatus()` is the Qwen-specific setup authority. It returns only
+`effectiveBaseUrl`, server-owned `endpointSource = DEFAULT | CONFIGURED`, and
+`apiKeyConfigured`. Endpoint source is based on whether `QWEN_BASE_URL` was
+explicitly saved, not on comparing its value with the built-in default URL.
 
 ### Mutations
 
 - `saveProviderApiKey(providerId, apiKey)` -> Boolean
+- `saveQwenConfiguration({ baseUrl, apiKey })` -> `QwenSetupStatus`
 - `probeCustomProvider(input)` -> discovered `{ id, name }` models only
 - `createCustomProvider(input)` -> assigned provider ID only
 - `deleteCustomProvider(providerId)` -> Boolean
@@ -105,6 +114,19 @@ They are not API-key Settings credential authorities.
 Gemini mutations return the same exact `GeminiSetupStateObject`; ordinary
 failures use the typed GraphQL error path rather than a parallel outcome,
 instruction-code, or generic status-message protocol.
+
+Qwen must use `saveQwenConfiguration`; the generic API-key mutation rejects the
+`QWEN` provider. The Qwen command normalizes and probes the submitted
+OpenAI-compatible endpoint before changing persisted state. It then retains the
+previous Qwen secret only in command scope, saves the new secret, and calls
+strict `AppConfig.setDurably("QWEN_BASE_URL", ...)`. Success is returned only
+after that file commit. If the URL commit fails, the command restores or removes
+the key and returns the sanitized
+`QWEN_CONFIGURATION_SAVE_FAILED_PREVIOUS_RESTORED` error. If that bounded
+compensation also fails, it returns `QWEN_CONFIGURATION_REPAIR_REQUIRED` and
+does not claim rollback. GraphQL exposes only the approved code/message; raw
+secrets, provider payloads, filesystem details, and internal exceptions remain
+private.
 
 ### Model Detail
 
@@ -165,6 +187,11 @@ remain unchanged.
   built-in provider Settings exposes no standalone credential-removal action.
 - Readback exposes only provider-owned `apiKeyConfigured`; raw secret values are
   never returned.
+- Qwen is the built-in exception to the ordinary key-only save path. Its
+  effective OpenAI-compatible endpoint is resolved from explicit
+  `QWEN_BASE_URL` or the core default, while its API key remains in the encrypted
+  provider vault. The endpoint and replacement key are always submitted
+  together through the dedicated Qwen command.
 - Gemini keeps three exact construction modes while projecting into the same
   provider-centered list: AI Studio supplies `{apiKey}`, Vertex Express
   supplies `{vertexai: true, apiKey}`, and Vertex Project supplies
@@ -230,6 +257,14 @@ and currently contains:
 The current file version is `2` and is metadata-only. Credentials are stored in
 the encrypted vault inside the current application database under the custom
 provider's stable definition ID. See [Secret Management](./secret_management.md).
+
+Native Qwen does not use the custom-provider JSON file. Its API key is stored in
+the built-in Qwen vault slot, while `QWEN_BASE_URL` is stored in the server's
+owned environment-assignment file through `AppConfig`. The strict write path
+writes and syncs a same-directory temporary file, renames it over the target,
+and updates `AppConfig`/`process.env` only after the rename succeeds. It reuses
+the latest-base shared assignment-line parser while leaving database URL
+normalization under `ApplicationDatabaseLocation`/`toPrismaSqliteUrl`.
 
 ### Upgrade From The Supported V1 File
 

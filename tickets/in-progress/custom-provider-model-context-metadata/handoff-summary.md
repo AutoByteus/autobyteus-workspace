@@ -2,98 +2,83 @@
 
 ## Status
 
-**Ready for explicit user verification.** Delivery integration, docs synchronization, and a local macOS arm64 Electron verification build are complete. Repository finalization, push/merge, release, deployment, archival, and cleanup are intentionally on hold until the user confirms completion or verification.
+**Ready for explicit user verification.** The current native-Qwen/exact-only implementation is integrated with the latest tracked base, passed fresh source review and independent integrated API/E2E/browser validation, and has synchronized long-lived documentation. Repository finalization remains intentionally on hold until the user explicitly accepts or verifies this handoff.
 
 ## Worktree / Branch / Target
 
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata`
 - Ticket branch: `codex/custom-provider-model-context-metadata`
 - Recorded finalization target: `personal` / `origin/personal`
-- Recorded base: `origin/personal`
-- Latest tracked base integrated: `origin/personal@ba6ebc2a2fbf56f17ee6bbb965f3f153307db3d2`
-- Delivery checkpoint: `e86bf82e7`
-- Integration merge: `36ebd83fb87df7608cbdbbd8de26750d4ee49ed9`
-- Current branch state: ahead 5 / behind 0 of `origin/personal`; the branch is not pushed by delivery.
+- Latest tracked base checked: `origin/personal@647b1119a9dc3ba2ba301243e1b5e752943454db`
+- Integrated HEAD: `9817d3b1fdcbfec4c5249eb782ae2d9acfb25688`
+- Merge parents: protected Qwen checkpoint `49736ac6b73436b1643ed7959391bd3e934ae164`; recorded base `647b1119a9dc3ba2ba301243e1b5e752943454db`
+- Fresh delivery divergence: ahead 7 / behind 0
 - Integrated-state evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/delivery-integrated-state-refresh.log`
 
-## What Changed
+## Fresh Delivery Refresh
 
-### TypeScript LLM runtime
+- `git fetch origin personal --prune`: passed; the tracked base remained `647b1119a9dc3ba2ba301243e1b5e752943454db`.
+- `git merge-base --is-ancestor origin/personal HEAD`: passed.
+- New base commits integrated during DR-004: none; IR-007 had already integrated the exact current base as `HEAD^2`.
+- Additional executable rerun: not required because the base did not advance and `API-REV-005` independently validated this exact HEAD/base pair after `CRR-010`.
+- `git diff --check` after docs sync: passed.
 
-- Custom OpenAI-compatible `/models` discovery now extracts supported model IDs and bounded positive integer context/input/output metadata aliases without retaining raw payloads or credentials.
-- Each numeric field resolves independently from endpoint-advertised metadata, an exact canonical endpoint/model profile, an exact built-in model-value fallback, or nullable unknown.
-- Endpoint profiles are exact and source-dated. Explicit provider wire aliases may reference a canonical built-in `{provider, value}`; generic suffix, family, display-name, substring, and nearest-model matching remain forbidden.
-- Resolved metadata and provenance flow through custom model construction and `ModelInfo`, while last-known-good reload, authoritative deletion cleanup, and provider identity isolation remain intact.
+## Delivered Behavior
 
-### Server / GraphQL
+### Native Qwen
 
-- Server enrichment preserves custom resolved metadata and maps internal source detail to the value-free GraphQL provenance enum.
-- GraphQL exposes numeric limits and coarse `LIVE`, `CURATED_FALLBACK`, or `CURATED_ONLY` values only; API keys, raw `/models` payloads, profile URLs, and wire-alias references remain private.
+- Settings provides one paired Base URL + API-key setup path for Qwen.
+- The endpoint is probed before persistence; the key remains in the encrypted vault and `QWEN_BASE_URL` is durably committed through `AppConfig`.
+- Status exposes only the effective URL, server-owned `DEFAULT|CONFIGURED` source, and value-free key configuration state.
+- URL-write failure restores the previous key pair when possible; the bounded compensation double-failure reports repair-required without claiming rollback.
+- Fresh Qwen clients resolve the persisted endpoint normally; the catalog owns exact `qwen3.8-max`, `qwen:deepseek-v4-pro`, and `qwen:glm-5.2` entries. `qwen3.8-max-preview` is absent.
 
-### Web
+### Custom OpenAI-compatible providers
 
-- The Token Meter keeps the Latest prompt block when prompt tokens exist. Known capacity renders progress; unknown capacity renders the token count plus explicit unavailable copy without inventing a denominator or percentage.
+- Discovery retains normalized IDs and bounded positive-integer context/input/output aliases without retaining raw payloads or secrets.
+- Each numeric field resolves independently: live endpoint value, exact built-in `SupportedModelDefinition.value` fallback, then unknown.
+- Endpoint URL/region/plan profiles, canonical wire references, suffix/family/display-name/case-folded/fuzzy matching, and nearest-model inference are removed.
+- Provider-owned deletion, last-known-good behavior, and GraphQL secret/raw-payload boundaries remain intact.
+
+### Web recovery and Token Meter
+
+- A committed Qwen save remains success even if the subsequent provider-data refresh warns; reload retries both provider settings and catalog owners before showing success.
+- Known model capacity renders progress. Unknown capacity keeps the latest-prompt token count visible with explicit unavailable copy and no fabricated denominator or percentage.
 
 ## Review And Validation Summary
 
-- Architecture review: approved package; `ARCH-REV-003` Pass.
-- Implementation source review: `CRR-002` Pass, `9.45/10`.
-- API/E2E execution: `API-REV-002` Pass, `95.3%` confidence; custom GraphQL E2E `3/3` passed, including post-delete catalog absence and isolated-config hygiene.
-- Proportional durable-test re-review: `CRR-004` Pass; `TR-001` resolved; no durable coverage removed.
-- Integrated-state executable check: `corepack pnpm -C autobyteus-ts exec vitest run tests/unit/llm/openai-compatible-endpoint-discovery.test.ts tests/unit/llm/openai-compatible-endpoint-provider.test.ts tests/unit/llm/models.test.ts --no-watch` — passed, 3 files / 16 tests.
-- Integrated diff/hygiene check: `git diff --check` — passed.
-- Broader validation included focused TS/server tests, server typecheck/build, web Token Meter tests, GraphQL E2E, and web guards; see the API/E2E execution report.
+- Architecture: `ARCH-REV-005` Pass.
+- Integrated implementation: `IR-007`.
+- Integrated source review: `CRR-010` Pass, `9.40/10`.
+- Integrated API/E2E: `API-REV-005` Pass, `96.4%` final confidence; API-REV-004 was not inferred forward.
+- Durable coverage: unchanged from the `CRR-009`-reviewed files; no additional proportional test-code review required.
+- Core exact metadata/Qwen: 4 files / 25 tests passed.
+- Conflict/Qwen-focused server: 5 files / 73 passed / 1 intentional Windows-only skip.
+- Current Qwen Settings: 5 files / 32 tests passed.
+- Server/shared production build, Prisma generation, built-in-agent bootstrap, and sanitized no-`DATABASE_URL` smoke: passed.
+- Live Qwen lifecycle + custom-provider GraphQL E2E: 2 files / 4 tests passed.
+- Web boundary/localization guards, integrated browser journey, desktop/narrow visual inspection, integrity, and cleanup: passed.
 
-## Durable Documentation
+## Docs / Release / Finalization State
 
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/docs-sync-report.md`
-- Updated long-lived docs:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-ts/docs/llm_module_design.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-ts/docs/llm_module_design_nodejs.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-ts/docs/provider_model_catalogs.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-server-ts/docs/modules/llm_management.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-server-ts/docs/modules/token_usage.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/docs/settings.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/docs/agent_execution_architecture.md`
+- Docs sync: `Updated / Pass`; see `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/docs-sync-report.md`.
+- Ticket remains in `tickets/in-progress`.
+- Ticket branch push, merge into `personal`, version/tag/release, deployment, archival, and cleanup: not started.
+- Earlier endpoint-profile delivery evidence and the unsigned v1.4.40 Electron artifact are superseded and must not be used to verify this implementation.
 
-## Electron User-Test Build
+## Suggested User Verification
 
-- Build report: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/electron-build-mac-report.md`
-- Build log: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/electron-build-mac.log`
-- README-guided command: `NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* corepack pnpm -C autobyteus-web build:electron:mac`
-- Result: Pass, exit `0`; macOS arm64, Electron `42.4.1`, package version `1.4.40`.
-- Recommended DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.40.dmg`
-- Portable ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.40.zip`
-- Direct app bundle: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
-- DMG verification, ZIP integrity, packaged arm64 `node-pty` helper checks, and the packaged spawn probe passed.
-- Build is unsigned/unnotarized for local testing. The app uses `~/.autobyteus/server-data`; back up existing test data before launch if needed.
+1. Open Settings -> API Key Management -> Qwen and confirm the default/configured endpoint badge is truthful.
+2. Save a matching Qwen-compatible Base URL and API key; confirm the key field clears and configured status remains after reload/restart.
+3. Confirm `qwen3.8-max`, `DeepSeek V4 Pro (Qwen)`, and `GLM-5.2 (Qwen)` are available and the preview model is absent.
+4. If testing an endpoint failure, confirm the UI reports restored-previous or repair-required state without exposing secrets/internal details.
 
-## Residual Risks / Unproven Scope
+Do not send credentials in the verification response. An explicit completion/acceptance reply is sufficient to authorize the finalization refresh.
 
-- Vendor profile facts are source-dated and may become stale; profile refresh is required when vendor plans, endpoints, or wire catalogs change.
-- Synthetic `/models` responses prove parser, resolver, catalog, and GraphQL behavior but not real vendor payload variation, authentication, transport/TLS, or provider-side enforcement.
-- Full browser/Electron shell and distributed-worker validation were not required because no shell/IPC/worker boundary changed.
-- The focused post-integration unit run emitted expected connection warnings for unavailable local Ollama and LM Studio probes; all 16 tests passed.
+## Bounded Residual Risk
 
-## Explicit User Verification Request
+Real Alibaba availability, credentials, quota, region policy, TLS behavior, undocumented payload variation, and future source-dated fact drift were not exercised. The owned loopback provider proves the approved OpenAI-compatible request and persistence contract, not current live-vendor operation.
 
-Please test the recommended DMG or app bundle and verify the integrated behavior and handoff state. Reply with explicit completion/verification when ready. Until then, delivery will not archive the ticket, push the ticket branch, merge into `personal`, publish a release, deploy, or clean up the ticket worktree/branch.
+## Next Action
 
-## Key Upstream Artifacts
-
-- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/design-spec.md`
-- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/solution-revision-record.md`
-- Design review: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/design-review-report.md`
-- Architecture revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/architecture-review-revision-record.md`
-- Implementation handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/implementation-handoff.md`
-- Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/implementation-revision-record.md`
-- Code review: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-report.md`
-- Code review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-revision-record.md`
-- Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-coverage-investigation.md`
-- Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-execution-coverage-report.md`
-- API/E2E revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-revision-record.md`
-- API/E2E test review: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-test-review-report.md`
-- Temporary affected E2E log: `/tmp/custom-provider-metadata-custom-graphql-e2e-api-rev-002.log`
-- Temporary server typecheck log: `/tmp/custom-provider-metadata-server-tsc-api-rev-002.log`
+Wait for explicit user verification or acceptance. After that signal, delivery must refresh the target again before moving the ticket to `tickets/done`, committing/pushing, merging into `personal`, or performing any release/publication work.

@@ -72,6 +72,12 @@ Two OpenAI-style paths coexist:
 
 - **Built-in OpenAI-style providers** such as DeepSeek, Grok, Kimi, Qwen, GLM,
   and the retained MiniMax M3 entry still use `OpenAICompatibleLLM`.
+- Qwen resolves its OpenAI-compatible endpoint through
+  `src/llm/qwen-provider-config.ts`. A nonblank `QWEN_BASE_URL` wins; otherwise
+  the built-in international DashScope URL is used. Both paths use the same
+  base-URL normalizer before `QwenLLM` construction. Endpoint selection is
+  independent from model identity, while the Qwen API key remains owned by the
+  provider credential resolver.
 - OpenAI-compatible Chat Completions payloads are built through
   `OpenAICompatibleRequestBuilder`, which maps `LLMConfig` generation controls,
   merges provider-specific `extraParams`, uses the shared provider-request

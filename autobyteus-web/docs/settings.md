@@ -21,10 +21,29 @@ server's centralized encrypted vault:
   focuses exactly one editor at a time. Key inputs remain write-only password
   fields, the visibility control affects only the transient typed value, and a
   successful save clears that input;
+- Qwen uses a dedicated Base URL + API-key form rather than the ordinary
+  built-in key-only editor. Both values are required; the URL must be absolute
+  HTTP(S), and the server probes its `/models` contract before persistence. The
+  key stays write-only and is cleared after a successful committed mutation;
+- Qwen renders the server-owned `DEFAULT` or `CONFIGURED` endpoint source and
+  value-free key status. It never infers configured state by comparing the
+  effective URL with a frontend default. A failed durable URL commit reports
+  that the previous pair was restored; the bounded double-failure result tells
+  the user to save a valid pair again before using Qwen;
 - configured and active state are value-free badges derived from the
   authoritative setup state and remain accurate after a Settings reload; and
 - successful commands refetch the provider-centered Settings read so the UI
   reflects authoritative provider and catalog state.
+
+A successful Qwen mutation is the committed setup result. The client then
+refreshes both provider settings and the model catalog so the saved endpoint and
+the exact Qwen catalog (`qwen3.8-max`, `qwen:deepseek-v4-pro`, and
+`qwen:glm-5.2`) converge in the UI. If a subordinate refresh fails, the UI keeps
+the committed configured state and shows a warning rather than relabeling the
+save as failed. Global and selected-provider reloads likewise await both
+provider-settings and catalog refresh owners before showing success; either
+refresh failure keeps the operation in its failure path. The removed
+`qwen3.8-max-preview` value must not reappear after save, reload, or recovery.
 
 Custom OpenAI-compatible provider drafts still accept an API key for the probe
 and create transaction, but only non-secret provider metadata is persisted in
