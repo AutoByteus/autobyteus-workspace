@@ -134,22 +134,29 @@ describe('AIMessage.vue', () => {
     expect(interAgentSegment.props('senderDisplayName')).toBe('Professor');
   });
 
-  it('keeps identified active text on the live presentation path', () => {
+  it('dispatches identified active text and reasoning without presentation policy props', () => {
     const textSegment = { type: 'text' as const, content: '**still streaming**' };
     setStreamSegmentIdentity(textSegment, 'text-1', 'text');
+    const thinkSegment = { type: 'think' as const, content: '# active reasoning' };
+    setStreamSegmentIdentity(thinkSegment, 'think-1', 'reasoning');
     const wrapper = mount(AIMessage, {
       props: {
-        message: { ...baseMessage, isComplete: false, segments: [textSegment] },
+        message: { ...baseMessage, isComplete: false, segments: [textSegment, thinkSegment] },
         runId: 'agent-1',
         messageIndex: 0,
       },
       global: { stubs: globalStubs },
     });
 
-    expect(wrapper.getComponent({ name: 'TextSegment' }).props('presentationComplete')).toBe(false);
+    const textPresenter = wrapper.getComponent({ name: 'TextSegment' });
+    const thinkPresenter = wrapper.getComponent({ name: 'ThinkSegment' });
+    expect(textPresenter.props('content')).toBe('**still streaming**');
+    expect(thinkPresenter.props('content')).toBe('# active reasoning');
+    expect(textPresenter.props()).not.toHaveProperty('presentationComplete');
+    expect(thinkPresenter.props()).not.toHaveProperty('presentationComplete');
   });
 
-  it('treats message-complete and historical text as rich-presentation eligible', () => {
+  it('keeps completed identified and historical text on the same segment presenter', () => {
     const identifiedText = { type: 'text' as const, content: 'complete' };
     setStreamSegmentIdentity(identifiedText, 'text-1', 'text');
     const historicalText = { type: 'text' as const, content: 'history' };
@@ -163,6 +170,6 @@ describe('AIMessage.vue', () => {
     });
 
     expect(wrapper.findAllComponents({ name: 'TextSegment' }).map((segment) =>
-      segment.props('presentationComplete'))).toEqual([true, true]);
+      segment.props('content'))).toEqual(['complete', 'history']);
   });
 });
