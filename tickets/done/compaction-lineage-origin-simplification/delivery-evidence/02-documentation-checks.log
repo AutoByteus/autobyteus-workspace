@@ -1,0 +1,20 @@
+Delivery documentation validation - compaction-lineage-origin-simplification
+checked_at_utc=2026-08-08T18:14:59Z
+check=git diff --check
+git_diff_check=PASS
+check=removed origin symbols and stale heading absent from changed durable docs
+removed_origin_doc_scan=PASS
+check=core and Node design mirrors differ only by intended title
+design_mirror_check=PASS
+check=required new durable contract phrases present
+189:branch, or using it as an output-to-raw origin link. New rows omit it.
+230:## 9. Lineage And Raw-Archive Independence
+240:`native_compaction_selection:<sha256>` where the digest is computed from the JSON
+124:interpretation; new rows omit it.
+134:There is no server or GraphQL direct/recursive episode/semantic-to-raw origin
+350:- Native AutoByteus compaction rotates exactly the selected active raw traces into `native_compaction` segments. The store derives a retry-stable `native_compaction_selection:<sha256>` boundary key from the JSON encoding of sorted selected trace IDs; the archive manager independently owns manifest completion and the rotated filename.
+163:extra field without rewriting data or introducing a schema branch, and new rows
+174:memory composition. There is no direct/recursive episode/semantic-to-raw origin
+209:lineage, raw-archive independence, current-context, restore, presentation, and
+durable_contract_presence=PASS
+result=PASS

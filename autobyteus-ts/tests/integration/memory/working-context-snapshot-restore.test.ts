@@ -110,7 +110,7 @@ describe('current-only recurrent compaction lifecycle integration', () => {
     expect(c1.expectedPreviousCompactionId).toBeNull();
     expect(c1.episodicItems).toHaveLength(1);
     expect(c1.semanticItems).toHaveLength(1);
-    expect(c1.lineageDraft).not.toHaveProperty('rawTraceArchiveFile');
+    expect(c1.lineageRecord).not.toHaveProperty('rawTraceArchiveFile');
     manager.commitAcceptedCompaction(c1);
 
     expect(manager.compactionRequired).toBe(false);
