@@ -10,8 +10,8 @@ AutoByteus native memory separates five concerns:
    records remain the authority for what work occurred.
 3. **Durable compacted output** is the validated, model-sized episode/semantic
    bundle produced by one successful native compaction.
-4. **Compaction lineage** relates a successful output bundle to the immediately
-   preceding successful compaction and to one completed raw-trace archive file.
+4. **Compaction lineage** records a successful output bundle, its immediately
+   preceding successful compaction, and its execution/prompt audit metadata.
 5. **Readable presentation** renders conversation/tool evidence for LLM or human
    consumption without becoming a storage or provenance authority.
 
@@ -36,7 +36,7 @@ PendingCompactionExecutor
   -> MemoryManager.prepareCompaction(baseline, ID-less proposal)
   -> framework validation of the finalized candidate
   -> MemoryManager.commitAcceptedCompaction(candidate)
-       1. archive exactly the selected new raw traces
+       1. archive exactly the selected new raw traces as an independent command
        2. persist assigned episode/semantic rows
        3. append one lineage record as the new head
        4. install the finalized WorkingContext
@@ -48,12 +48,15 @@ The pending operation ID is reused as the successful `compactionId`. A strategy
 supplies content, selected new raw IDs, retained messages, and execution metadata;
 it does not assign durable IDs or write storage. `MemoryManager` assigns output
 IDs, verifies that context and lineage baselines are unchanged, constructs the
-accepted candidate, and owns publication.
+complete accepted candidate, and owns publication. Raw archive filenames and
+descriptors are archive-manager results; they are not accepted-candidate or
+lineage fields.
 
 Failures before publication leave output, lineage, snapshot, and installed
 context unchanged and retain the pending ID for normal retry. The publication
 sequence is ordered and validated but is not crash-atomic across its multiple
-files; no journal or unsupported recovery inference is implied.
+files; an early archive or output side effect can remain when a later step fails.
+No journal or unsupported recovery inference is implied.
 
 ## 3. Strategy Contract And Selection
 
@@ -97,7 +100,7 @@ archived for the new compaction; prior-memory ancestry is represented by
 The proposal is normalized to one complete replacement bundle with at least one
 non-empty episode. The Memory Compactor chooses the natural number of episodes
 and semantic facts needed for safe continuation. Parser, normalizer, acceptance,
-lineage, current projection, and origin resolution do not impose a total episode
+lineage and current projection do not impose a total episode
 or fact-count cap; per-entry text bounds, structural validation, cleanup,
 deduplication, and positive salience still apply.
 
@@ -175,10 +178,15 @@ Run-local native memory uses:
 - `working_context_snapshot.json` — finalized schema-v5 messages.
 
 A lineage record contains schema version, explicit standalone/team-member scope,
-`compactionId`, optional `previousCompactionId`, a run-relative completed
-`rawTraceArchiveFile`, exact episode/semantic IDs, derivation time, runtime /
-provider / model metadata, policy/prompt versions, and optional integrity hashes.
-It does not copy raw IDs/content, prior memory, or rendered prompt content.
+`compactionId`, optional `previousCompactionId`, exact episode/semantic IDs,
+derivation time, runtime / provider / model metadata, policy/prompt versions, and
+optional integrity hashes. It does not copy raw IDs/content, an archive filename
+or descriptor, prior memory, or rendered prompt content.
+
+Existing schema-v1 rows that include the former `rawTraceArchiveFile` extra field
+remain directly readable. Recognized-field normalization ignores that stored
+superset field without rewriting the append-only file, introducing a schema
+branch, or using it as an output-to-raw origin link. New rows omit it.
 
 `selectionPolicyVersion` remains `1`. Existing prompt-audit value `1` is retained
 and read directly, while every new accepted compaction writes
@@ -219,27 +227,25 @@ v5 only and has no pre-v5 reader or raw-history recovery projector. The first
 successful compaction for a migrated absent/empty-lineage run uses
 `previousCompactionId: null`.
 
-## 9. Direct And Recursive Origin Resolution
+## 9. Lineage And Raw-Archive Independence
 
-`CompactionLineageResolver` accepts an explicit artifact selector:
+Compaction lineage is the authority for the current successful output bundle and
+its predecessor chain. Raw traces, archive manifests, and immutable rotated files
+remain a separate evidence corpus owned by `RunMemoryFileStore` and
+`RawTraceArchiveManager`; there is no supported direct or recursive
+episode/semantic-to-raw origin resolver or server origin service.
 
-```ts
-{ kind: 'episode' | 'semantic', id: string }
-```
+Before output publication, `archiveExactRawTraces(...)` validates and archives
+the exact selected active raw IDs. Its stable operation identity is
+`native_compaction_selection:<sha256>` where the digest is computed from the JSON
+encoding of the sorted selected IDs. The archive manager alone chooses the
+manifest descriptor and rotated filename. Completion is required before the
+committer proceeds, but neither result is copied into lineage.
 
-For a found artifact it returns the producing compaction, its direct completed
-raw archive and source interval, optional direct predecessor, deduplicated raw
-roots across recursive predecessors, root interval, and derivation time. Unknown
-artifact IDs return `not_found`.
-
-Resolution validates lineage shape/cycles, exact output membership, completed
-archive status, archive record count and identity bounds, and conflicting raw
-root content. Missing or malformed current-format state raises a typed integrity
-error; the resolver never guesses or backfills ancestry.
-
-The server `AgentMemoryOriginService` resolves the run-local directory and scope
-for standalone or team-member targets, then composes the core resolver. This is
-an internal service boundary; no provenance UI is implied.
+Malformed or unsupported lineage, and missing or misordered rows named by the
+current lineage head, remain integrity errors. `CurrentCompactionOutputLoader`
+validates exact current episode/semantic membership and never opens or resolves
+a raw archive.
 
 ## 10. LLM Request Recovery Boundary
 
@@ -312,7 +318,7 @@ move selected settled records from active storage to one completed archive
 without changing their identity/content.
 
 Event Monitor and normal active-history paging remain active-raw views; archived
-records are accessed only by evidence, provenance, or explicit inspection paths.
+records are accessed only by evidence projection or explicit inspection paths.
 
 Codex and Claude use server raw-trace-only memory recording. They share the
 native raw-trace and rotation primitives but do not construct, load, or persist
@@ -367,7 +373,6 @@ Lineage, projection, and restore:
 
 - `src/memory/lineage/compaction-lineage-record.ts`
 - `src/memory/store/file-compaction-lineage-store.ts`
-- `src/memory/lineage/compaction-lineage-resolver.ts`
 - `src/memory/projection/current-compaction-output-loader.ts`
 - `src/memory/projection/compacted-memory-context-projector.ts`
 - `src/memory/working-context-snapshot-serializer.ts`
@@ -379,7 +384,6 @@ Lineage, projection, and restore:
 Server composition and transition:
 
 - `autobyteus-server-ts/src/agent-execution/backends/autobyteus/compaction-lineage-scope-resolver.ts`
-- `autobyteus-server-ts/src/memory-lineage/services/agent-memory-origin-service.ts`
 - `autobyteus-server-ts/src/agent-memory/services/runtime-memory-location-classifier.ts`
 - `autobyteus-server-ts/src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5-migration.ts`
 - `autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts`
