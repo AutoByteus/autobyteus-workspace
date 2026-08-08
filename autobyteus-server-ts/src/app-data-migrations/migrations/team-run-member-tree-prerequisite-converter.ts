@@ -1,7 +1,6 @@
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { normalizeCollaborationHandoffs } from "../../agent-collaboration/domain/collaboration-handoff.js";
-import { RuntimeKind, runtimeKindFromString } from "../../runtime-management/runtime-kind-enum.js";
-import { convertLegacyTeamRunMetadata } from "./team-canonical-metadata-converter.js";
+import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 
 type JsonRecord = Record<string, unknown>;
 
@@ -13,11 +12,27 @@ const record = (value: unknown, label: string): JsonRecord => {
 };
 
 const text = (value: unknown): string => typeof value === "string" ? value.trim() : "";
-const nullableText = (value: unknown): string | null => text(value) || null;
-const objectOrNull = (value: unknown): JsonRecord | null =>
-  value && typeof value === "object" && !Array.isArray(value)
-    ? structuredClone(value as JsonRecord)
-    : null;
+const requireText = (value: unknown, label: string): string => {
+  const normalized = text(value);
+  if (!normalized) throw new Error(`${label} is required.`);
+  return normalized;
+};
+const requireDisplayText = (value: unknown, label: string): string => {
+  if (typeof value !== "string" || !value.trim()) throw new Error(`${label} is required.`);
+  return value;
+};
+const nullableText = (value: unknown, label: string): string | null => {
+  if (value === undefined || value === null) return null;
+  if (typeof value !== "string") throw new Error(`${label} must be a string or null.`);
+  return value;
+};
+const nullableObject = (value: unknown, label: string): JsonRecord | null => {
+  if (value === undefined || value === null) return null;
+  if (typeof value !== "object" || Array.isArray(value)) {
+    throw new Error(`${label} must be an object or null.`);
+  }
+  return structuredClone(value as JsonRecord);
+};
 
 const normalizeRoute = (value: string): string => value
   .trim()
@@ -25,157 +40,91 @@ const normalizeRoute = (value: string): string => value
   .replace(/\/{2,}/g, "/")
   .replace(/^\/+|\/+$/g, "");
 
-const legacyMemberPath = (member: JsonRecord): string[] => {
-  if (Array.isArray(member.memberPath)) {
-    const segments = member.memberPath.map(text).filter(Boolean);
-    if (segments.length > 0) return segments;
+const requireDirectRoute = (value: unknown, label: string): string => {
+  const route = normalizeRoute(requireText(value, label));
+  if (!route || route.includes("/")) {
+    throw new Error(`${label} must be one direct member segment; topology cannot be reconstructed safely.`);
   }
-  const routeOrName = text(member.memberRouteKey) || text(member.memberName);
-  return routeOrName.split("/").map((segment) => segment.trim()).filter(Boolean);
+  return route;
 };
 
-const skillAccessMode = (value: unknown): SkillAccessMode =>
-  value === SkillAccessMode.NONE || value === SkillAccessMode.PRELOADED_ONLY
-    ? value
-    : SkillAccessMode.PRELOADED_ONLY;
+const validateOptionalMemberPath = (value: unknown, route: string, label: string): void => {
+  if (value === undefined) return;
+  if (!Array.isArray(value) || value.length !== 1 || typeof value[0] !== "string" || !value[0].trim()) {
+    throw new Error(`${label} must contain exactly one non-empty direct segment.`);
+  }
+  if (normalizeRoute(value[0]) !== route || normalizeRoute(value[0]).includes("/")) {
+    throw new Error(`${label} contradicts memberRouteKey; topology cannot be reconstructed safely.`);
+  }
+};
+
+const requireRuntimeKind = (value: unknown, label: string): RuntimeKind => {
+  if (!Object.values(RuntimeKind).includes(value as RuntimeKind)) {
+    throw new Error(`${label} is unsupported.`);
+  }
+  return value as RuntimeKind;
+};
+
+const requireSkillAccessMode = (value: unknown, label: string): SkillAccessMode => {
+  if (!Object.values(SkillAccessMode).includes(value as SkillAccessMode)) {
+    throw new Error(`${label} is unsupported.`);
+  }
+  return value as SkillAccessMode;
+};
 
 const convertFlatAgent = (value: unknown, index: number): JsonRecord => {
-  const member = record(value, `memberMetadata[${index}]`);
+  const label = `memberMetadata[${index}]`;
+  const member = record(value, label);
   const declaredKind = text(member.memberKind);
   if (declaredKind && declaredKind !== "agent") {
     throw new Error("Legacy flat memberMetadata contains a non-agent member; topology cannot be reconstructed safely.");
   }
-  if ("memberTree" in member || "teamRunId" in member || "teamDefinitionId" in member) {
+  if ([
+    "memberTree", "children", "teamRunId", "teamDefinitionId",
+    "coordinatorMemberRouteKey", "coordinatorAddress",
+  ].some((key) => key in member)) {
     throw new Error("Legacy flat memberMetadata contains nested-team fields; topology cannot be reconstructed safely.");
   }
-  const memberPath = legacyMemberPath(member);
-  const memberRouteKey = normalizeRoute(text(member.memberRouteKey) || memberPath.join("/"));
-  if (memberPath.length !== 1 || memberRouteKey.includes("/")) {
-    throw new Error("Legacy flat memberMetadata contains a nested member path; topology cannot be reconstructed safely.");
-  }
-  if (normalizeRoute(memberPath.join("/")) !== memberRouteKey) {
-    throw new Error("Legacy flat memberMetadata contains contradictory route/path identity; topology cannot be reconstructed safely.");
-  }
-  const legacyMemberName = text(member.memberName);
-  if (legacyMemberName &&
-      legacyMemberName.toLocaleLowerCase("en-US") !== memberRouteKey.toLocaleLowerCase("en-US")) {
-    throw new Error("Legacy flat memberMetadata contains contradictory route/name identity; topology cannot be reconstructed safely.");
-  }
-  const memberRunId = text(member.memberRunId);
-  if (!memberRouteKey || !memberRunId) {
-    throw new Error("Legacy team member metadata is missing member route/path/run identity.");
+  const memberRouteKey = requireDirectRoute(member.memberRouteKey, `${label}.memberRouteKey`);
+  validateOptionalMemberPath(member.memberPath, memberRouteKey, `${label}.memberPath`);
+  const memberName = requireDisplayText(member.memberName, `${label}.memberName`);
+  const memberRunId = requireText(member.memberRunId, `${label}.memberRunId`);
+  if (typeof member.autoExecuteTools !== "boolean") {
+    throw new Error(`${label}.autoExecuteTools must be boolean.`);
   }
   return {
     memberKind: "agent",
     memberRouteKey,
     memberPath: [memberRouteKey],
-    // Historical display names were not structural. The prerequisite emits the
-    // exact path basename required by the following canonical converter.
-    memberName: memberRouteKey,
+    memberName,
     memberRunId,
-    role: nullableText(member.role),
-    description: nullableText(member.description),
-    runtimeKind: runtimeKindFromString(member.runtimeKind) ?? RuntimeKind.AUTOBYTEUS,
-    platformAgentRunId: nullableText(member.platformAgentRunId),
-    agentDefinitionId: text(member.agentDefinitionId),
-    llmModelIdentifier: text(member.llmModelIdentifier),
-    autoExecuteTools: Boolean(member.autoExecuteTools),
-    skillAccessMode: skillAccessMode(member.skillAccessMode),
-    llmConfig: objectOrNull(member.llmConfig),
-    workspaceRootPath: nullableText(member.workspaceRootPath),
-    applicationExecutionContext: objectOrNull(member.applicationExecutionContext),
+    role: nullableText(member.role, `${label}.role`),
+    description: nullableText(member.description, `${label}.description`),
+    runtimeKind: requireRuntimeKind(member.runtimeKind, `${label}.runtimeKind`),
+    platformAgentRunId: nullableText(member.platformAgentRunId, `${label}.platformAgentRunId`),
+    agentDefinitionId: requireText(member.agentDefinitionId, `${label}.agentDefinitionId`),
+    llmModelIdentifier: requireText(member.llmModelIdentifier, `${label}.llmModelIdentifier`),
+    autoExecuteTools: member.autoExecuteTools,
+    skillAccessMode: requireSkillAccessMode(member.skillAccessMode, `${label}.skillAccessMode`),
+    llmConfig: nullableObject(member.llmConfig, `${label}.llmConfig`),
+    workspaceRootPath: nullableText(member.workspaceRootPath, `${label}.workspaceRootPath`),
+    applicationExecutionContext: nullableObject(
+      member.applicationExecutionContext,
+      `${label}.applicationExecutionContext`,
+    ),
   };
-};
-
-const requireText = (value: unknown, label: string): string => {
-  const normalized = text(value);
-  if (!normalized) throw new Error(`${label} is required.`);
-  return normalized;
-};
-
-const validateNullableText = (value: unknown, label: string, optional = false): void => {
-  if (optional && value === undefined) return;
-  if (value !== null && typeof value !== "string") {
-    throw new Error(`${label} must be a string or null.`);
-  }
-};
-
-const validateNullableObject = (value: unknown, label: string, optional = false): void => {
-  if (optional && value === undefined) return;
-  if (value !== null && (!value || typeof value !== "object" || Array.isArray(value))) {
-    throw new Error(`${label} must be an object or null.`);
-  }
-};
-
-const validateMemberTreeNode = (value: unknown, label: string): void => {
-  const member = record(value, label);
-  const route = requireText(member.memberRouteKey, `${label}.memberRouteKey`);
-  if (!Array.isArray(member.memberPath) || member.memberPath.length === 0 ||
-      member.memberPath.some((segment) => !text(segment))) {
-    throw new Error(`${label}.memberPath must contain non-empty strings.`);
-  }
-  if (normalizeRoute((member.memberPath as unknown[]).map(text).join("/")) !== normalizeRoute(route)) {
-    throw new Error(`${label} route/path identity contradicts.`);
-  }
-  requireText(member.memberName, `${label}.memberName`);
-  requireText(member.memberRunId, `${label}.memberRunId`);
-  validateNullableText(member.role, `${label}.role`, true);
-  validateNullableText(member.description, `${label}.description`, true);
-  if (member.memberKind === "agent_team") {
-    requireText(member.teamDefinitionId, `${label}.teamDefinitionId`);
-    if (member.teamRunId === undefined) throw new Error(`${label}.teamRunId is required.`);
-    if (member.teamRunId !== null) requireText(member.teamRunId, `${label}.teamRunId`);
-    if (member.coordinatorMemberRouteKey === undefined) {
-      throw new Error(`${label}.coordinatorMemberRouteKey is required.`);
-    }
-    if (member.coordinatorMemberRouteKey !== null) {
-      requireText(member.coordinatorMemberRouteKey, `${label}.coordinatorMemberRouteKey`);
-    }
-    if (!Array.isArray(member.memberTree)) throw new Error(`${label}.memberTree must be an array.`);
-    member.memberTree.forEach((child, index) => validateMemberTreeNode(child, `${label}.memberTree[${index}]`));
-    return;
-  }
-  if (member.memberKind !== "agent") throw new Error(`${label}.memberKind is unsupported.`);
-  if (!Object.values(RuntimeKind).includes(member.runtimeKind as RuntimeKind)) {
-    throw new Error(`${label}.runtimeKind is unsupported.`);
-  }
-  validateNullableText(member.platformAgentRunId, `${label}.platformAgentRunId`);
-  requireText(member.agentDefinitionId, `${label}.agentDefinitionId`);
-  requireText(member.llmModelIdentifier, `${label}.llmModelIdentifier`);
-  if (typeof member.autoExecuteTools !== "boolean") throw new Error(`${label}.autoExecuteTools must be boolean.`);
-  if (!Object.values(SkillAccessMode).includes(member.skillAccessMode as SkillAccessMode)) {
-    throw new Error(`${label}.skillAccessMode is unsupported.`);
-  }
-  validateNullableObject(member.llmConfig, `${label}.llmConfig`);
-  validateNullableText(member.workspaceRootPath, `${label}.workspaceRootPath`);
-  validateNullableObject(member.applicationExecutionContext, `${label}.applicationExecutionContext`, true);
 };
 
 export const isLegacyFlatTeamRunMetadata = (payload: JsonRecord): boolean =>
   "memberMetadata" in payload || "runVersion" in payload;
 
-export const validateMemberTreePrerequisite = (payload: JsonRecord, teamRunId: string): void => {
-  if (payload.schemaVersion === 3) {
-    convertLegacyTeamRunMetadata(payload, teamRunId);
-    return;
-  }
-  if (requireText(payload.teamRunId, "teamRunId") !== teamRunId) {
-    throw new Error(`teamRunId '${String(payload.teamRunId)}' does not match directory '${teamRunId}'.`);
-  }
-  requireText(payload.teamDefinitionId, "teamDefinitionId");
-  requireText(payload.teamDefinitionName, "teamDefinitionName");
-  requireText(payload.coordinatorMemberRouteKey, "coordinatorMemberRouteKey");
-  requireText(payload.createdAt, "createdAt");
-  validateNullableText(payload.archivedAt, "archivedAt", true);
-  if (!Array.isArray(payload.memberTree)) throw new Error("memberTree must be an array.");
-  payload.memberTree.forEach((member, index) => validateMemberTreeNode(member, `memberTree[${index}]`));
-  normalizeCollaborationHandoffs(payload.handoffs);
-};
-
-export const convertFlatTeamRunMetadataToMemberTree = (
+export const decodeFlatTeamRunMetadataToMemberTree = (
   payload: JsonRecord,
   teamRunId: string,
 ): JsonRecord => {
+  if (payload.runVersion !== 1) {
+    throw new Error("Legacy flat metadata runVersion must equal 1.");
+  }
   if ("memberTree" in payload) {
     throw new Error("Legacy flat metadata also contains memberTree; topology cannot be reconstructed safely.");
   }
@@ -183,19 +132,32 @@ export const convertFlatTeamRunMetadataToMemberTree = (
     throw new Error("Legacy team metadata has no valid memberMetadata entries.");
   }
   const memberTree = payload.memberMetadata.map(convertFlatAgent);
-  const now = new Date().toISOString();
+  const sourceTeamRunId = requireText(payload.teamRunId, "teamRunId");
+  if (sourceTeamRunId !== teamRunId) {
+    throw new Error(`teamRunId '${sourceTeamRunId}' does not match directory '${teamRunId}'.`);
+  }
+  const coordinatorMemberRouteKey = requireDirectRoute(
+    payload.coordinatorMemberRouteKey,
+    "coordinatorMemberRouteKey",
+  );
+  if (!memberTree.some((member) => member.memberRouteKey === coordinatorMemberRouteKey)) {
+    throw new Error(`coordinatorMemberRouteKey '${coordinatorMemberRouteKey}' is not a direct Agent member.`);
+  }
+  const seen = new Set<string>();
+  for (const member of memberTree) {
+    const folded = String(member.memberRouteKey).toLocaleLowerCase("en-US");
+    if (seen.has(folded)) throw new Error(`Duplicate direct member route '${String(member.memberRouteKey)}'.`);
+    seen.add(folded);
+  }
   const converted: JsonRecord = {
-    teamRunId: text(payload.teamRunId) || teamRunId,
-    teamDefinitionId: text(payload.teamDefinitionId),
-    teamDefinitionName: text(payload.teamDefinitionName),
-    coordinatorMemberRouteKey: normalizeRoute(text(payload.coordinatorMemberRouteKey)) || memberTree[0]?.memberRouteKey,
-    createdAt: text(payload.createdAt) || now,
-    archivedAt: nullableText(payload.archivedAt),
+    teamRunId: sourceTeamRunId,
+    teamDefinitionId: requireText(payload.teamDefinitionId, "teamDefinitionId"),
+    teamDefinitionName: requireText(payload.teamDefinitionName, "teamDefinitionName"),
+    coordinatorMemberRouteKey,
+    createdAt: requireText(payload.createdAt, "createdAt"),
+    archivedAt: nullableText(payload.archivedAt, "archivedAt"),
     memberTree,
     handoffs: normalizeCollaborationHandoffs(payload.handoffs),
   };
-  // Prove the prerequisite output is accepted by the next ordered migration
-  // before any backup or source-file replacement occurs.
-  convertLegacyTeamRunMetadata(converted, teamRunId);
   return converted;
 };

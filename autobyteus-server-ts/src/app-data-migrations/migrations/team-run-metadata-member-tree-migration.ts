@@ -7,10 +7,10 @@ import type {
 } from "../domain/app-data-migration-types.js";
 import { TeamRunMetadataStore } from "../../run-history/store/team-run-metadata-store.js";
 import {
-  convertFlatTeamRunMetadataToMemberTree,
+  decodeFlatTeamRunMetadataToMemberTree,
   isLegacyFlatTeamRunMetadata,
-  validateMemberTreePrerequisite,
 } from "./team-run-member-tree-prerequisite-converter.js";
+import { convertLegacyTeamRunMetadata } from "./team-canonical-metadata-converter.js";
 
 const MIGRATION_ID = "20260517_team_run_metadata_member_tree";
 const missing = (error: unknown): boolean => (error as NodeJS.ErrnoException | null)?.code === "ENOENT";
@@ -58,11 +58,13 @@ export class TeamRunMetadataMemberTreeMigration implements AppDataMigrationDefin
       try {
         const payload = record(JSON.parse(await fs.readFile(filePath, "utf-8")) as unknown);
         if (!isLegacyFlatTeamRunMetadata(payload)) {
-          validateMemberTreePrerequisite(payload, teamRunId);
+          convertLegacyTeamRunMetadata(payload, teamRunId);
           details.push({ itemId: teamRunId, filePath, status: "SKIPPED", message: "Metadata already has a valid memberTree." });
           continue;
         }
-        const converted = convertFlatTeamRunMetadataToMemberTree(payload, teamRunId);
+        const converted = decodeFlatTeamRunMetadataToMemberTree(payload, teamRunId);
+        // Staged successor-contract validation must finish before backup or replacement.
+        convertLegacyTeamRunMetadata(converted, teamRunId);
         const backupPath = await backupAndReplace(filePath, converted);
         details.push({ itemId: teamRunId, filePath, backupPath, status: "MIGRATED", message: "Converted flat memberMetadata to validated memberTree metadata." });
       } catch (error) {
