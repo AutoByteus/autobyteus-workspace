@@ -4,9 +4,9 @@
 
 - Ticket: `compaction-lineage-origin-simplification`
 - Result: `Complete — repository finalized on personal`
-- Current delivery revision: `DR-003`
+- Current delivery revision: `DR-004`
 - Finalized main checkout: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
-- Ticket worktree pending post-push cleanup: `/Users/normy/autobyteus_org/autobyteus-worktrees/compaction-lineage-origin-simplification`
+- Ticket worktree: Removed after successful target push verification.
 - Ticket branch: `codex/compaction-lineage-origin-simplification`
 - Finalization target: `origin/personal` / local `personal`
 - Reviewed production source commit: `9bcac525850d8e65d1ac4c792401b77c7ee0d396`
@@ -19,7 +19,7 @@
 - Target-checkout cleanup: Completed under the user's earlier explicit discard authorization; tracked and untracked personal-checkout changes were removed and the checkout is clean.
 - Archived ticket commit: `d671b6961374c760bb4416287061843fa4a46f6f` — pushed to `origin/codex/compaction-lineage-origin-simplification`.
 - Finalization merge: `aad840d57387aabece1504e8563c8d7d05a0fbd8` (`Merge compaction-lineage-origin-simplification`).
-- Finalization state: Ticket archived and merged into `personal`; final records are being pushed with the merged branch. No version bump, tag, release, publication, or deployment is in scope.
+- Finalization state: Ticket archived and merged into `personal`; the target and final records were pushed successfully. The dedicated worktree and local/remote topic branches were removed. No version bump, tag, release, publication, or deployment is in scope.
 
 ## Delivered Behavior
 
@@ -69,4 +69,4 @@ Authoritative docs-sync details: `/Users/normy/autobyteus_org/autobyteus-workspa
 
 ## User Verification And Finalization Authorization
 
-The user explicitly verified this handoff and requested finalization. The required second remote refresh found no target advance, the ticket was archived and pushed, and merge `aad840d57387aabece1504e8563c8d7d05a0fbd8` finalized the implementation on `personal`. No renewed verification was needed because the verified implementation and documentation state did not change. Post-merge checks passed; only safe topic-worktree/branch cleanup remains.
+The user explicitly verified this handoff and requested finalization. The required second remote refresh found no target advance, the ticket was archived and pushed, and merge `aad840d57387aabece1504e8563c8d7d05a0fbd8` finalized the implementation on `personal`. No renewed verification was needed because the verified implementation and documentation state did not change. Post-merge checks passed, `personal` matched `origin/personal`, and the dedicated worktree plus local/remote ticket branches were removed safely. No delivery action remains.
