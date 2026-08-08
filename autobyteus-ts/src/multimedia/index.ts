@@ -10,3 +10,5 @@ export { ImageClientFactory, imageClientFactory } from './image/image-client-fac
 export { VideoModel } from './video/video-model.js';
 export { BaseVideoClient } from './video/base-video-client.js';
 export { VideoClientFactory, videoClientFactory } from './video/video-client-factory.js';
+
+export type { MediaOperationOptions } from './utils/operation-options.js';

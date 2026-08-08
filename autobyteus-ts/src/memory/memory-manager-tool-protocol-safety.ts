@@ -1,3 +1,4 @@
+import type { ToolResultEvent } from '../agent/events/agent-events.js';
 import { Message } from '../llm/utils/messages.js';
 import { WorkingContext } from './working-context.js';
 import { RawTraceItem, type RawTraceItemOptions } from './models/raw-trace-item.js';
@@ -8,16 +9,11 @@ import {
   repairWorkingContextToolProtocol,
   SYNTHETIC_INTERRUPTED_TOOL_RESULT_CONTENT,
   type CompletedToolResultFact,
-  type InterruptedToolResultRepair,
   type ToolCallFact,
   type WorkingContextToolProtocolRepairResult,
 } from './working-context-tool-protocol-repairer.js';
 
-export type MemoryManagerToolProtocolSafetyScope = {
-  kind: 'agent_turn';
-  id: string;
-};
-
+export type MemoryManagerToolProtocolSafetyScope = { kind: 'agent_turn'; id: string };
 export type MemoryManagerToolProtocolSafetyInput = {
   scope?: MemoryManagerToolProtocolSafetyScope;
   includeCommittedFacts?: boolean;
@@ -28,18 +24,22 @@ export type MemoryManagerToolProtocolSafetyInput = {
 
 type AppendRawTraceLikeInput = Omit<RawTraceItemOptions, 'id' | 'ts' | 'seq'> &
   Partial<Pick<RawTraceItemOptions, 'id' | 'ts' | 'seq'>>;
-
 type MemoryManagerToolProtocolSafetyBoundary = {
   getWorkingContextMessages(): Message[];
   replaceWorkingContext(workingContext: WorkingContext): void;
   listRawTracesOrdered(limit?: number): RawTraceItem[];
   listRawTraceCorpusOrdered(limit?: number): RawTraceItem[];
   appendRawTrace(input: AppendRawTraceLikeInput): RawTraceItem;
+  persistWorkingContextSnapshot(): void;
+  ingestToolResults(events: ToolResultEvent[], turnId?: string, options?: {
+    source?: string;
+    appendToWorkingContext?: boolean;
+    correlationIdByInvocationId?: ReadonlyMap<string, string>;
+  }): void;
 };
 
-const RECOVERY_TRACE_TYPE = 'operation_boundary';
 const DEFAULT_RECOVERY_SOURCE_EVENT = 'WorkingContextToolProtocolRecovery';
-const RECOVERY_CORRELATION_PREFIX = 'working_context_tool_protocol_recovery';
+const RECOVERY_CORRELATION_PREFIX = 'native-tool-recovery';
 
 export function ensureMemoryManagerWorkingContextToolProtocolSafe(
   memoryManager: MemoryManagerToolProtocolSafetyBoundary,
@@ -64,9 +64,56 @@ export function ensureMemoryManagerWorkingContextToolProtocolSafe(
 
   if (!result.didRepair) return result;
 
-  memoryManager.replaceWorkingContext(new WorkingContext(result.messages));
-  appendSyntheticRecoveryMarkers(memoryManager, rawTraces, result.repairs, input);
-  return result;
+  // Commit canonical terminal results first. The working context is a derived
+  // projection and may be rebuilt from these facts after a crash.
+  const syntheticRepairs = result.repairs.filter((repair) => repair.source === 'synthetic_interrupted');
+  if (syntheticRepairs.length) {
+    const correlationIdByInvocationId = new Map<string, string>();
+    const sourceEvent = input.recoverySourceEvent ?? DEFAULT_RECOVERY_SOURCE_EVENT;
+    const rawInteractionByKey = new Map(
+      buildToolInteractions(rawTraces).filter((interaction) => interaction.turnId).map((interaction) => [
+        toolCallIdentityKey({ turnId: interaction.turnId!, toolCallId: interaction.toolCallId }),
+        interaction,
+      ]),
+    );
+    for (const repair of syntheticRepairs) {
+      const identity = createToolCallIdentity(repair.turnId ?? input.scope?.id, repair.toolCallId);
+      if (!identity) continue;
+      const correlationId = `${RECOVERY_CORRELATION_PREFIX}:${toolCallIdentityKey(identity)}`;
+      memoryManager.appendRawTrace({
+        id: `rt_recovery_${identity.turnId}_${identity.toolCallId}_${Date.now()}`,
+        ts: Date.now() / 1000,
+        turnId: identity.turnId,
+        traceType: 'tool_result',
+        content: '',
+        sourceEvent,
+        toolName: repair.toolName,
+        toolCallId: repair.toolCallId,
+        toolArgs: repair.toolArgs ?? null,
+        toolResult: null,
+        toolError: repair.toolError,
+        correlationId,
+      });
+    }
+  }
+
+  const committedRawTraces = input.rawTraceScope === 'active'
+    ? memoryManager.listRawTracesOrdered()
+    : memoryManager.listRawTraceCorpusOrdered();
+  const committedInteractions = buildToolInteractions(committedRawTraces);
+  const converged = repairWorkingContextToolProtocol(
+    memoryManager.getWorkingContextMessages(),
+    {
+      completedToolResultsByIdentity: buildCompletedToolResultFactsByIdentity(committedInteractions),
+      toolCallFactsByIdentity: buildToolCallFactsByIdentity(committedInteractions),
+      syntheticInterruptedToolResultContent:
+        input.syntheticInterruptedToolResultContent ?? SYNTHETIC_INTERRUPTED_TOOL_RESULT_CONTENT,
+      fallbackTurnId: input.scope?.id ?? null,
+    },
+  );
+  memoryManager.replaceWorkingContext(new WorkingContext(converged.messages));
+  memoryManager.persistWorkingContextSnapshot();
+  return { ...converged, didRepair: true };
 }
 
 function buildCompletedToolResultFactsByIdentity(
@@ -101,43 +148,4 @@ function buildToolCallFactsByIdentity(
     });
   }
   return facts;
-}
-
-function appendSyntheticRecoveryMarkers(
-  memoryManager: MemoryManagerToolProtocolSafetyBoundary,
-  rawTraces: RawTraceItem[],
-  repairs: InterruptedToolResultRepair[],
-  input: MemoryManagerToolProtocolSafetyInput,
-): void {
-  const existingCorrelations = new Set(
-    rawTraces
-      .map((trace) => trace.correlationId)
-      .filter((id): id is string => Boolean(id)),
-  );
-  const sourceEvent = input.recoverySourceEvent ?? DEFAULT_RECOVERY_SOURCE_EVENT;
-  for (const repair of repairs) {
-    if (repair.source !== 'synthetic_interrupted') continue;
-    const identity = createToolCallIdentity(repair.turnId ?? input.scope?.id, repair.toolCallId);
-    if (!identity) continue;
-    const correlationId = `${RECOVERY_CORRELATION_PREFIX}:${toolCallIdentityKey(identity)}`;
-    if (existingCorrelations.has(correlationId)) continue;
-    existingCorrelations.add(correlationId);
-    memoryManager.appendRawTrace({
-      turnId: repair.turnId ?? input.scope?.id ?? 'unknown_turn',
-      traceType: RECOVERY_TRACE_TYPE,
-      content: buildSyntheticRecoveryMarkerContent(repair),
-      sourceEvent,
-      correlationId,
-      toolName: repair.toolName,
-      toolCallId: repair.toolCallId,
-    });
-  }
-}
-
-function buildSyntheticRecoveryMarkerContent(repair: InterruptedToolResultRepair): string {
-  return [
-    `System note: recovered incomplete native tool-call protocol for tool call '${repair.toolCallId}' (${repair.toolName}).`,
-    'A synthetic interrupted/unknown tool result was inserted because no recorded tool result was available in memory.',
-    'Completion status is unknown and no tool output should be assumed from that abandoned call.',
-  ].join(' ');
 }

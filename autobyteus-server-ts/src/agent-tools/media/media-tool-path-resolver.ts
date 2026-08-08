@@ -3,6 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { downloadFileFromUrl } from "autobyteus-ts/utils/download-utils.js";
 import type { MediaToolExecutionContext } from "./media-tool-contract.js";
+import type { MediaOperationOptions } from "autobyteus-ts/multimedia/utils/operation-options.js";
 
 const LOCAL_FILE_URL_PREFIX = "file:";
 
@@ -104,8 +105,8 @@ export class MediaPathResolver {
     return resolvedPath;
   }
 
-  async writeGeneratedMediaFromUrl(sourceUrl: string, outputFilePath: string): Promise<void> {
-    await downloadFileFromUrl(sourceUrl, outputFilePath);
+  async writeGeneratedMediaFromUrl(sourceUrl: string, outputFilePath: string, options: MediaOperationOptions = {}): Promise<void> {
+    await downloadFileFromUrl(sourceUrl, outputFilePath, { signal: options.signal ?? undefined, timeoutMs: options.deadlineAt ? Math.max(1, options.deadlineAt - Date.now()) : undefined });
   }
 }
 

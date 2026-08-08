@@ -2,6 +2,7 @@ import crypto from 'node:crypto';
 import { AutobyteusClient } from '../../../clients/autobyteus-client.js';
 import { BaseImageClient } from '../base-image-client.js';
 import { ImageGenerationResponse } from '../../utils/response-types.js';
+import type { MediaOperationOptions } from '../../utils/operation-options.js';
 import type { ImageModel } from '../image-model.js';
 import type { MultimediaConfig } from '../../utils/multimedia-config.js';
 import type { ProviderApiKeyResolver } from '../../../secrets/provider-api-key-resolver.js';
@@ -35,25 +36,28 @@ export class AutobyteusImageClient extends BaseImageClient {
   async generateImage(
     prompt: string,
     inputImageUrls?: string[] | null,
-    generationConfig?: Record<string, unknown>
+    generationConfig?: Record<string, unknown>,
+    operationOptions?: MediaOperationOptions
   ): Promise<ImageGenerationResponse> {
-    return this.callRemoteGenerate(prompt, inputImageUrls ?? null, null, generationConfig ?? null);
+    return this.callRemoteGenerate(prompt, inputImageUrls ?? null, null, generationConfig ?? null, operationOptions);
   }
 
   async editImage(
     prompt: string,
     inputImageUrls: string[],
     maskUrl?: string | null,
-    generationConfig?: Record<string, unknown>
+    generationConfig?: Record<string, unknown>,
+    operationOptions?: MediaOperationOptions
   ): Promise<ImageGenerationResponse> {
-    return this.callRemoteGenerate(prompt, inputImageUrls, maskUrl ?? null, generationConfig ?? null);
+    return this.callRemoteGenerate(prompt, inputImageUrls, maskUrl ?? null, generationConfig ?? null, operationOptions);
   }
 
   private async callRemoteGenerate(
     prompt: string,
     inputImageUrls: string[] | null,
     maskUrl: string | null,
-    generationConfig: Record<string, unknown> | null
+    generationConfig: Record<string, unknown> | null,
+    operationOptions?: MediaOperationOptions
   ): Promise<ImageGenerationResponse> {
     const client = await this.getClient();
     const responseData = await client.generateImage(
