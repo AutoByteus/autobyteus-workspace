@@ -7,6 +7,7 @@
 | DR-001 | `CRR-002` cumulative handoff after `API-REV-001` | N/A | Latest base integrated; docs synchronized; ready for user verification; finalization held | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-integration-evidence.log` |
 | DR-002 | User request to read build guidance and prepare Electron for testing | DR-001 — ready / held | Unsigned personal macOS ARM64 test package built and verified; finalization remains held | `handoff-summary.md`, `release-deployment-report.md`, Electron build/verification logs |
 | DR-003 | Explicit user verification plus request to finalize and release a new version | DR-002 — package ready / held | Verified target unchanged; finalization and stable `v1.4.45` release authorized and in progress | `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md` |
+| DR-004 | Completion of authorized ticket archive/push and merge/push to `personal` | DR-003 — authorized / in progress | Repository finalized and post-merge verified; stable release pending | `handoff-summary.md`, `release-deployment-report.md`, `repository-finalization-evidence.log` |
 
 ## Revision Entries
 
@@ -14,12 +15,12 @@
 
 - Date: 2026-08-08
 - Delivery round and trigger: Initial delivery round, triggered by the code reviewer's `CRR-002` cumulative handoff after `CRR-001` source Pass and `API-REV-001` Pass.
-- Triggering upstream report, verification, or evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/tickets/done/restore-focused-progressive-markdown/api-e2e-test-review-report.md`, with the full cumulative package through `api-e2e-execution-coverage-report.md` and `code-review-revision-record.md`.
+- Triggering upstream report, verification, or evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-focused-progressive-markdown/api-e2e-test-review-report.md`, with the full cumulative package through `api-e2e-execution-coverage-report.md` and `code-review-revision-record.md`.
 - Prior authoritative result (`N/A` for `DR-001`): `N/A`
 - Current authoritative result: The latest tracked remote base is integrated and verified; both required durable docs are synchronized; the candidate is ready for explicit user verification; repository finalization is held.
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/tickets/done/restore-focused-progressive-markdown/docs-sync-report.md`
-- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/tickets/done/restore-focused-progressive-markdown/handoff-summary.md`
-- Release/publication/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/tickets/done/restore-focused-progressive-markdown/release-deployment-report.md`
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-focused-progressive-markdown/docs-sync-report.md`
+- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-focused-progressive-markdown/handoff-summary.md`
+- Release/publication/deployment report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-focused-progressive-markdown/release-deployment-report.md`
 - Integration and post-integration verification:
   - Fetched `origin/personal`, which advanced seven commits from bootstrap `647b1119a9dc3ba2ba301243e1b5e752943454db` to `9ce41640960fc3e2a7b85b85608a4f081fe52df2`.
   - Protected the reviewed package in local checkpoint `7a5675ef2ac33f6e40bb47ea89f221c12959ead2`.
@@ -68,3 +69,17 @@
 - Why this delivery revision was recorded: Preserve the explicit acceptance boundary, mandatory second-refresh result, release scope expansion, selected next patch version, and ordered transition into irreversible repository/release work.
 - Next recipient/action: Delivery archives and commits/pushes the ticket, merges/pushes `personal`, creates and pushes `v1.4.45`, verifies all release workflows/publication outputs, then performs only safe cleanup.
 - Remaining blockers, rollback concerns, or untested scope: No product blocker. Release success depends on remote workflow and publishing infrastructure. Existing bounded product limitations remain unchanged; a user-running worktree app may require worktree cleanup deferral.
+
+### DR-004 — Repository finalized and post-merge verified
+
+- Date: 2026-08-08
+- Delivery round and trigger: Completion of the DR-003 user-authorized archive, ticket push, target merge, and target push sequence.
+- Triggering upstream report, verification, or evidence: `DR-003`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-focused-progressive-markdown/repository-finalization-evidence.log`.
+- Prior authoritative result: `DR-003` — user verified; target unchanged; finalization and stable `v1.4.45` authorized.
+- Current authoritative result: Pass. Ticket commit `d64914d2796e1522700f9eba34c073ccfb4d739d` was pushed, merged into `personal` as `3f53fcc52c556155210519146a484f16596398a9`, and the post-merge verification record was pushed with `origin/personal` at `446df76823f94d403ee1b4dfd970c7ce38b07a43`.
+- Verification details: Ticket and merge commits are target ancestors; the focused post-merge suite passed 4 files / 30 tests; diff, removed-symbol, durable-doc, and archived release-note checks passed.
+- Canonical artifacts updated: `handoff-summary.md`, `release-deployment-report.md`, `delivery-revision-record.md`; added `repository-finalization-evidence.log`.
+- User verification/finalization state: Repository finalization complete. User-authorized stable release remains in progress.
+- Why this delivery revision was recorded: Record exact target ancestry, pushes, and executable evidence before version/tag/publication work begins.
+- Next recipient/action: Delivery publishes stable `v1.4.45` with the documented release helper, verifies all tag-triggered workflows and published outputs, and then performs only safe topic cleanup.
+- Remaining blockers, rollback concerns, or untested scope: No repository blocker. Remote release infrastructure remains to execute. Do not rewrite a published stable tag; any later correction must use a new patch release.

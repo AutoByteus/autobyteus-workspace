@@ -6,7 +6,7 @@
 - Trigger: `CRR-002` cumulative delivery handoff after `CRR-001` source Pass and `API-REV-001` Pass.
 - Bootstrap base reference: `origin/personal` at `647b1119a9dc3ba2ba301243e1b5e752943454db`.
 - Integrated base reference used for docs sync: refreshed `origin/personal` at `9ce41640960fc3e2a7b85b85608a4f081fe52df2`.
-- Post-integration verification reference: integrated candidate `af5f8aa29cae32f5c6a26716e20182cd6e4ad910`; `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/tickets/done/restore-focused-progressive-markdown/delivery-integration-evidence.log`.
+- Post-integration verification reference: integrated candidate `af5f8aa29cae32f5c6a26716e20182cd6e4ad910`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-focused-progressive-markdown/delivery-integration-evidence.log`.
 
 ## Why Docs Were Updated
 
