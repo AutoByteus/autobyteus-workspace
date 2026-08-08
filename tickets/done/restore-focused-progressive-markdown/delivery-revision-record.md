@@ -8,6 +8,8 @@
 | DR-002 | User request to read build guidance and prepare Electron for testing | DR-001 — ready / held | Unsigned personal macOS ARM64 test package built and verified; finalization remains held | `handoff-summary.md`, `release-deployment-report.md`, Electron build/verification logs |
 | DR-003 | Explicit user verification plus request to finalize and release a new version | DR-002 — package ready / held | Verified target unchanged; finalization and stable `v1.4.45` release authorized and in progress | `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md` |
 | DR-004 | Completion of authorized ticket archive/push and merge/push to `personal` | DR-003 — authorized / in progress | Repository finalized and post-merge verified; stable release pending | `handoff-summary.md`, `release-deployment-report.md`, `repository-finalization-evidence.log` |
+| DR-005 | Documented stable release helper and tag-triggered workflows | DR-004 — repository finalized / release pending | Stable `v1.4.45` published; all five workflows and outputs verified | `release-deployment-report.md`, release command/monitor/verification evidence |
+| DR-006 | Post-release cleanup safety audit | DR-005 — release complete / cleanup pending | Cleanup safely blocked by user-running accepted app in ticket worktree | `handoff-summary.md`, `release-deployment-report.md`, `post-finalization-cleanup.log` |
 
 ## Revision Entries
 
@@ -83,3 +85,39 @@
 - Why this delivery revision was recorded: Record exact target ancestry, pushes, and executable evidence before version/tag/publication work begins.
 - Next recipient/action: Delivery publishes stable `v1.4.45` with the documented release helper, verifies all tag-triggered workflows and published outputs, and then performs only safe topic cleanup.
 - Remaining blockers, rollback concerns, or untested scope: No repository blocker. Remote release infrastructure remains to execute. Do not rewrite a published stable tag; any later correction must use a new patch release.
+
+### DR-005 — Stable v1.4.45 published and verified
+
+- Date: 2026-08-08
+- Delivery round and trigger: User-authorized stable release after `DR-004` repository finalization.
+- Triggering upstream report, verification, or evidence: `DR-004`; documented release helper; `release-v1.4.45-command.log`; `release-v1.4.45-workflow-monitor.log`; `release-v1.4.45-verification.log`.
+- Prior authoritative result: `DR-004` — repository finalized and post-merge verified; release pending.
+- Current authoritative result: Pass. Release commit `e0a1c280ec3c9f9f6c00391912e7cab660ac082c` was pushed to `personal`; annotated `v1.4.45` peels to that commit; the public stable GitHub release contains 21 uploaded assets; all five tag-triggered workflows succeeded.
+- Release command: `pnpm release 1.4.45 -- --release-notes tickets/done/restore-focused-progressive-markdown/release-notes.md`.
+- Version/synchronization result: web and messaging-gateway packages are `1.4.45`; managed messaging manifest targets `v1.4.45`; repository curated notes exactly match the archived ticket notes.
+- Workflow/publication result:
+  - Desktop Release succeeded for macOS ARM64/x64, Linux ARM64/x64, Windows x64, updater metadata, and GitHub Release publication.
+  - Android APK Release succeeded and uploaded the signed APK/checksum.
+  - iOS App Store Connect Release succeeded through build/test, secret validation, archive, and TestFlight upload.
+  - Messaging Gateway release succeeded and published archive/metadata/checksum/manifest assets.
+  - Server Docker release succeeded; `1.4.45` and `latest` share verified multi-architecture index digest `sha256:288d51f8e13106211c828d58888bb7e59e4dde33dabcf5e19406909acd743a54` for `linux/amd64` and `linux/arm64`.
+- Public release: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.45
+- Canonical artifacts updated: `handoff-summary.md`, `release-deployment-report.md`, `delivery-revision-record.md`.
+- Supplemental artifacts added: `release-v1.4.45-command.log`, `release-v1.4.45-workflow-monitor.log`, `release-v1.4.45-verification.log`.
+- Why this delivery revision was recorded: Stable release creation, ref publication, asynchronous workflows, and rollout outputs are a distinct delivery-stage result that must remain explicit.
+- Next recipient/action: Delivery performs the post-finalization cleanup safety audit and removes only resources that are no longer in user use.
+- Remaining blockers, rollback concerns, or untested scope: Do not rewrite `v1.4.45`; any correction requires a later patch. Product residuals remain those already approved in the handoff.
+
+### DR-006 — Topic cleanup safely deferred for user-running app
+
+- Date: 2026-08-08
+- Delivery round and trigger: Mandatory post-finalization cleanup audit after successful `DR-005` release.
+- Triggering upstream report, verification, or evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-focused-progressive-markdown/post-finalization-cleanup.log`.
+- Prior authoritative result: `DR-005` — repository and stable release complete; cleanup pending.
+- Current authoritative result: Cleanup blocked safely. The accepted local `1.4.44` Electron app, embedded server on port `29695`, Electron helpers, and file watcher are actively executing from `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown`. Delivery preserved those user processes and therefore did not remove the worktree or local/remote topic branches.
+- Repository/release impact: None. `personal`, `v1.4.45`, all workflows, public assets, TestFlight upload, and Docker publication are already pushed and verified.
+- Canonical artifacts updated: `handoff-summary.md`, `release-deployment-report.md`, `delivery-revision-record.md`.
+- Supplemental artifact added: `post-finalization-cleanup.log`.
+- Why this delivery revision was recorded: Cleanup must not be reported as complete or inferred from missing evidence when user-owned runtime processes make deletion unsafe.
+- Next recipient/action: User may continue using the accepted app. After the app is quit, the dedicated worktree and local/remote topic branches can be removed in a later cleanup pass.
+- Remaining blockers, rollback concerns, or untested scope: Operational cleanup only. Final product/release delivery is complete; final handoff remains cleanup-blocked under delivery policy until the user-running app exits.

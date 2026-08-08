@@ -1,0 +1,90 @@
+# v1.4.45 Release Verification
+
+- Verified: 2026-08-08T19:41:52Z
+- Repository: `AutoByteus/autobyteus-workspace`
+- Release commit: `e0a1c280ec3c9f9f6c00391912e7cab660ac082c`
+
+## Git And Version State
+
+- Remote personal: `e0a1c280ec3c9f9f6c00391912e7cab660ac082c`
+- Remote tag object: `c9faac5f89f95c7aca4e20748cdc110edcc75918`
+- Remote tag peeled: `e0a1c280ec3c9f9f6c00391912e7cab660ac082c`
+- Web version: `1.4.45`
+- Gateway version: `1.4.45`
+- Managed messaging tag: `v1.4.45`
+- Curated release notes sync: Pass.
+- Ticket and merge ancestry in release commit: Pass.
+
+## GitHub Release
+
+- URL: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.45
+- Name/tag: v1.4.45 / v1.4.45
+- Target: `e0a1c280ec3c9f9f6c00391912e7cab660ac082c`
+- Published: 2026-08-08T19:17:18Z
+- Draft/prerelease: false / false
+- Asset count: 21
+- Assets:
+  - autobyteus-message-gateway-1.4.45-node-generic.tar.gz (46516422 bytes, uploaded)
+  - autobyteus-message-gateway-1.4.45-node-generic.tar.gz.json (429 bytes, uploaded)
+  - autobyteus-message-gateway-1.4.45-node-generic.tar.gz.sha256 (120 bytes, uploaded)
+  - AutoByteus_personal_android-1.4.45-release.apk (1846691 bytes, uploaded)
+  - AutoByteus_personal_android-1.4.45-release.apk.sha256 (113 bytes, uploaded)
+  - AutoByteus_personal_linux-arm64-1.4.45.AppImage (357053555 bytes, uploaded)
+  - AutoByteus_personal_linux-x64-1.4.45.AppImage (368679997 bytes, uploaded)
+  - AutoByteus_personal_macos-arm64-1.4.45.dmg (434164483 bytes, uploaded)
+  - AutoByteus_personal_macos-arm64-1.4.45.dmg.blockmap (450646 bytes, uploaded)
+  - AutoByteus_personal_macos-arm64-1.4.45.zip (429981900 bytes, uploaded)
+  - AutoByteus_personal_macos-arm64-1.4.45.zip.blockmap (440812 bytes, uploaded)
+  - AutoByteus_personal_macos-x64-1.4.45.dmg (456397135 bytes, uploaded)
+  - AutoByteus_personal_macos-x64-1.4.45.dmg.blockmap (476652 bytes, uploaded)
+  - AutoByteus_personal_macos-x64-1.4.45.zip (451621587 bytes, uploaded)
+  - AutoByteus_personal_macos-x64-1.4.45.zip.blockmap (460956 bytes, uploaded)
+  - AutoByteus_personal_windows-1.4.45.exe (301764709 bytes, uploaded)
+  - latest-linux-arm64.yml (417 bytes, uploaded)
+  - latest-linux.yml (413 bytes, uploaded)
+  - latest-mac.yml (897 bytes, uploaded)
+  - latest.yml (354 bytes, uploaded)
+  - release-manifest.json (904 bytes, uploaded)
+
+## Tag-Triggered Workflows
+
+- Desktop Release: completed / success — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/31273946111
+  - Resolve Release Metadata: completed / success
+  - Build Linux ARM64: completed / success
+  - Build macOS Intel x64: completed / success
+  - Build Linux x64: completed / success
+  - Build macOS ARM64: completed / success
+  - Build Windows x64: completed / success
+  - Publish GitHub Release: completed / success
+- Android APK Release: completed / success — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/31273946110
+  - Resolve Android Release Metadata: completed / success
+  - Build Android APK: completed / success
+  - Publish Android APK To GitHub Release: completed / success
+- iOS App Store Connect Release: completed / success — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/31273946138
+  - Resolve iOS Release Metadata: completed / success
+  - Build And Test iOS App: completed / success
+  - Validate iOS Publish Secrets: completed / success
+  - Archive And Upload To App Store Connect: completed / success
+- Release Messaging Gateway: completed / success — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/31273946113
+  - Resolve Release Metadata: completed / success
+  - Build Runtime Package: completed / success
+  - Publish GitHub Release: completed / success
+- Server Docker Release: completed / success — https://github.com/AutoByteus/autobyteus-workspace/actions/runs/31273946123
+  - Resolve Release Metadata: completed / success
+  - Build And Push Server Image: completed / success
+
+## Docker Publication
+
+- `autobyteus/autobyteus-server:1.4.45`:
+  - index: `sha256:288d51f8e13106211c828d58888bb7e59e4dde33dabcf5e19406909acd743a54`
+  - linux/amd64: `sha256:649687256b89425ba34789b34e586443f333af81f89b817eb9758d45b28d4dd0`
+  - linux/arm64: `sha256:12743a2dde263d2afef24868c9acb096af07354d21c33f3affaa8c7ef077af43`
+- `autobyteus/autobyteus-server:latest`:
+  - index: `sha256:288d51f8e13106211c828d58888bb7e59e4dde33dabcf5e19406909acd743a54`
+  - linux/amd64: `sha256:649687256b89425ba34789b34e586443f333af81f89b817eb9758d45b28d4dd0`
+  - linux/arm64: `sha256:12743a2dde263d2afef24868c9acb096af07354d21c33f3affaa8c7ef077af43`
+- Stable and `latest` index digests match: Pass.
+
+## Result
+
+Pass. Stable v1.4.45 is published; all five workflows succeeded; the GitHub release is public with 21 assets; iOS upload, Android, desktop, messaging gateway, and multi-architecture Docker publication completed.

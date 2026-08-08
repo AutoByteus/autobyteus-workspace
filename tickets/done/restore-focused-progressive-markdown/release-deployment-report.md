@@ -2,15 +2,15 @@
 
 ## Release / Publication / Deployment Scope
 
-The user verified the local package and authorized repository finalization plus a new stable release. Delivery will finalize to `personal`, then publish patch `v1.4.45` through the documented release helper and verify the tag-triggered release workflows and outputs. The local unsigned personal macOS ARM64 package was the acceptance candidate; it remains separate from signed release artifacts.
+The user verified the local package and authorized repository finalization plus a new stable release. Repository finalization to `personal` and stable patch `v1.4.45` publication are complete. All five tag-triggered workflows passed. The local unsigned personal macOS ARM64 package was the acceptance candidate and remains separate from signed release artifacts.
 
 ## Handoff Summary
 
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-focused-progressive-markdown/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-focused-progressive-markdown/delivery-revision-record.md`
-- Current delivery revision ID: `DR-004`
-- Notes: Repository finalization completed and verified on `personal`; stable release execution is next.
+- Current delivery revision ID: `DR-006`
+- Notes: Repository finalization and stable release completed; post-finalization topic cleanup is safely blocked by the user-running accepted app.
 
 ## Initial Delivery Integration Refresh
 
@@ -26,7 +26,7 @@ The user verified the local package and authorized repository finalization plus 
 - No-rerun rationale (only if no new base commits were integrated): N/A
 - Delivery edits started only after integrated state was current: `Yes`
 - Handoff state current with latest tracked remote base: `Yes`
-- Blocker (if applicable): None; user-verification hold remains.
+- Blocker (if applicable): None.
 
 ## User Verification
 
@@ -50,10 +50,11 @@ The user verified the local package and authorized repository finalization plus 
 
 ## Version / Tag / Release Commit
 
-- Prior/latest published stable version: `1.4.44` / `v1.4.44`.
-- Planned new stable version: `1.4.45` / `v1.4.45`.
-- Planned release method: repository `pnpm release` helper with archived ticket release notes, synchronized web/gateway versions, managed messaging release manifest, curated notes, annotated tag, and explicit target/tag pushes.
-- Current state: release notes prepared; release commit/tag not yet created.
+- Prior stable version: `1.4.44` / `v1.4.44`.
+- Released stable version: `1.4.45` / `v1.4.45`.
+- Release commit: `e0a1c280ec3c9f9f6c00391912e7cab660ac082c` (`chore(release): bump workspace release version to 1.4.45`).
+- Annotated tag object: `c9faac5f89f95c7aca4e20748cdc110edcc75918`; peeled tag: `e0a1c280ec3c9f9f6c00391912e7cab660ac082c`.
+- Synchronized surfaces: web package `1.4.45`, messaging-gateway package `1.4.45`, managed messaging `v1.4.45` release manifest, and curated GitHub release notes.
 
 ## Repository Finalization
 
@@ -68,7 +69,7 @@ The user verified the local package and authorized repository finalization plus 
 - Re-integration before final merge result: `Not needed` — target unchanged
 - Target branch update result: `Completed` — clean main checkout refreshed to `origin/personal` at `9ce41640960fc3e2a7b85b85608a4f081fe52df2`
 - Merge into target result: `Completed` — merge commit `3f53fcc52c556155210519146a484f16596398a9`
-- Push target branch result: `Completed` — `origin/personal` verified at `446df76823f94d403ee1b4dfd970c7ce38b07a43`
+- Push target branch result: `Completed` — repository-finalized `personal` was verified at `446df76823f94d403ee1b4dfd970c7ce38b07a43`, then the release commit advanced `origin/personal` to `e0a1c280ec3c9f9f6c00391912e7cab660ac082c`
 - Repository finalization status: `Completed`
 - Blocker (if applicable): None
 
@@ -76,10 +77,22 @@ The user verified the local package and authorized repository finalization plus 
 
 - Applicable: `Yes`
 - Method: `Release Script`
-- Method reference / command: planned `pnpm release 1.4.45 -- --release-notes tickets/done/restore-focused-progressive-markdown/release-notes.md` using a clean finalization checkout; explicit branch/tag pushes may be used to protect unrelated main-checkout changes.
-- Release/publication/deployment result: `Blocked` — pending repository finalization and workflow execution
-- Release notes handoff result: `Blocked` — prepared at `release-notes.md`, not yet consumed
-- Blocker (if applicable): Ordered execution only; no technical defect blocker.
+- Method reference / command: `pnpm release 1.4.45 -- --release-notes tickets/done/restore-focused-progressive-markdown/release-notes.md`
+- Release/publication/deployment result: `Completed`
+- Release notes handoff result: `Used`
+- Blocker (if applicable): None
+
+Published release:
+
+- URL: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.45
+- State: stable, non-draft, non-prerelease
+- Target: `e0a1c280ec3c9f9f6c00391912e7cab660ac082c`
+- Assets: 21 uploaded assets
+- Desktop: macOS ARM64/x64 DMG + ZIP + block maps, Linux ARM64/x64 AppImages, Windows x64 installer, and updater metadata
+- Android: signed `AutoByteus_personal_android-1.4.45-release.apk` plus SHA-256
+- iOS: build/test, publish-secret validation, archive, and App Store Connect/TestFlight upload passed
+- Messaging gateway: node-generic archive, metadata, checksum, and release manifest
+- Server Docker: `autobyteus/autobyteus-server:1.4.45` and `:latest` share index digest `sha256:288d51f8e13106211c828d58888bb7e59e4dde33dabcf5e19406909acd743a54`, with `linux/amd64` and `linux/arm64` manifests
 
 Local verification build (not a release/publication):
 
@@ -97,18 +110,24 @@ Local verification build (not a release/publication):
 - Worktree cleanup result: `Blocked`
 - Worktree prune result: `Blocked`
 - Local ticket branch cleanup result: `Blocked`
-- Remote branch cleanup result: `Not required` at present; no ticket-branch push has occurred
-- Blocker (if applicable): Cleanup is intentionally deferred until user-authorized repository finalization completes and target ancestry is verified.
+- Remote branch cleanup result: `Blocked`
+- Blocker (if applicable): The user-running accepted `1.4.44` Electron app, embedded server on port `29695`, Electron helpers, and watcher execute from the ticket worktree. Delivery did not stop or mutate those processes; removing the worktree or its refs is deferred until the user quits the app. Evidence: `post-finalization-cleanup.log`.
 
 ## Release Notes Summary
 
 - Release notes artifact created before verification / acceptance: `No — release scope was added by the user's verification/finalization message; notes were created immediately afterward and before repository release work.`
-- Archived release notes artifact used for release/publication: Pending
+- Archived release notes artifact used for release/publication: `Yes`
 - Release notes status: `Updated`
 
 ## Deployment Steps
 
-Tag-triggered workflows are expected to build/publish desktop, Android, iOS/TestFlight where configured, messaging gateway, and multi-architecture server Docker outputs according to the repository release contract. Delivery will monitor and record exact results.
+| Workflow | Result | Run |
+| --- | --- | --- |
+| Desktop Release | Success | https://github.com/AutoByteus/autobyteus-workspace/actions/runs/31273946111 |
+| Android APK Release | Success | https://github.com/AutoByteus/autobyteus-workspace/actions/runs/31273946110 |
+| iOS App Store Connect Release | Success, including TestFlight upload | https://github.com/AutoByteus/autobyteus-workspace/actions/runs/31273946138 |
+| Release Messaging Gateway | Success | https://github.com/AutoByteus/autobyteus-workspace/actions/runs/31273946113 |
+| Server Docker Release | Success | https://github.com/AutoByteus/autobyteus-workspace/actions/runs/31273946123 |
 
 ## Environment Or Persisted-Data Transition Notes
 
@@ -125,11 +144,15 @@ Tag-triggered workflows are expected to build/publish desktop, Android, iOS/Test
 - Delivery post-integration rerun: 4 files / 30 tests passed on `af5f8aa29`; no ticket/base changed-path overlap; `git diff --check` passed; obsolete production presentation symbols absent.
 - Documentation stale-symbol check: both required durable docs now describe the final progressive-rich contract.
 - Local Electron verification build: guards, server/shared-package build, Prisma generation, sanitized built-in-agent bootstrap smoke, web/mobile/Electron generation, native rebuild, DMG, ZIP, and block maps passed; archive integrity and packaged terminal runtime/spawn checks passed.
+- Repository finalization: ticket/merge ancestry passed; post-merge 4 files / 30 tests plus static/docs checks passed; `origin/personal` push verified.
+- Release ref/version contract: remote annotated `v1.4.45` peels to release commit `e0a1c280e`; web/gateway versions and managed messaging manifest match `1.4.45` / `v1.4.45`; curated notes match the archived ticket notes.
+- Rollout: all five workflows completed successfully; public stable GitHub release has 21 uploaded assets; stable/latest Docker multi-architecture digests match.
+- Evidence: `release-v1.4.45-command.log`, `release-v1.4.45-workflow-monitor.log`, `release-v1.4.45-verification.log`, and `post-finalization-cleanup.log`.
 
 ## Rollback Criteria
 
-Before finalization, rollback is simply to withhold verification and leave `personal` unchanged. After a later authorized merge, revert the ticket merge if selected active text/reasoning regresses to incorrect rendering, conversation content/order or lifecycle changes, rich-render security/features regress, or the server-only cadence contract is violated. Renderer-wide background contention alone is not a rollback criterion for this bounded ticket because it is explicitly out of scope.
+Do not rewrite published tag `v1.4.45`. If selected active text/reasoning regresses to incorrect rendering, conversation content/order or lifecycle changes, rich-render security/features regress, or the server-only cadence contract is violated, revert the relevant change on `personal` and publish a later corrective patch through the documented release flow. App Store, Docker, and updater outputs should be superseded through their normal release paths. Renderer-wide background contention alone is not a rollback criterion for this bounded ticket because it is explicitly out of scope.
 
 ## Final Status
 
-**In progress — user verification received, target unchanged, repository finalization and stable `v1.4.45` release authorized.**
+**Release complete / cleanup blocked — repository finalized and stable `v1.4.45` published successfully; worktree/local/remote topic cleanup is safely deferred until the user quits the accepted app running from that worktree.**

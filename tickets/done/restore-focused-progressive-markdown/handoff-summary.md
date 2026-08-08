@@ -2,9 +2,9 @@
 
 ## Status
 
-- Delivery state: **User verified; finalization and stable patch release authorized**.
+- Delivery state: **Repository and stable release complete; post-finalization topic cleanup safely deferred**.
 - Repository finalization: **Completed** on `personal`; ticket and target pushes are verified.
-- Release/publication/deployment: User authorized stable `v1.4.45`; repository finalization is complete and release execution is next. No tag or publication has occurred yet. The local unsigned verification package remains available below.
+- Release/publication/deployment: **Stable `v1.4.45` published successfully**. All five tag-triggered workflows passed and the public GitHub release contains 21 assets. The earlier local unsigned verification package remains running from the ticket worktree.
 - Ticket state: archived at `tickets/done/restore-focused-progressive-markdown`.
 
 ## Delivered Behavior
@@ -41,8 +41,8 @@
 
 ## Documentation Synchronized
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/autobyteus-web/docs/content_rendering.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/autobyteus-web/docs/agent_execution_architecture.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/content_rendering.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/agent_execution_architecture.md`
 - Docs report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-focused-progressive-markdown/docs-sync-report.md`
 
 ## Personal macOS ARM64 Electron Verification Package
@@ -65,7 +65,7 @@
 - Verification evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-focused-progressive-markdown/electron-build-macos-arm64-personal-verification.log`
 - Package policy: intentionally unsigned/not notarized local test output, not a release artifact.
 
-## Suggested User Verification
+## User Verification
 
 1. Start a selected standalone response containing headings, emphasis, lists, or code and confirm those elements render richly before completion rather than showing raw Markdown syntax.
 2. In a focused team-member response that emits reasoning, expand **Thinking** and confirm rich content updates while the disclosure remains collapsed by default on a fresh segment.
@@ -74,7 +74,9 @@
 
 User verification was received on 2026-08-08: “the task is done. lets finalize and release a new version”. The post-verification refresh fetched `origin/personal` and confirmed it unchanged at `9ce41640960fc3e2a7b85b85608a4f081fe52df2`; the verified candidate remains four commits ahead / zero behind. No re-integration or renewed verification is required.
 
-An older AutoByteus instance is currently running from the completed runtime-streaming worktree and owns embedded port `29695`. Delivery did not stop or mutate that user process. Quit it before launching this package; otherwise macOS may focus the old instance or the new embedded server may fail to bind. After quitting it, launch the direct app with:
+The user completed verification using the ticket's local `1.4.44` app and authorized finalization/release. That accepted app is still running from the ticket worktree and owns embedded port `29695`. Delivery did not stop or mutate it. The published `v1.4.45` artifacts supersede the local package for distribution.
+
+If the local test app is later needed again after quitting it, launch with:
 
 ```bash
 open "/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app"
@@ -90,12 +92,16 @@ If macOS blocks the unsigned app, right-click it in Finder and choose **Open**.
 - A very large or feature-heavy accumulated Markdown revision can still be expensive at the configured cadence.
 - Renderer-wide background/unfocused contention remains explicitly out of scope and is not claimed fixed.
 
-## Finalization And Release Authorization
+## Finalization And Release Result
 
 - User verification: received.
 - Mandatory post-verification target refresh: passed; `origin/personal` unchanged at `9ce41640960fc3e2a7b85b85608a4f081fe52df2`.
 - Completed repository sequence: archived ticket, committed/pushed ticket branch, merged/pushed `personal`, and verified target ancestry.
 - Repository result: ticket commit `d64914d2796e1522700f9eba34c073ccfb4d739d` was pushed; merge `3f53fcc52c556155210519146a484f16596398a9` and verification record `446df76823f94d403ee1b4dfd970c7ce38b07a43` were pushed to `origin/personal`; ancestry and 4 files / 30 post-merge tests passed.
-- Planned release: stable `v1.4.45` through the documented release helper with the archived `release-notes.md`, followed by workflow/publication verification.
+- Release commit: `e0a1c280ec3c9f9f6c00391912e7cab660ac082c`; annotated tag `v1.4.45` peels to the same commit.
+- Public release: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.45 — stable, non-draft, non-prerelease, 21 uploaded assets.
+- Workflow results: Desktop, Android APK, iOS App Store Connect/TestFlight, Messaging Gateway, and Server Docker all completed successfully.
+- Published platforms: macOS ARM64/x64, Linux ARM64/x64, Windows x64, Android APK, iOS/TestFlight upload, messaging-gateway package, and server Docker `linux/amd64` + `linux/arm64` (`1.4.45` and `latest`).
 - Release notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/restore-focused-progressive-markdown/release-notes.md`
-- Cleanup remains last and will not remove a worktree containing a user-running AutoByteus app.
+- Release evidence: `release-v1.4.45-command.log`, `release-v1.4.45-workflow-monitor.log`, and `release-v1.4.45-verification.log` in the archived ticket.
+- Cleanup result: safely deferred. The accepted app, embedded server, helpers, and file watcher still execute from the ticket worktree, so worktree/local/remote topic-branch deletion would be unsafe until the user quits the app.
