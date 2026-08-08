@@ -812,17 +812,26 @@ history, and other persisted data remain fine-grained/unchanged and require no
 migration. A physically lost/closed socket still has no replay guarantee; the
 session disposes pending unsendable state instead of claiming delivery.
 
-### Active And Completed Text/Reasoning Presentation
+### Progressive Rich Text/Reasoning Presentation
 
-`AIMessage.vue` passes explicit completion state into `TextSegment.vue` and
-`ThinkSegment.vue`. An identified incomplete segment uses `LiveTextRenderer.vue`,
-which relies on escaped Vue text with preserved whitespace and does not mount
-the rich Markdown pipeline. `SEGMENT_END` or a supported message-terminal path
-marks the segment presentation-complete and switches it to the existing
-`MarkdownRenderer.vue`. Historical/hydrated segments without live stream
-identity are treated as complete, so final Markdown, syntax highlighting, math,
-Mermaid, images, links, file actions, and sanitization retain their existing
-owners.
+The frontend presents active, completed, historical, and hydrated text through
+one rich path. `AIMessage.vue` dispatches typed segments without deriving a
+presentation-completion selector. `TextSegment.vue` passes the current
+accumulated text directly to the reactive `MarkdownRenderer.vue` on each
+server-shaped revision. `ThinkSegment.vue` remains collapsed by default; while
+expanded, it passes current accumulated reasoning through the same renderer and
+updates it progressively. Markdown parsing, sanitization, syntax highlighting,
+math, Mermaid, images, links, and enabled file actions therefore retain one
+authoritative owner throughout the segment lifecycle.
+
+`SEGMENT_END`, turn completion, interruption, and error paths still finalize
+segment and message state for lifecycle, terminalization, and Event Monitor
+consumers. That completion metadata no longer chooses a presentation renderer
+or causes a live-to-final renderer switch. Server-owned WebSocket cadence is
+the only normal content-shaping delay; the frontend adds no presentation timer.
+Very large or feature-heavy accumulated revisions can still be expensive, and
+renderer-wide background or unfocused contention remains outside this
+presentation contract.
 
 ### Dispatch Logic
 

@@ -12,12 +12,10 @@
     <transition name="fade-slide">
       <div v-if="showContent" class="think-content">
         <MarkdownRenderer
-          v-if="presentationComplete"
           :content="content"
           :enable-event-monitor-file-actions="enableEventMonitorFileActions"
           @file-path-action="emit('file-path-action', $event)"
         />
-        <LiveTextRenderer v-else :content="content" />
       </div>
     </transition>
   </div>
@@ -27,14 +25,12 @@
 import { ref } from 'vue';
 import { Icon } from '@iconify/vue';
 import MarkdownRenderer from '~/components/conversation/segments/renderer/MarkdownRenderer.vue';
-import LiveTextRenderer from '~/components/conversation/segments/renderer/LiveTextRenderer.vue';
 import type { AbsoluteFilePathAction } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
 
-const props = withDefaults(defineProps<{
+withDefaults(defineProps<{
   content: string;
-  presentationComplete?: boolean;
   enableEventMonitorFileActions?: boolean;
-}>(), { presentationComplete: true, enableEventMonitorFileActions: false });
+}>(), { enableEventMonitorFileActions: false });
 const emit = defineEmits<{
   (event: 'file-path-action', action: AbsoluteFilePathAction): void;
 }>();

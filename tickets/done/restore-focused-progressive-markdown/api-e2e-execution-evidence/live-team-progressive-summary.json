@@ -1,0 +1,79 @@
+{
+  "scenarioId": "LIVE-TEAM-001",
+  "result": "Pass",
+  "team": "Classroom Simulation Team",
+  "teamRunId": "classroom_simulation_team_17bae4f9a3ed4ebab523d86e15caf570",
+  "memberRouteKey": "professor",
+  "promptMarker": "TEAM-PROGRESSIVE-001",
+  "observer": {
+    "distinctSamples": 63,
+    "runningRichRevisions": 57,
+    "thinkingOpenSamples": 60,
+    "firstRichRevisions": [
+      {
+        "tMs": 17575,
+        "textLength": 991
+      },
+      {
+        "tMs": 17876,
+        "textLength": 1096
+      },
+      {
+        "tMs": 18158,
+        "textLength": 1208
+      },
+      {
+        "tMs": 18577,
+        "textLength": 1316
+      }
+    ],
+    "lastRichRevisions": [
+      {
+        "tMs": 39667,
+        "textLength": 7038
+      },
+      {
+        "tMs": 40142,
+        "textLength": 7154
+      },
+      {
+        "tMs": 40540,
+        "textLength": 7219
+      }
+    ]
+  },
+  "liveFinal": {
+    "status": "Idle",
+    "h1": "Focused Team Member Witness",
+    "h2": "Professor Rendering",
+    "strongCount": 20,
+    "codeCount": 8,
+    "listItemCount": 14,
+    "thinkingButtonCount": 1,
+    "thinkingOpenCount": 1,
+    "scrollWidth": 562,
+    "clientWidth": 562,
+    "markerPresent": true
+  },
+  "memberReselection": {
+    "sequence": [
+      "professor",
+      "student",
+      "professor"
+    ],
+    "result": "The professor rich text and expanded live Thinking state returned intact after real focused-member store reselection."
+  },
+  "reloadHydration": {
+    "openedVia": "runHistory.openTeamMemberRun",
+    "h1": "Focused Team Member Witness",
+    "h2": "Professor Rendering",
+    "strongCount": 20,
+    "codeCount": 8,
+    "listItemCount": 14,
+    "scrollWidth": 562,
+    "clientWidth": 562,
+    "thinkingButtonCount": 0,
+    "reason": "The user-owned embedded backend predates the separate native-reasoning persistence fix."
+  },
+  "projectionEvidence": "team-current-professor-projection.json"
+}

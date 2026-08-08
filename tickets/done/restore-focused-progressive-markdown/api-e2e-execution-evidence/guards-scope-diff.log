@@ -1,0 +1,14 @@
+started_utc: 2026-08-08T18:03:24Z
++ pnpm guard:web-boundary
+
+> autobyteus@1.4.44 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
++ repository removal/scope searches
+obsolete production symbol search: none
++ git diff --check
++ git show --check HEAD
+295943495 fix(rendering): restore progressive rich markdown
+exit_code: 0
+finished_utc: 2026-08-08T18:03:24Z

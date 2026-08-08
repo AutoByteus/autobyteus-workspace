@@ -19,7 +19,6 @@
             <TextSegment
               v-if="segment.type === 'text'"
               :content="segment.content"
-              :presentation-complete="isSegmentPresentationComplete(segment)"
               :enable-event-monitor-file-actions="enableEventMonitorFileActions"
               @file-path-action="emit('file-path-action', $event)"
             />
@@ -41,7 +40,6 @@
             <ThinkSegment
               v-else-if="segment.type === 'think'"
               :content="segment.content"
-              :presentation-complete="isSegmentPresentationComplete(segment)"
               :enable-event-monitor-file-actions="enableEventMonitorFileActions"
               @file-path-action="emit('file-path-action', $event)"
             />
@@ -92,8 +90,6 @@ import MediaSegment from '~/components/conversation/segments/MediaSegment.vue';
 import ErrorSegment from '~/components/conversation/segments/ErrorSegment.vue';
 import EditFileCommandSegment from '~/components/conversation/segments/EditFileCommandSegment.vue';
 import type { AbsoluteFilePathAction } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
-import type { AIResponseSegment } from '~/types/segments';
-import { getStreamSegmentIdentity } from '~/services/agentStreaming/handlers/segmentIdentity';
 
 const props = defineProps<{
   message: AIMessage;
@@ -136,10 +132,6 @@ const resolveInterAgentSenderDisplayName = (senderAgentRunId: string): string | 
   }
   return props.interAgentSenderNameById?.[normalizedSenderRunId];
 };
-
-const isSegmentPresentationComplete = (segment: AIResponseSegment): boolean =>
-  props.message.isComplete ||
-  (getStreamSegmentIdentity(segment)?.presentationComplete ?? true);
 
 </script>
 
