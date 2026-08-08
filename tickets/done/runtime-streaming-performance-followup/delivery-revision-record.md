@@ -10,13 +10,15 @@
 | DR-004 | `code_reviewer`; `CRR-006` after `API-REV-004` hydration failure | `CR-003` | `Delivery Stop / Local Fix` | Blocked — Electron candidate superseded; implementation/review/API-E2E rerun required |
 | DR-005 | User finalization instruction after `IR-004` / `CRR-007` | Prior `CR-003` | `Finalization Authorization / Technical Hold` | Authorized but blocked — API-REV-005 and durable-test re-review still required |
 | DR-006 | `API-REV-005` / `CRR-008` plus final latest-base refresh | None | `Final Integrated Readiness` | Pass — 98.6% API/E2E, no findings, target unchanged, 27 + 30 focused tests pass |
+| DR-007 | User-authorized repository finalization | None | `Repository Finalization` | Pass — ticket archived/pushed; personal merged/pushed at `cacf3c053` |
+| DR-008 | Post-finalization main-personal Electron build | None | `Verification Enablement` | Pass — finalized personal macOS ARM64 package built and verified at 1.4.44 |
 
 ## Revision Entries
 
 ### DR-001 — Initial Integrated Delivery Baseline
 
 - Date: 2026-08-08
-- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/api-e2e-test-review-report.md`; `CRR-005`.
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/runtime-streaming-performance-followup/api-e2e-test-review-report.md`; `CRR-005`.
 - Triggering finding IDs: None; CRR-005 passed with no findings.
 - Prior authoritative result: `CRR-004` full implementation source review Pass; `API-REV-002` Pass at 97.6%; `CRR-005` proportional durable coverage review Pass.
 - Current authoritative result: Delivery integration refresh, post-integration executable verification, long-lived docs sync, release notes, and user-verification handoff artifacts are complete. Repository finalization is intentionally held pending explicit user verification/acceptance.
@@ -29,9 +31,9 @@
   - Updated five long-lived docs and prepared the handoff/release artifacts.
 - Approved behavior or requirement IDs affected: `BEH-001`–`BEH-006`; `FR-001`–`FR-008`; `AC-001`–`AC-008`.
 - Canonical artifacts and sections updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/docs-sync-report.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/handoff-summary.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/release-deployment-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/runtime-streaming-performance-followup/docs-sync-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/runtime-streaming-performance-followup/handoff-summary.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/runtime-streaming-performance-followup/release-deployment-report.md`
 - Supplemental artifacts updated, added, or removed: `release-notes.md`; `delivery-integration-evidence.log`; five long-lived documentation files enumerated in `docs-sync-report.md`.
 - Downstream and architecture-review impact: None. The latest base integrated cleanly, changed unrelated terminal-tool/docs history, and the post-integration egress check passed. No effective reviewed behavior or architecture changed.
 - Next recipient or routing: User verification/acceptance.
@@ -54,9 +56,9 @@
   - The unpacked app reports version `1.4.44`; its executable is Mach-O 64-bit ARM64.
 - Approved behavior or requirement IDs affected: Verification enablement for `BEH-001`–`BEH-006` / `AC-001`–`AC-008`; no approved behavior changed.
 - Canonical artifacts and sections updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/handoff-summary.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/release-deployment-report.md`
-- Supplemental artifacts updated, added, or removed: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/electron-build-macos-arm64-personal.log`.
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/runtime-streaming-performance-followup/handoff-summary.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/runtime-streaming-performance-followup/release-deployment-report.md`
+- Supplemental artifacts updated, added, or removed: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/runtime-streaming-performance-followup/electron-build-macos-arm64-personal.log`.
 - Downstream and architecture-review impact: None. The build produced ignored local artifacts only and did not change reviewed source or behavior.
 - Next recipient or routing: User runtime verification using the generated personal DMG or unpacked app.
 - Remaining gaps or risks: This is deliberately unsigned/not notarized local test output. Build warnings about stale Browserslist data, large chunks, deprecated subdependencies, and existing Nuxt CLI peer ranges were non-fatal. Quit any existing AutoByteus desktop instance before launch to avoid the shared embedded port `29695`.
@@ -64,7 +66,7 @@
 ### DR-003 — API-REV-003 Provider-To-DOM Evidence Refresh
 
 - Date: 2026-08-08
-- Triggering role, report path, and round: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/api-e2e-execution-coverage-report.md`; `API-REV-003`.
+- Triggering role, report path, and round: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/runtime-streaming-performance-followup/api-e2e-execution-coverage-report.md`; `API-REV-003`.
 - Triggering finding IDs: None. The trigger was the user's reported missing Thinking disclosure plus correction of the safe team control to `Classroom Simulation Team`.
 - Prior authoritative result: `API-REV-002` Pass at 97.6%; `DR-002` personal Electron test package ready.
 - Current authoritative result: `API-REV-003` Pass at 98.0%. An actual current Nuxt frontend bound to the packaged server proved real provider -> standalone/team WebSocket -> production store/member resolver -> `ThinkSegment` DOM behavior. Delivery docs and release notes now reflect the superseding result.
@@ -78,10 +80,10 @@
   - API/E2E-owned browser/Nuxt resources were cleaned up; the packaged server remained healthy.
 - Approved behavior or requirement IDs affected: Evidence for `BEH-004`/`BEH-005`, `FR-005`/`FR-007`, and `AC-005`/`AC-007`; no approved behavior changed.
 - Canonical artifacts and sections updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/handoff-summary.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/docs-sync-report.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/release-deployment-report.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/release-notes.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/runtime-streaming-performance-followup/handoff-summary.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/runtime-streaming-performance-followup/docs-sync-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/runtime-streaming-performance-followup/release-deployment-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/runtime-streaming-performance-followup/release-notes.md`
 - Supplemental artifacts updated, added, or removed: `autobyteus-web/docs/content_rendering.md` clarification; API-REV-003 structured summary, screenshots, and frontend logs under `api-e2e-execution-evidence/`.
 - Downstream and architecture-review impact: None. Round 3 changed no production or repository-resident durable coverage code, so no new code-review loop or architecture review is required. The existing Electron artifact remains source-valid.
 - Next recipient or routing: User manual Electron verification/acceptance.
@@ -90,7 +92,7 @@
 ### DR-004 — Hydrated Thinking Persistence Delivery Stop
 
 - Date: 2026-08-08
-- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/code-review-report.md`; `CRR-006`, triggered by `API-REV-004`.
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/runtime-streaming-performance-followup/code-review-report.md`; `CRR-006`, triggered by `API-REV-004`.
 - Triggering finding IDs: `CR-003` (`Local Fix`).
 - Prior authoritative result: `DR-003` recorded the `API-REV-003` live provider-to-DOM Pass at 98.0% and left the personal Electron package awaiting user verification.
 - Current authoritative result: **Delivery blocked.** `API-REV-004` fails at 86.4%, and `CRR-006` confirms that native `MemoryManager` omits the distinct reasoning raw-trace item required by standalone/team GraphQL replay. A Thinking disclosure that works live is lost after supported reload, member reselection, or history hydration.
@@ -102,10 +104,10 @@
   - Routed the local production fix to `implementation_engineer`; delivery resumes only after source review and API/E2E pass.
 - Approved behavior or requirement IDs affected: `BEH-004`, `BEH-005`, `FR-005`, `AC-005`, and `AC-007`.
 - Canonical artifacts and sections updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/handoff-summary.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/docs-sync-report.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/release-deployment-report.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/release-notes.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/runtime-streaming-performance-followup/handoff-summary.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/runtime-streaming-performance-followup/docs-sync-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/runtime-streaming-performance-followup/release-deployment-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/runtime-streaming-performance-followup/release-notes.md`
 - Supplemental artifacts updated, added, or removed: Upstream `real-bible-thinking-persistence-investigation.json`; no Round 4 production or repository-resident durable coverage change.
 - Downstream and architecture-review impact: Bounded `Local Fix`; no design or requirement reroute. `implementation_engineer` must return the corrected source through `code_reviewer` and `api_e2e_engineer` before delivery resumes.
 - Next recipient or routing: `implementation_engineer` (already routed by `code_reviewer`).
@@ -127,9 +129,9 @@
   - Did not fetch/reintegrate, archive, commit delivery-owned state, push, merge, build, release, or clean up while the technical gate remains open.
 - Approved behavior or requirement IDs affected: Finalization mechanics only; technical gate continues to cover `BEH-004`, `BEH-005`, `FR-005`, `AC-005`, and `AC-007`.
 - Canonical artifacts and sections updated:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/delivery-revision-record.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/handoff-summary.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/release-deployment-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/runtime-streaming-performance-followup/delivery-revision-record.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/runtime-streaming-performance-followup/handoff-summary.md`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/runtime-streaming-performance-followup/release-deployment-report.md`
 - Supplemental artifacts updated, added, or removed: None.
 - Downstream and architecture-review impact: No design impact. API/E2E must finish; because durable coverage changed after `CRR-007`, its successful package must return through proportional code review before delivery.
 - Next recipient or routing: `api_e2e_engineer`, then `code_reviewer`, then `delivery_engineer`.
@@ -138,7 +140,7 @@
 ### DR-006 — Final Integrated Readiness
 
 - Date: 2026-08-08
-- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/api-e2e-test-review-report.md`; `CRR-008`, after `API-REV-005`.
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/runtime-streaming-performance-followup/api-e2e-test-review-report.md`; `CRR-008`, after `API-REV-005`.
 - Triggering finding IDs: None; `CR-003` is resolved for corrected future writes.
 - Prior authoritative result: `DR-005` recorded user finalization authorization while holding for API-REV-005 and proportional durable-test review.
 - Current authoritative result: `API-REV-005` Pass at 98.6% and `CRR-008` Pass with no findings. Final fetch at `2026-08-08T16:38:11Z` confirmed `origin/personal` unchanged at `edf2d428b007eb4f8445da3e1e3e60076b8eec46`; the ticket remained 7 ahead / 0 behind, so no re-integration or renewed user verification was required. Delivery-focused reruns passed 3 native memory files / 27 tests and 3 server hydration/projection files / 30 tests.
@@ -148,7 +150,7 @@
   - Confirmed native future-write reasoning persists in ordered raw traces and survives standalone/team GraphQL hydration, hard reload/history reopen, and member reselection.
   - Confirmed both API/E2E durable server test changes passed proportional review.
   - Refreshed `origin/personal`; no new base commit existed, so the reviewed state did not materially change.
-  - Reran the relevant native-memory and server-hydration suites successfully and recorded `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/delivery-finalization-verification.log`.
+  - Reran the relevant native-memory and server-hydration suites successfully and recorded `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/runtime-streaming-performance-followup/delivery-finalization-verification.log`.
   - Rechecked long-lived docs and added the native reasoning raw-trace/hydration contract plus the explicit no-backfill limitation.
 - Approved behavior or requirement IDs affected: `BEH-001`–`BEH-006`, `FR-001`–`FR-008`, `AC-001`–`AC-008`.
 - Canonical artifacts and sections updated: `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md`, `autobyteus-web/docs/content_rendering.md`, and `autobyteus-web/docs/agent_execution_architecture.md`.
@@ -156,3 +158,44 @@
 - Downstream and architecture-review impact: None. The final refresh introduced no target changes, conflicts, or behavior delta.
 - Next recipient or routing: Repository finalization to `personal`, followed by a local personal Electron build from the finalized main checkout.
 - Remaining gaps or risks: Existing pre-IR-004 raw traces remain incomplete by approved no-migration/no-backfill decision; physical socket-loss replay remains unsupported; no release/version bump is authorized.
+
+### DR-007 — Repository Finalization Complete
+
+- Date: 2026-08-08
+- Triggering role, report path, and round: User-authorized finalization after `DR-006` Pass.
+- Triggering finding IDs: None.
+- Prior authoritative result: `DR-006` Pass; final target remained unchanged and finalization checks passed.
+- Current authoritative result: Repository finalization Pass. Ticket branch final commit `184f813b839ebb038a78b8d9371c7d89442a3a5b` was pushed, merged into main-repository `personal` as `cacf3c0539238d6c9c9e51460199a510b488ebf1`, and pushed to `origin/personal`. The main checkout and tracked remote matched exactly afterward.
+- Why this revision entry is recorded: Archival, ticket-branch publication, target merge, and target push are completed delivery-stage results and must be explicit.
+- Resolution:
+  - Archived the ticket at `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/runtime-streaming-performance-followup/`.
+  - Pushed `codex/runtime-streaming-performance-followup` at `184f813b8`.
+  - Merged the ticket into `personal` with merge commit `cacf3c053` and pushed `origin/personal`.
+  - Preserved unrelated pre-existing main-checkout changes in `autobyteus-server-ts/docs/modules/mcp_server_management.md`, `.article-work/`, `codex/`, and `tickets/in-progress/personal-main-latest-electron-build-20260808/`; none overlapped the ticket merge.
+  - Per user scope, performed no version bump, tag, publication, release, or deployment.
+- Approved behavior or requirement IDs affected: All approved task behavior; no new behavior introduced during finalization.
+- Canonical artifacts and sections updated: `handoff-summary.md`, `release-deployment-report.md`, and this revision record.
+- Supplemental artifacts updated, added, or removed: None.
+- Downstream and architecture-review impact: None.
+- Next recipient or routing: Post-finalization Electron build from the finalized main `personal` checkout.
+- Remaining gaps or risks: Ticket worktree/local/remote topic branch cleanup is deferred because a user-owned AutoByteus process is still running from the worktree's superseded app path; delivery did not stop or mutate that process.
+
+### DR-008 — Finalized Main-Personal Electron Build
+
+- Date: 2026-08-08
+- Triggering role, report path, and round: User instruction to build latest from the main repository `personal` branch after finalization.
+- Triggering finding IDs: None.
+- Prior authoritative result: `DR-007` repository finalization Pass; main `personal` and `origin/personal` both at `cacf3c0539238d6c9c9e51460199a510b488ebf1`.
+- Current authoritative result: Pass. The documented unsigned personal macOS ARM64 build completed at existing version `1.4.44`; DMG verification, packaged terminal runtime/architecture, real `node-pty` spawn probe, bundle version, and Mach-O ARM64 checks passed.
+- Why this revision entry is recorded: The build is an explicit post-finalization delivery result and replaces the superseded pre-fix package as the latest local test artifact.
+- Resolution:
+  - Ran `NO_TIMESTAMP=1 APPLE_TEAM_ID= AUTOBYTEUS_BUILD_FLAVOR=personal pnpm build:electron:mac` from `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web`.
+  - Produced DMG `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.44.dmg` (`402,286,366` bytes; SHA-256 `87418baf818024581f7d00621a67f15bceb8518ed46be1e4d91556c53e3f025d`).
+  - Produced ZIP `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.44.zip` (`398,081,187` bytes; SHA-256 `eade1a18a5d6cc1e69ed43bcf7ab4006a37d6d381034d5e8c1be0c0701800775`).
+  - Verified unpacked app `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app` reports version/build `1.4.44` and has an ARM64 executable.
+- Approved behavior or requirement IDs affected: Verification enablement only; no source, version, or approved behavior changed.
+- Canonical artifacts and sections updated: `handoff-summary.md`, `release-deployment-report.md`, and this revision record.
+- Supplemental artifacts updated, added, or removed: `electron-build-finalized-personal.log`; `electron-build-finalized-personal-verification.log`.
+- Downstream and architecture-review impact: None.
+- Next recipient or routing: User may run the finalized local package; no release/publication action is in scope.
+- Remaining gaps or risks: Package is intentionally unsigned/not notarized; existing non-fatal Browserslist, chunk-size, deprecated-subdependency, and peer-range warnings remain. Quit the currently running superseded AutoByteus instance before launching the finalized app because both use port `29695`.

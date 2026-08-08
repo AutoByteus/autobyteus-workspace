@@ -2,22 +2,30 @@
 
 ## Delivery State
 
-**Ready for user-authorized repository finalization.** `IR-004` corrects the `CR-003` native reasoning writer, `CRR-007` passes source review, `API-REV-005` passes native/GraphQL/real-browser reload hydration at 98.6%, and `CRR-008` passes both durable coverage edits with no findings. A final fetch at `2026-08-08T16:38:11Z` confirmed `origin/personal` unchanged, and delivery-focused reruns pass 27 native-memory tests plus 30 server hydration/projection tests. The user requested no release or version bump; finalize into the main repository `personal` branch, then build the latest personal Electron package from that finalized checkout.
+**Finalized and built from the main repository `personal` branch.** The branch
+contains implementation merge `cacf3c0539238d6c9c9e51460199a510b488ebf1`
+plus the post-build delivery evidence update.
+The ticket is archived, the final personal macOS ARM64 Electron package is
+verified, and no version bump, tag, release, publication, or deployment was
+performed.
 
 ## Final Integrated Candidate
 
 - Ticket branch: `codex/runtime-streaming-performance-followup`
-- Dedicated worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup`
+- Finalized main checkout: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
+- Ticket worktree retained for now: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup` (a user-owned process is running its superseded app)
 - Production implementation revision: `d691736dc66a3d4323d44367d837d57405bf20b8` (`IR-004`)
 - Reviewed API/E2E checkpoint: `efd1d200dc1ebb7b9a334be09aff9e40eef43ff7`
 - Latest tracked base checked: `origin/personal @ edf2d428b007eb4f8445da3e1e3e60076b8eec46` at `2026-08-08T16:38:11Z` (unchanged; ticket 7 ahead / 0 behind before final delivery edits)
 - Integration method: `git merge --no-edit origin/personal`
 - Integrated candidate revision before delivery-owned docs: `287d2fa12c319a885e11d413e1fb11a289ae38ae`
-- Expected finalization target after user acceptance: `origin/personal` / local `personal`
+- Ticket final commit: `184f813b839ebb038a78b8d9371c7d89442a3a5b`
+- Finalization merge: `cacf3c0539238d6c9c9e51460199a510b488ebf1`
+- Finalization target: `origin/personal` / local `personal` — both contain implementation merge `cacf3c053` plus the post-build delivery record
 
 The delivery fetch found eight new base commits relative to the prior implementation lineage. A local checkpoint protected all reviewed and API/E2E artifacts before the merge. The base integrated without conflicts; its changed runtime code was in the unrelated terminal `run_bash` result-shape area.
 
-## Intended Behavior And Current Exception
+## Delivered Behavior And Historical Limitation
 
 - Shared per-session server WebSocket egress owns one fixed, non-sliding standalone/team content cadence while internal canonical events remain fine-grained.
 - Same-identity content deltas coalesce exactly in order. Routine `initializing`/`running` status and declared safe companions remain separate/immediate without splitting the pending content lane; dependent/terminal boundaries flush earlier content first.
@@ -26,7 +34,7 @@ The delivery fetch found eight new base commits relative to the prior implementa
 - The bound-server **Live response update interval (ms)** accepts integer values 100–2,000, defaults/resets to 500, and applies to the next newly opened window without restart.
 - Existing persisted Settings/AppConfig data is directly usable; no settings
   migration, dual read/write, compatibility fallback, or reset is required.
-- **Correction awaiting API/E2E (`IR-004`):** future native writes now persist
+- **Corrected and validated (`IR-004` / `API-REV-005`):** future native writes persist
   non-empty reasoning as a distinct ordered raw-trace item before assistant/tool
   traces. Existing pre-fix raw traces remain incomplete and are not migrated or
   heuristically reconstructed.
@@ -49,48 +57,46 @@ The delivery fetch found eight new base commits relative to the prior implementa
 - Round 3 changed no production or durable repository coverage code, so `CRR-005` remains valid and no additional code-review loop is required.
 - Post-integration check: `(cd autobyteus-server-ts && pnpm exec vitest run tests/unit/services/agent-streaming/agent-stream-websocket-egress.test.ts --no-watch)` — Pass, 1 file / 26 tests.
 - Finalization check: native MemoryManager focused set — Pass, 3 files / 27 tests; server GraphQL/cross-runtime hydration set — Pass, 3 files / 30 tests.
-- Finalization evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/delivery-finalization-verification.log`
-- Integration evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/delivery-integration-evidence.log`
-- Round 3 structured evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/api-e2e-execution-evidence/real-agent-team-thinking-browser-summary.json`
-- Round 3 corrected control screenshots: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/api-e2e-execution-evidence/real-classroom-simulation-thinking-collapsed.png`; `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/api-e2e-execution-evidence/real-classroom-simulation-thinking-expanded.png`
+- Finalization evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/runtime-streaming-performance-followup/delivery-finalization-verification.log`
+- Integration evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/runtime-streaming-performance-followup/delivery-integration-evidence.log`
+- Round 3 structured evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/runtime-streaming-performance-followup/api-e2e-execution-evidence/real-agent-team-thinking-browser-summary.json`
+- Round 3 corrected control screenshots: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/runtime-streaming-performance-followup/api-e2e-execution-evidence/real-classroom-simulation-thinking-collapsed.png`; `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/runtime-streaming-performance-followup/api-e2e-execution-evidence/real-classroom-simulation-thinking-expanded.png`
 
-## Superseded Electron Test Build
+## Finalized Electron Test Build
 
-**Do not use this package as an acceptance candidate.** It predates the
-`CR-003` native reasoning raw-trace fix and can lose a previously live Thinking
-disclosure after reload, member reselection, or history hydration. Its packaging
-checks remain valid, but delivery will provide a replacement build only after
-repository finalization from the main `personal` checkout.
+This package was built after finalization from the main repository `personal`
+checkout at `cacf3c0539238d6c9c9e51460199a510b488ebf1`.
 
 The README-prescribed macOS package path was run with the explicit `personal`
 flavor required by the `personal` finalization target:
 
 ```bash
-cd /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-web
+cd /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web
 NO_TIMESTAMP=1 APPLE_TEAM_ID= AUTOBYTEUS_BUILD_FLAVOR=personal pnpm build:electron:mac
 ```
 
-- Result: Pass; local unsigned/non-notarized macOS ARM64 build, version `1.4.44`.
-- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.44.dmg` (`402,354,005` bytes; SHA-256 `773d1e865e5129a8d6bc6cbbe72b771ddcd1ce0656742fdb132501bc59bad767`).
-- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.44.zip` (`398,080,856` bytes; SHA-256 `78b8626a32e47c24900305134e8f0ba43d23ff73edb28b4f470b2623655c48b6`).
-- Unpacked app: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`.
+- Result: Pass; local unsigned/non-notarized macOS ARM64 build, existing version `1.4.44`.
+- DMG: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.44.dmg` (`402,286,366` bytes; SHA-256 `87418baf818024581f7d00621a67f15bceb8518ed46be1e4d91556c53e3f025d`).
+- ZIP: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.44.zip` (`398,081,187` bytes; SHA-256 `eade1a18a5d6cc1e69ed43bcf7ab4006a37d6d381034d5e8c1be0c0701800775`).
+- Unpacked app: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`.
 - Package validation: DMG valid; packaged `node-pty` helpers/architecture and real spawn probe pass; app executable is Mach-O ARM64.
-- Build evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/electron-build-macos-arm64-personal.log`.
+- Build evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/runtime-streaming-performance-followup/electron-build-finalized-personal.log`.
+- Verification evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/runtime-streaming-performance-followup/electron-build-finalized-personal-verification.log`.
 
-The package remains on disk only to preserve build evidence and possible
-non-acceptance diagnostics. Do not launch it as the delivery acceptance
-candidate; a replacement path will be supplied after finalization.
+Quit the currently running superseded AutoByteus instance before launching this
+app because both use embedded server port `29695`. The package is intentionally
+unsigned; use Finder's **Open** context action if macOS prompts.
 
 ## Documentation And Delivery Artifacts
 
-- Authoritative API/E2E report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/api-e2e-execution-coverage-report.md` (`API-REV-005`, Pass, 98.6%)
-- Authoritative source review: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/code-review-report.md` (`CRR-007`, Pass)
-- Authoritative durable test review: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/api-e2e-test-review-report.md` (`CRR-008`, Pass)
-- API/E2E revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/api-e2e-revision-record.md`
-- Docs sync: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/docs-sync-report.md`
-- Delivery/release report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/release-deployment-report.md`
-- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/delivery-revision-record.md` (`DR-006` current)
-- Release notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/done/runtime-streaming-performance-followup/release-notes.md`
+- Authoritative API/E2E report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/runtime-streaming-performance-followup/api-e2e-execution-coverage-report.md` (`API-REV-005`, Pass, 98.6%)
+- Authoritative source review: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/runtime-streaming-performance-followup/code-review-report.md` (`CRR-007`, Pass)
+- Authoritative durable test review: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/runtime-streaming-performance-followup/api-e2e-test-review-report.md` (`CRR-008`, Pass)
+- API/E2E revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/runtime-streaming-performance-followup/api-e2e-revision-record.md`
+- Docs sync: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/runtime-streaming-performance-followup/docs-sync-report.md`
+- Delivery/release report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/runtime-streaming-performance-followup/release-deployment-report.md`
+- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/runtime-streaming-performance-followup/delivery-revision-record.md` (`DR-008` current)
+- Release notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/runtime-streaming-performance-followup/release-notes.md`
 - Long-lived docs updated:
   - `autobyteus-web/docs/agent_execution_architecture.md`
   - `autobyteus-server-ts/docs/modules/agent_streaming.md`
@@ -108,10 +114,9 @@ candidate; a replacement path will be supplied after finalization.
 - Real-provider runs supplement, but do not replace, deterministic rate/equality evidence.
 - A fixture-local unproxied Nuxt `/rest/health` request returned 500. Direct backend health sampling and all task assertions remained green; this is a harness-route diagnostic, not a product-path failure.
 
-## Required Next Action
+## Final State
 
-The user has authorized finalization and explicitly declined a release/version
-bump. Move the ticket to `tickets/done`, commit and push the ticket branch,
-merge/push it into `personal`, make the main repository `personal` checkout
-current, and only then build the latest personal Electron package from that
-main checkout. Do not tag, publish, release, or change the version.
+No delivery action remains. The user may test the finalized Electron package
+above. Topic-worktree cleanup is intentionally deferred while a user-owned
+AutoByteus process is running from that worktree; it does not affect the
+finalized main `personal` branch or the new package.
