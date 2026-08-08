@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { mount } from '@vue/test-utils';
 import AIMessage from '~/components/conversation/AIMessage.vue';
 import type { AIMessage as AIMessageType } from '~/types/conversation';
+import { setStreamSegmentIdentity } from '~/services/agentStreaming/handlers/segmentIdentity';
 
 const baseMessage: AIMessageType = {
   type: 'ai',
@@ -131,5 +132,37 @@ describe('AIMessage.vue', () => {
 
     const interAgentSegment = wrapper.getComponent({ name: 'InterAgentMessageSegment' });
     expect(interAgentSegment.props('senderDisplayName')).toBe('Professor');
+  });
+
+  it('keeps identified active text on the live presentation path', () => {
+    const textSegment = { type: 'text' as const, content: '**still streaming**' };
+    setStreamSegmentIdentity(textSegment, 'text-1', 'text');
+    const wrapper = mount(AIMessage, {
+      props: {
+        message: { ...baseMessage, isComplete: false, segments: [textSegment] },
+        runId: 'agent-1',
+        messageIndex: 0,
+      },
+      global: { stubs: globalStubs },
+    });
+
+    expect(wrapper.getComponent({ name: 'TextSegment' }).props('presentationComplete')).toBe(false);
+  });
+
+  it('treats message-complete and historical text as rich-presentation eligible', () => {
+    const identifiedText = { type: 'text' as const, content: 'complete' };
+    setStreamSegmentIdentity(identifiedText, 'text-1', 'text');
+    const historicalText = { type: 'text' as const, content: 'history' };
+    const wrapper = mount(AIMessage, {
+      props: {
+        message: { ...baseMessage, isComplete: true, segments: [identifiedText, historicalText] },
+        runId: 'agent-1',
+        messageIndex: 0,
+      },
+      global: { stubs: globalStubs },
+    });
+
+    expect(wrapper.findAllComponents({ name: 'TextSegment' }).map((segment) =>
+      segment.props('presentationComplete'))).toEqual([true, true]);
   });
 });

@@ -15,6 +15,10 @@ import type {
   ErrorPayload,
   TurnLifecyclePayload
 } from '../../protocol/messageTypes';
+import {
+  getStreamSegmentIdentity,
+  setStreamSegmentIdentity,
+} from '../segmentIdentity';
 
 const mockActivityStore = {
   updateToolActivityToolName: vi.fn(),
@@ -103,6 +107,21 @@ describe('agentStatusHandler', () => {
       
       expect(aiMsg.isComplete).toBe(true);
     });
+
+    it.each(['idle', 'offline', 'error'] as const)(
+      'makes identified live text rich-presentation eligible on terminal status %s',
+      (status) => {
+        const textSegment = { type: 'text', content: 'final text' } as any;
+        setStreamSegmentIdentity(textSegment, 'text-1', 'text');
+        const aiMsg = { type: 'ai', isComplete: false, segments: [textSegment] };
+        mockContext.conversation.messages.push(aiMsg);
+
+        handleAgentStatus({ status }, mockContext);
+
+        expect(getStreamSegmentIdentity(textSegment)?.presentationComplete).toBe(true);
+        expect(aiMsg.isComplete).toBe(true);
+      },
+    );
   });
 
   describe('handleAssistantComplete', () => {
@@ -440,6 +459,21 @@ describe('agentStatusHandler', () => {
         source: 'TEST_ERR',
         message: 'Something went wrong'
       });
+    });
+
+    it('terminalizes an identified active segment before adding a direct error', () => {
+      const textSegment = { type: 'text', content: 'partial' } as any;
+      setStreamSegmentIdentity(textSegment, 'text-1', 'text');
+      mockContext.conversation.messages.push({
+        type: 'ai',
+        isComplete: false,
+        segments: [textSegment],
+      });
+
+      handleError({ code: 'STREAM_ERROR', message: 'stream failed' }, mockContext);
+
+      expect(getStreamSegmentIdentity(textSegment)?.presentationComplete).toBe(true);
+      expect(mockContext.conversation.messages[0].isComplete).toBe(true);
     });
 
     it('suppresses error segment for tool execution errors and updates tool segment', () => {

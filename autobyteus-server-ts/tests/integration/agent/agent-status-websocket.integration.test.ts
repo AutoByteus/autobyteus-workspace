@@ -20,6 +20,7 @@ import { AgentRunCommandRegistry } from "../../../src/agent-execution/services/a
 import { AgentRunCommandStatusOverlayStore } from "../../../src/agent-execution/services/agent-run-command-status-overlay-store.js";
 import { AgentRunStatusProjectionService } from "../../../src/agent-execution/services/agent-run-status-projection-service.js";
 import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
+import { STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY } from "../../../src/config/streaming-content-flush-interval-setting.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentStreamHandler } from "../../../src/services/agent-streaming/agent-stream-handler.js";
 import { AgentSessionManager } from "../../../src/services/agent-streaming/agent-session-manager.js";
@@ -254,13 +255,12 @@ describe("Agent status WebSocket contract integration", () => {
           event(run.runId, AgentRunEventType.TURN_COMPLETED, { turn_id: "turn-a" }),
         ]);
 
-        await waitForMessageCount(connection.messages, 10);
+        await waitForMessageCount(connection.messages, 9);
         const liveTrace = connection.messages.slice(2);
         expect(liveTrace.map((message) => message.type)).toEqual([
           "AGENT_STATUS",
           "TURN_STARTED",
           "AGENT_STATUS",
-          "SEGMENT_CONTENT",
           "AGENT_STATUS",
           "SEGMENT_CONTENT",
           "TURN_COMPLETED",
@@ -268,10 +268,11 @@ describe("Agent status WebSocket contract integration", () => {
         ]);
         expectStatusOnlyPayload(liveTrace[0]!, "running");
         expectStatusOnlyPayload(liveTrace[2]!, "running");
-        expectStatusOnlyPayload(liveTrace[4]!, "running");
-        expectStatusOnlyPayload(liveTrace[7]!, "idle");
+        expectStatusOnlyPayload(liveTrace[3]!, "running");
+        expectStatusOnlyPayload(liveTrace[6]!, "idle");
+        expect(liveTrace[4]?.payload.delta).toBe("onetwo");
         expect(liveTrace.filter((message) => message.type === "AGENT_STATUS")).toHaveLength(4);
-        expect(liveTrace.filter((message) => message.type !== "AGENT_STATUS")).toHaveLength(4);
+        expect(liveTrace.filter((message) => message.type !== "AGENT_STATUS")).toHaveLength(3);
 
         const reconnect = await openSocket(`${harness.baseUrl}/ws/agent/${run.runId}`);
         try {
@@ -286,6 +287,118 @@ describe("Agent status WebSocket contract integration", () => {
       }
     },
   );
+
+  it("coalesces a representative fine-grained canonical stream into one default-window content frame", async () => {
+    const previousInterval = process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY];
+    process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY] = "500";
+    const backend = new ScriptedAgentRunBackend(
+      "run-default-window-rate",
+      RuntimeKind.AUTOBYTEUS,
+      runningSnapshot("turn-rate"),
+    );
+    const run = new AgentRun({ context: backend.context, backend });
+    let internalContentEvents = 0;
+    const unsubscribe = run.subscribeToEvents((runEvent) => {
+      if (runEvent.eventType === AgentRunEventType.SEGMENT_CONTENT) {
+        internalContentEvents += 1;
+      }
+    });
+    const harness = await openAgentApp(run);
+    const connection = await openSocket(`${harness.baseUrl}/ws/agent/${run.runId}`);
+
+    try {
+      await waitForMessageCount(connection.messages, 2);
+      const deltas = Array.from({ length: 30 }, (_, index) => `${String(index).padStart(2, "0")}|`);
+      const openedAt = Date.now();
+      await backend.emitSource(deltas.map((delta) => event(
+        run.runId,
+        AgentRunEventType.SEGMENT_CONTENT,
+        {
+          turn_id: "turn-rate",
+          segment_id: "segment-rate",
+          segment_type: "text",
+          delta,
+        },
+      )));
+
+      await wait(350);
+      expect(connection.messages.filter((message) => message.type === "SEGMENT_CONTENT")).toHaveLength(0);
+      await wait(300);
+
+      const contentFrames = connection.messages.filter(
+        (message) => message.type === "SEGMENT_CONTENT",
+      );
+      expect(internalContentEvents).toBe(30);
+      expect(contentFrames).toHaveLength(1);
+      expect(contentFrames[0]?.payload.delta).toBe(deltas.join(""));
+      expect(Date.now() - openedAt).toBeGreaterThanOrEqual(500);
+    } finally {
+      unsubscribe();
+      connection.socket.close();
+      await harness.app.close();
+      if (previousInterval === undefined) {
+        delete process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY];
+      } else {
+        process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY] = previousInterval;
+      }
+    }
+  });
+
+  it("uses a changed interval only for the active socket's next newly opened window", async () => {
+    const previousInterval = process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY];
+    process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY] = "500";
+    const backend = new ScriptedAgentRunBackend(
+      "run-live-interval-change",
+      RuntimeKind.CODEX_APP_SERVER,
+      runningSnapshot("turn-live-setting"),
+    );
+    const run = new AgentRun({ context: backend.context, backend });
+    const harness = await openAgentApp(run);
+    const connection = await openSocket(`${harness.baseUrl}/ws/agent/${run.runId}`);
+
+    try {
+      await waitForMessageCount(connection.messages, 2);
+      await backend.emitSource([
+        event(run.runId, AgentRunEventType.SEGMENT_CONTENT, {
+          turn_id: "turn-live-setting",
+          segment_id: "segment-live-setting",
+          segment_type: "text",
+          delta: "first",
+        }),
+      ]);
+      process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY] = "1000";
+
+      await wait(350);
+      expect(connection.messages.filter((message) => message.type === "SEGMENT_CONTENT"))
+        .toHaveLength(0);
+      await wait(300);
+      expect(connection.messages.filter((message) => message.type === "SEGMENT_CONTENT")
+        .map((message) => message.payload.delta)).toEqual(["first"]);
+
+      await backend.emitSource([
+        event(run.runId, AgentRunEventType.SEGMENT_CONTENT, {
+          turn_id: "turn-live-setting",
+          segment_id: "segment-live-setting",
+          segment_type: "text",
+          delta: "second",
+        }),
+      ]);
+      await wait(650);
+      expect(connection.messages.filter((message) => message.type === "SEGMENT_CONTENT")
+        .map((message) => message.payload.delta)).toEqual(["first"]);
+      await wait(500);
+      expect(connection.messages.filter((message) => message.type === "SEGMENT_CONTENT")
+        .map((message) => message.payload.delta)).toEqual(["first", "second"]);
+    } finally {
+      connection.socket.close();
+      await harness.app.close();
+      if (previousInterval === undefined) {
+        delete process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY];
+      } else {
+        process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY] = previousInterval;
+      }
+    }
+  });
 
   it("keeps late A observable and preserves B across delayed A activity/terminal events and reconnect", async () => {
     const backend = new ScriptedAgentRunBackend(

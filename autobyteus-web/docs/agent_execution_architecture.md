@@ -7,21 +7,22 @@ This document outlines the end-to-end architecture of how Agent and Agent Team e
 The data flow follows a top-down approach:
 
 1.  **Orchestration Layer (Stores)**: Manages lifecycle, user input, and WebSocket streaming connections.
-2.  **Service Layer (Event Routing)**: Dispatches incoming structured WebSocket events to specific handlers.
-3.  **Presentation Control**: Batches fine-grained stream-content receipts at a
-    fixed cadence while forcing content through before semantic boundaries.
-4.  **Segment Processing (Handlers)**: Updates the reactive `AgentContext` and sidecar stores based on event payloads.
+2.  **Server WebSocket Egress**: Shapes fine-grained canonical content into a
+    configurable client-delivery cadence while preserving semantic boundaries.
+3.  **Service Layer (Event Routing)**: Immediately dispatches the already-shaped
+    structured WebSocket events to specific handlers; it owns no second timer.
+4.  **Segment Processing And Presentation**: Updates reactive state immediately,
+    uses cheap escaped text while text/reasoning is active, and selects rich
+    Markdown when the segment or message is complete.
 
 ```mermaid
 graph TD
     User-->|Input| Store[Pinia Store Layer]
     Store-->|Mutation| Backend[Backend API]
-    Backend-->|WebSocket Event| Store
-    Store-->|Event Data| Service[Service Layer]
-
-    Service-->|Fine-grained content| Presentation[Stream Content Presentation]
-    Presentation-->|Bounded batch| Handler{Event Handlers}
-    Service-->|Semantic events| Handler
+    Backend-->|Canonical run events| Egress[Server WebSocket Egress]
+    Egress-->|Shaped content and semantic events| Service[Service Layer]
+    Store-->|Connection and context ownership| Service
+    Service-->|Immediate dispatch| Handler{Event Handlers}
 
     Handler-->|Segment Created/Updated| Context[Agent Context State]
     Handler-->|File changes / outputs| RunFileChangeStore[Run File Change Store]
@@ -338,6 +339,17 @@ synthesize center compaction cards from compaction lifecycle/status entries.
 Archived segments and manifests remain unchanged and directly usable by their
 own storage lifecycle. The Event Monitor never pages into those archives; its
 explicit earlier-browsing path is bounded to the current active trace.
+
+Native AutoByteus memory ingestion persists every non-empty completed reasoning
+value as a distinct replay-authoritative `reasoning` raw trace immediately
+before its ordinary assistant trace. The pair shares turn, source-event, and
+timestamp identity while retaining unique trace IDs and monotonic sequence
+order; working-context provenance references both. The existing standalone and
+team replay transformers therefore hydrate reasoning and assistant rows in
+order, allowing Thinking to survive history reopen, hard reload, and member
+reselection. Pre-contract raw traces that omitted reasoning remain readable but
+incomplete; the product does not rewrite them, infer reasoning from ordinary
+assistant narration, or fall back to working-context snapshots.
 
 ### Run Reopen Projection Hydration
 
@@ -758,39 +770,59 @@ The service layer bridges the gap between the WebSocket transport and the applic
 - **Responsibilities**:
   1.  Maintains the WebSocket connection (`transport/WebSocketClient`).
   2.  Parses raw JSON messages into typed `ServerMessage` objects (`protocol/messageTypes`).
-  3.  Routes `SEGMENT_CONTENT` through the shared stream-presentation scheduler
-      and dispatches semantic messages to the appropriate pure-function handler.
+  3.  Dispatches every parsed message to the appropriate pure-function handler.
+      `SEGMENT_CONTENT` is applied once and immediately because the server has
+      already shaped the transport cadence.
 
-### Bounded Stream-Content Presentation
+### Server-Owned Stream-Content Cadence And Immediate Frontend Projection
 
-`AgentStreamingService` and `TeamStreamingService` each own an instance of the
-shared `StreamContentPresentationScheduler`. The policy is protocol-level and
-runtime-agnostic: it does not select a different path for AutoByteus, Codex, a
-particular provider, or a particular model.
+Standalone and team WebSocket sessions use the same server-side
+`AgentStreamWebSocketEgress`. Runtime and provider adapters still publish every
+fine-grained canonical event; only the client-bound WebSocket content lane is
+shaped. The policy does not select a different path for AutoByteus, Codex,
+Claude, a particular provider, or a particular model.
 
-- The first pending content receipt starts a fixed 100 ms presentation window.
-  Later receipts join that window without moving its deadline, so a continuous
-  stream cannot starve presentation as it could with a debounce.
-- Pending content remains partitioned by exact `AgentContext` and by the
-  backend's turn, segment id, and segment type. Delta bytes retain receipt order;
-  only the latest true receipt timestamp for each context is retained for live
-  activity recency.
-- A batch applies the context activity timestamp, appends each coalesced content
-  payload, and commits at most one Event Monitor presentation revision when the
-  rendered conversation actually changed. Transport event count is therefore
-  not the presentation revision count.
-- Every non-content message flushes all earlier pending content before its
-  semantic handler runs. Context replacement, explicit disconnect, and remote
-  disconnect also flush, preserving content-before-end/status/tool/teardown
-  ordering and preventing timers from targeting detached contexts.
+- The first pending `SEGMENT_CONTENT` receipt opens a fixed, non-sliding window.
+  The interval is read when that window opens from
+  `AUTOBYTEUS_STREAMING_CONTENT_FLUSH_INTERVAL_MS`; the effective default is
+  500 ms and valid configured values are whole milliseconds from 100 through
+  2,000. A setting change therefore applies to the next newly opened window of
+  an already-active stream without a restart.
+- Adjacent content messages are mergeable only when every payload field other
+  than `delta` is equal. Their delta bytes are concatenated in receipt order;
+  different run/turn/segment/member/task identity remains a separate ordered
+  content group.
+- Policy-declared routine companions (`CONNECTED`, command acknowledgements,
+  token-usage updates, and non-terminal `initializing`/`running` status) remain
+  immediate and visible without flushing, resetting, or splitting the pending
+  content lane. Terminal/dependent status, segment boundaries, tool/lifecycle
+  transitions, errors, completion, interruption, and conservative unknown
+  messages flush earlier content before they are sent.
+- `AgentStreamingService`, `TeamStreamingService`, and the team generic
+  dispatcher apply each shaped content message through the normal immediate
+  handler transaction. There is no frontend stream-content scheduler,
+  projector, presentation timer, or second cadence delay.
 - Team routing still resolves structural members and transient task-agent or
-  task-team children before enqueueing. The scheduler receives the already
-  resolved context and never guesses team identity.
+  task-team children before applying the message. The server egress preserves
+  the mapped identity and does not guess frontend context.
 
-This layer bounds reactive conversation and whole-source Markdown work while
-preserving exact final content. It is presentation-only: WebSocket protocol,
-raw traces, working-context snapshots, run history, and other persisted data
-remain unchanged and require no migration.
+The WebSocket payload type and final content remain unchanged. Raw runtime
+events, internal subscribers, raw traces, working-context snapshots, run
+history, and other persisted data remain fine-grained/unchanged and require no
+migration. A physically lost/closed socket still has no replay guarantee; the
+session disposes pending unsendable state instead of claiming delivery.
+
+### Active And Completed Text/Reasoning Presentation
+
+`AIMessage.vue` passes explicit completion state into `TextSegment.vue` and
+`ThinkSegment.vue`. An identified incomplete segment uses `LiveTextRenderer.vue`,
+which relies on escaped Vue text with preserved whitespace and does not mount
+the rich Markdown pipeline. `SEGMENT_END` or a supported message-terminal path
+marks the segment presentation-complete and switches it to the existing
+`MarkdownRenderer.vue`. Historical/hydrated segments without live stream
+identity are treated as complete, so final Markdown, syntax highlighting, math,
+Mermaid, images, links, file actions, and sanitization retain their existing
+owners.
 
 ### Dispatch Logic
 
@@ -799,7 +831,7 @@ Incoming events are routed based on their `type`:
 | Event Type                | Handler Function                                   | Purpose                                                         |
 | :------------------------ | :------------------------------------------------- | :-------------------------------------------------------------- |
 | `SEGMENT_START`           | `segmentHandler.handleSegmentStart`                | Creates or merges a transcript UI segment (Text, Code, Tool) and seeds/hydrates a pending Activity row for eligible displayable tool segments. |
-| `SEGMENT_CONTENT`         | `StreamContentPresentationScheduler` -> `streamContentBatchProjector` -> `segmentHandler.handleSegmentContent` | Coalesces exact ordered deltas into a bounded presentation batch before appending them to existing segments. |
+| `SEGMENT_CONTENT`         | `segmentHandler.handleSegmentContent`                | Immediately appends the already server-shaped ordered delta to the existing segment; the frontend has no additional cadence scheduler. |
 | `SEGMENT_END`             | `segmentHandler.handleSegmentEnd`                  | Finalizes transcript segment state/metadata, including interrupted/failed terminalization, and hydrates the matching Activity row without inventing execution success. |
 | `TURN_STARTED`            | inline lifecycle handling                          | Marks a new turn boundary in the protocol; current clients treat it as an observable lifecycle checkpoint. |
 | `TURN_COMPLETED`          | `agentStatusHandler.handleTurnCompleted`           | Marks the current AI message complete for that turn without waiting only for idle inference. |
@@ -841,10 +873,10 @@ These handlers are pure functions that take a payload and an `AgentContext`, and
 - **`handleSegmentStart`**: Finds the current AI message (or creates one) and pushes/merges a new Segment object (e.g., `ToolCallSegment`, `WriteFileSegment`) for transcript structure. When that segment is an eligible displayable tool invocation with a stable invocation id and tool identity, it delegates to `toolActivityProjection.ts` to seed or hydrate the matching pending Activity row. File-change sidecar state is still not inferred here; the backend emits dedicated `FILE_CHANGE` events for the Artifacts experience.
 - **`handleSegmentContent`**: Finds the segment by backend-provided
   `segment_type` + `id`, appends string deltas, and reports whether visible
-  presentation state changed. Live services call it through the bounded batch
-  projector rather than once per transport receipt. This powers the
-  "typewriter" effect without coupling Vue mutation cadence to provider chunk
-  size. The frontend intentionally trusts the identity contract; provider
+  presentation state changed. Live services call it once per already-shaped
+  WebSocket message and commit that normal handler transaction immediately.
+  The server egress—not a frontend projector—decouples Vue mutation cadence
+  from provider chunk size. The frontend intentionally trusts the identity contract; provider
   adapters must emit different ids for distinct text blocks that belong on
   different sides of tool cards instead of relying on frontend runtime-specific
   reorder logic.

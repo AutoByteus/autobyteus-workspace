@@ -175,6 +175,30 @@ AutoByteus segment conversion drops outbound camel-case `turnId` aliases from
 segment payloads, while the final WebSocket mapper still tolerates inbound
 legacy aliases and re-emits only `turn_id`.
 
+### Client-Bound Content Cadence
+
+After canonical pipeline publication and message mapping, every standalone and
+team WebSocket session sends through one shared `AgentStreamWebSocketEgress`.
+This egress is the only normal cadence owner: internal run events and all other
+subscribers remain fine-grained, while the wire retains the existing
+`SEGMENT_CONTENT` payload rather than introducing a batch envelope.
+
+- The first pending content message opens a fixed, non-sliding interval read
+  from `AUTOBYTEUS_STREAMING_CONTENT_FLUSH_INTERVAL_MS`. The effective default
+  is 500 ms; persisted values must be whole milliseconds from 100 through
+  2,000, and invalid/absent direct configuration falls back to 500 ms.
+- Content coalesces only while every payload field except `delta` is equal.
+  Delta bytes are concatenated exactly in order; a different identity becomes a
+  separate ordered content group.
+- `CONNECTED`, `AGENT_COMMAND_ACK`, `TOKEN_USAGE_UPDATED`, and non-terminal
+  `AGENT_STATUS initializing/running` remain immediate visible companions and
+  do not flush, seal, reset, or split the pending content lane/timer.
+- Dependent/terminal status, segment/tool/lifecycle boundaries, errors,
+  completion, interruption, and unknown messages flush all earlier content
+  before their own send. This preserves content-before-boundary semantics.
+- A physical socket loss has no replay guarantee. Disposing a closed session
+  cancels the timer and removes pending unsendable connection state.
+
 Stream terminalization is explicit. Interrupted turns end active segments with
 `interrupted: true` / `reason`; non-interrupt LLM stream failures end active
 segments with `failed: true` / `error` before the backend emits the runtime

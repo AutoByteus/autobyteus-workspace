@@ -18,6 +18,7 @@ import {
 } from './protocol';
 import {
   handleSegmentStart,
+  handleSegmentContent,
   handleSegmentEnd,
   handleExternalUserMessage,
   handleToolApprovalRequested,
@@ -46,9 +47,6 @@ import {
   beginRecentEventMonitorMutation,
   commitRecentEventMonitorMutation,
 } from '~/services/eventMonitor/recentEventMonitorMutationCommit';
-import { StreamContentPresentationScheduler } from './presentation/StreamContentPresentationScheduler';
-import { projectStreamContentBatch } from './presentation/streamContentBatchProjector';
-import { shouldFlushPendingContentBefore } from './presentation/streamContentPresentationFlushPolicy';
 import {
   drainPendingInterruptTransportFailures,
   interruptCommandTargetsEqual,
@@ -84,7 +82,6 @@ export class AgentStreamingService {
   private context: AgentContext | null = null;
   private wsEndpoint: string;
   private runId: string | null = null;
-  private readonly contentPresentationScheduler: StreamContentPresentationScheduler;
   private readonly pendingInterruptCommands = new Map<string, PendingInterruptCommand>();
   private readonly onInterruptCommandResult: (ack: InterruptGenerationCommandAckPayload) => void;
   private readonly onInterruptCommandTransportFailure: (failure: InterruptCommandTransportFailure) => void;
@@ -101,9 +98,6 @@ export class AgentStreamingService {
     this.onInterruptCommandResult = options.onInterruptCommandResult ?? (() => undefined);
     this.onInterruptCommandTransportFailure = options.onInterruptCommandTransportFailure
       ?? (() => undefined);
-    this.contentPresentationScheduler = new StreamContentPresentationScheduler(
-      projectStreamContentBatch,
-    );
   }
 
   get connectionState(): ConnectionState {
@@ -111,7 +105,6 @@ export class AgentStreamingService {
   }
 
   attachContext(context: AgentContext): void {
-    this.contentPresentationScheduler.flush();
     this.context = context;
   }
 
@@ -138,7 +131,6 @@ export class AgentStreamingService {
    */
   disconnect(): void {
     this.drainPendingInterruptCommands('Interrupt was cancelled because the stream disconnected.');
-    this.contentPresentationScheduler.flush();
     this.wsClient.off('onMessage', this.handleMessage);
     this.wsClient.off('onConnect', this.handleConnect);
     this.wsClient.off('onDisconnect', this.handleDisconnect);
@@ -231,20 +223,7 @@ export class AgentStreamingService {
         this.handleInterruptCommandAck(message.payload);
         return;
       }
-      const receivedAt = message.type === 'SEGMENT_CONTENT'
-        ? new Date().toISOString()
-        : null;
       this.logMessage(message);
-      if (message.type === 'SEGMENT_CONTENT') {
-        this.contentPresentationScheduler.enqueue(this.context, {
-          payload: message.payload,
-          receivedAt: receivedAt!,
-        });
-        return;
-      }
-      if (shouldFlushPendingContentBefore(message.type)) {
-        this.contentPresentationScheduler.flush();
-      }
       this.dispatchMessage(message, this.context);
     } catch (e) {
       console.error('Failed to parse WebSocket message:', e);
@@ -260,7 +239,6 @@ export class AgentStreamingService {
 
   private handleDisconnect = (reason?: string): void => {
     console.log('Agent WebSocket disconnected:', reason);
-    this.contentPresentationScheduler.flush();
     this.drainPendingInterruptCommands(
       reason || 'Interrupt result was lost because the stream disconnected.',
     );
@@ -336,6 +314,10 @@ export class AgentStreamingService {
     switch (message.type) {
       case 'SEGMENT_START':
         handleSegmentStart(message.payload, context);
+        break;
+
+      case 'SEGMENT_CONTENT':
+        handleSegmentContent(message.payload, context);
         break;
 
       case 'SEGMENT_END':
