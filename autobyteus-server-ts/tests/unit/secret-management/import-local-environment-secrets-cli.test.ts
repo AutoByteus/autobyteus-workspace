@@ -2,7 +2,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { ApplicationDatabaseLocation } from '../../../src/config/application-database-location.js';
+import {
+  ApplicationDatabaseLocation,
+  toPrismaSqliteUrl,
+} from '../../../src/config/application-database-location.js';
 import { secretId } from '../../../src/secret-management/domain/secret-id.js';
 import {
   createImportRequest,
@@ -60,7 +63,7 @@ describe('local environment import CLI adapter', () => {
     expect(request).toEqual({
       sourcePath: absoluteSource,
       targetLocation: expect.objectContaining({
-        databaseUrl: absoluteDatabaseUrl,
+        databaseUrl: toPrismaSqliteUrl(absoluteDatabasePath),
         databasePath: absoluteDatabasePath,
         rootKeyPath: `${absoluteDatabasePath}.secret.key`,
       }),

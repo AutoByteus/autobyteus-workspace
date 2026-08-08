@@ -1,0 +1,27 @@
+
+--- git status --short ---
+ M autobyteus-ts/docs/tool_schema_and_configuration.md
+ M autobyteus-ts/src/tools/file/context-patch.ts
+ M autobyteus-ts/src/tools/file/edit-file.ts
+ M autobyteus-ts/src/tools/usage/formatters/edit-file-xml-schema-formatter.ts
+ M autobyteus-ts/tests/unit/tools/file/context-patch.test.ts
+ M autobyteus-ts/tests/unit/tools/file/edit-file.test.ts
+ M autobyteus-ts/tests/unit/tools/usage/formatters/edit-file-xml-formatter.test.ts
+?? autobyteus-ts/src/tools/file/edit-file-contract.ts
+?? autobyteus-ts/src/tools/file/edit-file-patch-diagnostic.ts
+?? autobyteus-ts/tests/unit/agent/loop/tool-phase-edit-file-error.test.ts
+?? autobyteus-ts/tests/unit/tools/file/edit-file-patch-diagnostic.test.ts
+?? tickets/in-progress/edit-file-actionable-context-errors/
+
+--- implementation/test changed paths (excluding ticket artifacts) ---
+ M autobyteus-ts/docs/tool_schema_and_configuration.md
+ M autobyteus-ts/src/tools/file/context-patch.ts
+ M autobyteus-ts/src/tools/file/edit-file.ts
+ M autobyteus-ts/src/tools/usage/formatters/edit-file-xml-schema-formatter.ts
+ M autobyteus-ts/tests/unit/tools/file/context-patch.test.ts
+ M autobyteus-ts/tests/unit/tools/file/edit-file.test.ts
+ M autobyteus-ts/tests/unit/tools/usage/formatters/edit-file-xml-formatter.test.ts
+?? autobyteus-ts/src/tools/file/edit-file-contract.ts
+?? autobyteus-ts/src/tools/file/edit-file-patch-diagnostic.ts
+?? autobyteus-ts/tests/unit/agent/loop/tool-phase-edit-file-error.test.ts
+?? autobyteus-ts/tests/unit/tools/file/edit-file-patch-diagnostic.test.ts

@@ -1,0 +1,7 @@
+Owned live-provider cleanup start
+Imported test database: removed
+Adjacent test vault key: removed
+Persistent live-E2E runtime root: removed
+Owned live-provider processes: none
+User source file: unchanged and retained outside worktree
+Owned live-provider cleanup complete

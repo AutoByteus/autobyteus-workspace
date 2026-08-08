@@ -62,7 +62,6 @@ describe("CompactionRunOutputCollector", () => {
     }));
     collector.observe(event(AgentRunEventType.AGENT_STATUS, {
       status: "idle",
-      can_interrupt: false,
     }, "IDLE"));
 
     await expect(output).resolves.toBe('{"episodes":[{"summary":"claude"}]}');

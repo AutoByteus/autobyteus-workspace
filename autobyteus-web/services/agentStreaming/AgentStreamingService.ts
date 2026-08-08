@@ -7,9 +7,18 @@
 
 import type { AgentContext } from '~/types/agent/AgentContext';
 import { WebSocketClient, ConnectionState, type IWebSocketClient } from './transport';
-import { parseServerMessage, serializeClientMessage, type ServerMessage, type ClientMessage } from './protocol';
+import {
+  parseServerMessage,
+  serializeClientMessage,
+  type ServerMessage,
+  type ClientMessage,
+  type InterruptGenerationCommandAckPayload,
+  type InterruptCommandTransportFailure,
+  type PendingInterruptCommand,
+} from './protocol';
 import {
   handleSegmentStart,
+  handleSegmentContent,
   handleSegmentEnd,
   handleExternalUserMessage,
   handleToolApprovalRequested,
@@ -38,8 +47,11 @@ import {
   beginRecentEventMonitorMutation,
   commitRecentEventMonitorMutation,
 } from '~/services/eventMonitor/recentEventMonitorMutationCommit';
-import { StreamContentPresentationScheduler } from './presentation/StreamContentPresentationScheduler';
-import { projectStreamContentBatch } from './presentation/streamContentBatchProjector';
+import {
+  drainPendingInterruptTransportFailures,
+  interruptCommandTargetsEqual,
+  tryAdmitInterruptCommand,
+} from './interruptCommandAdmission';
 
 const shouldLogStreaming = (): boolean => {
   if (typeof window === 'undefined') return false;
@@ -61,13 +73,18 @@ const summarizeDelta = (delta: string, maxLen = 120): string => {
 export interface AgentStreamingServiceOptions {
   /** Custom WebSocket client for testing */
   wsClient?: IWebSocketClient;
+  onInterruptCommandResult?: (ack: InterruptGenerationCommandAckPayload) => void;
+  onInterruptCommandTransportFailure?: (failure: InterruptCommandTransportFailure) => void;
 }
 
 export class AgentStreamingService {
   private wsClient: IWebSocketClient;
   private context: AgentContext | null = null;
   private wsEndpoint: string;
-  private readonly contentPresentationScheduler: StreamContentPresentationScheduler;
+  private runId: string | null = null;
+  private readonly pendingInterruptCommands = new Map<string, PendingInterruptCommand>();
+  private readonly onInterruptCommandResult: (ack: InterruptGenerationCommandAckPayload) => void;
+  private readonly onInterruptCommandTransportFailure: (failure: InterruptCommandTransportFailure) => void;
 
   /**
    * Create an AgentStreamingService.
@@ -78,9 +95,9 @@ export class AgentStreamingService {
   constructor(wsEndpoint: string, options: AgentStreamingServiceOptions = {}) {
     this.wsClient = options.wsClient || new WebSocketClient();
     this.wsEndpoint = wsEndpoint;
-    this.contentPresentationScheduler = new StreamContentPresentationScheduler(
-      projectStreamContentBatch,
-    );
+    this.onInterruptCommandResult = options.onInterruptCommandResult ?? (() => undefined);
+    this.onInterruptCommandTransportFailure = options.onInterruptCommandTransportFailure
+      ?? (() => undefined);
   }
 
   get connectionState(): ConnectionState {
@@ -88,7 +105,6 @@ export class AgentStreamingService {
   }
 
   attachContext(context: AgentContext): void {
-    this.contentPresentationScheduler.flush();
     this.context = context;
   }
 
@@ -97,6 +113,7 @@ export class AgentStreamingService {
    */
   connect(agentRunId: string, context: AgentContext): void {
     this.attachContext(context);
+    this.runId = agentRunId.trim();
     
     this.wsClient.on('onMessage', this.handleMessage);
     this.wsClient.on('onConnect', this.handleConnect);
@@ -113,7 +130,7 @@ export class AgentStreamingService {
    * Disconnect from the WebSocket stream.
    */
   disconnect(): void {
-    this.contentPresentationScheduler.flush();
+    this.drainPendingInterruptCommands('Interrupt was cancelled because the stream disconnected.');
     this.wsClient.off('onMessage', this.handleMessage);
     this.wsClient.off('onConnect', this.handleConnect);
     this.wsClient.off('onDisconnect', this.handleDisconnect);
@@ -121,6 +138,7 @@ export class AgentStreamingService {
 
     this.wsClient.disconnect();
     this.context = null;
+    this.runId = null;
   }
 
   /**
@@ -170,11 +188,23 @@ export class AgentStreamingService {
   /**
    * Interrupt the current generation.
    */
-  interruptGeneration(): void {
+  interruptGeneration(commandId: string): boolean {
+    const normalizedCommandId = commandId.trim();
+    const entry: PendingInterruptCommand = {
+      commandId: normalizedCommandId,
+      target: { target_kind: 'standalone_run', run_id: this.runId ?? '' },
+    };
     const message: ClientMessage = {
       type: 'INTERRUPT_GENERATION',
+      payload: { command_id: normalizedCommandId },
     };
-    this.wsClient.send(serializeClientMessage(message));
+    return tryAdmitInterruptCommand({
+      pending: this.pendingInterruptCommands,
+      entry,
+      getConnectionState: () => this.wsClient.state,
+      send: () => this.wsClient.send(serializeClientMessage(message)),
+      onTransportFailure: this.onInterruptCommandTransportFailure,
+    });
   }
 
   // ============================================================================
@@ -186,18 +216,14 @@ export class AgentStreamingService {
 
     try {
       const message = parseServerMessage(raw);
-      const receivedAt = message.type === 'SEGMENT_CONTENT'
-        ? new Date().toISOString()
-        : null;
-      this.logMessage(message);
-      if (message.type === 'SEGMENT_CONTENT') {
-        this.contentPresentationScheduler.enqueue(this.context, {
-          payload: message.payload,
-          receivedAt: receivedAt!,
-        });
+      if (
+        message.type === 'AGENT_COMMAND_ACK'
+        && message.payload.command_type === 'INTERRUPT_GENERATION'
+      ) {
+        this.handleInterruptCommandAck(message.payload);
         return;
       }
-      this.contentPresentationScheduler.flush();
+      this.logMessage(message);
       this.dispatchMessage(message, this.context);
     } catch (e) {
       console.error('Failed to parse WebSocket message:', e);
@@ -213,7 +239,9 @@ export class AgentStreamingService {
 
   private handleDisconnect = (reason?: string): void => {
     console.log('Agent WebSocket disconnected:', reason);
-    this.contentPresentationScheduler.flush();
+    this.drainPendingInterruptCommands(
+      reason || 'Interrupt result was lost because the stream disconnected.',
+    );
     if (this.context) {
       this.context.isSubscribed = false;
     }
@@ -222,6 +250,28 @@ export class AgentStreamingService {
   private handleError = (error: Error): void => {
     console.error('Agent WebSocket error:', error);
   };
+
+  private handleInterruptCommandAck(ack: InterruptGenerationCommandAckPayload): void {
+    const pending = this.pendingInterruptCommands.get(ack.command_id);
+    if (!pending || !interruptCommandTargetsEqual(pending.target, ack.target)) {
+      console.warn('Ignoring unmatched interrupt command acknowledgement.', ack);
+      return;
+    }
+    this.pendingInterruptCommands.delete(ack.command_id);
+    this.onInterruptCommandResult(ack);
+  }
+
+  private drainPendingInterruptCommands(message: string): void {
+    drainPendingInterruptTransportFailures({
+      pending: this.pendingInterruptCommands,
+      reason: {
+        code: 'INTERRUPT_TRANSPORT_DISCONNECTED',
+        connectionState: this.wsClient.state,
+        message,
+      },
+      onTransportFailure: this.onInterruptCommandTransportFailure,
+    });
+  }
 
   private logMessage(message: ServerMessage): void {
     if (!shouldLogStreaming()) return;
@@ -264,6 +314,10 @@ export class AgentStreamingService {
     switch (message.type) {
       case 'SEGMENT_START':
         handleSegmentStart(message.payload, context);
+        break;
+
+      case 'SEGMENT_CONTENT':
+        handleSegmentContent(message.payload, context);
         break;
 
       case 'SEGMENT_END':
@@ -312,6 +366,7 @@ export class AgentStreamingService {
         break;
 
       case 'AGENT_COMMAND_ACK':
+        if (message.payload.command_type !== 'SEND_MESSAGE') break;
         if (message.payload.status) {
           handleAgentStatus(message.payload.status, context);
         }

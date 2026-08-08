@@ -1,0 +1,38 @@
+Verification started: 2026-08-08T16:48:55Z
+Repository HEAD: cacf3c0539238d6c9c9e51460199a510b488ebf1
+origin/personal: cacf3c0539238d6c9c9e51460199a510b488ebf1
+Branch: personal
+
+-rw-r--r--@ 1 normy  staff   384M Aug  8 18:46 /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.44.dmg
+-rw-r--r--@ 1 normy  staff   380M Aug  8 18:48 /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.44.zip
+-rwxr-xr-x@ 1 normy  staff    33K Aug  8 18:45 /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus
+
+87418baf818024581f7d00621a67f15bceb8518ed46be1e4d91556c53e3f025d  /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.44.dmg
+eade1a18a5d6cc1e69ed43bcf7ab4006a37d6d381034d5e8c1be0c0701800775  /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.44.zip
+
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $5AA69818
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $D0C87D00
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $AC534A94
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $ED8DD13D
+Prüfsumme für GPT Partition Data (Backup GPT Table : 5) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $AC534A94
+Prüfsumme für GPT Header (Backup GPT Header : 6) berechnen …
+  GPT Header (Backup GPT Header : 6): Die überprüfte CRC32-Prüfsumme ist $FC79F2DC
+Die überprüfte CRC32-Prüfsumme ist $CB48DB0B
+hdiutil: verify: checksum of "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.44.dmg" is VALID
+
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+
+bundle_version=1.4.44
+bundle_build=1.4.44
+/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+Verification completed: 2026-08-08T16:49:07Z

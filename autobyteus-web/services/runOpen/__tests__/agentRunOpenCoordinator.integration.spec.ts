@@ -106,7 +106,6 @@ describe('openAgentRun integration with real agent context store', () => {
     });
     const existing = store.getRun(runId)!;
     existing.isSubscribed = true;
-    existing.state.canInterrupt = true;
 
     const offlineConversation = buildConversation('2026-05-16T00:02:00.000Z');
     loadRunContextHydrationPayloadMock.mockResolvedValue({
@@ -131,7 +130,6 @@ describe('openAgentRun integration with real agent context store', () => {
     });
 
     expect(existing.state.currentStatus).toBe(AgentStatus.Offline);
-    expect(existing.state.canInterrupt).toBe(false);
     expect(existing.state.conversation).toEqual(offlineConversation);
     expect(disconnectAgentStreamMock).toHaveBeenCalledWith(runId);
     expect(existing.isSubscribed).toBe(false);

@@ -76,7 +76,7 @@ const seedActiveTeam = (options: { taskIds?: string[]; teamRunId?: string } = {}
       ] as const),
     ]),
     focusedMemberRouteKey: 'implementation_engineer',
-    currentStatus: 'idle',
+    isActive: false,
     isSubscribed: false,
   } as any);
   useAgentSelectionStore().$patch({ selectedRunId: teamRunId, selectedType: 'team' });
@@ -135,7 +135,7 @@ const seedFocusedSubteam = () => {
       ['BuildSquad/review_lead', { state: { runId: 'review-run' } }],
     ]),
     focusedMemberRouteKey: 'BuildSquad',
-    currentStatus: 'idle',
+    isActive: false,
     isSubscribed: false,
   } as any);
   useAgentSelectionStore().$patch({ selectedRunId: 'team-subteam', selectedType: 'team' });

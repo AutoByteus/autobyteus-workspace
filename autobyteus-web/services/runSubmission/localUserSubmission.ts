@@ -41,7 +41,7 @@ export const beginLocalUserSubmission = (
   context.state.conversation.updatedAt = nowIso();
   context.requirement = '';
   context.contextFilePaths = [];
-  context.isSending = true;
+  context.submissionPending = true;
 
   return {
     context,
@@ -65,7 +65,7 @@ export const failLocalSubmission = (
 ): void => {
   const presentationBaseline = beginRecentEventMonitorMutation(handle.context);
   const message = toErrorMessage(error);
-  handle.context.isSending = false;
+  handle.context.submissionPending = false;
   handle.context.state.conversation.messages.push({
     type: 'ai',
     text: 'Error Occurred',

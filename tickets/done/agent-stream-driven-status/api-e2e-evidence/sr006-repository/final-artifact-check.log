@@ -1,0 +1,14 @@
+--- final artifact-state git diff --check ---
+PASS: final artifact-state diff check
+--- evidence statuses ---
+tickets/in-progress/agent-stream-driven-status/api-e2e-evidence/sr006-repository/expanded.status=0
+tickets/in-progress/agent-stream-driven-status/api-e2e-evidence/sr006-repository/final-artifact-check.status=0
+tickets/in-progress/agent-stream-driven-status/api-e2e-evidence/sr006-repository/focused.status=0
+tickets/in-progress/agent-stream-driven-status/api-e2e-evidence/sr006-repository/guards.status=0
+tickets/in-progress/agent-stream-driven-status/api-e2e-evidence/sr006-repository/structural.status=0
+tickets/in-progress/agent-stream-driven-status/api-e2e-evidence/sr006-browser/status=0
+--- current durable additions ---
+?? autobyteus-web/tests/e2e/fixtures/team-activity-presentation.page.vue
+?? autobyteus-web/tests/e2e/team-activity-presentation-probe.mjs
+--- cleanup ---
+PASS: no fixture/process leak

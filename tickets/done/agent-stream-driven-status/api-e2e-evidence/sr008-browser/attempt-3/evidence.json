@@ -1,0 +1,122 @@
+{
+  "generatedAt": "2026-08-03T19:26:14.760Z",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "frames": [
+    {
+      "direction": "connect",
+      "kind": "standalone",
+      "url": "/ws/agent/browser-agent-run"
+    },
+    {
+      "direction": "connect",
+      "kind": "team",
+      "url": "/ws/agent-team/browser-team-run"
+    },
+    {
+      "direction": "client-to-server",
+      "kind": "standalone",
+      "mode": "standalone-failed",
+      "message": {
+        "type": "INTERRUPT_GENERATION",
+        "payload": {
+          "command_id": "client_interrupt_5ee0a469-4642-4ca7-a933-a27cbd49be1b"
+        }
+      }
+    },
+    {
+      "direction": "server-to-client",
+      "kind": "standalone",
+      "mode": "standalone-failed",
+      "message": {
+        "type": "AGENT_COMMAND_ACK",
+        "payload": {
+          "command_type": "INTERRUPT_GENERATION",
+          "command_id": "client_interrupt_5ee0a469-4642-4ca7-a933-a27cbd49be1b",
+          "state": "failed",
+          "code": "NO_ACTIVE_TURN",
+          "message": "The provider has no active turn.",
+          "target": {
+            "target_kind": "standalone_run",
+            "run_id": "browser-agent-run"
+          }
+        }
+      }
+    }
+  ],
+  "browserEvents": [
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "console:log",
+      "text": "Agent WebSocket connected"
+    },
+    {
+      "type": "console:log",
+      "text": "Team WebSocket connected"
+    },
+    {
+      "type": "console:warning",
+      "text": "No member context found for message, skipping"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22applicationsCapability%22%2C%22%7B%5Cn%20%20%5C%22availableLlmProvidersWithModels%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22agentDefinitions%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22agentTeamDefinitions%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspaces%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspaceInfos%5C%22%3A%20%5B%5D%2C%5Cn%20%20%5C%22workspacesWithMetadata%5C%22%3A%20%5B%5D%5Cn%7D%22%5D%7D"
+    }
+  ],
+  "scenarios": {
+    "SR008-BR-001": {
+      "result": "Fail",
+      "failure": {
+        "id": "SR008-BR-001",
+        "message": "locator.innerText: Error: strict mode violation: locator('.fixed.top-5.right-5') resolved to 2 elements:\n    1) <div data-v-1e8f3ca9=\"\" class=\"fixed top-5 right-5 z-[100] w-full max-w-sm\">…</div> aka locator('div').nth(2)\n    2) <div data-v-1e8f3ca9=\"\" class=\"fixed top-5 right-5 z-[100] w-full max-w-sm\">…</div> aka locator('div').filter({ hasText: /^Could not stop browser-agent-run: The provider has no active turn\\.$/ }).nth(4)\n\nCall log:\n\u001b[2m  - waiting for locator('.fixed.top-5.right-5')\u001b[22m\n",
+        "stack": "locator.innerText: Error: strict mode violation: locator('.fixed.top-5.right-5') resolved to 2 elements:\n    1) <div data-v-1e8f3ca9=\"\" class=\"fixed top-5 right-5 z-[100] w-full max-w-sm\">…</div> aka locator('div').nth(2)\n    2) <div data-v-1e8f3ca9=\"\" class=\"fixed top-5 right-5 z-[100] w-full max-w-sm\">…</div> aka locator('div').filter({ hasText: /^Could not stop browser-agent-run: The provider has no active turn\\.$/ }).nth(4)\n\nCall log:\n\u001b[2m  - waiting for locator('.fixed.top-5.right-5')\u001b[22m\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:268:63\n    at async runScenario (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:178:57)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:259:3"
+      }
+    }
+  },
+  "cleanup": {
+    "nuxt": {
+      "status": "terminated",
+      "pid": 23539,
+      "exitCode": null,
+      "signalCode": "SIGTERM"
+    },
+    "fixtureRemoved": true
+  },
+  "failures": [
+    {
+      "id": "SR008-BR-001",
+      "message": "locator.innerText: Error: strict mode violation: locator('.fixed.top-5.right-5') resolved to 2 elements:\n    1) <div data-v-1e8f3ca9=\"\" class=\"fixed top-5 right-5 z-[100] w-full max-w-sm\">…</div> aka locator('div').nth(2)\n    2) <div data-v-1e8f3ca9=\"\" class=\"fixed top-5 right-5 z-[100] w-full max-w-sm\">…</div> aka locator('div').filter({ hasText: /^Could not stop browser-agent-run: The provider has no active turn\\.$/ }).nth(4)\n\nCall log:\n\u001b[2m  - waiting for locator('.fixed.top-5.right-5')\u001b[22m\n",
+      "stack": "locator.innerText: Error: strict mode violation: locator('.fixed.top-5.right-5') resolved to 2 elements:\n    1) <div data-v-1e8f3ca9=\"\" class=\"fixed top-5 right-5 z-[100] w-full max-w-sm\">…</div> aka locator('div').nth(2)\n    2) <div data-v-1e8f3ca9=\"\" class=\"fixed top-5 right-5 z-[100] w-full max-w-sm\">…</div> aka locator('div').filter({ hasText: /^Could not stop browser-agent-run: The provider has no active turn\\.$/ }).nth(4)\n\nCall log:\n\u001b[2m  - waiting for locator('.fixed.top-5.right-5')\u001b[22m\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:268:63\n    at async runScenario (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:178:57)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:259:3"
+    },
+    {
+      "id": "probe",
+      "message": "locator.innerText: Error: strict mode violation: locator('.fixed.top-5.right-5') resolved to 2 elements:\n    1) <div data-v-1e8f3ca9=\"\" class=\"fixed top-5 right-5 z-[100] w-full max-w-sm\">…</div> aka locator('div').nth(2)\n    2) <div data-v-1e8f3ca9=\"\" class=\"fixed top-5 right-5 z-[100] w-full max-w-sm\">…</div> aka locator('div').filter({ hasText: /^Could not stop browser-agent-run: The provider has no active turn\\.$/ }).nth(4)\n\nCall log:\n\u001b[2m  - waiting for locator('.fixed.top-5.right-5')\u001b[22m\n",
+      "stack": "locator.innerText: Error: strict mode violation: locator('.fixed.top-5.right-5') resolved to 2 elements:\n    1) <div data-v-1e8f3ca9=\"\" class=\"fixed top-5 right-5 z-[100] w-full max-w-sm\">…</div> aka locator('div').nth(2)\n    2) <div data-v-1e8f3ca9=\"\" class=\"fixed top-5 right-5 z-[100] w-full max-w-sm\">…</div> aka locator('div').filter({ hasText: /^Could not stop browser-agent-run: The provider has no active turn\\.$/ }).nth(4)\n\nCall log:\n\u001b[2m  - waiting for locator('.fixed.top-5.right-5')\u001b[22m\n\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:268:63\n    at async runScenario (/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:178:57)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-web/tests/e2e/interrupt-result-presentation-probe.mjs:259:3"
+    }
+  ],
+  "wsPort": 63326,
+  "nuxtPort": 63327,
+  "completedAt": "2026-08-03T19:26:21.738Z"
+}

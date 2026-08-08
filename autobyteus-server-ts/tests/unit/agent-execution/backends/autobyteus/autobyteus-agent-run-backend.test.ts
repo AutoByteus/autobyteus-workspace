@@ -69,10 +69,10 @@ describe("AutoByteusAgentRunBackend", () => {
       message: undefined,
       turnId: "turn-1",
     });
-    expect(backend.getStatusSnapshot()).toEqual({
-      status: "idle",
-      can_interrupt: false,
-      agent_id: "agent-1",
+    expect(backend.getLifecycleSnapshot()).toEqual({
+      availability: "active",
+      phase: "idle",
+      currentTurn: { kind: "NONE" },
     });
     expect(backend.getPlatformAgentRunId()).toBe("agent-1");
     expect(backend.getContext()).toBe(context);

@@ -26,6 +26,10 @@ const harness = vi.hoisted(() => ({
   teamRunManager: {
     getActiveRun: vi.fn<(teamRunId: string) => unknown | null>(),
     getTeamRun: vi.fn<(teamRunId: string) => unknown | null>(),
+    getLifecycleSnapshot: vi.fn<(teamRunId: string) => {
+      teamRunId: string;
+      isActive: boolean;
+    }>(),
     listActiveRuns: vi.fn<() => string[]>(),
   },
   services: {
@@ -233,9 +237,16 @@ describe("Archive run history GraphQL e2e", () => {
         : null,
     );
     harness.agentRunManager.listActiveRuns.mockReturnValue(["run-agent-active"]);
+    harness.teamRunManager.getLifecycleSnapshot.mockImplementation((teamRunId: string) => ({
+      teamRunId,
+      isActive: teamRunId === "team-active" || teamRunId === "team-archived-active",
+    }));
     harness.teamRunManager.getActiveRun.mockImplementation((teamRunId: string) =>
       teamRunId === "team-active" || teamRunId === "team-archived-active"
-        ? { teamRunId }
+        ? {
+            teamRunId,
+            getLeafAgentStatusSnapshots: () => [],
+          }
         : null,
     );
     harness.teamRunManager.getTeamRun.mockReturnValue(null);
@@ -337,7 +348,6 @@ describe("Archive run history GraphQL e2e", () => {
                 createdAt
                 archivedAt
                 terminatedAt
-                status
                 isActive
                 members {
                   memberRunId
@@ -550,7 +560,6 @@ describe("Archive run history GraphQL e2e", () => {
       .find((run) => run.teamRunId === "team-archived-active");
     expect(activeArchivedTeamRun).toEqual(expect.objectContaining({
       isActive: true,
-      status: "running",
     }));
   });
 

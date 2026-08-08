@@ -1,4 +1,3 @@
-import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import type {
   RunHistoryWorkspaceGroup,
@@ -15,7 +14,6 @@ import { openAgentRun } from '~/services/runOpen/agentRunOpenCoordinator';
 import { openTeamRun } from '~/services/runOpen/teamRunOpenCoordinator';
 import {
   normalizeAgentRuntimeStatus,
-  normalizeTeamRuntimeStatus,
 } from '~/services/runHydration/runtimeStatusNormalization';
 import {
   applyActiveRuntimePlaceholder,
@@ -50,8 +48,7 @@ const applyTeamHistoryStatusToExistingContext = (
   teamRun: TeamRunHistoryItem,
 ): void => {
   const preserveCurrentMemberStatuses =
-    existingTeamContext.isSubscribed &&
-    existingTeamContext.currentStatus !== AgentTeamStatus.Offline;
+    existingTeamContext.isSubscribed;
   const statusByKey = new Map(
     teamRun.members
       .map((member) => [member.memberRouteKey.trim(), member.status] as const)
@@ -63,7 +60,7 @@ const applyTeamHistoryStatusToExistingContext = (
       .filter(([memberRunId]) => Boolean(memberRunId)),
   );
 
-  existingTeamContext.currentStatus = normalizeTeamRuntimeStatus(teamRun.status);
+  existingTeamContext.isActive = teamRun.isActive;
   existingTeamContext.leafAgentContextsByRouteKey.forEach((memberContext, memberRouteKey) => {
     memberContext.config.isLocked = true;
     const matchedStatus =
@@ -73,7 +70,6 @@ const applyTeamHistoryStatusToExistingContext = (
       memberContext,
       matchedStatus ? normalizeAgentRuntimeStatus(matchedStatus) : preserveCanonicalAgentStatus(memberContext.state.currentStatus),
       {
-        preserveLiveInterrupt: existingTeamContext.isSubscribed,
         preserveCurrentStatus: preserveCurrentMemberStatuses,
       },
     );

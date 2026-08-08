@@ -1,0 +1,2 @@
+file_count=52
+pnpm -C autobyteus-server-ts exec vitest run <server-expanded-files.txt> --no-watch --reporter=dot

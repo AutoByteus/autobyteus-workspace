@@ -18,6 +18,8 @@ const {
   mockAttachContext,
   mockConnectionState,
   contextFileUploadStoreMock,
+  mockServiceOptions,
+  addToastMock,
 } = vi.hoisted(() => ({
   mutateMock: vi.fn().mockResolvedValue({
     data: {
@@ -50,6 +52,8 @@ const {
   contextFileUploadStoreMock: {
     finalizeDraftAttachments: vi.fn(async ({ attachments }: { attachments: any[] }) => attachments),
   },
+  mockServiceOptions: { value: null as any },
+  addToastMock: vi.fn(),
 }));
 
 // Mocks
@@ -66,7 +70,9 @@ vi.mock('~/services/agentStreaming', () => ({
     CONNECTED: 'connected',
     RECONNECTING: 'reconnecting',
   },
-  AgentStreamingService: vi.fn().mockImplementation(() => ({
+  AgentStreamingService: vi.fn().mockImplementation((_endpoint, options) => {
+    mockServiceOptions.value = options;
+    return {
     get connectionState() {
       return mockConnectionState.value;
     },
@@ -77,7 +83,12 @@ vi.mock('~/services/agentStreaming', () => ({
     approveTool: vi.fn(),
     denyTool: vi.fn(),
     interruptGeneration: mockInterruptGeneration,
-  })),
+    };
+  }),
+}));
+
+vi.mock('~/composables/useToasts', () => ({
+  useToasts: () => ({ addToast: addToastMock }),
 }));
 
 vi.mock('../agentContextsStore', () => ({
@@ -116,6 +127,9 @@ describe('agentRunStore', () => {
         mockConnectionState.value = 'connected';
         mockSendMessage.mockReset();
         mockInterruptGeneration.mockReset();
+        mockInterruptGeneration.mockReturnValue(true);
+        mockServiceOptions.value = null;
+        addToastMock.mockReset();
         llmProviderConfigStoreMock.models = ['gpt-4-fallback'];
         llmProviderConfigStoreMock.fetchProvidersWithModels.mockResolvedValue(undefined);
         contextFileUploadStoreMock.finalizeDraftAttachments.mockImplementation(async ({ attachments }: { attachments: any[] }) => attachments);
@@ -146,6 +160,10 @@ describe('agentRunStore', () => {
             state: {
                 runId: 'temp-1',
                 currentStatus: 'idle',
+                eventMonitorPresentationRevision: 0,
+                markEventMonitorPresentationChanged() {
+                    this.eventMonitorPresentationRevision += 1;
+                },
                 conversation: {
                     messages: [],
                     agentDefinitionId: 'def-1',
@@ -154,9 +172,10 @@ describe('agentRunStore', () => {
             },
             requirement: 'do something',
             contextFilePaths: [],
-            isSending: false,
+            submissionPending: false,
             isSubscribed: false,
         };
+        mockAgentContext.conversation = mockAgentContext.state.conversation;
 
         mockContextsStore = {
             activeRun: mockAgentContext, // Initial state
@@ -272,9 +291,8 @@ describe('agentRunStore', () => {
         });
         expect(mockAgentContext.requirement).toBe('');
         expect(mockAgentContext.contextFilePaths).toEqual([]);
-        expect(mockAgentContext.isSending).toBe(true);
+        expect(mockAgentContext.submissionPending).toBe(true);
         expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Idle);
-        expect(mockAgentContext.state.canInterrupt).toBeUndefined();
 
         resolveCreate({
           data: {
@@ -450,16 +468,43 @@ describe('agentRunStore', () => {
         expect(mockContextsStore.removeRun).not.toHaveBeenCalled();
     });
 
-    it('interruptGeneration should signal active stream without clearing sending state optimistically', () => {
+    it('interruptGeneration should signal the active stream without clearing submission pending optimistically', () => {
         const store = useAgentRunStore();
         mockAgentContext.state.runId = 'agent-1';
-        mockAgentContext.isSending = true;
+        mockAgentContext.submissionPending = true;
 
         store.connectToAgentStream('agent-1');
         const result = store.interruptGeneration('agent-1');
 
         expect(result).toBe(true);
-        expect(mockInterruptGeneration).toHaveBeenCalledTimes(1);
-        expect(mockAgentContext.isSending).toBe(true);
+        expect(mockInterruptGeneration).toHaveBeenCalledWith(
+          expect.stringMatching(/^client_interrupt_/),
+        );
+        expect(mockAgentContext.submissionPending).toBe(true);
+    });
+
+    it('shows one result toast without fabricating lifecycle or transcript state', () => {
+        const store = useAgentRunStore();
+        mockAgentContext.state.runId = 'agent-toast-1';
+        mockAgentContext.state.currentStatus = AgentStatus.Running;
+        mockAgentContext.state.conversation.messages = [];
+        store.connectToAgentStream('agent-toast-1');
+
+        mockServiceOptions.value.onInterruptCommandResult({
+          command_type: 'INTERRUPT_GENERATION',
+          command_id: 'client_interrupt_toast',
+          state: 'failed',
+          code: 'PROVIDER_REJECTED',
+          message: 'Provider refused the interrupt.',
+          target: { target_kind: 'standalone_run', run_id: 'agent-toast-1' },
+        });
+
+        expect(addToastMock).toHaveBeenCalledTimes(1);
+        expect(addToastMock).toHaveBeenCalledWith(
+          expect.stringContaining('Provider refused the interrupt.'),
+          'error',
+        );
+        expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Running);
+        expect(mockAgentContext.state.conversation.messages).toHaveLength(0);
     });
 });

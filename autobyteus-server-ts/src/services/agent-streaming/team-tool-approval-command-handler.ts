@@ -10,22 +10,19 @@ import {
   resolveToolApprovalTaskTeamRunId,
   resolveToolApprovalTargetSelector,
 } from "./team-command-selector-parser.js";
+import type { AgentStreamServerMessageSink } from "./websocket-egress/agent-stream-websocket-egress.js";
 
-export type TeamToolApprovalConnection = {
-  send: (data: string) => void;
-} | null;
+export type TeamToolApprovalSink = AgentStreamServerMessageSink | null;
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
 };
 
 const sendInvalidTarget = (
-  connection: TeamToolApprovalConnection,
+  sink: TeamToolApprovalSink,
   message: string,
 ): void => {
-  connection?.send(
-    createErrorMessage(TEAM_COMMAND_INVALID_TARGET_CODE, message).toJson(),
-  );
+  sink?.send(createErrorMessage(TEAM_COMMAND_INVALID_TARGET_CODE, message));
 };
 
 export const handleTeamToolApprovalCommand = async (input: {
@@ -33,7 +30,7 @@ export const handleTeamToolApprovalCommand = async (input: {
   payload: Record<string, unknown>;
   approved: boolean;
   activeRun: TeamRun | null;
-  connection: TeamToolApprovalConnection;
+  sink: TeamToolApprovalSink;
 }): Promise<void> => {
   const invocationId = input.payload.invocation_id;
   if (typeof invocationId !== "string" || invocationId.length === 0) {
@@ -49,7 +46,7 @@ export const handleTeamToolApprovalCommand = async (input: {
   const reason = typeof input.payload.reason === "string" ? input.payload.reason : null;
   if (hasInvalidCommandSelectorFields(input.payload)) {
     logger.warn(`TOOL_APPROVAL rejected for team run ${input.teamRunId}: ${TOOL_APPROVAL_INVALID_TARGET_MESSAGE}`);
-    sendInvalidTarget(input.connection, TOOL_APPROVAL_INVALID_TARGET_MESSAGE);
+    sendInvalidTarget(input.sink, TOOL_APPROVAL_INVALID_TARGET_MESSAGE);
     return;
   }
 
@@ -60,7 +57,7 @@ export const handleTeamToolApprovalCommand = async (input: {
 
   if (!approvalTarget) {
     logger.warn(`TOOL_APPROVAL rejected for team run ${input.teamRunId}: ${TOOL_APPROVAL_MISSING_TARGET_MESSAGE}`);
-    sendInvalidTarget(input.connection, TOOL_APPROVAL_MISSING_TARGET_MESSAGE);
+    sendInvalidTarget(input.sink, TOOL_APPROVAL_MISSING_TARGET_MESSAGE);
     return;
   }
 

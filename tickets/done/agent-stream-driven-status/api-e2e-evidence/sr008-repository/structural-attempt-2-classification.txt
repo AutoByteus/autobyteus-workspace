@@ -1,0 +1,2 @@
+Classification: validation-harness evidence-schema error, not a product or durable-test failure.
+The corrected scan referenced non-existent pageErrors/consoleErrors fields. The probe's authoritative failure array, scenario result map, cleanup block, and recorded browser event types are the actual schema and are checked in the final structural run.

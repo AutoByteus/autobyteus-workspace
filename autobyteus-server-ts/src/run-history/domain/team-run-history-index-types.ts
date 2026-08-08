@@ -6,8 +6,6 @@ import type {
 } from "../store/team-run-history-index-record-types.js";
 import type { TeamRunMemberMetadata } from "../store/team-run-metadata-types.js";
 
-export type TeamRunKnownStatus = "ACTIVE" | "IDLE" | "ERROR";
-
 export type TeamRunIndexRow = TeamRunIndexRowRecord;
 
 export type TeamRunIndexFile = TeamRunIndexFileRecord;
@@ -36,7 +34,6 @@ export interface TeamRunHistoryItem {
   createdAt: string;
   archivedAt: string | null;
   terminatedAt: string | null;
-  status: AgentApiStatus;
   isActive: boolean;
   members: TeamRunMemberHistoryItem[];
   memberTree: TeamRunMemberMetadata[];

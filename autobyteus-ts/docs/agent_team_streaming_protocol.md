@@ -1,35 +1,20 @@
 # Agent Team Streaming Protocol
 
-The native `autobyteus-ts` team stream multiplexes runtime events for native
-teams. It no longer carries native task-plan events.
+`autobyteus-ts` no longer owns the application team-stream transport. The
+server composes heterogeneous/nested teams and publishes the current protocol
+from `autobyteus-server-ts`.
 
-## Event Envelope
+The current public boundary separates:
 
-```json
-{
-  "event_id": "uuid",
-  "timestamp": "2026-06-03T00:00:00.000Z",
-  "team_id": "team-id",
-  "event_source_type": "TEAM | AGENT | SUB_TEAM",
-  "data": {}
-}
-```
+- exact leaf-agent `AGENT_STATUS` and runtime events;
+- binary root `TEAM_RUN_LIFECYCLE { team_run_id, is_active }`; and
+- task delegation, communication, and member-input team events with explicit
+  path/route/task-execution identity.
 
-## Source Types
-
-### `TEAM`
-
-Team status updates. Data is `AgentTeamStatusUpdateData`.
-
-### `AGENT`
-
-A member agent stream event rebroadcast. Data is `AgentEventRebroadcastPayload`
-with `agent_name` and `agent_event`.
-
-### `SUB_TEAM`
-
-A nested team stream event rebroadcast. Data is `SubTeamEventRebroadcastPayload`
-with `sub_team_node_name` and `sub_team_event`.
+There is no public aggregate team status event. See
+`autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md` and
+`autobyteus-server-ts/docs/modules/agent_team_execution.md` for the authoritative
+server protocol and ownership model.
 
 ## Dedicated Task Delegation
 
@@ -39,7 +24,9 @@ set. Server team runs publish dedicated task domain events through
 exposes as `TASK_DELEGATION_EVENT`. See
 `autobyteus-server-ts/docs/modules/agent_team_execution.md`.
 
-## Personal ToDo
+## Backend-Owned TODO Progress
 
-Personal ToDo updates remain agent-level events and continue to use
-`TODO_LIST_UPDATE` in the agent WebSocket/streaming protocol.
+`autobyteus-ts` does not emit native personal ToDo stream events. Backend-owned
+progress events such as Codex `TODO_LIST_UPDATE` remain a server-level event
+and WebSocket contract, outside this native stream package. The existing web
+TODO panel continues to consume that server-owned path.

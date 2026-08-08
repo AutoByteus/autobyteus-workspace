@@ -37,6 +37,7 @@ import {
   STREAM_PARSER_SETTING_VALUES,
 } from "../../../src/config/stream-parser-setting.js";
 import { WORKING_CONTEXT_COMPACTION_STRATEGY_SETTING_KEY } from "../../../src/config/working-context-compaction-strategy-setting.js";
+import { STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY } from "../../../src/config/streaming-content-flush-interval-setting.js";
 
 describe("ServerSettingsService", () => {
   beforeEach(() => {
@@ -213,6 +214,42 @@ describe("ServerSettingsService", () => {
     expect(settings.find((item) => item.key === AUTOBYTEUS_STREAM_PARSER_SETTING_KEY)?.description).toContain(
       "api_tool_call",
     );
+  });
+
+  it("exposes and validates the live response update interval", () => {
+    mockConfig.getConfigData.mockReturnValue({
+      [STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY]: "1000",
+    });
+    mockConfig.get.mockImplementation((key: string) =>
+      key === STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY ? "1000" : undefined,
+    );
+
+    const service = new ServerSettingsService();
+    expect(service.getAvailableSettings().find(
+      (item) => item.key === STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY,
+    )).toMatchObject({
+      value: "1000",
+      description: expect.stringContaining("Recommended default: 500"),
+      isEditable: true,
+      isDeletable: false,
+    });
+    expect(service.getEffectiveStreamingContentFlushIntervalMs()).toBe(1000);
+
+    expect(service.updateSetting(
+      STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY,
+      " 0500 ",
+    )[0]).toBe(true);
+    expect(mockConfig.set).toHaveBeenCalledWith(
+      STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY,
+      "500",
+    );
+
+    const [invalid, message] = service.updateSetting(
+      STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY,
+      "500.5",
+    );
+    expect(invalid).toBe(false);
+    expect(message).toContain("whole number");
   });
 
   it("updates settings successfully", () => {

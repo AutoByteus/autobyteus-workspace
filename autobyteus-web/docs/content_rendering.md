@@ -186,6 +186,47 @@ File explorer and artifact viewers intentionally follow the shared **Settings ->
 
 Markdown files are rendered using `MarkdownRenderer.vue`, which uses `markdown-it` for parsing. The parsing logic is encapsulated in `useMarkdownSegments.ts`.
 
+### Conversation Active/Final Rendering
+
+Conversation text and reasoning have an explicit live/final presentation split.
+`AIMessage.vue` derives presentation completion from the backend stream segment
+identity and passes it to `TextSegment.vue` / `ThinkSegment.vue`:
+
+- An identified incomplete segment uses `LiveTextRenderer.vue`. Vue escapes the
+  authored content and CSS preserves its whitespace, so the complete current
+  text remains visible without running accumulated Markdown parsing,
+  highlighting, Mermaid, math, image, sanitization, or file-action work on each
+  live update.
+- `SEGMENT_END` or a supported message completion/interruption/error fallback
+  marks open identified segments complete. The segment then mounts the existing
+  `MarkdownRenderer.vue` and regains the full rich feature set.
+- Historical/hydrated segments without a live stream identity are treated as
+  complete and continue to render richly. Active content can therefore show
+  authored Markdown source syntax temporarily; it is not a second or reduced
+  final format.
+
+The **Thinking** disclosure exists only when the backend/provider emits an
+identified reasoning segment for that turn. A model or individual response that
+emits text without reasoning intentionally has no disclosure; absence alone
+does not show that the frontend dropped reasoning. When reasoning is emitted,
+standalone and team-member streams route it through the same completion-aware
+`ThinkSegment.vue` presentation boundary.
+
+For native AutoByteus runs, a non-empty completed reasoning value is persisted
+as its own replay-authoritative `reasoning` raw trace before the ordinary
+assistant trace, with the same turn/source identity. Standalone and team
+GraphQL history projection can therefore recreate the completed Thinking
+segment after run reopen, hard reload, or member reselection. Raw traces written
+before this persistence contract was introduced are not backfilled or
+heuristically reconstructed, so an older affected turn can remain without a
+historical Thinking disclosure.
+
+The server WebSocket egress already shapes `SEGMENT_CONTENT` cadence. Frontend
+streaming services apply each shaped message immediately and do not add a
+presentation scheduler or timer. See
+[Agent Execution Architecture](./agent_execution_architecture.md) for the
+transport and completion ownership boundaries.
+
 ### Features
 
 - **Standard Markdown**: CommonMark compliant.

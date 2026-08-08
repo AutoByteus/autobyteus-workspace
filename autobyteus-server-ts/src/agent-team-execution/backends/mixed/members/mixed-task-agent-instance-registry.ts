@@ -18,7 +18,7 @@ import type {
 import { MixedAgentMemberContext, type MixedTeamRunContext, type MixedTeamMemberContext } from "../mixed-team-run-context.js";
 import { MixedAgentMemberHandle } from "./mixed-agent-member-handle.js";
 import { getMixedTaskAgentHandleRecoveryCache } from "./mixed-task-agent-handle-recovery-cache.js";
-import type { MixedTeamEventPublish, MixedTeamStatusChange } from "./mixed-team-member-handle.js";
+import type { MixedTeamEventPublish } from "./mixed-team-member-handle.js";
 import { MixedTeamMemberConfigResolver } from "./mixed-team-member-config-resolver.js";
 
 export type TaskAgentInstanceDeliveryAccess = {
@@ -41,7 +41,6 @@ export class MixedTaskAgentInstanceRegistry implements TaskAgentInstanceDelivery
     configResolver: MixedTeamMemberConfigResolver;
     agentRunManager?: AgentRunManager;
     publish: MixedTeamEventPublish;
-    notifyStatusChange: MixedTeamStatusChange;
     deliverInterAgentMessage: (request: InterAgentMessageDeliveryIntent) => Promise<AgentOperationResult>;
   }) {}
 
@@ -81,7 +80,6 @@ export class MixedTaskAgentInstanceRegistry implements TaskAgentInstanceDelivery
       config: this.buildTaskAgentRunConfig(logicalContext, request.identity.taskAgentRunId),
       agentRunManager: this.options.agentRunManager,
       publish: this.options.publish,
-      notifyStatusChange: this.options.notifyStatusChange,
       deliverInterAgentMessage: this.options.deliverInterAgentMessage,
       taskAgentInstance: cloneTaskAgentInstanceIdentity(request.identity),
     });
@@ -285,7 +283,6 @@ export class MixedTaskAgentInstanceRegistry implements TaskAgentInstanceDelivery
       config: this.buildTaskAgentRunConfig(logicalContext, taskAgentRunId),
       agentRunManager: this.options.agentRunManager,
       publish: this.options.publish,
-      notifyStatusChange: this.options.notifyStatusChange,
       deliverInterAgentMessage: this.options.deliverInterAgentMessage,
       taskAgentInstance,
     });

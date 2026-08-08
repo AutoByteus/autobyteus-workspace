@@ -1,6 +1,5 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
-import { normalizeAgentApiStatus, type AgentApiStatus } from "../../agent-execution/domain/agent-status-payload.js";
 import type { InterAgentMessageDeliveryIntent } from "./inter-agent-message-delivery.js";
 import type { TeamRunConfig } from "./team-run-config.js";
 import type { TeamRunBackend } from "../backends/team-run-backend.js";
@@ -14,13 +13,10 @@ import {
   type TeamMemberSelector,
 } from "./team-run-member-identity.js";
 import {
-  TeamRunEventSourceType,
   type TeamRunEvent,
   type TeamRunEventListener,
   type TeamRunEventUnsubscribe,
-  type TeamRunStatusUpdateData,
 } from "./team-run-event.js";
-import type { TeamStatusPayload } from "./team-status-payload.js";
 import type { StartTaskAgentInstanceRequest } from "./task-agent-instance.js";
 import type { StartTaskTeamInstanceRequest } from "./task-team-instance.js";
 import type { ConversationTargetAddress } from "./conversation-target-address.js";
@@ -36,7 +32,6 @@ export class TeamRun {
   readonly context: TeamRunContext<RuntimeTeamRunContext> | null;
   private readonly backend: TeamRunBackend;
   private readonly configValue: TeamRunConfig | null;
-  private statusOverride: TeamStatusPayload | null = null;
 
   constructor(options: TeamRunOptions) {
     this.context = options.context ?? null;
@@ -65,22 +60,15 @@ export class TeamRun {
   }
 
   subscribeToEvents(listener: TeamRunEventListener): TeamRunEventUnsubscribe {
-    const wrappedListener: TeamRunEventListener = (event) => {
-      this.observeBackendEvent(event);
-      listener(event);
-    };
-    const unsubscribeBackend = this.backend.subscribeToEvents(wrappedListener);
-    return () => {
-      unsubscribeBackend();
-    };
+    return this.backend.subscribeToEvents(listener);
   }
 
-  getStatusSnapshot() {
-    return this.statusOverride ?? this.backend.getStatusSnapshot();
+  getLeafAgentStatusSnapshots() {
+    return this.backend.getLeafAgentStatusSnapshots();
   }
 
-  getMemberStatusSnapshots() {
-    return this.backend.getMemberStatusSnapshots();
+  hasOpenExecutionWork(): boolean {
+    return this.backend.hasOpenExecutionWork();
   }
 
   async postMessage(
@@ -246,18 +234,6 @@ export class TeamRun {
 
   async terminate(): Promise<AgentOperationResult> {
     return this.backend.terminate();
-  }
-
-  private observeBackendEvent(event: TeamRunEvent): void {
-    if (event.eventSourceType !== TeamRunEventSourceType.TEAM || event.sourcePath.length > 0) {
-      return;
-    }
-    const data = event.data as TeamRunStatusUpdateData;
-    const status: AgentApiStatus = normalizeAgentApiStatus(data.status);
-    this.statusOverride = {
-      status,
-      source_path: event.sourcePath,
-    };
   }
 
   private resolvePostMessageTarget(

@@ -38,31 +38,41 @@ type AgentStatusPayload = {
   agent_name?: string;
 };
 
-type AgentCommandAckPayload = {
-  command_type: "SEND_MESSAGE";
-  run_id: string;
-  message_id: string;
-  dedupe_key: string;
-  state:
-    | "accepted"
-    | "duplicate_in_progress"
-    | "duplicate_completed"
-    | "duplicate_failed"
-    | "duplicate_rejected"
-    | "rejected"
-    | "failed";
-  accepted: boolean;
-  duplicate: boolean;
-  code?:
-    | "RUN_COMMAND_IN_PROGRESS"
-    | "INVALID_COMMAND_ID"
-    | "RUN_NOT_FOUND"
-    | "ACTIVATION_FAILED"
-    | "RUNTIME_REJECTED"
-    | "UNKNOWN_ERROR";
-  message?: string;
-  status?: AgentStatusPayload;
-};
+type AgentCommandAckPayload =
+  | {
+      command_type: "SEND_MESSAGE";
+      run_id: string;
+      message_id: string;
+      dedupe_key: string;
+      state:
+        | "accepted"
+        | "duplicate_in_progress"
+        | "duplicate_completed"
+        | "duplicate_failed"
+        | "duplicate_rejected"
+        | "rejected"
+        | "failed";
+      accepted: boolean;
+      duplicate: boolean;
+      code?: string;
+      message?: string;
+      status?: AgentStatusPayload;
+    }
+  | {
+      command_type: "INTERRUPT_GENERATION";
+      command_id: string;
+      state: "accepted" | "rejected" | "failed";
+      code?: string;
+      message?: string;
+      target:
+        | { target_kind: "standalone_run"; run_id: string }
+        | {
+            target_kind: "team_member";
+            team_run_id: string;
+            member_route_key: string;
+            member_run_id: string | null;
+          };
+    };
 
 type TeamStatusPayload = {
   status: "offline" | "initializing" | "idle" | "running" | "error";
@@ -99,25 +109,18 @@ should treat that message as the authoritative live transition from an active
 run to an inactive/offline run; socket close or history reload is not the only
 termination signal.
 
-`TEAM_STATUS` is only the aggregate team status and intentionally does not
-carry `can_interrupt`. Team aggregation is derived from member statuses plus
-the native team status: any running member/native running state yields
-`running`; otherwise startup/initializing member or native state yields
-`initializing`; otherwise errors remain visible; otherwise active idle state
-yields `idle`; and an all-inactive/no-runtime team is `offline`.
-Clients must not apply aggregate `TEAM_STATUS` back onto every member. Member
-rows are driven by member `AGENT_STATUS` snapshots/events or member-scoped
-history; an active running or initializing team can legitimately contain one
-active member and other offline members.
+Root team lifecycle is not a five-state aggregate. The team WebSocket publishes
+`TEAM_RUN_LIFECYCLE { team_run_id, is_active }`, where `is_active` is the exact
+manager-registry fact for that root run. It carries no `can_interrupt`, member
+status, open-work, error, or subscription meaning. Clients keep their
+WebSocket/subscription state separately and drive member rows only from exact
+leaf `AGENT_STATUS` snapshots/events.
 
-For delegated task-team execution cleanup, successful accepted settlement emits
-or bridges a task-team-scoped root `TEAM_STATUS` with `status: "offline"` before
-the task-team handle is disposed. The event carries the task-team identity
-fields described above and uses the task-team root source path. Clients should
-treat it as the authoritative live cleanup signal for the transient task-team
-root and its scoped children; reconnect/reload should rely on the corresponding
-absence of that settled task-team handle from backend status snapshots rather
-than reconstructing it from durable task history.
+For delegated task-team execution cleanup, accepted settlement terminates the
+known child through its lifecycle owner, detaches its delegation service, and
+removes its active directory binding. Live task terminal/review events remove
+the corresponding transient projection; reconnect relies on the settled
+task-team's absence from leaf snapshots. No task-team root status is synthesized.
 
 Status payloads expose only normalized `status` plus documented metadata. Native runtime transition-field names are not part of the server WebSocket status contract.
 
@@ -171,6 +174,30 @@ all `SEGMENT_START`, `SEGMENT_CONTENT`, and `SEGMENT_END` messages. Native
 AutoByteus segment conversion drops outbound camel-case `turnId` aliases from
 segment payloads, while the final WebSocket mapper still tolerates inbound
 legacy aliases and re-emits only `turn_id`.
+
+### Client-Bound Content Cadence
+
+After canonical pipeline publication and message mapping, every standalone and
+team WebSocket session sends through one shared `AgentStreamWebSocketEgress`.
+This egress is the only normal cadence owner: internal run events and all other
+subscribers remain fine-grained, while the wire retains the existing
+`SEGMENT_CONTENT` payload rather than introducing a batch envelope.
+
+- The first pending content message opens a fixed, non-sliding interval read
+  from `AUTOBYTEUS_STREAMING_CONTENT_FLUSH_INTERVAL_MS`. The effective default
+  is 500 ms; persisted values must be whole milliseconds from 100 through
+  2,000, and invalid/absent direct configuration falls back to 500 ms.
+- Content coalesces only while every payload field except `delta` is equal.
+  Delta bytes are concatenated exactly in order; a different identity becomes a
+  separate ordered content group.
+- `CONNECTED`, `AGENT_COMMAND_ACK`, `TOKEN_USAGE_UPDATED`, and non-terminal
+  `AGENT_STATUS initializing/running` remain immediate visible companions and
+  do not flush, seal, reset, or split the pending content lane/timer.
+- Dependent/terminal status, segment/tool/lifecycle boundaries, errors,
+  completion, interruption, and unknown messages flush all earlier content
+  before their own send. This preserves content-before-boundary semantics.
+- A physical socket loss has no replay guarantee. Disposing a closed session
+  cancels the timer and removes pending unsendable connection state.
 
 Stream terminalization is explicit. Interrupted turns end active segments with
 `interrupted: true` / `reason`; non-interrupt LLM stream failures end active
@@ -328,8 +355,9 @@ explicit `TURN_STARTED`, command-correlated `AGENT_STATUS`, terminal/error
 events after handoff, or coordinator activation/post failure handling. Restored
 runtime snapshots/readiness, WebSocket bind success, `statusHint=ACTIVE` alone,
 persisted metadata, and active runtime snapshot availability do not clear or
-replace the overlay. The handler sends `AGENT_COMMAND_ACK` for
-accepted, duplicate, rejected, and failed outcomes. Retries with the same
+replace the overlay. The handler sends the `SEND_MESSAGE` arm of
+`AGENT_COMMAND_ACK` for accepted, duplicate, rejected, and failed outcomes.
+Retries with the same
 `(runId, message_id)` are idempotent; a different `message_id` while another
 command for the run is `STARTING` or `FORWARDED` is rejected with
 `RUN_COMMAND_IN_PROGRESS` rather than queued.
@@ -339,7 +367,13 @@ Team connection establishment remains restore-aware through the team service:
 1. The handler resolves the requested `teamRunId` through the team domain service.
 2. The service first checks the active in-memory registry.
 3. If no active runtime exists, the service attempts to restore the persisted run.
-4. The handler creates a WebSocket session only after it has a runtime subject and can subscribe to that subject's event stream.
+4. The handler creates a WebSocket session only after it has a runtime subject.
+5. It binds both the concrete run event stream and manager lifecycle stream,
+   then registers the connection and reads a fresh initial snapshot.
+6. Initial state contains exact leaf `AGENT_STATUS` messages followed by
+   `TEAM_RUN_LIFECYCLE`. Binding before the read closes the transition race; a
+   later create/restore/terminate transition is observed by the lifecycle
+   listener even if it overlaps snapshot construction.
 
 For team runs, `SEND_MESSAGE` targets are normalized at the WebSocket edge to a
 `ConversationTargetAddress`, a typed segment path rooted at the WebSocket-bound
@@ -433,8 +467,18 @@ client sending `INTERRUPT_GENERATION` to `/ws/agent-team/:teamRunId` must includ
 guard for the expected member run id; it is never the authoritative selector.
 The server rejects missing target selectors and route-key/run-id mismatches
 without invoking a member runtime and without falling back to aggregate team
-interruption. The single-agent `/ws/agent/:runId` command remains a no-payload
-`INTERRUPT_GENERATION`.
+interruption. The single-agent `/ws/agent/:runId` command carries only the
+required `command_id` in its payload in addition to the socket-bound run
+identity.
+
+Both handlers retain the originating connection and send one exact
+`AGENT_COMMAND_ACK` interrupt arm when the socket remains writable. The result
+echoes the client command id and an exact standalone/team-member target.
+Missing/inactive targets and provider rejection use `rejected`/`failed` rather
+than lifecycle output. `accepted` means admission only: it does not publish
+idle, change team liveness, or mutate transcript content. A disconnect before
+result delivery is completed by the client as a local transport failure rather
+than by fabricating a server acknowledgement.
 
 Approval commands are active-turn control commands, not queued runtime input.
 For native AutoByteus single-agent runs, `APPROVE_TOOL` / `DENY_TOOL` delegate
@@ -454,8 +498,8 @@ membership in the active tool invocation batch is not enough for
 `APPROVE_TOOL` / `DENY_TOOL` to succeed. Auto-executing active tools and stale
 client retries therefore reject as no-pending without status mutation.
 
-`INTERRUPT_GENERATION` should also not be treated as an immediate send-readiness
-acknowledgement. A client that sends interrupt should wait for the backend's
+The accepted `INTERRUPT_GENERATION` acknowledgement is not immediate
+send-readiness. A client should wait for the backend's
 terminal lifecycle/status stream projection for the affected turn before
 enabling a follow-up send. Runtime adapters that own provider processes must
 finish their cancellation boundary first; for Claude Agent SDK sessions this

@@ -212,14 +212,14 @@ describe("Codex reasoning block conversion", () => {
       "turn completion",
       CodexThreadEventName.TURN_COMPLETED,
       { turnId: "turn-1" },
-      [AgentRunEventType.TURN_COMPLETED, AgentRunEventType.AGENT_STATUS],
+      [AgentRunEventType.TURN_COMPLETED],
       "IDLE",
     ],
     [
       "turn start",
       CodexThreadEventName.TURN_STARTED,
       { turnId: "turn-2" },
-      [AgentRunEventType.TURN_STARTED, AgentRunEventType.AGENT_STATUS],
+      [AgentRunEventType.TURN_STARTED],
       "ACTIVE",
     ],
     [
@@ -230,18 +230,13 @@ describe("Codex reasoning block conversion", () => {
         error_scope: "runtime",
         error_effect: "terminal",
       },
-      [AgentRunEventType.ERROR, AgentRunEventType.AGENT_STATUS],
+      [AgentRunEventType.ERROR],
       "ERROR",
     ],
   ] as Array<[string, string, JsonObject, AgentRunEventType[], "ACTIVE" | "IDLE" | "ERROR"]>) (
-    "keeps the reasoning end neutral before status-bearing %s outputs",
+    "keeps the reasoning end neutral before lifecycle %s output",
     (_label, method, params, boundaryEventTypes, expectedHint) => {
-      const converter = method === CodexThreadEventName.ERROR
-        ? new CodexThreadEventConverter("run-1", null, () => ({
-            status: "error",
-            can_interrupt: false,
-          }))
-        : new CodexThreadEventConverter("run-1");
+      const converter = new CodexThreadEventConverter("run-1");
       emitCompletedReasoning(converter, "turn-1", "provider-a", "first");
 
       const events = converter.convert({ method, params });
@@ -251,10 +246,7 @@ describe("Codex reasoning block conversion", () => {
         statusHint: null,
       });
       expect(events.slice(1).map((event) => event.eventType)).toEqual(boundaryEventTypes);
-      expect(events.slice(1).map((event) => event.statusHint)).toEqual([
-        expectedHint,
-        expectedHint,
-      ]);
+      expect(events.slice(1).map((event) => event.statusHint)).toEqual([expectedHint]);
     },
   );
 

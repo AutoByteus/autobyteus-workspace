@@ -26,7 +26,9 @@ const createTargetRun = (input: {
   const run = {
     runId: input.runId ?? "target-run",
     postUserMessage,
-    emitLocalEvent: vi.fn((event: AgentRunEvent) => emittedEvents.push(event)),
+    publishEvent: vi.fn(async (event: AgentRunEvent) => {
+      emittedEvents.push(event);
+    }),
   } as unknown as AgentRun;
   return { run, postUserMessage, emittedEvents };
 };
@@ -131,6 +133,24 @@ describe("GlobalAgentRunMessageRouter", () => {
     expect(result.accepted).toBe(false);
     expect(result.code).toBe("TARGET_AGENT_RUN_REJECTED_INPUT");
     expect(target.emittedEvents).toEqual([]);
+  });
+
+  it("reports publication failure without rolling back accepted runtime delivery", async () => {
+    const target = createTargetRun();
+    vi.mocked(target.run.publishEvent).mockRejectedValueOnce(new Error("listener path failed"));
+    const { router } = createRouter(target.run);
+
+    const result = await router.deliver({
+      sender,
+      targetAgentRunId: "target-run",
+      content: "Accepted body.",
+    });
+
+    expect(result).toMatchObject({
+      accepted: true,
+      code: "DELIVERED_EVENT_PUBLICATION_FAILED",
+    });
+    expect(target.postUserMessage).toHaveBeenCalledTimes(1);
   });
 
   it("enforces direct grants for helper runs and records usage", async () => {

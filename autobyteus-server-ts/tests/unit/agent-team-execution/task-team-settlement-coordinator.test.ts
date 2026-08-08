@@ -44,7 +44,7 @@ describe("TaskTeamSettlementCoordinator", () => {
     const childRun = {
       runId: "child-team-run-1",
       isActive: () => false,
-      getStatusSnapshot: () => ({ status: "offline" }),
+      hasOpenExecutionWork: () => false,
       subscribeToEvents: vi.fn((listener: TeamRunEventListener) => {
         childListeners.add(listener);
         return () => childListeners.delete(listener);
@@ -82,10 +82,11 @@ describe("TaskTeamSettlementCoordinator", () => {
     const identity = buildIdentity();
     const directory = new TaskTeamActiveRunDirectory();
     const childListeners = new Set<TeamRunEventListener>();
+    let hasOpenExecutionWork = true;
     const childRun = {
       runId: "child-team-run-1",
       isActive: () => true,
-      getStatusSnapshot: () => ({ status: "idle" }),
+      hasOpenExecutionWork: () => hasOpenExecutionWork,
       subscribeToEvents: vi.fn((listener: TeamRunEventListener) => {
         childListeners.add(listener);
         return () => childListeners.delete(listener);
@@ -109,6 +110,7 @@ describe("TaskTeamSettlementCoordinator", () => {
 
     coordinator.requestSettlement(identity);
     await nextTick();
+    hasOpenExecutionWork = false;
     for (const listener of childListeners) listener({} as never);
     for (const listener of childListeners) listener({} as never);
     await nextTick();

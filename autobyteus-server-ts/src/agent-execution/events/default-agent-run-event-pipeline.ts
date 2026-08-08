@@ -25,10 +25,11 @@ export const getDefaultAgentRunEventPipeline = (): AgentRunEventPipeline => {
         ? [cachedTokenUsagePersistenceProcessor]
         : []),
     ], [
-      new LifecycleStatusEventTransformer(),
       ...(cachedTokenUsageEnrichmentTransformer
         ? [cachedTokenUsageEnrichmentTransformer]
         : []),
+    ], [
+      new LifecycleStatusEventTransformer(),
     ]);
   }
   return cachedDefaultAgentRunEventPipeline;

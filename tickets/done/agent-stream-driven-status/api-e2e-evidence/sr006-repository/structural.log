@@ -1,0 +1,26 @@
+--- git diff --check ---
+--- implementation changed paths ---
+autobyteus-web/components/workspace/common/TeamActivityDot.vue
+autobyteus-web/components/workspace/common/__tests__/TeamActivityDot.spec.ts
+autobyteus-web/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue
+autobyteus-web/components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+autobyteus-web/components/workspace/history/__tests__/workspaceHistoryTeamDefinitionGroups.spec.ts
+autobyteus-web/components/workspace/history/workspaceHistoryRunLabels.ts
+autobyteus-web/components/workspace/history/workspaceHistoryTeamDefinitionGroups.ts
+autobyteus-web/components/workspace/running/RunningTeamGroup.vue
+autobyteus-web/components/workspace/running/RunningTeamRow.vue
+autobyteus-web/components/workspace/running/__tests__/RunningTeamGroup.spec.ts
+autobyteus-web/components/workspace/running/__tests__/RunningTeamRow.spec.ts
+autobyteus-web/localization/messages/en/workspace.generated.ts
+autobyteus-web/localization/messages/zh-CN/workspace.generated.ts
+--- frontend-only boundary ---
+PASS: implementation delta is frontend-only
+--- production added-line forbidden coupling ---
+PASS: no forbidden production coupling added
+--- binary component contract ---
+  isActive: boolean;
+  label: string;
+    :class="props.isActive ? 'bg-blue-500' : 'bg-gray-400'"
+PASS: boolean-only solid component
+--- temporary fixture cleanup ---
+PASS: installed fixture absent and no Nuxt dev process remains

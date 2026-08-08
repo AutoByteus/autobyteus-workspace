@@ -33,7 +33,6 @@ describe('redundant exact file tools removal', () => {
     for (const toolName of retainedToolNames) {
       expect(defaultToolRegistry.getToolDefinition(toolName)).toBeDefined();
     }
-    expect(defaultToolRegistry.getToolDefinition('add_todo')).toBeDefined();
 
     const schemas = new ToolSchemaProvider(defaultToolRegistry).buildSchema([
       ...retainedToolNames,

@@ -10,26 +10,24 @@ import {
   fetchTeamMemberProjections,
 } from '~/stores/runHistoryTeamMemberProjectionHydrator';
 import type { AgentTeamContext, HistoricalTeamHydrationState, TeamMemberProjectionLoadState } from '~/types/agent/AgentTeamContext';
-import { normalizeTeamRuntimeStatus } from './runtimeStatusNormalization';
 import { reconstructTeamRunConfigFromMetadata } from '~/utils/teamRunConfigUtils';
 import { fetchAndHydrateTeamCommunicationForTeam } from './teamCommunicationHydrationService';
 import { fetchAndHydrateTaskDelegationRecordsForTeam } from './taskDelegationHydrationService';
 import { indexTeamMemberNodesByRouteKey } from '~/utils/teamDefinitionMembers';
 import { teamMemberNodesFromMetadata } from '~/utils/teamMemberMetadataNodes';
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
-import { applyLiveTeamStatusSnapshot } from './teamRunStatusHydration';
-import type { TeamMemberLiveSnapshot } from './teamRunStatusHydration';
-import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
+import { applyLiveTeamMemberStatusSnapshot } from './teamRunMemberStatusHydration';
+import type { TeamMemberLiveSnapshot } from './teamRunMemberStatusHydration';
 import { resolveActiveExecutionFocusedMemberRouteKey } from '~/utils/teamActiveExecutionMembers';
 
 export {
-  applyLiveTeamStatusSnapshot,
+  applyLiveTeamMemberStatusSnapshot,
   hydrateTeamMemberActivitiesFromProjection,
-} from './teamRunStatusHydration';
+} from './teamRunMemberStatusHydration';
 export type {
-  TeamLiveStatusSnapshot,
+  TeamMemberStatusSnapshotSet,
   TeamMemberLiveSnapshot,
-} from './teamRunStatusHydration';
+} from './teamRunMemberStatusHydration';
 
 export interface LoadTeamRunContextHydrationInput {
   teamRunId: string;
@@ -181,7 +179,6 @@ const buildHydratedTeamContext = (params: {
   members: Map<string, any>;
   focusedMemberRouteKey: string;
   primaryWorkspaceMetadata: WorkspaceMetadata | null;
-  currentStatus: string | null | undefined;
   memberStatuses: TeamMemberLiveSnapshot[];
   historicalHydration: HistoricalTeamHydrationState | null;
 }): AgentTeamContext => {
@@ -199,14 +196,13 @@ const buildHydratedTeamContext = (params: {
     coordinatorMemberRouteKey: params.metadata.coordinatorMemberRouteKey,
     historicalHydration: params.historicalHydration,
     focusedMemberRouteKey: params.focusedMemberRouteKey,
-    currentStatus: normalizeTeamRuntimeStatus(params.currentStatus),
+    isActive: params.resumeConfig.isActive,
     isSubscribed: false,
     members: params.members,
     focusedMemberName: params.focusedMemberRouteKey,
   };
 
-  applyLiveTeamStatusSnapshot(context, {
-    currentStatus: params.currentStatus,
+  applyLiveTeamMemberStatusSnapshot(context, {
     memberStatuses: params.memberStatuses,
   });
   return context;
@@ -266,7 +262,7 @@ const loadLiveTeamRunContextHydrationPayload = async (input: {
     coordinatorMemberRouteKey: input.metadata.coordinatorMemberRouteKey,
     historicalHydration: null,
     focusedMemberRouteKey: fallbackFocusKey,
-    currentStatus: AgentTeamStatus.Running,
+    isActive: input.resumeConfig.isActive,
     isSubscribed: false,
   }, fallbackFocusKey) || fallbackFocusKey;
 
@@ -435,7 +431,6 @@ export const loadTeamRunContextHydrationPayload = async (
 
 export const hydrateLiveTeamRunContext = async (
   input: LoadTeamRunContextHydrationInput & {
-    currentStatus?: string | null;
     memberStatuses?: TeamMemberLiveSnapshot[];
   },
 ): Promise<TeamRunContextHydrationPayload> => {
@@ -446,7 +441,6 @@ export const hydrateLiveTeamRunContext = async (
     members: payload.members,
     focusedMemberRouteKey: payload.focusedMemberRouteKey,
     primaryWorkspaceMetadata: payload.primaryWorkspaceMetadata,
-    currentStatus: input.currentStatus,
     memberStatuses: input.memberStatuses || [],
     historicalHydration: payload.historicalHydration,
   });

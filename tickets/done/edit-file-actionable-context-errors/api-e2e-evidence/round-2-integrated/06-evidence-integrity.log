@@ -1,0 +1,12 @@
+logs_scanned=5
+secret_loaded_for_scan=True
+secret_value_present_in_logs=False
+node=v22.23.1
+pnpm=10.28.2
+platform=Darwin 25.5.0 arm64
+sha256:
+57fcfdeeb71fab37084535f578c5b2b54d9a2f6dfa6809c57ac80a96c8cdf930  01-combined-focused.log
+928b888f6d99c521f13eb30b9c683671aa0905e25f6b82972459b989ad7e7697  02-broader-regression.log
+7cf091aee81794f4ac9d40e696cfb513f8f3527863ea4aff93e7fd266d993858  03-package-build.log
+a03062ac5fdc89f9b231a23dc33505e8986ce616527e4134b91d74e18b483ecd  04-live-deepseek-retained-four-hunk.log
+9dd88683372dda2bb31b598c98b694fc747e4336ee498665cab25d3a40e6d4f4  05-cleanup-hygiene-state.log

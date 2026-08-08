@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { AgentContext } from '~/types/agent/AgentContext';
 import { AgentRunState } from '~/types/agent/AgentRunState';
-import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
+import type { AgentTeamContext, AgentTeamMemberNode } from '~/types/agent/AgentTeamContext';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { resolveTeamStreamMemberContext } from '../teamStreamMemberContextResolver';
 import { ensureTaskAgentContext } from '../teamTaskAgentContextProjection';
@@ -39,7 +39,7 @@ const createLogicalAgentContext = (memberName: string, runId: string): AgentCont
 const createTeamContext = (): AgentTeamContext => {
   const coordinator = createLogicalAgentContext('coordinator', 'coordinator-run');
   const worker = createLogicalAgentContext('worker', 'worker-run');
-  const coordinatorNode = {
+  const coordinatorNode: AgentTeamMemberNode = {
     memberKind: 'agent',
     memberName: 'coordinator',
     displayName: 'Coordinator',
@@ -49,7 +49,7 @@ const createTeamContext = (): AgentTeamContext => {
     agentDefinitionId: 'coordinator-definition',
     currentStatus: AgentStatus.Running,
   };
-  const workerNode = {
+  const workerNode: AgentTeamMemberNode = {
     memberKind: 'agent',
     memberName: 'worker',
     displayName: 'Worker',
@@ -62,7 +62,7 @@ const createTeamContext = (): AgentTeamContext => {
   return {
     teamRunId: 'team-run-1',
     config: {} as any,
-    currentStatus: 'idle' as any,
+    isActive: true,
     focusedMemberRouteKey: 'coordinator',
     coordinatorMemberRouteKey: 'coordinator',
     memberTree: [coordinatorNode, workerNode],
@@ -75,8 +75,6 @@ const createTeamContext = (): AgentTeamContext => {
       ['worker', worker],
     ]),
     isSubscribed: true,
-    taskPlan: null,
-    taskStatuses: null,
   };
 };
 
@@ -88,7 +86,6 @@ describe('teamStreamMemberContextResolver', () => {
       type: 'AGENT_STATUS',
       payload: {
         status: 'initializing',
-        can_interrupt: false,
         agent_id: 'opaque-runtime-run',
         agent_name: 'worker',
         member_route_key: 'worker',
@@ -119,7 +116,6 @@ describe('teamStreamMemberContextResolver', () => {
       type: 'AGENT_STATUS',
       payload: {
         status: 'initializing',
-        can_interrupt: false,
         agent_id: 'opaque-mismatched-run',
         agent_name: 'worker',
         member_route_key: 'worker',

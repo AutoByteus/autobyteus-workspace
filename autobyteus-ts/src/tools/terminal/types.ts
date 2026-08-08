@@ -23,14 +23,23 @@ export class TerminalResult {
   }
 
   toJSON(): Record<string, unknown> {
-    return {
-      stdout: this.stdout,
-      stderr: this.stderr,
+    const json: Record<string, unknown> = {
       exitCode: this.exitCode,
-      timedOut: this.timedOut,
-      effectiveCwd: this.effectiveCwd,
-      backgroundProcesses: this.backgroundProcesses
+      effectiveCwd: this.effectiveCwd
     };
+    if (this.stdout !== '') {
+      json.stdout = this.stdout;
+    }
+    if (this.stderr !== '') {
+      json.stderr = this.stderr;
+    }
+    if (this.timedOut) {
+      json.timedOut = this.timedOut;
+    }
+    if (this.backgroundProcesses.length > 0) {
+      json.backgroundProcesses = this.backgroundProcesses;
+    }
+    return json;
   }
 }
 

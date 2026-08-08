@@ -908,11 +908,8 @@ describe("ClaudeSessionEventConverter", () => {
     });
   });
 
-  it("emits explicit turn completed plus normalized agent-status events", () => {
-    const converter = new ClaudeSessionEventConverter("run-claude-converter", () => ({
-      status: "idle",
-      can_interrupt: false,
-    }));
+  it("emits only the neutral explicit turn-completed event", () => {
+    const converter = new ClaudeSessionEventConverter("run-claude-converter");
 
     const completed = converter.convert({
       method: ClaudeSessionEventName.TURN_COMPLETED,
@@ -922,7 +919,7 @@ describe("ClaudeSessionEventConverter", () => {
       },
     });
 
-    expect(completed).toHaveLength(2);
+    expect(completed).toHaveLength(1);
     expect(completed[0]).toMatchObject({
       eventType: AgentRunEventType.TURN_COMPLETED,
       payload: {
@@ -930,21 +927,10 @@ describe("ClaudeSessionEventConverter", () => {
       },
       statusHint: "IDLE",
     });
-    expect(completed[1]).toMatchObject({
-      eventType: AgentRunEventType.AGENT_STATUS,
-      payload: {
-        status: "idle",
-        can_interrupt: false,
-      },
-      statusHint: "IDLE",
-    });
   });
 
-  it("emits explicit turn started before the running status event", () => {
-    const converter = new ClaudeSessionEventConverter("run-claude-converter", () => ({
-      status: "running",
-      can_interrupt: true,
-    }));
+  it("emits only the neutral explicit turn-started event", () => {
+    const converter = new ClaudeSessionEventConverter("run-claude-converter");
 
     const started = converter.convert({
       method: ClaudeSessionEventName.TURN_STARTED,
@@ -953,27 +939,16 @@ describe("ClaudeSessionEventConverter", () => {
       },
     });
 
-    expect(started).toHaveLength(2);
+    expect(started).toHaveLength(1);
     expect(started[0]).toMatchObject({
       eventType: AgentRunEventType.TURN_STARTED,
       payload: { turnId: "turn-claude-2" },
       statusHint: "ACTIVE",
     });
-    expect(started[1]).toMatchObject({
-      eventType: AgentRunEventType.AGENT_STATUS,
-      payload: {
-        status: "running",
-        can_interrupt: true,
-      },
-      statusHint: "ACTIVE",
-    });
   });
 
-  it("emits classified terminal error before its post-mutation status", () => {
-    const converter = new ClaudeSessionEventConverter("run-claude-converter", () => ({
-      status: "error",
-      can_interrupt: false,
-    }));
+  it("emits classified terminal error without a backend status companion", () => {
+    const converter = new ClaudeSessionEventConverter("run-claude-converter");
     const converted = converter.convert({
       method: ClaudeSessionEventName.ERROR,
       params: {
@@ -987,7 +962,6 @@ describe("ClaudeSessionEventConverter", () => {
 
     expect(converted.map((event) => event.eventType)).toEqual([
       AgentRunEventType.ERROR,
-      AgentRunEventType.AGENT_STATUS,
     ]);
     expect(converted[0].payload).toMatchObject({
       error_scope: "turn",
@@ -995,14 +969,10 @@ describe("ClaudeSessionEventConverter", () => {
       turn_id: "turn-claude-3",
     });
     expect(converted[0].statusHint).toBe("ERROR");
-    expect(converted[1].payload).toMatchObject({ status: "error" });
   });
 
   it("keeps unclassified Claude errors as content without a guessed status", () => {
-    const converter = new ClaudeSessionEventConverter("run-claude-converter", () => ({
-      status: "error",
-      can_interrupt: false,
-    }));
+    const converter = new ClaudeSessionEventConverter("run-claude-converter");
     const converted = converter.convert({
       method: ClaudeSessionEventName.ERROR,
       params: { code: "UNKNOWN", message: "unclassified" },

@@ -1,0 +1,127 @@
+$ git diff --check
+exit_code=0
+
+$ git status --short
+ M autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md
+ M autobyteus-server-ts/docs/modules/agent_streaming.md
+ M autobyteus-server-ts/tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts
+ M autobyteus-web/docs/agent_execution_architecture.md
+ M autobyteus-web/docs/content_rendering.md
+ M autobyteus-web/docs/settings.md
+ M tickets/in-progress/runtime-streaming-performance-followup/api-e2e-coverage-investigation.md
+ M tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-coverage-report.md
+ M tickets/in-progress/runtime-streaming-performance-followup/api-e2e-revision-record.md
+ M tickets/in-progress/runtime-streaming-performance-followup/code-review-report.md
+ M tickets/in-progress/runtime-streaming-performance-followup/code-review-revision-record.md
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/api-rev-005-autobyteus-ts-build.log
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/api-rev-005-cross-runtime-memory-rerun-2.log
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/api-rev-005-cross-runtime-memory-rerun.log
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/api-rev-005-diff-check-and-status.log
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/api-rev-005-frontend-thinking-hydration.log
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/api-rev-005-native-memory-focused.log
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/api-rev-005-native-reasoning-graphql-focused-rerun.log
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/api-rev-005-native-reasoning-graphql-focused.log
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/api-rev-005-recent-projection-full.log
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/api-rev-005-server-build-typecheck.log
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/api-rev-005-server-hydration-combined.log
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/api-rev-005-server-reasoning-regression.log
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/real-agent-team-thinking-browser-summary.json
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/real-bible-live-inspection-frontend.log
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/real-bible-thinking-persistence-investigation.json
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/real-classroom-frontend.log
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/real-classroom-simulation-thinking-collapsed.png
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/real-classroom-simulation-thinking-expanded.png
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/real-daily-frontend.log
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/real-daily-thinking-collapsed.png
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/real-daily-thinking-expanded.png
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/real-nested-classroom-thinking-collapsed.png
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/real-nested-classroom-thinking-expanded.png
+?? tickets/in-progress/runtime-streaming-performance-followup/delivery-integration-evidence.log
+?? tickets/in-progress/runtime-streaming-performance-followup/delivery-revision-record.md
+?? tickets/in-progress/runtime-streaming-performance-followup/docs-sync-report.md
+?? tickets/in-progress/runtime-streaming-performance-followup/electron-build-macos-arm64-personal.log
+?? tickets/in-progress/runtime-streaming-performance-followup/handoff-summary.md
+?? tickets/in-progress/runtime-streaming-performance-followup/release-deployment-report.md
+?? tickets/in-progress/runtime-streaming-performance-followup/release-notes.md
+$ git diff --check
+exit_code=0
+
+$ authoritative markers
+tickets/in-progress/runtime-streaming-performance-followup/api-e2e-coverage-investigation.md:18:- Current API/E2E Revision ID: `API-REV-005`
+tickets/in-progress/runtime-streaming-performance-followup/api-e2e-coverage-investigation.md:22:- Latest Authoritative Investigation: `Round 5 / API-REV-005 Pass at 98.6%; IR-004 corrects future-write native reasoning persistence and standalone/team/browser hydration.`
+tickets/in-progress/runtime-streaming-performance-followup/api-e2e-coverage-investigation.md:250:- Final confidence: `98.6%`.
+tickets/in-progress/runtime-streaming-performance-followup/api-e2e-coverage-investigation.md:253:- Latest authoritative result: `API-REV-005 Pass`.
+tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-coverage-report.md:13:- Current API/E2E Revision: `API-REV-005`
+tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-coverage-report.md:17:- Latest Authoritative Round: `5 — Pass`, `98.6%`.
+tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-coverage-report.md:53:| BROWSER-BIBLE-LIVE-001 / BIBLE-THINK-HYDRATE-001 | FR-005; AC-005/007 native history/hydration preservation | Round 4 active Bible Study Group read-only investigation | Prior Fail, **resolved for future writes by IR-004** | `real-bible-thinking-persistence-investigation.json`; API-REV-005 evidence below |
+tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-coverage-report.md:69:### API-REV-005 repository execution
+tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-coverage-report.md:144:## API-REV-005 Corrected Future-Write Native Reasoning Validation
+tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-coverage-report.md:153:- Data decision: existing pre-IR-004 turns are not backfilled or rewritten by design. API-REV-005 proves corrected future writes only.
+tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-coverage-report.md:168:- Overall final confidence: `98.6%` (`690 / 7`, rounded).
+tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-coverage-report.md:187:## Tests / Durable Coverage Updated In API-REV-005
+tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-coverage-report.md:230:`code_reviewer` for proportional review of the two API-REV-005 durable test-file changes. On pass, delivery may resume finalization into personal and the requested fresh Electron build; API/E2E authorizes no version bump or release action itself.
+tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-coverage-report.md:232:## Latest Authoritative Result
+tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-coverage-report.md:234:- Result: `Pass`.
+tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-coverage-report.md:235:- Current revision: `API-REV-005`.
+tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-coverage-report.md:236:- Final validation confidence: `98.6%`.
+tickets/in-progress/runtime-streaming-performance-followup/api-e2e-revision-record.md:13:| API-REV-005 | `code_reviewer` / CRR-007 / corrected future-write rerun | `IR-004`, `CRR-007`, `API-REV-004` | `Fail` / `86.4%` | `Pass` / `98.6%` |
+tickets/in-progress/runtime-streaming-performance-followup/api-e2e-revision-record.md:129:### API-REV-005 — Corrected native reasoning survives standalone/team replay and real browser recovery
+tickets/in-progress/runtime-streaming-performance-followup/api-e2e-revision-record.md:153:- Current result/confidence: `Pass`, `98.6%`.
+
+$ status
+ M autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md
+ M autobyteus-server-ts/docs/modules/agent_streaming.md
+ M autobyteus-server-ts/tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/integration/agent-memory/cross-runtime-memory-persistence.integration.test.ts
+ M autobyteus-web/docs/agent_execution_architecture.md
+ M autobyteus-web/docs/content_rendering.md
+ M autobyteus-web/docs/settings.md
+ M tickets/in-progress/runtime-streaming-performance-followup/api-e2e-coverage-investigation.md
+ M tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-coverage-report.md
+ M tickets/in-progress/runtime-streaming-performance-followup/api-e2e-revision-record.md
+ M tickets/in-progress/runtime-streaming-performance-followup/code-review-report.md
+ M tickets/in-progress/runtime-streaming-performance-followup/code-review-revision-record.md
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/api-rev-005-autobyteus-ts-build.log
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/api-rev-005-browser-backend.log
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/api-rev-005-browser-data-root.txt
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/api-rev-005-browser-fixture.json
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/api-rev-005-browser-frontend.log
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/api-rev-005-cross-runtime-memory-rerun-2.log
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/api-rev-005-cross-runtime-memory-rerun.log
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/api-rev-005-diff-check-and-status.log
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/api-rev-005-frontend-thinking-hydration.log
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/api-rev-005-live-team-projection.json
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/api-rev-005-live-thinking-collapsed.png
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/api-rev-005-live-thinking-expanded.png
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/api-rev-005-native-memory-focused.log
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/api-rev-005-native-reasoning-browser-reload-summary.json
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/api-rev-005-native-reasoning-graphql-focused-rerun.log
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/api-rev-005-native-reasoning-graphql-focused.log
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/api-rev-005-post-reload-reselection-expanded.png
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/api-rev-005-recent-projection-full.log
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/api-rev-005-secret-import-dry-run.log
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/api-rev-005-secret-import-result.log
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/api-rev-005-secret-import.log
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/api-rev-005-server-build-typecheck.log
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/api-rev-005-server-build.log
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/api-rev-005-server-hydration-combined.log
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/api-rev-005-server-reasoning-regression.log
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/real-agent-team-thinking-browser-summary.json
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/real-bible-live-inspection-frontend.log
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/real-bible-thinking-persistence-investigation.json
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/real-classroom-frontend.log
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/real-classroom-simulation-thinking-collapsed.png
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/real-classroom-simulation-thinking-expanded.png
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/real-daily-frontend.log
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/real-daily-thinking-collapsed.png
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/real-daily-thinking-expanded.png
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/real-nested-classroom-thinking-collapsed.png
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/real-nested-classroom-thinking-expanded.png
+?? tickets/in-progress/runtime-streaming-performance-followup/delivery-integration-evidence.log
+?? tickets/in-progress/runtime-streaming-performance-followup/delivery-revision-record.md
+?? tickets/in-progress/runtime-streaming-performance-followup/docs-sync-report.md
+?? tickets/in-progress/runtime-streaming-performance-followup/electron-build-macos-arm64-personal.log
+?? tickets/in-progress/runtime-streaming-performance-followup/handoff-summary.md
+?? tickets/in-progress/runtime-streaming-performance-followup/release-deployment-report.md
+?? tickets/in-progress/runtime-streaming-performance-followup/release-notes.md

@@ -2,9 +2,9 @@ import fs from "node:fs";
 import fsPromises from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { pathToFileURL } from "node:url";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AppConfig, AppConfigError } from "../../../src/config/app-config.js";
+import { toPrismaSqliteUrl } from "../../../src/config/application-database-location.js";
 
 const ENV_KEYS = [
   "AUTOBYTEUS_SERVER_HOST",
@@ -70,7 +70,7 @@ describe("AppConfig", () => {
 
     expect(config.getBaseUrl()).toBe("http://localhost:8000");
     const expectedDbPath = path.resolve(configDir, "db", "test.db");
-    const expectedDatabaseUrl = pathToFileURL(expectedDbPath).href;
+    const expectedDatabaseUrl = toPrismaSqliteUrl(expectedDbPath);
     expect(config.get("DATABASE_URL")).toBe(expectedDatabaseUrl);
     expect(config.getOperationalDatabaseLocation()).toEqual({
       databaseUrl: expectedDatabaseUrl,
@@ -94,7 +94,9 @@ describe("AppConfig", () => {
 
     config.initialize();
 
-    expect(config.get("DATABASE_URL")).toBe(pathToFileURL("/tmp/explicit-autobyteus-test.db").href);
+    expect(config.get("DATABASE_URL")).toBe(
+      toPrismaSqliteUrl(path.resolve("/tmp/explicit-autobyteus-test.db")),
+    );
     expect(process.env.DATABASE_URL).toBe(explicitDatabaseUrl);
 
     await fsPromises.rm(configDir, { recursive: true, force: true });
@@ -116,7 +118,7 @@ describe("AppConfig", () => {
     config.initialize();
 
     expect(config.getOperationalDatabaseUrl())
-      .toBe(pathToFileURL("/tmp/persisted-autobyteus-test.db").href);
+      .toBe(toPrismaSqliteUrl(path.resolve("/tmp/persisted-autobyteus-test.db")));
     expect(process.env.DATABASE_URL).toBe(explicitDatabaseUrl);
 
     await fsPromises.rm(configDir, { recursive: true, force: true });

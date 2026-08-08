@@ -1,0 +1,36 @@
+$ date -u +%Y-%m-%dT%H:%M:%SZ
+2026-08-06T07:58:55Z
+$ git rev-parse HEAD origin/personal
+ff8813cb928aa2412931b27a28de02edb6d238f3
+09e22b343f770b84d536dc9a97d0f1c2f6652814
+$ git rev-list --left-right --count origin/personal...HEAD
+0	5
+$ verify no durable source/test/docs delta after reviewed integrated source
+$ verify durable combined contract documentation
+76:- Every prefixed hunk body record is one complete logical line even when the
+80:- Outer patch-string termination is transport framing, not target-file
+83:  `\ No newline at end of file` marker. This marker is the sole opt-out from a
+113:  suffixes are not part of the grammar. XML sentinel tags are transport framing
+117:`src/tools/file/edit-file-contract.ts`; XML formatting adds only its sentinel
+120:failure rendering is owned by `src/tools/file/edit-file-patch-diagnostic.ts`.
+$ verify transport ownership remains framing-only
+213:For `edit_file`, the streaming parser owns transport framing only: it removes
+215:`context-patch.ts` owner validates the bare-`@@` context grammar, unique-match
+87:- `content` (string) for `write_file` OR `patch` (string) for `edit_file`
+130:  - Stream only decoded content/patch text.
+$ verify final review/API authorities
+11:| `CRR-003` | `/Users/normy/autobyteus_org/autobyteus-worktrees/edit-file-actionable-context-errors/tickets/in-progress/edit-file-actionable-context-errors/code-review-report.md` | Implementation Review round 2 / delivery `DR-001` semantic predecessor reconciliation | `Pass` source baseline; latest proportional result `Not Applicable` | `Pass` | None |
+12:| `CRR-004` | `/Users/normy/autobyteus_org/autobyteus-worktrees/edit-file-actionable-context-errors/tickets/in-progress/edit-file-actionable-context-errors/api-e2e-test-review-report.md` | Proportional Test-Code Review round 2 / successful integrated `API-REV-002` with no durable test change | `Pass` (`CRR-003` source) | `Not Applicable` | None |
+62:### CRR-003 — Integrated predecessor delta source-review pass
+85:### CRR-004 — No integrated API/E2E-stage durable test-code change
+95:- Prior authoritative result: `CRR-003 Pass` for integrated implementation source; prior proportional result `CRR-002 Not Applicable` applied only to the pre-integration actionable branch.
+104:- Material score or classification changes: None. `CRR-003` remains the authoritative integrated source result and score; this proportional result is `Not Applicable`.
+8:| `API-REV-002` | `code_reviewer` / integrated `CRR-003` / API/E2E round 2 | Current `SR-003`, `ARCH-REV-003`, `IR-001`; predecessor `SR-001`, `ARCH-REV-001`, `IR-001`; `DR-001`, `CRR-003` | `Pass` / `99%` current-only branch; final integration `Not Tested` | `Pass` / `99.7%` final integrated HEAD |
+36:### API-REV-002 — Final integrated historical live validation
+57:- Current result and confidence: `Pass` / `99.7%` for final integrated HEAD.
+$ verify current local package artifacts and hashes
+75a5c5fd1049aed50722815216f5ed24b00e5bd6fab94da074c8754808d0afe5  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.43.dmg
+4ebf58c354f930918d37135e5668e161b6e686bd000f1b724d77d2f51cefe60c  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.43.zip
+$ git diff origin/personal...HEAD --check
+$ git diff --check
+result=pass

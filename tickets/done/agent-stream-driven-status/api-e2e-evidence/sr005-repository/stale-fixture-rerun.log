@@ -1,0 +1,2282 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:24671) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > streams team events and routes client messages
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-server-ts
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > streams team events and routes client messages
+Agent team websocket attached for team run team-1
+Created agent session 129413e3-8343-470f-835c-5e142b72745d for run team-1
+Agent Team WebSocket connected: session=129413e3-8343-470f-835c-5e142b72745d, run=team-1
+
+stderr | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > streams team events and routes client messages
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > restores a stopped team on websocket connect and rebinds before member follow-up SEND_MESSAGE
+Closed agent session 129413e3-8343-470f-835c-5e142b72745d
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > restores a stopped team on websocket connect and rebinds before member follow-up SEND_MESSAGE
+Agent Team WebSocket disconnected: 129413e3-8343-470f-835c-5e142b72745d
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > restores a stopped team on websocket connect and rebinds before member follow-up SEND_MESSAGE
+Agent team websocket attached for team run team-recover
+Created agent session 49c23fce-ebd3-40e9-8134-55ca887391d3 for run team-recover
+Agent Team WebSocket connected: session=49c23fce-ebd3-40e9-8134-55ca887391d3, run=team-recover
+
+·stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > closes with TEAM_NOT_FOUND when a websocket connect cannot resolve a missing team run
+Closed agent session 49c23fce-ebd3-40e9-8134-55ca887391d3
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > closes with TEAM_NOT_FOUND when a websocket connect cannot resolve a missing team run
+Agent Team WebSocket disconnected: 49c23fce-ebd3-40e9-8134-55ca887391d3
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > closes with TEAM_NOT_FOUND when a websocket connect cannot resolve a missing team run
+Agent team websocket attached for team run missing-team
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > closes with TEAM_NOT_FOUND when follow-up SEND_MESSAGE cannot restore the team run
+Agent team websocket attached for team run team-send-missing
+Created agent session 3d723ac1-06ae-440b-81f3-3af55e2dd2c3 for run team-send-missing
+Agent Team WebSocket connected: session=3d723ac1-06ae-440b-81f3-3af55e2dd2c3, run=team-send-missing
+
+stderr | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > closes with TEAM_NOT_FOUND when follow-up SEND_MESSAGE cannot restore the team run
+Team websocket session '3d723ac1-06ae-440b-81f3-3af55e2dd2c3' could not resolve run 'team-send-missing'.
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > closes with TEAM_NOT_FOUND when follow-up SEND_MESSAGE cannot restore the team run
+Closed agent session 3d723ac1-06ae-440b-81f3-3af55e2dd2c3
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > closes with TEAM_NOT_FOUND when follow-up SEND_MESSAGE cannot restore the team run
+Agent Team WebSocket disconnected: 3d723ac1-06ae-440b-81f3-3af55e2dd2c3
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > keeps INTERRUPT_GENERATION active-only and does not restore a stopped team run
+Agent team websocket attached for team run team-stop-active-only
+Created agent session 42539d61-e98b-49d0-aed0-9712e3d3548c for run team-stop-active-only
+Agent Team WebSocket connected: session=42539d61-e98b-49d0-aed0-9712e3d3548c, run=team-stop-active-only
+
+stderr | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > keeps INTERRUPT_GENERATION active-only and does not restore a stopped team run
+Team websocket session '42539d61-e98b-49d0-aed0-9712e3d3548c' lost its active team subscription for run 'team-stop-active-only'.
+
+····stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > rejects invalid team websocket interrupt targets without falling back or retargeting
+Closed agent session 42539d61-e98b-49d0-aed0-9712e3d3548c
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > rejects invalid team websocket interrupt targets without falling back or retargeting
+Agent Team WebSocket disconnected: 42539d61-e98b-49d0-aed0-9712e3d3548c
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > rejects invalid team websocket interrupt targets without falling back or retargeting
+Agent team websocket attached for team run team-invalid-interrupt-target
+Created agent session ea12c2af-510f-4f4b-a4dc-bc5bbed2c094 for run team-invalid-interrupt-target
+Agent Team WebSocket connected: session=ea12c2af-510f-4f4b-a4dc-bc5bbed2c094, run=team-invalid-interrupt-target
+
+stderr | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > rejects invalid team websocket interrupt targets without falling back or retargeting
+INTERRUPT_GENERATION rejected for team run team-invalid-interrupt-target: INTERRUPT_GENERATION target missing; include target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > rejects invalid team websocket interrupt targets without falling back or retargeting
+INTERRUPT_GENERATION rejected for team run team-invalid-interrupt-target: [TARGET_MEMBER_RUN_MISMATCH] no message
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > forwards team-scoped live external user messages over the team websocket
+Closed agent session ea12c2af-510f-4f4b-a4dc-bc5bbed2c094
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > forwards team-scoped live external user messages over the team websocket
+Agent Team WebSocket disconnected: ea12c2af-510f-4f4b-a4dc-bc5bbed2c094
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > forwards team-scoped live external user messages over the team websocket
+Agent team websocket attached for team run team-live-1
+Created agent session 09311cd2-5b01-4275-906f-b849158dd5bc for run team-live-1
+Agent Team WebSocket connected: session=09311cd2-5b01-4275-906f-b849158dd5bc, run=team-live-1
+
+··stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > returns SESSION_NOT_READY for team command before connect handshake
+Closed agent session 09311cd2-5b01-4275-906f-b849158dd5bc
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > returns SESSION_NOT_READY for team command before connect handshake
+Agent Team WebSocket disconnected: 09311cd2-5b01-4275-906f-b849158dd5bc
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > returns SESSION_NOT_READY for team command before connect handshake
+Agent team websocket attached for team run any-team
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > routes approval commands only with explicit route selector fields
+Agent team websocket attached for team run team-approvals
+Created agent session 2c0578b7-4cad-4047-82ca-a0d92978b49a for run team-approvals
+Agent Team WebSocket connected: session=2c0578b7-4cad-4047-82ca-a0d92978b49a, run=team-approvals
+
+stderr | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > routes approval commands only with explicit route selector fields
+TOOL_APPROVAL rejected for team run team-approvals: Tool approval target missing; include member/source/target path or route selector fields.
+
+stderr | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > routes approval commands only with explicit route selector fields
+TOOL_APPROVAL rejected for team run team-approvals: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts
+Closed agent session 2c0578b7-4cad-4047-82ca-a0d92978b49a
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts
+Agent Team WebSocket disconnected: 2c0578b7-4cad-4047-82ca-a0d92978b49a
+
+··stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:24704) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > preserves provider conversation memory after interrupt instead of starting a new Claude conversation
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-server-ts
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > preserves provider conversation memory after interrupt instead of starting a new Claude conversation
+Agent websocket attached for run claude-ws-context-memory
+Created agent session 7370ae9d-5cfd-45ae-a637-f669499ef7aa for run claude-ws-context-memory
+Agent WebSocket connected: session=7370ae9d-5cfd-45ae-a637-f669499ef7aa, run=claude-ws-context-memory
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > resumes the same WebSocket follow-up with the adopted provider session id after INTERRUPT_GENERATION
+Closed agent session 7370ae9d-5cfd-45ae-a637-f669499ef7aa
+Agent WebSocket disconnected: 7370ae9d-5cfd-45ae-a637-f669499ef7aa
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > resumes the same WebSocket follow-up with the adopted provider session id after INTERRUPT_GENERATION
+Agent websocket attached for run claude-ws-interrupt-provider
+Created agent session 0a3a298c-7d55-485e-982a-66aac7cb5051 for run claude-ws-interrupt-provider
+Agent WebSocket connected: session=0a3a298c-7d55-485e-982a-66aac7cb5051, run=claude-ws-interrupt-provider
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > resumes a targeted Claude team member follow-up sent on the same team WebSocket after INTERRUPT_GENERATION
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > resumes a targeted Claude team member follow-up sent on the same team WebSocket after INTERRUPT_GENERATION
+Closed agent session 0a3a298c-7d55-485e-982a-66aac7cb5051
+Agent WebSocket disconnected: 0a3a298c-7d55-485e-982a-66aac7cb5051
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > resumes a targeted Claude team member follow-up sent on the same team WebSocket after INTERRUPT_GENERATION
+Agent team websocket attached for team run claude-team-ws-interrupt
+Created agent session cd07e1ed-f0e3-4424-8d0c-d91ed0059819 for run claude-team-ws-interrupt
+Agent Team WebSocket connected: session=cd07e1ed-f0e3-4424-8d0c-d91ed0059819, run=claude-team-ws-interrupt
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > does not send the local run id as SDK resume when INTERRUPT_GENERATION happens before a provider session id exists
+Closed agent session cd07e1ed-f0e3-4424-8d0c-d91ed0059819
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > does not send the local run id as SDK resume when INTERRUPT_GENERATION happens before a provider session id exists
+Agent Team WebSocket disconnected: cd07e1ed-f0e3-4424-8d0c-d91ed0059819
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > does not send the local run id as SDK resume when INTERRUPT_GENERATION happens before a provider session id exists
+Agent websocket attached for run claude-ws-interrupt-placeholder
+Created agent session 9e58fe1b-ccf6-4f36-a010-53d9cb9b1ce2 for run claude-ws-interrupt-placeholder
+Agent WebSocket connected: session=9e58fe1b-ccf6-4f36-a010-53d9cb9b1ce2, run=claude-ws-interrupt-placeholder
+
+···stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume live E2E
+Closed agent session 9e58fe1b-ccf6-4f36-a010-53d9cb9b1ce2
+Agent WebSocket disconnected: 9e58fe1b-ccf6-4f36-a010-53d9cb9b1ce2
+
+·-stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:24723) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > task delegation tool lifecycle integration > runs the server-managed delegate_task -> submit_task_result -> review_task_result -> idle settlement path
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > task delegation tool lifecycle integration > runs the server-managed delegate_task -> submit_task_result -> review_task_result -> idle settlement path
+Successfully created mixed team run 'task-delegation-codex-run'.
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > task delegation tool lifecycle integration > enforces absolute-only task reference files through managed tools and the preview route
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > task delegation tool lifecycle integration > enforces absolute-only task reference files through managed tools and the preview route
+Successfully created mixed team run 'task-delegation-codex-run'.
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > task delegation tool lifecycle integration > lets a task-agent delegate child work and review the child through tight task-agent identity
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > task delegation tool lifecycle integration > lets a task-agent delegate child work and review the child through tight task-agent identity
+Successfully created mixed team run 'task-delegation-codex-run'.
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > task delegation tool lifecycle integration > runs task-team target ingress, child tool routing, revision, settlement gates, cleanup, and sequential delegation
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > task delegation tool lifecycle integration > runs task-team target ingress, child tool routing, revision, settlement gates, cleanup, and sequential delegation
+Successfully created mixed team run 'task-delegation-codex-run'.
+
+···stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > task delegation tool lifecycle integration > scopes each singular activation to the created task and leaves stale rejected tasks inactive
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts > task delegation tool lifecycle integration > scopes each singular activation to the created task and leaves stale rejected tasks inactive
+Successfully created mixed team run 'task-delegation-codex-run'.
+
+···stdout | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'replace_in_file'
+Successfully registered tool definition: 'insert_in_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'add_todo'
+Successfully registered tool definition: 'create_todo_list'
+Successfully registered tool definition: 'get_todo_list'
+Successfully registered tool definition: 'update_todo_status'
+AgentFactory (Singleton) initialized.
+
+(node:24731) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager integration > creates and registers a mixed team for runtime composition "autobyteus"
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager integration > creates and registers a mixed team for runtime composition "autobyteus"
+Successfully created mixed team run 'team-mixed'.
+
+stdout | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager integration > creates and registers a mixed team for runtime composition "codex_app_server"
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager integration > creates and registers a mixed team for runtime composition "codex_app_server"
+Successfully created mixed team run 'team-mixed'.
+
+stdout | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager integration > creates and registers a mixed team for runtime composition "claude_agent_sdk"
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager integration > creates and registers a mixed team for runtime composition "claude_agent_sdk"
+Successfully created mixed team run 'team-mixed'.
+
+stdout | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager integration > creates and registers a mixed team for runtime composition "autobyteus"
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager integration > creates and registers a mixed team for runtime composition "autobyteus"
+Successfully created mixed team run 'team-mixed'.
+
+stdout | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager integration > restores through the mixed backend and normalizes the restored context
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agent-stream-driven-status/autobyteus-server-ts
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager integration > restores through the mixed backend and normalizes the restored context
+Successfully restored mixed team run 'team-restored-mixed'.
+
+stdout | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager integration > routes inter-agent delivery through the mixed backend
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager integration > routes inter-agent delivery through the mixed backend
+Successfully created mixed team run 'team-mixed-delivery'.
+
+stdout | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager integration > evicts inactive team runs when queried or listed
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager integration > evicts inactive team runs when queried or listed
+Successfully created mixed team run 'team-inactive'.
+
+stdout | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager integration > wraps backend termination failures
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager integration > wraps backend termination failures
+Successfully created mixed team run 'team-failing-terminate'.
+
+stderr | tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager integration > wraps backend termination failures
+Failed to terminate team run 'team-failing-terminate': Error: boom
+
+xxxx····
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager integration > creates and registers a mixed team for runtime composition "autobyteus"
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager integration > creates and registers a mixed team for runtime composition "autobyteus"
+AssertionError: expected "vi.fn()" to be called with arguments: [ ObjectContaining{…} ]
+
+Received: 
+
+  1st vi.fn() call:
+
+  [
+-   ObjectContaining {
++   TeamRunConfig {
++     "coordinatorMemberName": "Coordinator",
++     "coordinatorMemberRouteKey": "Coordinator",
++     "memberConfigs": [
++       {
++         "agentDefinitionId": "agent-a-0",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-a",
++         "memberKind": "agent",
++         "memberName": "Coordinator",
++         "memberPath": [
++           "Coordinator",
++         ],
++         "memberRouteKey": "coordinator",
++         "memberRunId": "member-run-a-0",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "a",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-a-0",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-u-1",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-u",
++         "memberKind": "agent",
++         "memberName": "Member1",
++         "memberPath": [
++           "Member1",
++         ],
++         "memberRouteKey": "member-1",
++         "memberRunId": "member-run-u-1",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "u",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-u-1",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-t-2",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-t",
++         "memberKind": "agent",
++         "memberName": "Member2",
++         "memberPath": [
++           "Member2",
++         ],
++         "memberRouteKey": "member-2",
++         "memberRunId": "member-run-t-2",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "t",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-t-2",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-o-3",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-o",
++         "memberKind": "agent",
++         "memberName": "Member3",
++         "memberPath": [
++           "Member3",
++         ],
++         "memberRouteKey": "member-3",
++         "memberRunId": "member-run-o-3",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "o",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-o-3",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-b-4",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-b",
++         "memberKind": "agent",
++         "memberName": "Member4",
++         "memberPath": [
++           "Member4",
++         ],
++         "memberRouteKey": "member-4",
++         "memberRunId": "member-run-b-4",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "b",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-b-4",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-y-5",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-y",
++         "memberKind": "agent",
++         "memberName": "Member5",
++         "memberPath": [
++           "Member5",
++         ],
++         "memberRouteKey": "member-5",
++         "memberRunId": "member-run-y-5",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "y",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-y-5",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-t-6",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-t",
++         "memberKind": "agent",
++         "memberName": "Member6",
++         "memberPath": [
++           "Member6",
++         ],
++         "memberRouteKey": "member-6",
++         "memberRunId": "member-run-t-6",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "t",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-t-6",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-e-7",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-e",
++         "memberKind": "agent",
++         "memberName": "Member7",
++         "memberPath": [
++           "Member7",
++         ],
++         "memberRouteKey": "member-7",
++         "memberRunId": "member-run-e-7",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "e",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-e-7",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-u-8",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-u",
++         "memberKind": "agent",
++         "memberName": "Member8",
++         "memberPath": [
++           "Member8",
++         ],
++         "memberRouteKey": "member-8",
++         "memberRunId": "member-run-u-8",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "u",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-u-8",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-s-9",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-s",
++         "memberKind": "agent",
++         "memberName": "Member9",
++         "memberPath": [
++           "Member9",
++         ],
++         "memberRouteKey": "member-9",
++         "memberRunId": "member-run-s-9",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "s",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-s-9",
++         "workspaceRootPath": null,
++       },
++     ],
++     "memberTree": [
++       {
++         "agentDefinitionId": "agent-a-0",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-a",
++         "memberKind": "agent",
++         "memberName": "Coordinator",
++         "memberPath": [
++           "Coordinator",
++         ],
++         "memberRouteKey": "coordinator",
++         "memberRunId": "member-run-a-0",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "a",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-a-0",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-u-1",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-u",
++         "memberKind": "agent",
++         "memberName": "Member1",
++         "memberPath": [
++           "Member1",
++         ],
++         "memberRouteKey": "member-1",
++         "memberRunId": "member-run-u-1",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "u",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-u-1",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-t-2",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-t",
++         "memberKind": "agent",
++         "memberName": "Member2",
++         "memberPath": [
++           "Member2",
++         ],
++         "memberRouteKey": "member-2",
++         "memberRunId": "member-run-t-2",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "t",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-t-2",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-o-3",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-o",
++         "memberKind": "agent",
++         "memberName": "Member3",
++         "memberPath": [
++           "Member3",
++         ],
++         "memberRouteKey": "member-3",
++         "memberRunId": "member-run-o-3",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "o",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-o-3",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-b-4",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-b",
++         "memberKind": "agent",
++         "memberName": "Member4",
++         "memberPath": [
++           "Member4",
++         ],
++         "memberRouteKey": "member-4",
++         "memberRunId": "member-run-b-4",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "b",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-b-4",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-y-5",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-y",
++         "memberKind": "agent",
++         "memberName": "Member5",
++         "memberPath": [
++           "Member5",
++         ],
++         "memberRouteKey": "member-5",
++         "memberRunId": "member-run-y-5",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "y",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-y-5",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-t-6",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-t",
++         "memberKind": "agent",
++         "memberName": "Member6",
++         "memberPath": [
++           "Member6",
++         ],
++         "memberRouteKey": "member-6",
++         "memberRunId": "member-run-t-6",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "t",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-t-6",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-e-7",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-e",
++         "memberKind": "agent",
++         "memberName": "Member7",
++         "memberPath": [
++           "Member7",
++         ],
++         "memberRouteKey": "member-7",
++         "memberRunId": "member-run-e-7",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "e",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-e-7",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-u-8",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-u",
++         "memberKind": "agent",
++         "memberName": "Member8",
++         "memberPath": [
++           "Member8",
++         ],
++         "memberRouteKey": "member-8",
++         "memberRunId": "member-run-u-8",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "u",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-u-8",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-s-9",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-s",
++         "memberKind": "agent",
++         "memberName": "Member9",
++         "memberPath": [
++           "Member9",
++         ],
++         "memberRouteKey": "member-9",
++         "memberRunId": "member-run-s-9",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "s",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-s-9",
++         "workspaceRootPath": null,
++       },
++     ],
+      "teamBackendKind": "mixed",
++     "teamDefinitionId": "team-def-mixed-only",
+    },
++   "team-mixed",
+  ]
+
+
+Number of calls: 1
+
+ ❯ tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts:109:33
+    107|     expect(manager.listActiveRuns()).toContain(run.runId);
+    108|     expect(mixed.createBackend).toHaveBeenCalledTimes(1);
+    109|     expect(mixed.createBackend).toHaveBeenCalledWith(expect.objectCont…
+       |                                 ^
+    110|       teamBackendKind: TeamBackendKind.MIXED,
+    111|     }));
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager integration > creates and registers a mixed team for runtime composition "codex_app_server"
+AssertionError: expected "vi.fn()" to be called with arguments: [ ObjectContaining{…} ]
+
+Received: 
+
+  1st vi.fn() call:
+
+  [
+-   ObjectContaining {
++   TeamRunConfig {
++     "coordinatorMemberName": "Coordinator",
++     "coordinatorMemberRouteKey": "Coordinator",
++     "memberConfigs": [
++       {
++         "agentDefinitionId": "agent-c-0",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-c",
++         "memberKind": "agent",
++         "memberName": "Coordinator",
++         "memberPath": [
++           "Coordinator",
++         ],
++         "memberRouteKey": "coordinator",
++         "memberRunId": "member-run-c-0",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "c",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-c-0",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-o-1",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-o",
++         "memberKind": "agent",
++         "memberName": "Member1",
++         "memberPath": [
++           "Member1",
++         ],
++         "memberRouteKey": "member-1",
++         "memberRunId": "member-run-o-1",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "o",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-o-1",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-d-2",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-d",
++         "memberKind": "agent",
++         "memberName": "Member2",
++         "memberPath": [
++           "Member2",
++         ],
++         "memberRouteKey": "member-2",
++         "memberRunId": "member-run-d-2",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "d",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-d-2",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-e-3",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-e",
++         "memberKind": "agent",
++         "memberName": "Member3",
++         "memberPath": [
++           "Member3",
++         ],
++         "memberRouteKey": "member-3",
++         "memberRunId": "member-run-e-3",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "e",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-e-3",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-x-4",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-x",
++         "memberKind": "agent",
++         "memberName": "Member4",
++         "memberPath": [
++           "Member4",
++         ],
++         "memberRouteKey": "member-4",
++         "memberRunId": "member-run-x-4",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "x",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-x-4",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-_-5",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-_",
++         "memberKind": "agent",
++         "memberName": "Member5",
++         "memberPath": [
++           "Member5",
++         ],
++         "memberRouteKey": "member-5",
++         "memberRunId": "member-run-_-5",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "_",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-_-5",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-a-6",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-a",
++         "memberKind": "agent",
++         "memberName": "Member6",
++         "memberPath": [
++           "Member6",
++         ],
++         "memberRouteKey": "member-6",
++         "memberRunId": "member-run-a-6",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "a",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-a-6",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-p-7",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-p",
++         "memberKind": "agent",
++         "memberName": "Member7",
++         "memberPath": [
++           "Member7",
++         ],
++         "memberRouteKey": "member-7",
++         "memberRunId": "member-run-p-7",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "p",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-p-7",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-p-8",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-p",
++         "memberKind": "agent",
++         "memberName": "Member8",
++         "memberPath": [
++           "Member8",
++         ],
++         "memberRouteKey": "member-8",
++         "memberRunId": "member-run-p-8",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "p",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-p-8",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-_-9",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-_",
++         "memberKind": "agent",
++         "memberName": "Member9",
++         "memberPath": [
++           "Member9",
++         ],
++         "memberRouteKey": "member-9",
++         "memberRunId": "member-run-_-9",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "_",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-_-9",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-s-10",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-s",
++         "memberKind": "agent",
++         "memberName": "Member10",
++         "memberPath": [
++           "Member10",
++         ],
++         "memberRouteKey": "member-10",
++         "memberRunId": "member-run-s-10",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "s",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-s-10",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-e-11",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-e",
++         "memberKind": "agent",
++         "memberName": "Member11",
++         "memberPath": [
++           "Member11",
++         ],
++         "memberRouteKey": "member-11",
++         "memberRunId": "member-run-e-11",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "e",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-e-11",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-r-12",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-r",
++         "memberKind": "agent",
++         "memberName": "Member12",
++         "memberPath": [
++           "Member12",
++         ],
++         "memberRouteKey": "member-12",
++         "memberRunId": "member-run-r-12",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "r",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-r-12",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-v-13",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-v",
++         "memberKind": "agent",
++         "memberName": "Member13",
++         "memberPath": [
++           "Member13",
++         ],
++         "memberRouteKey": "member-13",
++         "memberRunId": "member-run-v-13",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "v",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-v-13",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-e-14",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-e",
++         "memberKind": "agent",
++         "memberName": "Member14",
++         "memberPath": [
++           "Member14",
++         ],
++         "memberRouteKey": "member-14",
++         "memberRunId": "member-run-e-14",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "e",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-e-14",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-r-15",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-r",
++         "memberKind": "agent",
++         "memberName": "Member15",
++         "memberPath": [
++           "Member15",
++         ],
++         "memberRouteKey": "member-15",
++         "memberRunId": "member-run-r-15",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "r",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-r-15",
++         "workspaceRootPath": null,
++       },
++     ],
++     "memberTree": [
++       {
++         "agentDefinitionId": "agent-c-0",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-c",
++         "memberKind": "agent",
++         "memberName": "Coordinator",
++         "memberPath": [
++           "Coordinator",
++         ],
++         "memberRouteKey": "coordinator",
++         "memberRunId": "member-run-c-0",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "c",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-c-0",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-o-1",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-o",
++         "memberKind": "agent",
++         "memberName": "Member1",
++         "memberPath": [
++           "Member1",
++         ],
++         "memberRouteKey": "member-1",
++         "memberRunId": "member-run-o-1",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "o",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-o-1",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-d-2",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-d",
++         "memberKind": "agent",
++         "memberName": "Member2",
++         "memberPath": [
++           "Member2",
++         ],
++         "memberRouteKey": "member-2",
++         "memberRunId": "member-run-d-2",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "d",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-d-2",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-e-3",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-e",
++         "memberKind": "agent",
++         "memberName": "Member3",
++         "memberPath": [
++           "Member3",
++         ],
++         "memberRouteKey": "member-3",
++         "memberRunId": "member-run-e-3",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "e",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-e-3",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-x-4",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-x",
++         "memberKind": "agent",
++         "memberName": "Member4",
++         "memberPath": [
++           "Member4",
++         ],
++         "memberRouteKey": "member-4",
++         "memberRunId": "member-run-x-4",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "x",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-x-4",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-_-5",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-_",
++         "memberKind": "agent",
++         "memberName": "Member5",
++         "memberPath": [
++           "Member5",
++         ],
++         "memberRouteKey": "member-5",
++         "memberRunId": "member-run-_-5",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "_",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-_-5",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-a-6",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-a",
++         "memberKind": "agent",
++         "memberName": "Member6",
++         "memberPath": [
++           "Member6",
++         ],
++         "memberRouteKey": "member-6",
++         "memberRunId": "member-run-a-6",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "a",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-a-6",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-p-7",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-p",
++         "memberKind": "agent",
++         "memberName": "Member7",
++         "memberPath": [
++           "Member7",
++         ],
++         "memberRouteKey": "member-7",
++         "memberRunId": "member-run-p-7",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "p",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-p-7",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-p-8",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-p",
++         "memberKind": "agent",
++         "memberName": "Member8",
++         "memberPath": [
++           "Member8",
++         ],
++         "memberRouteKey": "member-8",
++         "memberRunId": "member-run-p-8",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "p",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-p-8",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-_-9",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-_",
++         "memberKind": "agent",
++         "memberName": "Member9",
++         "memberPath": [
++           "Member9",
++         ],
++         "memberRouteKey": "member-9",
++         "memberRunId": "member-run-_-9",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "_",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-_-9",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-s-10",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-s",
++         "memberKind": "agent",
++         "memberName": "Member10",
++         "memberPath": [
++           "Member10",
++         ],
++         "memberRouteKey": "member-10",
++         "memberRunId": "member-run-s-10",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "s",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-s-10",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-e-11",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-e",
++         "memberKind": "agent",
++         "memberName": "Member11",
++         "memberPath": [
++           "Member11",
++         ],
++         "memberRouteKey": "member-11",
++         "memberRunId": "member-run-e-11",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "e",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-e-11",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-r-12",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-r",
++         "memberKind": "agent",
++         "memberName": "Member12",
++         "memberPath": [
++           "Member12",
++         ],
++         "memberRouteKey": "member-12",
++         "memberRunId": "member-run-r-12",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "r",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-r-12",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-v-13",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-v",
++         "memberKind": "agent",
++         "memberName": "Member13",
++         "memberPath": [
++           "Member13",
++         ],
++         "memberRouteKey": "member-13",
++         "memberRunId": "member-run-v-13",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "v",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-v-13",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-e-14",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-e",
++         "memberKind": "agent",
++         "memberName": "Member14",
++         "memberPath": [
++           "Member14",
++         ],
++         "memberRouteKey": "member-14",
++         "memberRunId": "member-run-e-14",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "e",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-e-14",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-r-15",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-r",
++         "memberKind": "agent",
++         "memberName": "Member15",
++         "memberPath": [
++           "Member15",
++         ],
++         "memberRouteKey": "member-15",
++         "memberRunId": "member-run-r-15",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "r",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-r-15",
++         "workspaceRootPath": null,
++       },
++     ],
+      "teamBackendKind": "mixed",
++     "teamDefinitionId": "team-def-mixed-only",
+    },
++   "team-mixed",
+  ]
+
+
+Number of calls: 1
+
+ ❯ tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts:109:33
+    107|     expect(manager.listActiveRuns()).toContain(run.runId);
+    108|     expect(mixed.createBackend).toHaveBeenCalledTimes(1);
+    109|     expect(mixed.createBackend).toHaveBeenCalledWith(expect.objectCont…
+       |                                 ^
+    110|       teamBackendKind: TeamBackendKind.MIXED,
+    111|     }));
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager integration > creates and registers a mixed team for runtime composition "claude_agent_sdk"
+AssertionError: expected "vi.fn()" to be called with arguments: [ ObjectContaining{…} ]
+
+Received: 
+
+  1st vi.fn() call:
+
+  [
+-   ObjectContaining {
++   TeamRunConfig {
++     "coordinatorMemberName": "Coordinator",
++     "coordinatorMemberRouteKey": "Coordinator",
++     "memberConfigs": [
++       {
++         "agentDefinitionId": "agent-c-0",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-c",
++         "memberKind": "agent",
++         "memberName": "Coordinator",
++         "memberPath": [
++           "Coordinator",
++         ],
++         "memberRouteKey": "coordinator",
++         "memberRunId": "member-run-c-0",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "c",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-c-0",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-l-1",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-l",
++         "memberKind": "agent",
++         "memberName": "Member1",
++         "memberPath": [
++           "Member1",
++         ],
++         "memberRouteKey": "member-1",
++         "memberRunId": "member-run-l-1",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "l",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-l-1",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-a-2",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-a",
++         "memberKind": "agent",
++         "memberName": "Member2",
++         "memberPath": [
++           "Member2",
++         ],
++         "memberRouteKey": "member-2",
++         "memberRunId": "member-run-a-2",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "a",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-a-2",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-u-3",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-u",
++         "memberKind": "agent",
++         "memberName": "Member3",
++         "memberPath": [
++           "Member3",
++         ],
++         "memberRouteKey": "member-3",
++         "memberRunId": "member-run-u-3",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "u",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-u-3",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-d-4",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-d",
++         "memberKind": "agent",
++         "memberName": "Member4",
++         "memberPath": [
++           "Member4",
++         ],
++         "memberRouteKey": "member-4",
++         "memberRunId": "member-run-d-4",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "d",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-d-4",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-e-5",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-e",
++         "memberKind": "agent",
++         "memberName": "Member5",
++         "memberPath": [
++           "Member5",
++         ],
++         "memberRouteKey": "member-5",
++         "memberRunId": "member-run-e-5",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "e",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-e-5",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-_-6",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-_",
++         "memberKind": "agent",
++         "memberName": "Member6",
++         "memberPath": [
++           "Member6",
++         ],
++         "memberRouteKey": "member-6",
++         "memberRunId": "member-run-_-6",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "_",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-_-6",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-a-7",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-a",
++         "memberKind": "agent",
++         "memberName": "Member7",
++         "memberPath": [
++           "Member7",
++         ],
++         "memberRouteKey": "member-7",
++         "memberRunId": "member-run-a-7",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "a",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-a-7",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-g-8",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-g",
++         "memberKind": "agent",
++         "memberName": "Member8",
++         "memberPath": [
++           "Member8",
++         ],
++         "memberRouteKey": "member-8",
++         "memberRunId": "member-run-g-8",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "g",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-g-8",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-e-9",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-e",
++         "memberKind": "agent",
++         "memberName": "Member9",
++         "memberPath": [
++           "Member9",
++         ],
++         "memberRouteKey": "member-9",
++         "memberRunId": "member-run-e-9",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "e",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-e-9",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-n-10",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-n",
++         "memberKind": "agent",
++         "memberName": "Member10",
++         "memberPath": [
++           "Member10",
++         ],
++         "memberRouteKey": "member-10",
++         "memberRunId": "member-run-n-10",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "n",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-n-10",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-t-11",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-t",
++         "memberKind": "agent",
++         "memberName": "Member11",
++         "memberPath": [
++           "Member11",
++         ],
++         "memberRouteKey": "member-11",
++         "memberRunId": "member-run-t-11",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "t",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-t-11",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-_-12",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-_",
++         "memberKind": "agent",
++         "memberName": "Member12",
++         "memberPath": [
++           "Member12",
++         ],
++         "memberRouteKey": "member-12",
++         "memberRunId": "member-run-_-12",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "_",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-_-12",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-s-13",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-s",
++         "memberKind": "agent",
++         "memberName": "Member13",
++         "memberPath": [
++           "Member13",
++         ],
++         "memberRouteKey": "member-13",
++         "memberRunId": "member-run-s-13",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "s",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-s-13",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-d-14",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-d",
++         "memberKind": "agent",
++         "memberName": "Member14",
++         "memberPath": [
++           "Member14",
++         ],
++         "memberRouteKey": "member-14",
++         "memberRunId": "member-run-d-14",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "d",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-d-14",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-k-15",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-k",
++         "memberKind": "agent",
++         "memberName": "Member15",
++         "memberPath": [
++           "Member15",
++         ],
++         "memberRouteKey": "member-15",
++         "memberRunId": "member-run-k-15",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "k",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-k-15",
++         "workspaceRootPath": null,
++       },
++     ],
++     "memberTree": [
++       {
++         "agentDefinitionId": "agent-c-0",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-c",
++         "memberKind": "agent",
++         "memberName": "Coordinator",
++         "memberPath": [
++           "Coordinator",
++         ],
++         "memberRouteKey": "coordinator",
++         "memberRunId": "member-run-c-0",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "c",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-c-0",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-l-1",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-l",
++         "memberKind": "agent",
++         "memberName": "Member1",
++         "memberPath": [
++           "Member1",
++         ],
++         "memberRouteKey": "member-1",
++         "memberRunId": "member-run-l-1",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "l",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-l-1",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-a-2",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-a",
++         "memberKind": "agent",
++         "memberName": "Member2",
++         "memberPath": [
++           "Member2",
++         ],
++         "memberRouteKey": "member-2",
++         "memberRunId": "member-run-a-2",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "a",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-a-2",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-u-3",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-u",
++         "memberKind": "agent",
++         "memberName": "Member3",
++         "memberPath": [
++           "Member3",
++         ],
++         "memberRouteKey": "member-3",
++         "memberRunId": "member-run-u-3",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "u",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-u-3",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-d-4",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-d",
++         "memberKind": "agent",
++         "memberName": "Member4",
++         "memberPath": [
++           "Member4",
++         ],
++         "memberRouteKey": "member-4",
++         "memberRunId": "member-run-d-4",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "d",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-d-4",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-e-5",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-e",
++         "memberKind": "agent",
++         "memberName": "Member5",
++         "memberPath": [
++           "Member5",
++         ],
++         "memberRouteKey": "member-5",
++         "memberRunId": "member-run-e-5",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "e",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-e-5",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-_-6",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-_",
++         "memberKind": "agent",
++         "memberName": "Member6",
++         "memberPath": [
++           "Member6",
++         ],
++         "memberRouteKey": "member-6",
++         "memberRunId": "member-run-_-6",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "_",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-_-6",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-a-7",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-a",
++         "memberKind": "agent",
++         "memberName": "Member7",
++         "memberPath": [
++           "Member7",
++         ],
++         "memberRouteKey": "member-7",
++         "memberRunId": "member-run-a-7",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "a",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-a-7",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-g-8",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-g",
++         "memberKind": "agent",
++         "memberName": "Member8",
++         "memberPath": [
++           "Member8",
++         ],
++         "memberRouteKey": "member-8",
++         "memberRunId": "member-run-g-8",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "g",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-g-8",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-e-9",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-e",
++         "memberKind": "agent",
++         "memberName": "Member9",
++         "memberPath": [
++           "Member9",
++         ],
++         "memberRouteKey": "member-9",
++         "memberRunId": "member-run-e-9",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "e",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-e-9",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-n-10",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-n",
++         "memberKind": "agent",
++         "memberName": "Member10",
++         "memberPath": [
++           "Member10",
++         ],
++         "memberRouteKey": "member-10",
++         "memberRunId": "member-run-n-10",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "n",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-n-10",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-t-11",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-t",
++         "memberKind": "agent",
++         "memberName": "Member11",
++         "memberPath": [
++           "Member11",
++         ],
++         "memberRouteKey": "member-11",
++         "memberRunId": "member-run-t-11",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "t",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-t-11",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-_-12",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-_",
++         "memberKind": "agent",
++         "memberName": "Member12",
++         "memberPath": [
++           "Member12",
++         ],
++         "memberRouteKey": "member-12",
++         "memberRunId": "member-run-_-12",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "_",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-_-12",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-s-13",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-s",
++         "memberKind": "agent",
++         "memberName": "Member13",
++         "memberPath": [
++           "Member13",
++         ],
++         "memberRouteKey": "member-13",
++         "memberRunId": "member-run-s-13",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "s",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-s-13",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-d-14",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-d",
++         "memberKind": "agent",
++         "memberName": "Member14",
++         "memberPath": [
++           "Member14",
++         ],
++         "memberRouteKey": "member-14",
++         "memberRunId": "member-run-d-14",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "d",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-d-14",
++         "workspaceRootPath": null,
++       },
++       {
++         "agentDefinitionId": "agent-k-15",
++         "applicationExecutionContext": null,
++         "autoExecuteTools": true,
++         "description": null,
++         "llmConfig": null,
++         "llmModelIdentifier": "model-k",
++         "memberKind": "agent",
++         "memberName": "Member15",
++         "memberPath": [
++           "Member15",
++         ],
++         "memberRouteKey": "member-15",
++         "memberRunId": "member-run-k-15",
++         "memoryDir": null,
++         "role": null,
++         "runtimeKind": "k",
++         "skillAccessMode": "NONE",
++         "workspaceId": "workspace-k-15",
++         "workspaceRootPath": null,
++       },
++     ],
+      "teamBackendKind": "mixed",
++     "teamDefinitionId": "team-def-mixed-only",
+    },
++   "team-mixed",
+  ]
+
+
+Number of calls: 1
+
+ ❯ tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts:109:33
+    107|     expect(manager.listActiveRuns()).toContain(run.runId);
+    108|     expect(mixed.createBackend).toHaveBeenCalledTimes(1);
+    109|     expect(mixed.createBackend).toHaveBeenCalledWith(expect.objectCont…
+       |                                 ^
+    110|       teamBackendKind: TeamBackendKind.MIXED,
+    111|     }));
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+
+ Test Files  1 failed | 3 passed (4)
+      Tests  4 failed | 23 passed | 1 skipped (28)
+   Start at  11:41:22
+   Duration  9.02s (transform 3.08s, setup 19ms, import 7.19s, tests 972ms, environment 0ms)
+

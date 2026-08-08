@@ -4,7 +4,6 @@ import type { ServerMessage } from '../protocol';
 import { AgentContext } from '~/types/agent/AgentContext';
 import { AgentRunState } from '~/types/agent/AgentRunState';
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 
 const { handleBrowserToolExecutionSucceededMock, upsertTeamCommunicationMessageMock } = vi.hoisted(() => ({
   handleBrowserToolExecutionSucceededMock: vi.fn(),
@@ -107,7 +106,7 @@ const createTeamContextWithWorker = () => {
     currentStatus: AgentStatus.Offline,
   };
   return {
-    currentStatus: AgentTeamStatus.Idle,
+    isActive: true,
     focusedMemberRouteKey: 'worker',
     coordinatorMemberRouteKey: 'coordinator',
     memberTree: [coordinatorNode, workerNode],
@@ -156,11 +155,10 @@ const createTeamContextWithSoftwareTeam = () => {
     teamRunId: null,
     coordinatorMemberRouteKey: 'SoftwareEngineeringTeam/solution_designer',
     children: [solutionNode],
-    currentStatus: AgentStatus.Offline,
   };
   return {
     teamRunId: 'parent-team-run',
-    currentStatus: AgentTeamStatus.Idle,
+    isActive: true,
     focusedMemberRouteKey: 'program_manager',
     coordinatorMemberRouteKey: 'program_manager',
     memberTree: [programManagerNode, teamNode],
@@ -319,7 +317,7 @@ describe('TeamStreamingService', () => {
 
   it('serializes focused member interrupt with route-key target and optional run guard', () => {
     const wsClient = {
-      state: 'disconnected',
+      state: 'connected',
       connect: vi.fn(),
       disconnect: vi.fn(),
       send: vi.fn(),
@@ -327,17 +325,20 @@ describe('TeamStreamingService', () => {
       off: vi.fn(),
     } as any;
 
+    const teamContext = withEventMonitorPresentationState(createTeamContextWithWorker());
     const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
-    service.interruptGeneration({
+    service.connect('team-1', teamContext);
+    expect(service.interruptGeneration('client_interrupt_2', {
       targetMemberRouteKey: 'code_reviewer',
       targetMemberRunId: 'team-1::code_reviewer',
-    });
+    })).toBe(true);
 
     expect(wsClient.send).toHaveBeenCalledTimes(1);
     const outbound = JSON.parse(wsClient.send.mock.calls[0][0]);
     expect(outbound).toEqual({
       type: 'INTERRUPT_GENERATION',
       payload: {
+        command_id: 'client_interrupt_2',
         target_member_route_key: 'code_reviewer',
         target_member_run_id: 'team-1::code_reviewer',
       },
@@ -404,14 +405,104 @@ describe('TeamStreamingService', () => {
     const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
 
     expect(() =>
-      service.interruptGeneration({
+      service.interruptGeneration('client_interrupt_empty', {
         targetMemberRouteKey: '   ',
       }),
     ).toThrow('target member route key is required');
     expect(wsClient.send).not.toHaveBeenCalled();
   });
 
-  it('marks team subscription state on connect and disconnect callbacks', () => {
+  it.each(['disconnected', 'connecting', 'reconnecting'])('rejects team interrupt while %s without sending', (state) => {
+    const wsClient = {
+      state, connect: vi.fn(), disconnect: vi.fn(), send: vi.fn(), on: vi.fn(), off: vi.fn(),
+    } as any;
+    const onFailure = vi.fn();
+    const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', {
+      wsClient,
+      onInterruptCommandTransportFailure: onFailure,
+    });
+    service.connect('team-1', withEventMonitorPresentationState(createTeamContextWithWorker()));
+
+    expect(service.interruptGeneration(`client_interrupt_${state}`, {
+      targetMemberRouteKey: 'worker',
+      targetMemberRunId: 'worker-run-1',
+    })).toBe(false);
+    expect(wsClient.send).not.toHaveBeenCalled();
+    expect(onFailure).toHaveBeenCalledWith(expect.objectContaining({
+      target: {
+        target_kind: 'team_member', team_run_id: 'team-1',
+        member_route_key: 'worker', member_run_id: 'worker-run-1',
+      },
+      reason: expect.objectContaining({ code: 'INTERRUPT_TRANSPORT_NOT_CONNECTED', connectionState: state }),
+    }));
+    expect((service as any).pendingInterruptCommands.size).toBe(0);
+  });
+
+  it('intercepts exact team interrupt acks before member projection and drains only pending commands', () => {
+    const callbacks = new Map<string, (payload?: any) => void>();
+    const wsClient = {
+      state: 'connected', connect: vi.fn(), disconnect: vi.fn(), send: vi.fn(), off: vi.fn(),
+      on: vi.fn((event: string, callback: (payload?: any) => void) => callbacks.set(event, callback)),
+    } as any;
+    const onResult = vi.fn();
+    const onFailure = vi.fn();
+    const teamContext = withEventMonitorPresentationState(createTeamContextWithWorker());
+    const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', {
+      wsClient, onInterruptCommandResult: onResult,
+      onInterruptCommandTransportFailure: onFailure,
+    });
+    service.connect('team-1', teamContext);
+    expect(service.interruptGeneration('client_interrupt_exact', {
+      targetMemberRouteKey: 'worker', targetMemberRunId: 'worker-run-1',
+    })).toBe(true);
+
+    const ack = {
+      type: 'AGENT_COMMAND_ACK',
+      payload: {
+        command_type: 'INTERRUPT_GENERATION', command_id: 'client_interrupt_exact', state: 'accepted',
+        target: {
+          target_kind: 'team_member', team_run_id: 'team-1',
+          member_route_key: 'worker', member_run_id: 'worker-run-1',
+        },
+      },
+    };
+    callbacks.get('onMessage')?.(JSON.stringify({
+      ...ack,
+      payload: { ...ack.payload, target: { ...ack.payload.target, member_run_id: 'wrong-run' } },
+    }));
+    expect(onResult).not.toHaveBeenCalled();
+    callbacks.get('onMessage')?.(JSON.stringify(ack));
+    expect(onResult).toHaveBeenCalledTimes(1);
+    callbacks.get('onDisconnect')?.('after ack');
+    expect(onFailure).not.toHaveBeenCalled();
+    expect(teamContext.isActive).toBe(true);
+  });
+
+  it('completes a team reentrant disconnect-plus-send-throw only once', () => {
+    const callbacks = new Map<string, (payload?: any) => void>();
+    const wsClient = {
+      state: 'connected', connect: vi.fn(), disconnect: vi.fn(), off: vi.fn(),
+      on: vi.fn((event: string, callback: (payload?: any) => void) => callbacks.set(event, callback)),
+      send: vi.fn(() => {
+        callbacks.get('onDisconnect')?.('socket closed');
+        throw new Error('team send failed');
+      }),
+    } as any;
+    const onFailure = vi.fn();
+    const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', {
+      wsClient, onInterruptCommandTransportFailure: onFailure,
+    });
+    service.connect('team-1', withEventMonitorPresentationState(createTeamContextWithWorker()));
+
+    expect(service.interruptGeneration('client_interrupt_throw', {
+      targetMemberRouteKey: 'worker', targetMemberRunId: 'worker-run-1',
+    })).toBe(false);
+    callbacks.get('onDisconnect')?.('again');
+    expect(onFailure).toHaveBeenCalledTimes(1);
+    expect((service as any).pendingInterruptCommands.size).toBe(0);
+  });
+
+  it('keeps subscription transport state separate from backend-owned team lifecycle', () => {
     const callbacks = new Map<string, (payload?: any) => void>();
     const wsClient = {
       state: 'disconnected',
@@ -426,7 +517,9 @@ describe('TeamStreamingService', () => {
 
     const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
     const teamContext = {
+      teamRunId: 'team-1',
       isSubscribed: false,
+      isActive: false,
       focusedMemberRouteKey: 'worker-a',
       leafAgentContextsByRouteKey: new Map<string, any>([
         [
@@ -442,27 +535,51 @@ describe('TeamStreamingService', () => {
     service.connect('team-1', withEventMonitorPresentationState(teamContext));
     callbacks.get('onConnect')?.();
     expect(teamContext.isSubscribed).toBe(true);
+    expect(teamContext.isActive).toBe(false);
+
+    callbacks.get('onMessage')?.(JSON.stringify({
+      type: 'TEAM_RUN_LIFECYCLE',
+      payload: { team_run_id: 'team-1', is_active: true },
+    }));
+    expect(teamContext.isActive).toBe(true);
 
     callbacks.get('onDisconnect')?.('closed');
     expect(teamContext.isSubscribed).toBe(false);
+    expect(teamContext.isActive).toBe(true);
   });
 
-  it('flushes interleaved member content before a semantic event with per-context receipt recency', () => {
-    vi.useFakeTimers();
+  it('projects each server-shaped team content message immediately', () => {
     const { callbacks, service } = createWsHarness();
     const teamContext = withEventMonitorPresentationState(createTeamContextWithWorker());
     const coordinator = teamContext.leafAgentContextsByRouteKey.get('coordinator');
     const worker = teamContext.leafAgentContextsByRouteKey.get('worker');
     service.connect('team-1', teamContext);
     const onMessage = callbacks.get('onMessage')!;
-    const sendContent = (route: string, runId: string, delta: string, receivedAt: string) => {
+    const sendCompanionContent = (
+      route: string,
+      runId: string,
+      delta: string,
+      receivedAt: string,
+      segmentType = 'text',
+    ) => {
       vi.setSystemTime(new Date(receivedAt));
+      onMessage(JSON.stringify({
+        type: 'AGENT_STATUS',
+        payload: {
+          status: 'running',
+          agent_id: runId,
+          member_route_key: route,
+          member_path: [route],
+          source_route_key: route,
+          source_path: [route],
+        },
+      }));
       onMessage(JSON.stringify({
         type: 'SEGMENT_CONTENT',
         payload: {
-          id: `segment-${route}`,
+          id: `segment-${route}-${segmentType}`,
           turn_id: 'turn-1',
-          segment_type: 'text',
+          segment_type: segmentType,
           delta,
           agent_id: runId,
           member_route_key: route,
@@ -473,40 +590,35 @@ describe('TeamStreamingService', () => {
       }));
     };
 
-    sendContent('worker', 'worker-run-1', 'A1', '2026-08-01T10:00:00.001Z');
-    sendContent('coordinator', 'coordinator-run-1', 'B', '2026-08-01T10:00:00.002Z');
-    sendContent('worker', 'worker-run-1', 'A2', '2026-08-01T10:00:00.003Z');
-    expect(worker.conversation.messages).toEqual([]);
-    expect(coordinator.conversation.messages).toEqual([]);
-
-    onMessage(JSON.stringify({
-      type: 'AGENT_STATUS',
-      payload: {
-        status: 'running',
-        can_interrupt: true,
-        agent_id: 'worker-run-1',
-        member_route_key: 'worker',
-        member_path: ['worker'],
-        source_route_key: 'worker',
-        source_path: ['worker'],
-      },
-    }));
+    sendCompanionContent('worker', 'worker-run-1', 'A1', '2026-08-01T10:00:00.001Z');
+    sendCompanionContent('coordinator', 'coordinator-run-1', 'B', '2026-08-01T10:00:00.002Z');
+    sendCompanionContent('worker', 'worker-run-1', 'A2', '2026-08-01T10:00:00.003Z');
+    expect(worker.conversation.messages[0].segments[0].content).toBe('A1A2');
+    expect(coordinator.conversation.messages[0].segments[0].content).toBe('B');
+    expect(worker.state.currentStatus).toBe(AgentStatus.Running);
+    expect(coordinator.state.currentStatus).toBe(AgentStatus.Running);
 
     expect(worker.conversation.messages[0].segments[0].content).toBe('A1A2');
     expect(coordinator.conversation.messages[0].segments[0].content).toBe('B');
     expect(worker.conversation.updatedAt).toBe('2026-08-01T10:00:00.003Z');
     expect(coordinator.conversation.updatedAt).toBe('2026-08-01T10:00:00.002Z');
-    expect(worker.state.eventMonitorPresentationRevision).toBe(1);
+    expect(worker.state.eventMonitorPresentationRevision).toBe(2);
     expect(coordinator.state.eventMonitorPresentationRevision).toBe(1);
 
-    sendContent('worker', 'worker-run-1', 'C1', '2026-08-01T10:00:00.004Z');
+    sendCompanionContent('worker', 'worker-run-1', 'C1', '2026-08-01T10:00:00.104Z');
+    sendCompanionContent(
+      'worker',
+      'worker-run-1',
+      'C2',
+      '2026-08-01T10:00:00.105Z',
+      'reasoning',
+    );
+    expect(worker.conversation.messages[0].segments).toHaveLength(2);
+
     onMessage(JSON.stringify({
-      type: 'SEGMENT_CONTENT',
+      type: 'TURN_COMPLETED',
       payload: {
-        id: 'segment-worker-2',
         turn_id: 'turn-1',
-        segment_type: 'reasoning',
-        delta: 'C2',
         agent_id: 'worker-run-1',
         member_route_key: 'worker',
         member_path: ['worker'],
@@ -514,7 +626,17 @@ describe('TeamStreamingService', () => {
         source_path: ['worker'],
       },
     }));
-    expect(worker.conversation.messages[0].segments).toHaveLength(1);
+    onMessage(JSON.stringify({
+      type: 'AGENT_STATUS',
+      payload: {
+        status: 'idle',
+        agent_id: 'worker-run-1',
+        member_route_key: 'worker',
+        member_path: ['worker'],
+        source_route_key: 'worker',
+        source_path: ['worker'],
+      },
+    }));
 
     teamContext.isSubscribed = true;
     callbacks.get('onDisconnect')?.('remote closed');
@@ -522,9 +644,9 @@ describe('TeamStreamingService', () => {
     expect(worker.conversation.messages[0].segments).toHaveLength(2);
     expect(worker.conversation.messages[0].segments[0].content).toBe('A1A2C1');
     expect(worker.conversation.messages[0].segments[1].content).toBe('C2');
-    expect(worker.state.eventMonitorPresentationRevision).toBe(2);
+    expect(worker.state.eventMonitorPresentationRevision).toBe(4);
+    expect(worker.state.currentStatus).toBe(AgentStatus.Idle);
     expect(teamContext.isSubscribed).toBe(false);
-    vi.useRealTimers();
   });
 
   it('reattaches lifecycle callbacks to the latest team context', () => {
@@ -603,7 +725,7 @@ describe('TeamStreamingService', () => {
           {
             state: { runId: 'prof-run-1', compactionStatus: null },
             conversation: professorConversation,
-            isSending: false,
+            submissionPending: false,
           },
         ],
         [
@@ -611,7 +733,7 @@ describe('TeamStreamingService', () => {
           {
             state: { runId: 'student-run-1', compactionStatus: null },
             conversation: studentConversation,
-            isSending: false,
+            submissionPending: false,
           },
         ],
       ]),
@@ -641,7 +763,7 @@ describe('TeamStreamingService', () => {
     });
     expect(professorConversation.messages[0].timestamp.toISOString()).toBe('2026-03-10T20:15:00.000Z');
     expect((teamContext.leafAgentContextsByRouteKey.get('Professor') as any).state.runId).toBe('prof-run-1');
-    expect((teamContext.leafAgentContextsByRouteKey.get('Professor') as any).isSending).toBe(true);
+    expect((teamContext.leafAgentContextsByRouteKey.get('Professor') as any).submissionPending).toBe(false);
     expect(studentConversation.messages).toHaveLength(0);
   });
 
@@ -784,24 +906,22 @@ describe('TeamStreamingService', () => {
       state: {
         runId: 'prof-run-1',
         currentStatus: AgentStatus.Error,
-        canInterrupt: true,
         compactionStatus: null,
       },
       conversation: { messages: [], updatedAt: '' },
-      isSending: false,
+      submissionPending: false,
     };
     const studentContext = {
       state: {
         runId: 'student-run-1',
         currentStatus: AgentStatus.Error,
-        canInterrupt: true,
         compactionStatus: null,
       },
       conversation: { messages: [], updatedAt: '' },
-      isSending: false,
+      submissionPending: false,
     };
     const teamContext = {
-      currentStatus: AgentTeamStatus.Error,
+      isActive: true,
       focusedMemberRouteKey: 'Student',
       leafAgentContextsByRouteKey: new Map<string, any>([
         ['Professor', professorContext],
@@ -827,12 +947,10 @@ describe('TeamStreamingService', () => {
       }),
     );
 
-    expect(teamContext.currentStatus).toBe(AgentTeamStatus.Error);
+    expect(teamContext.isActive).toBe(true);
     expect(professorContext.state.currentStatus).toBe(AgentStatus.Error);
-    expect(professorContext.state.canInterrupt).toBe(true);
-    expect(professorContext.isSending).toBe(false);
+    expect(professorContext.submissionPending).toBe(false);
     expect(studentContext.state.currentStatus).toBe(AgentStatus.Error);
-    expect(studentContext.state.canInterrupt).toBe(true);
   });
 
   it('does not repair stale member error from focused-member fallback without explicit identity', () => {
@@ -853,14 +971,13 @@ describe('TeamStreamingService', () => {
       state: {
         runId: 'focused-run-1',
         currentStatus: AgentStatus.Error,
-        canInterrupt: true,
         compactionStatus: null,
       },
       conversation: { messages: [], updatedAt: '' },
-      isSending: false,
+      submissionPending: false,
     };
     const teamContext = {
-      currentStatus: AgentTeamStatus.Error,
+      isActive: true,
       focusedMemberRouteKey: 'Focused',
       leafAgentContextsByRouteKey: new Map<string, any>([
         ['Focused', focusedContext],
@@ -880,9 +997,8 @@ describe('TeamStreamingService', () => {
     );
 
     expect(focusedContext.state.currentStatus).toBe(AgentStatus.Error);
-    expect(focusedContext.state.canInterrupt).toBe(true);
-    expect(focusedContext.isSending).toBe(false);
-    expect(teamContext.currentStatus).toBe(AgentTeamStatus.Error);
+    expect(focusedContext.submissionPending).toBe(false);
+    expect(teamContext.isActive).toBe(true);
     expect(focusedContext.conversation.messages).toHaveLength(0);
   });
 
@@ -904,14 +1020,13 @@ describe('TeamStreamingService', () => {
       state: {
         runId: 'member-run-1',
         currentStatus: AgentStatus.Idle,
-        canInterrupt: false,
         compactionStatus: null,
       },
       conversation: { messages: [], updatedAt: '' },
-      isSending: false,
+      submissionPending: false,
     };
     const teamContext = {
-      currentStatus: AgentTeamStatus.Idle,
+      isActive: true,
       focusedMemberRouteKey: 'worker-a',
       leafAgentContextsByRouteKey: new Map<string, any>([
         ['worker-a', memberContext],
@@ -936,107 +1051,9 @@ describe('TeamStreamingService', () => {
       }),
     );
 
-    expect(teamContext.currentStatus).toBe(AgentTeamStatus.Idle);
+    expect(teamContext.isActive).toBe(true);
     expect(memberContext.state.currentStatus).toBe(AgentStatus.Idle);
-    expect(memberContext.isSending).toBe(false);
-  });
-
-  it('applies backend-owned agent status to a structural subteam node by route key', () => {
-    const callbacks = new Map<string, (payload?: any) => void>();
-    const wsClient = {
-      state: 'disconnected',
-      connect: vi.fn(),
-      disconnect: vi.fn(),
-      send: vi.fn(),
-      on: vi.fn((event: string, cb: (payload?: any) => void) => {
-        callbacks.set(event, cb);
-      }),
-      off: vi.fn(),
-    } as any;
-
-    const buildSquadNode = {
-      memberKind: 'agent_team',
-      memberName: 'BuildSquad',
-      displayName: 'BuildSquad',
-      memberRouteKey: 'BuildSquad',
-      memberPath: ['BuildSquad'],
-      children: [],
-      currentStatus: AgentStatus.Offline,
-    };
-    const teamContext = {
-      currentStatus: AgentTeamStatus.Idle,
-      focusedMemberRouteKey: 'program_manager',
-      leafAgentContextsByRouteKey: new Map(),
-      memberNodesByRouteKey: new Map<string, any>([
-        ['BuildSquad', buildSquadNode],
-      ]),
-    } as any;
-
-    const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
-    service.connect('team-1', withEventMonitorPresentationState(teamContext));
-    callbacks.get('onMessage')?.(
-      JSON.stringify({
-        type: 'AGENT_STATUS',
-        payload: {
-          status: 'initializing',
-          can_interrupt: false,
-          member_route_key: 'BuildSquad',
-          member_path: ['BuildSquad'],
-          source_route_key: 'BuildSquad',
-          source_path: ['BuildSquad'],
-        },
-      }),
-    );
-
-    expect(buildSquadNode.currentStatus).toBe(AgentStatus.Initializing);
-    expect(teamContext.currentStatus).toBe(AgentTeamStatus.Idle);
-  });
-
-  it('applies backend-owned team status to a structural subteam node by source path', () => {
-    const callbacks = new Map<string, (payload?: any) => void>();
-    const wsClient = {
-      state: 'disconnected',
-      connect: vi.fn(),
-      disconnect: vi.fn(),
-      send: vi.fn(),
-      on: vi.fn((event: string, cb: (payload?: any) => void) => {
-        callbacks.set(event, cb);
-      }),
-      off: vi.fn(),
-    } as any;
-
-    const buildSquadNode = {
-      memberKind: 'agent_team',
-      memberName: 'BuildSquad',
-      displayName: 'BuildSquad',
-      memberRouteKey: 'BuildSquad',
-      memberPath: ['BuildSquad'],
-      children: [],
-      currentStatus: AgentStatus.Offline,
-    };
-    const teamContext = {
-      currentStatus: AgentTeamStatus.Idle,
-      focusedMemberRouteKey: 'program_manager',
-      leafAgentContextsByRouteKey: new Map(),
-      memberNodesByRouteKey: new Map<string, any>([
-        ['BuildSquad', buildSquadNode],
-      ]),
-    } as any;
-
-    const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
-    service.connect('team-1', withEventMonitorPresentationState(teamContext));
-    callbacks.get('onMessage')?.(
-      JSON.stringify({
-        type: 'TEAM_STATUS',
-        payload: {
-          status: 'initializing',
-          source_path: ['BuildSquad'],
-        },
-      }),
-    );
-
-    expect(buildSquadNode.currentStatus).toBe(AgentStatus.Initializing);
-    expect(teamContext.currentStatus).toBe(AgentTeamStatus.Idle);
+    expect(memberContext.submissionPending).toBe(false);
   });
 
   it('does not convert team transport errors into lifecycle errors', () => {
@@ -1055,7 +1072,7 @@ describe('TeamStreamingService', () => {
     const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
     const teamContext = {
       isSubscribed: false,
-      currentStatus: AgentTeamStatus.Running,
+      isActive: true,
       focusedMemberRouteKey: 'worker-a',
       leafAgentContextsByRouteKey: new Map<string, any>([
         [
@@ -1064,7 +1081,6 @@ describe('TeamStreamingService', () => {
             state: {
               runId: 'member-run-1',
               currentStatus: AgentStatus.Running,
-              canInterrupt: true,
               compactionStatus: null,
             },
             conversation: { messages: [], updatedAt: '' },
@@ -1078,7 +1094,7 @@ describe('TeamStreamingService', () => {
     callbacks.get('onError')?.(new Error('socket failed'));
     callbacks.get('onDisconnect')?.('network reset');
 
-    expect(teamContext.currentStatus).toBe(AgentTeamStatus.Running);
+    expect(teamContext.isActive).toBe(true);
     expect(teamContext.leafAgentContextsByRouteKey.get('worker-a')?.state.currentStatus).toBe(AgentStatus.Running);
     expect(teamContext.isSubscribed).toBe(false);
   });
@@ -1349,7 +1365,7 @@ describe('TeamStreamingService', () => {
           {
             state: { runId: 'program-manager-run', compactionStatus: null },
             conversation: programManagerConversation,
-            isSending: false,
+            submissionPending: false,
           },
         ],
         [
@@ -1357,7 +1373,7 @@ describe('TeamStreamingService', () => {
           {
             state: { runId: 'review-lead-run', compactionStatus: null },
             conversation: reviewLeadConversation,
-            isSending: false,
+            submissionPending: false,
           },
         ],
       ]),
@@ -1406,7 +1422,6 @@ describe('TeamStreamingService', () => {
         type: 'AGENT_STATUS',
         payload: {
           status: 'running',
-          can_interrupt: true,
           agent_id: 'task-agent-run-1',
           agent_name: 'worker',
           member_route_key: 'worker',
@@ -1455,7 +1470,8 @@ describe('TeamStreamingService', () => {
         },
       }),
     );
-    expect(taskContext.conversation.messages).toHaveLength(0);
+    expect(taskContext.conversation.messages).toHaveLength(1);
+    expect(taskContext.conversation.messages[0].segments[0].content).toBe('Nested task-agent output');
 
     callbacks.get('onMessage')?.(
       JSON.stringify({
@@ -1489,7 +1505,6 @@ describe('TeamStreamingService', () => {
         type: 'AGENT_STATUS',
         payload: {
           status: 'offline',
-          can_interrupt: false,
           agent_id: 'task-agent-run-1',
           agent_name: 'worker',
           member_route_key: 'worker',
@@ -1522,7 +1537,6 @@ describe('TeamStreamingService', () => {
           type: 'AGENT_STATUS',
           payload: {
             status: 'initializing',
-            can_interrupt: false,
             agent_id: 'opaque-mismatched-run',
             agent_name: 'worker',
             member_route_key: 'worker',
@@ -1544,7 +1558,6 @@ describe('TeamStreamingService', () => {
           type: 'AGENT_STATUS',
           payload: {
             status: 'running',
-            can_interrupt: true,
             agent_id: 'opaque-mismatched-run',
             agent_name: 'worker',
             member_route_key: 'worker',
@@ -1789,7 +1802,6 @@ describe('TeamStreamingService', () => {
       type: 'AGENT_STATUS',
       payload: {
         status: 'running',
-        can_interrupt: true,
         agent_id: 'scoped-solution-run',
         agent_name: 'solution_designer',
         member_route_key: 'SoftwareEngineeringTeam/solution_designer',
@@ -1826,7 +1838,6 @@ describe('TeamStreamingService', () => {
         type: 'AGENT_STATUS',
         payload: {
           status: 'running',
-          can_interrupt: true,
           agent_id: 'bad-scoped-run',
           member_route_key: 'SoftwareEngineeringTeam/solution_designer',
           member_path: ['SoftwareEngineeringTeam', 'solution_designer'],
@@ -1872,7 +1883,6 @@ describe('TeamStreamingService', () => {
         type: 'AGENT_STATUS',
         payload: {
           status: 'running',
-          can_interrupt: true,
           agent_id: 'scoped-solution-run-2',
           agent_name: 'solution_designer',
           member_route_key: 'SoftwareEngineeringTeam/solution_designer',
@@ -1904,7 +1914,6 @@ describe('TeamStreamingService', () => {
         type: 'AGENT_STATUS',
         payload: {
           status: 'running',
-          can_interrupt: true,
           agent_id: 'unstamped-scoped-solution-run',
           agent_name: 'solution_designer',
           member_route_key: 'SoftwareEngineeringTeam/solution_designer',
@@ -1929,7 +1938,7 @@ describe('TeamStreamingService', () => {
     }
   });
 
-  it('settles and removes a task-team projection on root offline status without regressing accepted lifecycle on idle', async () => {
+  it('settles and removes a task-team projection from its terminal task event', async () => {
     const { callbacks, service } = createWsHarness();
     const teamContext = createTeamContextWithSoftwareTeam();
     const structuralTeam = teamContext.memberNodesByRouteKey.get('SoftwareEngineeringTeam');
@@ -1962,27 +1971,16 @@ describe('TeamStreamingService', () => {
       },
     }));
 
-    callbacks.get('onMessage')?.(JSON.stringify({
-      type: 'TEAM_STATUS',
-      payload: {
-        status: 'idle',
-        task_team_run_id: 'task-team-run-1',
-        task_team_instance_id: 'task-team-instance-1',
-        task_id: 'task_0001',
-        team_route_key: 'SoftwareEngineeringTeam',
-        team_path: ['SoftwareEngineeringTeam'],
-      },
-    }));
-
     expect(teamContext.memberNodesByRouteKey.get('task-team-run-1')).toMatchObject({
       taskExecutionStatus: 'accepted',
-      currentStatus: AgentStatus.Idle,
     });
 
     callbacks.get('onMessage')?.(JSON.stringify({
-      type: 'TEAM_STATUS',
+      type: 'TASK_DELEGATION_EVENT',
       payload: {
-        status: 'offline',
+        event_type: 'TASK_DELEGATION_TERMINAL_STATUS',
+        execution_kind: 'task_team',
+        status: 'settled',
         task_team_run_id: 'task-team-run-1',
         task_team_instance_id: 'task-team-instance-1',
         task_id: 'task_0001',
@@ -1993,7 +1991,6 @@ describe('TeamStreamingService', () => {
 
     expect(teamContext.memberNodesByRouteKey.get('task-team-run-1')).toMatchObject({
       taskExecutionStatus: 'settled',
-      currentStatus: AgentStatus.Offline,
     });
     await flushTaskTeamCleanup();
 
@@ -2040,7 +2037,6 @@ describe('TeamStreamingService', () => {
       type: 'AGENT_STATUS',
       payload: {
         status: 'running',
-        can_interrupt: true,
         agent_id: 'scoped-solution-run',
         agent_name: 'solution_designer',
         member_route_key: 'SoftwareEngineeringTeam/solution_designer',
@@ -2202,7 +2198,6 @@ describe('TeamStreamingService', () => {
         type: 'AGENT_STATUS',
         payload: {
           status: 'running',
-          can_interrupt: true,
           agent_id: 'task-agent-run-repair',
           agent_name: 'worker',
           member_route_key: 'worker',
@@ -2419,7 +2414,6 @@ describe('TeamStreamingService', () => {
           type: 'AGENT_STATUS',
           payload: {
             status: 'running',
-            can_interrupt: true,
             agent_id: `task-agent-run-${taskNumber}`,
             agent_name: 'worker',
             member_route_key: 'worker',
@@ -2469,7 +2463,6 @@ describe('TeamStreamingService', () => {
         type: 'AGENT_STATUS',
         payload: {
           status: 'offline',
-          can_interrupt: false,
           agent_id: 'task-agent-run-1',
           agent_name: 'worker',
           member_route_key: 'worker',
@@ -2506,12 +2499,12 @@ describe('TeamStreamingService', () => {
     const professorContext = {
       state: { runId: 'prof-run-1', compactionStatus: null },
       conversation: { messages: [], updatedAt: '' },
-      isSending: false,
+      submissionPending: false,
     };
     const studentContext = {
       state: { runId: 'student-run-1', compactionStatus: null },
       conversation: { messages: [], updatedAt: '' },
-      isSending: false,
+      submissionPending: false,
     };
     const teamContext = {
       focusedMemberRouteKey: 'Student',

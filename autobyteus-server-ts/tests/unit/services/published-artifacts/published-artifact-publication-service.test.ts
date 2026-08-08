@@ -35,7 +35,7 @@ describe("PublishedArtifactPublicationService", () => {
         memoryDir,
         ...(workspaceId ? { workspaceId } : {}),
       },
-      emitLocalEvent(event: AgentRunEvent) {
+      async publishEvent(event: AgentRunEvent) {
         localEvents.push(event);
       },
     } as any;

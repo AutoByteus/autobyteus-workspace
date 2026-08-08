@@ -1,4 +1,4 @@
-import { Arg, Field, Mutation, ObjectType, Query, Resolver } from "type-graphql";
+import { Arg, Field, Int, Mutation, ObjectType, Query, Resolver } from "type-graphql";
 import { getServerSettingsService } from "../../../services/server-settings-service.js";
 import { getSearchProvisioningService } from "../../../agent-tools/search/search-provisioning-service.js";
 
@@ -64,6 +64,11 @@ export class ServerSettingsResolver {
       isEditable: setting.isEditable,
       isDeletable: setting.isDeletable,
     }));
+  }
+
+  @Query(() => Int)
+  getEffectiveStreamingContentFlushIntervalMs(): number {
+    return this.serverSettingsService.getEffectiveStreamingContentFlushIntervalMs();
   }
 
   @Query(() => SearchConfig)

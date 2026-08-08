@@ -4,12 +4,16 @@ import WebSocket from "ws";
 import { describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
-import type { AgentRunBackend, AgentRunEventListener } from "../../../src/agent-execution/backends/agent-run-backend.js";
+import type {
+  AgentRunBackend,
+  AgentRunSourceEventBatchListener,
+} from "../../../src/agent-execution/backends/agent-run-backend.js";
 import { AgentRun } from "../../../src/agent-execution/domain/agent-run.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
 import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
-import { buildAgentStatusPayload, type AgentApiStatus } from "../../../src/agent-execution/domain/agent-status-payload.js";
+import type { AgentRuntimeLifecycleSnapshot } from "../../../src/agent-execution/domain/agent-runtime-lifecycle-snapshot.js";
+import type { AgentApiStatus } from "../../../src/agent-execution/domain/agent-status-payload.js";
 import { AgentRunCommandCoordinator } from "../../../src/agent-execution/services/agent-run-command-coordinator.js";
 import { AgentRunCommandRegistry } from "../../../src/agent-execution/services/agent-run-command-registry.js";
 import { AgentRunCommandStatusOverlayStore } from "../../../src/agent-execution/services/agent-run-command-status-overlay-store.js";
@@ -47,23 +51,28 @@ class ScriptedAgentRunBackend implements AgentRunBackend {
   readonly messages: AgentInputUserMessage[] = [];
   active = true;
 
-  private readonly listeners = new Set<AgentRunEventListener>();
+  private readonly listeners = new Set<AgentRunSourceEventBatchListener>();
   private readonly context: AgentRunContext<{ threadId: string; activeTurnId: string | null }>;
-  private statusPayload;
+  private lifecycleSnapshot: AgentRuntimeLifecycleSnapshot;
 
   constructor(
     readonly runId: string,
     options: {
       initialStatus: AgentApiStatus;
-      canInterrupt?: boolean;
+      initialTurnId?: string | null;
       postUserMessage: (message: AgentInputUserMessage) => Promise<{ accepted: boolean; turnId?: string | null; message?: string | null }>;
     },
   ) {
-    this.statusPayload = buildAgentStatusPayload({
-      status: options.initialStatus,
-      canInterrupt: options.canInterrupt === true,
-      agentId: runId,
-    });
+    const initialTurnId = options.initialTurnId ?? null;
+    this.lifecycleSnapshot = options.initialStatus === "offline"
+      ? { availability: "offline", phase: "idle", currentTurn: { kind: "NONE" } }
+      : {
+          availability: "active",
+          phase: options.initialStatus,
+          currentTurn: initialTurnId
+            ? { kind: "IDENTIFIED", turnId: initialTurnId }
+            : { kind: "NONE" },
+        };
     this.context = new AgentRunContext({
       runId,
       config: new AgentRunConfig({
@@ -96,11 +105,11 @@ class ScriptedAgentRunBackend implements AgentRunBackend {
     return `platform-${this.runId}`;
   }
 
-  getStatusSnapshot() {
-    return this.statusPayload;
+  getLifecycleSnapshot(): AgentRuntimeLifecycleSnapshot {
+    return this.lifecycleSnapshot;
   }
 
-  subscribeToEvents(listener: AgentRunEventListener): () => void {
+  subscribeToSourceEventBatches(listener: AgentRunSourceEventBatchListener): () => void {
     this.listeners.add(listener);
     return () => {
       this.listeners.delete(listener);
@@ -115,55 +124,45 @@ class ScriptedAgentRunBackend implements AgentRunBackend {
 
   terminate = vi.fn(async () => {
     this.active = false;
-    this.emitStatus("offline", false);
+    this.lifecycleSnapshot = {
+      availability: "offline",
+      phase: "idle",
+      currentTurn: { kind: "NONE" },
+    };
     return { accepted: true };
   });
 
-  emitStatus(status: AgentApiStatus, canInterrupt = false): void {
-    this.statusPayload = buildAgentStatusPayload({
-      status,
-      canInterrupt,
-      agentId: this.runId,
-    });
-    this.emit({
-      runId: this.runId,
-      eventType: AgentRunEventType.AGENT_STATUS,
-      payload: this.statusPayload,
-      statusHint: status === "running" ? "ACTIVE" : status === "error" ? "ERROR" : "IDLE",
-    });
-  }
-
-  emitTurnStarted(turnId: string): void {
-    this.statusPayload = buildAgentStatusPayload({
-      status: "running",
-      canInterrupt: true,
-      agentId: this.runId,
-    });
-    this.emit({
+  async emitTurnStarted(turnId: string): Promise<void> {
+    this.lifecycleSnapshot = {
+      availability: "active",
+      phase: "running",
+      currentTurn: { kind: "IDENTIFIED", turnId },
+    };
+    await this.emit([{
       runId: this.runId,
       eventType: AgentRunEventType.TURN_STARTED,
       payload: { turn_id: turnId, turnId },
       statusHint: "ACTIVE",
-    });
+    }]);
   }
 
-  emitTurnCompleted(turnId: string): void {
-    this.statusPayload = buildAgentStatusPayload({
-      status: "idle",
-      canInterrupt: false,
-      agentId: this.runId,
-    });
-    this.emit({
+  async emitTurnCompleted(turnId: string): Promise<void> {
+    this.lifecycleSnapshot = {
+      availability: "active",
+      phase: "idle",
+      currentTurn: { kind: "NONE" },
+    };
+    await this.emit([{
       runId: this.runId,
       eventType: AgentRunEventType.TURN_COMPLETED,
       payload: { turn_id: turnId, turnId },
       statusHint: "IDLE",
-    });
+    }]);
   }
 
-  private emit(event: AgentRunEvent): void {
+  private async emit(events: readonly AgentRunEvent[]): Promise<void> {
     for (const listener of this.listeners) {
-      listener(event);
+      await listener(events);
     }
   }
 }
@@ -386,7 +385,7 @@ describe("Agent command-correlated status overlay e2e", () => {
     });
     const restoredBackend = new ScriptedAgentRunBackend(runId, {
       initialStatus: "running",
-      canInterrupt: true,
+      initialTurnId: "turn-restored",
       postUserMessage: async () => restoredPost.promise,
     });
 
@@ -408,7 +407,7 @@ describe("Agent command-correlated status overlay e2e", () => {
       });
       expect(await waitForBufferedMessage(firstMessages, 1)).toEqual({
         type: "AGENT_STATUS",
-        payload: { status: "idle", can_interrupt: false, agent_id: runId },
+        payload: { status: "idle", agent_id: runId },
       });
 
       const firstSendStart = firstMessages.length;
@@ -422,9 +421,9 @@ describe("Agent command-correlated status overlay e2e", () => {
         ),
       ).toEqual({
         type: "AGENT_STATUS",
-        payload: { status: "initializing", can_interrupt: false, agent_id: runId },
+        payload: { status: "initializing", agent_id: runId },
       });
-      firstBackend.emitStatus("running", true);
+      await firstBackend.emitTurnStarted("turn-first");
       await waitForMessageAfter(
         firstMessages,
         firstSendStart,
@@ -438,8 +437,7 @@ describe("Agent command-correlated status overlay e2e", () => {
         (message) => message.type === "AGENT_COMMAND_ACK" && message.payload.message_id === "msg-first",
         "first command ACK",
       );
-      firstBackend.emitTurnCompleted("turn-first");
-      firstBackend.emitStatus("idle", false);
+      await firstBackend.emitTurnCompleted("turn-first");
       await waitForMessageAfter(
         firstMessages,
         firstSendStart,
@@ -461,7 +459,7 @@ describe("Agent command-correlated status overlay e2e", () => {
       });
       expect(await waitForBufferedMessage(secondMessages, 1)).toEqual({
         type: "AGENT_STATUS",
-        payload: { status: "offline", can_interrupt: false, agent_id: runId },
+        payload: { status: "offline", agent_id: runId },
       });
       expect(harness.agentRunService.restoreAgentRun).not.toHaveBeenCalled();
 
@@ -476,7 +474,7 @@ describe("Agent command-correlated status overlay e2e", () => {
         ),
       ).toEqual({
         type: "AGENT_STATUS",
-        payload: { status: "initializing", can_interrupt: false, agent_id: runId },
+        payload: { status: "initializing", agent_id: runId },
       });
       expect(harness.agentRunService.restoreAgentRun).toHaveBeenCalledWith(runId);
 
@@ -488,10 +486,9 @@ describe("Agent command-correlated status overlay e2e", () => {
       await wait(30);
 
       expect(statusValuesAfter(secondMessages, restoredSendStart)).toEqual(["initializing"]);
-      expect(harness.overlayStore.getOverlay(runId)?.status).toBe("initializing");
+      expect(harness.overlayStore.getOverlay(runId)).toBeNull();
 
-      restoredBackend.emitTurnStarted("turn-restored");
-      restoredBackend.emitStatus("running", true);
+      await restoredBackend.emitTurnStarted("turn-restored");
       expect(
         await waitForMessageAfter(
           secondMessages,

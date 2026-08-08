@@ -41,6 +41,10 @@ import {
   STREAM_PARSER_PROVIDER_NATIVE_VALUE,
   STREAM_PARSER_SETTING_VALUES,
 } from "../../../src/config/stream-parser-setting.js";
+import {
+  DEFAULT_STREAMING_CONTENT_FLUSH_INTERVAL_MS,
+  STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY,
+} from "../../../src/config/streaming-content-flush-interval-setting.js";
 import { WORKING_CONTEXT_COMPACTION_STRATEGY_SETTING_KEY } from "../../../src/config/working-context-compaction-strategy-setting.js";
 
 class RecordingPromptRenderer extends BasePromptRenderer {
@@ -58,6 +62,7 @@ describe("Server settings GraphQL e2e", () => {
   let originalCompactionStrategyEnv: string | undefined;
   let originalFeaturedCatalogItemsEnv: string | undefined;
   let originalStreamParserEnv: string | undefined;
+  let originalStreamingContentFlushIntervalEnv: string | undefined;
   let originalMediaModelEnv: Record<string, string | undefined>;
 
   beforeAll(async () => {
@@ -76,6 +81,8 @@ describe("Server settings GraphQL e2e", () => {
     originalCompactionStrategyEnv = process.env[AUTOBYTEUS_COMPACTION_STRATEGY];
     originalFeaturedCatalogItemsEnv = process.env[FEATURED_CATALOG_ITEMS_SETTING_KEY];
     originalStreamParserEnv = process.env[AUTOBYTEUS_STREAM_PARSER_SETTING_KEY];
+    originalStreamingContentFlushIntervalEnv =
+      process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY];
     originalMediaModelEnv = {
       [DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY]: process.env[DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY],
       [DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY]: process.env[DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY],
@@ -92,6 +99,7 @@ describe("Server settings GraphQL e2e", () => {
     delete process.env[AUTOBYTEUS_COMPACTION_STRATEGY];
     delete process.env[FEATURED_CATALOG_ITEMS_SETTING_KEY];
     delete process.env[AUTOBYTEUS_STREAM_PARSER_SETTING_KEY];
+    delete process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY];
     delete process.env[DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY];
     delete process.env[DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY];
     delete process.env[DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY];
@@ -124,6 +132,12 @@ describe("Server settings GraphQL e2e", () => {
       delete process.env[AUTOBYTEUS_STREAM_PARSER_SETTING_KEY];
     } else {
       process.env[AUTOBYTEUS_STREAM_PARSER_SETTING_KEY] = originalStreamParserEnv;
+    }
+    if (originalStreamingContentFlushIntervalEnv === undefined) {
+      delete process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY];
+    } else {
+      process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY] =
+        originalStreamingContentFlushIntervalEnv;
     }
     for (const [key, value] of Object.entries(originalMediaModelEnv)) {
       if (value === undefined) {
@@ -470,6 +484,99 @@ describe("Server settings GraphQL e2e", () => {
       `${AUTOBYTEUS_STREAM_PARSER_SETTING_KEY}=${STREAM_PARSER_PROVIDER_NATIVE_VALUE}`,
     );
     expect(envFileContents).not.toContain(`${AUTOBYTEUS_STREAM_PARSER_SETTING_KEY}=yaml`);
+  });
+
+  it("persists and reports the effective live response interval through GraphQL", async () => {
+    const query = `
+      query GetStreamingContentFlushInterval {
+        getEffectiveStreamingContentFlushIntervalMs
+        getServerSettings {
+          key
+          value
+          description
+          isEditable
+          isDeletable
+        }
+      }
+    `;
+    const updateMutation = `
+      mutation UpdateServerSetting($key: String!, $value: String!) {
+        updateServerSetting(key: $key, value: $value)
+      }
+    `;
+
+    const absent = await execGraphql<{
+      getEffectiveStreamingContentFlushIntervalMs: number;
+      getServerSettings: Array<{ key: string }>;
+    }>(query);
+    expect(absent.getEffectiveStreamingContentFlushIntervalMs).toBe(
+      DEFAULT_STREAMING_CONTENT_FLUSH_INTERVAL_MS,
+    );
+    expect(absent.getServerSettings.some(
+      (setting) => setting.key === STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY,
+    )).toBe(false);
+    expect(fs.readFileSync(path.join(tempDir, ".env"), "utf-8")).not.toContain(
+      STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY,
+    );
+
+    for (const interval of [100, 500, 1_000, 2_000]) {
+      const updated = await execGraphql<{ updateServerSetting: string }>(updateMutation, {
+        key: STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY,
+        value: interval === 500 ? " 0500 " : String(interval),
+      });
+      expect(updated.updateServerSetting).toContain("updated successfully");
+
+      const current = await execGraphql<{
+        getEffectiveStreamingContentFlushIntervalMs: number;
+        getServerSettings: Array<{
+          key: string;
+          value: string;
+          description: string;
+          isEditable: boolean;
+          isDeletable: boolean;
+        }>;
+      }>(query);
+      expect(current.getEffectiveStreamingContentFlushIntervalMs).toBe(interval);
+      expect(current.getServerSettings.find(
+        (setting) => setting.key === STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY,
+      )).toMatchObject({
+        value: String(interval),
+        description: expect.stringContaining("Recommended default: 500"),
+        isEditable: true,
+        isDeletable: false,
+      });
+      expect(process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY]).toBe(String(interval));
+      expect(fs.readFileSync(path.join(tempDir, ".env"), "utf-8")).toContain(
+        `${STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY}=${String(interval)}`,
+      );
+    }
+
+    for (const invalid of ["99", "2001", "500.5", "5e2"]) {
+      const rejected = await execGraphql<{ updateServerSetting: string }>(updateMutation, {
+        key: STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY,
+        value: invalid,
+      });
+      expect(rejected.updateServerSetting).toContain("whole number from 100 through 2000");
+      expect(process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY]).toBe("2000");
+    }
+
+    process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY] = "invalid-direct-input";
+    const invalidDirectInput = await execGraphql<{
+      getEffectiveStreamingContentFlushIntervalMs: number;
+    }>(query);
+    expect(invalidDirectInput.getEffectiveStreamingContentFlushIntervalMs).toBe(
+      DEFAULT_STREAMING_CONTENT_FLUSH_INTERVAL_MS,
+    );
+
+    const reset = await execGraphql<{ updateServerSetting: string }>(updateMutation, {
+      key: STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY,
+      value: String(DEFAULT_STREAMING_CONTENT_FLUSH_INTERVAL_MS),
+    });
+    expect(reset.updateServerSetting).toContain("updated successfully");
+    expect(process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY]).toBe("500");
+    expect(fs.readFileSync(path.join(tempDir, ".env"), "utf-8")).toContain(
+      `${STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY}=500`,
+    );
   });
 
   it("persists media default model identifiers as predefined GraphQL settings without catalog allow-list validation", async () => {

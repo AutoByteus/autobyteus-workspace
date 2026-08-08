@@ -6,7 +6,14 @@
  */
 
 import type { AgentCommandAckPayload } from './agentCommandTypes';
-export type { AgentCommandAckPayload } from './agentCommandTypes';
+export type {
+  AgentCommandAckPayload,
+  InterruptCommandTarget,
+  InterruptGenerationCommandAckPayload,
+  InterruptCommandTransportFailure,
+  PendingInterruptCommand,
+  SendMessageCommandAckPayload,
+} from './agentCommandTypes';
 import type { CompactionStatusPayload } from './compactionTypes';
 export type { CompactionStatusPayload } from './compactionTypes';
 import type { ExternalUserMessagePayload } from './externalUserMessageTypes';
@@ -37,7 +44,7 @@ export type ServerMessageType =
   | 'AGENT_COMMAND_ACK'
   | 'COMPACTION_STATUS'
   | 'TOKEN_USAGE_UPDATED'
-  | 'TEAM_STATUS'
+  | 'TEAM_RUN_LIFECYCLE'
   | 'TOOL_APPROVAL_REQUESTED'
   | 'TOOL_APPROVED'
   | 'TOOL_DENIED'
@@ -99,19 +106,15 @@ export interface SegmentEndPayload extends TeamStreamIdentityPayload {
 
 export interface AgentStatusPayload extends TeamStreamIdentityPayload {
   status: 'offline' | 'initializing' | 'idle' | 'running' | 'error';
-  can_interrupt: boolean;
   trigger?: string | null;
   tool_name?: string | null;
   error_message?: string | null;
   error_details?: string | null;
 }
 
-export interface TeamStatusPayload extends TeamStreamIdentityPayload {
-  status: 'offline' | 'initializing' | 'idle' | 'running' | 'error';
-  error_message?: string | null;
-  sub_team_node_name?: string | null;
-  source_route_key?: string;
-  source_path?: string[];
+export interface TeamRunLifecyclePayload {
+  team_run_id: string;
+  is_active: boolean;
 }
 
 export interface ToolApprovalRequestedPayload extends TeamStreamIdentityPayload {
@@ -346,7 +349,7 @@ export type ServerMessage =
   | { type: 'AGENT_COMMAND_ACK'; payload: AgentCommandAckPayload }
   | { type: 'COMPACTION_STATUS'; payload: CompactionStatusPayload }
   | { type: 'TOKEN_USAGE_UPDATED'; payload: TokenUsageUpdatedPayload }
-  | { type: 'TEAM_STATUS'; payload: TeamStatusPayload }
+  | { type: 'TEAM_RUN_LIFECYCLE'; payload: TeamRunLifecyclePayload }
   | { type: 'TOOL_APPROVAL_REQUESTED'; payload: ToolApprovalRequestedPayload }
   | { type: 'TOOL_APPROVED'; payload: ToolApprovedPayload }
   | { type: 'TOOL_DENIED'; payload: ToolDeniedPayload }
@@ -431,6 +434,7 @@ export interface ToolActionPayload {
 }
 
 export interface InterruptGenerationPayload {
+  command_id: string;
   target_member_route_key?: string;
   target_member_path?: string[];
   targetMemberRouteKey?: string;
@@ -446,6 +450,7 @@ export type SendMessageClientMessage = {
 
 export type AgentInterruptGenerationClientMessage = {
   type: 'INTERRUPT_GENERATION';
+  payload: InterruptGenerationPayload;
 };
 
 export type TeamInterruptGenerationClientMessage = {

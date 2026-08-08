@@ -13,5 +13,4 @@ export const handleExternalUserMessage = (
     context,
     userMessage: buildUserMessageFromProjectionPayload(payload),
   });
-  context.isSending = true;
 };

@@ -151,6 +151,7 @@ const workspaceStore = useWorkspaceStore();
 const selectionStore = useAgentSelectionStore();
 const agentRunStore = useAgentRunStore();
 const teamRunStore = useAgentTeamRunStore();
+const { stopPendingTeamIds } = storeToRefs(teamRunStore);
 const agentTeamContextsStore = useAgentTeamContextsStore();
 const agentDefinitionStore = useAgentDefinitionStore();
 const agentTeamDefinitionStore = useAgentTeamDefinitionStore();
@@ -207,7 +208,6 @@ const {
 
 const {
   terminatingRunIds,
-  terminatingTeamIds,
   deletingRunIds,
   deletingTeamIds,
   archivingRunIds,
@@ -235,6 +235,7 @@ const {
   archiveTeamRun: (teamRunId: string) => runHistoryStore.archiveTeamRun(teamRunId),
   addToast: addWorkspaceToast,
   canTerminateTeam: treeState.canTerminateTeam,
+  stopPendingTeamIds,
 });
 
 const {
@@ -311,7 +312,7 @@ const sectionState: WorkspaceHistorySectionState = {
     return treeState.selectedRunId.value;
   },
   isRunTerminating: (runId: string) => Boolean(terminatingRunIds.value[runId]),
-  isTeamTerminating: (teamRunId: string) => Boolean(terminatingTeamIds.value[teamRunId]),
+  isTeamTerminating: (teamRunId: string) => Boolean(stopPendingTeamIds.value[teamRunId]),
   isRunDeleting: (runId: string) => Boolean(deletingRunIds.value[runId]),
   isTeamDeleting: (teamRunId: string) => Boolean(deletingTeamIds.value[teamRunId]),
   isRunArchiving: (runId: string) => Boolean(archivingRunIds.value[runId]),

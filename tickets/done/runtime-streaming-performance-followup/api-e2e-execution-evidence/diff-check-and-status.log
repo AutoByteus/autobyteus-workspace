@@ -1,0 +1,21 @@
+COMMAND git diff --check
+RESULT PASS
+
+COMMAND git status --short
+ M autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/integration/agent/agent-status-websocket.integration.test.ts
+ M autobyteus-server-ts/tests/integration/agent/agent-team-websocket.integration.test.ts
+ M autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts
+ M test-support/live-e2e/live-e2e-harness.ts
+ M tickets/in-progress/runtime-streaming-performance-followup/code-review-report.md
+ M tickets/in-progress/runtime-streaming-performance-followup/code-review-revision-record.md
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-coverage-investigation.md
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-coverage-report.md
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/
+?? tickets/in-progress/runtime-streaming-performance-followup/api-e2e-revision-record.md
+
+OWNED PROCESS CHECK
+OWNED PROCESSES NONE
+
+TEMPORARY STATE CHECK
+TEMPORARY FIXTURE/IMPORTED VAULT/RUNTIME ABSENT

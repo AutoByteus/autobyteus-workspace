@@ -11,7 +11,6 @@ import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js"
 import {
   TeamRunEventSourceType,
   type TeamRunEvent,
-  type TeamRunStatusUpdateData,
 } from "../domain/team-run-event.js";
 import type { TaskAgentInstanceIdentity } from "../domain/task-agent-instance.js";
 
@@ -23,13 +22,6 @@ export type TeamMemberCommandStatusInput = {
   memberPath: string[];
   memberRouteKey: string;
   taskAgentInstance?: TaskAgentInstanceIdentity | null;
-  status: AgentApiStatus;
-  errorMessage?: string | null;
-};
-
-export type TeamCommandStatusInput = {
-  teamRunId: string;
-  sourcePath: string[];
   status: AgentApiStatus;
   errorMessage?: string | null;
 };
@@ -52,7 +44,6 @@ export const buildAgentMemberCommandStatusPayload = (
 ): AgentStatusPayload =>
   buildAgentStatusPayload({
     status: input.status,
-    canInterrupt: false,
     agentId: input.memberRunId,
     agentName: input.memberName,
     memberRouteKey: input.memberRouteKey,
@@ -91,15 +82,3 @@ export const buildAgentMemberCommandStartStatusEvent = (
     },
   };
 };
-
-export const buildTeamCommandStartStatusEvent = (
-  input: TeamCommandStatusInput,
-): TeamRunEvent => ({
-  eventSourceType: TeamRunEventSourceType.TEAM,
-  teamRunId: input.teamRunId,
-  sourcePath: [...input.sourcePath],
-  data: {
-    status: input.status,
-    ...(input.errorMessage ? { error_message: input.errorMessage } : {}),
-  } satisfies TeamRunStatusUpdateData,
-});

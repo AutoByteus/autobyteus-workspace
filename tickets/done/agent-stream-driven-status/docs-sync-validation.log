@@ -1,0 +1,172 @@
+Documentation sync validation
+Timestamp: 2026-08-02T10:41:01Z
+Integrated HEAD before delivery-owned edits: 8590a84869ba2d428b62d73374ceae0962cece9f
+Tracked base: cc11ca9b22880c06f689c14df7a68cc455d61158
+Ahead/behind (HEAD...origin/personal): 16	1
+
+Command: git diff --check
+Result: Pass (exit 0)
+
+Command: obsolete lifecycle documentation scan
+rg -n 'TEAM_STATUS|AgentTeamStatus|TeamRunStatusProjectionService|TeamCommandStatusOverlayStore|derived aggregate status|keep aggregate and member status|fan out aggregate team|canonical offline status fallback' docs autobyteus-server-ts/docs autobyteus-ts/docs autobyteus-web/docs
+Result: Pass (no matches)
+
+Updated docs:
+autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md
+autobyteus-server-ts/docs/modules/agent_streaming.md
+autobyteus-server-ts/docs/modules/agent_team_execution.md
+autobyteus-server-ts/docs/modules/run_history.md
+autobyteus-ts/docs/agent_team_runtime_and_task_coordination.md
+autobyteus-ts/docs/agent_team_streaming_protocol.md
+autobyteus-web/docs/agent_execution_architecture.md
+autobyteus-web/docs/agent_integration_minimal_bridge.md
+autobyteus-web/docs/agent_teams.md
+autobyteus-web/docs/settings.md
+
+Working tree state:
+ M autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md
+ M autobyteus-server-ts/docs/modules/agent_streaming.md
+ M autobyteus-server-ts/docs/modules/agent_team_execution.md
+ M autobyteus-server-ts/docs/modules/run_history.md
+ M autobyteus-ts/docs/agent_team_runtime_and_task_coordination.md
+ M autobyteus-ts/docs/agent_team_streaming_protocol.md
+ M autobyteus-web/docs/agent_execution_architecture.md
+ M autobyteus-web/docs/agent_integration_minimal_bridge.md
+ M autobyteus-web/docs/agent_teams.md
+ M autobyteus-web/docs/settings.md
+?? tickets/in-progress/agent-stream-driven-status/delivery-integrated-state-refresh.log
+?? tickets/in-progress/agent-stream-driven-status/docs-sync-validation.log
+
+Post-reintegration documentation validation
+Timestamp: 2026-08-02T10:42:27Z
+Integrated HEAD: 50a3c41c5061c2b4fcbf8af1ad86051ea01859e5
+Tracked base: cc11ca9b22880c06f689c14df7a68cc455d61158
+Ahead/behind (HEAD...origin/personal): 18	0
+
+Command: git diff --check
+Result: Pass (exit 0)
+
+Command: obsolete lifecycle documentation scan
+Result: Pass (no matches)
+
+Latest-base documentation validation
+Timestamp: 2026-08-03T05:09:53Z
+Integrated HEAD: 0f3b36a04332e1e14b092a04f9313737e95305c4
+Tracked base: ba6ebc2a2fbf56f17ee6bbb965f3f153307db3d2
+Ahead/behind (HEAD...origin/personal): 20	0
+
+Command: git diff --check
+Result: Pass (exit 0)
+
+Command: obsolete lifecycle documentation scan
+Result: Pass (no matches)
+
+Correction for latest-base documentation validation
+The first git diff --check invocation above emitted trailing-whitespace findings from raw Electron builder output before the script continued. Delivery normalized trailing whitespace in delivery-electron-build.log and reran the check.
+Command: git diff --check
+Result: Pass (exit 0 after evidence-log whitespace normalization)
+
+Second latest-base documentation validation
+Timestamp: 2026-08-03T13:12:25Z
+Integrated HEAD: 55c5b3c914d64059361d47ec87a29da0e4eb9bbb
+Tracked base: 2a7271c9d78b71b919f7dbfa3b8f97f61c3a2e2b
+Ahead/behind (HEAD...origin/personal): 22	0
+
+Command: git diff --check
+Result: Pass (exit 0)
+
+Command: obsolete lifecycle documentation scan
+Result: Pass (no matches)
+
+SR-006 presentation documentation validation
+Timestamp: 2026-08-03T14:35:52Z
+Integrated HEAD before delivery docs: df3fe87e78ccc734128ce0b96a4e4281e2f55405
+Tracked base: 2a7271c9d78b71b919f7dbfa3b8f97f61c3a2e2b
+Ahead/behind (HEAD...origin/personal): 27	0
+
+Command: git diff --check
+Result: Pass (exit 0)
+
+Command: obsolete lifecycle documentation scan
+Result: Pass (no matches)
+
+Command: required binary presentation guidance scan
+autobyteus-web/docs/agent_integration_minimal_bridge.md:179:  team-definition group may derive `runs.some(run => run.isActive)` solely as
+autobyteus-web/docs/settings.md:240:team status model. `TeamActivityDot.vue` accepts only `isActive` plus localized
+autobyteus-web/docs/settings.md:244:team-definition group derives a presentation-only `hasActiveRuns` value from
+autobyteus-web/docs/settings.md:245:`runs.some(run => run.isActive)` over the exact child runs it displays. That
+autobyteus-web/docs/agent_execution_architecture.md:179:team status model. `TeamActivityDot.vue` accepts only `isActive` plus localized
+autobyteus-web/docs/agent_execution_architecture.md:183:team-definition group derives a presentation-only `hasActiveRuns` value from
+autobyteus-web/docs/agent_execution_architecture.md:184:`runs.some(run => run.isActive)` over the exact child runs it displays. That
+autobyteus-web/docs/agent_teams.md:83:presentation-only any-active cue for that rendered collection. The group dot is
+autobyteus-web/docs/agent_teams.md:84:derived from `runs.some(run => run.isActive)` and is not stored on, transported
+Result: Pass (exact-run and presentation-only group guidance present)
+
+DR-005 final documentation and handoff validation
+Timestamp: 2026-08-03T16:44:52+02:00
+Checkpoint HEAD: df3fe87e78ccc734128ce0b96a4e4281e2f55405
+Tracked base before report-time refresh: 2a7271c9d78b71b919f7dbfa3b8f97f61c3a2e2b
+Ahead/behind: 27	0
+
+Command: git diff --check
+Result: Pass (exit 0)
+
+Command: obsolete lifecycle documentation scan
+Result: Pass (no matches)
+
+Command: required DR-005 presentation guidance scan
+autobyteus-web/docs/settings.md:240:team status model. `TeamActivityDot.vue` accepts only `isActive` plus localized
+autobyteus-web/docs/settings.md:242:run's authoritative `isActive`: active is a solid blue dot, inactive is a solid
+autobyteus-web/docs/settings.md:244:team-definition group derives a presentation-only `hasActiveRuns` value from
+autobyteus-web/docs/settings.md:245:`runs.some(run => run.isActive)` over the exact child runs it displays. That
+autobyteus-web/docs/settings.md:708:light-blue treatment is presentation-only and preserves hover plus
+autobyteus-web/docs/settings.md:892:    - Tool display names and statuses are backend-provided canonical values. Runtime-specific transport names such as Agent Tools MCP-prefixed Claude/Codex tool names must be normalized before streaming; frontend Activity and conversation components should render `toolName` and lifecycle state directly instead of stripping provider prefixes or inferring execution from presentation-only segments.
+autobyteus-web/docs/settings.md:908:    - `TokenUsageMeterPanel.vue` is presentation-only: it renders the approved focused-run Token Meter hierarchy (`Latest prompt`, `Gross input`, `Output`, `Total estimate`, `Input breakdown`, `Pricing details`, and collapsed `Calculation details`) and never imports provider pricing metadata or recalculates model prices.
+autobyteus-web/docs/agent_integration_minimal_bridge.md:179:  team-definition group may derive `runs.some(run => run.isActive)` solely as
+autobyteus-web/docs/agent_teams.md:83:presentation-only any-active cue for that rendered collection. The group dot is
+autobyteus-web/docs/agent_teams.md:84:derived from `runs.some(run => run.isActive)` and is not stored on, transported
+autobyteus-web/docs/agent_teams.md:162:callers. That light-blue treatment is presentation-only and preserves hover and
+autobyteus-web/docs/agent_execution_architecture.md:179:team status model. `TeamActivityDot.vue` accepts only `isActive` plus localized
+autobyteus-web/docs/agent_execution_architecture.md:181:run's authoritative `isActive`: active is a solid blue dot, inactive is a solid
+autobyteus-web/docs/agent_execution_architecture.md:183:team-definition group derives a presentation-only `hasActiveRuns` value from
+autobyteus-web/docs/agent_execution_architecture.md:184:`runs.some(run => run.isActive)` over the exact child runs it displays. That
+autobyteus-web/docs/agent_execution_architecture.md:658:light-blue treatment is presentation-only and preserves hover plus
+autobyteus-web/docs/agent_execution_architecture.md:785:preserving exact final content. It is presentation-only: WebSocket protocol,
+autobyteus-web/docs/agent_execution_architecture.md:920:    - Tool display names and statuses are backend-provided canonical values. Runtime-specific transport names such as Agent Tools MCP-prefixed Claude/Codex tool names must be normalized before streaming; frontend Activity and conversation components should render `toolName` and lifecycle state directly instead of stripping provider prefixes or inferring execution from presentation-only segments.
+autobyteus-web/docs/agent_execution_architecture.md:936:    - `TokenUsageMeterPanel.vue` is presentation-only: it renders the approved focused-run Token Meter hierarchy (`Latest prompt`, `Gross input`, `Output`, `Total estimate`, `Input breakdown`, `Pricing details`, and collapsed `Calculation details`) and never imports provider pricing metadata or recalculates model prices.
+Result: Pass
+
+DR-006 SR-008 documentation validation
+Timestamp: 2026-08-03T22:21:11+02:00
+Checkpoint HEAD: d870636d689a95c38c9efc276f2a844be381b417
+Tracked base: 2a7271c9d78b71b919f7dbfa3b8f97f61c3a2e2b
+Ahead/behind: 35	0
+
+Command: git diff --check
+Result: Pass (exit 0)
+
+Command: stale SR-008 guidance scan
+Result: Pass (no stale matches)
+
+Command: required SR-008 guidance scan
+autobyteus-web/docs/agent_teams.md:302:not-connected/send/disconnect completion produces one member-aware localized
+autobyteus-web/docs/settings.md:114:  - `interruptGeneration()`: Generates a fresh `client_interrupt_*` command id and asks `AgentStreamingService` to admit the backend `INTERRUPT_GENERATION` control command. Its boolean result means connected-socket admission only. A matching rejected/failed server result or local not-connected/send/disconnect completion produces one localized error toast; accepted produces no success toast or optimistic idle. `isSending` is cleared only by later backend lifecycle/status handling after the runtime settles the active turn.
+autobyteus-web/docs/settings.md:127:  - `interruptGeneration()`: Generates a fresh `client_interrupt_*` command id and sends team `INTERRUPT_GENERATION` for the exact active-execution command member. `TeamStreamingService` correlates command id plus team/member route/run target before completing it. Rejected/failed server results and local transport completion produce one member-aware localized error toast; accepted does not clear that member's `isSending`. The member becomes send-ready only from later backend lifecycle/status events.
+autobyteus-web/docs/settings.md:173:An accepted result means provider/runtime admission only. The frontend keeps the
+autobyteus-web/docs/settings.md:825:| `AGENT_COMMAND_ACK`       | command-specific correlation before generic dispatch | Handles the discriminated `SEND_MESSAGE` and `INTERRUPT_GENERATION` arms separately. Send acknowledgements preserve their status/error behavior. Interrupt acknowledgements must match command id plus exact standalone/team-member target; accepted only clears pending correlation, while rejected/failed invoke one store-owned localized toast without lifecycle or transcript mutation. |
+autobyteus-web/docs/agent_execution_architecture.md:52:  - `interruptGeneration()`: Generates a fresh `client_interrupt_*` command id and asks `AgentStreamingService` to admit the backend `INTERRUPT_GENERATION` control command. Its boolean result means connected-socket admission only. A matching rejected/failed server result or local not-connected/send/disconnect completion produces one localized error toast; accepted produces no success toast or optimistic idle. `isSending` is cleared only by later backend lifecycle/status handling after the runtime settles the active turn.
+autobyteus-web/docs/agent_execution_architecture.md:65:  - `interruptGeneration()`: Generates a fresh `client_interrupt_*` command id and sends team `INTERRUPT_GENERATION` for the exact active-execution command member. `TeamStreamingService` correlates command id plus team/member route/run target before completing it. Rejected/failed server results and local transport completion produce one member-aware localized error toast; accepted does not clear that member's `isSending`. The member becomes send-ready only from later backend lifecycle/status events.
+autobyteus-web/docs/agent_execution_architecture.md:111:An accepted result means provider/runtime admission only. The frontend keeps the
+autobyteus-web/docs/agent_execution_architecture.md:807:| `AGENT_COMMAND_ACK`       | command-specific correlation before generic dispatch | Handles the discriminated `SEND_MESSAGE` and `INTERRUPT_GENERATION` arms separately. Send acknowledgements preserve their status/error behavior. Interrupt acknowledgements must match command id plus exact standalone/team-member target; accepted only clears pending correlation, while rejected/failed invoke one store-owned localized toast without lifecycle or transcript mutation. |
+autobyteus-web/docs/agent_integration_minimal_bridge.md:167:- Treats interrupt `accepted` as admission only. `rejected`/`failed` server
+autobyteus-server-ts/docs/modules/agent_execution.md:141:`turn/steer(expectedTurnId=A)`. A successful steer preserves A without a new
+autobyteus-server-ts/docs/modules/agent_execution.md:148:exact team-member requests carry a fresh client `command_id`; the originating
+autobyteus-server-ts/docs/modules/agent_execution.md:156:separate local transport failure, not a synthetic acknowledgement.
+autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md:63:      command_id: string;
+autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md:447:required `command_id` in its payload in addition to the socket-bound run
+autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md:454:than lifecycle output. `accepted` means admission only: it does not publish
+autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md:456:result delivery is completed by the client as a local transport failure rather
+autobyteus-server-ts/docs/modules/codex_integration.md:131:`turn/steer` with `expectedTurnId: A`. Callers do not select the method or
+autobyteus-server-ts/docs/modules/agent_streaming.md:25:- Single-agent `SEND_MESSAGE` is the recoverable chat command and must include `message_id` plus `dedupe_key`. The stream handler routes it through `AgentRunCommandCoordinator`, which owns idempotency, command-level `initializing`/`error` overlays, prepared-run activation or historical restore, runtime forwarding, and activity recording. `AGENT_COMMAND_ACK` is a discriminated union: its `SEND_MESSAGE` arm reports accepted/duplicate/rejected/failed outcomes and may include current status, while its `INTERRUPT_GENERATION` arm reports `accepted`/`rejected`/`failed` with the exact client `command_id` and target. When the coordinator materializes/restores an active runtime, the handler binds the existing WebSocket session to that runtime stream. Restored runtime readiness or a restored status snapshot does not replace the command overlay by itself; visible replacement waits for command-correlated evidence such as `TURN_STARTED`, command-correlated `AGENT_STATUS`, terminal/error events after handoff, or coordinator failure handling.
+autobyteus-server-ts/docs/modules/agent_streaming.md:55:- `INTERRUPT_GENERATION` is active-only, result-correlated control traffic. Both standalone and team payloads require a non-empty client `command_id`. Team interrupts additionally require `target_member_path` / `targetMemberPath` or `target_member_route_key` / `targetMemberRouteKey` and may include `target_member_run_id` / `targetMemberRunId` as an optional stale-target guard. The originating socket receives exactly one matching interrupt acknowledgement when it remains writable. Missing/inactive targets, route/run mismatch, provider rejection, and execution failure do not publish lifecycle; accepted acknowledgement likewise does not synthesize idle. The runtime's later terminal/status event owns readiness. Team interrupt never falls back to aggregate/team-wide stop.
+Result: Pass

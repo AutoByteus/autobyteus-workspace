@@ -1,0 +1,1 @@
+pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals

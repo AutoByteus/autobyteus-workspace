@@ -1,4 +1,3 @@
-import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { TeamRunHistoryDefinitionGroup, TeamTreeNode } from '~/stores/runHistoryTypes';
 
 export type WorkspaceHistoryTeamDefinitionDisplayGroup = {
@@ -7,7 +6,7 @@ export type WorkspaceHistoryTeamDefinitionDisplayGroup = {
   teamDefinitionName: string;
   runs: TeamTreeNode[];
   representativeRun: TeamTreeNode;
-  status: AgentTeamStatus;
+  hasActiveRuns: boolean;
 };
 
 export const resolveTeamDefinitionGroupKey = (
@@ -25,9 +24,9 @@ const buildDisplayGroupsFromTeamNodes = (
     const existing = groups.get(key);
     if (existing) {
       existing.runs.push(team);
+      existing.hasActiveRuns ||= team.isActive;
       if (existing.representativeRun.lastActivityAt < team.lastActivityAt) {
         existing.representativeRun = team;
-        existing.status = team.currentStatus;
       }
       continue;
     }
@@ -38,7 +37,7 @@ const buildDisplayGroupsFromTeamNodes = (
       teamDefinitionName: team.teamDefinitionName || 'Team',
       runs: [team],
       representativeRun: team,
-      status: team.currentStatus,
+      hasActiveRuns: team.isActive,
     });
   }
 
@@ -84,7 +83,7 @@ const buildDisplayGroupsFromHistory = (
       teamDefinitionName: historyGroup.teamDefinitionName || representativeRun.teamDefinitionName || 'Team',
       runs,
       representativeRun,
-      status: representativeRun.currentStatus,
+      hasActiveRuns: runs.some((run) => run.isActive),
     });
   }
 

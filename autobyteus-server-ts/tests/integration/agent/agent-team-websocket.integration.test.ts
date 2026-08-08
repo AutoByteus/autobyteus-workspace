@@ -6,6 +6,7 @@ import {
   AgentInputUserMessage,
 } from "autobyteus-ts";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY } from "../../../src/config/streaming-content-flush-interval-setting.js";
 import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { TeamRunEventSourceType, type TeamRunEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
 import type { ConversationTargetAddress } from "../../../src/agent-team-execution/domain/conversation-target-address.js";
@@ -159,12 +160,12 @@ class FakeTeamRun {
     this.runId = team.teamRunId;
   }
 
-  getStatusSnapshot() {
-    return { status: "running" as const };
+  getLeafAgentStatusSnapshots() {
+    return [];
   }
 
-  getMemberStatusSnapshots() {
-    return [];
+  hasOpenExecutionWork(): boolean {
+    return true;
   }
 
   subscribeToEvents(listener: (event: TeamRunEvent) => void): () => void {
@@ -258,6 +259,30 @@ const waitForMessage = (socket: WebSocket, timeoutMs: number = 2000): Promise<st
     });
   });
 
+type CapturedMessage = { type: string; payload: Record<string, unknown> };
+
+const captureMessages = (socket: WebSocket): CapturedMessage[] => {
+  const messages: CapturedMessage[] = [];
+  socket.on("message", (data) => {
+    messages.push(JSON.parse(data.toString()) as CapturedMessage);
+  });
+  return messages;
+};
+
+const waitForCapturedMessage = async (
+  messages: CapturedMessage[],
+  predicate: (message: CapturedMessage) => boolean,
+  timeoutMs = 2_000,
+): Promise<CapturedMessage> => {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    const match = messages.find(predicate);
+    if (match) return match;
+    await new Promise((resolve) => setTimeout(resolve, 10));
+  }
+  throw new Error("Timed out waiting for captured websocket message");
+};
+
 const waitForClose = (socket: WebSocket, timeoutMs: number = 2000): Promise<number> =>
   new Promise((resolve, reject) => {
     const timer = setTimeout(() => reject(new Error("Timed out waiting for websocket close")), timeoutMs);
@@ -292,6 +317,92 @@ const waitForCondition = async (fn: () => boolean, timeoutMs = 2000): Promise<vo
 };
 
 describe("Agent team websocket integration", () => {
+  it("preserves ordered A/B/A member groups while coalescing consecutive team content", async () => {
+    const previousInterval = process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY];
+    process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY] = "100";
+    const team = new FakeTeam("team-ordered-egress");
+    const stream = new FakeTeamStream();
+    const teamRunService = new FakeTeamRunService(team, stream);
+    const handler = new AgentTeamStreamHandler(
+      new AgentSessionManager(),
+      teamRunService as unknown as any,
+    );
+    const app = fastify();
+    await app.register(websocket);
+    await registerAgentWebsocket(
+      app,
+      { connect: async () => null, handleMessage: async () => {}, disconnect: async () => {} } as never,
+      handler,
+    );
+    const address = await app.listen({ port: 0, host: "127.0.0.1" });
+    const url = new URL(address);
+    const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent-team/${team.teamRunId}`);
+    const messages = captureMessages(socket);
+
+    const pushContent = (
+      memberName: "alpha" | "beta",
+      memberRunId: "member-42" | "member-99",
+      segmentId: string,
+      delta: string,
+    ): void => {
+      stream.push({
+        teamRunId: team.teamRunId,
+        eventSourceType: TeamRunEventSourceType.AGENT,
+        data: {
+          runtimeKind: RuntimeKind.AUTOBYTEUS,
+          memberName,
+          memberRunId,
+          agentEvent: {
+            runId: memberRunId,
+            eventType: AgentRunEventType.SEGMENT_CONTENT,
+            payload: {
+              id: segmentId,
+              turn_id: "turn-team-order",
+              segment_type: "text",
+              delta,
+            },
+            statusHint: null,
+          },
+        },
+      });
+    };
+
+    try {
+      await waitForOpen(socket);
+      await waitForCapturedMessage(messages, (message) => message.type === "CONNECTED");
+      pushContent("alpha", "member-42", "segment-a", "a1");
+      pushContent("alpha", "member-42", "segment-a", "a2");
+      pushContent("beta", "member-99", "segment-b", "b1");
+      pushContent("alpha", "member-42", "segment-a", "a3");
+
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      expect(messages.filter((message) => message.type === "SEGMENT_CONTENT")).toHaveLength(0);
+      await waitForCondition(
+        () => messages.filter((message) => message.type === "SEGMENT_CONTENT").length === 3,
+      );
+      expect(messages.filter((message) => message.type === "SEGMENT_CONTENT").map(
+        (message) => [
+          message.payload.agent_name,
+          message.payload.agent_id,
+          message.payload.id,
+          message.payload.delta,
+        ],
+      )).toEqual([
+        ["alpha", "member-42", "segment-a", "a1a2"],
+        ["beta", "member-99", "segment-b", "b1"],
+        ["alpha", "member-42", "segment-a", "a3"],
+      ]);
+    } finally {
+      socket.close();
+      await app.close();
+      if (previousInterval === undefined) {
+        delete process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY];
+      } else {
+        process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY] = previousInterval;
+      }
+    }
+  });
+
   it("streams team events and routes client messages", async () => {
     const team = new FakeTeam("team-1");
     const stream = new FakeTeamStream();
@@ -379,13 +490,30 @@ describe("Agent team websocket integration", () => {
     });
     expect(team.messages).toHaveLength(2);
 
+    const interruptAckPromise = waitForMessage(socket);
     socket.send(JSON.stringify({
       type: "INTERRUPT_GENERATION",
       payload: {
+        command_id: "client_interrupt_alpha",
         target_member_route_key: "alpha",
         target_member_run_id: "member-42",
       },
     }));
+    const interruptAck = JSON.parse(await interruptAckPromise) as CapturedMessage;
+    expect(interruptAck).toEqual({
+      type: "AGENT_COMMAND_ACK",
+      payload: {
+        command_type: "INTERRUPT_GENERATION",
+        command_id: "client_interrupt_alpha",
+        state: "accepted",
+        target: {
+          target_kind: "team_member",
+          team_run_id: team.teamRunId,
+          member_route_key: "alpha",
+          member_run_id: "member-42",
+        },
+      },
+    });
     await waitForCondition(() => team.interruptCalls === 1);
     expect(team.interruptCalls).toBe(1);
     expect(team.lastInterruptTarget).toBe("alpha");
@@ -681,6 +809,7 @@ describe("Agent team websocket integration", () => {
     const address = await app.listen({ port: 0, host: "127.0.0.1" });
     const url = new URL(address);
     const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent-team/team-stop-active-only`);
+    const messages = captureMessages(socket);
     const connectedPromise = waitForMessage(socket);
 
     await waitForOpen(socket);
@@ -690,12 +819,30 @@ describe("Agent team websocket integration", () => {
       JSON.stringify({
         type: "INTERRUPT_GENERATION",
         payload: {
+          command_id: "client_interrupt_stopped_team",
           target_member_route_key: "alpha",
           target_member_run_id: "member-42",
         },
       }),
     );
-    await new Promise((resolve) => setTimeout(resolve, 80));
+    const stoppedAck = await waitForCapturedMessage(
+      messages,
+      (message) => message.type === "AGENT_COMMAND_ACK" &&
+        message.payload.command_id === "client_interrupt_stopped_team",
+    );
+    expect(stoppedAck.payload).toEqual({
+      command_type: "INTERRUPT_GENERATION",
+      command_id: "client_interrupt_stopped_team",
+      state: "rejected",
+      code: "RUN_NOT_FOUND",
+      message: "Team run 'team-stop-active-only' is not active.",
+      target: {
+        target_kind: "team_member",
+        team_run_id: "team-stop-active-only",
+        member_route_key: "alpha",
+        member_run_id: "member-42",
+      },
+    });
     expect(team.interruptCalls).toBe(0);
     expect(team.stopCalls).toBe(0);
     expect(resolveCalls).toBe(1);
@@ -729,6 +876,7 @@ describe("Agent team websocket integration", () => {
     const socket = new WebSocket(
       `ws://${url.hostname}:${url.port}/ws/agent-team/team-invalid-interrupt-target`,
     );
+    const messages = captureMessages(socket);
     const connectedPromise = waitForMessage(socket);
 
     await waitForOpen(socket);
@@ -737,10 +885,19 @@ describe("Agent team websocket integration", () => {
     socket.send(
       JSON.stringify({
         type: "INTERRUPT_GENERATION",
-        payload: {},
+        payload: { command_id: "client_interrupt_missing_target" },
       }),
     );
-    await new Promise((resolve) => setTimeout(resolve, 80));
+    const missingTargetAck = await waitForCapturedMessage(
+      messages,
+      (message) => message.type === "AGENT_COMMAND_ACK" &&
+        message.payload.command_id === "client_interrupt_missing_target",
+    );
+    expect(missingTargetAck.payload).toMatchObject({
+      state: "rejected",
+      code: "INVALID_TARGET",
+      target: { member_route_key: "", member_run_id: null },
+    });
     expect(team.interruptCalls).toBe(0);
     expect(team.lastInterruptTarget).toBeNull();
 
@@ -748,12 +905,22 @@ describe("Agent team websocket integration", () => {
       JSON.stringify({
         type: "INTERRUPT_GENERATION",
         payload: {
+          command_id: "client_interrupt_wrong_run",
           target_member_route_key: "beta",
           target_member_run_id: "member-42",
         },
       }),
     );
-    await new Promise((resolve) => setTimeout(resolve, 80));
+    const mismatchAck = await waitForCapturedMessage(
+      messages,
+      (message) => message.type === "AGENT_COMMAND_ACK" &&
+        message.payload.command_id === "client_interrupt_wrong_run",
+    );
+    expect(mismatchAck.payload).toMatchObject({
+      state: "failed",
+      code: "TARGET_MEMBER_RUN_MISMATCH",
+      target: { member_route_key: "beta", member_run_id: "member-42" },
+    });
     expect(team.interruptCalls).toBe(0);
     expect(team.lastInterruptTarget).toBeNull();
 
@@ -761,11 +928,28 @@ describe("Agent team websocket integration", () => {
       JSON.stringify({
         type: "INTERRUPT_GENERATION",
         payload: {
+          command_id: "client_interrupt_valid_beta",
           target_member_route_key: "beta",
           target_member_run_id: "member-99",
         },
       }),
     );
+    const validAck = await waitForCapturedMessage(
+      messages,
+      (message) => message.type === "AGENT_COMMAND_ACK" &&
+        message.payload.command_id === "client_interrupt_valid_beta",
+    );
+    expect(validAck.payload).toEqual({
+      command_type: "INTERRUPT_GENERATION",
+      command_id: "client_interrupt_valid_beta",
+      state: "accepted",
+      target: {
+        target_kind: "team_member",
+        team_run_id: "team-invalid-interrupt-target",
+        member_route_key: "beta",
+        member_run_id: "member-99",
+      },
+    });
     await waitForCondition(() => team.interruptCalls === 1);
     expect(team.lastInterruptTarget).toBe("beta");
     expect(team.stopCalls).toBe(0);

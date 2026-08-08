@@ -4,7 +4,6 @@ import {
   type TeamRunAgentEventPayload,
   type TeamRunCommunicationEventPayload,
   type TeamRunMemberInputEventPayload,
-  type TeamRunStatusUpdateData,
   type TeamRunTaskDelegationEventPayload,
   getTeamRunEventSourceRouteKey,
 } from "../../agent-team-execution/domain/team-run-event.js";
@@ -17,6 +16,10 @@ import {
 import { serializePayload } from "./payload-serialization.js";
 import { buildTeamCommunicationMessagePayload } from "./team-communication-message-payload.js";
 import { buildTeamMemberInputMessagePayload } from "./team-member-input-message-payload.js";
+import {
+  assertTaskTeamLeafStreamScope,
+  buildTaskTeamScopedIdentityPayload,
+} from "./team-stream-agent-identity-payload.js";
 
 const asRecord = (value: unknown): Record<string, unknown> => (
   value && typeof value === "object" && !Array.isArray(value)
@@ -29,37 +32,6 @@ const normalizePath = (value: unknown): string[] => (
     ? value.map((part) => String(part).trim()).filter(Boolean)
     : []
 );
-
-const pathStartsWith = (path: readonly string[], prefix: readonly string[]): boolean =>
-  path.length >= prefix.length && prefix.every((segment, index) => path[index] === segment);
-
-const flattenTaskTeamScopedIdentity = (
-  event: TeamRunEvent,
-): Record<string, unknown> => {
-  const taskTeamInstance = event.taskTeamInstance ?? null;
-  if (!taskTeamInstance?.taskTeamRunId) {
-    return {};
-  }
-
-  const teamPath = [...taskTeamInstance.logicalTeam.memberPath];
-  const sourcePath = Array.isArray(event.sourcePath) ? event.sourcePath : [];
-  const relativeMemberPath = pathStartsWith(sourcePath, teamPath)
-    ? sourcePath.slice(teamPath.length)
-    : [];
-  const relativeMemberRouteKey = relativeMemberPath.length > 0
-    ? relativeMemberPath.join("/")
-    : null;
-
-  return {
-    task_team_run_id: taskTeamInstance.taskTeamRunId,
-    task_team_instance_id: taskTeamInstance.taskTeamInstanceId,
-    task_id: taskTeamInstance.taskId,
-    team_route_key: taskTeamInstance.logicalTeam.memberRouteKey,
-    team_path: teamPath,
-    task_team_relative_member_path: relativeMemberPath,
-    ...(relativeMemberRouteKey ? { task_team_relative_member_route_key: relativeMemberRouteKey } : {}),
-  };
-};
 
 const flattenTaskDelegationIdentity = (
   payload: Record<string, unknown>,
@@ -115,15 +87,25 @@ export const convertTeamRunEventToServerMessage = (
 ): ServerMessage => {
   const sourceRouteKey = getTeamRunEventSourceRouteKey(event);
   const sourcePath = Array.isArray(event.sourcePath) ? event.sourcePath : [];
+  const taskTeamScope = event.taskTeamScope ?? null;
+  const taskTeamIdentity = buildTaskTeamScopedIdentityPayload({
+    sourcePath,
+    taskTeamScope,
+  });
   const sourcePayload = {
     source_path: sourcePath,
     ...(sourceRouteKey ? { source_route_key: sourceRouteKey } : {}),
     ...(event.subTeamNodeName ? { sub_team_node_name: event.subTeamNodeName } : {}),
-    ...flattenTaskTeamScopedIdentity(event),
+    ...(taskTeamIdentity ?? {}),
   };
 
   if (event.eventSourceType === TeamRunEventSourceType.AGENT) {
     const payload = event.data as TeamRunAgentEventPayload;
+    assertTaskTeamLeafStreamScope({
+      sourcePath,
+      taskTeamScope,
+      agentRunId: payload.memberRunId,
+    });
     const message = agentRunEventMessageMapper.map(payload.agentEvent);
     const basePayload = message.payload && typeof message.payload === "object"
       ? message.payload
@@ -141,13 +123,6 @@ export const convertTeamRunEventToServerMessage = (
             task_id: payload.taskAgentInstance.taskId,
           }
         : {}),
-      ...sourcePayload,
-    });
-  }
-
-  if (event.eventSourceType === TeamRunEventSourceType.TEAM) {
-    return new ServerMessage(ServerMessageType.TEAM_STATUS, {
-      ...serializePayload(event.data as TeamRunStatusUpdateData),
       ...sourcePayload,
     });
   }

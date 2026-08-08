@@ -1,7 +1,10 @@
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { CodexReadyTokenUsageUpdate } from "./codex-thread-token-usage.js";
 import { asString } from "../codex-app-server-json.js";
-import { resolveTurnId } from "./codex-thread-id-resolver.js";
+import {
+  resolveStartedTurnId,
+  resolveSteeredTurnId,
+} from "./codex-thread-id-resolver.js";
 import type { CodexAppServerClient } from "../../../../runtime-management/codex/client/codex-app-server-client.js";
 import { handleAppServerNotification as applyAppServerNotification } from "./codex-thread-notification-handler.js";
 import {
@@ -18,6 +21,7 @@ import type { JsonObject } from "../codex-app-server-json.js";
 import { toCodexUserInput } from "./codex-user-input-mapper.js";
 import type { CodexRunContext } from "../backend/codex-agent-run-context.js";
 import { dispatchRuntimeEvent } from "../../shared/runtime-event-dispatch.js";
+import { CodexInputSubmissionError } from "./codex-input-submission-error.js";
 
 const STARTUP_READY_TIMEOUT_MS = 60_000;
 const isRuntimeRawEventDebugEnabled = process.env.RUNTIME_RAW_EVENT_DEBUG === "1";
@@ -33,6 +37,10 @@ export type CodexPendingMcpToolCall = {
   arguments: JsonObject;
 };
 
+export type CodexInputSubmissionResult =
+  | { kind: "started"; turnId: string }
+  | { kind: "steered"; turnId: string };
+
 const normalizeLookupToken = (value: string | null): string | null =>
   value ? value.trim().toLowerCase() : null;
 
@@ -46,7 +54,8 @@ export class CodexThread {
   readonly pendingTokenUsageUpdates: Map<string, CodexReadyTokenUsageUpdate>;
   readonly listeners: Set<(message: CodexAppServerMessage) => void>;
   readonly unbindHandlers: Array<() => void>;
-  lastCompletedTurnId: string | null;
+  lastTerminalTurnId: string | null;
+  private inputSubmissionTail: Promise<void> = Promise.resolve();
 
   constructor(input: {
     runContext: CodexRunContext;
@@ -58,7 +67,7 @@ export class CodexThread {
     pendingTokenUsageUpdates?: Map<string, CodexReadyTokenUsageUpdate>;
     listeners?: Set<(message: CodexAppServerMessage) => void>;
     unbindHandlers?: Array<() => void>;
-    lastCompletedTurnId?: string | null;
+    lastTerminalTurnId?: string | null;
   }) {
     this.runContext = input.runContext;
     this.client = input.client;
@@ -69,7 +78,7 @@ export class CodexThread {
     this.pendingTokenUsageUpdates = input.pendingTokenUsageUpdates ?? new Map();
     this.listeners = input.listeners ?? new Set();
     this.unbindHandlers = input.unbindHandlers ?? [];
-    this.lastCompletedTurnId = input.lastCompletedTurnId ?? null;
+    this.lastTerminalTurnId = input.lastTerminalTurnId ?? null;
   }
 
   get runId(): string {
@@ -133,7 +142,7 @@ export class CodexThread {
   markTurnStarted(turnId: string | null): void {
     this.currentStatus = "RUNNING";
     this.runContext.runtimeContext.activeTurnId = turnId;
-    this.lastCompletedTurnId = null;
+    this.lastTerminalTurnId = null;
   }
 
   markTurnCompleted(turnId?: string | null): void {
@@ -142,7 +151,7 @@ export class CodexThread {
       return;
     }
     this.currentStatus = "IDLE";
-    this.lastCompletedTurnId = completedTurnId ?? null;
+    this.lastTerminalTurnId = completedTurnId;
     this.runContext.runtimeContext.activeTurnId = null;
     this.pendingMcpToolCalls.clear();
   }
@@ -151,6 +160,9 @@ export class CodexThread {
     this.currentStatus = status;
     const normalizedStatus = status?.trim().toUpperCase() ?? null;
     if (normalizedStatus === "IDLE") {
+      if (this.activeTurnId) {
+        this.lastTerminalTurnId = this.activeTurnId;
+      }
       this.runContext.runtimeContext.activeTurnId = null;
       this.pendingMcpToolCalls.clear();
     }
@@ -178,7 +190,18 @@ export class CodexThread {
     this.pendingTokenUsageUpdates.delete(idempotencyKey);
   }
 
-  async sendTurn(message: AgentInputUserMessage): Promise<{ turnId: string | null }> {
+  submitInput(message: AgentInputUserMessage): Promise<CodexInputSubmissionResult> {
+    const submission = this.inputSubmissionTail.then(() => this.performInputSubmission(message));
+    this.inputSubmissionTail = submission.then(
+      () => undefined,
+      () => undefined,
+    );
+    return submission;
+  }
+
+  private async performInputSubmission(
+    message: AgentInputUserMessage,
+  ): Promise<CodexInputSubmissionResult> {
     if (isRuntimeRawEventDebugEnabled) {
       console.log("[CodexSendTurnStart]", {
         runId: this.runId,
@@ -190,6 +213,14 @@ export class CodexThread {
     }
 
     await this.awaitStartupReady();
+    const activeTurnId = this.activeTurnId;
+    if (activeTurnId) {
+      return this.steerInput(message, activeTurnId);
+    }
+    return this.startInput(message);
+  }
+
+  private async startInput(message: AgentInputUserMessage): Promise<CodexInputSubmissionResult> {
     const payload = await this.client.request<unknown>("turn/start", {
       threadId: this.threadId,
       input: toCodexUserInput(message),
@@ -203,8 +234,15 @@ export class CodexThread {
       collaborationMode: null,
     });
 
-    const turnId = resolveTurnId(payload);
-    this.markTurnStarted(turnId);
+    const turnId = resolveStartedTurnId(payload);
+    if (this.activeTurnId === null && this.lastTerminalTurnId !== turnId) {
+      this.markTurnStarted(turnId);
+    } else if (this.activeTurnId !== null && this.activeTurnId !== turnId) {
+      throw new CodexInputSubmissionError(
+        "CODEX_TURN_START_IDENTITY_CONFLICT",
+        `Codex turn/start returned '${turnId}' while newer active turn '${this.activeTurnId}' is current.`,
+      );
+    }
     if (isRuntimeRawEventDebugEnabled) {
       console.log("[CodexSendTurnResponse]", {
         runId: this.runId,
@@ -217,7 +255,37 @@ export class CodexThread {
             : [],
       });
     }
-    return { turnId };
+    return { kind: "started", turnId };
+  }
+
+  private async steerInput(
+    message: AgentInputUserMessage,
+    expectedTurnId: string,
+  ): Promise<CodexInputSubmissionResult> {
+    let payload: unknown;
+    try {
+      payload = await this.client.request<unknown>("turn/steer", {
+        threadId: this.threadId,
+        expectedTurnId,
+        input: toCodexUserInput(message),
+      });
+    } catch (error) {
+      const detail = error instanceof Error ? error.message : String(error);
+      throw new CodexInputSubmissionError(
+        "CODEX_TURN_STEER_REJECTED",
+        `Codex turn/steer rejected input for turn '${expectedTurnId}': ${detail}`,
+        { cause: error },
+      );
+    }
+
+    const turnId = resolveSteeredTurnId(payload);
+    if (turnId !== expectedTurnId) {
+      throw new CodexInputSubmissionError(
+        "CODEX_TURN_STEER_ID_MISMATCH",
+        `Codex turn/steer returned '${turnId}' for expected turn '${expectedTurnId}'.`,
+      );
+    }
+    return { kind: "steered", turnId: expectedTurnId };
   }
 
   async interrupt(turnId?: string | null): Promise<void> {
@@ -313,6 +381,7 @@ export class CodexThread {
       return false;
     }
     this.currentStatus = "ERROR";
+    this.lastTerminalTurnId = turnId;
     this.runContext.runtimeContext.activeTurnId = null;
     this.pendingMcpToolCalls.clear();
     return true;
@@ -320,6 +389,9 @@ export class CodexThread {
 
   private markRuntimeFailed(): void {
     this.currentStatus = "ERROR";
+    if (this.activeTurnId) {
+      this.lastTerminalTurnId = this.activeTurnId;
+    }
     this.runContext.runtimeContext.activeTurnId = null;
     this.pendingMcpToolCalls.clear();
   }

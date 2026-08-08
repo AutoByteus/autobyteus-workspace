@@ -16,9 +16,13 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  /** DateTime scalar supporting ISO strings and date-only YYYY-MM-DD values */
   DateTime: { input: any; output: any; }
+  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: { input: any; output: any; }
+  /** The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSONObject: { input: any; output: any; }
+  /** The `SafeInt` scalar type represents non-fractional signed whole numeric values that are considered safe as defined by the ECMAScript specification. */
   SafeInt: { input: number; output: number; }
 };
 
@@ -1690,6 +1694,7 @@ export type Query = {
   getAgentRunSkillImprovementEligibility: GraphqlSkillImprovementEligibility;
   getAgentRunTokenUsageSummary: TokenUsageRunSummaryGraphql;
   getAppDataMigrations: Array<AppDataMigrationRecordObject>;
+  getEffectiveStreamingContentFlushIntervalMs: Scalars['Int']['output'];
   getEffectiveWorkingContextCompactionStrategyId: Scalars['String']['output'];
   getGeminiSetupConfig: GeminiSetupStateObject;
   getMemoryHubConnectionInfo: MemoryHubConnectionInfoGql;
@@ -2771,7 +2776,6 @@ export type WorkspaceHistoryTeamRunItemObject = {
   isActive: Scalars['Boolean']['output'];
   memberTree: Scalars['JSON']['output'];
   members: Array<WorkspaceHistoryTeamRunMemberObject>;
-  status: Scalars['String']['output'];
   summary: Scalars['String']['output'];
   teamDefinitionId: Scalars['String']['output'];
   teamDefinitionName: Scalars['String']['output'];
@@ -3571,7 +3575,7 @@ export type ListWorkspaceRunHistoryQueryVariables = Exact<{
 }>;
 
 
-export type ListWorkspaceRunHistoryQuery = { __typename?: 'Query', listWorkspaceRunHistory: Array<{ __typename?: 'WorkspaceRunHistoryGroupObject', workspaceRootPath: string, workspaceName: string, agentDefinitions: Array<{ __typename?: 'RunHistoryAgentGroupObject', agentDefinitionId: string, agentName: string, runs: Array<{ __typename?: 'RunHistoryItemObject', runId: string, summary: string, createdAt: string, archivedAt?: string | null, terminatedAt?: string | null, status: string, isActive: boolean, shouldConnectStream: boolean, statusSource: string }> }>, teamDefinitions: Array<{ __typename?: 'WorkspaceHistoryTeamDefinitionObject', teamDefinitionId: string, teamDefinitionName: string, runs: Array<{ __typename?: 'WorkspaceHistoryTeamRunItemObject', teamRunId: string, teamDefinitionId: string, teamDefinitionName: string, coordinatorMemberRouteKey: string, workspaceRootPath?: string | null, summary: string, createdAt: string, archivedAt?: string | null, terminatedAt?: string | null, status: string, isActive: boolean, memberTree: any, members: Array<{ __typename?: 'WorkspaceHistoryTeamRunMemberObject', memberRouteKey: string, memberName: string, memberRunId: string, status: string, runtimeKind: string, workspaceRootPath?: string | null }> }> }> }> };
+export type ListWorkspaceRunHistoryQuery = { __typename?: 'Query', listWorkspaceRunHistory: Array<{ __typename?: 'WorkspaceRunHistoryGroupObject', workspaceRootPath: string, workspaceName: string, agentDefinitions: Array<{ __typename?: 'RunHistoryAgentGroupObject', agentDefinitionId: string, agentName: string, runs: Array<{ __typename?: 'RunHistoryItemObject', runId: string, summary: string, createdAt: string, archivedAt?: string | null, terminatedAt?: string | null, status: string, isActive: boolean, shouldConnectStream: boolean, statusSource: string }> }>, teamDefinitions: Array<{ __typename?: 'WorkspaceHistoryTeamDefinitionObject', teamDefinitionId: string, teamDefinitionName: string, runs: Array<{ __typename?: 'WorkspaceHistoryTeamRunItemObject', teamRunId: string, teamDefinitionId: string, teamDefinitionName: string, coordinatorMemberRouteKey: string, workspaceRootPath?: string | null, summary: string, createdAt: string, archivedAt?: string | null, terminatedAt?: string | null, isActive: boolean, memberTree: any, members: Array<{ __typename?: 'WorkspaceHistoryTeamRunMemberObject', memberRouteKey: string, memberName: string, memberRunId: string, status: string, runtimeKind: string, workspaceRootPath?: string | null }> }> }> }> };
 
 export type GetWorkspaceRunHistoryQueryVariables = Exact<{
   workspaceId: Scalars['String']['input'];
@@ -3579,7 +3583,7 @@ export type GetWorkspaceRunHistoryQueryVariables = Exact<{
 }>;
 
 
-export type GetWorkspaceRunHistoryQuery = { __typename?: 'Query', workspaceRunHistory: { __typename?: 'WorkspaceRunHistoryGroupObject', workspaceRootPath: string, workspaceName: string, agentDefinitions: Array<{ __typename?: 'RunHistoryAgentGroupObject', agentDefinitionId: string, agentName: string, runs: Array<{ __typename?: 'RunHistoryItemObject', runId: string, summary: string, createdAt: string, archivedAt?: string | null, terminatedAt?: string | null, status: string, isActive: boolean, shouldConnectStream: boolean, statusSource: string }> }>, teamDefinitions: Array<{ __typename?: 'WorkspaceHistoryTeamDefinitionObject', teamDefinitionId: string, teamDefinitionName: string, runs: Array<{ __typename?: 'WorkspaceHistoryTeamRunItemObject', teamRunId: string, teamDefinitionId: string, teamDefinitionName: string, coordinatorMemberRouteKey: string, workspaceRootPath?: string | null, summary: string, createdAt: string, archivedAt?: string | null, terminatedAt?: string | null, status: string, isActive: boolean, memberTree: any, members: Array<{ __typename?: 'WorkspaceHistoryTeamRunMemberObject', memberRouteKey: string, memberName: string, memberRunId: string, status: string, runtimeKind: string, workspaceRootPath?: string | null }> }> }> } };
+export type GetWorkspaceRunHistoryQuery = { __typename?: 'Query', workspaceRunHistory: { __typename?: 'WorkspaceRunHistoryGroupObject', workspaceRootPath: string, workspaceName: string, agentDefinitions: Array<{ __typename?: 'RunHistoryAgentGroupObject', agentDefinitionId: string, agentName: string, runs: Array<{ __typename?: 'RunHistoryItemObject', runId: string, summary: string, createdAt: string, archivedAt?: string | null, terminatedAt?: string | null, status: string, isActive: boolean, shouldConnectStream: boolean, statusSource: string }> }>, teamDefinitions: Array<{ __typename?: 'WorkspaceHistoryTeamDefinitionObject', teamDefinitionId: string, teamDefinitionName: string, runs: Array<{ __typename?: 'WorkspaceHistoryTeamRunItemObject', teamRunId: string, teamDefinitionId: string, teamDefinitionName: string, coordinatorMemberRouteKey: string, workspaceRootPath?: string | null, summary: string, createdAt: string, archivedAt?: string | null, terminatedAt?: string | null, isActive: boolean, memberTree: any, members: Array<{ __typename?: 'WorkspaceHistoryTeamRunMemberObject', memberRouteKey: string, memberName: string, memberRunId: string, status: string, runtimeKind: string, workspaceRootPath?: string | null }> }> }> } };
 
 export type GetRunProjectionQueryVariables = Exact<{
   runId: Scalars['String']['input'];
@@ -3658,7 +3662,7 @@ export type GetRuntimeAvailabilitiesQuery = { __typename?: 'Query', runtimeAvail
 export type GetServerSettingsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetServerSettingsQuery = { __typename?: 'Query', getEffectiveWorkingContextCompactionStrategyId: string, getServerSettings: Array<{ __typename: 'ServerSetting', key: string, value: string, description: string, isEditable: boolean, isDeletable: boolean }> };
+export type GetServerSettingsQuery = { __typename?: 'Query', getEffectiveWorkingContextCompactionStrategyId: string, getEffectiveStreamingContentFlushIntervalMs: number, getServerSettings: Array<{ __typename: 'ServerSetting', key: string, value: string, description: string, isEditable: boolean, isDeletable: boolean }> };
 
 export type GetSearchConfigQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -8214,7 +8218,6 @@ export const ListWorkspaceRunHistoryDocument = gql`
         createdAt
         archivedAt
         terminatedAt
-        status
         isActive
         memberTree
         members {
@@ -8286,7 +8289,6 @@ export const GetWorkspaceRunHistoryDocument = gql`
         createdAt
         archivedAt
         terminatedAt
-        status
         isActive
         memberTree
         members {
@@ -8800,6 +8802,7 @@ export const GetServerSettingsDocument = gql`
     isDeletable
   }
   getEffectiveWorkingContextCompactionStrategyId
+  getEffectiveStreamingContentFlushIntervalMs
 }
     `;
 
