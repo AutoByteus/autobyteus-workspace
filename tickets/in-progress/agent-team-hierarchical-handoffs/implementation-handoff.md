@@ -12,17 +12,17 @@
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/solution-revision-record.md`
 - Architecture decision: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/design-review-report.md`
 - Architecture revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/architecture-review-revision-record.md`
-- Downstream lineage: `code-review-report.md`, `code-review-revision-record.md`, `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md`, `api-e2e-test-review-report.md`, `delivery-revision-record.md`, and `delivery-integration-blocker.md` in the same ticket directory. `CRR-027` passed cumulative SR-015 source, but `CRR-028` supersedes it after focused `API-REV-012` live failure-origin review and returns nested-Team routing findings `CR-F-016` / `API-F-008` and `CR-F-017` / `API-F-009`. SR-015 and `ARCH-REV-009` remain current authority. `API-REV-012` is paused at 84%; earlier completed delivery results cover SR-006 only.
+- Downstream lineage: `code-review-report.md`, `code-review-revision-record.md`, `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md`, `api-e2e-test-review-report.md`, `delivery-revision-record.md`, and `delivery-integration-blocker.md` in the same ticket directory. `CRR-029` passed IR-017 and resolved `CR-F-016` / `API-F-008` plus `CR-F-017` / `API-F-009`; focused `API-REV-013` then exposed `CR-F-018` / `API-F-010`, and `CRR-030` returned its active task-Team peer misrouting as a bounded Local Fix. SR-015 and `ARCH-REV-009` remain current authority. `API-REV-013` is paused at 90%; earlier completed delivery results cover SR-006 only.
 
 ## Current Implementation State
 
-- Implementation revision: `IR-017`
+- Implementation revision: `IR-018`
 - Implementation cycle: `Local Fix`
 - Current solution: `SR-015` (`SR-001` through `SR-015` cumulative), including the exact-copy `SR-014` Team collaboration instruction
 - Architecture approval: `ARCH-REV-009` Pass (`ARCH-REV-008` remains the complete structural baseline)
-- Triggering findings: `CR-F-016` / `API-F-008` and `CR-F-017` / `API-F-009` from `CRR-028`. `CR-F-012` through `CR-F-015` remain source-resolved. No requirement gap, design impact, or unclear finding is open.
-- Current code review: `CRR-028` Fail — Local Fix. `CRR-027`'s prior source Pass is superseded for current acceptance; IR-017 corrects both nested-Team routing seams and awaits focused source re-review.
-- Current API/E2E: `API-REV-012` remains halted at 84% with its cumulative durable delta and retained live failure state preserved. After source Pass it must rerun the AutoByteus nested-Team row and complete the still-required Codex and Claude rows; implementation edited no durable coverage.
+- Triggering finding: `CR-F-018` / `API-F-010` from `CRR-030`. `CR-F-012` through `CR-F-017` remain source-resolved. No requirement gap, design impact, or unclear finding is open.
+- Current code review: `CRR-030` Fail — Local Fix. `CRR-029`'s IR-017 source Pass is superseded for current acceptance; IR-018 corrects exact same-task-Team peer routing and awaits focused source re-review.
+- Current API/E2E: `API-REV-013` remains halted at 90% with its cumulative durable delta, both fixture corrections, and retained live failure state preserved. After source Pass it must rerun the AutoByteus active task-Team peer scenario and complete the still-required Codex and Claude rows; implementation edited no durable coverage.
 - Delivery lineage: completed delivery results through `DR-003` prove SR-006 only; `DR-004` is cumulative SR-012 lineage context, not completed SR-015 delivery proof.
 - IR-005 SR-012 baseline source commit: `3927e878db0318138b6e39ad7cea1b032584e08f`.
 - IR-013 source commit: `6a920d45e54981735c25146e0ab76ab7e0917c4c`.
@@ -30,6 +30,7 @@
 - IR-015 source commit: `24597cf194306848a06fdfe667ba932459c15c33` (`fix: make canonical token migration atomic`).
 - IR-016 source commit: `110b9007615741fa0f5a96974b95ad7bc2be595c` (`fix: remove dead Claude handoff control`).
 - IR-017 source commit: `b877d343b30fe01bd2f39546c0e8279adbd00dff` (`fix: preserve nested Team delivery identity`).
+- IR-018 source commit: `035fba611e6895187f7f6d4644993e22efd8c38c` (`fix: route active task-Team peers exactly`).
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/implementation-revision-record.md`
 
 ## Implementation Summary
@@ -128,12 +129,19 @@ The frontend now consumes the recursive `rootTeam`, derives canonical address in
 - No persistent/task registry retry, basename/alternate-address lookup, fallback selector, or weakened identity check was added. Activity/tool-result presentation is intentionally unchanged because the live failure was a contract rejection returned by a successfully completed tool invocation, not an execution error.
 - Change posture: bounded routing correction. Root-cause classification: IR-005 lost an existing persistent-versus-task execution discriminant at the child boundary and used the receiver Agent address for a Team lookup. The explicit internal resolved-delivery boundary and exact activation checks repair those seams without changing public contracts or persisted data.
 
+### IR-018 Active Task-Team Peer Routing Local Fix
+
+- `CR-F-018` / `API-F-010`: root message routing now validates every nonempty sender task-TeamRun chain against the existing root-scoped `TaskTeamActiveRunDirectory`, including exact ordered prefix, active TeamRun/context/runtime identity, persistent or nested parent TeamRun, logical Team placement, and task identity. Persistent task-Team members additionally prove their task-scoped AgentRun; task Agents prove the active root `TaskAgentDirectory` entry and exact owning physical TeamRun.
+- When the canonical target is inside the validated leaf task Team, the root manager materializes the recipient from that exact active TeamRun and sends the resolved request through the active run with the full ordered `taskTeamRunIds`, exact task-scoped peer AgentRun, and task ID. A target outside that leaf placement retains the ordinary persistent/root route, but only after the sender's full task execution scope has validated.
+- Missing, inactive, foreign, truncated, reordered, wrong-parent, wrong-Team, or mismatched sender identity fails before trace publication or member input. No persistent fallback, retry, localization, basename lookup authority, compatibility selector, or Activity presentation branch was added. The explicit coordinator route preserves the existing persistent path from IR-017 while allowing the separately proven active task-Team execution path.
+- Change posture: bounded routing correction. Root-cause classification: IR-005 retained the sender's concrete task chain but root recipient materialization always used the root manager's empty chain and persistent AgentRun. A focused task-execution resolver and explicit resolved-delivery route repair that ownership seam without changing public or persisted contracts.
+
 ## Reviewed Behavior Trace
 
 | Behavior | Implementation result |
 | --- | --- |
 | BEH-001 | Definition handoffs remain validated and compile into immutable rooted snapshots; rejected updates still validate detached candidates before persistence. |
-| BEH-002–BEH-003 | `send_message_to.recipient_address` uses the strict expression parser and one rooted resolver; non-root managers forward through their placement boundary before the root manager alone resolves/materializes root, upward, cross-branch, and Team-coordinator delivery. A resolved nested request then preserves persistent-versus-task execution kind and exact AgentRun identity across each child TeamRun until one validated delivery. |
+| BEH-002–BEH-003 | `send_message_to.recipient_address` uses the strict expression parser and one rooted resolver; non-root managers forward through their placement boundary before the root manager alone resolves/materializes root, upward, cross-branch, and Team-coordinator delivery. A resolved nested request preserves persistent-versus-task execution kind and exact AgentRun identity across child TeamRuns. An active task-Team sender targeting a peer inside its exact leaf task placement is routed through that proven active TeamRun with the full ordered task chain; outside targets retain ordinary persistent/root routing. |
 | BEH-004 | Schema-v3 `rootTeam` replaces localized route-bearing trees; persistent children select absolute nodes and task TeamRuns allocate fresh typed run IDs. |
 | BEH-005–BEH-006 | Intrinsic handoff lookup returns only `{handoffs:[{when,recipient_address}]}`. One exact SR-014 renderer substitutes only the caller address and carries the approved filesystem-like completion/blocked protocol without a roster or embedded rule set. |
 | BEH-007 | Exact `target_agent_run_id` routing, codes, and send result envelope remain separate and unchanged. |
@@ -142,17 +150,17 @@ The frontend now consumes the recursive `rootTeam`, derives canonical address in
 | BEH-010 | Default Team entry still targets the root Team coordinator. |
 | BEH-011–BEH-012 | `delegate_task.recipient_address` shares recipient resolution and its exact topology error codes with messaging, then applies the direct-current-Team policy and existing task lifecycle. Persistent callers match the rooted node AgentRun; active task callers match the exact root-directory task identity and local ownership before mapping/reservation. Task-Team activation resolves the Team at its canonical Team address and proves exact configured coordinator plus ordered task execution chain before start. AutoByteus native task tools receive an exact cloned collaboration caller binding, and canonical address remains the only shared logical placement authority. |
 | BEH-013 | TeamRun is one immutable rooted Agent/AgentTeam union with kind-local facts and derived indexes, not parallel topology/profile/binding projections. |
-| BEH-014 | Conversation, task, event, WebSocket, token, and frontend concrete identity use strict `TeamExecutionAddress` values. The canonical aggregate preserves IR-014 reconstruction of historical task-Team roots/chains/Team prefixes/member/task-Agent suffixes, plans all rows before mutation, and commits one verified immutable token batch. |
+| BEH-014 | Conversation, task, event, WebSocket, token, and frontend concrete identity use strict `TeamExecutionAddress` values. Live task-Team peer routing preserves the sender's proven ordered task chain and materializes the receiver from the exact active TeamRun. The canonical aggregate preserves IR-014 reconstruction of historical task-Team roots/chains/Team prefixes/member/task-Agent suffixes, plans all rows before mutation, and commits one verified immutable token batch. |
 | BEH-015 | Store-owned backup/transaction conversion runs before strict readers. Pending `20260517...` owns predecessor writes; pending `20260801...` is the sole final TeamRun/task/token canonical aggregate even when old token records are terminal. Token index/plan failure mutates zero rows; update/read-back failure rolls back the entire stable-order batch. Both token cleanups require exact canonical success, and the existing targeted startup gate preserves unrelated-warning policy. |
 | BEH-016 | GraphQL/REST/WebSocket/SDK/application/frontend boundaries use canonical address/execution shapes; exact application SDK V5 is built and V4 is rejected. |
 | BEH-017 | Storage-private lineage is `ancestorTeamRunIds`; existing memory/context physical locations are derived without moving files. |
-| BEH-018 | Production seams required by the imported nested-classroom scenario are implemented, including nested root-bound forwarding, exact persistent coordinator delivery across child TeamRuns, and task-Team coordinator activation from canonical Team identity. `API-REV-012` retains the pre-fix AutoByteus live failure and remains paused at 84%; its post-fix AutoByteus rerun and Codex/Claude rows are mandatory downstream work. |
+| BEH-018 | Production seams required by the imported nested-classroom scenario are implemented, including nested root-bound forwarding, exact persistent coordinator delivery across child TeamRuns, task-Team coordinator activation from canonical Team identity, and exact active task-Team peer delivery without persistent fallback. `API-REV-013` retains the pre-fix AutoByteus live failure and remains paused at 90%; its post-fix AutoByteus rerun and Codex/Claude rows are mandatory downstream work. |
 
 ## Key Areas
 
 - Canonical logical identity: `autobyteus-server-ts/src/agent-collaboration/domain/agent-team-address.ts`, `recipient-address-expression.ts`.
 - Root snapshot/index/recipient resolution: `src/agent-team-execution/domain/team-run-config.ts`, `services/team-run-tree-index.ts`, `services/team-recipient-resolver.ts`, `services/resolved-team-recipient.ts`.
-- Nested resolved delivery and task-Team activation: `src/agent-team-execution/backends/{team-manager.ts,team-run-backend.ts}`, `domain/team-run.ts`, and `backends/mixed/{mixed-team-run-backend.ts,mixed-team-manager.ts,members/mixed-sub-team-member-handle.ts,members/mixed-agent-member-handle.ts,members/mixed-task-team-instance-registry.ts}`.
+- Nested resolved delivery, task-Team activation, and exact active peer routing: `src/agent-team-execution/backends/{team-manager.ts,team-run-backend.ts}`, `domain/team-run.ts`, `task-delegation/task-team-active-run-directory.ts`, and `backends/mixed/{mixed-team-run-backend.ts,mixed-team-manager.ts,delivery/team-member-delivery-coordinator.ts,delivery/task-team-message-execution-resolver.ts,members/mixed-sub-team-member-handle.ts,members/mixed-agent-member-handle.ts,members/mixed-task-team-instance-registry.ts}`.
 - Concrete execution identity: `src/agent-team-execution/domain/team-execution-address.ts` and task/message/event/token consumers.
 - Strict persistence and startup migration: `src/app-data-migrations/migrations/team-run-metadata-member-tree-migration.ts`, `team-run-member-tree-prerequisite-converter.ts`, `team-canonical-*.ts`, `token-usage-canonical-execution-address-migrator.ts`, its transaction-owning migration store, preserved planner/task-Team index, both token cleanup definitions, Prisma migration, and store normalizers.
 - API/streaming: AgentTeam GraphQL schema/resolvers, REST/context boundaries, and `src/services/agent-streaming/team-execution-address-command-parser.ts`.
@@ -178,9 +186,18 @@ The frontend now consumes the recursive `rootTeam`, derives canonical address in
 - Current SDK `dist`, application vendor copies, application build products, and importable packages were regenerated rather than selectively patched.
 - Claude turn-input production source has zero `getHandoffRulesEnabled` references; genuine `getHandoffRulesConfigured` exposure remains only at its shared configured-tool/MCP owners.
 - IR-017 adds no receiver-as-Team lookup, basename/alternate selector, retry/fallback, or Activity/tool-result presentation branch. The resolved request's existing kind and exact execution coordinates remain authoritative across child TeamRuns.
-- Changed production files satisfy the implementation size guard. IR-017's eight files range from 38 to 280 effective non-empty lines; every changed file remains below 500. IR-015 canonical aggregate/migrator/store are 153/96/102 effective non-empty lines; exact renderer/composer are 26/28. Preserved planner/index remain separate 290/191-line migration-only owners.
+- IR-018 adds no persistent fallback, retry, alias, localization, legacy route/path selector, or Activity/tool-result presentation branch. The only new basename read is a display-name projection after exact canonical resolution; it has no lookup authority.
+- Changed production files satisfy the implementation size guard. IR-018's resolver/coordinator/manager are 158/111/335 effective non-empty lines; IR-017's eight files range from 38 to 280; every changed file remains below 500. IR-015 canonical aggregate/migrator/store are 153/96/102 effective non-empty lines; exact renderer/composer are 26/28. Preserved planner/index remain separate 290/191-line migration-only owners.
 
 ## Implementation-Scoped Checks
+
+### IR-018 Delta
+
+- Production `pnpm exec tsc -p tsconfig.build.json --noEmit --pretty false` — passed. Evidence: `/tmp/ir018-production-typecheck.log` (empty success log; SHA-256 `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`).
+- `pnpm run build:full` — passed, including clean production build and sanitized built-in Agent bootstrap smoke. Evidence: `/tmp/ir018-build-full.log` (SHA-256 `b065d24fb2e6c3b436cc41e0f08dbf0910971a98bd944a48013cd0fd0e0ea851`).
+- Built-JavaScript active-task-Team proof — passed exact outer peer delivery with the task-scoped AgentRun and one-element chain; exact nested peer delivery with the two-element ordered chain; exact task-Agent-to-task-Team-peer delivery; and outside-team `/Teacher` persistent routing with an empty receiver chain. Missing/inactive/foreign/wrong-parent/wrong-Team/truncated/reordered variants rejected before event or input, and neither persistent peer fallback started. Evidence: `/tmp/ir018-task-team-peer-routing-probe.mjs` (SHA-256 `0191e4f6d0a6c285246e8c42efb8204b115580c4803358f491706e020e365a0f`) and `/tmp/ir018-task-team-peer-routing-probe.log` (SHA-256 `76d48f882ca906713300db362eeff1d705105d1b0a58c2fd68a2080d1a587cc7`).
+- Three maintained API/E2E-owned routing units were executed without implementation edits and passed 3/3 files and 11/11 tests: mixed root manager, persistent child handle, and delivery coordinator. This preserves both API-REV-013 fixture corrections plus IR-017 delivery behavior; it is implementation-scoped evidence, not downstream sign-off. Evidence: `/tmp/ir018-routing-units.log` (SHA-256 `3a95bf9b19b278e67a71857e679d9fddef6a47485c3557d75ce6d846f1caa161`).
+- Focused source/diff/whitespace/no-fallback/size audit — passed for exactly three production files. It confirms directory-backed exact execution seams, no fallback/retry/alias/localization/legacy selector/Activity branch, display-only basename use, and effective sizes of 158/111/335 lines. Evidence: `/tmp/ir018-routing-audit.log` (SHA-256 `34bb43d4420b9c26bc7f1ad47a509ce6789f85e0065fc6718a84c9897d35bb33`). Source commit: `035fba611e6895187f7f6d4644993e22efd8c38c`. No API/E2E-owned durable file was edited.
 
 ### IR-017 Delta
 
@@ -304,7 +321,7 @@ The frontend now consumes the recursive `rootTeam`, derives canonical address in
 
 ## Frontend Rendered Result
 
-IR-006 through IR-017 do not change a rendered frontend surface. IR-015 changes model-facing system/developer instruction text only, verified at provider composition seams; IR-016 removes a dead internal Claude input; IR-017 corrects backend routing only. The live Activity label noted in CRR-028 was not changed because it truthfully describes completion of the tool invocation rather than acceptance of the returned collaboration operation. The cumulative IR-005 frontend result remains:
+IR-006 through IR-018 do not change a rendered frontend surface. IR-015 changes model-facing system/developer instruction text only, verified at provider composition seams; IR-016 removes a dead internal Claude input; IR-017 and IR-018 correct backend routing only. The live Activity label noted in CRR-028 and preserved by CRR-030 was not changed because it truthfully describes completion of the tool invocation rather than acceptance of the returned collaboration operation. The cumulative IR-005 frontend result remains:
 
 - Nuxt production output was served and `/agent-teams` was inspected at 1440x1000 and 390x844.
 - Search input, Reload action, Create affordance, responsive layout, and absence of horizontal overflow were verified. Evidence: `/tmp/sr012-agent-teams.png` and `/tmp/sr012-agent-teams-mobile.png`.
@@ -314,21 +331,21 @@ IR-006 through IR-017 do not change a rendered frontend surface. IR-015 changes 
 ## Known Risks And Downstream Work
 
 - No durable API/E2E coverage was added, changed, or removed by implementation. The cumulative API/E2E-owned durable delta and live failure evidence already present in the worktree were preserved without staging or rewriting.
-- API/E2E must resume `API-REV-012` from its paused 84% checkpoint only after code review Pass. It must update/revalidate the child resolved-delivery seam where its current unit fake still expects raw `postMessage`, rerun the AutoByteus nested-Team scenario, and complete the required Codex and Claude nested-Team rows. Any repository-resident durable coverage delta must return for proportional review.
-- Existing DS-013 token migration/cleanup/aggregate and combined TeamRun history coverage remains part of the cumulative downstream package; IR-017 does not alter those source boundaries or supersede the earlier evidence.
+- API/E2E must resume `API-REV-013` from its paused 90% checkpoint only after code review Pass. It must rerun the AutoByteus active task-Team peer scenario and complete the required Codex and Claude nested-Team rows while preserving both durable fixture corrections. Any repository-resident durable coverage delta must return for proportional review.
+- Existing DS-013 token migration/cleanup/aggregate and combined TeamRun history coverage remains part of the cumulative downstream package; IR-018 does not alter those source boundaries or supersede the earlier evidence.
 - The 30-minute interactive transaction timeout is intentionally bounded for the observed material row volume; real upgrade duration and operational progress remain downstream realistic-environment evidence. Atomicity cannot be traded for chunk commits.
-- The required imported nested-classroom live matrix—AutoByteus `gpt-5.6-luna`, Codex App Server `gpt-5.6-luna` with medium reasoning, and authenticated Claude Agent SDK—is incomplete. The pre-fix AutoByteus failure is retained for diagnosis but is not post-fix proof; all three post-fix provider outcomes remain mandatory downstream evidence.
+- The required imported nested-classroom live matrix—AutoByteus `gpt-5.6-luna`, Codex App Server `gpt-5.6-luna` with medium reasoning, and authenticated Claude Agent SDK—is incomplete. The API-REV-013 pre-fix AutoByteus accepted-but-persistent-peer misrouting is retained for diagnosis but is not post-fix proof; all three post-fix provider outcomes remain mandatory downstream evidence.
 - Real provider execution, fresh TeamRun/task-TeamRun identity, terminate/restore, application admission plus physical-DB discovery, frontend full workflows, and the remaining migration/API/frontend matrix remain incomplete.
 - Delivery-owned documentation and the protected stash were not touched. Prior SR-006 CRR/API/delivery evidence is not SR-015 verification.
 
 ## Task Design Health Check
 
-- Reviewed change posture: two bounded nested-Team routing fixes after cumulative SR-015 source Pass.
-- Root cause: IR-005 reconstructed an already-resolved persistent delivery as raw child `postMessage`, where a nonempty exact AgentRun ID means task-Agent selection, and task-Team activation independently looked up a Team using its coordinator Agent address.
-- Refactor decision: `No Broader Refactor Needed`; established canonical address, rooted index, persistent/task registries, and task lifecycle owners remain correct. One explicit internal resolved-delivery boundary is required to preserve the existing execution-kind discriminant across child TeamRuns; exact source-Team/coordinator/chain validation corrects the second seam.
+- Reviewed change posture: one bounded active task-Team peer routing fix after IR-017 source Pass.
+- Root cause: root logical resolution retained the sender's exact task execution address, but recipient materialization unconditionally used the root manager's empty task chain and persistent rooted AgentRun, causing an accepted message to start the persistent peer.
+- Refactor decision: `No Broader Refactor Needed`; established canonical address, root resolver, active task-Team directory, resolved-delivery boundary, and task lifecycle owners remain correct. One focused resolver proves active sender scope, while the coordinator accepts an explicit already-resolved route for the exact task TeamRun.
 - Implementation matched the reviewed assessment: `Yes`.
 - New Design Impact or Requirement Gap found during implementation: `No`.
 
 ## Routing
 
-Route this cumulative SR-015 / IR-017 package to `code_reviewer` for focused `CR-F-016` / `CR-F-017` source re-review while preserving resolved `CR-F-012` through `CR-F-015`. On Pass, route to `api_e2e_engineer` to resume `API-REV-012` at 84%, preserve its cumulative durable delta, rerun AutoByteus, and complete Codex/Claude nested-Team validation. Any repository-resident durable coverage additions, edits, or removals must return through proportional code review before delivery.
+Route this cumulative SR-015 / IR-018 package to `code_reviewer` for focused `CR-F-018` source re-review while preserving resolved `CR-F-012` through `CR-F-017`. On Pass, route to `api_e2e_engineer` to resume `API-REV-013` at 90%, preserve its cumulative durable delta and fixture corrections, rerun AutoByteus, and complete Codex/Claude nested-Team validation. Any repository-resident durable coverage additions, edits, or removals must return through proportional code review before delivery.
