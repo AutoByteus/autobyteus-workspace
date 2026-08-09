@@ -1,3 +1,4 @@
+import type { MediaOperationOptions } from '../utils/operation-options.js';
 import type { MultimediaConfig } from '../utils/multimedia-config.js';
 import type { VideoGenerationResponse } from '../utils/response-types.js';
 import type { VideoModel } from './video-model.js';
@@ -15,6 +16,7 @@ export abstract class BaseVideoClient {
     prompt: string,
     inputImageUrls?: string[] | null,
     generationConfig?: Record<string, unknown>,
+    operationOptions?: MediaOperationOptions,
     ...args: unknown[]
   ): Promise<VideoGenerationResponse>;
 

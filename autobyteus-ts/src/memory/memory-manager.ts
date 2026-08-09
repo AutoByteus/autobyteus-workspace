@@ -55,7 +55,11 @@ export type {
 } from './llm-request-recovery.js';
 
 export type ToolIntentIngestionOptions = { appendToWorkingContext?: boolean; assistantContent?: string | null; assistantReasoning?: string | null };
-export type ToolResultIngestionOptions = { source?: string; appendToWorkingContext?: boolean };
+export type ToolResultIngestionOptions = {
+  source?: string;
+  appendToWorkingContext?: boolean;
+  correlationIdByInvocationId?: ReadonlyMap<string, string>;
+};
 import {
   MemoryManagerWorkingContextController,
   type WorkingContextAppendOptions,
@@ -324,7 +328,13 @@ export class MemoryManager {
       batchIdentityKeys.add(identityKey);
     }
     const prepared = accepted.map(({ registration, canonicalToolName }) => ({
-      trace: buildNativeToolResultTrace(registration, canonicalToolName, sourceEvent, (id) => this.nextSeq(id)),
+      trace: buildNativeToolResultTrace(
+        registration,
+        canonicalToolName,
+        sourceEvent,
+        (id) => this.nextSeq(id),
+        options?.correlationIdByInvocationId?.get(registration.identity.toolCallId) ?? null,
+      ),
       canonicalToolName,
     }));
     if (prepared.length) this.store.add(prepared.map(({ trace }) => trace));

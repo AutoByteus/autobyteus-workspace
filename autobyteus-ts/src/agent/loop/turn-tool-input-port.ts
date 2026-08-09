@@ -1,7 +1,7 @@
 import { ToolExecutionApprovalEvent, ToolResultEvent } from '../events/agent-events.js';
 import { AgentInterruptionError } from '../interruption/agent-interruption.js';
 
-export type TurnToolInputPortCloseReason = 'completed' | 'interrupted' | 'failed' | 'stopped';
+export type TurnToolInputPortCloseReason = 'completed' | 'interrupted' | 'failed' | 'stopped' | 'recovered';
 
 export type PostTurnToolMessageResult = {
   accepted: boolean;
