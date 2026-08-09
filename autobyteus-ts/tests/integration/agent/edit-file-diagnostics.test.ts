@@ -703,7 +703,6 @@ deploy:
 ].map(createScenarioDefinition);
 
 runDiagnostics('edit_file diagnostics integration (LM Studio)', () => {
-  let originalParserEnv: string | undefined;
   const originalConsole = {
     log: console.log,
     info: console.info,
@@ -714,8 +713,6 @@ runDiagnostics('edit_file diagnostics integration (LM Studio)', () => {
     typeof firstArg === 'string' && firstArg.startsWith('[edit_file diagnostics]');
 
   beforeEach(() => {
-    originalParserEnv = process.env.AUTOBYTEUS_STREAM_PARSER;
-    process.env.AUTOBYTEUS_STREAM_PARSER = 'api_tool_call';
     SkillRegistry.getInstance().clear();
     resetFactory();
     console.log = (...args: unknown[]) => {
@@ -741,11 +738,6 @@ runDiagnostics('edit_file diagnostics integration (LM Studio)', () => {
   });
 
   afterEach(() => {
-    if (originalParserEnv === undefined) {
-      delete process.env.AUTOBYTEUS_STREAM_PARSER;
-    } else {
-      process.env.AUTOBYTEUS_STREAM_PARSER = originalParserEnv;
-    }
     SkillRegistry.getInstance().clear();
     resetFactory();
     console.log = originalConsole.log;

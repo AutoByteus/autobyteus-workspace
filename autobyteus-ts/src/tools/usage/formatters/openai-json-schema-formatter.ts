@@ -1,11 +1,11 @@
-import { UsageFormatter } from './base-formatter.js';
+import { BaseSchemaFormatter } from './base-formatter.js';
 import { ToolDefinition } from '../../registry/tool-definition.js';
 import {
   normalizeOpenAiToolParameters,
   type OpenAiToolSchemaOptions
 } from './openai-tool-schema-normalizer.js';
 
-export class OpenAiJsonSchemaFormatter implements UsageFormatter {
+export class OpenAiJsonSchemaFormatter implements BaseSchemaFormatter {
   constructor(private readonly options: OpenAiToolSchemaOptions = {}) {}
 
   provide(tool: ToolDefinition): Record<string, unknown> {

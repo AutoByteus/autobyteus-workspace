@@ -394,7 +394,6 @@ to `LMSTUDIO_TARGET_TEXT_MODEL`/default Qwen fragment discovery.
 
 ```bash
 RUN_MIXED_TASK_DELEGATION_E2E=1 RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 \
-  AUTOBYTEUS_STREAM_PARSER=api_tool_call \
   LMSTUDIO_MODEL_ID='<loaded-lmstudio-model-id>' \
   CODEX_E2E_TASK_DELEGATION_MODEL=gpt-5.5 \
   pnpm -C autobyteus-server-ts exec vitest run \

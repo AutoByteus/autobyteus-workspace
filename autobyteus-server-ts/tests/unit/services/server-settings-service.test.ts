@@ -31,11 +31,6 @@ import {
   FEATURED_CATALOG_ITEMS_SETTING_KEY,
   serializeFeaturedCatalogItemsSetting,
 } from "../../../src/config/featured-catalog-items-setting.js";
-import {
-  AUTOBYTEUS_STREAM_PARSER_SETTING_KEY,
-  STREAM_PARSER_PROVIDER_NATIVE_VALUE,
-  STREAM_PARSER_SETTING_VALUES,
-} from "../../../src/config/stream-parser-setting.js";
 import { WORKING_CONTEXT_COMPACTION_STRATEGY_SETTING_KEY } from "../../../src/config/working-context-compaction-strategy-setting.js";
 import { STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY } from "../../../src/config/streaming-content-flush-interval-setting.js";
 
@@ -72,6 +67,7 @@ describe("ServerSettingsService", () => {
       isEditable: false,
       isDeletable: false,
     });
+    expect(settings.find((item) => item.key === "AUTOBYTEUS_STREAM_PARSER")).toBeUndefined();
   });
 
   it("sorts settings by key", () => {
@@ -197,25 +193,6 @@ describe("ServerSettingsService", () => {
     });
   });
 
-  it("exposes stream parser as predefined editable metadata", () => {
-    mockConfig.getConfigData.mockReturnValue({
-      [AUTOBYTEUS_STREAM_PARSER_SETTING_KEY]: "json",
-    });
-
-    const service = new ServerSettingsService();
-    const settings = service.getAvailableSettings();
-
-    expect(settings.find((item) => item.key === AUTOBYTEUS_STREAM_PARSER_SETTING_KEY)).toMatchObject({
-      value: "json",
-      description: expect.stringContaining("Streaming tool-call parser override"),
-      isEditable: true,
-      isDeletable: false,
-    });
-    expect(settings.find((item) => item.key === AUTOBYTEUS_STREAM_PARSER_SETTING_KEY)?.description).toContain(
-      "api_tool_call",
-    );
-  });
-
   it("exposes and validates the live response update interval", () => {
     mockConfig.getConfigData.mockReturnValue({
       [STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY]: "1000",
@@ -314,51 +291,6 @@ describe("ServerSettingsService", () => {
     expect(ok).toBe(false);
     expect(message).toContain("read-only, workspace-write, danger-full-access");
     expect(mockConfig.set).not.toHaveBeenCalled();
-  });
-
-  it.each(STREAM_PARSER_SETTING_VALUES)(
-    "normalizes and saves valid stream parser value %s",
-    (parserValue) => {
-      mockConfig.set.mockImplementation(() => undefined);
-
-      const service = new ServerSettingsService();
-      const [ok, message] = service.updateSetting(
-        AUTOBYTEUS_STREAM_PARSER_SETTING_KEY,
-        ` ${parserValue.toUpperCase()} `,
-      );
-
-      expect(ok).toBe(true);
-      expect(message).toMatch(/updated successfully/i);
-      expect(mockConfig.set).toHaveBeenCalledWith(
-        AUTOBYTEUS_STREAM_PARSER_SETTING_KEY,
-        parserValue,
-      );
-    },
-  );
-
-  it("rejects invalid predefined stream parser values before persistence", () => {
-    const service = new ServerSettingsService();
-    const [ok, message] = service.updateSetting(AUTOBYTEUS_STREAM_PARSER_SETTING_KEY, "yaml");
-
-    expect(ok).toBe(false);
-    expect(message).toContain(STREAM_PARSER_SETTING_VALUES.join(", "));
-    expect(mockConfig.set).not.toHaveBeenCalled();
-  });
-
-  it("saves api_tool_call as the canonical stream parser provider-native value", () => {
-    mockConfig.set.mockImplementation(() => undefined);
-
-    const service = new ServerSettingsService();
-    const [ok] = service.updateSetting(
-      AUTOBYTEUS_STREAM_PARSER_SETTING_KEY,
-      STREAM_PARSER_PROVIDER_NATIVE_VALUE,
-    );
-
-    expect(ok).toBe(true);
-    expect(mockConfig.set).toHaveBeenCalledWith(
-      AUTOBYTEUS_STREAM_PARSER_SETTING_KEY,
-      "api_tool_call",
-    );
   });
 
   it("preserves custom setting values without predefined normalization", () => {

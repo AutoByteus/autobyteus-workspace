@@ -332,13 +332,11 @@ Responses streaming (official OpenAI) emits:
 Custom OpenAI-compatible providers stay on the existing OpenAI-style tool-call
 path rather than the Responses event format.
 
-In that OpenAI-compatible path, native API tool-call mode keeps tool metadata
-and history provider-native: schemas are sent through `tools`, the default
+In that OpenAI-compatible path, tool metadata and history stay provider-native:
+schemas are sent through `tools`, the default
 agent/server path leaves `tool_choice` unset, and LM Studio uses
-`assistant.tool_calls` plus `role: "tool"` history instead of prompt-template
-`[TOOL_CALL]` / `[TOOL_RESULT]` text. Legacy text-shaped LM Studio history
-remains available only when an explicit text-parser mode is selected. Native
-text-only tool-result continuations render the existing working context directly
+`assistant.tool_calls` plus `role: "tool"` history. No prompt-template or
+text-history fallback remains. Text-only tool-result continuations render the existing working context directly
 and do not append an extra aggregate `role: "user"` message containing tool
 results. If a processed tool result includes context-file media, the request
 keeps a user/media carrier so the media can be sent; that carrier uses semantic
@@ -357,10 +355,9 @@ omits that extension field.
 The same native-history rule applies to the first-party provider adapters that
 have native tool APIs. `ToolCallPayload` and `ToolResultPayload` remain the
 internal memory contract, while each prompt renderer converts those semantic
-entries to the provider's wire format only when `resolveToolCallFormat()` is
-`api_tool_call`:
+entries to the provider's wire format at the request boundary:
 
-| Provider path | Native history shape in `api_tool_call` mode |
+| Provider path | Native history shape |
 | --- | --- |
 | DeepSeek OpenAI-compatible path | OpenAI-compatible `assistant.tool_calls` followed by matching `role: "tool"` messages; assistant messages with preserved `Message.reasoning_content` also render DeepSeek `reasoning_content`. |
 | Gemini | model turns with `functionCall` parts followed by user `functionResponse` parts, preserving the function-call `id` when present. |
@@ -385,16 +382,17 @@ If tool results settle in a different order than the assistant's tool-call
 batch, native renderers replay those results in the original assistant
 `ToolCallSpec[]` order. Providers that require coalesced result turns
 (currently Gemini and Anthropic) render one ordered result turn/block group for
-the batch. When `resolveToolCallFormat()` is `xml`, `json`, or `sentinel`, the
-same providers use their explicit text-history renderers and keep legacy
-`[TOOL_CALL]` / `[TOOL_RESULT]` history isolated to those non-native modes.
-Native provider payloads must also omit the older synthetic aggregate
+the batch. Provider payloads must also omit synthetic aggregate
 tool-result user text, including the `The following tool executions have
 completed...` prefix, legacy `Tool: <name> (ID: ...)` lines, aggregate `Status:
 Success` markers, and internal continuation labels as user-facing text.
 Provider-required media carrier messages remain valid when their text is the
 semantic completed-tool wording and their attachments are the current
 context-file media.
+
+Provider integrations without a normalized native tool-call channel remain
+ordinary content/media providers; they do not receive a local text-encoded tool
+protocol.
 
 ### Provider Media Payload Rendering
 

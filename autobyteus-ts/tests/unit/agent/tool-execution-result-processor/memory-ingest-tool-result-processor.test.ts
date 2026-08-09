@@ -104,7 +104,6 @@ describe('MemoryIngestToolResultProcessor', () => {
   });
 
   it('defers active native API batch results to ordered batch ingestion', async () => {
-    process.env.AUTOBYTEUS_STREAM_PARSER = 'api_tool_call';
     const context = makeContext();
     const processor = new MemoryIngestToolResultProcessor();
     const memoryManager = {

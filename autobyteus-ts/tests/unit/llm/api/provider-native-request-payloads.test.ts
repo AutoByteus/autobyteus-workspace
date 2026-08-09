@@ -331,10 +331,7 @@ const expectNoLegacyProviderText = (payload: unknown) => {
 
 describe('provider-native API request payloads', () => {
   beforeEach(() => {
-    process.env = {
-      ...originalEnv,
-      AUTOBYTEUS_STREAM_PARSER: 'api_tool_call',
-    };
+    process.env = { ...originalEnv };
   });
 
   afterEach(() => {

@@ -10,7 +10,7 @@ import {
   parsePositiveNumberConfig,
   resolveConfiguredDirectoryPath,
 } from "./config-value-parsers.js";
-import { LOCAL_IMPORT_CREDENTIAL_ALIAS_NAMES } from "../secret-management/provisioning/local-import-credential-alias-registry.js";
+import { forbiddenGenericSettingNames, retiredSettingNames } from "./app-config-setting-policy.js";
 import {
   ApplicationDatabaseLocation,
   toPrismaSqliteUrl,
@@ -20,16 +20,6 @@ import {
   replaceEnvironmentAssignmentFileDurably,
   updateEnvironmentAssignmentFile,
 } from "./environment-assignment-file.js";
-
-const forbiddenGenericSettingNames = new Set<string>([
-  ...LOCAL_IMPORT_CREDENTIAL_ALIAS_NAMES,
-  "QWEN_API_KEY",
-  "ZHIPU_API_KEY",
-  "OLLAMA_API_KEY",
-  "GOOGLE_CSE_API_KEY",
-  "CLAUDE_CODE_API_KEY",
-  "CLAUDE_CODE_API_KEY_FILE_DESCRIPTOR",
-]);
 
 export class AppConfigError extends Error {
   constructor(message: string) {
@@ -93,6 +83,7 @@ export class AppConfig {
     }
 
     this.loadConfigData();
+    this.discardRetiredSettings();
     this.initializeBaseUrl();
 
     if (this.get("DB_TYPE", "sqlite") === "sqlite") {
@@ -565,7 +556,16 @@ export class AppConfig {
     process.env[key] = value;
   }
 
+  private discardRetiredSettings(): void {
+    for (const key of retiredSettingNames) {
+      if (process.env[key] !== undefined || this.configData[key] !== undefined) this.delete(key);
+    }
+  }
+
   private assertGenericSettingAllowed(key: string, operation: "written" | "removed"): void {
+    if (operation === "written" && retiredSettingNames.has(key)) {
+      throw new AppConfigError(`Server setting '${key}' has been retired and cannot be set.`);
+    }
     if (forbiddenGenericSettingNames.has(key)) {
       throw new AppConfigError(
         `Sensitive values must be ${operation} through a subject-specific secret service.`,

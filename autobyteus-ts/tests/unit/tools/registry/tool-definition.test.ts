@@ -4,38 +4,6 @@ import { ParameterSchema } from '../../../../src/utils/parameter-schema.js';
 import { ToolOrigin } from '../../../../src/tools/tool-origin.js';
 import { BaseTool } from '../../../../src/tools/base-tool.js';
 
-vi.mock('../../../../src/tools/usage/formatters/default-json-schema-formatter.js', () => {
-  return {
-    DefaultJsonSchemaFormatter: class {
-      provide = vi.fn().mockReturnValue({ mocked: 'json' });
-    }
-  };
-});
-
-vi.mock('../../../../src/tools/usage/formatters/default-xml-schema-formatter.js', () => {
-  return {
-    DefaultXmlSchemaFormatter: class {
-      provide = vi.fn().mockReturnValue('<tool name="MyTestTool">...</tool>');
-    }
-  };
-});
-
-vi.mock('../../../../src/tools/usage/formatters/default-xml-example-formatter.js', () => {
-  return {
-    DefaultXmlExampleFormatter: class {
-      provide = vi.fn().mockReturnValue('<tool name="MyTestTool">...</tool>');
-    }
-  };
-});
-
-vi.mock('../../../../src/tools/usage/formatters/default-json-example-formatter.js', () => {
-  return {
-    DefaultJsonExampleFormatter: class {
-      provide = vi.fn().mockReturnValue({ tool: { function: 'MyTestTool' } });
-    }
-  };
-});
-
 class MockTool extends BaseTool {
   _execute() { return Promise.resolve(); }
   static getDescription() { return "desc"; }
@@ -105,23 +73,4 @@ describe('ToolDefinition', () => {
         expect(descriptionProvider).toHaveBeenCalledTimes(1);
     });
 
-    it('test_get_usage_xml', () => {
-        const xml = sampleToolDef.getUsageXml();
-        expect(xml).toBe('<tool name="MyTestTool">...</tool>');
-    });
-
-    it('test_get_usage_json', () => {
-        const json = sampleToolDef.getUsageJson();
-        expect(json).toEqual({ mocked: 'json' });
-    });
-
-    it('test_get_usage_xml_example', () => {
-        const xml = sampleToolDef.getUsageXmlExample();
-        expect(xml).toBe('<tool name="MyTestTool">...</tool>');
-    });
-
-    it('test_get_usage_json_example', () => {
-        const json = sampleToolDef.getUsageJsonExample();
-        expect(json).toEqual({ tool: { function: 'MyTestTool' } });
-    });
 });

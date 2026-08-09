@@ -37,15 +37,12 @@ import {
 } from "../../../src/runtime-management/codex/codex-sandbox-mode-setting.js";
 import { FEATURED_CATALOG_ITEMS_SETTING_KEY } from "../../../src/config/featured-catalog-items-setting.js";
 import {
-  AUTOBYTEUS_STREAM_PARSER_SETTING_KEY,
-  STREAM_PARSER_PROVIDER_NATIVE_VALUE,
-  STREAM_PARSER_SETTING_VALUES,
-} from "../../../src/config/stream-parser-setting.js";
-import {
   DEFAULT_STREAMING_CONTENT_FLUSH_INTERVAL_MS,
   STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY,
 } from "../../../src/config/streaming-content-flush-interval-setting.js";
 import { WORKING_CONTEXT_COMPACTION_STRATEGY_SETTING_KEY } from "../../../src/config/working-context-compaction-strategy-setting.js";
+
+const AUTOBYTEUS_STREAM_PARSER_SETTING_KEY = "AUTOBYTEUS_STREAM_PARSER";
 
 class RecordingPromptRenderer extends BasePromptRenderer {
   async render(messages: Message[]): Promise<Array<Record<string, unknown>>> {
@@ -408,15 +405,10 @@ describe("Server settings GraphQL e2e", () => {
     );
   });
 
-  it("validates and exposes the stream parser override through the GraphQL settings boundary", async () => {
+  it("discards and rejects the retired stream-parser key through the GraphQL settings boundary", async () => {
     const updateMutation = `
       mutation UpdateServerSetting($key: String!, $value: String!) {
         updateServerSetting(key: $key, value: $value)
-      }
-    `;
-    const deleteMutation = `
-      mutation DeleteServerSetting($key: String!) {
-        deleteServerSetting(key: $key)
       }
     `;
     const listQuery = `
@@ -430,60 +422,43 @@ describe("Server settings GraphQL e2e", () => {
         }
       }
     `;
-
-    for (const parserValue of STREAM_PARSER_SETTING_VALUES) {
-      const rawValue = parserValue === "xml" ? " XML " : parserValue.toUpperCase();
-      const updated = await execGraphql<{ updateServerSetting: string }>(updateMutation, {
-        key: AUTOBYTEUS_STREAM_PARSER_SETTING_KEY,
-        value: rawValue,
-      });
-      expect(updated.updateServerSetting).toContain("updated successfully");
-      expect(process.env[AUTOBYTEUS_STREAM_PARSER_SETTING_KEY]).toBe(parserValue);
-
-      const listed = await execGraphql<{
-        getServerSettings: Array<{
-          key: string;
-          value: string;
-          description: string;
-          isEditable: boolean;
-          isDeletable: boolean;
-        }>;
-      }>(listQuery);
-      const streamParserSetting = listed.getServerSettings.find(
-        (entry) => entry.key === AUTOBYTEUS_STREAM_PARSER_SETTING_KEY,
-      );
-
-      expect(streamParserSetting).toMatchObject({
-        value: parserValue,
-        isEditable: true,
-        isDeletable: false,
-      });
-      expect(streamParserSetting?.description).toContain("Streaming tool-call parser override");
-      expect(streamParserSetting?.description).toContain(STREAM_PARSER_PROVIDER_NATIVE_VALUE);
-      expect(streamParserSetting?.description).not.toBe("Custom user-defined setting");
-    }
-
-    const invalidUpdate = await execGraphql<{ updateServerSetting: string }>(updateMutation, {
-      key: AUTOBYTEUS_STREAM_PARSER_SETTING_KEY,
-      value: "yaml",
-    });
-    expect(invalidUpdate.updateServerSetting).toContain(
-      STREAM_PARSER_SETTING_VALUES.join(", "),
+    fs.writeFileSync(
+      path.join(tempDir, ".env"),
+      [
+        "AUTOBYTEUS_SERVER_HOST=http://localhost:8000",
+        "APP_ENV=test",
+        `${AUTOBYTEUS_STREAM_PARSER_SETTING_KEY}=xml`,
+        "UNRELATED_SETTING=preserved",
+        "",
+      ].join("\n"),
+      "utf-8",
     );
-    expect(process.env[AUTOBYTEUS_STREAM_PARSER_SETTING_KEY]).toBe(
-      STREAM_PARSER_PROVIDER_NATIVE_VALUE,
-    );
+    process.env[AUTOBYTEUS_STREAM_PARSER_SETTING_KEY] = "sentinel";
+    appConfigProvider.config.initialize();
 
-    const deleteResult = await execGraphql<{ deleteServerSetting: string }>(deleteMutation, {
+    const listed = await execGraphql<{
+      getServerSettings: Array<{ key: string; value: string }>;
+    }>(listQuery);
+    expect(listed.getServerSettings.find(
+      (entry) => entry.key === AUTOBYTEUS_STREAM_PARSER_SETTING_KEY,
+    )).toBeUndefined();
+    expect(listed.getServerSettings.find(
+      (entry) => entry.key === "UNRELATED_SETTING",
+    )).toMatchObject({ value: "preserved" });
+    expect(process.env[AUTOBYTEUS_STREAM_PARSER_SETTING_KEY]).toBeUndefined();
+
+    const rejectedUpdate = await execGraphql<{ updateServerSetting: string }>(updateMutation, {
       key: AUTOBYTEUS_STREAM_PARSER_SETTING_KEY,
+      value: "api_tool_call",
     });
-    expect(deleteResult.deleteServerSetting).toContain("managed by the system");
+    expect(rejectedUpdate.updateServerSetting).toBe(
+      "Error updating server setting: SERVER_SETTING_UPDATE_REJECTED",
+    );
+    expect(process.env[AUTOBYTEUS_STREAM_PARSER_SETTING_KEY]).toBeUndefined();
 
     const envFileContents = fs.readFileSync(path.join(tempDir, ".env"), "utf-8");
-    expect(envFileContents).toContain(
-      `${AUTOBYTEUS_STREAM_PARSER_SETTING_KEY}=${STREAM_PARSER_PROVIDER_NATIVE_VALUE}`,
-    );
-    expect(envFileContents).not.toContain(`${AUTOBYTEUS_STREAM_PARSER_SETTING_KEY}=yaml`);
+    expect(envFileContents).not.toContain(`${AUTOBYTEUS_STREAM_PARSER_SETTING_KEY}=`);
+    expect(envFileContents).toContain("UNRELATED_SETTING=preserved");
   });
 
   it("persists and reports the effective live response interval through GraphQL", async () => {
@@ -685,45 +660,6 @@ describe("Server settings GraphQL e2e", () => {
     expect(codexSandboxSetting?.description).not.toBe("Custom user-defined setting");
     expect(fs.readFileSync(path.join(tempDir, ".env"), "utf-8")).not.toContain(
       CODEX_APP_SERVER_SANDBOX_SETTING_KEY,
-    );
-  });
-
-  it("lists effective stream parser values with predefined metadata even when not persisted", async () => {
-    process.env[AUTOBYTEUS_STREAM_PARSER_SETTING_KEY] = "sentinel";
-    const listQuery = `
-      query GetServerSettings {
-        getServerSettings {
-          key
-          value
-          description
-          isEditable
-          isDeletable
-        }
-      }
-    `;
-
-    const listed = await execGraphql<{
-      getServerSettings: Array<{
-        key: string;
-        value: string;
-        description: string;
-        isEditable: boolean;
-        isDeletable: boolean;
-      }>;
-    }>(listQuery);
-
-    const streamParserSetting = listed.getServerSettings.find(
-      (entry) => entry.key === AUTOBYTEUS_STREAM_PARSER_SETTING_KEY,
-    );
-    expect(streamParserSetting).toMatchObject({
-      value: "sentinel",
-      isEditable: true,
-      isDeletable: false,
-    });
-    expect(streamParserSetting?.description).toContain("future streamed agent responses");
-    expect(streamParserSetting?.description).not.toBe("Custom user-defined setting");
-    expect(fs.readFileSync(path.join(tempDir, ".env"), "utf-8")).not.toContain(
-      AUTOBYTEUS_STREAM_PARSER_SETTING_KEY,
     );
   });
 

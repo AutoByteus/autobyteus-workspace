@@ -1,0 +1,21 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/remove-xml-tool-calling/autobyteus-ts
+
+stdout | tests/unit/tools/file/file-tool-schema.test.ts > generic file-tool native path schemas > uses identical canonical path/base_dir wording and optionality across all three tools
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+
+stdout | tests/unit/tools/file/read-file.test.ts > read_file tool definition > registers definition with expected schema
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/unit/tools/file/read-file.test.ts > read_file tool definition > provides the native OpenAI JSON schema
+Successfully registered tool definition: 'read_file'
+
+ ✓ tests/unit/tools/file/file-tool-schema.test.ts (1 test) 5ms
+ ✓ tests/unit/tools/file/read-file.test.ts (2 tests) 5ms
+
+ Test Files  2 passed (2)
+      Tests  3 passed (3)
+   Start at  09:16:39
+   Duration  267ms (transform 227ms, setup 39ms, import 255ms, tests 9ms, environment 0ms)

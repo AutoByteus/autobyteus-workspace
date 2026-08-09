@@ -1,3 +1,4 @@
+import type { MediaOperationOptions } from '../utils/operation-options.js';
 import type { MultimediaConfig } from '../utils/multimedia-config.js';
 import type { SpeechGenerationResponse } from '../utils/response-types.js';
 import type { AudioModel } from './audio-model.js';
@@ -14,6 +15,7 @@ export abstract class BaseAudioClient {
   abstract generateSpeech(
     prompt: string,
     generationConfig?: Record<string, unknown>,
+    operationOptions?: MediaOperationOptions,
     ...args: unknown[]
   ): Promise<SpeechGenerationResponse>;
 

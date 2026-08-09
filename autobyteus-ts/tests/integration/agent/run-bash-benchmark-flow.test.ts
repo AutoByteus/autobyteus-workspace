@@ -603,21 +603,13 @@ const RUN_BASH_SCENARIOS: ScenarioDefinition[] = [
 ];
 
 runIntegration('run_bash scenario benchmark integration (LM Studio)', () => {
-  let originalParserEnv: string | undefined;
 
   beforeEach(() => {
-    originalParserEnv = process.env.AUTOBYTEUS_STREAM_PARSER;
-    process.env.AUTOBYTEUS_STREAM_PARSER = 'api_tool_call';
     SkillRegistry.getInstance().clear();
     resetFactory();
   });
 
   afterEach(() => {
-    if (originalParserEnv === undefined) {
-      delete process.env.AUTOBYTEUS_STREAM_PARSER;
-    } else {
-      process.env.AUTOBYTEUS_STREAM_PARSER = originalParserEnv;
-    }
     SkillRegistry.getInstance().clear();
     resetFactory();
   });

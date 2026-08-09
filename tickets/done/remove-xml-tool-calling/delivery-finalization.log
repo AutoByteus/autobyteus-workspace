@@ -1,0 +1,56 @@
+DELIVERY FINALIZATION LOG
+Ticket: remove-xml-tool-calling
+Date: 2026-08-09 Europe/Berlin
+
+USER VERIFICATION
+result = accepted
+message = perfect. its working. lets finalize, no need to release a new version
+release requested = no
+
+FINALIZATION-TIME TARGET REFRESH
+command = git fetch origin personal
+origin/personal before = 3edb88bc6f7e15d074474f51c870a13d69d5d7b7
+origin/personal after  = 3edb88bc6f7e15d074474f51c870a13d69d5d7b7
+ticket committed ahead / behind before archive commit = 3 / 0
+renewed verification required = no
+
+TARGET CHECKOUT
+path = /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+branch = personal
+HEAD = 3edb88bc6f7e15d074474f51c870a13d69d5d7b7
+unrelated untracked state preserved = .article-work/
+
+FINALIZATION EXECUTION
+status = complete
+ticket archive = completed: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-xml-tool-calling
+ticket branch commit = 033e47d85c466a126ba2c8895e5f32aad4f6f3f3
+ticket branch push = completed: origin/codex/remove-xml-tool-calling
+validation log normalization = completed: generated log trailing whitespace and excess blank EOF lines removed; evidence outcomes retained
+full origin/personal..ticket diff check = pass
+target refresh before merge = unchanged at 3edb88bc6f7e15d074474f51c870a13d69d5d7b7
+target merge commit = d4d683c799e0d3de4044de1bdaab8a09e056c1cd
+ticket ancestry in target = pass
+target base ancestry in merge = pass
+target push = completed: origin/personal at d4d683c799e0d3de4044de1bdaab8a09e056c1cd
+
+POST-FINALIZATION CLEANUP
+dedicated worktree removal = completed
+worktree prune = completed
+local codex/remove-xml-tool-calling deletion = completed
+remote codex/remove-xml-tool-calling deletion = completed
+unrelated .article-work/ preservation = pass, untouched
+local Electron app/DMG/ZIP disposition = removed with dedicated worktree after successful user test
+
+RELEASE / DEPLOYMENT
+version bump = not performed
+release commit = not performed
+tag = not performed
+publication = not performed
+notarization = not performed
+deployment / rollout = not performed
+reason = explicit user request for no new release
+
+FINAL RESULT
+repository finalization = complete
+release = intentionally not applicable
+blockers = none
