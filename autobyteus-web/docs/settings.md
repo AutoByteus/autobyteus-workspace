@@ -70,6 +70,29 @@ inherits its blank runtime/model launch fields from the parent run. The card
 stacks navigation/content and uses full-width controls on narrow screens while
 retaining the desktop sidebar row.
 
+## Server Settings: Live Response Streaming
+
+Settings -> Server Settings -> Basics contains a node-bound **Live response
+update interval (ms)** card. It controls the sole normal WebSocket content
+cadence on the server selected by the current window; it is not a per-agent,
+per-team, runtime, provider, or frontend-renderer preference.
+
+- `getEffectiveStreamingContentFlushIntervalMs` returns the bound server's
+  effective value. An absent or invalid direct configuration resolves to the
+  recommended default of 500 ms without writing configuration merely because
+  the card loaded.
+- Save accepts only whole milliseconds from 100 through 2,000 and persists the
+  canonical `AUTOBYTEUS_STREAMING_CONTENT_FLUSH_INTERVAL_MS` setting through the
+  existing server-setting mutation. Reset writes 500 ms.
+- A successful change affects the next newly opened content window on active
+  and future streams without restarting the application or server. A window
+  already in flight keeps the interval captured when it opened.
+- Smaller values display live progress more frequently; larger values reduce
+  transport and UI update work. The frontend adds no second cadence timer.
+- Loading, mutation, validation, and unavailable-node failures remain explicit.
+  Rebinding the window reads the newly bound server's effective value, so two
+  nodes can legitimately retain different settings without cross-node leakage.
+
 The data flow follows a top-down approach:
 
 1.  **Orchestration Layer (Stores)**: Manages lifecycle, user input, and WebSocket streaming connections.

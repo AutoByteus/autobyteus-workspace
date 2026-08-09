@@ -38,6 +38,28 @@ export class AgentInterruptRequestedEvent extends LifecycleEvent {
   }
 }
 
+export class AgentTurnRecoveredEvent extends LifecycleEvent {
+  turnId: string;
+  reason: string;
+  recoveredToolInvocationIds: string[];
+
+  constructor(turnId: string, reason: string, recoveredToolInvocationIds: string[] = []) {
+    super();
+    this.turnId = turnId;
+    this.reason = reason;
+    this.recoveredToolInvocationIds = [...recoveredToolInvocationIds];
+  }
+}
+
+export class AgentRuntimeRecoveredEvent extends LifecycleEvent {
+  reason: string;
+
+  constructor(reason: string) {
+    super();
+    this.reason = reason;
+  }
+}
+
 export class AgentTurnInterruptedEvent extends LifecycleEvent {
   turnId: string;
   reason: string;

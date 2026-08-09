@@ -1,0 +1,23 @@
+{
+  "scenarioId": "WS-EGRESS-001",
+  "acceptanceCriteria": ["AC-002", "AC-003", "AC-004"],
+  "configuration": {
+    "flushIntervalMs": 500,
+    "runtimeKind": "autobyteus",
+    "transport": "real Fastify WebSocket through AgentRun and AgentStreamHandler",
+    "inputShape": "30 consecutive same-identity SEGMENT_CONTENT source events in one canonical source batch"
+  },
+  "expected": {
+    "internalCanonicalContentEvents": 30,
+    "ordinaryClientContentFrames": 1,
+    "exactDelta": "concatenation of all 30 source deltas"
+  },
+  "observed": {
+    "internalCanonicalContentEvents": 30,
+    "ordinaryClientContentFrames": 30,
+    "windowDelayApplied": true
+  },
+  "result": "FAIL",
+  "preliminaryClassification": "Implementation defect: canonical running AGENT_STATUS companions occur between fine-grained content events and the egress policy seals the aggregate tail for every companion, preventing content coalescing even though the timer delays delivery.",
+  "evidence": "ws-default-window-rate-failure.log"
+}

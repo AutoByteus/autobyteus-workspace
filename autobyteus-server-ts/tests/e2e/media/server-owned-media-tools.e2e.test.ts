@@ -454,6 +454,64 @@ describe("server-owned media tools API/E2E boundary", () => {
     ]);
   });
 
+  it("revokes a cancelled image publication lease and suppresses a late provider completion", async () => {
+    const { workspaceRoot } = createWorkspace();
+    const externalOutputDir = createExternalOutputDir();
+    const outputPath = path.join(externalOutputDir, "cancelled.png");
+    const existingBytes = Buffer.from("existing-output-must-survive");
+    fs.writeFileSync(outputPath, existingBytes);
+    let providerStarted!: () => void;
+    const providerHasStarted = new Promise<void>((resolve) => {
+      providerStarted = resolve;
+    });
+    let releaseProvider!: () => void;
+    const providerReleased = new Promise<void>((resolve) => {
+      releaseProvider = resolve;
+    });
+    let signalLateClientCleanup!: () => void;
+    const lateClientCleanupCompleted = new Promise<void>((resolve) => {
+      signalLateClientCleanup = resolve;
+    });
+
+    mockImageClientFactory.createImageClient.mockImplementationOnce((modelIdentifier: string) => ({
+      generateImage: vi.fn(async (
+        prompt: string,
+        inputImages?: string[] | null,
+        generationConfig?: Record<string, unknown> | null,
+      ) => {
+        imageGenerateCalls.push({ modelIdentifier, prompt, inputImages, generationConfig });
+        providerStarted();
+        await providerReleased;
+        return { image_urls: [IMAGE_DATA_URI] };
+      }),
+      editImage: vi.fn(),
+      cleanup: vi.fn(async () => {
+        signalLateClientCleanup();
+      }),
+    }));
+    registerMediaTools();
+
+    const controller = new AbortController();
+    const generateImageTool = defaultToolRegistry.createTool(GENERATE_IMAGE_TOOL_NAME);
+    const execution = generateImageTool.execute(
+      { agentId: "agent-cancel", runId: "run-cancel", workspaceRootPath: workspaceRoot } as any,
+      {
+        prompt: "late provider completion",
+        output_file_path: outputPath,
+      },
+      { signal: controller.signal, turnId: "turn-cancel", invocationId: "invocation-cancel" },
+    );
+
+    await providerHasStarted;
+    controller.abort(new Error("user interrupted"));
+    await expect(execution).rejects.toThrow(/cancelled|aborted/i);
+
+    releaseProvider();
+    await lateClientCleanupCompleted;
+
+    expect(fs.readFileSync(outputPath)).toEqual(existingBytes);
+  });
+
   it("applies default media model setting changes to future AutoByteus schemas and invocations", async () => {
     const { workspaceRoot } = createWorkspace();
     registerMediaTools();

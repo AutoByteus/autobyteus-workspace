@@ -1,0 +1,49 @@
+Delivery integration evidence
+Recorded: 2026-08-09T07:22:51+02:00
+
+[base-refresh]
+bootstrap_base=edf2d428b007eb4f8445da3e1e3e60076b8eec46
+latest_origin_personal=7f0fc49965950d9689726a048371f2e2b78eef31
+reviewed_checkpoint=afdf72d5fffae564fbf74d440967c3f47d307fa0
+integration_merge=2264d112bb52044d203295648aea910f15c7886d
+integration_parents=afdf72d5fffae564fbf74d440967c3f47d307fa0 7f0fc49965950d9689726a048371f2e2b78eef31
+head_vs_origin_personal=8	0 (ahead behind)
+origin_personal_is_ancestor=yes
+
+[overlap-inspection]
+Base and ticket both changed these source owners; this is why post-integration affected checks were rerun:
+autobyteus-server-ts/src/services/server-settings-service.ts
+autobyteus-ts/src/memory/memory-manager.ts
+autobyteus-ts/src/memory/raw-trace-ingestion.ts
+autobyteus-ts/src/memory/store/run-memory-file-store.ts
+
+[post-integration executable checks]
+$ pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-tools/media/media-generation-service.test.ts --no-watch
+ Test Files  1 passed (1)
+      Tests  9 passed (9)
+$ pnpm -C autobyteus-server-ts exec vitest run tests/e2e/media/server-owned-media-tools.e2e.test.ts --no-watch
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+$ pnpm -C autobyteus-ts exec vitest run tests/unit/memory/working-context-tool-protocol-repairer.test.ts tests/unit/memory/memory-manager.test.ts tests/integration/agent/incomplete-tool-call-resume-recovery.test.ts tests/unit/agent/loop/llm-phase-tool-protocol-recovery.test.ts tests/unit/agent/loop/agent-turn-runner.test.ts tests/unit/agent/status/status-deriver.test.ts tests/integration/agent/working-context-snapshot-restore-flow.test.ts --run
+ Test Files  7 passed (7)
+      Tests  38 passed (38)
+$ pnpm -C autobyteus-ts build
+[verify:runtime-deps] OK
+$ pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit
+PASS (exit 0; no output)
+$ git diff --check (post-integration pre-doc state)
+PASS (exit 0; no output)
+
+[delivery documentation checks]
+$ diff -u <(tail -n +2 agent_memory_design.md) <(tail -n +2 agent_memory_design_nodejs.md)
+PASS (only the intended title differs)
+$ required contract terms
+PASS (duration, recovery, raw authority, and bootstrap contracts present)
+$ stale marker-only wording scan
+PASS (stale marker-only repair wording absent)
+$ delivery artifact presence
+PASS (cumulative and delivery artifacts present)
+
+[full delivery diff check]
+$ git diff --check with intent-to-add delivery artifacts
+PASS (exit 0; no output)

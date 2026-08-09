@@ -1,0 +1,3 @@
+$ pnpm -C autobyteus-ts exec tsc -p .api-e2e-tsconfig.json
+Exit code: 0
+No diagnostics. Temporary config selected the two added and one updated durable test files and was removed after execution.

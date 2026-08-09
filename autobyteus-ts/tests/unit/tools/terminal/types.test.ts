@@ -45,4 +45,31 @@ describe('terminal types', () => {
     expect(info.status).toBe('exited');
     expect(info.effectiveCwd).toBe('/tmp/project');
   });
+
+  it('serializes a clean successful result omitting empty/no-op fields (AC-001)', () => {
+    const result = new TerminalResult('', '', 0, false, '/tmp/project');
+
+    const json = result.toJSON();
+
+    expect(json.effectiveCwd).toBe('/tmp/project');
+    expect(json.exitCode).toBe(0);
+    expect(json).not.toHaveProperty('stdout');
+    expect(json).not.toHaveProperty('stderr');
+    expect(json).not.toHaveProperty('timedOut');
+    expect(json).not.toHaveProperty('backgroundProcesses');
+  });
+
+  it('serializes non-empty stderr, timedOut, and backgroundProcesses when present (AC-002)', () => {
+    const background = new BackgroundProcessInfo(1234, 'npm run dev &', '2026-05-14T00:00:00.000Z', 'running', '/tmp/project');
+    const result = new TerminalResult('out', 'warn', 1, true, '/tmp/project', [background]);
+
+    const json = result.toJSON();
+
+    expect(json.stdout).toBe('out');
+    expect(json.effectiveCwd).toBe('/tmp/project');
+    expect(json.exitCode).toBe(1);
+    expect(json.stderr).toBe('warn');
+    expect(json.timedOut).toBe(true);
+    expect(json.backgroundProcesses).toEqual([background]);
+  });
 });

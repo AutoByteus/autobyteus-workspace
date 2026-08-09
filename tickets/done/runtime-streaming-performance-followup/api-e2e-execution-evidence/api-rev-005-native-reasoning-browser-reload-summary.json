@@ -1,0 +1,113 @@
+{
+  "scenarioGroup": "API-REV-005 corrected future-write native reasoning persistence",
+  "result": "PASS",
+  "currentSource": {
+    "commit": "d691736dc66a3d4323d44367d837d57405bf20b8",
+    "branch": "codex/runtime-streaming-performance-followup"
+  },
+  "isolatedRuntime": {
+    "backend": "http://127.0.0.1:29741",
+    "frontend": "http://127.0.0.1:62741",
+    "dataIsolation": "Temporary API/E2E-owned data root; user backend 29695 and frontend 3000 were not stopped or mutated.",
+    "credentialSetup": "Authorized local .env imported through the project secret importer; no secret values retained in evidence.",
+    "provider": "DEEPSEEK",
+    "model": "deepseek-v4-flash",
+    "runtimeKind": "autobyteus"
+  },
+  "identity": {
+    "teamDefinitionId": "api-rev-005-classroom-team",
+    "teamRunId": "api_rev_005_classroom_team_3d89da4e5a784bc2ba2260d25c98f1d4",
+    "memberRouteKey": "professor",
+    "memberRunId": "api_rev_005_professor_7949c7c14e1b4ac2996639d11f53843b",
+    "turnId": "turn_0001"
+  },
+  "futureWritePersistence": {
+    "rawTraceTypes": [
+      "user",
+      "reasoning",
+      "assistant"
+    ],
+    "rawTraceSeq": [
+      1,
+      2,
+      3
+    ],
+    "reasoningBeforeAssistant": true,
+    "reasoningAssistantTimestampEqual": true,
+    "reasoningAssistantTurnIdEqual": true,
+    "reasoningSourceEvent": "LlmPhase",
+    "assistantSourceEvent": "LlmPhase",
+    "reasoningChars": 601,
+    "reasoningSha256": "b0871964204658f2b15e1bcd21093f2d45dad1ebc259bd0e205994c75b4d4528",
+    "assistantChars": 19,
+    "assistantSha256": "bf30401640b330461dbd7946e023fc81beaa3ee3c3015df34b343b41d2cf25d2",
+    "snapshotReasoningExact": true,
+    "snapshotAssistantExact": true,
+    "snapshotRawTraceIds": [
+      "rt_1786177308814_7034813d-9909-4146-818d-110cd46a8e29",
+      "rt_1786177308814_558ff175-6174-4bd2-9f3b-217c1c69b54a"
+    ],
+    "snapshotContainsBothResponseTraceIds": true
+  },
+  "graphqlHydration": {
+    "conversationKinds": [
+      "message",
+      "reasoning",
+      "message"
+    ],
+    "conversationRoles": [
+      "user",
+      null,
+      "assistant"
+    ],
+    "reasoningExactFromRawTrace": true,
+    "assistantExactFromRawTrace": true,
+    "reasoningChars": 601,
+    "reasoningSha256": "b0871964204658f2b15e1bcd21093f2d45dad1ebc259bd0e205994c75b4d4528"
+  },
+  "browser": {
+    "liveCompletion": {
+      "thinkingDisclosureVisible": true,
+      "expandedReasoningChars": 601,
+      "finalAnswerVisible": true
+    },
+    "initialMemberReselection": {
+      "studentSelectedWithoutProfessorContent": true,
+      "professorReselected": true,
+      "thinkingRetained": true,
+      "expandedReasoningChars": 601,
+      "finalAnswerRetained": true
+    },
+    "hardReload": {
+      "navigation": "Full navigate_to http://127.0.0.1:62741/workspace",
+      "selectionBehavior": "Reload intentionally returned to no selected run; reopened through Temp Workspace -> team definition -> historical team run.",
+      "historicalThinkingHydrated": true,
+      "expandedReasoningChars": 601,
+      "finalAnswerHydrated": true
+    },
+    "postReloadMemberReselection": {
+      "studentSelectedWithoutProfessorContent": true,
+      "professorReselected": true,
+      "thinkingRetained": true,
+      "expandedReasoningChars": 601,
+      "finalAnswerRetained": true
+    },
+    "renderedReasoningSha256": "30b47d31d9a419aed4ed95ea984242422d877b337036a09ae4494c48a888de06",
+    "renderingNote": "Rendered Markdown text applies typography normalization; exact byte equality is proven at raw-trace -> GraphQL boundary.",
+    "screenshots": {
+      "api-rev-005-live-thinking-collapsed.png": {
+        "sha256": "51aa7cb41fee95972f3c32c9cdd33c9d0ba6f17c73e756720afe5b86e1988f43",
+        "bytes": 98124
+      },
+      "api-rev-005-live-thinking-expanded.png": {
+        "sha256": "87d15a4268ec5b009c8ee9f3008a79e0cca96aff61768dd2b657cd172ac8a7ea",
+        "bytes": 136149
+      },
+      "api-rev-005-post-reload-reselection-expanded.png": {
+        "sha256": "0b3c6168250ebb7896df1f32b02720b6b17108a3d00833d842bb3684301890db",
+        "bytes": 132630
+      }
+    }
+  },
+  "legacyDataDecision": "Existing pre-IR-004 runs are not rewritten or backfilled by design; this proof covers corrected future writes."
+}

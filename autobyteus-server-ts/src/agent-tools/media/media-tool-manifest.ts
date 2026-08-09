@@ -1,5 +1,6 @@
 import type { ParameterSchema } from "autobyteus-ts/utils/parameter-schema.js";
 import type { MediaGenerationService } from "./media-generation-service.js";
+import type { ToolExecutionOptions } from "autobyteus-ts/tools/base-tool.js";
 import {
   EDIT_IMAGE_TOOL_NAME,
   GENERATE_IMAGE_TOOL_NAME,
@@ -34,6 +35,7 @@ export type MediaToolManifestEntry<TInput = unknown> = {
     service: MediaGenerationService,
     context: MediaToolExecutionContext,
     input: TInput,
+    options?: ToolExecutionOptions,
   ) => Promise<MediaToolResult>;
 };
 
@@ -58,28 +60,28 @@ const manifestEntries: MediaToolManifestEntry[] = [
     getDescription: generateImageDescription,
     buildArgumentSchema: () => buildMediaToolParameterSchema(GENERATE_IMAGE_TOOL_NAME),
     parseInput: (rawArguments): GenerateImageInput => parseGenerateImageInput(rawArguments),
-    execute: (service, context, input) => service.generateImage(context, input as GenerateImageInput),
+    execute: (service, context, input, options) => service.generateImage(context, input as GenerateImageInput, options ?? {}),
   },
   {
     name: EDIT_IMAGE_TOOL_NAME,
     getDescription: editImageDescription,
     buildArgumentSchema: () => buildMediaToolParameterSchema(EDIT_IMAGE_TOOL_NAME),
     parseInput: (rawArguments): EditImageInput => parseEditImageInput(rawArguments),
-    execute: (service, context, input) => service.editImage(context, input as EditImageInput),
+    execute: (service, context, input, options) => service.editImage(context, input as EditImageInput, options ?? {}),
   },
   {
     name: GENERATE_SPEECH_TOOL_NAME,
     getDescription: generateSpeechDescription,
     buildArgumentSchema: () => buildMediaToolParameterSchema(GENERATE_SPEECH_TOOL_NAME),
     parseInput: (rawArguments): GenerateSpeechInput => parseGenerateSpeechInput(rawArguments),
-    execute: (service, context, input) => service.generateSpeech(context, input as GenerateSpeechInput),
+    execute: (service, context, input, options) => service.generateSpeech(context, input as GenerateSpeechInput, options ?? {}),
   },
   {
     name: GENERATE_VIDEO_TOOL_NAME,
     getDescription: generateVideoDescription,
     buildArgumentSchema: () => buildMediaToolParameterSchema(GENERATE_VIDEO_TOOL_NAME),
     parseInput: (rawArguments): GenerateVideoInput => parseGenerateVideoInput(rawArguments),
-    execute: (service, context, input) => service.generateVideo(context, input as GenerateVideoInput),
+    execute: (service, context, input, options) => service.generateVideo(context, input as GenerateVideoInput, options ?? {}),
   },
 ];
 

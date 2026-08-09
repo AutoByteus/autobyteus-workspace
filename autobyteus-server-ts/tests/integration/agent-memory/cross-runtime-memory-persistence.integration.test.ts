@@ -94,7 +94,7 @@ const createRuntimeBackendFactory = (runtimeKind: RuntimeKind) => {
         },
         postUserMessage: vi.fn(async () => {
           for (const listener of listeners) {
-            void listener([
+            await listener([
               event(runId, AgentRunEventType.TURN_STARTED, { turnId: `turn-${runId}` }),
             ]);
           }
@@ -1165,7 +1165,7 @@ describe("cross-runtime memory persistence integration", () => {
       id: "claude-before-status",
       segment_type: "text",
     }));
-    for (const converted of converter.convert({
+    const compactingEvents = converter.convert({
       method: ClaudeSessionEventName.STATUS_COMPACTING,
       params: {
         session_id: "session-1",
@@ -1174,7 +1174,8 @@ describe("cross-runtime memory persistence integration", () => {
         timestamp: 2,
         input_tokens: 50000,
       },
-    })) {
+    });
+    for (const converted of compactingEvents) {
       await run.publishEvent(converted);
     }
     await recorder.waitForIdle(run.runId);
@@ -1202,7 +1203,7 @@ describe("cross-runtime memory persistence integration", () => {
       id: "claude-before-boundary",
       segment_type: "text",
     }));
-    for (const converted of converter.convert({
+    const boundaryEvents = converter.convert({
       method: ClaudeSessionEventName.COMPACT_BOUNDARY,
       params: {
         session_id: "session-1",
@@ -1211,7 +1212,8 @@ describe("cross-runtime memory persistence integration", () => {
         timestamp: 4,
         pre_tokens: 75000,
       },
-    })) {
+    });
+    for (const converted of boundaryEvents) {
       await run.publishEvent(converted);
     }
     await recorder.waitForIdle(run.runId);

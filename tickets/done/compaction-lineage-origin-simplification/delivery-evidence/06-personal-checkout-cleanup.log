@@ -1,0 +1,31 @@
+Authorized personal checkout cleanup - compaction-lineage-origin-simplification finalization
+checked_at_utc=2026-08-08T18:26:42Z
+authorization=Earlier user instruction explicitly authorized directly discarding uncommitted changes so the main personal checkout is clean.
+before_status:
+## personal...origin/personal
+ M autobyteus-server-ts/docs/modules/mcp_server_management.md
+?? .article-work/
+?? codex/
+?? tickets/in-progress/personal-main-latest-electron-build-20260808/
+command=git restore --staged --worktree .
+command=git clean -fd
+Removing "\"\"tickets/"
+Removing .article-work/
+Removing autobyteus-ts/codex/
+Skipping repository codex/shoe-selling-website
+Removing codex/mcp-env-handling
+Removing tickets/in-progress/personal-main-latest-electron-build-20260808/
+after_status:
+## personal...origin/personal
+?? codex/
+Authorized nested-untracked cleanup continuation
+checked_at_utc=2026-08-08T18:26:53Z
+reason=git clean -fd left one untracked nested repository under codex; user requested the personal checkout be clean and authorized discard.
+before_status:
+## personal...origin/personal
+?? codex/
+command=git clean -ffd codex/
+Removing codex/
+after_status:
+## personal...origin/personal
+result=PASS (personal checkout clean)

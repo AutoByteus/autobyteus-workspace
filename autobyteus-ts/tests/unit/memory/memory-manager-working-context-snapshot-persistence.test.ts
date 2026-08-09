@@ -86,19 +86,25 @@ describe('MemoryManager working context snapshot persistence', () => {
       const { workingContext } = WorkingContextSnapshotSerializer.deserialize(persisted);
       const messages = workingContext.buildMessages();
       expect(messages).toHaveLength(2);
-      expect(getWorkingContextMessageProvenance(messages[0]!)).toMatchObject({
+      const rawTraces = manager.listRawTracesOrdered();
+      expect(rawTraces.map((trace) => trace.traceType)).toEqual([
+        'reasoning', 'assistant', 'tool_call', 'tool_result',
+      ]);
+      expect(getWorkingContextMessageProvenance(messages[0]!)).toEqual({
         kind: 'single',
         turnId,
+        rawTraceIds: rawTraces.slice(0, 3).map((trace) => trace.id),
       });
-      expect(getWorkingContextMessageProvenance(messages[1]!)).toMatchObject({
+      expect(getWorkingContextMessageProvenance(messages[1]!)).toEqual({
         kind: 'single',
         turnId,
+        rawTraceIds: [rawTraces[3]!.id],
       });
       const rawTraceIds = messages.flatMap((message) => {
         const provenance = getWorkingContextMessageProvenance(message);
         return provenance?.kind === 'single' ? provenance.rawTraceIds : [];
       });
-      expect(new Set(rawTraceIds).size).toBe(3);
+      expect(new Set(rawTraceIds).size).toBe(4);
       expect(WorkingContextSnapshotSerializer.validate(persisted)).toBe(true);
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });

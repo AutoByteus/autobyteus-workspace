@@ -1,213 +1,134 @@
-# API Tool Call File Streaming (write_file / edit_file)
+# Provider-Native File Tool Streaming (`write_file` / `edit_file`)
 
-Date: 2026-01-14  
-Status: Draft  
-Authors: Autobyteus Core Team
+Status: Current
+Last updated: 2026-08-09
 
-## Summary
+## Purpose
 
-When `AUTOBYTEUS_STREAM_PARSER=api_tool_call`, the current streaming handler emits only
-`tool_call` segments and streams **raw JSON argument deltas**. This prevents the
-frontend from receiving `write_file` / `edit_file` segment events and therefore
-blocks file-content streaming.
+Provider-native tool arguments arrive as incremental JSON fragments. The runtime
+must display `write_file` content and `edit_file` patches while they stream,
+without allowing an incomplete display projection to become executable
+invocation data.
 
-This document proposes a targeted enhancement to `ApiToolCallStreamingResponseHandler`
-that **recognizes file tools** and emits `write_file` / `edit_file` segments with
-streamed content, while preserving existing behavior for all other tools.
+`ApiToolCallStreamingResponseHandler` therefore has two distinct outputs:
 
-No WebSocket protocol changes are required.
+1. specialized segment events for responsive user-visible file projection; and
+2. one `ToolInvocation` built from the provider's complete accumulated native
+   argument JSON.
 
----
+The second output is authoritative.
 
-## Background
+## Invariants
 
-- The XML/JSON parser path can emit `write_file` / `edit_file` segments and stream
-  content safely (including sentinel markers).
-- In API tool call mode, tool calls arrive as incremental JSON deltas
-  (e.g., OpenAI `tool_calls[].function.arguments` chunks).
-- Today, `ApiToolCallStreamingResponseHandler` emits:
-  - `SEGMENT_START` with `segment_type=tool_call`
-  - `SEGMENT_CONTENT` containing raw JSON deltas
-  - `SEGMENT_END` with pre-parsed arguments
-- The frontend sees only `tool_call` segments and cannot stream file content.
+- Only provider-native `ToolCallDelta` records enter this path.
+- The tool's provider call id is reused as the segment and invocation id when
+  available; otherwise a stable turn-prefixed id is generated.
+- `write_file` emits `WRITE_FILE` segments and projects `path` + `content`.
+- `edit_file` emits `EDIT_FILE` segments and projects `path` + `patch`.
+- Other tools emit normal `TOOL_CALL` segments containing raw argument deltas.
+- Exactly one invocation is published per finalized native call.
+- Final accumulated native argument JSON, not projected content, is invocation
+  authority.
+- Interruption or stream failure terminalizes visible segments without
+  publishing a partial invocation.
 
----
+## Per-Call State
 
-## Goals
+For every provider call index, the handler records:
 
-1. Emit `write_file` / `edit_file` **segment events** in API tool call mode.
-2. Stream **file content** (`content`/`patch`) incrementally to the UI.
-3. Preserve the **segment ID = tool invocation ID** guarantee.
-4. Avoid duplicate tool invocations.
-5. Do not change the external WebSocket protocol.
+- segment id;
+- tool name;
+- complete accumulated argument text;
+- specialized segment type;
+- incremental field streamer for file tools;
+- discovered path;
+- whether the display segment has started;
+- buffered projected content; and
+- provider-native replay context.
 
-## Non-Goals
-
-- General-purpose JSON streaming parser for all tools.
-- Modifying provider SDK tool-calling payloads.
-- Introducing new WebSocket message types.
-
----
-
-## Design Overview
-
-### High-Level Behavior
-
-For tool calls with `tool_name` in `{write_file, edit_file}`:
-
-- Emit `SEGMENT_START` with `segment_type=write_file` or `edit_file`.
-- Stream **only the decoded content string** (`content` or `patch`) via
-  `SEGMENT_CONTENT`.
-- Emit `SEGMENT_END` when the tool call completes.
-- Do **not** emit a `tool_call` segment for these tools (prevents duplicate
-  ToolInvocation creation).
-
-For all other tools:
-
-- Keep the existing `tool_call` segment emission as-is.
-
-### Why This Works
-
-- `ToolInvocationAdapter` already supports `SegmentType.WRITE_FILE` and
-  `SegmentType.EDIT_FILE` via `tool-syntax-registry.ts`.
-- It builds arguments from:
-  - start/end metadata (path)
-  - streamed content buffer
-- Therefore, emitting file segments is enough to produce the correct tool
-  invocation and tool execution flow.
-
----
+Calls are independent, so parallel file and non-file calls can interleave
+without sharing extraction state.
 
 ## Incremental JSON String Extraction
 
-Tool argument deltas are arbitrary JSON fragments. We only need to extract two
-string fields:
+`JsonStringFieldExtractor` incrementally scans JSON string keys and values across
+arbitrary delta boundaries. File streamers select only the fields needed for
+display:
 
-- `path` (string)
-- `content` (string) for `write_file` OR `patch` (string) for `edit_file`
+| Tool | Path field | Streamed body field |
+| --- | --- | --- |
+| `write_file` | `path` | `content` |
+| `edit_file` | `path` | `patch` |
 
-### Minimal Streaming Parser (State Machine)
+The extractor decodes JSON string escapes before emitting display content.
+Content that arrives before the path is buffered. Once the path is available,
+the handler starts the specialized segment and flushes the buffered suffix in
+order.
 
-Maintain per-tool-call parsing state:
+This extractor is intentionally not a general invocation parser. It does not
+create tools, repair malformed final JSON, or understand an XML/sentinel
+wrapper.
 
-- `mode`: `scan_key` | `read_key` | `expect_colon` | `expect_value` | `read_value`
-- `current_key`: accumulated key string
-- `in_string`: bool
-- `escape`: bool
-- `value_target`: None | `path` | `content` | `patch`
-- `value_buffer`: decoded stream for the target value
+## Segment Lifecycle
 
-#### Behavior
+### Normal completion
 
-1. **Scan for key strings** outside string context.
-2. When a key ends (`"` closed), match against `path`, `content`, or `patch`.
-3. Expect `:` then a string value (`"`).
-4. While reading a target value string, **decode escapes** and emit only the
-   **newly decoded suffix** as `SEGMENT_CONTENT` (for content/patch).
-5. When the string closes, mark `path` or `content/patch` complete.
+1. A native file call is detected and assigned its stable id.
+2. Argument deltas are appended to the authoritative argument buffer and also
+   fed to the display projector.
+3. When `path` is known, the specialized segment starts with `tool_name` and
+   `path` metadata; buffered content is flushed.
+4. Further decoded `content`/`patch` suffixes emit `SEGMENT_CONTENT`.
+5. At stream finalization, a start event is still emitted if the path never
+   arrived, so the segment has a valid lifecycle.
+6. The handler emits `SEGMENT_END` with any known path/native context.
+7. After the end event, the handler publishes the invocation built from the
+   complete accumulated native JSON.
 
-### Escapes
+The end-before-invocation ordering prevents execution publication while the
+user-visible segment remains open.
 
-- Support standard JSON escapes: `\\`, `\"`, `\n`, `\t`, `\r`.
-- Stream decoded content (e.g., `\n` -> newline).
+### Interruption or failure
 
-### Sentinel Tags (Optional)
+Only segments that actually started are terminalized. Active per-call state is
+cleared, and no partial invocation is published.
 
-Sentinel markers (e.g., `__START_CONTENT__`) can still appear inside the decoded
-JSON string. If present, they can be stripped during streaming, but they do **not**
-remove the need for JSON decoding.
+## Invocation Authority
 
----
+At normal finalization the handler parses the complete accumulated argument
+string once. A parsed non-array object becomes `ToolInvocation.arguments`.
+Malformed or non-object JSON falls back to `{}` and is left to downstream tool
+preparation/schema validation to reject as appropriate.
 
-## Segment Emission Rules
+The projector's decoded path/content is never merged back into the invocation.
+This matters when a provider omits a field, repeats a key, emits unusual but
+valid JSON, or fails after displaying only part of a file.
 
-### File Tools
+## Protocol Impact
 
-- **Start**:
-  - Emit `SEGMENT_START` immediately when the tool call is detected.
-  - Metadata may be empty at start (path can arrive later).
-- **Content**:
-  - Stream only decoded content/patch text.
-- **End**:
-  - Emit `SEGMENT_END` with metadata containing `path` once it is known
-    (adapter merges start+end metadata).
+No additional WebSocket event type is required. Existing `WRITE_FILE`,
+`EDIT_FILE`, and `TOOL_CALL` segment types remain the client contract. The
+specialized events affect live presentation only; tool execution still receives
+the normalized `ToolInvocation` contract.
 
-### Other Tools
-
-- Leave behavior unchanged (`tool_call` segments).
-
----
-
-## Avoiding Duplicate Tool Invocations
-
-`ApiToolCallStreamingResponseHandler` pipes emitted segments into
-`ToolInvocationAdapter`. Emitting **both** `tool_call` and `write_file` segments
-for the same tool call would create duplicate invocations.
-
-Therefore:
-
-- For file tools, emit **only** file segments.
-- For all other tools, emit only `tool_call` segments.
-
----
-
-## Compatibility & Protocol Impact
-
-- No protocol changes: `SEGMENT_*` types already support `write_file` and
-  `edit_file`.
-- Frontend will automatically render file-streamed content (same as XML path).
-- Tool invocation IDs remain identical to segment IDs.
-
----
-
-## Implementation Plan
-
-### Code Changes
-
-1. **Add a lightweight JSON string extractor** for targeted keys
-   (`path`, `content`, `patch`).
-2. **Add file content streamers** for write/edit file tools.
-3. **Extend** `ApiToolCallStreamingResponseHandler` to:
-   - Detect `write_file` / `edit_file` tool calls.
-   - Use the file content streamers to emit
-     `SegmentType.WRITE_FILE` / `SegmentType.EDIT_FILE`.
-
-### Files
+## Key Files
 
 - `src/agent/streaming/handlers/api-tool-call-streaming-response-handler.ts`
-- `src/agent/streaming/api-tool-call/json-string-field-extractor.ts`
 - `src/agent/streaming/api-tool-call/file-content-streamer.ts`
-- Tests:
-  - `tests/unit/agent/streaming/api-tool-call/json-string-field-extractor.test.ts`
-  - `tests/unit/agent/streaming/api-tool-call/file-content-streamer.test.ts`
-  - `tests/unit/agent/streaming/handlers/api-tool-call-streaming-response-handler.test.ts`
+- `src/agent/streaming/api-tool-call/json-string-field-extractor.ts`
+- `src/agent/streaming/segments/segment-events.ts`
 
----
+## Required Coverage
 
-## Testing Plan
+Durable tests should cover:
 
-1. **write_file streaming**:
-   - path + content in multiple chunks, verify:
-     - `SEGMENT_START` type `write_file`
-     - streamed decoded content
-     - invocation arguments match full content
-2. **edit_file streaming**:
-   - similar to write_file, with `patch` arg
-3. **Escapes**:
-   - content includes `\n`, `\"`, `\\`
-4. **Out-of-order keys**:
-   - `content` appears before `path`
-5. **Non-file tools unchanged**:
-   - still emit `tool_call` segments
-6. **No duplicate invocations**:
-   - one invocation per call ID
-
----
-
-## Open Questions
-
-- Should we gate this behavior behind a config flag?
-- Do we want to strip sentinel markers (`__START_CONTENT__` / `__END_CONTENT__`)
-  if they appear inside decoded JSON content?
-- Should we expose a lightweight `SEGMENT_METADATA_UPDATED` event to set `path`
-  late, or rely on `SEGMENT_END` metadata only?
+- path and body split across arbitrary chunks;
+- content arriving before path;
+- JSON escape decoding;
+- parallel calls and provider indexes;
+- delayed tool names and call ids;
+- one start/content/end lifecycle per call;
+- end publication before invocation callback;
+- final native arguments differing from live projected fields;
+- mixed assistant text plus file tools; and
+- interruption/failure with no partial invocation.

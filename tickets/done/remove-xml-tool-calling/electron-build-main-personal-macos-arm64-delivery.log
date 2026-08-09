@@ -1,0 +1,62 @@
+ELECTRON BUILD — MAIN REPOSITORY PERSONAL
+Ticket context: remove-xml-tool-calling
+Date: 2026-08-09 Europe/Berlin
+
+SOURCE REFRESH
+repository = /Users/normy/autobyteus_org/autobyteus-workspace-superrepo
+branch = personal
+origin/personal before fetch = 7dfa32d7fc15ec737a0a77ed66808381307ce3a8
+origin/personal after fetch = 7dfa32d7fc15ec737a0a77ed66808381307ce3a8
+local source commit = 7dfa32d7fc15ec737a0a77ed66808381307ce3a8
+merge method = git merge --ff-only origin/personal
+refresh result = already current
+unrelated untracked state preserved = .article-work/
+
+DEPENDENCIES
+command = pnpm install --frozen-lockfile
+scope = all 11 workspace projects
+result = pass, lockfile current
+
+BUILD
+working directory = /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web
+command = NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac
+result = pass, exit 0
+version = 1.4.45
+flavor = personal
+platform = darwin
+architecture = arm64
+signing = intentionally disabled
+timestamping = intentionally disabled
+notarization = not performed
+
+OUTPUTS
+app = /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+dmg = /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.45.dmg
+zip = /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.45.zip
+dmg sha256 = ea921ce89c7652846b3967cd3ed95a3572998b8f3df6291b5ba5348b502a634a
+zip sha256 = fe2932874ed8e460d7ce58500a5450f40c95ec2e1674e6b032b3c97a6defdc35
+dmg bytes = 402390862
+zip bytes = 397811687
+
+VALIDATION
+root executable architecture = pass, Mach-O 64-bit arm64
+packaged target node-pty helper = pass
+packaged selected node-pty helper = pass
+Electron-hosted node-pty spawn probe = pass
+packaged server startup = pass
+disposable database migrations = pass, 19 applied
+packaged server health endpoint = pass
+packaged server shutdown = pass, clean
+DMG hdiutil verify = pass, valid
+post-build origin/personal refresh = unchanged at 7dfa32d7fc15ec737a0a77ed66808381307ce3a8
+
+RELEASE / DEPLOYMENT
+release = not performed
+version bump = not performed
+tag = not created
+publication = not performed
+deployment / rollout = not performed
+
+FINAL RESULT
+status = pass
+use = local testing only

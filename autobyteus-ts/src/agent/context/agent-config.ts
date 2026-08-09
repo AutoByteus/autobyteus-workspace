@@ -1,5 +1,4 @@
-import { BaseSystemPromptProcessor, ToolManifestInjectorProcessor, AvailableSkillsProcessor } from '../system-prompt-processor/index.js';
-import { resolveToolCallFormat } from '../../utils/tool-call-format.js';
+import { BaseSystemPromptProcessor, AvailableSkillsProcessor } from '../system-prompt-processor/index.js';
 import { BaseLLM } from '../../llm/base.js';
 import { SkillAccessMode, resolveSkillAccessMode } from './skill-access-mode.js';
 import type { BaseTool } from '../../tools/base-tool.js';
@@ -24,7 +23,6 @@ function deepClone<T>(value: T): T {
 export class AgentConfig {
   static DEFAULT_LLM_RESPONSE_PROCESSORS: BaseLLMResponseProcessor[] = [];
   static DEFAULT_SYSTEM_PROMPT_PROCESSORS: BaseSystemPromptProcessor[] = [
-    new ToolManifestInjectorProcessor(),
     new AvailableSkillsProcessor()
   ];
 
@@ -103,18 +101,7 @@ export class AgentConfig {
       ? { ...compactionLineageScope }
       : null;
 
-    const toolCallFormat = resolveToolCallFormat();
-    if (toolCallFormat === 'api_tool_call') {
-      this.systemPromptProcessors = defaultProcessors.filter(
-        (processor) => !(processor instanceof ToolManifestInjectorProcessor)
-      );
-    } else {
-      this.systemPromptProcessors = defaultProcessors;
-    }
-
-    console.debug(
-      `AgentConfig created for name='${this.name}', role='${this.role}'. Tool call format: ${toolCallFormat}`
-    );
+    console.debug(`AgentConfig created for name='${this.name}', role='${this.role}'.`);
   }
 
   copy(): AgentConfig {

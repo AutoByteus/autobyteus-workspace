@@ -11,8 +11,14 @@ import {
   resolveConfiguredDirectoryPath,
 } from "./config-value-parsers.js";
 import { LOCAL_IMPORT_CREDENTIAL_ALIAS_NAMES } from "../secret-management/provisioning/local-import-credential-alias-registry.js";
-import { ApplicationDatabaseLocation } from "./application-database-location.js";
-import { assignmentName, linesWithEndings, splitLineEnding } from "./environment-assignment-lines.js";
+import {
+  ApplicationDatabaseLocation,
+  toPrismaSqliteUrl,
+} from "./application-database-location.js";
+import {
+  removeEnvironmentAssignment,
+  upsertEnvironmentAssignment,
+} from "./environment-assignment-lines.js";
 
 const forbiddenGenericSettingNames = new Set<string>([
   ...LOCAL_IMPORT_CREDENTIAL_ALIAS_NAMES,
@@ -23,6 +29,8 @@ const forbiddenGenericSettingNames = new Set<string>([
   "CLAUDE_CODE_API_KEY",
   "CLAUDE_CODE_API_KEY_FILE_DESCRIPTOR",
 ]);
+
+const retiredSettingNames = new Set<string>(["AUTOBYTEUS_STREAM_PARSER"]);
 
 export class AppConfigError extends Error {
   constructor(message: string) {
@@ -85,6 +93,7 @@ export class AppConfig {
     }
 
     this.loadConfigData();
+    this.discardRetiredSettings();
     this.initializeBaseUrl();
 
     if (this.get("DB_TYPE", "sqlite") === "sqlite") {
@@ -194,12 +203,8 @@ export class AppConfig {
       return;
     }
     const dbPath = this.getSqlitePath();
-    const expectedUrl = this.toPrismaSqliteUrl(dbPath);
+    const expectedUrl = toPrismaSqliteUrl(dbPath);
     this.setOperationalDatabaseLocation(expectedUrl);
-  }
-
-  private toPrismaSqliteUrl(filePath: string): string {
-    return `file:${filePath.replace(/\\/g, "/")}`;
   }
 
   private setOperationalDatabaseLocation(databaseUrl: string): void {
@@ -500,6 +505,9 @@ export class AppConfig {
   }
 
   set(key: string, value: string): void {
+    if (retiredSettingNames.has(key)) {
+      throw new AppConfigError(`Server setting '${key}' has been retired and cannot be set.`);
+    }
     if (forbiddenGenericSettingNames.has(key)) {
       throw new AppConfigError("Sensitive values must be written through a subject-specific secret service.");
     }
@@ -546,32 +554,21 @@ export class AppConfig {
     process.env[key] = value;
   }
 
+  private discardRetiredSettings(): void {
+    for (const key of retiredSettingNames) {
+      if (process.env[key] !== undefined || this.configData[key] !== undefined) {
+        this.delete(key);
+      }
+    }
+  }
+
   private updateEnvFile(configFile: string, key: string, value: string): void {
     const content = fs.readFileSync(configFile, "utf-8");
-    let found = false;
-    const updated = linesWithEndings(content).map((line) => {
-      const { body, ending } = splitLineEnding(line);
-      if (assignmentName(body) === key) {
-        found = true;
-        return `${key}=${value}${ending}`;
-      }
-      return line;
-    }).join("");
-
-    const preferredEnding = content.includes("\r\n") ? "\r\n" : "\n";
-    const withNewValue = found
-      ? updated
-      : `${content}${content.length > 0 && !/[\r\n]$/.test(content) ? preferredEnding : ""}${key}=${value}`;
-
-    fs.writeFileSync(configFile, withNewValue);
+    fs.writeFileSync(configFile, upsertEnvironmentAssignment(content, key, value));
   }
 
   private removeKeyFromEnvFile(configFile: string, key: string): void {
     const content = fs.readFileSync(configFile, "utf-8");
-    const filtered = linesWithEndings(content).filter((line) => {
-      const { body } = splitLineEnding(line);
-      return assignmentName(body) !== key;
-    }).join("");
-    fs.writeFileSync(configFile, filtered);
+    fs.writeFileSync(configFile, removeEnvironmentAssignment(content, key));
   }
 }

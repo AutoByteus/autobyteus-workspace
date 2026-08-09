@@ -13,11 +13,6 @@ export type WorkingContextCompactionProposal = {
   execution: CompactionAgentExecutionMetadata;
 };
 
-export type AcceptedCompactionLineageDraft = Omit<
-  CompactionLineageRecord,
-  'rawTraceArchiveFile'
->;
-
 export type AcceptedWorkingContextCompaction = {
   compactionId: string;
   baselineFingerprint: string;
@@ -25,6 +20,6 @@ export type AcceptedWorkingContextCompaction = {
   selectedNewRawTraceIds: string[];
   episodicItems: EpisodicItem[];
   semanticItems: SemanticItem[];
-  lineageDraft: AcceptedCompactionLineageDraft;
+  lineageRecord: CompactionLineageRecord;
   finalizedContext: WorkingContext;
 };

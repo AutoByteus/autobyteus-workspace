@@ -1,0 +1,13 @@
+owned_repository_temp_dirs_removed=51
+preexisting_repository_temp_dirs_preserved=16
+preexisting_set_preserved_exactly=True
+temporary_harness_exists=False
+temporary_live_workspaces_remaining=0
+head=1816b29ec4f87398b1bfb812cd43ea342d95cd7f
+unmerged_paths=0
+--- git diff check ---
+--- git status short ---
+ M tickets/in-progress/edit-file-actionable-context-errors/api-e2e-coverage-investigation.md
+ M tickets/in-progress/edit-file-actionable-context-errors/code-review-report.md
+ M tickets/in-progress/edit-file-actionable-context-errors/code-review-revision-record.md
+?? tickets/in-progress/edit-file-actionable-context-errors/api-e2e-evidence/round-2-integrated/

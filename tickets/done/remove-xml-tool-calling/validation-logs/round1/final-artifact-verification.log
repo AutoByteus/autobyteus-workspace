@@ -1,0 +1,6 @@
+Final API/E2E artifact verification
+durable coverage inventory: A=1 M=39 D=65
+required authoritative artifacts present: PASS
+credential-shape scan of retained text evidence: PASS
+temporary dependency/probe cleanup: PASS
+git diff --check: PASS

@@ -7,9 +7,42 @@ Bridges runtime stream events to GraphQL and WebSocket transport clients.
 ## TS Source
 
 - `src/services/agent-streaming`
+- `src/services/agent-streaming/websocket-egress`
+- `src/config/streaming-content-flush-interval-setting.ts`
 - `src/api/websocket/agent.ts`
 - `src/api/graphql/types/agent-run.ts`
 - `src/api/graphql/types/agent-team-run.ts`
+
+## WebSocket Content Egress
+
+Each standalone or team WebSocket session owns one
+`AgentStreamWebSocketEgress`, and every mapped post-session server message uses
+that sink. This is the sole normal content-cadence owner between the
+fine-grained canonical run-event stream and `connection.send(...)`; runtime
+adapters, `AgentRun`/`TeamRun` publication, persistence, memory, raw traces, and
+other internal subscribers remain unthrottled.
+
+- A first pending `SEGMENT_CONTENT` message opens a fixed, non-sliding window.
+  `AUTOBYTEUS_STREAMING_CONTENT_FLUSH_INTERVAL_MS` is resolved when the window
+  opens, so a successful live setting change affects the next newly opened
+  window on active and future sessions without restart. The effective default
+  is 500 ms; persistence accepts only whole values from 100 through 2,000 ms,
+  and absent/invalid direct configuration safely resolves to 500 ms.
+- Adjacent content messages coalesce only when every payload field except
+  `delta` is deeply equal. The sink clones the first payload, concatenates delta
+  bytes in receipt order, and preserves distinct run/turn/segment/member/task
+  identities as separate ordered groups.
+- `CONNECTED`, `AGENT_COMMAND_ACK`, `TOKEN_USAGE_UPDATED`, and non-terminal
+  `AGENT_STATUS initializing/running` are immediate companions. They remain
+  visible without flushing, sealing, resetting, or otherwise changing the
+  pending content lane/timer.
+- Dependent or terminal messages flush all earlier pending content before being
+  sent. This includes segment/tool/lifecycle boundaries, terminal statuses,
+  errors, completion/interruption, and unknown message types, which default to
+  correctness-first flush behavior.
+- Disposing an already-lost/closed session cancels its timer and discards
+  pending unsendable connection state. The transport does not claim replay for
+  a physical socket loss; normal supported open-socket boundaries flush first.
 
 ## Operational Notes
 
@@ -74,7 +107,12 @@ Bridges runtime stream events to GraphQL and WebSocket transport clients.
   not emit a second runtime-originated system-task notification for the same
   server-owned payload.
 - `INTERRUPT_GENERATION` is a control request, not a send-readiness signal. Clients should leave the affected run/member in a sending or interrupted-in-flight state until the backend stream emits the terminal lifecycle/status projection (`TURN_COMPLETED`, `AGENT_STATUS { status: "idle", can_interrupt: false }`, or an error path) for that turn. Claude Agent SDK sessions in particular emit that projection only after their active query has been aborted/closed and the per-turn cleanup task has settled, so same-run follow-up chat does not reuse stale SDK process resources.
-- Segment order and segment identity are backend-owned. WebSocket handlers forward `SEGMENT_*` events in runtime emission order for both single-agent and team streams; clients should append/coalesce only when the backend-provided `segment_type` and `id` identify the same provider text or tool segment, not by turn-level heuristics or provider-specific UI repair logic.
+- Segment order and segment identity are backend-owned. WebSocket egress
+  preserves `SEGMENT_START`/`SEGMENT_END` boundaries and every content delta
+  byte in runtime order for both single-agent and team streams while combining
+  only exactly equal content identity payloads. Clients append each shaped
+  message using the backend-provided `segment_type` and `id`; they must not add
+  turn-level or provider-specific batching/reorder heuristics.
 - `turn_id` is the canonical turn field for all outbound `SEGMENT_*` payloads. Native AutoByteus conversion strips segment-level `turnId` aliases; the WebSocket mapper normalizes any tolerated legacy alias back to `turn_id` before clients see it.
 - Runtime errors terminalize open segments before the error projection. Interrupt paths use `interrupted: true` / `reason`, while non-interrupt LLM stream failures use `failed: true` / `error`; clients should render failed partial tool segments as terminal error rows, not as runnable invocations. Clients may display every `ERROR`, but must not infer run or member lifecycle from the presence of an error or later activity; use the canonical `AGENT_STATUS`, matching turn boundary, and structured `error_scope` / `error_effect` evidence instead.
 - Missing or unrestorable runs close the socket with the subject-specific not-found error (`AGENT_NOT_FOUND` or `TEAM_NOT_FOUND`) and close code `4004`. A resolved run whose event stream cannot be subscribed closes with `*_STREAM_UNAVAILABLE` and close code `1011`.

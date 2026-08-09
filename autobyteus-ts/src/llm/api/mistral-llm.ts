@@ -9,7 +9,7 @@ import { Message } from '../utils/messages.js';
 import { convertMistralToolCalls } from '../converters/mistral-tool-call-converter.js';
 import { LLMProvider } from '../providers.js';
 import { BasePromptRenderer } from '../prompt-renderers/base-prompt-renderer.js';
-import { createMistralPromptRendererForToolFormat } from '../prompt-renderers/provider-tool-history-renderer-selection.js';
+import { MistralPromptRenderer } from '../prompt-renderers/mistral-prompt-renderer.js';
 import { applySafeProviderRequestKwargs } from './provider-request-kwargs.js';
 import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
 
@@ -25,7 +25,7 @@ export class MistralLLM extends BaseLLM {
     super(model, config);
     this.apiKeyResolver = apiKeyResolver;
     this.maxTokens = config.maxTokens ?? null;
-    this._renderer = createMistralPromptRendererForToolFormat();
+    this._renderer = new MistralPromptRenderer();
   }
 
   private getClient(): Promise<Mistral> {

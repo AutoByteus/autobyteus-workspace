@@ -17,11 +17,6 @@ import { WorkingContextSnapshotStore } from './store/working-context-snapshot-st
 import { buildToolInteractions } from './tool-interaction-builder.js';
 import { AGENT_INTERRUPTED_TOOL_RESULT_CONTENT, type WorkingContextToolProtocolRepairResult } from './working-context-tool-protocol-repairer.js';
 import { ensureMemoryManagerWorkingContextToolProtocolSafe, type MemoryManagerToolProtocolSafetyInput } from './memory-manager-tool-protocol-safety.js';
-import {
-  buildSingleMessageProvenance,
-  getWorkingContextMessageProvenance,
-  setWorkingContextMessageProvenance,
-} from './working-context-provenance.js';
 import type {
   AcceptedWorkingContextCompaction,
   WorkingContextCompactionProposal,
@@ -39,6 +34,7 @@ export type {
   PendingCompactionRequest,
 } from './memory-manager-compaction-coordinator.js';
 import {
+  buildNativeAssistantResponseTraces,
   buildNativeToolCallTrace,
   buildNativeToolResultTrace,
   normalizeNativeToolCallBatch,
@@ -59,7 +55,11 @@ export type {
 } from './llm-request-recovery.js';
 
 export type ToolIntentIngestionOptions = { appendToWorkingContext?: boolean; assistantContent?: string | null; assistantReasoning?: string | null };
-export type ToolResultIngestionOptions = { source?: string; appendToWorkingContext?: boolean };
+export type ToolResultIngestionOptions = {
+  source?: string;
+  appendToWorkingContext?: boolean;
+  correlationIdByInvocationId?: ReadonlyMap<string, string>;
+};
 import {
   MemoryManagerWorkingContextController,
   type WorkingContextAppendOptions,
@@ -239,6 +239,7 @@ export class MemoryManager {
 
   private persistNormalizedToolIntents(
     registrations: NativeToolCallRegistration[], options?: ToolIntentIngestionOptions,
+    responseRawTraceIds: readonly string[] = [],
   ): void {
     const seen = new Set<string>();
     const accepted = registrations.filter((registration) => {
@@ -264,7 +265,7 @@ export class MemoryManager {
         }),
         {
           turnId: accepted[0]!.identity.turnId,
-          rawTraceIds: traces.map((trace) => trace.id),
+          rawTraceIds: [...responseRawTraceIds, ...traces.map((trace) => trace.id)],
         }
       );
     }
@@ -276,29 +277,13 @@ export class MemoryManager {
       return;
     }
     const registrations = normalizeNativeToolCallBatch(toolInvocations, turnId);
-    this.ingestAssistantResponse(response, turnId, sourceEvent, { appendToWorkingContext: false });
-    const assistantTraceIds = this.findRecentRawTraceIds(turnId, 'assistant', response.content ?? '') ?? [];
-    const workingContextMessageCount = this.getWorkingContextMessages().length;
+    const responseTraces = this.ingestAssistantResponse(
+      response, turnId, sourceEvent, { appendToWorkingContext: false },
+    );
     this.persistNormalizedToolIntents(registrations, {
       assistantContent: response.content ?? null,
       assistantReasoning: response.reasoning ?? null,
-    });
-    const messages = this.workingContextController.getMessages();
-    const latestIndex = messages.length - 1;
-    const latest = messages[latestIndex];
-    if (messages.length > workingContextMessageCount && latest?.tool_payload instanceof ToolCallPayload && assistantTraceIds.length) {
-      const provenance = getWorkingContextMessageProvenance(latest);
-      const rawTraceIds = provenance?.kind === 'single' ? provenance.rawTraceIds : [];
-      setWorkingContextMessageProvenance(
-        latest,
-        buildSingleMessageProvenance(
-          [...assistantTraceIds, ...rawTraceIds],
-          provenance?.kind === 'single' ? provenance.turnId : turnId,
-        ),
-      );
-      this.workingContextController.replaceMessage(latestIndex, latest);
-      this.persistWorkingContextSnapshot();
-    }
+    }, responseTraces.map((trace) => trace.id));
   }
 
   ingestToolResult(event: ToolResultEvent, turnId?: string): void {
@@ -343,7 +328,13 @@ export class MemoryManager {
       batchIdentityKeys.add(identityKey);
     }
     const prepared = accepted.map(({ registration, canonicalToolName }) => ({
-      trace: buildNativeToolResultTrace(registration, canonicalToolName, sourceEvent, (id) => this.nextSeq(id)),
+      trace: buildNativeToolResultTrace(
+        registration,
+        canonicalToolName,
+        sourceEvent,
+        (id) => this.nextSeq(id),
+        options?.correlationIdByInvocationId?.get(registration.identity.toolCallId) ?? null,
+      ),
       canonicalToolName,
     }));
     if (prepared.length) this.store.add(prepared.map(({ trace }) => trace));
@@ -386,25 +377,25 @@ export class MemoryManager {
     });
   }
 
-  ingestAssistantResponse(response: CompleteResponse, turnId: string, sourceEvent: string, options?: { appendToWorkingContext?: boolean }): void {
+  ingestAssistantResponse(
+    response: CompleteResponse,
+    turnId: string,
+    sourceEvent: string,
+    options?: { appendToWorkingContext?: boolean },
+  ): RawTraceItem[] {
     const appendToWorkingContext = options?.appendToWorkingContext ?? true;
-    const trace = new RawTraceItem({
-      id: `rt_${Date.now()}`,
-      ts: Date.now() / 1000,
-      turnId,
-      seq: this.nextSeq(turnId),
-      traceType: 'assistant',
-      content: response.content ?? '',
-      sourceEvent
-    });
-    this.store.add([trace]);
+    const traces = buildNativeAssistantResponseTraces(
+      response, turnId, sourceEvent, (id) => this.nextSeq(id),
+    );
+    this.store.add(traces);
     if (appendToWorkingContext && (response.content || response.reasoning)) {
       this.appendWorkingContextAssistantMessage(response, turnId, {
-        rawTraceIds: [trace.id],
+        rawTraceIds: traces.map((trace) => trace.id),
         persist: false,
       });
     }
     this.persistWorkingContextSnapshot();
+    return traces;
   }
 
   appendRawTrace(input: AppendRawTraceInput): RawTraceItem {

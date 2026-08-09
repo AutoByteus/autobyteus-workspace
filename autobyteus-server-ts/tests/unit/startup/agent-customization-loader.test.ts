@@ -58,8 +58,9 @@ describe("loadAgentCustomizations", () => {
   it("registers core system prompt processors", () => {
     loadAgentCustomizations();
 
-    expect(defaultSystemPromptProcessorRegistry.contains("ToolManifestInjector")).toBe(true);
-    expect(defaultSystemPromptProcessorRegistry.contains("AvailableSkillsProcessor")).toBe(true);
+    expect(defaultSystemPromptProcessorRegistry.listProcessorNames()).toEqual([
+      "AvailableSkillsProcessor",
+    ]);
   });
 
   it("registers customization processors in all registries", () => {

@@ -55,36 +55,71 @@ workflow; tool/run approval remains the separate invocation gate.
 
 ## 2.2 `edit_file` Context-Patch Contract
 
-`edit_file` applies context-located hunks rather than line-number-located
-unified diffs. The model-facing canonical format is:
+`edit_file` applies context-located hunks in a simplified unified-diff-style
+format rather than line-number-located unified diffs. Before constructing a
+patch, read the current relevant file region unless it was just read and has
+not changed. Copy unchanged and removal lines exactly from that latest content;
+do not reconstruct them from memory. After an intervening edit or a
+context-match failure, read the affected region again before retrying.
+
+The model-facing canonical patch-field example is:
 
 ```diff
 @@
- unchanged context
--content to remove
-+replacement content
+-const mode = 'old'
++const mode = 'new'
+ const keep = true
 ```
 
 - Every hunk starts with a bare `@@` line. Each hunk body line starts with one
   space for unchanged context, `-` for a removal, or `+` for an addition.
+- Every prefixed hunk body record is one complete logical line even when the
+  outer patch string has no final line ending. The parser completes that record
+  with `CRLF` when the patch contains `CRLF`, and with `LF` otherwise; already
+  terminated patch documents are unchanged.
+- Outer patch-string termination is transport framing, not target-file
+  semantics. To make changed target content end without a line terminator,
+  immediately follow that content record with the exact
+  `\ No newline at end of file` marker. This marker is the sole opt-out from a
+  changed record's normal line terminator.
 - Unchanged and removal lines form the location anchor. Addition-only hunks are
   rejected because they do not identify a safe location.
+- The target file is supplied separately through `path`; a patch contains only
+  bare context hunks. Do not include Git file headers (`diff --git`, `---`, or
+  `+++`), numeric hunk coordinates, or `*** Begin Patch` / `*** End Patch`
+  semantic envelopes.
 - Each hunk must match exactly one eligible location after the preceding hunk.
-  Missing or ambiguous context is rejected with guidance to read the file again
-  and include more unique context.
+  Hunk-specific failures report the one-based hunk index and total.
 - Matching tries exact content first, then a whitespace-tolerant retry. The
   complete multi-hunk result is constructed before the file is written, so a
   failed hunk does not leave a partial edit.
+- After both strategies fail, missing-context diagnostics conservatively scan
+  the complete eligible region for same-length windows with exactly one
+  whitespace-tolerant mismatch. A unique result reports only its target range,
+  mismatch line, and the two mismatching `-`/`+` excerpts. Zero or multiple
+  results expose no source content or target location. Diagnostic candidates
+  are never applied or used as retry locations.
+- Each completed unique evidence line is capped at 200 Unicode code points,
+  including its prefix and any ellipses. Long excerpts use a code-point-aware
+  window around the first normalized difference rather than truncating only
+  from the end.
+- Ambiguous context reports the eligible full-match count but no content or
+  location. All public patch failures state that no file changes were written.
 - A conventional numeric-decorated header such as
   `@@ -10,2 +10,3 @@` may be accepted as model-output noise, but its coordinates
   and counts are discarded and never affect matching. Schemas, examples, and
   generated prompts must request the bare `@@` form.
-- File headers, line labels, `Begin/End Patch` wrappers, and arbitrary header
+- File headers, line labels, semantic patch wrappers, and arbitrary header
   suffixes are not part of the grammar. XML sentinel tags are transport framing
   only and are stripped before the patch reaches this semantic boundary.
 
-The semantic owner is `src/tools/file/context-patch.ts`; path resolution,
-existing-file validation, and write-after-success behavior remain owned by
+Canonical native/XML semantic wording and the patch-field example are owned by
+`src/tools/file/edit-file-contract.ts`; XML formatting adds only its sentinel
+framing. Patch grammar, matching, candidate classification, and structured
+failure facts are owned by `src/tools/file/context-patch.ts`. Bounded public
+failure rendering is owned by `src/tools/file/edit-file-patch-diagnostic.ts`.
+Path resolution, retry sequencing, existing-file validation, and
+write-after-complete-success behavior remain owned by
 `src/tools/file/edit-file.ts`.
 
 ## 2.3 File-Tool Surface And Stored Tool Names
@@ -197,22 +232,19 @@ const createUser = tool({
 2.  **Decorator**: Registers the schema as a `ToolDefinition`.
 3.  **Registry**: Stores it in `ToolRegistry`.
 4.  **Provider schema path**:
-    - `ToolSchemaProvider` resolves the provider-aware runtime argument schema
-      formatter.
-    - In native API tool-call mode (`AUTOBYTEUS_STREAM_PARSER=api_tool_call`),
-      `LlmPhase` passes those schemas to the LLM as the provider-native `tools`
-      request field. The tool manifest is not injected into the system prompt in
-      this mode.
-    - In text-parser modes (`xml`, `json`, `sentinel`), the formatter output is
-      still used to build prompt-visible tool instructions.
-5.  **Formatters**:
-    - `DefaultXmlSchemaFormatter`: Converts schema to `<tool>` XML.
-    - `DefaultJsonSchemaFormatter`: Converts schema to the default JSON
-      prompt/tool representation.
-    - `OpenAiJsonSchemaFormatter`: Converts schema to the OpenAI-compatible
-      function-tool envelope.
-6.  **LLM**: Receives the schema either as provider-native API metadata or as
-    prompt text, depending on the selected tool-call mode.
+    - `StreamingResponseHandlerFactory` asks `ToolSchemaProvider` to build
+      schemas only when the current turn has configured tools.
+    - `ToolSchemaProvider` resolves the provider-aware native schema formatter:
+      Anthropic, Gemini, or the OpenAI-compatible function-tool envelope used by
+      the remaining supported provider paths.
+    - `LlmPhase` supplies the resulting array through the provider request's
+      native `tools` field. With zero tools it sends no schema field.
+5.  **LLM**: Receives provider-native tool metadata. Tool definitions are not
+    rendered into system-prompt instructions, examples, XML, sentinel blocks,
+    or another model-authored text protocol.
+
+Structured provider-native calls are the only supported model-to-tool
+invocation channel. Assistant text is not parsed into invocations.
 
 ### 4.5 OpenAI-Compatible Function Tool Schemas
 
@@ -271,9 +303,13 @@ one arbitrary `ParameterType`; until `ParameterSchema` has first-class union
 support, those schemas follow the mapper's conservative unsupported-schema
 fallback behavior.
 
-### 4.7 Custom Overrides
+### 4.7 Provider Schema Extensions
 
-For complex requirements (e.g., custom sentinel tag instructions like `write_file`'s `__START_CONTENT__`), specific tools can bypass default generation by registering a **Custom Formatter** in the `ToolFormattingRegistry`.
+Provider-specific schema changes belong in the retained native formatters or in
+the provider adapter that owns request legality. Do not add prompt examples,
+text-call syntax formatters, per-tool manifest overrides, or a parallel schema
+registry. `write_file` and `edit_file` live streaming is a response-display
+projection and does not change their authoritative provider-native schemas.
 
 ---
 

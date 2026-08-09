@@ -47,6 +47,7 @@ const settingsAt = (ratio: string, override: string, logs: string): ServerSettin
 const settingsResponse = (ratio: string, override: string, logs: string) => ({
   data: {
     getEffectiveWorkingContextCompactionStrategyId: 'structured-json',
+    getEffectiveStreamingContentFlushIntervalMs: 500,
     getServerSettings: settingsAt(ratio, override, logs),
   },
 })
@@ -65,7 +66,7 @@ describe('Server settings Compaction failure journey', () => {
         SkillImprovementFeatureToggleCard: true,
         MediaDefaultModelsCard: true,
         CodexFullAccessCard: true,
-        StreamingParserCard: true,
+        LiveResponseStreamingCard: true,
         FeaturedCatalogItemsCard: true,
         WebSearchConfigurationCard: true,
       },

@@ -12,6 +12,7 @@ import { Message, MessageRole, ToolCallPayload, ToolResultPayload } from '../../
 import { ToolResultEvent } from '../../../src/agent/events/agent-events.js';
 import { ToolInvocation } from '../../../src/agent/tool-invocation.js';
 import { ToolInteractionStatus } from '../../../src/memory/models/tool-interaction.js';
+import { SYNTHETIC_TOOL_RESULT_ERROR } from '../../../src/memory/working-context-tool-protocol-repairer.js';
 
 const makeTempDir = () => fs.mkdtempSync(path.join(os.tmpdir(), 'memory-manager-'));
 const makeTrace = (
@@ -91,9 +92,8 @@ describe('MemoryManager', () => {
       expect(raw[0].toDict()).not.toHaveProperty('tool_error');
       expect(raw[1].toDict()).toMatchObject({
         trace_type: 'tool_result', tool_call_id: 'call_1', tool_name: 'write_file',
-        tool_result: 'ok', tool_error: null,
+        tool_args: { path: 'x.txt' }, tool_result: 'ok', tool_error: null,
       });
-      expect(raw[1].toDict()).not.toHaveProperty('tool_args');
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }
@@ -121,7 +121,7 @@ describe('MemoryManager', () => {
     }
   });
 
-  it('persists denied native results with the canonical name and without arguments', () => {
+  it('persists denied native results with the canonical name and invocation arguments', () => {
     const tempDir = makeTempDir();
     try {
       const manager = new MemoryManager({ store: new FileMemoryStore(tempDir, 'agent_mem_denied_tool') });
@@ -143,10 +143,10 @@ describe('MemoryManager', () => {
         trace_type: 'tool_result',
         tool_call_id: 'call_denied',
         tool_name: 'run_bash',
+        tool_args: { command: 'rm -rf /' },
         tool_result: null,
         tool_error: 'Tool execution denied.',
       });
-      expect(result).not.toHaveProperty('tool_args');
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }
@@ -395,7 +395,7 @@ describe('MemoryManager', () => {
     }
   });
 
-  it('ensures crash-recovered incomplete tool calls get one synthetic result and one recovery marker', () => {
+  it('ensures crash-recovered incomplete tool calls get one idempotent synthetic terminal result', () => {
     const tempDir = makeTempDir();
     try {
       const store = new FileMemoryStore(tempDir, 'agent_mem_crash_recovery_marker');
@@ -437,15 +437,20 @@ describe('MemoryManager', () => {
       ]);
       const syntheticResult = messages[1].tool_payload as ToolResultPayload;
       expect(syntheticResult.toolCallId).toBe('call_crash');
-      expect(syntheticResult.toolResult).toContain(
-        'Tool execution was interrupted by runtime shutdown before a result was recorded.'
+      expect(syntheticResult.toolResult).toBeNull();
+      expect(syntheticResult.toolError).toBe(
+        SYNTHETIC_TOOL_RESULT_ERROR('generate_image', 'call_crash')
       );
-      const recoveryMarkers = manager.listRawTracesOrdered().filter((item) =>
-        item.traceType === 'operation_boundary' &&
-        item.sourceEvent === 'WorkingContextToolProtocolRecovery' &&
-        item.toolCallId === 'call_crash'
+      const terminalResults = manager.listRawTracesOrdered().filter((item) =>
+        item.traceType === 'tool_result' && item.toolCallId === 'call_crash'
       );
-      expect(recoveryMarkers).toHaveLength(1);
+      expect(terminalResults).toHaveLength(1);
+      expect(terminalResults[0]).toMatchObject({
+        toolName: 'generate_image',
+        toolArgs: { prompt: 'page two' },
+        toolResult: null,
+        toolError: SYNTHETIC_TOOL_RESULT_ERROR('generate_image', 'call_crash'),
+      });
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }
@@ -592,7 +597,7 @@ describe('MemoryManager', () => {
     }
   });
 
-  it('keeps model-issued arguments on the early call and omits prepared arguments from failure results', () => {
+  it('keeps model-issued arguments on the early call and records prepared arguments on failure results', () => {
     const tempDir = makeTempDir();
     try {
       const store = new FileMemoryStore(tempDir, 'agent_mem_prepared_failure');
@@ -616,10 +621,10 @@ describe('MemoryManager', () => {
       expect(manager.listRawTracesOrdered()[1]).toMatchObject({
         traceType: 'tool_result',
         toolName: 'edit_image',
+        toolArgs: { input_images: ['/absolute/relative.png'] },
         toolResult: null,
         toolError: 'execution failed',
       });
-      expect(manager.listRawTracesOrdered()[1].toDict()).not.toHaveProperty('tool_args');
       expect((manager.getWorkingContextMessages()[0].tool_payload as ToolCallPayload).toolCalls[0].arguments).toEqual({
         input: 'relative.png',
       });

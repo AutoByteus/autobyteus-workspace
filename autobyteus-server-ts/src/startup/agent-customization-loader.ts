@@ -61,7 +61,7 @@ function registerToolInvocationPreprocessor(processorClass: ToolInvocationPrepro
 }
 
 function ensureSystemPromptProcessorsRegistered(): void {
-  const requiredNames = ["ToolManifestInjector", "AvailableSkillsProcessor"];
+  const requiredNames = ["AvailableSkillsProcessor"];
   const missing = requiredNames.filter((name) => !defaultSystemPromptProcessorRegistry.contains(name));
   if (missing.length === 0) {
     logger.info("System prompt processors already registered.");

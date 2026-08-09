@@ -11,7 +11,6 @@ import { getStreamSegmentIdentity, setStreamSegmentIdentity } from '../handlers/
 import { buildRecentEventMonitorPresentation } from '~/services/eventMonitor/recentEventMonitorWindow';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { hydrateContextAttachment } from '~/utils/contextFiles/contextAttachmentModel';
-import { projectStreamContentBatch } from '../presentation/streamContentBatchProjector';
 
 vi.mock('../transport', () => ({
   WebSocketClient: vi.fn().mockImplementation(() => ({
@@ -119,32 +118,14 @@ const fillWithMutablePresentation = (context: AgentContext) => {
   return message;
 };
 
-const dispatchScheduledContent = (
-  message: ServerMessage,
-  context: AgentContext,
-): boolean => {
-  if (message.type !== 'SEGMENT_CONTENT') return false;
-  projectStreamContentBatch(context, {
-    contentPayloads: [message.payload],
-    latestActivityAt: new Date().toISOString(),
-  });
-  return true;
-};
-
 const standaloneDispatcher = () => {
   const service = new AgentStreamingService('ws://localhost:8000/ws/agent');
-  return (message: ServerMessage, context: AgentContext) => {
-    if (!dispatchScheduledContent(message, context)) {
-      (service as any).dispatchMessage(message, context);
-    }
-  };
+  return (message: ServerMessage, context: AgentContext) =>
+    (service as any).dispatchMessage(message, context);
 };
 
-const teamMemberDispatcher = (message: ServerMessage, context: AgentContext) => {
-  if (!dispatchScheduledContent(message, context)) {
-    dispatchGenericTeamMemberMessage(message, context);
-  }
-};
+const teamMemberDispatcher = (message: ServerMessage, context: AgentContext) =>
+  dispatchGenericTeamMemberMessage(message, context);
 
 describe('recent Event Monitor production dispatch coverage', () => {
   beforeEach(() => setActivePinia(createPinia()));

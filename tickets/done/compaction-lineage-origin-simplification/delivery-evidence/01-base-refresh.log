@@ -1,0 +1,9 @@
+Delivery base refresh - compaction-lineage-origin-simplification
+checked_at_utc=2026-08-08T18:14:44Z
+command=git fetch origin --prune
+ticket_branch=codex/compaction-lineage-origin-simplification
+head=bc6e09abcbb36086ec73089ac7e799813deab7c5
+origin_personal=647b1119a9dc3ba2ba301243e1b5e752943454db
+merge_base=647b1119a9dc3ba2ba301243e1b5e752943454db
+origin_personal_vs_head_left_right=0	3
+result=PASS (tracked remote base unchanged; branch already current; no integration or executable rerun required)

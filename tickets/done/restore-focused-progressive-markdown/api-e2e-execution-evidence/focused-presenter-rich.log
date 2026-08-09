@@ -1,0 +1,54 @@
+command: pnpm test:nuxt --run components/conversation/__tests__/AIMessage.spec.ts components/conversation/segments/__tests__/TextSegment.spec.ts components/conversation/segments/__tests__/ThinkSegment.spec.ts components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts
+started_utc: 2026-08-08T18:02:28Z
+
+> autobyteus@1.4.44 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run components/conversation/__tests__/AIMessage.spec.ts components/conversation/segments/__tests__/TextSegment.spec.ts components/conversation/segments/__tests__/ThinkSegment.spec.ts components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/autobyteus-web
+
+stderr | components/conversation/segments/__tests__/ThinkSegment.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/__tests__/AIMessage.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/segments/__tests__/TextSegment.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/conversation/segments/__tests__/ThinkSegment.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/conversation/__tests__/AIMessage.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/conversation/segments/__tests__/TextSegment.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/conversation/segments/__tests__/TextSegment.spec.ts (3 tests) 27ms
+ ✓ components/conversation/segments/__tests__/ThinkSegment.spec.ts (2 tests) 33ms
+ ✓ components/conversation/__tests__/AIMessage.spec.ts (6 tests) 21ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts (19 tests) 104ms
+
+ Test Files  4 passed (4)
+      Tests  30 passed (30)
+   Start at  20:02:31
+   Duration  6.01s (transform 2.80s, setup 20.26s, collect 420ms, tests 185ms, environment 1.15s, prepare 671ms)
+
+exit_code: 0
+finished_utc: 2026-08-08T18:02:37Z

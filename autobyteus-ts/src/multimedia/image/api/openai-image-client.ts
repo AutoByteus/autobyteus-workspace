@@ -8,6 +8,7 @@ import crypto from 'node:crypto';
 import { BaseImageClient } from '../base-image-client.js';
 import { ImageGenerationResponse } from '../../utils/response-types.js';
 import { downloadFileFromUrl } from '../../../utils/download-utils.js';
+import type { MediaOperationOptions } from '../../utils/operation-options.js';
 import type { ImageModel } from '../image-model.js';
 import type { MultimediaConfig } from '../../utils/multimedia-config.js';
 import type { ProviderApiKeyResolver } from '../../../secrets/provider-api-key-resolver.js';
@@ -81,7 +82,8 @@ export class OpenAIImageClient extends BaseImageClient {
   async generateImage(
     prompt: string,
     inputImageUrls?: string[] | null,
-    generationConfig?: Record<string, unknown>
+    generationConfig?: Record<string, unknown>,
+    operationOptions?: MediaOperationOptions
   ): Promise<ImageGenerationResponse> {
     if (inputImageUrls && inputImageUrls.length > 0) {
       console.warn(
@@ -116,7 +118,8 @@ export class OpenAIImageClient extends BaseImageClient {
 
       const client = await this.getClient();
       const response = await client.images.generate(
-        request as unknown as OpenAI.Images.ImageGenerateParams
+        request as unknown as OpenAI.Images.ImageGenerateParams,
+        { signal: operationOptions?.signal ?? undefined }
       ) as OpenAI.Images.ImagesResponse;
       const outputFormat = typeof finalConfig.output_format === 'string' ? finalConfig.output_format : 'png';
       const mimeType = mimeTypeFromFormat(outputFormat);
@@ -145,7 +148,8 @@ export class OpenAIImageClient extends BaseImageClient {
     prompt: string,
     inputImageUrls: string[],
     maskUrl?: string | null,
-    generationConfig?: Record<string, unknown>
+    generationConfig?: Record<string, unknown>,
+    operationOptions?: MediaOperationOptions
   ): Promise<ImageGenerationResponse> {
     if (!inputImageUrls || inputImageUrls.length === 0) {
       throw new Error('At least one input image URL must be provided for editing.');
@@ -169,7 +173,7 @@ export class OpenAIImageClient extends BaseImageClient {
       let sourcePath = sourceUrl;
       if (!fs.existsSync(sourcePath)) {
         tempImagePath = await makeTempFile('png');
-        await downloadFileFromUrl(sourceUrl, tempImagePath);
+        await downloadFileFromUrl(sourceUrl, tempImagePath, { signal: operationOptions?.signal ?? undefined });
         sourcePath = tempImagePath;
       }
 
@@ -178,7 +182,7 @@ export class OpenAIImageClient extends BaseImageClient {
         maskPath = maskUrl;
         if (!fs.existsSync(maskPath)) {
           tempMaskPath = await makeTempFile('png');
-          await downloadFileFromUrl(maskUrl, tempMaskPath);
+          await downloadFileFromUrl(maskUrl, tempMaskPath, { signal: operationOptions?.signal ?? undefined });
           maskPath = tempMaskPath;
         }
       }
@@ -213,7 +217,8 @@ export class OpenAIImageClient extends BaseImageClient {
 
       const client = await this.getClient();
       const response = await client.images.edit(
-        request as unknown as OpenAI.Images.ImageEditParams
+        request as unknown as OpenAI.Images.ImageEditParams,
+        { signal: operationOptions?.signal ?? undefined }
       ) as OpenAI.Images.ImagesResponse;
       const outputFormat = typeof finalConfig.output_format === 'string' ? finalConfig.output_format : 'png';
       const mimeType = mimeTypeFromFormat(outputFormat);

@@ -1,0 +1,12 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-ts
+
+ ✓ tests/unit/memory/memory-manager-reasoning-persistence.test.ts (3 tests) 8ms
+ ✓ tests/unit/memory/memory-manager-working-context-snapshot-persistence.test.ts (3 tests) 12ms
+ ✓ tests/unit/memory/memory-manager.test.ts (21 tests) 49ms
+
+ Test Files  3 passed (3)
+      Tests  27 passed (27)
+   Start at  10:12:03
+   Duration  358ms (transform 461ms, setup 47ms, import 603ms, tests 69ms, environment 0ms)
+

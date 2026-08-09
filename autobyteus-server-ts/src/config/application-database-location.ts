@@ -1,5 +1,5 @@
 import path from "node:path";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { fileURLToPath } from "node:url";
 
 export class ApplicationDatabaseLocationError extends Error {
   constructor() {
@@ -19,7 +19,8 @@ const decodeConfiguredPath = (databaseUrl: string, requireAbsolute: boolean): st
     throw new ApplicationDatabaseLocationError();
   }
 
-  if (requireAbsolute && !configuredPath.startsWith("/")) {
+  const hasAbsoluteUrlPath = configuredPath.startsWith("/") || /^[A-Za-z]:[\\/]/.test(configuredPath);
+  if (requireAbsolute && !hasAbsoluteUrlPath) {
     throw new ApplicationDatabaseLocationError();
   }
 
@@ -33,6 +34,9 @@ const decodeConfiguredPath = (databaseUrl: string, requireAbsolute: boolean): st
   return configuredPath;
 };
 
+export const toPrismaSqliteUrl = (databasePath: string): string =>
+  `file:${databasePath.replace(/\\/g, "/")}`;
+
 export class ApplicationDatabaseLocation {
   readonly databaseUrl: string;
   readonly databasePath: string;
@@ -40,7 +44,7 @@ export class ApplicationDatabaseLocation {
 
   private constructor(databasePath: string) {
     this.databasePath = databasePath;
-    this.databaseUrl = pathToFileURL(databasePath).href;
+    this.databaseUrl = toPrismaSqliteUrl(databasePath);
     this.rootKeyPath = `${databasePath}.secret.key`;
     Object.freeze(this);
   }

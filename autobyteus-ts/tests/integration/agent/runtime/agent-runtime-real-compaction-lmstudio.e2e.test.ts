@@ -164,7 +164,6 @@ const extractConstituent = (
 };
 
 const ORIGINAL_ENV = {
-  parser: process.env.AUTOBYTEUS_STREAM_PARSER,
   strategy: process.env[AUTOBYTEUS_COMPACTION_STRATEGY],
   detailedLogs: process.env.AUTOBYTEUS_COMPACTION_DEBUG_LOGS,
   targetModel: process.env.LMSTUDIO_TARGET_TEXT_MODEL,
@@ -252,7 +251,6 @@ runRealE2E('Agent runtime real compaction (LM Studio)', () => {
     registrySnapshot = defaultToolRegistry.snapshot();
     SkillRegistry.getInstance().clear();
     resetAgentFactory();
-    process.env.AUTOBYTEUS_STREAM_PARSER = 'api_tool_call';
     process.env.AUTOBYTEUS_COMPACTION_DEBUG_LOGS = 'true';
     process.env[AUTOBYTEUS_COMPACTION_STRATEGY] = 'structured-json';
     process.env.LMSTUDIO_TARGET_TEXT_MODEL = EXPECTED_MODEL;
@@ -262,7 +260,6 @@ runRealE2E('Agent runtime real compaction (LM Studio)', () => {
     defaultToolRegistry.restore(registrySnapshot);
     SkillRegistry.getInstance().clear();
     resetAgentFactory();
-    restoreEnv('AUTOBYTEUS_STREAM_PARSER', ORIGINAL_ENV.parser);
     restoreEnv(AUTOBYTEUS_COMPACTION_STRATEGY, ORIGINAL_ENV.strategy);
     restoreEnv('AUTOBYTEUS_COMPACTION_DEBUG_LOGS', ORIGINAL_ENV.detailedLogs);
     restoreEnv('LMSTUDIO_TARGET_TEXT_MODEL', ORIGINAL_ENV.targetModel);

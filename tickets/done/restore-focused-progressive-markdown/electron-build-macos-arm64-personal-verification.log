@@ -1,0 +1,46 @@
+# Electron Build Verification — Restore Focused Progressive Markdown
+
+- Verified: 2026-08-08T18:59:28Z
+- DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.44.dmg`
+- ZIP: `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.44.zip`
+- App: `/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+
+## Artifact Metadata And SHA-256
+
+DMG bytes: 401822440; modified: 2026-08-08T20:57:53Z
+ZIP bytes: 398061988; modified: 2026-08-08T20:58:14Z
+b8d4ed5e72e631994ff3d78a7b95cb1870e4dae4707aab1af2e0bb1e6fdd2236  /Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.44.dmg
+d58d95ce62de26aa3fe110efdadc0ff6f7a52593443b4c4caca9238db4f2a156  /Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.44.zip
+
+## Archive Integrity
+
+Command: `hdiutil verify <DMG>`
+hdiutil: verify: checksum of "/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.44.dmg" is VALID
+Command: `unzip -t <ZIP>`
+No errors detected in compressed data of /Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.44.zip.
+
+## Packaged Terminal Runtime
+
+Staged resources:
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/autobyteus-web/resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+Final app resources:
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+Electron Node real spawn probe:
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+
+## Bundle And Executable
+
+Short version: 1.4.44
+Bundle version: 1.4.44
+/Users/normy/autobyteus_org/autobyteus-worktrees/restore-focused-progressive-markdown/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+
+## Result
+
+Pass. DMG and ZIP integrity, staged/final packaged terminal helpers, real node-pty spawn, bundle version, and ARM64 executable checks succeeded.

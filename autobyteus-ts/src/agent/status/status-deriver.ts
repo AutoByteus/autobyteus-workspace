@@ -6,6 +6,8 @@ import {
   AgentIdleEvent,
   AgentInterruptRequestedEvent,
   AgentTurnInterruptedEvent,
+  AgentTurnRecoveredEvent,
+  AgentRuntimeRecoveredEvent,
   ShutdownRequestedEvent,
   BootstrapStartedEvent,
   BootstrapCompletedEvent,
@@ -58,6 +60,9 @@ export class AgentStatusDeriver {
         return currentStatus;
       }
       return AgentStatus.INTERRUPTING;
+    }
+    if (event instanceof AgentTurnRecoveredEvent || event instanceof AgentRuntimeRecoveredEvent) {
+      return AgentStatus.IDLE;
     }
     if (event instanceof AgentTurnInterruptedEvent) {
       if (currentStatus === AgentStatus.ERROR || currentStatus === AgentStatus.SHUTTING_DOWN) {

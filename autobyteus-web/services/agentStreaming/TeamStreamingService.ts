@@ -36,9 +36,6 @@ import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAu
 import { getApolloClient } from '~/utils/apolloClient';
 import { scheduleTaskDelegationRecordsRefresh } from '~/services/runHydration/taskDelegationHydrationService';
 import { createTeamExecutionAddress, type TeamExecutionAddress } from '~/types/agent/TeamExecutionAddress';
-import { StreamContentPresentationScheduler } from './presentation/StreamContentPresentationScheduler';
-import { projectStreamContentBatch } from './presentation/streamContentBatchProjector';
-import { shouldFlushPendingContentBefore } from './presentation/streamContentPresentationFlushPolicy';
 import {
   drainPendingInterruptTransportFailures,
   interruptCommandTargetsEqual,
@@ -78,7 +75,6 @@ export class TeamStreamingService {
   private teamContext: AgentTeamContext | null = null;
   private wsEndpoint: string;
   private teamRunId: string | null = null;
-  private readonly contentPresentationScheduler: StreamContentPresentationScheduler;
   private readonly pendingInterruptCommands = new Map<string, PendingInterruptCommand>();
   private readonly onInterruptCommandResult: (ack: InterruptGenerationCommandAckPayload) => void;
   private readonly onInterruptCommandTransportFailure: (failure: InterruptCommandTransportFailure) => void;
@@ -96,9 +92,6 @@ export class TeamStreamingService {
     this.onInterruptCommandResult = options.onInterruptCommandResult ?? (() => undefined);
     this.onInterruptCommandTransportFailure = options.onInterruptCommandTransportFailure
       ?? (() => undefined);
-    this.contentPresentationScheduler = new StreamContentPresentationScheduler(
-      projectStreamContentBatch,
-    );
   }
 
   get connectionState(): ConnectionState {
@@ -106,7 +99,6 @@ export class TeamStreamingService {
   }
 
   attachContext(teamContext: AgentTeamContext): void {
-    this.contentPresentationScheduler.flush();
     this.teamContext = teamContext;
   }
 
@@ -130,7 +122,6 @@ export class TeamStreamingService {
 
   disconnect(): void {
     this.drainPendingInterruptCommands('Interrupt was cancelled because the stream disconnected.');
-    this.contentPresentationScheduler.flush();
     this.wsClient.off('onMessage', this.handleMessage);
     this.wsClient.off('onConnect', this.handleConnect);
     this.wsClient.off('onDisconnect', this.handleDisconnect);
@@ -236,18 +227,9 @@ export class TeamStreamingService {
         this.handleInterruptCommandAck(message.payload);
         return;
       }
-      const receivedAt = message.type === 'SEGMENT_CONTENT'
-        ? new Date().toISOString()
-        : null;
-      if (
-        message.type !== 'SEGMENT_CONTENT'
-        && shouldFlushPendingContentBefore(message.type)
-      ) {
-        this.contentPresentationScheduler.flush();
-      }
       this.approvalTracker.track(message);
       this.logMessage(message);
-      this.dispatchMessage(message, this.teamContext, receivedAt);
+      this.dispatchMessage(message, this.teamContext);
     } catch (e) {
       console.error('Failed to parse WebSocket message:', e);
     }
@@ -262,7 +244,6 @@ export class TeamStreamingService {
 
   private handleDisconnect = (reason?: string): void => {
     console.log('Team WebSocket disconnected:', reason);
-    this.contentPresentationScheduler.flush();
     this.drainPendingInterruptCommands(
       reason || 'Interrupt result was lost because the stream disconnected.',
     );
@@ -359,7 +340,6 @@ export class TeamStreamingService {
   private dispatchMessage(
     message: ServerMessage,
     teamContext: AgentTeamContext,
-    receivedAt: string | null = null,
   ): void {
     this.refreshTaskDelegationRecords(message, teamContext);
     if (message.type === 'TEAM_RUN_LIFECYCLE') {
@@ -398,17 +378,7 @@ export class TeamStreamingService {
       return;
     }
 
-    if (message.type === 'SEGMENT_CONTENT') {
-      if (!receivedAt) {
-        throw new Error('SEGMENT_CONTENT receipt time is required before enqueue.');
-      }
-      this.contentPresentationScheduler.enqueue(memberResolution.context, {
-        payload: message.payload,
-        receivedAt,
-      });
-    } else {
-      dispatchGenericTeamMemberMessage(message, memberResolution.context);
-    }
+    dispatchGenericTeamMemberMessage(message, memberResolution.context);
 
     if (removeTaskAgentAfterMessage && taskAgentIdentity) {
       removeTaskAgentContext(teamContext, taskAgentIdentity);

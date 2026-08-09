@@ -1,0 +1,14 @@
+{
+  "result": "Fail",
+  "summaryPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/long-stream-browser-summary.json",
+  "failures": [
+    {
+      "message": "PERF-001: The representative active stream lasts at least 10 minutes",
+      "details": {
+        "activeSeconds": 599.999,
+        "durationMs": 600000
+      },
+      "stack": "Error: PERF-001: The representative active stream lasts at least 10 minutes\n    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/long-stream-browser-probe.mjs:310:19)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/tickets/in-progress/runtime-streaming-performance-followup/api-e2e-execution-evidence/long-stream-browser-probe.mjs:743:3"
+    }
+  ]
+}

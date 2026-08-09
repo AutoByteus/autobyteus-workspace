@@ -2,9 +2,9 @@ import fs from "node:fs";
 import fsPromises from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { pathToFileURL } from "node:url";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { AppConfig, AppConfigError } from "../../../src/config/app-config.js";
+import { toPrismaSqliteUrl } from "../../../src/config/application-database-location.js";
 
 const ENV_KEYS = [
   "AUTOBYTEUS_SERVER_HOST",
@@ -17,6 +17,9 @@ const ENV_KEYS = [
   "AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS",
   "AUTOBYTEUS_LOG_DIR",
   "AUTOBYTEUS_TEMP_WORKSPACE_DIR",
+  "AUTOBYTEUS_STREAM_PARSER",
+  "AUTOBYTEUS_STREAM_PARSER_SUFFIX",
+  "UNRELATED_SETTING",
   "LOG_LEVEL",
 ];
 
@@ -67,7 +70,7 @@ describe("AppConfig", () => {
 
     expect(config.getBaseUrl()).toBe("http://localhost:8000");
     const expectedDbPath = path.resolve(configDir, "db", "test.db");
-    const expectedDatabaseUrl = pathToFileURL(expectedDbPath).href;
+    const expectedDatabaseUrl = toPrismaSqliteUrl(expectedDbPath);
     expect(config.get("DATABASE_URL")).toBe(expectedDatabaseUrl);
     expect(config.getOperationalDatabaseLocation()).toEqual({
       databaseUrl: expectedDatabaseUrl,
@@ -91,7 +94,9 @@ describe("AppConfig", () => {
 
     config.initialize();
 
-    expect(config.get("DATABASE_URL")).toBe(pathToFileURL("/tmp/explicit-autobyteus-test.db").href);
+    expect(config.get("DATABASE_URL")).toBe(
+      toPrismaSqliteUrl(path.resolve("/tmp/explicit-autobyteus-test.db")),
+    );
     expect(process.env.DATABASE_URL).toBe(explicitDatabaseUrl);
 
     await fsPromises.rm(configDir, { recursive: true, force: true });
@@ -113,7 +118,7 @@ describe("AppConfig", () => {
     config.initialize();
 
     expect(config.getOperationalDatabaseUrl())
-      .toBe(pathToFileURL("/tmp/persisted-autobyteus-test.db").href);
+      .toBe(toPrismaSqliteUrl(path.resolve("/tmp/persisted-autobyteus-test.db")));
     expect(process.env.DATABASE_URL).toBe(explicitDatabaseUrl);
 
     await fsPromises.rm(configDir, { recursive: true, force: true });
@@ -298,6 +303,71 @@ describe("AppConfig", () => {
     expect(config.get("TEST_KEY")).toBe("VALUE");
     expect(process.env.TEST_KEY).toBe("VALUE");
 
+    await fsPromises.rm(configDir, { recursive: true, force: true });
+  });
+
+  it("discards the exact retired stream-parser key while preserving unrelated settings", async () => {
+    const configDir = await createTempConfigDir([
+      "AUTOBYTEUS_SERVER_HOST=http://localhost:8000",
+      "AUTOBYTEUS_STREAM_PARSER=xml",
+      "AUTOBYTEUS_STREAM_PARSER_SUFFIX=still-current",
+      "UNRELATED_SETTING=preserved",
+      "",
+    ].join("\n"));
+    process.env.AUTOBYTEUS_STREAM_PARSER = "sentinel";
+    const config = new AppConfig({ appDataDir: configDir });
+
+    config.initialize();
+    config.initialize();
+
+    const contents = await fsPromises.readFile(path.join(configDir, ".env"), "utf-8");
+    expect(config.get("AUTOBYTEUS_STREAM_PARSER")).toBeUndefined();
+    expect(process.env.AUTOBYTEUS_STREAM_PARSER).toBeUndefined();
+    expect(contents).not.toMatch(/^AUTOBYTEUS_STREAM_PARSER=/m);
+    expect(config.get("AUTOBYTEUS_STREAM_PARSER_SUFFIX")).toBe("still-current");
+    expect(config.get("UNRELATED_SETTING")).toBe("preserved");
+    expect(contents).toContain("AUTOBYTEUS_STREAM_PARSER_SUFFIX=still-current");
+    expect(contents).toContain("UNRELATED_SETTING=preserved");
+
+    await fsPromises.rm(configDir, { recursive: true, force: true });
+  });
+
+  it("rejects only the exact retired key and leaves custom settings writable", async () => {
+    const configDir = await createTempConfigDir("AUTOBYTEUS_SERVER_HOST=http://localhost:8000\n");
+    const config = new AppConfig({ appDataDir: configDir });
+
+    expect(() => config.set("AUTOBYTEUS_STREAM_PARSER", "api_tool_call"))
+      .toThrow("Server setting 'AUTOBYTEUS_STREAM_PARSER' has been retired and cannot be set.");
+    expect(config.get("AUTOBYTEUS_STREAM_PARSER")).toBeUndefined();
+    expect(process.env.AUTOBYTEUS_STREAM_PARSER).toBeUndefined();
+
+    config.set("AUTOBYTEUS_STREAM_PARSER_SUFFIX", "still-current");
+    expect(config.get("AUTOBYTEUS_STREAM_PARSER_SUFFIX")).toBe("still-current");
+    expect(process.env.AUTOBYTEUS_STREAM_PARSER_SUFFIX).toBe("still-current");
+
+    await fsPromises.rm(configDir, { recursive: true, force: true });
+  });
+
+  it("keeps the retired key inert in-session when its persisted file is read-only", async () => {
+    if (process.platform === "win32") return;
+    const configDir = await createTempConfigDir([
+      "AUTOBYTEUS_SERVER_HOST=http://localhost:8000",
+      "AUTOBYTEUS_STREAM_PARSER=json",
+      "UNRELATED_SETTING=preserved",
+      "",
+    ].join("\n"));
+    const envPath = path.join(configDir, ".env");
+    await fsPromises.chmod(envPath, 0o400);
+    const config = new AppConfig({ appDataDir: configDir });
+
+    config.initialize();
+
+    expect(config.get("AUTOBYTEUS_STREAM_PARSER")).toBeUndefined();
+    expect(process.env.AUTOBYTEUS_STREAM_PARSER).toBeUndefined();
+    expect(config.get("UNRELATED_SETTING")).toBe("preserved");
+    expect(await fsPromises.readFile(envPath, "utf-8")).toContain("AUTOBYTEUS_STREAM_PARSER=json");
+
+    await fsPromises.chmod(envPath, 0o600);
     await fsPromises.rm(configDir, { recursive: true, force: true });
   });
 
