@@ -186,6 +186,54 @@ File explorer and artifact viewers intentionally follow the shared **Settings ->
 
 Markdown files are rendered using `MarkdownRenderer.vue`, which uses `markdown-it` for parsing. The parsing logic is encapsulated in `useMarkdownSegments.ts`.
 
+### Conversation Progressive Rich Rendering
+
+Conversation text and reasoning use one rich presentation path for active,
+completed, historical, and hydrated content. The server WebSocket egress shapes
+`SEGMENT_CONTENT` cadence, and the frontend applies each shaped revision
+immediately without adding another scheduler or presentation timer:
+
+- `AIMessage.vue` dispatches each typed segment without deriving a separate
+  presentation-completion state.
+- `TextSegment.vue` delegates the current accumulated text directly to the
+  reactive `MarkdownRenderer.vue` on every shaped revision.
+- `ThinkSegment.vue` remains collapsed by default. While its disclosure is
+  expanded, current accumulated reasoning is rendered and revised through the
+  same `MarkdownRenderer.vue` path.
+- Completed and historical/hydrated content continues through that same rich
+  owner, so there is no completion-selected renderer switch or temporary plain
+  presentation format.
+
+Stream-segment completion metadata remains authoritative for lifecycle,
+terminalization, and Event Monitor behavior. `SEGMENT_END` and supported
+message-terminal paths still finalize open segments, but that state no longer
+selects text or reasoning presentation.
+
+The **Thinking** disclosure exists only when the backend/provider emits an
+identified reasoning segment for that turn. A model or individual response that
+emits text without reasoning intentionally has no disclosure; absence alone
+does not show that the frontend dropped reasoning. When reasoning is emitted,
+standalone and team-member streams route it through the same progressive-rich
+`ThinkSegment.vue` presentation boundary.
+
+For native AutoByteus runs, a non-empty completed reasoning value is persisted
+as its own replay-authoritative `reasoning` raw trace before the ordinary
+assistant trace, with the same turn/source identity. Standalone and team
+GraphQL history projection can therefore recreate the completed Thinking
+segment after run reopen, hard reload, or member reselection. Raw traces written
+before this persistence contract was introduced are not backfilled or
+heuristically reconstructed, so an older affected turn can remain without a
+historical Thinking disclosure.
+
+Each visible shaped revision runs the existing Markdown parsing, sanitization,
+syntax-highlighting, math, Mermaid, managed-image, link, and enabled file-action
+pipeline. Server-owned cadence bounds normal update frequency, but a very large
+or feature-heavy accumulated revision can still be expensive. Renderer-wide
+background or unfocused contention is not addressed by this presentation
+policy. See
+[Agent Execution Architecture](./agent_execution_architecture.md) for the
+transport and completion ownership boundaries.
+
 ### Features
 
 - **Standard Markdown**: CommonMark compliant.

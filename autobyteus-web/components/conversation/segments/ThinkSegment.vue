@@ -27,7 +27,7 @@ import { Icon } from '@iconify/vue';
 import MarkdownRenderer from '~/components/conversation/segments/renderer/MarkdownRenderer.vue';
 import type { AbsoluteFilePathAction } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
 
-const props = withDefaults(defineProps<{
+withDefaults(defineProps<{
   content: string;
   enableEventMonitorFileActions?: boolean;
 }>(), { enableEventMonitorFileActions: false });

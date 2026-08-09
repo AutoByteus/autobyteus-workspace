@@ -30,6 +30,11 @@ import {
   normalizeWorkingContextCompactionStrategyForPersistence,
 } from "../config/working-context-compaction-strategy-setting.js";
 import { normalizeWorkingContextCompactionStrategyId } from "autobyteus-ts/memory/compaction/working-context-compaction-strategy-setting.js";
+import {
+  normalizeStreamingContentFlushIntervalForPersistence,
+  resolveStreamingContentFlushIntervalMs,
+  STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY,
+} from "../config/streaming-content-flush-interval-setting.js";
 
 export {
   DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY,
@@ -166,6 +171,15 @@ export class ServerSettingsService {
       true,
       {
         normalizeForPersistence: normalizeStreamParserSettingForPersistence,
+      },
+    );
+
+    this.registerPredefinedSetting(
+      STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY,
+      "Milliseconds between live response content updates. Smaller values update more frequently; larger values reduce UI and transport work. Recommended default: 500.",
+      true,
+      {
+        normalizeForPersistence: normalizeStreamingContentFlushIntervalForPersistence,
       },
     );
 
@@ -410,6 +424,10 @@ export class ServerSettingsService {
     return normalizeWorkingContextCompactionStrategyId(
       appConfigProvider.config.get(WORKING_CONTEXT_COMPACTION_STRATEGY_SETTING_KEY),
     );
+  }
+
+  getEffectiveStreamingContentFlushIntervalMs(): number {
+    return resolveStreamingContentFlushIntervalMs();
   }
 
   getSkillImprovementDefaultImproverAgentDefinitionId(): string | null {

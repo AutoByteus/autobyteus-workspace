@@ -1,0 +1,18 @@
+$ removed-contract active source/test search
+PASS: no removed contract symbol in active source/tests
+$ obsolete lineage field production source and fresh build search
+PASS: no obsolete field in production source/fresh build output
+$ intentional old-row/new-row test references
+autobyteus-ts/tests/integration/memory/working-context-snapshot-restore.test.ts:113:    expect(c1.lineageRecord).not.toHaveProperty('rawTraceArchiveFile');
+autobyteus-ts/tests/unit/memory/file-compaction-lineage-store.test.ts:69:    expect(persisted.every((row) => !Object.hasOwn(row, 'rawTraceArchiveFile'))).toBe(true);
+autobyteus-ts/tests/unit/memory/file-compaction-lineage-store.test.ts:92:      rawTraceArchiveFile: 'raw_traces_archive/raw_traces_000001.jsonl',
+autobyteus-ts/tests/unit/memory/file-compaction-lineage-store.test.ts:99:    expect(store.readHead()).not.toHaveProperty('rawTraceArchiveFile');
+PASS: exactly 4 allowlisted test assertions/fixture references
+$ deleted origin files
+PASS absent: autobyteus-ts/src/memory/lineage/compaction-lineage-resolver.ts
+PASS absent: autobyteus-ts/src/memory/lineage/memory-origin-resolution.ts
+PASS absent: autobyteus-server-ts/src/memory-lineage/services/agent-memory-origin-service.ts
+PASS absent: autobyteus-ts/tests/unit/memory/compaction-lineage-resolver.test.ts
+PASS absent: autobyteus-server-ts/tests/unit/memory-lineage/agent-memory-origin-service.test.ts
+$ no migration or future-memory addition in implementation diff
+PASS: no migration/future-memory path added

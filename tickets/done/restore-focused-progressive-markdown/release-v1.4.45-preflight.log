@@ -1,0 +1,14 @@
+# v1.4.45 finalization/release preflight
+timestamp=2026-08-08T19:11:33Z
+branch=codex/restore-focused-progressive-markdown
+head=596296147c6e9d50fc7a0a293004a42665ecc693
+origin_personal=9ce41640960fc3e2a7b85b85608a4f081fe52df2
+merge_base=9ce41640960fc3e2a7b85b85608a4f081fe52df2
+ahead_behind=4/0
+web_version=1.4.44
+gateway_version=1.4.44
+latest_stable_tag=v1.4.44
+local_v1.4.45=absent
+remote_v1.4.45=absent
+target_advanced_after_verification=no
+release_preflight=pass

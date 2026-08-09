@@ -1,0 +1,77 @@
+# Repository Finalization Evidence — Restore Focused Progressive Markdown
+
+- Timestamp: 2026-08-08T19:12:47Z
+- Target branch: `personal`
+- Previous target: `9ce41640960fc3e2a7b85b85608a4f081fe52df2`
+- Ticket commit: `d64914d2796e1522700f9eba34c073ccfb4d739d`
+- Merge commit: `3f53fcc52c556155210519146a484f16596398a9`
+- Ticket ancestry: Pass.
+
+## Focused Post-Merge Test
+
+```bash
+pnpm test:nuxt --run components/conversation/__tests__/AIMessage.spec.ts components/conversation/segments/__tests__/TextSegment.spec.ts components/conversation/segments/__tests__/ThinkSegment.spec.ts components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts
+```
+
+> autobyteus@1.4.44 test:nuxt /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run components/conversation/__tests__/AIMessage.spec.ts components/conversation/segments/__tests__/TextSegment.spec.ts components/conversation/segments/__tests__/ThinkSegment.spec.ts components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web
+
+stderr | components/conversation/segments/__tests__/ThinkSegment.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/segments/__tests__/TextSegment.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/__tests__/AIMessage.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/conversation/segments/__tests__/ThinkSegment.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/conversation/segments/__tests__/TextSegment.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/conversation/__tests__/AIMessage.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/conversation/segments/__tests__/TextSegment.spec.ts (3 tests) 26ms
+ ✓ components/conversation/segments/__tests__/ThinkSegment.spec.ts (2 tests) 32ms
+ ✓ components/conversation/__tests__/AIMessage.spec.ts (6 tests) 19ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts (19 tests) 99ms
+
+ Test Files  4 passed (4)
+      Tests  30 passed (30)
+   Start at  21:12:50
+   Duration  6.00s (transform 2.88s, setup 20.75s, collect 309ms, tests 177ms, environment 988ms, prepare 613ms)
+
+
+Result: Pass — 4 files / 30 tests.
+
+## Static And Documentation Checks
+
+- `git diff --check origin/personal...HEAD`: Pass.
+- Obsolete production presentation symbols: absent.
+- Durable progressive-rich documentation: present.
+- Archived release notes: present.
+
+## Result
+
+Pass. The accepted ticket is merged into personal, focused behavior is green, and static/docs/release-note checks pass.

@@ -22,7 +22,6 @@ export type CompactionLineageRecord = {
   scope: CompactionLineageScope;
   compactionId: string;
   previousCompactionId: string | null;
-  rawTraceArchiveFile: string;
   episodeIds: string[];
   semanticIds: string[];
   derivedAt: string;
@@ -61,15 +60,6 @@ export const normalizeCompactionLineageRecord = (value: unknown): CompactionLine
   const previousCompactionId = record.previousCompactionId === null
     ? null
     : requireText(record.previousCompactionId, 'previousCompactionId');
-  const rawTraceArchiveFile = requireText(record.rawTraceArchiveFile, 'rawTraceArchiveFile');
-  if (
-    rawTraceArchiveFile.includes('\\')
-    || rawTraceArchiveFile.startsWith('/')
-    || /^[A-Za-z]:/.test(rawTraceArchiveFile)
-    || rawTraceArchiveFile.split('/').includes('..')
-  ) {
-    throw new Error('rawTraceArchiveFile must be a safe run-relative file name.');
-  }
   const episodeIds = requireIds(record.episodeIds, 'episodeIds');
   const semanticIds = requireIds(record.semanticIds, 'semanticIds');
   if (episodeIds.length < 1) {
@@ -108,7 +98,6 @@ export const normalizeCompactionLineageRecord = (value: unknown): CompactionLine
     scope: normalizeCompactionLineageScope(record.scope),
     compactionId: requireText(record.compactionId, 'compactionId'),
     previousCompactionId,
-    rawTraceArchiveFile,
     episodeIds,
     semanticIds,
     derivedAt: requireIsoTime(record.derivedAt, 'derivedAt'),

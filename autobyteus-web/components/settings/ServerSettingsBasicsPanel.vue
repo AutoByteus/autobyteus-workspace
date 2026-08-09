@@ -8,6 +8,7 @@
       <MediaDefaultModelsCard />
       <CodexFullAccessCard />
       <StreamingParserCard />
+      <LiveResponseStreamingCard />
       <FeaturedCatalogItemsCard />
       <WebSearchConfigurationCard @notify="showNotification" />
       <CompactionConfigCard />
@@ -34,6 +35,7 @@ import MediaDefaultModelsCard from '~/components/settings/MediaDefaultModelsCard
 import ServerSettingsEndpointCards from '~/components/settings/ServerSettingsEndpointCards.vue'
 import SkillImprovementFeatureToggleCard from '~/components/settings/SkillImprovementFeatureToggleCard.vue'
 import StreamingParserCard from '~/components/settings/StreamingParserCard.vue'
+import LiveResponseStreamingCard from '~/components/settings/LiveResponseStreamingCard.vue'
 import WebSearchConfigurationCard from '~/components/settings/WebSearchConfigurationCard.vue'
 
 type NotificationType = 'success' | 'error'

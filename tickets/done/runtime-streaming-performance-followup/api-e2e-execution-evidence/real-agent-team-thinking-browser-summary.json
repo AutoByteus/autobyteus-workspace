@@ -1,0 +1,138 @@
+{
+  "scenarioGroup": "API-REV-003 real provider-to-browser Thinking validation",
+  "capturedAt": "2026-08-08T09:22:06+02:00",
+  "result": "PASS",
+  "frontend": {
+    "kind": "API/E2E-owned Nuxt development frontend",
+    "url": "http://127.0.0.1:62731",
+    "backendBaseUrl": "http://127.0.0.1:29695",
+    "backendWebSocketBaseUrl": "ws://127.0.0.1:29695",
+    "browserTool": "open_tab/run_script/screenshot",
+    "userOwnedProcessesModified": false
+  },
+  "model": {
+    "displaySelection": "alibaba_cloud / deepseek-v4-flash-0731",
+    "selectedThroughActualUi": true
+  },
+  "standaloneControl": {
+    "scenarioId": "BROWSER-DAILY-THINK-001",
+    "agentDefinition": "Daily Assistant",
+    "runId": "daily_assistant_172e0bd6e0fa4077b82344b4264ad730",
+    "webSocketUrl": "ws://127.0.0.1:29695/ws/agent/daily_assistant_172e0bd6e0fa4077b82344b4264ad730",
+    "transport": {
+      "reasoningSegmentStart": 1,
+      "reasoningContentFrames": 2,
+      "reasoningCharacters": 180,
+      "reasoningSegmentEnd": 1,
+      "textSegmentStart": 1,
+      "textContentFrames": 1,
+      "textCharacters": 71,
+      "textSegmentEnd": 1,
+      "assistantComplete": true,
+      "turnCompleted": true
+    },
+    "dom": {
+      "thinkingDisclosureObservedDuringRun": true,
+      "thinkingDisclosureRetainedAfterCompletion": true,
+      "expandableReasoningCharacters": 180,
+      "completedReasoningRenderer": "markdown-renderer-segments",
+      "finalAnswerVisible": true
+    },
+    "screenshots": {
+      "collapsed": {
+        "path": "api-e2e-execution-evidence/real-daily-thinking-collapsed.png",
+        "sha256": "8b20eb3a9d472a8b9fdd944c06f8d3b9d43dd980f0d31197ff905c1c379b819c"
+      },
+      "expanded": {
+        "path": "api-e2e-execution-evidence/real-daily-thinking-expanded.png",
+        "sha256": "351bf1ce3831fd0674aa34723a603893025ff8998804186faddabe4f2682b014"
+      }
+    }
+  },
+  "teamControl": {
+    "scenarioId": "BROWSER-TEAM-THINK-001",
+    "teamDefinition": "Nested Classroom Test Team",
+    "teamRunId": "nested_classroom_test_team_f433aa085d8e4e68abf0c26c588e414a",
+    "selectedMember": "Teacher",
+    "memberRunId": "test_teacher_01436f05b76645fc83f714fd3df1de55",
+    "memberRouteKey": "Teacher",
+    "memberPath": ["Teacher"],
+    "webSocketUrl": "ws://127.0.0.1:29695/ws/agent-team/nested_classroom_test_team_f433aa085d8e4e68abf0c26c588e414a",
+    "transport": {
+      "reasoningSegmentStart": 1,
+      "reasoningContentFrames": 1,
+      "reasoningCharacters": 164,
+      "reasoningSegmentEnd": 1,
+      "textSegmentStart": 1,
+      "textContentFrames": 1,
+      "textCharacters": 48,
+      "textSegmentEnd": 1,
+      "assistantComplete": true,
+      "turnCompleted": true
+    },
+    "dom": {
+      "thinkingDisclosureObservedDuringRun": true,
+      "thinkingDisclosureRetainedAfterCompletion": true,
+      "expandableReasoningCharacters": 164,
+      "memberIdentityResolvedToVisibleConversation": true,
+      "finalAnswerVisible": true
+    },
+    "screenshots": {
+      "collapsed": {
+        "path": "api-e2e-execution-evidence/real-nested-classroom-thinking-collapsed.png",
+        "sha256": "a7e2c2f9ea42fd4378391eea6442c804d1f51e593471c60eef493fe5c87b1122"
+      },
+      "expanded": {
+        "path": "api-e2e-execution-evidence/real-nested-classroom-thinking-expanded.png",
+        "sha256": "26f48e0f6dce8ad5692a5f977259f9eae88bf16713bd6a763acc90d411480e03"
+      }
+    }
+  },
+  "correctedClassroomTeamControl": {
+    "scenarioId": "BROWSER-CLASSROOM-THINK-001",
+    "authoritativeForCorrectedUserRequest": true,
+    "teamDefinition": "Classroom Simulation Team",
+    "teamRunId": "classroom_simulation_team_17bae4f9a3ed4ebab523d86e15caf570",
+    "selectedMember": "professor",
+    "memberRunId": "professor_fb4c9559cd924f3e817dda2c0a8c52ac",
+    "memberRouteKey": "professor",
+    "memberPath": ["professor"],
+    "webSocketUrl": "ws://127.0.0.1:29695/ws/agent-team/classroom_simulation_team_17bae4f9a3ed4ebab523d86e15caf570",
+    "transport": {
+      "reasoningSegmentStart": 1,
+      "reasoningContentFrames": 2,
+      "reasoningCharacters": 226,
+      "reasoningSegmentEnd": 1,
+      "textSegmentStart": 1,
+      "textContentFrames": 1,
+      "textCharacters": 48,
+      "textSegmentEnd": 1,
+      "assistantComplete": true,
+      "turnCompleted": true
+    },
+    "dom": {
+      "thinkingDisclosureObservedDuringRun": true,
+      "thinkingDisclosureRetainedAfterCompletion": true,
+      "expandableReasoningCharacters": 226,
+      "memberIdentityResolvedToVisibleConversation": true,
+      "finalAnswerVisible": true
+    },
+    "screenshots": {
+      "collapsed": {
+        "path": "api-e2e-execution-evidence/real-classroom-simulation-thinking-collapsed.png",
+        "sha256": "9d333aa0d9c9d9702257f4ad520340d164107dc5ed3171a238a235070f851c07"
+      },
+      "expanded": {
+        "path": "api-e2e-execution-evidence/real-classroom-simulation-thinking-expanded.png",
+        "sha256": "c580efdf08dfefac94aa7e9b3fb0aab9f3f1119dad9b23ce2feccfb94f9b7287"
+      }
+    }
+  },
+  "classification": {
+    "generalFrontendThinkingRegressionReproduced": false,
+    "standaloneProviderToDomPath": "PASS",
+    "teamProviderToMemberDomPath": "PASS (Nested Classroom supplemental; Classroom Simulation authoritative)",
+    "bibleStudyGroupHistoryInspectedOrMutated": false,
+    "interpretation": "A Thinking disclosure is conditional on the selected provider/model emitting reasoning. The current candidate frontend and current server render it for both standalone and team-member streams when reasoning is present. This does not prove that every model or prior Bible Study Group turn emitted reasoning."
+  }
+}

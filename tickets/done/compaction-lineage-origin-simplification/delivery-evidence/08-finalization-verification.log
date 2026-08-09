@@ -1,0 +1,33 @@
+Finalization verification on merged personal - compaction-lineage-origin-simplification
+checked_at_utc=2026-08-08T18:30:09Z
+personal_merge_head=aad840d57387aabece1504e8563c8d7d05a0fbd8
+ticket_commit=d671b6961374c760bb4416287061843fa4a46f6f
+check=focused changed-owner durable tests
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-ts
+
+ ✓ tests/unit/memory/current-compaction-output-loader.test.ts (6 tests) 4ms
+ ✓ tests/unit/memory/accepted-compaction-committer.test.ts (9 tests) 6ms
+ ✓ tests/unit/memory/run-memory-file-store.test.ts (7 tests) 20ms
+
+ Test Files  3 passed (3)
+      Tests  22 passed (22)
+   Start at  20:30:10
+   Duration  289ms (transform 246ms, setup 59ms, import 340ms, tests 31ms, environment 0ms)
+
+focused_tests=PASS
+check=removed production/test origin contracts absent
+removed_contract_scan=PASS
+check=durable docs no stale removed symbols
+durable_doc_scan=PASS
+check=core/Node design mirror
+design_mirror=PASS
+check=repository artifact hygiene
+Repository artifact hygiene check passed.
+Tracked files scanned: 18783
+Path-length threshold: 200
+Longest tracked path: 197 chars: tickets/done/agent-catalog-origin-grouping/validation-artifacts/round3/ui-application-package/applications/research-workspace/agent-teams/literature-review/agents/source-collector/agent-config.json
+artifact_hygiene=PASS
+check=merged personal clean before generated evidence
+status_before_evidence_commit=0 tracked_changes
+result=PASS

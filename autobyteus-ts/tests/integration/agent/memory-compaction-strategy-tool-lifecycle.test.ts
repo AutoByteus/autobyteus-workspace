@@ -25,7 +25,6 @@ import type {
   CompactionAgentTask,
 } from '../../../src/memory/compaction/compaction-agent-runner.js';
 import { AUTOBYTEUS_COMPACTION_STRATEGY } from '../../../src/memory/compaction/working-context-compaction-strategy-setting.js';
-import { CompactionLineageResolver } from '../../../src/memory/lineage/compaction-lineage-resolver.js';
 import { MemoryManager } from '../../../src/memory/memory-manager.js';
 import { MemoryType } from '../../../src/memory/models/memory-types.js';
 import { CompactionPolicy } from '../../../src/memory/policies/compaction-policy.js';
@@ -33,7 +32,6 @@ import { CompactedMemoryContextProjector } from '../../../src/memory/projection/
 import { CurrentCompactionOutputLoader } from '../../../src/memory/projection/current-compaction-output-loader.js';
 import { FileCompactionLineageStore } from '../../../src/memory/store/file-compaction-lineage-store.js';
 import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
-import { RawTraceArchiveManager } from '../../../src/memory/store/raw-trace-archive-manager.js';
 import { WorkingContext } from '../../../src/memory/working-context.js';
 import { registerReadFileTool } from '../../../src/tools/file/read-file.js';
 import { defaultToolRegistry } from '../../../src/tools/registry/tool-registry.js';
@@ -299,27 +297,6 @@ describe('structured strategy tool-safe lifecycle', () => {
       }).buildMessages();
       expect(projected[1]?.content).toContain('Settled natural phase 4');
       expect(projected[1]?.content).toContain('Continuation-critical natural fact 25.');
-
-      const resolver = new CompactionLineageResolver(
-        lineageScope,
-        lineageStore,
-        new RawTraceArchiveManager(store.agentDir),
-        store,
-      );
-      for (const artifact of [
-        { kind: 'episode' as const, id: head.episodeIds.at(-1)! },
-        { kind: 'semantic' as const, id: head.semanticIds.at(-1)! },
-      ]) {
-        const origin = resolver.resolve(artifact);
-        expect(origin).toMatchObject({
-          status: 'complete',
-          producingCompactionId: head.compactionId,
-          artifact,
-        });
-        if (origin.status !== 'complete') throw new Error('expected complete origin');
-        expect(origin.direct.rawTraces.length).toBeGreaterThan(0);
-        expect(origin.roots.length).toBeGreaterThan(0);
-      }
 
       const nextRequest = llm.requests[1]!;
       const toolCallIndex = nextRequest.findIndex((message) =>

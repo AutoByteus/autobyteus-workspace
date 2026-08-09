@@ -6,6 +6,7 @@ import {
   AgentInputUserMessage,
 } from "autobyteus-ts";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY } from "../../../src/config/streaming-content-flush-interval-setting.js";
 import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { TeamRunEventSourceType, type TeamRunEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
 import type { ConversationTargetAddress } from "../../../src/agent-team-execution/domain/conversation-target-address.js";
@@ -316,6 +317,92 @@ const waitForCondition = async (fn: () => boolean, timeoutMs = 2000): Promise<vo
 };
 
 describe("Agent team websocket integration", () => {
+  it("preserves ordered A/B/A member groups while coalescing consecutive team content", async () => {
+    const previousInterval = process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY];
+    process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY] = "100";
+    const team = new FakeTeam("team-ordered-egress");
+    const stream = new FakeTeamStream();
+    const teamRunService = new FakeTeamRunService(team, stream);
+    const handler = new AgentTeamStreamHandler(
+      new AgentSessionManager(),
+      teamRunService as unknown as any,
+    );
+    const app = fastify();
+    await app.register(websocket);
+    await registerAgentWebsocket(
+      app,
+      { connect: async () => null, handleMessage: async () => {}, disconnect: async () => {} } as never,
+      handler,
+    );
+    const address = await app.listen({ port: 0, host: "127.0.0.1" });
+    const url = new URL(address);
+    const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent-team/${team.teamRunId}`);
+    const messages = captureMessages(socket);
+
+    const pushContent = (
+      memberName: "alpha" | "beta",
+      memberRunId: "member-42" | "member-99",
+      segmentId: string,
+      delta: string,
+    ): void => {
+      stream.push({
+        teamRunId: team.teamRunId,
+        eventSourceType: TeamRunEventSourceType.AGENT,
+        data: {
+          runtimeKind: RuntimeKind.AUTOBYTEUS,
+          memberName,
+          memberRunId,
+          agentEvent: {
+            runId: memberRunId,
+            eventType: AgentRunEventType.SEGMENT_CONTENT,
+            payload: {
+              id: segmentId,
+              turn_id: "turn-team-order",
+              segment_type: "text",
+              delta,
+            },
+            statusHint: null,
+          },
+        },
+      });
+    };
+
+    try {
+      await waitForOpen(socket);
+      await waitForCapturedMessage(messages, (message) => message.type === "CONNECTED");
+      pushContent("alpha", "member-42", "segment-a", "a1");
+      pushContent("alpha", "member-42", "segment-a", "a2");
+      pushContent("beta", "member-99", "segment-b", "b1");
+      pushContent("alpha", "member-42", "segment-a", "a3");
+
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      expect(messages.filter((message) => message.type === "SEGMENT_CONTENT")).toHaveLength(0);
+      await waitForCondition(
+        () => messages.filter((message) => message.type === "SEGMENT_CONTENT").length === 3,
+      );
+      expect(messages.filter((message) => message.type === "SEGMENT_CONTENT").map(
+        (message) => [
+          message.payload.agent_name,
+          message.payload.agent_id,
+          message.payload.id,
+          message.payload.delta,
+        ],
+      )).toEqual([
+        ["alpha", "member-42", "segment-a", "a1a2"],
+        ["beta", "member-99", "segment-b", "b1"],
+        ["alpha", "member-42", "segment-a", "a3"],
+      ]);
+    } finally {
+      socket.close();
+      await app.close();
+      if (previousInterval === undefined) {
+        delete process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY];
+      } else {
+        process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY] = previousInterval;
+      }
+    }
+  });
+
   it("streams team events and routes client messages", async () => {
     const team = new FakeTeam("team-1");
     const stream = new FakeTeamStream();

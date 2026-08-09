@@ -1,0 +1,499 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:66084) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > preserves ordered A/B/A member groups while coalescing consecutive team content
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-server-ts
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > preserves ordered A/B/A member groups while coalescing consecutive team content
+Agent team websocket attached for team run team-ordered-egress
+Created agent session 8a49007a-1fbd-46b9-9000-ffcbdf60f0bf for run team-ordered-egress
+Agent Team WebSocket connected: session=8a49007a-1fbd-46b9-9000-ffcbdf60f0bf, run=team-ordered-egress
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > streams team events and routes client messages
+Closed agent session 8a49007a-1fbd-46b9-9000-ffcbdf60f0bf
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > streams team events and routes client messages
+Agent Team WebSocket disconnected: 8a49007a-1fbd-46b9-9000-ffcbdf60f0bf
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > streams team events and routes client messages
+Agent team websocket attached for team run team-1
+Created agent session 0818a4f6-994a-4681-80b4-b5441a7cc637 for run team-1
+Agent Team WebSocket connected: session=0818a4f6-994a-4681-80b4-b5441a7cc637, run=team-1
+
+stderr | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > streams team events and routes client messages
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > restores a stopped team on websocket connect and rebinds before member follow-up SEND_MESSAGE
+Closed agent session 0818a4f6-994a-4681-80b4-b5441a7cc637
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > restores a stopped team on websocket connect and rebinds before member follow-up SEND_MESSAGE
+Agent Team WebSocket disconnected: 0818a4f6-994a-4681-80b4-b5441a7cc637
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > restores a stopped team on websocket connect and rebinds before member follow-up SEND_MESSAGE
+Agent team websocket attached for team run team-recover
+Created agent session 36c27ddc-3269-4b62-b2d7-f984b52f4e2e for run team-recover
+Agent Team WebSocket connected: session=36c27ddc-3269-4b62-b2d7-f984b52f4e2e, run=team-recover
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > closes with TEAM_NOT_FOUND when a websocket connect cannot resolve a missing team run
+Closed agent session 36c27ddc-3269-4b62-b2d7-f984b52f4e2e
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > closes with TEAM_NOT_FOUND when a websocket connect cannot resolve a missing team run
+Agent Team WebSocket disconnected: 36c27ddc-3269-4b62-b2d7-f984b52f4e2e
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > closes with TEAM_NOT_FOUND when a websocket connect cannot resolve a missing team run
+Agent team websocket attached for team run missing-team
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > closes with TEAM_NOT_FOUND when follow-up SEND_MESSAGE cannot restore the team run
+Agent team websocket attached for team run team-send-missing
+Created agent session 3087c491-910a-4084-a9c8-8a260dab4fff for run team-send-missing
+Agent Team WebSocket connected: session=3087c491-910a-4084-a9c8-8a260dab4fff, run=team-send-missing
+
+stderr | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > closes with TEAM_NOT_FOUND when follow-up SEND_MESSAGE cannot restore the team run
+Team websocket session '3087c491-910a-4084-a9c8-8a260dab4fff' could not resolve run 'team-send-missing'.
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > closes with TEAM_NOT_FOUND when follow-up SEND_MESSAGE cannot restore the team run
+Closed agent session 3087c491-910a-4084-a9c8-8a260dab4fff
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > closes with TEAM_NOT_FOUND when follow-up SEND_MESSAGE cannot restore the team run
+Agent Team WebSocket disconnected: 3087c491-910a-4084-a9c8-8a260dab4fff
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > keeps INTERRUPT_GENERATION active-only and does not restore a stopped team run
+Agent team websocket attached for team run team-stop-active-only
+Created agent session 56162c95-f192-4709-aa1d-bf45d768b393 for run team-stop-active-only
+Agent Team WebSocket connected: session=56162c95-f192-4709-aa1d-bf45d768b393, run=team-stop-active-only
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > rejects invalid team websocket interrupt targets without falling back or retargeting
+Closed agent session 56162c95-f192-4709-aa1d-bf45d768b393
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > rejects invalid team websocket interrupt targets without falling back or retargeting
+Agent Team WebSocket disconnected: 56162c95-f192-4709-aa1d-bf45d768b393
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > rejects invalid team websocket interrupt targets without falling back or retargeting
+Agent team websocket attached for team run team-invalid-interrupt-target
+Created agent session 131b4818-8b4a-4d09-9e62-1a7460cf2904 for run team-invalid-interrupt-target
+Agent Team WebSocket connected: session=131b4818-8b4a-4d09-9e62-1a7460cf2904, run=team-invalid-interrupt-target
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > forwards team-scoped live external user messages over the team websocket
+Closed agent session 131b4818-8b4a-4d09-9e62-1a7460cf2904
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > forwards team-scoped live external user messages over the team websocket
+Agent Team WebSocket disconnected: 131b4818-8b4a-4d09-9e62-1a7460cf2904
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > forwards team-scoped live external user messages over the team websocket
+Agent team websocket attached for team run team-live-1
+Created agent session 46f51a4d-9f28-460b-be4c-62eaf1e0c2d1 for run team-live-1
+Agent Team WebSocket connected: session=46f51a4d-9f28-460b-be4c-62eaf1e0c2d1, run=team-live-1
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > returns SESSION_NOT_READY for team command before connect handshake
+Closed agent session 46f51a4d-9f28-460b-be4c-62eaf1e0c2d1
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > returns SESSION_NOT_READY for team command before connect handshake
+Agent Team WebSocket disconnected: 46f51a4d-9f28-460b-be4c-62eaf1e0c2d1
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > returns SESSION_NOT_READY for team command before connect handshake
+Agent team websocket attached for team run any-team
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > routes approval commands only with explicit route selector fields
+Agent team websocket attached for team run team-approvals
+Created agent session c16d284f-dc42-4562-a995-b217fd5b8357 for run team-approvals
+Agent Team WebSocket connected: session=c16d284f-dc42-4562-a995-b217fd5b8357, run=team-approvals
+
+stderr | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > routes approval commands only with explicit route selector fields
+TOOL_APPROVAL rejected for team run team-approvals: Tool approval target missing; include member/source/target path or route selector fields.
+
+stderr | tests/integration/agent/agent-team-websocket.integration.test.ts > Agent team websocket integration > routes approval commands only with explicit route selector fields
+TOOL_APPROVAL rejected for team run team-approvals: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts
+Closed agent session c16d284f-dc42-4562-a995-b217fd5b8357
+
+stdout | tests/integration/agent/agent-team-websocket.integration.test.ts
+Agent Team WebSocket disconnected: c16d284f-dc42-4562-a995-b217fd5b8357
+
+ ✓ tests/integration/agent/agent-team-websocket.integration.test.ts (10 tests) 1386ms
+     ✓ streams team events and routes client messages  555ms
+     ✓ restores a stopped team on websocket connect and rebinds before member follow-up SEND_MESSAGE  531ms
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:66086) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > supports update/list/delete lifecycle for custom server settings
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-P8Qb5b
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-P8Qb5b/.env
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > supports update/list/delete lifecycle for custom server settings
+Initialized server settings service with 20 predefined settings
+Added new custom server setting: CUSTOM_SETTING_1786166900061_4gif4n
+Server setting 'CUSTOM_SETTING_1786166900061_4gif4n' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > supports update/list/delete lifecycle for custom server settings
+Server setting 'CUSTOM_SETTING_1786166900061_4gif4n' deleted
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > persists featured catalog items through the GraphQL settings boundary
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-khFd3A
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-khFd3A/.env
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > persists featured catalog items through the GraphQL settings boundary
+Server setting 'AUTOBYTEUS_FEATURED_CATALOG_ITEMS' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > rejects duplicate featured catalog items through GraphQL without replacing the saved value
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-hb7yDb
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-hb7yDb/.env
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > rejects duplicate featured catalog items through GraphQL without replacing the saved value
+Server setting 'AUTOBYTEUS_FEATURED_CATALOG_ITEMS' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > validates and exposes Codex sandbox mode through the GraphQL settings boundary
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-mQole8
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-mQole8/.env
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > validates and exposes Codex sandbox mode through the GraphQL settings boundary
+Server setting 'CODEX_APP_SERVER_SANDBOX' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > validates and exposes Codex sandbox mode through the GraphQL settings boundary
+Server setting 'CODEX_APP_SERVER_SANDBOX' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > validates and exposes Codex sandbox mode through the GraphQL settings boundary
+Server setting 'CODEX_APP_SERVER_SANDBOX' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > validates and exposes the stream parser override through the GraphQL settings boundary
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-DP50Wc
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-DP50Wc/.env
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > validates and exposes the stream parser override through the GraphQL settings boundary
+Server setting 'AUTOBYTEUS_STREAM_PARSER' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > validates and exposes the stream parser override through the GraphQL settings boundary
+Server setting 'AUTOBYTEUS_STREAM_PARSER' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > validates and exposes the stream parser override through the GraphQL settings boundary
+Server setting 'AUTOBYTEUS_STREAM_PARSER' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > validates and exposes the stream parser override through the GraphQL settings boundary
+Server setting 'AUTOBYTEUS_STREAM_PARSER' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > persists and reports the effective live response interval through GraphQL
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-Blt9vx
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-Blt9vx/.env
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > persists and reports the effective live response interval through GraphQL
+Server setting 'AUTOBYTEUS_STREAMING_CONTENT_FLUSH_INTERVAL_MS' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > persists and reports the effective live response interval through GraphQL
+Server setting 'AUTOBYTEUS_STREAMING_CONTENT_FLUSH_INTERVAL_MS' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > persists and reports the effective live response interval through GraphQL
+Server setting 'AUTOBYTEUS_STREAMING_CONTENT_FLUSH_INTERVAL_MS' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > persists and reports the effective live response interval through GraphQL
+Server setting 'AUTOBYTEUS_STREAMING_CONTENT_FLUSH_INTERVAL_MS' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > persists and reports the effective live response interval through GraphQL
+Server setting 'AUTOBYTEUS_STREAMING_CONTENT_FLUSH_INTERVAL_MS' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > persists media default model identifiers as predefined GraphQL settings without catalog allow-list validation
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-Rz8Irx
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-Rz8Irx/.env
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > persists media default model identifiers as predefined GraphQL settings without catalog allow-list validation
+Server setting 'DEFAULT_IMAGE_EDIT_MODEL' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > persists media default model identifiers as predefined GraphQL settings without catalog allow-list validation
+Server setting 'DEFAULT_IMAGE_GENERATION_MODEL' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > persists media default model identifiers as predefined GraphQL settings without catalog allow-list validation
+Server setting 'DEFAULT_SPEECH_GENERATION_MODEL' updated
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > lists effective Codex sandbox values with predefined metadata even when not persisted
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-iiLXtQ
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-iiLXtQ/.env
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > lists effective stream parser values with predefined metadata even when not persisted
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-juopTf
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-juopTf/.env
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > exposes the production compaction strategy catalog and effective default without persisting it
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-d4Mm1x
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-d4Mm1x/.env
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > persists a registered global compaction strategy and selects it for an existing runtime's next operation
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-rlRMMh
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-server-settings-graphql-rlRMMh/.env
+
+stdout | tests/e2e/server-settings/server-settings-graphql.e2e.test.ts > Server settings GraphQL e2e > persists a registered global compaction strategy and selects it for an existing runtime's next operation
+Server setting 'AUTOBYTEUS_COMPACTION_STRATEGY' updated
+
+ ✓ tests/e2e/server-settings/server-settings-graphql.e2e.test.ts (11 tests) 102ms
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:66087) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > pairs every autobyteus activity/terminal event with status-only lifecycle over a real standalone socket
+Agent websocket attached for run run-autobyteus
+Created agent session 459fde68-015d-4139-960d-3890d4b8a71b for run run-autobyteus
+Agent WebSocket connected: session=459fde68-015d-4139-960d-3890d4b8a71b, run=run-autobyteus
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > pairs every autobyteus activity/terminal event with status-only lifecycle over a real standalone socket
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-server-ts
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > pairs every autobyteus activity/terminal event with status-only lifecycle over a real standalone socket
+Agent websocket attached for run run-autobyteus
+Created agent session 57541d1b-6c84-467e-a88f-0d719a682bca for run run-autobyteus
+Agent WebSocket connected: session=57541d1b-6c84-467e-a88f-0d719a682bca, run=run-autobyteus
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > pairs every autobyteus activity/terminal event with status-only lifecycle over a real standalone socket
+Closed agent session 57541d1b-6c84-467e-a88f-0d719a682bca
+Agent WebSocket disconnected: 57541d1b-6c84-467e-a88f-0d719a682bca
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > pairs every codex_app_server activity/terminal event with status-only lifecycle over a real standalone socket
+Closed agent session 459fde68-015d-4139-960d-3890d4b8a71b
+Agent WebSocket disconnected: 459fde68-015d-4139-960d-3890d4b8a71b
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > pairs every codex_app_server activity/terminal event with status-only lifecycle over a real standalone socket
+Agent websocket attached for run run-codex_app_server
+Created agent session 24e9fccc-5430-4708-970a-13bfe70d3e7b for run run-codex_app_server
+Agent WebSocket connected: session=24e9fccc-5430-4708-970a-13bfe70d3e7b, run=run-codex_app_server
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > pairs every codex_app_server activity/terminal event with status-only lifecycle over a real standalone socket
+Agent websocket attached for run run-codex_app_server
+Created agent session b7227178-bd39-4a6c-9918-0896aee4445f for run run-codex_app_server
+Agent WebSocket connected: session=b7227178-bd39-4a6c-9918-0896aee4445f, run=run-codex_app_server
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > pairs every codex_app_server activity/terminal event with status-only lifecycle over a real standalone socket
+Closed agent session b7227178-bd39-4a6c-9918-0896aee4445f
+Agent WebSocket disconnected: b7227178-bd39-4a6c-9918-0896aee4445f
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > pairs every claude_agent_sdk activity/terminal event with status-only lifecycle over a real standalone socket
+Closed agent session 24e9fccc-5430-4708-970a-13bfe70d3e7b
+Agent WebSocket disconnected: 24e9fccc-5430-4708-970a-13bfe70d3e7b
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > pairs every claude_agent_sdk activity/terminal event with status-only lifecycle over a real standalone socket
+Agent websocket attached for run run-claude_agent_sdk
+Created agent session ab15c51f-2603-4f9a-a6e1-4b8392b04385 for run run-claude_agent_sdk
+Agent WebSocket connected: session=ab15c51f-2603-4f9a-a6e1-4b8392b04385, run=run-claude_agent_sdk
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > pairs every claude_agent_sdk activity/terminal event with status-only lifecycle over a real standalone socket
+Agent websocket attached for run run-claude_agent_sdk
+Created agent session 051857cc-bbf5-40b1-b820-d3166972b6ea for run run-claude_agent_sdk
+Agent WebSocket connected: session=051857cc-bbf5-40b1-b820-d3166972b6ea, run=run-claude_agent_sdk
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > pairs every claude_agent_sdk activity/terminal event with status-only lifecycle over a real standalone socket
+Closed agent session 051857cc-bbf5-40b1-b820-d3166972b6ea
+Agent WebSocket disconnected: 051857cc-bbf5-40b1-b820-d3166972b6ea
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > coalesces a representative fine-grained canonical stream into one default-window content frame
+Closed agent session ab15c51f-2603-4f9a-a6e1-4b8392b04385
+Agent WebSocket disconnected: ab15c51f-2603-4f9a-a6e1-4b8392b04385
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > coalesces a representative fine-grained canonical stream into one default-window content frame
+Agent websocket attached for run run-default-window-rate
+Created agent session 4f71ddb8-d806-4b8b-9bbf-95dc698275b2 for run run-default-window-rate
+Agent WebSocket connected: session=4f71ddb8-d806-4b8b-9bbf-95dc698275b2, run=run-default-window-rate
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > uses a changed interval only for the active socket's next newly opened window
+Closed agent session 4f71ddb8-d806-4b8b-9bbf-95dc698275b2
+Agent WebSocket disconnected: 4f71ddb8-d806-4b8b-9bbf-95dc698275b2
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > uses a changed interval only for the active socket's next newly opened window
+Agent websocket attached for run run-live-interval-change
+Created agent session 79077f2a-c587-49eb-bb23-c3aa8af1be58 for run run-live-interval-change
+Agent WebSocket connected: session=79077f2a-c587-49eb-bb23-c3aa8af1be58, run=run-live-interval-change
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > keeps late A observable and preserves B across delayed A activity/terminal events and reconnect
+Closed agent session 79077f2a-c587-49eb-bb23-c3aa8af1be58
+Agent WebSocket disconnected: 79077f2a-c587-49eb-bb23-c3aa8af1be58
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > keeps late A observable and preserves B across delayed A activity/terminal events and reconnect
+Agent websocket attached for run run-retired-turn-ordering
+Created agent session 5e939023-88a5-4e56-a90c-0052eb576651 for run run-retired-turn-ordering
+Agent WebSocket connected: session=5e939023-88a5-4e56-a90c-0052eb576651, run=run-retired-turn-ordering
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > keeps late A observable and preserves B across delayed A activity/terminal events and reconnect
+Agent websocket attached for run run-retired-turn-ordering
+Created agent session 64dcc744-caaf-48a5-82f4-8e6796f000cd for run run-retired-turn-ordering
+Agent WebSocket connected: session=64dcc744-caaf-48a5-82f4-8e6796f000cd, run=run-retired-turn-ordering
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > keeps late A observable and preserves B across delayed A activity/terminal events and reconnect
+Closed agent session 64dcc744-caaf-48a5-82f4-8e6796f000cd
+Agent WebSocket disconnected: 64dcc744-caaf-48a5-82f4-8e6796f000cd
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > keeps late A observable and preserves B across delayed A activity/terminal events and reconnect
+Agent websocket attached for run run-retired-turn-ordering
+Created agent session 364e4c45-868d-4bdc-b5fe-67384bc9066c for run run-retired-turn-ordering
+Agent WebSocket connected: session=364e4c45-868d-4bdc-b5fe-67384bc9066c, run=run-retired-turn-ordering
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > keeps late A observable and preserves B across delayed A activity/terminal events and reconnect
+Closed agent session 364e4c45-868d-4bdc-b5fe-67384bc9066c
+Agent WebSocket disconnected: 364e4c45-868d-4bdc-b5fe-67384bc9066c
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > keeps diagnostic errors running, terminalizes the current turn to error, then publishes offline on termination
+Closed agent session 5e939023-88a5-4e56-a90c-0052eb576651
+Agent WebSocket disconnected: 5e939023-88a5-4e56-a90c-0052eb576651
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts > Agent status WebSocket contract integration > keeps diagnostic errors running, terminalizes the current turn to error, then publishes offline on termination
+Agent websocket attached for run run-error-contract
+Created agent session bcb207a0-db57-4e98-bc3c-d82cc754ef36 for run run-error-contract
+Agent WebSocket connected: session=bcb207a0-db57-4e98-bc3c-d82cc754ef36, run=run-error-contract
+
+stdout | tests/integration/agent/agent-status-websocket.integration.test.ts
+Closed agent session bcb207a0-db57-4e98-bc3c-d82cc754ef36
+Agent WebSocket disconnected: bcb207a0-db57-4e98-bc3c-d82cc754ef36
+
+ ✓ tests/integration/agent/agent-status-websocket.integration.test.ts (7 tests) 3094ms
+     ✓ coalesces a representative fine-grained canonical stream into one default-window content frame  658ms
+     ✓ uses a changed interval only for the active socket's next newly opened window  1810ms
+     ✓ keeps late A observable and preserves B across delayed A activity/terminal events and reconnect  527ms
+
+ Test Files  3 passed (3)
+      Tests  28 passed (28)
+   Start at  07:28:12
+   Duration  11.35s (transform 3.40s, setup 15ms, import 6.15s, tests 4.58s, environment 0ms)
+

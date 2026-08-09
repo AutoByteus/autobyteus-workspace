@@ -1,0 +1,557 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > lists available settings excluding API keys
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > sorts settings by key
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > includes predefined settings from effective runtime values even when not persisted in config data
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > exposes compaction predefined settings with typed descriptions
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > exposes Codex sandbox mode as predefined editable metadata
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > exposes media default model settings as predefined editable metadata
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > exposes stream parser as predefined editable metadata
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > exposes and validates the live response update interval
+Initialized server settings service with 20 predefined settings
+Server setting 'AUTOBYTEUS_STREAMING_CONTENT_FLUSH_INTERVAL_MS' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > updates settings successfully
+Initialized server settings service with 20 predefined settings
+Added new custom server setting: CUSTOM_SETTING
+Server setting 'CUSTOM_SETTING' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > normalizes a registered working-context compaction strategy before persistence
+Initialized server settings service with 20 predefined settings
+Server setting 'AUTOBYTEUS_COMPACTION_STRATEGY' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects an unknown working-context compaction strategy before persistence
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > trims and saves valid predefined Codex sandbox value read-only
+Initialized server settings service with 20 predefined settings
+Server setting 'CODEX_APP_SERVER_SANDBOX' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > trims and saves valid predefined Codex sandbox value workspace-write
+Initialized server settings service with 20 predefined settings
+Server setting 'CODEX_APP_SERVER_SANDBOX' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > trims and saves valid predefined Codex sandbox value danger-full-access
+Initialized server settings service with 20 predefined settings
+Server setting 'CODEX_APP_SERVER_SANDBOX' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects invalid predefined Codex sandbox values before persistence
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > normalizes and saves valid stream parser value xml
+Initialized server settings service with 20 predefined settings
+Server setting 'AUTOBYTEUS_STREAM_PARSER' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > normalizes and saves valid stream parser value json
+Initialized server settings service with 20 predefined settings
+Server setting 'AUTOBYTEUS_STREAM_PARSER' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > normalizes and saves valid stream parser value sentinel
+Initialized server settings service with 20 predefined settings
+Server setting 'AUTOBYTEUS_STREAM_PARSER' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > normalizes and saves valid stream parser value api_tool_call
+Initialized server settings service with 20 predefined settings
+Server setting 'AUTOBYTEUS_STREAM_PARSER' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects invalid predefined stream parser values before persistence
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > saves api_tool_call as the canonical stream parser provider-native value
+Initialized server settings service with 20 predefined settings
+Server setting 'AUTOBYTEUS_STREAM_PARSER' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > preserves custom setting values without predefined normalization
+Initialized server settings service with 20 predefined settings
+Added new custom server setting: CUSTOM_SETTING
+Server setting 'CUSTOM_SETTING' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > persists dynamic media model identifiers without static allowed-value validation
+Initialized server settings service with 20 predefined settings
+Server setting 'DEFAULT_IMAGE_EDIT_MODEL' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > exposes featured catalog items as predefined editable metadata
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > normalizes valid featured catalog settings before persistence
+Initialized server settings service with 20 predefined settings
+Server setting 'AUTOBYTEUS_FEATURED_CATALOG_ITEMS' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects duplicate featured catalog identities before persistence
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects invalid featured catalog JSON before persistence
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reloads media tool schemas after successful media default update for DEFAULT_IMAGE_EDIT_MODEL
+Initialized server settings service with 20 predefined settings
+Server setting 'DEFAULT_IMAGE_EDIT_MODEL' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reloads media tool schemas after successful media default update for DEFAULT_IMAGE_GENERATION_MODEL
+Initialized server settings service with 20 predefined settings
+Server setting 'DEFAULT_IMAGE_GENERATION_MODEL' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reloads media tool schemas after successful media default update for DEFAULT_SPEECH_GENERATION_MODEL
+Initialized server settings service with 20 predefined settings
+Server setting 'DEFAULT_SPEECH_GENERATION_MODEL' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > does not reload media tool schemas after successful unrelated setting updates
+Initialized server settings service with 20 predefined settings
+Added new custom server setting: CUSTOM_SETTING
+Server setting 'CUSTOM_SETTING' updated
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > does not reload media tool schemas when an update fails before persistence
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > does not reload media tool schemas when media default persistence fails
+Initialized server settings service with 20 predefined settings
+
+stderr | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > does not reload media tool schemas when media default persistence fails
+Error updating server setting 'DEFAULT_IMAGE_GENERATION_MODEL'
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > returns error when update fails
+Initialized server settings service with 20 predefined settings
+
+stderr | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > returns error when update fails
+Error updating server setting 'CUSTOM_SETTING'
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects updating system-managed settings
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > accepts any setting key
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > deletes custom settings successfully
+Initialized server settings service with 20 predefined settings
+Server setting 'CUSTOM_SETTING' deleted
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > rejects deleting predefined settings
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > returns error when deleting missing settings
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reads the typed applications capability setting as true, false, or null
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > persists the typed applications capability setting as normalized strings
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reads runtime-effective compaction strategy undefined as structured-json without persisting
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reads runtime-effective compaction strategy "" as structured-json without persisting
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reads runtime-effective compaction strategy "   " as structured-json without persisting
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reads runtime-effective compaction strategy " structured-json " as structured-json without persisting
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/unit/services/server-settings-service.test.ts > ServerSettingsService > reads runtime-effective compaction strategy " removed-strategy " as removed-strategy without persisting
+Initialized server settings service with 20 predefined settings
+
+ ✓ tests/unit/services/server-settings-service.test.ts (46 tests) 22ms
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:68016) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rebroadcasts agent lifecycle events with member context
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-server-ts
+AgentTeamRunManager initialized with MixedTeamManager-only team execution.
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > connects through TeamRunService.resolveTeamRun and sends CONNECTED, leaf status, and lifecycle
+Created agent session 18f8050c-5fb7-456d-be0b-8c68e0717fae for run team-1
+Agent Team WebSocket connected: session=18f8050c-5fb7-456d-be0b-8c68e0717fae, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > continues lifecycle publication after the backend event listener is torn down
+Created agent session 22f42f3a-8e2c-4836-a81a-dd22c13b29c0 for run team-1
+Agent Team WebSocket connected: session=22f42f3a-8e2c-4836-a81a-dd22c13b29c0, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > continues lifecycle publication after the backend event listener is torn down
+Closed agent session 22f42f3a-8e2c-4836-a81a-dd22c13b29c0
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > continues lifecycle publication after the backend event listener is torn down
+Agent Team WebSocket disconnected: 22f42f3a-8e2c-4836-a81a-dd22c13b29c0
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > handles SEND_MESSAGE via the service-resolved TeamRun subject
+Created agent session b0c527eb-e77e-4e3f-bab1-65fb7024293e for run team-1
+Agent Team WebSocket connected: session=b0c527eb-e77e-4e3f-bab1-65fb7024293e, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > handles SEND_MESSAGE with structured camelCase route and path selectors
+Created agent session e79e4f31-c0d7-4283-9d7d-e956aef35e19 for run team-1
+Agent Team WebSocket connected: session=e79e4f31-c0d7-4283-9d7d-e956aef35e19, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+Created agent session 3ab1dc45-acae-47e8-be9a-13a26df40b80 for run team-1
+Agent Team WebSocket connected: session=3ab1dc45-acae-47e8-be9a-13a26df40b80, run=team-1
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar SEND_MESSAGE target alias with invalid-target errors
+SEND_MESSAGE rejected for team run team-1: SEND_MESSAGE target must use target_member_path/targetMemberPath or target_member_route_key/targetMemberRouteKey.
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > restores and rebinds a team run before SEND_MESSAGE when the active subject was removed
+Created agent session 264bdfb6-61f4-47b9-91ea-ff40d41a8c5c for run team-1
+Agent Team WebSocket connected: session=264bdfb6-61f4-47b9-91ea-ff40d41a8c5c, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > keeps interrupt-generation active-only and does not restore a stopped team run
+Created agent session b614553d-b291-4833-80c3-ab75e59b75fb for run team-1
+Agent Team WebSocket connected: session=b614553d-b291-4833-80c3-ab75e59b75fb, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes interrupt-generation to the explicit member route key with run-id as guard
+Created agent session c02a1770-c1e1-4926-9d37-7ac252d805e4 for run team-1
+Agent Team WebSocket connected: session=c02a1770-c1e1-4926-9d37-7ac252d805e4, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes interrupt-generation with structured camelCase member path selectors
+Created agent session 371640a4-1a1a-4442-bdde-e59dd034cf8e for run team-1
+Agent Team WebSocket connected: session=371640a4-1a1a-4442-bdde-e59dd034cf8e, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects interrupt-generation without a target instead of falling back to team-wide interrupt
+Created agent session 15f1331e-68a9-4da1-b043-8a3c5eda562e for run team-1
+Agent Team WebSocket connected: session=15f1331e-68a9-4da1-b043-8a3c5eda562e, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects scalar interrupt target aliases with invalid-target errors
+Created agent session 6978806b-f24e-4956-a35f-d8a46d6b452d for run team-1
+Agent Team WebSocket connected: session=6978806b-f24e-4956-a35f-d8a46d6b452d, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > returns one failed acknowledgement when exact member interruption throws
+Created agent session 49be82a8-49d2-4a5f-adb3-7e36d4b6de1c for run team-1
+Agent Team WebSocket connected: session=49be82a8-49d2-4a5f-adb3-7e36d4b6de1c, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes approval commands with explicit member path selectors
+Created agent session aeb83c4b-acb5-433b-be7e-6b2870e2f817 for run team-1
+Agent Team WebSocket connected: session=aeb83c4b-acb5-433b-be7e-6b2870e2f817, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes approval commands with structured camelCase selector fields
+Created agent session 6a970557-79c5-4d89-8e2d-54874f92a20b for run team-1
+Agent Team WebSocket connected: session=6a970557-79c5-4d89-8e2d-54874f92a20b, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes approval commands with task-agent run identity as a concrete run guard
+Created agent session e485a04a-11a8-42ca-989e-c0a913ec559a for run team-1
+Agent Team WebSocket connected: session=e485a04a-11a8-42ca-989e-c0a913ec559a, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes task-team scoped approval commands with relative route selectors and run guards
+Created agent session cc524f34-ab67-4fbe-b0c7-f90aec62398c for run team-1
+Agent Team WebSocket connected: session=cc524f34-ab67-4fbe-b0c7-f90aec62398c, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > routes task-team scoped denial commands with relative path selectors
+Created agent session 51cbb892-d175-4a0b-9119-9aed6132f3ac for run team-1
+Agent Team WebSocket connected: session=51cbb892-d175-4a0b-9119-9aed6132f3ac, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects task-team scoped approvals without relative child selectors
+Created agent session a1632ba9-509d-47eb-bf1b-db6b317a0684 for run team-1
+Agent Team WebSocket connected: session=a1632ba9-509d-47eb-bf1b-db6b317a0684, run=team-1
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects task-team scoped approvals without relative child selectors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target missing; include member/source/target path or route selector fields.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects task-team scoped approvals without relative child selectors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+Created agent session fd60c1e7-7cc3-4347-8522-a66764450465 for run team-1
+Agent Team WebSocket connected: session=fd60c1e7-7cc3-4347-8522-a66764450465, run=team-1
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects every scalar tool approval target alias with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target must use path or route selector fields; scalar name/id target fields are not supported.
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects tool approvals without structured target identity with invalid-target errors
+Created agent session e658a24e-3276-4a09-b662-c1210871c163 for run team-1
+Agent Team WebSocket connected: session=e658a24e-3276-4a09-b662-c1210871c163, run=team-1
+
+stderr | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > rejects tool approvals without structured target identity with invalid-target errors
+TOOL_APPROVAL rejected for team run team-1: Tool approval target missing; include member/source/target path or route selector fields.
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > registers the websocket connection for team-scoped live message broadcasts
+Created agent session 401a41bd-16dc-4f9e-a479-07d850da789d for run team-1
+Agent Team WebSocket connected: session=401a41bd-16dc-4f9e-a479-07d850da789d, run=team-1
+
+stdout | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts > AgentTeamStreamHandler > coalesces metadata refresh work across a burst of streamed team events
+Created agent session 1a65a072-da81-4aff-a7d2-f60bd16647e4 for run team-1
+Agent Team WebSocket connected: session=1a65a072-da81-4aff-a7d2-f60bd16647e4, run=team-1
+
+ ✓ tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts (27 tests) 26ms
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+AgentFactory (Singleton) initialized.
+
+(node:68039) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > connects to a run identity and sends CONNECTED plus projected status without restoring runtime
+Created agent session bc393bf0-4015-4398-87bd-4a06330c5992 for run agent-123
+Agent WebSocket connected: session=bc393bf0-4015-4398-87bd-4a06330c5992, run=agent-123
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > connects to run events through the AgentRun subject for active runtime-managed runs
+Created agent session ee663b97-4a29-48a9-bac5-0d706de0f3a1 for run runtime-run-1
+Agent WebSocket connected: session=ee663b97-4a29-48a9-bac5-0d706de0f3a1, run=runtime-run-1
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > maps Codex AgentRunEvents directly to websocket messages for single-agent runs
+Created agent session 71cacecb-3893-4d84-a478-1c6c32e54e46 for run runtime-run-2
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-server-ts
+Agent WebSocket connected: session=71cacecb-3893-4d84-a478-1c6c32e54e46, run=runtime-run-2
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > maps turn lifecycle AgentRunEvents directly to websocket messages
+Created agent session 6f32d7ff-2264-4b26-b3c0-5a97d0d5ad58 for run runtime-run-3
+Agent WebSocket connected: session=6f32d7ff-2264-4b26-b3c0-5a97d0d5ad58, run=runtime-run-3
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > registers the websocket connection for run-scoped live message broadcasts
+Created agent session cbdf495c-52f3-42b4-a83a-699e8effcf6a for run agent-123
+Agent WebSocket connected: session=cbdf495c-52f3-42b4-a83a-699e8effcf6a, run=agent-123
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > publishes terminal offline status to an already-connected websocket when a run terminates
+Created agent session f611a0c3-40a6-4017-9980-2ab2d01b0eb0 for run run-terminate-1
+Agent WebSocket connected: session=f611a0c3-40a6-4017-9980-2ab2d01b0eb0, run=run-terminate-1
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > handles SEND_MESSAGE through the command coordinator and returns an ACK
+Created agent session 51ae5686-f545-44f5-aff4-d0d793784058 for run agent-123
+Agent WebSocket connected: session=51ae5686-f545-44f5-aff4-d0d793784058, run=agent-123
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > defers runtime binding on identity-only connect until SEND_MESSAGE activates through the coordinator
+Created agent session 99e132c6-ea03-498d-8233-8728a7b10f33 for run agent-123
+Agent WebSocket connected: session=99e132c6-ea03-498d-8233-8728a7b10f33, run=agent-123
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > keeps interrupt-generation active-only and does not activate a stopped agent run
+Created agent session 1afca11a-2436-4526-905f-90804f4f24f9 for run agent-123
+Agent WebSocket connected: session=1afca11a-2436-4526-905f-90804f4f24f9, run=agent-123
+
+stderr | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > keeps interrupt-generation active-only and does not activate a stopped agent run
+INTERRUPT_GENERATION rejected for missing agent run agent-123.
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > returns exactly one same-socket acknowledgement for an accepted interrupt
+Created agent session fb52bb92-b504-4455-94cd-8b8dcb880184 for run agent-123
+Agent WebSocket connected: session=fb52bb92-b504-4455-94cd-8b8dcb880184, run=agent-123
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > rejects an empty interrupt command id before runtime execution
+Created agent session b7b52d91-d100-4c45-ab8d-f6cf49dc875e for run agent-123
+Agent WebSocket connected: session=b7b52d91-d100-4c45-ab8d-f6cf49dc875e, run=agent-123
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > maps interrupt provider failures without emitting lifecycle status
+Created agent session 5b08fe97-a7de-4e09-bd7d-177e9063da7e for run agent-123
+Agent WebSocket connected: session=5b08fe97-a7de-4e09-bd7d-177e9063da7e, run=agent-123
+
+stderr | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > maps interrupt provider failures without emitting lifecycle status
+INTERRUPT_GENERATION rejected for agent run agent-123: [PROVIDER_REJECTED] Cannot interrupt now.
+
+stdout | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > handles tool approvals for active sessions
+Created agent session a997cc90-8f4a-49c2-89b9-f3dab753cd4b for run agent-123
+Agent WebSocket connected: session=a997cc90-8f4a-49c2-89b9-f3dab753cd4b, run=agent-123
+
+stderr | tests/unit/services/agent-streaming/agent-stream-handler.test.ts > AgentStreamHandler > ignores messages for unknown sessions
+Message for unknown session: missing
+
+ ✓ tests/unit/services/agent-streaming/agent-stream-handler.test.ts (18 tests) 13ms
+ ✓ tests/unit/services/agent-streaming/agent-stream-websocket-egress.test.ts (26 tests) 9ms
+stdout | tests/unit/config/streaming-content-flush-interval-setting.test.ts > streaming content flush interval setting > falls back for invalid runtime input undefined
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-streaming-performance-followup/autobyteus-server-ts
+AppConfig instance created.
+
+ ✓ tests/unit/config/streaming-content-flush-interval-setting.test.ts (22 tests) 5ms
+ ✓ tests/unit/services/agent-streaming/agent-stream-broadcaster.test.ts (2 tests) 3ms
+
+ Test Files  6 passed (6)
+      Tests  141 passed (141)
+   Start at  07:29:06
+   Duration  7.96s (transform 4.27s, setup 29ms, import 6.88s, tests 78ms, environment 0ms)
+

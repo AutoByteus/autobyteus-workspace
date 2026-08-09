@@ -40,7 +40,7 @@ Common files/directories:
 - `raw_traces_manifest.json` — completed raw-trace archive descriptors owned by `RawTraceArchiveManager`.
 - `raw_traces_<zero-padded-index>.jsonl` — immutable raw-trace archives, including one exact-new-activity archive per successful native compaction.
 - `episodic.jsonl` and `semantic.jsonl` — immutable native compacted output rows.
-- `compaction_lineage.jsonl` — append-only successful native-compaction lineage. Its last valid record is the only current-compaction head and lists exact current output IDs plus the run-relative completed raw archive.
+- `compaction_lineage.jsonl` — append-only successful native-compaction lineage. Its last valid record is the only current-compaction head and lists exact current output IDs, the optional preceding compaction, and execution/prompt audit metadata; it does not identify a raw archive.
 - `working_context_snapshot.json` — native AutoByteus continuation state: strict schema-v5 finalized provider-neutral messages and message-local constituent ranges. It contains no output identity, lineage object, or mutable current-state field. Codex and Claude recording no longer creates or updates this file.
 
 There is no current `compacted_memory_manifest.json` or compaction-state/pointer
@@ -95,13 +95,13 @@ runtime memory provider.
 
 Native AutoByteus runs remain owned by the `autobyteus-ts` `MemoryManager`. The server-side recorder must skip `RuntimeKind.AUTOBYTEUS` so native traces, snapshots, archives, outputs, and lineage are not duplicated.
 
-Native compaction is a proposal / accept / commit boundary. The executor resolves the process-global strategy, captures the manager-owned WorkingContext and lineage-head baseline, and requests an ID-less proposal. `MemoryManager` verifies the baseline, assigns output identities, finalizes the candidate, and commits exact new-raw archive -> output rows -> lineage append -> finalized context -> schema-v5 snapshot -> pending clear. Recurrent compaction consumes the current head output plus new raw-backed work but archives only the new raw evidence. The lineage tail selects the exact current complete replacement bundle; older successful outputs remain historical rather than being mixed into normal projection.
+Native compaction is a proposal / accept / commit boundary. The executor resolves the process-global strategy, captures the manager-owned WorkingContext and lineage-head baseline, and requests an ID-less proposal. `MemoryManager` verifies the baseline, assigns output identities, and builds a complete accepted candidate whose lineage record is finalized before commit. Commit then executes exact new-raw archive -> output rows -> lineage append -> finalized context -> schema-v5 snapshot -> pending clear. The archive is an independent command: `RawTraceArchiveManager` owns its descriptor and filename, and neither is returned into the candidate or lineage. Recurrent compaction consumes the current head output plus new raw-backed work but archives only the new raw evidence. The lineage tail selects the exact current complete replacement bundle; older successful outputs remain historical rather than being mixed into normal projection.
 
 The built-in Memory Compactor chooses the natural number of episodes and
 semantic facts needed for safe continuation. Accepted output requires at least
 one episode, but no fixed total episode/fact cap is imposed during parsing,
-normalization, publication, lineage read/write, current-head projection, or
-typed origin lookup. Per-entry bounds, structural validation, cleanup,
+normalization, publication, lineage read/write, or current-head projection.
+Per-entry bounds, structural validation, cleanup,
 deduplication, and positive salience remain enforced.
 
 The persisted `autobyteus-memory-compactor` system prompt owns the stable task,
@@ -118,6 +118,11 @@ immutable value-1 records remain directly usable, mixed `1 -> 2` chains are
 valid, and unsupported values reject without rewriting or compatibility
 decoding.
 
+Existing schema-v1 rows that contain the former `rawTraceArchiveFile` extra field
+remain directly readable through recognized-field normalization. The stored
+field is ignored without a data rewrite, version branch, or output-to-raw origin
+interpretation; new rows omit it.
+
 Explicit existing-run restore requires a strict-v5 snapshot; no raw-history
 projector or pre-v5 runtime reader remains. `LLMRequestAssembler` completes any
 pending compaction before capturing the request-recovery checkpoint and captures
@@ -126,7 +131,11 @@ that stable base, while final output, real Tool ingestion, and supported retaine
 interruption release it exactly once. Accepted archive/output/lineage state is
 never rolled back.
 
-`AgentMemoryOriginService` composes the core run-scoped resolver for explicit standalone/team-member targets and typed episode/semantic IDs. It returns direct and recursive raw origin for valid current-format chains, `not_found` for unknown artifacts, and an integrity error for broken lineage/archive/output membership.
+There is no server or GraphQL direct/recursive episode/semantic-to-raw origin
+service. Current output projection reads the lineage tail, loads exactly its
+episode/semantic membership in stored order, and treats malformed/unsupported
+lineage or missing/misordered output rows as integrity errors without opening a
+raw archive.
 
 ### Global Compaction Strategy Setting
 
@@ -338,7 +347,7 @@ When archive inclusion is requested without file-selector mode, readers retain t
 
 Current archive/rotation behavior:
 
-- Native AutoByteus compaction rotates compacted raw traces into `native_compaction` segments.
+- Native AutoByteus compaction rotates exactly the selected active raw traces into `native_compaction` segments. The store derives a retry-stable `native_compaction_selection:<sha256>` boundary key from the JSON encoding of sorted selected trace IDs; the archive manager independently owns manifest completion and the rotated filename.
 - Codex/Claude provider-boundary rotation moves settled active raw traces before an eligible boundary marker into `provider_compaction_boundary` segments.
 - New rotated segment files live directly beside `raw_traces_active.jsonl` as `raw_traces_<zero-padded-index>.jsonl`, for example `raw_traces_000001.jsonl`; boundary identity remains in the manifest `boundary_key`, not in the filename.
 - New writes use `raw_traces_manifest.json` and never create `raw_traces_archive_manifest.json` or `raw_traces_archive/`.

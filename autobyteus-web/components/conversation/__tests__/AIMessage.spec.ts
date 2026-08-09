@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { mount } from '@vue/test-utils';
 import AIMessage from '~/components/conversation/AIMessage.vue';
 import type { AIMessage as AIMessageType } from '~/types/conversation';
+import { setStreamSegmentIdentity } from '~/services/agentStreaming/handlers/segmentIdentity';
 
 const baseMessage: AIMessageType = {
   type: 'ai',
@@ -131,5 +132,44 @@ describe('AIMessage.vue', () => {
 
     const interAgentSegment = wrapper.getComponent({ name: 'InterAgentMessageSegment' });
     expect(interAgentSegment.props('senderDisplayName')).toBe('Professor');
+  });
+
+  it('dispatches identified active text and reasoning without presentation policy props', () => {
+    const textSegment = { type: 'text' as const, content: '**still streaming**' };
+    setStreamSegmentIdentity(textSegment, 'text-1', 'text');
+    const thinkSegment = { type: 'think' as const, content: '# active reasoning' };
+    setStreamSegmentIdentity(thinkSegment, 'think-1', 'reasoning');
+    const wrapper = mount(AIMessage, {
+      props: {
+        message: { ...baseMessage, isComplete: false, segments: [textSegment, thinkSegment] },
+        runId: 'agent-1',
+        messageIndex: 0,
+      },
+      global: { stubs: globalStubs },
+    });
+
+    const textPresenter = wrapper.getComponent({ name: 'TextSegment' });
+    const thinkPresenter = wrapper.getComponent({ name: 'ThinkSegment' });
+    expect(textPresenter.props('content')).toBe('**still streaming**');
+    expect(thinkPresenter.props('content')).toBe('# active reasoning');
+    expect(textPresenter.props()).not.toHaveProperty('presentationComplete');
+    expect(thinkPresenter.props()).not.toHaveProperty('presentationComplete');
+  });
+
+  it('keeps completed identified and historical text on the same segment presenter', () => {
+    const identifiedText = { type: 'text' as const, content: 'complete' };
+    setStreamSegmentIdentity(identifiedText, 'text-1', 'text');
+    const historicalText = { type: 'text' as const, content: 'history' };
+    const wrapper = mount(AIMessage, {
+      props: {
+        message: { ...baseMessage, isComplete: true, segments: [identifiedText, historicalText] },
+        runId: 'agent-1',
+        messageIndex: 0,
+      },
+      global: { stubs: globalStubs },
+    });
+
+    expect(wrapper.findAllComponents({ name: 'TextSegment' }).map((segment) =>
+      segment.props('content'))).toEqual(['complete', 'history']);
   });
 });

@@ -1,0 +1,82 @@
+{
+  "scenarioId": "LIVE-MOBILE-001",
+  "result": "Pass",
+  "route": "http://127.0.0.1:3107/mobile",
+  "surface": "Actual mobile route/phone shell",
+  "viewport": {
+    "width": 967,
+    "height": 738,
+    "emulation": "desktop viewport against the mobile-only route"
+  },
+  "runId": "daily_assistant_31b8c9bd94b5424d9bc4e2f803428844",
+  "promptMarker": "MOBILE-PROGRESSIVE-001",
+  "observer": {
+    "distinctSamples": 119,
+    "runningRichRevisions": 113,
+    "thinkingRevisionSamples": 117,
+    "thinkingOpenSamples": 116,
+    "firstRichRevisions": [
+      {
+        "tMs": 18653,
+        "textLength": 13358,
+        "h1": "Mobile Progressive Witness",
+        "h2": "Responsive Rich Content",
+        "scrollWidth": 935,
+        "clientWidth": 935
+      },
+      {
+        "tMs": 18968,
+        "textLength": 13443,
+        "h1": "Mobile Progressive Witness",
+        "h2": "Responsive Rich Content",
+        "scrollWidth": 935,
+        "clientWidth": 935
+      }
+    ],
+    "lastRichRevisions": [
+      {
+        "tMs": 54552,
+        "textLength": 23510
+      },
+      {
+        "tMs": 54672,
+        "textLength": 23511,
+        "finalMarker": "MOBILE-PROGRESSIVE-001 COMPLETE"
+      }
+    ]
+  },
+  "liveFinal": {
+    "stopButtonActive": false,
+    "h1Includes": "Mobile Progressive Witness",
+    "h2Includes": "Responsive Rich Content",
+    "strongCount": 72,
+    "codeCount": 110,
+    "listItemCount": 26,
+    "thinkingButtonCount": 1,
+    "thinkingOpenCount": 0,
+    "collapsedByDefaultAtCompletion": true,
+    "scrollWidth": 935,
+    "clientWidth": 935,
+    "markerPresent": true
+  },
+  "reloadHydration": {
+    "selectedVia": "Recent work row",
+    "markerPresent": true,
+    "h1": [
+      "Progressive Rendering Witness",
+      "Mobile Progressive Witness"
+    ],
+    "h2": [
+      "Understanding the Standalone Progressive Marker Protocol",
+      "Responsive Rich Content"
+    ],
+    "strongCount": 72,
+    "codeCount": 110,
+    "listItemCount": 26,
+    "thinkingButtonCount": 0,
+    "scrollWidth": 935,
+    "clientWidth": 935
+  },
+  "projectionEvidence": "mobile-standalone-run-projection.json",
+  "screenshotEvidence": "mobile-final-hydrated.png"
+}

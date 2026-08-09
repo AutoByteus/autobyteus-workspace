@@ -26,6 +26,7 @@ import {
   isTerminalStatus,
   type ToolLifecycleSegment,
 } from './toolLifecycleState';
+import { markStreamSegmentPresentationComplete } from './segmentIdentity';
 
 
 /**
@@ -38,13 +39,12 @@ export function handleAgentStatus(
   applyLiveAgentStatusEvent(context, payload);
 
   // If status indicates completion, mark the current AI message as complete.
-  if (payload.status === AgentStatus.Idle) {
-    const lastMessage = context.conversation.messages[context.conversation.messages.length - 1];
-    if (lastMessage?.type === 'ai') {
-      if (lastMessage.isComplete) return;
-      lastMessage.isComplete = true;
-      return;
-    }
+  if (
+    payload.status === AgentStatus.Idle ||
+    payload.status === AgentStatus.Offline ||
+    payload.status === AgentStatus.Error
+  ) {
+    markConversationComplete(context);
   }
 }
 
@@ -120,7 +120,7 @@ export function handleError(
   };
 
   aiMessage.segments.push(errorSegment);
-  aiMessage.isComplete = true;
+  markConversationComplete(context);
 }
 
 // ============================================================================
@@ -195,9 +195,15 @@ function applyToolError(info: ToolErrorInfo, context: AgentContext): boolean {
 function markConversationComplete(context: AgentContext): boolean {
   const lastMessage = context.conversation.messages[context.conversation.messages.length - 1];
   if (lastMessage?.type === 'ai') {
-    if (lastMessage.isComplete) return false;
-    lastMessage.isComplete = true;
-    return true;
+    let changed = false;
+    for (const segment of lastMessage.segments ?? []) {
+      changed = markStreamSegmentPresentationComplete(segment) || changed;
+    }
+    if (!lastMessage.isComplete) {
+      lastMessage.isComplete = true;
+      changed = true;
+    }
+    return changed;
   }
   return false;
 }

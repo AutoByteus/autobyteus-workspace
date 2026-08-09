@@ -548,8 +548,7 @@ describe('TeamStreamingService', () => {
     expect(teamContext.isActive).toBe(true);
   });
 
-  it('batches companion-interleaved team content and flushes before a terminal boundary', () => {
-    vi.useFakeTimers();
+  it('projects each server-shaped team content message immediately', () => {
     const { callbacks, service } = createWsHarness();
     const teamContext = withEventMonitorPresentationState(createTeamContextWithWorker());
     const coordinator = teamContext.leafAgentContextsByRouteKey.get('coordinator');
@@ -594,18 +593,16 @@ describe('TeamStreamingService', () => {
     sendCompanionContent('worker', 'worker-run-1', 'A1', '2026-08-01T10:00:00.001Z');
     sendCompanionContent('coordinator', 'coordinator-run-1', 'B', '2026-08-01T10:00:00.002Z');
     sendCompanionContent('worker', 'worker-run-1', 'A2', '2026-08-01T10:00:00.003Z');
-    expect(worker.conversation.messages).toEqual([]);
-    expect(coordinator.conversation.messages).toEqual([]);
+    expect(worker.conversation.messages[0].segments[0].content).toBe('A1A2');
+    expect(coordinator.conversation.messages[0].segments[0].content).toBe('B');
     expect(worker.state.currentStatus).toBe(AgentStatus.Running);
     expect(coordinator.state.currentStatus).toBe(AgentStatus.Running);
-
-    vi.advanceTimersByTime(100);
 
     expect(worker.conversation.messages[0].segments[0].content).toBe('A1A2');
     expect(coordinator.conversation.messages[0].segments[0].content).toBe('B');
     expect(worker.conversation.updatedAt).toBe('2026-08-01T10:00:00.003Z');
     expect(coordinator.conversation.updatedAt).toBe('2026-08-01T10:00:00.002Z');
-    expect(worker.state.eventMonitorPresentationRevision).toBe(1);
+    expect(worker.state.eventMonitorPresentationRevision).toBe(2);
     expect(coordinator.state.eventMonitorPresentationRevision).toBe(1);
 
     sendCompanionContent('worker', 'worker-run-1', 'C1', '2026-08-01T10:00:00.104Z');
@@ -616,7 +613,7 @@ describe('TeamStreamingService', () => {
       '2026-08-01T10:00:00.105Z',
       'reasoning',
     );
-    expect(worker.conversation.messages[0].segments).toHaveLength(1);
+    expect(worker.conversation.messages[0].segments).toHaveLength(2);
 
     onMessage(JSON.stringify({
       type: 'TURN_COMPLETED',
@@ -647,10 +644,9 @@ describe('TeamStreamingService', () => {
     expect(worker.conversation.messages[0].segments).toHaveLength(2);
     expect(worker.conversation.messages[0].segments[0].content).toBe('A1A2C1');
     expect(worker.conversation.messages[0].segments[1].content).toBe('C2');
-    expect(worker.state.eventMonitorPresentationRevision).toBe(2);
+    expect(worker.state.eventMonitorPresentationRevision).toBe(4);
     expect(worker.state.currentStatus).toBe(AgentStatus.Idle);
     expect(teamContext.isSubscribed).toBe(false);
-    vi.useRealTimers();
   });
 
   it('reattaches lifecycle callbacks to the latest team context', () => {
@@ -1474,7 +1470,8 @@ describe('TeamStreamingService', () => {
         },
       }),
     );
-    expect(taskContext.conversation.messages).toHaveLength(0);
+    expect(taskContext.conversation.messages).toHaveLength(1);
+    expect(taskContext.conversation.messages[0].segments[0].content).toBe('Nested task-agent output');
 
     callbacks.get('onMessage')?.(
       JSON.stringify({
