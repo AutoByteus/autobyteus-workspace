@@ -7,7 +7,7 @@ import {
 } from '../../../src/llm/utils/messages.js';
 import {
   repairWorkingContextToolProtocol,
-  SYNTHETIC_INTERRUPTED_TOOL_RESULT_CONTENT,
+  SYNTHETIC_TOOL_RESULT_ERROR,
 } from '../../../src/memory/working-context-tool-protocol-repairer.js';
 import {
   buildSingleMessageProvenance,
@@ -27,7 +27,7 @@ const toolResult = (id: string, result: unknown) => new Message(MessageRole.TOOL
 });
 
 describe('repairWorkingContextToolProtocol', () => {
-  it('inserts a synthetic interrupted result immediately after a missing assistant tool call and is idempotent', () => {
+  it('inserts a terminal synthetic error result immediately after a missing assistant tool call and is idempotent', () => {
     const messages = [
       new Message(MessageRole.USER, { content: 'start' }),
       assistantToolCall(['call_missing']),
@@ -42,8 +42,9 @@ describe('repairWorkingContextToolProtocol', () => {
         toolCallId: 'call_missing',
         toolName: 'tool_call_missing',
         source: 'synthetic_interrupted',
-        toolResult: SYNTHETIC_INTERRUPTED_TOOL_RESULT_CONTENT,
-        toolError: null,
+        toolResult: null,
+        toolError: SYNTHETIC_TOOL_RESULT_ERROR('tool_call_missing', 'call_missing'),
+        toolArgs: { id: 'call_missing' },
       }),
     ]);
     expect(repaired.messages.map((message) => message.role)).toEqual([
@@ -53,6 +54,10 @@ describe('repairWorkingContextToolProtocol', () => {
       MessageRole.USER,
     ]);
     expect((repaired.messages[2].tool_payload as ToolResultPayload).toolCallId).toBe('call_missing');
+    expect((repaired.messages[2].tool_payload as ToolResultPayload).toolResult).toBeNull();
+    expect((repaired.messages[2].tool_payload as ToolResultPayload).toolError).toBe(
+      SYNTHETIC_TOOL_RESULT_ERROR('tool_call_missing', 'call_missing'),
+    );
 
     const secondPass = repairWorkingContextToolProtocol(repaired.messages);
     expect(secondPass.didRepair).toBe(false);
@@ -96,7 +101,10 @@ describe('repairWorkingContextToolProtocol', () => {
     ]);
     expect((repaired.messages[1].tool_payload as ToolResultPayload).toolResult).toBe('SAFE_FACT');
     expect((repaired.messages[2].tool_payload as ToolResultPayload).toolResult).toBe(
-      SYNTHETIC_INTERRUPTED_TOOL_RESULT_CONTENT,
+      null,
+    );
+    expect((repaired.messages[2].tool_payload as ToolResultPayload).toolError).toBe(
+      SYNTHETIC_TOOL_RESULT_ERROR('tool_call_B', 'call_B'),
     );
     expect(repaired.repairs.map((repair) => [repair.toolCallId, repair.source])).toEqual([
       ['call_A', 'raw_completed_result'],

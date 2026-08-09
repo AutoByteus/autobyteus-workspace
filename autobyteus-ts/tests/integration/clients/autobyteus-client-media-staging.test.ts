@@ -27,6 +27,7 @@ function writeJson(response: http.ServerResponse, statusCode: number, payload: R
 }
 
 describe('AutobyteusClient media staging integration', () => {
+  const apiKey = 'test-key';
   const originalEnv = { ...process.env };
   let tempDir: string;
   let server: http.Server;
@@ -36,7 +37,7 @@ describe('AutobyteusClient media staging integration', () => {
   beforeEach(async () => {
     process.env = {
       ...originalEnv,
-      AUTOBYTEUS_API_KEY: 'test-key',
+      AUTOBYTEUS_API_KEY: apiKey,
       AUTOBYTEUS_INLINE_VIDEO_MAX_BYTES: '4'
     };
     capturedRequests = [];
@@ -102,7 +103,7 @@ describe('AutobyteusClient media staging integration', () => {
     const videoPath = path.join(tempDir, 'input.mp4');
     await fs.writeFile(videoPath, videoBytes);
 
-    const client = new AutobyteusClient(serverUrl);
+    const client = new AutobyteusClient(serverUrl, apiKey);
     const result = await client.sendMessage({
       conversationId: 'conversation-media-only',
       modelName: 'dummy-rpa-model',
