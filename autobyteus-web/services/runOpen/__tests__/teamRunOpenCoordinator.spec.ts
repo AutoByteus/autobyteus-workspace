@@ -249,8 +249,12 @@ describe('openTeamRun', () => {
     expect(existingContext.leafAgentContextsByRouteKey.get('member-a')?.state.conversation).toBe(liveConversation);
     expect(existingContext.leafAgentContextsByRouteKey.get('member-a')?.state.eventMonitorPresentationRevision).toBe(7);
     expect(resetPresentationRevision).not.toHaveBeenCalled();
+    expect(resetRecentEventMonitorBaselineMock).not.toHaveBeenCalled();
     expect(hydrateTeamMemberActivitiesFromProjectionMock).not.toHaveBeenCalled();
-    expect(primeRecentEventMonitorBaselineMock).not.toHaveBeenCalled();
+    expect(primeRecentEventMonitorBaselineMock).toHaveBeenCalledTimes(1);
+    expect(primeRecentEventMonitorBaselineMock).toHaveBeenCalledWith(
+      existingContext.leafAgentContextsByRouteKey.get('member-a'),
+    );
     expect(connectToTeamStreamMock).toHaveBeenCalledWith('team-1');
   });
 
@@ -285,6 +289,9 @@ describe('openTeamRun', () => {
       projectionByMemberRouteKey,
       memberRouteKeys: ['member-a'],
     });
+    expect(primeRecentEventMonitorBaselineMock).toHaveBeenCalledTimes(1);
+    expect(hydrateTeamMemberActivitiesFromProjectionMock.mock.invocationCallOrder[0])
+      .toBeLessThan(primeRecentEventMonitorBaselineMock.mock.invocationCallOrder[0]!);
   });
 
   it('hydrates only newly applied member projections when preserving existing live members', async () => {
@@ -326,6 +333,16 @@ describe('openTeamRun', () => {
       projectionByMemberRouteKey,
       memberRouteKeys: ['member-b'],
     });
+    expect(resetRecentEventMonitorBaselineMock).not.toHaveBeenCalled();
+    expect(primeRecentEventMonitorBaselineMock).toHaveBeenCalledTimes(2);
+    expect(primeRecentEventMonitorBaselineMock).toHaveBeenCalledWith(
+      existingContext.leafAgentContextsByRouteKey.get('member-a'),
+    );
+    expect(primeRecentEventMonitorBaselineMock).toHaveBeenCalledWith(
+      existingContext.leafAgentContextsByRouteKey.get('member-b'),
+    );
+    expect(hydrateTeamMemberActivitiesFromProjectionMock.mock.invocationCallOrder[0])
+      .toBeLessThan(primeRecentEventMonitorBaselineMock.mock.invocationCallOrder[0]!);
   });
 
   it('normalizes inactive logical member focus when reopening subscribed active execution', async () => {

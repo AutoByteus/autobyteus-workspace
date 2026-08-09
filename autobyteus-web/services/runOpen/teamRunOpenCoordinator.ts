@@ -172,7 +172,7 @@ export const openTeamRun = async (
     ? getTaskAgentContextsByRouteKey(existingTeamContext, liveTaskAgentNodesToRestore)
     : new Map<string, any>();
   let finalFocusedMemberRouteKey = resolvedFocusedMemberRouteKey;
-  let finalBaselineMemberKeys = Array.from(members.keys());
+  let activityHydrationMemberKeys = Array.from(members.keys());
 
   if (existingTeamContext) {
     if (!shouldKeepLiveContext && existingTeamContext.unsubscribe) {
@@ -191,7 +191,7 @@ export const openTeamRun = async (
 
     if (shouldKeepLiveContext) {
       const existingMemberKeys = new Set(existingLeafAgentContextsByRouteKey.keys());
-      finalBaselineMemberKeys = Array.from(members.keys()).filter(
+      activityHydrationMemberKeys = Array.from(members.keys()).filter(
         (memberRouteKey) => !existingMemberKeys.has(memberRouteKey),
       );
       existingTeamContext.leafAgentContextsByRouteKey = mergeHydratedMembers(existingLeafAgentContextsByRouteKey, members, {
@@ -236,19 +236,16 @@ export const openTeamRun = async (
     teamContextsStore.addTeamContext(hydratedContext);
   }
 
-  if (shouldTreatAsLive && finalBaselineMemberKeys.length > 0) {
+  if (shouldTreatAsLive && activityHydrationMemberKeys.length > 0) {
     const teamContext = teamContextsStore.getTeamContextById(metadata.teamRunId) || hydratedContext;
     hydrateTeamMemberActivitiesFromProjection({
       members: teamContext.leafAgentContextsByRouteKey,
       projectionByMemberRouteKey,
-      memberRouteKeys: finalBaselineMemberKeys,
+      memberRouteKeys: activityHydrationMemberKeys,
     });
   }
   const finalTeamContext = teamContextsStore.getTeamContextById(metadata.teamRunId) || hydratedContext;
-  finalBaselineMemberKeys.forEach((memberRouteKey) => {
-    const context = finalTeamContext.leafAgentContextsByRouteKey.get(memberRouteKey);
-    if (context) primeRecentEventMonitorBaseline(context);
-  });
+  finalTeamContext.leafAgentContextsByRouteKey.forEach(primeRecentEventMonitorBaseline);
 
   if (input.selectRun !== false) {
     const selectionStore = useAgentSelectionStore();

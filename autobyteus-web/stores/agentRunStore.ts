@@ -239,8 +239,8 @@ export const useAgentRunStore = defineStore('agentRun', {
             console.warn(`Failed to cancel prepared agent run '${preparedRunId}'.`, cancelError);
           });
         }
-        failLocalSubmission(localSubmission, error);
         applyOfflineOrTerminalCleanup(localSubmission.context, AgentStatus.Error);
+        failLocalSubmission(localSubmission, error);
 
         // We do NOT re-throw here because we've handled it by showing it in the UI.
         // If we re-throw, parent catch blocks might try to handle it again (e.g. log it).

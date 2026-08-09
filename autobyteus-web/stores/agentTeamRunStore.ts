@@ -436,14 +436,14 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
           finalTeamRunId = result.teamRunId || finalTeamRunId;
         }
 
-        teamContextsStore.lockConfig(finalTeamRunId);
-        runHistoryStore.markTeamAsActive(finalTeamRunId);
-        void runHistoryStore.refreshTreeQuietly();
-
         const finalTeamContext = teamContextsStore.getTeamContextById(finalTeamRunId);
         if (!finalTeamContext) {
           throw new Error(`Team context '${finalTeamRunId}' not found after creation.`);
         }
+        finalTeamContext.isActive = true;
+        teamContextsStore.lockConfig(finalTeamRunId);
+        runHistoryStore.markTeamAsActive(finalTeamRunId);
+        void runHistoryStore.refreshTreeQuietly();
         if (localSubmission) {
           retargetLocalUserSubmission(localSubmission, {
             kind: 'team_member',
@@ -452,7 +452,6 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
             memberRunId: localSubmission.context.state.runId,
           });
         }
-        finalTeamContext.isActive = true;
         const finalizedAttachments = await contextFileUploadStore.finalizeDraftAttachments({
           draftOwner,
           finalOwner: buildTeamMemberFinalContextFileOwner(finalTeamRunId, targetUploadKey),
@@ -497,8 +496,8 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       } catch (error: any) {
         console.error(`Failed to send message to conversation target ${conversationTargetKey}:`, error);
         if (localSubmission) {
-          failLocalSubmission(localSubmission, error);
           applyOfflineOrTerminalCleanup(localSubmission.context, AgentStatus.Error);
+          failLocalSubmission(localSubmission, error);
           return;
         }
         if (focusedMember) {

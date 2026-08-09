@@ -5,6 +5,7 @@ import { TeamStreamingService } from '~/services/agentStreaming';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { RestoreAgentTeamRun } from '~/graphql/mutations/agentTeamRunMutations';
 import { resolveTeamStreamMemberContext } from '~/services/agentStreaming/teamStreamMemberContextResolver';
+import { handleTeamRunLifecycle } from '~/services/agentStreaming/handlers/teamHandler';
 import type { ServerMessage } from '~/services/agentStreaming/protocol';
 import { hydrateContextAttachment } from '~/utils/contextFiles/contextAttachmentModel';
 
@@ -55,6 +56,7 @@ const {
     markTeamAsActive: vi.fn(),
     markTeamAsInactive: vi.fn(),
     refreshTreeQuietly: vi.fn().mockResolvedValue(undefined),
+    refreshRunNavigationTopology: vi.fn(),
     applyRunNavigationEffect: vi.fn(),
     teamResumeConfigByTeamRunId: {} as Record<string, { isActive: boolean }>,
   },
@@ -540,6 +542,68 @@ describe('agentTeamRunStore', () => {
     expect(teamContext.isSubscribed).toBe(true);
   });
 
+  it('publishes the authoritative Error status with exact navigation when team restore fails', async () => {
+    const focusedMember = {
+      state: {
+        runId: 'member-restore-failure',
+        currentStatus: AgentStatus.Offline,
+        conversation: {
+          messages: [] as any[],
+          updatedAt: '2026-08-09T09:00:00.000Z',
+        },
+      },
+      submissionPending: false,
+    };
+    const teamContext = buildTeamContext({
+      teamRunId: 'team-restore-failure',
+      focusedMemberRouteKey: 'professor',
+      isActive: false,
+      config: {
+        teamDefinitionId: 'team-def-1',
+        workspaceId: 'ws-1',
+        llmModelIdentifier: 'model-x',
+        memberOverrides: {},
+      },
+      memberContexts: { professor: focusedMember },
+    });
+    setActiveTeamContext(teamContext);
+    runHistoryStoreMock.teamResumeConfigByTeamRunId = {
+      'team-restore-failure': { isActive: false },
+    };
+    mockMutate.mockResolvedValueOnce({
+      data: {
+        restoreAgentTeamRun: {
+          success: false,
+          teamRunId: 'team-restore-failure',
+          message: 'restore failed',
+        },
+      },
+      errors: [],
+    });
+    const store = useAgentTeamRunStore();
+
+    await store.sendMessageToFocusedMember('recover this run', []);
+
+    expect(focusedMember.state.currentStatus).toBe(AgentStatus.Error);
+    expect(focusedMember.state.conversation.messages).toHaveLength(2);
+    expect(runHistoryStoreMock.applyRunNavigationEffect).toHaveBeenCalledTimes(2);
+    expect(runHistoryStoreMock.applyRunNavigationEffect).toHaveBeenLastCalledWith({
+      kind: 'team_member',
+      teamRunId: 'team-restore-failure',
+      memberRouteKey: 'professor',
+      memberRunId: 'member-restore-failure',
+      currentStatus: AgentStatus.Error,
+      summary: 'recover this run',
+    }, {
+      kind: 'PRESENTATION',
+      occurredAt: focusedMember.state.conversation.updatedAt,
+    });
+    expect(runHistoryStoreMock.markTeamAsActive).not.toHaveBeenCalled();
+    expect(runHistoryStoreMock.refreshRunNavigationTopology).not.toHaveBeenCalled();
+    expect(runHistoryStoreMock.refreshTreeQuietly).not.toHaveBeenCalled();
+    expect(mockSendMessage).not.toHaveBeenCalled();
+  });
+
   it('launches a temporary team send to the focused offline non-coordinator instead of active-execution fallback', async () => {
     const solutionDesigner = {
       state: {
@@ -613,6 +677,10 @@ describe('agentTeamRunStore', () => {
       },
       errors: [],
     });
+    let cachedRootActiveAtPublication: boolean | undefined;
+    runHistoryStoreMock.markTeamAsActive.mockImplementationOnce((teamRunId: string) => {
+      cachedRootActiveAtPublication = teamContextsStoreMock.getTeamContextById(teamRunId)?.isActive;
+    });
 
     const store = useAgentTeamRunStore();
     await store.sendMessageToFocusedMember(
@@ -621,6 +689,16 @@ describe('agentTeamRunStore', () => {
     );
 
     expect(codeReviewer.state.conversation.messages).toHaveLength(1);
+    expect(cachedRootActiveAtPublication).toBe(true);
+    expect(teamContext.isActive).toBe(true);
+    const patchCallsBeforeInitialLifecycle = runHistoryStoreMock.applyRunNavigationEffect.mock.calls.length;
+    expect(handleTeamRunLifecycle({
+      team_run_id: 'team-focused-real', is_active: true,
+    }, teamContext as any)).toBe(false);
+    expect(runHistoryStoreMock.applyRunNavigationEffect).toHaveBeenCalledTimes(
+      patchCallsBeforeInitialLifecycle,
+    );
+    expect(runHistoryStoreMock.refreshRunNavigationTopology).not.toHaveBeenCalled();
     expect(solutionDesigner.state.conversation.messages).toHaveLength(0);
     expect(contextFileUploadStoreMock.finalizeDraftAttachments).toHaveBeenCalledWith({
       draftOwner: {
@@ -849,6 +927,7 @@ describe('agentTeamRunStore', () => {
       teamRunId: 'team-restore-1',
       focusedMemberRouteKey: 'professor',
       isSubscribed: false,
+      isActive: false,
       config: {
         teamDefinitionId: 'team-def-1',
         workspaceId: 'ws-1',
@@ -882,6 +961,10 @@ describe('agentTeamRunStore', () => {
       },
       errors: [],
     });
+    let cachedRootActiveAtPublication: boolean | undefined;
+    runHistoryStoreMock.markTeamAsActive.mockImplementationOnce((teamRunId: string) => {
+      cachedRootActiveAtPublication = teamContextsStoreMock.getTeamContextById(teamRunId)?.isActive;
+    });
 
     const store = useAgentTeamRunStore();
     await store.sendMessageToFocusedMember('restore then send', []);
@@ -894,6 +977,16 @@ describe('agentTeamRunStore', () => {
     );
     expect(teamContextsStoreMock.lockConfig).toHaveBeenCalledWith('team-restore-1');
     expect(runHistoryStoreMock.markTeamAsActive).toHaveBeenCalledWith('team-restore-1');
+    expect(cachedRootActiveAtPublication).toBe(true);
+    expect(teamContext.isActive).toBe(true);
+    const patchCallsBeforeInitialLifecycle = runHistoryStoreMock.applyRunNavigationEffect.mock.calls.length;
+    expect(handleTeamRunLifecycle({
+      team_run_id: 'team-restore-1', is_active: true,
+    }, teamContext as any)).toBe(false);
+    expect(runHistoryStoreMock.applyRunNavigationEffect).toHaveBeenCalledTimes(
+      patchCallsBeforeInitialLifecycle,
+    );
+    expect(runHistoryStoreMock.refreshRunNavigationTopology).not.toHaveBeenCalled();
     expect(mockSendMessage).toHaveBeenCalledWith('restore then send', {
       segments: [{ kind: 'member', memberRouteKey: 'professor' }],
     }, [], [], expect.objectContaining({
