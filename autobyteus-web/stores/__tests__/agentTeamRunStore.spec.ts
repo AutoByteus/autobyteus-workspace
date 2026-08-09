@@ -55,6 +55,7 @@ const {
     markTeamAsActive: vi.fn(),
     markTeamAsInactive: vi.fn(),
     refreshTreeQuietly: vi.fn().mockResolvedValue(undefined),
+    applyRunNavigationEffect: vi.fn(),
     teamResumeConfigByTeamRunId: {} as Record<string, { isActive: boolean }>,
   },
   teamDefinitionStoreMock: {

@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { openTeamRun } from '~/services/runOpen/teamRunOpenCoordinator';
 import { ensureTaskAgentProjection } from '~/services/agentStreaming/teamTaskAgentContextProjection';
+import { commitRecentEventMonitorEffect } from '~/services/eventMonitor/recentEventMonitorMutationCoordinator';
 
 const {
   loadTeamRunContextHydrationPayloadMock,
@@ -12,6 +13,8 @@ const {
   clearTeamRunConfigMock,
   clearAgentRunConfigMock,
   reconstructTeamRunConfigFromMetadataMock,
+  primeRecentEventMonitorBaselineMock,
+  resetRecentEventMonitorBaselineMock,
 } = vi.hoisted(() => ({
   loadTeamRunContextHydrationPayloadMock: vi.fn(),
   hydrateTeamMemberActivitiesFromProjectionMock: vi.fn(),
@@ -22,7 +25,24 @@ const {
   clearTeamRunConfigMock: vi.fn(),
   clearAgentRunConfigMock: vi.fn(),
   reconstructTeamRunConfigFromMetadataMock: vi.fn(),
+  primeRecentEventMonitorBaselineMock: vi.fn(),
+  resetRecentEventMonitorBaselineMock: vi.fn(),
 }));
+
+vi.mock('~/services/eventMonitor/recentEventMonitorMutationCoordinator', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('~/services/eventMonitor/recentEventMonitorMutationCoordinator')>();
+  return {
+    ...actual,
+    primeRecentEventMonitorBaseline: (context: any) => {
+      primeRecentEventMonitorBaselineMock(context);
+      actual.primeRecentEventMonitorBaseline(context);
+    },
+    resetRecentEventMonitorBaseline: (context: any) => {
+      resetRecentEventMonitorBaselineMock(context);
+      actual.resetRecentEventMonitorBaseline(context);
+    },
+  };
+});
 
 vi.mock('~/services/runHydration/teamRunContextHydrationService', () => ({
   loadTeamRunContextHydrationPayload: loadTeamRunContextHydrationPayloadMock,
@@ -118,6 +138,9 @@ const createMemberContext = (runId: string, conversationId: string) => ({
     eventMonitorPresentationRevision: 0,
     resetEventMonitorPresentationRevision() {
       this.eventMonitorPresentationRevision = 0;
+    },
+    markEventMonitorPresentationChanged() {
+      this.eventMonitorPresentationRevision += 1;
     },
   },
 });
@@ -227,6 +250,7 @@ describe('openTeamRun', () => {
     expect(existingContext.leafAgentContextsByRouteKey.get('member-a')?.state.eventMonitorPresentationRevision).toBe(7);
     expect(resetPresentationRevision).not.toHaveBeenCalled();
     expect(hydrateTeamMemberActivitiesFromProjectionMock).not.toHaveBeenCalled();
+    expect(primeRecentEventMonitorBaselineMock).not.toHaveBeenCalled();
     expect(connectToTeamStreamMock).toHaveBeenCalledWith('team-1');
   });
 
@@ -425,12 +449,18 @@ describe('openTeamRun', () => {
           config: { isLocked: true },
           state: {
             runId: 'run-a',
-            conversation: { id: 'existing-conversation', messages: [] },
+            conversation: { id: 'existing-conversation', messages: [] as any[] },
             currentStatus: 'idle',
             eventMonitorPresentationRevision: 7,
             resetEventMonitorPresentationRevision() {
               this.eventMonitorPresentationRevision = 0;
             },
+            markEventMonitorPresentationChanged() {
+              this.eventMonitorPresentationRevision += 1;
+            },
+          },
+          get conversation() {
+            return this.state.conversation;
           },
         }],
       ]),
@@ -460,6 +490,17 @@ describe('openTeamRun', () => {
     expect(existingContext.leafAgentContextsByRouteKey.get('member-a')?.state.conversation.id).toBe('projected-conversation');
     expect(existingContext.leafAgentContextsByRouteKey.get('member-a')?.state.currentStatus).toBe('idle');
     expect(existingContext.leafAgentContextsByRouteKey.get('member-a')?.state.eventMonitorPresentationRevision).toBe(0);
+    expect(resetRecentEventMonitorBaselineMock).toHaveBeenCalledTimes(1);
+    expect(hydrateTeamMemberActivitiesFromProjectionMock).toHaveBeenCalledTimes(1);
+    expect(primeRecentEventMonitorBaselineMock).toHaveBeenCalledTimes(1);
+    expect(hydrateTeamMemberActivitiesFromProjectionMock.mock.invocationCallOrder[0])
+      .toBeLessThan(primeRecentEventMonitorBaselineMock.mock.invocationCallOrder[0]!);
+    const replacedMember = existingContext.leafAgentContextsByRouteKey.get('member-a')!;
+    replacedMember.state.conversation.messages.push({
+      type: 'user', text: 'first post-open mutation', timestamp: new Date(),
+    });
+    commitRecentEventMonitorEffect(replacedMember as any, 'STRUCTURAL');
+    expect(replacedMember.state.eventMonitorPresentationRevision).toBe(1);
     expect(connectToTeamStreamMock).toHaveBeenCalledWith('team-1');
   });
 

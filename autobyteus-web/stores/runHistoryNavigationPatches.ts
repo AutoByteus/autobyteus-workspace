@@ -15,7 +15,9 @@ export type RunNavigationTarget =
       memberRouteKey: string;
       memberRunId?: string | null;
       currentStatus: AgentStatus;
-    };
+      summary?: string;
+    }
+  | { kind: 'team_run'; teamRunId: string; isActive: boolean };
 
 export type TaskExecutionRowPresentationChange =
   | { field: 'DISPLAY_NAME'; value: string }
@@ -55,7 +57,7 @@ const replaceTeam = (
 const patchStandalone = (
   state: RunHistoryNavigationProjectionState,
   target: Extract<RunNavigationTarget, { kind: 'standalone' }>,
-  effect: RunNavigationEffect,
+  effect: Exclude<RunNavigationEffect, { kind: 'NONE' }>,
 ): RunHistoryNavigationProjectionState => {
   const index = state.runIndexById[target.runId];
   if (!index) return state;
@@ -63,14 +65,19 @@ const patchStandalone = (
   const agent = workspace?.agents[index.agentIndex];
   const run = agent?.runs[index.runIndex];
   if (!workspace || !agent || !run) return state;
-  if (effect.kind === 'ACTIVITY' && sameActivityBucket(run.lastActivityAt, effect.occurredAt)) return state;
+  const occurredAt = effect.occurredAt;
+  const activityChanged = Boolean(
+    occurredAt && !sameActivityBucket(run.lastActivityAt, occurredAt),
+  );
+  if (effect.kind === 'ACTIVITY' && !activityChanged) return state;
   const candidate = effect.kind === 'ACTIVITY'
-    ? { ...run, lastActivityAt: effect.occurredAt }
+    ? { ...run, lastActivityAt: occurredAt! }
     : {
         ...run,
         currentStatus: target.currentStatus,
         isActive: statusIsActive(target.currentStatus),
         ...(target.summary === undefined ? {} : { summary: target.summary }),
+        ...(activityChanged ? { lastActivityAt: occurredAt } : {}),
       };
   if (JSON.stringify(candidate) === JSON.stringify(run)) return state;
   const runs = [...agent.runs];
@@ -99,7 +106,7 @@ const patchExecutionRowStatus = (
 const patchTeamMember = (
   state: RunHistoryNavigationProjectionState,
   target: Extract<RunNavigationTarget, { kind: 'team_member' }>,
-  effect: RunNavigationEffect,
+  effect: Exclude<RunNavigationEffect, { kind: 'NONE' }>,
 ): RunHistoryNavigationProjectionState => {
   const teamIndex = state.teamIndexById[target.teamRunId];
   if (!teamIndex) return state;
@@ -112,14 +119,33 @@ const patchTeamMember = (
   const rowIndex = state.memberIndexByIdentity[
     runHistoryMemberIndexKey(target.teamRunId, target.memberRouteKey)
   ];
-  if (rowIndex === undefined) return state;
-  const row = team.executionRows[rowIndex];
-  if (!row) return state;
-  const nextRow = patchExecutionRowStatus(row, target.currentStatus);
-  if (JSON.stringify(nextRow) === JSON.stringify(row)) return state;
-  const executionRows = [...team.executionRows];
-  executionRows[rowIndex] = nextRow;
-  return replaceTeam(state, { ...team, executionRows });
+  const row = rowIndex === undefined ? null : team.executionRows[rowIndex] ?? null;
+  const nextRow = row ? patchExecutionRowStatus(row, target.currentStatus) : null;
+  const rowChanged = Boolean(row && nextRow && JSON.stringify(nextRow) !== JSON.stringify(row));
+  const occurredAt = effect.occurredAt;
+  const activityChanged = Boolean(
+    occurredAt && !sameActivityBucket(team.lastActivityAt, occurredAt),
+  );
+  const summaryChanged = target.summary !== undefined && target.summary !== team.summary;
+  if (!rowChanged && !activityChanged && !summaryChanged) return state;
+  const executionRows = rowChanged ? [...team.executionRows] : team.executionRows;
+  if (rowChanged && rowIndex !== undefined && nextRow) executionRows[rowIndex] = nextRow;
+  return replaceTeam(state, {
+    ...team,
+    executionRows,
+    ...(summaryChanged ? { summary: target.summary! } : {}),
+    ...(activityChanged ? { lastActivityAt: occurredAt! } : {}),
+  });
+};
+
+const patchTeamRun = (
+  state: RunHistoryNavigationProjectionState,
+  target: Extract<RunNavigationTarget, { kind: 'team_run' }>,
+): RunHistoryNavigationProjectionState => {
+  const teamIndex = state.teamIndexById[target.teamRunId];
+  const team = teamIndex ? state.teamNodes[teamIndex.index] : null;
+  if (!team || team.isActive === target.isActive) return state;
+  return replaceTeam(state, { ...team, isActive: target.isActive });
 };
 
 export const applyRunNavigationEffectToProjection = (
@@ -130,7 +156,9 @@ export const applyRunNavigationEffectToProjection = (
   if (effect.kind === 'NONE') return { state, changed: false };
   const next = target.kind === 'standalone'
     ? patchStandalone(state, target, effect)
-    : patchTeamMember(state, target, effect);
+    : target.kind === 'team_member'
+      ? patchTeamMember(state, target, effect)
+      : patchTeamRun(state, target);
   return { state: next, changed: next !== state };
 };
 

@@ -227,6 +227,45 @@ describe("AgentStreamWebSocketEgress", () => {
     expect(onObserverError).toHaveBeenCalledTimes(1);
   });
 
+  it("keeps nested delivery data immutable across registered observers and filters", () => {
+    const sendRaw = vi.fn();
+    const mutationAttempts: boolean[] = [];
+    const observer: AgentStreamEgressObserver = {
+      observe: (observation) => {
+        if (observation.type !== "MESSAGE_RECEIVED") return;
+        const nested = observation.message.payload.nested as Record<string, unknown>;
+        mutationAttempts.push(Reflect.set(nested, "route", "observer-mutated"));
+      },
+    };
+    const filter: AgentStreamEgressFilter = {
+      evaluate: (message) => {
+        const nested = message.payload.nested as Record<string, unknown>;
+        mutationAttempts.push(Reflect.set(nested, "route", "filter-mutated"));
+        return { action: "FORWARD" };
+      },
+    };
+    const original = new ServerMessage(ServerMessageType.CONNECTED, {
+      session_id: "s-immutable",
+      nested: { route: "exact" },
+    });
+    const egress = new AgentStreamWebSocketEgress({
+      sendRaw,
+      controlExtensions: {
+        filterFactories: [() => filter],
+        observerFactories: [() => observer],
+      },
+    });
+
+    egress.send(original);
+
+    expect(mutationAttempts).toEqual([false, false]);
+    expect(original.payload).toEqual({ session_id: "s-immutable", nested: { route: "exact" } });
+    expect(parseSent(sendRaw)).toEqual([{
+      type: ServerMessageType.CONNECTED,
+      payload: { session_id: "s-immutable", nested: { route: "exact" } },
+    }]);
+  });
+
   it.each([
     new ServerMessage(ServerMessageType.CONNECTED, { session_id: "session-1" }),
     new ServerMessage(ServerMessageType.AGENT_COMMAND_ACK, { accepted: true }),

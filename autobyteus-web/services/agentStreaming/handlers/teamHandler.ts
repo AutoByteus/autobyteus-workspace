@@ -71,12 +71,14 @@ export function handleTeamCommunicationMessage(
 export function handleTeamRunLifecycle(
   payload: TeamRunLifecyclePayload,
   context: AgentTeamContext,
-): void {
+): boolean {
   if (payload.team_run_id !== context.teamRunId) {
     console.warn(
       `Ignoring lifecycle for team '${payload.team_run_id}' on '${context.teamRunId}'.`,
     );
-    return;
+    return false;
   }
+  if (context.isActive === payload.is_active) return false;
   context.isActive = payload.is_active;
+  return true;
 }

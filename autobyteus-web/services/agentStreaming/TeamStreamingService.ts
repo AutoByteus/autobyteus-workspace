@@ -392,8 +392,13 @@ export class TeamStreamingService {
   ): void {
     this.refreshTaskDelegationRecords(message, teamContext);
     if (message.type === 'TEAM_RUN_LIFECYCLE') {
-      handleTeamRunLifecycle(message.payload, teamContext);
-      useRunHistoryStore().refreshRunNavigationTopology('team-run-lifecycle');
+      if (handleTeamRunLifecycle(message.payload, teamContext)) {
+        useRunHistoryStore().applyRunNavigationEffect({
+          kind: 'team_run',
+          teamRunId: teamContext.teamRunId,
+          isActive: teamContext.isActive,
+        }, { kind: 'PRESENTATION' });
+      }
       return;
     }
 

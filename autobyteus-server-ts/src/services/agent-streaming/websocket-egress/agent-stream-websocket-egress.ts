@@ -4,6 +4,7 @@ import type {
   AgentStreamEgressControlExtensions,
   AgentStreamEgressObservation,
 } from "./agent-stream-egress-control.js";
+import { createAgentStreamEgressControlMessage } from "./agent-stream-egress-control.js";
 import { createDefaultAgentStreamEgressControlComposition } from "./agent-stream-egress-control-composition.js";
 
 export interface AgentStreamServerMessageSink {
@@ -37,13 +38,14 @@ export class AgentStreamWebSocketEgress implements AgentStreamServerMessageSink 
       return;
     }
 
-    this.observe({ type: "MESSAGE_RECEIVED", message });
+    const controlMessage = createAgentStreamEgressControlMessage(message);
+    this.observe({ type: "MESSAGE_RECEIVED", message: controlMessage });
     for (const filter of this.controls.filters) {
-      const decision = filter.evaluate(message);
+      const decision = filter.evaluate(controlMessage);
       if (decision.action === "SUPPRESS") {
         this.observe({
           type: "MESSAGE_SUPPRESSED",
-          message,
+          message: controlMessage,
           reason: decision.reason,
         });
         return;
@@ -77,7 +79,10 @@ export class AgentStreamWebSocketEgress implements AgentStreamServerMessageSink 
 
   private readonly forward = (message: ServerMessage): void => {
     this.options.sendRaw(message.toJson());
-    this.observe({ type: "MESSAGE_FORWARDED", message });
+    this.observe({
+      type: "MESSAGE_FORWARDED",
+      message: createAgentStreamEgressControlMessage(message),
+    });
   };
 
   private observe(observation: AgentStreamEgressObservation): void {

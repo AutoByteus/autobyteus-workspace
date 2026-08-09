@@ -5,9 +5,7 @@ import {
   RestoreAgentTeamRun,
   TerminateAgentTeamRun,
 } from '~/graphql/mutations/agentTeamRunMutations';
-import type {
-  TeamMemberConfigInput,
-} from '~/generated/graphql';
+import type { TeamMemberConfigInput } from '~/generated/graphql';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
@@ -34,25 +32,18 @@ import { buildTeamRunMemberConfigRecords } from '~/utils/teamRunMemberConfigBuil
 import { evaluateTeamRunLaunchReadiness } from '~/utils/teamRunLaunchReadiness';
 import { resolveEffectiveMemberRuntimeKind } from '~/utils/teamRunConfigUtils';
 import { resolveTeamConversationTargetAddressResult } from '~/utils/teamConversationTargetAddress';
-import {
-  applyOfflineOrTerminalCleanup,
-} from '~/services/runStatus/agentRuntimeStatusState';
+import { applyOfflineOrTerminalCleanup } from '~/services/runStatus/agentRuntimeStatusState';
 import {
   beginLocalUserSubmission,
   failLocalSubmission,
   finalizeLocalSubmissionAttachments,
+  retargetLocalUserSubmission,
   type LocalUserSubmissionHandle,
 } from '~/services/runSubmission/localUserSubmission';
-import {
-  reconcileTeamContextMemberRunIdsFromBackend,
-} from '~/services/runHydration/teamRunMemberIdentityReconciler';
-import {
-  commitRecentEventMonitorEffect,
-} from '~/services/eventMonitor/recentEventMonitorMutationCoordinator';
+import { reconcileTeamContextMemberRunIdsFromBackend } from '~/services/runHydration/teamRunMemberIdentityReconciler';
 import { useToasts } from '~/composables/useToasts';
 import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
 
-// Maintain a map of streaming services per team run
 const teamStreamingServices = new Map<string, TeamStreamingService>();
 
 const buildClientMessageId = (): string => {
@@ -125,9 +116,6 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
   }),
 
   actions: {
-    /**
-     * Establish WebSocket connection for a team run.
-     */
     connectToTeamStream(teamRunId: string): TeamStreamingService | null {
       const teamContextsStore = useAgentTeamContextsStore();
       const teamContext = teamContextsStore.getTeamContextById(teamRunId);
@@ -377,6 +365,12 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
           localSubmission = beginLocalUserSubmission(focusedMember, {
             text,
             attachments: contextAttachments,
+            navigationTarget: {
+              kind: 'team_member',
+              teamRunId: activeTeam.teamRunId,
+              memberRouteKey: conversationTargetKey,
+              memberRunId: focusedMember.state.runId,
+            },
           });
         }
 
@@ -450,6 +444,14 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         if (!finalTeamContext) {
           throw new Error(`Team context '${finalTeamRunId}' not found after creation.`);
         }
+        if (localSubmission) {
+          retargetLocalUserSubmission(localSubmission, {
+            kind: 'team_member',
+            teamRunId: finalTeamRunId,
+            memberRouteKey: conversationTargetKey,
+            memberRunId: localSubmission.context.state.runId,
+          });
+        }
         finalTeamContext.isActive = true;
         const finalizedAttachments = await contextFileUploadStore.finalizeDraftAttachments({
           draftOwner,
@@ -470,16 +472,18 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
           localSubmission.message.dedupeKey = dedupeKey;
           finalizeLocalSubmissionAttachments(localSubmission, submissionPlan.retainedMessageAttachments);
         } else if (finalFocusedMember) {
-          finalFocusedMember.state.conversation.messages.push({
-            type: 'user',
+          localSubmission = beginLocalUserSubmission(finalFocusedMember, {
             text,
-            timestamp: new Date(),
-            contextFilePaths: submissionPlan.retainedMessageAttachments,
-            messageId,
-            dedupeKey,
+            attachments: submissionPlan.retainedMessageAttachments,
+            navigationTarget: {
+              kind: 'team_member',
+              teamRunId: finalTeamRunId,
+              memberRouteKey: conversationTargetKey,
+              memberRunId: finalFocusedMember.state.runId,
+            },
           });
-          commitRecentEventMonitorEffect(finalFocusedMember, 'STRUCTURAL');
-          finalFocusedMember.state.conversation.updatedAt = new Date().toISOString();
+          localSubmission.message.messageId = messageId;
+          localSubmission.message.dedupeKey = dedupeKey;
         }
 
         const service = await this.ensureTeamStreamConnected(finalTeamRunId);

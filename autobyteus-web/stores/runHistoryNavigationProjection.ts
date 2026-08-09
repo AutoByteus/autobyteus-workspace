@@ -64,10 +64,33 @@ const retainEqualNodes = <T extends object>(
   keyOf: (node: T) => string,
 ): T[] => {
   const previousByKey = new Map(previous.map((node) => [keyOf(node), node]));
-  return next.map((node) => {
+  const reconciled = next.map((node) => {
     const prior = previousByKey.get(keyOf(node));
     return prior && JSON.stringify(prior) === JSON.stringify(node) ? prior : node;
   });
+  return previous.length === reconciled.length && previous.every(
+    (node, index) => node === reconciled[index],
+  ) ? previous as T[] : reconciled;
+};
+
+const retainEqualWorkspaceTeamBuckets = (
+  previous: Readonly<Record<string, TeamTreeNode[]>> | null | undefined,
+  next: Record<string, TeamTreeNode[]>,
+): Record<string, TeamTreeNode[]> => {
+  if (!previous) return next;
+  const nextKeys = Object.keys(next);
+  const reconciled = Object.fromEntries(nextKeys.map((key) => {
+    const prior = previous[key];
+    const bucket = next[key]!;
+    const retained = prior?.length === bucket.length && prior.every(
+      (team, index) => team === bucket[index],
+    ) ? prior : bucket;
+    return [key, retained];
+  }));
+  const previousKeys = Object.keys(previous);
+  return previousKeys.length === nextKeys.length && nextKeys.every(
+    (key) => previous[key] === reconciled[key],
+  ) ? previous as Record<string, TeamTreeNode[]> : reconciled;
 };
 
 export const buildRunHistoryNavigationProjection = (
@@ -115,13 +138,13 @@ export const buildRunHistoryNavigationProjection = (
   const workspaceIdByRootPath = new Map(
     workspaceNodes.map((workspace) => [normalizeRootPath(workspace.workspaceRootPath), workspace.workspaceId]),
   );
-  const teamNodesByWorkspaceRoot: Record<string, TeamTreeNode[]> = {};
+  const builtTeamNodesByWorkspaceRoot: Record<string, TeamTreeNode[]> = {};
   const teamIndexById: RunHistoryNavigationProjectionState['teamIndexById'] = {};
   const memberIndexByIdentity: Record<string, number> = {};
   const teamAncestryById: RunHistoryNavigationProjectionState['teamAncestryById'] = {};
   const memberAncestorRouteKeysByIdentity: Record<string, string[]> = {};
   teamNodes.forEach((team, index) => {
-    const rows = teamNodesByWorkspaceRoot[team.workspaceRootPath] ?? [];
+    const rows = builtTeamNodesByWorkspaceRoot[team.workspaceRootPath] ?? [];
     teamIndexById[team.teamRunId] = {
       index,
       workspaceRootPath: team.workspaceRootPath,
@@ -144,8 +167,12 @@ export const buildRunHistoryNavigationProjection = (
       expandableAncestorByDepth[row.depth] = row.hasChildren ? row.memberRouteKey : undefined;
       expandableAncestorByDepth.length = row.depth + 1;
     });
-    teamNodesByWorkspaceRoot[team.workspaceRootPath] = [...rows, team];
+    builtTeamNodesByWorkspaceRoot[team.workspaceRootPath] = [...rows, team];
   });
+  const teamNodesByWorkspaceRoot = retainEqualWorkspaceTeamBuckets(
+    previous?.teamNodesByWorkspaceRoot,
+    builtTeamNodesByWorkspaceRoot,
+  );
   return {
     workspaceNodes,
     teamNodes,

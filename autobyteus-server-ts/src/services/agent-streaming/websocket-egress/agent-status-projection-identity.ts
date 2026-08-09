@@ -1,7 +1,8 @@
-import { ServerMessageType, type ServerMessage } from "../models.js";
+import { ServerMessageType } from "../models.js";
+import type { AgentStreamEgressControlMessage } from "./agent-stream-egress-control.js";
 
 const readNonEmptyString = (
-  payload: Record<string, unknown>,
+  payload: Readonly<Record<string, unknown>>,
   key: string,
 ): string | null => {
   const value = payload[key];
@@ -12,7 +13,7 @@ const identityPart = (label: string, value: string): string =>
   `${label}:${value.length}:${value}`;
 
 export const resolveAgentStatusProjectionIdentity = (
-  message: Readonly<ServerMessage>,
+  message: AgentStreamEgressControlMessage,
 ): string | null => {
   if (message.type !== ServerMessageType.AGENT_STATUS) {
     return null;

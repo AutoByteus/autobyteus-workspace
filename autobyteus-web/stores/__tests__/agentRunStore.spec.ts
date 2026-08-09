@@ -42,6 +42,7 @@ const {
     markRunAsActive: vi.fn(),
     markRunAsInactive: vi.fn(),
     refreshTreeQuietly: vi.fn(),
+    applyRunNavigationEffect: vi.fn(),
   },
   mockSendMessage: vi.fn(),
   mockInterruptGeneration: vi.fn(),

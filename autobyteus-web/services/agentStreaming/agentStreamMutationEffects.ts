@@ -23,10 +23,18 @@ const eventMonitorSeverity: Record<RecentEventMonitorEffect, number> = {
   STRUCTURAL: 2,
 };
 
-const navigationSeverity: Record<RunNavigationEffect['kind'], number> = {
-  NONE: 0,
-  ACTIVITY: 1,
-  PRESENTATION: 2,
+const mergeRunNavigationEffects = (
+  left: RunNavigationEffect,
+  right: RunNavigationEffect,
+): RunNavigationEffect => {
+  if (left.kind === 'NONE') return right;
+  if (right.kind === 'NONE') return left;
+  if (left.kind === 'ACTIVITY' && right.kind === 'ACTIVITY') return right;
+  const occurredAt = right.occurredAt ?? left.occurredAt;
+  return {
+    kind: 'PRESENTATION',
+    ...(occurredAt ? { occurredAt } : {}),
+  };
 };
 
 export const mergeAgentStreamMutationEffects = (
@@ -37,11 +45,7 @@ export const mergeAgentStreamMutationEffects = (
   eventMonitor: eventMonitorSeverity[right.eventMonitor] > eventMonitorSeverity[left.eventMonitor]
     ? right.eventMonitor
     : left.eventMonitor,
-  navigation: navigationSeverity[right.navigation.kind] > navigationSeverity[left.navigation.kind]
-    ? right.navigation
-    : left.navigation.kind === right.navigation.kind && right.navigation.kind !== 'NONE'
-      ? right.navigation
-      : left.navigation,
+  navigation: mergeRunNavigationEffects(left.navigation, right.navigation),
 });
 
 export const conversationMutationEffects = (

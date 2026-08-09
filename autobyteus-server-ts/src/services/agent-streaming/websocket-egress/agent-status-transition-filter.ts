@@ -20,7 +20,7 @@ export class AgentStatusTransitionFilter implements AgentStreamEgressFilter {
     if (previous && streamPayloadsEqual(previous, message.payload)) {
       return { action: "SUPPRESS", reason: "EXACT_REPEATED_AGENT_STATUS" };
     }
-    this.lastPayloadByIdentity.set(identity, cloneStreamPayload(message.payload));
+    this.lastPayloadByIdentity.set(identity, cloneStreamPayload(message.payload) as ServerMessagePayload);
     return FORWARD;
   }
 

@@ -75,7 +75,6 @@ const mergeHydratedMembers = (
           : memberContext.state.currentStatus,
         { preserveCurrentStatus: false },
       );
-      primeRecentEventMonitorBaseline(existingMemberContext);
     }
 
     refreshedMembers.set(memberRouteKey, existingMemberContext);
@@ -173,7 +172,7 @@ export const openTeamRun = async (
     ? getTaskAgentContextsByRouteKey(existingTeamContext, liveTaskAgentNodesToRestore)
     : new Map<string, any>();
   let finalFocusedMemberRouteKey = resolvedFocusedMemberRouteKey;
-  let liveProjectionActivityMemberKeys = Array.from(members.keys());
+  let finalBaselineMemberKeys = Array.from(members.keys());
 
   if (existingTeamContext) {
     if (!shouldKeepLiveContext && existingTeamContext.unsubscribe) {
@@ -192,7 +191,7 @@ export const openTeamRun = async (
 
     if (shouldKeepLiveContext) {
       const existingMemberKeys = new Set(existingLeafAgentContextsByRouteKey.keys());
-      liveProjectionActivityMemberKeys = Array.from(members.keys()).filter(
+      finalBaselineMemberKeys = Array.from(members.keys()).filter(
         (memberRouteKey) => !existingMemberKeys.has(memberRouteKey),
       );
       existingTeamContext.leafAgentContextsByRouteKey = mergeHydratedMembers(existingLeafAgentContextsByRouteKey, members, {
@@ -237,16 +236,19 @@ export const openTeamRun = async (
     teamContextsStore.addTeamContext(hydratedContext);
   }
 
-  if (shouldTreatAsLive && liveProjectionActivityMemberKeys.length > 0) {
+  if (shouldTreatAsLive && finalBaselineMemberKeys.length > 0) {
     const teamContext = teamContextsStore.getTeamContextById(metadata.teamRunId) || hydratedContext;
     hydrateTeamMemberActivitiesFromProjection({
       members: teamContext.leafAgentContextsByRouteKey,
       projectionByMemberRouteKey,
-      memberRouteKeys: liveProjectionActivityMemberKeys,
+      memberRouteKeys: finalBaselineMemberKeys,
     });
   }
   const finalTeamContext = teamContextsStore.getTeamContextById(metadata.teamRunId) || hydratedContext;
-  finalTeamContext.leafAgentContextsByRouteKey.forEach(primeRecentEventMonitorBaseline);
+  finalBaselineMemberKeys.forEach((memberRouteKey) => {
+    const context = finalTeamContext.leafAgentContextsByRouteKey.get(memberRouteKey);
+    if (context) primeRecentEventMonitorBaseline(context);
+  });
 
   if (input.selectRun !== false) {
     const selectionStore = useAgentSelectionStore();

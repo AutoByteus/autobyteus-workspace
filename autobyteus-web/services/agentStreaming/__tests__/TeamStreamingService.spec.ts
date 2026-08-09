@@ -532,6 +532,10 @@ describe('TeamStreamingService', () => {
         ],
       ]),
     } as any;
+    const runHistoryStore = useRunHistoryStore();
+    const topologySpy = vi.spyOn(runHistoryStore, 'refreshRunNavigationTopology');
+    const exactPatchSpy = vi.spyOn(runHistoryStore, 'applyRunNavigationEffect').mockReturnValue(true);
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
 
     service.connect('team-1', withEventMonitorPresentationState(teamContext));
     callbacks.get('onConnect')?.();
@@ -540,13 +544,36 @@ describe('TeamStreamingService', () => {
 
     callbacks.get('onMessage')?.(JSON.stringify({
       type: 'TEAM_RUN_LIFECYCLE',
+      payload: { team_run_id: 'team-1', is_active: false },
+    }));
+    expect(topologySpy).not.toHaveBeenCalled();
+    expect(exactPatchSpy).not.toHaveBeenCalled();
+
+    callbacks.get('onMessage')?.(JSON.stringify({
+      type: 'TEAM_RUN_LIFECYCLE',
       payload: { team_run_id: 'team-1', is_active: true },
     }));
     expect(teamContext.isActive).toBe(true);
+    expect(exactPatchSpy).toHaveBeenCalledTimes(1);
+    expect(exactPatchSpy).toHaveBeenCalledWith({
+      kind: 'team_run', teamRunId: 'team-1', isActive: true,
+    }, { kind: 'PRESENTATION' });
+    expect(topologySpy).not.toHaveBeenCalled();
+
+    callbacks.get('onMessage')?.(JSON.stringify({
+      type: 'TEAM_RUN_LIFECYCLE',
+      payload: { team_run_id: 'other-team', is_active: false },
+    }));
+    expect(teamContext.isActive).toBe(true);
+    expect(exactPatchSpy).toHaveBeenCalledTimes(1);
+    expect(warnSpy).toHaveBeenCalledWith("Ignoring lifecycle for team 'other-team' on 'team-1'.");
 
     callbacks.get('onDisconnect')?.('closed');
     expect(teamContext.isSubscribed).toBe(false);
     expect(teamContext.isActive).toBe(true);
+    exactPatchSpy.mockRestore();
+    topologySpy.mockRestore();
+    warnSpy.mockRestore();
   });
 
   it('projects each server-shaped team content message immediately', () => {
