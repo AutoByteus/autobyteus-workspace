@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { AgentStreamingService } from '../AgentStreamingService';
+import { primeRecentEventMonitorBaseline } from '~/services/eventMonitor/recentEventMonitorMutationCoordinator';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 // import { AgentContext } from '~/types/agent/AgentContext'; // We can just mock the context interface for testing
 
@@ -559,6 +560,7 @@ describe('AgentStreamingService', () => {
         mockConversation.messages.push({
             type: 'ai', text: '', timestamp: new Date(0), isComplete: false, segments: [tool],
         });
+        primeRecentEventMonitorBaseline(mockAgentContext);
 
         (service as any).dispatchMessage({
             type: 'TOOL_LOG',

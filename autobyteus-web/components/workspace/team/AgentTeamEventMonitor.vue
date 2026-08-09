@@ -58,11 +58,13 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
+import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useTeamMemberPresentation } from '~/composables/useTeamMemberPresentation';
 import AgentEventMonitor from '~/components/workspace/agent/AgentEventMonitor.vue';
 import { shouldShowMemberConversation } from '~/utils/teamActiveExecutionMembers';
 
 const teamContextsStore = useAgentTeamContextsStore();
+const runHistoryStore = useRunHistoryStore();
 const { getInterAgentSenderNameById, getMemberAvatarUrl, getMemberDisplayName } = useTeamMemberPresentation();
 
 defineProps<{
@@ -133,6 +135,6 @@ const focusMemberRouteKey = (memberRouteKey: string) => {
   if (!teamRunId) {
     return;
   }
-  void teamContextsStore.focusMemberAndEnsureHydrated?.(teamRunId, memberRouteKey);
+  void runHistoryStore.focusTeamMemberAndEnsureHydrated(teamRunId, memberRouteKey);
 };
 </script>

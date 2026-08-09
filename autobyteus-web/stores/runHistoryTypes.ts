@@ -180,6 +180,29 @@ export interface TeamMemberFocusTarget {
   memberRouteKey: string;
 }
 
+export interface RunHistoryTeamExecutionRowBase extends TeamMemberFocusTarget {
+  memberKind: TeamMemberTreeRow['memberKind'];
+  memberPath: string[];
+  displayName: string;
+  depth: number;
+  hasChildren: boolean;
+}
+
+export interface RunHistoryStableExecutionRow extends RunHistoryTeamExecutionRowBase {
+  kind: 'stable_member';
+  row: TeamMemberTreeRow;
+}
+
+export interface RunHistoryTransientExecutionRow extends RunHistoryTeamExecutionRowBase {
+  kind: 'transient_execution';
+  transientKind: 'task_agent' | 'task_team' | 'task_team_child';
+  currentStatus: AgentStatus | string | null;
+}
+
+export type RunHistoryTeamExecutionRow =
+  | RunHistoryStableExecutionRow
+  | RunHistoryTransientExecutionRow;
+
 export interface TeamTreeNode {
   teamRunId: string;
   teamDefinitionId: string;
@@ -192,6 +215,7 @@ export interface TeamTreeNode {
   focusedMemberRouteKey: string;
   members: TeamMemberTreeRow[];
   memberTree: TeamMemberTreeRow[];
+  executionRows: RunHistoryTeamExecutionRow[];
 }
 
 export interface ListWorkspaceRunHistoryQueryData {

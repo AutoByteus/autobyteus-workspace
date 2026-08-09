@@ -2,8 +2,8 @@ import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import type { ServerMessage } from './protocol';
 import {
-  ensureTaskAgentContext,
   applyTaskAgentDelegationDetails,
+  ensureTaskAgentProjection,
   extractTaskAgentIdentity,
   type TaskAgentStreamIdentity,
 } from './teamTaskAgentContextProjection';
@@ -19,18 +19,31 @@ import {
   updateTaskTeamChildStatus,
   type TaskTeamChildMemberProjectionIdentity,
 } from './teamTaskTeamChildProjection';
-import { extractTaskDelegationProjectionDetails } from './teamTaskExecutionProjection';
+import {
+  extractTaskDelegationProjectionDetails,
+  mergeTaskExecutionProjectionMutations,
+  NO_TASK_EXECUTION_PROJECTION_MUTATION,
+  type TaskExecutionProjectionMutation,
+} from './teamTaskExecutionProjection';
+
+interface TaskProjectionResultBase {
+  mutation: TaskExecutionProjectionMutation;
+}
 
 export type TaskExecutionProjectionMessageResult =
-  | { outcome: 'continue'; taskAgentIdentity?: TaskAgentStreamIdentity | null }
-  | { outcome: 'handled'; taskAgentIdentity?: TaskAgentStreamIdentity | null; cleanupTaskTeamRunId?: string | null }
-  | { outcome: 'drop'; reason: string }
-  | {
-    outcome: 'memberContext';
-    context: AgentContext;
-    taskAgentIdentity?: TaskAgentStreamIdentity | null;
-    cleanupTaskTeamRunId?: string | null;
-  };
+  | (TaskProjectionResultBase & { outcome: 'continue'; taskAgentIdentity?: TaskAgentStreamIdentity | null })
+  | (TaskProjectionResultBase & {
+      outcome: 'handled';
+      taskAgentIdentity?: TaskAgentStreamIdentity | null;
+      cleanupTaskTeamRunId?: string | null;
+    })
+  | (TaskProjectionResultBase & { outcome: 'drop'; reason: string })
+  | (TaskProjectionResultBase & {
+      outcome: 'memberContext';
+      context: AgentContext;
+      memberRouteKey: string;
+      taskAgentIdentity?: TaskAgentStreamIdentity | null;
+    });
 
 const toScopedTaskAgentIdentity = (
   taskAgentIdentity: TaskAgentStreamIdentity,
@@ -50,7 +63,10 @@ const toScopedTaskAgentIdentity = (
   parentLogicalTeamPath: [...childIdentity.logicalTeamPath],
   conversationTargetSegments: [
     ...(childIdentity.conversationTargetSegments ?? [
-      { kind: 'member' as const, memberRouteKey: childIdentity.logicalTeamRouteKey ?? childIdentity.logicalTeamPath.join('/') },
+      {
+        kind: 'member' as const,
+        memberRouteKey: childIdentity.logicalTeamRouteKey ?? childIdentity.logicalTeamPath.join('/'),
+      },
       { kind: 'task_team' as const, taskTeamRunId: childIdentity.parentTaskTeamRunId },
       { kind: 'member' as const, memberRouteKey: childIdentity.relativeMemberRouteKey },
     ]),
@@ -61,68 +77,77 @@ const toScopedTaskAgentIdentity = (
 const ensureRootForScopedChild = (
   teamContext: AgentTeamContext,
   identity: TaskTeamChildMemberProjectionIdentity,
-): void => {
+): TaskExecutionProjectionMutation => {
   if (teamContext.memberNodesByRouteKey.get(identity.parentTaskTeamRunId)?.isTaskTeamInstance) {
-    return;
+    return NO_TASK_EXECUTION_PROJECTION_MUTATION;
   }
-  ensureTaskTeamExecutionProjection(teamContext, {
+  return ensureTaskTeamExecutionProjection(teamContext, {
     taskTeamRunId: identity.parentTaskTeamRunId,
     taskTeamInstanceId: identity.parentTaskTeamInstanceId,
     taskId: identity.parentTaskId,
     logicalTeamRouteKey: identity.logicalTeamRouteKey,
     logicalTeamPath: [...identity.logicalTeamPath],
-    conversationTargetSegments: identity.conversationTargetSegments
-      ? identity.conversationTargetSegments.slice(0, 2)
-      : undefined,
-  }, 'active');
+    conversationTargetSegments: identity.conversationTargetSegments?.slice(0, 2),
+  }, 'active').mutation;
 };
 
 const handleTaskTeamScopedProjectionMessage = (
   teamContext: AgentTeamContext,
   message: ServerMessage,
 ): TaskExecutionProjectionMessageResult | null => {
-  if (!hasTaskTeamScopedFields(message)) {
-    return null;
-  }
-
+  if (!hasTaskTeamScopedFields(message)) return null;
   const scoped = resolveTaskTeamScopedMessage(teamContext, message);
   if (scoped.outcome === 'drop') {
-    return { outcome: 'drop', reason: scoped.reason };
+    return { outcome: 'drop', reason: scoped.reason, mutation: NO_TASK_EXECUTION_PROJECTION_MUTATION };
   }
   if (scoped.outcome === 'none') {
-    return { outcome: 'continue' };
+    return { outcome: 'continue', mutation: NO_TASK_EXECUTION_PROJECTION_MUTATION };
   }
   if (scoped.outcome === 'root') {
-    return { outcome: 'handled' };
+    return { outcome: 'handled', mutation: NO_TASK_EXECUTION_PROJECTION_MUTATION };
   }
 
-  ensureRootForScopedChild(teamContext, scoped.identity);
-  const childProjection = ensureTaskTeamChildProjection(teamContext, scoped.identity);
-  if (!childProjection) {
-    return { outcome: 'drop', reason: 'Task-team scoped child projection could not be resolved.' };
+  let mutation = ensureRootForScopedChild(teamContext, scoped.identity);
+  const child = ensureTaskTeamChildProjection(teamContext, scoped.identity);
+  if (!child) {
+    return {
+      outcome: 'drop',
+      reason: 'Task-team scoped child projection could not be resolved.',
+      mutation,
+    };
   }
-  updateTaskTeamChildStatus(childProjection.node, message);
+  mutation = mergeTaskExecutionProjectionMutations(mutation, child.mutation);
+  mutation = mergeTaskExecutionProjectionMutations(
+    mutation,
+    updateTaskTeamChildStatus(teamContext, child.node, message),
+  );
 
-  const taskAgentIdentity = extractTaskAgentIdentity(message);
-  if (taskAgentIdentity) {
-    const scopedTaskAgentIdentity = toScopedTaskAgentIdentity(taskAgentIdentity, scoped.identity);
-    const taskAgentContext = ensureTaskAgentContext(teamContext, scopedTaskAgentIdentity);
+  const extractedTaskAgentIdentity = extractTaskAgentIdentity(message);
+  if (extractedTaskAgentIdentity) {
+    const identity = toScopedTaskAgentIdentity(extractedTaskAgentIdentity, scoped.identity);
+    const ensured = ensureTaskAgentProjection(teamContext, identity);
     applyTaskAgentDelegationDetails(
       teamContext,
-      scopedTaskAgentIdentity.taskAgentRunId,
+      identity.taskAgentRunId,
       extractTaskDelegationProjectionDetails(message),
     );
     return {
       outcome: 'memberContext',
-      context: taskAgentContext,
-      taskAgentIdentity: scopedTaskAgentIdentity,
+      context: ensured.context,
+      memberRouteKey: identity.taskAgentRunId,
+      taskAgentIdentity: identity,
+      mutation: mergeTaskExecutionProjectionMutations(mutation, ensured.mutation),
     };
   }
-
-  if (childProjection.context) {
-    return { outcome: 'memberContext', context: childProjection.context };
+  if (child.context) {
+    return {
+      outcome: 'memberContext',
+      context: child.context,
+      memberRouteKey: scoped.identity.scopedMemberRouteKey,
+      mutation,
+    };
   }
-  return { outcome: 'handled' };
+  return { outcome: 'handled', mutation };
 };
 
 export const handleTaskExecutionProjectionMessage = (
@@ -130,39 +155,49 @@ export const handleTaskExecutionProjectionMessage = (
   message: ServerMessage,
 ): TaskExecutionProjectionMessageResult => {
   if (message.type === 'TASK_DELEGATION_EVENT') {
-    const taskTeamIdentity = extractTaskTeamIdentity(message);
-    if (taskTeamIdentity) {
+    if (extractTaskTeamIdentity(message)) {
       const updated = updateTaskTeamExecutionProjectionFromEvent(teamContext, message);
       return {
         outcome: 'handled',
         cleanupTaskTeamRunId: updated?.shouldCleanup ? updated.node.taskTeamRunId : null,
+        mutation: updated?.mutation ?? NO_TASK_EXECUTION_PROJECTION_MUTATION,
       };
     }
-
-    const scopedResult = handleTaskTeamScopedProjectionMessage(teamContext, message);
-    if (scopedResult) {
-      if (scopedResult.outcome === 'memberContext') {
-        return {
-          outcome: 'handled',
-          taskAgentIdentity: scopedResult.taskAgentIdentity,
-          cleanupTaskTeamRunId: scopedResult.cleanupTaskTeamRunId,
-        };
-      }
-      return scopedResult;
+    const scoped = handleTaskTeamScopedProjectionMessage(teamContext, message);
+    if (scoped) {
+      return scoped.outcome === 'memberContext'
+        ? {
+            outcome: 'handled',
+            taskAgentIdentity: scoped.taskAgentIdentity,
+            mutation: scoped.mutation,
+          }
+        : scoped;
     }
-
-    const taskAgentIdentity = extractTaskAgentIdentity(message);
-    if (taskAgentIdentity) {
-      ensureTaskAgentContext(teamContext, taskAgentIdentity);
+    const identity = extractTaskAgentIdentity(message);
+    if (identity) {
+      const ensured = ensureTaskAgentProjection(teamContext, identity);
       applyTaskAgentDelegationDetails(
         teamContext,
-        taskAgentIdentity.taskAgentRunId,
+        identity.taskAgentRunId,
         extractTaskDelegationProjectionDetails(message),
       );
-      return { outcome: 'handled', taskAgentIdentity };
+      return { outcome: 'handled', taskAgentIdentity: identity, mutation: ensured.mutation };
     }
-    return { outcome: 'handled' };
+    return { outcome: 'handled', mutation: NO_TASK_EXECUTION_PROJECTION_MUTATION };
   }
 
-  return handleTaskTeamScopedProjectionMessage(teamContext, message) ?? { outcome: 'continue' };
+  const scoped = handleTaskTeamScopedProjectionMessage(teamContext, message);
+  if (scoped) return scoped;
+  const identity = extractTaskAgentIdentity(message);
+  if (identity) {
+    const ensured = ensureTaskAgentProjection(teamContext, identity);
+    return {
+      outcome: 'memberContext',
+      context: ensured.context,
+      memberRouteKey: identity.taskAgentRunId,
+      taskAgentIdentity: identity,
+      mutation: ensured.mutation,
+    };
+  }
+  return { outcome: 'continue', mutation: NO_TASK_EXECUTION_PROJECTION_MUTATION };
 };

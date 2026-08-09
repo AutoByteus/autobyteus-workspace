@@ -47,9 +47,8 @@ import {
   reconcileTeamContextMemberRunIdsFromBackend,
 } from '~/services/runHydration/teamRunMemberIdentityReconciler';
 import {
-  beginRecentEventMonitorMutation,
-  commitRecentEventMonitorMutation,
-} from '~/services/eventMonitor/recentEventMonitorMutationCommit';
+  commitRecentEventMonitorEffect,
+} from '~/services/eventMonitor/recentEventMonitorMutationCoordinator';
 import { useToasts } from '~/composables/useToasts';
 import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
 
@@ -471,7 +470,6 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
           localSubmission.message.dedupeKey = dedupeKey;
           finalizeLocalSubmissionAttachments(localSubmission, submissionPlan.retainedMessageAttachments);
         } else if (finalFocusedMember) {
-          const presentationBaseline = beginRecentEventMonitorMutation(finalFocusedMember);
           finalFocusedMember.state.conversation.messages.push({
             type: 'user',
             text,
@@ -480,7 +478,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
             messageId,
             dedupeKey,
           });
-          commitRecentEventMonitorMutation(finalFocusedMember, presentationBaseline);
+          commitRecentEventMonitorEffect(finalFocusedMember, 'STRUCTURAL');
           finalFocusedMember.state.conversation.updatedAt = new Date().toISOString();
         }
 

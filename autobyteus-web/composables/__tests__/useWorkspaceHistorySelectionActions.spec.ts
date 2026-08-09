@@ -66,6 +66,7 @@ const buildTeamNode = (focusedMemberRouteKey: string): TeamTreeNode => {
     focusedMemberRouteKey,
     members: [],
     memberTree: [programManager, buildSquad, auditSquad],
+    executionRows: [],
   }
 }
 

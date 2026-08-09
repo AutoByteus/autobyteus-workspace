@@ -9,10 +9,9 @@ import {
   setStreamSegmentIdentity,
 } from '~/services/agentStreaming/handlers/segmentIdentity';
 import {
-  beginRecentEventMonitorMutation,
-  commitKnownRecentEventMonitorPresentationMutation,
-  commitRecentEventMonitorMutation,
-} from '../recentEventMonitorMutationCommit';
+  commitRecentEventMonitorEffect,
+  primeRecentEventMonitorBaseline,
+} from '../recentEventMonitorMutationCoordinator';
 
 const createContext = (conversation: Conversation): AgentContext => new AgentContext(
   {} as any,
@@ -37,7 +36,7 @@ const toolSegment = (): ToolCallSegment => ({
   status: 'success', approvalTarget: null, logs: [], result: null, error: null,
 });
 
-describe('recent Event Monitor mutation commit', () => {
+describe('recent Event Monitor mutation coordinator', () => {
   beforeEach(() => setActivePinia(createPinia()));
 
   it('does not revise when a transient completed append is immediately evicted from 100 mutable events', () => {
@@ -46,12 +45,12 @@ describe('recent Event Monitor mutation commit', () => {
       segments: Array.from({ length: 100 }, (_, index) => mutableText(index)),
     };
     const context = createContext(conversationWith([aiMessage]));
-    const baseline = beginRecentEventMonitorMutation(context);
+    primeRecentEventMonitorBaseline(context);
 
     context.conversation.messages.push({
       type: 'user', text: 'transient atomic event', timestamp: new Date(1), messageId: 'transient',
     });
-    const result = commitRecentEventMonitorMutation(context, baseline);
+    const result = commitRecentEventMonitorEffect(context, 'STRUCTURAL');
 
     expect(result).toMatchObject({ retentionChanged: true, presentationChanged: false });
     expect(context.state.eventMonitorPresentationRevision).toBe(0);
@@ -63,10 +62,10 @@ describe('recent Event Monitor mutation commit', () => {
     const context = createContext(conversationWith([{
       type: 'ai', text: '', timestamp: new Date(0), isComplete: false, segments: [segment],
     }]));
-    const baseline = beginRecentEventMonitorMutation(context);
+    primeRecentEventMonitorBaseline(context);
 
     segment.content = 'visible changed content';
-    const result = commitRecentEventMonitorMutation(context, baseline);
+    const result = commitRecentEventMonitorEffect(context, 'PRESENTATION');
 
     expect(result.presentationChanged).toBe(true);
     expect(context.state.eventMonitorPresentationRevision).toBe(1);
@@ -77,11 +76,11 @@ describe('recent Event Monitor mutation commit', () => {
     const context = createContext(conversationWith([{
       type: 'ai', text: '', timestamp: new Date(0), isComplete: false, segments,
     }]));
-    const baseline = beginRecentEventMonitorMutation(context);
+    primeRecentEventMonitorBaseline(context);
     const completedSegment = segments[50]!;
 
     markStreamSegmentPresentationComplete(completedSegment);
-    const result = commitRecentEventMonitorMutation(context, baseline);
+    const result = commitRecentEventMonitorEffect(context, 'STRUCTURAL');
 
     expect(result).toMatchObject({ retentionChanged: true, presentationChanged: true });
     expect(context.state.eventMonitorPresentationRevision).toBe(1);
@@ -95,12 +94,12 @@ describe('recent Event Monitor mutation commit', () => {
     const context = createContext(conversationWith([{
       type: 'ai', text: '', timestamp: new Date(0), isComplete: false, segments: [segment],
     }]));
-    const baseline = beginRecentEventMonitorMutation(context);
+    primeRecentEventMonitorBaseline(context);
 
     segment.logs.push('Activity-only log');
     segment.result = { output: 'Activity-only result' };
     segment.arguments = { query: 'weather' };
-    const result = commitRecentEventMonitorMutation(context, baseline);
+    const result = commitRecentEventMonitorEffect(context, 'PRESENTATION');
 
     expect(result.presentationChanged).toBe(false);
     expect(context.state.eventMonitorPresentationRevision).toBe(0);
@@ -111,10 +110,10 @@ describe('recent Event Monitor mutation commit', () => {
     const context = createContext(conversationWith([{
       type: 'ai', text: '', timestamp: new Date(0), isComplete: false, segments: [segment],
     }]));
-    const baseline = beginRecentEventMonitorMutation(context);
+    primeRecentEventMonitorBaseline(context);
 
     segment.arguments = { query: 'forecast' };
-    const result = commitRecentEventMonitorMutation(context, baseline);
+    const result = commitRecentEventMonitorEffect(context, 'PRESENTATION');
 
     expect(result.presentationChanged).toBe(true);
     expect(context.state.eventMonitorPresentationRevision).toBe(1);
@@ -126,7 +125,7 @@ describe('recent Event Monitor mutation commit', () => {
       type: 'ai', text: '', timestamp: new Date(0), isComplete: false, segments,
     }]));
 
-    const result = commitKnownRecentEventMonitorPresentationMutation(context);
+    const result = commitRecentEventMonitorEffect(context, 'STRUCTURAL');
 
     expect(result).toMatchObject({ retentionChanged: true, presentationChanged: true });
     expect(context.state.eventMonitorPresentationRevision).toBe(1);

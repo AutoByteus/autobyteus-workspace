@@ -66,7 +66,7 @@ export const upsertUserMessageByIdentity = (input: {
   context: AgentContext;
   userMessage: UserMessage;
   retainExistingNonExecutableContextFiles?: boolean;
-}): void => {
+}): boolean => {
   const { context, userMessage, retainExistingNonExecutableContextFiles = false } = input;
   const existingIndex = findExistingMessageIndex(
     context.conversation.messages,
@@ -81,14 +81,17 @@ export const upsertUserMessageByIdentity = (input: {
       ? mergeMemberEchoContextFiles(incomingContextFilePaths, existingContextFilePaths)
       : incomingContextFilePaths;
 
-    context.conversation.messages[existingIndex] = {
+    const nextMessage = {
       ...existing,
       ...userMessage,
       contextFilePaths,
     };
+    if (JSON.stringify(existing) === JSON.stringify(nextMessage)) return false;
+    context.conversation.messages[existingIndex] = nextMessage;
   } else {
     context.conversation.messages.push(userMessage);
   }
+  return true;
 };
 
 const getContextAttachmentIdentity = (

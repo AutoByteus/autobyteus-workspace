@@ -24,6 +24,10 @@ import {
   getTaskAgentIdentityFromContext,
   restoreTaskAgentContextProjections,
 } from '~/services/agentStreaming/teamTaskAgentContextProjection';
+import {
+  primeRecentEventMonitorBaseline,
+  resetRecentEventMonitorBaseline,
+} from '~/services/eventMonitor/recentEventMonitorMutationCoordinator';
 
 export type TeamRunOpenSelectionMode = 'desktop' | 'mobile';
 
@@ -59,6 +63,7 @@ const mergeHydratedMembers = (
     existingMemberContext.config = memberContext.config;
 
     if (!options.preserveLiveRuntimeState) {
+      resetRecentEventMonitorBaseline(existingMemberContext);
       existingMemberContext.state.runId = memberContext.state.runId;
       existingMemberContext.state.conversation = memberContext.state.conversation;
       existingMemberContext.state.hasEarlierActiveTraceEvents = memberContext.state.hasEarlierActiveTraceEvents;
@@ -70,6 +75,7 @@ const mergeHydratedMembers = (
           : memberContext.state.currentStatus,
         { preserveCurrentStatus: false },
       );
+      primeRecentEventMonitorBaseline(existingMemberContext);
     }
 
     refreshedMembers.set(memberRouteKey, existingMemberContext);
@@ -210,7 +216,13 @@ export const openTeamRun = async (
     (existingTeamContext as any).members = existingTeamContext.leafAgentContextsByRouteKey;
 
     if (liveTaskAgentNodesToRestore.length > 0 || liveTaskAgentContextsToRestore.size > 0) {
-      restoreTaskAgentContextProjections(existingTeamContext, liveTaskAgentNodesToRestore);
+      const restoredTaskProjectionMutation = restoreTaskAgentContextProjections(
+        existingTeamContext,
+        liveTaskAgentNodesToRestore,
+      );
+      if (restoredTaskProjectionMutation.kind === 'PRESENTATION') {
+        throw new Error('Task-agent restoration unexpectedly produced a presentation-only mutation.');
+      }
       if (shouldTreatAsLive) {
         const restoredFocus = resolveActiveExecutionFocusedMemberRouteKey(
           existingTeamContext,
@@ -233,6 +245,8 @@ export const openTeamRun = async (
       memberRouteKeys: liveProjectionActivityMemberKeys,
     });
   }
+  const finalTeamContext = teamContextsStore.getTeamContextById(metadata.teamRunId) || hydratedContext;
+  finalTeamContext.leafAgentContextsByRouteKey.forEach(primeRecentEventMonitorBaseline);
 
   if (input.selectRun !== false) {
     const selectionStore = useAgentSelectionStore();

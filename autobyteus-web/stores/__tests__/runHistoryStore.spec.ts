@@ -180,17 +180,20 @@ const {
           existing.state.runId = options.runId;
           existing.state.conversation = options.conversation;
           existing.state.currentStatus = options.status ?? 'offline';
-          return;
+          return existing;
         }
-        runs.set(options.runId, {
+        const context = {
           config: { ...options.config },
           state: {
+            runId: options.runId,
             agentRunId: options.runId,
             conversation: options.conversation,
             currentStatus: options.status ?? 'offline',
           },
           isSubscribed: false,
-        });
+        };
+        runs.set(options.runId, context);
+        return context;
       }),
       patchConfigOnly: vi.fn((runId: string, patch: any) => {
         const context = runs.get(runId);
@@ -231,6 +234,7 @@ const {
         const teamContext = teams.get(teamRunId);
         if (teamContext?.members?.has(memberName)) {
           teamContext.focusedMemberName = memberName;
+          teamContext.focusedMemberRouteKey = memberName;
         }
         if (teamContext?.memberNodesByRouteKey?.has(memberName)) {
           teamContext.focusedMemberRouteKey = memberName;
@@ -818,6 +822,7 @@ describe('runHistoryStore', () => {
         teamRuns: [],
       }),
     ];
+    store.refreshRunNavigationTopology('test-history-reconciliation');
 
     rows = store.getTreeNodes()[0]?.agents[0]?.runs ?? [];
     expect(rows).toHaveLength(1);

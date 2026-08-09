@@ -50,6 +50,7 @@ const buildTeamNode = (teamRunId = 'team-1') => ({
   focusedMemberRouteKey: 'solution_designer',
   members: [],
   memberTree: [],
+  executionRows: [],
 });
 
 const buildTeamHistoryWorkspace = (teamRunId = 'team-1') => ({
@@ -78,6 +79,7 @@ const buildReactiveHarness = () => {
     workspaceGroups: [] as any[],
     nodes: [] as any[],
     teams: [] as any[],
+    navigationTopologyRevision: 0,
   });
   const selectionStore = reactive({
     selectedType: null as string | null,
@@ -93,12 +95,54 @@ const buildReactiveHarness = () => {
     get workspaceGroups() {
       return state.workspaceGroups;
     },
+    get navigationTopologyRevision() {
+      return state.navigationTopologyRevision;
+    },
     getTreeNodes: () => state.nodes,
     getTeamNodes: (workspaceRootPath?: string) => {
       if (!workspaceRootPath) {
         return state.teams;
       }
       return state.teams.filter((team) => team.workspaceRootPath === workspaceRootPath);
+    },
+    getAgentNavigationAncestry: (runId: string) => {
+      for (const workspace of state.nodes) {
+        const agent = workspace.agents.find((candidate: any) =>
+          candidate.runs.some((run: any) => run.runId === runId));
+        if (agent) {
+          return {
+            workspaceId: workspace.workspaceId,
+            agentDefinitionId: agent.agentDefinitionId,
+          };
+        }
+      }
+      return null;
+    },
+    getTeamNavigationAncestry: (teamRunId: string) => {
+      const team = state.teams.find((candidate) => candidate.teamRunId === teamRunId);
+      if (!team) return null;
+      const workspace = state.nodes.find((candidate) =>
+        candidate.workspaceRootPath === team.workspaceRootPath);
+      return workspace ? {
+        workspaceId: workspace.workspaceId,
+        teamDefinitionGroupKey: team.teamDefinitionId,
+      } : null;
+    },
+    getTeamMemberNavigationAncestorRouteKeys: (teamRunId: string, memberRouteKey: string) => {
+      const team = state.teams.find((candidate) => candidate.teamRunId === teamRunId);
+      const targetIndex = team?.executionRows.findIndex(
+        (row: any) => row.memberRouteKey === memberRouteKey,
+      ) ?? -1;
+      if (!team || targetIndex < 0) return [];
+      const ancestorRouteKeys: string[] = [];
+      let expectedDepth = team.executionRows[targetIndex].depth - 1;
+      for (let index = targetIndex - 1; index >= 0 && expectedDepth >= 0; index -= 1) {
+        const row = team.executionRows[index];
+        if (row.depth !== expectedDepth || !row.hasChildren) continue;
+        ancestorRouteKeys.unshift(row.memberRouteKey);
+        expectedDepth -= 1;
+      }
+      return ancestorRouteKeys;
     },
   };
 
@@ -201,6 +245,7 @@ describe('useWorkspaceHistoryTreeState', () => {
     expect(treeState.isAgentExpanded('workspace-a', 'agent-def-1')).toBe(false);
 
     state.nodes = [buildAgentWorkspace('/ws/a', 'run-1')];
+    state.navigationTopologyRevision += 1;
     await flushReactiveUpdates();
 
     expect(treeState.isWorkspaceExpanded('workspace-a')).toBe(true);
@@ -223,5 +268,25 @@ describe('useWorkspaceHistoryTreeState', () => {
     await flushReactiveUpdates();
 
     expect(treeState.isAgentExpanded('workspace-a', 'agent-def-1')).toBe(false);
+  });
+
+  it('expands exact member ancestors from the cached navigation index', () => {
+    const { state, treeState } = buildReactiveHarness();
+    state.teams = [{
+      ...buildTeamNode('team-1'),
+      executionRows: [
+        { memberRouteKey: 'BuildSquad', depth: 0, hasChildren: true },
+        { memberRouteKey: 'BuildSquad/reviewer', depth: 1, hasChildren: true },
+        { memberRouteKey: 'task-agent-run-1', depth: 2, hasChildren: false },
+      ],
+    }];
+
+    expect(treeState.expandTeamMemberAncestors(
+      'workspace-a',
+      'team-1',
+      'task-agent-run-1',
+    )).toBe(true);
+    expect(treeState.isTeamMemberExpanded('workspace-a', 'team-1', 'BuildSquad')).toBe(true);
+    expect(treeState.isTeamMemberExpanded('workspace-a', 'team-1', 'BuildSquad/reviewer')).toBe(true);
   });
 });

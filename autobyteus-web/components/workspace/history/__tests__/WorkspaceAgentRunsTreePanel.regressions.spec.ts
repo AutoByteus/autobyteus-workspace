@@ -30,12 +30,28 @@ const {
     children: (member.children ?? []).map(normalizeMember),
   });
 
-  const normalizeTeamNode = (team: any): any => ({
-    ...team,
-    focusedMemberRouteKey: team.focusedMemberRouteKey ?? team.focusedMemberName ?? '',
-    members: (team.members ?? []).map(normalizeMember),
-    memberTree: (team.memberTree ?? []).map(normalizeMember),
-  });
+  const normalizeTeamNode = (team: any): any => {
+    const members = (team.members ?? []).map(normalizeMember);
+    const memberTree = (team.memberTree ?? []).map(normalizeMember);
+    const flattenRows = (rows: any[], depth = 0): any[] => rows.flatMap((row) => [{
+      kind: 'stable_member',
+      teamRunId: team.teamRunId,
+      memberKind: row.memberKind,
+      memberRouteKey: row.memberRouteKey,
+      memberPath: row.memberPath,
+      displayName: row.displayName,
+      depth,
+      hasChildren: row.children.length > 0,
+      row,
+    }, ...flattenRows(row.children, depth + 1)]);
+    return {
+      ...team,
+      focusedMemberRouteKey: team.focusedMemberRouteKey ?? team.focusedMemberName ?? '',
+      members,
+      memberTree,
+      executionRows: team.executionRows ?? flattenRows(memberTree.length > 0 ? memberTree : members),
+    };
+  };
 
   const normalizeTeamNodes = (teams: any[]): any[] => teams.map(normalizeTeamNode);
 
@@ -115,6 +131,9 @@ const {
       get workspaceHistoryErrorById() {
         return state.workspaceHistoryErrorById;
       },
+      get navigationTopologyRevision() {
+        return 0;
+      },
       fetchTree: vi.fn().mockResolvedValue(undefined),
       refreshTreeQuietly: vi.fn().mockResolvedValue(undefined),
       fetchWorkspaceHistory: vi.fn().mockResolvedValue(undefined),
@@ -127,6 +146,27 @@ const {
         }
         return normalizeTeamNodes(state.teamNodesByWorkspace[workspaceRootPath] || []);
       }),
+      getAgentNavigationAncestry: vi.fn((runId: string) => {
+        for (const workspace of state.nodes.map(normalizeWorkspaceNode)) {
+          const agent = workspace.agents.find((candidate: any) =>
+            candidate.runs.some((run: any) => run.runId === runId));
+          if (agent) return { workspaceId: workspace.workspaceId, agentDefinitionId: agent.agentDefinitionId };
+        }
+        return null;
+      }),
+      getTeamNavigationAncestry: vi.fn((teamRunId: string) => {
+        for (const [workspaceRootPath, teams] of Object.entries(state.teamNodesByWorkspace)) {
+          const team = teams.find((candidate: any) => candidate.teamRunId === teamRunId);
+          if (team) {
+            return {
+              workspaceId: workspaceIdFromRoot(workspaceRootPath),
+              teamDefinitionGroupKey: team.teamDefinitionId,
+            };
+          }
+        }
+        return null;
+      }),
+      getTeamMemberNavigationAncestorRouteKeys: vi.fn(() => []),
       formatRelativeTime: vi.fn((iso: string) => (iso.includes('01:00') ? 'now' : '4h')),
       selectTreeRun: vi.fn(),
       createDraftRun: vi.fn().mockResolvedValue('temp-2'),
@@ -154,6 +194,7 @@ const {
       closeAgent: vi.fn().mockResolvedValue(undefined),
     },
     teamRunStoreMock: {
+      stopPendingTeamIds: { __v_isRef: true, value: {} },
       terminateTeamRun: vi.fn().mockResolvedValue(undefined),
       discardDraftTeamRun: vi.fn().mockResolvedValue(true),
     },

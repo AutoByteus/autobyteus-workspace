@@ -1,9 +1,8 @@
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { ContextAttachment, UserMessage } from '~/types/conversation';
 import {
-  beginRecentEventMonitorMutation,
-  commitRecentEventMonitorMutation,
-} from '~/services/eventMonitor/recentEventMonitorMutationCommit';
+  commitRecentEventMonitorEffect,
+} from '~/services/eventMonitor/recentEventMonitorMutationCoordinator';
 
 export interface BeginLocalUserSubmissionOptions {
   text: string;
@@ -28,7 +27,6 @@ export const beginLocalUserSubmission = (
   context: AgentContext,
   options: BeginLocalUserSubmissionOptions,
 ): LocalUserSubmissionHandle => {
-  const presentationBaseline = beginRecentEventMonitorMutation(context);
   const submittedMessage: UserMessage = {
     type: 'user',
     text: options.text,
@@ -37,7 +35,7 @@ export const beginLocalUserSubmission = (
   };
 
   context.state.conversation.messages.push(submittedMessage);
-  commitRecentEventMonitorMutation(context, presentationBaseline);
+  commitRecentEventMonitorEffect(context, 'STRUCTURAL');
   context.state.conversation.updatedAt = nowIso();
   context.requirement = '';
   context.contextFilePaths = [];
@@ -53,9 +51,8 @@ export const finalizeLocalSubmissionAttachments = (
   handle: LocalUserSubmissionHandle,
   attachments: ContextAttachment[],
 ): void => {
-  const presentationBaseline = beginRecentEventMonitorMutation(handle.context);
   handle.message.contextFilePaths = [...attachments];
-  commitRecentEventMonitorMutation(handle.context, presentationBaseline);
+  commitRecentEventMonitorEffect(handle.context, 'PRESENTATION');
   handle.context.state.conversation.updatedAt = nowIso();
 };
 
@@ -63,7 +60,6 @@ export const failLocalSubmission = (
   handle: LocalUserSubmissionHandle,
   error: unknown,
 ): void => {
-  const presentationBaseline = beginRecentEventMonitorMutation(handle.context);
   const message = toErrorMessage(error);
   handle.context.submissionPending = false;
   handle.context.state.conversation.messages.push({
@@ -78,6 +74,6 @@ export const failLocalSubmission = (
       details: error instanceof Error ? error.toString() : String(error),
     }],
   });
-  commitRecentEventMonitorMutation(handle.context, presentationBaseline);
+  commitRecentEventMonitorEffect(handle.context, 'STRUCTURAL');
   handle.context.state.conversation.updatedAt = nowIso();
 };

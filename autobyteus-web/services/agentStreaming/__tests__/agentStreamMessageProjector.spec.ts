@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import { AgentContext } from '~/types/agent/AgentContext';
 import { AgentRunState } from '~/types/agent/AgentRunState';
-import { dispatchGenericTeamMemberMessage } from '../teamStreamGenericMessageDispatcher';
+import { dispatchAgentStreamMessage } from '../agentStreamMessageProjector';
 
 const buildContext = (): AgentContext => {
   const conversation = {
@@ -25,22 +25,22 @@ const buildContext = (): AgentContext => {
   }, new AgentRunState('member-run-1', conversation));
 };
 
-describe('team stream generic message dispatcher', () => {
+describe('agent stream message projector', () => {
   beforeEach(() => setActivePinia(createPinia()));
 
   it('commits visible changes once and ignores structural-only protocol traffic', () => {
     const context = buildContext();
-    dispatchGenericTeamMemberMessage({ type: 'CONNECTED', payload: {} } as any, context);
+    dispatchAgentStreamMessage({ type: 'CONNECTED', payload: {} } as any, { kind: 'team_member', context, teamRunId: 'team-1', memberRouteKey: 'worker', memberRunId: 'member-run-1' });
     expect(context.state.eventMonitorPresentationRevision).toBe(0);
 
     const start = {
       type: 'SEGMENT_START',
       payload: { id: 'segment-1', turn_id: 'turn-1', segment_type: 'text' },
     } as any;
-    dispatchGenericTeamMemberMessage(start, context);
+    dispatchAgentStreamMessage(start, { kind: 'team_member', context, teamRunId: 'team-1', memberRouteKey: 'worker', memberRunId: 'member-run-1' });
     expect(context.state.eventMonitorPresentationRevision).toBe(1);
 
-    dispatchGenericTeamMemberMessage(start, context);
+    dispatchAgentStreamMessage(start, { kind: 'team_member', context, teamRunId: 'team-1', memberRouteKey: 'worker', memberRunId: 'member-run-1' });
     expect(context.state.eventMonitorPresentationRevision).toBe(1);
   });
 });

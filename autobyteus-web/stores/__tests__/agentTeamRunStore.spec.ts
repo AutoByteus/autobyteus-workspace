@@ -249,12 +249,13 @@ vi.mock('~/stores/agentActivityStore', () => ({
   }),
 }));
 
-vi.mock('~/services/eventMonitor/recentEventMonitorMutationCommit', () => ({
-  beginRecentEventMonitorMutation: vi.fn(() => ({})),
-  commitRecentEventMonitorMutation: vi.fn(() => ({
+vi.mock('~/services/eventMonitor/recentEventMonitorMutationCoordinator', () => ({
+  commitRecentEventMonitorEffect: vi.fn(() => ({
     retentionChanged: false,
     presentationChanged: false,
   })),
+  primeRecentEventMonitorBaseline: vi.fn(),
+  resetRecentEventMonitorBaseline: vi.fn(),
 }));
 
 vi.mock('~/stores/runHistoryStore', () => ({

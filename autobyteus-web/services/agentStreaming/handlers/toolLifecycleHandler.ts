@@ -52,6 +52,21 @@ import {
   updateToolActivityStatus,
   upsertActivityFromToolSegment,
 } from './toolActivityProjection';
+import type { RecentEventMonitorEffect } from '../agentStreamMutationEffects';
+import {
+  buildToolCardPresentation,
+  getToolCardPresentationWitnessValues,
+} from '~/utils/toolCardPresentation';
+
+export interface ToolLifecycleHandlerResult {
+  conversationChanged: boolean;
+  eventMonitor: RecentEventMonitorEffect;
+}
+
+type EnsuredToolLifecycleSegment = {
+  segment: ToolLifecycleSegment;
+  created: boolean;
+};
 
 const resolveToolSegmentById = (
   context: AgentContext,
@@ -138,16 +153,16 @@ const ensureToolLifecycleSegment = (
   turnId: string | null,
   toolName: string,
   argumentsPayload: Record<string, any>,
-): ToolLifecycleSegment => {
+): EnsuredToolLifecycleSegment => {
   const existing = resolveToolSegmentById(context, invocationId);
   if (existing) {
     upsertActivityFromToolSegment(context, invocationId, existing, argumentsPayload);
-    return existing;
+    return { segment: existing, created: false };
   }
 
   const synthetic = createSyntheticToolSegment(context, invocationId, turnId, toolName, argumentsPayload);
   upsertActivityFromToolSegment(context, invocationId, synthetic, argumentsPayload);
-  return synthetic;
+  return { segment: synthetic, created: true };
 };
 
 const warnInvalidPayload = (eventType: string, payload: unknown): void => {
@@ -158,7 +173,10 @@ const mergeArguments = (
   segment: ToolCallSegment | WriteFileSegment | TerminalCommandSegment | EditFileSegment,
   argumentsPayload: Record<string, any>,
 ): void => {
-  segment.arguments = { ...segment.arguments, ...argumentsPayload };
+  const nextArguments = { ...segment.arguments, ...argumentsPayload };
+  if (JSON.stringify(segment.arguments) !== JSON.stringify(nextArguments)) {
+    segment.arguments = nextArguments;
+  }
 
   if (segment.type === 'terminal_command' && !segment.command && argumentsPayload.command) {
     segment.command = String(argumentsPayload.command);
@@ -177,31 +195,65 @@ const mergeArguments = (
   }
 };
 
+const captureToolPresentation = (segment: ToolLifecycleSegment): string =>
+  JSON.stringify(getToolCardPresentationWitnessValues(buildToolCardPresentation(segment)));
+
+const completeToolMutation = (input: {
+  ensured: EnsuredToolLifecycleSegment;
+  beforeSegment: string;
+  beforePresentation: string;
+  structural?: boolean;
+}): ToolLifecycleHandlerResult => {
+  const conversationChanged = input.ensured.created
+    || JSON.stringify(input.ensured.segment) !== input.beforeSegment;
+  if (!conversationChanged) {
+    return { conversationChanged: false, eventMonitor: 'NONE' };
+  }
+  if (input.ensured.created || input.structural) {
+    return { conversationChanged: true, eventMonitor: 'STRUCTURAL' };
+  }
+  const presentationChanged = captureToolPresentation(input.ensured.segment)
+    !== input.beforePresentation;
+  return {
+    conversationChanged: true,
+    eventMonitor: presentationChanged ? 'PRESENTATION' : 'NONE',
+  };
+};
+
+const beginToolMutation = (ensured: EnsuredToolLifecycleSegment) => ({
+  beforeSegment: JSON.stringify(ensured.segment),
+  beforePresentation: captureToolPresentation(ensured.segment),
+});
+
 export function handleToolApprovalRequested(
   payload: ToolApprovalRequestedPayload,
   context: AgentContext,
-) {
+): ToolLifecycleHandlerResult {
   const parsed = parseToolApprovalRequestedPayload(payload);
   if (!parsed) {
     warnInvalidPayload('TOOL_APPROVAL_REQUESTED', payload);
-    return;
+    return { conversationChanged: false, eventMonitor: 'NONE' };
   }
 
 
-  const segment = ensureToolLifecycleSegment(
+  const ensured = ensureToolLifecycleSegment(
     context,
     parsed.invocationId,
     parsed.turnId,
     parsed.toolName,
     parsed.arguments,
   );
+  const { segment } = ensured;
+  const before = beginToolMutation(ensured);
 
   if (!isTerminalStatus(segment.status)) {
     mergeArguments(segment, parsed.arguments);
     if (isPlaceholderToolName(segment.toolName)) {
       segment.toolName = parsed.toolName;
     }
-    segment.approvalTarget = parsed.approvalTarget;
+    if (JSON.stringify(segment.approvalTarget) !== JSON.stringify(parsed.approvalTarget)) {
+      segment.approvalTarget = parsed.approvalTarget;
+    }
   }
 
   const transitioned = applyApprovalRequestedState(segment);
@@ -211,18 +263,23 @@ export function handleToolApprovalRequested(
   if (transitioned) {
     updateToolActivityStatus(context, parsed.invocationId, 'awaiting-approval');
   }
-  return;
+  return completeToolMutation({ ensured, ...before });
 }
 
-export function handleToolApproved(payload: ToolApprovedPayload, context: AgentContext) {
+export function handleToolApproved(
+  payload: ToolApprovedPayload,
+  context: AgentContext,
+): ToolLifecycleHandlerResult {
   const parsed = parseToolApprovedPayload(payload);
   if (!parsed) {
     warnInvalidPayload('TOOL_APPROVED', payload);
-    return;
+    return { conversationChanged: false, eventMonitor: 'NONE' };
   }
 
 
-  const segment = ensureToolLifecycleSegment(context, parsed.invocationId, parsed.turnId, parsed.toolName, {});
+  const ensured = ensureToolLifecycleSegment(context, parsed.invocationId, parsed.turnId, parsed.toolName, {});
+  const { segment } = ensured;
+  const before = beginToolMutation(ensured);
 
   if (isPlaceholderToolName(segment.toolName)) {
     segment.toolName = parsed.toolName;
@@ -233,24 +290,29 @@ export function handleToolApproved(payload: ToolApprovedPayload, context: AgentC
   if (transitioned) {
     updateToolActivityStatus(context, parsed.invocationId, 'approved');
   }
-  return;
+  return completeToolMutation({ ensured, ...before });
 }
 
-export function handleToolDenied(payload: ToolDeniedPayload, context: AgentContext) {
+export function handleToolDenied(
+  payload: ToolDeniedPayload,
+  context: AgentContext,
+): ToolLifecycleHandlerResult {
   const parsed = parseToolDeniedPayload(payload);
   if (!parsed) {
     warnInvalidPayload('TOOL_DENIED', payload);
-    return;
+    return { conversationChanged: false, eventMonitor: 'NONE' };
   }
 
 
-  const segment = ensureToolLifecycleSegment(
+  const ensured = ensureToolLifecycleSegment(
     context,
     parsed.invocationId,
     parsed.turnId,
     parsed.toolName,
     parsed.arguments,
   );
+  const { segment } = ensured;
+  const before = beginToolMutation(ensured);
 
   if (isPlaceholderToolName(segment.toolName)) {
     segment.toolName = parsed.toolName;
@@ -264,27 +326,29 @@ export function handleToolDenied(payload: ToolDeniedPayload, context: AgentConte
     updateToolActivityStatus(context, parsed.invocationId, 'denied');
     setToolActivityResult(context, parsed.invocationId, null, segment.error);
   }
-  return;
+  return completeToolMutation({ ensured, ...before, structural: transitioned });
 }
 
 export function handleToolExecutionStarted(
   payload: ToolExecutionStartedPayload,
   context: AgentContext,
-) {
+): ToolLifecycleHandlerResult {
   const parsed = parseToolExecutionStartedPayload(payload);
   if (!parsed) {
     warnInvalidPayload('TOOL_EXECUTION_STARTED', payload);
-    return;
+    return { conversationChanged: false, eventMonitor: 'NONE' };
   }
 
 
-  const segment = ensureToolLifecycleSegment(
+  const ensured = ensureToolLifecycleSegment(
     context,
     parsed.invocationId,
     parsed.turnId,
     parsed.toolName,
     parsed.arguments,
   );
+  const { segment } = ensured;
+  const before = beginToolMutation(ensured);
 
   if (!isTerminalStatus(segment.status)) {
     mergeArguments(segment, parsed.arguments);
@@ -299,27 +363,29 @@ export function handleToolExecutionStarted(
   if (transitioned) {
     updateToolActivityStatus(context, parsed.invocationId, 'executing');
   }
-  return;
+  return completeToolMutation({ ensured, ...before });
 }
 
 export function handleToolExecutionSucceeded(
   payload: ToolExecutionSucceededPayload,
   context: AgentContext,
-) {
+): ToolLifecycleHandlerResult {
   const parsed = parseToolExecutionSucceededPayload(payload);
   if (!parsed) {
     warnInvalidPayload('TOOL_EXECUTION_SUCCEEDED', payload);
-    return;
+    return { conversationChanged: false, eventMonitor: 'NONE' };
   }
 
 
-  const segment = ensureToolLifecycleSegment(
+  const ensured = ensureToolLifecycleSegment(
     context,
     parsed.invocationId,
     parsed.turnId,
     parsed.toolName,
     parsed.arguments,
   );
+  const { segment } = ensured;
+  const before = beginToolMutation(ensured);
 
   if (isPlaceholderToolName(segment.toolName)) {
     segment.toolName = parsed.toolName;
@@ -333,27 +399,29 @@ export function handleToolExecutionSucceeded(
     updateToolActivityStatus(context, parsed.invocationId, 'success');
     setToolActivityResult(context, parsed.invocationId, segment.result, null);
   }
-  return;
+  return completeToolMutation({ ensured, ...before, structural: transitioned });
 }
 
 export function handleToolExecutionFailed(
   payload: ToolExecutionFailedPayload,
   context: AgentContext,
-) {
+): ToolLifecycleHandlerResult {
   const parsed = parseToolExecutionFailedPayload(payload);
   if (!parsed) {
     warnInvalidPayload('TOOL_EXECUTION_FAILED', payload);
-    return;
+    return { conversationChanged: false, eventMonitor: 'NONE' };
   }
 
 
-  const segment = ensureToolLifecycleSegment(
+  const ensured = ensureToolLifecycleSegment(
     context,
     parsed.invocationId,
     parsed.turnId,
     parsed.toolName,
     parsed.arguments,
   );
+  const { segment } = ensured;
+  const before = beginToolMutation(ensured);
 
   if (isPlaceholderToolName(segment.toolName)) {
     segment.toolName = parsed.toolName;
@@ -367,27 +435,29 @@ export function handleToolExecutionFailed(
     updateToolActivityStatus(context, parsed.invocationId, 'error');
     setToolActivityResult(context, parsed.invocationId, null, segment.error);
   }
-  return;
+  return completeToolMutation({ ensured, ...before, structural: transitioned });
 }
 
 export function handleToolExecutionInterrupted(
   payload: ToolExecutionInterruptedPayload,
   context: AgentContext,
-) {
+): ToolLifecycleHandlerResult {
   const parsed = parseToolExecutionInterruptedPayload(payload);
   if (!parsed) {
     warnInvalidPayload('TOOL_EXECUTION_INTERRUPTED', payload);
-    return;
+    return { conversationChanged: false, eventMonitor: 'NONE' };
   }
 
 
-  const segment = ensureToolLifecycleSegment(
+  const ensured = ensureToolLifecycleSegment(
     context,
     parsed.invocationId,
     parsed.turnId,
     parsed.toolName,
     parsed.arguments,
   );
+  const { segment } = ensured;
+  const before = beginToolMutation(ensured);
 
   if (isPlaceholderToolName(segment.toolName)) {
     segment.toolName = parsed.toolName;
@@ -401,21 +471,26 @@ export function handleToolExecutionInterrupted(
     updateToolActivityStatus(context, parsed.invocationId, 'interrupted');
     setToolActivityResult(context, parsed.invocationId, null, segment.error);
   }
-  return;
+  return completeToolMutation({ ensured, ...before, structural: transitioned });
 }
 
-export function handleToolLog(payload: ToolLogPayload, context: AgentContext) {
+export function handleToolLog(
+  payload: ToolLogPayload,
+  context: AgentContext,
+): ToolLifecycleHandlerResult {
   const parsed = parseToolLogPayload(payload);
   if (!parsed) {
     warnInvalidPayload('TOOL_LOG', payload);
-    return;
+    return { conversationChanged: false, eventMonitor: 'NONE' };
   }
 
 
-  const segment = ensureToolLifecycleSegment(context, parsed.invocationId, parsed.turnId, parsed.toolName, {});
+  const ensured = ensureToolLifecycleSegment(context, parsed.invocationId, parsed.turnId, parsed.toolName, {});
+  const { segment } = ensured;
+  const before = beginToolMutation(ensured);
 
   appendLog(segment, parsed.logEntry);
   syncActivityToolName(context, parsed.invocationId, parsed.toolName);
   addToolActivityLog(context, parsed.invocationId, parsed.logEntry);
-  return;
+  return completeToolMutation({ ensured, ...before });
 }

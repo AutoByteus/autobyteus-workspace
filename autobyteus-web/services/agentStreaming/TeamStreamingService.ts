@@ -32,7 +32,7 @@ import {
 import { resolveTeamStreamMemberContext } from './teamStreamMemberContextResolver';
 import { handleTaskExecutionProjectionMessage } from './teamTaskExecutionEventRouter';
 import { removeTaskTeamExecutionProjection } from './teamTaskTeamExecutionProjection';
-import { dispatchGenericTeamMemberMessage } from './teamStreamGenericMessageDispatcher';
+import { dispatchAgentStreamMessage } from './agentStreamMessageProjector';
 import { getActiveRemoteAccessCredential } from '~/utils/remoteAccess/authorizedTransport';
 import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAuth';
 import { getApolloClient } from '~/utils/apolloClient';
@@ -47,6 +47,12 @@ import {
   tryAdmitInterruptCommand,
 } from './interruptCommandAdmission';
 import { TeamToolApprovalTracker } from './TeamToolApprovalTracker';
+import { useRunHistoryStore } from '~/stores/runHistoryStore';
+import {
+  mergeTaskExecutionProjectionMutations,
+  NO_TASK_EXECUTION_PROJECTION_MUTATION,
+  type TaskExecutionProjectionMutation,
+} from './teamTaskExecutionProjection';
 
 const shouldLogStreaming = (): boolean => {
   if (typeof window === 'undefined') return false;
@@ -349,7 +355,12 @@ export class TeamStreamingService {
 
   private scheduleTaskTeamCleanup(teamContext: AgentTeamContext, taskTeamRunId?: string | null): void {
     if (!taskTeamRunId) return;
-    const cleanup = () => removeTaskTeamExecutionProjection(teamContext, taskTeamRunId);
+    const cleanup = () => {
+      const mutation = removeTaskTeamExecutionProjection(teamContext, taskTeamRunId);
+      if (mutation.kind !== 'NONE') {
+        useRunHistoryStore().commitTaskProjectionNavigationMutation(teamContext.teamRunId, mutation);
+      }
+    };
     if (typeof setTimeout === 'function') {
       setTimeout(cleanup, 0);
       return;
@@ -382,44 +393,65 @@ export class TeamStreamingService {
     this.refreshTaskDelegationRecords(message, teamContext);
     if (message.type === 'TEAM_RUN_LIFECYCLE') {
       handleTeamRunLifecycle(message.payload, teamContext);
-      return;
-    }
-
-    if (message.type === 'TEAM_COMMUNICATION_MESSAGE') {
-      const projectionResult = handleTaskExecutionProjectionMessage(teamContext, message);
-      if (projectionResult.outcome === 'drop') {
-        console.warn(projectionResult.reason);
-        return;
-      }
-      handleTeamCommunicationMessage(message.payload);
+      useRunHistoryStore().refreshRunNavigationTopology('team-run-lifecycle');
       return;
     }
 
     const projectionResult = handleTaskExecutionProjectionMessage(teamContext, message);
+    let taskMutation: TaskExecutionProjectionMutation = projectionResult.mutation;
+    const commitTaskMutation = (): void => {
+      if (taskMutation.kind === 'NONE') return;
+      useRunHistoryStore().commitTaskProjectionNavigationMutation(teamContext.teamRunId, taskMutation);
+      taskMutation = NO_TASK_EXECUTION_PROJECTION_MUTATION;
+    };
     if (projectionResult.outcome === 'drop') {
+      commitTaskMutation();
       console.warn(projectionResult.reason);
       return;
     }
+    if (message.type === 'TEAM_COMMUNICATION_MESSAGE') {
+      commitTaskMutation();
+      handleTeamCommunicationMessage(message.payload);
+      return;
+    }
     if (projectionResult.outcome === 'handled') {
+      commitTaskMutation();
       this.scheduleTaskTeamCleanup(teamContext, projectionResult.cleanupTaskTeamRunId);
       return;
     }
 
     const taskAgentIdentity = projectionResult.taskAgentIdentity ?? extractTaskAgentIdentity(message);
     const removeTaskAgentAfterMessage = shouldRemoveTaskAgentAfterMessage(message, taskAgentIdentity);
+    if (taskMutation.kind === 'TOPOLOGY' && !removeTaskAgentAfterMessage) {
+      commitTaskMutation();
+    }
     const memberResolution = projectionResult.outcome === 'memberContext'
-      ? { context: projectionResult.context }
+      ? {
+          context: projectionResult.context,
+          memberRouteKey: projectionResult.memberRouteKey,
+        }
       : resolveTeamStreamMemberContext(teamContext, message);
 
     if (!memberResolution) {
+      commitTaskMutation();
       console.warn('No member context found for message, skipping');
       return;
     }
 
-    dispatchGenericTeamMemberMessage(message, memberResolution.context);
+    dispatchAgentStreamMessage(message, {
+      kind: 'team_member',
+      context: memberResolution.context,
+      teamRunId: teamContext.teamRunId,
+      memberRouteKey: memberResolution.memberRouteKey,
+      memberRunId: memberResolution.context.state.runId,
+    });
 
     if (removeTaskAgentAfterMessage && taskAgentIdentity) {
-      removeTaskAgentContext(teamContext, taskAgentIdentity);
+      taskMutation = mergeTaskExecutionProjectionMutations(
+        taskMutation,
+        removeTaskAgentContext(teamContext, taskAgentIdentity),
+      );
     }
+    commitTaskMutation();
   }
 }

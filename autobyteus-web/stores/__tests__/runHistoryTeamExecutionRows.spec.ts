@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import { buildWorkspaceTeamExecutionDisplayRows } from '../workspaceTeamExecutionDisplayRows';
+import { buildRunHistoryTeamExecutionRows } from '../runHistoryTeamExecutionRows';
 
 const stableRow = (memberRouteKey: string, overrides: Record<string, any> = {}) => ({
   teamRunId: 'team-run-1',
@@ -21,7 +21,7 @@ const stableRow = (memberRouteKey: string, overrides: Record<string, any> = {}) 
   ...overrides,
 });
 
-describe('workspaceTeamExecutionDisplayRows', () => {
+describe('runHistoryTeamExecutionRows', () => {
   it('preserves live placement while separating stable and transient execution rows', () => {
     const structuralTeamStable = stableRow('SoftwareEngineeringTeam', {
       memberKind: 'agent_team',
@@ -114,7 +114,7 @@ describe('workspaceTeamExecutionDisplayRows', () => {
       ]),
     } as any;
 
-    const rows = buildWorkspaceTeamExecutionDisplayRows({ team, teamContext });
+    const rows = buildRunHistoryTeamExecutionRows(team, teamContext);
 
     expect(rows.map((row) => `${row.kind}:${row.memberRouteKey}`)).toEqual([
       'stable_member:solution_designer',
@@ -131,6 +131,7 @@ describe('workspaceTeamExecutionDisplayRows', () => {
       depth: 1,
       currentStatus: AgentStatus.Running,
     });
+    expect(rows.find((row) => row.memberRouteKey === 'worker')?.hasChildren).toBe(true);
     expect(rows.find((row) => row.memberRouteKey === 'task-team-run-1')).toMatchObject({
       kind: 'transient_execution',
       transientKind: 'task_team',
@@ -154,7 +155,7 @@ describe('workspaceTeamExecutionDisplayRows', () => {
       memberTree: [stableRow('worker', { children: [stableRow('worker/reviewer')] })],
     } as any;
 
-    const rows = buildWorkspaceTeamExecutionDisplayRows({ team });
+    const rows = buildRunHistoryTeamExecutionRows(team);
 
     expect(rows.map((row) => `${row.kind}:${row.memberRouteKey}:${row.depth}`)).toEqual([
       'stable_member:worker:0',

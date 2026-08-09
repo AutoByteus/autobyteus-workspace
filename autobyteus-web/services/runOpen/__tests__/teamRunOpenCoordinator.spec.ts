@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { openTeamRun } from '~/services/runOpen/teamRunOpenCoordinator';
-import { ensureTaskAgentContext } from '~/services/agentStreaming/teamTaskAgentContextProjection';
+import { ensureTaskAgentProjection } from '~/services/agentStreaming/teamTaskAgentContextProjection';
 
 const {
   loadTeamRunContextHydrationPayloadMock,
@@ -111,6 +111,8 @@ const createMemberContext = (runId: string, conversationId: string) => ({
     conversation: {
       id: conversationId,
       messages: [],
+      createdAt: '2026-05-02T00:00:00.000Z',
+      updatedAt: '2026-05-02T00:00:00.000Z',
     },
     currentStatus: 'Uninitialized',
     eventMonitorPresentationRevision: 0,
@@ -177,7 +179,9 @@ describe('openTeamRun', () => {
   });
 
   it('preserves live activities when keeping subscribed live member context', async () => {
-    const liveConversation = { id: 'live-conversation', messages: [{ type: 'assistant' }] };
+    const liveConversation = {
+      id: 'live-conversation', messages: [], createdAt: '', updatedAt: '',
+    };
     const resetPresentationRevision = vi.fn();
     const existingContext = {
       teamRunId: 'team-1',
@@ -371,13 +375,13 @@ describe('openTeamRun', () => {
       isActive: true,
       isSubscribed: true,
     } as any;
-    const existingTaskAgentContext = ensureTaskAgentContext(existingContext, {
+    const existingTaskAgentContext = ensureTaskAgentProjection(existingContext, {
       taskAgentInstanceId: 'task-agent-instance-1',
       taskAgentRunId: 'task-agent-run-1',
       taskId: 'task_0001',
       logicalMemberRouteKey: 'member-b',
       logicalMemberPath: ['member-b'],
-    });
+    }).context;
     existingContext.memberNodesByRouteKey.delete('task-agent-run-1');
     existingContext.memberTree = existingContext.memberTree.filter((node: any) => node.memberRouteKey !== 'task-agent-run-1');
 

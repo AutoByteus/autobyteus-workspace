@@ -2,6 +2,7 @@ import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import type { TeamMemberRunProjectionPayload } from '~/stores/runHistoryTypes';
 import { hydrateActivitiesFromProjection } from './runProjectionActivityHydration';
 import { applyMemberOrHistoryStatusSnapshot } from '~/services/runStatus/agentRuntimeStatusState';
+import { primeRecentEventMonitorBaseline } from '~/services/eventMonitor/recentEventMonitorMutationCoordinator';
 
 export interface TeamMemberLiveSnapshot {
   memberRouteKey: string | null;
@@ -60,6 +61,7 @@ export const hydrateTeamMemberActivitiesFromProjection = (params: {
       return;
     }
     hydrateActivitiesFromProjection(memberContext.state.runId, projection.activities || []);
+    primeRecentEventMonitorBaseline(memberContext);
   });
 };
 
