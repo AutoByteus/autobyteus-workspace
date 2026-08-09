@@ -2,7 +2,10 @@ import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-in
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import { assertAgentTeamAddress, type AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import { CollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
-import type { InterAgentMessageDeliveryIntent } from "./inter-agent-message-delivery.js";
+import type {
+  InterAgentMessageDeliveryIntent,
+  ResolvedInterAgentMessageDeliveryRequest,
+} from "./inter-agent-message-delivery.js";
 import type { TeamRunConfig } from "./team-run-config.js";
 import type { TeamRunBackend } from "../backends/team-run-backend.js";
 import type { RuntimeTeamRunContext, TeamRunContext } from "./team-run-context.js";
@@ -47,6 +50,13 @@ export class TeamRun {
 
   deliverInterAgentMessage(intent: InterAgentMessageDeliveryIntent): Promise<AgentOperationResult> {
     return this.backend.deliverInterAgentMessage(intent);
+  }
+
+  deliverResolvedInterAgentMessage(
+    request: ResolvedInterAgentMessageDeliveryRequest,
+    beforePublishMemberInput: (() => void) | null = null,
+  ): Promise<AgentOperationResult> {
+    return this.backend.deliverResolvedInterAgentMessage(request, beforePublishMemberInput);
   }
 
   resolveRecipient(recipientAddress: string, caller: MemberLogicalAddressContext) {

@@ -1,6 +1,9 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
-import type { InterAgentMessageDeliveryIntent } from "../domain/inter-agent-message-delivery.js";
+import type {
+  InterAgentMessageDeliveryIntent,
+  ResolvedInterAgentMessageDeliveryRequest,
+} from "../domain/inter-agent-message-delivery.js";
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { TeamRunEventListener, TeamRunEventUnsubscribe } from "../domain/team-run-event.js";
 import type { TeamLeafAgentStatusSnapshot } from "../domain/team-leaf-agent-status-snapshot.js";
@@ -20,6 +23,10 @@ export interface TeamManager {
   ): Promise<AgentOperationResult>;
   deliverInterAgentMessage(
     intent: InterAgentMessageDeliveryIntent,
+  ): Promise<AgentOperationResult>;
+  deliverResolvedInterAgentMessage(
+    request: ResolvedInterAgentMessageDeliveryRequest,
+    beforePublishMemberInput?: (() => void) | null,
   ): Promise<AgentOperationResult>;
   resolveRecipient(
     recipientAddress: string,

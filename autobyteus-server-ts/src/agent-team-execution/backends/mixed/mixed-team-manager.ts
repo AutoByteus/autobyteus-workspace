@@ -8,7 +8,11 @@ import { buildTeamLeafAgentStatusSnapshot, type TeamLeafAgentStatusSnapshot } fr
 import type { TeamRunContext } from "../../domain/team-run-context.js";
 import type { StartTaskAgentInstanceRequest } from "../../domain/task-agent-instance.js";
 import type { StartTaskTeamInstanceRequest } from "../../domain/task-team-instance.js";
-import type { InterAgentMessageDeliveryIntent, InterAgentMessageParticipant } from "../../domain/inter-agent-message-delivery.js";
+import type {
+  InterAgentMessageDeliveryIntent,
+  InterAgentMessageParticipant,
+  ResolvedInterAgentMessageDeliveryRequest,
+} from "../../domain/inter-agent-message-delivery.js";
 import { buildDeliveryEndpointForParticipant } from "../../domain/inter-agent-message-delivery.js";
 import type { MemberLogicalAddressContext } from "../../domain/member-logical-address-context.js";
 import { createTeamExecutionAddress } from "../../domain/team-execution-address.js";
@@ -115,6 +119,46 @@ export class MixedTeamManager implements TeamManager {
       if (!isCollaborationContractError(error)) throw error;
       return { accepted: false, code: error.code, message: error.message };
     }
+  }
+
+  async deliverResolvedInterAgentMessage(
+    request: ResolvedInterAgentMessageDeliveryRequest,
+    beforePublishMemberInput: (() => void) | null = null,
+  ): Promise<AgentOperationResult> {
+    const context = this.getContext();
+    if (!context) return buildRunNotFoundResult("unknown");
+    if (
+      request.rootTeamRunId !== context.config.rootTeam.teamRunId ||
+      request.receiverAddress.rootTeamRunId !== context.config.rootTeam.teamRunId
+    ) {
+      return {
+        accepted: false,
+        code: "COLLABORATION_TARGET_NOT_FOUND",
+        message: `TeamRun '${request.receiverAddress.rootTeamRunId}' is not reachable.`,
+      };
+    }
+    const target = request.receiverAddress.memberAddress;
+    const resolved = this.persistentMembers.resolveContext(target);
+    if (isAgentOperationResult(resolved)) return {
+      accepted: false,
+      code: "COLLABORATION_TARGET_NOT_FOUND",
+      message: `Collaboration target '${target}' is not reachable.`,
+    };
+    if (resolved.kind === "agent" && resolved.address !== target) return {
+      accepted: false,
+      code: "COLLABORATION_TARGET_NOT_FOUND",
+      message: `Collaboration target '${target}' is not a persistent Agent member.`,
+    };
+    if (resolved.kind === "agent" && request.resolvedTargetKind === "task_agent_run") {
+      return this.taskAgentInstances.deliverInterAgentMessageToTaskAgent(
+        target,
+        request.targetAgentRunId,
+        request,
+        beforePublishMemberInput,
+      );
+    }
+    return this.persistentMembers.getOrCreate(resolved)
+      .deliverInterMemberMessage(request, beforePublishMemberInput);
   }
 
   resolveRecipient(recipientAddress: string, caller: MemberLogicalAddressContext): ResolvedTeamRecipient {

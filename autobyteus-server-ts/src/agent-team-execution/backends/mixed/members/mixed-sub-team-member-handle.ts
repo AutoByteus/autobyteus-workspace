@@ -7,7 +7,6 @@ import type { InterAgentMessageDeliveryHandler, ResolvedInterAgentMessageDeliver
 import type { TeamRunAgentTeamNode } from "../../../domain/team-run-config.js";
 import type { MixedTeamRunContext, MixedSubTeamMemberContext } from "../mixed-team-run-context.js";
 import type { MixedSubTeamRunFactory } from "../mixed-sub-team-run-factory.js";
-import { buildInterAgentDeliveryInputMessage } from "../../../services/inter-agent-message-runtime-builders.js";
 import { getSubTeamActiveRunDirectory } from "../../../services/sub-team-active-run-directory.js";
 import { getTaskDelegationRunRegistry } from "../../../task-delegation/task-delegation-run-registry.js";
 import type { MixedTeamEventPublish, MixedTeamMemberHandle } from "./mixed-team-member-handle.js";
@@ -51,12 +50,10 @@ export class MixedSubTeamMemberHandle implements MixedTeamMemberHandle {
     if (!isAgentTeamAddressAncestor(this.context.address, request.receiverAddress.memberAddress)) {
       return { accepted: false, code: "COLLABORATION_TARGET_NOT_FOUND", message: `Recipient '${request.receiverAddress.memberAddress}' is outside AgentTeam '${this.context.address}'.` };
     }
-    const result = await (await this.ensureReady()).postMessage(
-      buildInterAgentDeliveryInputMessage(request),
-      request.receiverAddress.memberAddress,
-      request.targetAgentRunId,
+    const result = await (await this.ensureReady()).deliverResolvedInterAgentMessage(
+      request,
+      beforePublishMemberInput,
     );
-    if (result.accepted) beforePublishMemberInput?.();
     return result;
   }
 

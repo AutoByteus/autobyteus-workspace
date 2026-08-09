@@ -1,7 +1,10 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
-import type { InterAgentMessageDeliveryIntent } from "../domain/inter-agent-message-delivery.js";
+import type {
+  InterAgentMessageDeliveryIntent,
+  ResolvedInterAgentMessageDeliveryRequest,
+} from "../domain/inter-agent-message-delivery.js";
 import type { RuntimeTeamRunContext } from "../domain/team-run-context.js";
 import type { TeamRunEvent, TeamRunEventListener, TeamRunEventUnsubscribe } from "../domain/team-run-event.js";
 import type { TeamBackendKind } from "../domain/team-backend-kind.js";
@@ -21,6 +24,7 @@ export interface TeamRunBackend {
   subscribeToEvents(listener: TeamRunEventListener): TeamRunEventUnsubscribe;
   postMessage(message: AgentInputUserMessage, target: AgentTeamAddress | null, targetAgentRunId?: string | null): Promise<AgentOperationResult>;
   deliverInterAgentMessage(intent: InterAgentMessageDeliveryIntent): Promise<AgentOperationResult>;
+  deliverResolvedInterAgentMessage(request: ResolvedInterAgentMessageDeliveryRequest, beforePublishMemberInput?: (() => void) | null): Promise<AgentOperationResult>;
   resolveRecipient(recipientAddress: string, caller: MemberLogicalAddressContext): ResolvedTeamRecipient;
   approveToolInvocation(target: AgentTeamAddress, invocationId: string, approved: boolean, reason?: string | null, targetAgentRunId?: string | null, taskTeamRunId?: string | null): Promise<AgentOperationResult>;
   interruptMember(target: AgentTeamAddress, targetAgentRunId?: string | null): Promise<AgentOperationResult>;

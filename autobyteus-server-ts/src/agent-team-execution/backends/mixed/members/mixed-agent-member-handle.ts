@@ -109,6 +109,33 @@ export class MixedAgentMemberHandle implements MixedTeamMemberHandle {
   }
 
   async deliverInterMemberMessage(request: ResolvedInterAgentMessageDeliveryRequest, beforePublishMemberInput: (() => void) | null = null): Promise<AgentOperationResult> {
+    if (request.receiverAddress.memberAddress !== this.context.address) return {
+      accepted: false,
+      code: "COLLABORATION_TARGET_NOT_FOUND",
+      message: `Agent '${this.context.address}' cannot receive collaboration delivery for '${request.receiverAddress.memberAddress}'.`,
+    };
+    const targetsTaskAgent = request.resolvedTargetKind === "task_agent_run";
+    if (
+      targetsTaskAgent &&
+      (!this.options.taskAgentInstance || request.receiverAddress.taskAgentRunId !== this.context.agentRunId)
+    ) return {
+      accepted: false,
+      code: "TASK_AGENT_IDENTITY_MISMATCH",
+      message: `Task AgentRun '${request.targetAgentRunId}' does not match the resolved task execution address.`,
+    };
+    if (
+      !targetsTaskAgent &&
+      (this.options.taskAgentInstance || request.receiverAddress.taskAgentRunId !== null)
+    ) return {
+      accepted: false,
+      code: "TARGET_AGENT_RUN_MISMATCH",
+      message: `AgentRun '${request.targetAgentRunId}' is not the persistent AgentRun for '${this.context.address}'.`,
+    };
+    if (request.targetAgentRunId.trim() !== this.context.agentRunId) return {
+      accepted: false,
+      code: "TARGET_AGENT_RUN_MISMATCH",
+      message: `Agent '${this.context.address}' does not own AgentRun '${request.targetAgentRunId}'.`,
+    };
     this.publishCommandStatus("initializing");
     const run = await this.ensureReady();
     const result = await (this.options.interAgentMessageRouter ?? getInterAgentMessageRouter()).deliver({ recipientRun: run, request });

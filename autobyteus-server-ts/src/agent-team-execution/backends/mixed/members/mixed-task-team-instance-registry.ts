@@ -21,9 +21,28 @@ export class MixedTaskTeamInstanceRegistry {
   }) {}
   listHandles() { return [...this.handles.values()]; }
   async start(request: StartTaskTeamInstanceRequest) {
-    const source = this.options.teamContext.index.getTeam(request.receiver.memberAddress);
-    if (!source || source.address !== request.teamNode.address) return { accepted: false, code: "TARGET_TEAM_NOT_FOUND", message: `Task AgentTeam target '${request.receiver.memberAddress}' was not found.` };
+    const source = this.options.teamContext.index.getTeam(request.teamNode.address);
+    if (!source || source.coordinatorAddress !== request.teamNode.coordinatorAddress) return {
+      accepted: false,
+      code: "TARGET_TEAM_NOT_FOUND",
+      message: `Task AgentTeam target '${request.teamNode.address}' was not found.`,
+    };
     const id = request.identity.taskTeamRunId.trim();
+    const expectedTaskTeamRunIds = [...this.options.teamContext.taskTeamRunIds, id];
+    if (
+      !id ||
+      request.identity.parentTeamRunId !== this.options.teamContext.teamRunId ||
+      request.teamNode.teamRunId !== id ||
+      request.receiver.rootTeamRunId !== this.options.teamContext.config.rootTeam.teamRunId ||
+      request.receiver.memberAddress !== source.coordinatorAddress ||
+      request.receiver.taskAgentRunId !== null ||
+      request.receiver.taskTeamRunIds.length !== expectedTaskTeamRunIds.length ||
+      request.receiver.taskTeamRunIds.some((item, index) => item !== expectedTaskTeamRunIds[index])
+    ) return {
+      accepted: false,
+      code: "TASK_TEAM_IDENTITY_MISMATCH",
+      message: `Task AgentTeam '${source.address}' receiver does not match its coordinator or task execution chain.`,
+    };
     const existing = this.handles.get(id);
     if (existing?.isActive()) return { accepted: false, code: "TASK_TEAM_ALREADY_ACTIVE", message: `Task TeamRun '${id}' is already active.` };
     existing?.dispose();

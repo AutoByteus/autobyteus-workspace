@@ -1,6 +1,9 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
-import type { InterAgentMessageDeliveryIntent } from "../../domain/inter-agent-message-delivery.js";
+import type {
+  InterAgentMessageDeliveryIntent,
+  ResolvedInterAgentMessageDeliveryRequest,
+} from "../../domain/inter-agent-message-delivery.js";
 import type { TeamRunEventListener, TeamRunEventUnsubscribe } from "../../domain/team-run-event.js";
 import type { AgentTeamAddress } from "../../../agent-collaboration/domain/agent-team-address.js";
 import { TeamBackendKind } from "../../domain/team-backend-kind.js";
@@ -97,6 +100,23 @@ export class MixedTeamRunBackend implements TeamRunBackend {
       return await this.teamManager.deliverInterAgentMessage(intent);
     } catch (error) {
       return buildCommandFailure("deliver inter-agent message", error);
+    }
+  }
+
+  async deliverResolvedInterAgentMessage(
+    request: ResolvedInterAgentMessageDeliveryRequest,
+    beforePublishMemberInput: (() => void) | null = null,
+  ): Promise<AgentOperationResult> {
+    if (!this.isActive()) {
+      return buildRunNotFoundResult(this.teamRunId);
+    }
+    try {
+      return await this.teamManager.deliverResolvedInterAgentMessage(
+        request,
+        beforePublishMemberInput,
+      );
+    } catch (error) {
+      return buildCommandFailure("deliver resolved inter-agent message", error);
     }
   }
 
