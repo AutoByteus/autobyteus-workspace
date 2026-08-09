@@ -45,6 +45,17 @@ export const qwenSupportedModelDefinitions: SupportedModelDefinition[] = [
     ),
   },
   {
+    name: 'DeepSeek V4 Flash 0731 (Qwen)',
+    value: 'deepseek-v4-flash-0731',
+    provider: LLMProvider.QWEN,
+    llmClass: QwenLLM,
+    canonicalName: 'deepseek-v4-flash-0731',
+    modelIdentifierOverride: 'qwen:deepseek-v4-flash-0731',
+    staticMetadata: createStaticModelMetadata(
+      1_000_000, null, null, ALIBABA_TEXT_GENERATION_URL, '2026-08-06',
+    ),
+  },
+  {
     name: 'GLM-5.2 (Qwen)',
     value: 'glm-5.2',
     provider: LLMProvider.QWEN,

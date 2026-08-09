@@ -8,6 +8,7 @@
 | DR-002 | User requested README-guided local Electron build for hands-on verification | `DR-001 — Pass / awaiting verification` | `Pass — unsigned macOS arm64 Electron artifact ready for user testing; finalization still held` | `electron-build-mac-report.md`, `electron-build-mac.log`, `handoff-summary.md`, `release-deployment-report.md` |
 | DR-003 | Current `SR-010`/`SR-011`, `IR-006`, `CRR-007`, `API-REV-004`, and `CRR-009` package; mandatory latest-base delivery refresh | `DR-002 — historical/superseded by the Qwen rework` | `Blocked — latest-base merge conflicts in AppConfig production/test boundaries; merge aborted and rerouted` | `delivery-integrated-state-refresh.log`, `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md` |
 | DR-004 | `IR-007`, `CRR-010`, and integrated `API-REV-005`; mandatory fresh tracked-base delivery restart | `DR-003 — Blocked / Local Fix` | `Pass — integrated branch current, docs synchronized, handoff ready for explicit user verification; finalization held` | `delivery-integrated-state-refresh.log`, `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, three expanded long-lived docs |
+| DR-005 | User requested README-guided Electron build for hands-on testing | `DR-004 — Pass / awaiting verification` | `Pass — current-base macOS arm64 Electron 1.4.45 build and artifact verification complete; finalization held` | `electron-build-mac-report.md`, `electron-build-mac-dr-005.log`, `electron-build-mac-dr-005-verification.log`, `delivery-integrated-state-refresh.log`, `handoff-summary.md`, `release-deployment-report.md` |
 
 ## Revision Entries
 
@@ -72,3 +73,22 @@
 - Historical evidence posture: The endpoint-profile delivery design and unsigned v1.4.40 Electron artifact are superseded and must not be used to verify the current Qwen implementation.
 - Remaining risk to preserve: Real Alibaba availability, credentials, quota, region policy, TLS behavior, undocumented payload variation, and future source-dated fact drift were not exercised. The owned loopback provider proves the approved OpenAI-compatible contract only.
 - Next action: User verifies or explicitly accepts the handoff. Delivery then fetches the finalization target again and renews verification if that later refresh materially changes the handoff state before archive/commit/push/merge.
+
+### DR-005 — README-guided macOS Electron verification build
+
+- Delivery round and trigger: User asked delivery to read the README and build Electron for hands-on testing.
+- Prior authoritative result: `DR-004 — Pass; integrated docs/handoff ready for verification, repository finalization held.`
+- Documentation basis: root `README.md`; `autobyteus-web/README.md` Desktop Application Build, macOS logging/no-notarization, integrated backend, and server-mode sections; `autobyteus-web/docs/electron_packaging.md`; `autobyteus-web/AGENTS.md`.
+- Pre-build base refresh: `git fetch origin personal --prune` found ten commits beyond the DR-004 base, covering progressive rich rendering/finalization and release v1.4.45. Delivery checkpointed the current package as `93c731cfa74fa961da8f8746a9af89ac1e407f74` and merged `origin/personal@7f0fc49965950d9689726a048371f2e2b78eef31` without conflict as `f31f378d712b1b1f4e839a671104c410b51c6d06`.
+- Integrated docs impact: The base changed `autobyteus-web/docs/agent_execution_architecture.md`; the automatic merge retained both progressive-rendering and this ticket's Token Meter truth. No Qwen doc rework was required.
+- Build command: `NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* corepack pnpm -C autobyteus-web build:electron:mac`.
+- Build result: `Pass`, exit 0, 2026-08-08T20:16:12Z–20:20:29Z, package 1.4.45, Electron 42.4.1, Darwin arm64, unsigned/unnotarized.
+- Build pipeline result: web/localization guards, shared/server builds, Prisma generation, sanitized bootstrap, integrated-server deployment, Nuxt Electron generation, Electron/build TypeScript compilation, native module rebuild, packaging, and blockmap generation passed.
+- Artifact verification: DMG checksum valid; ZIP integrity passed; app executable is Mach-O arm64; packaged target/selected node-pty helpers and real spawn probe passed.
+- Recommended artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.45.dmg`, SHA-256 `50f60d04c6bee092211941c6be8813fb679e6e66a291902c7168d3ebbc5652d8`.
+- Post-build base confirmation: `git fetch origin personal --prune` at 2026-08-08T20:21:52Z retained `7f0fc49965950d9689726a048371f2e2b78eef31`; branch ahead 11 / behind 0.
+- Current authoritative result: `Pass — current-base local macOS arm64 Electron package is ready for user testing.`
+- User-data posture: Delivery did not launch the app or mutate `~/.autobyteus/server-data`. The user should back up that directory if preserving existing local state matters.
+- Release/finalization state: This is not a release. No tag, push, target merge, deployment, archival, or cleanup occurred. Explicit user verification remains required.
+- Remaining risk: Build is unsigned/unnotarized. Real Alibaba availability, credentials, quota, region policy, TLS behavior, undocumented payload variation, and source-dated fact drift remain outside automated coverage.
+- Next action: User installs/opens the DMG, verifies Qwen setup/catalog/restart behavior, and explicitly accepts or reports findings. Delivery then performs the mandatory finalization-target refresh.

@@ -1,0 +1,6 @@
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+3 !== 2
+
+    at file:///private/tmp/custom-provider-settings-browser-api-rev-006.mjs:308:10
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)

@@ -1,0 +1,48 @@
+DR-005 Electron artifact verification
+Started: 2026-08-08T20:21:14Z
+HEAD: f31f378d712b1b1f4e839a671104c410b51c6d06
+origin/personal: 7f0fc49965950d9689726a048371f2e2b78eef31
+Artifacts:
+-rw-r--r--@ 1 normy  staff   383M Aug  8 22:19 /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.45.dmg
+-rw-r--r--@ 1 normy  staff   380M Aug  8 22:20 /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.45.zip
+App bundle: /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+SHA-256:
+50f60d04c6bee092211941c6be8813fb679e6e66a291902c7168d3ebbc5652d8  /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.45.dmg
+d06fa9062941e5e5ad78cea9642a7fc8b204031236bfec93420c8570e0f29dd1  /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.45.zip
+App version/build:
+1.4.45
+1.4.45
+Executable architecture:
+/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+Command: hdiutil verify /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.45.dmg
+Prüfsumme für Protective Master Boot Record (MBR : 0) berechnen …
+Protective Master Boot Record (MBR :: Die überprüfte CRC32-Prüfsumme ist $9ED0FCC2
+Prüfsumme für GPT Header (Primary GPT Header : 1) berechnen …
+ GPT Header (Primary GPT Header : 1): Die überprüfte CRC32-Prüfsumme ist $23339E29
+Prüfsumme für GPT Partition Data (Primary GPT Table : 2) berechnen …
+GPT Partition Data (Primary GPT Tabl: Die überprüfte CRC32-Prüfsumme ist $EAF18D04
+Prüfsumme für  (Apple_Free : 3) berechnen …
+                    (Apple_Free : 3): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für disk image (Apple_APFS : 4) berechnen …
+         disk image (Apple_APFS : 4): Die überprüfte CRC32-Prüfsumme ist $CE5FFFAA
+Prüfsumme für  (Apple_Free : 5) berechnen …
+                    (Apple_Free : 5): Die überprüfte CRC32-Prüfsumme ist $00000000
+Prüfsumme für GPT Partition Data (Backup GPT Table : 6) berechnen …
+GPT Partition Data (Backup GPT Table: Die überprüfte CRC32-Prüfsumme ist $EAF18D04
+Prüfsumme für GPT Header (Backup GPT Header : 7) berechnen …
+  GPT Header (Backup GPT Header : 7): Die überprüfte CRC32-Prüfsumme ist $6D6A9BC6
+Die überprüfte CRC32-Prüfsumme ist $8B57C441
+hdiutil: verify: checksum of "/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.45.dmg" is VALID
+hdiutil verify exit: 0
+Command: unzip -t /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.45.zip
+    testing: AutoByteus.app/Contents/Resources/zh_CN.lproj/   OK
+    testing: AutoByteus.app/Contents/Resources/zh_TW.lproj/   OK
+No errors detected in compressed data of /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.45.zip.
+unzip -t exit: 0
+Command: corepack pnpm -C autobyteus-web exec node scripts/verify-packaged-terminal-runtime.mjs --server-root electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server --platform darwin --arch arm64 --spawn-probe
+[terminal-runtime] node-pty root: /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty
+[terminal-runtime] ok target helper: /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+[terminal-runtime] ok selected helper: /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/Release/spawn-helper
+[terminal-runtime] ok: node-pty spawn probe
+packaged terminal verification exit: 0
+Completed: 2026-08-08T20:21:35Z

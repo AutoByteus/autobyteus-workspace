@@ -1,4 +1,5 @@
 import type { LLMProvider } from 'autobyteus-ts/llm/providers.js';
+export { normalizeProviderName } from 'autobyteus-ts/llm/custom-llm-provider-identity.js';
 
 export type LlmProviderStatus = 'READY' | 'STALE_ERROR' | 'ERROR' | 'NOT_APPLICABLE';
 
@@ -66,9 +67,6 @@ export type CustomProviderReloadStatus = {
   modelCount: number;
   preservedPreviousModels: boolean;
 };
-
-export const normalizeProviderName = (value: string): string =>
-  value.trim().replace(/\s+/g, ' ').toLocaleLowerCase();
 
 export const sortProvidersByName = <T extends { name: string; id: string }>(providers: T[]): T[] =>
   providers

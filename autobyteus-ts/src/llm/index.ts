@@ -8,6 +8,7 @@ export * from './multimodal-capabilities.js';
 export * from './supported-model-definition.js';
 export * from './utils/media-input-sanitizer.js';
 export * from './custom-llm-provider-config.js';
+export * from './custom-llm-provider-identity.js';
 export * from './openai-compatible-endpoint-discovery.js';
 export * from './openai-compatible-endpoint-model.js';
 export * from './openai-compatible-endpoint-provider.js';

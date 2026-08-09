@@ -128,6 +128,32 @@ describe('OpenAI-compatible endpoint metadata resolver', () => {
     }).maxContextTokens).toEqual({ value: null, source: { kind: 'unknown' } });
   });
 
+  it('uses the exact native Qwen wire value for custom fallback without aliasing', () => {
+    const resolver = new OpenAICompatibleEndpointModelMetadataResolver();
+    const metadata = resolver.resolve({
+      discoveredModel: discovered('deepseek-v4-flash-0731'),
+    });
+
+    expect(metadata.maxContextTokens).toMatchObject({
+      value: 1_000_000,
+      source: {
+        kind: 'inferred_builtin',
+        provider: LLMProvider.QWEN,
+        value: 'deepseek-v4-flash-0731',
+        provenance: {
+          sourceUrl: 'https://www.alibabacloud.com/help/en/model-studio/text-generation-model',
+          verifiedAt: '2026-08-06',
+        },
+      },
+    });
+    expect(resolver.resolve({
+      discoveredModel: discovered('deepseek-v4-flash'),
+    }).maxContextTokens).toMatchObject({
+      value: 1_000_000,
+      source: { kind: 'inferred_builtin', provider: LLMProvider.DEEPSEEK, value: 'deepseek-v4-flash' },
+    });
+  });
+
   it('indexes non-empty definition values without transforming whitespace, case, or prefixes', () => {
     const definitions = [
       definition(LLMProvider.QWEN, '  glm-5.2  ', staticMetadata(198_000, null, null, 'https://catalog.example/glm')),

@@ -5,12 +5,12 @@
 - Ticket: `custom-provider-model-context-metadata`
 - Trigger: Integrated implementation `IR-007`, source review `CRR-010` Pass, and independently re-established integrated API/E2E `API-REV-005` Pass at 96.4%.
 - Bootstrap base reference: `personal`, tracked as `origin/personal`
-- Integrated base reference used for docs sync: `origin/personal@9ce41640960fc3e2a7b85b85608a4f081fe52df2`, integrated as `HEAD^2` of `894f01ac43b8ace816ca6f78da180507647cc59d`
-- Post-integration verification reference: `API-REV-005` for ticket behavior plus `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/probes/delivery/post-integration-core-dr-004.log` for the later base integration.
+- Integrated base reference used for docs sync: `origin/personal@7f0fc49965950d9689726a048371f2e2b78eef31`, integrated as `HEAD^2` of `f31f378d712b1b1f4e839a671104c410b51c6d06`
+- Post-integration verification reference: `API-REV-005` for ticket behavior plus the README-guided full Electron build and verification recorded in `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/electron-build-mac-report.md`.
 
 ## Why Docs Were Updated
 
-- Summary: The integrated candidate already carried accurate exact-only custom metadata, Qwen-served catalog, and unknown-context Token Meter updates. Delivery validated all seven changed long-lived docs against `IR-007`/`CRR-010`/`API-REV-005` and expanded the server, core Node.js, and web Settings docs with the final native Qwen endpoint/key persistence and recovery contract. A later fresh-base update touched only memory-lineage code/docs; it merged without conflict, the relevant Qwen/metadata smoke passed, and none of the seven ticket docs required further edits.
+- Summary: The integrated candidate already carried accurate exact-only custom metadata, Qwen-served catalog, and unknown-context Token Meter updates. Delivery validated all seven changed long-lived docs against `IR-007`/`CRR-010`/`API-REV-005` and expanded the server, core Node.js, and web Settings docs with the final native Qwen endpoint/key persistence and recovery contract. Subsequent base updates were integrated before handoff/build. The latest update restored progressive rich rendering and modified `autobyteus-web/docs/agent_execution_architecture.md`; its automatic merge retained both that base-owned rendering contract and this ticket's Token Meter contract. No additional Qwen docs edit was required.
 - Why this should live in long-lived project docs: Qwen endpoint ownership, durable pair-save semantics, GraphQL status/errors, Settings refresh behavior, exact model identifiers, and exact-only custom metadata inference are stable runtime/operator contracts that future implementation and maintenance work must not rediscover from ticket history.
 
 ## Long-Lived Docs Reviewed
@@ -63,7 +63,7 @@
 
 - Result: `Pass`
 - Next delivery action: Present the integrated handoff for explicit user verification. After acceptance, refresh `origin/personal` again before archival, commit/push, final target merge, or any release work.
-- Notes: Latest tracked base `9ce41640960fc3e2a7b85b85608a4f081fe52df2` is integrated. No migration, release, publication, or deployment is currently in scope. The prior endpoint-profile delivery artifacts and v1.4.40 Electron build remain historical only.
+- Notes: Latest tracked base `7f0fc49965950d9689726a048371f2e2b78eef31` is integrated. The current v1.4.45 local Electron build is verification-only; no migration, release, publication, or deployment is in scope. The prior endpoint-profile delivery artifacts and v1.4.40 Electron build remain historical only.
 
 ## Blocked Or Escalated Follow-Up (Use Only If Docs Sync Cannot Complete)
 

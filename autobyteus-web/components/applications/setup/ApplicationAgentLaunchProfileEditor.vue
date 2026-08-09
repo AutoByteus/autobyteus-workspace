@@ -45,6 +45,11 @@
       <p class="mt-1 text-xs text-slate-500">
         {{ $t('applications.components.applications.ApplicationLaunchSetupPanel.modelHelp') }}
       </p>
+      <p v-if="selectedModelUnavailable" class="mt-1 text-xs text-amber-600">
+        {{ $t('applications.components.applications.ApplicationLaunchSetupPanel.unavailableModelBeforeEntry', {
+          model: draft.llmModelIdentifier,
+        }) }}
+      </p>
     </div>
 
     <div v-if="supportsWorkspaceRootPath">
@@ -115,6 +120,12 @@ const {
   allowBlankRuntime: true,
 })
 
+const selectedModelUnavailable = computed(() => (
+  supportsModelIdentifier.value
+  && props.draft.llmModelIdentifier.trim().length > 0
+  && !hasModelIdentifier(props.draft.llmModelIdentifier)
+))
+
 watch(
   () => [supportsRuntimeKind.value, supportsModelIdentifier.value, supportsWorkspaceRootPath.value, props.draft] as const,
   () => {
@@ -132,25 +143,24 @@ watch(
 )
 
 watch(
-  () => [props.draft.runtimeKind, props.draft.llmModelIdentifier],
+  () => [
+    props.draft.runtimeKind,
+    props.draft.llmModelIdentifier,
+    selectedModelUnavailable.value,
+  ] as const,
   () => {
-    if (
-      props.draft.llmModelIdentifier
-      && !hasModelIdentifier(props.draft.llmModelIdentifier)
-    ) {
-      emit('update:draft', {
-        ...props.draft,
-        llmModelIdentifier: '',
-      })
-      return
-    }
+    const modelMissing = supportsModelIdentifier.value
+      && props.draft.llmModelIdentifier.trim().length === 0
 
     emit('readiness-change', {
-      isReady: !supportsModelIdentifier.value || props.draft.llmModelIdentifier.trim().length > 0,
-      blockingReason:
-        supportsModelIdentifier.value && props.draft.llmModelIdentifier.trim().length === 0
-          ? $t('applications.components.applications.ApplicationLaunchSetupPanel.requiredModelBeforeEntry', {
-            slot: props.slot.name,
+      isReady: !modelMissing && !selectedModelUnavailable.value,
+      blockingReason: modelMissing
+        ? $t('applications.components.applications.ApplicationLaunchSetupPanel.requiredModelBeforeEntry', {
+          slot: props.slot.name,
+        })
+        : selectedModelUnavailable.value
+          ? $t('applications.components.applications.ApplicationLaunchSetupPanel.unavailableModelBeforeEntry', {
+            model: props.draft.llmModelIdentifier,
           })
           : null,
       hasEffectiveResource: true,

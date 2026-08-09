@@ -5,186 +5,217 @@
 - Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/requirements.md`
 - Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/investigation-notes.md`
 - Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/design-spec.md`
-- Supplemental Task Artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/qwen-native-provider-setup-ui-spec.md`
-- Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/solution-revision-record.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/design-review-report.md`
-- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/architecture-review-revision-record.md`
-- Implementation Handoff / Revision: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/implementation-handoff.md`; `implementation-revision-record.md` (`IR-007`)
-- Code Review Report / Revision: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-report.md`; `code-review-revision-record.md` (`CRR-010`)
-- Prior Durable-Test Review: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-test-review-report.md` (`CRR-009 Pass`)
-- Delivery Re-entry Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/delivery-revision-record.md` (`DR-003`)
+- Supplemental Task Artifacts: `qwen-native-provider-setup-ui-spec.md`; `custom-provider-readable-id-migration-spec.md`
+- Solution Revision Record: `solution-revision-record.md` (`SR-016`)
+- Design Review Report: `design-review-report.md` (`ARCH-REV-010`)
+- Architecture Review Revision Record: `architecture-review-revision-record.md`
+- Implementation Handoff / Revision: `implementation-handoff.md`; `implementation-revision-record.md` (`IR-010`)
+- Code Review Report / Revision: `code-review-report.md`; `code-review-revision-record.md` (`CRR-012`, source `Pass` at `9.35/10`; `CRR-013`, proportional test review `Fail — Local Fix` before this correction)
+- API/E2E Test Review Report: `api-e2e-test-review-report.md` (`TR-004`; proportional re-review pending)
+- Delivery Revision Record: historical only; no delivery revision authorizes SR-016.
 - Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-coverage-investigation.md`
 - API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-005`
-- Current Execution Round: `5`
-- Integrated HEAD: `9817d3b1fdcbfec4c5249eb782ae2d9acfb25688`
-- Integrated Base: `origin/personal@647b1119a9dc3ba2ba301243e1b5e752943454db`
-- Trigger: `CRR-010 Pass` after `IR-007` resolved delivery integration blocker `DR-003`.
-- Prior Round Reviewed: `Yes` — API-REV-004/CRR-009 validated the pre-integration checkpoint only and were not inferred forward.
-- Latest Authoritative Round: `API-REV-005 integrated-state execution and this report`
+- Current API/E2E Revision ID: `API-REV-007`
+- Current Execution Round: `7`
+- Trigger: `code_reviewer` CRR-013 `TR-004` required direct proof that the rejected readable-provider create leaves no orphan consumer secret.
+- Prior Round Reviewed: `Yes`. API-REV-006 execution passed at 96.4%, but its proportional durable-test review failed only because RID-E2E-002 checked provider/catalog absence without checking the real vault row.
+- Latest Authoritative Round: `API-REV-007 — Pass / 96.4%`, pending proportional re-review.
 
 ## Investigation And Execution Basis
 
-- Mandatory investigation completed before execution: `Yes`.
-- Existing coverage decisions: all current Qwen, exact-metadata, Settings recovery, and historical-preview scenarios remained `Still Valid`; none needed edit, replacement, or removal.
-- Integrated risk that drove execution: AppConfig now composes latest-base Windows-safe Prisma SQLite URL ownership with SR-011 durable environment replacement. That shared startup/persistence boundary is used by Qwen URL save, restart loading, vault access, and the live browser backend.
-- Plan followed: `Yes` — focused merged-boundary tests, exact catalog/core tests, Qwen web tests, fresh integrated build, both GraphQL E2E files, three web guards, live Chrome recovery, integrity, and cleanup.
-- Reroute required: `No`.
-- Durable repository coverage changed during API-REV-005: `No`.
+- Investigation completed before durable coverage changes or final execution: `Yes`.
+- Investigation plan followed: `Yes`. Before the corrective edit, the investigation recorded one exact `listSecretIds()` absence assertion and the same authoritative combined rerun; no production/browser rerun was planned.
+- Existing coverage decisions revised during execution: `RID-E2E-002` now proves both public provider/catalog absence and exact real-vault absence immediately after rejected create.
+- Reroute required: `No` unresolved production, requirement, or design failure was found.
 
-## Compatibility / Persisted-Data Scope Check
+### Prior Failure Resolution
 
-- Backward-compatibility behavior approved or observed: `No`.
-- Approved persisted-data decision: `Directly Usable — No Migration`.
-- Result: `Pass`. The lifecycle E2E proves configured URL/key state through full restart, then removes only the optional URL assignment and proves the retained historical key remains configured with current `DEFAULT` URL semantics.
-- Version-specific fallback, dual read/write, migration shim, or legacy native preview path observed: `No`.
-- Historical `qwen3.8-max-preview` test strings remain opaque custom-provider token-ledger snapshots only; they do not register or resolve native support.
+| Finding | Prior Classification | Resolution | Evidence |
+| --- | --- | --- | --- |
+| `TR-004` / `RID-E2E-002` | CRR-013 `Fail — Local Fix`; orphan readable secret was unobservable | Added exact absence assertion for `provider.openai-compatible.provider_alibaba_cloud_token_plan.api-key` using the existing real-database `listSecretIds()` helper immediately after rejection and before valid create | `server-e2e-api-rev-007.log` passes 4 files / 12 tests; `repository-integrity-api-rev-007.log` records exact ordering and cleanup |
+
+## Compatibility / Legacy Scope Check
+
+- Reviewed requirements/design introduce backward compatibility: `No`. They require one bounded app-data migration followed by strict V3 runtime state.
+- Compatibility-only runtime behavior observed: `No`.
+- Approved persisted-data transition followed: `Yes` — provider/Base URL/credential state is discarded; exact managed selectors migrate; token identifiers remain unchanged; same-name recreation uses the ordinary current API.
+- Durable coverage protects compatibility-only behavior: `No`. The obsolete secret-preserving/provider-preserving E2E was replaced.
+- Upstream recipient notified: `code_reviewer` is required after this report because durable test code changed.
 
 ## Changed Boundary And Evidence Matrix
 
-| Scenario | Requirement / Boundary | Integrated Execution | Result |
-| --- | --- | --- | --- |
-| AppConfig/SQLite merge boundary | `IR-007`; `REQ-005`, `REQ-008`, `REQ-011`; `AC-007`, `AC-012` | Five focused server files exercise database URL/import ownership plus strict write ordering, fsync/rename, cleanup, sanitization, and post-commit publication | `Pass` — 73 passed / 1 intentional Windows-only skip |
-| `QW-E2E-001` | Probe -> pair commit -> configured restart; representative key-only -> default restart | Built Fastify/GraphQL processes, real owned filesystem, SQLite vault, and normal AppConfig startup | `Pass` |
-| `QW-E2E-002` | Exact native identifiers, contexts, provider ownership, preview absence | Live runtime registry and GraphQL catalog before/after restart | `Pass` |
-| `QW-E2E-003` | Persisted URL/key -> sanitized fresh process -> three real Qwen requests | Child receives no explicit `QWEN_BASE_URL`; AppConfig loads owned persisted `.env`; route/auth/model capture covers all three exact values | `Pass` |
-| `QW-E2E-004` | Probe rejection, URL-write failure compensation, repair mapping, sanitized output | Real loopback probe, owned environment obstruction, GraphQL errors, vault/file/runtime scans | `Pass` |
-| `CUS-E2E-001` | Advertised precedence, exact fallback, near-match unknown, stale retention, provider-scoped cleanup | Live custom-provider GraphQL lifecycle | `Pass` — 3 tests |
-| Qwen Settings durable coverage | Form, manager, Pinia/runtime/Apollo recovery, both reload owners | Five focused Nuxt/Vitest files | `Pass` — 32/32 |
-| `QW-BRW-001` | Default/configured UI, absolute URL validation, masking/clearing, real save/probe | Headless Chrome -> Nuxt proxy -> integrated built server -> loopback provider | `Pass` |
-| `QW-BRW-002` | Committed save survives exactly one subordinate settings rejection; global reload awaits both refreshes | Browser route injects one post-save GraphQL error and holds global `GetProviderSettings` until absence of success is observed | `Pass` |
-| `QW-BRW-003` | Selected-provider reload awaits both refreshes; exact model recovery; narrow layout | Browser holds selected-reload catalog query until absence of success is observed, then releases it; 390px semantic/layout check | `Pass` |
-| `HIST-001` | No native preview compatibility | Source inventory plus core/catalog/browser absence assertions | `Pass` |
+| Scenario ID | Behavior / Basis | Execution Surface | Evidence Type | Result | Evidence |
+| --- | --- | --- | --- | --- | --- |
+| `RID-E2E-001` | V1 secretless reset, exact selector transition, empty V3, restart no rerun (`AC-017`, `AC-019`) | Actual built server, owned files/SQLite/Prisma | Durable + Live | Pass | `server-e2e-api-rev-007.log` |
+| `RID-E2E-002` | Direct V2 ordering, token/selector state, bad create with neither provider record nor exact readable vault secret, valid same-name recreation/exact ID | Actual migrations, public GraphQL, real SQLite vault query, loopback `/models`, restart | Durable + Live | Pass | Same log; readable E2E 4/4 |
+| `RID-E2E-003` | Collision leaves selectors unchanged while both trusted old secrets are removed only after empty V3 | Actual built server and encrypted seed | Durable + Live | Pass | Same log |
+| `RID-E2E-004` | Recent `RUNNING` blocks pre-listen; ordinary stale retry converges and attempts increment | Fresh child processes and ledger timestamps | Durable + Live | Pass | Same log |
+| `APP-SEL-001` | Raw unavailable composite selector remains visible, blocks launch, and becomes available only on exact catalog return | Vue component/runtime tests | Durable | Pass | `web-focused-api-rev-006.log` |
+| `CUS-E2E-READABLE` | Exact readable provider ID and composite model IDs; exact-only metadata; owner-scoped delete cleanup | GraphQL schema/services, real isolated database/vault | Durable + Live | Pass | `server-e2e-api-rev-007.log` |
+| `QW-E2E-001`–`004` | Probe/commit/compensation/sanitized failure/restart, persisted Base URL loading, every exact native Qwen request route | Actual built server, restart, fresh request child, loopback Qwen server | Durable + Live | Pass | Same log; Qwen 1/1 |
+| `HIST-001` | `qwen3.8-max-preview` remains opaque historical/custom value and absent from native Qwen definitions | Core/server scan, Qwen E2E, browser catalog | Durable + Live + Browser | Pass | `repository-integrity-api-rev-006.log`; API-REV-006 browser JSON; Qwen rerun in `server-e2e-api-rev-007.log` |
+| `RID-BRW-001` | User pastes name/Base URL/API key; invalid probe persists nothing; valid probe previews exact models; save creates configured readable provider; delete removes ownership | Headless Chrome -> Nuxt dev proxy -> actual built backend -> loopback provider | Temporary + Browser + Live | Pass | `custom-provider-settings-browser-evidence-api-rev-006.json`; screenshots/logs |
 
-## Repository Coverage Execution
+## Additional Repository Coverage Execution
 
-| Order | Command / Mode | Working Directory | Result | Evidence |
+| Order | Command / Selection | Working Directory | Result | Evidence |
 | --- | --- | --- | --- | --- |
-| 1 | `pnpm exec vitest run tests/unit/llm/qwen-provider-config.test.ts tests/unit/llm/supported-model-definitions.test.ts tests/unit/llm/metadata/openai-compatible-endpoint-model-metadata.test.ts tests/unit/llm/openai-compatible-endpoint-provider.test.ts --no-watch` | `autobyteus-ts` | `Pass — 4 files / 25 tests` | `probes/api-e2e/core-focused-api-rev-005.log` |
-| 2 | `pnpm exec vitest run tests/unit/config/app-config.test.ts tests/unit/config/application-database-location.test.ts tests/unit/llm-management/llm-providers/llm-provider-service.test.ts tests/unit/api/graphql/types/llm-provider.test.ts tests/unit/llm-management/model-metadata-provisioning-service.test.ts --no-watch` | `autobyteus-server-ts` | `Pass — 5 files / 73 passed / 1 intentional skip` | `probes/api-e2e/server-focused-api-rev-005.log` |
-| 3 | `pnpm test:nuxt <five current Qwen Settings paths> --run` | `autobyteus-web` | `Pass — 5 files / 32 tests` | `probes/api-e2e/web-focused-api-rev-005.log` |
-| 4 | `pnpm build` | `autobyteus-server-ts` | `Pass` — shared builds, Prisma generation, server build, built-in-agent and sanitized no-DATABASE_URL bootstrap smoke | `probes/api-e2e/server-build-api-rev-005.log` |
-| 5 | `pnpm exec vitest run tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts tests/e2e/llm-management/custom-provider-model-metadata-graphql.e2e.test.ts --no-watch` | `autobyteus-server-ts` | `Pass — 2 files / 4 tests` | `probes/api-e2e/server-e2e-api-rev-005.log` |
-| 6 | `pnpm guard:web-boundary`; `pnpm guard:localization-boundary`; `pnpm audit:localization-literals` | `autobyteus-web` | `Pass` | `probes/api-e2e/web-guards-api-rev-005.log` |
-| 7 | HEAD/diff/test-path/source-shape/preview inventory/evidence/cleanup checks | worktree root | `Pass` | `probes/api-e2e/repository-integrity-api-rev-005.log` |
-
-Repository total for the focused selections: `134 passed / 1 intentional Windows-only skip`, plus integrated server build and three guards.
+| 1 | Core identity, exact metadata, factory and custom endpoint selection | `autobyteus-ts` | Pass — 4 files / 21 tests | `probes/api-e2e/core-focused-api-rev-006.log` |
+| 2 | Readable/V1 migration, prerequisites, runner, gate, store/service and metadata selection | `autobyteus-server-ts` | Pass — 10 files / 70 tests | `server-focused-api-rev-006.log` |
+| 3 | Application selector, Settings runtime/Apollo/component/store selection | `autobyteus-web` | Pass — 6 files / 33 tests | `web-focused-api-rev-006.log` |
+| 4 | `pnpm build` | `autobyteus-server-ts` | Pass — shared builds, Prisma generation, server compile, copied assets, sanitized built-in bootstrap | `server-build-api-rev-006.log` |
+| 5 | Four critical E2E files in one serial Vitest command, corrective rerun | `autobyteus-server-ts` | Pass — 4 files / 12 tests | `server-e2e-api-rev-007.log` |
+| 6 | Web boundary/localization/literal guards | `autobyteus-web` | Pass | `web-guards-api-rev-006.log` |
+| 7 | `pnpm build` | `autobyteus-web` | Pass — Nuxt production client/server and 15 prerendered routes | `web-build-api-rev-006.log` |
+| 8 | `git diff --check`, exact TR-004 assertion-order, secret-marker, and owned-runtime scans | worktree root | Pass | `repository-integrity-api-rev-007.log` |
+| Observation | `pnpm typecheck` | `autobyteus-server-ts` | Non-authoritative tooling failure: existing TS6059 configuration reports all tests outside `rootDir: src`; not specific to changed files. Production build and all selected Vitest transformations pass. | `server-typecheck-api-rev-006.log` |
 
 ## Validation Confidence Scorecard
 
-| Category | Final | Supporting Evidence | Residual Uncertainty |
-| --- | ---: | --- | --- |
-| Requirement and acceptance-criteria proof | 97% | Current exact resolver/catalog, pair commit, compensation, restart, real request, API, and browser journeys all pass integrated HEAD | Vendor facts remain source-dated |
-| Changed-boundary execution directness | 97% | Merge-specific AppConfig tests plus built-server restart and fresh-process request directly cross the resolved conflict | Real Alibaba service not contacted |
-| Cross-boundary integration realism and mock gap | 96% | Nuxt/Chrome/Apollo/GraphQL/AppConfig/vault/SQLite/fresh process/loopback provider are composed | External network behavior is locally emulated |
-| Environment, configuration, identity, and fixture fidelity | 95% | Owned real files, processes, database, generated canary, normal AppConfig startup, and reserved loopback ports | No vendor credential/quota/region enforcement |
-| Failure, edge-case, lifecycle, and recovery evidence | 97% | Probe rejection, real pre-commit obstruction, compensation codes, configured/default restarts, exactly one subordinate browser failure, and held-query reload checks pass | Physical catastrophic double-store corruption remains fault-injected at the service/API mapping layer |
-| User-surface, browser, and desktop-shell confidence | 96% | Chrome semantic assertions and visually checked desktop/narrow screenshots prove the web-equivalent renderer; shell is unaffected | Electron shell not launched because no shell boundary changed |
-| Durable regression coverage quality and relevance | 97% | Previously proportionally reviewed durable coverage remains unchanged, direct, deterministic, and green on integrated HEAD | No material gap |
+| Confidence Category | Post-Repository | Final | Change | Final Evidence | Residual Uncertainty |
+| --- | --- | --- | --- | --- | --- |
+| Requirement and acceptance-criteria proof | 96% | 97% | +1 | Browser adds current real custom-provider user flow to direct migration/API evidence | Real Alibaba policy is not exercised |
+| Changed-boundary execution directness | 97% | 98% | +1 | Actual browser joined already-direct physical runner/files/SQLite/Prisma/GraphQL/restart evidence | No arbitrary kill at every selector write |
+| Cross-boundary integration realism and mock gap | 96% | 97% | +1 | Nuxt proxy, built backend, vault/database, model endpoint and Chrome ran together | External service remains loopback-emulated |
+| Environment, configuration, identity, and fixture fidelity | 97% | 97% | 0 | Unique roots, exact V1/V2/V3/selector/token fixtures, generated credentials, sanitized children | No real region/quota/TLS behavior |
+| Failure, edge-case, lifecycle, and recovery evidence | 96% | 96% | 0 | Collision, cleanup, bad key, compensation, recent/stale gates and restarts are direct | Literal 15-minute sleep and arbitrary crash points omitted |
+| User-surface, browser, and desktop-shell confidence | 92% | 96% | +4 | Chrome proved invalid/valid Settings flows and 390px no-overflow; focused component proves raw unavailable selector | Electron shell is inapplicable; Chrome reports non-blocking dev diagnostics |
+| Durable regression coverage quality and relevance | 94% | 94% | 0 | Obsolete E2E replaced, combined-state isolation fixed, all critical E2E passes together | Proportional code review remains pending; lifecycle fixture is broad by design |
 
-- Overall final confidence: `96.4%` (simple average, one decimal).
-- Prior API-REV-004 confidence inferred forward: `No`; API-REV-005 independently re-establishes the score.
-- Default 95% clean target met: `Yes`.
-- Lowest applicable category: `95%`.
-- Critical acceptance criteria lacking direct proof: `None`.
-- Residual risk: real Alibaba availability, credentials, quota, region policy, TLS behavior, undocumented payload variation, and future vendor-fact drift were not exercised.
+- Overall post-repository confidence: `95.4%`.
+- Overall final confidence: `96.4%`.
+- Calculation: simple average of seven applicable categories, rounded to one decimal.
+- Every critical acceptance criterion directly proven: `Yes`.
+- Any applicable category below 90%: `No`.
+- Default final confidence target met: `Yes`.
+- Confidence-limiting risks: real Alibaba availability/credentials/quota/region/TLS/payload drift; literal 15-minute wait; arbitrary interruption timing; delivery base divergence; unrelated package-wide TS6059 test-root configuration.
 
 ## Broader Validation Decision And Execution
 
-- Decision: `Required and completed — Pass`.
-- Rationale: the integration changed AppConfig, which is reached by the live Qwen Settings save and backend startup. The pre-integration browser result could not authorize the merge.
-- Mode: temporary Playwright Core harness, local Google Chrome, owned Nuxt development server, integrated built backend, owned SQLite/vault/runtime, and loopback OpenAI-compatible provider.
-- Exact fault/recovery proof:
-  - exactly one post-save `GetProviderSettings` was fulfilled with a GraphQL error;
-  - the committed Qwen status remained `CONFIGURED`, plaintext remained cleared/masked, provider settings cleared, and the truthful saved-but-refresh-failed warning appeared without a save-error panel;
-  - global Reload Models emitted `ReloadLLMModels` plus both refresh queries; its provider-settings query was held and no success notification appeared until release;
-  - selected Qwen Reload Models emitted `ReloadLLMProviderModels` plus both refresh queries; its catalog query was held and no success notification appeared until release;
-  - configured provider state and `qwen3.8-max`, `qwen:deepseek-v4-pro`, and `qwen:glm-5.2` recovered; `qwen3.8-max-preview` stayed absent;
-  - 390px viewport had document/body width 390px and the form remained within the viewport.
-- Evidence: `probes/api-e2e/qwen-settings-browser-evidence-api-rev-005.json`, run/backend/frontend logs, and API-REV-005 desktop/narrow screenshots.
-- Observed diagnostics: expected injected Apollo error, standard Chrome password-form advisory, Nuxt/Vite debug connection messages, and experimental Suspense information. No unexpected `pageerror` occurred.
+- API-REV-007 decision: `Not Required`. Only durable test proof changed; no production/browser source or fixture contract changed.
+- Carried-forward API-REV-006 decision/result: `Required and completed — Pass`. The real Chrome/Nuxt/built-backend evidence remains applicable.
+- Mode: lifecycle/live API plus headless Google Chrome through the documented Nuxt development path; the user's Electron application was not launched or touched.
+- Startup: build server; bind owned loopback model server; start built backend on unique app-data/database; start Nuxt on a reserved port configured to the backend; wait for HTTP; launch Chrome.
+- Fixture: generated key held only in process/browser memory; loopback endpoint advertised `deepseek-v4-pro`, `deepseek-v4-pro-0713`, and `qwen3.8-max-preview`.
+
+| Journey Step | Expected | Actual | Evidence | Result |
+| --- | --- | --- | --- | --- |
+| Paste name/Base URL/bad key and Load Models | 401 visible; no provider persisted | 401 returned and UI error rendered; direct settings query found no readable ID | Browser JSON; backend log | Pass |
+| Replace with valid key and Load Models | Three exact wire models previewed | All three visible; authorized `/v1/models` captured | Browser JSON | Pass |
+| Save Provider | Exact `provider_alibaba_cloud_token_plan`, configured/READY, exact composite IDs | UI and direct GraphQL matched | Desktop screenshot; JSON | Pass |
+| Exact-only metadata | Exact built-in value may inherit curated metadata; suffix/preview near values must not | `deepseek-v4-pro` got curated fallback; `-0713` and preview stayed null/opaque | JSON `catalogEvidence` | Pass |
+| Narrow layout | No horizontal document overflow at 390px | client/scroll/body widths all 390 | Narrow screenshot; JSON | Pass |
+| Remove Provider | Provider and owned models absent | UI success plus direct settings owner absence | Browser JSON; backend log | Pass |
+
+The browser emitted Chrome password-container hints and Apollo development cache-replacement warnings during refresh. These did not produce an error page, stale visible state, missing GraphQL result, or cleanup failure. Excerpts and original-text hashes are retained in the JSON; the observation is bounded and non-blocking for this change.
 
 ## Desktop Application Validation
 
-- Strategy: browser-first validation of the shared Nuxt renderer.
-- Actual Electron execution: `Not Required`.
-- Reason: no preload, IPC, window, packaging, or native lifecycle boundary changed; starting the desktop application would add user-state risk without material evidence gain.
-- Impact on running user application: `None`.
+- Browser-tested web-equivalent behavior: real Settings renderer journey above.
+- Shell-specific behavior: none changed; Electron execution would not improve evidence.
+- Effect on running desktop application: `None`.
 
-## Platform / Runtime
+## Platform / Runtime Targets
 
-- OS / architecture: macOS `26.5.2`, arm64.
-- Node / pnpm: `22.23.1` / `10.28.2`.
-- Core/server Vitest: `4.0.18`; web Vitest: `3.2.4`.
-- Browser: Google Chrome `151.0.7922.108`, headless through Playwright Core `1.58.2`.
-- Viewports: `1280x900` desktop; `390x844` narrow.
+- OS: macOS `26.5.2`, arm64.
+- Node: `v22.23.1`; pnpm `10.28.2`.
+- Server Vitest: `4.0.18`; web Vitest: `3.2.4`; Nuxt: `3.21.1`.
+- Browser: Google Chrome `151.0.7922.108`, headless; viewports `1440x1000` and `390x844`; English UI; local Europe/Berlin environment.
 
-## Durable Coverage Changed In API-REV-005
+## Lifecycle / Upgrade / Restart / Persisted-Data Checks
 
-- Added: `None`.
-- Updated: `None`.
-- Removed: `None`.
-- Existing revalidated paths:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-server-ts/tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-server-ts/tests/e2e/llm-management/custom-provider-model-metadata-graphql.e2e.test.ts`
-- Proportional test-code re-review required: `No` — both paths are byte-unchanged from the CRR-009-reviewed checkpoint and no durable test file changed in this round.
+- Provider records/Base URLs/credentials: `Discard or Rebuild` — final file is strict empty V3 and old secrets are absent.
+- Exact managed selectors: `Migration Required` — exact old prefix changed, suffix bytes preserved across representative JSON and application SQLite.
+- Historical token identifier: `Directly Usable — No Rewrite`; provider-name snapshot is populated before reset.
+- Qwen: direct current configuration; GraphQL-persisted Base URL and vault key survive restart and feed a fresh request process.
+- Recovery: recent RUNNING blocks; aged ordinary retry succeeds with attempt 2; collision cleanup occurs after V3; genuine cleanup rejection remains warning-only in focused durable coverage.
+- Compatibility fallback observed: `No`.
 
-## Execution Artifacts
+## Tests Implemented Or Updated
 
-All retained artifacts are under:
-`/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/probes/api-e2e/`
+| Path / Scenario | Change | Boundary | Result | Notes |
+| --- | --- | --- | --- | --- |
+| `autobyteus-server-ts/tests/e2e/secret-management/custom-provider-readable-id-startup-migration.e2e.test.ts` | Added as replacement; corrected in API-REV-007 | `RID-E2E-001`–`004` | Pass — 4/4 in authoritative combined rerun | Adds exact real-vault absence after rejected public create, before valid recreation |
+| `autobyteus-server-ts/tests/e2e/llm-management/custom-provider-model-metadata-graphql.e2e.test.ts` | Updated | `CUS-E2E-READABLE` | Pass — 3/3 and in combined run | Exact ID/model IDs plus explicit repository Prisma lifecycle isolation |
 
-- `core-focused-api-rev-005.log`
-- `server-focused-api-rev-005.log`
-- `web-focused-api-rev-005.log`
-- `server-build-api-rev-005.log`
-- `server-e2e-api-rev-005.log`
-- `web-guards-api-rev-005.log`
-- `repository-integrity-api-rev-005.log`
-- `qwen-settings-browser-evidence-api-rev-005.json`
-- `qwen-settings-browser-run-api-rev-005.log`
-- `qwen-settings-browser-backend-api-rev-005.log`
-- `qwen-settings-browser-frontend-api-rev-005.log`
-- `qwen-settings-recovery-api-rev-005-desktop.png`
-- `qwen-settings-recovery-api-rev-005-narrow.png`
+## Tests Removed As Stale Or Obsolete
 
-## Temporary Execution / Emulation
-
-| Dependency / Method | Purpose | Limitation | Cleanup |
+| Path | Obsolete Assertion | Basis | Replacement |
 | --- | --- | --- | --- |
-| Temporary `/tmp/qwen-settings-browser-api-rev-005.mjs` | Browser orchestration and deterministic query holding/failure injection | Not durable coverage; the same logic is protected by repository tests | Removed |
-| Loopback OpenAI-compatible `/models` provider | Real HTTP probe, bearer equality, exact advertised values | Does not prove vendor network/TLS/quota/region behavior | Closed |
-| Browser GraphQL route injection | Exactly one subordinate settings failure plus held-query await checks | Does not enumerate every transport failure | Route/context/browser closed |
-| Owned runtime/database/processes | Real AppConfig, vault, GraphQL, restart, and Nuxt execution | macOS live filesystem only | Removed/stopped |
+| `autobyteus-server-ts/tests/e2e/secret-management/custom-provider-v1-startup-migration.e2e.test.ts` | Vault/preserve V1 provider and keep V2 ready across restart | SR-016, REQ-014, AC-017 | Current readable startup lifecycle E2E |
 
-## Cleanup
+## Durable Coverage Changed In The Codebase
 
-- Built server children, loopback provider, Nuxt process group, Chrome contexts/browser: `Stopped / none remain`.
-- Unique `qwen-browser-*` and `qwen-configuration-*` app-data/database/key targets: `Removed / none remain`.
-- Temporary browser harness: `Removed`.
-- Generated secret canary: `Absent from retained browser evidence and owned frontend/backend/runtime files`.
-- Unowned processes/ports/user data: `Not stopped, reused, or modified`.
+- Repository-resident durable coverage changed: `Yes`.
+- Added: `autobyteus-server-ts/tests/e2e/secret-management/custom-provider-readable-id-startup-migration.e2e.test.ts`.
+- Updated: `autobyteus-server-ts/tests/e2e/llm-management/custom-provider-model-metadata-graphql.e2e.test.ts`.
+- Removed: `autobyteus-server-ts/tests/e2e/secret-management/custom-provider-v1-startup-migration.e2e.test.ts`.
+- Attached for proportional review: `Yes`; delivery remains blocked until that review passes.
 
-## Result, Classification, And Route
+## Other Execution Artifacts
 
-- Result: `Pass`.
-- Final confidence: `96.4%`.
-- Preliminary failure classification: `N/A`; no implementation, test, environment, requirement, or design failure was found.
-- Durable coverage changed: `No`.
-- Next recipient: `delivery_engineer` for a fresh tracked-base refresh and integrated-state delivery continuation.
-- Delivery constraint: delivery must use API-REV-005/CRR-010 as current authorization; API-REV-004 and the DR-003 blocked report remain historical context.
-- Residual risk to preserve: real Alibaba availability, credentials, quota, region policy, TLS behavior, undocumented payload variation, and source-dated facts were not tested.
+All retained evidence is below `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/probes/api-e2e/`.
+
+| Artifact | Purpose |
+| --- | --- |
+| `server-e2e-api-rev-007.log` | Authoritative corrective combined critical E2E pass, 4 files / 12 tests |
+| `core-focused-api-rev-006.log`, `server-focused-api-rev-006.log`, `web-focused-api-rev-006.log` | Focused repository passes |
+| `server-build-api-rev-006.log`, `web-build-api-rev-006.log`, `web-guards-api-rev-006.log` | Build/static evidence |
+| `custom-provider-settings-browser-evidence-api-rev-006.json` | Value-free browser/API/provider event and catalog evidence |
+| `custom-provider-settings-api-rev-006-desktop.png`, `...-narrow.png` | Supporting visual evidence |
+| `custom-provider-settings-backend-api-rev-006.log`, `...frontend...log` | Correlated owned-process logs |
+| `repository-integrity-api-rev-007.log` | Diff/TR-004 assertion ordering/secret-marker/cleanup scans |
+| `server-typecheck-api-rev-006.log` | Transparent TS6059 package configuration observation |
+
+## Temporary Execution Methods / Scaffolding
+
+| Method | Why | Result | Cleanup |
+| --- | --- | --- | --- |
+| Temporary Node/Playwright browser harness | Repository has focused renderer tests but no durable full browser framework | Final run passed all 12 browser assertions | Harness removed; browser/Nuxt/backend/provider stopped; runtime/database removed |
+| Browser attempts 1–2 | Initial harness asserted catalog `apiKeyConfigured` instead of settings state, then underestimated the expected authorized reload count | Harness-only assumptions corrected; no product change | Failed attempt logs retained; owned resources cleaned |
+| Readable E2E attempts 1–2 | Multiline test-only TypeScript cast was not transformed by the runner version | Cast expressed in transform-safe form; authoritative test passes | No runtime state survived |
+
+## Dependencies Mocked Or Emulated
+
+| Dependency | Method | Reason | Limitation |
+| --- | --- | --- | --- |
+| Alibaba/Qwen/OpenAI-compatible endpoint | Owned loopback HTTP servers with exact auth/routes/payloads | No real credential is needed or safe; protocol boundary is deterministic | Does not prove availability, quota, region, TLS or undocumented vendor variation |
+
+## Result Summary
+
+| Result | Scenarios | Summary |
+| --- | --- | --- |
+| Pass | `RID-E2E-001`–`004`, `APP-SEL-001`, `CUS-E2E-READABLE`, `QW-E2E-001`–`004`, `HIST-001`, `RID-BRW-001` | Current SR-016 readable reset/recreation, exact-only catalog behavior, native Qwen, Settings user flow, restart and cleanup all passed |
+| Not Tested | Real vendor policy and arbitrary crash timing | Explicit bounded residuals; no fabricated claim |
+
+## Cleanup Performed
+
+| Resource | Ownership | Action | Result |
+| --- | --- | --- | --- |
+| Unique app-data/SQLite/root-key fixtures | API-REV-006 | Harness cleanup/remove-owned-runtime | Removed; scan found none |
+| Loopback provider/backend/Nuxt/Chrome | API-REV-006 | Graceful stop, bounded kill fallback | Stopped; no owned process remained |
+| Generated keys | API-REV-006 | Never written to durable evidence; secret-marker scan | Absent from retained logs/evidence |
+| Corrective E2E app-data/SQLite/root-key fixtures | API-REV-007 | Test `afterEach` and owned-runtime cleanup | Removed; current scan found none |
+| User Electron app/data | Unowned | Not touched | No effect |
+
+## Preliminary Classification
+
+- `TR-004` is resolved in API/E2E evidence and awaits reviewer closure; no unresolved API/E2E execution failure exists.
+- The combined-run vault failure was a `Local Fix` in changed durable test setup: explicit repository Prisma lifecycle ownership now isolates the target database, and the same four-file run passes 12/12.
+- The browser and early readable-test attempt failures were temporary harness/test-expression defects, corrected before the authoritative reruns.
+- The package-wide TS6059 output is an existing test-root configuration limitation, not evidence of a production or changed-test type failure; it is retained transparently and does not override successful production builds/Vitest execution.
+
+## Recommended Recipient
+
+`code_reviewer` for proportional re-review of the bounded TR-004 correction. Do not route to delivery until that review passes.
 
 ## Latest Authoritative Result
 
-- Result values: `Pass` / `Fail` / `Blocked`
 - Result: `Pass`
-- Current revision: `API-REV-005`
-- Integrated HEAD: `9817d3b1fdcbfec4c5249eb782ae2d9acfb25688`
 - Final validation confidence: `96.4%`
-- Default confidence target met: `Yes`
-- Any applicable category below 90%: `No`
-- Broader validation: `Required and completed — Pass`
+- Default 95% target met: `Yes`
+- Applicable category below 90%: `No`
+- Broader validation: `Not Required for API-REV-007`; API-REV-006 real browser result remains applicable
 - Critical acceptance criteria lacking direct proof: `None`
-- Durable repository coverage changed: `No`
-- Required next recipient: `delivery_engineer`
+- Required next recipient: `code_reviewer`
+- Notes: The corrective real-database assertion and identical combined run directly prove rejected create leaves neither provider state nor the exact readable vault secret. The prior real browser result remains applicable; no live Alibaba credential claim is made.

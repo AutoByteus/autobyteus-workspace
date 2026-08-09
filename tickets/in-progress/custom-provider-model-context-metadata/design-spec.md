@@ -2,566 +2,696 @@
 
 ## Current-State Read
 
-This ticket branch contains a completed but now superseded custom-provider metadata implementation. The supported custom-provider path is:
+The ticket has three related paths:
 
-`Settings -> GraphQL -> LlmProviderService -> saved provider/key -> GET /models -> normalized rows -> custom metadata resolver -> custom LLMModel -> LLMFactory -> server catalog -> runtime/token UI`.
+1. **Custom metadata:** `Settings -> GraphQL -> LlmProviderService -> saved custom provider/key -> GET /models -> strict row normalization -> custom metadata resolver -> LLMModel -> LLMFactory -> server catalog -> token budget/compaction/meter`. Advertised numeric metadata already flows correctly. The defect is that the generic resolver also owns Alibaba endpoint profiles, URL/plan policy, and aliases.
+2. **Native Qwen:** `supported definition -> LLMFactory -> QwenLLM -> OpenAI-compatible client`. Qwen currently assumes one Singapore pay-as-you-go URL while Settings is key-only. Existing `modelIdentifierOverride` already makes provider-specific catalog identity distinct without altering the API model value.
+3. **Custom identity:** Browser creates with `{name,baseUrl,apiKey}`, but `CustomLlmProviderStore` generates `provider_<UUID>`. Custom models then correctly compose `openai-compatible:<providerId>:<exact-model-value>`, so the provider component—not the overall identity shape—is the readability defect. The service checks name availability before a network probe, while the store commits later without an atomic name/derived-ID invariant.
 
-The branch correctly preserves advertised numeric metadata, exact built-in fallback, source-bearing `ModelInfo`, compaction behavior, last-known-good custom models, and the explicit unknown-capacity UI state. It incorrectly places Alibaba-specific endpoint, plan, and alias knowledge inside `openai-compatible-endpoint-model-metadata.ts`.
+Legacy names can deterministically derive future readable selector prefixes, but the user now accepts discarding legacy provider records, Base URLs, and all credentials for simplicity. Existing custom creation already accepts/probes/saves `{name,baseUrl,apiKey}` and reloads models. Current `saveProviderApiKey` rejects custom IDs and saved details has no key editor; adding those branches is unnecessary when empty-V3 reset plus ordinary recreation is accepted. Missing selectors are generally retained and fail explicitly at model activation; `ApplicationAgentLaunchProfileEditor.vue` alone clears a non-catalog value.
 
-The native Qwen path is:
+Startup migrations already provide ordered definitions, durable result records, atomic file utilities, and ordinary stale-`RUNNING` retry after 15 minutes. `TokenUsageProviderNameSnapshotBackfillMigration` must consume the UUID-to-name map before readable publication. Current migrations that write bindings/run/team metadata must complete before readable selector rewriting. The earlier SR-015 journal, backups, secret re-encryption, completion receipt, PID-lock recovery matrix, and runner timestamp bypass are no longer justified; they are superseded by the user-approved optimistic hybrid.
 
-`Built-in supported-model definition -> LLMFactory -> QwenLLM -> OpenAI-compatible client`,
-
-but `QwenLLM` hardcodes one Singapore pay-as-you-go Base URL. Settings only writes the existing Qwen key secret. The current code therefore cannot represent the user's Token Plan, workspace, or regional Qwen endpoint through the native provider.
-
-The current data model already has the necessary concepts: provider `baseUrl`, secret consumer `provider.qwen.api-key`, exact model `value`, static metadata/provenance, and `modelIdentifierOverride`. No generalized model-offering schema is missing.
+Source/test edits visible in the worktree from the SR-015 implementation attempt are not target authority. Implementation must reconcile them to this SR-016 design after architecture passes.
 
 ## Intended Change
 
-1. Keep custom endpoint-advertised metadata normalization.
-2. Simplify custom metadata resolution to per-field `advertised > exact built-in value as inferred > unknown`.
-3. Remove endpoint profiles, URL identity, plan/region matching, and all alias/reference behavior.
-4. Add native Qwen configuration for one user-supplied Base URL plus the existing secret API key.
-5. Make newly constructed `QwenLLM` clients use the configured URL, with the current URL as the no-setting default.
-6. Add Qwen-owned model definitions for exact values `qwen3.8-max`, `deepseek-v4-pro`, and `glm-5.2` with source-dated Alibaba-route context metadata.
-7. Reuse `modelIdentifierOverride` for the two duplicated cross-provider values.
-8. Preserve existing compaction, catalog, provenance projection, custom-provider persistence, and known/unknown UI behavior.
-9. Make the two-owner Qwen pair command restart-durable and all-or-old for each individual write failure by adding one strict atomic AppConfig setter and bounded previous-secret compensation; never return success for a session-only URL change, and surface a bounded compensation double-failure as repair-required.
-10. Add a Qwen-specific setup status `{effectiveBaseUrl, endpointSource, apiKeyConfigured}` so the browser can distinguish the historical default from an explicitly configured endpoint without generalized provider/model attributes.
+1. Preserve strict provider-advertised metadata as highest priority per field.
+2. Simplify custom fallback to exact, case-sensitive built-in `value` lookup only; unknown/near-match values remain unknown.
+3. Remove all custom-provider endpoint profiles, Alibaba URL/region/plan logic, and aliases.
+4. Let the user configure native Qwen with a Base URL and API key; use the saved URL dynamically and retain the historical URL only as an absent-setting default.
+5. Save the Qwen pair through one probe plus bounded key compensation and a strict durable URL write; expose server-owned default/configured status.
+6. Native Qwen owns exact values `qwen3.8-max`, `deepseek-v4-pro`, `deepseek-v4-flash-0731`, and `glm-5.2`; remove `qwen3.8-max-preview` and preserve exact wire values.
+7. Derive new custom provider IDs from the normalized user-entered name and enforce custom name/ID uniqueness inside the store commit. Add no provider attribute or frontend ID field.
+8. Keep custom model identity `openai-compatible:<derived-provider-id>:<exact-model-value>`; do not introduce a structured registry refactor.
+9. Use valid unique legacy names only to derive old-to-future selector prefixes, rewrite exact allowlisted active/default/resumable selectors, and atomically publish an empty V3 provider list last.
+10. Do not preserve a legacy provider record, Base URL, or credential value. Never resolve, copy, or re-encrypt an old secret; old UUID secret removal after empty V3 is best-effort only.
+11. Reuse the unchanged add-custom-provider flow for re-entry of name, Base URL, and key. The same canonical name recreates the same readable ID. Do not add reconnect service/UI branches or a credential-state attribute.
+12. Keep unavailable selectors stored and visible with no fallback. Launch, external dispatch, and resume fail through existing missing-model/activation paths until recreation or reselection.
+13. Retain only required migration ordering and gating: five exact prerequisites, readable migration last, empty-V3-last publication, ordinary runner retry semantics, and one terminal status gate before runtime/listen.
+14. Remove the private journal, backups, receipt, secret migrator, recovery coordinator, special runner method, and crash-perfect fault matrix.
 
-### Minimal representation constraint
+### Minimal Representation Constraint
 
-The design adds only one required non-secret configuration value, `QWEN_BASE_URL`, and one Qwen-specific save command carrying `{baseUrl, apiKey}`. It reuses every model/provider field already present. It must not add producer, origin provider, inference provider, offering, deployment, route, plan, region, revision, alias, or per-model override attributes.
+The design adds only:
+
+- optional non-secret `QWEN_BASE_URL`;
+- Qwen command input `{baseUrl, apiKey}`;
+- Qwen status `{effectiveBaseUrl, endpointSource, apiKeyConfigured}`;
+- one pure custom name/ID codec;
+- provider file version 3 with the same record attributes as V2 but a stronger invariant.
+
+It does not add provider producer/origin/offering/deployment/route/region/plan/revision/alias fields, credential state fields, frontend-supplied IDs, per-model serving overrides, runtime UUID aliases, or migration transaction/recovery schemas.
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
-| Behavior ID | Kind | Approved Intent / IDs | Approved Trigger | Existing Evidence | Approved Change / Preserved Outcome | Target Path / Spine |
+| Behavior ID | Kind | Approved Requirement / Intent And Acceptance-Criteria IDs | Approved Trigger Or Governing Contract | Relevant Existing Behavior And Evidence Reference | Approved Change Or Preserved Outcome | Target Production Path / Lifecycle And Spine ID(s) |
 | --- | --- | --- | --- | --- | --- | --- |
-| BEH-001 | User/System | REQ-001, REQ-008; AC-001, AC-002 | User probes/saves/reloads a custom provider | Discovery already normalizes strict optional fields and preserves stale models | Preserve generic discovery and live metadata | DS-003 |
-| BEH-002 | System/Contract | REQ-002, REQ-003; AC-003, AC-004 | A discovered field is absent | Current resolver performs profiles/aliases then exact fallback | Delete profiles/aliases; exact `value` fallback only | DS-003, LS-001 |
-| BEH-003 | System/User | REQ-004, REQ-009; AC-005, AC-006 | Runtime consumes a resolved model | Canonical fields already drive budget/compaction/UI | Preserve with reduced source union | DS-003, DS-004 |
-| BEH-004 | User | REQ-005, REQ-008, REQ-011; AC-007, AC-012, AC-013 | User saves Qwen URL/key in Settings | Qwen currently uses generic key-only form; `AppConfig.set` can report session-only success | Add one probe, key-first, strict durable URL commit with bounded key compensation and truthful errors | DS-001 |
-| BEH-005 | System | REQ-006; AC-008, AC-011 | Runtime constructs a Qwen client | Constructor literal always chooses Singapore paygo | Resolve configured URL or historical default | DS-002 |
-| BEH-006 | User/System | REQ-007, REQ-012; AC-009, AC-010, AC-014 | Catalog/selection or Qwen Settings requests Qwen state/models | Required values are absent; effective URL + key flag cannot distinguish default from explicitly configured | Add three Qwen definitions and one Qwen-specific configured/default status | DS-001, DS-002, DS-004 |
+| BEH-001 | User/System | REQ-001, REQ-008; AC-001, AC-002 | Custom provider probe/reload returns model rows | Investigation: discovery normalizes strict optional positive integers | Preserve advertised metadata and resilience | DS-003, LS-001 |
+| BEH-002 | System/Contract | REQ-002, REQ-003; AC-003, AC-004 | One or more discovered limit fields are absent | Investigation: resolver currently owns profiles/aliases and exact fallback | Delete route policy; exact built-in `value` fallback only | DS-003, LS-001 |
+| BEH-003 | System/User | REQ-004, REQ-009; AC-005, AC-006 | Runtime consumes known/unknown capacity | Investigation: canonical fields already feed budget/compaction/meter | Preserve propagation with reduced source union | DS-003, DS-004 |
+| BEH-004 | User | REQ-005, REQ-008, REQ-011; AC-007, AC-012, AC-013 | User submits Qwen Base URL/key in Settings | Investigation: key-only flow; `AppConfig.set` may be session-only after file failure | Probe pair; key-first; strict durable URL; bounded restore/remove on URL failure | DS-001 |
+| BEH-005 | User/System | REQ-006; AC-008, AC-011 | Qwen runtime instance is constructed | Investigation: constructor uses one literal URL | Resolve saved URL or historical default | DS-002 |
+| BEH-006 | User/System | REQ-007, REQ-010, REQ-012; AC-009–AC-011, AC-014 | Qwen catalog/status is queried or a Qwen model is selected | Investigation: required exact offerings/status projection are incomplete | Add four exact offerings and Qwen-only server projection | DS-001, DS-002, DS-004 |
+| BEH-007 | User/Operational | REQ-013–REQ-015; AC-015–AC-019 | Create custom provider; startup resets V1/V2; user opens/launches/resumes saved selector; user recreates | Investigation: UUID store, split uniqueness, existing create flow, mostly retained missing selectors, old-ID snapshot/order dependencies | Derive/store readable identity for new providers, map exact selectors, publish empty V3, recreate through existing form, retain unavailable selections, and use optimistic final migration/gate | DS-005–DS-007, LS-002 |
 
 ## Relevant Supplemental Task Artifacts
 
-| Artifact Path | Purpose | Related IDs | Relationship To Design | Status / Approval |
+| Artifact Path | Purpose | Related Requirement / Acceptance-Criteria IDs | Relationship To This Design | Status / Approval Applicability |
 | --- | --- | --- | --- | --- |
-| `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/qwen-native-provider-setup-ui-spec.md` | Qwen Base URL/key journey, states, labels, and error recovery | REQ-005, REQ-006, REQ-008, REQ-010–REQ-012; AC-007, AC-008, AC-011–AC-014 | Defines the frontend/GraphQL observable contract for DS-001 | Refined; user-approved and aligned by SR-011 |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/qwen-native-provider-setup-ui-spec.md` | Qwen connection journey, default/configured states, errors, accessibility | REQ-005, REQ-006, REQ-008, REQ-010–REQ-012; AC-007, AC-008, AC-011–AC-014 | Observable contract for DS-001 | User-approved; unchanged in SR-016 |
+| `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/custom-provider-readable-id-migration-spec.md` | Name/ID codec, legacy reset/selector transition, exact order, provider-absent interval, recreation | REQ-013–REQ-015; AC-015–AC-019 | Detailed contract for DS-005–DS-007 and LS-002 | Replaced for SR-016; pending architecture review |
 
 ## Task Design Health Assessment (Mandatory)
 
 - Change posture: `Behavior Change / Refactor`
 - Current design issue found: `Yes`
-- Root cause classification: `Boundary Or Ownership Issue` and `Duplicated Policy Or Coordination`
+- Root cause classification: `Boundary Or Ownership Issue`, `Missing Invariant`, `Duplicated Policy Or Coordination`, `Legacy Or Compatibility Pressure`
 - Refactor needed now: `Yes`
-- Evidence: The custom resolver owns a Token Plan URL table and a DeepSeek alias even though endpoint selection and Alibaba-served model support belong to native Qwen. Qwen endpoint ownership is hidden in a constructor literal. `ARCH-REV-004` additionally proved that the initial Qwen save contract could pair a new key with a non-durable/old URL and that effective URL plus key flag could not represent default versus configured state.
-- Design response: Delete route-specific custom machinery; make `LlmProviderService` the Qwen configuration command owner; make a small core Qwen endpoint resolver the runtime owner; keep model facts in Qwen `SupportedModelDefinition`s; add one strict atomic AppConfig write and bounded secret compensation; return one Qwen-specific setup status.
-- Refactor rationale: Leaving profiles dormant would retain two conflicting sources of Alibaba truth and violate the user's simplification.
-- Intentional deferrals / residual risk: Multiple simultaneous Qwen endpoints and dynamic native model discovery remain out of scope. Public documentation for the production Qwen3.8 rename may lag and requires future provenance refresh, not compatibility with the preview value.
+- Evidence: Generic custom metadata owns Alibaba route knowledge; Qwen endpoint ownership is hidden in an adapter literal; the custom store ignores the meaningful name and does not atomically enforce identity uniqueness; and SR-015 added secret/recovery/reconnect coordination no longer supported once provider recreation is acceptable.
+- Design response: Move Alibaba connection/catalog facts to native Qwen, keep generic inference exact, centralize custom name/ID policy, strengthen the store boundary, use old names only for selector mapping, publish empty V3, reuse existing custom creation, and remove superseded secret/recovery/reconnect mechanisms.
+- Refactor rationale: Adding another alias/profile or layering a reset path over UUID identity would leave conflicting truth and unnecessary attributes. The selected refactor replaces those paths cleanly.
+- Intentional deferrals and residual risk: Provider rename/Base-URL edit, multiple simultaneous Qwen endpoints, dynamic native model discovery, and a global `{providerId,value}` registry refactor remain out of scope. Missing selectors remain strings and can require manual reselection when an offering disappears.
 
 ## Terminology
 
-- **Qwen connection:** The single effective native Qwen Base URL plus the existing Qwen API-key secret for one installation.
-- **Qwen-served model:** A model invoked through the configured Qwen/Alibaba endpoint, including third-party-produced values such as DeepSeek and GLM.
-- **Exact built-in fallback:** A custom model lookup keyed only by exact `SupportedModelDefinition.value`, irrespective of which built-in provider owns a matching candidate.
-- **Effective Qwen Base URL:** Saved `QWEN_BASE_URL`, or the historical default when the setting is absent.
-- **Endpoint source:** `DEFAULT` when `QWEN_BASE_URL` is absent; `CONFIGURED` when any non-empty configured value exists, even when it equals the default string.
-- **Strict durable AppConfig write:** A setting write that atomically replaces `.env`, surfaces failure, and updates runtime memory only after persistent replacement succeeds.
+- **Exact built-in fallback:** Per-field metadata inference from definitions whose `value` exactly equals the discovered model ID.
+- **Qwen connection:** One effective native Qwen Base URL plus the Qwen API-key secret for an installation.
+- **Endpoint source:** `DEFAULT` when no non-empty `QWEN_BASE_URL` is saved; `CONFIGURED` otherwise, even if the saved string equals the default.
+- **Canonical custom-provider name:** NFKC, trimmed, internal Unicode whitespace collapsed to one space, lowercase form used for uniqueness.
+- **Readable provider ID:** Immutable `provider_<name-derived-body>` generated without randomness/hash/counter suffixes.
+- **Managed selector:** An exact allowlisted structured `llmModelIdentifier` used by current/default launch or supported resume.
+- **Provider-absent interval:** Period after empty-V3 publication and before the user recreates a provider; migrated selectors can reference the future readable ID while no record/model exists.
+- **Empty-V3 publication:** Atomic replacement of `custom-llm-providers.json` with version 3 and `providers: []`; the reset commit point.
+- **Optimistic transition:** Bounded idempotent rewrites using existing migration status/retry, without private rollback/recovery state or immediate crash convergence.
+
+## Legacy Removal Policy (Mandatory)
+
+- Policy: `No backward compatibility; remove legacy code paths.`
+- Remove Alibaba endpoint profiles, URL canonicalization/plan matching, model aliases/references, and the `endpoint_profile` metadata source.
+- Remove `qwen3.8-max-preview`; do not alias it to `qwen3.8-max`.
+- Remove UUID generation for new providers; do not grandfather UUID IDs in current V3.
+- Remove all SR-015 private migration state, backups, receipt, secret transfer, startup recovery, and runner bypass.
+- Keep V1/V2 readers only inside app-data migration sources/tests. Normal store/runtime is V3-only.
+- Preserve absent Qwen URL as default-setting semantics, not as a legacy runtime branch.
+
+## Persisted Data / State Transition Decision (Mandatory When Persisted Data May Be Affected)
+
+- Stored subject, location, representative shape, and approximate volume:
+  - Qwen key in secret vault; optional `.env` setting is new.
+  - `llm/custom-llm-providers.json`: small V1/V2 provider array.
+  - Old custom key entries keyed by UUID provider ID.
+  - Structured selector fields in agent/team configs, external bindings, application SQLite rows, run/team metadata, and improver sessions.
+  - Historical traces/token rows/model-free history indexes, potentially much larger.
+- Relevant code-model/semantic change: New custom identity becomes deterministic name-derived V3; legacy provider records reset to empty while active selectors move to future readable prefixes.
+- Normal reader/writer behavior and evidence: Target provider store parses V3 only. Structured config readers retain arbitrary nonempty model strings and factory validates at use. Existing custom creation recreates a record/secret/models from user input.
+- Required semantics and invariants under direct use: V2 UUID selectors cannot directly select a V3 readable provider. Historical token/trace identity remains truthful and must not be rewritten.
+- Physical-store/privacy/operational constraints: V1 inline secret must leave the provider file. Migration cannot log/serialize secret or endpoint contents. JSON publication must be atomic; application database updates use per-database transactions.
+- Decision: `Migration Required` only for exact active/default/resumable selectors; `Discard or Rebuild` by ordinary frontend recreation for legacy provider records, Base URLs, and credentials; `Directly Usable — No Migration` for Qwen key-only installs and historical traces/token/index data.
+- Decision rationale: Selector mapping is deterministic and preserves meaningful choices. Provider/Base-URL/secret preservation would require extra migration/reconnect behavior the user does not value. Empty V3 plus existing creation is simpler. Historical rewrites provide no runtime benefit. Optimistic partial selector skips are acceptable because missing selectors remain visible/actionable.
+- Acceptance criteria/design constraints: REQ-010, REQ-013–REQ-015; AC-011, AC-015–AC-019.
+
+### Migration Plan (Only When Decision Is `Migration Required`)
+
+- Current canonical schema/version: Custom provider file V3; records `{id,name,providerType,baseUrl}` with `id === buildCustomProviderId(name)`.
+- Older versions: V1 inline-secret file; V2 non-secret provider file plus optional UUID vault entries.
+- Why direct use/discard are insufficient: UUID selectors cannot address future readable providers, so exact structured selectors require mapping. Provider records/Base URLs/credentials are disposable because the user accepts ordinary recreation.
+- Trigger: Required startup app-data migrations.
+- Migration owner: `CustomProviderV1AppDataMigration` for V1 secretless staging; `CustomProviderReadableIdAppDataMigration` for selector mapping plus empty-V3 reset.
+- Normal business/runtime path: V3-only store and derived IDs; no UUID alias/reader.
+- Historical decoders: Confined to app-data migration files.
+- Completion marker: Existing migration runner terminal status. No journal/receipt/private completion marker.
+- Restart safety/idempotency: Exact old prefix rewrites accept already-new/unrelated values; V3 entry is no-op after validation. An interrupted `RUNNING` retries only under ordinary stale-run policy.
+- Validation before runtime: Exact prerequisite guard before writes; atomic empty-V3 publication last; after ordinary `runPending`, terminal readable status gate before provider/runtime/bootstrap/listen.
+- Backup/rollback/operator recovery: No custom backup/rollback protocol. Provider-file publication failure retains V2 and blocks startup; individual selector failures warn and remain manually repairable; old-secret deletion failure leaves unreachable orphan.
+- Concurrent access: Startup migration runs before runtime/listen and uses existing file/database atomicity. No supported concurrent old/new application process is introduced.
+- Historical migration retention: Keep historical V1 migration ID for installed ledger compatibility, but direct V1 behavior is secretless. Keep readable migration as final current required definition.
+
+| Migration Step | Source Shape / Version | Target Shape / Version | Transformation Owner | Validation | Failure / Recovery Behavior |
+| --- | --- | --- | --- | --- | --- |
+| 1. V1 staging | Valid V1 with inline key | Secretless V2 | `CustomProviderV1AppDataMigration` | Strict V2 parse; inline field absent | Atomic publish failure fails; no vault write; warning requires key re-entry |
+| 2. Prerequisites | Migration result ledger | Five terminal successes | `CustomProviderReadableIdPrerequisiteGuard` | Exact IDs are `SUCCEEDED` or `SUCCEEDED_WITH_WARNINGS` | Incomplete status causes no readable write and later startup gate blocks |
+| 3. Mapping | Valid V2 provider records | In-memory old ID -> future derived ID; no target records | Readable migration + core codec | Names derive uniquely | Invalid/colliding set has no selector map and continues to empty V3 with warning |
+| 4. Selector attempts | Exact allowlisted old prefixes | Exact future readable prefixes; suffix unchanged | JSON/SQLite selector adapters | Re-read/transaction success per target | Individual failure warning; stale selector remains visible/unavailable |
+| 5. Reset commit | Any classified legacy state | Atomic empty V3 provider file | Readable migration | Strict `{version:3,providers:[]}` parse | Publication failure is fatal; V2 remains; startup blocked |
+| 6. Cleanup | Optional old UUID secret entries | Entry absent if deletion succeeds | Readable migration via secret service remove | Removal result only; never resolve value | Best-effort warning; empty V3 remains; orphan is unreachable |
+| 7. Runtime gate | Runner status | Startup allowed/blocked | `server-runtime` thin status gate | Exact terminal success set | Missing/NOT_RUN/RUNNING/FAILED blocks; no special rerun |
+
+#### Exact Migration Ordering
+
+Readable identity is the final current `requiredOnStartup` definition. Before it reads/mutates legacy state it requires terminal `SUCCEEDED | SUCCEEDED_WITH_WARNINGS` for:
+
+| Migration ID | Reason |
+| --- | --- |
+| `20260727_custom_provider_v1_secret_migration` | Removes V1 inline secret and produces missing/V2/current V3 |
+| `20260706_remove_global_skill_discovery_mode` | Can write bindings and run/team metadata |
+| `20260517_team_run_metadata_member_tree` | Can rewrite team run metadata |
+| `20260730_token_usage_provider_name_snapshot_backfill` | Must resolve old UUID provider names before V3 removes old map key |
+| `20260623_remove_self_evolution_run_metadata` | Can write run/team metadata |
+
+`TokenUsageProviderNameSnapshotBackfillMigration` uses a migration-only strict missing/V2/V3 reader returning only `{id,name}`. It remains the only owner that updates token provider-name snapshots. Readable identity never rewrites token identifiers or rows.
+
+A registry invariant test asserts readable is last and all five IDs precede it. This is a fixed local guard, not dependency metadata on every migration.
+
+#### Exact Managed Selector Inventory
+
+| Store / Location | Exact Fields |
+| --- | --- |
+| Shared/application/team-local `agent-config.json` | `defaultLaunchConfig.llmModelIdentifier` |
+| Shared/application `team-config.json` | `defaultLaunchConfig.llmModelIdentifier` |
+| `external-channel/bindings.json` | each persisted agent/team binding `launchPreset.llmModelIdentifier` |
+| `applications/*/db/platform.sqlite`, `__autobyteus_resource_configurations.launch_profile_json` | agent root `llmModelIdentifier`; team `defaults.llmModelIdentifier`; every `memberProfiles[].llmModelIdentifier` |
+| Same table, `launch_defaults_json` | legacy root `llmModelIdentifier` |
+| `memory/agents/*/run_metadata.json` | root `llmModelIdentifier` |
+| `memory/agent_teams/*/team_run_metadata.json` | every current agent member node recursively |
+| `memory/**/skill_improvement/**/improver_session.json` | root `llmModelIdentifier` |
+
+No arbitrary recursive key search or text replacement is permitted. Raw/work traces, token model identifiers/accounting, prompts, logs, application run-binding summaries, and model-free indexes are excluded.
+
+JSON adapters use same-directory temp write/fsync/atomic rename. Each application database uses one transaction. They replace only:
+
+```text
+openai-compatible:<exact-old-provider-id>:<suffix>
+->
+openai-compatible:<exact-new-provider-id>:<same byte sequence suffix>
+```
+
+#### Optimistic Interruption Contract
+
+- Before empty-V3 publication: V2 remains authoritative; any completed exact selector rewrites are idempotent. The existing recent-`RUNNING` window can block immediate restart. A later ordinary retry derives the same map and continues.
+- After empty-V3 publication: Every target was attempted and legacy providers are gone. An interrupted runner record may still block immediate restart; later ordinary retry sees strict V3 and returns no-op success.
+- No private state, backup, completion receipt, PID-specific recovery, timestamp bypass, or custom runner method exists.
+- A provider-file publication failure is fatal because normal runtime is V3-only.
+- Selector-target/old-secret cleanup failures are warnings; they do not roll back empty V3.
 
 ## Implementation Contracts Required Before Coding
 
-### Custom metadata contract
+### Custom Metadata Contract
 
 ```ts
 type ResolvedMetadataSource =
   | { kind: 'live' }
-  | {
-      kind: 'inferred_builtin';
-      provider: LLMProvider;
-      value: string;
-      provenance: StaticModelMetadataProvenance;
-    }
+  | { kind: 'inferred_builtin'; provider: LLMProvider; value: string; provenance: StaticModelMetadataProvenance }
   | { kind: 'static_definition'; provenance: StaticModelMetadataProvenance }
   | { kind: 'unknown' };
 ```
 
-`endpoint_profile` is removed. The custom resolver input contains the discovered row only; Base URL is not part of metadata identity.
-
-For each of `maxContextTokens`, `maxInputTokens`, and `maxOutputTokens`:
+For each limit independently:
 
 ```text
-valid advertised JSON integer
-  ?? lowest valid exact SupportedModelDefinition.value candidate (inferred)
-  ?? null/unknown
+valid advertised integer
+  ?? lowest valid candidate among exact SupportedModelDefinition.value matches
+  ?? null
 ```
 
-The exact fallback index:
+The exact index performs no case folding, suffix/prefix stripping, display-name lookup, family matching, URL inspection, or aliasing. It retains candidate provenance and uses deterministic provider/source tie-breaking.
 
-- keys only non-empty `SupportedModelDefinition.value` without case or prefix transformation;
-- retains all provider/value candidates;
-- selects the lowest valid value independently per numeric field;
-- uses deterministic provider/source tie-breaking;
-- carries the selected candidate's provider, exact value, source URL, and verification date.
+### Qwen Configuration Contract
 
-### Qwen configuration contract
-
-```ts
-type QwenConfigurationInput = {
-  baseUrl: string;
-  apiKey: string;
-};
-```
-
-One authoritative `LlmProviderService.saveQwenConfiguration` command:
-
-1. require and normalize both values;
-2. probe the normalized pair through existing `OpenAICompatibleEndpointDiscovery.probeEndpoint`;
-3. if probe fails, write nothing;
-4. read the old Qwen secret status; when configured, resolve the previous `SecretValue` and retain it only within this command scope;
-5. save the new key under the existing Qwen secret consumer;
-6. call `AppConfig.setDurably(QWEN_BASE_URL, normalizedBaseUrl)`;
-7. when the URL commit succeeds, return the Qwen setup status and discard the previous-secret reference;
-8. when the URL commit fails, restore the prior secret with `saveForConsumer`, or remove the newly created secret when no prior secret existed;
-9. after successful compensation, throw sanitized code `QWEN_CONFIGURATION_SAVE_FAILED_PREVIOUS_RESTORED`;
-10. if compensation also fails, throw `QWEN_CONFIGURATION_REPAIR_REQUIRED`; never claim rollback or success.
-
-Key-first is deliberate: strict URL failure guarantees the URL remains old, while vault compensation is independent of the failed filesystem path. A probe or new-key failure touches no URL. The command must not return the key, previous key, or raw probe payload. An in-flight Qwen client is not mutated; newly constructed clients use the new URL.
-
-### Strict AppConfig write contract
-
-`autobyteus-server-ts/src/config/app-config.ts` adds one narrow operation; the existing best-effort `set` remains for callers that explicitly accept session-only behavior.
-
-```ts
-export type DurableAppConfigWriteResult = { persisted: true };
-
-setDurably(key: string, value: string): DurableAppConfigWriteResult;
-```
-
-`setDurably` must:
-
-1. apply the existing forbidden-sensitive-key guard;
-2. require an initialized configuration-file path;
-3. serialize the updated environment contents with the existing assignment/line-ending rules;
-4. create a unique sibling temporary file with exclusive creation and the existing `.env` file mode, write the full replacement, and fsync the open temporary file;
-5. atomically rename the temporary file over `.env` and clean up any pre-rename temporary file on failure;
-6. only after rename succeeds, update `configData[key]` and `process.env[key]`;
-7. return `{persisted:true}`; throw `AppConfigError` on any pre-commit failure instead of logging session-only success.
-
-The successful rename is the commit point. No fallible persistence operation follows it, so the method never reports failure after replacing the authoritative file. The method is synchronous like the current setter, which serializes calls through the server event loop; its private implementation closes the temporary descriptor in every path and never logs the setting value.
-
-The scope does not add a generalized transaction or multi-setting API. The all-or-old guarantee for the Qwen pair is composed specifically in `LlmProviderService` with the old-secret snapshot and compensation above.
-
-### Effective endpoint contract
-
-Add a small core-owned Qwen endpoint configuration file or equivalent cohesive owner containing:
+Core Qwen endpoint owner:
 
 ```ts
 export const QWEN_BASE_URL_ENV_VAR = 'QWEN_BASE_URL';
 export const DEFAULT_QWEN_BASE_URL =
   'https://dashscope-intl.aliyuncs.com/compatible-mode/v1';
-
-export function resolveQwenBaseUrl(
-  configured = process.env[QWEN_BASE_URL_ENV_VAR],
-): string;
+export function resolveQwenBaseUrl(configured?: string): string;
 ```
 
-The resolver uses the existing OpenAI-compatible absolute HTTP(S) normalization. `QwenLLM` calls it during construction and passes the result to `OpenAICompatibleLLM`. The URL literal is removed from `QwenLLM` itself.
+`resolveQwenBaseUrl` validates/normalizes absolute HTTP(S) and uses the default only for missing/blank setting. `QwenLLM` obtains it when constructed; no route literal remains in the adapter.
 
-### Qwen setup-status contract
-
-The server projects Qwen configuration through one Qwen-specific status rather than expanding `LlmProviderRecord` or general model/provider fields:
+GraphQL/service command input remains narrow:
 
 ```ts
-type QwenEndpointSource = 'DEFAULT' | 'CONFIGURED';
-
+type QwenConfigurationInput = { baseUrl: string; apiKey: string };
 type QwenSetupStatus = {
   effectiveBaseUrl: string;
-  endpointSource: QwenEndpointSource;
+  endpointSource: 'DEFAULT' | 'CONFIGURED';
   apiKeyConfigured: boolean;
 };
 ```
 
-`LlmProviderService.getQwenSetupStatus` reads `QWEN_BASE_URL` through `AppConfig`, normalizes optional whitespace, and determines source from the presence of that non-empty configured value, not equality with the default. It passes that same optional value to the core URL resolver for `effectiveBaseUrl` and uses the existing Qwen secret status for `apiKeyConfigured`. Thus an explicitly configured value equal to the default string is still `CONFIGURED`, while a missing/blank setting is `DEFAULT`.
+`LlmProviderService.saveQwenConfiguration` sequence:
 
-GraphQL exposes `qwenSetupStatus: QwenSetupStatus!` and `saveQwenConfiguration(input: QwenConfigurationInput!): QwenSetupStatus!`. The successful mutation returns the same service projection. The GraphQL boundary allowlists the two command failure codes as sanitized `GraphQLError.extensions.code` values—`QWEN_CONFIGURATION_SAVE_FAILED_PREVIOUS_RESTORED` and `QWEN_CONFIGURATION_REPAIR_REQUIRED`—and never forwards the AppConfig/vault cause. The browser consumes the enum and error code directly; it never embeds or compares the default URL.
+1. normalize/validate both values;
+2. probe pair; on failure write nothing;
+3. retain previous Qwen `SecretValue` in command scope when configured;
+4. save new key;
+5. call narrow `AppConfig.setDurably('QWEN_BASE_URL', normalizedUrl)` that writes same-directory temp, fsyncs file/directory, atomically replaces `.env`, and changes runtime memory only after success;
+6. if step 5 fails, restore previous key or remove the newly created key;
+7. if compensation succeeds, return `QWEN_CONFIGURATION_SAVE_FAILED_PREVIOUS_RESTORED`; if compensation fails, return `QWEN_CONFIGURATION_REPAIR_REQUIRED`; never return success;
+8. on success reload/project Qwen status.
 
-### Native Qwen definition contract
+`endpointSource` derives from presence of a saved non-empty setting, not URL equality. Generic provider records gain no Qwen fields.
 
-| Display / Identifier | Exact `value` | Provider | Static context | Input / Output | Notes |
-| --- | --- | --- | ---: | --- | --- |
-| `qwen3.8-max` | `qwen3.8-max` | `QWEN` | 1,000,000 | `null` / `null` unless route-specific evidence is recorded | No preview value or compatibility alias |
-| `DeepSeek V4 Pro (Qwen)` / `qwen:deepseek-v4-pro` | `deepseek-v4-pro` | `QWEN` | 1,000,000 | `null` / `null` unless route-specific evidence is recorded | Existing direct DeepSeek entry remains distinct |
-| `GLM-5.2 (Qwen)` / `qwen:glm-5.2` | `glm-5.2` | `QWEN` | 198,000 | `null` / `null` unless route-specific evidence is recorded | Existing direct GLM entry remains distinct |
+### Native Qwen Definitions
 
-Names may follow local display conventions, but identifiers and exact values must satisfy the table. Do not change a wire value to create uniqueness.
+| Display / Global Identifier | Exact `value` / Wire Model | Context | Notes |
+| --- | --- | ---: | --- |
+| `qwen3.8-max` | `qwen3.8-max` | 1,000,000 | No preview alias |
+| `DeepSeek V4 Pro (Qwen)` / `qwen:deepseek-v4-pro` | `deepseek-v4-pro` | 1,000,000 | Direct-provider entry remains distinct |
+| `DeepSeek V4 Flash 0731 (Qwen)` / `qwen:deepseek-v4-flash-0731` | `deepseek-v4-flash-0731` | 1,000,000 | Preserve exact Alibaba wire value |
+| `GLM-5.2 (Qwen)` / `qwen:glm-5.2` | `glm-5.2` | 198,000 | Direct-provider entry remains distinct |
 
-## Legacy Removal Policy (Mandatory)
+Input/output limits remain null unless route-specific evidence is recorded. Static definitions carry source URL and verification date. `modelIdentifierOverride` is internal catalog identity only and never changes the API `model` value.
 
-- Policy: `No backward compatibility; remove legacy code paths.`
-- Remove every custom endpoint profile and alias path rather than deprecating it.
-- Remove `qwen3.8-max-preview`; do not map it to `qwen3.8-max`.
-- Preserve existing key-only Qwen users through the semantics of an absent new optional setting, not a preview/model compatibility branch.
+### Custom Provider Identity And Store Contract
 
-## Persisted Data / State Transition Decision (Mandatory When Persisted Data May Be Affected)
+Core owner:
 
-- Stored subject/location: Qwen API-key secret under `provider.qwen.api-key`; server `.env` managed by `AppConfig`; custom provider V2 records.
-- Change: add optional non-secret `QWEN_BASE_URL`; no secret shape or custom-provider record change.
-- Normal reader/writer: secret resolver continues returning the existing Qwen key; `AppConfig.get` returns saved/env settings; absent URL selects the constant default.
-- Required invariants: secrets never enter non-secret config; saved URL is absolute HTTP(S); successful mutation means both values are durable; probe/new-key failure leaves the prior pair active; strict URL failure restores the prior key before reporting previous-restored failure.
-- Physical/privacy constraints: key remains in secret vault; URL is safe to expose in provider settings.
-- Decision: `Directly Usable — No Migration`.
-- Rationale: Existing data already has correct semantics. Rewriting the key or custom-provider records has no benefit and adds operational risk.
-- Supported criteria: AC-011–AC-014.
+```ts
+export function normalizeProviderName(value: string): string;
+export function buildCustomProviderId(displayName: string): string;
+```
 
-### Migration Plan (Only When Decision Is `Migration Required`)
+Normalization and examples are authoritative in the supplement. No random/hash/counter collision suffix exists. Invalid empty derivation fails `CUSTOM_PROVIDER_NAME_INVALID`.
 
-N/A — no transformation is required.
+`CustomLlmProviderStore.createProvider` under its existing locked update:
+
+1. normalize name and derive ID;
+2. parse V3 only;
+3. reject canonical name conflict;
+4. reject derived ID conflict;
+5. append `{id,name,providerType,baseUrl}` and return committed record.
+
+The service retains built-in-name and friendly early checks but cannot be commit authority. Browser/GraphQL input stays `{name,baseUrl,apiKey}`. The ID is immutable; provider rename/Base-URL edit is out of scope.
+
+### V1 Secretless Staging Contract
+
+Keep migration ID `20260727_custom_provider_v1_secret_migration` for installed ledger compatibility:
+
+- missing/strict V2/strict V3 -> not required;
+- valid V1 -> atomically publish V2 with only `id,name,providerType,baseUrl`, clear owned inline value/source bytes, and return warning `CUSTOM_PROVIDER_V1_RECONFIGURATION_REQUIRED`;
+- invalid/unsafe V1 -> existing reset/reconfiguration-required outcome;
+- never call secret batch/save/resolve/compensation;
+- do not access the vault during V1 staging; the readable transition may remove any old UUID entry only after empty-V3 publication.
+
+### Existing Custom Provider Recreation Contract
+
+Do not extend `saveProviderApiKey` for custom IDs and do not add a key editor to saved custom details. After empty-V3 reset there is no migrated record to repair.
+
+Reuse the existing add-custom-provider path without a new schema or branch:
+
+1. User opens the existing custom provider form.
+2. User enters provider name, Base URL, and API key again.
+3. Existing `createCustomProvider` validation/probe runs before mutation.
+4. Store derives the readable ID from the submitted name, atomically creates the V3 record, and existing secret save/runtime reload complete.
+5. Reusing the same canonical legacy name recreates the future ID already embedded in migrated selectors.
+6. A bad pair creates no provider/secret. A different name creates a different readable ID and old selectors remain unavailable until manually reselected.
+
+There is no persisted credential-missing flag, no preserved provider/Base URL, no custom branch in the built-in key mutation, and no new UI/API path.
+
+### Provider-Absent Selection Contract
+
+After empty-V3 publication and before recreation:
+
+- no migrated custom provider record, Base URL, readable-ID secret, model group, or credential-state attribute exists;
+- exact migrated/stale selectors remain stored and shown as unavailable, never changed to another model;
+- new agent/team launch, external dispatch, application launch, and resume fail through existing missing-model/activation error paths;
+- history remains viewable;
+- `ApplicationAgentLaunchProfileEditor.vue` retains the raw missing selector on load and reports not-ready/unavailable instead of clearing it;
+- same-name recreation restores usability only if the endpoint advertises the exact suffix; otherwise manual reselection is required.
 
 ## Data-Flow Spine Inventory
 
-| Spine ID | Scope | Related Behavior | Start | End | Governing Owner | Why It Matters |
+| Spine ID | Scope | Related Behavior ID(s) | Start | End | Governing Owner | Why It Matters |
 | --- | --- | --- | --- | --- | --- | --- |
-| DS-001 | Primary End-to-End | BEH-004, BEH-006 | Qwen Settings query/submit | Truthful Qwen status or sanitized failure with no false success | `LlmProviderService` | Establishes a durable user-supplied route/key and authoritative default/configured state |
-| DS-002 | Primary End-to-End | BEH-005, BEH-006 | User selects/starts Qwen model | Alibaba OpenAI-compatible completion call | `LLMFactory` model registry and `QwenLLM` adapter | Proves exact model value and dynamic endpoint reach runtime |
-| DS-003 | Primary End-to-End | BEH-001–BEH-003 | Custom provider probe/reload | Runtime token budget/compaction state | Custom discovery/model provider | Preserves generic context recovery with no route-specific policy |
-| DS-004 | Return/Event | BEH-003, BEH-006 | LLMFactory model projection/token usage | GraphQL catalog and token meter | Server catalog/token projection owners | Makes provider/model identity and known/unknown capacity observable |
-| LS-001 | Bounded Local | BEH-002 | One discovered custom row | Three resolved metadata fields | Exact custom metadata resolver | Centralizes per-field precedence and conservative duplicate handling |
+| DS-001 | Primary End-to-End | BEH-004, BEH-006 | Qwen Settings query/submit | Truthful status or sanitized all-old/repair-required failure | `LlmProviderService` | Owns Qwen pair sequencing/durability |
+| DS-002 | Primary End-to-End | BEH-005, BEH-006 | User selects/starts native Qwen model | OpenAI-compatible call to configured Alibaba route with exact model | `LLMFactory` + `QwenLLM` adapter | Proves catalog identity and wire identity stay separate |
+| DS-003 | Primary End-to-End | BEH-001–BEH-003 | Custom provider probe/reload | Model with known/inferred/unknown metadata reaches runtime | Custom discovery/provider | Preserves generic metadata behavior |
+| DS-004 | Return-Event | BEH-003, BEH-006 | Model/status/token state | GraphQL catalog/Settings/token meter | Server projection owners | Makes source and default/configured state observable |
+| DS-005 | Primary End-to-End | BEH-007 | User creates/recreates custom provider | Readable provider/model catalog becomes usable | `LlmProviderService` + store commit | Reuses existing create flow and establishes readable identity |
+| DS-006 | Primary End-to-End | BEH-007 | Server startup with V1/V2/V3 data | Exact selectors mapped, empty V3 published, terminal status permits runtime | App-data runner + readable migration | Resets providers while preserving deterministic selector intent |
+| DS-007 | Primary End-to-End | BEH-007 | User opens/launches/resumes unavailable saved selector | Explicit unavailable/activation failure or restored execution after recreation | Config owner + `LLMFactory` | Prevents silent fallback/data loss |
+| LS-001 | Bounded Local | BEH-001–BEH-003 | One discovered model row | Per-field resolved metadata | Custom metadata resolver | Exact deterministic precedence |
+| LS-002 | Bounded Local | BEH-007 | One legacy mapping/managed target | Exact prefix rewrite or warning | Readable migration | Optimistic bounded transition |
 
 ## Primary Execution Spine(s)
 
-- **DS-001:** `QwenSetupForm -> Qwen setup query/save mutation -> LlmProviderService -> normalize/probe -> old-secret snapshot -> new secret -> AppConfig.setDurably -> success status OR secret compensation -> sanitized failure`
-- **DS-002:** `Model selection -> Qwen catalog definition -> LLMFactory.createLLM -> QwenLLM -> effective Base URL resolver -> OpenAI-compatible client -> Alibaba endpoint`
-- **DS-003:** `Custom provider Settings/reload -> endpoint discovery -> exact-value metadata resolver -> custom LLMModel -> LLMFactory -> resolveTokenBudget -> compaction decision`
+- DS-001: `Qwen Settings -> GraphQL -> LlmProviderService -> endpoint probe -> SecretManagementService -> AppConfig.setDurably -> QwenSetupStatus -> Settings`
+- DS-002: `Model selector -> LLMFactory -> QwenLLM -> resolveQwenBaseUrl -> OpenAI-compatible client -> configured Alibaba endpoint`
+- DS-003: `Custom provider reload -> endpoint discovery -> strict normalization -> exact metadata resolver -> custom LLMModel -> token budget/compaction`
+- DS-005 create/recreate: `Existing custom form -> GraphQL -> LlmProviderService -> probe -> CustomLlmProviderStore locked readable-ID commit -> secret save -> runtime sync -> model group`
+- DS-006: `server startup -> ordinary ordered runPending -> V1/other prerequisites -> final readable migration -> selector attempts -> empty-V3 publication/cleanup -> runner terminal record -> thin status gate -> runtime/listen`
+- DS-007: `Stored future-readable selector -> UI/config owner retains raw value -> launch/resume -> explicit unavailable failure OR same-name recreation/reload -> exact model execution`
 
 ## Spine Narratives (Mandatory)
 
 | Spine ID | Short Narrative | Main Domain Subject Nodes | Governing Owner | Key Off-Spine Concerns |
 | --- | --- | --- | --- | --- |
-| DS-001 | The form first reads server-owned effective/default status. On save, the server probes, snapshots/replaces the secret, and strictly commits the URL. URL failure restores/removes the secret before returning previous-restored failure; double failure returns repair-required; success returns `CONFIGURED`. | Form, GraphQL query/command, provider configuration command, secret vault, strict AppConfig write | `LlmProviderService` | URL normalization, discovery probe, atomic file replacement, sanitized notifications |
-| DS-002 | A selected Qwen-owned definition supplies the exact provider wire value. `QwenLLM` resolves the effective endpoint at construction and calls it with the existing secret resolver. | Catalog definition, registry, Qwen adapter, client | `LLMFactory` / `QwenLLM` | Static metadata provenance, unique identifier override |
-| DS-003 | Custom discovery retains any advertised fields. A pure exact-value resolver fills only missing fields from the conservative built-in index; runtime consumes canonical fields unchanged. | Discovery, resolver, model construction, registry, token budget | Custom endpoint model provider | Stale-model preservation, source provenance |
-| DS-004 | Models and token state are projected through existing server/GraphQL/UI owners without new inference. | ModelInfo, catalog enrichment, GraphQL, UI | Existing catalog/token projection services | Coarse provenance mapping, localization |
-| LS-001 | Each numeric field independently checks live value, exact candidates, then unknown. | Row, fallback index, field result | Custom metadata resolver | Deterministic tie-breaking |
+| DS-001 | Settings submits one Qwen pair. Service proves pair, commits key, durably commits URL, compensates key on URL failure, and returns server-owned source/status. | form, service command, secret, durable setting, status | `LlmProviderService` | URL normalization, GraphQL error mapping |
+| DS-002 | Catalog selects provider-specific global identity, while adapter sends the unchanged exact value through the dynamically resolved route. | selector, registry model, adapter, provider | Registry/adapter | static metadata provenance |
+| DS-003 | Discovery owns raw endpoint interpretation; resolver owns only advertised/exact precedence; runtime receives canonical fields. | endpoint row, resolved metadata, model, budget | Custom provider lifecycle | definition index/provenance |
+| DS-005 | Existing create flow establishes readable identity, endpoint, key, and models after reset. Same-name recreation matches migrated selectors without a new repair path. | create form/command, store record, secret, runtime models | Service/store | probe and store-atomic uniqueness |
+| DS-006 | Existing migrations finish old-ID and target writes; final readable migration stages V1 without keys, maps exact selectors from legacy names, publishes empty V3 last, and relies on ordinary runner status/gate. | migration ledger, legacy names, selectors, empty V3, startup gate | Readable migration | migration-only name reader, atomic adapters, best-effort secret removal |
+| DS-007 | Provider-absent selectors remain data, not fallback instructions. UI shows unavailable and runtime fails explicitly until same-name recreation returns the exact model or the user reselects. | stored selector, editor, factory, activation | Each config owner + factory | model-group refresh/error copy |
 
 ## Spine Actors / Main-Line Nodes
 
-- `QwenSetupForm`: owns editable two-field UI state and client validation.
-- Qwen GraphQL query/mutation: thin transport boundaries for setup status and one explicit command.
-- `LlmProviderService`: owns validation/probe/key-first save sequencing, secret compensation, success gate, and Qwen setup-status projection.
-- Secret vault: owns Qwen key persistence.
-- `AppConfig.setDurably`: owns strict atomic non-secret Qwen Base URL persistence and its durable result.
-- Qwen endpoint resolver: owns effective URL/default semantics.
-- `SupportedModelDefinition`: owns code-curated model value and route-specific static metadata.
-- `LLMFactory`: owns registry construction and unique model identifiers.
-- `QwenLLM`: owns Qwen OpenAI-compatible client construction.
-- Custom discovery/resolver/provider: own custom row normalization, exact inference, and model construction.
+- Qwen setup form: input and user-visible submission state only.
+- `LlmProviderService`: Qwen/custom workflow sequencing, probes, secret commands, reload/status.
+- `AppConfig`: authoritative non-secret durable write result.
+- Qwen endpoint resolver/adapter: effective route and client construction.
+- Custom metadata resolver: pure per-field precedence.
+- Identity codec: pure canonical name/derived ID.
+- `CustomLlmProviderStore`: V3 record and atomic uniqueness authority.
+- App-data runner/readable migration: startup transition lifecycle and terminal status.
+- Config/application/run owners: exact selector persistence.
+- `LLMFactory`: final model availability/identity lookup.
 
 ## Ownership Map
 
-| Node | Owns | Must Not Own |
+| Owner | Owns | Must Not Own |
 | --- | --- | --- |
-| `QwenSetupForm` | Form state, server-projected endpoint-source presentation, validation, submit event, sanitized failure recovery | Secret persistence, URL comparisons, probing, model facts |
-| `LlmProviderService` | Qwen status, probe, previous-secret snapshot, key-first save, strict URL commit, compensation, success/failure semantics | Runtime request construction, provider profile tables |
-| `AppConfig.setDurably` | Atomic `.env` replacement and post-commit runtime update | Secret compensation, Qwen-specific sequencing |
-| Qwen endpoint resolver | Setting name, historical default, URL normalization | Secrets, GraphQL, model catalog |
-| `QwenLLM` | Client creation using effective URL/key resolver | Static model catalog, region/plan guessing |
-| Qwen supported definitions | Exact values, unique identifiers, static metadata/provenance | User endpoint configuration |
-| Custom metadata resolver | Exact built-in index and per-field precedence | Endpoint URLs, provider aliases, regional policy |
+| `LlmProviderService` | Provider workflow sequencing, probe, key mutation, runtime reload, Qwen status | File-format migration, catalog metadata facts, UI state |
+| `AppConfig` | Strict durable `.env` replacement and truthful result | Secret compensation or Qwen workflow |
+| Qwen endpoint resolver | Env key/default/normalization | Secrets, Settings, model list |
+| Qwen definitions | Exact values, unique identifiers, static provenance | User endpoint or keys |
+| Custom metadata resolver | Exact index and per-field precedence | Endpoint URL/profile/alias/provider-name policy |
+| Identity codec | Deterministic name normalization/ID | Persistence, conflict resolution, suffix allocation |
+| `CustomLlmProviderStore` | V3 parse, locked uniqueness, append/delete | Probe, secret write, V2 conversion |
+| V1 migration | Inline-secret removal and secretless V2 | Readable ID mapping or runtime aliases |
+| Readable migration | Exact prerequisites, transient mapping, selector attempts, empty-V3-last publication, best-effort old-secret removal | Provider/Base-URL preservation, secret value transfer, token-row rewrite, generic recovery framework |
+| Migration-only name reader | Strict missing/V2/V3 `{id,name}` projection | Normal runtime/store reads |
+| Config/UI owners | Persist/display exact selector | Selecting fallback on missing model |
+| `LLMFactory` | Exact global selector lookup | UI clearing or provider-ID migration |
 
-## Thin Entry Facades / Public Wrappers (If Applicable)
+## Thin Entry Facades / Public Wrappers
 
-| Facade | Governing Owner | Why It Exists | Must Not Secretly Own |
+| Facade / Entry Wrapper | Governing Owner Behind It | Why It Exists | Must Not Secretly Own |
 | --- | --- | --- | --- |
-| Qwen save GraphQL mutation | `LlmProviderService` | Schema/auth/transport | Probe/write sequencing |
-| `OpenAICompatibleEndpointDiscovery.probeEndpoint` | Discovery boundary | Reusable normalized HTTP probe | Qwen persistence or model selection |
-| `LLMFactory.createLLM` | Registry/model owner | Stable runtime construction entry | Qwen endpoint literals |
+| GraphQL provider query/mutations | `LlmProviderService` | Auth/schema/error projection | Probe/write order or custom/built-in identity rules |
+| `ProviderAPIKeyManager.vue` | Settings runtime/store | Compose provider-specific forms/details | Server source inference or key persistence |
+| `server-runtime.ts` migration gate | Runner result + readable migration definition | Stop before runtime on non-terminal result | Rerun/recovery/state interpretation |
 
 ## Removal / Decommission Plan (Mandatory)
 
-| Item To Remove / Decommission | Why Unnecessary | Replaced By | Scope | Notes |
+| Item To Remove / Decommission | Why It Becomes Unnecessary | Replaced By Which Owner / File / Structure | Scope | Notes |
 | --- | --- | --- | --- | --- |
-| `OPENAI_COMPATIBLE_ENDPOINT_MODEL_PROFILES` | Route-specific policy rejected | Native Qwen definitions/config | In This Change | Delete constant and tests |
-| `CanonicalEndpointIdentity` and URL profile parser/matcher | Resolver no longer uses endpoint identity | Exact value resolver | In This Change | Endpoint URL removed from resolver input |
-| `EndpointModelProfile`, profile provenance/reference functions | No profile or alias source remains | Built-in fallback candidate/index | In This Change | Tighten source union |
-| `deepseek-v4-flash-0731` alias/reference | User selected `deepseek-v4-pro`; no aliases | Exact native/built-in value | In This Change | Near values remain unknown |
-| `endpoint_profile` source kind and server mapping branches | No producer remains | `live`/`inferred_builtin`/`static_definition`/`unknown` | In This Change | Update tests |
-| Qwen constructor URL literal | Prevents dynamic endpoints | Qwen endpoint resolver | In This Change | Default constant retained in one owner |
-| Generic key-only Qwen editor branch | Cannot save URL/key pair | `QwenSetupForm` | In This Change | Other providers retain generic editor |
-| `qwen3.8-max-preview` profile/tests/docs | User requires production exact value | `qwen3.8-max` Qwen definition | In This Change | No compatibility alias |
+| Custom endpoint profiles/Alibaba URL tables | Native Qwen owns route configuration; generic custom inference is exact | Qwen endpoint config + exact resolver | In This Change | Delete tests/types too |
+| Custom model aliases/references including dated DeepSeek remap | Exact native offering exists; custom values remain exact | Native Qwen definitions / exact fallback | In This Change | No suffix normalization |
+| `endpoint_profile` source union branch | No producer remains | `live`, `inferred_builtin`, `static_definition`, `unknown` | In This Change | Update server projection/tests |
+| Qwen constructor URL literal | Blocks regional/Token Plan endpoints | `qwen-provider-config.ts` | In This Change | One historical default remains |
+| `qwen3.8-max-preview` | User says production exact value is non-preview | `qwen3.8-max` exact definition | In This Change | No alias/migration |
+| `randomUUID` custom ID creation | Opaque identity and split invariant | core codec + store commit | In This Change | No collision suffix |
+| `custom-provider-readable-id-migration-state.ts` and validator/state-specific result if unused | Private journal/receipt state is superseded | Existing runner status + idempotent exact operations | In This Change | Delete source/tests |
+| `custom-provider-readable-id-startup-recovery.ts` | Immediate recovery no longer required | Thin terminal status gate | In This Change | No coordinator |
+| `custom-provider-readable-id-secret-migrator.ts` | Secret transfer explicitly rejected | Empty-V3 reset plus ordinary provider recreation | In This Change | Migration never resolves old value |
+| `AppDataMigrationRunner.resumePersistedRunningAtStartup` and type/test changes supporting it | Special timestamp bypass superseded | Ordinary stale-`RUNNING` policy | In This Change | Preserve normal runner |
+| Migration journal/backups/completion receipt/phase/lock machinery beyond ordinary atomic store utilities | Crash-perfect protocol rejected | Optimistic empty-V3-last transition | In This Change | Remove PID-recovery-specific files/tests |
+| Crash-point/receipt/runner-handoff test matrix | No longer acceptance authority | Ordinary interruption/idempotency/status-gate tests | In This Change | Keep proportional failure tests |
+| Application-agent missing-selector clearing watcher | Conflicts with provider-absent selector contract | Retain-and-block state | In This Change | Align team/editor behavior |
 
-## Return Or Event Spine(s) (If Applicable)
+## Return Or Event Spine(s)
 
-- **DS-004 catalog:** `LLMModel.toModelInfo -> ModelMetadataProvisioningService -> GraphQL ModelDetail/LlmProviderObject -> provider browser/model selector`.
-- **DS-004 token state:** `runtime token usage -> token summary projection -> GraphQL -> TokenUsageMeterPanel`; capacity remains known or explicitly unavailable.
-- **DS-001 status/save response:** setup query supplies effective URL/source/key flag; successful mutation returns the same `CONFIGURED` status and clears plaintext; previous-restored and repair-required failures preserve the input and show distinct messages.
+DS-004:
 
-## Bounded Local / Internal Spines (If Applicable)
+`resolved model/Qwen status -> provider/model service -> GraphQL typed projection -> web store/runtime -> model group, source state, token meter, or error UI`.
 
-- **LS-001 parent:** custom metadata resolver.
-- **Flow:** `advertised field validation -> exact value candidate set -> lowest valid candidate + provenance -> unknown`.
-- **Why:** Keeps all fallback policy deterministic and prevents endpoint/provider heuristics from reappearing in callers.
+Secrets and raw causes never enter this return path. Metadata source/provenance and Qwen endpoint source are explicit server projections.
+
+## Bounded Local / Internal Spines
+
+- LS-001 parent: custom metadata resolver. `advertised field -> exact candidate set -> deterministic minimum/tie-break -> typed source/null`.
+- LS-002 parent: readable migration. `transient old/future map -> enumerate exact owned targets -> compare exact prefix -> atomic replace/transaction or warning -> continue -> publish empty V3 last`.
+- Qwen compensation loop is command-local rather than a reusable transaction framework: `key saved -> durable URL failure -> restore old/remove new -> truthful code`.
 
 ## Off-Spine Concerns Around The Spine
 
-| Concern | Spines | Serves Owner | Responsibility | Why It Exists | Risk If On Main Line |
+| Off-Spine Concern | Related Spine IDs | Serves Which Owner | Responsibility | Why It Exists | Risk If Misplaced On Main Line |
 | --- | --- | --- | --- | --- | --- |
-| URL normalization | DS-001, DS-002 | Provider configuration / endpoint resolver | Absolute HTTP(S), normalized trailing slash | Same user/runtime URL semantics | Duplicated validation |
-| Secret hygiene | DS-001, DS-002 | Secret vault / provider service | Write-only key and sanitized errors | Security contract | Secret leakage |
-| Strict file replacement | DS-001 | AppConfig | Temp write/fsync/atomic rename before memory update | Prevent session-only false success | Provider service duplicates file persistence |
-| Secret compensation | DS-001 | `LlmProviderService` | Restore old key/remove new key after URL failure | All-or-old for individual failures | General transaction abstraction or UI guesses |
-| Static provenance | DS-002, DS-003 | Definitions/resolver | Source URL/date per numeric fact | Vendor facts change | Unreviewable constants |
-| Stale custom models | DS-003 | Custom runtime sync | Preserve last-known-good on failure | Existing resilience | Resolver owns lifecycle incorrectly |
-| Coarse GraphQL provenance | DS-004 | Server enrichment | Map source without exposing internal detail | Existing public API | UI guesses source |
-| Localization/accessibility | DS-001, DS-004 | Frontend components | Labels, errors, unknown state | User-facing quality | Backend concerns mixed into UI |
+| Static metadata provenance | DS-002–DS-004 | Definition/resolver | Source URL/date and selected candidate | Auditability | Catalog or UI starts inventing facts |
+| Strict URL normalization | DS-001, DS-002 | Qwen endpoint owner/service | Absolute HTTP(S), canonical form | Shared route invariant | UI/runtime disagree |
+| Secret management | DS-001, DS-005, DS-006 | Service/migration | Save/status/remove without exposure | Existing security boundary | Migration/UI handles plaintext |
+| Atomic JSON/SQLite adapters | DS-006, LS-002 | Readable migration | Shape-specific exact writes | Storage semantics differ | Migration becomes broad text rewriter |
+| Migration-only provider names | DS-006 | Token snapshot/readable migration | Historical `{id,name}` lookup | Old-ID consumer ordering | Normal store gains V2 alias |
+| Missing-model presentation | DS-007 | Config editors | Retain raw value and mark unavailable | Actionable repair | UI silently changes user choice |
 
 ## Ownership Boundaries
 
-- GraphQL delegates the Qwen command to `LlmProviderService`; it does not directly write AppConfig or the secret vault.
-- `LlmProviderService` delegates probing to the shared discovery boundary; it does not parse raw `/models` payloads.
-- `LlmProviderService` is the only boundary composing the secret and URL owners. `AppConfig` reports strict persistence but knows nothing about the Qwen secret; the vault knows nothing about the URL.
-- Qwen setup query/mutation return the server-owned endpoint source; the browser does not infer source from URL equality or general provider records.
-- `QwenLLM` depends on the effective endpoint resolver and existing API-key resolver, not server configuration services.
-- Custom model construction depends on one resolved metadata result; callers must not inspect built-in definitions themselves.
-- Runtime/compaction/UI consume canonical model/token fields and must not infer provider limits by model strings.
+- GraphQL and Vue components call `LlmProviderService`; they do not sequence vault/AppConfig/store internals.
+- Qwen runtime and server status use one endpoint policy; UI does not compare against the default URL.
+- Store creation is authoritative for custom name/ID uniqueness; service prechecks are advisory.
+- Migration owns old schema/mapping and exact selector adapters; normal provider/config/runtime code never reads UUID aliases.
+- Secret service owns values. Readable migration may request removal by old consumer identity only; it never resolves the value.
+- Each selector store's adapter owns its physical atomicity; readable migration owns enumeration/order and exact mapping.
+- `server-runtime` only checks terminal migration status; it does not implement retry/recovery or infer completion from V3.
 
 ## Boundary Encapsulation Map
 
-| Authoritative Boundary | Encapsulated Mechanisms | Required Callers | Forbidden Bypass | If Too Thin, Fix By |
+| Authoritative Boundary | Internal Owned Mechanisms | Upstream Callers | Forbidden Bypass Shape | If API Is Too Thin, Fix By |
 | --- | --- | --- | --- | --- |
-| `LlmProviderService.saveQwenConfiguration` | normalization, probe, old-secret snapshot, key write, strict URL write, compensation, result | GraphQL resolver | Resolver writes vault/AppConfig directly | Strengthen command result/status |
-| `LlmProviderService.getQwenSetupStatus` | configured/default source and effective URL/key flag | GraphQL query/mutation return mapping | Browser compares URLs or reads AppConfig | Strengthen Qwen-specific status only |
-| `AppConfig.setDurably` | atomic persistent setting replacement and post-commit memory update | Qwen provider command | Command calls private file writer or best-effort `set` | Strengthen strict write result |
-| Qwen endpoint resolver | env key, default, normalization | Qwen runtime and Qwen status projection | Duplicate URL literal/default logic | Export stable constant/resolver |
-| Custom metadata resolver | exact index, candidate selection, sources | Custom model provider | Constructor/runtime reads definitions | Strengthen typed resolver output |
-| `ModelMetadataProvisioningService` | internal source merge/coarse mapping | Catalog service | GraphQL merges fields | Preserve source-bearing ModelInfo |
+| `LlmProviderService` | probe, vault, AppConfig, store, runtime sync | GraphQL | resolver/UI directly writes vault/env/store | Add subject-specific service method |
+| `AppConfig.setDurably` | temp file/fsync/rename/runtime update | Qwen command | service writes `.env` itself | Strengthen result/error contract |
+| `CustomLlmProviderStore.createProvider` | lock, V3 parse, derive/recheck/append | provider service | service generates ID/appends file | Return committed record/conflict code |
+| Readable migration definition | prerequisites, transient mapping, target adapters, empty-V3 commit/cleanup | app-data runner | server runtime invokes adapters/state | Keep one execute boundary |
+| `LLMFactory` | registry exact lookup | launch/resume backends | caller silently substitutes default | Surface not-found |
 
 ## Dependency Rules
 
-- Frontend Qwen form -> Qwen setup GraphQL query/mutation only; no embedded default or URL comparison.
-- GraphQL -> `LlmProviderService`; no direct secret/config dependency.
-- `LlmProviderService` -> shared URL normalization/discovery, secret vault, `AppConfig.setDurably`, catalog invalidation/refresh.
-- `AppConfig.setDurably` -> existing environment serialization/filesystem only; it must not import Qwen or secret management.
-- Core Qwen endpoint resolver -> shared OpenAI-compatible URL normalizer only; no server import.
-- `QwenLLM` -> Qwen endpoint resolver + existing OpenAI-compatible base class.
-- Supported definitions -> QwenLLM/static metadata; no AppConfig or endpoint probing.
-- Custom resolver -> supported definitions/static metadata; no network, URL, server, GraphQL, or UI.
-- Server/UI/runtime must not introduce endpoint profiles or alias matching elsewhere.
+Allowed:
+
+- Web GraphQL store -> GraphQL provider boundary -> `LlmProviderService`.
+- `LlmProviderService` -> discovery, secret service, AppConfig, custom store, runtime sync.
+- Qwen adapter/server projection -> core Qwen endpoint resolver.
+- Custom store/schema/migration -> core identity codec.
+- Readable migration -> migration-only name reader/prerequisite guard/shape adapters/secret removal.
+- Token snapshot migration -> migration-only name reader.
+
+Forbidden:
+
+- Generic custom resolver depending on Base URL, Alibaba plan, provider display name, or alias table.
+- UI generating provider IDs or inferring Qwen endpoint source.
+- Service treating its precheck as final uniqueness authority.
+- Normal store/service/runtime importing V1/V2 readers or UUID maps.
+- Readable migration resolving/copying legacy secret values or rewriting token/history/free text.
+- `server-runtime` bypassing runner/definition boundaries or implementing custom recovery.
+- Missing selector code selecting a fallback or clearing persisted value solely because catalog entry is absent.
 
 ## Interface Boundary Mapping
 
-| Interface | Subject | Responsibility | Identity Shape | Notes |
+| Interface / API / Query / Command / Method | Subject Owned | Responsibility | Accepted Identity Shape(s) | Notes |
 | --- | --- | --- | --- | --- |
-| `saveQwenConfiguration({baseUrl, apiKey})` | Qwen connection | Validate, probe, key-first commit, strict URL commit, compensation, truthful result | One Base URL + one write-only key | Returns setup status only on success |
-| `getQwenSetupStatus()` | Qwen configuration state | Project effective URL, source, and key flag | Singleton native Qwen provider | No secret or generic provider expansion |
-| `AppConfig.setDurably(key, value)` | Persistent setting | Atomic file replacement before runtime mutation | One allowed key/value | Throws; never session-only success |
-| `resolveQwenBaseUrl(configured?)` | Qwen endpoint | Return normalized configured/default URL | Optional string | Same semantics in runtime/status |
-| `QwenLLM(model, config, apiKeyResolver)` | Qwen runtime | Build OpenAI-compatible client | Qwen-owned model | Uses exact `model.value` |
-| `resolve({discoveredModel})` | Custom metadata | Per-field live/exact/unknown result | Exact discovered `value` | No endpoint identity |
-| `SupportedModelDefinition` | Native model fact | Exact value, provider, identifier, metadata | Provider + exact value | Existing structure only |
+| `saveQwenConfiguration({baseUrl,apiKey})` | Qwen connection | Probe and durable pair command | Qwen singleton | Subject-specific |
+| `qwenSetupStatus` | Qwen connection | Project effective URL/source/key flag | Qwen singleton | No secret |
+| `saveProviderApiKey(providerId,apiKey)` | Built-in provider credential | Preserve current built-in key behavior only | Built-in provider ID | Do not add a custom-reset branch |
+| `createCustomProvider({name,baseUrl,apiKey})` | New custom provider | Probe/create/save/reload | Name-derived server ID | Browser supplies no ID |
+| `CustomLlmProviderStore.createProvider` | Custom V3 record | Derive ID and atomically commit uniqueness | Canonical name/derived ID | Returns record |
+| `resolveOpenAICompatibleEndpointModelMetadata(row)` | Custom discovered model | Per-field advertised/exact resolution | Exact model value | No endpoint argument |
+| `CustomProviderMigrationNameSnapshotReader.read()` | Migration provider-name projection | Strict missing/V2/V3 `{id,name}` | Historical/current provider IDs | Migration-only |
+| `CustomProviderReadableIdPrerequisiteGuard.requireTerminalSuccess()` | Readable prerequisites | Fixed exact status check | Five migration IDs | No graph/framework |
+| `CustomProviderReadableIdAppDataMigration.execute()` | Reset/selector transition | Map/rewrite/empty-V3-last/cleanup | Complete transient V2 old->future mapping | No record/Base-URL/secret preservation |
 
 ## Interface Boundary Check
 
-| Interface | Singular? | Explicit Identity? | Selector Risk | Corrective Action |
+| Interface | Responsibility Is Singular? | Identity Shape Is Explicit? | Ambiguous Selector Risk | Corrective Action |
 | --- | --- | --- | --- | --- |
-| Qwen save command | Yes | Yes | Low | Reject generic provider-setting bag |
-| Qwen setup status | Yes | Yes | Low | Use `DEFAULT|CONFIGURED`, not URL comparison |
-| Strict AppConfig setter | Yes | Yes | Low | Keep one-setting result; no transaction API |
-| Qwen URL resolver | Yes | Yes | Low | Keep one default constant |
-| Custom resolver | Yes | Yes | Low | Remove endpoint input |
-| Qwen definitions | Yes | Yes | Medium | Require unique identifier override for duplicate values |
+| Qwen configuration command | Yes | Yes | Low | Keep two-field input |
+| Existing key mutation | Yes | Yes | Low | Keep built-in-only; custom re-entry uses create |
+| Custom create/store | Yes | Yes | Low | Store derives ID |
+| Exact metadata resolver | Yes | Yes | Low | Remove endpoint/profile input |
+| Readable migration | Yes | Yes | Medium | Exact prefix inventory and suffix preservation |
+| Missing selector runtime | Yes | Yes | Medium | Preserve raw value; exact factory failure |
 
 ## Main Domain Subject Naming Check
 
-| Subject | Name | Clear | Drift Risk | Action |
+| Node / Subject | Current / Proposed Name | Natural/Self-Descriptive? | Naming Drift Risk | Corrective Action |
 | --- | --- | --- | --- | --- |
-| Native configuration form | `QwenSetupForm` | Yes | Low | Do not call it custom provider form |
-| Server command | `saveQwenConfiguration` | Yes | Low | Avoid generic map settings |
-| Server state | `QwenSetupStatus` | Yes | Low | Do not add general provider route attributes |
-| Durable setting operation | `setDurably` | Yes | Low | Differentiate from best-effort `set` |
-| Effective endpoint | `resolveQwenBaseUrl` | Yes | Low | Keep plan/region out of name |
-| Custom resolver | `OpenAICompatibleEndpointModelMetadataResolver` | Yes | Medium | Name remains acceptable after simplification; no profile types |
+| Qwen endpoint policy | `qwen-provider-config.ts` | Yes | Low | Keep only endpoint setting/default/resolve |
+| Custom identity | `custom-llm-provider-identity.ts` | Yes | Low | No generic slug helper |
+| Migration-only names | `custom-provider-migration-name-snapshot.ts` | Yes | Low | Keep migration namespace/shape |
+| Readable transition | `custom-provider-readable-id-app-data-migration.ts` | Yes | Low | Remove recovery/state duties |
+| Custom saved details | `CustomProviderDetailsCard.vue` | Yes | Low | No change; reset leaves no migrated record to repair |
 
 ## Existing Capability / Subsystem Reuse Check
 
-| Need | Existing Area | Decision | Why |
-| --- | --- | --- | --- |
-| Effective/saved state | Qwen-specific GraphQL status | Create narrow | General `baseUrl` cannot express `DEFAULT` vs `CONFIGURED`; three fields exactly serve the form |
-| Key storage | Secret vault Qwen consumer | Reuse | Existing authoritative owner |
-| Non-secret persistence | AppConfig | Extend narrowly | Existing `.env` owner gains one strict atomic single-setting operation |
-| Key compensation | Secret management methods | Reuse | Existing status/resolve/save/remove operations support bounded rollback |
-| Pair validation | OpenAI-compatible discovery | Reuse | Already calls `/models` with key |
-| Static model facts | Supported definitions | Reuse/extend | Existing canonical catalog |
-| Unique duplicated identifier | `modelIdentifierOverride` | Reuse | Avoids schema change |
-| Custom exact fallback | Current metadata resolver/index | Simplify | Generic useful part already implemented |
-| Runtime compaction/UI | Existing token budget/meter | Reuse | Already correct once context exists |
+| Need / Concern | Existing Capability Area / Subsystem | Decision | Why | If New, Why Existing Areas Are Not Right |
+| --- | --- | --- | --- | --- |
+| Custom endpoint probe | Discovery | Reuse | Already validates URL/key/model rows | N/A |
+| Key save/status/remove | Secret management | Reuse | Existing secure owner | N/A |
+| Strict Qwen URL durability | AppConfig | Extend | Existing non-secret config owner | N/A |
+| Legacy custom re-entry | Existing custom create form/service | Reuse | Already accepts/probes/saves name/Base URL/key | N/A |
+| Name/ID policy | Core LLM provider domain | Create New file | Shared pure invariant across server/store/migration | Generic utility would lose domain meaning |
+| Legacy provider names | App-data migrations | Create New migration-only file | Normal store must stay V3-only | N/A |
+| Selector rewrites | App-data migration adapters | Extend/Add bounded files | Store-specific atomicity | No general text migration |
+| Migration dependencies/recovery | Existing runner/records | Reuse ordinary status only | Special framework not required | N/A |
 
 ## Subsystem / Capability-Area Allocation
 
-| Area | Concerns | Spines | Owners | Decision | Notes |
+| Subsystem / Capability Area | Owns Which Concerns | Related Spine IDs | Governing Owner(s) Served | Decision | Notes |
 | --- | --- | --- | --- | --- | --- |
-| LLM provider configuration | Qwen pair command/setup status/compensation | DS-001 | `LlmProviderService` | Extend | One provider-specific command/query projection |
-| Server app configuration | Strict atomic setting persistence | DS-001 | `AppConfig` | Extend | One single-setting durable method, no transaction layer |
-| Core Qwen adapter | Default/effective URL and client | DS-002 | Qwen endpoint resolver / `QwenLLM` | Extend | No server dependency |
-| Supported model catalog | Three required Qwen offerings | DS-002, DS-004 | Definitions/LLMFactory | Extend | Existing fields only |
-| Custom endpoint metadata | Advertised + exact fallback | DS-003, LS-001 | Discovery/resolver/provider | Simplify | Delete route-specific policy |
-| Server catalog | Source projection | DS-004 | Metadata provisioning | Simplify | Remove endpoint-profile branch |
-| Settings UI | Qwen form | DS-001 | Provider manager/form/runtime/store | Extend | Consume Qwen setup status, not inferred provider data |
+| Core LLM/Qwen | Endpoint policy, adapter, exact definitions | DS-002 | Qwen runtime/catalog | Extend | No Settings/secret concerns |
+| Core metadata | Advertised/exact inference/source types | DS-003, LS-001 | Custom provider | Simplify | Delete route policy |
+| Server provider management | Qwen commands/status and custom create/probe/reload/store | DS-001, DS-005 | `LlmProviderService`/store | Extend only for readable create ID | No reconnect branch |
+| App-data migrations | V1 staging, ordering, transient mapping, exact adapters, empty-V3 commit | DS-006, LS-002 | App-data runner | Simplify existing/new | No private recovery subsystem |
+| Web Settings | Qwen form and existing custom create/delete UI | DS-001, DS-005 | Settings runtime/store | Reuse/extend Qwen only | No custom reconnect/credential state |
+| Web application setup | Missing selector presentation/readiness | DS-007 | Application editors | Modify | Align agent/team behavior |
 
 ## Draft File Responsibility Mapping
 
-| Candidate File | Area | Owner | Concern | Why One File | Shared Structure |
+| Candidate File | Subsystem | Owner / Boundary | Concrete Concern | Why One File | Reuses Shared Structure? |
 | --- | --- | --- | --- | --- | --- |
-| `autobyteus-ts/src/llm/qwen-provider-config.ts` | Core Qwen | Endpoint resolver | Env key, default, normalization | Cohesive non-secret endpoint policy | Existing URL normalizer |
-| `qwen-llm.ts` | Core Qwen | Runtime adapter | Use effective URL | Existing adapter owner | Resolver |
-| `supported-model-definitions.ts` | Catalog | Definitions | Three Qwen entries | Existing catalog owner | Static metadata helper |
-| `openai-compatible-endpoint-model-metadata.ts` | Custom metadata | Resolver | Exact index and per-field fallback | Existing pure owner, now smaller | Resolved metadata types |
-| `model-metadata-resolver.ts` | Shared metadata | Source contract | Remove obsolete variant | Existing canonical type | N/A |
-| `app-config.ts` | Server config | Strict persistence | Atomic single-setting write/result | Existing file/env owner | Environment helpers |
-| `llm-provider-service.ts` | Provider config | Command/status owner | Probe/snapshot/save/strict commit/compensate/project | Existing provider setup owner | Discovery/vault/AppConfig |
-| GraphQL `llm-provider.ts` | Transport | Resolver | Qwen input, setup query, mutation/status, allowlisted failure-code mapping | Existing provider API | Service command/status |
-| `QwenSetupForm.vue` | Settings UI | Form | Two-field UX | Distinct from generic key editor | Existing styles |
+| `qwen-provider-config.ts` | Core Qwen | Endpoint policy | env key/default/normalize/resolve | Cohesive route concern | URL normalizer |
+| `custom-llm-provider-identity.ts` | Core provider | Identity codec | canonical name + ID | Shared pure invariant | N/A |
+| `llm-provider-service.ts` | Server provider | Workflow | Qwen save/status and existing custom create | Existing command owner | discovery/secret/AppConfig/store |
+| readable migration | Migration | Transition sequencer | prerequisites/transient map/adapters/empty-V3/cleanup | One migration lifecycle | codec/readers/adapters |
+| name snapshot | Migration | Historical projection | missing/V2/V3 `{id,name}` | Narrow shared migration data | codec/parsers |
+| JSON/SQLite selector migrators | Migration | Physical adapters | Exact shape-specific atomic writes | Separate physical stores | mapping shape |
 
 ## Reusable Owned Structures Check
 
-| Repeated Structure | Candidate Shared File | Owner | Why Shared | Redundant Removed? | Overlap Removed? | Must Not Become |
+| Repeated Structure / Logic | Candidate Shared File | Owning Subsystem | Why Shared | Redundant Attributes Removed? | Overlapping Representations Removed? | Must Not Become |
 | --- | --- | --- | --- | --- | --- | --- |
-| Qwen URL key/default/normalization | `qwen-provider-config.ts` | Core Qwen | Runtime and server projection need identical semantics | Yes | Yes | General provider setting bag |
-| Positive integer/source field | Existing metadata types | LLM metadata | Discovery, definitions, server use same semantics | Yes | Yes | Raw vendor payload |
-| Qwen configuration projection | `QwenSetupStatus` in provider domain/GraphQL | Provider configuration | The form needs one explicit state across query and mutation | Yes | Yes | General provider/model route schema |
+| Provider name/ID normalization | `autobyteus-ts/src/llm/custom-llm-provider-identity.ts` | Core provider | Store/schema/service/migration need exact same invariant | Yes | Yes | Generic slug/alias framework |
+| Qwen effective endpoint | `autobyteus-ts/src/llm/qwen-provider-config.ts` | Core Qwen | Runtime and server status must agree | Yes | Yes | General provider route bag |
+| Old/new selector prefix | Migration-local mapping type | App-data migration | Every adapter needs exact pair | Yes | Yes | Public model identity type |
+| Migration provider name | `custom-provider-migration-name-snapshot.ts` | App-data migration | Token snapshot/readable mapping need legacy names | Yes | Yes | Runtime dual reader |
 
 ## Shared Structure / Data Model Tightness Check
 
-| Structure | One Meaning Per Field? | Redundant Removed? | Parallel Risk | Corrective Action |
+| Shared Structure / Type / Schema | One Clear Meaning Per Field? | Redundant Attributes Removed? | Parallel Risk | Corrective Action |
 | --- | --- | --- | --- | --- |
-| `QwenConfigurationInput` | Yes | Yes | Low | Only baseUrl/apiKey |
-| `QwenSetupStatus` | Yes | Yes | Low | Only effectiveBaseUrl/endpointSource/apiKeyConfigured |
-| `LlmProviderRecord` | Yes | Yes | Low | Leave general record unchanged; no plan/region/source fields |
-| `SupportedModelDefinition` | Yes | Yes | Low | Reuse exact value/identifier override |
-| `ResolvedMetadataSource` | Yes after deletion | Yes | Low | Remove `endpoint_profile` completely |
-| Built-in fallback index | Yes | Yes | Low | Key exact value only |
+| Qwen configuration input | Yes | Yes | Low | Exactly URL/key |
+| Qwen setup status | Yes | Yes | Low | Exactly effective URL/source/key flag |
+| V3 provider record | Yes | Yes | Low | Same four fields; ID/name invariant |
+| Custom model selector | Yes | Yes | Medium | Keep current composite; no second structured identity |
+| Migration mapping | Yes | Yes | Low | Old/new IDs/prefixes only; no secrets |
 
 ## Final File Responsibility Mapping
 
-| File | Area | Owner | Concrete Concern | Why One File | Reuse |
+| File | Subsystem | Owner / Boundary | Concrete Concern | Why This Is One File | Reuses Shared Structure? |
 | --- | --- | --- | --- | --- | --- |
-| `autobyteus-ts/src/llm/qwen-provider-config.ts` (add) | Core Qwen | Endpoint policy | Setting constant, default, effective normalized URL | One cohesive policy | URL normalizer |
-| `autobyteus-ts/src/llm/api/qwen-llm.ts` (modify) | Core Qwen | Runtime adapter | Remove literal and use resolver | Existing adapter | Endpoint policy |
-| `autobyteus-ts/src/llm/supported-model-definitions.ts` (modify) | Catalog | Model facts | Add three Qwen definitions and unique overrides | Existing authority | Static helper |
-| `autobyteus-ts/src/llm/metadata/openai-compatible-endpoint-model-metadata.ts` (rewrite/simplify) | Custom metadata | Exact resolver | Remove profiles/URLs/aliases; retain exact index/field resolution | One pure boundary | Definitions/source types |
-| `autobyteus-ts/src/llm/metadata/model-metadata-resolver.ts` (modify) | Shared metadata | Source contract | Remove endpoint-profile type | Existing type owner | N/A |
-| `autobyteus-ts/src/llm/openai-compatible-endpoint-provider.ts` (modify) | Custom lifecycle | Model provider | Call resolver without endpoint | Existing coordinator | Resolver |
-| `autobyteus-server-ts/src/llm-management/services/model-metadata-provisioning-service.ts` (modify) | Server catalog | Source projection | Remove obsolete source branch | Existing owner | Source type |
-| `autobyteus-server-ts/src/config/app-config.ts` (modify) | Server config | Strict persistence | Add atomic single-setting `setDurably` and result | Existing owner | Env serialization/fs |
-| `autobyteus-server-ts/src/llm-management/llm-providers/domain/models.ts` (modify) | Provider config | Qwen status type | Three-field internal status and source enum | Existing provider domain | No generalized route fields |
-| `autobyteus-server-ts/src/llm-management/llm-providers/services/llm-provider-service.ts` (modify) | Provider config | Command/status owner | Probe, previous-secret snapshot, key write, strict URL write, compensate, project status | Existing owner | Discovery/vault/AppConfig |
-| `autobyteus-server-ts/src/api/graphql/types/llm-provider.ts` (modify) | GraphQL | Transport | `qwenSetupStatus`, save mutation/input/status, and allowlisted error-code mapping | Existing provider schema | Service |
-| `autobyteus-web/components/settings/providerApiKey/QwenSetupForm.vue` (add) | Settings UI | Form | Two-field UX | Distinct configured provider | Existing form patterns |
-| `ProviderAPIKeyManager.vue`, section runtime, store, GraphQL operations, generated types/locales/tests (modify) | Settings UI | Orchestration | Query Qwen status; route form/mutation; map prior-restored/repair-required errors | Existing settings flow | Qwen status |
-| Existing custom metadata/server/UI tests (modify/remove) | Coverage | Behavior proof | Replace profile cases with exact-only and Qwen cases | Align durable suite | Test helpers |
+| `autobyteus-ts/src/llm/qwen-provider-config.ts` | Core Qwen | Endpoint policy | setting/default/effective URL | One cohesive policy | URL normalizer |
+| `autobyteus-ts/src/llm/api/qwen-llm.ts` | Core Qwen | Adapter | construct client with resolver | Existing provider adapter | endpoint policy |
+| `autobyteus-ts/src/llm/qwen-supported-model-definitions.ts` | Core catalog | Qwen facts | four exact entries/metadata/overrides | Existing Qwen definition owner | static metadata helper |
+| `autobyteus-ts/src/llm/metadata/openai-compatible-endpoint-model-metadata.ts` | Core metadata | Exact resolver | advertised/exact per-field only | One pure policy | supported definitions |
+| `autobyteus-ts/src/llm/metadata/model-metadata-resolver.ts` | Core metadata | Source type | reduced source union | Existing type owner | N/A |
+| `autobyteus-ts/src/llm/custom-llm-provider-identity.ts` | Core provider | Identity | canonical name/readable ID | Shared pure owner | N/A |
+| `autobyteus-ts/src/llm/custom-llm-provider-config.ts` | Core provider | Current schema | strict V3 parser/invariant | Existing schema owner | identity codec |
+| `autobyteus-server-ts/src/config/app-config.ts` | Server config | Durable setting | narrow strict atomic setter | Existing config authority | file utilities |
+| `autobyteus-server-ts/src/llm-management/llm-providers/services/llm-provider-service.ts` | Server provider | Command/status | Qwen pair; readable custom create | Existing provider workflow owner | discovery/secret/store/runtime sync |
+| `autobyteus-server-ts/src/llm-management/llm-providers/stores/custom-llm-provider-store.ts` | Server provider | Persistence | V3-only atomic uniqueness/create/delete | Existing store | codec/update utility |
+| `autobyteus-server-ts/src/llm-management/llm-providers/domain/models.ts` | Server provider | Domain projections | Qwen status; shared identity import as needed | Existing domain owner | core codec |
+| `autobyteus-server-ts/src/api/graphql/types/llm-provider.ts` | GraphQL | Transport | Qwen status/save; preserve existing custom create and key mutation behavior | Existing provider schema | service |
+| `autobyteus-server-ts/src/app-data-migrations/migrations/custom-provider-v1-app-data-migration.ts` | Migration | V1 staging | secretless V2/direct V2/V3 handling | Historical ID owner | migration file codec |
+| `.../custom-provider-migration-name-snapshot.ts` | Migration | Historical names | strict missing/V2/V3 `{id,name}` | Migration-only shared projection | codec |
+| `.../custom-provider-readable-id-prerequisite-guard.ts` | Migration | Ordering | five exact terminal checks | Fixed local policy | record repository |
+| `.../custom-provider-readable-id-json-selector-migrator.ts` | Migration | JSON adapter | exact allowlisted atomic rewrites | JSON store semantics | mapping |
+| `.../custom-provider-readable-id-application-selector-migrator.ts` | Migration | SQLite adapter | exact application row transaction | SQLite semantics | mapping |
+| `.../custom-provider-readable-id-app-data-migration.ts` | Migration | Sequencer | transient map, attempt targets, empty V3 last, best-effort cleanup | One transition lifecycle | guard/adapters/codec |
+| `autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-provider-name-snapshot-backfill-migration.ts` | Migration | Token snapshot | use migration-only names before readable | Existing token owner | name reader |
+| `autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts` | Migration registry | Order | readable final + invariant tests | Existing registry owner | definition |
+| `autobyteus-server-ts/src/server-runtime.ts` | Startup | Thin gate | accept terminal readable status only | Existing lifecycle owner | runner result |
+| `autobyteus-web/components/settings/providerApiKey/QwenSetupForm.vue` | Web Settings | Form | URL/key journey/states | Distinct Qwen UI | runtime/store |
+| `autobyteus-web/components/applications/setup/ApplicationAgentLaunchProfileEditor.vue` | Web application | Selector editor | retain unavailable raw value and block readiness | Existing owner | grouped select/readiness patterns |
+| GraphQL ops/store/runtime/generated types/locales/tests | Web Settings | Client boundary | query/mutation/status refresh/copy | Existing frontend paths | provider GraphQL |
 
-## Applied Patterns (If Any)
+## Applied Patterns
 
-- Command boundary for validate-before-commit Qwen configuration.
-- Atomic replace plus bounded compensation for the two-owner Qwen command; not a generalized transaction pattern.
-- Existing adapter pattern for `QwenLLM` over `OpenAICompatibleLLM`.
-- Code-curated supported-model definitions with source-dated static metadata.
-- Pure exact index/resolver for custom metadata.
-- Existing write-only secret plus non-secret app configuration composition.
+- **Thin transport, owning service:** GraphQL exposes provider commands but service owns workflow.
+- **Pure domain codec:** Name/ID policy is reusable without persistence or UI.
+- **Current-schema runtime with isolated migration:** V1/V2 knowledge stays in app-data migrations.
+- **Empty-V3-last optimistic reset:** Exact repairable target failures warn; provider reset publication is the hard boundary.
+- **Server-owned UI projection:** Qwen endpoint source is explicit, not inferred in browser.
 
 ## Target Subsystem / Folder / File Mapping
 
-| Path | Kind | Owner | Responsibility | Why Here | Must Not Contain |
+| Path | Kind | Owner / Boundary | Responsibility | Why It Belongs Here | Must Not Contain |
 | --- | --- | --- | --- | --- | --- |
-| `autobyteus-ts/src/llm/` | Folder | LLM domain | Qwen endpoint policy and supported definitions | Existing provider/core area | Server GraphQL/UI |
-| `autobyteus-ts/src/llm/api/qwen-llm.ts` | File | Qwen adapter | Client construction | Existing adapter | Hardcoded route profile |
-| `autobyteus-ts/src/llm/metadata/` | Folder | Metadata | Exact custom fallback/source types | Existing metadata owner | Alibaba endpoints/aliases |
-| server `llm-management/llm-providers/services/` | Folder | Provider configuration | Qwen command | Existing setup owner | Runtime client construction |
-| server `config/app-config.ts` | File | App configuration | Strict atomic single-setting persistence | Existing `.env` owner | Qwen/secret sequencing |
-| server GraphQL `types/llm-provider.ts` | File | Transport | Qwen query/mutation/status | Existing provider API | Persistence logic |
-| web `components/settings/providerApiKey/` | Folder | Settings UI | Qwen form/runtime integration | Existing provider setup area | Secret reads/model metadata policy |
+| `autobyteus-ts/src/llm/` | Folder | Core LLM domain | Qwen policy/catalog, custom identity | Shared provider concepts | GraphQL/UI/migrations |
+| `autobyteus-ts/src/llm/metadata/` | Folder | Metadata policy | Generic advertised/exact resolution | Existing metadata owner | Alibaba endpoints/aliases |
+| `autobyteus-server-ts/src/llm-management/llm-providers/` | Folder | Provider management | Commands/status/store/runtime sync | Existing provider boundary | Legacy file conversion |
+| `autobyteus-server-ts/src/app-data-migrations/migrations/` | Folder | Startup transitions | Historical parsers, exact adapters, readable sequencing | Existing migration owner; flat bounded set is clearest | Runtime aliases/public schemas |
+| `autobyteus-web/components/settings/providerApiKey/` | Folder | Settings | Qwen form plus unchanged existing custom create/delete flow | Existing provider settings area | Migration/reconnect logic |
+| `autobyteus-web/components/applications/setup/` | Folder | Application setup | Missing selector readiness/presentation | Existing application editor owner | Migration mapping |
 
 ## Folder Boundary Check
 
-| Path | Depth | Clear? | Risk | Justification |
+| Path / Folder | Intended Structural Depth | Ownership Boundary Is Clear? | Mixed/Over-Split Risk | Justification / Corrective Action |
 | --- | --- | --- | --- | --- |
-| `autobyteus-ts/src/llm/` | Main-Line Domain-Control | Yes | Low | Small endpoint policy belongs beside Qwen adapter/catalog |
-| `autobyteus-ts/src/llm/metadata/` | Off-Spine Concern | Yes | Low | Exact inference remains generic metadata policy |
-| server provider services | Main-Line Domain-Control | Yes | Low | Existing authoritative settings command area |
-| web providerApiKey | UI | Yes | Low | Existing component/runtime grouping remains readable |
+| core `llm/` | Main-Line Domain-Control | Yes | Low | Provider facts/pure identity belong together |
+| core `llm/metadata/` | Off-Spine Concern | Yes | Low | Pure inference separated from provider adapter |
+| server provider management | Main-Line Domain-Control/Persistence | Yes | Medium | Service/store subfolders already separate authority |
+| app-data migrations | Main-Line transition + bounded adapters | Yes | Medium | Keep small named adapters; remove state/recovery proliferation |
+| web provider settings | Transport/UI | Yes | Low | Reuse existing editor/runtime |
 
-## Concrete Examples / Shape Guidance (Mandatory When Needed)
+## Concrete Examples / Shape Guidance
 
-| Topic | Good | Avoid | Why |
+| Topic | Good Example | Bad / Avoided Shape | Why It Matters |
 | --- | --- | --- | --- |
-| Dynamic Qwen URL | `resolveQwenBaseUrl(process.env.QWEN_BASE_URL)` | Alibaba hostname switch/region enum | User already supplies the correct endpoint |
-| Qwen DeepSeek entry | identifier `qwen:deepseek-v4-pro`, value `deepseek-v4-pro`, provider `QWEN` | Rename wire value or add producer field | Unique product identity without changing request contract |
-| Custom fallback | exact `glm-5.2` candidates -> lowest valid field | endpoint/region/profile lookup or `glm-*` family match | Conservative, generic, minimal |
-| Unknown custom ID | `deepseek-v4-pro-0713` -> null absent exact definition/live field | Strip suffix to `deepseek-v4-pro` | No alias guessing |
-| Configuration commit | probe -> snapshot old key -> save new key -> `setDurably` URL -> success | Best-effort `AppConfig.set` after replacing key | Successful response is restart-durable |
-| URL persistence failure | strict URL write leaves URL old -> restore old key/remove new -> previous-restored error | Report session-only success | Individual failures are all-or-old |
-| Default state | server returns `endpointSource=DEFAULT`; equal explicitly set URL returns `CONFIGURED` | Browser compares URL with embedded default | Truthful observable state with no duplicated endpoint policy |
-| Production rename | add `qwen3.8-max`, delete preview profile | Keep preview alias for compatibility | User requested exact current value |
+| Qwen duplicate offering | selector `qwen:deepseek-v4-pro`; wire model `deepseek-v4-pro` | send `qwen:deepseek-v4-pro` to Alibaba | Registry identity and API value differ intentionally |
+| Custom model identity | `openai-compatible:provider_alibaba_cloud:deepseek-v4-flash-0731` | UUID provider or structured attributes added everywhere | Existing composite is sufficient once provider ID is readable |
+| Exact fallback | discovered `glm-5.2` -> exact built-in candidates -> conservative field | `glm-*`, URL, provider name, or nearest-family match | Avoids unsafe guesses |
+| Selector migration | change exact provider prefix; copy suffix bytes | normalize `0731`, rewrite free text/traces | Preserves actual wire selection/history |
+| Provider-absent interval | show retained selector unavailable; recreate/reselect | clear it or choose a default | No silent user-choice loss |
+| Secret transition | empty V3 has no provider/key; user recreates | decrypt/re-encrypt old key or runtime alias | Matches explicit simplification/security posture |
 
 ## Backward-Compatibility Rejection Log (Mandatory)
 
-| Candidate | Why Considered | Decision | Clean Replacement |
+| Candidate Compatibility Mechanism | Why Considered | Decision | Clean-Cut Replacement / Removal Plan |
 | --- | --- | --- | --- |
-| Map `qwen3.8-max-preview` to `qwen3.8-max` | Preserve old profile ID | Rejected | Remove preview and use exact production definition |
-| Retain endpoint profiles but stop adding new ones | Minimize deletion | Rejected | Exact fallback-only resolver |
-| Keep generic key-only Qwen save plus separate URL save | Smaller UI delta | Rejected | One pair command prevents mismatch |
-| Add plan/region dropdown and synthesize URL | Vendor has regions/plans | Rejected | User pastes authoritative Base URL |
-| Add provider-offering schema | Model producer differs from inference provider | Rejected | Existing provider + exact value + identifier override |
-| Rewrite existing Qwen secrets | New URL setting added | Rejected | Absent URL uses historical default |
-| General cross-store transaction manager | Two owners need coordination | Rejected | One strict AppConfig method plus Qwen-command-local secret compensation |
-| Add endpoint-source to every provider/model record | Qwen form needs default/configured state | Rejected | Qwen-specific three-field setup status |
+| Custom endpoint profiles/aliases | Fill missing Alibaba metadata | Rejected | Exact built-in fallback + native Qwen |
+| Preview-to-production alias | Preserve old selector | Rejected | Exact production value; user reselects old preview |
+| Grandfather UUID providers | Avoid migration | Rejected | Deterministic selector mapping plus empty V3 |
+| Runtime UUID -> readable alias | Keep old selectors/secrets | Rejected | Exact structured rewrite; no alias |
+| Old secret lookup/copy/re-encryption | Seamless credentials | Rejected | Empty V3 and ordinary recreation |
+| Delete all legacy providers/selectors | Simplest reset | Rejected | User asked to preserve easy deterministic non-secret state |
+| Journal/backups/receipt/runner bypass | Crash-perfect migration | Rejected | Ordinary retry + optimistic empty-V3-last transition |
+| Broad selector rewrite | Find every UUID occurrence | Rejected | Exact allowlisted structured inventory |
+| New reconnect mutation/editor/credential field | Repair a preserved record | Rejected | Do not preserve the record; reuse existing create flow |
+| Structured `{providerId,value}` registry | Cleaner long-term identity | Rejected for scope | Keep existing composite selector |
 
 ## Derived Layering (If Useful)
 
-`Settings -> provider configuration command -> configuration/secret owners -> core Qwen endpoint resolver -> Qwen runtime client`, and separately `custom discovery -> exact metadata resolver -> canonical model -> runtime/catalog/UI`.
+`Web/GraphQL transport -> provider/configuration owners -> core provider identity/catalog/metadata -> persistence/secret/provider adapters`.
+
+Startup transition is a separate lane: `server runtime -> app-data runner -> migration definition/adapters -> current V3 runtime`. Normal provider services do not cross into migration internals.
 
 ## Change / Refactor Sequence
 
-1. Replace profile/alias tests with approved exact-only custom-resolution tests.
-2. Simplify `ResolvedMetadataSource` and custom resolver; remove endpoint input, profiles, URL canonicalization, alias references, and obsolete tests/docs.
-3. Update custom model provider and server provenance mapping to the reduced source union; rerun existing custom discovery, stale reload, GraphQL, compaction, and token-meter regressions.
-4. Add the Qwen endpoint config constant/resolver and make `QwenLLM` use it; cover configured/default/invalid manual-env behavior.
-5. Add the three Qwen definitions with exact values, source-dated context, and unique identifier overrides; cover registry/catalog collisions and custom exact fallback across duplicate values.
-6. Add `AppConfig.setDurably` with temp-file write/fsync/atomic rename, post-commit memory update, cleanup, and injected failure coverage; retain existing best-effort `set` for unrelated callers.
-7. Add `LlmProviderService.getQwenSetupStatus` and `saveQwenConfiguration`: probe, old-secret snapshot, new-key write, strict URL commit, old-key restoration/removal on URL failure, and distinct previous-restored/repair-required errors. Add the Qwen setup GraphQL query/mutation/status.
-8. Add `QwenSetupForm` and connect the store/runtime/mutation/localization; consume server `DEFAULT|CONFIGURED`, validate loading/configured/failure/repair/success/accessibility/responsive states, and never compare URLs.
-9. Re-run implementation review, mandatory coverage investigation, API/E2E/system/browser validation, code review for any durable coverage edits, and delivery integration/docs/build. All prior downstream evidence is obsolete for SR-010/SR-011.
+1. Reconcile dirty SR-015 work to this authority; inventory/remove recovery/secret-transfer code before extending it further.
+2. Finalize core exact custom resolver/source contraction and Qwen endpoint/catalog behavior.
+3. Finalize strict AppConfig Qwen save/status and web Qwen form behavior.
+4. Finalize core name/ID codec, strict V3 schema, and store-atomic create invariant.
+5. Change V1 migration to secretless staging and migration-only name snapshot behavior.
+6. Simplify readable migration to fixed prerequisites, exact selector adapters, empty-V3-last publication, and best-effort old-secret removal; remove journal/state/receipt/secret/recovery/runner-bypass files and tests.
+7. Register readable last; add the thin terminal post-run gate and multi-version ordering fixture.
+8. Keep existing custom create/delete UI/API unchanged apart from readable-ID creation; add no reconnect branch.
+9. Correct application-agent missing selector retention; verify agent/team defaults, bindings, applications, and resume paths use no fallback during provider absence.
+10. Update unit/integration/API/E2E coverage proportionately, then repeat code review and downstream stages because prior evidence predates SR-016.
+
+No temporary runtime dual reader, alias, or secret fallback is permitted at any step.
 
 ## Key Tradeoffs
 
-- **Static curated Qwen catalog vs dynamic discovery:** Static definitions are simpler and provide reviewed context facts. The user asked for three major models, not arbitrary native discovery.
-- **One endpoint vs multiple routes:** One configurable endpoint meets the stated user journey without new collections or provider instances. Multiple simultaneous Qwen plans are deferred.
-- **Exact duplicate values vs canonical producer model:** Keeping exact wire values allows custom fallback and provider calls to work. Existing identifier override solves UI/runtime identity without new attributes.
-- **Conservative GLM context:** 198k is safer for Alibaba inference than reusing the direct GLM 1M definition when official pages conflict.
-- **Separate URL/key storage:** Reuses current owners and security boundaries. One strict URL primitive plus bounded secret compensation is more code than a best-effort save but far smaller and clearer than a generalized transaction framework.
-- **Qwen-specific status vs general provider fields:** Three explicit Qwen setup fields avoid ambiguous UI inference without expanding every provider/model record.
+- **Exact safety over reach:** Unknown custom values remain unknown rather than guessed.
+- **Native Qwen usefulness over compiled simplicity:** One user-configured route supports region/workspace/Token Plan without provider attributes.
+- **Readable deterministic identity over collision auto-resolution:** Canonical collisions fail instead of receiving opaque suffixes.
+- **Preserve selectors, reset provider records:** Legacy names are used transiently for mapping, while Base URLs/records are re-entered.
+- **Ordinary recreation over reconnect/seamlessness:** Users enter name, Base URL, and key again through an existing path, eliminating secret-transfer and repair branches.
+- **Optimistic transition over immediate crash convergence:** Ordinary runner delay and manual stale-selector repair are accepted; no custom transaction protocol.
+- **Current composite selector over global registry refactor:** Solves the present identity defect without broad churn.
 
 ## Risks
 
-- A manually supplied invalid `QWEN_BASE_URL` environment value can bypass the UI probe; the core resolver must fail clearly rather than silently use another endpoint.
-- Strict AppConfig failure after new-key save requires compensation. Tests must inject URL failure and verify old-key restoration/removal plus no runtime URL mutation.
-- A second failure during secret compensation cannot prove all-old. It must return `QWEN_CONFIGURATION_REPAIR_REQUIRED`, never success or a prior-active claim; the user must save a valid pair again.
-- Duplicate exact values affect custom fallback. Lowest-valid-per-field is deliberately conservative but may understate a custom provider's real capacity.
-- Vendor context documentation changes; provenance dates and future review are required.
-- Removing `endpoint_profile` affects server tests and documentation that were already delivered on this branch; all references must be cleaned.
+1. A recreated endpoint may no longer advertise a saved model suffix, or the user may choose a different name; the migrated selector remains unavailable until reselection.
+2. Canonical/slug collisions or invalid legacy names reset the provider set to empty V3 with warnings; users recreate/reselect.
+3. Individual unwritable/malformed/concurrently changed selector targets remain stale by design.
+4. Process interruption can block immediate startup until ordinary stale-`RUNNING` retry; this is explicit product posture.
+5. Old secret cleanup can leave unreachable vault orphan; no runtime fallback may use it.
+6. Qwen URL and key span two owners; bounded compensation covers single write failures, while double failure is explicitly repair-required.
+7. Future required migrations appended after readable can violate ordering; registry invariant/review must catch it.
+8. Existing SR-015 source/tests can mislead implementation unless removed/simplified explicitly.
+9. Branch divergence remains delivery-owned integration risk.
 
 ## Guidance For Implementation
 
-- Keep the Qwen API key in the current secret consumer. Never put it in `QWEN_BASE_URL`, provider records, GraphQL return objects, logs, or fixtures.
-- Use the shared OpenAI-compatible Base URL normalizer and discovery probe; do not write a second HTTP parser or `/models` parser.
-- Keep `QWEN_BASE_URL` and its default in one core-owned file used by runtime and server projection.
-- Use `AppConfig.setDurably`, not best-effort `set`, in the Qwen command. The strict method must update runtime memory only after atomic persistent replacement succeeds.
-- Snapshot the previous Qwen `SecretValue` only inside the save command; never reveal, serialize, log, cache globally, or return it. Restore it or remove the newly created secret when URL commit fails.
-- Map Qwen setup query and successful mutation to `{effectiveBaseUrl, endpointSource, apiKeyConfigured}`. Do not add source fields to general provider/model records and do not compare URLs in the browser.
-- Do not add endpoint URLs to static model definitions; all Qwen-owned models use the single effective Qwen connection.
-- Use `modelIdentifierOverride` only to prevent direct-provider collisions. Keep exact request `value`s unchanged.
-- Remove every `endpoint_profile` switch branch, type, test, doc example, and profile-specific provenance reference.
-- Preserve existing `live`, `inferred_builtin`, `static_definition`, and `unknown` source semantics and coarse GraphQL mapping.
-- Preserve existing custom last-known-good behavior, compaction algorithm, explicit override semantics, and unknown token-meter rendering.
-- Treat `qwen3.8-max`, `deepseek-v4-pro`, and `glm-5.2` as the required new/updated Qwen offerings. Do not add a preview alias.
+- Treat `requirements.md`, this design, and both supplements as authority; treat SR-015 code/review as superseded where they conflict.
+- Do not preserve or adapt the secret migrator/journal/receipt/startup recovery. Delete it.
+- Do not resolve a legacy custom-provider credential even “only to test” migration. Assert call absence in tests.
+- Preserve exact model suffix bytes and wire values. Never send `modelIdentifierOverride` to a provider.
+- Keep migration warnings sanitized: IDs/status/path categories are acceptable; endpoints, response bodies, keys, prompts, and file contents are not.
+- Keep `saveProviderApiKey` behavior unchanged and built-in-only. Custom re-entry goes through existing `createCustomProvider({name,baseUrl,apiKey})`; do not add a saved-record key branch.
+- Keep UI missing selections visible. Add an unavailable state/message rather than clearing/selecting another model.
+- Use one direct multi-version upgrade fixture containing: V1/V2 provider, old-ID token row missing provider name, selector writes from prerequisite migrations, every managed selector class, empty-V3-last publication, no migrated record/Base URL/secret, and same-name recreation through the existing create flow.
+- Coverage must prove both source removal and behavior: no endpoint profile/alias; no preview; no random UUID; no secret transfer; no journal/receipt/runner bypass; no silent fallback/clearing.
+- Implementation engineer owns source changes and `implementation-handoff.md`; solution artifacts must not be replaced by implementation notes.

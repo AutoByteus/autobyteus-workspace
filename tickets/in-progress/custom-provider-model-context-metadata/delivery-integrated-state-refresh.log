@@ -1,59 +1,60 @@
-Delivery integrated-state refresh — DR-004
+Delivery integrated-state refresh — DR-005 Electron verification build
+Timestamp: 2026-08-08T20:15:33Z
 Ticket branch: codex/custom-provider-model-context-metadata
 Recorded base/finalization target: origin/personal
+Pre-refresh HEAD: 894f01ac43b8ace816ca6f78da180507647cc59d
+Pre-refresh origin/personal: 7f0fc49965950d9689726a048371f2e2b78eef31
+Pre-refresh divergence: ahead 9, behind 10
 
-Initial fresh refresh
-Started: 2026-08-08T18:26:48Z
-Pre-fetch HEAD: 9817d3b1fdcbfec4c5249eb782ae2d9acfb25688
-Pre-fetch HEAD parents: 49736ac6b73436b1643ed7959391bd3e934ae164 647b1119a9dc3ba2ba301243e1b5e752943454db
-Pre-fetch origin/personal: 647b1119a9dc3ba2ba301243e1b5e752943454db
-Command: git fetch origin personal --prune
-Result: exit 0; tracked base initially remained 647b1119a9dc3ba2ba301243e1b5e752943454db
-Initial divergence: ahead 7, behind 0
-Initial integration decision: Already current; IR-007 had integrated the exact fetched base as HEAD^2.
-
-Late tracked-base drift detected before handoff
-Detected during final integrated-state audit; delivery did not hand off the stale state.
-Explicit refetch: 2026-08-08T18:33:55Z
+Tracked-base refresh
 Command: git fetch origin personal --prune
 Result: exit 0
-Updated origin/personal: 9ce41640960fc3e2a7b85b85608a4f081fe52df2
-Divergence before late integration: ahead 7, behind 7
-New base scope: seven commits for compaction-lineage origin simplification/finalization. Changed production/test/docs paths were confined to memory/compaction/lineage boundaries plus that ticket's archived artifacts; no Qwen, LLM metadata, AppConfig, provider Settings, GraphQL LLM, or Token Meter path changed.
+Tracked base: 7f0fc49965950d9689726a048371f2e2b78eef31
+New base scope: progressive rich Markdown restoration/finalization plus release v1.4.45. Changed runtime paths were conversation rendering components/tests/docs and release metadata; no Qwen, LLM metadata, AppConfig, GraphQL LLM, or provider Settings source path changed.
 
 Delivery-safety checkpoint
-Pre-checkpoint tracked diff check: passed
-Staging method: each tracked/untracked path added explicitly; git add . and git add -A were not used.
-Verbatim whitespace-bearing API-REV-005 logs were intentionally left outside the checkpoint rather than rewritten.
-Cached diff check: passed after retaining those logs verbatim outside the checkpoint.
-Checkpoint commit: 694fe3ffb75d42b41a25462346ec9e492b1d3a45
-Checkpoint subject: chore(delivery): checkpoint integrated Qwen handoff artifacts
+Tracked diff check: passed
+Checkpoint: 93c731cfa74fa961da8f8746a9af89ac1e407f74
+Checkpoint subject: chore(delivery): checkpoint refreshed Qwen handoff state
 
-Late integration
+Integration
 Command: git merge --no-edit origin/personal
 Result: exit 0; no conflict
-Integrated HEAD: 894f01ac43b8ace816ca6f78da180507647cc59d
-Merge parents: 694fe3ffb75d42b41a25462346ec9e492b1d3a45 9ce41640960fc3e2a7b85b85608a4f081fe52df2
-Post-merge divergence: ahead 9, behind 0
+Integrated HEAD: f31f378d712b1b1f4e839a671104c410b51c6d06
+Merge parents: 93c731cfa74fa961da8f8746a9af89ac1e407f74 7f0fc49965950d9689726a048371f2e2b78eef31
+Post-merge divergence: ahead 11, behind 0
+Documentation intersection: autobyteus-web/docs/agent_execution_architecture.md merged automatically and retains both progressive-rendering truth and this ticket's unknown-context Token Meter contract.
 
-Required post-integration executable check
-Timestamp: 2026-08-08T18:34:58Z
-Command: corepack pnpm -C autobyteus-ts exec vitest run tests/unit/llm/qwen-provider-config.test.ts tests/unit/llm/supported-model-definitions.test.ts tests/unit/llm/metadata/openai-compatible-endpoint-model-metadata.test.ts tests/unit/llm/openai-compatible-endpoint-provider.test.ts --no-watch
-Result: exit 0; 4 files / 25 tests passed
-Expected local discovery note: unavailable Ollama warning; LM Studio discovery completed. No test failed.
-Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/probes/delivery/post-integration-core-dr-004.log
+README-guided post-integration Electron build
+Command: NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* corepack pnpm -C autobyteus-web build:electron:mac
+Result: exit 0
+Version: 1.4.45
+Platform/architecture: macOS arm64
+Started: 2026-08-08T20:16:12Z
+Completed: 2026-08-08T20:20:29Z
+Build log: /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/electron-build-mac-dr-005.log
 
-Docs impact after late integration
-The new base touched memory-lineage documentation only and did not overlap the seven ticket-owned LLM/server/web docs. The previously completed docs sync remains accurate against integrated HEAD. Delivery artifacts were then refreshed to record the final base and smoke evidence.
+Artifact verification
+- DMG checksum verification: passed
+- ZIP integrity: passed
+- App executable architecture: Mach-O arm64
+- Target/selected packaged node-pty helper verification: passed
+- Real packaged node-pty spawn probe: passed
+- Verification log: /Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/electron-build-mac-dr-005-verification.log
 
-Final pre-handoff ref confirmation
-Timestamp: 2026-08-08T18:37:32Z
+Post-build ref confirmation
+Timestamp: 2026-08-08T20:21:52Z
 Command: git fetch origin personal --prune
-Result: exit 0; origin/personal remained 9ce41640960fc3e2a7b85b85608a4f081fe52df2
-Final divergence: ahead 9, behind 0
+Result: exit 0; origin/personal remained 7f0fc49965950d9689726a048371f2e2b78eef31
+Final divergence: ahead 11, behind 0
 Ancestor check: passed
+
+Final post-artifact ref confirmation
+Timestamp: 2026-08-08T20:25:47Z
+Command: git fetch origin personal --prune
+Result: exit 0; origin/personal remained 7f0fc49965950d9689726a048371f2e2b78eef31
 Tracked diff check: passed
-Source/test working-tree diff after delivery edits: empty
+Source/test working-tree diff: empty
 
 Delivery result
-Pass. Latest tracked base 9ce41640960fc3e2a7b85b85608a4f081fe52df2 is integrated, the relevant post-integration Qwen/metadata smoke passed, durable docs are synchronized, and the handoff is ready for explicit user verification. Ticket archival, push, final target merge, release/deployment, and cleanup remain on hold until that explicit user signal.
+Pass. The current tracked base is integrated, the full Electron packaging pipeline and artifact verification passed on integrated HEAD, and macOS arm64 v1.4.45 artifacts are ready for hands-on user testing. Finalization remains held pending explicit user verification.

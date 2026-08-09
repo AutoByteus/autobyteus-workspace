@@ -2,28 +2,29 @@
 
 ## Status
 
-**Ready for explicit user verification.** The current native-Qwen/exact-only implementation is integrated with the latest tracked base, passed fresh source review and independent integrated API/E2E/browser validation, and has synchronized long-lived documentation. Repository finalization remains intentionally on hold until the user explicitly accepts or verifies this handoff.
+**Ready for hands-on user verification.** The current native-Qwen/exact-only implementation is integrated with the latest tracked base, passed source/API/E2E/browser validation, has synchronized long-lived documentation, and is packaged as a verified macOS arm64 Electron 1.4.45 build. Repository finalization remains intentionally on hold until the user explicitly accepts or verifies this handoff.
 
 ## Worktree / Branch / Target
 
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata`
 - Ticket branch: `codex/custom-provider-model-context-metadata`
 - Recorded finalization target: `personal` / `origin/personal`
-- Latest tracked base checked: `origin/personal@9ce41640960fc3e2a7b85b85608a4f081fe52df2`
-- Integrated HEAD: `894f01ac43b8ace816ca6f78da180507647cc59d`
-- Merge parents: protected delivery checkpoint `694fe3ffb75d42b41a25462346ec9e492b1d3a45`; current base `9ce41640960fc3e2a7b85b85608a4f081fe52df2`
+- Latest tracked base checked: `origin/personal@7f0fc49965950d9689726a048371f2e2b78eef31`
+- Integrated HEAD: `f31f378d712b1b1f4e839a671104c410b51c6d06`
+- Merge parents: protected delivery checkpoint `93c731cfa74fa961da8f8746a9af89ac1e407f74`; current base `7f0fc49965950d9689726a048371f2e2b78eef31`
 - API-REV-005-authorized ticket merge retained in history: `9817d3b1fdcbfec4c5249eb782ae2d9acfb25688`
-- Fresh delivery divergence: ahead 9 / behind 0
+- Fresh delivery divergence: ahead 11 / behind 0
 - Integrated-state evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/delivery-integrated-state-refresh.log`
 
 ## Fresh Delivery Refresh
 
-- Initial `git fetch origin personal --prune` passed at the API-REV-005 base. A final pre-handoff audit detected that `origin/personal` subsequently advanced by seven compaction-lineage commits, so delivery stopped rather than hand off stale state.
-- Delivery protected the current package in checkpoint `694fe3ffb75d42b41a25462346ec9e492b1d3a45` and merged `origin/personal@9ce41640960fc3e2a7b85b85608a4f081fe52df2` without conflict.
-- The new base changed memory/compaction/lineage paths and its archived ticket only; no Qwen, LLM metadata, AppConfig, provider Settings, GraphQL LLM, or Token Meter path changed.
-- Required post-integration executable check passed: core exact-metadata/Qwen 4 files / 25 tests.
-- `git merge-base --is-ancestor origin/personal HEAD`: passed after the late integration.
-- Final pre-handoff refetch at 2026-08-08T18:37:32Z remained at `9ce41640960fc3e2a7b85b85608a4f081fe52df2`; divergence stayed ahead 9 / behind 0.
+- Before the requested build, `git fetch origin personal --prune` found ten newer progressive-rendering/release commits. Delivery stopped, protected the current package in checkpoint `93c731cfa74fa961da8f8746a9af89ac1e407f74`, and merged `origin/personal@7f0fc49965950d9689726a048371f2e2b78eef31` without conflict.
+- The new base changed conversation rendering, its tests/docs, and release metadata to v1.4.45; no Qwen, LLM metadata, AppConfig, provider Settings, or GraphQL LLM source path changed.
+- The shared web architecture doc merged automatically and retains both progressive-rendering and Token Meter contracts.
+- Required post-integration execution passed through the full README-guided Electron pipeline and artifact validation.
+- `git merge-base --is-ancestor origin/personal HEAD`: passed.
+- Post-build refetch at 2026-08-08T20:21:52Z remained at `7f0fc49965950d9689726a048371f2e2b78eef31`; divergence stayed ahead 11 / behind 0.
+- Final post-artifact refetch at 2026-08-08T20:25:47Z remained unchanged; tracked diff check passed and source/test working-tree diff was empty.
 - `git diff --check` after docs sync: passed.
 
 ## Delivered Behavior
@@ -61,13 +62,23 @@
 - Server/shared production build, Prisma generation, built-in-agent bootstrap, and sanitized no-`DATABASE_URL` smoke: passed.
 - Live Qwen lifecycle + custom-provider GraphQL E2E: 2 files / 4 tests passed.
 - Web boundary/localization guards, integrated browser journey, desktop/narrow visual inspection, integrity, and cleanup: passed.
+- README-guided Electron 1.4.45 build on final integrated HEAD: passed; DMG, ZIP, arm64 app bundle, packaged terminal helpers, and real node-pty spawn probe verified.
 
 ## Docs / Release / Finalization State
 
 - Docs sync: `Updated / Pass`; see `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/docs-sync-report.md`.
 - Ticket remains in `tickets/in-progress`.
 - Ticket branch push, merge into `personal`, version/tag/release, deployment, archival, and cleanup: not started.
-- Earlier endpoint-profile delivery evidence and the unsigned v1.4.40 Electron artifact are superseded and must not be used to verify this implementation.
+- Current local verification build: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/electron-build-mac-report.md`.
+- Earlier endpoint-profile delivery evidence and the unsigned v1.4.40 Electron artifact are superseded.
+
+## Electron Test Artifact
+
+- Recommended DMG: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.45.dmg`
+- SHA-256: `50f60d04c6bee092211941c6be8813fb679e6e66a291902c7168d3ebbc5652d8`
+- ZIP alternative: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.45.zip`
+- Build posture: local, unsigned, unnotarized; macOS may require right-click **Open**.
+- Integrated app data: `~/.autobyteus/server-data`; back it up first if preserving existing state matters.
 
 ## Suggested User Verification
 

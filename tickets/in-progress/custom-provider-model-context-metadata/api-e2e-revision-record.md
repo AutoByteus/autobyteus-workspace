@@ -9,6 +9,8 @@
 | API-REV-003 | `code_reviewer` CRR-007; current exact-only/Qwen round `3` | `SR-010`–`SR-011`, `ARCH-REV-005`, `IR-006`, `CRR-007` | `Pass` / `95.3%` (historical contract, superseded) | `Pass` / `96.4%` |
 | API-REV-004 | `code_reviewer` CRR-008 `TR-002`/`TR-003`; corrective round `4` | `API-REV-003`, `CRR-008`, `IR-006`, `CRR-007` | `Pass` / `96.4%` execution; proportional review `Fail` | `Pass` / `96.4%`, pending re-review |
 | API-REV-005 | `code_reviewer` CRR-010; integrated-state round `5` after IR-007/DR-003 | `API-REV-004`, `CRR-009`, `DR-003`, `IR-007`, `CRR-010` | Pre-integration `Pass` / `96.4%`; merge not authorized | Integrated `Pass` / `96.4%` |
+| API-REV-006 | `code_reviewer` CRR-012; fresh SR-016 readable-identity round `6` | `SR-016`, `ARCH-REV-010`, `IR-010`, `CRR-012`, `API-REV-005` | `Pass` / `96.4%`, historical for readable identity | `Pass` / `96.4%`, pending proportional review |
+| API-REV-007 | `code_reviewer` CRR-013 `TR-004`; corrective round `7` | `API-REV-006`, `CRR-013`, `SR-016`, `AC-019` | Execution `Pass / 96.4%`; proportional review `Fail` | `Pass / 96.4%`, pending proportional re-review |
 
 ## Revision Entries
 
@@ -157,3 +159,57 @@ None. `API-REV-002` had no unresolved failure. The older endpoint-profile result
 - Proportional durable-test review required: `No`; no durable repository coverage changed in API-REV-005, and CRR-009 already passed the unchanged test code.
 - Recommended recipient: `delivery_engineer` to restart delivery from a fresh tracked-base refresh.
 - Remaining risks: real Alibaba availability, credentials, quota, region policy, TLS behavior, undocumented payload variation, and future drift in source-dated vendor facts were not exercised. The loopback provider proves the approved OpenAI-compatible contract only.
+
+### API-REV-006 — Readable custom-provider reset, recreation, and real Settings proof
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-report.md` (`CRR-012`); execution round `6`.
+- Triggering finding or scenario IDs: fresh SR-016 proof for `RID-E2E-001`–`004`, `APP-SEL-001`, `CUS-E2E-READABLE`, retained `QW-E2E-001`–`004`, `HIST-001`, and `RID-BRW-001`.
+- Related revisions: `SR-016`; `ARCH-REV-010`; `IR-010`; `CRR-012`; API-REV-005 is prior historical authorization only.
+- Why recorded: readable deterministic custom-provider identity materially changed new-provider creation and the persisted V1/V2 transition. All evidence predating SR-016 was therefore historical for this boundary.
+- Coverage changes:
+  - Replaced obsolete `autobyteus-server-ts/tests/e2e/secret-management/custom-provider-v1-startup-migration.e2e.test.ts` with `custom-provider-readable-id-startup-migration.e2e.test.ts`.
+  - Added actual built-process V1 reset, direct V2 multiversion ordering, physical JSON/application-SQLite selectors, token snapshot, restart/no-rerun, collision cleanup, recent/stale RUNNING gate, bad create, and ordinary same-name recreation scenarios.
+  - Updated `custom-provider-model-metadata-graphql.e2e.test.ts` with exact readable ID/composite model assertions and explicit repository Prisma lifecycle isolation discovered by the combined run.
+- Execution delta: core `4/21`, server focused `10/70`, web focused `6/33`, combined critical E2E `4/12`, server/web builds, web guards, diff/integrity scans, and real Chrome/Nuxt/built-backend Settings execution all passed.
+- Browser delta: invalid key rejected without persistence; valid name/Base URL/API key previewed three exact models; save created `provider_alibaba_cloud_token_plan`; exact built-in model metadata matched only the exact value; suffixed and historical preview values stayed opaque; delete removed provider ownership; 390px layout had no overflow.
+
+#### Prior Failure Resolution
+
+None was carried into API-REV-006. During execution, a combined E2E run exposed test-owned Prisma client state in the changed custom metadata E2E; explicit shutdown/initialization resolved it and the authoritative identical four-file run passed 12/12. Early readable-test transform and browser-harness expectation defects were also corrected before authoritative reruns; none indicated a production defect.
+
+- Canonical artifacts updated:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-execution-coverage-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-revision-record.md`
+- Prior result and confidence: API-REV-005 integrated `Pass / 96.4%`, explicitly historical for readable identity.
+- Current result and confidence: API-REV-006 `Pass / 96.4%`; no category below 90%, every critical current criterion directly proven, broader validation passed.
+- New or remaining failure IDs: `None`.
+- Proportional durable-test review required: `Yes` — added/updated/removed repository coverage must return through `code_reviewer`.
+- Recommended recipient: `code_reviewer`; delivery stays blocked until its test-code review passes.
+- Remaining risks: real Alibaba availability, credentials, quota, region policy, TLS and undocumented payload drift; literal 15-minute wait; arbitrary crash timing; delivery base divergence; unrelated package-wide TS6059 test-root configuration. The browser also emitted non-blocking Chrome password-container and Apollo development cache diagnostics without observable state failure.
+
+### API-REV-007 — Close TR-004 with direct rejected-create vault absence
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-test-review-report.md` (`CRR-013`); corrective execution round `7`.
+- Triggering finding or scenario IDs: `TR-004`; `RID-E2E-002`; `AC-019` rejected-create provider/secret postcondition.
+- Related revisions: `API-REV-006`; `CRR-013`; `SR-016`; `ARCH-REV-010`; `IR-010`; `CRR-012` source Pass remains unchanged.
+- Why recorded: API-REV-006 made a real rejected GraphQL request and proved provider/catalog absence, but its durable test could not detect an orphan readable consumer secret. Proportional review correctly rejected the stronger “no state” conclusion.
+- Coverage delta: added `READABLE_SECRET_ID` and, immediately after the rejected mutation and before valid recreation, asserted with the existing real-database `listSecretIds()` helper that `provider.openai-compatible.provider_alibaba_cloud_token_plan.api-key` is absent. No production source, fixture contract, or other durable path changed.
+- Execution delta: reran the same four critical E2E files in one serial Vitest command; 4 files / 12 tests passed. `git diff --check`, exact assertion-order/source scan, generated-secret scan, and owned-runtime cleanup scan passed.
+- Broader validation delta: `None required`. API-REV-006's actual Chrome/Nuxt/built-backend Settings pass remains applicable because the correction is test-only.
+
+#### Prior Failure Resolution
+
+| Prior Finding | Previous Classification | Current Resolution | Evidence |
+| --- | --- | --- | --- |
+| `TR-004` / `RID-E2E-002` | CRR-013 `Fail — Local Fix` | `Resolved in API/E2E evidence; reviewer closure pending` | `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/probes/api-e2e/server-e2e-api-rev-007.log`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/probes/api-e2e/repository-integrity-api-rev-007.log` |
+
+- Canonical artifacts updated:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-coverage-investigation.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-execution-coverage-report.md`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-revision-record.md`
+- Prior result and confidence: API-REV-006 execution `Pass / 96.4%`; CRR-013 proportional review `Fail` on `TR-004`.
+- Current result and confidence: API-REV-007 `Pass / 96.4%`; numeric confidence is unchanged, while the AC-019 secret postcondition now has direct durable proof.
+- New or remaining API/E2E failure IDs: `None`; `TR-004` awaits proportional reviewer closure.
+- Recommended recipient: `code_reviewer` for proportional re-review; delivery remains blocked.
+- Remaining risks: unchanged from API-REV-006 — real Alibaba policy/availability, literal 15-minute wait, arbitrary interruption timing, delivery base divergence, and unrelated TS6059 test-root configuration.

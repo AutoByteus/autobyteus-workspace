@@ -1,4 +1,5 @@
 import {
+  buildCustomProviderId,
   OpenAICompatibleEndpointDiscovery,
   QWEN_BASE_URL_ENV_VAR,
   SecretValue,
@@ -218,6 +219,7 @@ export class LlmProviderService {
     input: CustomLlmProviderDraftInput,
   ): Promise<CustomLlmProviderProbeResult> {
     const draft = await this.normalizeDraftInput(input);
+    buildCustomProviderId(draft.name);
     await this.assertProviderNameAvailable(draft.name);
     const discoveredModels = await this.discovery.probeEndpoint({
       baseUrl: draft.baseUrl,
@@ -230,6 +232,7 @@ export class LlmProviderService {
 
   async createCustomProvider(input: CustomLlmProviderDraftInput): Promise<string> {
     const draft = await this.normalizeDraftInput(input);
+    buildCustomProviderId(draft.name);
     await this.assertProviderNameAvailable(draft.name);
     await this.discovery.probeEndpoint({ baseUrl: draft.baseUrl, apiKey: draft.apiKey });
 

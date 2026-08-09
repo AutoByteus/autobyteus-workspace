@@ -14,6 +14,10 @@
 | CRR-008 | `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-test-review-report.md` | Proportional current-contract durable-test review after API-REV-003 | `Pass` (API/E2E execution) | `Fail` (test review) | `TR-002`, `TR-003` |
 | CRR-009 | `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-test-review-report.md` | Proportional re-review after API-REV-004 | `Fail` (CRR-008 test review) | `Pass` (test review) | `TR-002`, `TR-003` resolved |
 | CRR-010 | `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-report.md` | Integrated source re-review of IR-007 after DR-003 latest-base conflict | `Pass` on pre-integration source/test state; delivery blocked | `Pass` (integrated source) | None |
+| CRR-011 | `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-report.md` | Fresh SR-016 source review of IR-009 | `Pass` on superseded readable-identity package | `Fail` | `CR-004` |
+| CRR-012 | `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-report.md` | Source re-review of IR-010 after CRR-011 | `Fail` | `Pass` | `CR-004` resolved |
+| CRR-013 | `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-test-review-report.md` | Proportional SR-016 durable-test review after API-REV-006 | `Pass` (API/E2E execution) | `Fail` (test review) | `TR-004` |
+| CRR-014 | `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-test-review-report.md` | Proportional re-review after API-REV-007 | `Fail` (CRR-013 test review) | `Pass` (test review) | `TR-004` resolved |
 
 ## Revision Entries
 
@@ -276,3 +280,108 @@ None. `CR-002` and `CR-003` were already resolved before the integration. `DR-00
 - Material score or classification changes: Integrated source remains `Pass`; source score changes from pre-integration `9.37/10` to current `9.40/10`. Every category remains at least `9.0`; the small increase reflects reuse of the current base's dedicated database URL owner without duplication.
 - Recommended recipient: `api_e2e_engineer` for applicable integrated-state coverage investigation/execution before delivery resumes.
 - Remaining risks or uncertainty: `API-REV-004` and `CRR-009` validated the pre-integration checkpoint, not the merge. Real Alibaba availability, credentials, quota/region/TLS, and undocumented payload variation remain the bounded external residual risk. Vendor facts remain source-dated.
+
+
+### CRR-011 — Fresh SR-016 source review: collision cleanup identities are lost
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `7`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/implementation-handoff.md`; `IR-009`; `CR-004`, `PREM-CPMIG-005`
+- Relevant solution revision IDs: `SR-010`–`SR-012`, `SR-016`; `SR-013`–`SR-015` are superseded for readable identity
+- Relevant architecture-review revision IDs: `ARCH-REV-010`; `ARCH-REV-009` is superseded
+- Relevant implementation revision IDs: `IR-009`
+- Relevant code-review revision IDs: `CRR-010`, `CRR-011`
+- Relevant API/E2E revision IDs: `N/A` — all prior API/E2E evidence predates current SR-016 readable identity
+- Relevant delivery revision IDs: `N/A` for current approval; delivery retains later tracked-base refresh/integration ownership
+- Prior authoritative result: `CRR-010` passed the earlier integrated exact-metadata/native-Qwen package. It did not review or authorize the SR-016 readable-identity implementation.
+- Current authoritative result: `Fail — Local Fix`. Deterministic identity, V3 store uniqueness, secretless V1 staging, exact prerequisite/final ordering, selector adapters, empty-V3-last publication, terminal gating, and unavailable-selector UX are structurally sound. A supported strict-V2 readable-ID collision, however, produces no selector mapping and consequently no old-secret cleanup attempt because cleanup iterates only mappings.
+- What changed in the review result and why: Completed a fresh full source review against SR-016/ARCH-REV-010. `PREM-CPMIG-005` traces the explicit collision upgrade path from ordinary startup to empty V3 and zero cleanup calls. This contradicts the separate post-V3 best-effort removal-only contract and exceeds the accepted orphan risk of cleanup failure/interruption. Independent focused reruns passed core `3 files / 25 tests`, server `10 files / 61 tests`, web `5 files / 29 tests`, and `git diff --check`.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-002` | Resolved at `CRR-006` | Remains resolved | `IR-005`; `BEH-004`, `BEH-006`; retained SR-010–SR-012 source | Qwen mutation status remains authoritative before subordinate refresh; plaintext reset/warning behavior is unchanged. |
+| `CR-003` | Resolved at `CRR-007` | Remains resolved | `IR-006`; `BEH-006`; retained SR-010–SR-012 source | Both Reload Models paths still refresh catalog and provider settings together. |
+
+- New or remaining finding IDs: `CR-004`
+- Material score or classification changes: Earlier current-package proof was `N/A`; fresh SR-016 result is `Fail — Local Fix` at `9.12/10`. Data-Flow, API/E2E Readiness, Runtime Correctness, and Cleanup are below `9.0` because cleanup identity is incorrectly coupled to selector-map success.
+- Recommended recipient: `implementation_engineer`
+- Remaining risks or uncertainty: After the bounded fix, repeat source review before API/E2E. Real Alibaba behavior remains unexercised; ordinary recent `RUNNING`, genuine cleanup failure/interruption, stale skipped selectors, exact-suffix recreation, and delivery-owned base divergence remain bounded residual risks.
+
+
+### CRR-012 — Source re-review: independent trusted-ID cleanup passes
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round `8`
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/implementation-handoff.md`; `IR-010`; `CR-004`, `PREM-CPMIG-005`
+- Relevant solution revision IDs: `SR-010`–`SR-012`, `SR-016`
+- Relevant architecture-review revision IDs: `ARCH-REV-010`
+- Relevant implementation revision IDs: `IR-009`, `IR-010`
+- Relevant code-review revision IDs: `CRR-011`, `CRR-012`
+- Relevant API/E2E revision IDs: `N/A` — fresh current-contract investigation/execution is next
+- Relevant delivery revision IDs: `N/A` for current approval; delivery retains later tracked-base integration ownership
+- Prior authoritative result: `Fail — Local Fix` at CRR-011 because a trusted strict-V2 mapping collision produced no selector map and also skipped every old UUID secret removal attempt.
+- Current authoritative result: `Pass`. IR-010 derives `cleanupProviderIds` independently from every trusted strict-V2 record before mapping validation. Collision/non-derivable/built-in-name mapping failure still leaves selectors unchanged, but every trusted old ID reaches removal-only cleanup after empty V3. Invalid/untrusted files still supply no cleanup identity.
+- What changed in the review result and why: Revalidated CR-004 from the explicit collision startup contract through current source and tests. The collision regression proves two removals observe empty V3, and the non-derivable regression proves an actual removal rejection remains sanitized warning-only with no status/resolve/save call. Independent focused execution passed `1 file / 10 tests`; `git diff --check` passed. No new finding was identified.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `CR-004` | Open; blocking; `Local Fix` | Resolved | `IR-010`; `CRR-011`; `REQ-014`; `AC-016`, `AC-017`; `PREM-CPMIG-005` | `cleanupProviderIds` derives from strict-V2 records independently of `buildMappings()`. Cleanup remains after `publishEmptyV3()`. Collision and non-derivable tests prove exact removal identities, V3-first sequencing, warning-only genuine failure, unchanged selectors, and no secret status/resolve/save calls. |
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: `Fail — Local Fix` -> `Pass`; score `9.12/10` -> `9.35/10`; every category now meets the clean-pass threshold.
+- Recommended recipient: `api_e2e_engineer`
+- Remaining risks or uncertainty: Current SR-016 API/E2E coverage still requires fresh investigation/execution. Real Alibaba behavior, ordinary recent `RUNNING`, genuine cleanup failure/interruption, invalid/untrusted cleanup absence, stale skipped selectors, exact-name/suffix recreation, and delivery-owned base divergence remain bounded residual risks.
+
+
+### CRR-013 — Proportional SR-016 durable-test review: bad-create secret absence is unproven
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-test-review-report.md`
+- Review entry point and round: `Proportional API/E2E test-code review`, round `5`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-revision-record.md`; `API-REV-006`; `RID-E2E-002`; `TR-004`
+- Relevant solution revision IDs: `SR-010`–`SR-012`, `SR-016`
+- Relevant architecture-review revision IDs: `ARCH-REV-010`
+- Relevant implementation revision IDs: `IR-009`, `IR-010`
+- Relevant API/E2E revision IDs: `API-REV-006`
+- Relevant delivery revision IDs: `N/A`; pre-SR-016 delivery evidence is superseded for readable identity
+- Prior authoritative result: `CRR-012` source review is `Pass`; API-REV-006 execution is `Pass / 96.4%` with one added, one updated, and one removed durable E2E path awaiting proportional review.
+- Current authoritative result: `Fail — Local Fix` for the proportional test review. The replacement readable lifecycle suite is coherent, isolated, current-contract aligned, and passes with the combined critical selection, but its rejected public create assertion proves provider/catalog absence without proving the separately required absence of the readable consumer secret.
+- What changed in the review result and why: Reviewed the exact added/updated/removed durable paths, current requirements/spec, coverage decisions, and execution evidence. The obsolete provider/secret-preserving V1 E2E removal is correct; exact readable/composite assertions and Prisma lifecycle isolation are correct; the only blocker is the bounded `TR-004` postcondition gap. The full successful workflow was not rerun during review.
+
+#### Prior Finding Resolution
+
+None. Historical `TR-002` and `TR-003` remain resolved; no previously unresolved current-package test finding entered this round.
+
+- New or remaining finding IDs: `TR-004`
+- Material score or classification changes: No implementation-source score/result change; `CRR-012` remains `Pass`. API-REV-006 execution remains `Pass / 96.4%`; only the proportional durable-test review is `Fail — Local Fix`.
+- Recommended recipient: `api_e2e_engineer`
+- Remaining risks or uncertainty: Add the exact real-vault absence assertion after rejected create, rerun the affected/combined durable E2E, and return for proportional re-review. External Alibaba behavior, ordinary recent `RUNNING`, arbitrary interruption timing, stale selectors, cleanup orphans on actual removal failure, package-wide TS6059 baseline, and delivery base divergence remain the bounded upstream/API residuals.
+
+
+### CRR-014 — Proportional durable-test re-review: rejected create now proves vault absence
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-test-review-report.md`
+- Review entry point and round: `Proportional API/E2E test-code review`, round `6`
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/custom-provider-model-context-metadata/tickets/in-progress/custom-provider-model-context-metadata/api-e2e-revision-record.md`; `API-REV-007`; `RID-E2E-002`; `TR-004`
+- Relevant solution revision IDs: `SR-010`–`SR-012`, `SR-016`
+- Relevant architecture-review revision IDs: `ARCH-REV-010`
+- Relevant implementation revision IDs: `IR-009`, `IR-010`
+- Relevant API/E2E revision IDs: `API-REV-006`, `API-REV-007`
+- Relevant delivery revision IDs: `N/A`; pre-SR-016 delivery evidence is superseded for readable identity
+- Prior authoritative result: `Fail — Local Fix` at CRR-013 because rejected `createCustomProvider` proved provider/catalog absence but did not query the real vault for the separately required readable consumer secret absence.
+- Current authoritative result: `Pass`. API-REV-007 defines the exact readable consumer secret ID and asserts it absent from the owned SQLite vault immediately after the rejected mutation and before valid recreation. The independent provider-settings absence check remains. The identical four-file serial selection passed 12/12.
+- What changed in the review result and why: Re-reviewed only the bounded TR-004 assertion, its placement, the refreshed investigation/execution artifacts, and corrective evidence. The assertion uses the existing real-database helper and the same deterministic provider ID, adds no fixture or compatibility machinery, and directly closes AC-019. No full workflow rerun was needed during review.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| `TR-004` | Open; blocking; `Local Fix` | Resolved | `API-REV-007`; `CRR-013`; `RID-E2E-002`; `AC-019` | `READABLE_SECRET_ID` resolves to `provider.openai-compatible.provider_alibaba_cloud_token_plan.api-key`; the real SQLite `listSecretIds()` assertion follows rejected `BadCreate` and precedes valid `Recreate`. API-REV-007's identical serial selection passed 4 files / 12 tests, and assertion-order/integrity/cleanup scans passed. |
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: Proportional test review `Fail — Local Fix` -> `Pass`; implementation source remains CRR-012 `Pass`; API/E2E confidence remains `96.4%`.
+- Recommended recipient: `delivery_engineer`
+- Remaining risks or uncertainty: No test-review blocker remains. Real Alibaba availability/credentials/quota/region/TLS/payload drift, the literal ordinary RUNNING window, arbitrary interruption timing, actual cleanup-failure orphan risk, stale skipped selectors, package-wide TS6059 baseline, and delivery-owned tracked-base integration remain the bounded residuals.

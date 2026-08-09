@@ -6,6 +6,7 @@ import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import type { graphql as graphqlFn, GraphQLSchema } from 'graphql';
 import { LLMFactory } from 'autobyteus-ts';
 import { LLMProvider } from 'autobyteus-ts/llm/providers.js';
+import { initializePrisma, shutdownPrisma } from 'repository_prisma';
 import { buildGraphqlSchema } from '../../../src/api/graphql/schema.js';
 import { appConfigProvider } from '../../../src/config/app-config-provider.js';
 import { getModelMetadataProvisioningService } from '../../../src/llm-management/services/model-metadata-provisioning-service.js';
@@ -122,6 +123,10 @@ describe('custom provider metadata GraphQL E2E', () => {
     appConfigProvider.resetForTests();
     const config = appConfigProvider.initialize({ appDataDir: tempDirectory });
     config.initialize();
+    await shutdownPrisma();
+    await initializePrisma({
+      datasourceUrl: config.getOperationalDatabaseLocation().databaseUrl,
+    });
     await resetSecretVaultRuntimeForTests();
     await getSecretVaultRuntime().initialize(config.getOperationalDatabaseLocation());
 
@@ -136,6 +141,7 @@ describe('custom provider metadata GraphQL E2E', () => {
     vi.unstubAllGlobals();
     getModelMetadataProvisioningService().invalidate();
     await resetSecretVaultRuntimeForTests();
+    await shutdownPrisma();
     appConfigProvider.resetForTests();
     await removeOwnedTestRuntime(tempDirectory, database);
     LLMFactory.resetForTests();
@@ -186,6 +192,7 @@ describe('custom provider metadata GraphQL E2E', () => {
       },
     });
     createdProviderId = created.createCustomProvider;
+    expect(createdProviderId).toBe('provider_synthetic_metadata_gateway');
 
     const provider = await customProvider();
     expect(provider.provider).toMatchObject({
@@ -200,6 +207,7 @@ describe('custom provider metadata GraphQL E2E', () => {
 
     const live = provider.models.find((model) => model.value === 'qwen3.8-max');
     expect(live).toMatchObject({
+      modelIdentifier: 'openai-compatible:provider_synthetic_metadata_gateway:qwen3.8-max',
       providerId: createdProviderId,
       providerType: LLMProvider.OPENAI_COMPATIBLE,
       maxContextTokens: 654321,
@@ -210,6 +218,7 @@ describe('custom provider metadata GraphQL E2E', () => {
 
     const inferredDeepSeek = provider.models.find((model) => model.value === 'deepseek-v4-pro');
     expect(inferredDeepSeek).toMatchObject({
+      modelIdentifier: 'openai-compatible:provider_synthetic_metadata_gateway:deepseek-v4-pro',
       maxContextTokens: 1_000_000,
       metadataProvenance: 'CURATED_FALLBACK',
     });

@@ -247,21 +247,28 @@ describe('LlmProviderService', () => {
     expect(discovery.probeEndpoint).not.toHaveBeenCalled();
   });
 
-  it('creates custom metadata and credential, returning only the assigned ID', async () => {
+  it('rejects a non-derivable custom-provider name before endpoint probing', async () => {
+    await expect(createService().probeCustomProvider({
+      name: '---', baseUrl: 'https://gateway.example.com/v1', apiKey: 'synthetic-key',
+    })).rejects.toThrow('CUSTOM_PROVIDER_NAME_INVALID');
+    expect(discovery.probeEndpoint).not.toHaveBeenCalled();
+  });
+
+  it('creates custom metadata and credential, returning only the readable assigned ID', async () => {
     customProviderStore.createProvider.mockResolvedValue({
-      id: 'provider_gateway', name: 'Internal Gateway',
+      id: 'provider_internal_gateway', name: 'Internal Gateway',
       providerType: LLMProvider.OPENAI_COMPATIBLE,
       baseUrl: 'https://gateway.example.com/v1',
     });
     await expect(createService().createCustomProvider({
       name: 'Internal Gateway', baseUrl: 'https://gateway.example.com/v1', apiKey: 'synthetic-key',
-    })).resolves.toBe('provider_gateway');
+    })).resolves.toBe('provider_internal_gateway');
     expect(customProviderStore.createProvider).toHaveBeenCalledWith({
       name: 'Internal Gateway', providerType: LLMProvider.OPENAI_COMPATIBLE,
       baseUrl: 'https://gateway.example.com/v1',
     });
     expect(secretManagement.saveForConsumer).toHaveBeenCalledWith({
-      consumer: { kind: 'llm', providerId: 'provider_gateway', credentialSlot: 'apiKey' },
+      consumer: { kind: 'llm', providerId: 'provider_internal_gateway', credentialSlot: 'apiKey' },
       value: expect.anything(),
     });
   });
