@@ -12,25 +12,21 @@
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/solution-revision-record.md`
 - Architecture decision: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/design-review-report.md`
 - Architecture revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/architecture-review-revision-record.md`
-- Downstream lineage: `code-review-report.md`, `code-review-revision-record.md`, `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md`, `api-e2e-test-review-report.md`, `delivery-revision-record.md`, and `delivery-integration-blocker.md` in the same ticket directory. `CRR-029` passed IR-017 and resolved `CR-F-016` / `API-F-008` plus `CR-F-017` / `API-F-009`; focused `API-REV-013` then exposed `CR-F-018` / `API-F-010`, and `CRR-030` returned its active task-Team peer misrouting as a bounded Local Fix. SR-015 and `ARCH-REV-009` remain current authority. `API-REV-013` is paused at 90%; earlier completed delivery results cover SR-006 only.
+- Downstream lineage: `code-review-report.md`, `code-review-revision-record.md`, `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md`, `api-e2e-test-review-report.md`, `delivery-revision-record.md`, and `delivery-integration-blocker.md` in the same ticket directory. `CRR-031` passed IR-018 source; `API-REV-014` then passed the complete pre-latest-base three-runtime matrix, `API-REV-015` corrected the cumulative durable package, and `CRR-033` passed its proportional review. Delivery `DR-004` refreshed the branch to `origin/personal@3cddeec6b93602da172fec2e7b9a80acc7c05117` and returned seven conflicts as a Local Fix. SR-015 and `ARCH-REV-009` remain current design authority; pre-integration API evidence is not post-integration verification.
 
 ## Current Implementation State
 
-- Implementation revision: `IR-018`
-- Implementation cycle: `Local Fix`
+- Implementation revision: `IR-019`
+- Implementation cycle: `Local Fix` — latest-base integration for delivery `DR-004`
 - Current solution: `SR-015` (`SR-001` through `SR-015` cumulative), including the exact-copy `SR-014` Team collaboration instruction
 - Architecture approval: `ARCH-REV-009` Pass (`ARCH-REV-008` remains the complete structural baseline)
-- Triggering finding: `CR-F-018` / `API-F-010` from `CRR-030`. `CR-F-012` through `CR-F-017` remain source-resolved. No requirement gap, design impact, or unclear finding is open.
-- Current code review: `CRR-030` Fail — Local Fix. `CRR-029`'s IR-017 source Pass is superseded for current acceptance; IR-018 corrects exact same-task-Team peer routing and awaits focused source re-review.
-- Current API/E2E: `API-REV-013` remains halted at 90% with its cumulative durable delta, both fixture corrections, and retained live failure state preserved. After source Pass it must rerun the AutoByteus active task-Team peer scenario and complete the still-required Codex and Claude rows; implementation edited no durable coverage.
-- Delivery lineage: completed delivery results through `DR-003` prove SR-006 only; `DR-004` is cumulative SR-012 lineage context, not completed SR-015 delivery proof.
-- IR-005 SR-012 baseline source commit: `3927e878db0318138b6e39ad7cea1b032584e08f`.
-- IR-013 source commit: `6a920d45e54981735c25146e0ab76ab7e0917c4c`.
-- IR-014 source commit: `4dd8ff543d1c7ebbc8b1c6ffca6923487aa3eda5`.
-- IR-015 source commit: `24597cf194306848a06fdfe667ba932459c15c33` (`fix: make canonical token migration atomic`).
-- IR-016 source commit: `110b9007615741fa0f5a96974b95ad7bc2be595c` (`fix: remove dead Claude handoff control`).
-- IR-017 source commit: `b877d343b30fe01bd2f39546c0e8279adbd00dff` (`fix: preserve nested Team delivery identity`).
-- IR-018 source commit: `035fba611e6895187f7f6d4644993e22efd8c38c` (`fix: route active task-Team peers exactly`).
+- Triggering blocker: `DR-004` / `delivery-integration-blocker.md`. No requirement gap, design impact, or unclear finding is open.
+- Prior reviewed state: `CRR-033` passed corrected `API-REV-015` over the complete SR-015 checkpoint `7e7d6a7b4cd55188f548c9e6a8c616f2e0b4e3bb`; prior source head `6b829e3d9aed63a24cd2f1e50c37a3457f9c0718` contains IR-018 artifacts.
+- Integrated state: merge commit `77688d8f3aadaea0edcda4f4030cc5d845577b73` has parents `7e7d6a7b4cd55188f548c9e6a8c616f2e0b4e3bb` and latest base `3cddeec6b93602da172fec2e7b9a80acc7c05117`; merge metadata is cleared and latest base is an ancestor.
+- Conflict resolution: five production paths plus two API/E2E coverage/support paths are textually resolved. Production preserves canonical `TeamExecutionAddress` commands and current SR-015 routing while integrating latest-base server-owned WebSocket egress and memory-lineage deletion. Coverage validity is intentionally not claimed: the merged memory integration contains one newly reachable pre-schema TeamRun fixture and must be corrected/revalidated by API/E2E after source review.
+- Current review state: integrated source awaits code review. After Pass, API/E2E must perform a fresh post-integration coverage investigation/execution and proportional review; API-REV-014/015 evidence remains pre-integration only.
+- Operational safety: IR-019 did not run server startup, app-data migrations, or live/provider scenarios. The only focused executable selection used `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db`; `/Users/normy/.autobyteus/server-data/db/production.db` was explicitly rejected by the guard and was not targeted.
+- Protected delivery state: stash `92fe82e95eb123bdfa259c74eeb1c534b26d909b` and backup `/tmp/agent-team-hierarchical-handoffs-dr004-preintegrate.EJ9Oli/delivery-protected.tar` remain intact and unapplied.
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/implementation-revision-record.md`
 
 ## Implementation Summary
@@ -136,6 +132,14 @@ The frontend now consumes the recursive `rootTeam`, derives canonical address in
 - Missing, inactive, foreign, truncated, reordered, wrong-parent, wrong-Team, or mismatched sender identity fails before trace publication or member input. No persistent fallback, retry, localization, basename lookup authority, compatibility selector, or Activity presentation branch was added. The explicit coordinator route preserves the existing persistent path from IR-017 while allowing the separately proven active task-Team execution path.
 - Change posture: bounded routing correction. Root-cause classification: IR-005 retained the sender's concrete task chain but root recipient materialization always used the root manager's empty chain and persistent AgentRun. A focused task-execution resolver and explicit resolved-delivery route repair that ownership seam without changing public or persisted contracts.
 
+### IR-019 Latest-Base Integration Local Fix
+
+- `DR-004`: the reviewed complete SR-015/API checkpoint is merged with latest `origin/personal` in merge commit `77688d8f3aadaea0edcda4f4030cc5d845577b73`; both parents are retained, latest base is an ancestor, and no merge markers or merge metadata remain.
+- Memory lineage follows the latest-base ownership contraction: deleted `agent-memory-origin-service.ts` remains deleted, and production/tests contain no reference to that obsolete service. No compatibility wrapper was recreated.
+- Team WebSocket production keeps SR-015's strict exact `execution_address` parsing and root validation for send, interrupt, and approval while adopting latest-base `AgentStreamWebSocketEgress` for server-owned content cadence/coalescing. The web service retains canonical `TeamExecutionAddress` emission and respects removal of the client presentation scheduler. Deprecated route/path/run selector fields remain absent from the five resolved production paths.
+- The live harness combines API-REV-015's explicit `AUTOBYTEUS_TEST_DATABASE_URL` contract with latest-base normalized-path equality and rejects any resolved mismatch before vault/server setup. The cross-runtime memory test conflict was mechanically preserved, but implementation execution exposed one latest-base test block that constructs the removed flat `TeamRunConfig` shape. Its validity/fixture correction is API/E2E-owned and was not weakened or silently patched by implementation.
+- Change posture: bounded integration fix. No canonical TeamRun, recipient, provider-instruction, migration/token, nested delivery, active task-Team routing, public API, or durable storage authority was redesigned.
+
 ## Reviewed Behavior Trace
 
 | Behavior | Implementation result |
@@ -190,6 +194,17 @@ The frontend now consumes the recursive `rootTeam`, derives canonical address in
 - Changed production files satisfy the implementation size guard. IR-018's resolver/coordinator/manager are 158/111/335 effective non-empty lines; IR-017's eight files range from 38 to 280; every changed file remains below 500. IR-015 canonical aggregate/migrator/store are 153/96/102 effective non-empty lines; exact renderer/composer are 26/28. Preserved planner/index remain separate 290/191-line migration-only owners.
 
 ## Implementation-Scoped Checks
+
+### IR-019 Integrated Delta
+
+- Shared dependency build: `autobyteus-server-ts` `pnpm prepare:shared` — passed. Evidence: `/tmp/ir019-integrated-shared-build.log`.
+- Server production typecheck: `pnpm exec tsc -p tsconfig.build.json --noEmit --pretty false` — passed after the shared package build refreshed its linked `dist`. Evidence: `/tmp/ir019-integrated-server-typecheck.log`. The initial stale-linked-dist attempt is retained separately at `/tmp/ir019-integrated-server-typecheck-initial.log` and is not reported as a source failure.
+- Server `pnpm run build:full` — passed, including clean TypeScript build/assets and sanitized built-in bootstrap smoke without `DATABASE_URL`. Evidence: `/tmp/ir019-integrated-server-build-full.log`.
+- Web `pnpm run build` — passed. Expected Browserslist/chunk-size warnings remain. Evidence: `/tmp/ir019-integrated-web-build.log`.
+- Exact streaming command built-JavaScript probe — passed: canonical interrupt and approval preserved member/task-Agent/leaf task-Team identity; legacy route/run selectors and a foreign root were rejected before runtime calls; acknowledgements/errors used the current server-message sink. Evidence: `/tmp/ir019-integrated-stream-command-probe.mjs` and `/tmp/ir019-integrated-stream-command-probe.log`.
+- Focused safe selection, guarded to test-owned SQLite — `agent-stream-websocket-egress` passed 26/26 and `live-e2e-harness` passed 17/17. The merged cross-runtime memory integration passed 15/16 and exposed one latest-base block still constructing the removed flat `TeamRunConfig` fields (`coordinatorMemberRouteKey`, `memberConfigs`) instead of schema-v3 `rootTeam`; this is recorded as post-integration API/E2E coverage maintenance, not as a production-source Pass or a test weakening opportunity. Evidence: `/tmp/ir019-disposable-database-guard.log` and `/tmp/ir019-integrated-focused-tests.log`.
+- Resolution audit — passed for merge identity/parents, latest-base ancestry, cleared merge metadata, seven resolved path dispositions, zero conflict markers, deleted memory-service references, canonical streaming identity, absence of deprecated selector/path fields, server egress/client scheduler ownership, harness database guard, resolved-path diff hygiene against both parents, and production source sizes of 465/68/54/350 effective non-empty lines. Evidence: `/tmp/ir019-integrated-conflict-audit.log`.
+- Operational safety — no IR-019 startup, migration, live provider, or browser scenario was run. The test guard accepted only `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db` and explicitly rejected `/Users/normy/.autobyteus/server-data/db/production.db`. The protected stash and backup hash remain unchanged.
 
 ### IR-018 Delta
 
@@ -321,7 +336,7 @@ The frontend now consumes the recursive `rootTeam`, derives canonical address in
 
 ## Frontend Rendered Result
 
-IR-006 through IR-018 do not change a rendered frontend surface. IR-015 changes model-facing system/developer instruction text only, verified at provider composition seams; IR-016 removes a dead internal Claude input; IR-017 and IR-018 correct backend routing only. The live Activity label noted in CRR-028 and preserved by CRR-030 was not changed because it truthfully describes completion of the tool invocation rather than acceptance of the returned collaboration operation. The cumulative IR-005 frontend result remains:
+IR-006 through IR-018 do not change a rendered frontend surface. IR-019 resolves the web Team streaming transport against latest-base server-owned cadence/coalescing but introduces no intentional visual component or layout change. The Nuxt production build passed; no post-integration rendered interaction was claimed because no safe live server/provider environment was started in this implementation round. API/E2E must exercise streaming interactions post-integration against an isolated database. IR-015 changes model-facing system/developer instruction text only, verified at provider composition seams; IR-016 removes a dead internal Claude input; IR-017 and IR-018 correct backend routing only. The live Activity label noted in CRR-028 and preserved by CRR-030 was not changed because it truthfully describes completion of the tool invocation rather than acceptance of the returned collaboration operation. The cumulative IR-005 frontend result remains:
 
 - Nuxt production output was served and `/agent-teams` was inspected at 1440x1000 and 390x844.
 - Search input, Reload action, Create affordance, responsive layout, and absence of horizontal overflow were verified. Evidence: `/tmp/sr012-agent-teams.png` and `/tmp/sr012-agent-teams-mobile.png`.
@@ -330,22 +345,21 @@ IR-006 through IR-018 do not change a rendered frontend surface. IR-015 changes 
 
 ## Known Risks And Downstream Work
 
-- No durable API/E2E coverage was added, changed, or removed by implementation. The cumulative API/E2E-owned durable delta and live failure evidence already present in the worktree were preserved without staging or rewriting.
-- API/E2E must resume `API-REV-013` from its paused 90% checkpoint only after code review Pass. It must rerun the AutoByteus active task-Team peer scenario and complete the required Codex and Claude nested-Team rows while preserving both durable fixture corrections. Any repository-resident durable coverage delta must return for proportional review.
-- Existing DS-013 token migration/cleanup/aggregate and combined TeamRun history coverage remains part of the cumulative downstream package; IR-018 does not alter those source boundaries or supersede the earlier evidence.
-- The 30-minute interactive transaction timeout is intentionally bounded for the observed material row volume; real upgrade duration and operational progress remain downstream realistic-environment evidence. Atomicity cannot be traded for chunk commits.
-- The required imported nested-classroom live matrix—AutoByteus `gpt-5.6-luna`, Codex App Server `gpt-5.6-luna` with medium reasoning, and authenticated Claude Agent SDK—is incomplete. The API-REV-013 pre-fix AutoByteus accepted-but-persistent-peer misrouting is retained for diagnosis but is not post-fix proof; all three post-fix provider outcomes remain mandatory downstream evidence.
-- Real provider execution, fresh TeamRun/task-TeamRun identity, terminate/restore, application admission plus physical-DB discovery, frontend full workflows, and the remaining migration/API/frontend matrix remain incomplete.
-- Delivery-owned documentation and the protected stash were not touched. Prior SR-006 CRR/API/delivery evidence is not SR-015 verification.
+- API-REV-014's real AutoByteus/Codex/Claude matrix and API-REV-015's corrected durable result are pre-latest-base evidence. They remain valid historical evidence but cannot verify merge commit `77688d8f3aadaea0edcda4f4030cc5d845577b73`.
+- After integrated source review passes, API/E2E must issue a fresh coverage investigation before editing/executing coverage. It must revalidate the merged cross-runtime memory integration, the live harness database boundary, all 53 retained durable paths, and the complete realistic matrix against the integrated state. Any durable edit/removal then returns through proportional code review.
+- The implementation-scoped focused selection exposed one stale latest-base memory-integration block that instantiates the removed flat TeamRun config. Implementation left it unchanged because coverage validity and durable correction are API/E2E-owned; this one assertion is not evidence of a production regression.
+- The mandatory operational disclosure remains: API-REV-014 mutated `/Users/normy/.autobyteus/server-data/db/production.db` before containment. No automatic rollback occurred. IR-019 did not touch or inspect it through startup/migration/live execution; renewed checks must prove an exact disposable root/database and fail closed on mismatch.
+- The bounded Claude teardown-only MCP 404 and unrelated non-clean whole-suite baselines remain disclosed. The protected delivery stash/backup and delivery-owned untracked artifacts remain untouched.
+- Latest-base WebSocket cadence ownership is production-build/probe validated but not post-integration rendered/live verified. Server/client connection timing, real provider flows, task lifecycle, terminate/restore, application admission, migration, and browser history/projection rows remain downstream.
 
 ## Task Design Health Check
 
-- Reviewed change posture: one bounded active task-Team peer routing fix after IR-017 source Pass.
-- Root cause: root logical resolution retained the sender's exact task execution address, but recipient materialization unconditionally used the root manager's empty task chain and persistent rooted AgentRun, causing an accepted message to start the persistent peer.
-- Refactor decision: `No Broader Refactor Needed`; established canonical address, root resolver, active task-Team directory, resolved-delivery boundary, and task lifecycle owners remain correct. One focused resolver proves active sender scope, while the coordinator accepts an explicit already-resolved route for the exact task TeamRun.
-- Implementation matched the reviewed assessment: `Yes`.
+- Reviewed change posture: bounded latest-base integration after `CRR-033` / `API-REV-015` and delivery blocker `DR-004`.
+- Root cause: the latest base independently removed the old memory-origin owner, moved WebSocket content cadence to server egress, and changed adjacent streaming/test-support files across the same paths modified by SR-015, producing textual conflicts rather than a reviewed-behavior contradiction.
+- Refactor decision: `No Broader Refactor Needed`; canonical TeamRun/execution identity, exact provider instruction, migration/token ownership, nested delivery, and active task-Team routing remain intact. The conflict resolutions compose latest ownership directly and do not introduce aliases or compatibility branches.
+- Implementation matched the reviewed assessment: `Yes` for production integration. Durable coverage validity remains deliberately routed downstream.
 - New Design Impact or Requirement Gap found during implementation: `No`.
 
 ## Routing
 
-Route this cumulative SR-015 / IR-018 package to `code_reviewer` for focused `CR-F-018` source re-review while preserving resolved `CR-F-012` through `CR-F-017`. On Pass, route to `api_e2e_engineer` to resume `API-REV-013` at 90%, preserve its cumulative durable delta and fixture corrections, rerun AutoByteus, and complete Codex/Claude nested-Team validation. Any repository-resident durable coverage additions, edits, or removals must return through proportional code review before delivery.
+Route this cumulative SR-015 / IR-019 integrated package to `code_reviewer` for source and proportional conflict-resolution review against merge commit `77688d8f3aadaea0edcda4f4030cc5d845577b73`. Preserve resolved `CR-F-012` through `CR-F-018`, `CRR-033`, and the exact pre-integration API package while recognizing that post-integration verification is still required. On Pass, route to `api_e2e_engineer` for a fresh post-integration coverage investigation/execution with the operational-database guard; any durable coverage edit/removal must return through proportional code review before delivery re-enters.
