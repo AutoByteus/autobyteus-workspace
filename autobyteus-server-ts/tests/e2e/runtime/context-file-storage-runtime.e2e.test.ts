@@ -310,12 +310,9 @@ runLiveContextFileRuntimeE2e(
     let schema: GraphQLSchema;
     let graphql: typeof graphqlFn;
     let testDataDir: string | null = null;
-    let previousParserEnv: string | undefined;
     const createdWorkspaceRoots = new Set<string>();
 
     beforeAll(async () => {
-      previousParserEnv = process.env.AUTOBYTEUS_STREAM_PARSER;
-      process.env.AUTOBYTEUS_STREAM_PARSER = "api_tool_call";
       testDataDir = await mkdtemp(path.join(os.tmpdir(), "context-file-storage-runtime-e2e-"));
       await writeFile(
         path.join(testDataDir, ".env"),
@@ -343,11 +340,6 @@ runLiveContextFileRuntimeE2e(
         testDataDir = null;
       }
 
-      if (previousParserEnv === undefined) {
-        delete process.env.AUTOBYTEUS_STREAM_PARSER;
-      } else {
-        process.env.AUTOBYTEUS_STREAM_PARSER = previousParserEnv;
-      }
     });
 
     const execGraphql = async <T>(

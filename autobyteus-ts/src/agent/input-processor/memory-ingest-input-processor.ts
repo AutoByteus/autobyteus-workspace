@@ -4,7 +4,7 @@ import type { AgentContext } from '../context/agent-context.js';
 import type { UserMessageReceivedEvent } from '../events/agent-events.js';
 import { buildLLMUserMessage } from '../message/multimodal-message-builder.js';
 import { SenderType } from '../sender-type.js';
-import { getToolContinuationMode, NATIVE_API_TOOL_CONTINUATION_MODE } from '../message/tool-continuation-metadata.js';
+import { getToolContinuationMode } from '../message/tool-continuation-metadata.js';
 
 export class MemoryIngestInputProcessor extends BaseAgentUserInputMessageProcessor {
   static getOrder(): number {
@@ -35,16 +35,11 @@ export class MemoryIngestInputProcessor extends BaseAgentUserInputMessageProcess
 
     if (message.senderType === SenderType.TOOL) {
       const continuationMode = getToolContinuationMode(message);
-      const isNativeApiContinuation = continuationMode === NATIVE_API_TOOL_CONTINUATION_MODE;
       const isToolHistoryContinuation = continuationMode !== null;
       memoryManager.ingestToolContinuationBoundary(
         turnId,
         isToolHistoryContinuation ? 'ToolContinuationReadyEvent' : 'ToolContinuationInput',
-        isNativeApiContinuation
-          ? 'Native API tool continuation'
-          : isToolHistoryContinuation
-            ? 'Tool history continuation'
-            : 'Tool continuation'
+        isToolHistoryContinuation ? 'Native API tool continuation' : 'Tool continuation'
       );
       console.debug(`MemoryIngestInputProcessor stored tool continuation boundary with turnId ${turnId}`);
       return message;

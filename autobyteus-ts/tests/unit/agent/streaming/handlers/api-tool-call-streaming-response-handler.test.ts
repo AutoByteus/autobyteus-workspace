@@ -18,6 +18,23 @@ describe('ApiToolCallStreamingResponseHandler basics', () => {
     expect(events[1].payload.delta).toBe('Hello world');
   });
 
+  it.each([
+    '<tool name="run_bash"><arguments><command>echo unsafe</command></arguments></tool>',
+    '{"tool":"run_bash","arguments":{"command":"echo unsafe"}}',
+    '[[SEG_START tool]] run_bash {"command":"echo unsafe"} [[SEG_END tool]]',
+    '[TOOL_CALL] run_bash {"command":"echo unsafe"}'
+  ])('treats legacy-looking assistant text as content and creates zero invocations: %s', (content) => {
+    const handler = new ApiToolCallStreamingResponseHandler({ turnId: TURN_ID });
+
+    handler.feed(new ChunkResponse({ content }));
+    handler.finalize();
+
+    expect(handler.getAllInvocations()).toEqual([]);
+    expect(handler.getAllEvents().find(
+      (event) => event.event_type === SegmentEventType.CONTENT
+    )?.payload.delta).toBe(content);
+  });
+
   it('emits write_file segments from tool calls', () => {
     const handler = new ApiToolCallStreamingResponseHandler({ turnId: TURN_ID });
 
@@ -204,8 +221,12 @@ describe('ApiToolCallStreamingResponseHandler parallel tool calls', () => {
 
     expect(writeInv).toBeDefined();
     expect(bashInv).toBeDefined();
-    expect(writeInv!.arguments).toEqual({ path: 'test.py', content: '' });
+    expect(writeInv!.arguments).toEqual({ path: 'test.py' });
+    expect(writeInv!.turnId).toBe(TURN_ID);
+    expect(writeInv!.id).toBe('call_write');
     expect(bashInv!.arguments).toEqual({ command: 'python test.py' });
+    expect(bashInv!.turnId).toBe(TURN_ID);
+    expect(bashInv!.id).toBe('call_bash');
   });
 
   it('keeps multiple Gemini functionCall parts as distinct invocations', () => {
@@ -400,6 +421,28 @@ describe('ApiToolCallStreamingResponseHandler callbacks', () => {
 
     expect(invocations).toHaveLength(1);
     expect(invocations[0].name).toBe('test');
+  });
+
+  it('emits the tool segment end before publishing the finalized invocation', () => {
+    const callbackOrder: string[] = [];
+    const handler = new ApiToolCallStreamingResponseHandler({
+      turnId: TURN_ID,
+      onSegmentEvent: (event) => callbackOrder.push(`segment:${event.event_type}`),
+      onToolInvocation: () => callbackOrder.push('invocation')
+    });
+
+    handler.feed(new ChunkResponse({
+      content: '',
+      tool_calls: [{ index: 0, call_id: 'call_order', name: 'test', arguments_delta: '{}' }]
+    }));
+    handler.finalize();
+
+    expect(callbackOrder).toEqual([
+      `segment:${SegmentEventType.START}`,
+      `segment:${SegmentEventType.CONTENT}`,
+      `segment:${SegmentEventType.END}`,
+      'invocation'
+    ]);
   });
 });
 

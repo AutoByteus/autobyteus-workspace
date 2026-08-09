@@ -151,7 +151,6 @@ const createToolRequiredLlmFactory = () =>
 
 runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration", () => {
   let previousMemoryDir: string | undefined;
-  let previousParserEnv: string | undefined;
   let previousAgentRunManagerInstance: AgentRunManager | null | undefined;
   let agentRunManagerOverridden = false;
   let memoryDir = "";
@@ -173,10 +172,8 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
 
   beforeEach(async () => {
     previousMemoryDir = process.env.AUTOBYTEUS_MEMORY_DIR;
-    previousParserEnv = process.env.AUTOBYTEUS_STREAM_PARSER;
     previousAgentRunManagerInstance = (AgentRunManager as any).instance;
     agentRunManagerOverridden = false;
-    process.env.AUTOBYTEUS_STREAM_PARSER = "api_tool_call";
 
     memoryDir = await fsPromises.mkdtemp(path.join(os.tmpdir(), "autobyteus-live-backend-memory-"));
     workspaceDir = await fsPromises.mkdtemp(
@@ -231,12 +228,6 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
       delete process.env.AUTOBYTEUS_MEMORY_DIR;
     } else {
       process.env.AUTOBYTEUS_MEMORY_DIR = previousMemoryDir;
-    }
-
-    if (previousParserEnv === undefined) {
-      delete process.env.AUTOBYTEUS_STREAM_PARSER;
-    } else {
-      process.env.AUTOBYTEUS_STREAM_PARSER = previousParserEnv;
     }
 
     if (agentRunManagerOverridden) {

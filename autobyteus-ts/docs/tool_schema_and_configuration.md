@@ -232,22 +232,19 @@ const createUser = tool({
 2.  **Decorator**: Registers the schema as a `ToolDefinition`.
 3.  **Registry**: Stores it in `ToolRegistry`.
 4.  **Provider schema path**:
-    - `ToolSchemaProvider` resolves the provider-aware runtime argument schema
-      formatter.
-    - In native API tool-call mode (`AUTOBYTEUS_STREAM_PARSER=api_tool_call`),
-      `LlmPhase` passes those schemas to the LLM as the provider-native `tools`
-      request field. The tool manifest is not injected into the system prompt in
-      this mode.
-    - In text-parser modes (`xml`, `json`, `sentinel`), the formatter output is
-      still used to build prompt-visible tool instructions.
-5.  **Formatters**:
-    - `DefaultXmlSchemaFormatter`: Converts schema to `<tool>` XML.
-    - `DefaultJsonSchemaFormatter`: Converts schema to the default JSON
-      prompt/tool representation.
-    - `OpenAiJsonSchemaFormatter`: Converts schema to the OpenAI-compatible
-      function-tool envelope.
-6.  **LLM**: Receives the schema either as provider-native API metadata or as
-    prompt text, depending on the selected tool-call mode.
+    - `StreamingResponseHandlerFactory` asks `ToolSchemaProvider` to build
+      schemas only when the current turn has configured tools.
+    - `ToolSchemaProvider` resolves the provider-aware native schema formatter:
+      Anthropic, Gemini, or the OpenAI-compatible function-tool envelope used by
+      the remaining supported provider paths.
+    - `LlmPhase` supplies the resulting array through the provider request's
+      native `tools` field. With zero tools it sends no schema field.
+5.  **LLM**: Receives provider-native tool metadata. Tool definitions are not
+    rendered into system-prompt instructions, examples, XML, sentinel blocks,
+    or another model-authored text protocol.
+
+Structured provider-native calls are the only supported model-to-tool
+invocation channel. Assistant text is not parsed into invocations.
 
 ### 4.5 OpenAI-Compatible Function Tool Schemas
 
@@ -306,9 +303,13 @@ one arbitrary `ParameterType`; until `ParameterSchema` has first-class union
 support, those schemas follow the mapper's conservative unsupported-schema
 fallback behavior.
 
-### 4.7 Custom Overrides
+### 4.7 Provider Schema Extensions
 
-For complex requirements (e.g., custom sentinel tag instructions like `write_file`'s `__START_CONTENT__`), specific tools can bypass default generation by registering a **Custom Formatter** in the `ToolFormattingRegistry`.
+Provider-specific schema changes belong in the retained native formatters or in
+the provider adapter that owns request legality. Do not add prompt examples,
+text-call syntax formatters, per-tool manifest overrides, or a parallel schema
+registry. `write_file` and `edit_file` live streaming is a response-display
+projection and does not change their authoritative provider-native schemas.
 
 ---
 

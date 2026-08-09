@@ -3,6 +3,8 @@ import { defaultToolRegistry, ToolRegistry } from '../../../../src/tools/registr
 import { ToolDefinition } from '../../../../src/tools/registry/tool-definition.js';
 import { ParameterSchema, ParameterDefinition, ParameterType } from '../../../../src/utils/parameter-schema.js';
 import { registerReadFileTool } from '../../../../src/tools/file/read-file.js';
+import { ToolSchemaProvider } from '../../../../src/tools/usage/providers/tool-schema-provider.js';
+import { LLMProvider } from '../../../../src/llm/providers.js';
 
 const TOOL_NAME_READ_FILE = 'read_file';
 
@@ -51,33 +53,24 @@ describe('read_file tool definition', () => {
     expect(paramInclude?.required).toBe(false);
   });
 
-  it('formats XML usage', () => {
-    const definition = defaultToolRegistry.getToolDefinition(TOOL_NAME_READ_FILE);
-    const xmlOutput = definition?.getUsageXml() ?? '';
-    expect(xmlOutput).toContain(`<tool name="${TOOL_NAME_READ_FILE}"`);
-    expect(xmlOutput).toContain('Reads content from a specified file');
-    expect(xmlOutput).toContain('If path is relative, you must provide an absolute base_dir');
-    expect(xmlOutput).toContain('name="base_dir"');
-    expect(xmlOutput).toContain('prior shell cd state');
-    expect(xmlOutput).toContain('include_line_numbers');
-    expect(xmlOutput).toContain('default="True"');
-  });
+  it('provides the native OpenAI JSON schema', () => {
+    const [nativeSchema] = new ToolSchemaProvider().buildSchema(
+      [TOOL_NAME_READ_FILE],
+      LLMProvider.OPENAI
+    ) as Array<Record<string, any>>;
 
-  it('formats JSON usage', () => {
-    const definition = defaultToolRegistry.getToolDefinition(TOOL_NAME_READ_FILE);
-    const jsonOutput = definition?.getUsageJson() as Record<string, any>;
+    expect(nativeSchema.type).toBe('function');
+    expect(nativeSchema.function.name).toBe(TOOL_NAME_READ_FILE);
+    expect(nativeSchema.function.description).toContain('Reads content from a specified file');
 
-    expect(jsonOutput.name).toBe(TOOL_NAME_READ_FILE);
-    expect(jsonOutput.description).toContain('Reads content from a specified file');
-
-    const inputSchema = jsonOutput.inputSchema;
-    expect(inputSchema.type).toBe('object');
-    expect(inputSchema.properties.path.type).toBe('string');
-    expect(inputSchema.properties.base_dir.type).toBe('string');
-    expect(inputSchema.required).toContain('path');
-    expect(inputSchema.required).not.toContain('base_dir');
-    expect(inputSchema.properties.start_line.type).toBe('integer');
-    expect(inputSchema.properties.end_line.type).toBe('integer');
-    expect(inputSchema.properties.include_line_numbers.type).toBe('boolean');
+    const parameters = nativeSchema.function.parameters;
+    expect(parameters.type).toBe('object');
+    expect(parameters.properties.path.type).toBe('string');
+    expect(parameters.properties.base_dir.type).toBe('string');
+    expect(parameters.required).toContain('path');
+    expect(parameters.required).not.toContain('base_dir');
+    expect(parameters.properties.start_line.type).toBe('integer');
+    expect(parameters.properties.end_line.type).toBe('integer');
+    expect(parameters.properties.include_line_numbers.type).toBe('boolean');
   });
 });

@@ -14,7 +14,7 @@ import {
 import { resolveModelForRuntime } from '../../utils/gemini-model-mapping.js';
 import { convertGeminiToolCalls } from '../converters/gemini-tool-call-converter.js';
 import { BasePromptRenderer } from '../prompt-renderers/base-prompt-renderer.js';
-import { createGeminiPromptRendererForToolFormat } from '../prompt-renderers/provider-tool-history-renderer-selection.js';
+import { GeminiPromptRenderer } from '../prompt-renderers/gemini-prompt-renderer.js';
 import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
 import type { GeminiRuntimeResolver } from '../../utils/gemini-runtime.js';
 
@@ -56,7 +56,7 @@ export class GeminiLLM extends BaseLLM {
     this.apiKeyResolver = apiKeyResolver;
     if (!runtimeResolver) throw new Error('GEMINI_RUNTIME_RESOLVER_REQUIRED');
     this.runtimeResolver = runtimeResolver;
-    this._renderer = createGeminiPromptRendererForToolFormat();
+    this._renderer = new GeminiPromptRenderer();
   }
 
   private getClient(): Promise<{ client: GoogleGenAI; runtimeInfo: GeminiRuntimeInfo }> {

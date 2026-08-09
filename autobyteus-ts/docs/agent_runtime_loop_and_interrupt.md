@@ -142,7 +142,9 @@ uses these collaborators:
     canonical memory;
   - passes `{ signal, turnId }` into `BaseLLM.streamMessages(...)`;
   - publishes streamed segment facts through `AgentExternalEventNotifier`;
-  - parses text/API tool calls through the streaming response handler factory;
+  - sends configured tools through provider-native schemas and normalizes only
+    provider-native tool-call deltas through the streaming response handler
+    factory; assistant text is never parsed into invocations;
   - checks the `TurnExecutionScope` before starting or consuming LLM streams
     and again after awaited LLM seams before publishing normal assistant
     completion side effects;
@@ -181,9 +183,9 @@ uses these collaborators:
 - `ToolResultContinuationBuilder`
   - builds semantic completed-tool continuation text from the processed tool
     results, for example `The read_media_file tool call completed successfully.`;
-  - builds the same-turn `SenderType.TOOL` continuation input for legacy
-    text-parser modes;
-  - marks native `api_tool_call` continuations as `tool_history_only` when no
+  - ingests the active native result batch in call order and builds the
+    same-turn internal `SenderType.TOOL` continuation carrier;
+  - marks provider-native continuations as `tool_history_only` when no
     context-file media must be carried, causing `AgentTurnRunner` to emit
     `ToolContinuationReadyEvent` and `LlmPhase` to call
     `LLMRequestAssembler.prepareToolContinuationRequest(...)` without appending
@@ -375,8 +377,9 @@ eligible for interrupted-turn memory projection.
 
 Failed LLM streams are not treated as interrupts. Streaming handlers emit
 terminal `SEGMENT_END` events with `failed: true` and an error message for
-open segments; `ToolInvocationAdapter` suppresses failed partial tool segments
-so they do not become invocations, tool results, or same-turn continuations.
+open segments; the provider-native handler clears partial call state without
+publishing invocations, so failed partial calls cannot become tool results or
+same-turn continuations.
 The named LLM-request recovery boundary also restores the pre-request working
 context and compaction flags, persists that restored snapshot, and appends a
 correlated recovery trace. The failure is surfaced as one diagnostic; the

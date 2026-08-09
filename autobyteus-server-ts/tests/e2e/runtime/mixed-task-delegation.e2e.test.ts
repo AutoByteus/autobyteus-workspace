@@ -29,7 +29,6 @@ const liveMixedTaskDelegationEnabled =
 const describeLive = codexBinaryReady && liveMixedTaskDelegationEnabled ? describe : describe.skip;
 const DEFAULT_LMSTUDIO_TEXT_MODEL = "qwen3.6-35b-a3b";
 const originalCodexApprovalPolicy = process.env.CODEX_APP_SERVER_APPROVAL_POLICY;
-const originalToolCallFormat = process.env.AUTOBYTEUS_STREAM_PARSER;
 
 type WsMessage = { type: string; payload: Record<string, unknown> };
 type TeamMemberMetadata = {
@@ -357,7 +356,6 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
   beforeAll(async () => {
     originalInternalServerBaseUrl = process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR];
     process.env.CODEX_APP_SERVER_APPROVAL_POLICY = "untrusted";
-    process.env.AUTOBYTEUS_STREAM_PARSER = "api_tool_call";
     testDataDir = await mkdtemp(path.join(os.tmpdir(), "mixed-task-delegation-e2e-appdata-"));
     await writeFile(path.join(testDataDir, ".env"), "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n", "utf-8");
     appConfigProvider.config.setCustomAppDataDir(testDataDir);
@@ -383,8 +381,6 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
   afterAll(async () => {
     if (typeof originalCodexApprovalPolicy === "string") process.env.CODEX_APP_SERVER_APPROVAL_POLICY = originalCodexApprovalPolicy;
     else delete process.env.CODEX_APP_SERVER_APPROVAL_POLICY;
-    if (typeof originalToolCallFormat === "string") process.env.AUTOBYTEUS_STREAM_PARSER = originalToolCallFormat;
-    else delete process.env.AUTOBYTEUS_STREAM_PARSER;
     if (originalInternalServerBaseUrl) process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR] = originalInternalServerBaseUrl;
     else delete process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR];
     if (runtimeServerApp) {

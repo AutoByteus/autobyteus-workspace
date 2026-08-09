@@ -23,7 +23,6 @@ describe('registerSystemPromptProcessors', () => {
     registerSystemPromptProcessors();
 
     const names = defaultSystemPromptProcessorRegistry.listProcessorNames();
-    expect(names).toContain('ToolManifestInjector');
-    expect(names).toContain('AvailableSkillsProcessor');
+    expect(names).toEqual(['AvailableSkillsProcessor']);
   });
 });

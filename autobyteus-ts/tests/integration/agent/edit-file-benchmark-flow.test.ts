@@ -1105,21 +1105,13 @@ search,2,10000
 ].map(createScenarioDefinition);
 
 runIntegration('edit_file scenario benchmark integration (LM Studio)', () => {
-  let originalParserEnv: string | undefined;
 
   beforeEach(() => {
-    originalParserEnv = process.env.AUTOBYTEUS_STREAM_PARSER;
-    process.env.AUTOBYTEUS_STREAM_PARSER = 'api_tool_call';
     SkillRegistry.getInstance().clear();
     resetFactory();
   });
 
   afterEach(() => {
-    if (originalParserEnv === undefined) {
-      delete process.env.AUTOBYTEUS_STREAM_PARSER;
-    } else {
-      process.env.AUTOBYTEUS_STREAM_PARSER = originalParserEnv;
-    }
     SkillRegistry.getInstance().clear();
     resetFactory();
   });

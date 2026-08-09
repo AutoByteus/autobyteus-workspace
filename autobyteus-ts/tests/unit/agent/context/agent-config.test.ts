@@ -1,6 +1,5 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { AgentConfig } from '../../../../src/agent/context/agent-config.js';
-import { ToolManifestInjectorProcessor } from '../../../../src/agent/system-prompt-processor/tool-manifest-injector-processor.js';
 import { AvailableSkillsProcessor } from '../../../../src/agent/system-prompt-processor/available-skills-processor.js';
 import { BaseLLM } from '../../../../src/llm/base.js';
 import { LLMModel } from '../../../../src/llm/models.js';
@@ -31,38 +30,14 @@ const makeLLM = () => {
 };
 
 describe('AgentConfig', () => {
-  const originalEnv = process.env.AUTOBYTEUS_STREAM_PARSER;
-
-  beforeEach(() => {
-    process.env.AUTOBYTEUS_STREAM_PARSER = originalEnv;
-  });
-
-  afterEach(() => {
-    if (originalEnv === undefined) {
-      delete process.env.AUTOBYTEUS_STREAM_PARSER;
-    } else {
-      process.env.AUTOBYTEUS_STREAM_PARSER = originalEnv;
-    }
-  });
-
-  it('uses default system prompt processors when not in api_tool_call format', () => {
-    process.env.AUTOBYTEUS_STREAM_PARSER = 'xml';
+  it('uses only current default system prompt processors', () => {
     const config = new AgentConfig('name', 'role', 'desc', makeLLM());
 
-    expect(config.systemPromptProcessors.some((p) => p instanceof ToolManifestInjectorProcessor)).toBe(true);
-    expect(config.systemPromptProcessors.some((p) => p instanceof AvailableSkillsProcessor)).toBe(true);
-  });
-
-  it('filters tool manifest injector in api_tool_call format', () => {
-    process.env.AUTOBYTEUS_STREAM_PARSER = 'api_tool_call';
-    const config = new AgentConfig('name', 'role', 'desc', makeLLM());
-
-    expect(config.systemPromptProcessors.some((p) => p instanceof ToolManifestInjectorProcessor)).toBe(false);
-    expect(config.systemPromptProcessors.some((p) => p instanceof AvailableSkillsProcessor)).toBe(true);
+    expect(config.systemPromptProcessors).toHaveLength(1);
+    expect(config.systemPromptProcessors[0]).toBeInstanceOf(AvailableSkillsProcessor);
   });
 
   it('copy creates a new config with cloned lists and data', () => {
-    process.env.AUTOBYTEUS_STREAM_PARSER = 'xml';
     const llm = makeLLM();
     const config = new AgentConfig('name', 'role', 'desc', llm, null, [{ name: 'tool' } as any], true, null, null, null, null, null, null, null, { nested: { value: 1 } }, ['skill-a']);
 
