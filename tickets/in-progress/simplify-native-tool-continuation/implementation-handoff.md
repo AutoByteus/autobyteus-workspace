@@ -9,23 +9,30 @@
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/solution-revision-record.md`
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/design-review-report.md`
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence, when applicable: N/A; the initial implementation follows `ARCH-REV-001` Pass with no findings.
+- Triggering rework package:
+  - Code review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/code-review-report.md`
+  - Code review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/code-review-revision-record.md`
+  - API/E2E coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/api-e2e-coverage-investigation.md`
+  - API/E2E execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/api-e2e-execution-coverage-report.md`
+  - API/E2E revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/api-e2e-revision-record.md`
+  - API/E2E test review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/api-e2e-test-review-report.md`
+  - Durable coverage diff: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/durable-coverage-diff.txt`
 
 The completed `remove-xml-tool-calling` artifacts supplied upstream were comparison context only. The fresh ticket package and current source are authoritative.
 
 ## Current Implementation Summary
 
-The native-only agent loop now expresses request shape and stream capability through the data it actually has rather than one-value selection vocabulary. `AgentTurnRunner` owns the final ordered post-processor tool-result commit through `MemoryManager`; a pure `ToolContinuationInputBuilder` creates only semantic/context carriers. `AgentInputPipelineResult.llmUserMessage` is required and nullable, and one `LLMRequestAssembler.prepareRequest` transaction optionally appends it without changing safety, compaction, recovery, sanitation, rendering, or rollback order. `LlmPhase` directly builds provider schemas when tools exist and always uses one `LlmStreamingResponseHandler`, whose explicit tool-call gate ignores unexpected native deltas on no-tool turns while preserving ordinary text. Coordination-only continuation trace writes, obsolete result-memory processing, handler selection/hierarchy layers, old names/wrappers, continuation modes, and unused batch settlement state are removed without aliases.
+The native-only agent loop now expresses request shape and stream capability through the data it actually has rather than one-value selection vocabulary. `AgentTurnRunner` owns the final ordered post-processor tool-result commit through `MemoryManager`; a pure `ToolContinuationInputBuilder` creates only semantic/context carriers. `AgentInputPipelineResult.llmUserMessage` is required and nullable, and one `LLMRequestAssembler.prepareRequest` transaction optionally appends it without changing safety, compaction, recovery, sanitation, rendering, or rollback order. `LlmPhase` directly builds provider schemas when tools exist and always uses one `LlmStreamingResponseHandler`, whose explicit tool-call gate ignores unexpected native deltas on no-tool turns while preserving ordinary text. Coordination-only continuation trace writes, obsolete result-memory processing, handler selection/hierarchy layers, old names/wrappers, continuation modes, and unused batch settlement state are removed without aliases. IR-002 completes the approved package-root contract by exporting the canonical `ToolSchemaProvider` identity through `src/tools/index.ts`; it adds no alias, wrapper, or alternate path.
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/simplify-native-tool-continuation/tickets/in-progress/simplify-native-tool-continuation/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-001`
 - Related architecture-review revision IDs: `ARCH-REV-001`
-- Related code-review revision IDs: N/A
-- Related API/E2E revision IDs: N/A
+- Related code-review revision IDs: `CRR-001`, `CRR-002`, `CRR-003`
+- Related API/E2E revision IDs: `API-REV-001`, `API-REV-002`
 - Related delivery revision IDs: N/A
-- Triggering finding IDs: N/A
+- Triggering finding IDs: `CR-001` (`TR-001` resolved by API/E2E before this local fix)
 
 ## Reviewed Behavior Implementation Trace
 
@@ -39,7 +46,7 @@ The native-only agent loop now expresses request shape and stream capability thr
 | `BEH-006` | Preserve no-tool text/reasoning/media/finalization with native deltas disabled. | `LlmPhase(toolCallsEnabled=false) -> LlmStreamingResponseHandler`; no `tools` request field. | Implemented. An implementation probe confirmed mixed ordinary text plus an unexpected native delta yields final text, zero batches/invocations, and no `tools` kwarg. |
 | `BEH-007` | Retain active invocation identity/order/admission and remove unused settlement state. | `tool-invocation-batch.ts`, consumed by `AgentTurn`, `ToolPhase`, and `TurnToolInputPort`. | Implemented. `accepts`, `expectsInvocation`, and copy-returning expected-ID order remain; settlement map/methods are gone and identities are private readonly. |
 | `BEH-008` | Preserve interruption/failure, partial response, protocol repair, request recovery, and truthful outcomes. | Existing fences in `agent-turn-runner.ts`, `llm-phase.ts`, and terminalization in `llm-streaming-response-handler.ts`; unified assembler recovery snapshot. | Preserved. Focused LlmPhase recovery/interruption coverage passed 4/4, and the unified assembler rollback probe restored the stable snapshot. |
-| `BEH-009` | Contract package exports and remove obsolete files without aliases. | `agent/streaming/index.ts`, `agent/streaming/handlers/index.ts`, `agent/tool-execution-result-processor/index.ts`, `agent/loop/index.ts`. | Implemented. The supported concrete handler, segments, schemas, and custom processor contracts remain; removed symbols and old dist paths do not resolve after a clean build. |
+| `BEH-009` | Contract package exports and remove obsolete files without aliases. | `src/index.ts -> tools/index.ts -> ToolSchemaProvider`; streaming, handler, tool-result-processor, and loop indices for the other retained contracts. | Implemented after `CR-001`. The package root exposes the canonical handler, schema provider, segment, processor base, and processor registry identities; removed symbols and old dist paths do not resolve after a clean build. |
 | `BEH-010` | Stop writing coordination-only `tool_continuation` records while retaining actual call/results and runtime status. | `memory-ingest-input-processor.ts`; removed `MemoryManager.ingestToolContinuationBoundary`. | Implemented. A focused real MemoryManager probe confirmed TOOL processing adds no raw trace; production search finds no continuation trace writer or replacement marker. Historical generic records are untouched. |
 
 ## Key Files Or Areas
@@ -54,6 +61,7 @@ The native-only agent loop now expresses request shape and stream capability thr
 - `autobyteus-ts/src/agent/tool-invocation-batch.ts`
 - `autobyteus-ts/src/agent/factory/agent-factory.ts`
 - `autobyteus-ts/src/memory/memory-manager.ts`
+- `autobyteus-ts/src/tools/index.ts`
 - Streaming, loop, and tool-result-processor export indices
 
 Removed production paths include `tool-continuation-metadata.ts`, `memory-ingest-tool-result-processor.ts`, the old result continuation builder name, the old API handler name/top-level wrapper, the streaming factory/result wrapper, abstract base, and pass-through handler.
@@ -69,7 +77,7 @@ Removed production paths include `tool-continuation-metadata.ts`, `memory-ingest
 ## Known Risks
 
 - Provider-native indexed parallel calls, write/edit incremental projection, approval/external-result admission, context-file continuation across every renderer, pending compaction, and interruption seams still require independent downstream coverage investigation/execution.
-- Existing durable tests intentionally still reference removed factory/pass-through/old-handler/mode/result-processor/builder APIs and structural expectations. They require downstream classification and updates/removal rather than implementation-stage compatibility code.
+- API/E2E has updated/removed the stale structural coverage and added the retained package-root contract assertion. Those durable edits remain uncommitted in the shared worktree and require the normal proportional code-review path before delivery.
 - Historical `tool_continuation` cards remain visible in old stored traces by approved no-migration design; only new writes stop.
 - Unknown external subpath consumers receive no alias or deprecation bridge.
 
@@ -90,7 +98,7 @@ Removed production paths include `tool-continuation-metadata.ts`, `memory-ingest
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`; no new design gap was found.
 - Changed source implementation files stayed within proactive size-pressure guardrails (`>500` avoided; `>220` assessed/acted on): `Yes`. The largest changed effective files are `MemoryManager` at 494 non-empty/non-line-comment lines and the unified handler at 417; no changed-line delta exceeded 220.
-- Notes: Staged production-source delta is 72 insertions and 488 deletions across 20 paths, including two clean renames and six additional deletions. No mode alias, deprecated wrapper, no-op result processor, replacement trace marker, generic manager, or dual request path remains.
+- Notes: The initial production contraction was 72 insertions and 488 deletions across 20 paths; IR-002 adds one canonical export line. No mode alias, deprecated wrapper, no-op result processor, replacement trace marker, generic manager, dual request path, or schema-provider wrapper remains.
 
 ## Persisted Data Transition Check (When Applicable)
 
@@ -122,7 +130,14 @@ Removed production paths include `tool-continuation-metadata.ts`, `memory-ingest
 - Production-source removal scan — **Pass** for old modes, metadata, builders, processors, handler names, factory/wrapper/base/pass-through, continuation writer, and batch settlement APIs. The retained `native_api_ordered_batch` value is only factual result-ingestion provenance.
 - `git diff --check` / staged source check — **Pass**.
 
-Durable repository coverage was not edited. Structural tests that import or assert removed architecture remain for the mandatory downstream API/E2E coverage investigation.
+IR-002 focused checks after `CR-001`:
+
+- `pnpm -C autobyteus-ts exec vitest run --no-watch tests/unit/legacy-tool-calling-public-surfaces-removed.test.ts` — **Pass**, 35/35 with the corrected five-symbol root identity assertion unchanged.
+- `pnpm -C autobyteus-ts build` — **Pass**, including clean TypeScript compilation and runtime dependency verification.
+- Compiled `dist/index.js` five-symbol root probe — **Pass**: `LlmStreamingResponseHandler`, `ToolSchemaProvider`, `SegmentEvent`, `BaseToolExecutionResultProcessor`, and `ToolExecutionResultProcessorRegistry` are all present with canonical identity.
+- IR-002 diff/source checks — **Pass**: one production line added in `src/tools/index.ts`; source points directly to `tool-schema-provider.ts`; `git diff --check` passed; no alias/wrapper/index redesign was introduced.
+
+IR-002 did not edit the corrected durable assertion or any other API/E2E-owned coverage.
 
 ## Frontend Rendered-Result Check (When Applicable)
 
@@ -140,4 +155,4 @@ Not Applicable. This refactor changes only the `autobyteus-ts` agent runtime and
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Yes. `api_e2e_engineer` must first produce the mandatory coverage investigation artifact, classify stale structural tests, then update/replace/expand durable repository coverage and execute the approved UC-001–UC-010 / DS-001–DS-013 matrix. Any repository-resident durable coverage edit or removal must return through `code_reviewer` before delivery.
+Yes. API/E2E investigation and broad execution already produced `API-REV-001`; the corrected retained-root assertion then exposed `CR-001` in `API-REV-002`. After IR-002 passes source re-review, `api_e2e_engineer` must rerun the focused root contract check and update the execution evidence. Because repository-resident durable coverage changed after the initial source review, the updated coverage state must still pass the proportional `code_reviewer` path before delivery.
