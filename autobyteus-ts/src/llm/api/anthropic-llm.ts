@@ -13,7 +13,7 @@ import {
 import { Message, MessageRole } from '../utils/messages.js';
 import { convertAnthropicToolCall } from '../converters/anthropic-tool-call-converter.js';
 import { BasePromptRenderer } from '../prompt-renderers/base-prompt-renderer.js';
-import { createAnthropicPromptRendererForToolFormat } from '../prompt-renderers/provider-tool-history-renderer-selection.js';
+import { AnthropicPromptRenderer } from '../prompt-renderers/anthropic-prompt-renderer.js';
 import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
 import {
   applySafeProviderRequestKwargs,
@@ -196,7 +196,7 @@ export class AnthropicLLM extends BaseLLM {
     super(model, config);
     this.apiKeyResolver = apiKeyResolver;
     this.maxTokens = config.maxTokens ?? 8192;
-    this._renderer = createAnthropicPromptRendererForToolFormat();
+    this._renderer = new AnthropicPromptRenderer();
   }
 
   private getClient(): Promise<Anthropic> {

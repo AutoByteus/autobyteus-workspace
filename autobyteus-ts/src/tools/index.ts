@@ -12,9 +12,7 @@ export { registerTools } from './register-tools.js';
 
 export { ParameterSchema, ParameterDefinition, ParameterType } from '../utils/parameter-schema.js';
 
-export { ToolFormattingRegistry, registerToolFormatter } from './usage/registries/tool-formatting-registry.js';
-export { ToolFormatterPair } from './usage/registries/tool-formatter-pair.js';
-export type { BaseSchemaFormatter, BaseExampleFormatter } from './usage/formatters/base-formatter.js';
+export type { BaseSchemaFormatter } from './usage/formatters/base-formatter.js';
 
 
 export { Search, type SearchExecutor } from './search-tool.js';

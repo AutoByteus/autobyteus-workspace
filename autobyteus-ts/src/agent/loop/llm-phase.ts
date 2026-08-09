@@ -13,7 +13,7 @@ import { PendingCompactionExecutor } from '../../memory/compaction/pending-compa
 import type { WorkingContextCompactionDiagnostics } from '../../memory/compaction/working-context-compaction-strategy.js';
 import { WorkingContextCompactionStrategyResolver } from '../../memory/compaction/working-context-compaction-strategy-resolver.js';
 import { isAgentInterruptionError } from '../interruption/agent-interruption.js';
-import { buildToolArgumentSchemaResolver, resolveTurnToolNames } from './llm-phase-tools.js';
+import { resolveTurnToolNames } from './llm-phase-tools.js';
 import { evaluateLlmPhaseCompaction } from './llm-phase-compaction.js';
 import { applyCompactionPolicy, resolveTokenBudget } from '../token-budget.js';
 import type { AgentContext } from '../context/agent-context.js';
@@ -92,9 +92,7 @@ export class LlmPhase {
       toolNames,
       provider,
       onSegmentEvent: (segmentEvent) => notifier?.notifyAgentSegmentEvent(segmentEvent.toDict()),
-      turnId: activeTurnId,
-      agentId,
-      xmlArgumentSchemaResolver: buildToolArgumentSchemaResolver(context)
+      turnId: activeTurnId
     });
     const streamingHandler = handlerResult.handler;
 
