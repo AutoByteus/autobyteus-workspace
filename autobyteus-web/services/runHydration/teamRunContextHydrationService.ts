@@ -26,7 +26,6 @@ import { primeRecentEventMonitorBaseline } from '~/services/eventMonitor/recentE
 
 export {
   applyLiveTeamMemberStatusSnapshot,
-  hydrateTeamMemberActivitiesFromProjection,
 } from './teamRunMemberStatusHydration';
 export type {
   TeamMemberStatusSnapshotSet,

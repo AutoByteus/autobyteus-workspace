@@ -7,10 +7,8 @@ import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import type { AgentTeamContext, AgentTeamMemberNode } from '~/types/agent/AgentTeamContext';
-import {
-  hydrateTeamMemberActivitiesFromProjection,
-  loadTeamRunContextHydrationPayload,
-} from '~/services/runHydration/teamRunContextHydrationService';
+import { loadTeamRunContextHydrationPayload } from '~/services/runHydration/teamRunContextHydrationService';
+import { hydrateTeamMemberActivitiesFromProjection } from '~/services/runHydration/teamRunMemberStatusHydration';
 import { reconstructTeamRunConfigFromMetadata } from '~/utils/teamRunConfigUtils';
 import {
   applyMemberOrHistoryStatusSnapshot,

@@ -5,7 +5,7 @@ import { commitRecentEventMonitorEffect } from '~/services/eventMonitor/recentEv
 
 const {
   loadTeamRunContextHydrationPayloadMock,
-  hydrateTeamMemberActivitiesFromProjectionMock,
+  hydrateActivitiesFromProjectionMock,
   getTeamContextByIdMock,
   addTeamContextMock,
   connectToTeamStreamMock,
@@ -17,7 +17,7 @@ const {
   resetRecentEventMonitorBaselineMock,
 } = vi.hoisted(() => ({
   loadTeamRunContextHydrationPayloadMock: vi.fn(),
-  hydrateTeamMemberActivitiesFromProjectionMock: vi.fn(),
+  hydrateActivitiesFromProjectionMock: vi.fn(),
   getTeamContextByIdMock: vi.fn(),
   addTeamContextMock: vi.fn(),
   connectToTeamStreamMock: vi.fn(),
@@ -46,7 +46,10 @@ vi.mock('~/services/eventMonitor/recentEventMonitorMutationCoordinator', async (
 
 vi.mock('~/services/runHydration/teamRunContextHydrationService', () => ({
   loadTeamRunContextHydrationPayload: loadTeamRunContextHydrationPayloadMock,
-  hydrateTeamMemberActivitiesFromProjection: hydrateTeamMemberActivitiesFromProjectionMock,
+}));
+
+vi.mock('~/services/runHydration/runProjectionActivityHydration', () => ({
+  hydrateActivitiesFromProjection: hydrateActivitiesFromProjectionMock,
 }));
 
 vi.mock('~/stores/agentTeamContextsStore', () => ({
@@ -250,7 +253,7 @@ describe('openTeamRun', () => {
     expect(existingContext.leafAgentContextsByRouteKey.get('member-a')?.state.eventMonitorPresentationRevision).toBe(7);
     expect(resetPresentationRevision).not.toHaveBeenCalled();
     expect(resetRecentEventMonitorBaselineMock).not.toHaveBeenCalled();
-    expect(hydrateTeamMemberActivitiesFromProjectionMock).not.toHaveBeenCalled();
+    expect(hydrateActivitiesFromProjectionMock).not.toHaveBeenCalled();
     expect(primeRecentEventMonitorBaselineMock).toHaveBeenCalledTimes(1);
     expect(primeRecentEventMonitorBaselineMock).toHaveBeenCalledWith(
       existingContext.leafAgentContextsByRouteKey.get('member-a'),
@@ -284,14 +287,34 @@ describe('openTeamRun', () => {
         memberNodesByRouteKey: expect.any(Map),
       }),
     );
-    expect(hydrateTeamMemberActivitiesFromProjectionMock).toHaveBeenCalledWith({
-      members: projectedMembers,
-      projectionByMemberRouteKey,
-      memberRouteKeys: ['member-a'],
-    });
+    expect(hydrateActivitiesFromProjectionMock).toHaveBeenCalledWith(
+      'run-a', [{ invocationId: 'tool-a' }],
+    );
     expect(primeRecentEventMonitorBaselineMock).toHaveBeenCalledTimes(1);
-    expect(hydrateTeamMemberActivitiesFromProjectionMock.mock.invocationCallOrder[0])
+    expect(hydrateActivitiesFromProjectionMock.mock.invocationCallOrder[0])
       .toBeLessThan(primeRecentEventMonitorBaselineMock.mock.invocationCallOrder[0]!);
+  });
+
+  it('still establishes one final baseline when an active member projection is absent', async () => {
+    const projectedMembers = new Map([
+      ['member-a', createMemberContext('run-a', 'empty-live-conversation')],
+    ]);
+    getTeamContextByIdMock.mockReturnValue(null);
+    loadTeamRunContextHydrationPayloadMock.mockResolvedValue(
+      createPayload(projectedMembers, new Map()),
+    );
+
+    await openTeamRun({
+      teamRunId: 'team-1',
+      resolveWorkspaceMetadataByRootPath: vi.fn(),
+      ensureWorkspaceByRootPath: vi.fn(),
+    });
+
+    expect(hydrateActivitiesFromProjectionMock).not.toHaveBeenCalled();
+    expect(primeRecentEventMonitorBaselineMock).toHaveBeenCalledTimes(1);
+    expect(primeRecentEventMonitorBaselineMock).toHaveBeenCalledWith(
+      projectedMembers.get('member-a'),
+    );
   });
 
   it('hydrates only newly applied member projections when preserving existing live members', async () => {
@@ -328,11 +351,10 @@ describe('openTeamRun', () => {
       ensureWorkspaceByRootPath: vi.fn(),
     });
 
-    expect(hydrateTeamMemberActivitiesFromProjectionMock).toHaveBeenCalledWith({
-      members: existingContext.leafAgentContextsByRouteKey,
-      projectionByMemberRouteKey,
-      memberRouteKeys: ['member-b'],
-    });
+    expect(hydrateActivitiesFromProjectionMock).toHaveBeenCalledTimes(1);
+    expect(hydrateActivitiesFromProjectionMock).toHaveBeenCalledWith(
+      'run-b', [{ invocationId: 'tool-b' }],
+    );
     expect(resetRecentEventMonitorBaselineMock).not.toHaveBeenCalled();
     expect(primeRecentEventMonitorBaselineMock).toHaveBeenCalledTimes(2);
     expect(primeRecentEventMonitorBaselineMock).toHaveBeenCalledWith(
@@ -341,7 +363,7 @@ describe('openTeamRun', () => {
     expect(primeRecentEventMonitorBaselineMock).toHaveBeenCalledWith(
       existingContext.leafAgentContextsByRouteKey.get('member-b'),
     );
-    expect(hydrateTeamMemberActivitiesFromProjectionMock.mock.invocationCallOrder[0])
+    expect(hydrateActivitiesFromProjectionMock.mock.invocationCallOrder[0])
       .toBeLessThan(primeRecentEventMonitorBaselineMock.mock.invocationCallOrder[0]!);
   });
 
@@ -508,9 +530,9 @@ describe('openTeamRun', () => {
     expect(existingContext.leafAgentContextsByRouteKey.get('member-a')?.state.currentStatus).toBe('idle');
     expect(existingContext.leafAgentContextsByRouteKey.get('member-a')?.state.eventMonitorPresentationRevision).toBe(0);
     expect(resetRecentEventMonitorBaselineMock).toHaveBeenCalledTimes(1);
-    expect(hydrateTeamMemberActivitiesFromProjectionMock).toHaveBeenCalledTimes(1);
+    expect(hydrateActivitiesFromProjectionMock).toHaveBeenCalledTimes(1);
     expect(primeRecentEventMonitorBaselineMock).toHaveBeenCalledTimes(1);
-    expect(hydrateTeamMemberActivitiesFromProjectionMock.mock.invocationCallOrder[0])
+    expect(hydrateActivitiesFromProjectionMock.mock.invocationCallOrder[0])
       .toBeLessThan(primeRecentEventMonitorBaselineMock.mock.invocationCallOrder[0]!);
     const replacedMember = existingContext.leafAgentContextsByRouteKey.get('member-a')!;
     replacedMember.state.conversation.messages.push({
