@@ -526,6 +526,7 @@ export const ensureHistoricalTeamMemberHydrated = async (params: {
       memberContext,
       isActive: false,
     });
+    primeRecentEventMonitorBaseline(memberContext);
     historicalHydration.memberProjectionLoadStateByRouteKey[normalizedMemberRouteKey] = 'loaded';
   })();
 

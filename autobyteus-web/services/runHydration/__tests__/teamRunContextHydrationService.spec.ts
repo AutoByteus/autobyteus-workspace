@@ -1,12 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import { hydrateLiveTeamRunContext } from '../teamRunContextHydrationService';
-import { AgentStatus } from '~/types/agent/AgentStatus';
 
 const {
   queryMock,
-  fetchTeamMemberProjectionsMock,
-  buildLiveTeamMemberContextsMock,
   fetchTeamCommunicationMock,
   fetchTaskDelegationsMock,
   hydrateActivitiesFromProjectionMock,
@@ -14,8 +11,6 @@ const {
   reconstructTeamRunConfigFromMetadataMock,
 } = vi.hoisted(() => ({
   queryMock: vi.fn(),
-  fetchTeamMemberProjectionsMock: vi.fn(),
-  buildLiveTeamMemberContextsMock: vi.fn(),
   fetchTeamCommunicationMock: vi.fn(),
   fetchTaskDelegationsMock: vi.fn(),
   hydrateActivitiesFromProjectionMock: vi.fn(),
@@ -27,14 +22,6 @@ vi.mock('~/utils/apolloClient', () => ({
   getApolloClient: () => ({ query: queryMock }),
 }));
 
-vi.mock('~/stores/runHistoryTeamMemberProjectionHydrator', () => ({
-  applyProjectionToTeamMemberContext: vi.fn(),
-  buildHistoricalTeamMemberContextShells: vi.fn(),
-  buildLiveTeamMemberContexts: buildLiveTeamMemberContextsMock,
-  fetchTeamMemberProjection: vi.fn(),
-  fetchTeamMemberProjections: fetchTeamMemberProjectionsMock,
-}));
-
 vi.mock('../teamCommunicationHydrationService', () => ({
   fetchAndHydrateTeamCommunicationForTeam: fetchTeamCommunicationMock,
 }));
@@ -43,9 +30,16 @@ vi.mock('../taskDelegationHydrationService', () => ({
   fetchAndHydrateTaskDelegationRecordsForTeam: fetchTaskDelegationsMock,
 }));
 
-vi.mock('../runProjectionActivityHydration', () => ({
-  hydrateActivitiesFromProjection: hydrateActivitiesFromProjectionMock,
-}));
+vi.mock('~/services/runHydration/runProjectionActivityHydration', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('~/services/runHydration/runProjectionActivityHydration')>();
+  return {
+    ...actual,
+    hydrateActivitiesFromProjection: (runId: string, activities: any[]) => {
+      hydrateActivitiesFromProjectionMock(runId, activities);
+      actual.hydrateActivitiesFromProjection(runId, activities);
+    },
+  };
+});
 
 vi.mock('~/utils/teamRunConfigUtils', () => ({
   reconstructTeamRunConfigFromMetadata: reconstructTeamRunConfigFromMetadataMock,
@@ -85,23 +79,16 @@ const metadata = {
   }],
 };
 
-const buildMemberContext = () => ({
-  config: { isLocked: false },
-  state: {
-    runId: 'run-a',
-    currentStatus: AgentStatus.Running,
-    conversation: {
-      id: 'conversation-a',
-      messages: [],
-      createdAt: '2026-08-09T10:00:00.000Z',
-      updatedAt: '2026-08-09T10:00:00.000Z',
-    },
-    eventMonitorPresentationRevision: 0,
-    markEventMonitorPresentationChanged() {
-      this.eventMonitorPresentationRevision += 1;
-    },
-  },
-});
+const projectedActivity = {
+  kind: 'compaction',
+  activityId: 'compaction:boundary:boundary-a',
+  phase: 'completed',
+  message: 'Provider context compaction boundary recorded',
+  turnId: 'turn-a',
+  provider: 'codex',
+  boundaryKey: 'boundary-a',
+  ts: 30,
+};
 
 describe('hydrateLiveTeamRunContext Event Monitor final-prime ownership', () => {
   beforeEach(() => {
@@ -112,22 +99,12 @@ describe('hydrateLiveTeamRunContext Event Monitor final-prime ownership', () => 
       teamDefinitionName: 'Recovery Team',
       isLocked: true,
     });
-    queryMock.mockResolvedValue({
-      data: {
-        getTeamRunResumeConfig: {
-          teamRunId: 'team-live-recovery',
-          isActive: true,
-          metadata,
-        },
-      },
-      errors: [],
-    });
   });
 
   it.each([
     {
       name: 'after projected activity hydration',
-      projection: { activities: [{ invocationId: 'tool-a' }] },
+      projection: { conversation: [], activities: [projectedActivity] },
       expectedActivityCalls: 1,
     },
     {
@@ -135,22 +112,33 @@ describe('hydrateLiveTeamRunContext Event Monitor final-prime ownership', () => 
       projection: null,
       expectedActivityCalls: 0,
     },
-  ])('primes each final context exactly once $name', async ({ projection, expectedActivityCalls }) => {
-    const memberContext = buildMemberContext();
-    const members = new Map([['member-a', memberContext]]);
-    fetchTeamMemberProjectionsMock.mockResolvedValue(new Map([['member-a', projection]]));
-    buildLiveTeamMemberContextsMock.mockResolvedValue({
-      members,
-      primaryWorkspaceMetadata: null,
-      memberWorkspaceMetadatasByRouteKey: {},
-    });
+  ])('primes each real loader/builder context exactly once $name', async ({
+    projection,
+    expectedActivityCalls,
+  }) => {
+    queryMock.mockImplementation(async ({ variables }: { variables: Record<string, unknown> }) => (
+      variables.memberRouteKey
+        ? { data: { getTeamMemberRunProjection: projection }, errors: [] }
+        : {
+            data: {
+              getTeamRunResumeConfig: {
+                teamRunId: 'team-live-recovery',
+                isActive: true,
+                metadata,
+              },
+            },
+            errors: [],
+          }
+    ));
 
     const result = await hydrateLiveTeamRunContext({
       teamRunId: 'team-live-recovery',
-      resolveWorkspaceMetadataByRootPath: vi.fn(),
-      ensureWorkspaceByRootPath: vi.fn(),
+      resolveWorkspaceMetadataByRootPath: vi.fn().mockResolvedValue(null),
+      ensureWorkspaceByRootPath: vi.fn().mockResolvedValue(null),
     });
 
+    const memberContext = result.hydratedContext.leafAgentContextsByRouteKey.get('member-a');
+    expect(memberContext).toBeDefined();
     expect(hydrateActivitiesFromProjectionMock).toHaveBeenCalledTimes(expectedActivityCalls);
     if (projection) {
       expect(hydrateActivitiesFromProjectionMock).toHaveBeenCalledWith(
@@ -161,6 +149,5 @@ describe('hydrateLiveTeamRunContext Event Monitor final-prime ownership', () => 
     }
     expect(primeRecentEventMonitorBaselineMock).toHaveBeenCalledTimes(1);
     expect(primeRecentEventMonitorBaselineMock).toHaveBeenCalledWith(memberContext);
-    expect(result.hydratedContext.leafAgentContextsByRouteKey.get('member-a')).toBe(memberContext);
   });
 });

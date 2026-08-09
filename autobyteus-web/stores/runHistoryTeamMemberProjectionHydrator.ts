@@ -15,7 +15,6 @@ import {
 } from '~/services/runStatus/agentRuntimeStatusState';
 import { flattenTeamRunAgentMetadata } from '~/stores/runHistoryMetadata';
 import {
-  primeRecentEventMonitorBaseline,
   resetRecentEventMonitorBaseline,
 } from '~/services/eventMonitor/recentEventMonitorMutationCoordinator';
 
@@ -209,7 +208,6 @@ export const applyProjectionToTeamMemberContext = (params: {
   if (params.projection) {
     hydrateActivitiesFromProjection(memberRunId, params.projection.activities || []);
   }
-  primeRecentEventMonitorBaseline(params.memberContext);
 };
 
 interface TeamMemberContextBuildResult {
@@ -257,7 +255,6 @@ const buildTeamMemberContextsFromReferences = (params: {
     state.hasEarlierActiveTraceEvents = projection?.hasEarlierActiveTraceEvents === true;
     initializeRuntimeStatusState(state, AgentStatus.Offline);
     const context = new AgentContext(memberConfig, state);
-    if (!projection) primeRecentEventMonitorBaseline(context);
     members.set(normalizedMemberRouteKey, context);
   }
 

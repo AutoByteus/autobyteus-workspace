@@ -7,6 +7,7 @@
 | CRR-001 | `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/code-review-report.md` | Implementation Review / IR-001 initial handoff | N/A | Fail — Local Fix | CR-001–CR-006 |
 | CRR-002 | `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/code-review-report.md` | Implementation Review / IR-002 full source re-review | CRR-001: Fail — Local Fix | Fail — Local Fix | CR-001–CR-009 |
 | CRR-003 | `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/code-review-report.md` | Implementation Review / IR-003 full source re-review | CRR-002: Fail — Local Fix | Fail — Local Fix | CR-006–CR-009 |
+| CRR-004 | `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/code-review-report.md` | Implementation Review / IR-004 full source re-review | CRR-003: Fail — Local Fix | Fail — Local Fix | CR-006 |
 
 ## Revision Entries
 
@@ -88,3 +89,26 @@ None.
 - Review-gap attribution: CRR-002 should have followed the mocked activity-hydration boundary into its production implementation. The one-prime coordinator assertion proved only the mock boundary, not the production composition.
 - Recommended recipient: `implementation_engineer`
 - Remaining risks: API/E2E remains intentionally unstarted; aggregate browser/Electron performance and sustained correctness remain downstream. Broad typecheck baselines remain red; both diff checks pass.
+
+### CRR-004 — IR-004 removes one hidden prime but CR-006 remains on historical and projection-absent composition
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/code-review-report.md`
+- Review entry point and round: `Implementation Review`, round 4
+- Triggering role/report/finding: `implementation_engineer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/implementation-handoff.md`; IR-004; CR-006
+- Relevant revisions: `SR-004`, `ARCH-REV-004`, `IR-004`; API/E2E and delivery `N/A`
+- Prior authoritative result: `CRR-003 — Fail — Local Fix — 9.31/10 (93.1/100)`
+- Current authoritative result: `Fail — Local Fix — 9.25/10 (92.5/100)`
+- What changed: `hydrateTeamMemberActivitiesFromProjection` is now correctly activity-only, so projection-present active open/recovery no longer double-primes at that seam. However, the complete production composition still primes historical projected members in `applyProjectionToTeamMemberContext` before `openTeamRun` primes all final members, and primes projection-absent members during context construction before open/recovery primes all final members.
+
+#### Prior Finding Resolution
+
+| Finding ID | Resolution | Current Evidence |
+| --- | --- | --- |
+| CR-006 | Partially Resolved / Open | Activity-helper duplication is removed. Historical projection application and projection-absent context construction remain nested prime owners before outer final-prime owners. |
+
+- New or remaining finding IDs: `CR-006`
+- Material score/classification change: Score decreases 0.06/10 because the claimed projection-absent real-composition proof mocks the builder that performs the first production prime. Result remains Local Fix.
+- Material premises: CR-PREM-006A and CR-PREM-006B are Reachable from supported workspace-history open and live-recovery/new-empty-member lifecycles.
+- Review-gap attribution: CRR-003 named activity-helper composition but did not finish the prime inventory through member construction and historical projection application. IR-004 tests likewise mock those upstream owners.
+- Recommended recipient: `implementation_engineer`
+- Remaining risks: API/E2E remains paused; realistic browser/Electron performance and sustained correctness remain downstream. Broad typecheck baselines remain red; both diff checks pass.
