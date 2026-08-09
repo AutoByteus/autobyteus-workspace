@@ -3,11 +3,11 @@
 ## Delivery State
 
 - Ticket: `remove-xml-tool-calling`
-- Result: `User verified — repository finalization authorized and in progress; no release requested`
-- Current delivery revision: `DR-003`
-- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-xml-tool-calling/tickets/done/remove-xml-tool-calling`
-- Ticket worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-xml-tool-calling`
-- Ticket branch: `codex/remove-xml-tool-calling`
+- Result: `Complete — user-verified change merged and pushed; task cleanup complete; no release performed`
+- Current delivery revision: `DR-004`
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-xml-tool-calling`
+- Ticket worktree: `Removed` — historical path `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-xml-tool-calling`
+- Ticket branch: `Removed locally and remotely` — historical branch `codex/remove-xml-tool-calling`
 - Finalization target: `origin/personal` / local `personal`
 - Recorded implementation base: `origin/personal` at `7f0fc49965950d9689726a048371f2e2b78eef31`
 - Implementation baseline commit: `33f632054c39a088618723b506f368f5e934608f`
@@ -19,7 +19,9 @@
 - Post-build target check: Passed — a fresh fetch kept `origin/personal` at `3edb88bc6f7e15d074474f51c870a13d69d5d7b7`; the built state remains 3 committed changes ahead and 0 behind.
 - User verification: Received — user confirmed the tested app works and requested finalization.
 - Finalization-time target refresh: Passed — `origin/personal` remained `3edb88bc6f7e15d074474f51c870a13d69d5d7b7`, so the verified state did not change and renewed verification is not required.
-- Finalization state: In progress — the ticket is archived under `tickets/done`; commit/push, target merge/push, and task cleanup are authorized. No release, version bump, tag, publication, notarization, or deployment will be performed.
+- Ticket finalization commit: `033e47d85c466a126ba2c8895e5f32aad4f6f3f3`.
+- Target merge/push: Passed — merge `d4d683c799e0d3de4044de1bdaab8a09e056c1cd` was pushed to `origin/personal` after full-range diff and ancestry checks passed.
+- Finalization state: Complete — ticket archive, commit/push, target merge/push, worktree pruning, and local/remote task-branch cleanup succeeded. No release, version bump, tag, publication, notarization, or deployment was performed.
 
 ## Delivered Behavior
 
@@ -47,16 +49,16 @@
 - Real/browser execution: DeepSeek native tool/compaction/continuation clean rerun passed; OpenAI no-tool AgentRun passed; populated Settings browser journey passed. AutoByteus remote discovery was unavailable and remains explicitly Not Tested.
 - Delivery refresh: 13 newer `origin/personal` commits were integrated without conflict after the reviewed state was checkpointed.
 - Delivery post-integration execution: 3 files / 29 tests passed on merge `91c9eac86e60a3b4454486d68b9e237f8e3964fe`.
-- Delivery evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-xml-tool-calling/tickets/done/remove-xml-tool-calling/delivery-integration-evidence.log`
-- Electron build evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-xml-tool-calling/tickets/done/remove-xml-tool-calling/electron-build-macos-arm64-delivery.log`
+- Delivery evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-xml-tool-calling/delivery-integration-evidence.log`
+- Electron build evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-xml-tool-calling/electron-build-macos-arm64-delivery.log`
 
 ## Documentation And Release Notes
 
-- Docs sync: `Pass` — `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-xml-tool-calling/tickets/done/remove-xml-tool-calling/docs-sync-report.md`
+- Docs sync: `Pass` — `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-xml-tool-calling/docs-sync-report.md`
 - Canonical streaming and file-projection docs were rewritten for the native-only architecture.
 - Tool schema, provider renderer, agent processor/runtime, lifecycle, terminology, and server mixed-team docs were corrected.
 - Obsolete `tool_call_formatting_and_parsing.md` and `streaming_parser_design.md` were retired because the implementation has no text parser/formatter subsystem.
-- Archived release notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-xml-tool-calling/tickets/done/remove-xml-tool-calling/release-notes.md`
+- Archived release notes: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-xml-tool-calling/release-notes.md`
 - Publication status: Prepared only; not published and not attached to a release.
 
 ## Local Electron Test Build
@@ -71,6 +73,7 @@
 - ZIP SHA-256: `90871d7004062f1435725a3984502d3d2c84333e7b4aebda6cd9efaaf92ddf2f`
 - Verification: Build exit 0; staged and packaged terminal runtime checks passed; packaged Electron executable completed the `node-pty` spawn probe; app executable is Mach-O ARM64; DMG checksum is valid.
 - Distribution posture: Local test artifact only, intentionally unsigned, untimestamped, and unnotarized. No release/publication occurred.
+- Cleanup disposition: These ignored local app/DMG/ZIP outputs were removed with the dedicated task worktree after successful user testing. The paths above are historical; checksums and archived build evidence remain authoritative.
 
 ## Persisted Data / Operator Transition
 
@@ -93,19 +96,17 @@
 - External consumers of intentionally removed package subpaths cannot be enumerated from this repository.
 - These risks do not leave a critical acceptance criterion unproven and do not block user verification.
 
-## Finalization Authorization
+## Finalization Result
 
 - User acceptance: `perfect. its working. lets finalize, no need to release a new version`.
 - Target refresh after acceptance: unchanged; 3 committed changes ahead / 0 behind.
 - Renewed verification: Not required because the target and tested candidate did not change.
-- Authorized actions: Archive ticket, commit/push ticket branch, merge/push `personal`, then remove task-owned worktree and branches after target ancestry verification.
+- Repository result: Ticket commit `033e47d85c466a126ba2c8895e5f32aad4f6f3f3` was merged by `d4d683c799e0d3de4044de1bdaab8a09e056c1cd` and pushed to `origin/personal`.
+- Cleanup result: Dedicated worktree pruned; local and remote ticket branches removed after ancestry confirmation; unrelated `.article-work/` state preserved untouched.
 - Explicitly excluded: Version bump, tag, release, publication, notarization, deployment, or rollout action.
 
 ## Rollback Criteria
 
-- Before finalization, rollback is simply to retain the ticket branch/worktree
-  and leave `personal` unchanged.
-- Stop finalization if a later target refresh conflicts, changes effective
-  behavior, or causes a relevant check to fail.
-- After a future merge, regressions should be handled by reverting the target
-  merge or a focused follow-up; no data migration rollback is applicable.
+- If a regression is later found, revert target merge
+  `d4d683c799e0d3de4044de1bdaab8a09e056c1cd` or deliver a focused follow-up.
+- No data migration rollback is applicable.

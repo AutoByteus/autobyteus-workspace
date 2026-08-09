@@ -6,7 +6,7 @@
 - Trigger: `CRR-002` Pass after `API-REV-001`, followed by the mandatory delivery-stage base refresh.
 - Bootstrap base reference: recorded `origin/personal` at `7f0fc49965950d9689726a048371f2e2b78eef31`.
 - Integrated base reference used for docs sync: refreshed `origin/personal` at `3edb88bc6f7e15d074474f51c870a13d69d5d7b7`, merged into the ticket branch as `91c9eac86e60a3b4454486d68b9e237f8e3964fe`.
-- Post-integration verification reference: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-xml-tool-calling/tickets/done/remove-xml-tool-calling/delivery-integration-evidence.log` — 3 files / 29 tests passed.
+- Post-integration verification reference: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-xml-tool-calling/delivery-integration-evidence.log` — 3 files / 29 tests passed.
 
 ## Why Docs Were Updated
 
@@ -75,5 +75,5 @@
 ## Delivery Continuation
 
 - Result: `Pass`
-- Next delivery action: User verification was received; repository finalization is authorized and the ticket is archived under `tickets/done` before the final ticket commit.
-- Notes: Release notes were required because the change intentionally removes public subpaths and provider fallback behavior. They were prepared and archived but will not be published because the user explicitly requested no new release.
+- Next delivery action: `None` — user verification, repository finalization, target push, archive, and task cleanup are complete.
+- Notes: Release notes were required because the change intentionally removes public subpaths and provider fallback behavior. They were prepared and archived but were not published because the user explicitly requested no new release.
