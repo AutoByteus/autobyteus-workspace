@@ -10,6 +10,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 | IR-002 | `code_reviewer` / `code-review-report.md` / CRR-001 | `CR-001–CR-006` | `Local Fix` | `SR-004`, `ARCH-REV-004`, `CRR-001`; `API-REV N/A`, `DR N/A` | Six bounded source/test findings corrected and locally validated; ready for complete source re-review |
 | IR-003 | `code_reviewer` / `code-review-report.md` / CRR-002 | `CR-007–CR-009` | `Local Fix` | `SR-004`, `ARCH-REV-004`, `CRR-002`; `API-REV N/A`, `DR N/A` | Three caller/lifecycle ordering defects corrected and locally validated; ready for complete source re-review |
 | IR-004 | `code_reviewer` / `code-review-report.md` / CRR-003 | `CR-006` (reopened) | `Local Fix` | `SR-004`, `ARCH-REV-004`, `CRR-003`; `API-REV N/A`, `DR N/A` | Nested Event Monitor prime ownership removed and real open/recovery composition locally validated; ready for complete source re-review |
+| IR-005 | `code_reviewer` / `code-review-report.md` / CRR-004 | `CR-006` (partially resolved / open) | `Local Fix` | `SR-004`, `ARCH-REV-004`, `CRR-004`; `API-REV N/A`, `DR N/A` | Complete team-hydration prime inventory centralized at outer/lazy lifecycle owners and real loader/builder paths validated; ready for complete source re-review |
 
 ## Revision Entries
 
@@ -139,5 +140,36 @@ The current code and `implementation-handoff.md` are authoritative. This record 
   - current IR-004 and full task-range `git diff --check`: **pass**;
   - changed production implementation files remain `<= 500` effective non-empty lines.
 - Development source commit: `85c3cf9032c48f14e2b996cf7ce2419041d8de9c`.
+- Next recipient or routing: `code_reviewer` for complete source re-review before API/E2E resumes.
+- Remaining limitations or risks: No new implementation limitation was introduced. Realistic aggregate performance and WebSocket/API/browser/Electron coverage remain downstream after source review passes; delivery still owns base refresh and durable docs synchronization.
+
+### IR-005 — Complete Team-Hydration Final-Prime Ownership
+
+- Triggering role, report path, and round: `code_reviewer`; `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/code-review-report.md`; `CRR-004` full source re-review of IR-004.
+- Triggering finding IDs: `CR-006` (partially resolved / open after nested historical projection and projection-absent builder primes were traced).
+- Classification: `Local Fix`.
+- Prior authoritative result: `CRR-004 — Fail / Local Fix — 9.25/10 (92.5/100)`; API/E2E remains paused.
+- Current authoritative result: The complete team construction/projection/open/recovery/lazy inventory now has exactly one final prime per context after its last conversation/activity writer. The cumulative package is ready for complete source re-review.
+- Related solution revision IDs: `SR-004`.
+- Related architecture-review revision IDs: `ARCH-REV-004`.
+- Related code-review revision IDs: `CRR-004`.
+- Related API/E2E revision IDs: `N/A`.
+- Related delivery revision IDs: `N/A`.
+- Why this implementation revision is recorded: Completes the final-prime ownership audit beyond IR-004's activity-helper correction and replaces mocked post-builder tests with real outer loader/builder compositions.
+- Approved behavior or requirement IDs affected: `BEH-005`; `FR-002`; `AC-003`, `AC-007`; `DS-006`.
+- Implementation delta:
+  - removes final-prime side effects from both `applyProjectionToTeamMemberContext` and projection-absent context construction, leaving those lower boundaries as conversation/activity writers only;
+  - preserves active/historical open and live recovery as the one final-prime owner after all outer merging/status/activity work;
+  - adds the one explicit final prime to lazy historical member hydration immediately after projection conversation/activity application;
+  - replaces the mocked live-recovery builder seam and adds a real open loader/builder suite covering historical projection-present, active projection-present, active projection-absent, existing replacement, preserved subscribed, and lazy historical transactions.
+- Changed files or areas: `runHistoryTeamMemberProjectionHydrator.ts`, `teamRunContextHydrationService.ts`, real live-recovery coverage, new real open/lazy ownership coverage, and the retained CRR-004 artifacts.
+- Local validation and result:
+  - direct real-composition subset: **4 files / 16 tests pass**;
+  - affected frontend matrix: **11 files / 171 tests pass**;
+  - web/localization boundary guards and full team-prime ownership/caller/static scans: **pass**;
+  - frontend repository typecheck remains at the recorded baseline **220 diagnostics**, with **zero diagnostics on all changed production and test paths**;
+  - current IR-005 and full task-range `git diff --check`: **pass**;
+  - changed production implementation files remain `<= 500` effective non-empty lines.
+- Development source commit: `81a8e8b64aad0fd2253081fe9a94f88e3a9ffa46`.
 - Next recipient or routing: `code_reviewer` for complete source re-review before API/E2E resumes.
 - Remaining limitations or risks: No new implementation limitation was introduced. Realistic aggregate performance and WebSocket/API/browser/Electron coverage remain downstream after source review passes; delivery still owns base refresh and durable docs synchronization.

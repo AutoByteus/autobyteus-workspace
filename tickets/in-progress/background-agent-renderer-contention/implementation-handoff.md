@@ -13,7 +13,7 @@
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/architecture-review-revision-record.md`
 - Triggering rework report, revision record, or evidence:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/code-review-report.md`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/code-review-revision-record.md` (`CRR-001`, `CRR-002`, `CRR-003`)
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/code-review-revision-record.md` (`CRR-001`, `CRR-002`, `CRR-003`, `CRR-004`)
 
 ## Current Implementation Summary
 
@@ -21,18 +21,18 @@ The implementation replaces multiplied presentation work with the reviewed share
 
 Standalone and team frontend dispatch now share one generic projector. Handlers report actual conversation, Event Monitor, and navigation effects; the Event Monitor coordinator uses explicit reset/prime/commit lifecycle operations. Run history owns an indexed navigation projection with completed stable/transient execution rows and cached focus. Task-agent ensure/repair is mutation-bearing in the task router, `TeamStreamingService` commits the required mutation before every outcome, and member resolution is read-only. Workspace navigation consumes the completed projection instead of rebuilding from live contexts.
 
-IR-004 retains the resolved CR-001–CR-009 corrections and closes CRR-003's reopened CR-006 lifecycle gap without changing SR-004 boundaries. Team-member activity hydration is now activity-only; active history open and live recovery each remain the sole owner of one final Event Monitor prime per final member context after activity hydration. New/replaced members receive one post-activity prime, preserved subscribed members receive one no-reset idempotent prime, and members without a projection still receive exactly one final prime.
+IR-005 retains the resolved CR-001–CR-009 corrections and completes CRR-004's bounded CR-006 ownership inventory without changing SR-004 boundaries. Team-member construction and projection application are now conversation/activity writers only. Active/historical open and live recovery each own one final Event Monitor prime per final context after their last writer; lazy historical member hydration owns its separate post-projection final prime. Historical projection-present, active projection-present, projection-absent, existing replacement, preserved subscribed, and lazy historical branches now have one explicit final-prime owner.
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/background-agent-renderer-contention/tickets/in-progress/background-agent-renderer-contention/implementation-revision-record.md`
-- Current implementation revision ID: `IR-004`
+- Current implementation revision ID: `IR-005`
 - Related solution revision IDs: `SR-004`
 - Related architecture-review revision IDs: `ARCH-REV-004`
-- Related code-review revision IDs: `CRR-001`, `CRR-002`, `CRR-003`
+- Related code-review revision IDs: `CRR-001`, `CRR-002`, `CRR-003`, `CRR-004`
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `CR-006` (reopened by `CRR-003`; now corrected; `CR-001–CR-009` resolved at implementation scope)
-- Development source commit: `85c3cf9032c48f14e2b996cf7ce2419041d8de9c`
+- Triggering finding IDs: `CR-006` (partially resolved by IR-004, retained open by `CRR-004`; now corrected across the complete inventory)
+- Development source commit: `81a8e8b64aad0fd2253081fe9a94f88e3a9ffa46`
 
 ## Reviewed Behavior Implementation Trace
 
@@ -42,7 +42,7 @@ IR-004 retains the resolved CR-001–CR-009 corrections and closes CRR-003's reo
 | BEH-002 | Keep paste/upload/file/panel contracts unchanged while bounding background work. | Shared projector, Event Monitor coordinator, indexed run-history projection; existing attachment/file owners unchanged. | Implemented structural contention correction; aggregate browser/Electron latency remains downstream. |
 | BEH-003 | Preserve all active subscriptions and exact live hierarchy, including first ordinary task-agent messages. | `teamTaskExecutionEventRouter.ts`, `teamTaskAgentContextProjection.ts`, `TeamStreamingService.ts`, read-only `teamStreamMemberContextResolver.ts`, run-history execution rows. | First status/content, repair, no-op, generic-status coordination, offline cleanup, and bounded build/patch paths are covered. |
 | BEH-004 | Use one generic standalone/team projector with actual mutation effects. | `agentStreamMessageProjector.ts`, `agentStreamMutationEffects.ts`, `localUserSubmission.ts`, `AgentStreamingService.ts`, `TeamStreamingService.ts`, handler result conversions and run-store callers. | Combined presentation/activity survives effect merging and applies in one exact patch. Standalone/team local submission, attachment, and failure mutations apply exact summary/activity effects; failure callers establish authoritative Error first and equal attachment replacement is a no-op. |
-| BEH-005 | Make recent Event Monitor work effect-driven with explicit lifecycle baselines. | `recentEventMonitorMutationCoordinator.ts` plus context/store/open/hydration/submission callers. | Old before/after witness API removed; reset/prime/commit covers create, replace, hydrate, promote, task, reuse, and removal lifecycles. Activity hydration is side-effect-limited to activity state; active open and live recovery each own exactly one final prime per final context. New/replaced contexts prime once after activity hydration, preserved subscribed live contexts are not reset and prime idempotently, and absent projections still reach the final prime. |
+| BEH-005 | Make recent Event Monitor work effect-driven with explicit lifecycle baselines. | `recentEventMonitorMutationCoordinator.ts` plus context/store/open/hydration/submission callers. | Old before/after witness API removed; reset/prime/commit covers create, replace, hydrate, promote, task, reuse, and removal lifecycles. Team construction/projection helpers are writer-only; active/historical open and live recovery each own one final prime after the last writer, while lazy historical hydration owns its separate post-projection prime. New/replaced contexts prime after activity hydration, preserved subscribed contexts prime without reset, and absent projections still reach exactly one final prime. |
 | BEH-006 | Cache/index navigation once per relevant change and publish completed stable/transient rows and focus. | `runHistoryNavigationProjection.ts`, `runHistoryNavigationPatches.ts`, `runHistoryNavigationStoreActions.ts`, `runHistoryTeamExecutionRows.ts`, `runHistoryStore.ts`, team activation callers, and workspace history components/composables. | Component/live-context builder path removed; detail-only task changes stay out of navigation; root team lifecycle and local/status presentation use exact patches; new/restored team source state is active before its topology publication; equal workspace branches and per-workspace team buckets retain identity. |
 | BEH-007 | Suppress only exact redundant UI status projections after identity enrichment. | `agent-status-projection-identity.ts`, `agent-status-transition-filter.ts`, shared egress composition and focused server unit coverage. | Initial/changed statuses forward, identities remain isolated, malformed/unkeyable payloads fail open, and filter state is per connection. Canonical runtime publishers were not changed. |
 | BEH-008 | Preserve the configurable/default 500 ms cadence, lossless ordering/flush rules, wire shape, and progressive rich Markdown. | `agent-stream-content-cadence-scheduler.ts`, `stream-content-coalescing.ts`, `agent-stream-websocket-egress.ts`; existing frontend rich-render path unchanged. | Existing cadence/flush unit cases pass. No frontend timer, content downgrade, or protocol envelope was added. |
@@ -55,6 +55,7 @@ IR-004 retains the resolved CR-001–CR-009 corrections and closes CRR-003's reo
 - Shared frontend generic projection: `autobyteus-web/services/agentStreaming/agentStreamMessageProjector.ts`, `agentStreamMutationEffects.ts`, and converted handlers/services
 - Exact local-submission navigation: `autobyteus-web/services/runSubmission/localUserSubmission.ts`, standalone/team store callers, and focused coverage
 - Event Monitor lifecycle/effect owner: `autobyteus-web/services/eventMonitor/recentEventMonitorMutationCoordinator.ts` and mapped context/open/hydration callers
+- Team hydration writer/final-prime enclosure: `autobyteus-web/stores/runHistoryTeamMemberProjectionHydrator.ts`, `autobyteus-web/services/runHydration/teamRunContextHydrationService.ts`, and `autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts`
 - Task projection enclosure: `autobyteus-web/services/agentStreaming/teamTask*`, `TeamStreamingService.ts`, `teamStreamMemberContextResolver.ts`
 - Run-history navigation ownership: `autobyteus-web/stores/runHistoryNavigation*.ts`, `runHistoryTeamExecutionRows.ts`, `runHistoryStore.ts`, `runHistoryTypes.ts`
 - Thin navigation consumers: workspace history components/composables, running/mobile focus callers, and the updated presentation fixture
@@ -134,6 +135,12 @@ IR-004 retains the resolved CR-001–CR-009 corrections and closes CRR-003's reo
 - IR-004 frontend affected-path check:
   - `pnpm test:nuxt --run` across `TeamStreamingService`, shared projector, local submission, active team open, live team recovery, standalone/team run stores, navigation projection, and run-history store.
   - Result: **Pass — 9 files / 164 tests**.
+- IR-005 direct prime-ownership composition check:
+  - `pnpm test:nuxt --run services/runOpen/__tests__/teamRunOpenCoordinator.primeOwnership.spec.ts services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts services/runHydration/__tests__/teamRunContextHydrationService.spec.ts stores/__tests__/runHistoryTeamMemberProjectionHydrator.spec.ts`
+  - Result: **Pass — 4 files / 16 tests**. The real loader/builder paths cover historical projection-present, active projection-present, active projection-absent, existing replacement, preserved subscribed, live recovery, and lazy historical hydration ownership.
+- IR-005 frontend affected-path check:
+  - `pnpm test:nuxt --run` across the retained IR-004 matrix plus real open ownership and projection-hydrator coverage.
+  - Result: **Pass — 11 files / 171 tests**.
 - Frontend boundary guards:
   - `pnpm guard:web-boundary` → **Pass**.
   - `pnpm guard:localization-boundary` → **Pass**.
@@ -145,9 +152,9 @@ IR-004 retains the resolved CR-001–CR-009 corrections and closes CRR-003's reo
   - Member resolver has no ensure/repair/mutation path; task helpers do not import run history; no changed production deep watcher exists.
   - The task router's result requires a mutation, every production ensure captures it, and `TeamStreamingService` initializes/commits it before every outcome.
   - Only the shared generic projector assigns `conversation.updatedAt`; workspace components do not call a dynamic row/team builder.
-  - `hydrateTeamMemberActivitiesFromProjection` contains no final-prime call or hidden re-export; its only production callers are active team open and live recovery, each of which owns one final prime loop after hydration.
+  - Team-member activity hydration, projection application, and context construction contain no final-prime calls. Their only production compositions end at the active/historical open or live-recovery final-prime loop; lazy historical projection hydration performs its one explicit post-writer prime.
   - Changed production implementation files are all `<= 500` effective lines.
-- `git diff --check`: **Pass** for the IR-004 delta and the full task range from `7f0fc49965950d9689726a048371f2e2b78eef31`; retained probe-evidence whitespace is normalized.
+- `git diff --check`: **Pass** for the IR-005 delta and the full task range from `7f0fc49965950d9689726a048371f2e2b78eef31`; retained probe-evidence whitespace is normalized.
 
 ## Frontend Rendered-Result Check (When Applicable)
 
@@ -163,7 +170,7 @@ IR-004 retains the resolved CR-001–CR-009 corrections and closes CRR-003's reo
   - Collapsing the definition removed descendant rows from the DOM; re-expansion restored both exact transient rows and focus.
   - Mobile showed history, running surface, and transient rows with document/body width equal to the `390 px` viewport (no horizontal overflow).
 - Visual or interaction issues found and corrected: Stable parents initially lacked descendant disclosure because `hasChildren` was derived only from stable children. The relocated execution-row composer was corrected to infer a child from the next live row's greater depth, and focused/component coverage was updated. Fixture navigation contracts were also completed before the final rendered pass.
-- Supporting evidence and remaining unverified states or limitations: Local inspection output is `/tmp/background-render-inspection.json`; screenshots are `/tmp/background-render-desktop.png` and `/tmp/background-render-mobile.png`. IR-002 through IR-004 change state/effect/egress/hydration sequencing only and do not change component markup, styling, or layout, so the IR-001 real-component rendered inspection remains authoritative for the current rendered surface. This was an implementation feedback loop, not API/E2E sign-off. Aggregate sustained traffic, collapsed nested task teams, paste/fake-media latency, and Electron behavior remain downstream.
+- Supporting evidence and remaining unverified states or limitations: Local inspection output is `/tmp/background-render-inspection.json`; screenshots are `/tmp/background-render-desktop.png` and `/tmp/background-render-mobile.png`. IR-002 through IR-005 change state/effect/egress/hydration sequencing only and do not change component markup, styling, or layout, so the IR-001 real-component rendered inspection remains authoritative for the current rendered surface. This was an implementation feedback loop, not API/E2E sign-off. Aggregate sustained traffic, collapsed nested task teams, paste/fake-media latency, and Electron behavior remain downstream.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
