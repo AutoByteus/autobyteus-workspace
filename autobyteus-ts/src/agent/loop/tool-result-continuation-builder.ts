@@ -3,10 +3,8 @@ import { ContextFile } from '../message/context-file.js';
 import { ContextFileType } from '../message/context-file-type.js';
 import { AgentInputUserMessage } from '../message/agent-input-user-message.js';
 import { SenderType } from '../sender-type.js';
-import { resolveToolCallFormat } from '../../utils/tool-call-format.js';
 import {
   NATIVE_API_TOOL_CONTINUATION_MODE,
-  TOOL_HISTORY_ONLY_CONTINUATION_MODE,
   TOOL_CONTINUATION_MODE_METADATA_KEY
 } from '../message/tool-continuation-metadata.js';
 import {
@@ -40,10 +38,8 @@ export class ToolResultContinuationBuilder {
       );
     }
 
-    const toolCallFormat = resolveToolCallFormat();
-    const isNativeApiMode = toolCallFormat === 'api_tool_call';
     context.state.memoryManager?.ingestToolResults(processedEvents, turnId, {
-      source: isNativeApiMode ? 'native_api_ordered_batch' : 'text_history_ordered_batch'
+      source: 'native_api_ordered_batch'
     });
     const contextFiles = this.collectContextFiles(processedEvents);
     const content = buildToolContinuationDisplayText(this.buildDisplayTextSummaries(processedEvents));
@@ -53,9 +49,7 @@ export class ToolResultContinuationBuilder {
       SenderType.TOOL,
       contextFiles.length > 0 ? contextFiles : null,
       {
-        [TOOL_CONTINUATION_MODE_METADATA_KEY]: isNativeApiMode
-          ? NATIVE_API_TOOL_CONTINUATION_MODE
-          : TOOL_HISTORY_ONLY_CONTINUATION_MODE,
+        [TOOL_CONTINUATION_MODE_METADATA_KEY]: NATIVE_API_TOOL_CONTINUATION_MODE,
         turn_id: turnId,
         tool_result_count: processedEvents.length
       }

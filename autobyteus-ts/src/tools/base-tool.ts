@@ -8,6 +8,7 @@ export type ToolExecutionOptions = {
   signal?: AbortSignal | null;
   turnId?: string | null;
   invocationId?: string | null;
+  mediaOperationTimeoutMs?: number | null;
 };
 
 export type ToolResultExecutionMode = 'in_process' | 'external_result';

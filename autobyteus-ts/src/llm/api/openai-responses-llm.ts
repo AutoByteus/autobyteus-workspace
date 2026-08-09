@@ -7,7 +7,7 @@ import { Message } from '../utils/messages.js';
 import { CompleteResponse, ChunkResponse } from '../utils/response-types.js';
 import { ToolCallDelta } from '../utils/tool-call-delta.js';
 import { BasePromptRenderer } from '../prompt-renderers/base-prompt-renderer.js';
-import { createOpenAIResponsesRendererForToolFormat } from '../prompt-renderers/provider-tool-history-renderer-selection.js';
+import { OpenAIResponsesRenderer } from '../prompt-renderers/openai-responses-renderer.js';
 import { createOpenAICompatibleTokenUsageObservation } from './openai-compatible-token-usage-normalizer.js';
 import type { LlmTokenUsageObservation } from '../utils/llm-token-usage-observation.js';
 import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
@@ -44,7 +44,7 @@ export class OpenAIResponsesLLM extends BaseLLM {
     this.apiKeyProviderId = apiKeyProviderId;
     this.baseUrl = baseUrl;
     this.maxTokens = config.maxTokens ?? null;
-    this._renderer = createOpenAIResponsesRendererForToolFormat();
+    this._renderer = new OpenAIResponsesRenderer();
   }
 
   private getClient(): Promise<OpenAIClient> {

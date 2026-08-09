@@ -6,7 +6,7 @@ import { CompleteResponse, ChunkResponse } from '../utils/response-types.js';
 import { buildLlmTokenUsageObservation, type LlmTokenUsageObservation } from '../utils/llm-token-usage-observation.js';
 import { Message } from '../utils/messages.js';
 import { BasePromptRenderer } from '../prompt-renderers/base-prompt-renderer.js';
-import { createOllamaPromptRendererForToolFormat } from '../prompt-renderers/provider-tool-history-renderer-selection.js';
+import { OllamaPromptRenderer } from '../prompt-renderers/ollama-prompt-renderer.js';
 import { convertOllamaToolCalls } from '../converters/ollama-tool-call-converter.js';
 import { createLocalLongRunningFetch } from '../transport/local-long-running-fetch.js';
 import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
@@ -46,7 +46,7 @@ export class OllamaLLM extends BaseLLM {
       host: model.hostUrl,
       fetch: createLocalLongRunningFetch(),
     });
-    this._renderer = createOllamaPromptRendererForToolFormat();
+    this._renderer = new OllamaPromptRenderer();
   }
 
   private buildChatRequest(

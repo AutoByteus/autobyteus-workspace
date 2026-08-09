@@ -1,0 +1,265 @@
+
+> autobyteus@1.4.45 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/remove-xml-tool-calling/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/settings/__tests__ --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/remove-xml-tool-calling/autobyteus-web
+
+stderr | components/settings/__tests__/NodeManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/ServerSettingsManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/CodexFullAccessCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/ApplicationPackagesManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/CompactionConfigCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/MessagingSetupManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/ServerSettingsEndpointCards.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/AgentPackagesManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/WebSearchConfigurationCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/__tests__/ServerSettingsManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/CodexFullAccessCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/WebSearchConfigurationCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/AgentPackagesManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/NodeManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/ApplicationPackagesManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/MessagingSetupManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/ServerSettingsEndpointCards.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/CompactionConfigCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/WebSearchConfigurationCard.spec.ts (7 tests) 77ms
+ ✓ components/settings/__tests__/ApplicationPackagesManager.spec.ts (5 tests) 50ms
+ ✓ components/settings/__tests__/AgentPackagesManager.spec.ts (8 tests) 69ms
+ ✓ components/settings/__tests__/ServerSettingsEndpointCards.spec.ts (5 tests) 92ms
+ ❯ components/settings/__tests__/CodexFullAccessCard.spec.ts (10 tests | 1 failed) 64ms
+   × CodexFullAccessCard > renders one full-access toggle without exposing the three runtime modes as Basic choices 19ms
+     → expected 'Codex full accessControl whether non-…' to contain 'Applies to new sessions.'
+   ✓ CodexFullAccessCard > initializes checked state for absent setting 5ms
+   ✓ CodexFullAccessCard > initializes checked state for invalid setting 4ms
+   ✓ CodexFullAccessCard > initializes checked state for workspace-write setting 4ms
+   ✓ CodexFullAccessCard > initializes checked state for read-only setting 4ms
+   ✓ CodexFullAccessCard > initializes checked state for danger-full-access setting 3ms
+   ✓ CodexFullAccessCard > initializes checked state for trimmed danger-full-access setting 4ms
+   ✓ CodexFullAccessCard > preserves an in-flight local toggle when settings refresh from the store 9ms
+   ✓ CodexFullAccessCard > auto-saves danger-full-access when the toggle is turned on 6ms
+   ✓ CodexFullAccessCard > auto-saves workspace-write when the toggle is turned off 5ms
+ ✓ components/settings/__tests__/NodeManager.spec.ts (10 tests) 67ms
+ ✓ components/settings/__tests__/CompactionConfigCard.spec.ts (9 tests) 135ms
+ ✓ components/settings/__tests__/ServerSettingsManager.spec.ts (8 tests) 101ms
+ ✓ components/settings/__tests__/MessagingSetupManager.spec.ts (4 tests) 132ms
+stderr | components/settings/__tests__/AboutSettingsManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/PhoneAccessCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/ProviderAPIKeyManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/ServerSettingsCompactionFailure.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/FeaturedCatalogItemsCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/MediaDefaultModelsCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/MemorySyncCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/SkillImprovementFeatureToggleCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/TokenUsageStatistics.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/__tests__/AboutSettingsManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/MediaDefaultModelsCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/ServerSettingsCompactionFailure.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/FeaturedCatalogItemsCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/MemorySyncCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/ProviderAPIKeyManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/PhoneAccessCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/SkillImprovementFeatureToggleCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/PhoneAccessCard.spec.ts (3 tests) 38ms
+ ✓ components/settings/__tests__/MemorySyncCard.spec.ts (4 tests) 60ms
+ ✓ components/settings/__tests__/SkillImprovementFeatureToggleCard.spec.ts (3 tests) 33ms
+ ✓ components/settings/__tests__/FeaturedCatalogItemsCard.spec.ts (3 tests) 83ms
+ ✓ components/settings/__tests__/AboutSettingsManager.spec.ts (6 tests) 23ms
+ ✓ components/settings/__tests__/MediaDefaultModelsCard.spec.ts (4 tests) 148ms
+ ✓ components/settings/__tests__/ServerSettingsCompactionFailure.spec.ts (2 tests) 138ms
+ ✓ components/settings/__tests__/ProviderAPIKeyManager.spec.ts (4 tests) 47ms
+stdout | components/settings/__tests__/TokenUsageStatistics.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/TokenUsageStatistics.spec.ts (3 tests) 42ms
+stderr | components/settings/__tests__/VoiceInputExtensionCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/ApplicationsFeatureToggleCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/DisplaySettingsManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/DockerNodeStartGuideCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/PhoneSetupGuideCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/LiveResponseStreamingCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/LanguageSettingsManager.integration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/LanguageSettingsManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/__tests__/VoiceInputExtensionCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/ApplicationsFeatureToggleCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/DockerNodeStartGuideCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/VoiceInputExtensionCard.spec.ts (8 tests) 47ms
+stdout | components/settings/__tests__/DisplaySettingsManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/ApplicationsFeatureToggleCard.spec.ts (3 tests) 25ms
+ ✓ components/settings/__tests__/DockerNodeStartGuideCard.spec.ts (3 tests) 35ms
+ ✓ components/settings/__tests__/DisplaySettingsManager.spec.ts (3 tests) 23ms
+stdout | components/settings/__tests__/PhoneSetupGuideCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts (2 tests) 38ms
+stdout | components/settings/__tests__/LiveResponseStreamingCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/PhoneSetupGuideCard.spec.ts (2 tests) 23ms
+stdout | components/settings/__tests__/LanguageSettingsManager.integration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/LiveResponseStreamingCard.spec.ts (8 tests) 51ms
+ ✓ components/settings/__tests__/LanguageSettingsManager.integration.spec.ts (1 test) 17ms
+stdout | components/settings/__tests__/LanguageSettingsManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/LanguageSettingsManager.spec.ts (2 tests) 14ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  components/settings/__tests__/CodexFullAccessCard.spec.ts > CodexFullAccessCard > renders one full-access toggle without exposing the three runtime modes as Basic choices
+AssertionError: expected 'Codex full accessControl whether non-…' to contain 'Applies to new sessions.'
+
+Expected: "Applies to new sessions."
+Received: "Codex full accessControl whether non-auto-approved Codex sessions run without filesystem sandboxing.Allow full filesystem accessWarning: Runs with danger-full-access. Use only when you trust the task.Allow full filesystem accessApplies to new non-auto-approved sessions. Auto approve tools is high-trust and grants effective full access for that run."
+
+ ❯ components/settings/__tests__/CodexFullAccessCard.spec.ts:66:28
+     64|     expect(wrapper.text()).toContain('Allow full filesystem access')
+     65|     expect(wrapper.text()).toContain('danger-full-access')
+     66|     expect(wrapper.text()).toContain('Applies to new sessions.')
+       |                            ^
+     67|     expect(wrapper.find('[data-testid="codex-full-access-toggle"]').at…
+     68|     expect(wrapper.find('[data-testid="codex-full-access-save"]').exis…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 26 passed (27)
+      Tests  1 failed | 129 passed (130)
+   Start at  09:28:46
+   Duration  15.65s (transform 6.83s, setup 105.39s, collect 7.51s, tests 1.67s, environment 11.14s, prepare 5.88s)
+
+ ELIFECYCLE  Command failed with exit code 1.

@@ -36,7 +36,6 @@ import { WorkingContext } from '../../../src/memory/working-context.js';
 import { registerReadFileTool } from '../../../src/tools/file/read-file.js';
 import { defaultToolRegistry } from '../../../src/tools/registry/tool-registry.js';
 
-const originalParser = process.env.AUTOBYTEUS_STREAM_PARSER;
 const originalStrategy = process.env[AUTOBYTEUS_COMPACTION_STRATEGY];
 
 class SequencedStreamingLLM extends BaseLLM {
@@ -143,15 +142,12 @@ const seedSettledHistory = (manager: MemoryManager): void => {
 };
 
 afterEach(() => {
-  if (originalParser === undefined) delete process.env.AUTOBYTEUS_STREAM_PARSER;
-  else process.env.AUTOBYTEUS_STREAM_PARSER = originalParser;
   if (originalStrategy === undefined) delete process.env[AUTOBYTEUS_COMPACTION_STRATEGY];
   else process.env[AUTOBYTEUS_COMPACTION_STRATEGY] = originalStrategy;
 });
 
 describe('structured strategy tool-safe lifecycle', () => {
   it('waits for the terminal result, compacts through the current strategy, and renders the complete native tool group', async () => {
-    process.env.AUTOBYTEUS_STREAM_PARSER = 'api_tool_call';
     process.env[AUTOBYTEUS_COMPACTION_STRATEGY] = 'structured-json';
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'structured-tool-lifecycle-'));
     const registrySnapshot = defaultToolRegistry.snapshot();

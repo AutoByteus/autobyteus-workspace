@@ -18,6 +18,9 @@ export const SYNTHETIC_INTERRUPTED_TOOL_RESULT_CONTENT = [
   'Do not assume the requested output exists. Retry or verify only if the user asks or task requires it.',
 ].join('\n');
 
+export const SYNTHETIC_TOOL_RESULT_ERROR = (toolName: string, toolCallId: string): string =>
+  `Tool '${toolName}' failed: operation did not complete or was interrupted before a result was recorded (invocation '${toolCallId}').`;
+
 export const AGENT_INTERRUPTED_TOOL_RESULT_CONTENT = [
   'Tool execution was interrupted before a result was recorded.',
   'Completion status is unknown. No tool output is available in memory.',
@@ -47,6 +50,7 @@ export type InterruptedToolResultRepair = {
   source: 'synthetic_interrupted' | 'raw_completed_result';
   toolResult: unknown;
   toolError: string | null;
+  toolArgs?: Record<string, unknown> | null;
 };
 
 export type WorkingContextToolProtocolRepairResult = {
@@ -176,8 +180,8 @@ function buildInsertedToolResultMessage(
   const source = completed ? 'raw_completed_result' : 'synthetic_interrupted';
   const toolResult = completed
     ? completed.toolResult
-    : options.syntheticInterruptedToolResultContent ?? SYNTHETIC_INTERRUPTED_TOOL_RESULT_CONTENT;
-  const toolError = completed ? completed.toolError : null;
+    : null;
+  const toolError = completed?.toolError ?? SYNTHETIC_TOOL_RESULT_ERROR(toolName, callId);
   const message = new Message(MessageRole.TOOL, {
     content: null,
     tool_payload: new ToolResultPayload(callId, toolName, toolResult, toolError),
@@ -190,7 +194,7 @@ function buildInsertedToolResultMessage(
 
   return {
     message,
-    repair: { toolCallId: callId, toolName, turnId, source, toolResult, toolError },
+    repair: { toolCallId: callId, toolName, turnId, source, toolResult, toolError, toolArgs: call.arguments ?? null },
   };
 }
 

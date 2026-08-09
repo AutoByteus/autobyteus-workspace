@@ -34,22 +34,28 @@ function resolveSslOptions(): SslOptions {
   return {};
 }
 
-export async function downloadFileFromUrl(url: string, filePath: string): Promise<void> {
+export type DownloadOptions = { signal?: AbortSignal; timeoutMs?: number };
+
+export async function downloadFileFromUrl(url: string, filePath: string, options: DownloadOptions = {}): Promise<void> {
   const targetDir = path.dirname(filePath);
   await fsPromises.mkdir(targetDir, { recursive: true });
 
   try {
+    if (options.signal?.aborted) throw new Error('Media transfer was cancelled.');
+
     if (url.startsWith('data:')) {
       const [, encoded] = url.split(',', 2);
       if (!encoded) {
         throw new Error('Invalid data URI format');
       }
       const data = Buffer.from(encoded, 'base64');
+      if (options.signal?.aborted) throw new Error('Media transfer was cancelled.');
       await fsPromises.writeFile(filePath, data);
       return;
     }
 
     if (fs.existsSync(url) && fs.statSync(url).isFile()) {
+      if (options.signal?.aborted) throw new Error('Media transfer was cancelled.');
       await fsPromises.copyFile(url, filePath);
       return;
     }
@@ -57,15 +63,20 @@ export async function downloadFileFromUrl(url: string, filePath: string): Promis
     const sslOptions = resolveSslOptions();
     const response = await axios.get(url, {
       responseType: 'stream',
+      signal: options.signal,
+      timeout: options.timeoutMs,
       ...sslOptions
     });
 
     await new Promise<void>((resolve, reject) => {
       const writeStream = fs.createWriteStream(filePath);
+      const abort = () => { response.data.destroy(new Error('Media transfer was cancelled.')); writeStream.destroy(new Error('Media transfer was cancelled.')); };
+      options.signal?.addEventListener('abort', abort, { once: true });
       response.data.pipe(writeStream);
       response.data.on('error', reject);
       writeStream.on('error', reject);
-      writeStream.on('finish', resolve);
+      writeStream.on('finish', () => { options.signal?.removeEventListener('abort', abort); resolve(); });
+      writeStream.on('close', () => options.signal?.removeEventListener('abort', abort));
     });
   } catch (error) {
     try {

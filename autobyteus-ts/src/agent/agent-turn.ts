@@ -17,6 +17,7 @@ export type TurnOutcome =
   | { kind: 'completed'; turnId: string }
   | { kind: 'interrupted'; turnId: string; reason: string }
   | { kind: 'failed'; turnId: string; error: unknown }
+  | { kind: 'recovered'; turnId: string; reason: string; recoveredToolInvocationIds: string[] }
   | { kind: 'stopped'; turnId: string; reason: string };
 
 export type AgentTurnRunnerLike<TTrigger> = {

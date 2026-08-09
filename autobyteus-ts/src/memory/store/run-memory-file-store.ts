@@ -23,14 +23,33 @@ import {
 } from './raw-trace-archive-manager.js';
 
 const readJsonl = (filePath: string): Record<string, unknown>[] => {
-  if (!fs.existsSync(filePath)) {
-    return [];
+  if (!fs.existsSync(filePath)) return [];
+  const raw = fs.readFileSync(filePath, 'utf-8');
+  const lines = raw.split('\n');
+  const records: Record<string, unknown>[] = [];
+  let validBytes = 0;
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index]!;
+    const trimmed = line.trim();
+    const isLastPhysicalLine = index === lines.length - 1;
+    if (!trimmed) {
+      validBytes += Buffer.byteLength(line + (isLastPhysicalLine ? '' : '\n'), 'utf8');
+      continue;
+    }
+    try {
+      records.push(JSON.parse(trimmed) as Record<string, unknown>);
+      validBytes += Buffer.byteLength(line + (isLastPhysicalLine ? '' : '\n'), 'utf8');
+    } catch (error) {
+      if (isLastPhysicalLine || index === lines.length - 2 && lines.at(-1) === '') {
+        // A process crash can leave only the final JSONL record incomplete.
+        // Preserve complete prior evidence and truncate the broken tail.
+        fs.writeFileSync(filePath, raw.slice(0, validBytes), 'utf-8');
+        break;
+      }
+      throw error;
+    }
   }
-  return fs.readFileSync(filePath, 'utf-8')
-    .split('\n')
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .map((line) => JSON.parse(line));
+  return records;
 };
 
 const writeJsonl = (filePath: string, items: Record<string, unknown>[]): void => {

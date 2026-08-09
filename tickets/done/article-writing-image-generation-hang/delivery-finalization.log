@@ -1,0 +1,56 @@
+Article-writing image-generation hang — repository finalization evidence
+Date: 2026-08-09
+User verification: app confirmed working; finalization requested; no new version/release requested.
+
+[finalization target refresh]
+$ git fetch origin personal
+origin/personal=7f0fc49965950d9689726a048371f2e2b78eef31
+ticket_HEAD=2264d112bb52044d203295648aea910f15c7886d
+$ git rev-list --left-right --count HEAD...origin/personal
+8  0
+Result: target unchanged since the verified Electron build; no re-integration or renewed verification required.
+
+[ticket archive and branch finalization]
+Ticket archived before final ticket commit: tickets/done/article-writing-image-generation-hang
+Delivery/archive commit: 15067e5fcb322fb43dd88a4e77de74caee465d14
+Initial ticket branch push: PASS
+
+[finalization-local quality correction]
+An initial local, unpushed target merge produced one branch-wide git diff --check finding:
+tickets/done/article-writing-image-generation-hang/bible-study-trace-probe.md:61: new blank line at EOF.
+The unpushed local merge was reset to origin/personal. The archived Markdown probe alone was normalized on the ticket branch.
+Formatting commit: 3db9dd3afff8aa2f40eb44be379f538330fe84d7
+$ git diff --check origin/personal..HEAD
+PASS
+Updated ticket branch push: PASS
+Product/runtime behavior impact: none.
+
+[authoritative target merge]
+Target before merge: personal=origin/personal=7f0fc49965950d9689726a048371f2e2b78eef31
+Ticket tip: 3db9dd3afff8aa2f40eb44be379f538330fe84d7
+Merge method: git merge --no-ff codex/article-writing-image-generation-hang -m "merge: recover stalled image generation turns"
+Merge commit: c6d18abfc43dfc77ebf623522a5bd24f264c9744
+Ticket ancestry check: PASS
+Archived ticket presence / in-progress absence: PASS
+$ git diff --check origin/personal..HEAD
+PASS
+Push origin personal: PASS
+Remote target after push: c6d18abfc43dfc77ebf623522a5bd24f264c9744
+
+[post-finalization cleanup]
+$ git merge-base --is-ancestor codex/article-writing-image-generation-hang personal
+PASS: ticket branch is contained by personal
+$ git worktree remove --force /Users/normy/autobyteus_org/autobyteus-worktrees/article-writing-image-generation-hang
+PASS
+$ git worktree prune
+PASS
+$ git branch -d codex/article-writing-image-generation-hang
+PASS: local ticket branch removed
+$ git push origin --delete codex/article-writing-image-generation-hang
+PASS: remote ticket branch removed
+PASS: dedicated worktree path removed
+PASS: personal and origin/personal matched at the authoritative merge before this terminal metadata update
+Preserved unrelated main-worktree state: pre-existing untracked .article-work/
+
+[release/publication/deployment]
+Not performed. The user explicitly requested no new version/release.

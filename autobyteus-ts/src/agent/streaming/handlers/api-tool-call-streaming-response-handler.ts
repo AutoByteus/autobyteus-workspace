@@ -1,6 +1,5 @@
 import { StreamingResponseHandler } from './streaming-response-handler.js';
 import { SegmentEvent, SegmentEventType, SegmentType } from '../segments/segment-events.js';
-import { ToolInvocationAdapter } from '../adapters/invocation-adapter.js';
 import { WriteFileContentStreamer, EditFileContentStreamer } from '../api-tool-call/file-content-streamer.js';
 import { ToolInvocation } from '../../tool-invocation.js';
 import { ChunkResponse } from '../../../llm/utils/response-types.js';
@@ -27,7 +26,6 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
   private onToolInvocation?: (invocation: ToolInvocation) => void;
   private turnId: string;
   private segmentIdPrefix: string;
-  private adapter: ToolInvocationAdapter;
   private textSegmentId: string | null = null;
   private activeTools: Map<number, ToolCallState> = new Map();
   private allEvents: SegmentEvent[] = [];
@@ -45,7 +43,6 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
     this.onToolInvocation = options?.onToolInvocation;
     this.turnId = options?.turnId ?? (() => { throw new Error('ApiToolCallStreamingResponseHandler requires turnId.'); })();
     this.segmentIdPrefix = options?.segmentIdPrefix ?? '';
-    this.adapter = new ToolInvocationAdapter();
   }
 
   private generateId(): string {
@@ -62,7 +59,7 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
     return { segmentType: SegmentType.TOOL_CALL, streamer: null };
   }
 
-  private emit(event: SegmentEvent): void {
+  private emitEvent(event: SegmentEvent): void {
     this.allEvents.push(event);
     if (this.onSegmentEvent) {
       try {
@@ -71,18 +68,46 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
         console.error(`Error in onSegmentEvent callback: ${error}`);
       }
     }
+  }
 
-    const invocation = this.adapter.processEvent(event);
-    if (invocation) {
-      this.allInvocations.push(invocation);
-      if (this.onToolInvocation) {
-        try {
-          this.onToolInvocation(invocation);
-        } catch (error) {
-          console.error(`Error in onToolInvocation callback: ${error}`);
-        }
+  private recordInvocation(invocation: ToolInvocation): void {
+    this.allInvocations.push(invocation);
+    if (this.onToolInvocation) {
+      try {
+        this.onToolInvocation(invocation);
+      } catch (error) {
+        console.error(`Error in onToolInvocation callback: ${error}`);
       }
     }
+  }
+
+  private buildInvocation(state: ToolCallState): ToolInvocation | null {
+    if (!state.name) {
+      console.warn(`Native tool call ${state.segmentId} ended without a tool name.`);
+      return null;
+    }
+
+    let parsedArgs: unknown = {};
+    if (state.accumulatedArgs) {
+      try {
+        parsedArgs = JSON.parse(state.accumulatedArgs);
+      } catch (error) {
+        console.error(`Failed to parse native tool arguments for ${state.name}: ${error}`);
+        parsedArgs = {};
+      }
+    }
+    if (!parsedArgs || typeof parsedArgs !== 'object' || Array.isArray(parsedArgs)) {
+      console.warn(`Native tool call ${state.segmentId} produced non-object arguments for ${state.name}.`);
+      parsedArgs = {};
+    }
+
+    return new ToolInvocation(
+      state.name,
+      parsedArgs as Record<string, unknown>,
+      state.segmentId,
+      this.turnId,
+      state.nativeToolCallContext
+    );
   }
 
   feed(chunk: ChunkResponse): SegmentEvent[] {
@@ -96,12 +121,12 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
       if (!this.textSegmentId) {
         this.textSegmentId = this.generateId();
         const startEvent = SegmentEvent.start(this.turnId, this.textSegmentId, SegmentType.TEXT);
-        this.emit(startEvent);
+        this.emitEvent(startEvent);
         events.push(startEvent);
       }
 
       const contentEvent = SegmentEvent.content(this.turnId, this.textSegmentId, chunk.content);
-      this.emit(contentEvent);
+      this.emitEvent(contentEvent);
       events.push(contentEvent);
     }
 
@@ -132,7 +157,7 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
             if (state) {
               state.segmentStarted = true;
             }
-            this.emit(startEvent);
+            this.emitEvent(startEvent);
             events.push(startEvent);
           }
         }
@@ -157,17 +182,17 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
               }
               const startEvent = SegmentEvent.start(this.turnId, state.segmentId, state.segmentType, metadata);
               state.segmentStarted = true;
-              this.emit(startEvent);
+              this.emitEvent(startEvent);
               events.push(startEvent);
               if (state.pendingContent) {
                 const pendingEvent = SegmentEvent.content(this.turnId, state.segmentId, state.pendingContent);
-                this.emit(pendingEvent);
+                this.emitEvent(pendingEvent);
                 events.push(pendingEvent);
                 state.pendingContent = '';
               }
             }
             const contentEvent = SegmentEvent.content(this.turnId, state.segmentId, delta.arguments_delta);
-            this.emit(contentEvent);
+            this.emitEvent(contentEvent);
             events.push(contentEvent);
           } else if (state.streamer) {
             const update = state.streamer.feed(delta.arguments_delta);
@@ -182,11 +207,11 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
               }
               const startEvent = SegmentEvent.start(this.turnId, state.segmentId, state.segmentType, metadata);
               state.segmentStarted = true;
-              this.emit(startEvent);
+              this.emitEvent(startEvent);
               events.push(startEvent);
               if (state.pendingContent) {
                 const pendingEvent = SegmentEvent.content(this.turnId, state.segmentId, state.pendingContent);
-                this.emit(pendingEvent);
+                this.emitEvent(pendingEvent);
                 events.push(pendingEvent);
                 state.pendingContent = '';
               }
@@ -195,7 +220,7 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
             if (update.contentDelta) {
               if (state.segmentStarted) {
                 const contentEvent = SegmentEvent.content(this.turnId, state.segmentId, update.contentDelta);
-                this.emit(contentEvent);
+                this.emitEvent(contentEvent);
                 events.push(contentEvent);
               } else {
                 state.pendingContent += update.contentDelta;
@@ -213,11 +238,11 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
             }
             const startEvent = SegmentEvent.start(this.turnId, state.segmentId, state.segmentType, metadata);
             state.segmentStarted = true;
-            this.emit(startEvent);
+            this.emitEvent(startEvent);
             events.push(startEvent);
             if (state.pendingContent) {
               const pendingEvent = SegmentEvent.content(this.turnId, state.segmentId, state.pendingContent);
-              this.emit(pendingEvent);
+              this.emitEvent(pendingEvent);
               events.push(pendingEvent);
               state.pendingContent = '';
             }
@@ -238,7 +263,7 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
 
     if (this.textSegmentId) {
       const endEvent = SegmentEvent.end(this.turnId, this.textSegmentId);
-      this.emit(endEvent);
+      this.emitEvent(endEvent);
       events.push(endEvent);
     }
 
@@ -254,11 +279,11 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
           }
           const startEvent = SegmentEvent.start(this.turnId, state.segmentId, state.segmentType, metadata);
           state.segmentStarted = true;
-          this.emit(startEvent);
+          this.emitEvent(startEvent);
           events.push(startEvent);
           if (state.pendingContent) {
             const pendingEvent = SegmentEvent.content(this.turnId, state.segmentId, state.pendingContent);
-            this.emit(pendingEvent);
+            this.emitEvent(pendingEvent);
             events.push(pendingEvent);
             state.pendingContent = '';
           }
@@ -271,27 +296,19 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
         }
         const startEvent = SegmentEvent.start(this.turnId, state.segmentId, state.segmentType, metadata);
         state.segmentStarted = true;
-        this.emit(startEvent);
+        this.emitEvent(startEvent);
         events.push(startEvent);
         if (state.pendingContent) {
           const pendingEvent = SegmentEvent.content(this.turnId, state.segmentId, state.pendingContent);
-          this.emit(pendingEvent);
+          this.emitEvent(pendingEvent);
           events.push(pendingEvent);
           state.pendingContent = '';
         }
       }
 
+      const invocation = this.buildInvocation(state);
       let endEvent: SegmentEvent;
       if (state.segmentType === SegmentType.TOOL_CALL) {
-        let parsedArgs: Record<string, any> = {};
-        if (state.accumulatedArgs) {
-          try {
-            parsedArgs = JSON.parse(state.accumulatedArgs);
-          } catch (error) {
-            console.error(`Failed to parse tool arguments for ${state.name}: ${error}`);
-            parsedArgs = {};
-          }
-        }
         endEvent = new SegmentEvent({
           event_type: SegmentEventType.END,
           segment_id: state.segmentId,
@@ -299,7 +316,7 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
           payload: {
             metadata: {
               tool_name: state.name,
-              arguments: parsedArgs,
+              arguments: invocation?.arguments ?? {},
               ...(state.nativeToolCallContext
                 ? { native_tool_call_context: state.nativeToolCallContext }
                 : {})
@@ -320,8 +337,11 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
           Object.keys(metadata).length ? { metadata } : {}
         );
       }
-      this.emit(endEvent);
+      this.emitEvent(endEvent);
       events.push(endEvent);
+      if (invocation) {
+        this.recordInvocation(invocation);
+      }
     }
 
     if (this.allInvocations.length) {
@@ -345,7 +365,7 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
         interrupted: true,
         reason
       });
-      this.emit(endEvent);
+      this.emitEvent(endEvent);
       events.push(endEvent);
       this.textSegmentId = null;
     }
@@ -366,7 +386,7 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
         reason,
         ...(Object.keys(metadata).length ? { metadata } : {})
       });
-      this.emit(endEvent);
+      this.emitEvent(endEvent);
       events.push(endEvent);
     }
     this.activeTools.clear();
@@ -386,7 +406,7 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
         failed: true,
         error
       });
-      this.emit(endEvent);
+      this.emitEvent(endEvent);
       events.push(endEvent);
       this.textSegmentId = null;
     }
@@ -407,7 +427,7 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
         error,
         ...(Object.keys(metadata).length ? { metadata } : {})
       });
-      this.emit(endEvent);
+      this.emitEvent(endEvent);
       events.push(endEvent);
     }
     this.activeTools.clear();
@@ -428,7 +448,6 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
     this.activeTools.clear();
     this.allEvents = [];
     this.allInvocations = [];
-    this.adapter = new ToolInvocationAdapter();
     this.isFinalized = false;
   }
 }

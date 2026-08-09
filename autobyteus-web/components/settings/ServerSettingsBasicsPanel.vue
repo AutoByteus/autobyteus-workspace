@@ -7,7 +7,6 @@
       <SkillImprovementFeatureToggleCard />
       <MediaDefaultModelsCard />
       <CodexFullAccessCard />
-      <StreamingParserCard />
       <LiveResponseStreamingCard />
       <FeaturedCatalogItemsCard />
       <WebSearchConfigurationCard @notify="showNotification" />
@@ -34,7 +33,6 @@ import FeaturedCatalogItemsCard from '~/components/settings/FeaturedCatalogItems
 import MediaDefaultModelsCard from '~/components/settings/MediaDefaultModelsCard.vue'
 import ServerSettingsEndpointCards from '~/components/settings/ServerSettingsEndpointCards.vue'
 import SkillImprovementFeatureToggleCard from '~/components/settings/SkillImprovementFeatureToggleCard.vue'
-import StreamingParserCard from '~/components/settings/StreamingParserCard.vue'
 import LiveResponseStreamingCard from '~/components/settings/LiveResponseStreamingCard.vue'
 import WebSearchConfigurationCard from '~/components/settings/WebSearchConfigurationCard.vue'
 

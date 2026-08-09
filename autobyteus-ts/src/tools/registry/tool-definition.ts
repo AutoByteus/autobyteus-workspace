@@ -1,10 +1,5 @@
 import { ParameterSchema } from '../../utils/parameter-schema.js';
-import { LLMProvider } from '../../llm/providers.js';
 import { ToolOrigin } from '../tool-origin.js';
-import { DefaultJsonSchemaFormatter } from '../usage/formatters/default-json-schema-formatter.js';
-import { DefaultJsonExampleFormatter } from '../usage/formatters/default-json-example-formatter.js';
-import { DefaultXmlSchemaFormatter } from '../usage/formatters/default-xml-schema-formatter.js';
-import { DefaultXmlExampleFormatter } from '../usage/formatters/default-xml-example-formatter.js';
 import { BaseTool, type ToolClass } from '../base-tool.js';
 import { ToolConfig } from '../tool-config.js';
 
@@ -148,26 +143,6 @@ export class ToolDefinition {
     } catch (e) {
       console.warn(`Failed to refresh description for tool '${this.name}' during reload: ${e}. Keeping existing description.`);
     }
-  }
-
-  public getUsageXml(provider?: LLMProvider): string {
-    const formatter = new DefaultXmlSchemaFormatter();
-    return formatter.provide(this);
-  }
-
-  public getUsageJson(provider?: LLMProvider): unknown {
-    const formatter = new DefaultJsonSchemaFormatter();
-    return formatter.provide(this);
-  }
-
-  public getUsageXmlExample(provider?: LLMProvider): string {
-    const formatter = new DefaultXmlExampleFormatter();
-    return formatter.provide(this);
-  }
-
-  public getUsageJsonExample(provider?: LLMProvider): unknown {
-    const formatter = new DefaultJsonExampleFormatter();
-    return formatter.provide(this);
   }
 
   public get hasInstantiationConfig(): boolean {

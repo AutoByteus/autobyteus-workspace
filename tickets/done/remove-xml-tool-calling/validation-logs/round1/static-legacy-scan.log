@@ -1,0 +1,16 @@
+=== git diff --check ===
+=== exact retired selector in production source (approved AppConfig tombstone only) ===
+autobyteus-server-ts/src/config/app-config.ts:33:const retiredSettingNames = new Set<string>(["AUTOBYTEUS_STREAM_PARSER"]);
+=== retired production owner paths ===
+ABSENT autobyteus-ts/src/agent/streaming/parser
+ABSENT autobyteus-ts/src/agent/streaming/adapters
+ABSENT autobyteus-ts/src/agent/streaming/handlers/parsing-streaming-response-handler.ts
+ABSENT autobyteus-ts/src/agent/system-prompt-processor/tool-manifest-injector
+ABSENT autobyteus-ts/src/tools/usage/formatters/example-formatter.ts
+ABSENT autobyteus-ts/src/tools/usage/providers/tool-manifest-provider.ts
+ABSENT autobyteus-ts/src/llm/prompt-renderers/text-tool-history-renderers.ts
+ABSENT autobyteus-web/components/settings/StreamingParserCard.vue
+ABSENT autobyteus-server-ts/src/config/stream-parser-setting.ts
+=== retired selector outside exact tombstone coverage ===
+autobyteus-server-ts/tests/unit/services/server-settings-service.test.ts:70:    expect(settings.find((item) => item.key === "AUTOBYTEUS_STREAM_PARSER")).toBeUndefined();
+=== removed legacy symbol imports/exports in production ===

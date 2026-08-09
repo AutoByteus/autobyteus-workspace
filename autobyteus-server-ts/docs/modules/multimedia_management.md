@@ -56,6 +56,42 @@ writable by the server process. Absolute local `input_images` entries,
 URLs may target any existing local file readable by the server process. URL and
 data URI image references continue to pass through unchanged.
 
+## Synchronous Image-Generation Completion Boundary
+
+`generate_image` is the bounded synchronous media capability. Its
+`MediaGenerationService` deadline begins before model/provider resolution and
+covers provider generation, returned-media transfer, and cleanup performed
+before the service settles. Timeout resolution uses the first valid integer in
+this order:
+
+1. the service-internal `mediaOperationTimeoutMs` execution option;
+2. the saved `MEDIA_OPERATION_TIMEOUT_MS` server setting; and
+3. the 300,000 ms default.
+
+Valid values are 10,000 through 3,600,000 ms. Invalid explicit or saved values
+are diagnosed and skipped. This policy belongs only to synchronous
+`generate_image`; it is not a runtime-wide tool timeout, and this ticket does
+not add a duration bound to `edit_image`, `generate_speech`, or
+`generate_video`.
+
+The native tool wrapper passes the active turn signal and invocation identity
+into the service. The child signal reaches provider and returned-media
+transports where their SDKs support cancellation. A provider that cannot cancel
+may settle late, but the service observes its rejection and a revoked
+`MediaOperationLease` prevents the late operation from publishing success.
+Every generated image is downloaded to a per-invocation sibling staging path;
+publication to the requested final path is serialized per output path and
+requires the current active lease immediately before and after atomic rename.
+A newer retry for the same path revokes the older lease, so timeout,
+cancellation, or late completion cannot overwrite a pre-existing or newer
+artifact. Staging and client cleanup waits are bounded to five seconds and do
+not turn a failed operation into `{ file_path }` success.
+
+The remaining media operations still propagate an available abort signal to
+their provider and transfer adapters, but otherwise preserve their existing
+duration semantics. All successful public media tool results remain
+`{ file_path }`.
+
 Saved default model server settings apply to future/new media tool schema
 construction and invocation:
 
@@ -63,3 +99,6 @@ construction and invocation:
 - `DEFAULT_IMAGE_EDIT_MODEL`
 - `DEFAULT_SPEECH_GENERATION_MODEL`
 - `DEFAULT_VIDEO_GENERATION_MODEL`
+
+`MEDIA_OPERATION_TIMEOUT_MS` is a separate capability-policy setting for
+future `generate_image` invocations; it does not affect model selection.

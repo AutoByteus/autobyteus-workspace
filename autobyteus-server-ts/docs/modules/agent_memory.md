@@ -131,6 +131,20 @@ that stable base, while final output, real Tool ingestion, and supported retaine
 interruption release it exactly once. Accepted archive/output/lineage state is
 never rolled back.
 
+An otherwise current schema-v5 snapshot whose native assistant tool call lacks
+a matching result is repaired during bootstrap before strict message/provenance
+validation. The bootstrapper validates the v5 envelope and run identity, asks
+the native `MemoryManager` protocol-safety owner to correlate calls by
+`(turn_id, tool_call_id)`, and then requires the repaired snapshot to pass the
+ordinary strict validator. When no committed result exists, repair appends one
+canonical raw `tool_result` first, preserving the original tool name and
+arguments while recording `tool_result: null` plus a deterministic non-empty
+`tool_error`; the working-context snapshot is then rebuilt from raw authority.
+Repeated restore is idempotent and does not append another result. Only a
+malformed final physical record in the active raw JSONL file may be truncated as
+a partial-write tail; earlier malformed records and unrelated snapshot
+corruption remain integrity failures.
+
 There is no server or GraphQL direct/recursive episode/semantic-to-raw origin
 service. Current output projection reads the lineage tail, loads exactly its
 episode/semantic membership in stored order, and treats malformed/unsupported

@@ -52,7 +52,7 @@ const resolveLocalReference = (reference: string): string => {
 
 export async function loadMediaReference(
   reference: string,
-  options: { fallbackMimeType?: string } = {},
+  options: { fallbackMimeType?: string; signal?: AbortSignal } = {},
 ): Promise<LoadedMediaReference> {
   const normalizedReference = reference.trim();
   if (!normalizedReference) {
@@ -66,7 +66,7 @@ export async function loadMediaReference(
   }
 
   if (normalizedReference.startsWith('http://') || normalizedReference.startsWith('https://')) {
-    const response = await axios.get(normalizedReference, { responseType: 'arraybuffer' });
+    const response = await axios.get(normalizedReference, { responseType: 'arraybuffer', signal: options.signal });
     const bytes = Buffer.from(response.data);
     const contentType = normalizeMimeType(response.headers?.['content-type'], '');
     return {
