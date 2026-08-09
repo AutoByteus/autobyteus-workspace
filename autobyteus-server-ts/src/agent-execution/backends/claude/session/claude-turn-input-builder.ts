@@ -8,7 +8,6 @@ export const buildClaudeTurnInput = (options: {
   content: string;
   sendMessageToEnabled: boolean;
   taskDelegationEnabled?: boolean;
-  getHandoffRulesEnabled?: boolean;
 }): string => {
   const memberTeamContext = options.runContext.runtimeContext.memberTeamContext;
   const instructionComposition = composeMemberRunInstructions({
