@@ -2,7 +2,7 @@
 
 ## Status
 
-Implementation local fixes for `CRR-002` are complete and are routed back to `code_reviewer` for source re-review. The code is authoritative; this handoff records paths and validation.
+Implementation local fix `IR-004` for `CRR-005` / `CR-009` is complete and is routed back to `code_reviewer` for source re-review. The code is authoritative; this handoff records paths and validation.
 
 ## Scope Delivered
 
@@ -34,9 +34,9 @@ Implementation local fixes for `CRR-002` are complete and are routed back to `co
 - Passed: `pnpm -C autobyteus-ts build`.
 - Passed: `pnpm -C autobyteus-ts exec vitest run tests/unit/agent/loop/agent-turn-runner.test.ts tests/unit/agent/status/status-deriver.test.ts --run` (8 tests).
 - Core build typecheck passed.
-- Server build typecheck is blocked by unrelated missing generated Prisma exports; no changed media-path diagnostics were reported.
-- Media service unit test was attempted but is blocked during module import by the same unrelated Prisma CommonJS named-export mismatch; no test cases executed.
-- Existing memory tests containing the old marker-only/omitted-result-arguments expectations are stale relative to `ARCH-REV-006`; API/E2E should update coverage per its investigation before execution.
+- Current focused media-service unit check passed: `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-tools/media/media-generation-service.test.ts --no-watch` (9 tests). This directly covers the three previously failing timeout scenarios without changing their expectations.
+- Current server build typecheck passed: `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`.
+- Current `git diff --check` passed.
 
 ## CRR-001 Local-Fix Resolution
 
@@ -47,11 +47,23 @@ Implementation local fixes for `CRR-002` are complete and are routed back to `co
 - **Cleanup:** Removed the unused repair-boundary `ingestToolResults` declaration and unused correlation/raw-interaction scaffolding.
 - **CR-005:** Parent abort now revokes the media publication lease through the child-signal bridge, and both publication gates reject an aborted operation before returning success.
 
-Focused local-fix checks: `git diff --check` passed; `pnpm -C autobyteus-ts exec tsc -p tsconfig.build.json --noEmit` and `pnpm -C autobyteus-ts build` passed. The server typecheck and media service unit test remain subject to the previously reported unrelated generated Prisma-client/CommonJS errors.
+Focused local-fix checks in that round: `git diff --check` passed; `pnpm -C autobyteus-ts exec tsc -p tsconfig.build.json --noEmit` and `pnpm -C autobyteus-ts build` passed. Server typecheck and media service test collection were blocked in that round; the current `IR-004` checks below now pass both paths.
+
+## CRR-005 Local-Fix Resolution
+
+- **CR-009:** `runBoundedMediaOperation` now records when its own deadline initiates settlement before aborting child provider/transfer work. The child abort therefore revokes the lease and propagates transport cancellation without allowing the cancellation branch of `Promise.race` to replace the authoritative timeout cause.
+- A timeout error instance is retained across timeout settlement and the pre-publication abort gate, so a deadline that fires after task completion while publication is waiting on the per-path lock is still reported as timeout. An explicit parent/user abort remains cancellation.
+- No tests or runner configuration were changed in this implementation round. The existing deterministic service suite now passes all 9 tests, including provider non-resolution, transfer non-resolution, and invalid-explicit -> valid-server-timeout precedence.
+
+Focused `IR-004` checks: `git diff --check` passed; server build typecheck passed; the focused media-service unit suite passed 9/9. API/E2E rerun and proportional review of accumulated durable coverage remain downstream-owned.
+
+## Frontend Implementation Feedback Loop
+
+Not Applicable. This is a backend media-operation settlement-cause correction with no rendered frontend or interaction change.
 
 ## Review Risks
 
-Provider SDK cancellation is best effort; raw-first retry and partial-tail convergence, late publication suppression, cleanup settlement, and ready/idle follow-up behavior require downstream executable coverage.
+Provider SDK cancellation is best effort. API/E2E must independently rerun the affected timeout scenarios, and a later successful package must return for proportional review of the accumulated durable test/config edits before delivery.
 
 ## Upstream Package
 

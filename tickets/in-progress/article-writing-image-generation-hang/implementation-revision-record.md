@@ -41,3 +41,14 @@
 - **Code location:** `autobyteus-server-ts/src/agent-tools/media/media-generation-service.ts`.
 - **Focused validation:** `git diff --check` passed; `pnpm -C autobyteus-ts exec tsc -p tsconfig.build.json --noEmit` passed; `pnpm -C autobyteus-ts build` passed with runtime dependency verification.
 - **Remaining limitations:** A filesystem rename already in progress cannot be interrupted by JavaScript; the post-publication cancellation gate prevents a cancelled operation from returning success. Provider-specific cancellation, environment-blocked media tests, and API/E2E evidence remain downstream concerns.
+
+## IR-004 — Media-deadline cause-authority local-fix round
+
+- **Trigger / review basis:** `code_reviewer` `CRR-005`, finding `CR-009`, triggered by `API-REV-002`; upstream basis remains `ARCH-REV-006` / `SR-012`. `CR-006` through `CR-008` were resolved before this round.
+- **Prior result:** Focused API/E2E failure-origin review failed / Local Fix because media-deadline abort synchronously selected cancellation before timeout.
+- **Current result:** CR-009 local fix implemented and ready for source re-review.
+- **Affected behaviors:** BEH-001, BEH-003, and BEH-004; REQ-001, REQ-003, REQ-006, and REQ-007; AC-001, AC-002, and AC-007.
+- **Implementation delta:** `runBoundedMediaOperation` now marks media-deadline-initiated settlement before revoking the lease and aborting child work. Its cancellation listener does not replace that authoritative cause, while parent/user abort still rejects as cancellation. The shared timeout error is also used if the deadline fires after task completion while publication is waiting on the per-path lock.
+- **Code location:** `autobyteus-server-ts/src/agent-tools/media/media-generation-service.ts`.
+- **Focused validation:** `git diff --check` passed. `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit` passed. `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-tools/media/media-generation-service.test.ts --no-watch` passed 9/9, including provider non-resolution, returned-media transfer non-resolution, and invalid-explicit -> valid-server-timeout precedence. Evidence: `/tmp/article-writing-image-generation-hang-implementation-ir004-media-unit.txt` and `/tmp/article-writing-image-generation-hang-implementation-ir004-server-typecheck.txt`.
+- **Remaining limitations:** Provider-specific cancellation remains best effort. Independent API/E2E rerun and later proportional review of all accumulated repository-resident durable test/config edits remain required before delivery.
