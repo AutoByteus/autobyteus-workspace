@@ -7,7 +7,6 @@ import { TeamRunHistoryIndexV2AppDataMigration } from "./migrations/team-run-his
 import { TeamRunMetadataMemberTreeMigration } from "./migrations/team-run-metadata-member-tree-migration.js";
 import { RemoveSelfEvolutionRunMetadataMigration } from "./migrations/remove-self-evolution-run-metadata-migration.js";
 import { TeamCommunicationProjectionAddressMigration } from "./migrations/team-communication-projection-address-migration.js";
-import { TokenUsageExecutionAddressBackfillMigration } from "./migrations/token-usage-execution-address-backfill-migration.js";
 import { TokenUsageCustomProviderModelValueBackfillMigration } from "./migrations/token-usage-custom-provider-model-value-backfill-migration.js";
 import { TokenUsageProviderNameSnapshotBackfillMigration } from "./migrations/token-usage-provider-name-snapshot-backfill-migration.js";
 import { TokenUsageLegacyPathColumnsDropMigration } from "./migrations/token-usage-legacy-path-columns-drop-migration.js";
@@ -43,7 +42,6 @@ export class AppDataMigrationRegistry {
         appConfigProvider.config.getMemoryDir(),
       ),
       new TeamCommunicationProjectionAddressMigration(appConfigProvider.config.getMemoryDir()),
-      new TokenUsageExecutionAddressBackfillMigration(appConfigProvider.config.getMemoryDir()),
       new TokenUsageCustomProviderModelValueBackfillMigration(),
       new TokenUsageProviderNameSnapshotBackfillMigration(),
       new TokenUsageLegacyPathColumnsDropMigration(),

@@ -2,15 +2,26 @@ import type { MemberLogicalAddressContext } from "../domain/member-logical-addre
 
 export const renderMemberCollaborationInstruction = (input: {
   addressing: MemberLogicalAddressContext;
-  taskDelegationEnabled?: boolean;
 }): string => [
-  `Your canonical absolute AgentTeam address is \`${input.addressing.memberAddress}\`.`,
+  "You are working as a member of an AgentTeam. Agents and AgentTeams use filesystem-like logical addresses to communicate. These addresses identify Team members; they are not real filesystem paths.",
   "",
-  "AgentTeam members and nested AgentTeams use filesystem-like logical addresses. These are not operating-system file paths. `/` denotes the root AgentTeam, `/research_team` denotes an AgentTeam, `/research_team/research_lead` denotes an Agent, and `./peer` starts from your immediate AgentTeam. Addressing an AgentTeam sends through its configured coordinator. Bare names, `../`, and backslashes are invalid.",
+  "Your address in the AgentTeam is:",
   "",
-  "Before completing your work, or before stopping because you are blocked, you must call `get_handoff_rules`. Each returned item contains `when`, the condition to evaluate, and `recipient_address`, the Agent or AgentTeam to contact. Call `send_message_to` once for each distinct applicable `recipient_address`, in the order its first applicable item appears. Multiple applicable conditions for the same address are reasons for one handoff, not duplicate messages. Do not claim a handoff unless delivery is accepted. If no item applies, complete normally.",
-  ...(input.taskDelegationEnabled ? [
-    "",
-    "`delegate_task.recipient_address` uses the same logical-address grammar. A task target must be a direct Agent or AgentTeam child of your immediate AgentTeam; deeper and cross-branch addresses remain valid for message delivery but are not task-eligible.",
-  ] : []),
+  input.addressing.memberAddress,
+  "",
+  "Addresses beginning with `/` start from the root AgentTeam. Addresses beginning with `./` start from your current AgentTeam, similar to relative filesystem paths.",
+  "",
+  "For example:",
+  "",
+  "- `./architecture_reviewer` addresses a member named `architecture_reviewer` in your current AgentTeam.",
+  "- `./implementation_team` addresses a child AgentTeam named `implementation_team`.",
+  "- `/requirements_engineering/requirements_lead` is an absolute address from the root AgentTeam.",
+  "",
+  "Sending a message to an AgentTeam address delivers it to that Team's configured coordinator. Bare member names, `../`, and backslashes are not valid addresses.",
+  "",
+  "When you finish your work or are blocked, call `get_handoff_rules` to check your configured handoff rules. Each returned rule tells you when a handoff applies and provides the `recipient_address` to notify.",
+  "",
+  "If a rule applies, use `send_message_to` to notify that Agent or AgentTeam. If several applicable rules have the same recipient, send one message that combines the relevant reasons. Follow distinct recipients in the order they first appear. If no rule applies, finish normally.",
+  "",
+  "Do not say that you completed a handoff unless `send_message_to` confirms that the message was delivered.",
 ].join("\n");

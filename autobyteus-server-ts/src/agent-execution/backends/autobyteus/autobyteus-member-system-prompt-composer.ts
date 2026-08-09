@@ -35,9 +35,7 @@ export const composeAutoByteusMemberSystemPrompt = (
     agentInstruction: baseAgentInstruction,
     memberTeamContext: input.memberTeamContext,
     sendMessageToEnabled: true,
-    recipientAddressDeliveryEnabled: Boolean(input.memberTeamContext.collaboration.deliverInterAgentMessage),
     taskDelegationEnabled: exposure.enabledTaskDelegationToolNames.length > 0,
-    getHandoffRulesEnabled: true,
   });
 
   return [

@@ -7,16 +7,14 @@ import type {
   AppDataMigrationStatus,
   AppDataMigrationSummary,
 } from "../domain/app-data-migration-types.js";
+import { TEAM_CANONICAL_IDENTITY_MIGRATION_ID } from "./team-canonical-identity-migration.js";
 
 export const TOKEN_USAGE_LEGACY_PATH_COLUMNS_DROP_MIGRATION_ID =
   "20260703_drop_token_usage_legacy_path_columns";
-export const TOKEN_USAGE_EXECUTION_ADDRESS_BACKFILL_MIGRATION_ID =
-  "20260703_token_usage_execution_address_backfill";
 
 const TOKEN_USAGE_LEDGER_TABLE = "token_usage_ledger_events";
 const LEGACY_PATH_COLUMNS = ["team_run_path_json", "member_path_json"] as const;
 const CANONICAL_HIERARCHY_COLUMNS = ["root_team_run_id", "execution_address_json"] as const;
-const TERMINAL_SUCCESS_STATUSES = new Set<AppDataMigrationStatus>(["SUCCEEDED", "SUCCEEDED_WITH_WARNINGS"]);
 
 type LegacyPathColumn = (typeof LEGACY_PATH_COLUMNS)[number];
 
@@ -73,7 +71,7 @@ const successSummary = (outcome: DropOutcome): AppDataMigrationSummary => ({
     detail(
       "token-usage-legacy-path-columns:prerequisite",
       "SKIPPED",
-      `Execution-address backfill prerequisite status: ${outcome.prerequisiteStatus}.`,
+      `Canonical identity prerequisite status: ${outcome.prerequisiteStatus}.`,
     ),
     ...outcome.droppedColumns.map((column) =>
       detail(
@@ -163,7 +161,7 @@ export class PrismaTokenUsageLegacyPathColumnsDropDatabase implements TokenUsage
 export class TokenUsageLegacyPathColumnsDropMigration implements AppDataMigrationDefinition {
   readonly id = TOKEN_USAGE_LEGACY_PATH_COLUMNS_DROP_MIGRATION_ID;
   readonly displayName = "Token usage legacy path columns drop";
-  readonly description = "Physically removes obsolete token usage ledger path columns after execution-address backfill.";
+  readonly description = "Physically removes obsolete token usage ledger path columns after exact canonical identity success.";
   readonly requiredOnStartup = true;
   private database: TokenUsageLegacyPathColumnsDropDatabase | null;
 
@@ -179,18 +177,18 @@ export class TokenUsageLegacyPathColumnsDropMigration implements AppDataMigratio
   async execute(): Promise<AppDataMigrationExecutionResult> {
     const database = this.getDatabase();
     const prerequisiteStatus = await database.getAppDataMigrationStatus(
-      TOKEN_USAGE_EXECUTION_ADDRESS_BACKFILL_MIGRATION_ID,
+      TEAM_CANONICAL_IDENTITY_MIGRATION_ID,
     );
     const prerequisiteDetails = [
       detail(
         "token-usage-legacy-path-columns:prerequisite",
-        TERMINAL_SUCCESS_STATUSES.has(prerequisiteStatus as AppDataMigrationStatus) ? "SKIPPED" : "FAILED",
-        `Execution-address backfill prerequisite status: ${prerequisiteStatus ?? "NOT_RUN"}.`,
+        prerequisiteStatus === "SUCCEEDED" ? "SKIPPED" : "FAILED",
+        `Canonical identity prerequisite status: ${prerequisiteStatus ?? "NOT_RUN"}.`,
       ),
     ];
 
-    if (!TERMINAL_SUCCESS_STATUSES.has(prerequisiteStatus as AppDataMigrationStatus)) {
-      const message = "Token usage legacy path column cleanup requires terminal-success execution-address backfill.";
+    if (prerequisiteStatus !== "SUCCEEDED") {
+      const message = "Token usage legacy path column cleanup requires exact-success canonical identity migration.";
       return {
         status: "FAILED",
         summary: failureSummary(message, prerequisiteDetails),

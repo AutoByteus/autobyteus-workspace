@@ -1,17 +1,16 @@
 import type { PrismaClient } from "@prisma/client";
 import { createConfiguredPrismaClient } from "../../config/prisma-client-factory.js";
 import type { AppDataMigrationDefinition, AppDataMigrationExecutionResult, AppDataMigrationStatus } from "../domain/app-data-migration-types.js";
-import { TOKEN_USAGE_EXECUTION_ADDRESS_BACKFILL_MIGRATION_ID } from "./token-usage-execution-address-backfill-migration.js";
+import { TEAM_CANONICAL_IDENTITY_MIGRATION_ID } from "./team-canonical-identity-migration.js";
 
 const MIGRATION_ID = "20260801_drop_token_usage_legacy_route_column";
 const TABLE = "token_usage_ledger_events";
 const COLUMN = "member_route_key";
-const success = new Set<AppDataMigrationStatus>(["SUCCEEDED", "SUCCEEDED_WITH_WARNINGS"]);
 
 export class TokenUsageLegacyRouteColumnDropMigration implements AppDataMigrationDefinition {
   readonly id = MIGRATION_ID;
   readonly displayName = "Token usage legacy route identity removal";
-  readonly description = "Drops member_route_key only after exact execution-address backfill has succeeded.";
+  readonly description = "Drops member_route_key only after exact canonical identity migration has succeeded.";
   readonly requiredOnStartup = true;
   constructor(private readonly suppliedClient?: PrismaClient) {}
 
@@ -20,11 +19,11 @@ export class TokenUsageLegacyRouteColumnDropMigration implements AppDataMigratio
     try {
       const statusRows = await client.$queryRawUnsafe<Array<{ status: AppDataMigrationStatus }>>(
         `SELECT status FROM app_data_migration_records WHERE migration_id = ? LIMIT 1`,
-        TOKEN_USAGE_EXECUTION_ADDRESS_BACKFILL_MIGRATION_ID,
+        TEAM_CANONICAL_IDENTITY_MIGRATION_ID,
       );
       const prerequisite = statusRows[0]?.status ?? "NOT_RUN";
-      if (!success.has(prerequisite)) {
-        const message = `Execution-address backfill prerequisite status is ${prerequisite}.`;
+      if (prerequisite !== "SUCCEEDED") {
+        const message = `Canonical identity prerequisite status is ${prerequisite}.`;
         return { status: "FAILED", summary: { scannedCount: 1, migratedCount: 0, skippedCount: 0, failedCount: 1, details: [{ itemId: COLUMN, status: "FAILED", message }] }, errorMessage: message };
       }
       const columns = await client.$queryRawUnsafe<Array<{ name: string }>>(`PRAGMA table_info("${TABLE}")`);

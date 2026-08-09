@@ -11,6 +11,10 @@ import type {
 import { migrateCanonicalApplicationDatabase } from "./team-canonical-application-db-migrator.js";
 import { convertLegacyTeamRunMetadata } from "./team-canonical-metadata-converter.js";
 import { convertExternalChannelBindings, convertTaskDelegationFile } from "./team-canonical-structured-file-converter.js";
+import {
+  TokenUsageCanonicalExecutionAddressMigrator,
+  type TokenUsageCanonicalExecutionAddressMigratorLike,
+} from "./token-usage-canonical-execution-address-migrator.js";
 
 const MIGRATION_ID = "20260801_team_canonical_identity";
 const json = (value: unknown): string => JSON.stringify(value, null, 2);
@@ -35,13 +39,14 @@ const summary = (details: AppDataMigrationItemDetail[]): AppDataMigrationSummary
 export class TeamCanonicalIdentityMigration implements AppDataMigrationDefinition {
   readonly id = MIGRATION_ID;
   readonly displayName = "AgentTeam canonical identity migration";
-  readonly description = "Atomically converts required TeamRun, task, channel, and application platform state to canonical schema v3 identity.";
+  readonly description = "Converts required TeamRun, task, token, channel, and application platform state to canonical schema v3 identity.";
   readonly requiredOnStartup = true;
 
   constructor(
     private readonly memoryDir: string,
     private readonly appDataDir: string,
     private readonly platformStateStore = new ApplicationPlatformStateStore(),
+    private readonly suppliedTokenMigrator?: TokenUsageCanonicalExecutionAddressMigratorLike,
   ) {}
 
   async execute(): Promise<AppDataMigrationExecutionResult> {
@@ -55,6 +60,21 @@ export class TeamCanonicalIdentityMigration implements AppDataMigrationDefinitio
       if (!missing(error)) throw error;
     }
     for (const teamRunId of teamRunIds) await this.migrateTeamFiles(teamRoot, teamRunId, details);
+    const teamIdentityFailed = details.some((detail) =>
+      detail.status === "FAILED"
+      && (detail.itemId.startsWith("team-metadata:") || detail.itemId.startsWith("task-records:"))
+    );
+    if (teamIdentityFailed) {
+      details.push({
+        itemId: "token-usage:team-identity-dependency",
+        status: "FAILED",
+        message: "Canonical token planning was not started because required TeamRun or task identity conversion failed.",
+      });
+    } else {
+      const tokenMigrator = this.suppliedTokenMigrator
+        ?? new TokenUsageCanonicalExecutionAddressMigrator(this.memoryDir);
+      details.push(...await tokenMigrator.migrate());
+    }
     await this.migrateBindings(details);
     this.migrateApplicationDatabases(details);
     const resultSummary = summary(details);
