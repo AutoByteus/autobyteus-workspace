@@ -12,18 +12,18 @@
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/solution-revision-record.md`
 - Architecture decision: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/design-review-report.md`
 - Architecture revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/architecture-review-revision-record.md`
-- Downstream lineage: `code-review-report.md`, `code-review-revision-record.md`, `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md`, `api-e2e-test-review-report.md`, `delivery-revision-record.md`, and `delivery-integration-blocker.md` in the same ticket directory. `CRR-021` classified `CR-F-010` / `API-F-006`; `CRR-022` found the display/terminal-record `CR-F-011` design impact in IR-012. SR-013 and `ARCH-REV-008` are now authoritative. `API-REV-010` remains paused at 54%; earlier completed delivery results cover SR-006 only.
+- Downstream lineage: `code-review-report.md`, `code-review-revision-record.md`, `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md`, `api-e2e-test-review-report.md`, `delivery-revision-record.md`, and `delivery-integration-blocker.md` in the same ticket directory. `CRR-023` passed IR-013; `CRR-024` classified `CR-F-012` / `API-F-007` as an implementation-owned token-attribution migration defect. SR-013 and `ARCH-REV-008` remain authoritative. `API-REV-011` is paused at 61%; earlier completed delivery results cover SR-006 only.
 
 ## Current Implementation State
 
-- Implementation revision: `IR-013`
-- Implementation cycle: `Approved Design Rework`
+- Implementation revision: `IR-014`
+- Implementation cycle: `Local Fix`
 - Current solution: `SR-013` (`SR-001` through `SR-013` cumulative)
-- Queued follow-up: user-approved `SR-014` supplies an exact-copy AgentTeam collaboration system instruction, but its handoff explicitly forbids bypassing the active SR-013 source gate. It arrived after IR-013 source completion and is not implemented or claimed in this round.
+- Queued follow-up: user-approved `SR-014` supplies an exact-copy AgentTeam collaboration system instruction. `CRR-024` explicitly keeps it outside this bounded migration finding, so it is not implemented or claimed in IR-014.
 - Architecture approval: `ARCH-REV-008` Pass (`ARCH-REV-001` through `ARCH-REV-008` cumulative complete review)
-- Triggering design finding: `CR-F-011`, resolved by SR-013 at the design boundary; `DR-001` through `DR-004` remain resolved. No open requirement gap, design impact, or unclear finding remains.
-- Current code review: `CRR-022` Fail — Design Impact is the triggering prior result. IR-013 implements the approved SR-013 two-ID transition and awaits source re-review of `CR-F-010`/`CR-F-011`. `CR-F-003` through `CR-F-009` remain resolved.
-- Current API/E2E: `API-REV-010` remains halted at 54% confidence. API/E2E must reinvestigate/update the durable historical migration coverage for the explicit predecessor plus canonical stages after source Pass; the other 15 migration failures and all later frontend/API/provider/live rows remain unclassified or Not Tested. Implementation edited no durable coverage.
+- Triggering finding: `CR-F-012` / `API-F-007` / `SR013-MIG-TOKEN-001`; `CR-PREM-008` is Reachable. `CR-F-010` / `CR-F-011` are resolved downstream, `DR-001` through `DR-004` remain resolved, and no requirement gap, design impact, or unclear finding is open.
+- Current code review: `CRR-024` Fail — Local Fix is the triggering result after `CRR-023` passed IR-013 at 9.5/10 (95.1/100). IR-014 restores strict historical task-Team token attribution and awaits source re-review of `CR-F-012`. `CR-F-003` through `CR-F-011` remain resolved.
+- Current API/E2E: `API-REV-011` remains halted at 61% confidence after the maintained token-attribution case reproduced 3/4. API/E2E must resume only after source Pass, retain/reinvestigate durable nested-chain/conflict/current-address coverage, and continue the remaining migration/frontend/API/provider/live matrix. Implementation edited no durable coverage.
 - Delivery lineage: completed delivery results through `DR-003` prove SR-006 only; `DR-004` is cumulative SR-012 lineage context, not completed SR-012 delivery proof.
 - SR-012 baseline source commit: `3927e878db0318138b6e39ad7cea1b032584e08f` (`refactor: adopt canonical rooted AgentTeam identity`).
 - IR-006 local-fix source commit: `5430ee064193471694a0bdd056b36ce57ee97d8b` (`fix: route nested collaboration through root manager`).
@@ -34,6 +34,7 @@
 - IR-011 local-fix source commit: `d3796bd1fbabbd1a27fd83eb0cbb7857ec08249a` (`fix: scope blocking migration startup gate`).
 - IR-012 local-fix source commit: `fc709d127801c103889b85fda27fd13974be97c7` (`fix: restore legacy TeamRun migration prerequisite`).
 - IR-013 source commit: `6a920d45e54981735c25146e0ab76ab7e0917c4c` (`fix: complete TeamRun canonical migration transition`).
+- IR-014 source commit: `4dd8ff543d1c7ebbc8b1c6ffca6923487aa3eda5` (`fix: restore task Team token attribution migration`).
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/implementation-revision-record.md`
 
 ## Implementation Summary
@@ -104,6 +105,13 @@ The frontend now consumes the recursive `rootTeam`, derives canonical address in
 - Parent/direct-child shape, duplicate placement, direct-Agent coordinator, generic/Team run-ID agreement, Agent facts, handoffs, complete v3 validation, unsafe no-mutation, canonical exact-success startup gating, and unrelated migration warning policy remain fail-closed and unchanged. No third migration ID, terminal-record reset, current runtime old-shape reader, lazy conversion, alias, retry, or post-listen recovery dependency was added.
 - Change posture: approved SR-013 persisted-transition rework. Root-cause classification: historical display/structural semantics and terminal migration-record ownership were incomplete in SR-012; SR-013 now provides one decoder and two non-overlapping write owners.
 
+### IR-014 Local Fix Summary
+
+- `CR-F-012` / `API-F-007`: token attribution migration again builds a migration-only index from strict current `task_delegation_records.json` files. Every task TeamRun ID maps to one exact root TeamRun, ordered task-Team chain, logical Team address, source file, and task record. Missing ancestors, unreadable/invalid files, duplicate mappings, and conflicting root/chain/address mappings produce actionable blocking details before token mutation.
+- Historical token rows use the task record mapping when their row-local root is an immediate task TeamRun or their legacy segment address names a task TeamRun. The planner validates any stored chain/logical Team prefix, appends only the final member suffix and optional task-Agent run ID, then persists one exact `TeamExecutionAddress` and correct root column. Direct members, direct task Agents, and already-current exact addresses preserve their existing behavior and idempotence.
+- Identity planning is completed before writes; any unresolved/conflicting row blocks the batch without partially applying otherwise valid plans. Historical segments remain confined to the migration planner. No current-runtime legacy reader, retry, fallback, alternate identity, compatibility shape, or task-record mutation was added.
+- Change posture: bounded migration bug fix. Root-cause classification: local implementation defect introduced when IR-005 removed the prior task TeamRun index; the approved migration/current-record ownership remains correct.
+
 ## Reviewed Behavior Trace
 
 | Behavior | Implementation result |
@@ -118,7 +126,7 @@ The frontend now consumes the recursive `rootTeam`, derives canonical address in
 | BEH-010 | Default Team entry still targets the root Team coordinator. |
 | BEH-011–BEH-012 | `delegate_task.recipient_address` shares recipient resolution and its exact topology error codes with messaging, then applies the direct-current-Team policy and existing task lifecycle. Persistent callers match the rooted node AgentRun; active task callers match the exact root-directory task identity and local ownership before mapping/reservation. AutoByteus native task tools receive an exact cloned collaboration caller binding, and canonical address remains the only shared logical placement authority. |
 | BEH-013 | TeamRun is one immutable rooted Agent/AgentTeam union with kind-local facts and derived indexes, not parallel topology/profile/binding projections. |
-| BEH-014 | Conversation, task, event, WebSocket, token, and frontend concrete identity use strict `TeamExecutionAddress` values. |
+| BEH-014 | Conversation, task, event, WebSocket, token, and frontend concrete identity use strict `TeamExecutionAddress` values. Token backfill now reconstructs historical task-Team roots, ordered task-Team chains, logical Team prefixes, final member suffixes, and task-Agent suffixes from strict current task records before persistence. |
 | BEH-015 | Store-owned backup/transaction conversion runs before strict current-schema readers. One pure migration-only decoder preserves display name while requiring direct structural flat placement. Pending `20260517...` owns only predecessor writes; pending `20260801...` owns final v3 from predecessor or in-memory-decoded residual flat input after a terminal stable record. Final addresses come only from agreeing route/path; unsafe input remains byte-stable. The server advances only when canonical identity is exactly `SUCCEEDED`, while unrelated best-effort warning/retry policy remains unchanged. |
 | BEH-016 | GraphQL/REST/WebSocket/SDK/application/frontend boundaries use canonical address/execution shapes; exact application SDK V5 is built and V4 is rejected. |
 | BEH-017 | Storage-private lineage is `ancestorTeamRunIds`; existing memory/context physical locations are derived without moving files. |
@@ -129,7 +137,7 @@ The frontend now consumes the recursive `rootTeam`, derives canonical address in
 - Canonical logical identity: `autobyteus-server-ts/src/agent-collaboration/domain/agent-team-address.ts`, `recipient-address-expression.ts`.
 - Root snapshot/index/recipient resolution: `src/agent-team-execution/domain/team-run-config.ts`, `services/team-run-tree-index.ts`, `services/team-recipient-resolver.ts`, `services/resolved-team-recipient.ts`.
 - Concrete execution identity: `src/agent-team-execution/domain/team-execution-address.ts` and task/message/event/token consumers.
-- Strict persistence and startup migration: `src/app-data-migrations/migrations/team-run-metadata-member-tree-migration.ts`, `team-run-member-tree-prerequisite-converter.ts`, `team-canonical-*.ts`, `token-usage-legacy-route-column-drop-migration.ts`, Prisma migration, and store normalizers.
+- Strict persistence and startup migration: `src/app-data-migrations/migrations/team-run-metadata-member-tree-migration.ts`, `team-run-member-tree-prerequisite-converter.ts`, `team-canonical-*.ts`, `token-usage-execution-address-backfill-migration.ts`, its planner/task-Team index, `token-usage-legacy-route-column-drop-migration.ts`, Prisma migration, and store normalizers.
 - API/streaming: AgentTeam GraphQL schema/resolvers, REST/context boundaries, and `src/services/agent-streaming/team-execution-address-command-parser.ts`.
 - Intrinsic collaboration protocol: member context/instruction composition and AutoByteus/Codex/Claude tool/provider adapters.
 - Application contract: `autobyteus-application-sdk-contracts`, backend/frontend SDK packages, devkit, project applications, generated/vendor/importable artifacts, application admission/loader/migration paths.
@@ -151,9 +159,18 @@ The frontend now consumes the recursive `rootTeam`, derives canonical address in
 - The current publish-artifacts runtime contains no `member_run_id` read or writer and does not accept that retired generic identity as a fallback.
 - Production identity audits found no stale current route/name/path identity in the server runtime, web production code, or project application source/built/vendor/importable artifacts outside explicit migration/incompatibility boundaries.
 - Current SDK `dist`, application vendor copies, application build products, and importable packages were regenerated rather than selectively patched.
-- Changed production files satisfy the implementation size guard: all are at or below 500 effective non-empty lines; the largest checked files are 498 and 499 lines.
+- Changed production files satisfy the implementation size guard: all are at or below 500 effective non-empty lines. IR-014 split orchestration, historical row planning, and strict task-record indexing into 159/290/191 effective-line owners rather than expanding one mixed migration file.
 
 ## Implementation-Scoped Checks
+
+### IR-014 Delta
+
+- Maintained token execution-address migration unit — passed 1/1 file and 4/4 tests. It proves direct/task-Agent conversion, task-Team root/chain/logical-prefix reconstruction, legacy segment conversion, exact-current second-run idempotence, unresolved-row no-mutation, physical-column preservation, and canonical JSON output. Evidence: `/tmp/ir014-token-migration-focused.log` (SHA-256 `bd9f8d438cd5c56ba031baba28a9a86b42c0267d743e7fccf1d04b33ae4ab63f`).
+- Temporary built-JavaScript proof — passed nested ordered-chain plus task-Agent reconstruction and second-run idempotence; explicit missing mapping, duplicate mapping, conflicting mapping, and unreadable current task-record file each returned `FAILED` with actionable detail and zero database updates. Evidence: `/tmp/ir014-token-migration-probe.mjs` (SHA-256 `c40d7f6b2af7b412faf61a162d2d1cb54ba8a852867e53fc69518f4ca17419ca`) and `/tmp/ir014-token-migration-probe.log` (SHA-256 `6190ffb82ef6f1ccdc22e36fb1cdce90c9f6548697f07b86e2f492c45b4ee892`).
+- `autobyteus-server-ts`: production `pnpm exec tsc -p tsconfig.build.json --noEmit --pretty false` — passed. Evidence: `/tmp/ir014-production-typecheck.log`.
+- `autobyteus-server-ts`: `pnpm run build:full` — passed, including clean build and built-in Agent bootstrap smoke. Evidence: `/tmp/ir014-build-full.log` (SHA-256 `b7e4b06ab57e135e6bcefa7899fd5f2c4189184f2cd7901c028d7e6674461563`).
+- An adjacent legacy-column-drop selection was attempted and finished 8/9; its sole non-passing assertion still expects the removed `{segments:[...]}` payload instead of the current exact `TeamExecutionAddress`. That API/E2E-owned durable file was not edited and this result is not claimed as Pass or as failure-origin adjudication.
+- Migration-boundary/no-fallback/diff/whitespace/size audit passed. The changed orchestrator/planner/index are 159/290/191 effective non-empty lines, all below 500; the split keeps filesystem indexing, row planning, and persistence orchestration separate. Source commit: `4dd8ff543d1c7ebbc8b1c6ffca6923487aa3eda5`. No API/E2E-owned fixture or durable test was edited.
 
 ### IR-013 Delta
 
@@ -240,7 +257,7 @@ The frontend now consumes the recursive `rootTeam`, derives canonical address in
 
 ## Frontend Rendered Result
 
-IR-006 through IR-013 are backend-only and do not change a rendered surface. The cumulative IR-005 frontend result remains:
+IR-006 through IR-014 are backend-only and do not change a rendered surface. The cumulative IR-005 frontend result remains:
 
 - Nuxt production output was served and `/agent-teams` was inspected at 1440x1000 and 390x844.
 - Search input, Reload action, Create affordance, responsive layout, and absence of horizontal overflow were verified. Evidence: `/tmp/sr012-agent-teams.png` and `/tmp/sr012-agent-teams-mobile.png`.
@@ -249,25 +266,25 @@ IR-006 through IR-013 are backend-only and do not change a rendered surface. The
 
 ## Known Risks And Downstream Work
 
-- No durable API/E2E coverage was added, changed, or removed by implementation. The maintained prerequisite/runner units and temporary built migration-chain proofs were run only as implementation-scoped local checks; no repository-resident proof file remains and existing dirty tests remain unstaged/downstream-owned.
-- API/E2E must resume `API-REV-010` after IR-013 source Pass, investigate the maintained historical integration coverage against the explicit predecessor-plus-canonical chain, and own any durable correction. An unchanged combined integration attempt was not clean: its first case now passes prerequisite conversion but invokes index/current readers before canonical v3, and its second case separately passes predecessor shape to the strict current-v3 writer. This is not claimed as a downstream failure classification or Pass.
-- The other 15 migration failures and all later frontend/API/provider/live rows retain downstream ownership and are not reclassified by this fix.
-- SR-014's exact shared collaboration instruction/provider parity work remains a separate future implementation round after the SR-013 source gate; code review must not treat it as part of IR-013 or infer provider verification from this migration-only delta.
+- No durable API/E2E coverage was added, changed, or removed by implementation. The maintained token unit and temporary built migration proof were run only as implementation-scoped local checks; no repository-resident proof file remains and existing dirty tests remain unstaged/downstream-owned.
+- API/E2E must resume `API-REV-011` after IR-014 source Pass, retain the requirement-aligned task-Team token reconstruction case, investigate nested-chain/duplicate/conflict/current-address durable coverage, and continue its remaining migration matrix. Implementation did not weaken or rewrite the triggering test.
+- The remaining migration failures and all later frontend/API/provider/live rows retain downstream ownership and are not reclassified by this fix.
+- SR-014's exact shared collaboration instruction/provider parity work remains a separate future implementation round outside `CRR-024`; code review must not treat it as part of IR-014 or infer provider verification from this migration-only delta.
 - The required imported nested-classroom live matrix—AutoByteus `gpt-5.6-luna`, Codex App Server `gpt-5.6-luna` with medium reasoning, and authenticated Claude Agent SDK—has not run. Missing credentials/runtime availability must be classified truthfully, not skipped as Pass.
 - Real provider parity, fresh TeamRun/task-TeamRun identity, terminate/restore, application admission plus physical-DB discovery, frontend full workflows, and broad migration fixture/idempotence/failure-gate behavior require downstream evidence.
 - The temporary SQLite migration proof is deliberately narrow synthetic implementation evidence, not a durable migration test suite.
 - Stale V4 wording remains in SDK README files; those are durable delivery documentation and were intentionally not edited during implementation. Delivery documentation sync remains required after code/API gates pass.
 - Prior SR-006 CRR/API/delivery evidence is not SR-013 verification.
-- `CRR-022` keeps API/E2E blocked until IR-013 passes source re-review. `API-REV-010` remains incomplete at 54% confidence.
+- `CRR-024` keeps API/E2E blocked until IR-014 passes source re-review. `API-REV-011` remains incomplete at 61% confidence.
 
 ## Task Design Health Check
 
-- Reviewed change posture: comprehensive approved refactor plus focused SR-013 persisted-transition correction.
-- Root cause: parallel route/path/name identity and mixed-version boundary structures, compounded at migration time by treating historical display `memberName` as structural and assuming changed code under a terminal stable migration ID would rerun.
-- Refactor decision: `Refactor Needed Now`; the cumulative rooted/V5 cut remains intact, and SR-013 adds only one migration decoder plus two non-overlapping existing record owners without expanding into physical memory/context relocation or changing independent application manifest/backend bundle/iframe envelope versions.
+- Reviewed change posture: comprehensive approved refactor plus a bounded historical token-attribution migration fix.
+- Root cause: IR-005 removed the migration-owned task TeamRun index and treated the row-local immediate task TeamRun ID as the canonical root, silently dropping the true root, ordered task-Team chain, and logical Team prefix.
+- Refactor decision: `No Refactor Needed`; the existing migration boundary and strict current task-record authority are correct. IR-014 restores the removed off-spine index and separates index/planner/orchestrator responsibilities without changing current runtime contracts.
 - Implementation matched the reviewed assessment: `Yes`.
 - New Design Impact or Requirement Gap found during implementation: `No`.
 
 ## Routing
 
-Route this cumulative SR-013 / IR-013 package to `code_reviewer` for CR-F-010/CR-F-011 source re-review. On Pass, route it to `api_e2e_engineer` to resume API-REV-010 and reinvestigate/update the durable two-stage migration coverage. Any repository-resident durable coverage additions, edits, or removals must return through proportional code review before delivery.
+Route this cumulative SR-013 / IR-014 package to `code_reviewer` for `CR-F-012` source re-review. On Pass, route it to `api_e2e_engineer` to resume `API-REV-011` at 61% and continue durable token/migration coverage. Any repository-resident durable coverage additions, edits, or removals must return through proportional code review before delivery.
