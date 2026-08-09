@@ -3,8 +3,8 @@
 ## Delivery State
 
 - Ticket: `remove-xml-tool-calling`
-- Result: `Complete — user-verified change merged and pushed; task cleanup complete; no release performed`
-- Current delivery revision: `DR-004`
+- Result: `Complete — finalized change remains on personal; latest main-repository Electron build passed; no release performed`
+- Current delivery revision: `DR-005`
 - Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-xml-tool-calling`
 - Ticket worktree: `Removed` — historical path `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-xml-tool-calling`
 - Ticket branch: `Removed locally and remotely` — historical branch `codex/remove-xml-tool-calling`
@@ -22,6 +22,7 @@
 - Ticket finalization commit: `033e47d85c466a126ba2c8895e5f32aad4f6f3f3`.
 - Target merge/push: Passed — merge `d4d683c799e0d3de4044de1bdaab8a09e056c1cd` was pushed to `origin/personal` after full-range diff and ancestry checks passed.
 - Finalization state: Complete — ticket archive, commit/push, target merge/push, worktree pruning, and local/remote task-branch cleanup succeeded. No release, version bump, tag, publication, notarization, or deployment was performed.
+- Latest main-repository build: Passed from `personal` / `origin/personal` source `7dfa32d7fc15ec737a0a77ed66808381307ce3a8`; post-build refresh confirmed that source remained latest throughout execution.
 
 ## Delivered Behavior
 
@@ -74,6 +75,20 @@
 - Verification: Build exit 0; staged and packaged terminal runtime checks passed; packaged Electron executable completed the `node-pty` spawn probe; app executable is Mach-O ARM64; DMG checksum is valid.
 - Distribution posture: Local test artifact only, intentionally unsigned, untimestamped, and unnotarized. No release/publication occurred.
 - Cleanup disposition: These ignored local app/DMG/ZIP outputs were removed with the dedicated task worktree after successful user testing. The paths above are historical; checksums and archived build evidence remain authoritative.
+
+## Latest Main-Repository Personal Electron Build
+
+- Source repository: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
+- Source branch/commit: `personal` at `7dfa32d7fc15ec737a0a77ed66808381307ce3a8`, equal to `origin/personal` before and after the build.
+- Version/flavor/target: `1.4.45`, `personal`, macOS ARM64.
+- App: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+- DMG: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.45.dmg`
+- ZIP: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.45.zip`
+- DMG SHA-256: `ea921ce89c7652846b3967cd3ed95a3572998b8f3df6291b5ba5348b502a634a`
+- ZIP SHA-256: `fe2932874ed8e460d7ce58500a5450f40c95ec2e1674e6b032b3c97a6defdc35`
+- Verification: Build and guards passed; app is Mach-O ARM64; packaged terminal helpers and Electron-hosted spawn passed; packaged server migrations/health/clean shutdown passed; DMG verification passed.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-xml-tool-calling/electron-build-main-personal-macos-arm64-delivery.log`
+- Distribution posture: Local test artifact only, unsigned, untimestamped, and unnotarized. No release or deployment was performed.
 
 ## Persisted Data / Operator Transition
 

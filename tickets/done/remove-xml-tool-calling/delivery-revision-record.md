@@ -8,6 +8,7 @@
 | `DR-002` | User requested a README-directed Electron build for manual testing | `DR-001` — ready / held | Local unsigned macOS ARM64 Electron app, DMG, and ZIP built and verified; finalization hold remains | `handoff-summary.md`, `release-deployment-report.md`, `electron-build-macos-arm64-delivery.log` |
 | `DR-003` | User confirmed the app works and requested finalization without a release | `DR-002` — package passed / held | Verification accepted; final target unchanged; repository finalization authorized and in progress; release explicitly skipped | `handoff-summary.md`, `release-deployment-report.md`, `delivery-finalization.log` |
 | `DR-004` | Authorized repository finalization completed | `DR-003` — authorized / in progress | Ticket archived, committed, merged, and pushed to `personal`; task worktree and branches removed; no release performed | `handoff-summary.md`, `release-deployment-report.md`, `delivery-finalization.log` |
+| `DR-005` | User requested a new Electron build from the latest main-repository `personal` state | `DR-004` — complete | Latest `personal` confirmed; unsigned macOS ARM64 personal-flavor app, DMG, and ZIP built and verified locally; no release performed | `handoff-summary.md`, `release-deployment-report.md`, `electron-build-main-personal-macos-arm64-delivery.log` |
 
 ## Revision Entries
 
@@ -75,3 +76,17 @@
 - Release scope and result: `Not applicable by explicit user request`. No version bump, release commit, tag, publication, notarization, deployment, or rollout was performed.
 - Current authoritative result: `Complete` — the verified native-only change is merged and pushed on `personal`; archive and task cleanup are complete; no delivery blocker remains.
 - Remaining bounded risks: External compactor output can vary; AutoByteus remote live execution remains Not Tested; not every supported native provider made a live call; external consumers of intentionally removed package subpaths cannot be enumerated. These are accepted non-blocking residuals from `API-REV-001`/`CRR-002`.
+
+### DR-005 — Latest main-repository personal Electron package passes
+
+- Delivery round and trigger: User requested, `now make the main repo personal latest, and build the electron from there`.
+- Prior authoritative result: `DR-004 — repository finalization, archive, and cleanup complete without a release.`
+- Source refresh: In `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`, local `personal` and `origin/personal` were both `7dfa32d7fc15ec737a0a77ed66808381307ce3a8`; `git fetch origin personal` plus `git merge --ff-only origin/personal` reported already current. A second fetch after build and validation confirmed the remote remained unchanged, so the produced package is from the latest source state available throughout execution.
+- Dependency result: `pnpm install --frozen-lockfile` passed for all 11 workspace projects with the existing lockfile.
+- Build result: `Pass` — from `autobyteus-web`, the README-documented local no-notarization command `NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac` completed with exit 0 for version `1.4.45`, personal flavor, macOS ARM64.
+- Output paths: App `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`; DMG `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.45.dmg`; ZIP `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.45.zip`.
+- Verification result: `Pass` — the root executable is Mach-O ARM64; target and selected packaged `node-pty` helpers passed; a real Electron-hosted `node-pty` spawn probe passed; the packaged server started against a disposable database, applied all 19 migrations, reached `/rest/health`, and shut down cleanly; `hdiutil verify` reported a valid DMG.
+- Checksums and sizes: DMG SHA-256 `ea921ce89c7652846b3967cd3ed95a3572998b8f3df6291b5ba5348b502a634a`, `402390862` bytes; ZIP SHA-256 `fe2932874ed8e460d7ce58500a5450f40c95ec2e1674e6b032b3c97a6defdc35`, `397811687` bytes.
+- Evidence: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/remove-xml-tool-calling/electron-build-main-personal-macos-arm64-delivery.log`.
+- Release posture: Local build only. It is unsigned, untimestamped, and unnotarized; no version bump, release commit, tag, publication, deployment, or rollout was performed.
+- Current authoritative result: `Pass` — latest main-repository `personal` package is ready for local testing at the paths above.
