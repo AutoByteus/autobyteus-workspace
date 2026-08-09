@@ -51,9 +51,12 @@ const firstUrlOrThrow = (urls: string[] | null | undefined, operation: string): 
   return first;
 };
 
-const withChildAbortSignal = (parent: AbortSignal | null | undefined): { signal: AbortSignal; abort: () => void; dispose: () => void } => {
+const withChildAbortSignal = (parent: AbortSignal | null | undefined, onParentAbort?: () => void): { signal: AbortSignal; abort: () => void; dispose: () => void } => {
   const controller = new AbortController();
-  const abort = () => controller.abort(parent?.reason ?? new Error('Media operation cancelled.'));
+  const abort = () => {
+    onParentAbort?.();
+    controller.abort(parent?.reason ?? new Error('Media operation cancelled.'));
+  };
   if (parent?.aborted) abort();
   else parent?.addEventListener('abort', abort, { once: true });
   return { signal: controller.signal, abort: () => controller.abort(new Error('Media operation timed out.')), dispose: () => parent?.removeEventListener('abort', abort) };
@@ -161,7 +164,7 @@ export class MediaGenerationService {
       previous?.revoke();
       this.currentLeaseByFinalPath.set(outputPath, lease);
     });
-    const child = withChildAbortSignal(options.signal);
+    const child = withChildAbortSignal(options.signal, () => lease.revoke());
     const operationOptions = { ...options, signal: child.signal, deadlineAt };
     let timer: ReturnType<typeof setTimeout> | null = null;
     try {
@@ -176,6 +179,9 @@ export class MediaGenerationService {
       task.catch(() => undefined);
       const result = await Promise.race([task, timeout, cancellation]);
       return await this.withPublicationLock(outputPath, async () => {
+        if (child.signal.aborted) {
+          throw new Error('Media operation was cancelled.');
+        }
         if (!lease.canPublish(this.currentLeaseByFinalPath.get(outputPath))) {
           throw new Error('Media operation completed after its publication lease was revoked.');
         }
@@ -184,6 +190,9 @@ export class MediaGenerationService {
           timer = null;
         }
         await fsRename(lease.stagingPath, outputPath);
+        if (child.signal.aborted) {
+          throw new Error('Media operation was cancelled.');
+        }
         if (!lease.canPublish(this.currentLeaseByFinalPath.get(outputPath))) {
           throw new Error('Media operation publication lease was revoked during publication.');
         }

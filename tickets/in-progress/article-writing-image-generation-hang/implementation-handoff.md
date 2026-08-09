@@ -2,7 +2,7 @@
 
 ## Status
 
-Implementation local fixes for `CRR-001` are complete and are routed back to `code_reviewer` for source re-review. The code is authoritative; this handoff records paths and validation.
+Implementation local fixes for `CRR-002` are complete and are routed back to `code_reviewer` for source re-review. The code is authoritative; this handoff records paths and validation.
 
 ## Scope Delivered
 
@@ -45,8 +45,9 @@ Implementation local fixes for `CRR-001` are complete and are routed back to `co
 - **CR-003:** `AgentWorker.observeTurnSettlement` now derives idle only for completed/recovered outcomes, so recovery-failure `AgentErrorEvent` remains terminal.
 - **CR-004:** Same-output lease replacement and publication are serialized by a per-path lock, with lease checks before and after staging rename; the publication timer is stopped only while the serialized rename is in progress.
 - **Cleanup:** Removed the unused repair-boundary `ingestToolResults` declaration and unused correlation/raw-interaction scaffolding.
+- **CR-005:** Parent abort now revokes the media publication lease through the child-signal bridge, and both publication gates reject an aborted operation before returning success.
 
-Focused local-fix checks: `git diff --check` passed; `pnpm -C autobyteus-ts exec tsc -p tsconfig.build.json --noEmit` passed. The server typecheck and media service unit test remain subject to the previously reported unrelated generated Prisma-client/CommonJS errors.
+Focused local-fix checks: `git diff --check` passed; `pnpm -C autobyteus-ts exec tsc -p tsconfig.build.json --noEmit` and `pnpm -C autobyteus-ts build` passed. The server typecheck and media service unit test remain subject to the previously reported unrelated generated Prisma-client/CommonJS errors.
 
 ## Review Risks
 

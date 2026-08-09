@@ -30,3 +30,14 @@
 - **Code locations:** `autobyteus-server-ts/src/agent-tools/media/media-generation-service.ts`; `autobyteus-ts/src/multimedia/image/api/openai-image-client.ts`; `autobyteus-ts/src/multimedia/image/api/autobyteus-image-client.ts`; `autobyteus-ts/src/clients/autobyteus-client.ts`; `autobyteus-ts/src/agent/runtime/agent-worker.ts`; `autobyteus-ts/src/memory/memory-manager-tool-protocol-safety.ts`.
 - **Focused validation:** `git diff --check` passed. `pnpm -C autobyteus-ts exec tsc -p tsconfig.build.json --noEmit` passed. The media service unit test was attempted but blocked before test collection by the same unrelated Prisma CommonJS named-export mismatch. Broader server typecheck remains blocked by unrelated generated Prisma-client export errors; no changed-path diagnostics were reported.
 - **Remaining limitations:** Provider-specific cancellation remains best effort, and API/E2E coverage investigation/execution remains owned by `api_e2e_engineer` after source review passes. Existing memory assertions for the superseded marker-only contract remain stale and are not used as implementation sign-off.
+
+## IR-003 — Cancellation-aware publication local-fix round
+
+- **Trigger / review basis:** `code_reviewer` `CRR-002`, finding `CR-005`; prior CR-001 through CR-004 and repair-boundary cleanup were resolved. Upstream basis remains `ARCH-REV-006` / `SR-012`.
+- **Prior result:** Implementation source re-review failed / Local Fix.
+- **Current result:** CR-005 local fix implemented and returned for source re-review.
+- **Affected behaviors:** BE-003 and BE-004; REQ-002, REQ-003, REQ-005; AC-004 and AC-007.
+- **Implementation delta:** `withChildAbortSignal` now invokes a parent-abort callback, and the bounded media operation supplies a callback that revokes its `MediaOperationLease`. Both pre-rename and post-rename publication gates also check `child.signal.aborted` and return the truthful cancellation error rather than a success result. The existing per-path publication lock and no-universal-watchdog boundary are unchanged.
+- **Code location:** `autobyteus-server-ts/src/agent-tools/media/media-generation-service.ts`.
+- **Focused validation:** `git diff --check` passed; `pnpm -C autobyteus-ts exec tsc -p tsconfig.build.json --noEmit` passed; `pnpm -C autobyteus-ts build` passed with runtime dependency verification.
+- **Remaining limitations:** A filesystem rename already in progress cannot be interrupted by JavaScript; the post-publication cancellation gate prevents a cancelled operation from returning success. Provider-specific cancellation, environment-blocked media tests, and API/E2E evidence remain downstream concerns.
