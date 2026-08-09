@@ -1,0 +1,14 @@
+Article-writing image-generation hang — repository finalization evidence
+Date: 2026-08-09
+User verification: app confirmed working; finalization requested; no new version/release requested.
+
+[finalization target refresh]
+$ git fetch origin personal
+origin/personal=7f0fc49965950d9689726a048371f2e2b78eef31
+ticket_HEAD=2264d112bb52044d203295648aea910f15c7886d
+$ git rev-list --left-right --count HEAD...origin/personal
+8  0
+Result: target unchanged since the verified Electron build; no re-integration or renewed verification required.
+
+[remaining execution]
+Ticket archive, final ticket commit/push, target merge/push, and safe task-owned cleanup are pending and will be appended after execution.

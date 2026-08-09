@@ -6,6 +6,7 @@ import { loadImageFromUrl } from '../../utils/api-utils.js';
 import {
   initializeGeminiClientWithRuntime,
 } from '../../../utils/gemini-helper.js';
+import type { MediaOperationOptions } from '../../utils/operation-options.js';
 import type { GeminiRuntimeInfo } from '../../../utils/gemini-helper.js';
 import { resolveModelForRuntime } from '../../../utils/gemini-model-mapping.js';
 import type { ImageModel } from '../image-model.js';
@@ -113,7 +114,8 @@ export class GeminiImageClient extends BaseImageClient {
   async generateImage(
     prompt: string,
     inputImageUrls?: string[] | null,
-    generationConfig?: Record<string, unknown>
+    generationConfig?: Record<string, unknown>,
+    operationOptions?: MediaOperationOptions
   ): Promise<ImageGenerationResponse> {
     try {
       const { client, runtimeInfo } = await this.getClient();
@@ -121,7 +123,7 @@ export class GeminiImageClient extends BaseImageClient {
       if (inputImageUrls && inputImageUrls.length > 0) {
         for (const url of inputImageUrls) {
           try {
-            const imageBytes = await loadImageFromUrl(url);
+            const imageBytes = await loadImageFromUrl(url, operationOptions?.signal ?? undefined);
             const mimeType = guessMimeType(url);
             contentParts.push({
               inlineData: {
@@ -155,11 +157,11 @@ export class GeminiImageClient extends BaseImageClient {
         runtimeInfo.runtime
       );
 
-      const response = await client.models.generateContent({
+      const response = await (client.models.generateContent as any)({
         model: runtimeAdjustedModel,
         contents: contentParts,
         config: configDict
-      });
+      }, { signal: operationOptions?.signal ?? undefined } as any);
 
       const imageUrls: string[] = [];
       const parts = response?.candidates?.[0]?.content?.parts ?? [];
@@ -195,7 +197,8 @@ export class GeminiImageClient extends BaseImageClient {
     prompt: string,
     inputImageUrls: string[],
     maskUrl?: string | null,
-    generationConfig?: Record<string, unknown>
+    generationConfig?: Record<string, unknown>,
+    operationOptions?: MediaOperationOptions
   ): Promise<ImageGenerationResponse> {
     if (maskUrl) {
       console.warn(
@@ -203,6 +206,6 @@ export class GeminiImageClient extends BaseImageClient {
       );
     }
 
-    return this.generateImage(prompt, inputImageUrls, generationConfig);
+    return this.generateImage(prompt, inputImageUrls, generationConfig, operationOptions);
   }
 }

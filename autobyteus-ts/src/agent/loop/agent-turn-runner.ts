@@ -1,6 +1,7 @@
 import {
   AgentErrorEvent,
   AgentTurnInterruptedEvent,
+  AgentTurnRecoveredEvent,
   InterAgentMessageReceivedEvent,
   LLMCompleteResponseReceivedEvent,
   LLMUserMessageReadyEvent,
@@ -153,15 +154,35 @@ export class AgentTurnRunner {
         return { kind: 'interrupted', turnId, reason };
       }
 
-      const errorMessage = `Agent turn '${turnId}' failed: ${String(error)}`;
-      this.notifier?.notifyAgentErrorOutputGeneration({
-        source: 'AgentTurnRunner',
-        message: errorMessage,
-        details: error instanceof Error ? error.stack : String(error),
-        classification: { scope: 'turn', effect: 'terminal', turnId }
-      });
-      await this.applyStatusEvent(new AgentErrorEvent(errorMessage, String(error)));
-      return { kind: 'failed', turnId, error };
+      const errorMessage = `Agent turn '${turnId}' recovered after an execution failure: ${String(error)}`;
+      const memoryManager = this.context.state.memoryManager;
+      try {
+        const repair = memoryManager?.ensureWorkingContextToolProtocolSafeForNextLlm({
+          scope: { kind: 'agent_turn', id: turnId },
+          includeCommittedFacts: true,
+          recoverySourceEvent: 'AgentTurnRecoveredEvent',
+          rawTraceScope: 'active',
+        });
+        const recoveredToolInvocationIds = repair?.repairs.map(({ toolCallId }) => toolCallId) ?? [];
+        this.notifier?.notifyAgentErrorOutputGeneration({
+          source: 'AgentTurnRunner.Recovered',
+          message: errorMessage,
+          details: error instanceof Error ? error.stack : String(error),
+          classification: { scope: 'turn', effect: 'diagnostic', turnId }
+        });
+        await this.applyStatusEvent(new AgentTurnRecoveredEvent(turnId, errorMessage, recoveredToolInvocationIds));
+        return { kind: 'recovered', turnId, reason: errorMessage, recoveredToolInvocationIds };
+      } catch (recoveryError) {
+        const terminalMessage = `Agent turn '${turnId}' recovery failed: ${String(recoveryError)}`;
+        this.notifier?.notifyAgentErrorOutputGeneration({
+          source: 'AgentTurnRunner.RecoveryFailed',
+          message: terminalMessage,
+          details: recoveryError instanceof Error ? recoveryError.stack : String(recoveryError),
+          classification: { scope: 'turn', effect: 'terminal', turnId }
+        });
+        await this.applyStatusEvent(new AgentErrorEvent(terminalMessage, String(recoveryError)));
+        return { kind: 'failed', turnId, error: recoveryError };
+      }
     }
   }
 

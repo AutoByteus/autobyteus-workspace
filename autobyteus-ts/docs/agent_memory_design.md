@@ -162,8 +162,30 @@ Restore rules are current-only:
   its own current context; and
 - archived raw traces are never replayed as current conversation activity.
 
-Tool-protocol repair runs before the next LLM request. Broken current-format
-references are integrity failures, not compatibility cases.
+Tool-protocol repair runs before the next LLM request and during existing-run
+snapshot bootstrap. Bootstrap first validates only the current schema-v5 root
+envelope and agent identity, installs the parseable working context, repairs
+missing native tool results, and then applies full structural/provenance
+validation to the repaired snapshot. This ordering repairs the one approved
+incomplete-protocol shape without treating unrelated current-format corruption
+as compatible data.
+
+For each unmatched native call, `(turn_id, tool_call_id)` is the durable
+identity. A matching committed raw `tool_result` is reused when present.
+Otherwise `MemoryManager` first appends one canonical synthetic raw
+`tool_result` carrying the original tool name/arguments, `tool_result: null`, a
+deterministic non-empty `tool_error`, and a compound-identity recovery
+correlation. It then rebuilds the provider-safe result message from raw facts
+and atomically replaces the schema-v5 working-context snapshot. Repeated
+bootstrap or repair therefore converges without duplicate terminal results and
+never assumes that an abandoned tool succeeded.
+
+The active JSONL reader preserves complete earlier records and truncates only a
+malformed final physical record left by a partial append. A parse failure in any
+earlier record remains an integrity error. Existing raw traces and schema-v5
+snapshots are directly usable; repair appends a terminal fact and rewrites the
+derived snapshot in the existing shapes, so no persisted-data migration is
+required.
 
 ## 7. Persisted Files And Current Authority
 

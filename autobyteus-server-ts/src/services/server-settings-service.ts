@@ -103,6 +103,11 @@ export class ServerSettingsService {
     );
 
     this.registerPredefinedSetting(
+      "MEDIA_OPERATION_TIMEOUT_MS",
+      "Capability-owned timeout in milliseconds for synchronous image generation (10,000-3,600,000; default 300,000).",
+    );
+
+    this.registerPredefinedSetting(
       "AUTOBYTEUS_COMPACTION_TRIGGER_RATIO",
       "Decimal compaction trigger ratio used for post-response budget checks (default 0.8)",
     );

@@ -25,6 +25,7 @@ import { MemoryManager } from '../../../../src/memory/memory-manager.js';
 import { WorkingContext } from '../../../../src/memory/working-context.js';
 import { RawTraceItem } from '../../../../src/memory/models/raw-trace-item.js';
 import { FileMemoryStore } from '../../../../src/memory/store/file-store.js';
+import { SYNTHETIC_TOOL_RESULT_ERROR } from '../../../../src/memory/working-context-tool-protocol-repairer.js';
 import { BaseTool } from '../../../../src/tools/base-tool.js';
 import { defaultToolRegistry } from '../../../../src/tools/registry/tool-registry.js';
 import { registerToolClass } from '../../../../src/tools/tool-meta.js';
@@ -413,7 +414,7 @@ describe('LlmPhase incomplete native tool-call resume recovery', () => {
         tool_call_id: 'call_resume_missing',
       });
       expect(rendered[assistantIndex + 1].content).toContain(
-        'Tool execution was interrupted by runtime shutdown before a result was recorded.'
+        SYNTHETIC_TOOL_RESULT_ERROR('generate_image', 'call_resume_missing')
       );
       expect(rendered[assistantIndex + 2]).toMatchObject({ role: 'user' });
       expect(rendered[assistantIndex + 2].content).toContain('earlier failed continue attempt');

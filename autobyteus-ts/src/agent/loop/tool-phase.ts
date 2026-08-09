@@ -4,6 +4,7 @@ import { ToolInvocationPipeline } from '../pipelines/tool-invocation-pipeline.js
 import { formatToCleanString } from '../../utils/llm-output-formatter.js';
 import { buildToolLifecyclePayloadFromInvocation } from '../handlers/tool-lifecycle-payload.js';
 import { isAgentInterruptionError } from '../interruption/agent-interruption.js';
+import { SYNTHETIC_TOOL_RESULT_ERROR } from '../../memory/working-context-tool-protocol-repairer.js';
 import type { BaseTool, ToolExecutionPreparation } from '../../tools/base-tool.js';
 import type { AgentContext } from '../context/agent-context.js';
 import type { AgentTurn } from '../agent-turn.js';
@@ -26,11 +27,32 @@ export class ToolPhase {
     const results: ToolResultEvent[] = [];
     for (const originalInvocation of invocations) {
       turn.executionScope.throwIfAborted({ kind: 'tool_phase' });
-      const result = await this.runOneInvocation(originalInvocation, context, turn, notifier);
+      let result: ToolResultEvent | null = null;
+      try {
+        result = await this.runOneInvocation(originalInvocation, context, turn, notifier);
+      } catch (error) {
+        if (!isAgentInterruptionError(error)) throw error;
+        result = new ToolResultEvent(
+          originalInvocation.name,
+          null,
+          originalInvocation.id,
+          SYNTHETIC_TOOL_RESULT_ERROR(originalInvocation.name, originalInvocation.id),
+          originalInvocation.arguments,
+          originalInvocation.turnId ?? turn.turnId,
+          false,
+        );
+        notifier?.notifyAgentDataToolLog({
+          log_entry: `[TOOL_INTERRUPTED_TERMINALIZED] Tool: ${originalInvocation.name}, Invocation_ID: ${originalInvocation.id}, Reason: ${error.reason}`,
+          tool_invocation_id: originalInvocation.id,
+          tool_name: originalInvocation.name,
+          turn_id: turn.turnId,
+        });
+      }
       if (result) {
         results.push(result);
         await options.onToolResult?.(result);
       }
+      if (turn.executionScope.isInterrupted) break;
       turn.executionScope.throwIfAborted({ kind: 'post_tool_invocation' });
     }
     return results;

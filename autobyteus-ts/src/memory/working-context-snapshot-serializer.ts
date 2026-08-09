@@ -52,6 +52,17 @@ export class WorkingContextSnapshotSerializer {
     return { workingContext, metadata };
   }
 
+  static validateEnvelope(payload: SerializedPayload): boolean {
+    if (typeof payload !== 'object' || payload === null) return false;
+    if (payload.schema_version !== this.CURRENT_SCHEMA_VERSION) return false;
+    if (typeof payload.agent_id !== 'string' || !payload.agent_id.trim()) return false;
+    const allowedRootFields = new Set(['schema_version', 'agent_id', 'messages']);
+    if (Object.keys(payload).some((field) => !allowedRootFields.has(field))) return false;
+    return Array.isArray(payload.messages) && payload.messages.every((message) =>
+      typeof message === 'object' && message !== null && typeof (message as Record<string, unknown>).role === 'string'
+    );
+  }
+
   static validate(payload: SerializedPayload): boolean {
     if (typeof payload !== 'object' || payload === null) {
       return false;

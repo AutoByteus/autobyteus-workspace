@@ -115,6 +115,7 @@ export const buildNativeToolResultTrace = (
   canonicalToolName: string,
   sourceEvent: string,
   nextSeq: NextSeq,
+  correlationId?: string | null,
 ): RawTraceItem => {
   const { event, identity } = registration;
   const toolError = event.error?.trim() || (event.isDenied ? 'Tool execution denied.' : null);
@@ -128,7 +129,9 @@ export const buildNativeToolResultTrace = (
     sourceEvent,
     toolName: canonicalToolName,
     toolCallId: identity.toolCallId,
+    toolArgs: event.toolArgs ?? null,
     toolResult: event.result === undefined ? null : event.result,
     toolError,
+    correlationId: correlationId ?? null,
   });
 };

@@ -2,6 +2,7 @@ import {
   AgentIdleEvent,
   AgentReadyEvent,
   AgentErrorEvent,
+  AgentTurnRecoveredEvent,
   AgentStoppedEvent,
   BootstrapStartedEvent,
   BootstrapCompletedEvent,
@@ -266,17 +267,29 @@ export class AgentWorker {
       return await new AgentTurnRunner(this.context, turn).run(trigger);
     } catch (error) {
       console.error(`AgentWorker '${this.context.agentId}': Active turn runner failed outside normal outcome handling: ${error}`);
-      await this.applyStatusEvent(
-        new AgentErrorEvent('Active turn runner failed unexpectedly.', String(error))
-      );
-      return { kind: 'failed', turnId: turn.turnId, error };
+      try {
+        const repair = this.context.state.memoryManager?.ensureWorkingContextToolProtocolSafeForNextLlm({
+          scope: { kind: 'agent_turn', id: turn.turnId },
+          recoverySourceEvent: 'AgentRuntimeRecoveredEvent',
+          rawTraceScope: 'active',
+        });
+        const recoveredToolInvocationIds = repair?.repairs.map(({ toolCallId }) => toolCallId) ?? [];
+        const reason = `Active turn runner recovered after an unexpected failure: ${String(error)}`;
+        await this.applyStatusEvent(new AgentTurnRecoveredEvent(turn.turnId, reason, recoveredToolInvocationIds));
+        return { kind: 'recovered', turnId: turn.turnId, reason, recoveredToolInvocationIds };
+      } catch (recoveryError) {
+        await this.applyStatusEvent(
+          new AgentErrorEvent('Active turn runner recovery failed.', String(recoveryError))
+        );
+        return { kind: 'failed', turnId: turn.turnId, error: recoveryError };
+      }
     }
   }
 
   private async observeTurnSettlement(turn: NonNullable<AgentContext['state']['activeTurn']>): Promise<void> {
     try {
       const outcome = await turn.waitForSettlement();
-      if (outcome.kind === 'completed') {
+      if (outcome.kind === 'completed' || outcome.kind === 'recovered') {
         await this.applyStatusEvent(new AgentIdleEvent(outcome.turnId));
       }
     } catch (error) {

@@ -293,6 +293,15 @@ user input, interrupted streamed assistant text/reasoning, and completed
 tool-result facts. This is distinct from `stop()`, which remains terminal
 runtime shutdown and runs cleanup.
 
+A non-interrupt native turn failure is also operation-scoped when memory repair
+can complete. `AgentTurnRunner` terminalizes unmatched native calls through the
+memory-owned protocol-safety boundary, publishes a diagnostic recovered event,
+settles the turn as recovered, and lets the still-live worker return to idle for
+a later message. A missing persisted result is represented as one matching raw
+and working-context tool error, never fabricated success. If repair/persistence
+itself fails, the turn remains terminally errored. This recovery rule does not
+add a universal timeout to unrelated native tools.
+
 Claude Agent SDK and Codex App Server expose in-scope configured backend agent
 tools through the unified Agent Tools MCP route, not through runtime-owned
 duplicated tool projections. The enabled set includes selected server-owned
@@ -356,7 +365,14 @@ Family-specific execution ownership stays below the Agent Tools MCP adapter:
   into the standard browser result object before terminal lifecycle events are
   emitted.
 - Media tools return the canonical `{ file_path }` result shape so generated
-  media files continue to project as generated-output file changes.
+  media files continue to project as generated-output file changes. The
+  server-owned `generate_image` capability applies its own validated
+  10,000-3,600,000 ms operation deadline (saved
+  `MEDIA_OPERATION_TIMEOUT_MS`, default 300,000 ms), propagates supported
+  cancellation, stages bytes under a revocable publication lease, and suppresses
+  late provider/download publication. This is media-service policy, not a
+  runtime-wide tool deadline; other media operations retain their existing
+  duration semantics.
 - Task-delegation tools call `TaskDelegationToolService` with the current
   `MemberTeamContext` and inherit the canonical ready-to-run/no-dependencies
   guidance from the shared manifest/schema. AutoByteus native execution
