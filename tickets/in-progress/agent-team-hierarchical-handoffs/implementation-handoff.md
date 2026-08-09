@@ -12,22 +12,23 @@
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/solution-revision-record.md`
 - Architecture decision: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/design-review-report.md`
 - Architecture revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/architecture-review-revision-record.md`
-- Downstream lineage: `code-review-report.md`, `code-review-revision-record.md`, `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md`, `api-e2e-test-review-report.md`, `delivery-revision-record.md`, and `delivery-integration-blocker.md` in the same ticket directory. `CRR-025` confirms IR-014's strict reconstruction and reopens target migration ownership/atomicity as `CR-F-013` / `CR-F-014`. SR-015 and `ARCH-REV-009` are current authority; user-approved SR-014 exact-copy instruction is included in the same implementation round. `API-REV-011` remains paused at 61%; earlier completed delivery results cover SR-006 only.
+- Downstream lineage: `code-review-report.md`, `code-review-revision-record.md`, `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md`, `api-e2e-test-review-report.md`, `delivery-revision-record.md`, and `delivery-integration-blocker.md` in the same ticket directory. `CRR-026` passes the substantive SR-015 corrections (`CR-F-012` through `CR-F-014`) and returns only the bounded Claude dead-control cleanup `CR-F-015`. SR-015 and `ARCH-REV-009` remain current authority. `API-REV-011` remains paused at 61%; earlier completed delivery results cover SR-006 only.
 
 ## Current Implementation State
 
-- Implementation revision: `IR-015`
-- Implementation cycle: `Approved Design Rework` plus bounded transactional source correction
+- Implementation revision: `IR-016`
+- Implementation cycle: `Local Fix`
 - Current solution: `SR-015` (`SR-001` through `SR-015` cumulative), including the exact-copy `SR-014` Team collaboration instruction
 - Architecture approval: `ARCH-REV-009` Pass (`ARCH-REV-008` remains the complete structural baseline)
-- Triggering findings: `CR-F-013` and `CR-F-014` from `CRR-025`; `CR-F-012` / `API-F-007` remains source-resolved by IR-014 and is preserved. No requirement gap, unresolved design impact, or unclear finding remains in the approved package.
-- Current code review: `CRR-025` Fail — Design Impact at 8.7/10 (86.5/100) is the triggering result. SR-015 resolves the owner/interface design boundary; IR-015 implements it and awaits source re-review.
+- Triggering finding: `CR-F-015` from `CRR-026`. `CR-F-012`, `CR-F-013`, and `CR-F-014` are source-resolved by the reviewed cumulative implementation and remain preserved. No requirement gap, design impact, or unclear finding is open.
+- Current code review: `CRR-026` Fail — Local Fix at 9.4/10 (93.7/100). The substantive SR-015 source passed; IR-016 removes the one dead Claude control and awaits focused source re-review.
 - Current API/E2E: `API-REV-011` remains halted at 61%. It must reinvestigate/update durable token migration, cleanup, aggregate, and exact provider-instruction coverage only after source Pass; implementation edited no durable coverage.
 - Delivery lineage: completed delivery results through `DR-003` prove SR-006 only; `DR-004` is cumulative SR-012 lineage context, not completed SR-015 delivery proof.
 - IR-005 SR-012 baseline source commit: `3927e878db0318138b6e39ad7cea1b032584e08f`.
 - IR-013 source commit: `6a920d45e54981735c25146e0ab76ab7e0917c4c`.
 - IR-014 source commit: `4dd8ff543d1c7ebbc8b1c6ffca6923487aa3eda5`.
 - IR-015 source commit: `24597cf194306848a06fdfe667ba932459c15c33` (`fix: make canonical token migration atomic`).
+- IR-016 source commit: `110b9007615741fa0f5a96974b95ad7bc2be595c` (`fix: remove dead Claude handoff control`).
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-team-hierarchical-handoffs/tickets/in-progress/agent-team-hierarchical-handoffs/implementation-revision-record.md`
 
 ## Implementation Summary
@@ -113,6 +114,12 @@ The frontend now consumes the recursive `rootTeam`, derives canonical address in
 - `SR-014`: `member-collaboration-instruction-renderer.ts` is the single exact-copy renderer and substitutes only the bound caller `memberAddress`. The same block flows through the existing AutoByteus system prompt, Codex developer-instruction, and Claude system/runtime-instruction seams for every Team-bound context; standalone Agents remain unchanged. Intrinsic `get_handoff_rules` / `send_message_to` exposure remains tied to Team binding.
 - Change posture: approved SR-015 persisted-transition rework plus exact SR-014 text consumption. No runtime legacy reader, migration-record reset, retry fallback, extra migration ID/gate, provider paraphrase, roster injection, or durable coverage edit was added.
 
+### IR-016 Claude Dead-Control Cleanup
+
+- `CR-F-015`: `buildClaudeTurnInput` no longer declares the unused `getHandoffRulesEnabled` option, and `ClaudeSession.executeTurn` no longer derives or passes `configuredToolExposure.getHandoffRulesConfigured` to that builder.
+- Team instruction authority remains exclusively the existing `memberTeamContext` path. The shared configured-tool exposure still owns genuine MCP tool enablement; no replacement flag, derivation, compatibility selector, or fallback was added.
+- Change posture: bounded dead-code cleanup. Root-cause classification: local implementation defect left by the SR-014 authority move; the current provider/context boundary remains correct and no refactor or persisted-data change is needed.
+
 ## Reviewed Behavior Trace
 
 | Behavior | Implementation result |
@@ -160,9 +167,17 @@ The frontend now consumes the recursive `rootTeam`, derives canonical address in
 - The current publish-artifacts runtime contains no `member_run_id` read or writer and does not accept that retired generic identity as a fallback.
 - Production identity audits found no stale current route/name/path identity in the server runtime, web production code, or project application source/built/vendor/importable artifacts outside explicit migration/incompatibility boundaries.
 - Current SDK `dist`, application vendor copies, application build products, and importable packages were regenerated rather than selectively patched.
+- Claude turn-input production source has zero `getHandoffRulesEnabled` references; genuine `getHandoffRulesConfigured` exposure remains only at its shared configured-tool/MCP owners.
 - Changed production files satisfy the implementation size guard. IR-015 canonical aggregate/migrator/store are 153/96/102 effective non-empty lines; exact renderer/composer are 26/28. Preserved planner/index remain separate 290/191-line migration-only owners. Every changed file is below 500 and each new responsibility delta is below 220 lines.
 
 ## Implementation-Scoped Checks
+
+### IR-016 Delta
+
+- Production `pnpm exec tsc -p tsconfig.build.json --noEmit --pretty false` — passed. Evidence: `/tmp/ir016-production-typecheck.log` (empty success log; SHA-256 `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`).
+- `pnpm run build:full` — passed, including clean production build and sanitized built-in Agent bootstrap smoke. Evidence: `/tmp/ir016-build-full.log` (SHA-256 `305aac208d8d3aa972d21d5efb0d313abe3caca3f157bdc921ded47ceeeeb316`).
+- Production zero-reference audit — passed: `getHandoffRulesEnabled` has zero references under `autobyteus-server-ts/src`; the retained three `getHandoffRulesConfigured` references are the genuine shared exposure/MCP owners and no Claude turn-input call remains. Evidence: `/tmp/ir016-zero-reference-audit.log` (SHA-256 `9977fcef98e5607594a345697a058e9eb9f5f63c4b5ba450834fd3bfbae56670`).
+- Focused diff/whitespace/size audit — passed: exactly two production lines were deleted, with no additions; `claude-turn-input-builder.ts` and `claude-session.ts` are 53 and 495 effective non-empty lines. Source commit: `110b9007615741fa0f5a96974b95ad7bc2be595c`. No API/E2E-owned durable file was edited.
 
 ### IR-015 Delta
 
@@ -271,7 +286,7 @@ The frontend now consumes the recursive `rootTeam`, derives canonical address in
 
 ## Frontend Rendered Result
 
-IR-006 through IR-015 do not change a rendered frontend surface. IR-015 changes model-facing system/developer instruction text only, verified at provider composition seams; it adds no UI. The cumulative IR-005 frontend result remains:
+IR-006 through IR-016 do not change a rendered frontend surface. IR-015 changes model-facing system/developer instruction text only, verified at provider composition seams; IR-016 removes a dead internal Claude input and adds no UI. The cumulative IR-005 frontend result remains:
 
 - Nuxt production output was served and `/agent-teams` was inspected at 1440x1000 and 390x844.
 - Search input, Reload action, Create affordance, responsive layout, and absence of horizontal overflow were verified. Evidence: `/tmp/sr012-agent-teams.png` and `/tmp/sr012-agent-teams-mobile.png`.
@@ -290,12 +305,12 @@ IR-006 through IR-015 do not change a rendered frontend surface. IR-015 changes 
 
 ## Task Design Health Check
 
-- Reviewed change posture: approved SR-015 migration ownership/transaction rework plus exact-copy SR-014 instruction consumption.
-- Root cause: IR-014 fixed row semantics but remained attached to a terminal historical migration record and persisted plans per row. SR-015 moves orchestration under the independently pending exact-gated canonical aggregate and assigns one transaction-owning store. Provider copy was a separate user-approved text authority already compatible with the established shared composer.
-- Refactor decision: `Refactor Needed Now`; the old app-data definition/per-row database API was deleted and replaced by canonical aggregate composition plus migrator/store separation. The strict planner/index remain unchanged.
+- Reviewed change posture: bounded dead-code cleanup after the approved SR-015 rework.
+- Root cause: moving Claude Team-instruction authority to `memberTeamContext` left one unused optional builder property and one dead caller derivation.
+- Refactor decision: `No Refactor Needed`; the established Team context and shared tool-exposure owners remain correct. Removing the two dead references completes the clean cut without changing behavior or boundaries.
 - Implementation matched the reviewed assessment: `Yes`.
 - New Design Impact or Requirement Gap found during implementation: `No`.
 
 ## Routing
 
-Route this cumulative SR-015 / IR-015 package to `code_reviewer` for `CR-F-013` / `CR-F-014` source re-review while preserving resolved `CR-F-012`. On Pass, route to `api_e2e_engineer` to resume `API-REV-011` at 61%, reinvestigate/update DS-013 and SR-014 durable coverage, and continue the remaining matrix. Any repository-resident durable coverage additions, edits, or removals must return through proportional code review before delivery.
+Route this cumulative SR-015 / IR-016 package to `code_reviewer` for focused `CR-F-015` source re-review while preserving resolved `CR-F-012` through `CR-F-014`. On Pass, route to `api_e2e_engineer` to resume `API-REV-011` at 61%, reinvestigate/update DS-013 and SR-014 durable coverage, and continue the remaining matrix. Any repository-resident durable coverage additions, edits, or removals must return through proportional code review before delivery.
